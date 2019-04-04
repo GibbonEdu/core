@@ -16,7 +16,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         <input type="hidden" name="{{ values.name }}" value="{{ values.value }}">
     {% endfor %}
 
-    <table class="{{ form.getClass }}" cellspacing=0>
+    <table class="{{ form.getClass }} px-3 py-2 sm:p-0" cellspacing=0>
     {% for row in form.getRows %}
         <tr id="{{ row.getID }}" class="{{ row.getClass|replace({'standardWidth': ''}) }} flex flex-col sm:flex-row justify-between content-center p-0">
 
@@ -24,12 +24,12 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             {% set colspan = loop.last and loop.length < totalColumns ? (totalColumns + 1 - loop.length) : 0  %}
             
             {% if element.getType == "Gibbon\\Forms\\Layout\\Label" %}
-                {% set class = 'flex flex-col flex-grow justify-center' %}
+                {% set class = 'flex flex-col flex-grow justify-center -mb-1 sm:mb-0' %}
             {% else %}
-                {% set class = loop.last and loop.length > 1 ? 'w-full max-w-full sm:max-w-sm' : 'flex-grow' %}  
+                {% set class = loop.last and loop.length > 1 ? 'w-full max-w-full sm:max-w-xs justify-center' : 'flex-grow justify-center' %}  
             {% endif %}
 
-            <td class="{{ element.getClass|replace({'standardWidth': ''}) }} {{ class }}" {{ colspan ? 'colspan="%s"'|format(colspan)|raw }}>
+            <td class="{{ element.getClass|replace({'standardWidth': ''}) }} {{ class }} px-2 border-b-0 sm:border-b border-t-0" {{ colspan ? 'colspan="%s"'|format(colspan)|raw }}>
                 {{ element.getOutput|replace({'standardWidth': 'w-full' })|raw }}
             </td>
         {% endfor %}

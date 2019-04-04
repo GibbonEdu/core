@@ -395,6 +395,9 @@ tr.dull, tr.dull td, div.dull, td.dull {
 
 
 /* ALT TABLE STYLES */
+table.noIntBorder {
+    background: #EDF7FF ;
+}
 table.noIntBorder td {
 	border: none!important ;
 	padding: 5px!important ;
@@ -402,6 +405,9 @@ table.noIntBorder td {
 }
 table.noIntBorder td:last-child {
 	text-align: left;
+}
+table.smallIntBorder {
+    background: #fafafa;
 }
 table.smallIntBorder td {
 	border-left: none!important ;
