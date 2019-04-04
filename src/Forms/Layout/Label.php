@@ -165,10 +165,10 @@ class Label extends Element implements RowDependancyInterface
     {
         $output = '';
 
-        $this->addClass('mt-4 sm:mt-0');
+        $this->addClass('mt-4 sm:my-1 max-w-sm font-bold');
 
         if (!empty($this->label)) {
-            $output .= '<label '.$this->getAttributeString().'><b>'.$this->label.' '.( ($this->getRequired())? '*' : '').'</b></label><br/>';
+            $output .= '<label '.$this->getAttributeString().'>'.$this->label.' '.( ($this->getRequired())? '*' : '').'</label>';
         }
 
         if ($this->getReadonly()) {
@@ -185,9 +185,9 @@ class Label extends Element implements RowDependancyInterface
         }
 
         if (!empty($this->description)) {
-            $output .= '<span class="emphasis small">';
+            $output .= '<span class="text-xxs italic mt-1 sm:mt-0">';
             $output .= $this->getDescription();
-            $output .= '</span><br/>';
+            $output .= '</span>';
         }
 
         $output .= $this->content;

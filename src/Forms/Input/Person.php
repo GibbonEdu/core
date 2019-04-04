@@ -46,11 +46,11 @@ class Person extends Select
         $this->addClass('personSelect');
 
         $output = '';
-        $output .= '<div class="flex justify-end items-center">';
+        $output .= '<div class="flex justify-end items-center pl-24 lg:pl-0">';
         if ($this->displayPhoto) {
 
-            $output .= '<div id="'.$this->getID().'Photo" class="relative w-20 h-20 z-10 mr-4 rounded-full bg-gray-200 border border-solid border-gray-400 bg-no-repeat">';
-            $output .= '<div id="'.$this->getID().'Count" class="hidden absolute bottom-0 right-0 bg-purple-400 text-white text-center rounded-full py-1 px-2"></div>';
+            $output .= '<div id="'.$this->getID().'Photo" class="flex-none relative w-20 h-20 z-10 -ml-24 mr-4 rounded-full bg-gray-200 border border-solid border-gray-400 bg-no-repeat">';
+            $output .= '<div id="'.$this->getID().'Count" class="hidden badge"></div>';
             $output .= '</div>';
 
             $output .= '<script>

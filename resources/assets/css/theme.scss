@@ -85,6 +85,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 .badge {
-    @apply absolute -mr-2 right-0 z-10 rounded-full bg-blue-400 text-xs text-white no-underline leading-tight;
-    padding: 3px 6px 1px 6px;
+    @apply absolute z-10 rounded-full bg-blue-400 text-xs text-white no-underline leading-tight;
+    padding: 2px 6px 2px 6px;
 }
