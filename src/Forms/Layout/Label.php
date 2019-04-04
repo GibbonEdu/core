@@ -33,7 +33,6 @@ class Label extends Element implements RowDependancyInterface
 
     protected $label;
     protected $description;
-    protected $for = '';
 
     /**
      * Create a label element with a for attribute linking to an input.
@@ -43,7 +42,7 @@ class Label extends Element implements RowDependancyInterface
     public function __construct($for, $label)
     {
         $this->label = $label;
-        $this->for = $for;
+        $this->setAttribute('for', $for);
     }
 
     /**
@@ -61,7 +60,7 @@ class Label extends Element implements RowDependancyInterface
      */
     public function getName()
     {
-        return 'label'.$this->for;
+        return 'label'.$this->getAttribute('for');
     }
 
     /**
@@ -70,7 +69,7 @@ class Label extends Element implements RowDependancyInterface
      */
     public function getID()
     {
-        return 'label'.$this->for;
+        return 'label'.$this->getAttribute('for');
     }
 
     /**
@@ -151,11 +150,11 @@ class Label extends Element implements RowDependancyInterface
 
     protected function getLinkedElement()
     {
-        if (empty($this->for) || empty($this->row)) {
+        if (empty($this->getAttribute('for')) || empty($this->row)) {
             return false;
         }
 
-        return $this->row->getElement($this->for);
+        return $this->row->getElement($this->getAttribute('for'));
     }
 
     /**
@@ -166,8 +165,10 @@ class Label extends Element implements RowDependancyInterface
     {
         $output = '';
 
+        $this->addClass('mt-4 sm:my-1 max-w-sm font-bold');
+
         if (!empty($this->label)) {
-            $output .= '<label for="'.$this->for.'"><b>'.$this->label.' '.( ($this->getRequired())? '*' : '').'</b></label><br/>';
+            $output .= '<label '.$this->getAttributeString().'>'.$this->label.' '.( ($this->getRequired())? '*' : '').'</label>';
         }
 
         if ($this->getReadonly()) {
@@ -184,9 +185,9 @@ class Label extends Element implements RowDependancyInterface
         }
 
         if (!empty($this->description)) {
-            $output .= '<span class="emphasis small">';
+            $output .= '<span class="text-xxs italic mt-1 sm:mt-0">';
             $output .= $this->getDescription();
-            $output .= '</span><br/>';
+            $output .= '</span>';
         }
 
         $output .= $this->content;

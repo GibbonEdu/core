@@ -16,12 +16,75 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/**
- * This injects Tailwind's base styles, which is a combination of
- * Normalize.css and some additional base styles.
- *
- * Inactive during refactoring due to some conflicts with the old
- * main.css file which will be resolved manually.
- *
- * @tailwind base;
- */
+// @tailwind base;
+
+*,
+:after,
+:before {
+    border: 0 solid hsl(0, 3%, 82%);
+    box-sizing: border-box;
+}
+
+/*
+ --------------------------------------------------------------------------
+  Sizing
+ --------------------------------------------------------------------------
+*/
+
+.min-h-1\/2 {
+    min-height: 50vh;
+}
+
+/*
+ --------------------------------------------------------------------------
+  Typography
+ --------------------------------------------------------------------------
+*/
+
+.link-white {
+    @apply text-white underline;
+}
+
+.link-white:hover {
+    @apply text-gray-400 underline;
+}
+
+/*
+ --------------------------------------------------------------------------
+  Alerts
+ --------------------------------------------------------------------------
+*/
+.alert {
+    @apply shadow border-l-6 p-3 my-3 text-xs;
+    @apply bg-gray-100 border-gray-600 text-gray-600;
+}
+
+.alert.message {
+    @apply shadow border-l-6 p-3 my-3 text-xs;
+    @apply bg-blue-200 border-blue-700 text-blue-700;
+}
+
+.alert.success {
+    @apply shadow border-l-6 p-3 my-3 text-xs;
+    @apply bg-green-200 border-green-700 text-green-700;
+}
+
+.alert.warning {
+    @apply shadow border-l-6 p-3 my-3 text-xs;
+    @apply bg-orange-300 border-orange-700 text-orange-700;
+}
+
+.alert.error {
+    @apply shadow border-l-6 p-3 my-3 text-xs;
+    @apply bg-red-200 border-red-700 text-red-700;
+}
+
+.alert.exception {
+    @apply shadow border-l-6 p-3 my-3 text-xs;
+    @apply bg-gray-300 border-gray-800 text-gray-800;
+}
+
+.badge {
+    @apply absolute z-10 rounded-full bg-blue-400 text-xs text-white no-underline leading-tight;
+    padding: 2px 6px 2px 6px;
+}
