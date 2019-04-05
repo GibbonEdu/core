@@ -525,7 +525,7 @@ class Format
         $class = 'block shadow bg-white border border-gray-600 sm:p-1 ';
 
         switch ($size) {
-            case 240:   $class .= 'w-64 p-1 mx-auto'; break;
+            case 240:   $class .= 'w-48 sm:w-64 p-1 mx-auto'; break;
             case 75:    $class .= 'w-12 sm:w-20 p-px'; break;
             default:    $class .= $size; break;
         }

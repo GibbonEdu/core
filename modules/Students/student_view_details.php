@@ -3121,7 +3121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                     //Show alerts
                     $alert = getAlertBar($guid, $connection2, $gibbonPersonID, $row['privacy'], '', false, true);
-                    $_SESSION[$guid]['sidebarExtra'] .= '<div class="w-64 h-10 mt-1 mx-auto p-1">';
+                    $_SESSION[$guid]['sidebarExtra'] .= '<div class="w-48 sm:w-64 h-10 mt-1 mx-auto p-1">';
                     if ($alert == '') {
                         $_SESSION[$guid]['sidebarExtra'] .= '<span class="text-gray-500 text-xs">'.__('No Current Alerts').'</span>';
                     } else {
