@@ -539,7 +539,7 @@ class Format
             $path = '/themes/'.static::$settings['gibbonThemeName'].'/img/anonymous_'.$size.'.jpg';
         }
 
-        return sprintf('<img class="mx-auto %1$s" src="%2$s"><br/>', $class, static::$settings['absoluteURL'].'/'.$path);
+        return sprintf('<img class="mx-auto %1$s" src="%2$s">', $class, static::$settings['absoluteURL'].'/'.$path);
     }
 
     public static function userStatusInfo($person = [])
