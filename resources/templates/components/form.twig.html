@@ -16,7 +16,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         <input type="hidden" name="{{ values.name }}" value="{{ values.value }}">
     {% endfor %}
 
-    <table class="{{ form.getClass }} px-3 py-2 sm:p-0" cellspacing=0>
+    <table class="{{ form.getClass }}" cellspacing=0>
     {% for row in form.getRows %}
         <tr id="{{ row.getID }}" class="{{ row.getClass|replace({'standardWidth': ''}) }} flex flex-col sm:flex-row justify-between content-center p-0">
 
