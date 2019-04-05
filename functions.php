@@ -2317,152 +2317,20 @@ function formatName($title, $preferredName, $surname, $roleCategory, $reverse = 
     return Format::name($title, $preferredName, $surname, $roleCategory, $reverse, $informal);
 }
 
-//$tinymceInit indicates whether or not tinymce should be initialised, or whether this will be done else where later (this can be used to improve page load.
-function getEditor($guid, $tinymceInit = true, $id, $value = '', $rows = 10, $showMedia = false, $required = false, $initiallyHidden = false, $allowUpload = true, $initialFilter = '', $resourceAlphaSort = false)
+/**
+ * Updated v18 to use a twig template.
+ * 
+ * $tinymceInit indicates whether or not tinymce should be initialised, or whether this will be done else where later (this can be used to improve page load.
+ */
+function getEditor($guid, $tinymceInit = true, $id = '', $value = '', $rows = 10, $showMedia = false, $required = false, $initiallyHidden = false, $allowUpload = true, $initialFilter = '', $resourceAlphaSort = false)
 {
-    $output = false;
-    if ($resourceAlphaSort == false) {
-        $resourceAlphaSort = 'false';
-    } else {
-        $resourceAlphaSort = 'true';
-    }
+    global $page;
 
-    $output .= "<a name='".$id."editor'></a>";
+    $templateData = compact('tinymceInit', 'id', 'value', 'rows', 'showMedia', 'required', 'initiallyHidden', 'allowUpload', 'initialFilter', 'resourceAlphaSort');
 
-    $output .= "<div id='editor-toolbar'>";
-    $output .= "<a style='margin-top:-4px' id='".$id."edButtonHTML' class='hide-if-no-js edButtonHTML'>HTML</a>";
-    $output .= "<a style='margin-top:-4px' id='".$id."edButtonPreview' class='active hide-if-no-js edButtonPreview'>".__('Visual').'</a>';
+    $templateData['absoluteURL'] = $_SESSION[$guid]['absoluteURL'];
 
-    $output .= "<div id='media-buttons'>";
-    $output .= "<div style='padding-top: 2px; height: 15px'>";
-    if ($showMedia == true) {
-        $output .= "<div id='".$id."mediaInner' style='text-align: left'>";
-        $output .= "<script type='text/javascript'>";
-        $output .= '$(document).ready(function(){';
-        $output .= '$(".'.$id.'resourceSlider").hide();';
-        $output .= '$(".'.$id.'resourceAddSlider").hide();';
-        $output .= '$(".'.$id.'resourceQuickSlider").hide();';
-        $output .= '$(".'.$id.'show_hide").show();';
-        $output .= '$(".'.$id."show_hide\").unbind('click').click(function(){";
-        $output .= '$(".'.$id.'resourceSlider").slideToggle();';
-        $output .= '$(".'.$id.'resourceAddSlider").hide();';
-        $output .= '$(".'.$id.'resourceQuickSlider").hide();';
-        $output .= "if (tinyMCE.get('".$id."').selection.getRng().startOffset < 1) {";
-        $output .= "tinyMCE.get('".$id."').focus();";
-        $output .= '}';
-        $output .= '});';
-        $output .= '$(".'.$id.'show_hideAdd").show();';
-        $output .= '$(".'.$id."show_hideAdd\").unbind('click').click(function(){";
-        $output .= '$(".'.$id.'resourceAddSlider").slideToggle();';
-        $output .= '$(".'.$id.'resourceSlider").hide();';
-        $output .= '$(".'.$id.'resourceQuickSlider").hide();';
-        $output .= "if (tinyMCE.get('".$id."').selection.getRng().startOffset < 1) {";
-        $output .= "tinyMCE.get('".$id."').focus();";
-        $output .= '}';
-        $output .= '});';
-        $output .= '$(".'.$id.'show_hideQuickAdd").show();';
-        $output .= '$(".'.$id."show_hideQuickAdd\").unbind('click').click(function(){";
-        $output .= '$(".'.$id.'resourceQuickSlider").slideToggle();';
-        $output .= '$(".'.$id.'resourceSlider").hide();';
-        $output .= '$(".'.$id.'resourceAddSlider").hide();';
-        $output .= "if (tinyMCE.get('".$id."').selection.getRng().startOffset < 1) {";
-        $output .= "tinyMCE.get('".$id."').focus();";
-        $output .= '}';
-        $output .= '});';
-        $output .= '});';
-        $output .= '</script>';
-
-        $output .= "<div style='float: left; padding-top:1px; margin-right: 5px'><u>".__('Shared Resources').'</u>:</div> ';
-        $output .= "<a title='".__('Insert Existing Resource')."' style='float: left' class='".$id."show_hide' onclick='\$(\".".$id.'resourceSlider").load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Planner/resources_insert_ajax.php?alpha='.$resourceAlphaSort.'&'.$initialFilter.'","id='.$id."&allowUpload=$allowUpload\");' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/search_mini.png' alt='".__('Insert Existing Resource')."' onclick='return false;' /></a>";
-        if ($allowUpload == true) {
-            $output .= "<a title='".__('Create & Insert New Resource')."' style='float: left' class='".$id."show_hideAdd' onclick='\$(\".".$id.'resourceAddSlider").load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Planner/resources_add_ajax.php?alpha='.$resourceAlphaSort.'&'.$initialFilter.'","id='.$id."&allowUpload=$allowUpload\");' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/upload_mini.png' alt='".__('Create & Insert New Resource')."' onclick='return false;' /></a>";
-        }
-        $output .= "<div style='float: left; padding-top:1px; margin-right: 5px'><u>".__('Quick File Upload').'</u>:</div> ';
-        $output .= "<a title='".__('Quick Add')."' style='float: left' class='".$id."show_hideQuickAdd' onclick='\$(\".".$id.'resourceQuickSlider").load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Planner/resources_addQuick_ajax.php?alpha='.$resourceAlphaSort.'&'.$initialFilter.'","id='.$id."&allowUpload=$allowUpload\");' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/page_new_mini.png' alt='".__('Quick Add')."' onclick='return false;' /></a>";
-        $output .= '</div>';
-    }
-    $output .= '</div>';
-    $output .= '</div>';
-
-    if ($showMedia == true) {
-        //DEFINE MEDIA INPUT DISPLAY
-        $output .= "<div class='".$id."resourceSlider' style='display: none; width: 100%; min-height: 60px;'>";
-        $output .= "<div style='text-align: center; width: 100%; margin-top: 5px'>";
-        $output .= "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/loading.gif' alt='".__('Loading')."' onclick='return false;' /><br/>";
-        $output .= __('Loading');
-        $output .= '</div>';
-        $output .= '</div>';
-
-        //DEFINE QUICK INSERT
-        $output .= "<div class='".$id."resourceQuickSlider' style='display: none; width: 100%; min-height: 60px;'>";
-        $output .= "<div style='text-align: center; width: 100%; margin-top: 5px'>";
-        $output .= "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/loading.gif' alt='".__('Loading')."' onclick='return false;' /><br/>";
-        $output .= __('Loading');
-        $output .= '</div>';
-        $output .= '</div>';
-    }
-
-    if ($showMedia == true and $allowUpload == true) {
-        //DEFINE MEDIA ADD DISPLAY
-        $output .= "<div class='".$id."resourceAddSlider' style='display: none; width: 100%; min-height: 60px;'>";
-        $output .= "<div style='text-align: center; width: 100%; margin-top: 5px'>";
-        $output .= "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/loading.gif' alt='".__('Loading')."' onclick='return false;' /><br/>";
-        $output .= __('Loading');
-        $output .= '</div>';
-        $output .= '</div>';
-    }
-
-    $output .= "<div id='editorcontainer' style='margin-top: 4px'>";
-
-    $output .= "<textarea class='tinymce' name='".$id."' id='".$id."' style='height: ".($rows * 18)."px; width: 100%; margin-left: 0px'>".htmlPrep($value).'</textarea>';
-    if ($required) {
-        $output .= "<script type='text/javascript'>";
-        $output .= 'var '.$id."='';";
-        $output .= $id."=new LiveValidation('".$id."');";
-        $output .= $id.".add(Validate.Presence, { tinymce: true, tinymceField: '".$id."'});";
-        if ($initiallyHidden == true) {
-            $output .= $id.'.disable();';
-        }
-        $output .= '</script>';
-    }
-    $output .= '</div>';
-
-    $output .= "<script type='text/javascript'>";
-    $output .= '$(document).ready(function(){';
-    if ($tinymceInit) {
-        $output .= "tinyMCE.execCommand('mceAddControl', false, '".$id."');";
-    }
-    $output .= "$('#".$id."edButtonPreview').addClass('active') ;";
-    $output .= "$('#".$id."edButtonHTML').click(function(){";
-    $output .= "tinyMCE.execCommand('mceRemoveEditor', false, '".$id."');";
-    $output .= "$('#".$id."edButtonHTML').addClass('active') ;";
-    $output .= "$('#".$id."edButtonPreview').removeClass('active') ;";
-    $output .= '$(".'.$id.'resourceSlider").hide();';
-    $output .= '$("#'.$id.'mediaInner").hide();';
-    if ($required) {
-        $output .= $id.'.destroy();';
-        $output .= "$('.LV_validation_message').css('display','none');";
-        $output .= $id."=new LiveValidation('".$id."');";
-        $output .= $id.'.add(Validate.Presence);';
-    }
-    $output .= '}) ;';
-    $output .= "$('#".$id."edButtonPreview').click(function(){";
-    $output .= "tinyMCE.execCommand('mceAddEditor', false, '".$id."');";
-    $output .= "$('#".$id."edButtonPreview').addClass('active') ;";
-    $output .= "$('#".$id."edButtonHTML').removeClass('active') ; ";
-    $output .= '$("#'.$id.'mediaInner").show();';
-    if ($required) {
-        $output .= $id.'.destroy();';
-        $output .= "$('.LV_validation_message').css('display','none');";
-        $output .= $id."=new LiveValidation('".$id."');";
-        $output .= $id.".add(Validate.Presence, { tinymce: true, tinymceField: '".$id."'});";
-    }
-    $output .= '}) ;';
-    $output .= '});';
-    $output .= '</script>';
-    $output .= '</div>';
-
-    return $output;
+    return $page->fetchFromTemplate('components/editor.twig.html', $templateData);
 }
 
 function getYearGroups($connection2)

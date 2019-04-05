@@ -1,0 +1,161 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+
+Rich Text Editor
+-->#}
+
+{% set resourceAlphaSort = resourceAlphaSort ? 'true' : 'false' %}
+
+<a name="{{ id }}editor"></a>
+
+<div class="editor-toolbar flex flex-col sm:flex-row justify-between text-xs ">
+
+    {% if showMedia %}
+    <div id="{{ id }}mediaInner" class="flex items-center py-2">
+        <script type="text/javascript">
+        $(document).ready(function(){
+            $(".{{ id }}resourceSlider, .{{ id }}resourceAddSlider, .{{ id }}resourceQuickSlider").hide();
+            $(".{{ id }}show_hide").unbind('click').click(function(){
+                $(".{{ id }}resourceSlider").slideToggle();
+                $(".{{ id }}resourceAddSlider, .{{ id }}resourceQuickSlider").hide();
+                if (tinyMCE.get('{{ id }}').selection.getRng().startOffset < 1) {
+                    tinyMCE.get('{{ id }}').focus();
+                }
+            });
+            $(".{{ id }}show_hideAdd").unbind('click').click(function(){
+                $(".{{ id }}resourceAddSlider").slideToggle();
+                $(".{{ id }}resourceSlider, .{{ id }}resourceQuickSlider").hide();
+                if (tinyMCE.get('{{ id }}').selection.getRng().startOffset < 1) {
+                    tinyMCE.get('{{ id }}').focus();
+                }
+            });
+            $(".{{ id }}show_hideQuickAdd").unbind('click').click(function(){
+            $(".{{ id }}resourceQuickSlider").slideToggle();
+            $(".{{ id }}resourceSlider, .{{ id }}resourceAddSlider").hide();
+            if (tinyMCE.get('{{ id }}').selection.getRng().startOffset < 1) {
+                tinyMCE.get('{{ id }}').focus();
+            }
+            });
+        });
+        </script>
+
+        <div class="mr-2 flex items-center">
+            <span>{{ __('Shared Resources') }}:</span> 
+    
+            <a title="{{ __('Insert Existing Resource') }}" class="{{ id }}show_hide mx-1" onclick='$(".{{ id }}resourceSlider").load("{{ absoluteURL }}/modules/Planner/resources_insert_ajax.php?alpha={{ resourceAlphaSort }}&{{ initialFilter }}","id={{ id }}&allowUpload={{ allowUpload }}");'>
+                <img src="{{ absoluteURL  }}/themes/Default/img/search_mini.png" alt="{{ __('Insert Existing Resource') }}" onclick="return false;" />
+            </a>
+        
+            {% if allowUpload %}
+            <a title="{{ __('Create & Insert New Resource') }}" class="{{ id }}show_hideAdd mx-1" onclick='$(".{{ id }}resourceAddSlider").load("{{ absoluteURL }}/modules/Planner/resources_add_ajax.php?alpha={{ resourceAlphaSort }}&{{ initialFilter }}","id={{ id }}&allowUpload={{ allowUpload }}");'>
+                <img src="{{ absoluteURL  }}/themes/Default/img/upload_mini.png" alt="{{ __('Create & Insert New Resource') }}" onclick="return false;" />
+            </a>
+            {% endif %}
+        </div>
+        
+        {% if allowUpload %}
+        <div class="mr-2 flex items-center">
+            <span>{{ __('Quick File Upload') }}:</span> 
+
+            <a title="{{ __('Quick Add') }}" class="{{ id }}show_hideQuickAdd mx-1" onclick='$(".{{ id }}resourceQuickSlider").load("{{ absoluteURL }}/modules/Planner/resources_addQuick_ajax.php?alpha={{ resourceAlphaSort }}&{{ initialFilter }}","id={{ id }}&allowUpload={{ allowUpload }}");'>
+                <img src="{{ absoluteURL  }}/themes/Default/img/page_new_mini.png" alt="{{ __('Quick Add') }}" onclick="return false;" />
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="editor-tabs flex flex-grow justify-end items-end">
+        <a id="{{ id }}edButtonPreview" class="active hide-if-no-js block cursor-pointer bg-gray-100 text-gray-500 border border-b-0 rounded-t px-4 pt-2 pb-1 mx-1 font-bold">
+            {{ __('Visual') }}
+        </a>
+        <a id="{{ id }}edButtonHTML" class="hide-if-no-js block cursor-pointer bg-gray-100 text-gray-500 border border-b-0 rounded-t px-4 pt-2 pb-1 mx-1 font-bold">
+            HTML
+        </a>
+    </div>
+</div>
+
+
+{% if showMedia %}
+    {## Define: Insert Existing Resource ##}
+    <div class="{{ id }}resourceSlider hidden w-full">
+        <div class="w-full text-center h-20 p-6">
+            <img src="{{ absoluteURL  }}/themes/Default/img/loading.gif" alt="{{ __('Loading') }}" onclick="return false;" /><br/>
+            {{ __('Loading') }}
+        </div>
+    </div>
+{% endif %}
+
+{% if showMedia and allowUpload %}
+    {## Define: Quick File Upload ##}
+    <div class="{{ id }}resourceQuickSlider hidden w-full">
+        <div class="w-full text-center h-20 p-6">
+            <img src="{{ absoluteURL  }}/themes/Default/img/loading.gif" alt="{{ __('Loading') }}" onclick="return false;" /><br/>
+            {{ __('Loading') }}
+        </div>
+    </div>
+
+    {## Define: Create & Insert New Resource ##}
+    <div class="{{ id }}resourceAddSlider hidden w-full">
+        <div class="w-full text-center h-20 p-6">
+            <img src="{{ absoluteURL  }}/themes/Default/img/loading.gif" alt="{{ __('Loading') }}" onclick="return false;" /><br/>
+            {{ __('Loading') }}
+        </div>
+    </div>
+{% endif %}
+
+
+<div id="editorcontainer">
+    <textarea class="tinymce w-full ml-0" name="{{ id }}" id="{{ id }}" style="height: {{ rows * 18 }}px;">
+        {{- value -}}
+    </textarea>
+
+    {% if required %}
+        <script type="text/javascript">
+        var {{ id }} = new LiveValidation('{{ id }}');
+        {{ id }}.add(Validate.Presence, { tinymce: true, tinymceField: '{{ id }}'});
+        {% if initiallyHidden %}
+            {{ id }}.disable();
+        {% endif %}
+        </script>
+    {% endif %}
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    {% if tinymceInit %}
+        tinyMCE.execCommand('mceAddControl', false, '{{ id }}');
+    {% endif %}
+
+    $('#{{ id }}edButtonPreview').addClass('active') ;
+    $('#{{ id }}edButtonHTML').click(function(){
+        tinyMCE.execCommand('mceRemoveEditor', false, '{{ id }}');
+        $('#{{ id }}edButtonHTML').addClass('active') ;
+        $('#{{ id }}edButtonPreview').removeClass('active') ;
+        $(".{{ id }}resourceSlider").hide();
+        $("#{{ id }}mediaInner").hide();
+        {% if required %}
+            {{ id }}.destroy();
+            $('.LV_validation_message').css('display','none');
+            {{ id }}=new LiveValidation('{{ id }}');
+            {{ id }}.add(Validate.Presence);
+        {% endif %}
+    }) ;
+    $('#{{ id }}edButtonPreview').click(function(){
+        tinyMCE.execCommand('mceAddEditor', false, '{{ id }}');
+        $('#{{ id }}edButtonPreview').addClass('active');
+        $('#{{ id }}edButtonHTML').removeClass('active'); 
+        $("#{{ id }}mediaInner").show();
+        {% if required %}
+            {{ id }}.destroy();
+            $('.LV_validation_message').css('display','none');
+            {{ id }}=new LiveValidation('{{ id }}');
+            {{ id }}.add(Validate.Presence, { tinymce: true, tinymceField: '{{ id }}'});
+        {% endif %}
+    });
+});
+</script>
