@@ -20,6 +20,13 @@ collapsed drop-down list in 'mini' view-mode.
     </button>
     {% endif %}
 
+    {% for code in page.extraSidebar if sidebar and sidebarPosition != 'bottom' %}
+        {% if code is not empty %}
+        <div class="pt-6 sm:pt-16 lg:pt-6 mx-auto max-w-md">
+            {{ code|raw }}
+        </div>
+        {% endif %}
+    {% endfor %}
     
 
     {% if sidebar and sidebarContents %}
@@ -55,7 +62,7 @@ collapsed drop-down list in 'mini' view-mode.
     {% endif %}
     
     {% for code in page.extraSidebar if sidebar and sidebarPosition == 'bottom' %}
-    <div class="sm:pt-12 lg:pt-0">
+    <div class="pt-6 sm:pt-16 lg:pt-0 mx-auto max-w-md">
         {{ code|raw }}
     </div>
     {% endfor %}
