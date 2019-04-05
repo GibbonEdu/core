@@ -464,6 +464,12 @@ td.mceIframeContainer {
 
 
 /* FORMS */
+input:not([type="checkbox"]), button {
+    -webkit-appearance: none;
+    -webkit-border-radius: 0;
+    border-radius: 0;
+}
+
 input[type="text"], input[type="password"], input[type="file"] {
 	border: 1px solid #BFBFBF;
 	background-color: #ffffff ;
@@ -506,6 +512,8 @@ select {
 	margin-left: 4px ;
 	font-size: 13px ;
     box-sizing: border-box;
+    -webkit-border-radius: 0;
+    border-radius: 0;
 }
 
 
