@@ -17,25 +17,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-.attendanceGrid .grid {
-	border-collapse: collapse; 
-}
-
-.attendanceGrid td {
-	padding: 5px !important;
-	border: 0;
-}
-
-.attendanceField {
-	display:inline-block;
-	width: 133px;
-	margin-right: 8px;
-}
-
-.attendanceFieldStacked {
-	margin-top: -4px;
-}
-
 .verticalHeader {
 	overflow: hidden;
 	padding: 4px !important;
