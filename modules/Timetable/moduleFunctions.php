@@ -735,7 +735,8 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
             $count = 0;
 
-            $output .= "<table cellspacing='0' class='mini' cellspacing='0' style='width: ";
+            $output .= '<div class="overflow-x-scroll sm:overflow-x-auto overflow-y-hidden mb-6">';
+            $output .= "<table cellspacing='0' class='mini mb-1' cellspacing='0' style='width: ";
             if ($narrow == 'trim') {
                 $output .= '700px';
             } elseif ($narrow == 'narrow') {
@@ -743,7 +744,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             } else {
                 $output .= '750px';
             }
-            $output .= "; margin: 0px 0px 30px 0px;'>";
+            $output .= ";'>";
                 //Spit out controls for displaying calendars
                 if ($self == true and ($_SESSION[$guid]['calendarFeed'] != '' or $_SESSION[$guid]['calendarFeedPersonal'] != '' or $_SESSION[$guid]['viewCalendarSpaceBooking'] != '')) {
                     $output .= "<tr class='head' style='height: 37px;'>";
@@ -951,6 +952,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             }
             $output .= '</tr>';
             $output .= '</table>';
+            $output .= '</div>';
         }
     }
 
