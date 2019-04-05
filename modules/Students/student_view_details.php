@@ -3121,9 +3121,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                     //Show alerts
                     $alert = getAlertBar($guid, $connection2, $gibbonPersonID, $row['privacy'], '', false, true);
-                    $_SESSION[$guid]['sidebarExtra'] .= "<div style='background-color: none; font-size: 12px; margin: 3px 0 0px 0; width: 240px; text-align: left; height: 40px; padding: 2px 0px;'>";
+                    $_SESSION[$guid]['sidebarExtra'] .= '<div class="w-64 h-10 mt-1 mx-auto p-1">';
                     if ($alert == '') {
-                        $_SESSION[$guid]['sidebarExtra'] .= '<b>'.__('No Current Alerts').'</b>';
+                        $_SESSION[$guid]['sidebarExtra'] .= '<span class="text-gray-500 text-xs">'.__('No Current Alerts').'</span>';
                     } else {
                         $_SESSION[$guid]['sidebarExtra'] .= $alert;
                     }
