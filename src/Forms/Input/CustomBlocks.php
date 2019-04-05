@@ -55,7 +55,7 @@ class CustomBlocks implements OutputableInterface
         $this->name = $name;
 
         $this->toolsTable = $factory->createTable()->setClass('inputTools fullWidth');
-        $this->blockButtons = $factory->createGrid()->setClass('blockButtons blank fullWidth')->setColumns(2);
+        $this->blockButtons = $factory->createGrid()->setClass('blockButtons blank fullWidth');
         $this->addBlockButton('delete', __('Delete'), 'garbage.png');
 
         $this->settings = array(

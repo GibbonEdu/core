@@ -214,7 +214,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                             $form = Form::create('attendanceByRollGroup', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']. '/attendance_take_byRollGroupProcess.php');
                             $form->setAutocomplete('off');
-                            $form->addClass('attendanceGrid');
 
                             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
                             $form->addHiddenValue('gibbonRollGroupID', $gibbonRollGroupID);
@@ -223,31 +222,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                             $form->addRow()->addHeading(__('Take Attendance') . ': '. htmlPrep($rollGroup['name']));
 
-                            $grid = $form->addRow()->addGrid('attendance')->setColumns(4);
+                            $grid = $form->addRow()->addGrid('attendance')->setBreakpoints('w-1/2 sm:w-1/4 md:w-1/5 lg:w-1/4');
 
                             foreach ($students as $student) {
                                 $form->addHiddenValue($count . '-gibbonPersonID', $student['gibbonPersonID']);
 
-                                $cell = $grid->addCell()->addClass('textCenter stacked')->addClass($student['cellHighlight']);
+                                $cell = $grid->addCell()
+                                    ->setClass('text-center py-2 px-1 -mr-px -mb-px')
+                                    ->addClass($student['cellHighlight']);
+
                                 $cell->addContent(getUserPhoto($guid, $student['image_240'], 75));
                                 $cell->addWebLink(formatName('', htmlPrep($student['preferredName']), htmlPrep($student['surname']), 'Student', false))
                                      ->setURL('index.php?q=/modules/Students/student_view_details.php')
                                      ->addParam('gibbonPersonID', $student['gibbonPersonID'])
                                      ->addParam('subpage', 'Attendance')
-                                     ->wrap('<b>', '</b>');
-                                $cell->addContent($student['absenceCount'])->wrap('<span class="small emphasis">', '<span>');
+                                     ->setClass('pt-2 font-bold underline');
+                                $cell->addContent($student['absenceCount'])->wrap('<div class="text-xxs italic py-2">', '</div>');
                                 $cell->addSelect($count.'-type')
                                      ->fromArray(array_keys($attendance->getAttendanceTypes()))
                                      ->selected($student['log']['type'])
-                                     ->setClass('attendanceField floatNone shortWidth');
+                                     ->setClass('mx-auto float-none w-32 m-0 mb-px');
                                 $cell->addSelect($count.'-reason')
                                      ->fromArray($attendance->getAttendanceReasons())
                                      ->selected($student['log']['reason'])
-                                     ->setClass('attendanceField attendanceFieldStacked floatNone shortWidth');
+                                     ->setClass('mx-auto float-none w-32 m-0 mb-px');
                                 $cell->addTextField($count.'-comment')
                                      ->maxLength(255)
                                      ->setValue($student['log']['comment'])
-                                     ->setClass('attendanceField attendanceFieldStacked floatNone shortWidth');
+                                     ->setClass('mx-auto float-none w-32 m-0 mb-2');
                                 $cell->addContent($attendance->renderMiniHistory($student['gibbonPersonID']));
 
                                 $count++;
@@ -259,13 +261,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                 ->wrap('<b>', '</b>');
 
                             $row = $form->addRow();
-                                // Drop-downs to change the whole group at once
-                                $col = $row->addColumn()->addClass('inline');
-                                    $col->addSelect('set-all-type')->fromArray(array_keys($attendance->getAttendanceTypes()))->setClass('attendanceField');
-                                    $col->addSelect('set-all-reason')->fromArray($attendance->getAttendanceReasons())->setClass('attendanceField');
-                                    $col->addTextField('set-all-comment')->maxLength(255)->setClass('attendanceField');
-                                    $col->addButton(__('Change All'))->setID('set-all');
-                                $row->addSubmit();
+
+                            // Drop-downs to change the whole group at once
+                            $row->addWebLink(__('Change All').'?')->addData('toggle', '.change-all')->addClass('w-32 sm:self-center');
+
+                            $col = $row->addColumn()->setClass('change-all hidden flex flex-col sm:flex-row items-stretch sm:items-center');
+                                $col->addSelect('set-all-type')->fromArray(array_keys($attendance->getAttendanceTypes()));
+                                $col->addSelect('set-all-reason')->fromArray($attendance->getAttendanceReasons());
+                                $col->addTextField('set-all-comment')->maxLength(255);
+                            $col->addButton(__('Change All'))->setID('set-all');
+
+                            $row->addSubmit();
 
                             echo $form->getOutput();
                         }
