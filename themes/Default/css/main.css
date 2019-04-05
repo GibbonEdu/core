@@ -464,7 +464,7 @@ td.mceIframeContainer {
 
 
 /* FORMS */
-input:not([type="checkbox"]), button {
+input:not([type="checkbox"]):not([type="radio"]), button, textarea {
     -webkit-appearance: none;
     -webkit-border-radius: 0;
     border-radius: 0;
