@@ -39,6 +39,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics.php') == f
         //Proceed!
         $page->breadcrumbs->add(__('Manage Rubrics'));
 
+        // Register scripts available to the core, but not included by default
+        $page->scripts->add('chart', 'lib/Chart.js/2.0/Chart.bundle.min.js', ['context' => 'head']);
+    
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);
         }
