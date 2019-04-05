@@ -14,7 +14,7 @@ TODO: add template variable details.
         {{ include('head.twig.html') }}
     </head>
     <body style="{{ bodyBackground }}">
-        <div id="wrapOuter">
+        <div id="wrapOuter" class="sm:px-6">
             <div class="mx-auto max-w-6xl text-right text-white text-xs md:text-sm px-2 xl:px-0 {{ gibbonHouseIDLogo ? 'mt-2' : 'mt-6' }}">
                 {{ minorLinks|raw }}
             </div>
@@ -28,7 +28,7 @@ TODO: add template variable details.
                     </a>
 
                     <div class="flex-grow">
-                        <div class="w-full md:max-w-sm absolute md:relative top-0 right-0 px-1 md:pr-4 ml-auto ">
+                        <div class="w-full md:max-w-sm absolute md:relative top-0 right-0 px-1 sm:px-10 md:pr-4 md:pl-0 ml-auto ">
                             {{ fastFinder|raw }}
                         </div>
                     </div>
