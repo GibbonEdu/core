@@ -21,12 +21,11 @@ TODO: add template variable details.
 
             <div id="wrap" class="mx-auto max-w-6xl m-2 shadow-container rounded">
                 {% block header %}
-                <div id="header" class="bg-white flex justify-between rounded-t">
+                <div id="header" class="bg-white flex justify-between items-center rounded-t h-32">
 
                     <a id="header-logo" class="block mt-4 mb-2" href="{{ absoluteURL }}">
-                        <img class="max-w-full" alt="Logo" src="{{ absoluteURL }}/{{ organisationLogo|default("/themes/Default/img/logo.png") }}" width="400px"/>
+                        <img class="max-w-full" alt="Logo" src="{{ absoluteURL }}/{{ organisationLogo|default("/themes/Default/img/logo.png") }}" width="400"/>
                     </a>
-
 
                     <div class="flex-grow">
                         <div class="w-full md:max-w-sm absolute md:relative top-0 right-0 px-1 md:pr-4 ml-auto ">
