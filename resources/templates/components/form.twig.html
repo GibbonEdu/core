@@ -18,7 +18,12 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
     <table class="{{ form.getClass }} px-3 py-2 sm:p-0" cellspacing=0>
     {% for row in form.getRows %}
-        <tr id="{{ row.getID }}" class="{{ row.getClass|replace({'standardWidth': ''}) }} flex flex-col sm:flex-row justify-between content-center p-0">
+
+        {% if "smallIntBorder" in form.getClass or "noIntBorder" in form.getClass %}
+            {% set rowClass = 'flex flex-col sm:flex-row justify-between content-center p-0' %}
+        {% endif %}
+
+        <tr id="{{ row.getID }}" class="{{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }}">
 
         {% for element in row.getElements %}
             {% set colspan = loop.last and loop.length < totalColumns ? (totalColumns + 1 - loop.length) : 0  %}
