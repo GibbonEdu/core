@@ -522,19 +522,24 @@ class Format
      */
     public static function userPhoto($path, $size = 75)
     {
-        $class = 'block shadow bg-white border border-gray-600 sm:p-1 ';
+        $class = 'block shadow bg-white border border-gray-600 ';
 
         switch ($size) {
-            case 240:   $class .= 'w-48 sm:w-64 p-1 mx-auto'; break;
-            case 75:    $class .= 'w-12 sm:w-20 p-px'; break;
-            default:    $class .= $size; break;
+            case 240:
+            case 'lg':  $class .= 'w-48 sm:w-64 p-1'; break;
+            case 75:
+            case 'md':  $class .= 'w-20 lg:w-24 p-1'; break;
+
+            case 'sm':  $class .= 'w-12 sm:w-20 p-px sm:p-1'; break;
+
+            default:    $class .= $size;
         }
 
         if (empty($path) or file_exists(static::$settings['absolutePath'].'/'.$path) == false) {
             $path = '/themes/'.static::$settings['gibbonThemeName'].'/img/anonymous_'.$size.'.jpg';
         }
 
-        return sprintf('<img class="%1$s" src="%2$s"><br/>', $class, static::$settings['absoluteURL'].'/'.$path);
+        return sprintf('<img class="mx-auto %1$s" src="%2$s"><br/>', $class, static::$settings['absoluteURL'].'/'.$path);
     }
 
     public static function userStatusInfo($person = [])
