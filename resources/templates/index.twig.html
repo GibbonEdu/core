@@ -14,22 +14,21 @@ TODO: add template variable details.
         {{ include('head.twig.html') }}
     </head>
     <body style="{{ bodyBackground }}">
-        <div id="wrapOuter">
+        <div id="wrapOuter" class="sm:px-6">
             <div class="mx-auto max-w-6xl text-right text-white text-xs md:text-sm px-2 xl:px-0 {{ gibbonHouseIDLogo ? 'mt-2' : 'mt-6' }}">
                 {{ minorLinks|raw }}
             </div>
 
             <div id="wrap" class="mx-auto max-w-6xl m-2 shadow-container rounded">
                 {% block header %}
-                <div id="header" class="bg-white flex justify-between rounded-t">
+                <div id="header" class="bg-white flex justify-between items-center rounded-t h-32">
 
                     <a id="header-logo" class="block mt-4 mb-2" href="{{ absoluteURL }}">
-                        <img class="max-w-full" alt="Logo" src="{{ absoluteURL }}/{{ organisationLogo|default("/themes/Default/img/logo.png") }}" width="400px"/>
+                        <img class="max-w-full" alt="Logo" src="{{ absoluteURL }}/{{ organisationLogo|default("/themes/Default/img/logo.png") }}" width="400"/>
                     </a>
 
-
                     <div class="flex-grow">
-                        <div class="w-full md:max-w-sm absolute md:relative top-0 right-0 px-1 md:pr-4 ml-auto ">
+                        <div class="w-full md:max-w-sm absolute md:relative top-0 right-0 px-1 sm:px-10 md:pr-4 md:pl-0 ml-auto ">
                             {{ fastFinder|raw }}
                         </div>
                     </div>
@@ -52,7 +51,7 @@ TODO: add template variable details.
                         <br style="clear: both">
                     {% endif %}
 
-                    <div id="content" class="w-full {{ sidebar ? 'lg:w-content' : '' }} lg:max-w-full px-6 pb-6 pt-6 sm:pt-16 lg:pt-0">
+                    <div id="content" class="w-full {{ sidebar ? 'lg:w-content pt-6' : '' }} lg:max-w-full px-6 pb-6  sm:pt-16 lg:pt-0 overflow-x-scroll sm:overflow-x-auto">
 
                         {% block page %}
 

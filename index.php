@@ -344,7 +344,7 @@ if (getSettingByScope($connection2, 'User Admin', 'personalBackground') == 'Y' &
 
 $page->stylesheets->add(
     'personal-background',
-    'body { background: url('.$backgroundImage.') '.$backgroundScroll.' #A88EDB!important; }',
+    'body { background: url('.$backgroundImage.') '.$backgroundScroll.' #626cd3!important; }',
     ['type' => 'inline']
 );
 
