@@ -517,18 +517,29 @@ class Format
      * Returns an HTML <img> based on the supplied photo path, using a placeholder image if none exists. Size may be either 75 or 240 at this time.
      *
      * @param string $path
-     * @param int $size
+     * @param int|string $size
      * @return string
      */
     public static function userPhoto($path, $size = 75)
-    {   
-        $sizeStyle = $size == 240 ? "width: 240px; height: 320px" : "width: 75px; height: 100px";
+    {
+        $class = 'block shadow bg-white border border-gray-600 ';
+
+        switch ($size) {
+            case 240:
+            case 'lg':  $class .= 'w-48 sm:w-64 p-1'; break;
+            case 75:
+            case 'md':  $class .= 'w-20 lg:w-24 p-1'; break;
+
+            case 'sm':  $class .= 'w-12 sm:w-20 p-px sm:p-1'; break;
+
+            default:    $class .= $size;
+        }
 
         if (empty($path) or file_exists(static::$settings['absolutePath'].'/'.$path) == false) {
             $path = '/themes/'.static::$settings['gibbonThemeName'].'/img/anonymous_'.$size.'.jpg';
         }
 
-        return sprintf('<img class="user" style="%1$s" src="%2$s"><br/>', $sizeStyle, static::$settings['absoluteURL'].'/'.$path);
+        return sprintf('<img class="mx-auto %1$s" src="%2$s">', $class, static::$settings['absoluteURL'].'/'.$path);
     }
 
     public static function userStatusInfo($person = [])
