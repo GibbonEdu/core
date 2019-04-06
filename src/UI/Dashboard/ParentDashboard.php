@@ -103,7 +103,9 @@ class ParentDashboard implements OutputableInterface
                     $student['preferredName'].' '.$student['surname'].
                     '</h4>';
 
-                $output .= "<div style='margin-right: 1%; float:left; width: 15%; text-align: center'>".
+                $output .= '<section class="flex flex-col sm:flex-row">';
+                
+                $output .= '<div class="w-24 text-center mx-auto mb-4 sm:ml-0 sm:mr-4">'.
                     getUserPhoto($guid, $student['image_240'], 75).
                     "<div style='height: 5px'></div>".
                     "<span style='font-size: 70%'>".
@@ -118,21 +120,22 @@ class ParentDashboard implements OutputableInterface
 
                 $output .= '</span>';
                 $output .= '</div>';
-                $output .= "<div style='margin-bottom: 30px; margin-left: 1%; float: left; width: 83%'>";
-                $dashboardContents = $this->renderChildDashboard($student['gibbonPersonID']);
+                $output .= '<div class="flex-grow mb-6">';
+                $dashboardContents = $this->renderChildDashboard($student['gibbonPersonID'], $student['dateStart']);
                 if ($dashboardContents == false) {
                     $output .= "<div class='error'>".__('There are no records to display.').'</div>';
                 } else {
                     $output .= $dashboardContents;
                 }
                 $output .= '</div>';
+                $output .= '</section>';
             }
         }
 
         return $output;
     }
 
-    protected function renderChildDashboard($gibbonPersonID)
+    protected function renderChildDashboard($gibbonPersonID, $dateStart)
     {
         $guid = $this->session->get('guid');
         $connection2 = $this->db->getConnection();
@@ -486,7 +489,7 @@ class ParentDashboard implements OutputableInterface
                             if (date('Y-m-d H:i:s') < $rowSub['homeworkDueDateTime']) {
                                 $gradesOutput .= "<span title='Pending'>".__('Pending').'</span>';
                             } else {
-                                if ($row['dateStart'] > $rowSub['date']) {
+                                if (!empty($dateStart) && $dateStart > $rowSub['date']) {
                                     $gradesOutput .= "<span title='".__('Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>".__('NA').'</span>';
                                 } else {
                                     if ($rowSub['homeworkSubmissionRequired'] == 'Compulsory') {
@@ -806,7 +809,7 @@ class ParentDashboard implements OutputableInterface
 
             $tabCountExtraReset = 0;
             if ($classes != false or $grades != false or $deadlines != false) {
-                $return .= "<div id='tabs".$tabCountExtraReset."'>";
+                $return .= "<div id='tabs".$tabCountExtraReset."' class='overflow-x-auto'>";
                 $return .= $plannerOutput;
                 $return .= $gradesOutput;
                 $return .= $deadlinesOutput;
@@ -814,13 +817,13 @@ class ParentDashboard implements OutputableInterface
                 $tabCountExtraReset++;
             }
             if ($timetable != false) {
-                $return .= "<div id='tabs".$tabCountExtraReset."'>";
+                $return .= "<div id='tabs".$tabCountExtraReset."' class='overflow-x-auto'>";
                 $return .= $timetableOutput;
                 $return .= '</div>';
                 $tabCountExtraReset++;
             }
             if ($activities != false) {
-                $return .= "<div id='tabs".$tabCountExtraReset."'>";
+                $return .= "<div id='tabs".$tabCountExtraReset."' class='overflow-x-auto'>";
                 $return .= $activitiesOutput;
                 $return .= '</div>';
                 $tabCountExtraReset++;
