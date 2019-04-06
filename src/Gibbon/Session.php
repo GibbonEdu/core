@@ -230,6 +230,7 @@ class Session implements SessionInterface
 
     public function createUserSession($username, $userData) {
 
+        $this->set('guid', $this->guid);
         $this->set('username', $username);
         $this->set('passwordStrong', $userData['passwordStrong']);
         $this->set('passwordStrongSalt', $userData['passwordStrongSalt']);
