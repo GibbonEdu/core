@@ -526,7 +526,7 @@ class Format
 
         switch ($size) {
             case 240:
-            case 'lg':  $class .= 'w-48 sm:w-64 p-1'; break;
+            case 'lg':  $class .= 'w-48 sm:w-64 max-w-full p-1'; break;
             case 75:
             case 'md':  $class .= 'w-20 lg:w-24 p-1'; break;
 
