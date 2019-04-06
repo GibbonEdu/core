@@ -492,13 +492,15 @@ if ($isLoggedIn) {
  * into the template engine for rendering. They're a work in progress, but once
  * they're more finalized we can document them for theme developers.
  */
+$header = $container->get(Gibbon\UI\Components\Header::class);
+
 $page->addData([
     'isLoggedIn'        => $isLoggedIn,
     'gibbonThemeName'   => $session->get('gibbonThemeName'),
     'gibbonHouseIDLogo' => $session->get('gibbonHouseIDLogo'),
     'organisationLogo'  => $session->get('organisationLogo'),
-    'minorLinks'        => getMinorLinks($connection2, $guid, $cacheLoad),
-    'notificationTray'  => getNotificationTray($connection2, $guid, $cacheLoad),
+    'minorLinks'        => $header->getMinorLinks($cacheLoad),
+    'notificationTray'  => $header->getNotificationTray($cacheLoad),
     'sidebar'           => $showSidebar,
     'version'           => $gibbon->getVersion(),
     'versionName'       => 'v'.$gibbon->getVersion().($session->get('cuttingEdgeCode') == 'Y'? 'dev' : ''),

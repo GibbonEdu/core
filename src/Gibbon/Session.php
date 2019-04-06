@@ -79,6 +79,7 @@ class Session implements SessionInterface
         $this->set('address', $address);
         $this->set('module', $address ? getModuleName($address) : '');
         $this->set('action', $address ? getActionName($address) : '');
+        $this->set('guid', $this->guid);
     }
 
     /**
@@ -230,7 +231,6 @@ class Session implements SessionInterface
 
     public function createUserSession($username, $userData) {
 
-        $this->set('guid', $this->guid);
         $this->set('username', $username);
         $this->set('passwordStrong', $userData['passwordStrong']);
         $this->set('passwordStrongSalt', $userData['passwordStrongSalt']);
