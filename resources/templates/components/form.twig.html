@@ -39,15 +39,21 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             <td class="{{ element.getClass|replace({'standardWidth': ''}) }} {{ class }} px-2 border-b-0 sm:border-b border-t-0" {{ colspan ? 'colspan="%s"'|format(colspan)|raw }}>
                 {{ element.getOutput|replace({'standardWidth': 'w-full' })|raw }}
             </td>
+
+            {% if element.instanceOf('Gibbon\\Forms\\ValidatableInterface') %}
+                <script type="text/javascript">
+                    {{ element.getValidationOutput|raw }}
+                </script>
+            {% endif %}
         {% endfor %}
 
         </tr>
     {% endfor %}
     </table>
 
-    {% for code in javascript %}
         <script type="text/javascript">
+        {% for code in javascript %}
         {{ code|raw }}
-        </script>
     {% endfor %}
+    </script>
 </form>
