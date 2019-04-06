@@ -613,18 +613,15 @@ if (!$session->has('address')) {
 /**
  * GET SIDEBAR CONTENT
  *
- * TODO: rewrite the sidebar() function as a template file.
+ * TODO: rewrite the Sidebar class as a template file.
  */
 $sidebarContents = '';
 if ($showSidebar) {
     $page->addSidebarExtra($session->get('sidebarExtra'));
     $session->set('sidebarExtra', '');
 
-    ob_start();
-    sidebar($gibbon, $pdo);
-
     $page->addData([
-        'sidebarContents' => ob_get_clean(),
+        'sidebarContents' => $container->get(Gibbon\UI\Components\Sidebar::class)->getOutput(),
         'sidebarPosition' => $session->get('sidebarExtraPosition'),
     ]);
 }
