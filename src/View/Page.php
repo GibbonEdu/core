@@ -303,7 +303,7 @@ class Page extends View
         // It currently only displays the new breadcrumbs if some have been added via this class.
         // Eg: more than one on a non-module page, more than two on a module-page.
         $breadcrumbs = $this->breadcrumbs->getItems();
-        $displayTrail = ((!$this['isLoggedIn'] || empty($this->getModule())) && count($breadcrumbs) > 1) || (!empty($this->getModule()) && count($breadcrumbs) > 2);
+        $displayTrail = ((empty($this['isLoggedIn']) || empty($this->getModule())) && count($breadcrumbs) > 1) || (!empty($this->getModule()) && count($breadcrumbs) > 2);
         
         return [
             'title'        => $this->getTitle(),

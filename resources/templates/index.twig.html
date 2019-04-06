@@ -11,7 +11,9 @@ TODO: add template variable details.
 <!DOCTYPE html>
 <html {{ rightToLeft ? 'dir="rtl"' : '' }}>
     <head>
+        {% block head %}
         {{ include('head.twig.html') }}
+        {% endblock head %}
     </head>
     <body style="{{ bodyBackground }}">
         <div id="wrapOuter" class="sm:px-6">
@@ -44,9 +46,9 @@ TODO: add template variable details.
 
                     {% if sidebar %}
                         <div id="sidebar" class="w-full lg:w-sidebar px-6 lg:border-l">
-                            
+                            {% block sidebar %}
                             {{ include('navigation.twig.html') }}
-
+                            {% endblock sidebar %}
                         </div>
                         <br style="clear: both">
                     {% endif %}
@@ -110,6 +112,8 @@ TODO: add template variable details.
             </div>
         </div>
 
+        {% block foot %}
         {{ include('foot.twig.html') }}
+        {% endblock foot %}
     </body>
 </html>
