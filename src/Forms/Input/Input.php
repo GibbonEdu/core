@@ -115,7 +115,7 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
         $output = '';
 
         if ($this->hasValidation()) {
-            $safeID = preg_replace('/[^a-zA-Z0-9_]/', '', $this->getID());
+            $safeID = 'lv'.preg_replace('/[^a-zA-Z0-9_]/', '', $this->getID());
             
             $output .= 'var '.$safeID.'Validate=new LiveValidation(\''.$this->getID().'\', {'.implode(',', $this->validationOptions).' }); '."\r";
 
