@@ -28,6 +28,8 @@ function sidebarExtra($guid, $pdo, $gibbonPersonID, $gibbonCourseClassID = '', $
     if (empty($basePage)) $basePage = 'markbook_view.php';
 
     //Show class picker in sidebar
+
+    $output .= '<div class="column-no-break">';
     $output .= '<h2>';
     $output .= __('Choose A Class');
     $output .= '</h2>';
@@ -35,6 +37,7 @@ function sidebarExtra($guid, $pdo, $gibbonPersonID, $gibbonCourseClassID = '', $
     $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('q', '/modules/Markbook/'.$basePage);
+    $form->setClass('smallIntBorder w-full');
 
     $row = $form->addRow();
         $row->addSelectClass('gibbonCourseClassID', $_SESSION[$guid]['gibbonSchoolYearID'], $gibbonPersonID)
@@ -44,6 +47,7 @@ function sidebarExtra($guid, $pdo, $gibbonPersonID, $gibbonCourseClassID = '', $
         $row->addSubmit(__('Go'));
 
     $output .= $form->getOutput();
+    $output .= '</div>';
 
     return $output;
 }
