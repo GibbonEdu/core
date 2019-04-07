@@ -3121,6 +3121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                     //Set sidebar
                     $_SESSION[$guid]['sidebarExtra'] = '';
+                    $_SESSION[$guid]['sidebarExtra'] = '<div class="column-no-break">';
 
                     //Show alerts
                     $alert = getAlertBar($guid, $connection2, $gibbonPersonID, $row['privacy'], '', false, true);
@@ -3131,10 +3132,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $_SESSION[$guid]['sidebarExtra'] .= $alert;
                     }
                     $_SESSION[$guid]['sidebarExtra'] .= '</div>';
-
+                    
                     $_SESSION[$guid]['sidebarExtra'] .= getUserPhoto($guid, $studentImage, 240);
+                    $_SESSION[$guid]['sidebarExtra'] .= '</div>';
 
                     //PERSONAL DATA MENU ITEMS
+                    $_SESSION[$guid]['sidebarExtra'] .= '<div class="column-no-break">';
                     $_SESSION[$guid]['sidebarExtra'] .= '<h4>'.__('Personal').'</h4>';
                     $_SESSION[$guid]['sidebarExtra'] .= "<ul class='moduleMenu'>";
                     $style = '';
@@ -3362,6 +3365,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             }
                         }
                     }
+
+                    $_SESSION[$guid]['sidebarExtra'] .= '</div>';
                 }
             }
         }
