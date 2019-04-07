@@ -2516,7 +2516,6 @@ function sidebar($gibbon, $pdo)
     // Add Google Login Button
     if ((isset($_SESSION[$guid]['username']) == false) && (isset($_SESSION[$guid]['email']) == false)) {
         if ($googleOAuth == 'Y') {
-            echo '<div class="column-no-break">';
             echo '<h2>';
             echo __('Login with Google');
             echo '</h2>';
@@ -2528,12 +2527,10 @@ function sidebar($gibbon, $pdo)
 				});
 			</script>
 			<div id="siteloader" style="min-height:73px"></div>
-            <?php
-            echo '</div>';
+			<?php
 
         } //End Check for Google Auth
         if ((isset($_SESSION[$guid]['username']) == false)) { // If Google Auth set to No make sure login screen not visible when logged in
-            echo '<div class="column-no-break">';
             echo '<h2>';
                 echo __('Login');
             echo '</h2>';
@@ -2600,20 +2597,16 @@ function sidebar($gibbon, $pdo)
                 echo '$(".loginOptions").fadeToggle(1000);';
                 echo '});';
             echo '</script>';
-            
-            echo '</div>';
 
             //Publc registration permitted?
             $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
             if ($enablePublicRegistration == 'Y') {
-                echo '<div class="column-no-break">';
                 echo "<h2 style='margin-top: 30px'>";
                 echo __('Register');
                 echo '</h2>';
                 echo '<p>';
                 echo sprintf(__('%1$sJoin our learning community.%2$s'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/publicRegistration.php'>", '</a>').' '.__("It's free!");
                 echo '</p>';
-                echo '</div>';
             }
         }
     }
