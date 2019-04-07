@@ -51,7 +51,7 @@ TODO: add template variable details.
                         <br style="clear: both">
                     {% endif %}
 
-                    <div id="content" class="w-full {{ sidebar ? 'lg:w-content pt-6' : 'sm:pt-16' }} lg:max-w-full px-6 pb-6 lg:pt-0 overflow-x-scroll sm:overflow-x-auto">
+                    <div id="content" class="w-full {{ sidebar ? 'lg:w-content' : 'sm:pt-16' }} lg:max-w-full p-6 lg:pt-0 overflow-x-scroll sm:overflow-x-auto">
 
                         {% block page %}
 
@@ -60,16 +60,18 @@ TODO: add template variable details.
                         {% endif %}
 
                         {% if page.breadcrumbs %}
-                        <div class="absolute lg:static top-0 my-6 text-xs text-blue-700">
-                            {% for title, src in page.breadcrumbs %}
-                                {% if loop.last %}
-                                    <span class="trailEnd">{{ title }}</span>
-                                {% elseif loop.revindex > 5 and loop.index != 1 %}
-                                    <a class="text-blue-700 underline" href="{{ absoluteURL }}/{{ src }}">...</a> > 
-                                {% else %}
-                                    <a class="text-blue-700 underline" href="{{ absoluteURL }}/{{ src }}">{{ title }}</a> > 
-                                {% endif %}
-                            {% endfor %}
+                        <div class="sm:pt-10 lg:pt-0">
+                            <div class="absolute lg:static top-0 my-6 text-xs text-blue-700">
+                                {% for title, src in page.breadcrumbs %}
+                                    {% if loop.last %}
+                                        <span class="trailEnd">{{ title }}</span>
+                                    {% elseif loop.revindex > 5 and loop.index != 1 %}
+                                        <a class="text-blue-700 underline" href="{{ absoluteURL }}/{{ src }}">...</a> > 
+                                    {% else %}
+                                        <a class="text-blue-700 underline" href="{{ absoluteURL }}/{{ src }}">{{ title }}</a> > 
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
                         </div>
                         {% endif %}
 
