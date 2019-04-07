@@ -88,6 +88,7 @@ class Sidebar implements OutputableInterface
         // Add Google Login Button
         if ((isset($_SESSION[$guid]['username']) == false) && (isset($_SESSION[$guid]['email']) == false)) {
             if ($googleOAuth == 'Y') {
+                echo '<div class="column-no-break">';
                 echo '<h2>';
                 echo __('Login with Google');
                 echo '</h2>';
@@ -100,9 +101,11 @@ class Sidebar implements OutputableInterface
                 </script>
                 <div id="siteloader" style="min-height:73px"></div>
                 <?php
+                echo '</div>';
 
             } //End Check for Google Auth
             if ((isset($_SESSION[$guid]['username']) == false)) { // If Google Auth set to No make sure login screen not visible when logged in
+                echo '<div class="column-no-break">';
                 echo '<h2>';
                     echo __('Login');
                 echo '</h2>';
@@ -161,6 +164,7 @@ class Sidebar implements OutputableInterface
                     $row->addSubmit(__('Login'));
 
                 echo $form->getOutput();
+                echo '</div>';
 
                 // Control the show/hide for login options
                 echo "<script type='text/javascript'>";
@@ -173,12 +177,14 @@ class Sidebar implements OutputableInterface
                 //Publc registration permitted?
                 $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
                 if ($enablePublicRegistration == 'Y') {
+                    echo '<div class="column-no-break">';
                     echo "<h2 style='margin-top: 30px'>";
                     echo __('Register');
                     echo '</h2>';
                     echo '<p>';
                     echo sprintf(__('%1$sJoin our learning community.%2$s'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/publicRegistration.php'>", '</a>').' '.__("It's free!");
                     echo '</p>';
+                    echo '</div>';
                 }
             }
         }
@@ -211,6 +217,7 @@ class Sidebar implements OutputableInterface
                 if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
                     $attainmentAlternativeName = getSettingByScope($connection2, 'Messenger', 'enableHomeScreenWidget');
                     if ($attainmentAlternativeName == 'Y') {
+                        echo '<div class="column-no-break">';
                         echo '<h2>';
                         echo __('Message Wall');
                         echo '</h2>';
@@ -333,6 +340,7 @@ class Sidebar implements OutputableInterface
                         echo "<p style='padding-top: 5px; text-align: right'>";
                         echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Messenger/messageWall_view.php'>".__('View Message Wall').'</a>';
                         echo '</p>';
+                        echo '</div>';
                     }
                 }
             }
@@ -342,6 +350,7 @@ class Sidebar implements OutputableInterface
         if ($_SESSION[$guid]['address'] == '' and isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
             $highestAction = getHighestGroupedAction($guid, '/modules/Planner/planner.php', $connection2);
             if ($highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses') {
+                echo '<div class="column-no-break">';
                 echo '<h2>';
                 echo __('Homework & Deadlines');
                 echo '</h2>';
@@ -428,6 +437,7 @@ class Sidebar implements OutputableInterface
                 echo "<p style='padding-top: 0px; text-align: right'>";
                 echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_deadlines.php'>".__('View Homework').'</a>';
                 echo '</p>';
+                echo '</div>';
             }
         }
 
@@ -444,6 +454,7 @@ class Sidebar implements OutputableInterface
                 }
 
                 if ($resultEntry->rowCount() > 0) {
+                    echo '<div class="column-no-break">';
                     echo '<h2>';
                     echo __('Recent Marks');
                     echo '</h2>';
@@ -457,6 +468,7 @@ class Sidebar implements OutputableInterface
                     }
 
                     echo '</ol>';
+                    echo '</div>';
                 }
             }
         }
@@ -472,6 +484,7 @@ class Sidebar implements OutputableInterface
             }
 
             if ($result->rowCount() > 0) {
+                echo '<div class="column-no-break">';
                 echo "<h2 style='margin-bottom: 10px'  class='sidebar'>";
                 echo __('My Classes');
                 echo '</h2>';
@@ -541,12 +554,14 @@ class Sidebar implements OutputableInterface
                     echo '</tr>';
                 }
                 echo '</table>';
+                echo '</div>';
             }
         }
 
         //Show tag cloud
         if ($_SESSION[$guid]['address'] == '' and isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php')) {
             include_once './modules/Planner/moduleFunctions.php';
+            echo '<div class="column-no-break">';
             echo "<h2 class='sidebar'>";
             echo __('Resource Tags');
             echo '</h2>';
@@ -554,11 +569,13 @@ class Sidebar implements OutputableInterface
             echo "<p style='margin-bototm: 20px; text-align: right'>";
             echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/resources_view.php'>".__('View Resources').'</a>';
             echo '</p>';
+            echo '</div>';
         }
 
         //Show role switcher if user has more than one role
         if (isset($_SESSION[$guid]['username'])) {
             if (count($_SESSION[$guid]['gibbonRoleIDAll']) > 1 and $_SESSION[$guid]['address'] == '') {
+                echo '<div class="column-no-break">';
                 echo "<h2 style='margin-bottom: 10px' class='sidebar'>";
                 echo __('Role Switcher');
                 echo '</h2>';
@@ -576,6 +593,7 @@ class Sidebar implements OutputableInterface
                     }
                 }
                 echo '</ul>';
+                echo '</div>';
             }
         }
 
@@ -597,6 +615,7 @@ class Sidebar implements OutputableInterface
     
         $category = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
         if ($category == 'Parent') {
+            $output .= '<div class="column-no-break">';
             $output .= "<h2 style='margin-bottom: 10px'>";
             $output .= 'Profile Photo';
             $output .= '</h2>';
@@ -623,6 +642,7 @@ class Sidebar implements OutputableInterface
                 $output .= '</div>';
                 $output .= '</p>';
             }
+            $output .= '</div>';
         }
     
         return $output;
