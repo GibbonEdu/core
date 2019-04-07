@@ -267,7 +267,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 
                         $row = $form->addRow();
                             $row->addLabel('name', __('Name'));
-                            $row->addTextField('name')->setValue($values['name'])->maxLength(20)->required();
+                            $row->addTextField('name')->setValue($values['name'])->maxLength(50)->required();
 
                         //Try and find the next unplanned slot for this class.
                         try {
