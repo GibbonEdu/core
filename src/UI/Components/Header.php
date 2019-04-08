@@ -291,7 +291,7 @@ class Header
             //Check for house logo (needed to get bubble, below, in right spot)
             if (isset($_SESSION[$guid]['gibbonHouseIDLogo']) and isset($_SESSION[$guid]['gibbonHouseIDName'])) {
                 if ($_SESSION[$guid]['gibbonHouseIDLogo'] != '') {
-                    $return .= " . <img class='minorLinkIconLarge' title='".$_SESSION[$guid]['gibbonHouseIDName']."' style='vertical-align: -75%; margin-left: 4px' src='".$_SESSION[$guid]['absoluteURL'].'/'.$_SESSION[$guid]['gibbonHouseIDLogo']."'/>";
+                    $return .= " . <img class='ml-1 h-10 sm:h-12 lg:h-16' title='".$_SESSION[$guid]['gibbonHouseIDName']."' style='vertical-align: -75%;' src='".$_SESSION[$guid]['absoluteURL'].'/'.$_SESSION[$guid]['gibbonHouseIDLogo']."'/>";
                 }
             }
         }
