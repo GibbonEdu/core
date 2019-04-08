@@ -669,9 +669,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     $_SESSION[$guid]['sidebarExtra'] = '';
 
                     //Show pic
-                    $_SESSION[$guid]['sidebarExtra'] .= '<div class="column-no-break">';
                     $_SESSION[$guid]['sidebarExtra'] .= getUserPhoto($guid, $row['image_240'], 240);
-                    $_SESSION[$guid]['sidebarExtra'] .= '</div>';
 
                     //PERSONAL DATA MENU ITEMS
                     $_SESSION[$guid]['sidebarExtra'] .= '<div class="column-no-break">';
