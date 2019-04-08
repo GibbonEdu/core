@@ -83,7 +83,12 @@ if (isset($authUrl)){
 	//show login url
     echo '<div>';
         $themeName = isset($_SESSION[$guid]['gibbonThemeName'])? $_SESSION[$guid]['gibbonThemeName'] : 'Default';
-		print '<a target=\'_top\' class="login" href="' . $authUrl . '" onclick="addGoogleLoginParams(this)"><img style=\'width: 260px; height: 55px; margin-left: -4px\' src="themes/' . $themeName . '/img/g_login_btn.png" /></a>';
+        echo '<a target=\'_top\' class="login" href="' . $authUrl . '" onclick="addGoogleLoginParams(this)">';
+            echo '<button class="w-full bg-white rounded shadow border border-gray-400 flex items-center px-2 py-1 mb-2 text-gray-600 hover:shadow-md hover:border-blue-600 hover:text-blue-600">';
+                echo '<img class="w-10 h-10" src="themes/'.$themeName.'/img/google-login.svg">';
+                echo '<span class="flex-grow text-lg">'.__('Sign in with Google').'</span>';
+            echo '</button>';
+        echo '</a>';
 
         $form = \Gibbon\Forms\Form::create('loginFormGoogle', '#');
         $form->setFactory(\Gibbon\Forms\DatabaseFormFactory::create($pdo));
