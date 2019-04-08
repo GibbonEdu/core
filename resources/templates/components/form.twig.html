@@ -18,7 +18,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
     {% set renderStyle = "standardForm" in form.getClass or "noIntBorder" in form.getClass ? 'flex' : 'table' %}
 
-    <table class="{{ form.getClass }}" cellspacing="0">
+    <table class="{{ form.getClass }} relative" cellspacing="0">
     {% for row in form.getRows %}
 
         {% if renderStyle == 'flex' %}
