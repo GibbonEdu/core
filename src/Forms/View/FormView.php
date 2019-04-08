@@ -50,14 +50,6 @@ class FormView extends View implements FormRendererInterface
     {
         $javascript = [];
 
-        foreach ($form->getRows() as $row) {
-            foreach ($row->getElements() as $element) {
-                if ($element instanceof ValidatableInterface) {
-                    $javascript[] = $element->getValidationOutput();
-                }
-            }
-        }
-
         foreach (array_reverse($form->getTriggers()) as $trigger) {
             $javascript[] = $trigger->getOutput();
         }

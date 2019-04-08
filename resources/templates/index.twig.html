@@ -23,16 +23,14 @@ TODO: add template variable details.
 
             <div id="wrap" class="mx-auto max-w-6xl m-2 shadow-container rounded">
                 {% block header %}
-                <div id="header" class="bg-white flex justify-between items-center rounded-t h-32">
+                <div id="header" class="relative bg-white flex justify-between items-center rounded-t h-24 sm:h-32">
 
-                    <a id="header-logo" class="block mt-4 mb-2" href="{{ absoluteURL }}">
+                    <a id="header-logo" class="block" href="{{ absoluteURL }}">
                         <img class="max-w-full" alt="Logo" src="{{ absoluteURL }}/{{ organisationLogo|default("/themes/Default/img/logo.png") }}" width="400"/>
                     </a>
 
-                    <div class="flex-grow">
-                        <div class="w-full md:max-w-sm absolute md:relative top-0 right-0 px-1 sm:px-10 md:pr-4 md:pl-0 ml-auto ">
-                            {{ fastFinder|raw }}
-                        </div>
+                    <div class="flex-grow flex justify-end">
+                        {{ fastFinder|raw }}
                     </div>
                 </div>
 
@@ -53,7 +51,7 @@ TODO: add template variable details.
                         <br style="clear: both">
                     {% endif %}
 
-                    <div id="content" class="w-full {{ sidebar ? 'lg:w-content pt-6' : '' }} lg:max-w-full px-6 pb-6  sm:pt-16 lg:pt-0 overflow-x-scroll sm:overflow-x-auto">
+                    <div id="content" class="w-full {{ sidebar ? 'lg:w-content' : 'pt-0 sm:pt-6' }} lg:max-w-full p-6 lg:pt-0 overflow-x-scroll sm:overflow-x-auto">
 
                         {% block page %}
 
@@ -62,16 +60,18 @@ TODO: add template variable details.
                         {% endif %}
 
                         {% if page.breadcrumbs %}
-                        <div class="absolute lg:static top-0 my-6 text-xs text-blue-700">
-                            {% for title, src in page.breadcrumbs %}
-                                {% if loop.last %}
-                                    <span class="trailEnd">{{ title }}</span>
-                                {% elseif loop.revindex > 5 and loop.index != 1 %}
-                                    <a class="text-blue-700 underline" href="{{ absoluteURL }}/{{ src }}">...</a> > 
-                                {% else %}
-                                    <a class="text-blue-700 underline" href="{{ absoluteURL }}/{{ src }}">{{ title }}</a> > 
-                                {% endif %}
-                            {% endfor %}
+                        <div class="sm:pt-10 lg:pt-0">
+                            <div class="absolute lg:static top-0 my-6 text-xs text-blue-700">
+                                {% for title, src in page.breadcrumbs %}
+                                    {% if loop.last %}
+                                        <span class="trailEnd">{{ title }}</span>
+                                    {% elseif loop.revindex > 5 and loop.index != 1 %}
+                                        <a class="text-blue-700 underline" href="{{ absoluteURL }}/{{ src }}">...</a> > 
+                                    {% else %}
+                                        <a class="text-blue-700 underline" href="{{ absoluteURL }}/{{ src }}">{{ title }}</a> > 
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
                         </div>
                         {% endif %}
 

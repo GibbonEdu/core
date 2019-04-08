@@ -249,7 +249,8 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
         $output .= '</div>';
     } else {
         //Show date picker in sidebar
-        $output = "<h2 class='sidebar'>";
+        $output = '<div class="column-no-break">';
+        $output .= "<h2 class='sidebar'>";
         $output .= __('Choose A Date');
         $output .= '</h2>';
 
@@ -401,8 +402,10 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
         $output .= '</tr>';
         $output .= '</table>';
         $output .= '</form>';
+        $output .= '</div>';
 
         //Show class picker in sidebar
+        $output .= '<div class="column-no-break">';
         $output .= '<h2>';
         $output .= __('Choose A Class');
         $output .= '</h2>';
@@ -466,9 +469,11 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
         $output .= '</tr>';
         $output .= '</table>';
         $output .= '</form>';
+        $output .= '</div>';
 
         if ($_GET['q'] != '/modules/Planner/planner_deadlines.php') {
             //Show upcoming deadlines
+            $output .= '<div class="column-no-break">';
             $output .= '<h2>';
             $output .= __('Homework & Deadlines');
             $output .= '</h2>';
@@ -515,6 +520,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
             $output .= "<p style='padding-top: 15px; text-align: right'>";
             $output .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_deadlines.php&search=$gibbonPersonID'>View Homework</a>";
             $output .= '</p>';
+            $output .= '</div>';
         }
     }
 
