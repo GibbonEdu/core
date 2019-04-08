@@ -907,6 +907,10 @@ td.hiddenReveal, div.hiddenReveal, tr.hiddenReveal td {
 }
 
 /* Timetable styles */
+#tt * {
+    box-sizing: content-box;
+}
+
 th.ttCalendarBar {
 	vertical-align: top;
 	width: 100%;
