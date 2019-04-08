@@ -228,7 +228,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                 $form->addHiddenValue($count . '-gibbonPersonID', $student['gibbonPersonID']);
 
                                 $cell = $grid->addCell()
-                                    ->setClass('text-center py-2 px-1 -mr-px -mb-px')
+                                    ->setClass('text-center py-2 px-1 -mr-px -mb-px flex flex-col justify-between')
                                     ->addClass($student['cellHighlight']);
 
                                 $cell->addContent(getUserPhoto($guid, $student['image_240'], 75));
