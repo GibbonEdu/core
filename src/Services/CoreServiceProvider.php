@@ -87,9 +87,11 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
     {
         $container = $this->getContainer();
 
-        $container->add('config', new Core($this->absolutePath));
-        $container->add('session', new Session($container));
-        $container->add('locale', new Locale($this->absolutePath, $container->get('session')));
+        $container->share('config', new Core($this->absolutePath));
+        $container->share('session', new Session($container));
+        $container->share('locale', new Locale($this->absolutePath, $container->get('session')));
+
+        $container->share(\Gibbon\Contracts\Services\Session::class, $container->get('session'));
 
         Format::setupFromSession($container->get('session'));
     }
