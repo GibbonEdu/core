@@ -135,20 +135,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
             }
 
             //Print sidebar
-            $_SESSION[$guid]['sidebarExtra'] = '';
+            $sidebarExtra = '';
 
             //Print subject list
             if ($row['subjectListing'] != '') {
-                $_SESSION[$guid]['sidebarExtra'] .= '<h4>';
-                $_SESSION[$guid]['sidebarExtra'] .= __('Subject List');
-                $_SESSION[$guid]['sidebarExtra'] .= '</h4>';
+                $sidebarExtra .= '<div class="column-no-break">';
+                $sidebarExtra .= '<h4>';
+                $sidebarExtra .= __('Subject List');
+                $sidebarExtra .= '</h4>';
 
-                $_SESSION[$guid]['sidebarExtra'] .= '<ul>';
+                $sidebarExtra .= '<ul>';
                 $subjects = explode(',', $row['subjectListing']);
                 for ($i = 0;$i < count($subjects);++$i) {
-                    $_SESSION[$guid]['sidebarExtra'] .= '<li>'.$subjects[$i].'</li>';
+                    $sidebarExtra .= '<li>'.$subjects[$i].'</li>';
                 }
-                $_SESSION[$guid]['sidebarExtra'] .= '</ul>';
+                $sidebarExtra .= '</ul>';
+                $sidebarExtra .= '</div>';
             }
 
             //Print current course list
@@ -168,28 +170,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
             }
 
             if ($resultCourse->rowCount() > 0) {
+                $sidebarExtra .= '<div class="column-no-break">';
                 if ($role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)') {
-                    $_SESSION[$guid]['sidebarExtra'] .= '<h4>';
-                    $_SESSION[$guid]['sidebarExtra'] .= __('Current Courses');
-                    $_SESSION[$guid]['sidebarExtra'] .= '</h4>';
+                    $sidebarExtra .= '<h4>';
+                    $sidebarExtra .= __('Current Courses');
+                    $sidebarExtra .= '</h4>';
                 } else {
-                    $_SESSION[$guid]['sidebarExtra'] .= '<h4>';
-                    $_SESSION[$guid]['sidebarExtra'] .= __('Course List');
-                    $_SESSION[$guid]['sidebarExtra'] .= '</h4>';
+                    $sidebarExtra .= '<h4>';
+                    $sidebarExtra .= __('Course List');
+                    $sidebarExtra .= '</h4>';
                 }
 
-                $_SESSION[$guid]['sidebarExtra'] .= '<ul>';
+                $sidebarExtra .= '<ul>';
                 while ($rowCourse = $resultCourse->fetch()) {
-                    $_SESSION[$guid]['sidebarExtra'] .= "<li><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Departments/department_course.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=".$rowCourse['gibbonCourseID']."'>".$rowCourse['nameShort']."</a> <span style='font-size: 85%; font-style: italic'>".$rowCourse['name'].'</span></li>';
+                    $sidebarExtra .= "<li><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Departments/department_course.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=".$rowCourse['gibbonCourseID']."'>".$rowCourse['nameShort']."</a> <span style='font-size: 85%; font-style: italic'>".$rowCourse['name'].'</span></li>';
                 }
-                $_SESSION[$guid]['sidebarExtra'] .= '</ul>';
+                $sidebarExtra .= '</ul>';
+                $sidebarExtra .= '</div>';
             }
 
             //Print other courses
             if ($role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Teacher') {
-                $_SESSION[$guid]['sidebarExtra'] .= '<h4>';
-                $_SESSION[$guid]['sidebarExtra'] .= __('Non-Current Courses');
-                $_SESSION[$guid]['sidebarExtra'] .= '</h4>';
+                $sidebarExtra .= '<div class="column-no-break">';
+                $sidebarExtra .= '<h4>';
+                $sidebarExtra .= __('Non-Current Courses');
+                $sidebarExtra .= '</h4>';
 
                 $form = Form::create('courseSelect', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
                 $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/department_course.php');
@@ -217,7 +222,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
                         ->setClass('fullWidth');
                     $row->addSubmit(__('Go'));
 
-                $_SESSION[$guid]['sidebarExtra'] .= $form->getOutput();
+                $sidebarExtra .= $form->getOutput();
+                $sidebarExtra .= '</div>';
             }
 
             //Print useful reading
@@ -231,23 +237,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
             }
 
             if ($resultReading->rowCount() > 0 or $role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Director' or $role == 'Manager') {
-                $_SESSION[$guid]['sidebarExtra'] .= '<h4>';
-                $_SESSION[$guid]['sidebarExtra'] .= __('Useful Reading');
+                $sidebarExtra .= '<div class="column-no-break">';
+                $sidebarExtra .= '<h4>';
+                $sidebarExtra .= __('Useful Reading');
                 if ($role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Director' or $role == 'Manager') {
-                    $_SESSION[$guid]['sidebarExtra'] .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/department_edit.php&gibbonDepartmentID=$gibbonDepartmentID'><img style='margin-left: 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                    $sidebarExtra .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/department_edit.php&gibbonDepartmentID=$gibbonDepartmentID'><img style='margin-left: 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                 }
-                $_SESSION[$guid]['sidebarExtra'] .= '</h4>';
+                $sidebarExtra .= '</h4>';
 
-                $_SESSION[$guid]['sidebarExtra'] .= '<ul>';
+                $sidebarExtra .= '<ul>';
                 while ($rowReading = $resultReading->fetch()) {
                     if ($rowReading['type'] == 'Link') {
-                        $_SESSION[$guid]['sidebarExtra'] .= "<li><a target='_blank' href='".$rowReading['url']."'>".$rowReading['name'].'</a></li>';
+                        $sidebarExtra .= "<li><a target='_blank' href='".$rowReading['url']."'>".$rowReading['name'].'</a></li>';
                     } else {
-                        $_SESSION[$guid]['sidebarExtra'] .= "<li><a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowReading['url']."'>".$rowReading['name'].'</a></li>';
+                        $sidebarExtra .= "<li><a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowReading['url']."'>".$rowReading['name'].'</a></li>';
                     }
                 }
-                $_SESSION[$guid]['sidebarExtra'] .= '</ul>';
+                $sidebarExtra .= '</ul>';
+                $sidebarExtra .= '</div>';
             }
+
+            $_SESSION[$guid]['sidebarExtra'] = $sidebarExtra;
         }
     }
 }

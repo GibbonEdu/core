@@ -228,7 +228,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                 $form->addHiddenValue($count . '-gibbonPersonID', $student['gibbonPersonID']);
 
                                 $cell = $grid->addCell()
-                                    ->setClass('text-center py-2 px-1 -mr-px -mb-px')
+                                    ->setClass('text-center py-2 px-1 -mr-px -mb-px flex flex-col justify-between')
                                     ->addClass($student['cellHighlight']);
 
                                 $cell->addContent(getUserPhoto($guid, $student['image_240'], 75));
@@ -263,13 +263,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                             $row = $form->addRow();
 
                             // Drop-downs to change the whole group at once
-                            $row->addWebLink(__('Change All').'?')->addData('toggle', '.change-all')->addClass('w-32 sm:self-center');
+                            $row->addButton(__('Change All').'?')->addData('toggle', '.change-all')->addClass('w-32 m-px sm:self-center');
 
                             $col = $row->addColumn()->setClass('change-all hidden flex flex-col sm:flex-row items-stretch sm:items-center');
-                                $col->addSelect('set-all-type')->fromArray(array_keys($attendance->getAttendanceTypes()));
-                                $col->addSelect('set-all-reason')->fromArray($attendance->getAttendanceReasons());
-                                $col->addTextField('set-all-comment')->maxLength(255);
-                            $col->addButton(__('Change All'))->setID('set-all');
+                                $col->addSelect('set-all-type')->fromArray(array_keys($attendance->getAttendanceTypes()))->addClass('m-px');
+                                $col->addSelect('set-all-reason')->fromArray($attendance->getAttendanceReasons())->addClass('m-px');
+                                $col->addTextField('set-all-comment')->maxLength(255)->addClass('m-px');
+                            $col->addButton(__('Apply'))->setID('set-all');
 
                             $row->addSubmit();
 

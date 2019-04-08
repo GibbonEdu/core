@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.ph
 
     if (isset($_SESSION[$guid]['username'])) {
         //Print sidebar
-        $_SESSION[$guid]['sidebarExtra'] = '';
+        $sidebarExtra = '';
 
         try {
             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
@@ -145,15 +145,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.ph
         }
 
         if ($result->rowCount() > 0) {
-            $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra']."<h2 class='sidebar'>";
-            $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra'].__('My Classes');
-            $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra'].'</h2>';
+            $sidebarExtra .= '<div class="column-no-break">';
+            $sidebarExtra .= "<h2 class='sidebar'>";
+            $sidebarExtra .= __('My Classes');
+            $sidebarExtra .= '</h2>';
 
-            $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra'].'<ul>';
+            $sidebarExtra .= '<ul>';
             while ($row = $result->fetch()) {
-                $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra']."<li><a href='index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=".$row['gibbonCourseClassID']."'>".$row['course'].'.'.$row['class'].'</a></li>';
+                $sidebarExtra .= "<li><a href='index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=".$row['gibbonCourseClassID']."'>".$row['course'].'.'.$row['class'].'</a></li>';
             }
-            $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra'].'</ul>';
+            $sidebarExtra .= '</ul>';
+            $sidebarExtra .= '</div>';
+
+            $_SESSION[$guid]['sidebarExtra'] = $sidebarExtra;
         }
     }
 }

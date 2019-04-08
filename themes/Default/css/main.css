@@ -187,7 +187,6 @@ h1, h2, h3, h4, h5, h6 {
 	color:#444;
 	background-color: none ;
 	padding: 0 0 0 0px;
-	line-height: 85%;
 	text-align: left;
 	text-transform: uppercase;
 	padding-bottom: 5px ;
@@ -402,6 +401,7 @@ table.noIntBorder td:last-child {
 }
 table.smallIntBorder {
     background: #fafafa;
+    margin: 5px 0px;
 }
 table.smallIntBorder td {
 	border-left: none!important ;
@@ -907,6 +907,10 @@ td.hiddenReveal, div.hiddenReveal, tr.hiddenReveal td {
 }
 
 /* Timetable styles */
+#tt * {
+    box-sizing: content-box;
+}
+
 th.ttCalendarBar {
 	vertical-align: top;
 	width: 100%;

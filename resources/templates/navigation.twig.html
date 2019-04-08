@@ -22,7 +22,7 @@ collapsed drop-down list in 'mini' view-mode.
 
     {% for code in page.extraSidebar if sidebar and sidebarPosition != 'bottom' %}
         {% if code is not empty %}
-        <div class="pt-6 sm:pt-16 lg:pt-6 mx-auto max-w-md">
+        <div class="md:column-2 lg:column-1 pt-6 sm:pt-16 lg:pt-6">
             {{ code|raw }}
         </div>
         {% endif %}
@@ -30,7 +30,7 @@ collapsed drop-down list in 'mini' view-mode.
     
 
     {% if sidebar and sidebarContents %}
-    <div class="mx-auto max-w-md">
+    <div class="md:column-2 lg:column-1">
         {{ sidebarContents|raw }}
     </div>
     {% endif %}
@@ -39,11 +39,11 @@ collapsed drop-down list in 'mini' view-mode.
     <nav id="navigation" class="w-full hidden absolute top-0 z-40 mt-24 sm:mt-12 -ml-6 px-6  
         {{ sidebar ? 'lg:block lg:static lg:p-0 lg:my-6 lg:mx-0' }}">
 
-        <ul class="w-full bg-white border list-none columns-1 sm:columns-2 md:columns-3 m-0 pt-6 px-6 shadow-lg 
-            {{ sidebar ? 'lg:bg-transparent lg:border-0 lg:columns-1 lg:shadow-none lg:p-0' }}">
+        <ul class="w-full bg-white border list-none column-1 sm:column-2 md:column-3 m-0 pt-6 px-6 shadow-lg 
+            {{ sidebar ? 'lg:bg-transparent lg:border-0 lg:column-1 lg:shadow-none lg:p-0' }}">
 
             {% for categoryName, items in menuModule %}
-                <li class=" w-full inline-block p-0 ">
+                <li class="w-full column-no-break p-0 ">
                     <h5 class="m-0 mb-1 text-xs pb-0 ">{{ __(categoryName, (items|first).textDomain) }}</h5>
 
                     <ul class="list-none m-0 mb-6">
@@ -62,7 +62,7 @@ collapsed drop-down list in 'mini' view-mode.
     {% endif %}
     
     {% for code in page.extraSidebar if sidebar and sidebarPosition == 'bottom' %}
-    <div class="pt-6 sm:pt-16 lg:pt-0 mx-auto max-w-md">
+    <div class="md:column-2 lg:column-1 pt-6 sm:pt-16 lg:pt-0">
         {{ code|raw }}
     </div>
     {% endfor %}

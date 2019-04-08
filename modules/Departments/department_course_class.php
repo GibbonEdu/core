@@ -210,7 +210,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
 
             //Print sidebar
             if (isset($_SESSION[$guid]['username'])) {
-                $_SESSION[$guid]['sidebarExtra'] = '';
+                $sidebarExtra = '';
 
                 //Print related class list
                 try {
@@ -219,28 +219,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                     $resultCourse = $connection2->prepare($sqlCourse);
                     $resultCourse->execute($dataCourse);
                 } catch (PDOException $e) {
-                    $_SESSION[$guid]['sidebarExtra'] .= "<div class='error'>".$e->getMessage().'</div>';
+                    $sidebarExtra .= "<div class='error'>".$e->getMessage().'</div>';
                 }
 
                 if ($resultCourse->rowCount() > 0) {
-                    $_SESSION[$guid]['sidebarExtra'] .= '<h2>';
-                    $_SESSION[$guid]['sidebarExtra'] .= __('Related Classes');
-                    $_SESSION[$guid]['sidebarExtra'] .= '</h2>';
+                    $sidebarExtra .= '<div class="column-no-break">';
+                    $sidebarExtra .= '<h2>';
+                    $sidebarExtra .= __('Related Classes');
+                    $sidebarExtra .= '</h2>';
 
-                    $_SESSION[$guid]['sidebarExtra'] .= '<ul>';
+                    $sidebarExtra .= '<ul>';
                     while ($rowCourse = $resultCourse->fetch()) {
-                        $_SESSION[$guid]['sidebarExtra'] .= "<li><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Departments/department_course_class.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=".$row['gibbonCourseID'].'&gibbonCourseClassID='.$rowCourse['gibbonCourseClassID']."'>".$rowCourse['course'].'.'.$rowCourse['class'].'</a></li>';
+                        $sidebarExtra .= "<li><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Departments/department_course_class.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=".$row['gibbonCourseID'].'&gibbonCourseClassID='.$rowCourse['gibbonCourseClassID']."'>".$rowCourse['course'].'.'.$rowCourse['class'].'</a></li>';
                     }
-                    $_SESSION[$guid]['sidebarExtra'] .= '</ul>';
+                    $sidebarExtra .= '</ul>';
+                    $sidebarExtra .= '</div>';
                 }
 
                 //Print list of all classes
-                $_SESSION[$guid]['sidebarExtra'] .= '<h2>';
-                $_SESSION[$guid]['sidebarExtra'] .= __('Current Classes');
-                $_SESSION[$guid]['sidebarExtra'] .= '</h2>';
+                $sidebarExtra .= '<div class="column-no-break">';
+                $sidebarExtra .= '<h2>';
+                $sidebarExtra .= __('Current Classes');
+                $sidebarExtra .= '</h2>';
 
                 $form = Form::create('classSelect', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
                 $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/department_course_class.php');
+                $form->setClass('smallIntBorder w-full');
                 
                 $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                 $sql = "SELECT gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name 
@@ -257,7 +261,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                         ->setClass('fullWidth');
                     $row->addSubmit(__('Go'));
                 
-                $_SESSION[$guid]['sidebarExtra'] .= $form->getOutput();
+                $sidebarExtra .= $form->getOutput();
+                $sidebarExtra .= '</div>';
+
+                $_SESSION[$guid]['sidebarExtra'] .= $sidebarExtra;
             }
         }
     }

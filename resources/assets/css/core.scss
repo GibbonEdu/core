@@ -38,7 +38,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     background-color: rgba(50,50,50,0.95);
 }
 
-
+.column-no-break {
+    @apply table w-full pt-px;
+    -webkit-column-break-inside:avoid;
+    -moz-column-break-inside:avoid;
+    -o-column-break-inside:avoid;
+    -ms-column-break-inside:avoid;
+    column-break-inside:avoid;
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
 
 @responsive {
     .w-content {
@@ -53,17 +62,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         font-size: 0.65rem;
     }
 
-    .columns-1 {
+    .column-1 {
         column-count: 1;
         column-gap: 1.5rem;
     }
 
-    .columns-2 {
+    .column-2 {
         column-count: 2;
         column-gap: 1.5rem;
     }
 
-    .columns-3 {
+    .column-3 {
         column-count: 3;
         column-gap: 1.5rem;
     }

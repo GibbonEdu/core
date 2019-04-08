@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
         $fileCount++;
     }
 
-    $form = Form::create('installer', "./install.php?step=1");
+    $form = Form::create('systemCheck', "")->setClass('smallIntBorder w-full');
 
     $form->addRow()->addHeading(__('System Requirements'));
 

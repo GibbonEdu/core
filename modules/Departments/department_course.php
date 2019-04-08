@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             }
 
             //Print sidebar
-            $_SESSION[$guid]['sidebarExtra'] = '';
+            $sidebarExtra = '';
 
             if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php')) {
                 //Print class list
@@ -122,15 +122,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 }
 
                 if ($resultCourse->rowCount() > 0) {
-                    $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra'].'<h2>';
-                    $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra'].__('Class List');
-                    $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra'].'</h2>';
+                    $sidebarExtra .= '<div class="column-no-break">';
+                    $sidebarExtra .= '<h2>';
+                    $sidebarExtra .= __('Class List');
+                    $sidebarExtra .= '</h2>';
 
-                    $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra'].'<ul>';
+                    $sidebarExtra .= '<ul>';
                     while ($rowCourse = $resultCourse->fetch()) {
-                        $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra']."<li><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Departments/department_course_class.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=".$rowCourse['gibbonCourseClassID']."'>".$rowCourse['course'].'.'.$rowCourse['class'].'</a></li>';
+                        $sidebarExtra .= "<li><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Departments/department_course_class.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=".$rowCourse['gibbonCourseClassID']."'>".$rowCourse['course'].'.'.$rowCourse['class'].'</a></li>';
                     }
-                    $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra'].'</ul>';
+                    $sidebarExtra .= '</ul>';
+                    $sidebarExtra .= '</div>';
+
+                    $_SESSION[$guid]['sidebarExtra'] = $sidebarExtra;
                 }
             }
         }
