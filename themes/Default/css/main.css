@@ -401,6 +401,7 @@ table.noIntBorder td:last-child {
 }
 table.smallIntBorder {
     background: #fafafa;
+    margin: 5px 0px;
 }
 table.smallIntBorder td {
 	border-left: none!important ;
