@@ -79,6 +79,7 @@ class Session implements SessionInterface
         $this->set('address', $address);
         $this->set('module', $address ? getModuleName($address) : '');
         $this->set('action', $address ? getActionName($address) : '');
+        $this->set('guid', $this->guid);
     }
 
     /**

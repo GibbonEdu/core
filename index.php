@@ -492,13 +492,15 @@ if ($isLoggedIn) {
  * into the template engine for rendering. They're a work in progress, but once
  * they're more finalized we can document them for theme developers.
  */
+$header = $container->get(Gibbon\UI\Components\Header::class);
+
 $page->addData([
     'isLoggedIn'        => $isLoggedIn,
     'gibbonThemeName'   => $session->get('gibbonThemeName'),
     'gibbonHouseIDLogo' => $session->get('gibbonHouseIDLogo'),
     'organisationLogo'  => $session->get('organisationLogo'),
-    'minorLinks'        => getMinorLinks($connection2, $guid, $cacheLoad),
-    'notificationTray'  => getNotificationTray($connection2, $guid, $cacheLoad),
+    'minorLinks'        => $header->getMinorLinks($cacheLoad),
+    'notificationTray'  => $header->getNotificationTray($cacheLoad),
     'sidebar'           => $showSidebar,
     'version'           => $gibbon->getVersion(),
     'versionName'       => 'v'.$gibbon->getVersion().($session->get('cuttingEdgeCode') == 'Y'? 'dev' : ''),
@@ -567,150 +569,20 @@ if (!$session->has('address')) {
         }
 
         // DASHBOARDS!
-        // Get role category
         $category = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
-        if ($category == false) {
-            $page->write('<div class="error">'.__('Your current role type cannot be determined.').'</div>');
-        } elseif ($category == 'Parent') {
-            // Display Parent Dashboard
-            $count = 0;
-            try {
-                $data = ['gibbonPersonID' => $session->get('gibbonPersonID')];
-                $sql = "SELECT * FROM gibbonFamilyAdult WHERE
-                    gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $page->addError($e->getMessage());
-            }
-
-            if ($result->rowCount() > 0) {
-                // Get child list
-                $count = 0;
-                $options = '';
-                $students = array();
-                while ($row = $result->fetch()) {
-                    try {
-                        $dataChild = [
-                            'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'),
-                            'gibbonFamilyID' => $row['gibbonFamilyID'],
-                            'today' => date('Y-m-d'),
-                        ];
-                        $sqlChild = "SELECT
-                            gibbonPerson.gibbonPersonID,image_240, surname,
-                            preferredName, dateStart,
-                            gibbonYearGroup.nameShort AS yearGroup,
-                            gibbonRollGroup.nameShort AS rollGroup,
-                            gibbonRollGroup.website AS rollGroupWebsite,
-                            gibbonRollGroup.gibbonRollGroupID
-                            FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                            JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                            JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
-                            JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
-                            WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                            AND gibbonFamilyID=:gibbonFamilyID
-                            AND gibbonPerson.status='Full'
-                            AND (dateStart IS NULL OR dateStart<=:today)
-                            AND (dateEnd IS NULL OR dateEnd>=:today)
-                            ORDER BY surname, preferredName ";
-                        $resultChild = $connection2->prepare($sqlChild);
-                        $resultChild->execute($dataChild);
-                    } catch (PDOException $e) {
-                        $page->addError($e->getMessage());
-                    }
-                    while ($rowChild = $resultChild->fetch()) {
-                        $students[$count][0] = $rowChild['surname'];
-                        $students[$count][1] = $rowChild['preferredName'];
-                        $students[$count][2] = $rowChild['yearGroup'];
-                        $students[$count][3] = $rowChild['rollGroup'];
-                        $students[$count][4] = $rowChild['gibbonPersonID'];
-                        $students[$count][5] = $rowChild['image_240'];
-                        $students[$count][6] = $rowChild['dateStart'];
-                        $students[$count][7] = $rowChild['gibbonRollGroupID'];
-                        $students[$count][8] = $rowChild['rollGroupWebsite'];
-                        ++$count;
-                    }
-                }
-            }
-
-            if ($count > 0) {
-                include_once './modules/Timetable/moduleFunctions.php';
-
-                $output = '<h2>'.__('Parent Dashboard').'</h2>';
-
-                for ($i = 0; $i < $count; ++$i) {
-                    $output .= '<h4>'.
-                        $students[$i][1].' '.$students[$i][0].
-                        '</h4>';
-
-                    $output .= "<div style='margin-right: 1%; float:left; width: 15%; text-align: center'>".
-                        getUserPhoto($guid, $students[$i][5], 75).
-                        "<div style='height: 5px'></div>".
-                        "<span style='font-size: 70%'>".
-                        "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$students[$i][4]."'>".__('Student Profile').'</a><br/>';
-
-                    if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_details.php')) {
-                        $output .= "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID='.$students[$i][7]."'>".__('Roll Group').' ('.$students[$i][3].')</a><br/>';
-                    }
-                    if ($students[$i][8] != '') {
-                        $output .= "<a target='_blank' href='".$students[$i][8]."'>".$students[$i][3].' '.__('Website').'</a>';
-                    }
-
-                    $output .= '</span>';
-                    $output .= '</div>';
-                    $output .= "<div style='margin-bottom: 30px; margin-left: 1%; float: left; width: 83%'>";
-                    $dashboardContents = getParentDashboardContents($connection2, $guid, $students[$i][4]);
-                    if ($dashboardContents == false) {
-                        $output .= "<div class='error'>".__('There are no records to display.').'</div>';
-                    } else {
-                        $output .= $dashboardContents;
-                    }
-                    $output .= '</div>';
-                }
-
-                $page->write($output);
-            }
-        } elseif ($category == 'Student') {
-            // Display Student Dashboard
-            $output = '<h2>'.
-                __('Student Dashboard').
-                '</h2>'.
-                "<div style='margin-bottom: 30px; margin-left: 1%; float: left; width: 100%'>";
-            $dashboardContents = getStudentDashboardContents($connection2, $guid, $session->get('gibbonPersonID'));
-            if ($dashboardContents == false) {
-                $output .= "<div class='error'>".
-                    __('There are no records to display.').
-                    '</div>';
-            } else {
-                $output .= $dashboardContents;
-            }
-            $output .= '</div>';
-
-            $page->write($output);
-        } elseif ($category == 'Staff') {
-            // Display Staff Dashboard
-
-            $output = '';
-            $smartWorkflowHelp = getSmartWorkflowHelp($connection2, $guid);
-            if ($smartWorkflowHelp != false) {
-                $output .= $smartWorkflowHelp;
-            }
-
-            $output .= '<h2>'.
-                __('Staff Dashboard').
-                '</h2>'.
-                "<div style='margin-bottom: 30px; margin-left: 1%; float: left; width: 100%'>";
-            $dashboardContents = getStaffDashboardContents($connection2, $guid, $session->get('gibbonPersonID'));
-            if ($dashboardContents == false) {
-                $output .= "<div class='error'>".
-                    __('There are no records to display.').
-                    '</div>';
-            } else {
-                $output .= $dashboardContents;
-            }
-            $output .= '</div>';
-
-            $page->write($output);
+        
+        switch ($category) {
+            case 'Parent':
+                $page->write($container->get(Gibbon\UI\Dashboard\ParentDashboard::class)->getOutput());
+                break;
+            case 'Student':
+                $page->write($container->get(Gibbon\UI\Dashboard\StudentDashboard::class)->getOutput());
+                break;
+            case 'Staff':
+                $page->write($container->get(Gibbon\UI\Dashboard\StaffDashboard::class)->getOutput());
+                break;
+            default:
+                $page->write('<div class="error">'.__('Your current role type cannot be determined.').'</div>');
         }
     }
 } else {
@@ -743,18 +615,15 @@ if (!$session->has('address')) {
 /**
  * GET SIDEBAR CONTENT
  *
- * TODO: rewrite the sidebar() function as a template file.
+ * TODO: rewrite the Sidebar class as a template file.
  */
 $sidebarContents = '';
 if ($showSidebar) {
     $page->addSidebarExtra($session->get('sidebarExtra'));
     $session->set('sidebarExtra', '');
 
-    ob_start();
-    sidebar($gibbon, $pdo);
-
     $page->addData([
-        'sidebarContents' => ob_get_clean(),
+        'sidebarContents' => $container->get(Gibbon\UI\Components\Sidebar::class)->getOutput(),
         'sidebarPosition' => $session->get('sidebarExtraPosition'),
     ]);
 }
