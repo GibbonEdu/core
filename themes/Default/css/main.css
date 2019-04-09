@@ -473,7 +473,6 @@ input[type="text"], input[type="password"], input[type="file"] {
 	border-width: 1px;
 	background-color: #ffffff ;
 	height: 28px;
-	margin-left: 4px ;
 	font-size: 13px ;
     box-sizing: border-box;
 }
@@ -496,7 +495,6 @@ textarea {
 	border-width: 1px;
 	background-color: #ffffff ;
 	float:right;
-	margin-left: 4px ;
 	font-size: 13px ;
     box-sizing: border-box;
     padding: 4px;
@@ -507,7 +505,6 @@ select {
 	background-color: #ffffff ;
 	height: 28px;
 	float:right;
-	margin-left: 4px ;
 	font-size: 13px ;
     box-sizing: border-box;
     -webkit-border-radius: 0;
