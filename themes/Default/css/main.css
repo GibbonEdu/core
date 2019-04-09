@@ -206,6 +206,11 @@ h2 {
 	border-left: none ;
 	background: none ;
 }
+
+#sidebar p:last-of-type {
+    margin-bottom: 0;
+}
+
 h3 {
 	font-size: 13pt;
 }
