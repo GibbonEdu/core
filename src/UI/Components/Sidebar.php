@@ -21,7 +21,9 @@ namespace Gibbon\UI\Components;
 
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Forms\Form;
 use Gibbon\Forms\OutputableInterface;
+use Gibbon\Forms\DatabaseFormFactory;
 
 /**
  * Sidebar View Composer
@@ -112,9 +114,9 @@ class Sidebar implements OutputableInterface
 
                 if (empty($_SESSION[$guid]['gibbonSchoolYearID'])) setCurrentSchoolYear($guid, $connection2);
 
-                $form = \Gibbon\Forms\Form::create('loginForm', $_SESSION[$guid]['absoluteURL'].'/login.php?'.(isset($_GET['q'])? 'q='.$_GET['q'] : '') );
+                $form = Form::create('loginForm', $_SESSION[$guid]['absoluteURL'].'/login.php?'.(isset($_GET['q'])? 'q='.$_GET['q'] : '') );
 
-                $form->setFactory(\Gibbon\Forms\DatabaseFormFactory::create($pdo));
+                $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->setAutocomplete(false);
                 $form->setClass('noIntBorder fullWidth');
                 $form->addHiddenValue('address', $_SESSION[$guid]['address']);
@@ -178,7 +180,7 @@ class Sidebar implements OutputableInterface
                 $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
                 if ($enablePublicRegistration == 'Y') {
                     echo '<div class="column-no-break">';
-                    echo "<h2 style='margin-top: 30px'>";
+                    echo "<h2>";
                     echo __('Register');
                     echo '</h2>';
                     echo '<p>';
@@ -627,6 +629,7 @@ class Sidebar implements OutputableInterface
     
                 $form = Form::create('photoUpload', $_SESSION[$guid]['absoluteURL'].'/index_parentPhotoUploadProcess.php?gibbonPersonID='.$_SESSION[$guid]['gibbonPersonID']);
                 $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                $form->setClass('smallIntBorder w-full');
     
                 $row = $form->addRow();
                     $row->addFileUpload('file1')->accepts('.jpg,.jpeg,.gif,.png')->setMaxUpload(false)->setClass('fullWidth');
