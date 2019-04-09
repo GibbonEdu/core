@@ -54,6 +54,7 @@ v18.0.00
         Markbook: fixed column title showing term's name when the term filter is applied in View Markbook
         Markbook: fixed bug preventing parents and students from viewing the markbook with work submitted to a lesson plan
         School Admin: fixed interface string typos
+        Staff: fixed staff photo not displaying on Facilities sub-page in staff profile
         System Admin: fixed typo in Google integration settings
         Timetable Admin: fixed malformed translatable interface strings
         User Admin: fixed issue preventing action names from being translated in Manage Permissions
