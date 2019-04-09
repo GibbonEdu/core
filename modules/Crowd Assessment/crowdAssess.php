@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
 
     if ($result->rowCount() < 1) {
         echo "<div class='error'>";
-        echo __('There are currently no lessons to for you to crowd asess.');
+        echo __('There are currently no lessons to for you to crowd assess.');
         echo '</div>';
     } else {
         echo "<table cellspacing='0' style='width: 100%'>";

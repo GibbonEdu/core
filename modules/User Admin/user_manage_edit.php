@@ -205,7 +205,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 				$restrictedRolesList = implode(', ', array_column($restrictedRoles, 'name'));
 
 				$row = $form->addRow();
-					$row->addLabel('gibbonRoleIDRestricted', __('Resticted Roles'));
+					$row->addLabel('gibbonRoleIDRestricted', __('Restricted Roles'));
 					$row->addTextField('gibbonRoleIDRestricted')->readOnly()->setValue($restrictedRolesList)->setClass('standardWidth');
 			}
 

@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
 					echo __('Step 1 - Select CSV Files');
 				echo '</h2>';
 				echo '<p>';
-					echo __('This page allows you to import timetable data from a CSV file. The import includes all classes and their teachers. There is no support for importing students: these need to be entered manually into the relavent classes. The system will do its best to keep existing data in tact, whilst updating what is necessary (note: you will lose student exceptions from timetabled classes). Select the CSV files you wish to use for the synchronise operation.')."<br/>";
+					echo __('This page allows you to import timetable data from a CSV file. The import includes all classes and their teachers. There is no support for importing students: these need to be entered manually into the relevant classes. The system will do its best to keep existing data intact, whilst updating what is necessary (note: you will lose student exceptions from timetabled classes). Select the CSV files you wish to use for the synchronise operation.')."<br/>";
 				echo '</p>';
 
                 $form = Form::create('importTimetable', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/tt_import.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&step=2");
