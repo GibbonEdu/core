@@ -63,8 +63,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
 
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/feeCategories_manage_editProcess.php?gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID");
 
-            $form->setClass('smallIntBorder fullWidth');
-
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
             $row = $form->addRow();

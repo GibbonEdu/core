@@ -64,7 +64,6 @@ if ($proceed == false) {
 
     $form = Form::create('publicRegistration', $_SESSION[$guid]['absoluteURL'].'/publicRegistrationProcess.php');
 
-    $form->setClass('smallIntBorder fullWidth');
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
     $form->addRow()->addHeading(__('Account Details'));

@@ -160,8 +160,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 
                                 $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/planner_view_full_submit_editProcess.php');
 
-                                $form->setClass('smallIntBorder fullWidth');
-
                                 $form->addHiddenValue('search', '');
                                 $form->addHiddenValue('params', $paramsVar);
                                 $form->addHiddenValue('gibbonPlannerEntryID', $gibbonPlannerEntryID);
@@ -224,8 +222,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                                 }
 
                                 $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/planner_view_full_submit_editProcess.php');
-
-                                $form->setClass('smallIntBorder fullWidth');
 
                                 $form->addHiddenValue('count', $count);
                                 $form->addHiddenValue('lesson', $values['name']);
