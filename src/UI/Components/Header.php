@@ -274,16 +274,17 @@ class Header
                     }
                 }
             }
+
             $return .= $name.' . ';
             $return .= "<a class='link-white' href='./logout.php'>".__('Logout')."</a> . <a class='link-white' href='./index.php?q=preferences.php'>".__('Preferences').'</a>';
             if ($_SESSION[$guid]['emailLink'] != '') {
-                $return .= " . <a class='link-white' target='_blank' href='".$_SESSION[$guid]['emailLink']."'>".__('Email').'</a>';
+                $return .= "<span class='hidden sm:inline'> . <a class='link-white' target='_blank' href='".$_SESSION[$guid]['emailLink']."'>".__('Email').'</a></span>';
             }
             if ($_SESSION[$guid]['webLink'] != '') {
-                $return .= " . <a class='link-white' target='_blank' href='".$_SESSION[$guid]['webLink']."'>".$_SESSION[$guid]['organisationNameShort'].' '.__('Website').'</a>';
+                $return .= "<span class='hidden sm:inline'>  . <a class='link-white' target='_blank' href='".$_SESSION[$guid]['webLink']."'>".$_SESSION[$guid]['organisationNameShort'].' '.__('Website').'</a></span>';
             }
             if ($_SESSION[$guid]['website'] != '') {
-                $return .= " . <a class='link-white' target='_blank' href='".$_SESSION[$guid]['website']."'>".__('My Website').'</a>';
+                $return .= "<span class='hidden sm:inline'>  . <a class='link-white' target='_blank' href='".$_SESSION[$guid]['website']."'>".__('My Website').'</a></span>';
             }
 
             $return .= !empty($languageLink) ? ' . '.$languageLink : '';
