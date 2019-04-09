@@ -158,6 +158,7 @@ if ($canInstall == false) {
     $extensions = $gibbon->getSystemRequirement('extensions');
 
     $form = Form::create('installer', "./install.php?step=1");
+    $form->setClass('smallIntBorder w-full');
 
     $form->addHiddenValue('guid', $guid);
     $form->addHiddenValue('nonce', $nonce);
@@ -199,7 +200,7 @@ if ($canInstall == false) {
 
     $row = $form->addRow();
         $row->addLabel('code', __('System Language'));
-        $row->addSelectSystemLanguage('code')->selected($code)->required();
+        $row->addSelectSystemLanguage('code')->addClass('w-64')->selected($code)->required();
 
     $row = $form->addRow();
         $row->addFooter();
