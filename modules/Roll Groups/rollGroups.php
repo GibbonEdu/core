@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php
 
     $gateway = $container->get(RollGroupGateway::class);
     $rollGroups = $gateway->selectRollGroupsBySchoolYear($_SESSION[$guid]['gibbonSchoolYearID']);
-    
+
     $formatTutorsList = function($row) use ($gateway) {
         $tutors = $gateway->selectTutorsByRollGroup($row['gibbonRollGroupID'])->fetchAll();
         if (count($tutors) > 1) $tutors[0]['surname'] .= ' ('.__('Main Tutor').')';
@@ -49,7 +49,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php
     $table->addColumn('name', __('Name'));
     $table->addColumn('tutors', __('Form Tutors'))->format($formatTutorsList);
     $table->addColumn('space', __('Room'));
-    $table->addColumn('students', __('Students'));
+    if (getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2) == "Staff") {
+        $table->addColumn('students', __('Students'));
+    }
     $table->addColumn('website', __('Website'))->format(Format::using('link', 'website'));
 
     $actions = $table->addActionColumn()->addParam('gibbonRollGroupID');
