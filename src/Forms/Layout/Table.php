@@ -129,6 +129,8 @@ class Table implements OutputableInterface, ValidatableInterface
 
             // Output each element inside the row
             foreach ($row->getElements() as $element) {
+                $element->removeClass('standardWidth');
+
                 $output .= '<td '.$element->getAttributeString('class,title,rowspan,colspan,data').'>';
                     $output .= $element->getOutput();
                 $output .= '</td>';
