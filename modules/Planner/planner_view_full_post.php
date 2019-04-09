@@ -166,8 +166,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 
                     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/planner_view_full_postProcess.php');
 
-                    $form->setClass('smallIntBorder fullWidth');
-
                     $form->addHiddenValue('search', $search);
                     $form->addHiddenValue('replyTo', $replyTo);
                     $form->addHiddenValue('params', $paramsVar);

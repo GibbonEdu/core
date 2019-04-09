@@ -56,10 +56,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
 
     $form = Form::create('addform', $_SESSION[$guid]['absoluteURL'].'/modules/Behaviour/behaviour_manage_addMultiProcess.php?gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']);
-        $form->setClass('smallIntBorder fullWidth');
-        $form->setFactory(DatabaseFormFactory::create($pdo));
-        $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_addMulti.php");
-        $form->addRow()->addHeading(__('Step 1'));
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_addMulti.php");
+    $form->addRow()->addHeading(__('Step 1'));
 
     //Student
     $row = $form->addRow();

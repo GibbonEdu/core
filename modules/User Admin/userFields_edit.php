@@ -60,8 +60,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
 
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/userFields_editProcess.php?gibbonPersonFieldID='.$gibbonPersonFieldID);
 
-            $form->setClass('smallIntBorder fullWidth');
-
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
             $row = $form->addRow();

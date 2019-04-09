@@ -148,8 +148,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/planner_addProcess.php?viewBy=$viewBy&subView=$subView&address=".$_SESSION[$guid]['address']);
             $form->setFactory(PlannerFormFactory::create($pdo));
 
-            $form->setClass('smallIntBorder fullWidth');
-
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
             //BASIC INFORMATION

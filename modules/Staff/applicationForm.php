@@ -106,9 +106,7 @@ if ($proceed == false) {
         echo '</div>';
 
         $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/applicationFormProcess.php');
-
         $form->setFactory(DatabaseFormFactory::create($pdo));
-        $form->setClass('smallIntBorder fullWidth');
 
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 

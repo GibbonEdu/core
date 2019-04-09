@@ -60,8 +60,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/district_manage
 
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/district_manage_editProcess.php?gibbonDistrictID=$gibbonDistrictID");
 
-            $form->setClass('smallIntBorder fullWidth');
-
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
             $row = $form->addRow();

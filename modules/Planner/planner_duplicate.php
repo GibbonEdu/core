@@ -150,8 +150,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 
                     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/planner_duplicate.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&step=2");
 
-                    $form->setClass('smallIntBorder fullWidth');
-
                     $form->addHiddenValue('viewBy', $viewBy);
                     $form->addHiddenValue('gibbonPlannerEntryID_org',  $gibbonPlannerEntryID);
                     $form->addHiddenValue('subView', $subView);
@@ -210,8 +208,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                         echo '</div>';
                     } else {
                         $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/planner_duplicateProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID");
-
-                        $form->setClass('smallIntBorder fullWidth');
 
                         $form->addHiddenValue('duplicate', $duplicate);
                         $form->addHiddenValue('gibbonPlannerEntryID_org', $gibbonPlannerEntryID_org);

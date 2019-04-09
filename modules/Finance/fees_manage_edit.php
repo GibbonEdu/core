@@ -75,8 +75,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_edit.p
 
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/fees_manage_editProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&search=$search");
 
-            $form->setClass('smallIntBorder fullWidth');
-
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('gibbonFinanceFeeID', $gibbonFinanceFeeID);
 

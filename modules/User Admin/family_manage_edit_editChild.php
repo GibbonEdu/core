@@ -71,8 +71,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_editChildProcess.php?gibbonPersonID=$gibbonPersonID&gibbonFamilyID=$gibbonFamilyID&search=$search");
 
-            $form->setClass('smallIntBorder fullWidth');
-
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
             $form->addRow()->addHeading(__('Edit Child'));

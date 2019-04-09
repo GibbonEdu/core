@@ -115,8 +115,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 
                         $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/expenseRequest_manage_viewProcess.php');
 
-                        $form->setClass('smallIntBorder fullWidth');
-
                         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
                         $form->addHiddenValue('status2', $status2);
                         $form->addHiddenValue('gibbonFinanceBudgetID2', $gibbonFinanceBudgetID2);

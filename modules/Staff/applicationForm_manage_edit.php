@@ -75,9 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             echo '</div>';
 
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_editProcess.php?search=$search");
-
             $form->setFactory(DatabaseFormFactory::create($pdo));
-            $form->setClass('smallIntBorder fullWidth');
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
