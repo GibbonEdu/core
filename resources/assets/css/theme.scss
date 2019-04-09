@@ -88,3 +88,71 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     @apply absolute z-10 rounded-full bg-blue-400 text-xs text-white no-underline leading-tight font-sans;
     padding: 2px 6px 2px 6px;
 }
+
+/*
+ --------------------------------------------------------------------------
+  Live Validation
+ --------------------------------------------------------------------------
+*/
+
+.LV_validation_message {
+    @apply absolute right-0 pt-px px-1 mr-2 text-xs font-bold leading-loose bg-white z-10;
+}
+
+select + .LV_validation_message {
+    @apply mr-6;
+}
+
+.tinymce + .LV_validation_message {
+    @apply bottom-0 mb-2;
+}
+
+.LV_valid {
+    @apply text-green-700;
+}
+
+.LV_invalid {
+    @apply text-red-700;
+}
+
+.LV_invalid_field {
+    @apply border border-red-700;
+}
+
+.LV_validation_message:empty,
+.LV_invalid ~ .LV_invalid {
+    @apply hidden;
+}
+
+/*
+ --------------------------------------------------------------------------
+  Forms
+ --------------------------------------------------------------------------
+*/
+
+input, select, textarea {
+    @apply border-gray-500;
+}
+
+input:focus, select:focus, textarea:focus {
+    @apply shadow-outline border-blue-500;
+    
+}
+
+.column.inline {
+    @apply flex flex-wrap ;
+}
+
+@screen sm {
+    .column.inline {
+        @apply flex flex-row justify-between items-center;
+    }
+}
+
+.column.inline.displayNone {
+    display: none;
+}
+
+.column.stacked {
+    @apply flex flex-col justify-end items-stretch content-center;
+}

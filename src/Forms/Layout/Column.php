@@ -40,7 +40,7 @@ class Column extends Row implements OutputableInterface, ValidatableInterface
      */
     public function __construct(FormFactoryInterface $factory, $id = '')
     {
-        $this->setClass('column');
+        $this->setClass('column w-full');
         parent::__construct($factory, $id);
     }
 
@@ -69,7 +69,7 @@ class Column extends Row implements OutputableInterface, ValidatableInterface
         $output = '';
 
         foreach ($this->getElements() as $element) {
-            $output .= '<div class="'.$this->getContainerClass($element).'">';
+            $output .= '<div class="'.$this->getContainerClass($element).' mb-1">';
             $output .= $element->getOutput();
             $output .= '</div>';
         }
