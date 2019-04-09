@@ -190,6 +190,13 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
     } else {
         while ($rowDiscuss = $resultDiscuss->fetch()) {
             $classExtra = '';
+            $namePerson = __('{name} said', [
+                'name' => formatName($rowDiscuss['title'], $rowDiscuss['preferredName'], $rowDiscuss['surname'], $rowDiscuss['category'])
+            ]);
+            $datetimePosted = __('Posted at {hourPosted} on {datePosted}', [
+                'hourPosted' => '<b>'.substr($rowDiscuss['timestamp'], 11, 5).'</b>', 
+                'datePosted' => '<b>'.dateConvertBack($guid, substr($rowDiscuss['timestamp'], 0, 10)).'</b>'
+            ]);
             if ($level == 0) {
                 $classExtra = 'chatBoxFirst';
             }
@@ -199,23 +206,23 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
                 $width = (705 - ($level * 15));
             }
             $output .= "<table class='noIntBorder chatBox $classExtra' cellspacing='0' style='width: ".$width.'px; margin-left: '.($level * 15)."px'>";
-            $output .= '<tr>';
-            $output .= '<td><i>'.formatName($rowDiscuss['title'], $rowDiscuss['preferredName'], $rowDiscuss['surname'], $rowDiscuss['category']).' '.__('said').'</i>:</td>';
-            $output .= "<td style='text-align: right'><i>".__('Posted at').' <b>'.substr($rowDiscuss['timestamp'], 11, 5).'</b> on <b>'.dateConvertBack($guid, substr($rowDiscuss['timestamp'], 0, 10)).'</b></i></td>';
-            $output .= '</tr>';
-            $output .= '<tr>';
+            $output .= "<tr>";
+            $output .= "<td><i>".$namePerson.'</i>:</td>';
+            $output .= "<td style='text-align: right'><i>".$datetimePosted."</i></td>";
+            $output .= "</tr>";
+            $output .= "<tr>";
             $output .= "<td style='max-width: ".(700 - ($level * 15))."px;' colspan=2><b>".$rowDiscuss['comment'].'</b></td>';
-            $output .= '</tr>';
-            $output .= '<tr>';
+            $output .= "</tr>";
+            $output .= "<tr>";
             if ($links == true) {
                 $output .= "<td style='text-align: right' colspan=2><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full_post.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&replyTo=".$rowDiscuss['gibbonPlannerEntryDiscussID']."&search=$search'>Reply</a> ";
                 if ($role == 'Teacher') {
                     $output .= " | <a href='".$_SESSION[$guid]['absoluteURL']."/modules/Planner/planner_view_full_post_deleteProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=$search&gibbonPlannerEntryDiscussID=".$rowDiscuss['gibbonPlannerEntryDiscussID']."'>Delete</a>";
                 }
-                $output .= '</td>';
+                $output .= "</td>";
             }
-            $output .= '</tr>';
-            $output .= '</table>';
+            $output .= "</tr>";
+            $output .= "</table>";
 
             //Get any replies
             $replies = true;
