@@ -83,10 +83,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             echo '</div>';
 
             $form = Form::create('addform', $_SESSION[$guid]['absoluteURL'].'/modules/Behaviour/behaviour_manage_addProcess.php?step=1&gibbonPersonID='.$gibbonPersonID.'&gibbonRollGroupID='.$gibbonRollGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&type='.$type);
-                $form->setClass('smallIntBorder fullWidth');
-                $form->setFactory(DatabaseFormFactory::create($pdo));
-                $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
-                $form->addRow()->addHeading(__('Step 1'));
+            $form->setFactory(DatabaseFormFactory::create($pdo));
+            $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
+            $form->addRow()->addHeading(__('Step 1'));
 
             //Student
             $row = $form->addRow();
@@ -176,11 +175,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     $values = $result->fetch();
 
                     $form = Form::create('addform', $_SESSION[$guid]['absoluteURL'].'/modules/Behaviour/behaviour_manage_addProcess.php?step=2&gibbonPersonID='.$gibbonPersonID.'&gibbonRollGroupID='.$gibbonRollGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&type='.$type);
-                        $form->setClass('smallIntBorder fullWidth');
-                        $form->setFactory(DatabaseFormFactory::create($pdo));
-                        $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
-                        $form->addHiddenValue('gibbonBehaviourID', $gibbonBehaviourID);
-                        $form->addRow()->addHeading(__('Step 2 (Optional)'));
+                    $form->setFactory(DatabaseFormFactory::create($pdo));
+                    $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
+                    $form->addHiddenValue('gibbonBehaviourID', $gibbonBehaviourID);
+                    $form->addRow()->addHeading(__('Step 2 (Optional)'));
 
                     //Student
                     $row = $form->addRow();

@@ -119,8 +119,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
 
                     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/planner_bumpProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID");
 
-                    $form->setClass('smallIntBorder fullWidth');
-
                     $form->addHiddenValue('viewBy', $viewBy);
                     $form->addHiddenValue('subView', $subView);
                     $form->addHiddenValue('date', $date);

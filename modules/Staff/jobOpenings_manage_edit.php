@@ -60,8 +60,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_e
 
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/jobOpenings_manage_editProcess.php?gibbonStaffJobOpeningID=$gibbonStaffJobOpeningID");
 
-            $form->setClass('smallIntBorder fullWidth');
-
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
             $types = array(__('Basic') => array ('Teaching' => __('Teaching'), 'Support' => __('Support')));

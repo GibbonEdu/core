@@ -66,7 +66,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/medicalForm_manage_condition_editProcess.php?gibbonPersonMedicalID=$gibbonPersonMedicalID&search=$search&gibbonPersonMedicalConditionID=$gibbonPersonMedicalConditionID");
 
             $form->setFactory(DatabaseFormFactory::create($pdo));
-            $form->setClass('smallIntBorder fullWidth');
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('gibbonPersonMedicalID', $gibbonPersonMedicalID);
