@@ -73,7 +73,8 @@ li.token-input-input-token-facebook {
 }
 
 li.token-input-input-token-facebook input {
-	  background: none!important;
+      background: none!important;
+      box-shadow: none !important;
 }
 
 div.token-input-dropdown-facebook {

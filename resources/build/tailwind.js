@@ -44,6 +44,10 @@ module.exports = {
                     900: 'hsl(20, 80%, 30%)',
                 },
             },
+            boxShadow: {
+                outline: '0 0 0 3px #4299e155',
+            },
+            
         },
     },
     
