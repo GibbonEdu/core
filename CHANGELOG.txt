@@ -37,6 +37,7 @@ v18.0.00
         System: method for columns that require the translation, and update the columns where this is applicable
         System: added Omani Rial as a currency option
         System: added an option to select SMTP encryption in Third Party Settings
+        Form Groups: hide student count from non-staff
         Students: added link from student profile to Individual Needs edit screen
         System Admin: updated importer to add Skip Non-Required Fields option when importing partial data
         Timetable: update View Timetable by Person to access Expected users when All Users filter is enabled
