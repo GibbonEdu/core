@@ -46,7 +46,7 @@ class PhoneNumber extends Input
     public function __construct(FormFactoryInterface &$factory, $name, $countryCodes = array())
     {
         $this->setName($name);
-        $this->setClass('column inline right phoneNumber');
+        $this->setClass('');
 
         $types = array(
             'Mobile' => __('Mobile'),
@@ -60,9 +60,21 @@ class PhoneNumber extends Input
         // Create an internal column to hold the set of phone number fields
         $this->column = $factory->createColumn();
 
-        $this->phoneType = $this->column->addSelect($name.'Type')->fromArray($types)->placeholder();
-        $this->phoneCodes = $this->column->addSelect($name.'CountryCode')->fromArray($countryCodes)->placeholder();
-        $this->phoneNumber = $this->column->addTextField($name);
+        $this->phoneType = $this->column
+            ->addSelect($name.'Type')
+            ->fromArray($types)
+            ->placeholder()
+            ->addClass('mr-1');
+        
+        $this->phoneCodes = $this->column
+            ->addSelect($name.'CountryCode')
+            ->fromArray($countryCodes)
+            ->placeholder()
+            ->addClass('mr-1');
+            
+        $this->phoneNumber = $this->column
+            ->addTextField($name)
+            ->addClass('w-1/2');
     }
 
     /**
@@ -130,10 +142,10 @@ class PhoneNumber extends Input
         $this->phoneNumber->setSize($this->getSize());
         $this->phoneNumber->setDisabled($this->getDisabled());
 
-        $output = '<div class="phoneInputs">';
-        $output .= $this->phoneNumber->getOutput();
-        $output .= $this->phoneCodes->getOutput();
+        $output = '<div class="w-full sm:max-w-xs flex justify-between items-center">';
         $output .= $this->phoneType->getOutput();
+        $output .= $this->phoneCodes->getOutput();
+        $output .= $this->phoneNumber->getOutput();
         $output .= '</div>';
 
         return $output;

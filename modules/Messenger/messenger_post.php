@@ -564,7 +564,7 @@ else {
 				$row->addLabel('group', __('Group'))->description(__('Members of a Messenger module group.'));
 				$row->addYesNoRadio('group')->checked('N')->required();
 
-			$form->toggleVisibilityByClass('group')->onRadio('group')->when('Y');
+			$form->toggleVisibilityByClass('messageGroup')->onRadio('group')->when('Y');
 
             if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_any")) {
 				$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
@@ -578,20 +578,20 @@ else {
 					";
             }
 
-			$row = $form->addRow()->addClass('group hiddenReveal');
+			$row = $form->addRow()->addClass('messageGroup hiddenReveal');
 				$row->addLabel('groups[]', __('Select Groups'));
 				$row->addSelect('groups[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required();
 
-			$row = $form->addRow()->addClass('group hiddenReveal');
+			$row = $form->addRow()->addClass('messageGroup hiddenReveal');
 		        $row->addLabel('groupsStaff', __('Include Staff?'));
 				$row->addYesNo('groupsStaff')->selected('Y');
 
-			$row = $form->addRow()->addClass('group hiddenReveal');
+			$row = $form->addRow()->addClass('messageGroup hiddenReveal');
 		        $row->addLabel('groupsStudents', __('Include Students?'));
 				$row->addYesNo('groupsStudents')->selected('Y');
 
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_parents")) {
-				$row = $form->addRow()->addClass('group hiddenReveal');
+				$row = $form->addRow()->addClass('messageGroup hiddenReveal');
 			        $row->addLabel('groupsParents', __('Include Parents?'))->description('Parents who are members, and parents of student members.');
 					$row->addYesNo('groupsParents')->selected('N');
 			}

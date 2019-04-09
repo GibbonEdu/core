@@ -470,11 +470,9 @@ input:not([type="checkbox"]):not([type="radio"]), button, textarea {
 }
 
 input[type="text"], input[type="password"], input[type="file"] {
-	border: 1px solid #BFBFBF;
+	border-width: 1px;
 	background-color: #ffffff ;
 	height: 28px;
-	float:right;
-	margin-left: 4px ;
 	font-size: 13px ;
     box-sizing: border-box;
 }
@@ -494,21 +492,19 @@ textarea[readonly] {
 }
 
 textarea {
-	border: 1px solid #BFBFBF;
+	border-width: 1px;
 	background-color: #ffffff ;
 	float:right;
-	margin-left: 4px ;
 	font-size: 13px ;
     box-sizing: border-box;
     padding: 4px;
 }
 
 select {
-	border: 1px solid #BFBFBF;
+	border-width: 1px;
 	background-color: #ffffff ;
 	height: 28px;
 	float:right;
-	margin-left: 4px ;
 	font-size: 13px ;
     box-sizing: border-box;
     -webkit-border-radius: 0;
@@ -733,29 +729,14 @@ div#ui-datepicker-div {
 	z-index: 1000!important;
 }
 
-/* Live Validation */
-
-.LV_validation_message{
-    font-weight:bold;
-    margin:6px 0px 0px 5px;
-    float:right;
-	text-align: right;
-	font-size: 12px;
-}
-
-.LV_valid {
-    color:#00CC00;
-}
-
-.LV_invalid {
-    color:#CC0000;
-}
 
 /* From WP for tinymce display */
 .editor-toolbar .active {
     background-color: #f0f0f0;
     color:#333;
     padding-bottom: 0.5rem;
+    margin-bottom: -1px;
+    z-index: 10;
 }
 
 .wp_themeSkin .mceStatusbar{border-color:#dfdfdf;}
@@ -1079,11 +1060,6 @@ td.wordWrap {
 
 /* v14 NEW CLASSES */
 
-/* Ensure forms leave enough room in the second column for LiveValidation to fit. Updated to fix nested tables in forms. */
-table.standardForm td.standardWidth:last-child:nth-child(2) {
-	min-width: 450px;
-}
-
 select[multiple] {
 	height: auto;
 }
@@ -1096,57 +1072,6 @@ select[multiple] {
 	width: 230px;
 }
 
-.phoneNumber input {
-	width: 160px;
-}
-
-.phoneNumber select[name$="CountryCode"] {
-	width: 60px;
-}
-
-.phoneNumber select[name$="Type"] {
-	width: 70px;
-}
-
-.phoneNumber .phoneInputs {
-    position: relative;
-}
-
-.column > div:after {
-  content: "";
-  display: table;
-  clear: both;
-}
-
-.column.inline {
-    white-space: nowrap;
-    display: table-cell;
-}
-
-.column.inline.displayNone {
-    display: none;
-}
-
-.column.inline div {
-	display:inline-block;
-	width:auto;
-    vertical-align: middle;
-}
-
-.column.stacked div:not(:last-of-type) {
-    margin-bottom: 10px;
-}
-
-.formTable .standardWidth {
-    width: auto;
-}
-
-.formTable input,
-.formTable select,
-.formTable textarea {
-	float: left;
-    margin-left: 0px;
-}
 
 
 table tr.heading td {
@@ -1182,24 +1107,7 @@ table.columnHighlight .hover:not(:first-child) {
 	background: #EDF7FF !important;
 }
 
-/* Unfloat validation preceded by a phone input, adjust line height for vertical alignment */
-input[name*="phone"] ~ .LV_invalid {
-    float: none;
-    position: absolute;
-    left: calc(-100% - 6px);
-    text-align: right;
-    width: 100%;
-}
 
-/* Hide validation preceded by another validation message in the same parent element */
-.LV_invalid ~ .LV_invalid {
-    display: none;
-}
-
-/* Remove the tiny gap that appears near validation elements */
-.LV_valid:empty, .LV_invalid:empty {
-    margin: 0;
-}
 
 /* v15 NEW CLASSES */
 .input-box {
@@ -1543,10 +1451,6 @@ tr.selected, tr.selected td, div.selected, td.selected {
     border-top-left-radius: 3px;
 }
 
-.bulkActionForm .bulkActionPanel .LV_validation_message {
-    position: absolute;
-    bottom: -14px;
-}
 
 .bulkActionForm .bulkActionCount {
     position: relative;
@@ -1622,17 +1526,7 @@ button[disabled], input[disabled], textarea[disabled] {
     opacity: 0.65;
 }
 
-/* PERSON SELECT - LiveValidation styling */
-.personSelect + .LV_validation_message {
-    position: absolute;
-    top: 40%;
-    right: 410px;
-    white-space: nowrap;
-}
-.personSelect[multiple] + .LV_validation_message {
-    top: 78%;
-    right: 325px;
-}
+
 
 
 /* PRINT STYLES */

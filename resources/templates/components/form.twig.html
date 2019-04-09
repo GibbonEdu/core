@@ -34,7 +34,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {% if element.isInstanceOf('Gibbon\\Forms\\Layout\\Label') %}
                     {% set class = 'flex flex-col flex-grow justify-center -mb-1 sm:mb-0 ' %}
                 {% elseif loop.last and loop.length == 2 %}
-                    {% set class = 'w-full max-w-full sm:max-w-lg flex justify-end items-center' %}
+                    {% set class = 'w-full max-w-full sm:max-w-xs flex justify-end items-center' %}
                 {% else %}
                     {% set class = 'flex-grow justify-center' %}
                 {% endif %}
@@ -42,8 +42,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {% set class = '' %}  
             {% endif %}
 
-            <td class="{{ element.getClass|replace({'standardWidth': ''}) }} {{ class }} px-2 border-b-0 sm:border-b border-t-0" {{ colspan ? 'colspan="%s"'|format(colspan)|raw }}>
-                {{ element.getOutput|replace({'standardWidth': renderStyle == 'flex' ? 'w-full sm:max-w-xs' : '' })|raw }}
+            <td class="{{ class }} px-2 border-b-0 sm:border-b border-t-0 {{ element.getClass|replace({'standardWidth': ''}) }}" {{ colspan ? 'colspan="%s"'|format(colspan)|raw }}>
+                {{ element.getOutput|replace({'standardWidth': renderStyle == 'flex' ? 'w-full' : '' })|raw }}
             </td>
 
             {% if element.instanceOf('Gibbon\\Forms\\ValidatableInterface') %}

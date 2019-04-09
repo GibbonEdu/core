@@ -12,7 +12,7 @@ Rich Text Editor
 
 <a name="{{ id }}editor"></a>
 
-<div class="editor-toolbar flex flex-col sm:flex-row justify-between text-xs ">
+<div class="editor-toolbar flex flex-col sm:flex-row justify-between h-8 text-xs">
 
     {% if showMedia %}
     <div id="{{ id }}mediaInner" class="flex items-center py-2">
@@ -109,8 +109,8 @@ Rich Text Editor
 {% endif %}
 
 
-<div id="editorcontainer">
-    <textarea class="tinymce w-full ml-0" name="{{ id }}" id="{{ id }}" style="height: {{ rows * 18 }}px;">
+<div id="editorcontainer" class="relative">
+    <textarea class="tinymce w-full ml-0 float-none" name="{{ id }}" id="{{ id }}" style="height: {{ rows * 18 }}px;">
         {{- value -}}
     </textarea>
 
