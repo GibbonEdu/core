@@ -25,8 +25,8 @@ TODO: add template variable details.
                 {% block header %}
                 <div id="header" class="relative bg-white flex justify-between items-center rounded-t h-24 sm:h-32">
 
-                    <a id="header-logo" class="block" href="{{ absoluteURL }}">
-                        <img class="max-w-full" alt="Logo" src="{{ absoluteURL }}/{{ organisationLogo|default("/themes/Default/img/logo.png") }}" width="400"/>
+                    <a id="header-logo" class="block max-w-xs sm:max-w-full leading-none" href="{{ absoluteURL }}">
+                        <img class="block max-w-full" alt="Logo" src="{{ absoluteURL }}/{{ organisationLogo|default("/themes/Default/img/logo.png") }}" width="400"/>
                     </a>
 
                     <div class="flex-grow flex justify-end">
