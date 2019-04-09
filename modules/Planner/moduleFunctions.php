@@ -232,9 +232,9 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
             $namePerson = __('{name} said', [
                 'name' => formatName($rowDiscuss['title'], $rowDiscuss['preferredName'], $rowDiscuss['surname'], $rowDiscuss['category'])
             ]);
-            $datetimePosted = __('Posted at <b>{hourPosted}</b> on <b>{datePosted}</b>',[
-                'hourPosted' => substr($rowDiscuss['timestamp'], 11, 5), 
-                'datePosted' => dateConvertBack($guid, substr($rowDiscuss['timestamp'], 0, 10))
+            $datetimePosted = __('Posted at {hourPosted} on {datePosted}', [
+                'hourPosted' => '<b>'.substr($rowDiscuss['timestamp'], 11, 5).'</b>', 
+                'datePosted' => '<b>'.dateConvertBack($guid, substr($rowDiscuss['timestamp'], 0, 10)).'</b>'
             ]);
             if ($level == 0) {
                 $classExtra = 'chatBoxFirst';
