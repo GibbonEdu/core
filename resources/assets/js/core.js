@@ -330,6 +330,8 @@ CustomBlocks.prototype.initBlock = function(block, data) {
 CustomBlocks.prototype.loadBlockInputData = function(block, data) {
     var _ = this;
 
+    $(':input', block).prop('disabled', false);
+
     for (key in data) {
         $("[name='"+key+"']", block).val(data[key]);
         $("label[for='"+key+"']", block).html(data[key]);
