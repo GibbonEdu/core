@@ -486,7 +486,7 @@ function getFastFinder($connection2, $guid)
     $row = $form->addRow();
         $row->addFinder('fastFinderSearch')
             ->fromAjax($_SESSION[$guid]['absoluteURL'].'/index_fastFinder_ajax.php')
-            ->setClass('w-full')
+            ->setClass('w-full text-white')
             ->setParameter('hintText', __('Start typing a name...'))
             ->setParameter('noResultsText', __('No results'))
             ->setParameter('searchingText', __('Searching...'))

@@ -212,10 +212,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                             $list .= '{id: "'.addslashes($tag[1]).'", name: "'.addslashes($tag[1]).'"},';
                                         }
                 						?>
-        								<style>
-        									td.long ul.token-input-list-facebook { width: 100%; margin-top: 5px }
-        									td.long div.token-input-dropdown-facebook { width: 120px }
-        								</style>
+        								
         								<input type="text" id="tags" name="tags" class='standardWidth' />
         								<?php
                                             $prepopulate = '';
@@ -238,7 +235,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
         											],
         											{theme: "facebook",
         											hintText: "Start typing a tag...",
-        											allowCreation: true,
+        											allowFreeTagging: true,
         											<?php
                                                     if ($prepopulate != '{id: , name: }') {
                                                         echo "prePopulate: [ $prepopulate ],";
