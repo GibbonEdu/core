@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
 
             // Acess denied for users changing a password if they do not have system access to this role
             if ( ($role['restriction'] == 'Admin Only' && !isset($userRoles['001']) ) 
-              || ($role['restriction'] == 'Same Role' && !isset($userRoles[$role['gibbonRoleID']]) )) {
+              || ($role['restriction'] == 'Same Role' && !isset($userRoles[$role['gibbonRoleID']]) && !isset($userRoles['001']) )) {
                 echo "<div class='error'>";
                 echo __('You do not have access to this action.');
                 echo '</div>';
