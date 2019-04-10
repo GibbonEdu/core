@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
                 ->fromQuery($pdo, $sql)
                 ->required()
                 ->setParameter('hintText', __('Type a tag...'))
-                ->setParameter('allowCreation', true);
+                ->setParameter('allowFreeTagging', true);
 
         $row = $form->addRow();
             $row->addLabel('gibbonYearGroupID', __('Year Groups'))->description(__('Students year groups which may participate'));
@@ -126,8 +126,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
             $row->addSubmit();
 
         echo $form->getOutput();
-
-        // HACK: Otherwise FastFinder width overrides this one :(
-        echo '<style>.tags ul.token-input-list-facebook {width: 100% !important;} </style>';
     }
 }

@@ -48,7 +48,7 @@ class Finder extends TextField
             'hintText'          => __('Start typing...'),
             'noResultsText'     => __('No results'),
             'searchingText'     => __('Searching...'),
-            'allowCreation'     => false,
+            'allowFreeTagging'  => false,
             'preventDuplicates' => true,
             'tokenLimit'        => null,
             'minChars'          => 1,
