@@ -165,7 +165,7 @@ class Label extends Element implements RowDependancyInterface
     {
         $output = '';
 
-        $this->addClass('inline-block mt-4 sm:my-1 sm:max-w-xs font-bold text-xs');
+        $this->addClass('inline-block mt-4 sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs');
 
         
         $output .= '<label '.$this->getAttributeString().'>'.$this->label.' '.( ($this->getRequired())? '*' : '');
