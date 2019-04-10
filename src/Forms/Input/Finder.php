@@ -149,12 +149,6 @@ class Finder extends TextField
     {
         $output = '<input type="text" '.$this->getAttributeString().'>';
 
-        // TODO: move this css to sass files
-        $output .= '<style>';
-            $output .= 'ul.token-input-list-facebook { width: 300px; float: right; height: 28px!important; margin-right: 0px; box-sizing: border-box; padding-left: 0px;}';
-            $output .= 'div.token-input-dropdown-facebook { width: 300px; z-index: 99999999 }';
-        $output .= '</style>';
-
         $output .= '<script type="text/javascript">';
         $output .= '$(document).ready(function() {';
         $output .= '$("#'.$this->getID().'").tokenInput(';
@@ -176,6 +170,10 @@ class Finder extends TextField
         }
         if (!empty($this->tokenFormatter)) {
             $this->params['tokenFormatter'] = 'CUSTOM_TOKEN_FORMATTER';
+        }
+        // Account for the change in param name from allowCreation to allowFreeTagging
+        if (!empty($this->params['allowCreation'])) {
+            $this->params['allowFreeTagging'] = $this->params['allowCreation'];
         }
 
         $paramsOutput = json_encode($this->params);
