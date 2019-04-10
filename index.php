@@ -321,7 +321,6 @@ $page->addHeadExtra($session->get('analytics'));
 $page->stylesheets->addMultiple([
     'jquery-ui'    => 'lib/jquery-ui/css/blitzer/jquery-ui.css',
     'jquery-time'  => 'lib/jquery-timepicker/jquery.timepicker.css',
-    'jquery-token' => 'lib/jquery-tokeninput/styles/token-input-facebook.css',
     'thickbox'     => 'lib/thickbox/thickbox.css',
 ]);
 

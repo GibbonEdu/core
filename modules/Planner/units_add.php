@@ -195,10 +195,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                                             $list = $list.'{id: "'.$tag[1].'", name: "'.$tag[1].'"},';
                                         }
                 						?>
-                						<style>
-                							td.long ul.token-input-list-facebook { width: 100%; margin-top: 5px }
-                							td.long div.token-input-dropdown-facebook { width: 120px }
-                						</style>
+                						
                 						<input type="text" id="tags" name="tags" />
                 						<script type="text/javascript">
                 							$(document).ready(function() {
@@ -207,7 +204,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                 								],
                 									{theme: "facebook",
                 									hintText: "Start typing a tag...",
-                									allowCreation: true,
+                									allowFreeTagging: true,
                 									preventDuplicates: true});
                 							});
                 						</script>
