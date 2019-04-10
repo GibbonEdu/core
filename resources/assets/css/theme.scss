@@ -156,3 +156,10 @@ input:focus, select:focus, textarea:focus {
 .column.stacked {
     @apply flex flex-col justify-end items-stretch content-center;
 }
+
+/* Prevent the input zoom-in effect that happens on mobile devices */
+@media (max-width: 767px) {
+    input, select, option, textarea {
+        font-size: initial !important;
+    }
+}
