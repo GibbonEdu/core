@@ -156,3 +156,65 @@ input:focus, select:focus, textarea:focus {
 .column.stacked {
     @apply flex flex-col justify-end items-stretch content-center;
 }
+
+/*
+ --------------------------------------------------------------------------
+  Finder
+ --------------------------------------------------------------------------
+*/
+
+/* Input Style */
+
+.token-input-list-facebook {
+    @apply w-full overflow-hidden m-0 p-0 list-none bg-white border border-gray-500 text-xs;
+    cursor: text;
+}
+
+.token-input-list-facebook input,
+.token-input-input-token-facebook input {
+    @apply shadow-none border-0 bg-transparent;
+    height: 26px;
+}
+
+/* Token Style */
+
+.token-input-token-facebook {
+    @apply float-left rounded-sm m-px p-1 bg-blue-500 cursor-pointer text-white ;
+    
+}
+
+.token-input-selected-token-facebook {
+    @apply bg-blue-800 text-white;
+}
+
+.token-input-token-facebook p {
+    @apply m-0 p-0 pr-1 inline;
+}
+
+/* Dropdown Style */
+
+.token-input-dropdown-facebook {
+    @apply absolute w-full overflow-hidden bg-white border border-gray-500 border-t-0 z-10;
+    box-sizing: content-box;
+}
+
+.token-input-input-token-facebook,
+.token-input-dropdown-facebook ul {
+    @apply m-0 p-0;
+}
+
+.token-input-dropdown-facebook li {
+    @apply m-0 px-2 py-1 cursor-pointer;
+}
+
+.token-input-dropdown-facebook p {
+    @apply font-bold text-gray-600 m-0 p-2;
+}
+
+.token-input-dropdown-facebook em {
+    @apply font-bold not-italic;
+}
+
+.token-input-selected-dropdown-item-facebook {
+    @apply bg-blue-700 text-white;
+}
