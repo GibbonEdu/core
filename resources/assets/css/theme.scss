@@ -139,6 +139,10 @@ input:focus, select:focus, textarea:focus {
     
 }
 
+input[readonly]:focus, select[readonly]:focus, textarea[readonly]:focus {
+    @apply shadow-none;
+}
+
 .column.inline {
     @apply flex flex-wrap ;
 }
@@ -150,7 +154,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 .column.inline.displayNone {
-    display: none;
+    @apply hidden;
 }
 
 .column.stacked {
