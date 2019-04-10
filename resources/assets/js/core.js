@@ -40,20 +40,24 @@ jQuery(function($){
     });
 
     /**
-     * Bluk Actions: show/hide the bulk action panel, highlight selected
+     * Bulk Actions: show/hide the bulk action panel, highlight selected
      */
     $(document).on('click, change', '.bulkActionForm .bulkCheckbox :checkbox', function () {
         var checkboxes = $(this).parents('.bulkActionForm').find('.bulkCheckbox :checkbox');
         var checkedCount = checkboxes.filter(':checked').length;
 
         if (checkedCount > 0) {
+            var header = $(this).parents('.bulkActionForm').find('.dataTable header');
+            var panelHeight = $('.bulkActionPanel').innerHeight();
+
             $('.bulkActionCount span').html(checkedCount);
-            $('.bulkActionPanel').fadeIn(150);
+            $('.bulkActionPanel').css('top', header.outerHeight(false) - panelHeight + 2);
+            $('.bulkActionPanel').removeClass('hidden');
 
             // Trigger a showhide event on any nested inputs to update their visibility & validation state
             $('.bulkActionPanel :input').trigger('showhide');
         } else {
-            $('.bulkActionPanel').fadeOut(75);
+            $('.bulkActionPanel').addClass('hidden');
         }
         
         $('.checkall').prop('checked', checkedCount > 0 );
@@ -536,7 +540,7 @@ DataTable.prototype.refresh = function() {
     }
 
     $(_.table).load(_.path, postData, function(responseText, textStatus, jqXHR) { 
-        $('.bulkActionPanel').hide();
+        $('.bulkActionPanel').addClass('hidden');
         tb_init('a.thickbox'); 
         clearTimeout(submitted);
     });
