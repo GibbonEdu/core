@@ -21,6 +21,8 @@ include '../../gibbon.php';
 
 include './moduleFunctions.php';
 
+$page = $container->get('page');
+
 $id = $_GET['id'];
 $type = $_GET['type'];
 $gibbonOutcomeID = $_GET['gibbonOutcomeID'];
