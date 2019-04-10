@@ -85,7 +85,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 .badge {
-    @apply absolute z-10 rounded-full bg-blue-400 text-xs text-white no-underline leading-tight font-sans;
+    @apply absolute z-10 rounded-full bg-purple-400 text-xs text-white no-underline leading-tight font-sans;
     padding: 2px 6px 2px 6px;
 }
 
@@ -139,6 +139,10 @@ input:focus, select:focus, textarea:focus {
     
 }
 
+input[readonly]:focus, select[readonly]:focus, textarea[readonly]:focus {
+    @apply shadow-none;
+}
+
 .column.inline {
     @apply flex flex-wrap ;
 }
@@ -150,11 +154,18 @@ input:focus, select:focus, textarea:focus {
 }
 
 .column.inline.displayNone {
-    display: none;
+    @apply hidden;
 }
 
 .column.stacked {
     @apply flex flex-col justify-end items-stretch content-center;
+}
+
+/* Prevent the input zoom-in effect that happens on mobile devices */
+@media (max-width: 767px) {
+    input, select, option, textarea {
+        font-size: initial !important;
+    }
 }
 
 /*

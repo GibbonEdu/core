@@ -23,6 +23,8 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\FormFactory;
 use Gibbon\Forms\View\FormView;
 use League\Container\ServiceProvider\AbstractServiceProvider;
+use Gibbon\Forms\View\FormRendererInterface;
+use Gibbon\Forms\FormFactoryInterface;
 
 /**
  * DI Container Services for rendering Views
@@ -42,6 +44,8 @@ class ViewServiceProvider extends AbstractServiceProvider
      */
     protected $provides = [
         Form::class,
+        FormRendererInterface::class,
+        FormFactoryInterface::class,
     ];
 
     /**
@@ -59,6 +63,14 @@ class ViewServiceProvider extends AbstractServiceProvider
             $renderer = new FormView($this->getContainer()->get('twig'));
 
             return (new Form($factory, $renderer))->setClass('w-full smallIntBorder standardForm');
+        });
+
+        $container->add(FormRendererInterface::class, function () {
+            return new FormView($this->getContainer()->get('twig'));
+        });
+
+        $container->add(FormFactoryInterface::class, function () {
+            return new FormFactory();
         });
     }
 }
