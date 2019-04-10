@@ -74,7 +74,7 @@ class PhoneNumber extends Input
             
         $this->phoneNumber = $this->column
             ->addTextField($name)
-            ->addClass('w-1/2');
+            ->addClass('w-2/3 sm:w-1/2');
     }
 
     /**
