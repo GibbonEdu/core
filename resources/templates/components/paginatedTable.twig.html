@@ -35,8 +35,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {{ parent() }}
     </div>
 
-    <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-1">
-        <div class="mb-3 sm:mb-0">
+    <div class="flex flex-wrap sm:flex-no-wrap items-end justify-between mb-1">
+        <div class="">
             {{ filterOptions|raw }}
             {{ pageSize|raw }}
             <small class="ml-px">{{ __('Per Page') }}</small>
