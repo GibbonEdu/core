@@ -30,8 +30,8 @@ use Gibbon\Tables\Renderer\RendererInterface;
 /**
  * TableView
  *
- * @version v17
- * @since   v17
+ * @version v18
+ * @since   v18
  */
 class DataTableView extends View implements RendererInterface
 {

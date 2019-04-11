@@ -30,8 +30,8 @@ use Gibbon\Tables\Columns\Column;
 /**
  * Paginated View
  *
- * @version v17
- * @since   v17
+ * @version v18
+ * @since   v18
  */
 class PaginatedView extends DataTableView implements RendererInterface
 {

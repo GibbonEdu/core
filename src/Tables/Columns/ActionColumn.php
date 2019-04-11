@@ -56,6 +56,11 @@ class ActionColumn extends Column
         return $action;
     }
 
+    public function getActions()
+    {
+        return $this->actions;
+    }
+
     /**
      * Adds a URL parameter to the column that is passed to _each_ action.
      *
@@ -85,6 +90,11 @@ class ActionColumn extends Column
         return $this;
     }
 
+    public function getParams()
+    {
+        return $this->params;
+    }
+
     /**
      * Sets a column width based on the number of actions.
      *
@@ -110,11 +120,11 @@ class ActionColumn extends Column
             call_user_func($this->formatter, $data, $this);
         }
 
-        $output .= '<div style="white-space: nowrap;">';
-        foreach ($this->actions as $actionName => $action) {
-            $output .= $action->getOutput($data, $this->params);
-        }
-        $output .= '</div>';
+        // $output .= '<div style="white-space: nowrap;">';
+        // foreach ($this->actions as $actionName => $action) {
+        //     $output .= $action->getOutput($data, $this->params);
+        // }
+        // $output .= '</div>';
 
         return $output;
     }
