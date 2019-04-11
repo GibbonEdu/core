@@ -19,6 +19,7 @@ CHANGELOG
 v18.0.00
 --------
     Headlines
+        Fully responsive layouts and navigation on all screen sizes
         Added responsive HTML email templates for outgoing notifications and messages
         Activated Urdu and Croatian as available languages
         Added Burmese as a development language
@@ -27,11 +28,13 @@ v18.0.00
         System: removed Likes/Stars feature
 
     Significant Changes
+        System: added a webpack-based build process for javascript and css files
         Attendance: added ability to set future absence for multiple students
 
     Security
 
     Tweaks & Additions
+        System: updated the Google login button to be responsive and translatable
         System: updated Google login scopes to remove plus.me, based on Google API changes
         System: made disabled checkboxes more visible
         System: method for columns that require the translation, and update the columns where this is applicable
