@@ -107,19 +107,26 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     $table->addColumn('image_240', __('Photo'))
         ->width('10%')
         ->notSortable()
-        ->format(Format::using('userPhoto', 'image_240'));
+        ->format(Format::using('userPhoto', ['image_240', 'sm']));
 
     $table->addColumn('fullName', __('Name'))
         ->width('30%')
         ->sortable(['surname', 'preferredName'])
         ->format(Format::using('name', ['title', 'preferredName', 'surname', 'Student', true]));
 
-    $table->addColumn('status', __('Status'))->width('10%')->translatable();
+    $table->addColumn('status', __('Status'))
+        ->width('10%')
+        ->responsive('md')
+        ->translatable();
 
-    $table->addColumn('primaryRole', __('Primary Role'))->width('16%')->translatable();
+    $table->addColumn('primaryRole', __('Primary Role'))
+        ->width('16%')
+        ->responsive('md')
+        ->translatable();
 
     $table->addColumn('family', __('Family'))
         ->notSortable()
+        ->responsive('md')
         ->format(function($person) use ($guid) {
             $output = '';
             foreach ($person['families'] as $family) {
