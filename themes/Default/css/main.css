@@ -39,47 +39,6 @@ body {
 
 /* LAYOUT */
 
-#wrap-report {
-	width:1101px;
-	padding-top: 10px;
-	padding-left: 1px;
-	margin: 10px auto ;
-	position:relative ;
-}
-
-#header-logo-report {
-	margin:0 0 0 0px;
-	padding:0px 0;
-	color:#ccc;
-	border:none;
-	width: 250px;
-}
-
-#header-finder {
-	float: right ;
-	color:#fff;
-	font-weight:bold;
-	position:absolute;
-	top:24px;
-	right:24px;
-	left:auto;
-	width:400px;
-}
-#header-finder h2 {
-	text-align: right ;
-	border-bottom: none ;
-	font-size: 90% ;
-	margin-bottom: 0!important ;
-	margin-top: 0!important ;
-}
-
-
-#content-wrap-report {
-	background-color: rgba(255,255,255,0.9) ;
-	position:relative;
-	width:100%;
-}
-
 #content div.trail {
 	text-align: left;
 	font-size: 70%;
@@ -127,16 +86,6 @@ div.sidebarExtra {
 	margin-bottom: 10px ;
 }
 
-#footer-report {
-	clear:both;
-	width:750px;
-	color: #333;
-	margin: 0 0 0 -1px;
-	padding: 5px 0px 5px 0px;
-	font-size:75%;
-	text-align: right ;
-	font-style: italic ;
-}
 
 
 img.minorLinkIconLarge {
@@ -195,9 +144,7 @@ h1, h2, h3, h4, h5, h6 {
 h1 {
 	font-size: 17pt;
 }
-h1.report {
-	font-size: 17pt;
-}
+
 h2 {
 	font-size: 14pt;
 }
