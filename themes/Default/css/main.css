@@ -1272,10 +1272,6 @@ tr.selected, tr.selected td, div.selected, td.selected {
 }
 
 /* Gibbon Data Table CSS - Will be moved to core.css */
-.dataTable {
-    overflow-x: auto;
-}
-
 .dataTable .sortable {
 	cursor: pointer;
     position: relative;

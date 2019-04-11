@@ -26,10 +26,11 @@ use Gibbon\Tables\Columns\Column;
 use Gibbon\Forms\OutputableInterface;
 use Gibbon\Tables\Columns\ActionColumn;
 use Gibbon\Tables\Columns\CheckboxColumn;
-use Gibbon\Tables\Columns\ExpandableColumn;
-use Gibbon\Tables\Renderer\RendererInterface;
+use Gibbon\Tables\Renderer\PaginatedView;
 use Gibbon\Tables\Renderer\SimpleRenderer;
+use Gibbon\Tables\Columns\ExpandableColumn;
 use Gibbon\Tables\Renderer\PaginatedRenderer;
+use Gibbon\Tables\Renderer\RendererInterface;
 
 /**
  * DataTable
@@ -71,7 +72,9 @@ class DataTable implements OutputableInterface
      */
     public static function create($id, RendererInterface $renderer = null)
     {
-        return (new static($renderer ? $renderer : new SimpleRenderer()))->setID($id);
+        global $container;
+        
+        return $container->get(DataTable::class)->setID($id);
     }
 
     /**
@@ -83,7 +86,11 @@ class DataTable implements OutputableInterface
      */
     public static function createPaginated($id, QueryCriteria $criteria)
     {
-        return (new static(new PaginatedRenderer($criteria, '/fullscreen.php?'.http_build_query($_GET))))->setID($id);
+        global $container;
+
+        $renderer = $container->get(PaginatedView::class)->setCriteria($criteria);
+
+        return $container->get(DataTable::class)->setID($id)->setRenderer($renderer);
     }
 
     /**

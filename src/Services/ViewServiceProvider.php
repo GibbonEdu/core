@@ -21,12 +21,13 @@ namespace Gibbon\Services;
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\FormFactory;
+use Gibbon\Forms\FormFactoryInterface;
 use Gibbon\Forms\View\FormView;
+use Gibbon\Forms\View\FormRendererInterface;
 use Gibbon\Tables\DataTable;
 use Gibbon\Tables\Renderer\DataTableView;
+use Gibbon\Tables\Renderer\PaginatedView;
 use League\Container\ServiceProvider\AbstractServiceProvider;
-use Gibbon\Forms\View\FormRendererInterface;
-use Gibbon\Forms\FormFactoryInterface;
 
 /**
  * DI Container Services for rendering Views
@@ -80,6 +81,10 @@ class ViewServiceProvider extends AbstractServiceProvider
             $renderer = new DataTableView($container->get('twig'));
 
             return new DataTable($renderer);
+        });
+
+        $container->add(PaginatedView::class, function () use ($container) {
+            return new PaginatedView($container->get('twig'));
         });
     }
 }
