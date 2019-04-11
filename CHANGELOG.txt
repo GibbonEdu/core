@@ -57,6 +57,7 @@ v18.0.00
         Library: removed lending icon for items that are not borrowable
         Markbook: fixed column title showing term's name when the term filter is applied in View Markbook
         Markbook: fixed bug preventing parents and students from viewing the markbook with work submitted to a lesson plan
+        Markbook: fixed column widths when modified assessment is enabled
         School Admin: fixed interface string typos
         Staff: fixed staff photo not displaying on Facilities sub-page in staff profile
         System Admin: fixed typo in Google integration settings
