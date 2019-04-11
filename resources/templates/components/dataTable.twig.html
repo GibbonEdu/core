@@ -40,8 +40,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% endblock blankslate %}
 
     {% else %}
-        <div class="w-full overflow-x-scroll">
-        <table class="w-full max-w-full" cellspacing="0">
+        <div class="overflow-x-scroll">
+        <table class="w-full" cellspacing="0">
             <thead>
             {% for headerRow in headers %}
                 <tr class="head text-xs">
@@ -70,23 +70,26 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
                     {% for columnIndex, column in columns %}
                         {% set cell = rowData.cells[columnIndex] %}
-
+                        
                         <td {{ cell.getAttributeString|raw }}>
                             {{ cell.getPrepended|raw }}
 
                             {% if column.getID == "actions" %} 
-                                <nav id="actions{{ table.getID }}{{ rowIndex }}" class="relative group">
-                                    <div class="hidden group-hover:flex sm:flex absolute sm:static top-0 right-0 -mr-1 rounded shadow sm:shadow-none bg-white sm:bg-transparent px-2 -mt-3 sm:m-0 sm:p-0 z-10">
+                                <nav class="relative group">
                                     {% do column.getOutput(rowData.data) %}
+                                    {% set actions = column.getActions %}
 
-                                    {% for actionName, action in column.getActions %}
-                                        {{ action.getOutput(rowData.data, column.getParams)|raw }}
-                                    {% endfor %}
+                                    <div class="{{ actions|length == 1 ? 'flex -m-3' : 'hidden group-hover:flex sm:flex absolute sm:static top-0 right-0 -mr-1 rounded shadow sm:shadow-none bg-white sm:bg-transparent px-2 -mt-3 sm:m-0 sm:p-0 z-10' }}">
+                                        {% for actionName, action in actions %}
+                                            {{ action.getOutput(rowData.data, column.getParams)|raw }}
+                                        {% endfor %}
                                     </div>
 
-                                    <button class="relative block sm:hidden rounded px-1 py-2 bg-gray-300 text-2xl text-gray-600 font-sans font-bold leading-none" data-toggle="#actions{{ table.getID }}{{ rowIndex }}xxx" onClick="event.preventDefault();" onTouchEnd="event.preventDefault();">
+                                    {% if actions|length > 1 %}
+                                    <button class="block sm:hidden rounded px-1 py-2 bg-gray-300 text-2xl text-gray-600 font-sans font-bold leading-none" onClick="event.preventDefault();" onTouchEnd="event.preventDefault();">
                                         <span class="block -mt-3">...</span>
                                     </button>
+                                    {% endif %}
                                 </nav>
 
                             {% else %}

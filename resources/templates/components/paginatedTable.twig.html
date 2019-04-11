@@ -26,7 +26,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 
 {% block header %}
-    <div class="flex items-end justify-between mb-1">
+    <div class="flex items-end justify-between pb-1">
         <div class="">
             {{ block('pageCount') }}
             {{ block('filters') }}
@@ -108,15 +108,15 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 {% block bulkActions %}
     {% if bulkActions %}
-    <div class="column bulkActionPanel inline right displayNone">
-        <div class="bulkActionCount">
+    <div class="bulkActionPanel hidden absolute top-0 right-0 w-full flex items-center justify-between px-1 pt-1 bg-purple-600 rounded-t">
+        <div class="bulkActionCount flex-grow text-white text-sm text-right pr-3">
             <span>0</span> {{ __('Selected') }}
         </div>
         
-        {{ bulkActions.getOutput }}
+        {{ bulkActions.getOutput|raw }}
 
         <script>
-            {{ bulkActions.getValidationOutput }}
+            {{ bulkActions.getValidationOutput|raw }}
         </script>
     </div>
     {% endif %}
