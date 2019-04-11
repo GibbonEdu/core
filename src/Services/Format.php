@@ -536,6 +536,7 @@ class Format
         }
 
         if (empty($path) or file_exists(static::$settings['absolutePath'].'/'.$path) == false) {
+            $imageSize = $size == 240 || $size == 'lg' ? 240 : 75;
             $path = '/themes/'.static::$settings['gibbonThemeName'].'/img/anonymous_'.$size.'.jpg';
         }
 
