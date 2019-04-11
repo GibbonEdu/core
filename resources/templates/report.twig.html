@@ -1,0 +1,38 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+<!DOCTYPE html>
+<html {{ rightToLeft ? 'dir="rtl"' : '' }}>
+    <head>
+        {{ include('head.twig.html') }}
+    </head>
+    <body class="print">
+
+        <div id="wrap-report" class="mx-auto max-w-3xl">
+            <div id="header-report" class="flex items-center w-full my-6">
+                
+                <div id="header-logo" class="leading-none">
+                    <img class="block max-w-full" alt="{{ organisationNameShort }}" src="{{ absoluteURL }}/{{ organisationLogo|default("/themes/Default/img/logo.png") }}" width="400"/>
+                </div>
+
+                <div id="header-text" class="w-3/4 text-xs leading-tight pl-10">
+                    {{  __('This printout contains information that is the property of %1$s. If you find this report, and do not have permission to read it, please return it to %2$s (%3$s). In the event that it cannot be returned, please destroy it.')|format(organisationName, organisationAdministratorName, organisationAdministratorEmail) }}
+                </div>
+            </div>
+
+            <div id="content-wrap-report" class="w-full max-w-full">
+                {% if isLoggedIn %}
+                    {{ content|join("\n")|raw }}
+                {% endif %}
+            </div>
+
+            <div id="footer-report" class="pt-8 text-xs text-right italic">
+                {{ __('Created by %1$s (%2$s) at %3$s on %4$s.')|format(username, organisationNameShort, time, date) }}
+            </div>
+        </div>
+    </body>
+</html>
