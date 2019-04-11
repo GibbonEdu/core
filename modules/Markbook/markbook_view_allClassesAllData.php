@@ -716,7 +716,7 @@ use Gibbon\Services\Format;
                         $rowEntry = $resultEntry->fetch();
 
                         if ($enableModifiedAssessment == 'Y') {
-                            echo "<td class='smallColumn'>";
+                            echo "<td class='medColumn'>";
                                 echo $rowEntry['modifiedAssessment'];
                             echo "</td>";
                         }
@@ -832,6 +832,9 @@ use Gibbon\Services\Format;
                             $editLink = "<a class='markbookQuickEdit' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'><img style='margin-top: 3px' title='" . __("Add") . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_mini.png'/></a> " ;
                         }
 
+                        if ($enableModifiedAssessment == 'Y') {
+                            echo '<td class="medColumn">'.$editLink.'</td>';
+                        }
                         if ($column->displayAttainment()) {
                             echo '<td class="medColumn">'.$editLink.'</td>';
                         }
