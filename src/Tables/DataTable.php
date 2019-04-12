@@ -268,6 +268,12 @@ class DataTable implements OutputableInterface
         return $getNestedColumns($this->columns);
     }
 
+    public function getColumnByIndex($index)
+    {
+        $keys = array_keys($this->columns);
+        return $this->columns[$keys[$index] ?? ''] ?? null;
+    }
+    
     /**
      * Calculate how many layers deep the columns are nested.
      *

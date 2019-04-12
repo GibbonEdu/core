@@ -33,6 +33,7 @@ class Column
 
     protected $label;
     protected $description;
+    protected $contexts = [];
     protected $width = 'auto';
     protected $depth = 0;
     protected $sortable = false;
@@ -93,16 +94,33 @@ class Column
         return $this->depth;
     }
 
-    public function responsive($breakpoint)
+    public function context($context)
     {
-        switch ($breakpoint) {
-            case 'sm': $this->addClass('hidden sm:table-cell'); break;
-            case 'md': $this->addClass('hidden md:table-cell'); break;
-            case 'lg': $this->addClass('hidden lg:table-cell'); break;
-        }
+        $this->contexts[] = $context;
 
         return $this;
     }
+
+    public function getContexts()
+    {
+        return $this->contexts;
+    }
+
+    public function hasContext($context)
+    {
+        return in_array($context, $this->contexts);
+    }
+
+    // public function responsive($breakpoint)
+    // {
+    //     switch ($breakpoint) {
+    //         case 'sm': $this->addClass('hidden sm:table-cell'); break;
+    //         case 'md': $this->addClass('hidden md:table-cell'); break;
+    //         case 'lg': $this->addClass('hidden lg:table-cell'); break;
+    //     }
+
+    //     return $this;
+    // }
 
     /**
      * Sets the column description, often displayed as smaller text below the label.

@@ -39,6 +39,7 @@ class ActionColumn extends Column
     {
         parent::__construct('actions', __('Actions'));
         $this->sortable(false);
+        $this->context('action');
     }
 
     /**
@@ -102,7 +103,7 @@ class ActionColumn extends Column
      */
     public function getWidth()
     {
-        return (count($this->actions) * 36).'px';
+        return '1%';
     }
 
     /**
@@ -119,12 +120,6 @@ class ActionColumn extends Column
             $this->actions = [];
             call_user_func($this->formatter, $data, $this);
         }
-
-        // $output .= '<div style="white-space: nowrap;">';
-        // foreach ($this->actions as $actionName => $action) {
-        //     $output .= $action->getOutput($data, $this->params);
-        // }
-        // $output .= '</div>';
 
         return $output;
     }
