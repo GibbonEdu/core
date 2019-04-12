@@ -72,9 +72,7 @@ class DataTable implements OutputableInterface
      */
     public static function create($id, RendererInterface $renderer = null)
     {
-        global $container;
-        
-        return $container->get(DataTable::class)->setID($id);
+        return (new static($renderer))->setID($id);
     }
 
     /**
@@ -90,7 +88,7 @@ class DataTable implements OutputableInterface
 
         $renderer = $container->get(PaginatedView::class)->setCriteria($criteria);
 
-        return $container->get(DataTable::class)->setID($id)->setRenderer($renderer);
+        return (new static($renderer))->setID($id)->setRenderer($renderer);
     }
 
     /**
