@@ -105,28 +105,28 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
 
     // COLUMNS
     $table->addColumn('image_240', __('Photo'))
+        ->context('primary')
         ->width('10%')
         ->notSortable()
         ->format(Format::using('userPhoto', ['image_240', 'sm']));
 
     $table->addColumn('fullName', __('Name'))
+        ->context('primary')
         ->width('30%')
         ->sortable(['surname', 'preferredName'])
         ->format(Format::using('name', ['title', 'preferredName', 'surname', 'Student', true]));
 
     $table->addColumn('status', __('Status'))
         ->width('10%')
-        ->responsive('md')
         ->translatable();
 
     $table->addColumn('primaryRole', __('Primary Role'))
+        ->context('secondary')
         ->width('16%')
-        ->responsive('md')
         ->translatable();
 
     $table->addColumn('family', __('Family'))
         ->notSortable()
-        ->responsive('md')
         ->format(function($person) use ($guid) {
             $output = '';
             foreach ($person['families'] as $family) {
@@ -135,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
             return $output;
         });
 
-    $table->addColumn('username', __('Username'));
+    $table->addColumn('username', __('Username'))->context('primary');
 
     // ACTIONS
     $table->addActionColumn()
