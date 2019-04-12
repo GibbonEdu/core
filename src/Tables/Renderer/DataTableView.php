@@ -47,6 +47,8 @@ class DataTableView extends View implements RendererInterface
         $this->addData('table', $table);
 
         if ($dataSet->count() > 0) {
+            $this->preProcessTable($table);
+
             $this->addData('headers', $this->getTableHeaders($table));
             $this->addData('columns', $table->getColumns());
             $this->addData('rows', $this->getTableRows($table, $dataSet));
@@ -55,6 +57,37 @@ class DataTableView extends View implements RendererInterface
         return $this->render('components/dataTable.twig.html');
     }
 
+    /**
+     * If a table doesn't have pre-defined context, apply some initial contexts.
+     * In most cases, the first few columns in a table represent the primary data.
+     *
+     * @param DataTable $table
+     */
+    protected function preProcessTable(DataTable $table)
+    {
+        $contextColumns = array_filter($table->getColumns(), function ($column) {
+            return $column->hasContext('primary');
+        });
+
+        if (count($contextColumns) == 0) {
+            if ($firstColumn = $table->getColumnByIndex(0)) {
+                $firstColumn->context('primary');
+            }
+            if ($secondColumn = $table->getColumnByIndex(1)) {
+                $secondColumn->context('primary');
+            }
+            if ($thirdColumn = $table->getColumnByIndex(2)) {
+                $thirdColumn->context('secondary');
+            }
+        }
+    }
+
+    /**
+     * Returns an array of header objects, accounting for nested columns.
+     *
+     * @param DataTable $table
+     * @return array
+     */
     protected function getTableHeaders(DataTable $table)
     {
         $headers = [];
@@ -79,6 +112,13 @@ class DataTableView extends View implements RendererInterface
         return $headers;
     }
 
+    /**
+     * Returns an array of row objects for the data in this <table class=""></table>
+     *
+     * @param DataTable $table
+     * @param DataSet $dataSet
+     * @return array
+     */
     protected function getTableRows(DataTable $table, DataSet $dataSet)
     {
         $rows = [];
@@ -117,8 +157,9 @@ class DataTableView extends View implements RendererInterface
 
         $th->setTitle($column->getTitle())
            ->setClass('column')
-           ->addClass($column->getClass())
            ->addData('description', $column->getDescription());
+
+        $this->applyContexts($column, $th);
 
         return $th;
     }
@@ -150,13 +191,29 @@ class DataTableView extends View implements RendererInterface
     protected function createTableCell(array $data, DataTable $table, Column $column)
     {
         $cell = new Element();
+        $cell->addClass('p-2 sm:p-3');
 
         foreach ($column->getCellModifiers() as $callable) {
             $cell = $callable($data, $cell, $table->getColumnCount());
         }
 
-        $cell->addClass($column->getClass());
+        $this->applyContexts($column, $cell);
 
         return $cell;
+    }
+
+    /**
+     * Adds classes to a table element based on it's column's context.
+     * 
+     * @param Column $column
+     * @param Element $element
+     */
+    protected function applyContexts(Column $column, Element &$element)
+    {
+        if ($column->hasContext('secondary')) {
+            $element->addClass('hidden sm:table-cell');
+        } elseif (!$column->hasContext('primary') && !$column->hasContext('action')) {
+            $element->addClass('hidden md:table-cell');
+        }
     }
 }

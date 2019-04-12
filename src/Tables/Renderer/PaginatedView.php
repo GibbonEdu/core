@@ -58,6 +58,8 @@ class PaginatedView extends DataTableView implements RendererInterface
         $this->addData('table', $table);
 
         if ($dataSet->count() > 0) {
+            $this->preProcessTable($table);
+            
             $filters = $table->getMetaData('filterOptions', []);
 
             $this->addData([
