@@ -50,6 +50,7 @@ class ViewServiceProvider extends AbstractServiceProvider
         FormRendererInterface::class,
         FormFactoryInterface::class,
         DataTable::class,
+        PaginatedView::class,
     ];
 
     /**
