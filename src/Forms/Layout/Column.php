@@ -40,7 +40,7 @@ class Column extends Row implements OutputableInterface, ValidatableInterface
      */
     public function __construct(FormFactoryInterface $factory, $id = '')
     {
-        $this->setClass('column w-full');
+        $this->setClass('column flex-grow');
         parent::__construct($factory, $id);
     }
 
