@@ -192,13 +192,12 @@ class DataTableView extends View implements RendererInterface
     {
         $cell = new Element();
         $cell->addClass('p-2 sm:p-3');
+        $this->applyContexts($column, $cell);
 
         foreach ($column->getCellModifiers() as $callable) {
             $cell = $callable($data, $cell, $table->getColumnCount());
         }
-
-        $this->applyContexts($column, $cell);
-
+        
         return $cell;
     }
 

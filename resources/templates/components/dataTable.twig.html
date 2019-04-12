@@ -41,7 +41,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
     {% else %}
         <div class="overflow-x-auto overflow-y-visible">
-        <table class="w-full" cellspacing="0">
+        <table class="{{ class }} w-full" cellspacing=0>
             <thead>
             {% for headerRow in headers %}
                 <tr class="head text-xs">
