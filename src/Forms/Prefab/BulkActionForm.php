@@ -62,7 +62,7 @@ class BulkActionForm extends Form
         $col->addSelect('action')
             ->fromArray($actions)
             ->required()
-            ->setClass('relative w-48 mr-1 flex items-center')
+            ->setClass('relative w-32 sm:w-48 mr-1 flex items-center')
             ->placeholder(__('Select action'));
 
         return $col;

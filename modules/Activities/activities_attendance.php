@@ -195,7 +195,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
             echo '</div>';
         }
 
-        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_attendanceProcess.php?gibbonActivityID='.$gibbonActivityID);
+        $form = Form::create('attendance', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_attendanceProcess.php?gibbonActivityID='.$gibbonActivityID);
         $form->setClass('blank w-full');
 
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);

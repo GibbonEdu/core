@@ -47,12 +47,14 @@ jQuery(function($){
         var checkedCount = checkboxes.filter(':checked').length;
 
         if (checkedCount > 0) {
+            $('.bulkActionPanel').removeClass('hidden');
+
             var header = $(this).parents('.bulkActionForm').find('.dataTable header');
             var panelHeight = $('.bulkActionPanel').innerHeight();
 
             $('.bulkActionCount span').html(checkedCount);
-            $('.bulkActionPanel').css('top', header.outerHeight(false) - panelHeight + 2);
-            $('.bulkActionPanel').removeClass('hidden');
+            $('.bulkActionPanel').css('top', header.outerHeight(false) - panelHeight + 6);
+            
 
             // Trigger a showhide event on any nested inputs to update their visibility & validation state
             $('.bulkActionPanel :input').trigger('showhide');
