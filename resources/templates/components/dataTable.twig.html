@@ -40,7 +40,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% endblock blankslate %}
 
     {% else %}
-        <div class="overflow-x-scroll overflow-y-visible">
+        <div class="overflow-x-auto overflow-y-visible">
         <table class="w-full" cellspacing="0">
             <thead>
             {% for headerRow in headers %}
@@ -75,7 +75,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                             {{ cell.getPrepended|raw }}
 
                             {% if column.getID == "actions" %} 
-                                <nav class="relative group" onClick="event.preventDefault();" onTouchEnd="event.preventDefault();">
+                                <nav class="relative group">
                                     {% do column.getOutput(rowData.data) %}
                                     {% set actions = column.getActions %}
 
