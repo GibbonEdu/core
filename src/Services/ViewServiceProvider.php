@@ -25,8 +25,8 @@ use Gibbon\Forms\FormFactoryInterface;
 use Gibbon\Forms\View\FormView;
 use Gibbon\Forms\View\FormRendererInterface;
 use Gibbon\Tables\DataTable;
-use Gibbon\Tables\Renderer\DataTableView;
-use Gibbon\Tables\Renderer\PaginatedView;
+use Gibbon\Tables\View\DataTableView;
+use Gibbon\Tables\View\PaginatedView;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 
 /**
@@ -50,6 +50,7 @@ class ViewServiceProvider extends AbstractServiceProvider
         FormRendererInterface::class,
         FormFactoryInterface::class,
         DataTable::class,
+        DataTableView::class,
         PaginatedView::class,
     ];
 
@@ -82,6 +83,10 @@ class ViewServiceProvider extends AbstractServiceProvider
             $renderer = new DataTableView($container->get('twig'));
 
             return new DataTable($renderer);
+        });
+
+        $container->add(DataTableView::class, function () use ($container) {
+            return new DataTableView($container->get('twig'));
         });
 
         $container->add(PaginatedView::class, function () use ($container) {

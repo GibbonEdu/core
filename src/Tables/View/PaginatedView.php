@@ -17,12 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Tables\Renderer;
+namespace Gibbon\Tables\View;
 
 use Gibbon\Domain\DataSet;
 use Gibbon\Tables\DataTable;
 use Gibbon\Tables\Renderer\RendererInterface;
-use Gibbon\Tables\Renderer\DataTableView;
+use Gibbon\Tables\View\DataTableView;
 use Gibbon\Forms\FormFactory;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Tables\Columns\Column;

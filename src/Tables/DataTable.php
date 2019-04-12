@@ -19,18 +19,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Tables;
 
-use Gibbon\Tables\Action;
 use Gibbon\Domain\DataSet;
 use Gibbon\Domain\QueryCriteria;
-use Gibbon\Tables\Columns\Column;
 use Gibbon\Forms\OutputableInterface;
+use Gibbon\Tables\Action;
+use Gibbon\Tables\Columns\Column;
 use Gibbon\Tables\Columns\ActionColumn;
 use Gibbon\Tables\Columns\CheckboxColumn;
-use Gibbon\Tables\Renderer\PaginatedView;
-use Gibbon\Tables\Renderer\SimpleRenderer;
 use Gibbon\Tables\Columns\ExpandableColumn;
-use Gibbon\Tables\Renderer\PaginatedRenderer;
 use Gibbon\Tables\Renderer\RendererInterface;
+use Gibbon\Tables\View\DataTableView;
+use Gibbon\Tables\View\PaginatedView;
 
 /**
  * DataTable
@@ -72,6 +71,10 @@ class DataTable implements OutputableInterface
      */
     public static function create($id, RendererInterface $renderer = null)
     {
+        global $container;
+
+        $renderer = !empty($renderer) ? $renderer : $container->get(DataTableView::class);
+        
         return (new static($renderer))->setID($id);
     }
 
