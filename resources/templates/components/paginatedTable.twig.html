@@ -94,7 +94,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
         {%- for page in dataSet.getPaginatedRange -%}
             {%- if page == '...' -%}
-                <input type="button" disabled value="...">
+                <input type="button" value="..." disabled>
             {%- else -%}
                 <input type="button" class="{{ page == dataSet.getPage ? 'active' }} paginate" data-page="{{ page }}" value="{{ page }}">
             {%- endif -%}
@@ -108,7 +108,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 {% block bulkActions %}
     {% if bulkActions %}
-    <div class="bulkActionPanel hidden absolute top-0 right-0 w-full flex items-center justify-between px-1 pt-1 bg-purple-600 rounded-t">
+    <div class="bulkActionPanel hidden absolute top-0 right-0 w-full flex items-center justify-between p-1 pt-2 bg-purple-600 rounded-t">
         <div class="bulkActionCount flex-grow text-white text-sm text-right pr-3">
             <span>0</span> {{ __('Selected') }}
         </div>
