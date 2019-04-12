@@ -70,14 +70,12 @@ class DataTableView extends View implements RendererInterface
         });
 
         if (count($contextColumns) == 0) {
-            if ($firstColumn = $table->getColumnByIndex(0)) {
-                $firstColumn->context('primary');
-            }
-            if ($secondColumn = $table->getColumnByIndex(1)) {
-                $secondColumn->context('primary');
-            }
-            if ($thirdColumn = $table->getColumnByIndex(2)) {
-                $thirdColumn->context('secondary');
+            for ($i = 0; $i <= 2; $i++) {
+                if ($column = $table->getColumnByIndex($i)) {
+                    if ($column->hasContext('action')) continue;
+
+                    $column->context($i < 2 ? 'primary' : 'secondary');
+                }
             }
         }
     }
