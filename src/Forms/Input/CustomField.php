@@ -94,6 +94,8 @@ class CustomField extends Input
             $this->customField->setValue($fields['default']);
         }
 
+        $this->customField->setClass('w-full');
+
         parent::__construct($name);
     }
 
