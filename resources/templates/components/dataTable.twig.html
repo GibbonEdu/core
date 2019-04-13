@@ -1,0 +1,117 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% if table.getTitle %}
+    <h2>{{ table.getTitle }}</h2>
+{% endif %}
+
+{% if table.getDescription %}
+    <p>{{ table.getDescription }}</p>
+{% endif %}
+
+{% block table %}
+
+    <header class="relative">
+    {% block header %}
+
+        {% if table.getHeader %}
+        <div class="linkTop">
+            {% for action in table.getHeader %}
+                {{ action.getOutput|raw }}
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+    {% endblock header %}
+    </header>
+
+
+    {% if not rows %}
+
+        {% block blankslate %}
+            <div class="error">
+                {{ __('There are no records to display.') }}
+            </div>
+        {% endblock blankslate %}
+
+    {% else %}
+        <div class="overflow-x-auto overflow-y-visible">
+        <table class="{{ class }} w-full" cellspacing=0>
+            <thead>
+            {% for headerRow in headers %}
+                <tr class="head text-xs">
+                {% for columnIndex, column in columns %}
+                    {% set th = headerRow[columnIndex] %}
+                    {% if th %}
+                    <th {{ th.getAttributeString|raw }} style="width: {{ column.getWidth }}">
+                        {{ th.getOutput|raw }}
+
+                        {% if th.getData('description') %}
+                            <br/><small><i>{{ th.getData('description') }}</i></small>
+                        {% endif %}
+                    </th>
+                    {% endif %}
+                {% endfor %}
+                </tr>
+            {% endfor %}
+            </thead>
+
+            <tbody>
+            {% for rowIndex, rowData in rows %}
+                {% set row = rowData.row %}
+
+                <tr {{ row.getAttributeString|raw }}>
+                    {{ row.getPrepended|raw }}
+
+                    {% for columnIndex, column in columns %}
+                        {% set cell = rowData.cells[columnIndex] %}
+                        
+                        <td {{ cell.getAttributeString|raw }}>
+                            {{ cell.getPrepended|raw }}
+
+                            {% if column.getID == "actions" %} 
+                                <nav class="relative group">
+                                    {% do column.getOutput(rowData.data) %}
+                                    {% set actions = column.getActions %}
+
+                                    <div class="{{ column.getClass() }} {{ actions|length == 1 ? 'flex -m-2 sm:m-0' : 'hidden group-hover:flex sm:flex absolute sm:static top-0 right-0 -mr-1 rounded shadow sm:shadow-none bg-white sm:bg-transparent px-1 -mt-3 sm:m-0 sm:p-0 z-10' }}">
+                                        {% for actionName, action in actions %}
+                                            {% do action.addClass('p-3 sm:p-0') %}
+                                            {{ action.getOutput(rowData.data, column.getParams)|raw }}
+                                        {% endfor %}
+                                    </div>
+
+                                    {% if actions|length > 1 %}
+                                    <button class="block sm:hidden rounded mx-auto my-1 px-1 py-2 bg-gray-300 text-2xl text-gray-600 font-sans font-bold leading-none" onClick="event.preventDefault();" onTouchEnd="event.preventDefault();">
+                                        <span class="block -mt-3">...</span>
+                                    </button>
+                                    {% endif %}
+                                </nav>
+
+                            {% else %}
+                                {{ column.getOutput(rowData.data)|raw }}
+                            {% endif %}
+
+                            {{ cell.getAppended|raw }}
+                        </td>
+                    {% endfor %}
+
+                    {{ row.getAppended|raw }}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    {% endif %}
+
+    <footer>
+    {% block footer %}
+    {% endblock footer %}
+    </footer>
+
+{% endblock table %}

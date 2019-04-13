@@ -23,25 +23,27 @@ $(document).ready(function(){
 
 
     // Initialize tooltip
-    $(document).tooltip({
-        show: 800,
-        hide: false,
-        content: function () {
-            return $(this).prop('title');
-        },
-        position: {
-            my: "center bottom-20",
-            at: "center top",
-            using: function (position, feedback) {
-                $(this).css(position);
-                $("<div>").
-                    addClass("arrow").
-                    addClass(feedback.vertical).
-                    addClass(feedback.horizontal).
-                    appendTo(this);
+    if ($(window).width() > 768) {
+        $(document).tooltip({
+            show: 800,
+            hide: false,
+            content: function () {
+                return $(this).prop('title');
+            },
+            position: {
+                my: "center bottom-20",
+                at: "center top",
+                using: function (position, feedback) {
+                    $(this).css(position);
+                    $("<div>").
+                        addClass("arrow").
+                        addClass(feedback.vertical).
+                        addClass(feedback.horizontal).
+                        appendTo(this);
+                }
             }
-        }
-    });
+        });
+    }
 
     // Initialize latex
     $(".latex").latex();

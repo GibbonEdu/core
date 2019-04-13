@@ -239,7 +239,6 @@ table th {
 	padding:15px 5px 15px 5px;
 	border-top:1px solid #fafafa;
 	border-bottom:1px solid #e0e0e0;
-	font-size: 110% ;
 	background: #ebebeb;
 	background: -webkit-gradient(linear, left top, left bottom, from(#ebebeb), to(#dfdfdf));
 	background: -moz-linear-gradient(top,  #ebebeb,  #dfdfdf);
@@ -263,11 +262,9 @@ table tr:first-child th:last-child {
 }
 table tr {
 	text-align: center;
-	padding-left:20px;
 }
 table td:first-child {
 	text-align: left;
-	padding-left:20px;
 	border-left: 0;
 }
 table td:last-child {
@@ -1022,7 +1019,7 @@ select[multiple] {
 
 
 table tr.heading td {
-	padding:15px 5px 15px 5px !important;
+	padding:15px 5px 15px 5px ;
 	border-top:1px solid #fafafa;
 	border-bottom:1px solid #e0e0e0;
 	font-size: 110% !important;
@@ -1038,14 +1035,14 @@ table tr.heading:first-child td:first-child {
 	-webkit-border-top-left-radius:3px;
 	border-top-left-radius:3px;
 	text-align: left;
-	padding-left: 15px !important;
+	padding-left: 15px ;
 }
 
 table tr.heading:first-child td:last-child {
 	-moz-border-radius-topright:3px;
 	-webkit-border-top-right-radius:3px;
 	border-top-right-radius:3px;
-	padding-left: 5px !important;
+	padding-left: 5px ;
 }
 
 /* Usability tweak to make large data tables like User Permissions easier to read */
@@ -1273,10 +1270,6 @@ tr.selected, tr.selected td, div.selected, td.selected {
 }
 
 /* Gibbon Data Table CSS - Will be moved to core.css */
-.dataTable {
-    overflow-x: auto;
-}
-
 .dataTable .sortable {
 	cursor: pointer;
     position: relative;

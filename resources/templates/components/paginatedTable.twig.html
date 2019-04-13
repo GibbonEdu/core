@@ -1,0 +1,124 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% extends "components/dataTable.twig.html" %}
+
+{% block table %}
+    <div id="{{ table.getID }}">
+        <div class="dataTable" data-results="{{ dataSet.getResultCount }}">
+            {{ parent() }}
+        </div>
+    </div>
+
+    {{ block('bulkActions') }}
+
+    <script>
+    $(function(){
+        $('#{{ table.getID }}').gibbonDataTable( '{{ path|raw }}', {{ jsonData|raw }}, '{{ identifier }}');
+    });
+    </script>
+{% endblock table %}
+
+
+{% block header %}
+    <div class="flex items-end justify-between pb-1">
+        <div class="">
+            {{ block('pageCount') }}
+            {{ block('filters') }}
+        </div>
+
+        {{ parent() }}
+    </div>
+
+    <div class="flex flex-wrap sm:flex-no-wrap items-end justify-between mb-1">
+        <div class="">
+            {{ filterOptions|raw }}
+            {{ pageSize|raw }}
+            <small class="ml-px">{{ __('Per Page') }}</small>
+        </div>
+
+        {{ block('pagination') }}
+    </div>
+{% endblock header %}
+
+
+{% block footer %}
+    <div class="flex flex-col sm:flex-row sm:items-end justify-end my-1">
+        {{ block('pagination') }}
+    </div>
+{% endblock footer %}
+
+
+{% block filters %}
+    <small>
+    {% if filterCriteria %}
+        {{ __('Filtered by') }}
+
+        {% for name, label in filterCriteria %}
+            <input type="button" class="filter" value="{{ label }}" data-filter="{{ name }}"> 
+        {% endfor %}
+
+        <input type="button" class="filter clear buttonLink" value="{{ __('Clear') }}">
+
+    {% endif %}
+    </small>
+{% endblock filters %}
+
+
+{% block pageCount %}
+    <small class="mr-1">
+        {{ searchText ? __('Search') ~ " " }}
+
+        {{ dataSet.isSubset ? __('Results') : __('Records') }}
+
+        {% if dataSet.count > 0 %}
+            {{ dataSet.getPageFrom }}-{{ dataSet.getPageTo }} {{ __('of') }}
+        {% else %}
+            :
+        {% endif %} 
+        
+        {{ dataSet.getResultCount }}
+    </small>
+{% endblock pageCount %}
+
+
+{% block pagination %}
+    {% if dataSet.getResultCount > 25 %}
+    <div class="pagination">
+        <input type="button" class="paginate" data-page="{{ dataSet.getPrevPageNumber }}" {{ dataSet.isFirstPage ? 'disabled'}} value="{{ __('Prev') }}">
+
+        {%- for page in dataSet.getPaginatedRange -%}
+            {%- if page == '...' -%}
+                <input type="button" value="..." disabled>
+            {%- else -%}
+                <input type="button" class="{{ page == dataSet.getPage ? 'active' }} paginate" data-page="{{ page }}" value="{{ page }}">
+            {%- endif -%}
+        {%- endfor -%}
+
+        <input type="button" class="paginate" data-page="{{ dataSet.getNextPageNumber }}" {{ dataSet.isLastPage ? 'disabled'}} value="{{ __('Next') }}">
+    </div>
+    {% endif %}
+{% endblock pagination %}
+
+
+{% block bulkActions %}
+    {% if bulkActions %}
+    <div class="bulkActionPanel hidden absolute top-0 right-0 w-full flex items-center justify-between p-1 pt-2 bg-purple-600 rounded-t">
+        <div class="bulkActionCount flex-grow text-white text-sm text-right pr-3">
+            <span>0</span> {{ __('Selected') }}
+        </div>
+        
+        {{ bulkActions.getOutput|raw }}
+
+        <script>
+            {{ bulkActions.getValidationOutput|raw }}
+        </script>
+    </div>
+    {% endif %}
+{% endblock bulkActions %}
+
