@@ -205,20 +205,19 @@ table {
 	color:#666;
 	font-size:12px;
 	text-shadow: none;
-	background:#eaebec;
+	background-color:#fafafa;
 	margin:0px;
 	border:#ccc 1px solid;
 	-moz-border-radius:3px;
 	-webkit-border-radius:3px;
-	border-radius:3px;
+    border-radius:3px;
+    border-spacing: 0px;
 }
 table th {
 	padding:15px 5px 15px 5px;
 	border-top:1px solid #fafafa;
 	border-bottom:1px solid #e0e0e0;
-	background: #ebebeb;
-	background: -webkit-gradient(linear, left top, left bottom, from(#ebebeb), to(#dfdfdf));
-	background: -moz-linear-gradient(top,  #ebebeb,  #dfdfdf);
+	background-color: #ebebeb;
 	text-align: left;
 }
 table .heading td:not(:first-child) {
@@ -244,24 +243,22 @@ table td:first-child {
 	text-align: left;
 	border-left: 0;
 }
-table td:last-child {
 
-}
 table td {
 	text-align: left;
 	padding:12px;
 	border-top: 1px solid #ffffff;
 	border-bottom:1px solid #dfdfdf;
 	border-left: 1px solid #dfdfdf;
-	background: #fafafa;
-	background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));
-	background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);
 }
-table tr.even > td {
-	background: #f0f0f0;
-	background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#f0f0f0));
-	background: -moz-linear-gradient(top,  #f2f2f2,  #f0f0f0);
+
+.odd {
+    background-color: #fafafa;
 }
+.even {
+	background-color: #f0f0f0;
+}
+
 table tr:last-child > td {
 	border-bottom:0;
 
@@ -285,25 +282,22 @@ td.right {
 div.right {
 	text-align: right!important;
 }
-div.odd {
-	background-color: #E2DDCA ;
-}
 
 
 /* ALT TABLE STYLES */
 table.noIntBorder {
-    background: #EDF7FF ;
+    background-color: #EDF7FF ;
 }
 table.noIntBorder td {
 	border: none!important ;
 	padding: 5px!important ;
-	background: #EDF7FF ;
+	background-color: #EDF7FF ;
 }
 table.noIntBorder td:last-child {
 	text-align: left;
 }
 table.smallIntBorder {
-    background: #fafafa;
+    background-color: #fafafa;
     margin: 5px 0px;
 }
 table.smallIntBorder td {
@@ -314,7 +308,7 @@ table.smallIntBorder td:last-child {
 	text-align: left;
 }
 tr.break td {
-	background: #eaebec !important;
+	background-color: #eaebec;
 }
 tr.break h3, tr.break h4 {
 	margin-top: 10px!important;
@@ -877,17 +871,17 @@ h1.bigTop, h2.bigTop, h3.bigTop, h4.bigTop, h5.bigTop, h6.bigTop {
 	margin-top: 50px!important;
 }
 
-table.colorOddEven tr:nth-of-type(even) > td {
-	background: -webkit-gradient(linear, center top, center bottom, from(#F2F2F2), to(#F0F0F0));
-	background: -webkit-linear-gradient(center top , #F2F2F2, #F0F0F0);
-	background: -o-linear-gradient(center top , #F2F2F2, #F0F0F0);
-	background: -moz-linear-gradient(center top , #F2F2F2, #F0F0F0);
-	background: linear-gradient(center top , #F2F2F2, #F0F0F0);
+table.colorOddEven tr {
+    background-color: #fafafa;
+}
+
+table.colorOddEven tr:nth-of-type(odd) {
+	background-color: #f0f0f0;
 }
 
 /* Forms - ignore the colorOddEven stripe on footer */
-form table.colorOddEven tr:last-of-type td {
-	background: #fbfbfb;
+form table.colorOddEven tr:last-of-type {
+	background-color: #fbfbfb;
 }
 
 /* v13 NEW CLASSES */
