@@ -475,6 +475,25 @@ input[type=checkbox][disabled]{
   opacity: 1;
 }
 
+button, input[type="submit"], input[type="button"] {
+	cursor: pointer;
+}
+
+button.active {
+    background-color: #dedede;
+}
+input[type="submit"].active, input[type="button"].active {
+	background-color: #bbbbbb;
+}
+
+button[disabled], input[disabled], textarea[disabled] {
+	cursor: initial;
+	filter: alpha(opacity = 65);
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	opacity: .45;
+}
+
 /* PAGINATION */
 div.paginationTop {
 	text-align: right;
@@ -1150,13 +1169,6 @@ table.smallIntBorder td.noPadding {
     display: none;
 }
 
-tr.selected, tr.selected td, div.selected, td.selected {
-    background: none!important ;
-    background-color: #e2ccf6!important ;
-    border-bottom-color: #d2b8ec;
-    border-top-color: #f7edff;
-}
-
 /* Gibbon Data Table CSS - Will be moved to core.css */
 .dataTable .sortable {
 	cursor: pointer;
@@ -1267,24 +1279,7 @@ tr.selected, tr.selected td, div.selected, td.selected {
     line-height: 32px;
 }
 
-button, input[type="submit"], input[type="button"] {
-	cursor: pointer;
-}
 
-button.active {
-    background-color: #dedede;
-}
-input[type="submit"].active, input[type="button"].active {
-	background-color: #bbbbbb;
-}
-
-button[disabled], input[disabled], textarea[disabled] {
-	cursor: initial;
-	filter: alpha(opacity = 65);
-	-webkit-box-shadow: none;
-	box-shadow: none;
-	opacity: .45;
-}
 
 @-moz-keyframes spin {
     from { -moz-transform: rotate(0deg); }

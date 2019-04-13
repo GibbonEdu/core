@@ -80,11 +80,15 @@ body {
 }
 
 .exception {
-    @apply bg-gray-300 border-gray-800 text-gray-800;
+    @apply bg-gray-100 border-gray-800 text-gray-800;
 }
 
 .dull {
     @apply bg-gray-400 border-gray-600 text-gray-600;
+}
+
+.selected {
+    @apply bg-purple-200 border-purple-700 text-purple-700;
 }
 
 div.message, div.success, div.warning, div.error, div.exception, div.dull {
