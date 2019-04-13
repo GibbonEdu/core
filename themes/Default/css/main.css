@@ -23,7 +23,7 @@ Used under "GNU Creative Commons License", http://creativecommons.org/licenses/G
 
 /* LAYOUT */
 
-#content div.trail {
+div.trail {
     text-align: left;
     font-size: 70%;
     margin: 10px 0px 10px -18px;
@@ -34,25 +34,20 @@ Used under "GNU Creative Commons License", http://creativecommons.org/licenses/G
     color: #3b73af;
 }
 
+div.trailEnd,
+div.trailHead,
+div.trailHead a {
+    display: inline-block;
+    white-space: nowrap;
+    font-weight: normal;
+    color: #3b73af;
+}
+
 div.trailEnd {
     padding-left: 3px;
-    float: left;
-    color: #3b73af;
 }
-div.trailHead {
-    float: left;
-    white-space: nowrap;
-}
-div.trailHead a {
-    text-decoration: underline;
-    font-weight: normal;
-    color: #3b73af;
-}
-div.trailHead a:hover {
-    text-decoration: underline;
-    font-weight: normal;
-    color: #c00;
-}
+
+
 
 /* LINKS */
 
@@ -331,24 +326,6 @@ table.blank > tbody > tr > td {
     background: none !important ;
 }
 
-table.mceToolbar td,
-table.mceToolbar tr {
-    padding: 0px !important ;
-    background: none;
-}
-tr.mceFirst td {
-    background: none;
-    background-color: #edf7ff !important ;
-}
-table.mceToolbar {
-    box-shadow: none !important;
-    -moz-box-shadow: none !important;
-    -webkit-box-shadow: none !important;
-}
-td.mceIframeContainer {
-    background-color: white !important ;
-}
-
 /* FORMS */
 input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
 button,
@@ -599,214 +576,6 @@ div#ui-datepicker-div {
     z-index: 10;
 }
 
-.wp_themeSkin .mceStatusbar {
-    border-color: #dfdfdf;
-}
-.wp_themeSkin .mceStatusbar * {
-    color: #555;
-}
-.wp_themeSkin iframe {
-    background: transparent;
-}
-.wp_themeSkin .mceStatusbar {
-    color: #000;
-    background-color: #f5f5f5;
-}
-.wp_themeSkin .mceButton,
-.wp_themeSkin .mceAction,
-.wp_themeSkin .mceOpen {
-    border-color: #ccc;
-    background-color: #eee;
-    background-image: -ms-linear-gradient(bottom, #ddd, #fff);
-    background-image: -moz-linear-gradient(bottom, #ddd, #fff);
-    background-image: -o-linear-gradient(bottom, #ddd, #fff);
-    background-image: -webkit-gradient(
-        linear,
-        left bottom,
-        left top,
-        from(#ddd),
-        to(#fff)
-    );
-    background-image: -webkit-linear-gradient(bottom, #ddd, #fff);
-    background-image: linear-gradient(bottom, #ddd, #fff);
-}
-.wp_themeSkin a.mceButtonEnabled:hover {
-    border-color: #a0a0a0;
-    background: #ddd;
-    background-image: -ms-linear-gradient(bottom, #ccc, #fff);
-    background-image: -moz-linear-gradient(bottom, #ccc, #fff);
-    background-image: -o-linear-gradient(bottom, #ccc, #fff);
-    background-image: -webkit-gradient(
-        linear,
-        left bottom,
-        left top,
-        from(#ccc),
-        to(#fff)
-    );
-    background-image: -webkit-linear-gradient(bottom, #ccc, #fff);
-    background-image: linear-gradient(bottom, #ccc, #fff);
-}
-.wp_themeSkin a.mceButton:active,
-.wp_themeSkin a.mceButtonEnabled:active,
-.wp_themeSkin a.mceButtonSelected:active,
-.wp_themeSkin a.mceButtonActive,
-.wp_themeSkin a.mceButtonActive:active,
-.wp_themeSkin a.mceButtonActive:hover {
-    background-color: #ddd;
-    background-image: -ms-linear-gradient(bottom, #eee, #bbb);
-    background-image: -moz-linear-gradient(bottom, #eee, #bbb);
-    background-image: -o-linear-gradient(bottom, #eee, #bbb);
-    background-image: -webkit-gradient(
-        linear,
-        left bottom,
-        left top,
-        from(#eee),
-        to(#bbb)
-    );
-    background-image: -webkit-linear-gradient(bottom, #eee, #bbb);
-    background-image: linear-gradient(bottom, #eee, #bbb);
-    border-color: #909090;
-}
-.wp_themeSkin .mceButtonDisabled {
-    border-color: #ccc !important;
-}
-.wp_themeSkin .mceListBox .mceText,
-.wp_themeSkin .mceListBox .mceOpen {
-    border-color: #ccc;
-    background-color: #eee;
-    background-image: -ms-linear-gradient(bottom, #ddd, #fff);
-    background-image: -moz-linear-gradient(bottom, #ddd, #fff);
-    background-image: -o-linear-gradient(bottom, #ddd, #fff);
-    background-image: -webkit-gradient(
-        linear,
-        left bottom,
-        left top,
-        from(#ddd),
-        to(#fff)
-    );
-    background-image: -webkit-linear-gradient(bottom, #ddd, #fff);
-    background-image: linear-gradient(bottom, #ddd, #fff);
-}
-.wp_themeSkin .mceListBox .mceOpen {
-    border-left: 0 !important;
-}
-.wp_themeSkin table.mceListBoxEnabled:hover .mceOpen,
-.wp_themeSkin .mceListBoxHover .mceOpen,
-.wp_themeSkin .mceListBoxHover:active .mceOpen,
-.wp_themeSkin .mceListBoxSelected .mceOpen,
-.wp_themeSkin .mceListBoxSelected .mceText,
-.wp_themeSkin table.mceListBoxEnabled:active .mceText {
-    background: #ccc;
-    border-color: #999;
-}
-.wp_themeSkin table.mceListBoxEnabled:hover .mceText,
-.wp_themeSkin .mceListBoxHover .mceText,
-.wp_themeSkin table.mceListBoxEnabled:hover .mceOpen,
-.wp_themeSkin .mceListBoxHover .mceOpen {
-    border-color: #909090;
-    background-color: #eee;
-    background-image: -ms-linear-gradient(bottom, #ccc, #fff);
-    background-image: -moz-linear-gradient(bottom, #ccc, #fff);
-    background-image: -o-linear-gradient(bottom, #ccc, #fff);
-    background-image: -webkit-gradient(
-        linear,
-        left bottom,
-        left top,
-        from(#ccc),
-        to(#fff)
-    );
-    background-image: -webkit-linear-gradient(bottom, #ccc, #fff);
-    background-image: linear-gradient(bottom, #ccc, #fff);
-}
-.wp_themeSkin select.mceListBox {
-    border-color: #b2b2b2;
-    background-color: #fff;
-}
-.wp_themeSkin .mceSplitButton a.mceAction,
-.wp_themeSkin .mceSplitButton a.mceOpen {
-    border-color: #ccc;
-}
-.wp_themeSkin .mceSplitButton a.mceOpen:hover,
-.wp_themeSkin .mceSplitButtonSelected a.mceOpen,
-.wp_themeSkin table.mceSplitButtonEnabled:hover a.mceAction,
-.wp_themeSkin .mceSplitButton a.mceAction:hover {
-    border-color: #909090;
-}
-.wp_themeSkin table.mceSplitButton td {
-    background-color: #eee;
-    background-image: -ms-linear-gradient(bottom, #ddd, #fff);
-    background-image: -moz-linear-gradient(bottom, #ddd, #fff);
-    background-image: -o-linear-gradient(bottom, #ddd, #fff);
-    background-image: -webkit-gradient(
-        linear,
-        left bottom,
-        left top,
-        from(#ddd),
-        to(#fff)
-    );
-    background-image: -webkit-linear-gradient(bottom, #ddd, #fff);
-    background-image: linear-gradient(bottom, #ddd, #fff);
-}
-.wp_themeSkin table.mceSplitButton:hover td {
-    background-image: -ms-linear-gradient(bottom, #ccc, #fff);
-    background-image: -moz-linear-gradient(bottom, #ccc, #fff);
-    background-image: -o-linear-gradient(bottom, #ccc, #fff);
-    background-image: -webkit-gradient(
-        linear,
-        left bottom,
-        left top,
-        from(#ccc),
-        to(#fff)
-    );
-    background-image: -webkit-linear-gradient(bottom, #ccc, #fff);
-    background-image: linear-gradient(bottom, #ccc, #fff);
-}
-.wp_themeSkin .mceSplitButtonActive {
-    background-color: #b2b2b2;
-}
-.wp_themeSkin div.mceColorSplitMenu table {
-    background-color: #ebebeb;
-    border-color: #b2b2b2;
-}
-.wp_themeSkin .mceColorSplitMenu a {
-    border-color: #b2b2b2;
-}
-.wp_themeSkin .mceColorSplitMenu a.mceMoreColors {
-    border-color: #fff;
-}
-.wp_themeSkin .mceColorSplitMenu a.mceMoreColors:hover {
-    border-color: #0a246a;
-    background-color: #b6bdd2;
-}
-.wp_themeSkin a.mceMoreColors:hover {
-    border-color: #0a246a;
-}
-.wp_themeSkin .mceMenu {
-    border-color: #ddd;
-}
-.wp_themeSkin .mceMenu table {
-    background-color: #ebeaeb;
-}
-.wp_themeSkin .mceMenu .mceText {
-    color: #000;
-}
-.wp_themeSkin .mceMenu .mceMenuItemEnabled a:hover,
-.wp_themeSkin .mceMenu .mceMenuItemActive {
-    background-color: #f5f5f5;
-}
-.wp_themeSkin td.mceMenuItemSeparator {
-    background-color: #aaa;
-}
-.wp_themeSkin .mceMenuItemTitle a {
-    background-color: #ccc;
-    border-bottom-color: #aaa;
-}
-.wp_themeSkin .mceMenuItemTitle span.mceText {
-    color: #000;
-}
-.wp_themeSkin .mceMenuItemDisabled .mceText {
-    color: #888;
-}
 a.edButtonPreview,
 a.edButtonHTML {
     background-color: #f1f1f1;
