@@ -21,21 +21,6 @@ Theme fundamentals based on Mollio, copyright Daemon Pty Limited 2006, http://ww
 Used under "GNU Creative Commons License", http://creativecommons.org/licenses/GPL/2.0/
 */
 
-/* THE BASICS */
-* {
-	margin:0;
-	padding:0;
-}
-
-html {
-    height: 100%;
-}
-
-body {
-	padding: 0 0 20px;
-	color:#222222;
-	font-family: Helvetica, Arial, sans-serif!important;
-}
 
 /* LAYOUT */
 
@@ -81,17 +66,9 @@ div.trailHead a:hover {
 	color: #c00;
 }
 
-div.sidebarExtra {
-	padding: 15px 0 ;
-	margin-bottom: 10px ;
-}
 
 
 
-img.minorLinkIconLarge {
-	height: 65px ;
-	max-height: 65px ;
-}
 
 /* LINKS */
 
@@ -311,29 +288,6 @@ div.right {
 div.odd {
 	background-color: #E2DDCA ;
 }
-tr.current, tr.current td, div.current, td.current {
-	background-color: #B3EFC2!important ;
-	background: -webkit-gradient(linear, left top, left bottom, from(#B5F1C4), to(#B3EFC2))!important;
-	background: -moz-linear-gradient(top,  #B5F1C4,  #B3EFC2)!important;
-}
-tr.past, tr.past td, div.past, td.past {
-	background-color: #F6CECB!important ;
-	background: -webkit-gradient(linear, left top, left bottom, from(#F8D1CD), to(#F6CECB))!important;
-	background: -moz-linear-gradient(top,  #F8D1CD,  #F6CECB)!important;
-}
-tr.error, tr.error td, div.error, td.error {
-	background-color: #F6CECB!important ;
-	background: -webkit-gradient(linear, left top, left bottom, from(#F8D1CD), to(#F6CECB))!important;
-	background: -moz-linear-gradient(top,  #F8D1CD,  #F6CECB)!important;
-}
-tr.warning, tr.warning td, div.warning, td.warning {
-	background: none!important ;
-	background-color: #FFD2A9!important ;
-}
-tr.dull, tr.dull td, div.dull, td.dull {
-	background: none!important ;
-	background-color: #dddddd!important ;
-}
 
 
 /* ALT TABLE STYLES */
@@ -529,60 +483,7 @@ input[type=checkbox][disabled]{
   opacity: 1;
 }
 
-/* MESSAGES */
-div.message {
-	border-left: 6px solid #3B73AF;
-	color: #3B73AF;
-	background-color: #D0EAFD;
-	font-size: 12px;
-	padding: 10px;
-	margin: 10px 0px 15px 0px;
-	box-shadow: 2px 2px 2px rgba(50,50,50,0.15);
-}
-div.message a {
-	color: #3B73AF;
-}
-div.message a:hover {
-	color: #c00 ;
-}
-
-div.error {
-	border-left: 6px solid #CC0000;
-	color: #CC0000;
-	background-color: #F6CECB;
-	font-size: 12px;
-	padding: 10px;
-	margin: 10px 0px 15px 0px;
-	box-shadow: 2px 2px 2px rgba(50,50,50,0.15);
-}
-div.warning {
-	border-left: 6px solid #D65602;
-	color: #D65602;
-	background-color: #FFD2A9;
-	font-size: 12px;
-	padding: 10px;
-	margin: 10px 0px 15px 0px;
-	box-shadow: 2px 2px 2px rgba(50,50,50,0.15);
-}
-div.success {
-	border-left: 6px solid #390;
-	color: #390;
-	background-color: #D4F6DC;
-	font-size: 12px;
-	padding: 10px;
-	margin: 10px 0px 15px 0px;
-	box-shadow: 2px 2px 2px rgba(50,50,50,0.15);
-}
-div.exception {
-	border-left: 6px solid #444;
-	color: #444;
-	background-color: #f9f9f9;
-	font-size: 12px;
-	padding: 10px;
-	margin: 10px 0px 15px 0px;
-	box-shadow: 2px 2px 2px rgba(50,50,50,0.15);
-}
-
+/* PAGINATION */
 div.paginationTop {
 	text-align: right;
 	font-size: 12px;
@@ -597,11 +498,6 @@ div.linkTop {
 	text-align: right;
     font-size: 12px;
     margin: 15px 0px 5px 0px;
-}
-div.linkTopLeft {
-	text-align: left;
-	font-size: 12px;
-	margin: 15px 0px 5px 0px
 }
 
 /* IMAGES */
@@ -1425,47 +1321,4 @@ button[disabled], input[disabled], textarea[disabled] {
     height: 14px;
     width: 14px;
     opacity: 0.65;
-}
-
-
-
-
-/* PRINT STYLES */
-body.print div.trail {
-    display: none;
-}
-
-@media print {
-    table tr {
-        page-break-inside: avoid;
-    }
-}
-
-/* Thickbox: Hide breadcrumbs in fullscreen */
-#TB_window .trail {
-	display: none;
-}
-
-/* Thickbox: Prevent random scrollbars */
-#TB_ajaxContent {
-    max-height: 90vh;
-    min-height: 25vh;
-    margin: 0 auto;
-}
-
-/* Wrangle the Thickbox into displaying somewhat usably on mobile */
-@media only screen and (max-width: 1000px) {
-
-    #TB_window {
-        margin-left: -45vw !important;
-        width: 90vw !important;
-    }
-
-    #TB_ajaxContent {
-        width: 76vw !important;
-        max-width: 100vw;
-        overflow: initial;
-        padding: 0.5rem;
-        height: auto !important;
-    }
 }
