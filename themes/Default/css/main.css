@@ -215,7 +215,6 @@ table {
 }
 table th {
 	padding:15px 5px 15px 5px;
-	border-top:1px solid #fafafa;
 	border-bottom:1px solid #e0e0e0;
 	background-color: #ebebeb;
 	text-align: left;
@@ -247,7 +246,6 @@ table td:first-child {
 table td {
 	text-align: left;
 	padding:12px;
-	border-top: 1px solid #ffffff;
 	border-bottom:1px solid #dfdfdf;
 	border-left: 1px solid #dfdfdf;
 }
@@ -256,7 +254,7 @@ table td {
     background-color: #fafafa;
 }
 .even {
-	background-color: #f0f0f0;
+	background-color: #f4f4f4;
 }
 
 table tr:last-child > td {
