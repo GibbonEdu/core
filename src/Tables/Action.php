@@ -211,7 +211,7 @@ class Action extends WebLink
         global $guid; // :(
 
         if ($icon = $this->getIcon()) {
-            $this->setContent(sprintf('%1$s<img title="%2$s" src="'.$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/%3$s.png" style="margin-left: 5px">', 
+            $this->setContent(sprintf('%1$s<img title="%2$s" src="'.$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/%3$s.png" class="pl-1">', 
                 ($this->displayLabel? $this->getLabel() : ''),
                 $this->getLabel(), 
                 $this->getIcon()

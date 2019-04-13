@@ -33,6 +33,7 @@ class Column
 
     protected $label;
     protected $description;
+    protected $contexts = [];
     protected $width = 'auto';
     protected $depth = 0;
     protected $sortable = false;
@@ -91,6 +92,23 @@ class Column
     public function getDepth()
     {
         return $this->depth;
+    }
+
+    public function context($context)
+    {
+        $this->contexts[] = $context;
+
+        return $this;
+    }
+
+    public function getContexts()
+    {
+        return $this->contexts;
+    }
+
+    public function hasContext($context)
+    {
+        return in_array($context, $this->contexts);
     }
 
     /**

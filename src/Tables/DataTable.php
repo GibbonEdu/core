@@ -19,17 +19,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Tables;
 
-use Gibbon\Tables\Action;
 use Gibbon\Domain\DataSet;
 use Gibbon\Domain\QueryCriteria;
-use Gibbon\Tables\Columns\Column;
 use Gibbon\Forms\OutputableInterface;
+use Gibbon\Tables\Action;
+use Gibbon\Tables\Columns\Column;
 use Gibbon\Tables\Columns\ActionColumn;
 use Gibbon\Tables\Columns\CheckboxColumn;
 use Gibbon\Tables\Columns\ExpandableColumn;
 use Gibbon\Tables\Renderer\RendererInterface;
-use Gibbon\Tables\Renderer\SimpleRenderer;
-use Gibbon\Tables\Renderer\PaginatedRenderer;
+use Gibbon\Tables\View\DataTableView;
+use Gibbon\Tables\View\PaginatedView;
 
 /**
  * DataTable
@@ -57,9 +57,8 @@ class DataTable implements OutputableInterface
      * @param string $id
      * @param RendererInterface $renderer
      */
-    public function __construct($id, RendererInterface $renderer = null)
+    public function __construct(RendererInterface $renderer = null)
     {
-        $this->id = $id;
         $this->renderer = $renderer;
     }
 
@@ -72,7 +71,11 @@ class DataTable implements OutputableInterface
      */
     public static function create($id, RendererInterface $renderer = null)
     {
-        return new static($id, $renderer ? $renderer : new SimpleRenderer());
+        global $container;
+
+        $renderer = !empty($renderer) ? $renderer : $container->get(DataTableView::class);
+        
+        return (new static($renderer))->setID($id);
     }
 
     /**
@@ -84,7 +87,11 @@ class DataTable implements OutputableInterface
      */
     public static function createPaginated($id, QueryCriteria $criteria)
     {
-        return new static($id, new PaginatedRenderer($criteria, '/fullscreen.php?'.http_build_query($_GET)));
+        global $container;
+
+        $renderer = $container->get(PaginatedView::class)->setCriteria($criteria);
+
+        return (new static($renderer))->setID($id)->setRenderer($renderer);
     }
 
     /**
@@ -262,6 +269,12 @@ class DataTable implements OutputableInterface
         return $getNestedColumns($this->columns);
     }
 
+    public function getColumnByIndex($index)
+    {
+        $keys = array_keys($this->columns);
+        return $this->columns[$keys[$index] ?? ''] ?? null;
+    }
+    
     /**
      * Calculate how many layers deep the columns are nested.
      *

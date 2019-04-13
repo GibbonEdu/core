@@ -206,7 +206,7 @@ class DataSet implements \Countable, \IteratorAggregate
      * @param int $endSize
      * @return array
      */
-    public function getPaginatedRange($placeholder = '...', $midSize = 2, $endSize = 2)
+    public function getPaginatedRange($placeholder = '...', $midSize = 1, $endSize = 2)
     {
         $range = range(1, $this->getPageCount());
         $countFromEnd = count($range) - $this->page;
