@@ -133,7 +133,9 @@ class Table implements OutputableInterface, ValidatableInterface
                 $element->removeClass('standardWidth');
 
                 $output .= '<td '.$element->getAttributeString('class,title,rowspan,colspan,data').'>';
-                    $element->setClass('w-full '.$element->getClass());
+                    if (stripos($this->getClass(), 'formTable') !== false) {
+                        $element->setClass('w-full '.$element->getClass());
+                    }
                     $output .= $element->getOutput();
                 $output .= '</td>';
             }
