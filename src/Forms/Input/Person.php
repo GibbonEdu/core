@@ -59,6 +59,10 @@ class Person extends Select
                     var value =  $(this).val();
 
                     if ( Array.isArray(value) && value.length > 1) {
+                        value = value.filter(function (value, index, self) { 
+                            return self.indexOf(value) === index;
+                        });
+
                         $("#'.$this->getID().'Count").show();
                         $("#'.$this->getID().'Count").html(value.length);
                         $("#'.$this->getID().'Photo")
