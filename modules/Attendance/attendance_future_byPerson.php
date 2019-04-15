@@ -46,9 +46,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     $attendance = new AttendanceView($gibbon, $pdo);
 
     $scope = (isset($_GET['scope']))? $_GET['scope'] : 'single';
-    $gibbonPersonID = (isset($_GET['gibbonPersonID']))? $_GET['gibbonPersonID'] : null;
-    if (!empty($gibbonPersonID) && !is_array($gibbonPersonID)) {
-        $gibbonPersonID = explode(",", $gibbonPersonID);
+    $gibbonPersonID = (isset($_GET['gibbonPersonID']))? $_GET['gibbonPersonID'] : [];
+    if (!empty($gibbonPersonID)) {
+        $gibbonPersonID = is_array($gibbonPersonID)
+            ? array_unique($gibbonPersonID)
+            : explode(",", $gibbonPersonID);
     }
     $absenceType = (isset($_GET['absenceType']))? $_GET['absenceType'] : 'full';
     $date = (isset($_GET['date']))? date($_GET['date']) : '';
@@ -75,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
     $row = $form->addRow()->addClass('student');
         $row->addLabel('gibbonPersonID', __('Student'));
-        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->setID('gibbonPersonIDSingle')->required()->placeholder()->selected($gibbonPersonID);
+        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->setID('gibbonPersonIDSingle')->required()->placeholder()->selected($gibbonPersonID[0] ?? '');
 
     $row = $form->addRow()->addClass('students');
         $row->addLabel('gibbonPersonID', __('Students'));
@@ -254,9 +256,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
 <script type='text/javascript'>
     $("#absenceType").change(function(){
-        $("#attendanceSet").css("display","none");
+        if ($("#scope").val() != 'multiple') {
+            $("#attendanceLog").css("display","none");
+            $("#attendanceSet").css("display","none");
+        }
     });
     $("#scope").change(function(){
         $("#attendanceLog").css("display","none");
+        $("#attendanceSet").css("display","none");
     });
 </script>
