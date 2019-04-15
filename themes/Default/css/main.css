@@ -1170,12 +1170,6 @@ table.smallIntBorder td.noPadding {
 }
 
 /* Gibbon Data Table CSS - Will be moved to core.css */
-.dataTable .sortable {
-    cursor: pointer;
-    position: relative;
-    padding-right: 20px;
-}
-
 .dataTable .sortable:not(.sorting):hover:after,
 .dataTable .sortASC:after,
 .dataTable .sortDESC:after {
@@ -1202,39 +1196,19 @@ table.smallIntBorder td.noPadding {
     top: 18px;
 }
 
-.dataTable input[type="button"],
-.dataTable input[type="button"]:hover {
-    font-size: 10px;
-    padding: 6px;
-    height: auto;
-    min-width: auto;
+.dataTable select {
+    -webkit-appearance: none;
 }
 
-.dataTable .filters {
-    width: 70px;
-    height: 26px;
-    margin: 2px 5px 4px 0;
+.caret::after {
+    content: "";
+    width: 0;
+    height: 0;
+    border: 5px solid transparent;
+    border-top: 5px solid #666666;
+    position: absolute;
 }
 
-.dataTable .limit {
-    width: 50px;
-    height: 26px;
-    margin: 2px 0px 4px 0;
-}
-
-.dataTable header small,
-.dataTable footer small {
-    font-size: 12px;
-    line-height: 32px;
-}
-
-.dataTable .flexRow {
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: flex-end;
-    justify-content: space-between;
-    padding-bottom: 5px;
-}
 
 .dataTable .expandable {
     border-right: 0px !important;
@@ -1272,11 +1246,6 @@ table.smallIntBorder td.noPadding {
 .dataTable .expander.expanded:before {
     transform: rotate(45deg);
     -webkit-transform: rotate(45deg);
-}
-
-.dataTable .linkTop {
-    margin: 0;
-    line-height: 32px;
 }
 
 @-moz-keyframes spin {
