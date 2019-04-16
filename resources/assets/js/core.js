@@ -53,7 +53,7 @@ jQuery(function($){
             var panelHeight = $('.bulkActionPanel').innerHeight();
 
             $('.bulkActionCount span').html(checkedCount);
-            $('.bulkActionPanel').css('top', header.outerHeight(false) - panelHeight + 10);
+            $('.bulkActionPanel').css('top', header.outerHeight(false) - panelHeight + 6);
             
 
             // Trigger a showhide event on any nested inputs to update their visibility & validation state
