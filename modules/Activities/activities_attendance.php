@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -203,7 +204,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 
         $row = $form->addRow('doublescroll-wrapper')->setClass('block doublescroll-wrapper smallIntBorder w-full max-w-full')->addColumn()->setClass('pl-48');
 
-        // Headings as a separate table (for double-scroll)
+        // Headings as a separate table
         $table = $row->addTable()->setClass('mini w-full m-0 border-0');
         $header = $table->addHeaderRow();
             $header->addContent(__('Student'))->addClass('w-48 py-8');
@@ -211,14 +212,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
             $header->addContent(sprintf(__('Sessions Recorded: %s of %s'), count($sessionAttendanceData), count($activitySessions)))
                 ->addClass('emphasis subdued right');
 
-        // $row->addContent("<div class='block ml-48 -mt-4'><div class='doublescroll-top-tablewidth block'></div></div>");
-
-        // Wrap the attendance table in a double-scroll container
         $table = $row->addClass('doublescroll-container block ')->addColumn()->setClass('ml-48 border-l-2 border-gray-600 -mt-1')
             ->addTable()->setClass('mini colorOddEven w-full m-0 border-0 overflow-x-scroll rowHighlight');
 
         $row = $table->addRow();
-            $row->addContent(__('Date'))->addClass('w-48 h-24 absolute left-0 ml-px');
+            $row->addContent(__('Date'))->addClass('w-48 h-24 absolute left-0 ml-px flex items-center');
 
         $icon = '<img class="mt-1 inline" title="%1$s" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/%2$s"/>';
 
@@ -226,7 +224,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         $i = 0;
         foreach ($activitySessions as $sessionDate => $sessionTimestamp) {
             $col = $row->addColumn()->addClass('h-24 px-2 text-center');
-            $dateLabel = $col->addContent(date('D<\b\r>M j', $sessionTimestamp))->addClass('w-10');
+            $dateLabel = $col->addContent(Format::dateReadable($sessionDate, '%a<br>%b %e'))->addClass('w-10 mx-auto');
 
             if (isset($sessionAttendanceData[$sessionDate]['data'])) {
                 $col->addWebLink(sprintf($icon, __('Edit'), 'config.png'))
@@ -287,8 +285,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         foreach ($activitySessions as $sessionDate => $sessionTimestamp) {
             $row->setClass('h-8')->addContent(!empty($attendanceCount[$sessionDate])
                 ? $attendanceCount[$sessionDate].' / '.$activity['participants']
-                : ''
-            );
+                : '');
         }
 
         $row = $form->addRow()->addClass('flex w-full')->addTable()->setClass('smallIntBorder w-full')->addRow();
