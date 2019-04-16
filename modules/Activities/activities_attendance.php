@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     }
 
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
-    $form->setClass('noIntBorder fullWidth');
+    $form->setClass('noIntBorder w-full');
 
     $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/activities_attendance.php");
 
@@ -196,37 +196,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         }
 
         $form = Form::create('attendance', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_attendanceProcess.php?gibbonActivityID='.$gibbonActivityID);
-        $form->setClass('blank w-full');
+        $form->setClass('blank block max-w-full');
 
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
         $form->addHiddenValue('gibbonPersonID', $_SESSION[$guid]['gibbonPersonID']);
 
-        $row = $form->addRow('doublescroll-wrapper')->addClass('doublescroll-wrapper smallIntBorder');
+        $row = $form->addRow('doublescroll-wrapper')->setClass('block doublescroll-wrapper smallIntBorder w-full max-w-full')->addColumn()->setClass('pl-48');
 
         // Headings as a separate table (for double-scroll)
-        $table = $row->addTable()->setClass('mini fullWidth noMargin noBorder');
+        $table = $row->addTable()->setClass('mini w-full m-0 border-0');
         $header = $table->addHeaderRow();
-            $header->addContent(__('Student'))->addClass('attendanceRowHeader py-8');
+            $header->addContent(__('Student'))->addClass('w-48 py-8');
             $header->addContent(__('Attendance'));
             $header->addContent(sprintf(__('Sessions Recorded: %s of %s'), count($sessionAttendanceData), count($activitySessions)))
                 ->addClass('emphasis subdued right');
 
-        $row->addContent("<div class='doublescroll-top -mt-4'><div class='doublescroll-top-tablewidth'></div></div>");
+        // $row->addContent("<div class='block ml-48 -mt-4'><div class='doublescroll-top-tablewidth block'></div></div>");
 
         // Wrap the attendance table in a double-scroll container
-        $table = $row->addColumn()->addClass('doublescroll-container')
-            ->addTable()->setClass('mini colorOddEven fullWidth noMargin noBorder');
+        $table = $row->addClass('doublescroll-container block ')->addColumn()->setClass('ml-48 border-l-2 border-gray-600 -mt-1')
+            ->addTable()->setClass('mini colorOddEven w-full m-0 border-0 overflow-x-scroll rowHighlight');
 
         $row = $table->addRow();
-            $row->addContent(__('Date'))->addClass('attendanceDateHeader attendanceRowHeader');
+            $row->addContent(__('Date'))->addClass('w-48 h-24 absolute left-0 ml-px');
 
-        $icon = '<img style="margin-top: 3px" title="%1$s" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/%2$s"/>';
+        $icon = '<img class="mt-1 inline" title="%1$s" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/%2$s"/>';
 
         // Display the date and action buttons for each session
         $i = 0;
         foreach ($activitySessions as $sessionDate => $sessionTimestamp) {
-            $col = $row->addColumn()->addClass('attendanceDateHeader');
-            $dateLabel = $col->addContent(date('D<\b\r>M j', $sessionTimestamp))->addClass('attendanceDate');
+            $col = $row->addColumn()->addClass('h-24 px-2 text-center');
+            $dateLabel = $col->addContent(date('D<\b\r>M j', $sessionTimestamp))->addClass('w-10');
 
             if (isset($sessionAttendanceData[$sessionDate]['data'])) {
                 $col->addWebLink(sprintf($icon, __('Edit'), 'config.png'))
@@ -260,10 +260,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         foreach ($students as $index => $student) {
             $row = $table->addRow()->addData('student', $student['gibbonPersonID']);
 
-            $row->addWebLink(formatName('', $student['preferredName'], $student['surname'], 'Student', true))
+            $col = $row->addColumn()->addClass('w-48 h-8 absolute left-0 ml-px text-left');
+
+            $col->addWebLink(formatName('', $student['preferredName'], $student['surname'], 'Student', true))
                 ->setURl($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php')
                 ->addParam('gibbonPersonID', $student['gibbonPersonID'])
-                ->setClass('colName')
+                ->setClass('')
                 ->prepend(($index+1).') ');
 
             $i = 0;
@@ -273,23 +275,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
                     $content = '✓';
                     $attendanceCount[$sessionDate]++;
                 }
-                $row->addContent($content)->setClass("col$i");
+                $row->addContent($content)->setClass("col$i h-8 text-center");
                 ++$i;
             }
         }
 
         // Total students per date
         $row = $table->addRow();
-        $row->addContent(__('Total students:'))->addClass('right');
+        $row->addContent(__('Total students:'))->addClass('text-right w-48 h-8 absolute left-0 ml-px');
 
         foreach ($activitySessions as $sessionDate => $sessionTimestamp) {
-            $row->addContent(!empty($attendanceCount[$sessionDate])
+            $row->setClass('h-8')->addContent(!empty($attendanceCount[$sessionDate])
                 ? $attendanceCount[$sessionDate].' / '.$activity['participants']
                 : ''
             );
         }
 
-        $row = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth')->addRow();
+        $row = $form->addRow()->addClass('flex w-full')->addTable()->setClass('smallIntBorder w-full')->addRow();
             $row->addContent(__('All highlighted columns will be updated when you press submit.'))
                 ->wrap('<span class="small emphasis">', '</span>');
             $row->addSubmit();
