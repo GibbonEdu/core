@@ -29,30 +29,30 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     <div class="flex items-end justify-between pb-2">
         <div class="">
             {{ block('pageCount') }}
-            
         </div>
 
         {{ parent() }}
     </div>
 
-    <div class="flex flex-wrap sm:flex-no-wrap items-stretch justify-between mb-2">
-        <div class="flex items-center">
+    {% if dataSet.getTotalCount > 0 %}
+    <div class="flex flex-wrap sm:flex-no-wrap items-stretch justify-between">
+        <div class="flex items-stretch h-full">
             {% if pageSize %}
-            <div class="relative -mr-1">
+            <div class="relative -mr-1 mb-2">
                 <div class="absolute caret z-10 mt-3 right-0 mr-5 pointer-events-none"></div>
                 {{ pageSize|raw }}
             </div>
             {% endif %}
 
             {% if filterOptions %}
-            <div class="relative">
+            <div class="relative mb-2">
                 <div class="absolute caret z-10 mt-3 right-0 mr-5 pointer-events-none"></div>
                 {{ filterOptions|raw }}
             </div>
             {% endif %}
             
             {% if filterCriteria %}
-            <nav class="flex cursor-default">
+            <nav class="flex cursor-default mb-2">
                 {{ block('filters') }}
             </nav>
             {% endif %}
@@ -60,13 +60,16 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
         {{ block('pagination') }}
     </div>
+    {% endif %}
 {% endblock header %}
 
 
 {% block footer %}
-    <div class="flex flex-col sm:flex-row sm:items-end justify-end my-1">
+    {% if dataSet.getResultCount > 25 %}
+    <div class="flex flex-col sm:flex-row sm:items-end justify-end mt-2">
         {{ block('pagination') }}
     </div>
+    {% endif %}
 {% endblock footer %}
 
 
@@ -85,6 +88,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 
 {% block pageCount %}
+    {% if dataSet.getTotalCount > 0 %}
     <div class="text-xs">
         {{ searchText ? __('Search') ~ " " }}
 
@@ -92,19 +96,20 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
         {% if dataSet.count > 0 %}
             {{ dataSet.getPageFrom }}-{{ dataSet.getPageTo }} {{ __('of') }}
-        {% else %}
-            :
         {% endif %} 
         
         {{ dataSet.getResultCount|number_format }}
     </div>
+    {% endif %}
 {% endblock pageCount %}
 
 
 {% block pagination %}
-    {% if dataSet.getResultCount > 25 %}
+    
     {% set buttonStyle = 'border -ml-px px-2 py-1 font-bold leading-loose' %}
-    <div class="pagination">
+    
+    {% if dataSet.getResultCount > 25 or filterOptions %}
+    <div class="pagination mb-2">
         <button type="button" class="paginate rounded-l text-gray-600 bg-gray-200 border-gray-500 {{ not dataSet.isFirstPage ? 'hover:bg-gray-400'}} {{ buttonStyle }}" data-page="{{ dataSet.getPrevPageNumber }}" {{ dataSet.isFirstPage ? 'disabled'}}>
             {{ __('Prev') }}
         </button>
@@ -122,6 +127,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         </button>
     </div>
     {% endif %}
+    
 {% endblock pagination %}
 
 

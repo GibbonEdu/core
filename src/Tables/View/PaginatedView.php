@@ -70,11 +70,13 @@ class PaginatedView extends DataTableView implements RendererInterface
             'path'       => './fullscreen.php?'.http_build_query($_GET),
             'identifier' => $this->criteria->getIdentifier(),
 
+            'blankSlate'     => $table->getMetaData('blankSlate'),
             'searchText'     => $this->criteria->getSearchText(),
             'pageSize'       => $this->getSelectPageSize($dataSet, $filters),
             'filterOptions'  => $this->getSelectFilterOptions($dataSet, $filters),
             'filterCriteria' => $this->getFilterCriteria($filters),
             'bulkActions'    => $table->getMetaData('bulkActions'),
+            'isFiltered'     => $dataSet->getTotalCount() > 0 && ($this->criteria->hasSearchText() || $this->criteria->hasFilter()),
         ]);
 
         $postData = $table->getMetaData('post');
@@ -141,7 +143,7 @@ class PaginatedView extends DataTableView implements RendererInterface
         
         return $this->factory->createSelect('filter')
             ->fromArray($filters)
-            ->setClass('filters float-none w-24 pl-2 border leading-loose h-8 ')
+            ->setClass('filters float-none w-24 pl-2 border leading-loose h-full sm:h-8 ')
             ->addClass($this->criteria->hasFilter() ?: 'rounded-r')
             ->placeholder(__('Filters'))
             ->getOutput();
@@ -168,7 +170,7 @@ class PaginatedView extends DataTableView implements RendererInterface
 
         return $this->factory->createSelect('limit')
             ->fromArray($options)
-            ->setClass('limit float-none w-16 pl-2 rounded-l border leading-loose h-8 ')
+            ->setClass('limit float-none w-16 pl-2 rounded-l border leading-loose h-full sm:h-8 ')
             ->addClass(!empty($filters) ?: 'rounded-r')
             ->selected($dataSet->getPageSize())
             ->getOutput();

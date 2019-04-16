@@ -206,7 +206,7 @@ table {
 }
 table th {
     padding: 1rem 0.75rem;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid #ccc;
     background-color: #ebebeb;
     text-align: left;
 }
