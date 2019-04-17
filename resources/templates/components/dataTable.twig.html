@@ -11,36 +11,42 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 {% endif %}
 
 {% if table.getDescription %}
-    <p>{{ table.getDescription }}</p>
+    <p>{{ table.getDescription|raw }}</p>
 {% endif %}
 
 {% block table %}
 
     <header class="relative">
-    {% block header %}
-
-        {% if table.getHeader %}
-        <div class="linkTop">
-            {% for action in table.getHeader %}
-                {{ action.getOutput|raw }}
-            {% endfor %}
-        </div>
-        {% endif %}
-        
-    {% endblock header %}
+        {% block header %}
+    
+            {% if table.getHeader %}
+            <div class="linkTop">
+                {% for action in table.getHeader %}
+                    {{ action.getOutput|raw }}
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+        {% endblock header %}
     </header>
 
-
-    {% if not rows %}
-
-        {% block blankslate %}
-            <div class="error">
-                {{ __('There are no records to display.') }}
+    {% if not rows and not isFiltered %}
+        <div class="rounded-sm border overflow-hidden">
+            {% block blankslate %}
+            <div class="w-full h-64 flex flex-col items-center justify-center bg-gray-100 shadow-inner text-gray-600 text-lg">
+                {% if blankSlate %}
+                    {{ blankSlate|raw }}
+                {% elseif isFiltered %}
+                    {{ __('No results matched your search.') }}
+                {% else %}
+                    {{ __('There are no records to display.') }}
+                {% endif %}
             </div>
-        {% endblock blankslate %}
-
+            {% endblock blankslate %}
+        </div>
     {% else %}
-        <div class="overflow-x-auto overflow-y-visible">
+
+    <div class="overflow-x-auto overflow-y-visible">
         <table class="{{ class }} w-full" cellspacing=0>
             <thead>
             {% for headerRow in headers %}
@@ -62,6 +68,14 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             </thead>
 
             <tbody>
+            {% if not rows and isFiltered %}
+                <tr class="">
+                    <td class="p-0" colspan="{{ columns|length }}">
+                    {{ block('blankslate') }}
+                    </td>
+                </tr>
+            {% endif %}
+
             {% for rowIndex, rowData in rows %}
                 {% set row = rowData.row %}
 
@@ -106,7 +120,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             {% endfor %}
             </tbody>
         </table>
-        </div>
+    </div>
     {% endif %}
 
     <footer>
@@ -115,3 +129,6 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     </footer>
 
 {% endblock table %}
+
+
+

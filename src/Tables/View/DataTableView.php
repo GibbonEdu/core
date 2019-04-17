@@ -49,9 +49,12 @@ class DataTableView extends View implements RendererInterface
         if ($dataSet->count() > 0) {
             $this->preProcessTable($table);
 
-            $this->addData('headers', $this->getTableHeaders($table));
-            $this->addData('columns', $table->getColumns());
-            $this->addData('rows', $this->getTableRows($table, $dataSet));
+            $this->addData([
+                'headers'    => $this->getTableHeaders($table),
+                'columns'    => $table->getColumns(),
+                'rows'       => $this->getTableRows($table, $dataSet),
+                'blankSlate' => $table->getMetaData('blankSlate'),
+            ]);
         }
 
         return $this->render('components/dataTable.twig.html');
