@@ -28,7 +28,6 @@ use Gibbon\Services\Format;
  *
  * @version 12th Sept 2016
  * @since   12th Sept 2016
- * @author  Sandra Kuipers
  */
 class AttendanceView
 {
