@@ -146,7 +146,7 @@ $.prototype.gibbonUniquenessCheck = function (settings) {
 
     $(uniqueField).ready(function(){
         // Get the existing LiveValidation object, otherwise create one
-        validation = window[$(uniqueField).attr('id') + "Validate"];
+        validation = window["lv" + $(uniqueField).attr('id') + "Validate"];
         if (validation == null || typeof validation != "object") {
             validation = new LiveValidation($(uniqueField).attr('id'));
         }
