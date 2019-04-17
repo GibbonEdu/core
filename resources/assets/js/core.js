@@ -339,7 +339,7 @@ CustomBlocks.prototype.loadBlockInputData = function(block, data) {
     $(':input', block).prop('disabled', false);
 
     for (key in data) {
-        $("[name='"+key+"']", block).val(data[key]);
+        $("[name='"+key+"']:not([type='file'])", block).val(data[key]);
         $("label[for='"+key+"']", block).html(data[key]);
     }
 
