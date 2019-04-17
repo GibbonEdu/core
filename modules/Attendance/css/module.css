@@ -204,32 +204,3 @@ td.center {
 #periodSelectContainer{
     float: right;   
 }
-
-/**
- * daily attendance table, by roll or by course class
- * (attendance.php)
- */
-.dailyAttendanceTable {
-    table-layout: fixed;
-}
-.dailyAttendanceTable th {
-    font-size: 60%;
-    text-align: center;
-    text-transform: uppercase;
-}
-.dailyAttendanceTable th:first-child {
-    font-size: 85%;
-    text-align: left;
-}
-.dailyAttendanceTable tr td:nth-child(n+3) {
-    text-align: center;
-}
-.dailyAttendanceTable tr td div.month {
-    font-size: 65%;
-}
-.dailyAttendanceTable tr td table.historyCalendarMini {
-    border-spacing: 0;
-    border-collapse: separate;
-    width:160px;
-    margin:0;
-}
