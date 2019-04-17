@@ -150,12 +150,10 @@ class Trigger implements OutputableInterface
         $output .= "$('{$this->targetSelector} :input').each(function(index, element){ element.disabledState = $(this).prop('disabled'); });";
 
         // Hide all initial targets if the source value does not equal the trigger value
-        $output .= "$(function() {";
-            $output .= "if ( !({$comparisons}) ) { \n";
-            $output .= "$('{$this->targetSelector}').hide(); \n";
-            $output .= "$('{$this->targetSelector} :input:not(button)').prop('disabled', true).change(); \n";
-            $output .= "}\n\n";
-        $output .= "});";
+        $output .= "if ( !({$comparisons}) ) { \n";
+        $output .= "$('{$this->targetSelector}').hide(); \n";
+        $output .= "$('{$this->targetSelector} :input:not(button)').prop('disabled', true).change(); \n";
+        $output .= "}\n\n";
         
 
         return $output;

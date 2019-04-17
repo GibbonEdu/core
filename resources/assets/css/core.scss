@@ -22,46 +22,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  @tailwind utilities;
 
-.shadow-container {
-    box-shadow: 0px 0px 20px rgba(0,0,0,0.4);
-}
-
-.bg-transparent-100 {
-    background-color: rgba(255,255,255,0.9);
-}
-
-.bg-transparent-600 {
-    background-color: rgba(50,50,50,0.6);
-}
-
-.bg-transparent-900 {
-    background-color: rgba(50,50,50,0.95);
-}
-
-.column-no-break {
-    @apply table w-full pt-px;
-    -webkit-column-break-inside:avoid;
-    -moz-column-break-inside:avoid;
-    -o-column-break-inside:avoid;
-    -ms-column-break-inside:avoid;
-    column-break-inside:avoid;
-    page-break-inside: avoid;
-    break-inside: avoid;
-}
+/*
+ --------------------------------------------------------------------------
+  Layout
+ --------------------------------------------------------------------------
+*/
 
 @responsive {
-    .w-content {
-        width: 72%;
-    }
-
-    .w-sidebar {
-        width: 28%;
-    }
-
-    .text-xxs {
-        font-size: 0.65rem;
-    }
-
     .column-1 {
         column-count: 1;
         column-gap: 1.5rem;
@@ -78,3 +45,73 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     }
 }
 
+.column-no-break {
+    @apply table w-full pt-px;
+    -webkit-column-break-inside:avoid;
+    -moz-column-break-inside:avoid;
+    -o-column-break-inside:avoid;
+    -ms-column-break-inside:avoid;
+    column-break-inside:avoid;
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+/*
+ --------------------------------------------------------------------------
+  Typography
+ --------------------------------------------------------------------------
+*/
+
+@responsive {
+    .text-xxs {
+        font-size: 0.65rem;
+    }
+}
+
+/*
+ --------------------------------------------------------------------------
+  Backgrounds
+ --------------------------------------------------------------------------
+*/
+
+.bg-transparent-100 {
+    background-color: rgba(255,255,255,0.9);
+}
+
+.bg-transparent-600 {
+    background-color: rgba(50,50,50,0.6);
+}
+
+.bg-transparent-900 {
+    background-color: rgba(50,50,50,0.95);
+}
+
+/*
+ --------------------------------------------------------------------------
+  Sizing
+ --------------------------------------------------------------------------
+*/
+
+.min-h-1\/2 {
+    min-height: 50vh;
+}
+
+@responsive {
+    .w-content {
+        width: 72%;
+    }
+
+    .w-sidebar {
+        width: 28%;
+    }
+}
+
+/*
+ --------------------------------------------------------------------------
+  Effects
+ --------------------------------------------------------------------------
+*/
+
+.shadow-container {
+    box-shadow: 0px 0px 20px rgba(0,0,0,0.4);
+}

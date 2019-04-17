@@ -26,89 +26,114 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 
 {% block header %}
-    <div class="flex items-end justify-between pb-1">
+    <div class="flex items-end justify-between pb-2">
         <div class="">
             {{ block('pageCount') }}
-            {{ block('filters') }}
         </div>
 
         {{ parent() }}
     </div>
 
-    <div class="flex flex-wrap sm:flex-no-wrap items-end justify-between mb-1">
-        <div class="">
-            {{ filterOptions|raw }}
-            {{ pageSize|raw }}
-            <small class="ml-px">{{ __('Per Page') }}</small>
+    {% if dataSet.getTotalCount > 0 %}
+    <div class="flex flex-wrap sm:flex-no-wrap items-stretch justify-between">
+        <div class="flex items-stretch h-full">
+            {% if pageSize %}
+            <div class="relative -mr-1 mb-2">
+                <div class="absolute caret z-10 mt-3 right-0 mr-5 pointer-events-none"></div>
+                {{ pageSize|raw }}
+            </div>
+            {% endif %}
+
+            {% if filterOptions %}
+            <div class="relative mb-2">
+                <div class="absolute caret z-10 mt-3 right-0 mr-5 pointer-events-none"></div>
+                {{ filterOptions|raw }}
+            </div>
+            {% endif %}
+            
+            {% if filterCriteria %}
+            <nav class="flex cursor-default mb-2">
+                {{ block('filters') }}
+            </nav>
+            {% endif %}
         </div>
 
         {{ block('pagination') }}
     </div>
+    {% endif %}
 {% endblock header %}
 
 
 {% block footer %}
-    <div class="flex flex-col sm:flex-row sm:items-end justify-end my-1">
+    {% if dataSet.getResultCount > 25 %}
+    <div class="flex flex-col sm:flex-row sm:items-end justify-end mt-2">
         {{ block('pagination') }}
     </div>
+    {% endif %}
 {% endblock footer %}
 
 
 {% block filters %}
-    <small>
-    {% if filterCriteria %}
-        {{ __('Filtered by') }}
+    {% for name, label in filterCriteria %}
+        <button type="button" class="filter -mx-px py-2 px-3 border border-blue-700 bg-blue-500 hover:bg-blue-700 z-10 text-white font-bold" data-filter="{{ name }}">
+            {{ label|raw }}
+        </button>
+    {% endfor %}
+    
+    <button type="button" class="filter p-2 rounded-r border border-gray-500 text-gray-600 bg-gray-200 font-bold hover:bg-gray-400 clear">
+        {{ __('Clear') }}
+    </button>
 
-        {% for name, label in filterCriteria %}
-            <input type="button" class="filter" value="{{ label }}" data-filter="{{ name }}"> 
-        {% endfor %}
-
-        <input type="button" class="filter clear buttonLink" value="{{ __('Clear') }}">
-
-    {% endif %}
-    </small>
 {% endblock filters %}
 
 
 {% block pageCount %}
-    <small class="mr-1">
+    {% if dataSet.getTotalCount > 0 %}
+    <div class="text-xs">
         {{ searchText ? __('Search') ~ " " }}
 
         {{ dataSet.isSubset ? __('Results') : __('Records') }}
 
         {% if dataSet.count > 0 %}
             {{ dataSet.getPageFrom }}-{{ dataSet.getPageTo }} {{ __('of') }}
-        {% else %}
-            :
         {% endif %} 
         
-        {{ dataSet.getResultCount }}
-    </small>
+        {{ dataSet.getResultCount|number_format }}
+    </div>
+    {% endif %}
 {% endblock pageCount %}
 
 
 {% block pagination %}
-    {% if dataSet.getResultCount > 25 %}
-    <div class="pagination">
-        <input type="button" class="paginate" data-page="{{ dataSet.getPrevPageNumber }}" {{ dataSet.isFirstPage ? 'disabled'}} value="{{ __('Prev') }}">
+    
+    {% set buttonStyle = 'border -ml-px px-2 py-1 font-bold leading-loose' %}
+    
+    {% if dataSet.getResultCount > 25 or filterOptions %}
+    <div class="pagination mb-2">
+        <button type="button" class="paginate rounded-l text-gray-600 bg-gray-200 border-gray-500 {{ not dataSet.isFirstPage ? 'hover:bg-gray-400'}} {{ buttonStyle }}" data-page="{{ dataSet.getPrevPageNumber }}" {{ dataSet.isFirstPage ? 'disabled'}}>
+            {{ __('Prev') }}
+        </button>
 
         {%- for page in dataSet.getPaginatedRange -%}
             {%- if page == '...' -%}
-                <input type="button" value="..." disabled>
+                <button type="button" class=" {{ buttonStyle }}" disabled>...</button>
             {%- else -%}
-                <input type="button" class="{{ page == dataSet.getPage ? 'active' }} paginate" data-page="{{ page }}" value="{{ page }}">
+                <button type="button" class="paginate {{ buttonStyle }} {{ page == dataSet.getPage ? 'bg-blue-500 border-blue-700 text-white relative z-10' : 'text-gray-600 hover:bg-gray-400 border-gray-500' }}" data-page="{{ page }}">{{ page }}</button>
             {%- endif -%}
         {%- endfor -%}
 
-        <input type="button" class="paginate" data-page="{{ dataSet.getNextPageNumber }}" {{ dataSet.isLastPage ? 'disabled'}} value="{{ __('Next') }}">
+        <button type="button" class="paginate rounded-r text-gray-600 border-gray-500 {{ not dataSet.isLastPage ? 'hover:bg-gray-400'}} {{ buttonStyle }}" data-page="{{ dataSet.getNextPageNumber }}" {{ dataSet.isLastPage ? 'disabled'}}>
+        {{ __('Next') }}
+        </button>
     </div>
     {% endif %}
+    
 {% endblock pagination %}
 
 
 {% block bulkActions %}
     {% if bulkActions %}
-    <div class="bulkActionPanel hidden absolute top-0 right-0 w-full flex items-center justify-between p-1 pt-2 bg-purple-600 rounded-t">
+    <div class="bulkActionPanel hidden absolute top-0 right-0 w-full flex items-center justify-between p-1 pt-2 bg-purple-600 rounded-t z-20">
         <div class="bulkActionCount flex-grow text-white text-sm text-right pr-3">
             <span>0</span> {{ __('Selected') }}
         </div>

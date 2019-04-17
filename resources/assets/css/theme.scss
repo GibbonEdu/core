@@ -21,19 +21,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *,
 :after,
 :before {
+    margin:0;
+	padding:0;
     border: 0 solid hsl(0, 3%, 82%);
     box-sizing: border-box;
 }
 
-/*
- --------------------------------------------------------------------------
-  Sizing
- --------------------------------------------------------------------------
-*/
-
-.min-h-1\/2 {
-    min-height: 50vh;
+html {
+    @apply h-full;
 }
+
+body {
+    @apply text-gray-900;
+    font-family: Helvetica, Arial, sans-serif;
+}
+
 
 /*
  --------------------------------------------------------------------------
@@ -59,35 +61,53 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     @apply bg-gray-100 border-gray-600 text-gray-600;
 }
 
-.alert.message {
-    @apply shadow border-l-6 p-3 my-3 text-xs;
+.message {
     @apply bg-blue-200 border-blue-700 text-blue-700;
 }
 
-.alert.success {
-    @apply shadow border-l-6 p-3 my-3 text-xs;
+.current,
+.success {
     @apply bg-green-200 border-green-700 text-green-700;
 }
 
-.alert.warning {
-    @apply shadow border-l-6 p-3 my-3 text-xs;
+.warning {
     @apply bg-orange-300 border-orange-700 text-orange-700;
 }
 
-.alert.error {
-    @apply shadow border-l-6 p-3 my-3 text-xs;
+.past,
+.error {
     @apply bg-red-200 border-red-700 text-red-700;
 }
 
-.alert.exception {
+.exception {
+    @apply bg-gray-100 border-gray-800 text-gray-800;
+}
+
+.dull {
+    @apply bg-gray-300 text-gray-600;
+}
+
+.selected {
+    @apply bg-purple-200 border-purple-700 text-purple-700;
+}
+
+div.message, div.success, div.warning, div.error, div.exception, div.dull {
     @apply shadow border-l-6 p-3 my-3 text-xs;
-    @apply bg-gray-300 border-gray-800 text-gray-800;
+}
+
+div.message a, div.success a, div.warning a, div.error a, div.exception a, div.dull a {
+    color: inherit;
 }
 
 .badge {
     @apply absolute z-10 rounded-full bg-purple-400 text-xs text-white no-underline leading-tight font-sans;
     padding: 2px 6px 2px 6px;
 }
+
+.tag {
+    @apply inline-block rounded-full border m-0 px-4  leading-loose;
+}
+
 
 /*
  --------------------------------------------------------------------------
@@ -228,4 +248,34 @@ input[readonly]:focus, select[readonly]:focus, textarea[readonly]:focus {
 
 .token-input-selected-dropdown-item-facebook {
     @apply bg-blue-700 text-white;
+}
+
+/*
+ --------------------------------------------------------------------------
+  Thickbox
+ --------------------------------------------------------------------------
+*/
+
+/* Thickbox: Prevent random scrollbars */
+#TB_ajaxContent {
+    max-height: 90vh;
+    min-height: 25vh;
+    margin: 0 auto;
+}
+
+/* Wrangle the Thickbox into displaying somewhat usably on mobile */
+@media only screen and (max-width: 1000px) {
+
+    #TB_window {
+        margin-left: -45vw !important;
+        width: 90vw !important;
+    }
+
+    #TB_ajaxContent {
+        width: 76vw !important;
+        max-width: 100vw;
+        overflow: initial;
+        padding: 0.5rem;
+        height: auto !important;
+    }
 }

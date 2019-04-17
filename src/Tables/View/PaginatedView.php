@@ -57,32 +57,32 @@ class PaginatedView extends DataTableView implements RendererInterface
     {
         $this->addData('table', $table);
 
-        if ($dataSet->count() > 0) {
-            $this->preProcessTable($table);
-            
-            $filters = $table->getMetaData('filterOptions', []);
+        $this->preProcessTable($table);
+        
+        $filters = $table->getMetaData('filterOptions', []);
 
-            $this->addData([
-                'dataSet'    => $dataSet,
+        $this->addData([
+            'dataSet'    => $dataSet,
 
-                'headers'    => $this->getTableHeaders($table),
-                'columns'    => $table->getColumns(),
-                'rows'       => $this->getTableRows($table, $dataSet),
-                'path'       => './fullscreen.php?'.http_build_query($_GET),
-                'identifier' => $this->criteria->getIdentifier(),
+            'headers'    => $this->getTableHeaders($table),
+            'columns'    => $table->getColumns(),
+            'rows'       => $this->getTableRows($table, $dataSet),
+            'path'       => './fullscreen.php?'.http_build_query($_GET),
+            'identifier' => $this->criteria->getIdentifier(),
 
-                'searchText'     => $this->criteria->getSearchText(),
-                'pageSize'       => $this->getSelectPageSize($dataSet),
-                'filterOptions'  => $this->getSelectFilterOptions($dataSet, $filters),
-                'filterCriteria' => $this->getFilterCriteria($filters),
-                'bulkActions'    => $table->getMetaData('bulkActions'),
-            ]);
+            'blankSlate'     => $table->getMetaData('blankSlate'),
+            'searchText'     => $this->criteria->getSearchText(),
+            'pageSize'       => $this->getSelectPageSize($dataSet, $filters),
+            'filterOptions'  => $this->getSelectFilterOptions($dataSet, $filters),
+            'filterCriteria' => $this->getFilterCriteria($filters),
+            'bulkActions'    => $table->getMetaData('bulkActions'),
+            'isFiltered'     => $dataSet->getTotalCount() > 0 && ($this->criteria->hasSearchText() || $this->criteria->hasFilter()),
+        ]);
 
-            $postData = $table->getMetaData('post');
-            $this->addData('jsonData', !empty($postData)
-                ? json_encode(array_replace($postData, $this->criteria->toArray()))
-                : $this->criteria->toJson());
-        }
+        $postData = $table->getMetaData('post');
+        $this->addData('jsonData', !empty($postData)
+            ? json_encode(array_replace($postData, $this->criteria->toArray()))
+            : $this->criteria->toJson());
 
         return $this->render('components/paginatedTable.twig.html');
     }
@@ -98,7 +98,7 @@ class PaginatedView extends DataTableView implements RendererInterface
 
         if ($sortBy = $column->getSortable()) {
             $sortBy = !is_array($sortBy)? array($sortBy) : $sortBy;
-            $th->addClass('sortable');
+            $th->addClass('sortable relative pr-4 cursor-pointer');
             $th->addData('sort', implode(',', $sortBy));
 
             foreach ($sortBy as $sortColumn) {
@@ -143,7 +143,8 @@ class PaginatedView extends DataTableView implements RendererInterface
         
         return $this->factory->createSelect('filter')
             ->fromArray($filters)
-            ->setClass('filters float-none')
+            ->setClass('filters float-none w-24 pl-2 border leading-loose h-full sm:h-8 ')
+            ->addClass($this->criteria->hasFilter() ?: 'rounded-r')
             ->placeholder(__('Filters'))
             ->getOutput();
     }
@@ -152,16 +153,25 @@ class PaginatedView extends DataTableView implements RendererInterface
      * Render the page size drop-down. Hidden if there's less than one page of total results.
      *
      * @param DataSet $dataSet
+     * @param array $filters
      * @return string
      */
-    protected function getSelectPageSize(DataSet $dataSet)
+    protected function getSelectPageSize(DataSet $dataSet, array $filters)
     {
-        if ($dataSet->getPageSize() <= 0 || $dataSet->getResultCount() <= 25) return '';
+        if ($dataSet->getPageSize() <= 0 || $dataSet->getTotalCount() <= 25) return '';
+
+        $options = [__('Per Page') => [
+            10 => 10,
+            25 => 25,
+            50 => 50,
+            100 => 100,
+            $dataSet->getResultCount() => __('All'),
+        ]];
 
         return $this->factory->createSelect('limit')
-            ->fromArray(array(10, 25, 50, 100))
-            ->fromArray(array($dataSet->getResultCount() => __('All')))
-            ->setClass('limit float-none')
+            ->fromArray($options)
+            ->setClass('limit float-none w-16 pl-2 rounded-l border leading-loose h-full sm:h-8 ')
+            ->addClass(!empty($filters) ?: 'rounded-r')
             ->selected($dataSet->getPageSize())
             ->getOutput();
     }
