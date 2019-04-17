@@ -61,6 +61,7 @@ v18.0.00
         School Admin: fixed interface string typos
         Staff: fixed staff photo not displaying on Facilities sub-page in staff profile
         System Admin: fixed typo in Google integration settings
+        System Admin: added a clear cache option under System Check
         Timetable Admin: fixed malformed translatable interface strings
         User Admin: fixed issue preventing action names from being translated in Manage Permissions
         User Admin: improved interface string consistency
