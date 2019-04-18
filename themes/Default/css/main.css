@@ -1061,12 +1061,6 @@ input[type="reset"] {
     padding: 0px 6px;
 }
 
-input[type="button"].alignRight {
-    position: absolute;
-    right: 5px;
-    margin: 0;
-}
-
 .displayInlineBlock {
     display: inline-block;
 }

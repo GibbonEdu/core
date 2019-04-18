@@ -67,7 +67,7 @@ class Password extends TextField
     public function addGeneratePasswordButton($form, $sourceField = 'passwordNew', $confirmField = 'passwordConfirm')
     {
         $button = $form->getFactory()->createButton(__('Generate'));
-        $button->addClass('generatePassword alignRight')
+        $button->addClass('generatePassword -ml-px')
             ->addData('source', $sourceField)
             ->addData('confirm', $confirmField)
             ->addData('alert', __('Copy this password if required:'))
