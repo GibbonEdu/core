@@ -19,14 +19,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Input;
 
+use Gibbon\Forms\Traits\InputAttributesTrait;
+use Gibbon\Forms\Layout\Element;
+
 /**
  * Button
  *
  * @version v14
  * @since   v14
  */
-class Button extends Input
+class Button extends Element
 {
+    use InputAttributesTrait;
+    
     private $onclick;
 
     public function __construct($name, $onClick)
@@ -35,17 +40,18 @@ class Button extends Input
         $this->onClick($onClick);
         $this->setValue($name);
         $this->setID($name);
+        $this->addClass('button');
     }
 
     public function onClick($value)
     {
-        $this->setAttribute('onClick',$value);
+        $this->setAttribute('onClick', $value);
         return $this;
     }
 
     protected function getElement()
     {
-        $output = '<input type="button" '.$this->getAttributeString().'>';
+        $output = '<button type="button" '.$this->getAttributeString().'>'.$this->getValue().'</button>';
         return $output;
     }
 }

@@ -64,17 +64,17 @@ class PhoneNumber extends Input
             ->addSelect($name.'Type')
             ->fromArray($types)
             ->placeholder()
-            ->addClass('mr-1');
+            ->setClass('mr-1 w-1/3 sm:w-1/4');
         
         $this->phoneCodes = $this->column
             ->addSelect($name.'CountryCode')
             ->fromArray($countryCodes)
             ->placeholder()
-            ->addClass('mr-1');
+            ->setClass('mr-1 w-1/3 sm:w-1/4');
             
         $this->phoneNumber = $this->column
             ->addTextField($name)
-            ->addClass('w-2/3 sm:w-1/2');
+            ->setClass('w-2/3 sm:w-1/2');
     }
 
     /**
@@ -142,10 +142,10 @@ class PhoneNumber extends Input
         $this->phoneNumber->setSize($this->getSize());
         $this->phoneNumber->setDisabled($this->getDisabled());
 
-        $output = '<div class="w-full sm:max-w-xs flex justify-between items-center">';
-        $output .= $this->phoneType->getOutput();
-        $output .= $this->phoneCodes->getOutput();
-        $output .= $this->phoneNumber->getOutput();
+        $output = '<div class="w-full sm:max-w-xs flex justify-between">';
+        $output .= $this->phoneType->getElement();
+        $output .= $this->phoneCodes->getElement();
+        $output .= $this->phoneNumber->getElement();
         $output .= '</div>';
 
         return $output;
