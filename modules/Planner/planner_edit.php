@@ -310,22 +310,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 
                     $row = $form->addRow();
                         $customBlocks = $row->addPlannerOutcomeBlocks('outcome', $gibbon->session, $gibbonYearGroupIDList, $gibbonDepartmentID, $allowOutcomeEditing);
+      
+                    $dataBlocks = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
+                    $sqlBlocks = 'SELECT gibbonPlannerEntryOutcome.*, scope, name, category FROM gibbonPlannerEntryOutcome JOIN gibbonOutcome ON (gibbonPlannerEntryOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE gibbonPlannerEntryOutcome.gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY sequenceNumber';
+                    $resultBlocks = $pdo->select($sqlBlocks, $dataBlocks);
 
-                    try {
-                        $dataBlocks = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                        $sqlBlocks = 'SELECT gibbonPlannerEntryOutcome.*, scope, name, category FROM gibbonPlannerEntryOutcome JOIN gibbonOutcome ON (gibbonPlannerEntryOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY sequenceNumber';
-                        $resultBlocks = $connection2->prepare($sqlBlocks);
-                        $resultBlocks->execute($dataBlocks);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
                     while ($rowBlocks = $resultBlocks->fetch()) {
                         $outcome = array(
                             'outcometitle' => $rowBlocks['name'],
+                            'outcomegibbonOutcomeID' => $rowBlocks['gibbonOutcomeID'],
                             'outcomecategory' => $rowBlocks['category'],
                             'outcomecontents' => $rowBlocks['content']
                         );
-                        $customBlocks->addBlock($rowBlocks['gibbonPlannerEntryOutcomeID'], $outcome);
+                        $customBlocks->addBlock($rowBlocks['gibbonOutcomeID'], $outcome);
                     }
                 }
 
