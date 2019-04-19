@@ -260,6 +260,7 @@ CustomBlocks.prototype.init = function() {
     // Initialize existing blocks from JSON data
     for (var index in _.settings.currentBlocks) {
         _.addBlock(_.settings.currentBlocks[index]);
+        _.identifiers.push(index);
     }
 
     // Built-in Button Events
