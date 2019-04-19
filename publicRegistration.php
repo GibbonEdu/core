@@ -139,7 +139,7 @@ if ($proceed == false) {
 
         $row = $form->addRow();
             $row->addLabel('agreement', __('Do you agree to the above?'));
-            $row->addCheckbox('agreement')->required()->prepend('Yes');
+            $row->addCheckbox('agreement')->description(__('Yes'))->required();
     }
 
     $row = $form->addRow();
