@@ -80,7 +80,7 @@ class Format
      */
     public static function date($dateString = null, $format = false)
     {
-        $date = static::createDateTime(is_null($dateString) ? date('Y-m-d') :  $dateString);
+        $date = static::createDateTime(empty($dateString) ? date('Y-m-d') : $dateString);
         return $date ? $date->format($format ? $format : static::$settings['dateFormatPHP']) : $dateString;
     }
 
