@@ -302,31 +302,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $row->addLabel('homeworkSubmission', __('Online Submission?'));
                 $row->addRadio('homeworkSubmission')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->required()->checked('N')->inline(true);
 
-            $row = $form->addRow()->setClass('homework homeworkSubmission');
+            $row = $form->addRow()->setClass('homeworkSubmission');
                 $row->addLabel('homeworkSubmissionDateOpen', __('Submission Open Date'));
                 $row->addDate('homeworkSubmissionDateOpen')->required();
 
-            $row = $form->addRow()->setClass('homework homeworkSubmission');
+            $row = $form->addRow()->setClass('homeworkSubmission');
                 $row->addLabel('homeworkSubmissionDrafts', __('Drafts'));
                 $row->addSelect('homeworkSubmissionDrafts')->fromArray(array('0' => __('None'), '1' => __('1'), '2' => __('2'), '3' => __('3')))->required();
 
-            $row = $form->addRow()->setClass('homework homeworkSubmission');
+            $row = $form->addRow()->setClass('homeworkSubmission');
                 $row->addLabel('homeworkSubmissionType', __('Submission Type'));
                 $row->addSelect('homeworkSubmissionType')->fromArray(array('Link' => __('Link'), 'File' => __('File'), 'Link/File' => __('Link/File')))->required();
 
-            $row = $form->addRow()->setClass('homework homeworkSubmission');
+            $row = $form->addRow()->setClass('homeworkSubmission');
                 $row->addLabel('homeworkSubmissionRequired', __('Submission Required'));
                 $row->addSelect('homeworkSubmissionRequired')->fromArray(array('Optional' => __('Optional'), 'Compulsory' => __('Compulsory')))->required();
 
             if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAssess.php')) {
                 $form->toggleVisibilityByClass('homeworkCrowdAssess')->onRadio('homeworkCrowdAssess')->when('Y');
-                $row = $form->addRow()->addClass('homework homeworkSubmission');
+                $row = $form->addRow()->addClass('homeworkSubmission');
                     $row->addLabel('homeworkCrowdAssess', __('Crowd Assessment?'));
                     $row->addRadio('homeworkCrowdAssess')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->required()->checked('N')->inline(true);
 
-                $row = $form->addRow()->addClass('homework homeworkSubmission homeworkCrowdAssess');
+                $row = $form->addRow()->addClass('homeworkCrowdAssess');
                     $row->addLabel('homeworkCrowdAssessControl', __('Access Controls?'))->description(__('Decide who can see this homework.'));
-                    $column = $row->addColumn();
+                    $column = $row->addColumn()->setClass('flex-col items-end');
                         $column->addCheckbox('homeworkCrowdAssessClassTeacher')->checked(true)->description(__('Class Teacher'))->disabled();
                         $column->addCheckbox('homeworkCrowdAssessClassSubmitter')->checked(true)->description(__('Submitter'))->disabled();
                         $column->addCheckbox('homeworkCrowdAssessClassmatesRead')->description(__('Classmates'));
