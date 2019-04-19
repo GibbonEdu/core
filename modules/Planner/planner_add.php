@@ -262,6 +262,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $row->addLabel('timeEnd', __('End Time'))->description("Format: hh:mm (24hr)");
                 $row->addTime('timeEnd')->setValue($nextTimeEnd)->required();
 
+            $form->addRow()->addHeading(__('Lesson Content'));
+
             $description = getSettingByScope($connection2, 'Planner', 'lessonDetailsTemplate') ;
             $row = $form->addRow();
                 $column = $row->addColumn();
