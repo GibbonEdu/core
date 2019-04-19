@@ -1,4 +1,8 @@
 <?php
+
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -411,72 +415,50 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
         $output .= '</form>';
         $output .= '</div>';
 
-        //Show class picker in sidebar
-        $output .= '<div class="column-no-break">';
-        $output .= '<h2>';
-        $output .= __('Choose A Class');
-        $output .= '</h2>';
+        global $pdo;
 
-        $selectCount = 0;
-        $output .= "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/index.php'>";
-        $output .= "<table class='smallIntBorder' cellspacing='0' style='width: 100%; margin: 0px 0px'>";
-        $output .= '<tr>';
-        $output .= "<td style='width: 190px'>";
-        $output .= "<input name='q' id='q' type='hidden' value='/modules/Planner/planner.php'>";
-        $output .= "<input name='search' id='search' type='hidden' value='$gibbonPersonID'>";
-        $output .= "<input name='viewBy' id='viewBy' type='hidden' value='class'>";
-        $output .= "<select name='gibbonCourseClassID' id='gibbonCourseClassID' style='width:161px'>";
+        $form = Form::create('classChooser', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form->setFactory(DatabaseFormFactory::create($pdo));
+        $form->setTitle(__('Choose A Class'));
+        $form->setClass('smallIntBorder w-full');
 
-        $output .= "<option value=''></option>";
-        try {
-            $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
-            $sqlSelect = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID ORDER BY course, class';
+        $form->addHiddenValue('q', '/modules/Planner/planner.php');
+        $form->addHiddenValue('search', $gibbonPersonID);
+        $form->addHiddenValue('viewBy', 'class');
+
+        $classes = [];
+
+        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
+        $sqlSelect = "SELECT gibbonCourseClass.gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort";
+        $resultSelect = $connection2->prepare($sqlSelect);
+        $resultSelect->execute($dataSelect);
+
+        if ($resultSelect->rowCount() > 0) {
+            $classes[__('My Classes')] = $resultSelect->fetchAll(PDO::FETCH_KEY_PAIR);
+        }
+
+        if ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses') {
+            $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+            $sqlSelect = "SELECT gibbonCourseClass.gibbonCourseClassID, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort";
             $resultSelect = $connection2->prepare($sqlSelect);
             $resultSelect->execute($dataSelect);
-        } catch (PDOException $e) {
-        }
-        if ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses') {
-            $output .= "<optgroup label='--".__('My Classes')."--'>";
-        }
-        while ($rowSelect = $resultSelect->fetch()) {
-            $selected = '';
-            if ($rowSelect['gibbonCourseClassID'] == $gibbonCourseClassID and $selectCount == 0) {
-                $selected = 'selected';
-                ++$selectCount;
+
+            if ($resultSelect->rowCount() > 0) {
+                $classes[__('All Classes')] = $resultSelect->fetchAll(PDO::FETCH_KEY_PAIR);
             }
-            $output .= "<option $selected value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
         }
-        if ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses') {
-            $output .= '</optgroup>';
-        }
-        if ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses') {
-            try {
-                $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                $sqlSelect = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY course, class';
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-            }
-            $output .= "<optgroup label='--".__('All Classes')."--'>";
-            while ($rowSelect = $resultSelect->fetch()) {
-                $selected = '';
-                if ($rowSelect['gibbonCourseClassID'] == $gibbonCourseClassID and $selectCount == 0) {
-                    $selected = 'selected';
-                    ++$selectCount;
-                }
-                $output .= "<option $selected value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
-            }
-            $output .= '</optgroup>';
-        }
-        $output .= '</select>';
-        $output .= '</td>';
-        $output .= "<td class='right'>";
-        $output .= "<input type='submit' value='".__('Go')."'>";
-        $output .= '</td>';
-        $output .= '</tr>';
-        $output .= '</table>';
-        $output .= '</form>';
-        $output .= '</div>';
+
+        $row = $form->addRow();
+            $row->addSelect('gibbonCourseClassID', $_SESSION[$guid]['gibbonSchoolYearID'], $gibbonPersonID)
+                ->setID('gibbonCourseClassIDSidebar')
+                ->fromArray($classes)
+                ->selected($gibbonCourseClassID)
+                ->placeholder()
+                ->setClass('float-none w-48');
+            $row->addSubmit(__('Go'));
+
+        $output .= $form->getOutput();
+
 
         if ($_GET['q'] != '/modules/Planner/planner_deadlines.php') {
             //Show upcoming deadlines
