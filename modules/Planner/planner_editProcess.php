@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $homeworkCrowdAssessClassmatesParentsRead = null;
                     $homeworkCrowdAssessOtherParentsRead = null;
                     $homework = $_POST['homework'];
-                    if ($_POST['homework'] == 'Yes') {
+                    if ($_POST['homework'] == 'Y') {
                         $homework = 'Y';
                         $homeworkDetails = $_POST['homeworkDetails'];
                         if ($_POST['homeworkDueDateTime'] != '') {
@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                             $homeworkDueDate = dateConvert($guid, $_POST['homeworkDueDate']).' '.$homeworkDueDateTime;
                         }
 
-                        if ($_POST['homeworkSubmission'] == 'Yes') {
+                        if ($_POST['homeworkSubmission'] == 'Y') {
                             $homeworkSubmission = 'Y';
                             if ($_POST['homeworkSubmissionDateOpen'] != '') {
                                 $homeworkSubmissionDateOpen = dateConvert($guid, $_POST['homeworkSubmissionDateOpen']);
@@ -132,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                             }
                             $homeworkSubmissionType = $_POST['homeworkSubmissionType'];
                             $homeworkSubmissionRequired = $_POST['homeworkSubmissionRequired'];
-                            if (!empty($_POST['homeworkCrowdAssess']) && $_POST['homeworkCrowdAssess'] == 'Yes') {
+                            if (!empty($_POST['homeworkCrowdAssess']) && $_POST['homeworkCrowdAssess'] == 'Y') {
                                 $homeworkCrowdAssess = 'Y';
                                 if (isset($_POST['homeworkCrowdAssessOtherTeachersRead'])) {
                                     $homeworkCrowdAssessOtherTeachersRead = 'Y';
@@ -165,14 +165,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                                     $homeworkCrowdAssessOtherParentsRead = 'N';
                                 }
                             }
+                            else {
+                                $homeworkCrowdAssess = 'N';
+                            }
                         } else {
                             $homeworkSubmission = 'N';
+                            $homeworkCrowdAssess = 'N';
                         }
                     } else {
                         $homework = 'N';
                         $homeworkDueDate = null;
                         $homeworkDetails = '';
                         $homeworkSubmission = 'N';
+                        $homeworkCrowdAssess = 'N';
                     }
 
                     $viewableParents = $_POST['viewableParents'];
@@ -292,7 +297,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                                             $resultInsert = $connection2->prepare($sqlInsert);
                                             $resultInsert->execute($dataInsert);
                                         } catch (PDOException $e) {
-                                            echo $e;
                                             $partialFail = true;
                                         }
                                     }
