@@ -54,14 +54,14 @@ jQuery(function($){
 
             $('.bulkActionCount span').html(checkedCount);
             $('.bulkActionPanel').css('top', header.outerHeight(false) - panelHeight + 6);
-            
+
 
             // Trigger a showhide event on any nested inputs to update their visibility & validation state
             $('.bulkActionPanel :input').trigger('showhide');
         } else {
             $('.bulkActionPanel').addClass('hidden');
         }
-        
+
         $('.checkall').prop('checked', checkedCount > 0 );
         $('.checkall').prop('indeterminate', checkedCount > 0 && checkedCount < checkboxes.length);
 
@@ -72,7 +72,7 @@ jQuery(function($){
     $('.bulkActionForm').find('.bulkCheckbox :checkbox').each(function () {
         $(this).closest('tr').toggleClass('selected', $(this).prop('checked'));
     });
-    
+
     /**
      * Column Highlighting
      */
@@ -248,7 +248,7 @@ CustomBlocks.prototype.init = function() {
                 tinymce.EditorManager.execCommand('mceRemoveEditor', false, $(this).prop("id"));
             });
         });
-        
+
         $(_.blockTemplate).prepend('<div class="sortHandle floatLeft"></div>');
     }
 
@@ -382,9 +382,9 @@ CustomBlocks.prototype.renameBlockFields = function(block) {
     });
 
     // Initialize any textareas tagged as tinymce using an AJAX load to grab a full editor
-    $("textarea.tinymce", block).each(function (index, element) {
-        var data = { id: $(this).prop("id"), value: $(this).val() };
-        $(this).parent().load('./modules/Planner/planner_add_editorAjax.php', data, function(responseText, textStatus, jqXHR) { 
+    $("textarea[data-tinymce]", block).each(function (index, element) {
+        var data = { id: $(this).prop("id"), value: $(this).val(), showMedia: $(this).data('media') };
+        $(this).parent().load('./modules/Planner/planner_editorAjax.php', data, function(responseText, textStatus, jqXHR) {
             tinymce.EditorManager.execCommand('mceAddEditor', false, data.id);
         });
     });
@@ -392,7 +392,7 @@ CustomBlocks.prototype.renameBlockFields = function(block) {
 
 CustomBlocks.prototype.addBlockValidation = function(block) {
     var _ = this;
-    
+
     $("input, textarea, select", block).each(function(index, element) {
         if ($(this).data('validation') && !$(this).prop('readonly')) {
             var id = $(this).prop("id");
@@ -406,7 +406,7 @@ CustomBlocks.prototype.addBlockValidation = function(block) {
 
 CustomBlocks.prototype.removeBlockValidation = function(block) {
     var _ = this;
-    
+
     $("input, textarea, select", block).each(function(index, element) {
         if ($(this).data('validation') && !$(this).prop('readonly')) {
             var id = $(this).prop("id");
@@ -442,11 +442,11 @@ CustomBlocks.prototype.refresh = function() {
 $.prototype.gibbonCustomBlocks = function(settings) {
     this.gibbonCustomBlocks = new CustomBlocks(this, settings);
 };
-    
+
 /**
  * Gibbon Data Table: a very basic implementation of jQuery + AJAX powered data tables in Gibbon
- * @param string basePath 
- * @param Object settings 
+ * @param string basePath
+ * @param Object settings
  */
 var DataTable = window.DataTable || {};
 
@@ -479,7 +479,7 @@ DataTable.prototype.init = function() {
         var columns = $(this).data('sort').split(',');
 
         // Hold shift to add columns to the sort (or toggle them), otherwise clear it each time.
-        var activeColumns = columns.filter(function(item){ return item in _.filters.sortBy; }); 
+        var activeColumns = columns.filter(function(item){ return item in _.filters.sortBy; });
         if (activeColumns.length == 0 && !event.shiftKey) _.filters.sortBy = {};
 
         columns.forEach(function(column) {
@@ -492,7 +492,7 @@ DataTable.prototype.init = function() {
     // Remove Filter
     $(_.table).on('click', '.filter', function() {
         var filter = $(this).data('filter');
-        
+
         if ($(this).hasClass('clear')) {
             _.filters.filterBy = {'':''};
             _.filters.searchBy.columns = [''];
@@ -542,7 +542,7 @@ DataTable.prototype.refresh = function() {
     var submitted = setTimeout(function() {
         $('.pagination', _.table).prepend('<span class="submitted"></span>');
     }, 500);
-    
+
     var postData = {};
 
     if (_.identifier != '') {
@@ -551,9 +551,9 @@ DataTable.prototype.refresh = function() {
         postData = _.filters;
     }
 
-    $(_.table).load(_.path, postData, function(responseText, textStatus, jqXHR) { 
+    $(_.table).load(_.path, postData, function(responseText, textStatus, jqXHR) {
         $('.bulkActionPanel').addClass('hidden');
-        tb_init('a.thickbox'); 
+        tb_init('a.thickbox');
         clearTimeout(submitted);
     });
 };
@@ -563,7 +563,7 @@ $.prototype.gibbonDataTable = function(basePath, filters, identifier) {
 };
 
 /**
- * Disable the submit button once a form has started submitting. 
+ * Disable the submit button once a form has started submitting.
  * Add a spinning indicator for forms that take longer than 0.5s to submit.
  */
 function gibbonFormSubmitted(form) {
