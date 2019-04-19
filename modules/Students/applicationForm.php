@@ -947,7 +947,7 @@ if ($proceed == false) {
 
         $row = $form->addRow();
             $row->addLabel('privacyOptions[]', __('Privacy Options'));
-            $row->addCheckbox('privacyOptions[]')->fromArray($options);
+            $row->addCheckbox('privacyOptions[]')->fromArray($options)->addClass('md:max-w-lg');
     }
 
     // AGREEMENT
