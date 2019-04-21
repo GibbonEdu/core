@@ -54,8 +54,8 @@ class CustomBlocks implements OutputableInterface
         $this->session = $session;
         $this->name = $name;
 
-        $this->toolsTable = $factory->createTable()->setClass('inputTools fullWidth');
-        $this->blockButtons = $factory->createGrid()->setClass('blockButtons blank fullWidth');
+        $this->toolsTable = $factory->createTable()->setClass('inputTools w-full');
+        $this->blockButtons = $factory->createGrid()->setClass('blockButtons blank w-full');
         $this->addBlockButton('delete', __('Delete'), 'garbage.png');
 
         $this->settings = array(
@@ -91,7 +91,7 @@ class CustomBlocks implements OutputableInterface
 
     /**
      * Updates the settings array which is passed as json params to JS.
-     * @param  string  $value
+     * @param  array  $value
      * @return self
      */
     public function settings($value)
@@ -180,12 +180,12 @@ class CustomBlocks implements OutputableInterface
             $output .= '<input type="hidden" class="blockCount" name="'.$this->name.'Count" value="0" />';
             $output .= '<div class="blockPlaceholder" style="'.(count($this->settings['currentBlocks']) > 0 ? 'display: none;' : '').'">'.$this->settings['placeholder'].'</div>';
    
-            $output .= '<div class="blockTemplate" style="display: none;">';
-                $output .= '<div class="blockInputs floatLeft">';
+            $output .= '<div class="blockTemplate relative" style="display: none;">';
+                $output .= '<div class="blockInputs flex py-2 pr-4">';
                 $output .= $this->getTemplateOutput($this->blockTemplate);
                 $output .= '</div>';
 
-                $output .= '<div class="blockSidebar floatRight">';
+                $output .= '<div class="blockSidebar absolute top-0 right-0 mt-2">';
                     $output .= $this->blockButtons->getOutput();
                 $output .= '</div>';
             $output .= '</div>';

@@ -42,6 +42,66 @@ class PlannerFormFactory extends DatabaseFormFactory
     }
 
     /**
+     * Creates a fully-configured CustomBlocks input for Smart Blocks in the lesson planner.
+     *
+     * @param string $name
+     * @param Session $session
+     * @param string $guid
+     * @return OutputableInterface
+     */
+    public function createPlannerSmartBlocks($name, $session, $guid) : OutputableInterface
+    {
+        $blockTemplate = $this->createSmartBlockTemplate($guid);
+
+        // Create and initialize the Custom Blocks
+        $customBlocks = $this->createCustomBlocks($name, $session)
+            ->fromTemplate($blockTemplate)
+            ->settings([
+                'inputNameStrategy' => 'string',
+                'addOnEvent'        => 'change',
+                'sortable'          => true,
+                'orderName'         => 'order',
+            ])
+            ->placeholder(__('Smart Blocks outcomes listed here...'))
+            ->addBlockButton('showHide', __('Show/Hide'), 'plus.png');
+
+        return $customBlocks;
+    }
+
+    /**
+     * Creates a template for displaying Outcomes in a CustomBlocks input.
+     *
+     * @param string $guid
+     * @return OutputableInterface
+     */
+    public function createSmartBlockTemplate($guid) : OutputableInterface
+    {
+        $blockTemplate = $this->createTable()->setClass('blank w-full');
+            $row = $blockTemplate->addRow();
+            $row->addTextField('title')
+                ->setClass('w-3/4 title focus:bg-white')
+                ->placeholder(__('Title'))
+                ->append('<input type="hidden" id="gibbonUnitClassBlockID" name="gibbonUnitClassBlockID" value="">')
+                ->append('<input type="hidden" id="gibbonUnitBlockID" name="gibbonUnitBlockID" value="">');
+
+            $row = $blockTemplate->addRow()->addClass('w-3/4 flex justify-between mt-1');
+                $row->addTextField('type')->placeholder(__('type (e.g. discussion, outcome)'))
+                    ->setClass('w-full focus:bg-white mr-1');
+                $row->addTextField('length')->placeholder(__('length (min)'))
+                    ->setClass('w-24 focus:bg-white')->prepend('');
+
+            $col = $blockTemplate->addRow()->addClass('showHide w-full')->addColumn();
+                $col->addLabel('contentsLabel', __('Block Contents'))->setClass('mt-3 -mb-2');
+                $col->addTextArea('contents', $guid)->setRows(20)->addData('tinymce')->addData('media', '1');
+
+            $col = $blockTemplate->addRow()->addClass('showHide w-full')->addColumn();
+                $col->addLabel('teachersNotesLabel', __('Teacher\'s Notes'))->setClass('mt-3 -mb-2');
+                $col->addTextArea('teachersNotes', $guid)->setRows(20)->addData('tinymce')->addData('media', '1');
+
+        return $blockTemplate;
+    }
+
+    /**
      * Creates a fully-configured CustomBlocks input for Outcomes in the lesson planner.
      *
      * @param string $name
@@ -72,7 +132,7 @@ class PlannerFormFactory extends DatabaseFormFactory
 
         // Add predefined block data (for creating new blocks, triggered with the outcome selector)
         $data = ['gibbonYearGroupIDList' => $gibbonYearGroupIDList];
-        $sql = "SELECT gibbonOutcomeID as outcomegibbonOutcomeID, gibbonOutcome.name as outcometitle, category as outcomecategory, description as outcomecontents 
+        $sql = "SELECT gibbonOutcomeID as outcomegibbonOutcomeID, gibbonOutcome.name as outcometitle, category as outcomecategory, description as outcomecontents
                 FROM gibbonOutcome JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonOutcome.gibbonYearGroupIDList))
                 WHERE FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList)";
         $outcomeData = $this->pdo->select($sql, $data)->fetchAll();
@@ -96,23 +156,23 @@ class PlannerFormFactory extends DatabaseFormFactory
     {
         // Get School Outcomes
         $data = ['gibbonYearGroupIDList' => $gibbonYearGroupIDList];
-        $sql = "SELECT category AS groupBy, CONCAT('all ', category) as chainedTo, gibbonOutcomeID AS value, gibbonOutcome.name AS name 
-                FROM gibbonOutcome 
+        $sql = "SELECT category AS groupBy, CONCAT('all ', category) as chainedTo, gibbonOutcomeID AS value, gibbonOutcome.name AS name
+                FROM gibbonOutcome
                 JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonOutcome.gibbonYearGroupIDList))
-                WHERE active='Y' AND scope='School' 
-                AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList) 
+                WHERE active='Y' AND scope='School'
+                AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList)
                 GROUP BY gibbonOutcome.gibbonOutcomeID
                 ORDER BY groupBy, name";
 
         // Get Departmental Outcomes
         $data2 = ['gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'gibbonDepartmentID' => $gibbonDepartmentID];
-        $sql2 = "SELECT CONCAT(gibbonDepartment.name, ': ', category) AS groupBy, CONCAT('all ', category) as chainedTo, gibbonOutcomeID AS value, gibbonOutcome.name AS name 
-                FROM gibbonOutcome 
-                JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) 
+        $sql2 = "SELECT CONCAT(gibbonDepartment.name, ': ', category) AS groupBy, CONCAT('all ', category) as chainedTo, gibbonOutcomeID AS value, gibbonOutcome.name AS name
+                FROM gibbonOutcome
+                JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID)
                 JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonOutcome.gibbonYearGroupIDList))
                 WHERE active='Y' AND scope='Learning Area'
-                AND gibbonDepartment.gibbonDepartmentID=:gibbonDepartmentID 
-                AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList) 
+                AND gibbonDepartment.gibbonDepartmentID=:gibbonDepartmentID
+                AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList)
                 GROUP BY gibbonOutcome.gibbonOutcomeID
                 ORDER BY groupBy, gibbonOutcome.name";
 
@@ -131,7 +191,7 @@ class PlannerFormFactory extends DatabaseFormFactory
         $sql3 = "SELECT category as value, category as name
                 FROM gibbonOutcome
                 JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonOutcome.gibbonYearGroupIDList))
-                WHERE active='Y' AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList) 
+                WHERE active='Y' AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList)
                 GROUP BY gibbonOutcome.category";
 
         $col->addSelect($name.'Filter')
@@ -153,19 +213,19 @@ class PlannerFormFactory extends DatabaseFormFactory
         $blockTemplate = $this->createTable()->setClass('blank w-full');
             $row = $blockTemplate->addRow();
             $row->addTextField('outcometitle')
-                ->setClass('w-3/4 floatLeft noMargin title readonly')
+                ->setClass('w-3/4 title readonly')
                 ->readonly()
                 ->placeholder(__('Outcome Name'))
                 ->append('<input type="hidden" id="outcomegibbonOutcomeID" name="outcomegibbonOutcomeID" value="">');
 
             $row = $blockTemplate->addRow();
             $row->addTextField('outcomecategory')
-                ->setClass('w-3/4 floatLeft noMargin readonly')
+                ->setClass('w-3/4 readonly mt-1')
                 ->readonly();
-                
+
             $col = $blockTemplate->addRow()->addClass('showHide fullWidth')->addColumn();
             if ($allowOutcomeEditing == 'Y') {
-                $col->addTextArea('outcomecontents')->setRows(10)->setClass('tinymce');
+                $col->addTextArea('outcomecontents')->setRows(10)->addData('tinymce');
             } else {
                 $col->addContent('')->wrap('<label for="outcomecontents" class="block pt-2">', '</label>')
                     ->append('<input type="hidden" id="outcomecontents" name="outcomecontents" value="">');
