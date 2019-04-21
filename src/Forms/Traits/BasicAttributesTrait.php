@@ -117,7 +117,7 @@ trait BasicAttributesTrait
      * @param  mixed  $data
      * @return self
      */
-    public function addData($name, $data = '', $encode = false)
+    public function addData($name, $data = true, $encode = false)
     {
         if ($encode || is_array($data)) $data = json_encode($data);
         $this->setAttribute('data-'.$name, $data);

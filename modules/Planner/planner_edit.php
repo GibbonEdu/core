@@ -233,7 +233,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $column->addEditor('teachersNotes', $guid)->setRows(25)->showMedia()->setValue($teachersNotes);
 
                 //SMART BLOCKS
-                $form->addRow()->addHeading(__('Smart Blocks'));
+                if ($values['gibbonUnitID'] != '') {
+                    $form->addRow()->addHeading(__('Smart Blocks'));
+
+                    $form->addRow()->addContent("<div class='float-right'><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_edit_working.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=".$values['gibbonCourseID'].'&gibbonUnitID='.$values['gibbonUnitID'].'&gibbonSchoolYearID='.$_SESSION[$guid]['gibbonSchoolYearID']."&gibbonUnitClassID=$gibbonUnitClassID'>".__('Edit Unit').'</a></span>');
+
+                    $row = $form->addRow();
+                        $customBlocks = $row->addPlannerSmartBlocks('smart', $gibbon->session, $guid);
+
+                    $dataBlocks = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
+                    $sqlBlocks = 'SELECT * FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY sequenceNumber';
+                    $resultBlocks = $pdo->select($sqlBlocks, $dataBlocks);
+
+                    while ($rowBlocks = $resultBlocks->fetch()) {
+                        $smart = array(
+                            'title' => $rowBlocks['title'],
+                            'type' => $rowBlocks['type'],
+                            'length' => $rowBlocks['length'],
+                            'contents' => $rowBlocks['contents'],
+                            'teachersNotes' => $rowBlocks['teachersNotes'],
+                            'gibbonUnitClassBlockID' => $rowBlocks['gibbonUnitClassBlockID']
+                        );
+                        $customBlocks->addBlock($rowBlocks['gibbonUnitClassBlockID'], $smart);
+                    }
+                }
 
                 //HOMEWORK
                 $form->addRow()->addHeading(__('Homework'));
@@ -310,7 +333,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 
                     $row = $form->addRow();
                         $customBlocks = $row->addPlannerOutcomeBlocks('outcome', $gibbon->session, $gibbonYearGroupIDList, $gibbonDepartmentID, $allowOutcomeEditing);
-      
+
                     $dataBlocks = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
                     $sqlBlocks = 'SELECT gibbonPlannerEntryOutcome.*, scope, name, category FROM gibbonPlannerEntryOutcome JOIN gibbonOutcome ON (gibbonPlannerEntryOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE gibbonPlannerEntryOutcome.gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY sequenceNumber';
                     $resultBlocks = $pdo->select($sqlBlocks, $dataBlocks);
