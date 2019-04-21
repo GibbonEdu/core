@@ -79,16 +79,16 @@ class PlannerFormFactory extends DatabaseFormFactory
         $blockTemplate = $this->createTable()->setClass('blank w-full');
             $row = $blockTemplate->addRow();
             $row->addTextField('title')
-                ->setClass('w-3/4  title readonly')
+                ->setClass('w-3/4 title focus:bg-white')
                 ->placeholder(__('Title'))
                 ->append('<input type="hidden" id="gibbonUnitClassBlockID" name="gibbonUnitClassBlockID" value="">')
                 ->append('<input type="hidden" id="gibbonUnitBlockID" name="gibbonUnitBlockID" value="">');
 
             $row = $blockTemplate->addRow()->addClass('w-3/4 flex justify-between mt-1');
                 $row->addTextField('type')->placeholder(__('type (e.g. discussion, outcome)'))
-                    ->setClass('w-full readonly mr-1');
+                    ->setClass('w-full focus:bg-white mr-1');
                 $row->addTextField('length')->placeholder(__('length (min)'))
-                    ->setClass('w-24 readonly')->prepend('');
+                    ->setClass('w-24 focus:bg-white')->prepend('');
 
             $col = $blockTemplate->addRow()->addClass('showHide w-full')->addColumn();
                 $col->addLabel('contentsLabel', __('Block Contents'))->setClass('mt-3 -mb-2');

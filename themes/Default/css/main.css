@@ -1119,32 +1119,19 @@ table.smallIntBorder td.noPadding {
 }
 
 .blockTemplate.ui-sortable-helper {
-    max-height: 80px !important;
+    max-height: 74px !important;
 }
-
-.blockSidebar {
-    width: 8%;
-}
-
 
 .blockInputs input,
-.blockInputs textarea,
-.blockInputs select {
-    border: 1px solid #bfbfbf;
-    font-style: italic;
+.blockInputs select,
+.blockInputs textarea:not(.tinymce) {
+    background: transparent;
 }
 
-.blockInputs input.readonly {
-    color: #222222;
-    border: 1px dotted #aaa;
-    background: none;
+.blockInputs input:not([readonly]) {
+    border: 1px solid #d2e4f2;
 }
 
-.blockInputs select.readonly {
-    pointer-events: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-}
 
 .blockInputs .title {
     font-style: normal;
