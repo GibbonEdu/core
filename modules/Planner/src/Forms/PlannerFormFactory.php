@@ -93,11 +93,11 @@ class PlannerFormFactory extends DatabaseFormFactory
 
             $col = $blockTemplate->addRow()->addClass('showHide fullWidth')->addColumn();
                 $col->addLabel('contentsLabel', __('Block Contents'));
-                $col->addTextArea('contents', $guid)->setRows(10);
+                $col->addTextArea('contents', $guid)->setRows(10)->addData('tinymce')->addData('media', '1');
 
             $col = $blockTemplate->addRow()->addClass('showHide fullWidth')->addColumn();
                 $col->addLabel('teachersNotesLabel', __('Teacher\'s Notes'));
-                $col->addTextArea('teachersNotes', $guid)->setRows(10);
+                $col->addTextArea('teachersNotes', $guid)->setRows(10)->addData('tinymce')->addData('media', '1');
 
         return $blockTemplate;
     }
@@ -226,7 +226,7 @@ class PlannerFormFactory extends DatabaseFormFactory
 
             $col = $blockTemplate->addRow()->addClass('showHide fullWidth')->addColumn();
             if ($allowOutcomeEditing == 'Y') {
-                $col->addTextArea('outcomecontents')->setRows(10);
+                $col->addTextArea('outcomecontents')->setRows(10)->addData('tinymce');
             } else {
                 $col->addContent('')->wrap('<label for="outcomecontents" class="block pt-2">', '</label>')
                     ->append('<input type="hidden" id="outcomecontents" name="outcomecontents" value="">');

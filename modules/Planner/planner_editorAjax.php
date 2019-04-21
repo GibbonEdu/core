@@ -26,6 +26,4 @@ $id = $_POST['id'];
 $value = $_POST['value'];
 $showMedia = $_POST['showMedia'] ?? false;
 
-// echo 'Show Media? '.$showMedia;
-
-echo getEditor($guid, true, $id, $value, 10, $showMedia, false, false, false, '', false);
+echo getEditor($guid, false, $id, $value, 10, $showMedia, false, false, $showMedia, '', false);
