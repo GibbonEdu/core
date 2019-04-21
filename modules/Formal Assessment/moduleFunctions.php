@@ -255,7 +255,7 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID, $mode = 'manage
             ->fromArray($classes)
             ->selected($gibbonCourseClassID)
             ->placeholder()
-            ->setClass('fullWidth');
+            ->setClass('float-none w-48');
         $row->addSubmit(__('Go'));
 
     $output .= $form->getOutput();
