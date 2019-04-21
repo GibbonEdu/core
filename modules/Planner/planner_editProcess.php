@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     //Validate Inputs
                     $timeStart = $_POST['timeStart'];
                     $timeEnd = $_POST['timeEnd'];
-                    $gibbonUnitID = $_POST['gibbonUnitID'];
+                    $gibbonUnitID = !empty($_POST['gibbonUnitID']) ? $_POST['gibbonUnitID'] : null;
                     $name = $_POST['name'];
                     $summary = $_POST['summary'];
                     if ($summary == '') {
