@@ -44,7 +44,7 @@ if ($proceed == false) {
 
     $returns = array();
     $returns['fail5'] = sprintf(__('Your request failed because you do not meet the minimum age for joining this site (%1$s years of age).'), $publicRegistrationMinimumAge);
-    $returns['fail7'] = __('Your request failed because your password to not meet the minimum requirements for strength.');
+    $returns['fail7'] = __('Your request failed because your password does not meet the minimum requirements for strength.');
     $returns['success1'] = __('Your registration was successfully submitted and is now pending approval. Our team will review your registration and be in touch in due course.');
     $returns['success0'] = __('Your registration was successfully submitted, and you may now log into the system using your new username and password.');
     if (isset($_GET['return'])) {

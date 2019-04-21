@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     $returns = array();
     $returns['error5'] = __('Your request failed because your passwords did not match.');
     $returns['error6'] = __('Your request failed due to an attachment error.');
-    $returns['error7'] = __('Your request failed because your password to not meet the minimum requirements for strength.');
+    $returns['error7'] = __('Your request failed because your password does not meet the minimum requirements for strength.');
     $returns['warning1'] = __('Your request was completed successfully, but one or more images were the wrong size and so were not saved.');
     $editLink = '';
     if (isset($_GET['editID'])) {

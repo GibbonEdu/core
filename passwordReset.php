@@ -39,7 +39,7 @@ if ($step == 1) {
     $returns['error4'] = __('Your request failed due to incorrect, non-existent or non-unique email address or username.');
     $returns['error3'] = __('Failed to send update email.');
     $returns['error5'] = __('Your request failed due to non-matching passwords.');
-    $returns['error6'] = __('Your request failed because your password to not meet the minimum requirements for strength.');
+    $returns['error6'] = __('Your request failed because your password does not meet the minimum requirements for strength.');
     $returns['error7'] = __('Your request failed because your new password is the same as your current password.');
     $returns['fail2'] = __('You do not have sufficient privileges to login.');
     $returns['fail9'] = __('Your primary role does not support the ability to log into the specified year.');
