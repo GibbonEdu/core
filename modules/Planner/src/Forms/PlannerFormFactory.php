@@ -79,17 +79,16 @@ class PlannerFormFactory extends DatabaseFormFactory
         $blockTemplate = $this->createTable()->setClass('blank w-full');
             $row = $blockTemplate->addRow();
             $row->addTextField('title')
-                ->setClass('w-3/4 floatLeft noMargin title readonly')
+                ->setClass('w-3/4  title readonly')
                 ->placeholder(__('Title'))
                 ->append('<input type="hidden" id="gibbonUnitClassBlockID" name="gibbonUnitClassBlockID" value="">')
                 ->append('<input type="hidden" id="gibbonUnitBlockID" name="gibbonUnitBlockID" value="">');
 
-            $row = $blockTemplate->addRow();
-                $column = $row->addColumn()->addClass('right');
-                $column->addTextField('type')->placeholder(__('type (e.g. discussion, outcome)'))
-                    ->setClass('w-1/2 floatLeft noMargin readonly');
-                $column->addTextField('length')->placeholder(__('length (min)'))
-                    ->setClass('w-1/2 floatLeft noMargin readonly');
+            $row = $blockTemplate->addRow()->addClass('w-3/4 flex');
+                $row->addTextField('type')->placeholder(__('type (e.g. discussion, outcome)'))
+                    ->setClass('flex-1 w-full readonly');
+                $row->addTextField('length')->placeholder(__('length (min)'))
+                    ->setClass('flex-1 w-full readonly');
 
             $col = $blockTemplate->addRow()->addClass('showHide fullWidth')->addColumn();
                 $col->addLabel('contentsLabel', __('Block Contents'));
