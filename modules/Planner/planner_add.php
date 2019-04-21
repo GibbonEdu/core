@@ -179,11 +179,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                     $row->addSelect('gibbonUnitID')->fromQuery($pdo, $sql, $data)->placeholder();
             }
             else {
-                $data = array();
-                $sql = "SELECT gibbonCourseClassID AS chainedTo, gibbonUnit.gibbonUnitID as value, name FROM gibbonUnit JOIN gibbonUnitClass ON (gibbonUnit.gibbonUnitID=gibbonUnitClass.gibbonUnitID) WHERE active='Y' AND running='Y' ORDER BY name";
+                $sql = "SELECT GROUP_CONCAT(gibbonCourseClassID SEPARATOR ' ') AS chainedTo, gibbonUnit.gibbonUnitID as value, name FROM gibbonUnit JOIN gibbonUnitClass ON (gibbonUnit.gibbonUnitID=gibbonUnitClass.gibbonUnitID) WHERE active='Y' AND running='Y'  GROUP BY gibbonUnit.gibbonUnitID ORDER BY name";
                 $row = $form->addRow();
                     $row->addLabel('gibbonUnitID', __('Unit'));
-                    $row->addSelect('gibbonUnitID')->fromQueryChained($pdo, $sql, $data, 'gibbonCourseClassID')->placeholder();
+                    $row->addSelect('gibbonUnitID')->fromQueryChained($pdo, $sql, [], 'gibbonCourseClassID')->placeholder();
             }
 
             $row = $form->addRow();
