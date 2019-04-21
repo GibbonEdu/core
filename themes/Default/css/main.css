@@ -1139,7 +1139,7 @@ table.smallIntBorder td.noPadding {
     font-style: italic;
 }
 
-.blockInputs .readonly {
+.blockInputs input.readonly {
     color: #222222;
     border: 1px dotted #aaa;
     background: none;
