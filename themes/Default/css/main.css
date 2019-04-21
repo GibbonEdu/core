@@ -1097,7 +1097,7 @@ table.smallIntBorder td.noPadding {
 
 .customBlocks .sortHandle {
     width: 2px;
-    height: 70px;
+    height: 64px;
     margin: 5px;
     border-color: #c7dae9;
     border-style: dotted;
@@ -1126,11 +1126,6 @@ table.smallIntBorder td.noPadding {
     width: 8%;
 }
 
-.blockInputs {
-    width: 88%;
-    padding: 5px;
-    box-sizing: border-box;
-}
 
 .blockInputs input,
 .blockInputs textarea,

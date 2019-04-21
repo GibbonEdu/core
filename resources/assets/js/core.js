@@ -383,7 +383,7 @@ CustomBlocks.prototype.renameBlockFields = function(block) {
 
     // Initialize any textareas tagged as tinymce using an AJAX load to grab a full editor
     $("textarea[data-tinymce]", block).each(function (index, element) {
-        var data = { id: $(this).prop("id"), value: $(this).val(), showMedia: $(this).data('media') };
+        var data = { id: $(this).prop("id"), value: $(this).val(), showMedia: $(this).data('media'), rows: $(this).prop("rows") };
         $(this).parent().load('./modules/Planner/planner_editorAjax.php', data, function(responseText, textStatus, jqXHR) {
             tinymce.EditorManager.execCommand('mceAddEditor', false, data.id);
         });

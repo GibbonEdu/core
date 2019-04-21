@@ -84,19 +84,19 @@ class PlannerFormFactory extends DatabaseFormFactory
                 ->append('<input type="hidden" id="gibbonUnitClassBlockID" name="gibbonUnitClassBlockID" value="">')
                 ->append('<input type="hidden" id="gibbonUnitBlockID" name="gibbonUnitBlockID" value="">');
 
-            $row = $blockTemplate->addRow()->addClass('w-3/4 flex');
+            $row = $blockTemplate->addRow()->addClass('w-3/4 flex justify-between mt-1');
                 $row->addTextField('type')->placeholder(__('type (e.g. discussion, outcome)'))
-                    ->setClass('flex-1 w-full readonly');
+                    ->setClass('w-full readonly mr-1');
                 $row->addTextField('length')->placeholder(__('length (min)'))
-                    ->setClass('flex-1 w-full readonly');
+                    ->setClass('w-24 readonly')->prepend('');
 
-            $col = $blockTemplate->addRow()->addClass('showHide fullWidth')->addColumn();
-                $col->addLabel('contentsLabel', __('Block Contents'));
-                $col->addTextArea('contents', $guid)->setRows(10)->addData('tinymce')->addData('media', '1');
+            $col = $blockTemplate->addRow()->addClass('showHide w-full')->addColumn();
+                $col->addLabel('contentsLabel', __('Block Contents'))->setClass('mt-3 -mb-2');
+                $col->addTextArea('contents', $guid)->setRows(20)->addData('tinymce')->addData('media', '1');
 
-            $col = $blockTemplate->addRow()->addClass('showHide fullWidth')->addColumn();
-                $col->addLabel('teachersNotesLabel', __('Teacher\'s Notes'));
-                $col->addTextArea('teachersNotes', $guid)->setRows(10)->addData('tinymce')->addData('media', '1');
+            $col = $blockTemplate->addRow()->addClass('showHide w-full')->addColumn();
+                $col->addLabel('teachersNotesLabel', __('Teacher\'s Notes'))->setClass('mt-3 -mb-2');
+                $col->addTextArea('teachersNotes', $guid)->setRows(20)->addData('tinymce')->addData('media', '1');
 
         return $blockTemplate;
     }
@@ -213,14 +213,14 @@ class PlannerFormFactory extends DatabaseFormFactory
         $blockTemplate = $this->createTable()->setClass('blank w-full');
             $row = $blockTemplate->addRow();
             $row->addTextField('outcometitle')
-                ->setClass('w-3/4 floatLeft noMargin title readonly')
+                ->setClass('w-3/4 title readonly')
                 ->readonly()
                 ->placeholder(__('Outcome Name'))
                 ->append('<input type="hidden" id="outcomegibbonOutcomeID" name="outcomegibbonOutcomeID" value="">');
 
             $row = $blockTemplate->addRow();
             $row->addTextField('outcomecategory')
-                ->setClass('w-3/4 floatLeft noMargin readonly')
+                ->setClass('w-3/4 readonly mt-1')
                 ->readonly();
 
             $col = $blockTemplate->addRow()->addClass('showHide fullWidth')->addColumn();
