@@ -171,7 +171,7 @@ input[readonly]:focus, select[readonly]:focus, textarea[readonly]:focus {
     @apply shadow-none;
 }
 
-.button {
+input.button, a.button, button.button {
     @apply py-1 px-2 border border-gray-500 text-gray-700 text-xs font-bold leading-normal ;
 }
 
