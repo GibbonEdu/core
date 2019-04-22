@@ -12,68 +12,70 @@ Rich Text Editor
 
 <a name="{{ id }}editor"></a>
 
-<div class="editor-toolbar flex flex-col sm:flex-row justify-between h-8 text-xs">
+<div class="editor-toolbar flex flex-wrap sm:flex-no-wrap justify-between text-xs">
 
     {% if showMedia %}
-    <div id="{{ id }}mediaInner" class="flex items-center py-2">
-        <script type="text/javascript">
-        $(document).ready(function(){
-            $(".{{ id }}resourceSlider, .{{ id }}resourceAddSlider, .{{ id }}resourceQuickSlider").hide();
-            $(".{{ id }}show_hide").unbind('click').click(function(){
-                $(".{{ id }}resourceSlider").slideToggle();
-                $(".{{ id }}resourceAddSlider, .{{ id }}resourceQuickSlider").hide();
+    <div id="{{ id }}mediaOuter" class="h-6">
+        <div id="{{ id }}mediaInner" class="flex items-center py-1">
+            <script type="text/javascript">
+            $(document).ready(function(){
+                $(".{{ id }}resourceSlider, .{{ id }}resourceAddSlider, .{{ id }}resourceQuickSlider").hide();
+                $(".{{ id }}show_hide").unbind('click').click(function(){
+                    $(".{{ id }}resourceSlider").slideToggle();
+                    $(".{{ id }}resourceAddSlider, .{{ id }}resourceQuickSlider").hide();
+                    if (tinyMCE.get('{{ id }}').selection.getRng().startOffset < 1) {
+                        tinyMCE.get('{{ id }}').focus();
+                    }
+                });
+                $(".{{ id }}show_hideAdd").unbind('click').click(function(){
+                    $(".{{ id }}resourceAddSlider").slideToggle();
+                    $(".{{ id }}resourceSlider, .{{ id }}resourceQuickSlider").hide();
+                    if (tinyMCE.get('{{ id }}').selection.getRng().startOffset < 1) {
+                        tinyMCE.get('{{ id }}').focus();
+                    }
+                });
+                $(".{{ id }}show_hideQuickAdd").unbind('click').click(function(){
+                $(".{{ id }}resourceQuickSlider").slideToggle();
+                $(".{{ id }}resourceSlider, .{{ id }}resourceAddSlider").hide();
                 if (tinyMCE.get('{{ id }}').selection.getRng().startOffset < 1) {
                     tinyMCE.get('{{ id }}').focus();
                 }
+                });
             });
-            $(".{{ id }}show_hideAdd").unbind('click').click(function(){
-                $(".{{ id }}resourceAddSlider").slideToggle();
-                $(".{{ id }}resourceSlider, .{{ id }}resourceQuickSlider").hide();
-                if (tinyMCE.get('{{ id }}').selection.getRng().startOffset < 1) {
-                    tinyMCE.get('{{ id }}').focus();
-                }
-            });
-            $(".{{ id }}show_hideQuickAdd").unbind('click').click(function(){
-            $(".{{ id }}resourceQuickSlider").slideToggle();
-            $(".{{ id }}resourceSlider, .{{ id }}resourceAddSlider").hide();
-            if (tinyMCE.get('{{ id }}').selection.getRng().startOffset < 1) {
-                tinyMCE.get('{{ id }}').focus();
-            }
-            });
-        });
-        </script>
+            </script>
 
-        <div class="mr-2 flex items-center">
-            <span>{{ __('Shared Resources') }}:</span> 
-    
-            <a title="{{ __('Insert Existing Resource') }}" class="{{ id }}show_hide mx-1" onclick='$(".{{ id }}resourceSlider").load("{{ absoluteURL }}/modules/Planner/resources_insert_ajax.php?alpha={{ resourceAlphaSort }}&{{ initialFilter }}","id={{ id }}&allowUpload={{ allowUpload }}");'>
-                <img src="{{ absoluteURL  }}/themes/Default/img/search_mini.png" alt="{{ __('Insert Existing Resource') }}" onclick="return false;" />
-            </a>
+            <div class="mr-2 flex items-center">
+                <span>{{ __('Shared Resources') }}:</span> 
         
+                <a title="{{ __('Insert Existing Resource') }}" class="{{ id }}show_hide mx-1" onclick='$(".{{ id }}resourceSlider").load("{{ absoluteURL }}/modules/Planner/resources_insert_ajax.php?alpha={{ resourceAlphaSort }}&{{ initialFilter }}","id={{ id }}&allowUpload={{ allowUpload }}");'>
+                    <img src="{{ absoluteURL  }}/themes/Default/img/search_mini.png" alt="{{ __('Insert Existing Resource') }}" onclick="return false;" />
+                </a>
+            
+                {% if allowUpload %}
+                <a title="{{ __('Create & Insert New Resource') }}" class="{{ id }}show_hideAdd mx-1" onclick='$(".{{ id }}resourceAddSlider").load("{{ absoluteURL }}/modules/Planner/resources_add_ajax.php?alpha={{ resourceAlphaSort }}&{{ initialFilter }}","id={{ id }}&allowUpload={{ allowUpload }}");'>
+                    <img src="{{ absoluteURL  }}/themes/Default/img/upload_mini.png" alt="{{ __('Create & Insert New Resource') }}" onclick="return false;" />
+                </a>
+                {% endif %}
+            </div>
+            
             {% if allowUpload %}
-            <a title="{{ __('Create & Insert New Resource') }}" class="{{ id }}show_hideAdd mx-1" onclick='$(".{{ id }}resourceAddSlider").load("{{ absoluteURL }}/modules/Planner/resources_add_ajax.php?alpha={{ resourceAlphaSort }}&{{ initialFilter }}","id={{ id }}&allowUpload={{ allowUpload }}");'>
-                <img src="{{ absoluteURL  }}/themes/Default/img/upload_mini.png" alt="{{ __('Create & Insert New Resource') }}" onclick="return false;" />
-            </a>
+            <div class="mr-2 flex items-center">
+                <span>{{ __('Quick File Upload') }}:</span> 
+
+                <a title="{{ __('Quick Add') }}" class="{{ id }}show_hideQuickAdd mx-1" onclick='$(".{{ id }}resourceQuickSlider").load("{{ absoluteURL }}/modules/Planner/resources_addQuick_ajax.php?alpha={{ resourceAlphaSort }}&{{ initialFilter }}","id={{ id }}&allowUpload={{ allowUpload }}");'>
+                    <img src="{{ absoluteURL  }}/themes/Default/img/page_new_mini.png" alt="{{ __('Quick Add') }}" onclick="return false;" />
+                </a>
+            </div>
             {% endif %}
         </div>
-        
-        {% if allowUpload %}
-        <div class="mr-2 flex items-center">
-            <span>{{ __('Quick File Upload') }}:</span> 
-
-            <a title="{{ __('Quick Add') }}" class="{{ id }}show_hideQuickAdd mx-1" onclick='$(".{{ id }}resourceQuickSlider").load("{{ absoluteURL }}/modules/Planner/resources_addQuick_ajax.php?alpha={{ resourceAlphaSort }}&{{ initialFilter }}","id={{ id }}&allowUpload={{ allowUpload }}");'>
-                <img src="{{ absoluteURL  }}/themes/Default/img/page_new_mini.png" alt="{{ __('Quick Add') }}" onclick="return false;" />
-            </a>
-        </div>
-        {% endif %}
     </div>
     {% endif %}
 
     <div class="editor-tabs flex flex-grow justify-end items-end">
-        <a id="{{ id }}edButtonPreview" class="active hide-if-no-js block cursor-pointer bg-gray-100 text-gray-500 border border-b-0 rounded-t px-4 pt-2 pb-1 mx-1 font-bold">
+        <a id="{{ id }}edButtonPreview" class="active hide-if-no-js block cursor-pointer bg-gray-100 text-gray-500 border border-b-0 rounded-t px-4 pt-2 pb-1 mx-1 font-bold z-10">
             {{ __('Visual') }}
         </a>
-        <a id="{{ id }}edButtonHTML" class="hide-if-no-js block cursor-pointer bg-gray-100 text-gray-500 border border-b-0 rounded-t px-4 pt-2 pb-1 mx-1 font-bold">
+        <a id="{{ id }}edButtonHTML" class="hide-if-no-js block cursor-pointer bg-gray-100 text-gray-500 border border-b-0 rounded-t px-4 pt-2 pb-1 mx-1 font-bold z-10">
             HTML
         </a>
     </div>
