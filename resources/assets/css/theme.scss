@@ -270,7 +270,7 @@ input[readonly]:focus, select[readonly]:focus, textarea[readonly]:focus {
 
 /* Thickbox: Prevent random scrollbars */
 #TB_ajaxContent {
-    max-height: 90vh;
+    max-height: 85vh;
     min-height: 25vh;
     margin: 0 auto;
 }
@@ -286,7 +286,7 @@ input[readonly]:focus, select[readonly]:focus, textarea[readonly]:focus {
     #TB_ajaxContent {
         width: 76vw !important;
         max-width: 100vw;
-        overflow: initial;
+        overflow: auto;
         padding: 0.5rem;
         height: auto !important;
     }
