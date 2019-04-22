@@ -19,28 +19,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Rubrics;
 
-use Gibbon\Contracts\Database\Connection;
-use Gibbon\session;
 use Gibbon\UI\Chart\Chart;
 
 /**
  * Attendance display & edit class
  *
- * @version 12th Sept 2016
- * @since   12th Sept 2016
- * @author  Sandra Kuipers
+ * @version v18
+ * @since   v18
  */
 class Visualise
 {
-    /**
-     * Gibbon\Contracts\Database\Connection
-     */
-    protected $pdo;
-
-    /**
-     * Gibbon\session
-     */
-    protected $session;
+    protected $absoluteURL;
 
     protected $page;
 
@@ -59,18 +48,13 @@ class Visualise
     /**
      * Constructor
      *
-     * @version  3rd May 2016
-     * @since    3rd May 2016
-     * @param    Gibbon\session
-     * @param    Gibbon\config
-     * @param    Gibbon\Contracts\Database\Connection
+     * @version  v18
+     * @since    v18
      * @return   void
      */
-    public function __construct(\Gibbon\Core $gibbon, Connection $pdo, $page, Int $gibbonPersonID, Array $columns, Array $rows, Array $cells, Array $contexts)
+    public function __construct($absoluteURL, $page, Int $gibbonPersonID, Array $columns, Array $rows, Array $cells, Array $contexts)
     {
-        $this->session = $gibbon->session;
-
-        $this->pdo = $pdo;
+        $this->absoluteURL = $absoluteURL;
 
         $this->page = $page;
 
@@ -153,7 +137,7 @@ class Visualise
                     'duration' => 0,
                     'onComplete' => $chart->addFunction('function(e) {
                         var img = visualisation.toDataURL("image/png");
-                        $.ajax({ url: "'.$this->session->get('absoluteURL').'/modules/Rubrics/src/visualise_saveAjax.php", type: "POST", data: {img: img, gibbonPersonID: '.$this->gibbonPersonID.'}, dataType: "html"})
+                        $.ajax({ url: "'.$this->absoluteURL.'/modules/Rubrics/src/visualise_saveAjax.php", type: "POST", data: {img: img, gibbonPersonID: '.$this->gibbonPersonID.'}, dataType: "html"})
                         $.ajax({ url: "./"});
                     }'),
                 ];
