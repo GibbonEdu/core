@@ -230,11 +230,11 @@ table td {
 }
 
 .odd,
-table.colorOddEven tr {
+table.colorOddEven tr:not([class]) {
     background-color: #fefefe;
 }
 .even,
-table.colorOddEven tr:nth-of-type(odd) {
+table.colorOddEven tr:nth-of-type(odd):not([class]) {
     background-color: #f9f9f9;
 }
 
@@ -892,12 +892,6 @@ h4.bigTop,
 h5.bigTop,
 h6.bigTop {
     margin-top: 50px !important;
-}
-
-
-/* Forms - ignore the colorOddEven stripe on footer */
-form table.colorOddEven tr:last-of-type {
-    background-color: #fbfbfb;
 }
 
 /* v13 NEW CLASSES */
