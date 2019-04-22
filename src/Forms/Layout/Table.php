@@ -114,7 +114,7 @@ class Table implements OutputableInterface, ValidatableInterface
 
             // Output each element inside the row
             foreach ($row->getElements() as $element) {
-                $element->addClass('text-xxs sm:text-xs');
+                $element->addClass('text-xxs sm:text-xs p-2 sm:py-3');
                 $output .= '<th '.$element->getAttributeString('class,title,rowspan,colspan,data').'>';
                     $output .= $element->getOutput();
                 $output .= '</th>';
