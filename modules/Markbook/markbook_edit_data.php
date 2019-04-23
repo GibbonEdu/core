@@ -44,7 +44,7 @@ $studentOrderBy = (isset($_SESSION[$guid]['markbookOrderBy']))? $_SESSION[$guid]
 $studentOrderBy = (isset($_GET['markbookOrderBy']))? $_GET['markbookOrderBy'] : $studentOrderBy;
 
 // Register scripts available to the core, but not included by default
-$page->scripts->add('chart', 'lib/Chart.js/2.0/Chart.bundle.min.js', ['context' => 'head']);
+$page->scripts->add('chart');
 
 // This script makes entering raw marks easier, by capturing the enter key and moving to the next field insted of submitting
 echo "<script type='text/javascript'>";

@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
     echo '</div>';
 } else {
     // Register scripts available to the core, but not included by default
-    $page->scripts->add('chart', 'lib/Chart.js/2.0/Chart.bundle.min.js', ['context' => 'head']);
+    $page->scripts->add('chart');
     
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
