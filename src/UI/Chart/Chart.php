@@ -92,7 +92,7 @@ class Chart
     {
         return $this->elementID;
     }
-    
+
     /**
      * Set the HTML element ID for the chart.
      * @param string $id
@@ -164,7 +164,7 @@ class Chart
     public function setOptions($options)
     {
         $this->options = array_replace($this->options, $options);
-        
+
         return $this;
     }
 
@@ -369,11 +369,11 @@ class Chart
         foreach ($this->datasets as $dataset) {
             $chartDataset = $dataset->getProperties();
             $chartDataset['data'] = $dataset->getData();
-            
+
             if (!empty($dataset->getLabel())) {
                 $chartDataset['label'] = $dataset->getLabel();
             }
-            
+
             if ($this->useDefaultColors) {
                 if (in_array($this->chartType, array('doughnut', 'pie', 'polarArea'))) {
                     $chartDataset['backgroundColor'] = [];

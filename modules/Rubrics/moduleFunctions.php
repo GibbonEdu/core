@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\UI\Chart\Chart;
+use Gibbon\Module\Rubrics\Visualise;
 
 function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $search = '', $filter2 = '')
 {
@@ -41,14 +41,14 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
     $resultCells = $pdo->executeQuery($data, $sqlCells);
     $cellCount = $resultCells->rowCount();
 
-    $sqlGradeScales = "SELECT gibbonScaleGrade.gibbonScaleGradeID, gibbonScaleGrade.* FROM gibbonRubricColumn 
-        JOIN gibbonScaleGrade ON (gibbonRubricColumn.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) 
+    $sqlGradeScales = "SELECT gibbonScaleGrade.gibbonScaleGradeID, gibbonScaleGrade.* FROM gibbonRubricColumn
+        JOIN gibbonScaleGrade ON (gibbonRubricColumn.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID)
         WHERE gibbonRubricColumn.gibbonRubricID=:gibbonRubricID";
     $resultGradeScales = $pdo->executeQuery($data, $sqlGradeScales);
     $gradeScales = ($resultGradeScales->rowCount() > 0)? $resultGradeScales->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE) : array();
 
-    $sqlOutcomes = "SELECT gibbonOutcome.gibbonOutcomeID, gibbonOutcome.* FROM gibbonRubricRow 
-        JOIN gibbonOutcome ON (gibbonRubricRow.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) 
+    $sqlOutcomes = "SELECT gibbonOutcome.gibbonOutcomeID, gibbonOutcome.* FROM gibbonRubricRow
+        JOIN gibbonOutcome ON (gibbonRubricRow.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID)
         WHERE gibbonRubricRow.gibbonRubricID=:gibbonRubricID";
     $resultOutcomes = $pdo->executeQuery($data, $sqlOutcomes);
     $outcomes = ($resultOutcomes->rowCount() > 0)? $resultOutcomes->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE) : array();
@@ -77,7 +77,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
 
         $row = $form->addRow()->addClass();
             $row->addContent()->addClass('rubricCellEmpty');
-            
+
         // Column Headers
         for ($n = 0; $n < $columnCount; ++$n) {
             $col = $row->addColumn()->addClass('rubricHeading');
@@ -128,7 +128,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
 
         $row = $form->addRow();
             $row->addSubmit();
-        
+
         $output .= $form->getOutput();
     }
 
@@ -138,8 +138,8 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
 //If $mark=TRUE, then marking tools are made available, otherwise it is view only
 function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID = '', $contextDBTable = '', $contextDBTableIDField = '', $contextDBTableID = '', $contextDBTableGibbonRubricIDField = '', $contextDBTableNameField = '', $contextDBTableDateField = '')
 {
-    global $pdo, $page;
-    
+    global $pdo, $page, $gibbon;
+
     $output = false;
     $hasContexts = $contextDBTable != '' and $contextDBTableIDField != '' and $contextDBTableID != '' and $contextDBTableGibbonRubricIDField != '' and $contextDBTableNameField != '' and $contextDBTableDateField != '';
 
@@ -172,42 +172,49 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
         $resultCells = $pdo->executeQuery($data, $sqlCells);
         $cellCount = $resultCells->rowcount();
 
-        $sqlGradeScales = "SELECT gibbonScaleGrade.gibbonScaleGradeID, gibbonScaleGrade.*, gibbonScale.name FROM gibbonRubricColumn 
-            JOIN gibbonScaleGrade ON (gibbonRubricColumn.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) 
+        $sqlGradeScales = "SELECT gibbonScaleGrade.gibbonScaleGradeID, gibbonScaleGrade.*, gibbonScale.name FROM gibbonRubricColumn
+            JOIN gibbonScaleGrade ON (gibbonRubricColumn.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID)
             JOIN gibbonScale ON (gibbonScale.gibbonScaleID=gibbonScaleGrade.gibbonScaleID)
             WHERE gibbonRubricColumn.gibbonRubricID=:gibbonRubricID";
         $resultGradeScales = $pdo->executeQuery($data, $sqlGradeScales);
         $gradeScales = ($resultGradeScales->rowCount() > 0)? $resultGradeScales->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE) : array();
 
-        $sqlOutcomes = "SELECT gibbonOutcome.gibbonOutcomeID, gibbonOutcome.* FROM gibbonRubricRow 
-            JOIN gibbonOutcome ON (gibbonRubricRow.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) 
+        $sqlOutcomes = "SELECT gibbonOutcome.gibbonOutcomeID, gibbonOutcome.* FROM gibbonRubricRow
+            JOIN gibbonOutcome ON (gibbonRubricRow.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID)
             WHERE gibbonRubricRow.gibbonRubricID=:gibbonRubricID";
         $resultOutcomes = $pdo->executeQuery($data, $sqlOutcomes);
         $outcomes = ($resultOutcomes->rowCount() > 0)? $resultOutcomes->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE) : array();
 
         // Check if outcomes are specified in unit
+        $unitOutcomes = array();
         if ($hasContexts) {
-            $dataUnitOutcomes = array('gibbonRubricID' => $gibbonRubricID, 'contextDBTableID' => $contextDBTableID);
-            $sqlUnitOutcomes = "SELECT gibbonUnitOutcome.gibbonOutcomeID, gibbonUnitOutcome.gibbonUnitOutcomeID FROM gibbonRubricRow 
-                JOIN gibbonOutcome ON (gibbonRubricRow.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) 
-                JOIN gibbonUnitOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) 
-                JOIN `$contextDBTable` ON (`$contextDBTable`.gibbonUnitID=gibbonUnitOutcome.gibbonUnitID AND `$contextDBTableIDField`=:contextDBTableID)
-                WHERE gibbonRubricRow.gibbonRubricID=:gibbonRubricID";
+            $dataUnitOutcomes = array();
+            $sqlUnitOutcomes = "SHOW COLUMNS FROM `$contextDBTable` LIKE 'gibbonUnitID'";
             $resultUnitOutcomes = $pdo->executeQuery($dataUnitOutcomes, $sqlUnitOutcomes);
-            $unitOutcomes = ($resultUnitOutcomes->rowCount() > 0)? $resultUnitOutcomes->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE) : array();
+
+            if ($resultUnitOutcomes->rowCount() > 0) {
+                $dataUnitOutcomes = array('gibbonRubricID' => $gibbonRubricID, 'contextDBTableID' => $contextDBTableID);
+                $sqlUnitOutcomes = "SELECT gibbonUnitOutcome.gibbonOutcomeID, gibbonUnitOutcome.gibbonUnitOutcomeID FROM gibbonRubricRow
+                    JOIN gibbonOutcome ON (gibbonRubricRow.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID)
+                    JOIN gibbonUnitOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID)
+                    JOIN `$contextDBTable` ON (`$contextDBTable`.gibbonUnitID=gibbonUnitOutcome.gibbonUnitID AND `$contextDBTableIDField`=:contextDBTableID)
+                    WHERE gibbonRubricRow.gibbonRubricID=:gibbonRubricID";
+                $resultUnitOutcomes = $pdo->executeQuery($dataUnitOutcomes, $sqlUnitOutcomes);
+                $unitOutcomes = ($resultUnitOutcomes->rowCount() > 0)? $resultUnitOutcomes->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE) : array();
+            }
         }
 
         // Load rubric data for this student
         $dataEntries = array('gibbonRubricID' => $gibbonRubricID, 'gibbonPersonID' => $gibbonPersonID, 'contextDBTable' => $contextDBTable, 'contextDBTableID' => $contextDBTableID);
-        $sqlEntries = "SELECT gibbonRubricEntry.gibbonRubricCellID, gibbonRubricEntry.* FROM gibbonRubricCell 
-            LEFT JOIN gibbonRubricEntry ON (gibbonRubricEntry.gibbonRubricCellID=gibbonRubricCell.gibbonRubricCellID) 
-            WHERE gibbonRubricCell.gibbonRubricID=:gibbonRubricID 
-            AND gibbonRubricEntry.gibbonPersonID=:gibbonPersonID 
-            AND gibbonRubricEntry.contextDBTable=:contextDBTable 
+        $sqlEntries = "SELECT gibbonRubricEntry.gibbonRubricCellID, gibbonRubricEntry.* FROM gibbonRubricCell
+            LEFT JOIN gibbonRubricEntry ON (gibbonRubricEntry.gibbonRubricCellID=gibbonRubricCell.gibbonRubricCellID)
+            WHERE gibbonRubricCell.gibbonRubricID=:gibbonRubricID
+            AND gibbonRubricEntry.gibbonPersonID=:gibbonPersonID
+            AND gibbonRubricEntry.contextDBTable=:contextDBTable
             AND gibbonRubricEntry.contextDBTableID=:contextDBTableID";
         $resultEntries = $pdo->executeQuery($dataEntries, $sqlEntries);
         $entries = ($resultEntries->rowCount() > 0)? $resultEntries->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE) : array();
-                
+
 
         if ($rowCount <= 0 or $columnCount <= 0) {
             $output .= "<div class='error'>";
@@ -226,16 +233,16 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
             $contexts = array();
             if ($hasContexts) {
                 $dataContext = array('gibbonPersonID' => $gibbonPersonID);
-                $sqlContext = "SELECT gibbonRubricEntry.*, $contextDBTable.*, gibbonRubricEntry.*, gibbonRubricCell.*, gibbonCourse.nameShort AS course, gibbonCourseClass.nameshort AS class 
-                    FROM gibbonRubricEntry 
-                    JOIN $contextDBTable ON (gibbonRubricEntry.contextDBTableID=$contextDBTable.$contextDBTableIDField 
-                        AND gibbonRubricEntry.gibbonRubricID=$contextDBTable.$contextDBTableGibbonRubricIDField) 
-                    JOIN gibbonRubricCell ON (gibbonRubricEntry.gibbonRubricCellID=gibbonRubricCell.gibbonRubricCellID) 
-                    LEFT JOIN gibbonCourseClass ON ($contextDBTable.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) 
-                    LEFT JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) 
-                    WHERE contextDBTable='$contextDBTable' 
-                    AND gibbonRubricEntry.gibbonPersonID=:gibbonPersonID 
-                    AND NOT $contextDBTableDateField IS NULL 
+                $sqlContext = "SELECT gibbonRubricEntry.*, $contextDBTable.*, gibbonRubricEntry.*, gibbonRubricCell.*, gibbonCourse.nameShort AS course, gibbonCourseClass.nameshort AS class
+                    FROM gibbonRubricEntry
+                    JOIN $contextDBTable ON (gibbonRubricEntry.contextDBTableID=$contextDBTable.$contextDBTableIDField
+                        AND gibbonRubricEntry.gibbonRubricID=$contextDBTable.$contextDBTableGibbonRubricIDField)
+                    JOIN gibbonRubricCell ON (gibbonRubricEntry.gibbonRubricCellID=gibbonRubricCell.gibbonRubricCellID)
+                    LEFT JOIN gibbonCourseClass ON ($contextDBTable.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                    LEFT JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+                    WHERE contextDBTable='$contextDBTable'
+                    AND gibbonRubricEntry.gibbonPersonID=:gibbonPersonID
+                    AND NOT $contextDBTableDateField IS NULL
                     ORDER BY $contextDBTableDateField DESC";
                 $resultContext = $pdo->executeQuery($dataContext,  $sqlContext);
 
@@ -243,7 +250,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                     while ($rowContext = $resultContext->fetch()) {
                         $context = $rowContext['course'].'.'.$rowContext['class'].' - '.$rowContext[$contextDBTableNameField].' ('.dateConvertBack($guid, $rowContext[$contextDBTableDateField]).')';
                         $cells[$rowContext['gibbonRubricRowID']][$rowContext['gibbonRubricColumnID']]['context'][] = $context;
-                    
+
                         array_push($contexts, array('gibbonRubricEntry' => $rowContext['gibbonRubricEntry'], 'gibbonRubricID' => $rowContext['gibbonRubricID'], 'gibbonPersonID' => $rowContext['gibbonPersonID'], 'gibbonRubricCellID' => $rowContext['gibbonRubricCellID'], 'contextDBTable' => $rowContext['contextDBTable'], 'contextDBTableID' => $rowContext['contextDBTableID']));
                     }
                 }
@@ -329,7 +336,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 
                             $highlightClass = isset($entries[$cell['gibbonRubricCellID']])? 'rubricCellHighlight' : '';
                             $markableClass = ($mark == true)? 'markableCell' : '';
-                            
+
                             $col = $row->addColumn()->addClass('rubricCell '.$highlightClass);
                                 $col->addContent($cell['contents'])
                                     ->addClass('currentView '.$markableClass)
@@ -382,76 +389,14 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                     $output .= __("This view offers a visual representation of all rubric data for the current student, this year, in the current context:");
                 $output .= "</p>";
 
-                //Filter out columns to ignore from visualisation
-                $columns = array_filter($columns, function ($item) {
-                    return (isset($item['visualise']) && $item['visualise'] == 'Y'); 
-                });
+                require_once __DIR__ . '/src/Visualise.php';
+                $visualise = new Visualise($gibbon->session->get('absoluteURL'), $page, $gibbonPersonID, $columns, $rows, $cells, $contexts);
 
-                if (!empty($columns) && !empty($cells)) {
-                    //Cycle through rows to calculate means
-                    $means = array() ;
-                    foreach ($rows as $row) {
-                        $means[$row['gibbonRubricRowID']]['title'] = $row['title'];
-                        $means[$row['gibbonRubricRowID']]['cumulative'] = 0;
-                        $means[$row['gibbonRubricRowID']]['denonimator'] = 0;
+                $output .= $visualise->renderVisualise();
 
-                        //Cycle through cells, and grab those for this row
-                        $cellCount = 1 ;
-                        foreach ($cells[$row['gibbonRubricRowID']] as $cell) {
-                            $visualise = false ;
-                            foreach ($columns as $column) {
-                                if ($column['gibbonRubricColumnID'] == $cell['gibbonRubricColumnID']) {
-                                    $visualise = true ;
-                                }
-                            }
-
-                            if ($visualise) {
-                                foreach ($contexts as $entry) {
-                                    if ($entry['gibbonRubricCellID'] == $cell['gibbonRubricCellID']) {
-                                        $means[$row['gibbonRubricRowID']]['cumulative'] += $cellCount;
-                                        $means[$row['gibbonRubricRowID']]['denonimator']++;
-                                    }
-                                }
-                                $cellCount++;
-                            }
-                        }
-                    }
-                
-                    $columnCount = count($columns);
-                    $data = array_map(function ($mean) use ($columnCount) {
-                        return !empty($mean['denonimator'])
-                        ? round((($mean['cumulative']/$mean['denonimator'])/$columnCount), 2)
-                        : 0;
-                    }, $means);
-
-                    $page->scripts->add('chart');
-                
-                    $chart = Chart::create('visualisation', 'polarArea')
-                        ->setLegend(['display' => true, 'position' => 'right'])
-                        ->setLabels(array_column($means, 'title'))
-                        ->setColorOpacity(0.6);
-
-                        $chart->setOptions([
-                        'height' => '120%',
-                        'scale'  => [
-                            'ticks' => [
-                                'min' => 0.0,
-                                'max' => 1.0,
-                                'callback' => $chart->addFunction('function(tickValue, index, ticks) {
-                                    return Number(tickValue).toFixed(1);
-                                }'),
-                            ],
-                        ],
-                    ]);
-
-                    $chart->addDataset('rubric')->setData($data);
-
-                    $output .= $chart->render();
-                }
-    
             $output .= "</div>";
 
-            //Function to show/hide rubric/visualisation 
+            //Function to show/hide rubric/visualisation
             $output .= "<script type='text/javascript'>
                  $(document).ready(function(){
                     $('#type').change(function () {
