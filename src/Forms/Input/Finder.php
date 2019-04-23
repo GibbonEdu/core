@@ -147,6 +147,7 @@ class Finder extends TextField
      */
     protected function getElement()
     {
+        $this->addClass('finderInput');
         $output = '<input type="text" '.$this->getAttributeString().'>';
 
         $output .= '<script type="text/javascript">';
