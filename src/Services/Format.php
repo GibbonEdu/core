@@ -197,7 +197,8 @@ class Format
      */
     public static function relativeTime($dateString, $tooltip = true)
     {
-        if (strlen($dateString) == 10) $dateString .= ' 00:00:00';
+        if (empty($dateString)) return '';
+        if (strlen($dateString) == 10) $dateString .=' 00:00:00';
         $date = static::createDateTime($dateString, 'Y-m-d H:i:s');
 
         $timeDifference = time() - $date->format('U');
@@ -215,17 +216,17 @@ class Format
                 $hours = floor($seconds / 3600);
                 $time = __n('{count} hr', '{count} hrs', $hours);
                 break;
-            case ($seconds >= 86400 && $seconds < 2419200):
+            case ($seconds >= 86400 && $seconds < 1209600):
                 $days = floor($seconds / 86400);
                 $time = __n('{count} day', '{count} days', $days);
                 break;
+            case ($seconds >= 1209600 && $seconds < 4838400):
+                $days = floor($seconds / 604800);
+                $time = __n('{count} week', '{count} weeks', $days);
+                break;
             default:
                 $timeDifference = 0;
-                $time = $date->format(
-                    strlen($dateString) == 10
-                        ? static::$settings['dateFormatPHP']
-                        : static::$settings['dateTimeFormatPHP']
-                );
+                $time = static::dateReadable($dateString);
         }
 
         if ($timeDifference > 0) {
