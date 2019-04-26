@@ -442,7 +442,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
     echo '</h2>';
 
     // Student History Legend
-    echo "<table class='mini historyCalendar historyCalendarKey' cellspacing='8' style='width: 100%'>";
+    echo "<table class='mini historyCalendar historyCalendarKey w-full p-4' cellspacing='8'>";
     echo '<tr>';
     echo '<td class="legend">'.__('School Closed').'</td>';
     echo '<td class="legend">'.__('Present').' '.__('Day').'</td>';
