@@ -358,6 +358,7 @@ class Format
 
     /**
      * Formats a link from a url. Automatically adds target _blank to external links.
+     * Automatically resolves relative URLs starting with ./ into absolute URLs.
      * 
      * @param string $url
      * @param string $text
@@ -369,6 +370,10 @@ class Format
         if (empty($url)) return $text;
         if (!$text) $text = $url;
         if (!is_array($attr)) $attr = ['title' => $attr];
+
+        if (substr($url, 0, 2) == './') {
+            $url = static::$settings['absoluteURL'].substr($url, 1);
+        }
 
         if (stripos($url, static::$settings['absoluteURL']) === false) {
             return '<a href="'.$url.'" '.self::attributes($attr).' target="_blank">'.$text.'</a>';
