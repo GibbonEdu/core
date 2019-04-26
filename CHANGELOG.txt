@@ -30,6 +30,7 @@ v18.0.00
     Significant Changes
         System: added a webpack-based build process for javascript and css files
         Attendance: added ability to set future absence for multiple students
+        Rubrics: added ability to export Visualise chart to PNG
 
     Security
 
