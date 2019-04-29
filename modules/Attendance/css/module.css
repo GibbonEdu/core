@@ -176,7 +176,7 @@ td.center {
 
 .historyCalendarKey ul {
 	font-size: 12px;
-	margin: -15px 0px 0px 80px;
+	margin: 10px 0px 0px 80px;
 }
 
 .historyCalendarKey .highlightPresent,
@@ -187,16 +187,16 @@ td.center {
 
 .historyCalendarKey .arrow-one {
 	position: absolute;
-	top: -76px;
-	left: 61px;
+	top: -64px;
+	left: 64px;
 	font-size:32px;
 	color: #333333;
 }
 
 .historyCalendarKey .arrow-two {
 	position: absolute;
-	top: -76px;
-	left: 154px;
+	top: -64px;
+	left: 158px;
 	font-size: 32px;
 	color: #333333;
 }

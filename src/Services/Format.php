@@ -216,17 +216,17 @@ class Format
                 $hours = floor($seconds / 3600);
                 $time = __n('{count} hr', '{count} hrs', $hours);
                 break;
-            case ($seconds >= 86400 && $seconds < 2419200):
+            case ($seconds >= 86400 && $seconds < 1209600):
                 $days = floor($seconds / 86400);
                 $time = __n('{count} day', '{count} days', $days);
                 break;
+            case ($seconds >= 1209600 && $seconds < 4838400):
+                $days = floor($seconds / 604800);
+                $time = __n('{count} week', '{count} weeks', $days);
+                break;
             default:
                 $timeDifference = 0;
-                $time = $date->format(
-                    strlen($dateString) == 10
-                        ? static::$settings['dateFormatPHP']
-                        : static::$settings['dateTimeFormatPHP']
-                );
+                $time = static::dateReadable($dateString);
         }
 
         if ($timeDifference > 0) {
@@ -358,6 +358,7 @@ class Format
 
     /**
      * Formats a link from a url. Automatically adds target _blank to external links.
+     * Automatically resolves relative URLs starting with ./ into absolute URLs.
      * 
      * @param string $url
      * @param string $text
@@ -369,6 +370,10 @@ class Format
         if (empty($url)) return $text;
         if (!$text) $text = $url;
         if (!is_array($attr)) $attr = ['title' => $attr];
+
+        if (substr($url, 0, 2) == './') {
+            $url = static::$settings['absoluteURL'].substr($url, 1);
+        }
 
         if (stripos($url, static::$settings['absoluteURL']) === false) {
             return '<a href="'.$url.'" '.self::attributes($attr).' target="_blank">'.$text.'</a>';
@@ -527,7 +532,7 @@ class Format
 
         switch ($size) {
             case 240:
-            case 'lg':  $class .= 'w-48 sm:w-64 max-w-full p-1'; break;
+            case 'lg':  $class .= 'w-48 sm:w-64 max-w-full p-1 mx-auto'; break;
             case 75:
             case 'md':  $class .= 'w-20 lg:w-24 p-1'; break;
 
@@ -541,7 +546,7 @@ class Format
             $path = '/themes/'.static::$settings['gibbonThemeName'].'/img/anonymous_'.$imageSize.'.jpg';
         }
 
-        return sprintf('<img class="mx-auto %1$s" src="%2$s">', $class, static::$settings['absoluteURL'].'/'.$path);
+        return sprintf('<img class="%1$s" src="%2$s">', $class, static::$settings['absoluteURL'].'/'.$path);
     }
 
     public static function userStatusInfo($person = [])

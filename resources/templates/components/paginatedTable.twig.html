@@ -51,7 +51,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             </div>
             {% endif %}
             
-            {% if filterCriteria %}
+            {% if filterCriteria and filterOptions %}
             <nav class="flex cursor-default mb-2">
                 {{ block('filters') }}
             </nav>

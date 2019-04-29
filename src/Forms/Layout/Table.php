@@ -103,7 +103,7 @@ class Table implements OutputableInterface, ValidatableInterface
     {
         $output = '';
 
-        $totalColumns = $this->getColumnCount();
+        $this->totalColumns = $this->getColumnCount();
 
         $output .= '<table '.$this->getAttributeString().' cellspacing="0">';
 
@@ -114,8 +114,8 @@ class Table implements OutputableInterface, ValidatableInterface
 
             // Output each element inside the row
             foreach ($row->getElements() as $element) {
-                $element->addClass('text-xxs sm:text-xs');
-                $output .= '<th '.$element->getAttributeString('class,title,rowspan,colspan,data').'>';
+                $element->addClass('text-xxs sm:text-xs p-2 sm:py-3');
+                $output .= '<th '.$element->getAttributeString('class,title,rowspan,colspan,data').' '.$this->getColspan($row, $element).'>';
                     $output .= $element->getOutput();
                 $output .= '</th>';
             }
@@ -132,7 +132,7 @@ class Table implements OutputableInterface, ValidatableInterface
             foreach ($row->getElements() as $element) {
                 $element->removeClass('standardWidth');
 
-                $output .= '<td '.$element->getAttributeString('class,title,rowspan,colspan,data').'>';
+                $output .= '<td '.$element->getAttributeString('class,title,rowspan,colspan,data').' '.$this->getColspan($row, $element).'>';
                     if (stripos($this->getClass(), 'formTable') !== false) {
                         $element->setClass('w-full '.$element->getClass());
                     }
@@ -163,6 +163,13 @@ class Table implements OutputableInterface, ValidatableInterface
         }
 
         return $count;
+    }
+
+    protected function getColspan($row, $element)
+    {
+        return $row->isLastElement($element) && $row->getElementCount() < $this->totalColumns
+            ? 'colspan="'.($this->totalColumns + 1 - $row->getElementCount()).'"'
+            : '';
     }
 
     /**
