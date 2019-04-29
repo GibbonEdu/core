@@ -91,6 +91,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
             ->addParam('search', $search)
             ->displayLabel();
 
+        $table->modifyRows(function ($person, $row) {
+            if (!empty($person['status']) && $person['status'] != 'Full') $row->addClass('error');
+            return $row;
+        });
+
         if ($highestAction == 'View Staff Profile_full') {
             $table->addMetaData('filterOptions', [
                 'all:on'        => __('All Staff'),
