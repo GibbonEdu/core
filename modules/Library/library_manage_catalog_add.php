@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
     $form->toggleVisibilityByClass('imageFile')->onSelect('imageType')->when('File');
 
-    $row = $form->addRow()->addClass('general imageFile');
+    $row = $form->addRow()->addClass('imageFile');
         $row->addLabel('imageFile', __('Image File'))
             ->description(__('240px x 240px or smaller.'));
         $row->addFileUpload('imageFile')
@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
     $form->toggleVisibilityByClass('imageLink')->onSelect('imageType')->when('Link');
 
-    $row = $form->addRow()->addClass('general imageLink');
+    $row = $form->addRow()->addClass('imageLink');
         $row->addLabel('imageLink', __('Image Link'))
             ->description(__('240px x 240px or smaller.'));
         $row->addURL('imageLink')->maxLength(255)->required();
@@ -135,13 +135,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
     $form->toggleVisibilityByClass('ownershipSchool')->onSelect('ownershipType')->when('School');
 
-    $row = $form->addRow()->addClass('general ownershipSchool');
+    $row = $form->addRow()->addClass('ownershipSchool');
         $row->addLabel('gibbonPersonIDOwnershipSchool', __('Main User'))->description(__('Person the device is assigned to.'));
         $row->addSelectUsers('gibbonPersonIDOwnershipSchool')->placeholder();
 
     $form->toggleVisibilityByClass('ownershipIndividual')->onSelect('ownershipType')->when('Individual');
 
-    $row = $form->addRow()->addClass('general ownershipIndividual');
+    $row = $form->addRow()->addClass('ownershipIndividual');
         $row->addLabel('gibbonPersonIDOwnershipIndividual', __('Owner'));
         $row->addSelectUsers('gibbonPersonIDOwnershipIndividual')->placeholder();
 
@@ -176,11 +176,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
     $form->toggleVisibilityByClass('replacement')->onSelect('replacement')->when('Y');
 
-    $row = $form->addRow()->addClass('general replacement');
+    $row = $form->addRow()->addClass('replacement');
             $row->addLabel('gibbonSchoolYearIDReplacement', __('Replacement Year'))->description(__('When is this item scheduled for replacement.'));
             $row->addSelectSchoolYear('gibbonSchoolYearIDReplacement', 'All', 'DESC');
 
-    $row = $form->addRow()->addClass('general replacement');
+    $row = $form->addRow()->addClass('replacement');
         $row->addLabel('replacementCost', __('Replacement Cost'));
         $row->addCurrency('replacementCost')->maxLength(9);
 
