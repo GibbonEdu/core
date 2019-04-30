@@ -529,7 +529,7 @@ class Format
      */
     public static function userPhoto($path, $size = 75, $class = '')
     {
-        $class .= ' block shadow bg-white border border-gray-600 ';
+        $class .= ' inline-block shadow bg-white border border-gray-600 ';
 
         switch ($size) {
             case 240:
