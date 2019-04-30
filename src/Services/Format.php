@@ -524,11 +524,12 @@ class Format
      *
      * @param string $path
      * @param int|string $size
+     * @param string $class
      * @return string
      */
-    public static function userPhoto($path, $size = 75)
+    public static function userPhoto($path, $size = 75, $class = '')
     {
-        $class = 'block shadow bg-white border border-gray-600 ';
+        $class .= ' block shadow bg-white border border-gray-600 ';
 
         switch ($size) {
             case 240:

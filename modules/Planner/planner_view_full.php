@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -1534,7 +1535,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
 							//Get photos
 							$_SESSION[$guid]['sidebarExtra'] .= '<div>';
-                            $_SESSION[$guid]['sidebarExtra'] .= getUserPhoto($guid, $rowClassGroup['image_240'], 75);
+                            $_SESSION[$guid]['sidebarExtra'] .= Format::userPhoto($rowClassGroup['image_240'], 75, 'mx-auto');
 
                             if ($row['role'] == 'Teacher' and $teacher == true) {
                                 if ($rowClassGroup['role'] == 'Student') {
@@ -1560,7 +1561,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                                     $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='$countStudents-gibbonPersonID' value='".$rowClassGroup['gibbonPersonID']."' data-id='$countStudents'>";
 
-                                    $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceTypeSelect( $rowLog['type'], "$countStudents-type", '86px;margin-left:1px;');
+                                    $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceTypeSelect( $rowLog['type'], "$countStudents-type", '96px');
 
                                     // Only hide the reason and comment fields if Present is the default attendance type
                                     if ($defaultAttendanceType == 'Present' || $attendance->isTypePresent($rowLog['type'])) {
@@ -1569,8 +1570,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                         $_SESSION[$guid]['sidebarExtra'] .= "<div>";
                                     }
 
-                                    $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceReasonSelect( $rowLog['reason'], "$countStudents-reason", '84px');
-                                    $_SESSION[$guid]['sidebarExtra'] .= "<input type='text' maxlength=255 name='$countStudents-comment' id='$countStudents-comment' style='float: none; width:82px; margin-bottom: 3px' value='".htmlPrep($rowLog['comment'])."'>";
+                                    $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceReasonSelect( $rowLog['reason'], "$countStudents-reason", '96px');
+                                    $_SESSION[$guid]['sidebarExtra'] .= "<input type='text' maxlength=255 name='$countStudents-comment' id='$countStudents-comment' style='float: none; width:96px; margin-bottom: 3px' value='".htmlPrep($rowLog['comment'])."'>";
                                     $_SESSION[$guid]['sidebarExtra'] .= "</div>";
 
                                 }
