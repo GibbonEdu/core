@@ -62,7 +62,7 @@ class PlannerFormFactory extends DatabaseFormFactory
                 'sortable'          => true,
                 'orderName'         => 'order',
             ])
-            ->placeholder(__('Smart Blocks outcomes listed here...'))
+            ->placeholder(__('Smart Blocks listed here...'))
             ->addBlockButton('showHide', __('Show/Hide'), 'plus.png');
 
         return $customBlocks;
