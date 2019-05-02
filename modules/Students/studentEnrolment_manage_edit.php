@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
             $schoolHistory = '';
 
             if ($values['dateStart'] != '') {
-                $schoolHistory .= '<u>'.__('Start Date').'</u>: '.dateConvertBack($guid, $values['dateStart']).'</br>';
+                $schoolHistory .= '<li><u>'.__('Start Date').'</u>: '.dateConvertBack($guid, $values['dateStart']).'</li>';
             }
 
             $dataSelect = array('gibbonPersonID' => $values['gibbonPersonID']);
@@ -128,16 +128,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
             $resultSelect = $pdo->executeQuery($dataSelect, $sqlSelect);
 
             while ($resultSelect && $rowSelect = $resultSelect->fetch()) {
-                $schoolHistory .= '<u>'.$rowSelect['schoolYear'].'</u>: '.$rowSelect['rollGroup'].'<br/>';
+                $schoolHistory .= '<li><u>'.$rowSelect['schoolYear'].'</u>: '.$rowSelect['rollGroup'].'</li>';
             }
 
             if ($values['dateEnd'] != '') {
-                $schoolHistory .= '<u>'.__('End Date').'</u>: '.dateConvertBack($guid, $values['dateEnd']).'</br>';
+                $schoolHistory .= '<li><u>'.__('End Date').'</u>: '.dateConvertBack($guid, $values['dateEnd']).'</li>';
             }
 
             $row = $form->addRow();
                 $row->addLabel('schoolHistory', __('School History'));
-                $row->addContent($schoolHistory)->setClass('right');
+                $row->addContent('<ul class="list-none w-full sm:max-w-xs text-xs m-0">'.$schoolHistory.'</ul>');
 
             $row = $form->addRow();
                 $row->addFooter();
