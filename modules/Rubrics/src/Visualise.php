@@ -52,7 +52,7 @@ class Visualise
      * @since    v18
      * @return   void
      */
-    public function __construct($absoluteURL, $page, Int $gibbonPersonID, Array $columns, Array $rows, Array $cells, Array $contexts)
+    public function __construct($absoluteURL, $page, $gibbonPersonID, array $columns, array $rows, array $cells, array $contexts)
     {
         $this->absoluteURL = $absoluteURL;
 
