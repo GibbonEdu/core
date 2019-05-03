@@ -1199,66 +1199,54 @@ function printClassGroupTable($guid, $gibbonCourseClassID, $columns, $connection
 function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divExtras = '', $div = true, $large = false)
 {
     $output = '';
-
-    $width = '14';
-    $height = '13';
-    $fontSize = '12';
-    $totalHeight = '16';
-    if ($large) {
-        $width = '42';
-        $height = '35';
-        $fontSize = '39';
-        $totalHeight = '45';
-    }
+    $alerts = [];
 
     $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
     if ($highestAction == 'View Student Profile_full' or $highestAction == 'View Student Profile_fullNoNotes') {
-        if ($div == true) {
-            $output .= "<div $divExtras style='width: 83px; text-align: right; height: ".$totalHeight."px; padding: 3px 0px; margin: auto'><b>";
-        }
 
-        //Individual Needs
+        // Individual Needs
         try {
             $dataAlert = array('gibbonPersonID' => $gibbonPersonID);
-            $sqlAlert = 'SELECT * FROM gibbonINPersonDescriptor JOIN gibbonAlertLevel ON (gibbonINPersonDescriptor.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY sequenceNumber DESC';
+            $sqlAlert = "SELECT * FROM gibbonINPersonDescriptor JOIN gibbonAlertLevel ON (gibbonINPersonDescriptor.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY sequenceNumber DESC";
             $resultAlert = $connection2->prepare($sqlAlert);
             $resultAlert->execute($dataAlert);
-        } catch (PDOException $e) { }
-        if ($resultAlert->rowCount() > 0) {
-            $rowAlert = $resultAlert->fetch();
-            $highestLevel = __($rowAlert['name']);
-            $highestColour = $rowAlert['color'];
-            $highestColourBG = $rowAlert['colorBG'];
-            if ($resultAlert->rowCount() == 1) {
-                $title = $resultAlert->rowCount().' '.sprintf(__('Individual Needs alert is set, with an alert level of %1$s.'), $rowAlert['name']);
-            } else {
-                $title = $resultAlert->rowCount().' '.sprintf(__('Individual Needs alerts are set, up to a maximum alert level of %1$s.'), $rowAlert['name']);
-            }
-            $output .= "<a style='font-size: ".$fontSize.'px; color: #'.$highestColour."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID."&subpage=Individual Needs'><div title='$title' style='float: left; text-align: center; vertical-align: middle; max-height: ".$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$highestColour.'; margin-right: 2px; background-color: #'.$highestColourBG."'>".__('IN').'</div></a>';
+        } catch (PDOException $e) {}
+
+        if ($alert = $resultAlert->fetch()) {
+            $title = $resultAlert->rowCount() == 1
+                ? $resultAlert->rowCount().' '.sprintf(__('Individual Needs alert is set, with an alert level of %1$s.'), $alert['name'])
+                : $resultAlert->rowCount().' '.sprintf(__('Individual Needs alerts are set, up to a maximum alert level of %1$s.'), $alert['name']);
+
+            $alerts[] = [
+                'highestLevel'    => __($alert['name']),
+                'highestColour'   => $alert['color'],
+                'highestColourBG' => $alert['colorBG'],
+                'tag'             => __('IN'),
+                'title'           => $title,
+                'link'            => './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&subpage=Individual Needs',
+            ];
         }
 
-        //Academic
+        // Academic
         $gibbonAlertLevelID = '';
         $alertThresholdText = '';
         try {
             $dataAlert = array('gibbonPersonIDStudent' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d'), 'date' => date('Y-m-d', (time() - (24 * 60 * 60 * 60))));
             $sqlAlert = "SELECT *
-                FROM gibbonMarkbookEntry
-                    JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID)
-                    JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
-                    JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
-                WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent
-                    AND (attainmentConcern='Y' OR effortConcern='Y')
-                    AND complete='Y'
-                    AND gibbonSchoolYearID=:gibbonSchoolYearID
-                    AND completeDate<=:today
-                    AND completeDate>:date
-                    ";
+            FROM gibbonMarkbookEntry
+                JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID)
+                JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+            WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent
+                AND (attainmentConcern='Y' OR effortConcern='Y')
+                AND complete='Y'
+                AND gibbonSchoolYearID=:gibbonSchoolYearID
+                AND completeDate<=:today
+                AND completeDate>:date
+                ";
             $resultAlert = $connection2->prepare($sqlAlert);
             $resultAlert->execute($dataAlert);
-        } catch (PDOException $e) {
-            $_SESSION[$guid]['sidebarExtra'] .= "<div class='error'>".$e->getMessage().'</div>';
-        }
+        } catch (PDOException $e) {}
 
         $academicAlertLowThreshold = getSettingByScope($connection2, 'Students', 'academicAlertLowThreshold');
         $academicAlertMediumThreshold = getSettingByScope($connection2, 'Students', 'academicAlertMediumThreshold');
@@ -1275,14 +1263,19 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
             $alertThresholdText = sprintf(__('This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $academicAlertLowThreshold, ($academicAlertMediumThreshold-1));
         }
         if ($gibbonAlertLevelID != '') {
-            $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
-            if ($alert != false) {
-                $title = sprintf(__('Student has a %1$s alert for academic concern over the past 60 days.'), __($alert['name'])).' '.$alertThresholdText;
-                $output .= "<a style='font-size: ".$fontSize.'px; color: #'.$alert['color']."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&subpage=Markbook&filter='.$_SESSION[$guid]['gibbonSchoolYearID']."'><div title='$title' style='float: left; text-align: center; vertical-align: middle; max-height: ".$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$alert['color'].'; margin-right: 2px; background-color: #'.$alert['colorBG']."'>".__('A').'</div></a>';
+            if ($alert = getAlert($guid, $connection2, $gibbonAlertLevelID)) {
+                $alerts[] = [
+                    'highestLevel'    => __($alert['name']),
+                    'highestColour'   => $alert['color'],
+                    'highestColourBG' => $alert['colorBG'],
+                    'tag'             => __('A'),
+                    'title'           => sprintf(__('Student has a %1$s alert for academic concern over the past 60 days.'), __($alert['name'])).' '.$alertThresholdText,
+                    'link'            => './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&subpage=Markbook&filter='.$_SESSION[$guid]['gibbonSchoolYearID'],
+                ];
             }
         }
 
-        //Behaviour
+        // Behaviour
         $gibbonAlertLevelID = '';
         $alertThresholdText = '';
         try {
@@ -1290,9 +1283,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
             $sqlAlert = "SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND type='Negative' AND date>:date";
             $resultAlert = $connection2->prepare($sqlAlert);
             $resultAlert->execute($dataAlert);
-        } catch (PDOException $e) {
-            $_SESSION[$guid]['sidebarExtra'] .= "<div class='error'>".$e->getMessage().'</div>';
-        }
+        } catch (PDOException $e) {}
 
         $behaviourAlertLowThreshold = getSettingByScope($connection2, 'Students', 'behaviourAlertLowThreshold');
         $behaviourAlertMediumThreshold = getSettingByScope($connection2, 'Students', 'behaviourAlertMediumThreshold');
@@ -1310,33 +1301,63 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         }
 
         if ($gibbonAlertLevelID != '') {
-            $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
-            if ($alert != false) {
-                $title = sprintf(__('Student has a %1$s alert for behaviour over the past 60 days.'), __($alert['name'])).' '.$alertThresholdText;
-                $output .= "<a style='font-size: ".$fontSize.'px; color: #'.$alert['color']."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID."&subpage=Behaviour'><div title='$title' style='float: left; text-align: center; vertical-align: middle; max-height: ".$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$alert['color'].'; margin-right: 2px; background-color: #'.$alert['colorBG']."'>".__('B').'</div></a>';
+            if ($alert = getAlert($guid, $connection2, $gibbonAlertLevelID)) {
+                $alerts[] = [
+                    'highestLevel'    => __($alert['name']),
+                    'highestColour'   => $alert['color'],
+                    'highestColourBG' => $alert['colorBG'],
+                    'tag'             => __('B'),
+                    'title'           => sprintf(__('Student has a %1$s alert for behaviour over the past 60 days.'), __($alert['name'])).' '.$alertThresholdText,
+                    'link'            => './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&subpage=Behaviour',
+                ];
             }
         }
 
-        //Medical
-        $alert = getHighestMedicalRisk($guid,  $gibbonPersonID, $connection2);
-        if ($alert != false) {
-            $highestLevel = $alert[1];
-            $highestColour = $alert[3];
-            $highestColourBG = $alert[4];
-            $title = sprintf(__('Medical alerts are set, up to a maximum of %1$s'), $highestLevel);
-            $output .= "<a style='font-size: ".$fontSize.'px; color: #'.$highestColour."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID."&subpage=Medical'><div title='$title' style='float: left; text-align: center; vertical-align: middle; max-height: ".$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$highestColour.'; margin-right: 2px; background-color: #'.$highestColourBG."'><b>".__('M').'</b></div></a>';
+        // Medical
+        if ($alert = getHighestMedicalRisk($guid, $gibbonPersonID, $connection2)) {
+            $alerts[] = [
+                'highestLevel'    => $alert[1],
+                'highestColour'   => $alert[3],
+                'highestColourBG' => $alert[4],
+                'tag'             => __('M'),
+                'title'           => sprintf(__('Medical alerts are set, up to a maximum of %1$s'), $alert[1]),
+                'link'            => './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&subpage=Medical',
+            ];
         }
 
-        //Privacy
+        // Privacy
         $privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
         if ($privacySetting == 'Y' and $privacy != '') {
-            $alert = getAlert($guid, $connection2, 001);
-            $title = sprintf(__('Privacy is required: %1$s'), $privacy);
-            $output .= "<div title='$title' style='font-size: ".$fontSize.'px; float: left; text-align: center; vertical-align: middle; max-height: '.$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$alert['color'].'; margin-right: 2px; color: #'.$alert['color'].'; background-color: #'.$alert['colorBG']."'>".__('P').'</div>';
+            if ($alert = getAlert($guid, $connection2, 001)) {
+                $alerts[] = [
+                    'highestLevel'    => __($alert['name']),
+                    'highestColour'   => $alert['color'],
+                    'highestColourBG' => $alert['colorBG'],
+                    'tag'             => __('P'),
+                    'title'           => sprintf(__('Privacy is required: %1$s'), $privacy),
+                    'link'            => './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID,
+                ];
+            }
+        }
+
+        // Output alerts
+        $classDefault = 'block align-middle text-center font-bold border-0 border-t-2 ';
+        $classDefault .= $large
+            ? 'text-4xl w-10 h-10 pt-1 mr-2'
+            : 'text-xs w-4 pt-px mr-1';
+
+        foreach ($alerts as $alert) {
+            $style = "color: #{$alert['highestColour']}; border-color: #{$alert['highestColour']}; background-color: #{$alert['highestColourBG']};";
+            $class = $classDefault .' '. ($alert['class'] ?? 'float-left');
+            $output .= Format::link($alert['link'], $alert['tag'], [
+                'title' => $alert['title'],
+                'class' => $class,
+                'style' => $style,
+            ]);
         }
 
         if ($div == true) {
-            $output .= '</div>';
+            $output = "<div {$divExtras} class='w-20 lg:w-24 h-6 text-left py-1 px-0 mx-auto'>{$output}</div>";
         }
     }
 
