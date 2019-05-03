@@ -184,6 +184,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 
                         }
 
+                        $form->addHiddenValue('classCount', $classCount);
+
                         //UNIT OUTLINE
                         $form->addRow()->addHeading(__('Unit Outline'));
 
@@ -242,6 +244,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                         for ($i=0 ; $i<5 ; $i++) {
                             $customBlocks->addBlock("block$i");
                         }
+
+                        $form->addHiddenValue('blockCount', "5");
 
                         //MISCELLANEOUS SETTINGS
                         $form->addRow()->addHeading(__('Miscellaneous Settings'))->addClass('advanced');
