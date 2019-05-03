@@ -58,7 +58,7 @@ class PlannerFormFactory extends DatabaseFormFactory
             ->fromTemplate($blockTemplate)
             ->settings([
                 'inputNameStrategy' => 'string',
-                'addOnEvent'        => 'change',
+                'addOnEvent'        => 'click',
                 'sortable'          => true,
                 'orderName'         => 'order',
             ])
