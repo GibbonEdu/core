@@ -19,9 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\System;
 
-use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
+use Gibbon\Domain\Traits\TableAware;
 
 /**
  * Log Gateway
@@ -34,6 +34,7 @@ class LogGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonLog';
+    private static $primaryKey = 'gibbonLogID';
 
     private static $searchableColumns = ['title'];
     
@@ -42,9 +43,9 @@ class LogGateway extends QueryableGateway
         $data = array('moduleName' => $moduleName, 'title' => $title);
         $sql = "SELECT gibbonLog.title as groupBy, gibbonLog.*, gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.title
                 FROM gibbonLog 
-                JOIN gibbonModule ON (gibbonModule.gibbonModuleID=gibbonLog.gibbonModuleID)
+                LEFT JOIN gibbonModule ON (gibbonModule.gibbonModuleID=gibbonLog.gibbonModuleID)
                 LEFT JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonLog.gibbonPersonID) 
-                WHERE gibbonModule.name=:moduleName
+                WHERE (gibbonModule.name=:moduleName OR (:moduleName IS NULL AND gibbonLog.gibbonModuleID IS NULL))
                 AND gibbonLog.title LIKE :title
                 ORDER BY gibbonLog.timestamp DESC";
 
