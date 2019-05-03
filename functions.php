@@ -649,7 +649,7 @@ function formatName($title, $preferredName, $surname, $roleCategory, $reverse = 
 
 /**
  * Updated v18 to use a twig template.
- * 
+ *
  * $tinymceInit indicates whether or not tinymce should be initialised, or whether this will be done else where later (this can be used to improve page load.
  */
 function getEditor($guid, $tinymceInit = true, $id = '', $value = '', $rows = 10, $showMedia = false, $required = false, $initiallyHidden = false, $allowUpload = true, $initialFilter = '', $resourceAlphaSort = false)
@@ -2163,7 +2163,7 @@ function returnProcessGetAlert($return, $editLink = null, $customReturns = null)
         $returns['error3'] = __('Your request failed because your inputs were invalid.');
         $returns['error4'] = __('Your request failed because your passwords did not match.');
         $returns['error5'] = __('Your request failed because there are no records to show.');
-        $returns['error6'] = __('Your request was completed successfully, but one or more images were the wrong size and so were not saved.');
+        $returns['error6'] = __('Your request was completed successfully, but there was a problem saving some uploaded files.');
         $returns['warning0'] = __('Your optional extra data failed to save.');
         $returns['warning1'] = __('Your request was successful, but some data was not properly saved.');
         $returns['warning2'] = __('Your request was successful, but some data was not properly deleted.');
