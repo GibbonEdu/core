@@ -90,17 +90,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
             $table = $container->get(DataTable::class)->setRenderer($gridRenderer);
             $table->setTitle(__('Staff'));
             $table->addMetaData('gridClass', 'justify-center sm:justify-start rounded-sm bg-blue-100 border py-2');
-            $table->addMetaData('gridItemClass', 'w-32 my-2');
+            $table->addMetaData('gridItemClass', 'w-32 my-2 text-center');
 
             $table->addColumn('image_240')
-                ->setClass('text-center')
                 ->format(function ($person) {
                     return Format::userPhoto($person['image_240'], 'sm', '');
                 });
 
             $canViewProfile = isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php');
             $table->addColumn('name')
-                ->setClass('text-center text-xs font-bold mt-1')
+                ->setClass('text-xs font-bold mt-1')
                 ->format(function ($person) use ($canViewProfile) {
                     $name = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff');
                     $url = "./index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID=".$person['gibbonPersonID'];
@@ -110,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
                 });
 
             $table->addColumn('jobTitle')
-                ->setClass('text-center text-xs text-gray-600 italic leading-snug')
+                ->setClass('text-xs text-gray-600 italic leading-snug')
                 ->format(function ($person) {
                     return !empty($person['jobTitle']) ? $person['jobTitle'] : __($person['role']);
                 });

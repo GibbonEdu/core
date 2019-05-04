@@ -38,13 +38,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.ph
     $table = $container->get(DataTable::class)->setRenderer($gridRenderer);
 
     $table->addColumn('logo')
-        ->setClass('text-center')
         ->format(function ($department) {
             return Format::userPhoto($department['logo'], 125, 'w-20 h-20 sm:w-32 sm:h-32 p-1');
         });
 
     $table->addColumn('name')
-        ->setClass('text-center text-xs font-bold mt-1 mb-4')
+        ->setClass('text-xs font-bold mt-1 mb-4')
         ->format(function ($department) {
             $url = "./index.php?q=/modules/Departments/department.php&gibbonDepartmentID=".$department['gibbonDepartmentID'];
             return Format::link($url, $department['name']);
