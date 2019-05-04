@@ -533,17 +533,22 @@ class Format
 
         switch ($size) {
             case 240:
-            case 'lg':  $class .= 'w-48 sm:w-64 max-w-full p-1 mx-auto'; break;
+            case 'lg':  $class .= 'w-48 sm:w-64 max-w-full p-1 mx-auto';
+                        $imageSize = 240;
+                        break;
             case 75:
-            case 'md':  $class .= 'w-20 lg:w-24 p-1'; break;
+            case 'md':  $class .= 'w-20 lg:w-24 p-1';
+                        $imageSize = 75;
+                        break;
 
-            case 'sm':  $class .= 'w-12 sm:w-20 p-px sm:p-1'; break;
+            case 'sm':  $class .= 'w-12 sm:w-20 p-px sm:p-1';
+                        $imageSize = 75;
+                        break;
 
-            default:    $class .= $size;
+            default:    $imageSize = $size;
         }
 
         if (empty($path) or file_exists(static::$settings['absolutePath'].'/'.$path) == false) {
-            $imageSize = $size == 240 || $size == 'lg' ? 240 : 75;
             $path = '/themes/'.static::$settings['gibbonThemeName'].'/img/anonymous_'.$imageSize.'.jpg';
         }
 
