@@ -1,0 +1,33 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% extends "components/dataTable.twig.html" %}
+
+{% block table %}
+    
+    {{ block("header") }}
+
+    <div class="flex flex-wrap py-2">
+    {% for rowIndex, rowData in dataSet %}
+    
+        <div class="w-1/2 sm:w-1/3 flex-col">
+        {% for columnIndex, column in columns %}
+        
+            <div class="{{ column.getClass }}">
+            {{ column.getOutput(rowData)|raw }}
+            </div>
+
+        {% endfor %}
+        </div>
+
+    {% endfor %}
+    </div>
+
+    {{ block("footer") }}
+
+{% endblock table %}
