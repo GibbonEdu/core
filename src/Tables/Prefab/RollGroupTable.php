@@ -103,7 +103,7 @@ class RollGroupTable extends DataTable
 
             $this->addColumn('alerts')
                 ->format(function ($person) use ($guid, $connection2, $gibbonRollGroupID) {
-                    $divExtras = ' data-roll="confidential'.$gibbonRollGroupID.'"';
+                    $divExtras = ' data-conf="confidential'.$gibbonRollGroupID.'"';
                     return getAlertBar($guid, $connection2, $person['gibbonPersonID'], $person['privacy'], $divExtras);
                 });
         }
@@ -131,13 +131,13 @@ class RollGroupTable extends DataTable
             ->translatable();
     }
 
-    private function getCheckboxScript($gibbonRollGroupID)
+    private function getCheckboxScript($id)
     {
         return '
         <script type="text/javascript">
         $(function () {
-            $("#confidential'.$gibbonRollGroupID.'").click(function () {
-                $("[data-roll=\'confidential'.$gibbonRollGroupID.'\']").slideToggle(!$(this).is(":checked"));
+            $("#confidential'.$id.'").click(function () {
+                $("[data-conf=\'confidential'.$id.'\']").slideToggle(!$(this).is(":checked"));
             });
         });
         </script>';

@@ -21,10 +21,11 @@ namespace Gibbon\Tables\Prefab;
 
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Gibbon\Forms\Input\Checkbox;
 use Gibbon\Tables\View\GridView;
-use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 
 /**
  * ClassGroupTable
@@ -56,7 +57,7 @@ class ClassGroupTable extends DataTable
 
         $canViewStaff = isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php');
         $canViewStudents = ($highestAction == 'View Student Profile_brief' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes');
-        $canExport = $highestAction == 'View Student Profile_full';
+        $canViewConfidential = $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes';
 
         $criteria = $this->enrolmentGateway
             ->newQueryCriteria()
@@ -70,9 +71,9 @@ class ClassGroupTable extends DataTable
         $this->setTitle(__('Participants'));
 
         $this->addMetaData('gridClass', 'rounded-sm bg-blue-100 border');
-        $this->addMetaData('gridItemClass', 'w-1/2 sm:w-1/4 sm:my-2 text-center');
+        $this->addMetaData('gridItemClass', 'w-1/2 sm:w-1/3 md:w-1/5 mb-2 sm:mb-4 text-center');
 
-        if ($canExport) {
+        if ($canViewConfidential) {
             $this->addHeaderAction('export', __('Export to Excel'))
                 ->setURL('/modules/Departments/department_course_classExport.php')
                 ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
@@ -82,10 +83,22 @@ class ClassGroupTable extends DataTable
                 ->displayLabel();
         }
 
-        $this->addColumn('alerts')
-            ->format(function ($person) use ($guid, $connection2) {
-                return getAlertBar($guid, $connection2, $person['gibbonPersonID'], $person['privacy']);
-            });
+        if ($canViewConfidential) {
+            $checkbox = (new Checkbox('confidential'.$gibbonCourseClassID))
+                ->description(__('Show Confidential Data'))
+                ->checked(true)
+                ->inline()
+                ->wrap('<div class="my-2 text-right text-xxs text-gray-700 italic">', '</div>');
+
+            $this->addMetaData('gridHeader', $checkbox->getOutput());
+            $this->addMetaData('gridFooter', $this->getCheckboxScript($gibbonCourseClassID));
+
+            $this->addColumn('alerts')
+                ->format(function ($person) use ($guid, $connection2, $gibbonCourseClassID) {
+                    $divExtras = ' data-conf="confidential'.$gibbonCourseClassID.'"';
+                    return getAlertBar($guid, $connection2, $person['gibbonPersonID'], $person['privacy'], $divExtras);
+                });
+        }
 
         $this->addColumn('image_240')
             ->setClass('relative')
@@ -115,5 +128,17 @@ class ClassGroupTable extends DataTable
         $this->addColumn('role')
             ->setClass('text-xs text-gray-600 italic leading-snug')
             ->translatable();
+    }
+
+    private function getCheckboxScript($id)
+    {
+        return '
+        <script type="text/javascript">
+        $(function () {
+            $("#confidential'.$id.'").click(function () {
+                $("[data-conf=\'confidential'.$id.'\']").slideToggle(!$(this).is(":checked"));
+            });
+        });
+        </script>';
     }
 }
