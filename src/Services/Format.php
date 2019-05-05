@@ -555,6 +555,36 @@ class Format
         return sprintf('<img class="%1$s" src="%2$s">', $class, static::$settings['absoluteURL'].'/'.$path);
     }
 
+    /**
+     * Display an icon if this user's birthday is within the next week.
+     *
+     * @param string $dob YYYY-MM-DD
+     * @param string $preferredName
+     * @return string
+     */
+    public static function userBirthdayIcon($dob, $preferredName)
+    {
+        // HEY SHORTY IT'S YOUR BIRTHDAY!
+        $daysUntilNextBirthday = daysUntilNextBirthday($dob);
+        
+        if (empty($dob) || $daysUntilNextBirthday >= 8) return '';
+
+        if ($daysUntilNextBirthday == 0) {
+            $title = __("{name}'s birthday today!", ['name' => $preferredName]);
+            $icon = 'gift_pink.png';
+        } else {
+            $title = __n(
+                "{count} day until {name}'s birthday!",
+                "{count} days until {name}'s birthday!",
+                $daysUntilNextBirthday,
+                ['name' => $preferredName]
+            );
+            $icon = 'gift.png';
+        }
+
+        return sprintf('<img class="absolute bottom-0 -ml-4" title="%1$s" src="%2$s">', $title, static::$settings['absoluteURL'].'/themes/'.static::$settings['gibbonThemeName'].'/img/'.$icon);
+    }
+
     public static function userStatusInfo($person = [])
     {
         if (!empty($person['status']) && $person['status'] != 'Full') return __($person['status']);

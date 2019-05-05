@@ -18,72 +18,52 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Tables\View\GridView;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
 $makeDepartmentsPublic = getSettingByScope($connection2, 'Departments', 'makeDepartmentsPublic');
 if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
-    $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-    $gibbonCourseID = null;
-    if (isset($_GET['gibbonCourseID'])) {
-        $gibbonCourseID = $_GET['gibbonCourseID'];
-    }
-    $gibbonDepartmentID = null;
-    if (isset($_GET['gibbonDepartmentID'])) {
-        $gibbonDepartmentID = $_GET['gibbonDepartmentID'];
-    }
-    if ($gibbonCourseClassID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+    $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+    $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
+    $gibbonDepartmentID = $_GET['gibbonDepartmentID'] ?? '';
+
+    $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
+    $canViewStaff = isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php');
+    $canViewStudents = ($highestAction == 'View Student Profile_brief' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes');
+
+    if (empty($gibbonCourseClassID) || empty($highestAction)) {
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        $proceed = false;
-        if ($gibbonDepartmentID != '') {
-            try {
-                $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                $sql = 'SELECT gibbonCourse.gibbonSchoolYearID,gibbonDepartment.name AS department, gibbonCourse.name AS courseLong, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonCourseID, gibbonSchoolYear.name AS year, gibbonCourseClass.attendance FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonDepartment ON (gibbonDepartment.gibbonDepartmentID=gibbonCourse.gibbonDepartmentID) WHERE gibbonCourseClassID=:gibbonCourseClassID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-
-            if ($result->rowCount() != 1) {
-                echo "<div class='error'>";
-                echo __('The specified record does not exist.');
-                echo '</div>';
-            } else {
-                $row = $result->fetch();
-                $proceed = true;
-            }
+        if (!empty($gibbonDepartmentID)) {
+            $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
+            $sql = "SELECT gibbonCourse.gibbonSchoolYearID,gibbonDepartment.name AS department, gibbonCourse.name AS courseLong, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonCourseID, gibbonSchoolYear.name AS year, gibbonCourseClass.attendance 
+                    FROM gibbonCourse 
+                    JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
+                    JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) 
+                    JOIN gibbonDepartment ON (gibbonDepartment.gibbonDepartmentID=gibbonCourse.gibbonDepartmentID) 
+                    WHERE gibbonCourseClassID=:gibbonCourseClassID";
         } else {
-            try {
-                $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                $sql = 'SELECT gibbonCourse.gibbonSchoolYearID, gibbonCourse.name AS courseLong, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonCourseID, gibbonSchoolYear.name AS year, gibbonCourseClass.attendance FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonCourseClassID=:gibbonCourseClassID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-
-            if ($result->rowCount() != 1) {
-                echo "<div class='error'>";
-                echo __('The specified record does not exist.');
-                echo '</div>';
-            } else {
-                $row = $result->fetch();
-                $proceed = true;
-            }
+            $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
+            $sql = "SELECT gibbonCourse.gibbonSchoolYearID, gibbonCourse.name AS courseLong, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonCourseID, gibbonSchoolYear.name AS year, gibbonCourseClass.attendance 
+                    FROM gibbonCourse 
+                    JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
+                    JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) 
+                    WHERE gibbonCourseClassID=:gibbonCourseClassID";
         }
 
-        if ($proceed == true) {
+        $row = $pdo->selectOne($sql, $data);
+
+        if (empty($row)) {
+            $page->addError(__('The specified record does not exist.'));
+        } else {
             //Get role within learning area
             $role = null;
             if ($gibbonDepartmentID != '' and isset($_SESSION[$guid]['username'])) {
@@ -106,106 +86,135 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 $page->breadcrumbs
                     ->add(__('View All'), 'departments.php')
                     ->add(Format::courseClassName($row['course'], $row['class']));
-            }            
-            
-            echo '<h2>';
-            echo Format::courseClassName($row['course'], $row['class']);
-            echo '<br/><small><em>'.__('Course').': '.$row['courseLong'].'</em></small>';
-            echo '</h2>';
+            }
 
-            //CHECK & STORE WHAT TO DISPLAY
-            $menu = array();
-            $menuCount = 0;
+            // CHECK & STORE WHAT TO DISPLAY
+            $menuItems = [];
 
             // Attendance
             if ($row['attendance'] == 'Y' && isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
-                $menu[$menuCount][0]="Attendance" ;
-                $menu[$menuCount][1]="<a href='index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-bottom: 10px' title='" . __('Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance_large.png'/><br/><b>" . __('Attendance') . "</b></a>" ;
-                $menuCount++ ;
+                $menuItems[] = [
+                    'name' => __('Attendance'),
+                    'url'  => './index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID'.$gibbonCourseClassID,
+                    'icon' => 'attendance_large.png',
+                ];
             }
-            //Planner
+            // Planner
             if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
-                $menu[$menuCount][0] = 'Planner';
-                $menu[$menuCount][1] = "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php&gibbonCourseClassID=$gibbonCourseClassID&viewBy=class'><img style='margin-bottom: 10px'  style='margin-left: 5px' title='".__('Planner')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/planner_large.png'/><br/><b>".__('Planner').'</b></a>';
-                ++$menuCount;
+                $menuItems[] = [
+                    'name' => __('Planner'),
+                    'url'  => './index.php?q=/modules/Planner/planner.php&gibbonCourseClassID='.$gibbonCourseClassID.'&viewBy=class',
+                    'icon' => 'planner_large.png',
+                ];
             }
-            //Markbook
+            // Markbook
             if (getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $connection2) == 'View Markbook_allClassesAllData') {
-                $menu[$menuCount][0] = 'Markbook';
-                $menu[$menuCount][1] = "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-bottom: 10px'  style='margin-left: 5px' title='".__('Markbook')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/markbook_large.png'/><br/><b>".__('Markbook').'</b></a>';
-                ++$menuCount;
+                $menuItems[] = [
+                    'name' => __('Markbook'),
+                    'url'  => './index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID='.$gibbonCourseClassID,
+                    'icon' => 'markbook_large.png',
+                ];
             }
-            //Homework
+            // Homework
             if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.php')) {
-                $menu[$menuCount][0] = 'Homework';
-                $menu[$menuCount][1] = "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_deadlines.php&gibbonCourseClassIDFilter=$gibbonCourseClassID'><img style='margin-bottom: 10px'  style='margin-left: 5px' title='".__('Markbook')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/homework_large.png'/><br/><b>".__('Homework').'</b></a>';
-                ++$menuCount;
+                $menuItems[] = [
+                    'name' => __('Homework'),
+                    'url'  => './index.php?q=/modules/Planner/planner_deadlines.php&gibbonCourseClassIDFilter='.$gibbonCourseClassID,
+                    'icon' => 'homework_large.png',
+                ];
             }
-            //Internal Assessment
+            // Internal Assessment
             if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_write.php')) {
-                $menu[$menuCount][0] = 'Internal Assessment';
-                $menu[$menuCount][1] = "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Formal Assessment/internalAssessment_write.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-bottom: 10px'  style='margin-left: 5px' title='".__('Internal Assessment')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/internalAssessment_large.png'/><br/><b>".__('Internal Assessment').'</b></a>';
-                ++$menuCount;
+                $menuItems[] = [
+                    'name' => __('Internal Assessment'),
+                    'url'  => './index.php?q=/modules/Formal Assessment/internalAssessment_write.php&gibbonCourseClassID='.$gibbonCourseClassID,
+                    'icon' => 'internalAssessment_large.png',
+                ];
             }
 
-            if ($menuCount < 1) {
-                echo "<div class='error'>";
-                echo __('There are no records to display.');
-                echo '</div>';
-            } else {
-                echo "<table class='smallIntBorder' cellspacing='0' style='width:100%'>";
-                $count = 0;
-                $columns = 3;
+            // Menu Items Table
+            $gridRenderer = new GridView($container->get('twig'));
+            $table = $container->get(DataTable::class)->setRenderer($gridRenderer);
+            $table->setTitle(Format::courseClassName($row['course'], $row['class']));
+            $table->setDescription(__('Course').': '.$row['courseLong']);
 
-                foreach ($menu as $menuEntry) {
-                    if ($count % $columns == 0) {
-                        echo '<tr>';
-                    }
-                    echo "<td style='padding-top: 15px!important; padding-bottom: 15px!important; width:30%; text-align: center; vertical-align: top'>";
-                    echo $menuEntry[1];
-                    echo '</td>';
+            $table->addMetaData('gridClass', 'rounded-sm bg-gray-100 border py-2');
+            $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/3 p-4 text-center');
 
-                    if ($count % $columns == ($columns - 1)) {
-                        echo '</tr>';
-                    }
-                    ++$count;
-                }
+            $iconPath = $_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/';
+            $table->addColumn('icon')
+                ->format(function ($menu) use ($iconPath) {
+                    $img = sprintf('<img src="%1$s" title="%2$s" class="w-24 sm:w-32 px-4 pb-2">', $iconPath.$menu['icon'], $menu['name']);
+                    return Format::link($menu['url'], $img);
+                });
 
-                if ($count % $columns != 0) {
-                    for ($i = 0;$i < $columns - ($count % $columns);++$i) {
-                        echo '<td></td>';
-                    }
-                    echo '</tr>';
-                }
+            $table->addColumn('name')
+                ->setClass('font-bold text-xs')
+                ->format(function ($menu) {
+                    return Format::link($menu['url'], $menu['name']);
+                });
 
-                echo '</table>';
+            echo $table->render(new DataSet($menuItems));
 
-                //PARTICIPANTS
-                echo '<a name=\'participants\'></a>';
-                echo '<h3 class=\'bigTop\'>';
-                    echo __('Participants');
-                echo '</h3>';
-                if (getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2) == 'View Student Profile_full') {
-                    echo "<div class='linkTop'>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/department_course_classExport.php?gibbonCourseClassID=$gibbonCourseClassID&address=".$_GET['q']."'>".__('Export')." <img title='".__('Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
-                    echo '</div>';
-                }
-
-                try {
-                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                    $sql = 'SELECT gibbonCourseClassID, gibbonCourse.nameShort AS courseName, gibbonCourseClass.nameShort AS className FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY gibbonCourse.name, gibbonCourseClass.name';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                if ($result->rowCount() < 1) {
-                    echo "<div class='error'>";
-                    echo __('The specified record does not exist.');
-                    echo '</div>';
+            // PARTICIPANTS
+            if (!empty($menuItems)) {
+                $dataClassGroup = array('gibbonCourseClassID' => $gibbonCourseClassID, 'today' => date('Y-m-d'));
+                if ($canViewStudents) {
+                    $sqlClassGroup = "SELECT * FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today) AND (NOT role='Student - Left') AND (NOT role='Teacher - Left') ORDER BY role DESC, surname, preferredName";
                 } else {
-                    printClassGroupTable($guid, $gibbonCourseClassID, 4, $connection2);
+                    $sqlClassGroup = "SELECT * FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today) AND (NOT role LIKE 'Student%') AND (NOT role='Teacher - Left') ORDER BY role DESC, surname, preferredName";
                 }
+
+                $participants = $pdo->select($sqlClassGroup, $dataClassGroup)->toDataSet();
+                
+                // Participants Grid Table
+                $gridRenderer = new GridView($container->get('twig'));
+                $table = $container->get(DataTable::class)->setRenderer($gridRenderer);
+                $table->setTitle(__('Participants'));
+
+                $table->addMetaData('gridClass', 'rounded-sm bg-blue-100 border py-2');
+                $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/4 my-4 text-center');
+
+                if (getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2) == 'View Student Profile_full') {
+                    $table->addHeaderAction('export', __('Export to Excel'))
+                        ->setURL('/modules/Departments/department_course_classExport.php')
+                        ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
+                        ->addParam('address', $_GET['q'])
+                        ->setIcon('download')
+                        ->directLink()
+                        ->displayLabel();
+                }
+
+                $table->addColumn('image_240')
+                    ->setClass('relative')
+                    ->format(function ($person) {
+                        return Format::userPhoto($person['image_240'], 'md', '').
+                               Format::userBirthdayIcon($person['dob'], $person['preferredName']);
+                    });
+                    
+                $table->addColumn('name')
+                    ->setClass('text-xs font-bold mt-1')
+                    ->format(function ($person) use ($canViewStaff, $canViewStudents) {
+                        if ($person['role'] == 'Student') {
+                            $name = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Student', false, true);
+                            $url =  './index.php?q=/modules/Student/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
+                            $canViewProfile = $canViewStudents;
+                        } else {
+                            $name = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', false, false);
+                            $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
+                            $canViewProfile = $canViewStaff;
+                        }
+
+                        return $canViewProfile
+                            ? Format::link($url, $name)
+                            : $name;
+                    });
+
+                $table->addColumn('role')
+                    ->setClass('text-xs text-gray-600 italic leading-snug')
+                    ->translatable();
+
+                echo $table->render($participants);
             }
 
             //Print sidebar
@@ -238,13 +247,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
 
                 //Print list of all classes
                 $sidebarExtra .= '<div class="column-no-break">';
-                $sidebarExtra .= '<h2>';
-                $sidebarExtra .= __('Current Classes');
-                $sidebarExtra .= '</h2>';
 
                 $form = Form::create('classSelect', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
-                $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/department_course_class.php');
+                $form->setTitle(__('Current Classes'));
                 $form->setClass('smallIntBorder w-full');
+
+                $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/department_course_class.php');
                 
                 $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                 $sql = "SELECT gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name 

@@ -89,8 +89,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
             $gridRenderer = new GridView($container->get('twig'));
             $table = $container->get(DataTable::class)->setRenderer($gridRenderer);
             $table->setTitle(__('Staff'));
-            $table->addMetaData('gridClass', 'justify-center sm:justify-start rounded-sm bg-blue-100 border py-2');
-            $table->addMetaData('gridItemClass', 'w-32 my-2 text-center');
+            $table->addMetaData('gridClass', 'rounded-sm bg-blue-100 border py-2');
+            $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/4 md:w-1/5 my-2 text-center');
 
             $table->addColumn('image_240')
                 ->format(function ($person) {
