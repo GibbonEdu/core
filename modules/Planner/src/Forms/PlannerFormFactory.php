@@ -58,11 +58,11 @@ class PlannerFormFactory extends DatabaseFormFactory
             ->fromTemplate($blockTemplate)
             ->settings([
                 'inputNameStrategy' => 'string',
-                'addOnEvent'        => 'change',
+                'addOnEvent'        => 'click',
                 'sortable'          => true,
                 'orderName'         => 'order',
             ])
-            ->placeholder(__('Smart Blocks outcomes listed here...'))
+            ->placeholder(__('Smart Blocks listed here...'))
             ->addBlockButton('showHide', __('Show/Hide'), 'plus.png');
 
         return $customBlocks;
