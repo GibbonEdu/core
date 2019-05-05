@@ -52,6 +52,7 @@ class ViewServiceProvider extends AbstractServiceProvider
         DataTable::class,
         DataTableView::class,
         PaginatedView::class,
+        Twig_Environment::class,
     ];
 
     /**
@@ -91,6 +92,10 @@ class ViewServiceProvider extends AbstractServiceProvider
 
         $container->add(PaginatedView::class, function () use ($container) {
             return new PaginatedView($container->get('twig'));
+        });
+
+        $container->share(\Twig_Environment::class, function () {
+            return $this->getContainer()->get('twig');
         });
     }
 }
