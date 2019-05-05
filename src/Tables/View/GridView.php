@@ -46,6 +46,8 @@ class GridView extends DataTableView implements RendererInterface
             $this->addData([
                 'columns' => $table->getColumns(),
                 'dataSet' => $dataSet,
+                'gridHeader' => $table->getMetaData('gridHeader'),
+                'gridFooter' => $table->getMetaData('gridFooter'),
             ]);
         }
 
