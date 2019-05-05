@@ -22,6 +22,8 @@ use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Tables\View\GridView;
+use Gibbon\Tables\Prefab\ClassGroupTable;
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -35,11 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
     $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
     $gibbonDepartmentID = $_GET['gibbonDepartmentID'] ?? '';
 
-    $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
-    $canViewStaff = isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php');
-    $canViewStudents = ($highestAction == 'View Student Profile_brief' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes');
-
-    if (empty($gibbonCourseClassID) || empty($highestAction)) {
+    if (empty($gibbonCourseClassID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         if (!empty($gibbonDepartmentID)) {
@@ -156,65 +154,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
 
             echo $table->render(new DataSet($menuItems));
 
-            // PARTICIPANTS
+            // Participants
             if (!empty($menuItems)) {
-                $dataClassGroup = array('gibbonCourseClassID' => $gibbonCourseClassID, 'today' => date('Y-m-d'));
-                if ($canViewStudents) {
-                    $sqlClassGroup = "SELECT * FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today) AND (NOT role='Student - Left') AND (NOT role='Teacher - Left') ORDER BY role DESC, surname, preferredName";
-                } else {
-                    $sqlClassGroup = "SELECT * FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today) AND (NOT role LIKE 'Student%') AND (NOT role='Teacher - Left') ORDER BY role DESC, surname, preferredName";
-                }
+                $table = $container->get(ClassGroupTable::class);
+                $table->build($gibbon->session->get('gibbonSchoolYearID'), $gibbonCourseClassID);
 
-                $participants = $pdo->select($sqlClassGroup, $dataClassGroup)->toDataSet();
-                
-                // Participants Grid Table
-                $gridRenderer = new GridView($container->get('twig'));
-                $table = $container->get(DataTable::class)->setRenderer($gridRenderer);
-                $table->setTitle(__('Participants'));
-
-                $table->addMetaData('gridClass', 'rounded-sm bg-blue-100 border py-2');
-                $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/4 my-4 text-center');
-
-                if (getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2) == 'View Student Profile_full') {
-                    $table->addHeaderAction('export', __('Export to Excel'))
-                        ->setURL('/modules/Departments/department_course_classExport.php')
-                        ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
-                        ->addParam('address', $_GET['q'])
-                        ->setIcon('download')
-                        ->directLink()
-                        ->displayLabel();
-                }
-
-                $table->addColumn('image_240')
-                    ->setClass('relative')
-                    ->format(function ($person) {
-                        return Format::userPhoto($person['image_240'], 'md', '').
-                               Format::userBirthdayIcon($person['dob'], $person['preferredName']);
-                    });
-                    
-                $table->addColumn('name')
-                    ->setClass('text-xs font-bold mt-1')
-                    ->format(function ($person) use ($canViewStaff, $canViewStudents) {
-                        if ($person['role'] == 'Student') {
-                            $name = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Student', false, true);
-                            $url =  './index.php?q=/modules/Student/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
-                            $canViewProfile = $canViewStudents;
-                        } else {
-                            $name = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', false, false);
-                            $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
-                            $canViewProfile = $canViewStaff;
-                        }
-
-                        return $canViewProfile
-                            ? Format::link($url, $name)
-                            : $name;
-                    });
-
-                $table->addColumn('role')
-                    ->setClass('text-xs text-gray-600 italic leading-snug')
-                    ->translatable();
-
-                echo $table->render($participants);
+                echo $table->getOutput();
             }
 
             //Print sidebar
