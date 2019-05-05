@@ -19,9 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UI\Dashboard;
 
-use Gibbon\Contracts\Services\Session;
-use Gibbon\Contracts\Database\Connection;
 use Gibbon\Forms\OutputableInterface;
+use Gibbon\Contracts\Services\Session;
+use Gibbon\Tables\Prefab\RollGroupTable;
+use Gibbon\Contracts\Database\Connection;
 
 /**
  * Staff Dashboard View Composer
@@ -33,11 +34,13 @@ class StaffDashboard implements OutputableInterface
 {
     protected $db;
     protected $session;
+    protected $rollGroupTable;
 
-    public function __construct(Connection $db, Session $session)
+    public function __construct(Connection $db, Session $session, RollGroupTable $rollGroupTable)
     {
         $this->db = $db;
         $this->session = $session;
+        $this->rollGroupTable = $rollGroupTable;
     }
 
     public function getOutput()
@@ -222,13 +225,25 @@ class StaffDashboard implements OutputableInterface
             $rollGroups[$count][1] = $rowRollGroups['nameShort'];
 
             //Roll group table
-            $rollGroups[$count][2] = "<div class='linkTop' style='margin-top: 0px'>";
+            $this->rollGroupTable->build($rowRollGroups['gibbonRollGroupID'], true, false, 'rollOrder, surname, preferredName');
+            $this->rollGroupTable->setTitle('');
+            
             if ($rowRollGroups['attendance'] == 'Y' AND $attendanceAccess) {
-                $rollGroups[$count][2] .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID='.$rowRollGroups['gibbonRollGroupID']."'>".__('Take Attendance')."<img style='margin-left: 5px' title='".__('Take Attendance')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a> | ";
+                $this->rollGroupTable->addHeaderAction('attendance', __('Take Attendance'))
+                    ->setURL('/modules/Attendance/attendance_take_byRollGroup.php')
+                    ->addParam('gibbonRollGroupID', $rowRollGroups['gibbonRollGroupID'])
+                    ->setIcon('attendance')
+                    ->displayLabel()
+                    ->append(' | ');
             }
-            $rollGroups[$count][2] .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/indexExport.php?gibbonRollGroupID='.$rowRollGroups['gibbonRollGroupID']."'>".__('Export to Excel')."<img style='margin-left: 5px' title='".__('Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
-            $rollGroups[$count][2] .= '</div>';
-            $rollGroups[$count][2] .= getRollGroupTable($guid, $rowRollGroups['gibbonRollGroupID'], 5, $connection2);
+
+            $this->rollGroupTable->addHeaderAction('export', __('Export to Excel'))
+                ->setURL('/indexExport.php')
+                ->addParam('gibbonRollGroupID', $rowRollGroups['gibbonRollGroupID'])
+                ->directLink()
+                ->displayLabel();
+            
+            $rollGroups[$count][2] = $this->rollGroupTable->getOutput();
 
             $behaviourView = isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.php');
             if ($behaviourView) {

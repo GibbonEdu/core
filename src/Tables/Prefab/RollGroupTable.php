@@ -76,7 +76,7 @@ class RollGroupTable extends DataTable
         $this->setTitle(__('Students'));
 
         $this->addMetaData('gridClass', 'rounded-sm bg-blue-100 border');
-        $this->addMetaData('gridItemClass', 'w-1/2 sm:w-1/3 md:w-1/5 my-2 sm:my-4 text-center');
+        $this->addMetaData('gridItemClass', 'w-1/2 sm:w-1/3 md:w-1/5 mb-2 sm:mb-4 text-center');
         
 
         if ($canPrint) {
@@ -96,7 +96,7 @@ class RollGroupTable extends DataTable
                 ->description(__('Show Confidential Data'))
                 ->checked(true)
                 ->inline()
-                ->wrap('<div class="mt-2 text-right text-xxs text-gray-700 italic">', '</div>');
+                ->wrap('<div class="my-2 text-right text-xxs text-gray-700 italic">', '</div>');
 
             $this->addMetaData('gridHeader', $checkbox->getOutput());
             $this->addMetaData('gridFooter', $this->getCheckboxScript($gibbonRollGroupID));

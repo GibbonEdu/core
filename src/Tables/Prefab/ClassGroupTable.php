@@ -70,7 +70,7 @@ class ClassGroupTable extends DataTable
         $this->setTitle(__('Participants'));
 
         $this->addMetaData('gridClass', 'rounded-sm bg-blue-100 border');
-        $this->addMetaData('gridItemClass', 'w-1/2 sm:w-1/4 my-2 sm:my-4 text-center');
+        $this->addMetaData('gridItemClass', 'w-1/2 sm:w-1/4 sm:my-2 text-center');
 
         if ($canExport) {
             $this->addHeaderAction('export', __('Export to Excel'))
