@@ -21,8 +21,8 @@ namespace Gibbon\Tables\View;
 
 use Gibbon\Domain\DataSet;
 use Gibbon\Tables\DataTable;
-use Gibbon\Tables\Renderer\RendererInterface;
 use Gibbon\Tables\View\DataTableView;
+use Gibbon\Tables\Renderer\RendererInterface;
 /**
  * Grid View
  *

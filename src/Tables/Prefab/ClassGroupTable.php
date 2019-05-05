@@ -21,8 +21,8 @@ namespace Gibbon\Tables\Prefab;
 
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
-use Gibbon\Forms\Input\Checkbox;
 use Gibbon\Tables\View\GridView;
+use Gibbon\Forms\Input\Checkbox;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;

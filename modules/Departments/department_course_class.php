@@ -23,7 +23,6 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Tables\View\GridView;
 use Gibbon\Tables\Prefab\ClassGroupTable;
-use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
