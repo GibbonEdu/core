@@ -284,7 +284,7 @@ class DatabaseFormFactory extends FormFactory
                 FROM gibbonPerson
                 WHERE status='Full' 
                 AND FIND_IN_SET(gibbonPersonID, :gibbonPersonIDList)
-                ORDER BY surname, preferredName";
+                ORDER BY FIND_IN_SET(gibbonPersonID, :gibbonPersonIDList), surname, preferredName";
 
         $people = $this->pdo->select($sql, $data)->fetchGroupedUnique();
 
