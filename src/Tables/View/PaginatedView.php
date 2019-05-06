@@ -144,6 +144,7 @@ class PaginatedView extends DataTableView implements RendererInterface
         return $this->factory->createSelect('filter')
             ->fromArray($filters)
             ->setClass('filters float-none w-24 pl-2 border leading-loose h-full sm:h-8 ')
+            ->addClass($dataSet->getTotalCount() > 25 ?: 'rounded-l')
             ->addClass($this->criteria->hasFilter() ?: 'rounded-r')
             ->placeholder(__('Filters'))
             ->getOutput();
