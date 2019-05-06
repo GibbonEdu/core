@@ -63,6 +63,7 @@ v18.0.00
         Staff: fixed staff photo not displaying on Facilities sub-page in staff profile
         System Admin: fixed typo in Google integration settings
         System Admin: added a clear cache option under System Check
+        Timetable: fixed some staff not showing up in View Timetable by Person
         Timetable Admin: fixed malformed translatable interface strings
         User Admin: fixed issue preventing action names from being translated in Manage Permissions
         User Admin: improved interface string consistency
