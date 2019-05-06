@@ -131,6 +131,12 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
                 $loader->prependPath($absolutePath.'/themes/'.$themeName.'/templates');
             }
 
+            // Add module templates
+            $moduleName = $session->get('module');
+            if (is_dir($absolutePath.'/modules/'.$moduleName.'/templates')) {
+                $loader->prependPath($absolutePath.'/modules/'.$moduleName.'/templates');
+            }
+
             $twig = new \Twig_Environment($loader, array(
                 'cache' => $absolutePath.'/uploads/cache',
                 'debug' => $session->get('installType') == 'Development',
