@@ -83,7 +83,8 @@ abstract class BackgroundProcess
      */
     public function execute($method = '', array $arguments = []) : string
     {
-        return $this->$method(...$arguments);
+        $output = $this->$method(...$arguments);
+        return is_array($output)? json_encode($output) : strval($output);
     }
 
     /**
