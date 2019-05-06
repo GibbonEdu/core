@@ -36,6 +36,7 @@ class UserGateway extends QueryableGateway
     use SharedUserLogic;
 
     private static $tableName = 'gibbonPerson';
+    private static $primaryKey = 'gibbonPersonID';
 
     private static $searchableColumns = ['preferredName', 'surname', 'username', 'studentID', 'email', 'emailAlternate', 'phone1', 'phone2', 'phone3', 'phone4', 'vehicleRegistration', 'gibbonRole.name'];
     
@@ -94,6 +95,21 @@ class UserGateway extends QueryableGateway
                 JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary)
                 WHERE FIND_IN_SET(gibbonPerson.status, :statusList) 
                 ORDER BY surname, preferredName";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectNotificationDetailsByPerson($gibbonPersonID)
+    {
+        $gibbonPersonIDList = is_array($gibbonPersonID)? $gibbonPersonID : [$gibbonPersonID];
+
+        $data = ['gibbonPersonIDList' => implode(',', $gibbonPersonIDList)];
+        $sql = "SELECT gibbonPerson.gibbonPersonID as groupBy, gibbonPerson.gibbonPersonID, title, surname, preferredName, gibbonPerson.status, image_240, username, email, phone1, phone1CountryCode, phone1Type, gibbonRole.category as roleCategory, gibbonStaff.jobTitle, gibbonStaff.type
+                FROM gibbonPerson 
+                JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary)
+                LEFT JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                WHERE FIND_IN_SET(gibbonPerson.gibbonPersonID, :gibbonPersonIDList) 
+                ORDER BY FIND_IN_SET(gibbonPerson.gibbonPersonID, :gibbonPersonIDList), surname, preferredName";
 
         return $this->db()->select($sql, $data);
     }
