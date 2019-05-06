@@ -60,6 +60,7 @@ v18.0.00
         Markbook: fixed bug preventing parents and students from viewing the markbook with work submitted to a lesson plan
         Markbook: fixed column widths when modified assessment is enabled
         School Admin: fixed interface string typos
+        School Admin: increased field lengths for Roll Group name and nameShort
         Staff: fixed staff photo not displaying on Facilities sub-page in staff profile
         System Admin: fixed typo in Google integration settings
         System Admin: added a clear cache option under System Check
