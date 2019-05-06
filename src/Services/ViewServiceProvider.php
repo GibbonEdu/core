@@ -28,6 +28,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Tables\View\DataTableView;
 use Gibbon\Tables\View\PaginatedView;
 use League\Container\ServiceProvider\AbstractServiceProvider;
+use Twig_Environment;
 
 /**
  * DI Container Services for rendering Views

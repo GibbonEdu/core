@@ -17,6 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Tables\View\GridView;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -29,103 +33,42 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.ph
 } else {
     $page->breadcrumbs->add(__('View All'));
 
-    $departments = false;
+    // Data Table
+    $gridRenderer = new GridView($container->get('twig'));
+    $table = $container->get(DataTable::class)->setRenderer($gridRenderer);
 
-    //LEARNING AREAS
-    try {
-        $dataLA = array();
-        $sqlLA = "SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
-        $resultLA = $connection2->prepare($sqlLA);
-        $resultLA->execute($dataLA);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
-    if ($resultLA->rowCount() > 0) {
-        $departments = true;
-        echo '<h2>';
-        echo __('Learning Areas');
-        echo '</h2>';
-        echo "<table class='blank' cellspacing='0' style='width:100%; margin-top: 20px'>";
-        $count = 0;
-        $columns = 3;
+    $table->addColumn('logo')
+        ->format(function ($department) {
+            return Format::userPhoto($department['logo'], 125, 'w-20 h-20 sm:w-32 sm:h-32 p-1');
+        });
 
-        while ($rowLA = $resultLA->fetch()) {
-            if ($count % $columns == 0) {
-                echo '<tr>';
-            }
-            echo "<td style='width:33%; text-align: center; vertical-align: top'>";
-            if ($rowLA['logo'] == '' or file_exists($_SESSION[$guid]['absolutePath'].'/'.$rowLA['logo']) == false) {
-                echo "<img style='height: 125px; width: 125px' class='user' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/anonymous_125.jpg'/><br/>";
-            } else {
-                echo "<img style='height: 125px; width: 125px' class='user' src='".$_SESSION[$guid]['absoluteURL'].'/'.$rowLA['logo']."'/><br/>";
-            }
-            echo "<div style='padding-top: 5px'><b><a href='index.php?q=/modules/Departments/department.php&gibbonDepartmentID=".$rowLA['gibbonDepartmentID']."'>".$rowLA['name'].'</a><br/><br/></div>';
-            echo '</td>';
+    $table->addColumn('name')
+        ->setClass('text-xs font-bold mt-1 mb-4')
+        ->format(function ($department) {
+            $url = "./index.php?q=/modules/Departments/department.php&gibbonDepartmentID=".$department['gibbonDepartmentID'];
+            return Format::link($url, $department['name']);
+        });
 
-            if ($count % $columns == ($columns - 1)) {
-                echo '</tr>';
-            }
-            ++$count;
-        }
+    // Learning Areas
+    $sql = "SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
+    $learningAreas = $pdo->select($sql)->toDataSet();
+    
+    $tableLA = clone $table;
+    $tableLA->setTitle(__('Learning Areas'));
+    
+    echo $tableLA->render($learningAreas);
+    
+    // Administration
+    $sql = "SELECT * FROM gibbonDepartment WHERE type='Administration' ORDER BY name";
+    $administration = $pdo->select($sql)->toDataSet();
 
-        for ($i = 0;$i < $columns - ($count % $columns);++$i) {
-            echo '<td></td>';
-        }
+    $tableAdmin = clone $table;
+    $tableAdmin->setTitle(__('Administration'));
 
-        if ($count % $columns != 0) {
-            echo '</tr>';
-        }
-        echo '</table>';
-    }
+    echo $tableAdmin->render($administration);
 
-    //ADMINISTRATION
-    try {
-        $dataLA = array();
-        $sqlLA = "SELECT * FROM gibbonDepartment WHERE type='Administration' ORDER BY name";
-        $resultLA = $connection2->prepare($sqlLA);
-        $resultLA->execute($dataLA);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
-    if ($resultLA->rowCount() > 0) {
-        $departments = true;
-        echo '<h2>';
-        echo __('Administration');
-        echo '</h2>';
-        echo "<table class='blank' cellspacing='0' style='width:100%; margin-top: 20px'>";
-        $count = 0;
-        $columns = 3;
 
-        while ($rowLA = $resultLA->fetch()) {
-            if ($count % $columns == 0) {
-                echo '<tr>';
-            }
-            echo "<td style='width:33%; text-align: center; vertical-align: top'>";
-            if ($rowLA['logo'] == '' or file_exists($_SESSION[$guid]['absolutePath'].'/'.$rowLA['logo']) == false) {
-                echo "<img style='height: 125px; width: 125px' class='user' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/anonymous_125.jpg'/><br/>";
-            } else {
-                echo "<img style='height: 125px; width: 125px' class='user' src='".$_SESSION[$guid]['absoluteURL'].'/'.$rowLA['logo']."'/><br/>";
-            }
-            echo "<div style='padding-top: 5px'><b><a href='index.php?q=/modules/Departments/department.php&gibbonDepartmentID=".$rowLA['gibbonDepartmentID']."'>".$rowLA['name'].'</a><br/><br/></div>';
-            echo '</td>';
-
-            if ($count % $columns == ($columns - 1)) {
-                echo '</tr>';
-            }
-            ++$count;
-        }
-
-        for ($i = 0;$i < $columns - ($count % $columns);++$i) {
-            echo '<td></td>';
-        }
-
-        if ($count % $columns != 0) {
-            echo '</tr>';
-        }
-        echo '</table>';
-    }
-
-    if ($departments == false) {
+    if (empty($learningAreas) && empty($administration)) {
         echo "<div class='warning'>";
         echo __('There are no records to display.');
         echo '</div>';

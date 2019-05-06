@@ -533,21 +533,56 @@ class Format
 
         switch ($size) {
             case 240:
-            case 'lg':  $class .= 'w-48 sm:w-64 max-w-full p-1 mx-auto'; break;
+            case 'lg':  $class .= 'w-48 sm:w-64 max-w-full p-1 mx-auto';
+                        $imageSize = 240;
+                        break;
             case 75:
-            case 'md':  $class .= 'w-20 lg:w-24 p-1'; break;
+            case 'md':  $class .= 'w-20 lg:w-24 p-1';
+                        $imageSize = 75;
+                        break;
 
-            case 'sm':  $class .= 'w-12 sm:w-20 p-px sm:p-1'; break;
+            case 'sm':  $class .= 'w-12 sm:w-20 p-px sm:p-1';
+                        $imageSize = 75;
+                        break;
 
-            default:    $class .= $size;
+            default:    $imageSize = $size;
         }
 
         if (empty($path) or file_exists(static::$settings['absolutePath'].'/'.$path) == false) {
-            $imageSize = $size == 240 || $size == 'lg' ? 240 : 75;
             $path = '/themes/'.static::$settings['gibbonThemeName'].'/img/anonymous_'.$imageSize.'.jpg';
         }
 
         return sprintf('<img class="%1$s" src="%2$s">', $class, static::$settings['absoluteURL'].'/'.$path);
+    }
+
+    /**
+     * Display an icon if this user's birthday is within the next week.
+     *
+     * @param string $dob YYYY-MM-DD
+     * @param string $preferredName
+     * @return string
+     */
+    public static function userBirthdayIcon($dob, $preferredName)
+    {
+        // HEY SHORTY IT'S YOUR BIRTHDAY!
+        $daysUntilNextBirthday = daysUntilNextBirthday($dob);
+        
+        if (empty($dob) || $daysUntilNextBirthday >= 8) return '';
+
+        if ($daysUntilNextBirthday == 0) {
+            $title = __("{name}'s birthday today!", ['name' => $preferredName]);
+            $icon = 'gift_pink.png';
+        } else {
+            $title = __n(
+                "{count} day until {name}'s birthday!",
+                "{count} days until {name}'s birthday!",
+                $daysUntilNextBirthday,
+                ['name' => $preferredName]
+            );
+            $icon = 'gift.png';
+        }
+
+        return sprintf('<img class="absolute bottom-0 -ml-4" title="%1$s" src="%2$s">', $title, static::$settings['absoluteURL'].'/themes/'.static::$settings['gibbonThemeName'].'/img/'.$icon);
     }
 
     public static function userStatusInfo($person = [])
