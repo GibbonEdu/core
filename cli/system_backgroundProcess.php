@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\BackgroundProcessor;
+use Gibbon\Services\Format;
 
 $_POST['address'] = '/modules/'.($argv[3] ?? 'System Admin').'/index.php';
 
@@ -27,6 +28,9 @@ require __DIR__.'/../gibbon.php';
 if (!isCommandLineInterface()) {
     die(__('This script cannot be run from a browser, only via CLI.'));
 }
+
+// Setup some of the globals
+Format::setupFromSession($container->get('session'));
 
 // Override the ini to keep this process alive
 ini_set('memory_limit', '2048M');
