@@ -100,10 +100,28 @@ class GroupGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function selectGroupsByIDList($gibbonGroupID)
+    {
+        $gibbonGroupIDList = is_array($gibbonGroupID)? $gibbonGroupID : [$gibbonGroupID];
+
+        $data = array('gibbonGroupIDList' => implode(',', $gibbonGroupIDList));
+        $sql = "SELECT gibbonGroupID, name FROM gibbonGroup WHERE FIND_IN_SET(gibbonGroupID, :gibbonGroupIDList) ORDER BY FIND_IN_SET(gibbonGroupID, :gibbonGroupIDList)";
+
+        return $this->db()->select($sql, $data);
+    }
+
     public function selectGroupPersonByID($gibbonGroupID, $gibbonPersonID)
     {
         $data = array('gibbonGroupID' => $gibbonGroupID, 'gibbonPersonID' => $gibbonPersonID);
         $sql = "SELECT * FROM gibbonGroupPerson WHERE gibbonGroupID=:gibbonGroupID AND gibbonPersonID=:gibbonPersonID";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectPersonIDsByGroup($gibbonGroupID)
+    {
+        $data = array('gibbonGroupID' => $gibbonGroupID);
+        $sql = "SELECT gibbonGroupPerson.gibbonPersonID FROM gibbonGroupPerson WHERE gibbonGroupID=:gibbonGroupID";
 
         return $this->db()->select($sql, $data);
     }
