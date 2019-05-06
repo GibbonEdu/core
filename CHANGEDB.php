@@ -846,4 +846,5 @@ INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `dateFormat
 ALTER TABLE gibbonPlannerEntry DROP COLUMN gibbonHookID;end
 ALTER TABLE `gibbonHook` CHANGE `type` `type` ENUM('Public Home Page','Student Profile','Parental Dashboard','Staff Dashboard','Student Dashboard') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 DROP TABLE gibbonUnitBlockStar;end
+ALTER TABLE `gibbonRollGroup` CHANGE `name` `name` VARCHAR(20) NOT NULL, CHANGE `nameShort` `nameShort` VARCHAR(8) NOT NULL;end
 ";
