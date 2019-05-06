@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/School Admin/attendanceSettings_manage_add.php')
         ->displayLabel();
-    
+
     $table->modifyRows(function ($values, $row) {
         if ($values['active'] == 'N') $row->addClass('error');
         return $row;
@@ -99,19 +99,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
 
-    $row = $form->addRow()->addHeading(__('Pre-Fills & Defaults'))->append(__('The pre-fill settings below determine which Attendance contexts are preset by data available from other contexts. This allows, for example, for attendance taken in a class to be preset by attendance already taken in a Roll Group. The contexts for attendance include Roll Group, Class, Person, Future and Self Registration.'));
+    $row = $form->addRow()->addHeading(__('Context & Defaults'));
 
-    $setting = getSettingByScope($connection2, 'Attendance', 'prefillRollGroup', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
-
-    $setting = getSettingByScope($connection2, 'Attendance', 'prefillClass', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
-
-    $setting = getSettingByScope($connection2, 'Attendance', 'prefillPerson', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();

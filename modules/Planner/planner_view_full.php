@@ -1426,7 +1426,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $attendanceEnabled = isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php") && $row['attendance'] == 'Y';
 
                         // Get attendance pre-fill and default settings
-                        $prefillAttendanceType = getSettingByScope($connection2, 'Attendance', 'prefillClass');
                         $defaultAttendanceType = getSettingByScope($connection2, 'Attendance', 'defaultClassAttendanceType');
 
                         $attendance = new Gibbon\Module\Attendance\AttendanceView($gibbon, $pdo);
@@ -1488,11 +1487,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             $rowLog = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '');
 
                             if ($rowClassGroup['role'] == 'Student') {
-
-                                //Get any student log data by context
+                                //Get any student log data for this class
                                 try {
-                                    $dataLog=array('gibbonPersonID' => $rowClassGroup['gibbonPersonID'], 'date' => $row['date'].'%', 'gibbonCourseClassID' => $gibbonCourseClassID);
-                                    $sqlLog="SELECT * FROM gibbonAttendanceLogPerson WHERE context='Class' AND gibbonPersonID=:gibbonPersonID AND (gibbonCourseClassID=:gibbonCourseClassID) AND date LIKE :date ORDER BY timestampTaken DESC" ;
+                                    $dataLog = array('gibbonPersonID' => $rowClassGroup['gibbonPersonID'], 'date' => $row['date'] . '%', 'gibbonCourseClassID' => $gibbonCourseClassID);
+                                    $sqlLog = "SELECT type, reason, comment, context, timestampTaken FROM gibbonAttendanceLogPerson
+                                            JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                                            WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
+                                            AND date LIKE :date
+                                            AND context='Class' AND gibbonCourseClassID=:gibbonCourseClassID
+                                            ORDER BY timestampTaken DESC";
                                     $resultLog=$connection2->prepare($sqlLog);
                                     $resultLog->execute($dataLog);
                                 }
@@ -1503,17 +1506,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 if ($resultLog && $resultLog->rowCount() > 0 ) {
                                     $rowLog = $resultLog->fetch();
                                 }
-                                elseif ($prefillAttendanceType == 'Y') {
-                                    //Get any student log data
-                                    try {
-                                        $dataLog=array('gibbonPersonID' => $rowClassGroup['gibbonPersonID'], 'date' => $row['date'].'%');
-                                        $sqlLog="SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY timestampTaken DESC" ;
-                                        $resultLog=$connection2->prepare($sqlLog);
-                                        $resultLog->execute($dataLog);
-                                    }
-                                    catch(PDOException $e) {
-                                        print "<div class='error'>" . $e->getMessage() . "</div>" ;
-                                    }
+                                //Check for school prefill if attendance not taken in this class
+                                else {
+                                    $dataLog = array('gibbonPersonID' => $rowClassGroup['gibbonPersonID'], 'date' => $row['date'] . '%');
+                                    $sqlLog = "SELECT type, reason, comment, context, timestampTaken FROM gibbonAttendanceLogPerson
+                                            JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                                            WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
+                                            AND date LIKE :date
+                                            AND NOT context='Class'
+                                            ORDER BY timestampTaken DESC";
+                                    $resultLog = $pdo->executeQuery($dataLog, $sqlLog);
 
                                     if ($resultLog && $resultLog->rowCount() > 0 ) {
                                         $rowLog = $resultLog->fetch();
