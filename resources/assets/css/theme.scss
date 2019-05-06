@@ -105,7 +105,7 @@ div.message a, div.success a, div.warning a, div.error a, div.exception a, div.d
 }
 
 .tag {
-    @apply inline-block rounded-full border m-0 px-4  leading-loose;
+    @apply inline-block rounded-sm px-2 text-xs font-medium font-sans leading-loose ;
 }
 
 
