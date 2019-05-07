@@ -25,7 +25,7 @@ $from = $_POST['from'] ?? '';
 $phoneNumber = $_POST['phoneNumber'] ?? '';
 $smsGateway = getSettingByScope($connection2, 'Messenger', 'smsGateway');
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/subs_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_edit.php') == false) {
     die(Format::alert(__('Your request failed because you do not have access to this action.')));
 } elseif (empty($from) || empty($phoneNumber)) {
     die(__('You have not specified one or more required parameters.'));

@@ -21,7 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\System\SettingGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/subs_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_add.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -29,12 +29,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/subs_manage_add.php'
     $search = $_GET['search'] ?? '';
 
     $page->breadcrumbs
-        ->add(__('Manage Substitutes'), 'subs_manage.php', ['search' => $search])
+        ->add(__('Manage Substitutes'), 'substitutes_manage.php', ['search' => $search])
         ->add(__('Add Substitute'));
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/subs_manage_edit.php&gibbonSubstituteID='.$_GET['editID'].'&search='.$_GET['search'];
+        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/substitutes_manage_edit.php&gibbonSubstituteID='.$_GET['editID'].'&search='.$_GET['search'];
     }
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], $editLink, null);
@@ -42,11 +42,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/subs_manage_add.php'
 
     if ($search != '') {
         echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/subs_manage.php&search=$search'>".__('Back to Search Results').'</a>';
+        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/substitutes_manage.php&search=$search'>".__('Back to Search Results').'</a>';
         echo '</div>';
     }
 
-    $form = Form::create('subsManage', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/subs_manage_addProcess.php?search='.$search);
+    $form = Form::create('subsManage', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/substitutes_manage_addProcess.php?search='.$search);
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
 

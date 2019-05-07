@@ -25,7 +25,7 @@ use Gibbon\Domain\Staff\SubstituteGateway;
 use Gibbon\Services\Format;
 use Gibbon\Tables\Action;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/subs_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_edit.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/subs_manage_edit.php
     $search = $_GET['search'] ?? '';
 
     $page->breadcrumbs
-        ->add(__('Manage Substitutes'), 'subs_manage.php', ['search' => $search])
+        ->add(__('Manage Substitutes'), 'substitutes_manage.php', ['search' => $search])
         ->add(__('Edit Substitute'));
 
     if (isset($_GET['return'])) {
@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/subs_manage_edit.php
 
     echo "<div class='linkTop'>";
     if ($search != '') {
-        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/subs_manage.php&search=$search'>".__('Back to Search Results').'</a>';
+        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/substitutes_manage.php&search=$search'>".__('Back to Search Results').'</a>';
     }
 
     if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edit.php')) {
@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/subs_manage_edit.php
     }
     echo '</div>';
 
-    $form = Form::create('subsManage', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/subs_manage_editProcess.php?search=$search");
+    $form = Form::create('subsManage', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/substitutes_manage_editProcess.php?search=$search");
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
@@ -149,7 +149,7 @@ $(document).ready(function() {
     $('.testSMS').on('click', function() {
         if (confirm("<?php echo __('Test SMS').'?'; ?>")) {
             $.ajax({
-                url: './modules/Staff/subs_manage_edit_smsAjax.php',
+                url: './modules/Staff/substitutes_manage_edit_smsAjax.php',
                 data: {
                     from: "<?php echo $_SESSION[$guid]['preferredName'].' '.$_SESSION[$guid]['surname']; ?>",    
                     phoneNumber: "<?php echo $person['phone1CountryCode'].$person['phone1']; ?>"

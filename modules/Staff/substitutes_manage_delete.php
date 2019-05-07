@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Prefab\DeleteForm;
 use Gibbon\Domain\Staff\SubstituteGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/subs_manage_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_delete.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -39,6 +39,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/subs_manage_delete.p
         return;
     }
 
-    $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/Staff/subs_manage_deleteProcess.php?gibbonSubstituteID='.$gibbonSubstituteID, true);
+    $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/Staff/substitutes_manage_deleteProcess.php?gibbonSubstituteID='.$gibbonSubstituteID, true);
     echo $form->getOutput();
 }

@@ -22,7 +22,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Staff\SubstituteGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/subs_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/subs_manage.php') ==
     $form->setClass('noIntBorder fullWidth');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/subs_manage.php');
+    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/substitutes_manage.php');
 
     $row = $form->addRow();
         $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username.'));
@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/subs_manage.php') ==
     $table->setTitle(__('View'));
 
     $table->addHeaderAction('add', __('Add'))
-        ->setURL('/modules/Staff/subs_manage_add.php')
+        ->setURL('/modules/Staff/substitutes_manage_add.php')
         ->addParam('search', $search)
         ->displayLabel();
 
@@ -118,14 +118,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/subs_manage.php') ==
         ->addParam('search', $criteria->getSearchText(true))
         ->format(function ($person, $actions) {
             $actions->addAction('edit', __('Edit'))
-                    ->setURL('/modules/Staff/subs_manage_edit.php');
+                    ->setURL('/modules/Staff/substitutes_manage_edit.php');
 
             $actions->addAction('availability', __('Edit Availability'))
                     ->setIcon('planner')
                     ->setURL('/modules/Staff/coverage_availability.php');
 
             $actions->addAction('delete', __('Delete'))
-                    ->setURL('/modules/Staff/subs_manage_delete.php');
+                    ->setURL('/modules/Staff/substitutes_manage_delete.php');
         });
 
     echo $table->render($subs);
