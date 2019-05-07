@@ -231,7 +231,7 @@ trait TableAware
     {
         $query = $this
             ->newSelect()
-            ->cols($this->getPrimaryKey())
+            ->cols([$this->getPrimaryKey()])
             ->from($this->getTableName())
             ->where($this->getPrimaryKey().' = :primaryKey')
             ->bindValue('primaryKey', $primaryKeyValue);
