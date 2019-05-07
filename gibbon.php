@@ -36,6 +36,7 @@ $container->inflector(\Gibbon\Services\BackgroundProcess::class)
 
 $container->addServiceProvider(new Gibbon\Services\CoreServiceProvider(__DIR__));
 $container->addServiceProvider(new Gibbon\Services\ViewServiceProvider());
+$container->addServiceProvider(new Gibbon\Services\GoogleServiceProvider());
 
 // Globals for backwards compatibility
 $gibbon = $container->get('config');
