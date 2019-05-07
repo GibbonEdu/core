@@ -18,6 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
+use Gibbon\Domain\Staff\StaffAbsenceGateway;
+use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -185,6 +187,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             echo "<div class='linkTop'>";
                             echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                             echo '</div>';
+                        }
+
+                        // Display a message if the staff member is absent today.
+                        $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
+                        $staffAbsenceDateGateway = $container->get(StaffAbsenceDateGateway::class);
+
+                        $criteria = $staffAbsenceGateway->newQueryCriteria()->filterBy('date', 'Today')->filterBy('status', 'Approved');
+                        $absences = $staffAbsenceGateway->queryAbsencesByPerson($criteria, $gibbonPersonID)->toArray();
+
+                        if (count($absences) > 0) {
+                            $absenceMessage = __('{name} is absent today.', [
+                                'name' => Format::name($row['title'], $row['preferredName'], $row['surname'], 'Staff', false, true),
+                            ]);
+                            $absenceMessage .= '<br/><br/><ul>';
+                            foreach ($absences as $absence) {
+                                $details = $staffAbsenceDateGateway->getByAbsenceAndDate($absence['gibbonStaffAbsenceID'], date('Y-m-d'));
+                                $time = $details['allDay'] == 'N' ? Format::timeRange($details['timeStart'], $details['timeEnd']) : __('All Day');
+
+                                $absenceMessage .= '<li>'.Format::dateRangeReadable($absence['dateStart'], $absence['dateEnd']).'  '.$time;
+                                if ($details['coverage'] == 'Accepted') {
+                                    $absenceMessage .= '<li>'.__('Coverage').': '.Format::name($details['titleCoverage'], $details['preferredNameCoverage'], $details['surnameCoverage'], 'Staff', false, true);
+                                }
+                                $absenceMessage .= '</li>';
+                            }
+                            $absenceMessage .= '<ul>';
+
+                            echo Format::alert($absenceMessage, 'warning');
                         }
 
                         //General Information
