@@ -83,7 +83,7 @@ class StaffGateway extends QueryableGateway
     public function selectStaffByID($gibbonPersonID, $type = null)
     {
         $data = array('gibbonPersonID' => $gibbonPersonID);
-        $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.title, gibbonPerson.preferredName, gibbonPerson.surname, gibbonStaff.type
+        $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.title, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.image_240, gibbonStaff.type, gibbonStaff.jobTitle
                 FROM gibbonStaff 
                 JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
                 WHERE gibbonStaff.gibbonPersonID=:gibbonPersonID 
