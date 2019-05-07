@@ -360,9 +360,7 @@ $page->stylesheets->add('core', 'resources/assets/css/core.min.css', ['weight' =
 // Try to auto-set user's calendar feed if not set already
 if ($session->exists('calendarFeedPersonal') && $session->exists('googleAPIAccessToken')) {
     if (!$session->has('calendarFeedPersonal') && $session->has('googleAPIAccessToken')) {
-        $client2 = new Google_Client();
-        $client2->setAccessToken($session->get('googleAPIAccessToken'));
-        $service = new Google_Service_Calendar($client2);
+        $service = $container->get('Google_Service_Calendar');
         $calendar = $service->calendars->get('primary');
 
         if ($calendar['id'] != '') {
