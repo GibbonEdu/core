@@ -847,6 +847,37 @@ ALTER TABLE gibbonPlannerEntry DROP COLUMN gibbonHookID;end
 ALTER TABLE `gibbonHook` CHANGE `type` `type` ENUM('Public Home Page','Student Profile','Parental Dashboard','Staff Dashboard','Student Dashboard') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 DROP TABLE gibbonUnitBlockStar;end
 ALTER TABLE `gibbonRollGroup` CHANGE `name` `name` VARCHAR(20) NOT NULL, CHANGE `nameShort` `nameShort` VARCHAR(8) NOT NULL;end
-DELETE FROM gibbonSetting WHERE (name='prefillClass' OR name='prefillPerson') AND scope='Attendance';end
-UPDATE gibbonSetting SET name='countClassAsSchool', nameDisplay='Count Class Attendance as School Attendance', description='Should attendance from the class context be used to prefill and inform school attendance?' WHERE name='prefillRollGroup' AND scope='Attendance';end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='School Admin'), 'Manage Staff Settings', 0, 'People', 'Manage settings for the Staff module', 'staffSettings.php,staffSettings_manage_add.php,staffSettings_manage_edit.php,staffSettings_manage_delete.php', 'staffSettings.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
+INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='School Admin' AND gibbonAction.name='Manage Staff Settings'));end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('Staff', 'substituteTypes', 'Substitute Types', 'A comma-separated list.', 'Internal Substitute,External Substitute');end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('Staff', 'urgencyThreshold', 'Urgency Threshold', 'Notifications in this time-span are sent immediately, day or night.', '3');end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('Staff', 'urgentNotifications', 'Urgent Notifications', 'Which contact methods should be used to notify users.', 'Email');end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('Staff', 'absenceApprovers', 'Absence Approvers', 'Users who can approve staff absences. Leave this blank if approval is not used.', '');end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('Staff', 'absenceFullDayThreshold', 'Full Day Absence', 'The minumum number of hours for an absence to count as a full day (1.0)', '6.0');end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('Staff', 'absenceHalfDayThreshold', 'Half Day Absence', 'The minumum number of hours for an absence to count as a half day (0.5). Absences less than this count as 0', '2.0');end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('Staff', 'absenceNotificationGroups', 'Notification Groups', 'Which messenger groups can staff members send absence notifications to?', '');end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('Staff', 'absenceGoogleCalendarID', 'Google Calendar Sync', 'Enter a Google Calendar ID to automatically update the calendar with staff absences.', '');end
+CREATE TABLE `gibbonStaffAbsenceType` (
+    `gibbonStaffAbsenceTypeID` INT(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(60) NULL,
+    `nameShort` VARCHAR(10) NULL,
+    `active` ENUM('N','Y') DEFAULT 'Y',
+    `requiresApproval` ENUM('N','Y') DEFAULT 'N',
+    `reasons` TEXT NULL,
+    `sequenceNumber` INT(3) NOT NULL,
+    PRIMARY KEY (`gibbonStaffAbsenceTypeID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
+INSERT INTO `gibbonStaffAbsenceType` (`gibbonStaffAbsenceTypeID`, `name`, `nameShort`, `active`, `requiresApproval`, `reasons`, `sequenceNumber`) VALUES (000001, 'Sick Leave', 'S', 'Y', 'N', '', 1), (000002, 'Personal Leave', 'P', 'Y', 'N', '', 2), (000003, 'Non-paid Leave', 'NP', 'Y', 'N', '', 3), (000004, 'School Related', 'D', 'Y', 'N', 'PD,Sports Trip,Offsite Event,Other', 4);end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Staff'), 'Manage Substitutes', 0, 'Staff Management', 'Edit information for users who can provide staff coverage.', 'subs_manage.php,subs_manage_add.php,subs_manage_edit.php,subs_manage_delete.php,coverage_availability.php', 'subs_manage.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'Y');end
+INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Staff' AND gibbonAction.name='Manage Substitutes'));end
+CREATE TABLE `gibbonSubstitute` (
+    `gibbonSubstituteID` INT(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+    `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
+    `active` ENUM('Y','N') DEFAULT 'Y',
+    `type` VARCHAR(60) NULL,
+    `details` VARCHAR(255) NULL,
+    `priority` INT(2) NOT NULL DEFAULT '0',
+    UNIQUE KEY `gibbonPersonID` (`gibbonPersonID`),
+    PRIMARY KEY (`gibbonSubstituteID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
 ";
