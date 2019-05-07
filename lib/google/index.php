@@ -15,11 +15,7 @@ $_SESSION[$guid]["pageLoads"] = NULL;
 
 $URL = "index.php";
 
-//Cleint ID and Secret
-$client_id = getSettingByScope($connection2, "System", "googleClientID" );
-$client_secret = getSettingByScope($connection2, "System", "googleClientSecret" );
 $redirect_uri = getSettingByScope($connection2, "System", "googleRedirectUri" );
-
 
 /************************************************
   Make an API request on behalf of a user. In
@@ -28,14 +24,7 @@ $redirect_uri = getSettingByScope($connection2, "System", "googleRedirectUri" );
   through a login flow. To do this we need some
   information from our API console project.
  ************************************************/
-$client = new Google_Client();
-$client->setClientId($client_id);
-$client->setClientSecret($client_secret);
-$client->setRedirectUri($redirect_uri);
-$client->setAccessType('offline');
-$client->setScopes(array('email',
-    'profile',
-    'https://www.googleapis.com/auth/calendar')); // set scope during user login
+$client = $container->get('Google_Client');
 
 /************************************************
   When we create the service here, we pass the
@@ -51,6 +40,11 @@ $service = new Google_Service_Oauth2($client);
   function. We store the resultant access token
   bundle in the session, and redirect to ourself.
 */
+
+if (isset($_GET['error'])) {
+    header('Location: '.getSettingByScope($connection2, 'System', 'absoluteURL').'?loginReturn=fail7');
+    exit;
+}
 
 if (isset($_GET['code'])) {
   $client->authenticate($_GET['code']);
