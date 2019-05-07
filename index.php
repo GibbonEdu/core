@@ -20,6 +20,7 @@ along with this program. If not, see <http:// www.gnu.org/licenses/>.
 use Gibbon\Domain\System\ModuleGateway;
 use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\User\UserGateway;
 
 /**
  * BOOTSTRAP
@@ -360,26 +361,16 @@ $page->stylesheets->add('core', 'resources/assets/css/core.min.css', ['weight' =
 // Try to auto-set user's calendar feed if not set already
 if ($session->exists('calendarFeedPersonal') && $session->exists('googleAPIAccessToken')) {
     if (!$session->has('calendarFeedPersonal') && $session->has('googleAPIAccessToken')) {
-        $client2 = new Google_Client();
-        $client2->setAccessToken($session->get('googleAPIAccessToken'));
-        $service = new Google_Service_Calendar($client2);
-        $calendar = $service->calendars->get('primary');
+        $service = $container->get('Google_Service_Calendar');
+        try {
+            $calendar = $service->calendars->get('primary');
+        } catch (\Google_Service_Exception $e) {}
 
-        if ($calendar['id'] != '') {
-            try {
-                $dataCalendar = [
-                    'calendarFeedPersonal' => $calendar['id'],
-                    'gibbonPersonID' => $session->get('gibbonPersonID'),
-                ];
-                $sqlCalendar = 'UPDATE gibbonPerson SET
-                    calendarFeedPersonal=:calendarFeedPersonal
-                    WHERE gibbonPersonID=:gibbonPersonID';
-                $resultCalendar = $connection2->prepare($sqlCalendar);
-                $resultCalendar->execute($dataCalendar);
-            } catch (PDOException $e) {
-                exit($e->getMessage());
-            }
+        if (!empty($calendar['id'])) {
             $session->set('calendarFeedPersonal', $calendar['id']);
+            $container->get(UserGateway::class)->update($session->get('gibbonPersonID'), [
+                'calendarFeedPersonal' => $calendar['id'],
+            ]);
         }
     }
 }

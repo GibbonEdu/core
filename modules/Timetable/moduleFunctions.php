@@ -171,6 +171,8 @@ function getSpaceBookingEventsSpace($guid, $connection2, $startDayStamp, $gibbon
 //Returns events from a Google Calendar XML field, between the time and date specified
 function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDayStamp)
 {
+    global $container;
+
     $googleOAuth = getSettingByScope($connection2, 'System', 'googleOAuth');
 
     if ($googleOAuth == 'Y' and isset($_SESSION[$guid]['googleAPIAccessToken'])) {
@@ -178,40 +180,11 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
         $start = date("Y-m-d\TH:i:s", strtotime(date('Y-m-d', $startDayStamp)));
         $end = date("Y-m-d\TH:i:s", (strtotime(date('Y-m-d', $endDayStamp)) + 86399));
 
-        $client = new Google_Client();
-        $client->setAccessToken($_SESSION[$guid]['googleAPIAccessToken']);
-
-        if ($client->isAccessTokenExpired()) { //Need to refresh the token
-            //Get API details
-            $googleClientName = getSettingByScope($connection2, 'System', 'googleClientName');
-            $googleClientID = getSettingByScope($connection2, 'System', 'googleClientID');
-            $googleClientSecret = getSettingByScope($connection2, 'System', 'googleClientSecret');
-            $googleRedirectUri = getSettingByScope($connection2, 'System', 'googleRedirectUri');
-            $googleDeveloperKey = getSettingByScope($connection2, 'System', 'googleDeveloperKey');
-
-            //Re-establish $client
-            $client->setApplicationName($googleClientName); // Set your application name
-            $client->setScopes(array('email', 'profile', 'https://www.googleapis.com/auth/calendar')); // set scope during user login
-            $client->setClientId($googleClientID); // paste the client id which you get from google API Console
-            $client->setClientSecret($googleClientSecret); // set the client secret
-            $client->setRedirectUri($googleRedirectUri); // paste the redirect URI where you given in APi Console. You will get the Access Token here during login success
-            $client->setDeveloperKey($googleDeveloperKey); // Developer key
-            $client->setAccessType('offline');
-            if ($_SESSION[$guid]['googleAPIRefreshToken'] == '') {
-                echo "<div class='error'>";
-                echo __('Your request failed due to a database error.');
-                echo '</div>';
-            }
-            else {
-                $client->refreshToken($_SESSION[$guid]['googleAPIRefreshToken']);
-                $_SESSION[$guid]['googleAPIAccessToken'] = $client->getAccessToken();
-            }
-        }
-
-        $getFail = false;
+        $service = $container->get('Google_Service_Calendar');
+        $getFail = empty($service);
+        
         $calendarListEntry = array();
         try {
-            $service = new Google_Service_Calendar($client);
             $optParams = array('timeMin' => $start.'+00:00', 'timeMax' => $end.'+00:00', 'singleEvents' => true);
             $calendarListEntry = $service->events->listEvents($xml, $optParams);
         } catch (Exception $e) {
