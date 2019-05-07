@@ -102,7 +102,6 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                 echo __("School is closed on the specified date, and so attendance information cannot be recorded.");
                 echo "</div>";
             } else {
-                $prefillAttendanceType = getSettingByScope($connection2, 'Attendance', 'prefillClass');
                 $defaultAttendanceType = getSettingByScope($connection2, 'Attendance', 'defaultClassAttendanceType');
 
                 // Check class
@@ -214,20 +213,30 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
 
                         // Build the attendance log data per student
                         foreach ($students as $key => $student) {
-                            $data = array('gibbonPersonID' => $student['gibbonPersonID'], 'date' => $currentDate . '%');
+                            $data = array('gibbonPersonID' => $student['gibbonPersonID'], 'date' => $currentDate . '%', 'gibbonCourseClassID' => $gibbonCourseClassID);
                             $sql = "SELECT type, reason, comment, context, timestampTaken FROM gibbonAttendanceLogPerson
                                     JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                                     WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
-                                    AND date LIKE :date";
-
-                            if ($prefillAttendanceType == 'N') {
-                                $data['gibbonCourseClassID'] = $gibbonCourseClassID;
-                                $sql .= " AND context='Class' AND gibbonCourseClassID=:gibbonCourseClassID";
-                            }
-                            $sql .= " ORDER BY timestampTaken DESC";
+                                    AND date LIKE :date
+                                    AND context='Class' AND gibbonCourseClassID=:gibbonCourseClassID
+                                    ORDER BY timestampTaken DESC";
                             $result = $pdo->executeQuery($data, $sql);
 
                             $log = ($result->rowCount() > 0) ? $result->fetch() : $defaults;
+
+                            //Check for school prefill if attendance not taken in this class
+                            if ($result->rowCount() == 0 ) {
+                                $data = array('gibbonPersonID' => $student['gibbonPersonID'], 'date' => $currentDate . '%');
+                                $sql = "SELECT type, reason, comment, context, timestampTaken FROM gibbonAttendanceLogPerson
+                                        JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                                        WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
+                                        AND date LIKE :date
+                                        AND NOT context='Class'
+                                        ORDER BY timestampTaken DESC";
+                                $result = $pdo->executeQuery($data, $sql);
+
+                                $log = ($result->rowCount() > 0) ? $result->fetch() : $log;
+                            }
 
                             $students[$key]['cellHighlight'] = '';
                             if ($attendance->isTypeAbsent($log['type'])) {
@@ -288,7 +297,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                                 ->maxLength(255)
                                 ->setValue($student['log']['comment'])
                                 ->setClass('mx-auto float-none w-32 m-0 mb-2');
-                            $cell->addContent($attendance->renderMiniHistory($student['gibbonPersonID']));
+                            $cell->addContent($attendance->renderMiniHistory($student['gibbonPersonID'], 'Class', $gibbonCourseClassID));
 
                             $count++;
                         }

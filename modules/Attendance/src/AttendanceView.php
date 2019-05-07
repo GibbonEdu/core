@@ -178,14 +178,35 @@ class AttendanceView
         return (stristr($this->attendanceTypes[$type]['scope'], 'Offsite') !== false);
     }
 
-    public function renderMiniHistory($gibbonPersonID, $cssClass = '')
+    public function renderMiniHistory($gibbonPersonID, $context, $gibbonCourseClassID = null, $cssClass = '')
     {
+
+        $countClassAsSchool = getSettingByScope($this->pdo->getConnection(), 'Attendance', 'countClassAsSchool');
 
         $schoolDays = (is_array($this->last5SchoolDays)) ? implode(',', $this->last5SchoolDays) : '';
 
         // Grab all 5 days on one query to improve page load performance
-        $data = array('gibbonPersonID' => $gibbonPersonID, 'schoolDays' => $schoolDays);
-        $sql = "SELECT date, type, reason FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND FIND_IN_SET(date, :schoolDays) ORDER BY gibbonAttendanceLogPerson.timestampTaken";
+        if ($context == 'Class') {
+            $data = array('gibbonPersonID' => $gibbonPersonID, 'schoolDays' => $schoolDays, 'gibbonCourseClassID' => $gibbonCourseClassID);
+            $sql = "SELECT date, type, reason
+                    FROM gibbonAttendanceLogPerson
+                    WHERE gibbonPersonID=:gibbonPersonID
+                    AND gibbonCourseClassID=:gibbonCourseClassID
+                    AND FIND_IN_SET(date, :schoolDays)
+                    ORDER BY gibbonAttendanceLogPerson.timestampTaken";
+        }
+        else {
+            $data = array('gibbonPersonID' => $gibbonPersonID, 'schoolDays' => $schoolDays);
+            $sql = "SELECT date, type, reason
+                    FROM gibbonAttendanceLogPerson
+                    WHERE gibbonPersonID=:gibbonPersonID";
+                    if ($countClassAsSchool == "N") {
+                        $sql .= " AND NOT context='Class'";
+                    }
+                    $sql .= " AND FIND_IN_SET(date, :schoolDays)
+                    ORDER BY gibbonAttendanceLogPerson.timestampTaken";
+        }
+
         $result = $this->pdo->executeQuery($data, $sql);
 
         $logs = ($result->rowCount() > 0) ? $result->fetchAll(\PDO::FETCH_GROUP) : array();

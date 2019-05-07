@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     echo __('School is closed on the specified date, and so attendance information cannot be recorded.');
                     echo '</div>';
                 } else {
-                    $prefillAttendanceType = getSettingByScope($connection2, 'Attendance', 'prefillRollGroup');
+                    $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
                     $defaultAttendanceType = getSettingByScope($connection2, 'Attendance', 'defaultRollGroupAttendanceType');
 
                     //Check roll group
@@ -183,8 +183,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                         WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
                                         AND date LIKE :date";
 
-                                if ($prefillAttendanceType == 'N') {
-                                    $sql .= " AND context='Roll Group'";
+                                if ($countClassAsSchool == 'N') {
+                                    $sql .= " AND NOT context='Class'";
                                 }
                                 $sql .= " ORDER BY timestampTaken DESC";
                                 $result = $pdo->executeQuery($data, $sql);
@@ -250,7 +250,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                      ->maxLength(255)
                                      ->setValue($student['log']['comment'])
                                      ->setClass('mx-auto float-none w-32 m-0 mb-2');
-                                $cell->addContent($attendance->renderMiniHistory($student['gibbonPersonID']));
+                                $cell->addContent($attendance->renderMiniHistory($student['gibbonPersonID'], 'Roll Group'));
 
                                 $count++;
                             }

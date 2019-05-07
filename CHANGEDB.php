@@ -847,4 +847,6 @@ ALTER TABLE gibbonPlannerEntry DROP COLUMN gibbonHookID;end
 ALTER TABLE `gibbonHook` CHANGE `type` `type` ENUM('Public Home Page','Student Profile','Parental Dashboard','Staff Dashboard','Student Dashboard') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 DROP TABLE gibbonUnitBlockStar;end
 ALTER TABLE `gibbonRollGroup` CHANGE `name` `name` VARCHAR(20) NOT NULL, CHANGE `nameShort` `nameShort` VARCHAR(8) NOT NULL;end
+DELETE FROM gibbonSetting WHERE (name='prefillClass' OR name='prefillPerson') AND scope='Attendance';end
+UPDATE gibbonSetting SET name='countClassAsSchool', nameDisplay='Count Class Attendance as School Attendance', description='Should attendance from the class context be used to prefill and inform school attendance?' WHERE name='prefillRollGroup' AND scope='Attendance';end
 ";

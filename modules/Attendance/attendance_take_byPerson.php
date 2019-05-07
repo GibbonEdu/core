@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 echo 'School is closed on the specified date, and so attendance information cannot be recorded.';
                 echo '</div>';
             } else {
-                $prefillAttendanceType = getSettingByScope($connection2, 'Attendance', 'prefillPerson');
+                $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
 
                 //Get last 5 school days from currentDate within the last 100
                 $timestamp = dateConvertToTimestamp($currentDate);
@@ -90,7 +90,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 //Show attendance log for the current day
                 try {
                     $dataLog = array('gibbonPersonID' => $gibbonPersonID, 'date' => "$currentDate%");
-                    $sqlLog = 'SELECT gibbonAttendanceLogPersonID, direction, type, reason, context, comment, timestampTaken, gibbonAttendanceLogPerson.gibbonCourseClassID, preferredName, surname, gibbonCourseClass.nameShort as className, gibbonCourse.nameShort as courseName FROM gibbonAttendanceLogPerson JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonCourseClass ON (gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE  gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY gibbonAttendanceLogPersonID';
+                    $sqlLog = 'SELECT gibbonAttendanceLogPersonID, direction, type, reason, context, comment, timestampTaken, gibbonAttendanceLogPerson.gibbonCourseClassID, preferredName, surname, gibbonCourseClass.nameShort as className, gibbonCourse.nameShort as courseName FROM gibbonAttendanceLogPerson JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonCourseClass ON (gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE  gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date LIKE :date';
+                    if ($countClassAsSchool == "N") {
+                        $sqlLog .= ' AND NOT context=\'Class\'';
+                    }
+                    $sqlLog .= ' ORDER BY gibbonAttendanceLogPersonID';
                     $resultLog = $connection2->prepare($sqlLog);
                     $resultLog->execute($dataLog);
                 } catch (PDOException $e) {
@@ -160,10 +164,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                             echo '</td>';
                         }
 
-
-                        $lastType = ($prefillAttendanceType == 'Y')? $rowLog['type'] : '';
-                        $lastReason = ($prefillAttendanceType == 'Y')? $rowLog['reason'] : '';
-                        $lastComment = ($prefillAttendanceType == 'Y')? $rowLog['comment'] : '';
+                        $lastType = $rowLog['type'];
+                        $lastReason = $rowLog['reason'];
+                        $lastComment = $rowLog['comment'];
                         echo '</tr>';
                     }
                     echo '</table><br/>';
@@ -193,7 +196,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                 $row = $form->addRow();
                     $row->addLabel('summary', __('Recent Attendance Summary'));
-                    $row->addContent($attendance->renderMiniHistory($gibbonPersonID, 'floatRight'));
+                    $row->addContent($attendance->renderMiniHistory($gibbonPersonID, 'Person', null, 'floatRight'));
 
                 $row = $form->addRow();
                     $row->addLabel('type', __('Type'));
