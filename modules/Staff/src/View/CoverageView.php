@@ -30,8 +30,6 @@ use Gibbon\Domain\Staff\StaffCoverageGateway;
  *
  * A view composer class: receives a coverage ID and displays the status information.
  *
- * A view composer class: receives a coverage ID and displays the status information.
- *
  * @version v18
  * @since   v18
  */
