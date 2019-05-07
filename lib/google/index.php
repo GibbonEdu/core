@@ -41,6 +41,11 @@ $service = new Google_Service_Oauth2($client);
   bundle in the session, and redirect to ourself.
 */
 
+if (isset($_GET['error'])) {
+    header('Location: '.getSettingByScope($connection2, 'System', 'absoluteURL').'?loginReturn=fail7');
+    exit;
+}
+
 if (isset($_GET['code'])) {
   $client->authenticate($_GET['code']);
   $_SESSION[$guid]['googleAPIAccessToken']  = $client->getAccessToken();

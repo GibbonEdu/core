@@ -362,9 +362,11 @@ $page->stylesheets->add('core', 'resources/assets/css/core.min.css', ['weight' =
 if ($session->exists('calendarFeedPersonal') && $session->exists('googleAPIAccessToken')) {
     if (!$session->has('calendarFeedPersonal') && $session->has('googleAPIAccessToken')) {
         $service = $container->get('Google_Service_Calendar');
-        $calendar = $service->calendars->get('primary');
+        try {
+            $calendar = $service->calendars->get('primary');
+        } catch (\Google_Service_Exception $e) {}
 
-        if ($calendar['id'] != '') {
+        if (!empty($calendar['id'])) {
             $session->set('calendarFeedPersonal', $calendar['id']);
             $container->get(UserGateway::class)->update($session->get('gibbonPersonID'), [
                 'calendarFeedPersonal' => $calendar['id'],
