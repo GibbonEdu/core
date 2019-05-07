@@ -20,6 +20,7 @@ along with this program. If not, see <http:// www.gnu.org/licenses/>.
 use Gibbon\Domain\System\ModuleGateway;
 use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\User\UserGateway;
 
 /**
  * BOOTSTRAP
@@ -364,20 +365,10 @@ if ($session->exists('calendarFeedPersonal') && $session->exists('googleAPIAcces
         $calendar = $service->calendars->get('primary');
 
         if ($calendar['id'] != '') {
-            try {
-                $dataCalendar = [
-                    'calendarFeedPersonal' => $calendar['id'],
-                    'gibbonPersonID' => $session->get('gibbonPersonID'),
-                ];
-                $sqlCalendar = 'UPDATE gibbonPerson SET
-                    calendarFeedPersonal=:calendarFeedPersonal
-                    WHERE gibbonPersonID=:gibbonPersonID';
-                $resultCalendar = $connection2->prepare($sqlCalendar);
-                $resultCalendar->execute($dataCalendar);
-            } catch (PDOException $e) {
-                exit($e->getMessage());
-            }
             $session->set('calendarFeedPersonal', $calendar['id']);
+            $container->get(UserGateway::class)->update($session->get('gibbonPersonID'), [
+                'calendarFeedPersonal' => $calendar['id'],
+            ]);
         }
     }
 }
