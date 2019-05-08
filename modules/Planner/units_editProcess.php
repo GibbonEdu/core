@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                         $row = $result->fetch();
                         $partialFail = false;
                         //Move attached file, if there is one
-                        if ($_FILES['file']['tmp_name'] != '') {
+                        if (!empty($_FILES['file']['tmp_name'])) {
                             $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
 
                             $file = (isset($_FILES['file']))? $_FILES['file'] : null;
@@ -112,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                 $content = $attachment;
                             }
                         } else {
-                            $attachment = $row['attachment'];
+                            $attachment = $_POST['attachment'];
                         }
 
                         //Update classes

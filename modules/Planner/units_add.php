@@ -176,7 +176,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                             $classCount = 0;
                             while ($rowClass = $resultClass->fetch()) {
                                 $row = $table->addRow();
-                                    $row->addContent($rowCourse['nameShort'].'.'.$rowClass['name']);
+                                    $row->addContent($rowCourse['nameShort'].'.'.$rowClass['nameShort']);
                                     $row->addYesNo("running$classCount")->selected("N");
                                 $form->addHiddenValue("gibbonCourseClassID$classCount", $rowClass['gibbonCourseClassID']);
                                 ++$classCount;
