@@ -44,19 +44,19 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/staffSettings
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
-        $row->addTextField('name')->isRequired()->maxLength(60);
+        $row->addTextField('name')->required()->maxLength(60);
     
     $row = $form->addRow();
         $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
-        $row->addTextField('nameShort')->isRequired()->maxLength(10);
+        $row->addTextField('nameShort')->required()->maxLength(10);
 
     $row = $form->addRow();
         $row->addLabel('active', __('Active'));
-        $row->addYesNo('active')->isRequired();
+        $row->addYesNo('active')->required();
 
     $row = $form->addRow();
         $row->addLabel('requiresApproval', __('Requires Approval'))->description(__('If enabled, absences of this type must be submitted for approval before they are accepted.'));
-        $row->addYesNo('requiresApproval')->isRequired();
+        $row->addYesNo('requiresApproval')->required();
 
     $row = $form->addRow();
         $row->addLabel('reasons', __('Reasons'))->description(__('An optional, comma-separated list of reasons which are available when submitting this type of absence.'));
