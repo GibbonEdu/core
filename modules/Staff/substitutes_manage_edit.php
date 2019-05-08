@@ -63,16 +63,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_e
     }
 
     echo "<div class='linkTop'>";
-    if ($search != '') {
-        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/substitutes_manage.php&search=$search'>".__('Back to Search Results').'</a>';
-    }
-
     if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edit.php')) {
         echo (new Action('edit', __('Edit User')))
             ->setURL('/modules/User Admin/user_manage_edit.php')
             ->addParam('gibbonPersonID', $values['gibbonPersonID'])
             ->displayLabel()
             ->getOutput();
+    }
+
+    if ($search != '') {
+        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/substitutes_manage.php&search=$search'>".__('Back to Search Results').'</a>  ';
     }
     echo '</div>';
 
@@ -87,11 +87,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_e
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Person'));
-        $row->addSelectUsers('gibbonPersonID')->placeholder()->isRequired()->selected($values['gibbonPersonID'])->readonly();
+        $row->addSelectUsers('gibbonPersonID')
+            ->placeholder()
+            ->required()
+            ->readonly()
+            ->selected($values['gibbonPersonID']);
 
     $row = $form->addRow();
         $row->addLabel('active', __('Active'));
-        $row->addYesNo('active')->isRequired();
+        $row->addYesNo('active')->required();
 
     $types = $container->get(SettingGateway::class)->getSettingByScope('Staff', 'substituteTypes');
     $types = array_filter(array_map('trim', explode(',', $types)));
@@ -102,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_e
 
     $row = $form->addRow();
         $row->addLabel('priority', __('Priority'))->description(__('Higher priority substitutes appear first when booking coverage.'));
-        $row->addSelect('priority')->fromArray(range(-9, 9))->isRequired()->selected(0);
+        $row->addSelect('priority')->fromArray(range(-9, 9))->required()->selected(0);
         
     $row = $form->addRow();
         $row->addLabel('details', __('Details'))->description(__('Additional information such as year group preference, language preference, etc.'));
@@ -110,29 +114,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_e
 
     $form->addRow()->addHeading(__('Contact Information'));
 
-    if ($values['contactCall'] == 'Y' || $values['contactSMS'] == 'Y') {
-        $row = $form->addRow();
-            $row->addLabel('phone1Label', __('Phone').' 1');
-            $phone = $row->addTextField('phone1')
-                ->readonly()
-                ->setValue(Format::phone($person['phone1'], $person['phone1CountryCode'], $person['phone1Type']));
+    $row = $form->addRow();
+        $row->addLabel('phone1Label', __('Phone').' 1');
+        $phone = $row->addTextField('phone1')
+            ->readonly()
+            ->setValue(Format::phone($person['phone1'], $person['phone1CountryCode'], $person['phone1Type']));
 
-        if ($values['contactSMS'] == 'Y' && !empty($person['phone1']) && !empty($smsGateway)) {
-            $phone->append(
-                $form->getFactory()
-                    ->createButton(__('Test SMS'))
-                    ->addClass('testSMS alignRight')
-                    ->setTabIndex(-1)
-                    ->getOutput()
-            );
-        }
+    if (!empty($person['phone1']) && !empty($smsGateway)) {
+        $phone->append(
+            $form->getFactory()
+                ->createButton(__('Test SMS'))
+                ->addClass('testSMS alignRight')
+                ->setTabIndex(-1)
+                ->getOutput()
+        );
     }
 
-    if ($values['contactEmail'] == 'Y') {
-        $row = $form->addRow();
-            $row->addLabel('emailLabel', __('Email'));
-            $row->addTextField('email')->readonly()->setValue($person['email']);
-    }
+    $row = $form->addRow();
+        $row->addLabel('emailLabel', __('Email'));
+        $row->addTextField('email')->readonly()->setValue($person['email']);
+
 
     $row = $form->addRow();
         $row->addFooter();

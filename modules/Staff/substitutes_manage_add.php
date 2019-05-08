@@ -56,11 +56,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_a
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Person'))->description(__('Must be unique.'));
-        $row->addSelectUsers('gibbonPersonID')->placeholder()->isRequired();
+        $row->addSelectUsers('gibbonPersonID')->placeholder()->required();
 
     $row = $form->addRow();
         $row->addLabel('active', __('Active'));
-        $row->addYesNo('active')->isRequired();
+        $row->addYesNo('active')->required();
 
     $types = $container->get(SettingGateway::class)->getSettingByScope('Staff', 'substituteTypes');
     $types = array_filter(array_map('trim', explode(',', $types)));
@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_a
 
     $row = $form->addRow();
         $row->addLabel('priority', __('Priority'))->description(__('Higher priority substitutes appear first when booking coverage.'));
-        $row->addSelect('priority')->fromArray(range(-9, 9))->isRequired()->selected(0);
+        $row->addSelect('priority')->fromArray(range(-9, 9))->required()->selected(0);
 
     $row = $form->addRow();
         $row->addLabel('details', __('Details'))->description(__('Additional information such as year group preference, language preference, etc.'));

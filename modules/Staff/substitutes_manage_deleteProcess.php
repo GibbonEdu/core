@@ -50,5 +50,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_d
         : '&return=success0';
 
     header("Location: {$URL}");
-    exit;
 }

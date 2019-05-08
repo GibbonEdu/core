@@ -24,7 +24,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_d
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Proceed!
+    // Proceed!
     $gibbonSubstituteID = $_GET['gibbonSubstituteID'] ?? '';
     
     if (empty($gibbonSubstituteID)) {

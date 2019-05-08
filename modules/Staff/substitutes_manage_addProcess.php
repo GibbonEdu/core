@@ -58,6 +58,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_a
         exit;
     }
 
+    // Validate that this person doesn't already have a record
+    if (!$subGateway->unique($data, ['gibbonPersonID'])) {
+        $URL .= '&return=error7';
+        header("Location: {$URL}");
+        exit;
+    }
+
     // Create the substitute
     $gibbonSubstituteID = $subGateway->insert($data);
 
@@ -66,5 +73,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_a
         : "&return=success0";
 
     header("Location: {$URL}&editID=$gibbonSubstituteID");
-    exit;
 }
