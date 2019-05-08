@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
             if ($highestAction == 'Lesson Planner_viewMyChildrensClasses') {
                 if ($gibbonPersonID == '') {
                     echo "<div class='warning'>";
-                    echo __('Your request failed because some required value were not unique.');
+                    echo __('Your request failed because some required values were not unique.');
                     echo '</div>';
                 } else {
                     try {
