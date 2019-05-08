@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             if ($row['attendance'] == 'Y' && isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
                 $menuItems[] = [
                     'name' => __('Attendance'),
-                    'url'  => './index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID'.$gibbonCourseClassID,
+                    'url'  => './index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$gibbonCourseClassID,
                     'icon' => 'attendance_large.png',
                 ];
             }
