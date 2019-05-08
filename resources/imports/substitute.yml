@@ -1,0 +1,36 @@
+details:
+    type: substitute
+    category: Substitute
+    name: Substitutes
+    table: gibbonSubstitute
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Staff
+    action: Manage Substitutes
+primaryKey:
+    gibbonSubstituteID
+uniqueKeys:
+    - gibbonPersonID
+table:
+    gibbonPersonID:
+        name: "Substitute User"
+        desc: "Username"
+        args: { filter: nospaces, required: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+    active:
+        name: "Active"
+        desc: ""
+        args: { filter: yesno, custom: true }
+    type:
+        name: "Type"
+        desc: ""
+        args: { filter: string, custom: true }
+    details:
+        name: "Details"
+        desc: ""
+        args: { filter: string, custom: true }
+    priority:
+        name: "Priority"
+        desc: ""
+        args: { filter: numeric, custom: true }
+
