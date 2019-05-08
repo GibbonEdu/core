@@ -20,9 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Messenger\GroupGateway;
-use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/staffSettings.php') == false) {
@@ -38,7 +38,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/staffSettings
 
     $settingGateway = $container->get(SettingGateway::class);
     $staffAbsenceTypeGateway = $container->get(StaffAbsenceTypeGateway::class);
-    $smsGatewaySetting = $settingGateway->getSettingByScope('Messenger', 'smsGateway');
     $absoluteURL = $gibbon->session->get('absoluteURL');
 
     // QUERY
@@ -80,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/staffSettings
 
     echo $table->render($absenceTypes);
 
-
+    // FORM
     $form = Form::create('staffSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/staffSettingsProcess.php');
     $form->setTitle(__('Settings'));
 
@@ -104,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/staffSettings
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addFinder($setting['name'])
-            ->fromAjax($gibbon->session->get('absoluteURL').'/modules/Staff/staff_searchAjax.php')
+            ->fromAjax($absoluteURL.'/modules/Staff/staff_searchAjax.php')
             ->selected($approvers)
             ->setParameter('resultsLimit', 10)
             ->resultsFormatter('function(item){ return "<li class=\'\'><div class=\'inline-block bg-cover w-12 h-12 rounded-full bg-gray-200 border border-gray-400 bg-no-repeat\' style=\'background-image: url(" + item.image + ");\'></div><div class=\'inline-block px-4 truncate\'>" + item.name + "<br/><span class=\'inline-block opacity-75 truncate text-xxs\'>" + item.jobTitle + "</span></div></li>"; }');
@@ -112,29 +111,19 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/staffSettings
     $setting = $settingGateway->getSettingByScope('Staff', 'absenceFullDayThreshold', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addNumber($setting['name'])->isRequired()->onlyInteger(false)->setValue($setting['value']);
+        $row->addNumber($setting['name'])->required()->onlyInteger(false)->setValue($setting['value']);
 
     $setting = $settingGateway->getSettingByScope('Staff', 'absenceHalfDayThreshold', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addNumber($setting['name'])->isRequired()->onlyInteger(false)->setValue($setting['value']);
-
-    // Google calendar options, required Google API
-    // $googleOAuth = getSettingByScope($connection2, 'System', 'googleOAuth');
-    // if ($googleOAuth == 'Y') {
-    //     $setting = $settingGateway->getSettingByScope('Staff', 'absenceGoogleCalendarID', true);
-
-    //     $row = $form->addRow();
-    //         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-    //         $row->addTextField($setting['name'])->setValue($setting['value']);
-    // }
+        $row->addNumber($setting['name'])->required()->onlyInteger(false)->setValue($setting['value']);
                 
     $form->addRow()->addHeading(__('Staff Coverage'));
 
     $setting = $settingGateway->getSettingByScope('Staff', 'substituteTypes', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextArea($setting['name'])->setRows(3)->isRequired()->setValue($setting['value']);
+        $row->addTextArea($setting['name'])->setRows(3)->required()->setValue($setting['value']);
 
     $form->addRow()->addHeading(__('Notifications'));
 
@@ -144,30 +133,29 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/staffSettings
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addFinder($setting['name'])
-            ->fromAjax($gibbon->session->get('absoluteURL').'/modules/School Admin/staffSettings_groupsAjax.php')
+            ->fromAjax($absoluteURL.'/modules/School Admin/staffSettings_groupsAjax.php')
             ->selected($notificationList)
             ->setParameter('resultsLimit', 10);
 
-    $smsOptions = !empty($smsGatewaySetting) ? ['mail-sms' => __('Email and SMS')] : [];
-    $notifyOptions = [
-        'mail' => __('Email'),
-        'none' => __('None'),
-    ];
+    $smsGatewaySetting = $settingGateway->getSettingByScope('Messenger', 'smsGateway');
+    if ($smsGatewaySetting) {
+        $setting = $settingGateway->getSettingByScope('Staff', 'urgentNotifications', true);
+        $row = $form->addRow();
+            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+            $row->addYesNo($setting['name'])->required()->selected($setting['value']);
+            
+        $form->toggleVisibilityByClass('urgency')->onSelect('urgentNotifications')->when('Y');
 
-    $setting = $settingGateway->getSettingByScope('Staff', 'urgentNotifications', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelect($setting['name'])->fromArray($smsOptions)->fromArray($notifyOptions)->selected($setting['value'])->isRequired();
-        
-    $thresholds = array_map(function ($count) {
-        return __n('{count} Day', '{count} Days', $count);
-    }, array_combine(range(1, 14), range(1, 14)));
+        $thresholds = array_map(function ($count) {
+            return __n('{count} Day', '{count} Days', $count);
+        }, array_combine(range(1, 14), range(1, 14)));
 
-    $setting = $settingGateway->getSettingByScope('Staff', 'urgencyThreshold', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelect($setting['name'])->fromArray($thresholds)->isRequired()->selected($setting['value']);
-        
+        $setting = $settingGateway->getSettingByScope('Staff', 'urgencyThreshold', true);
+        $row = $form->addRow()->addClass('urgency');
+            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+            $row->addSelect($setting['name'])->fromArray($thresholds)->required()->selected($setting['value']);
+    }
+
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();

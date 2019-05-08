@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\System\SettingGateway;
 
-include '../../gibbon.php';
+require_once '../../gibbon.php';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/staffSettings.php';
 
@@ -41,7 +41,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/staffSettings
             'absenceFullDayThreshold',
             'absenceHalfDayThreshold',
             'absenceNotificationGroups',
-            'absenceGoogleCalendarID',
         ],
     ];
 
@@ -54,13 +53,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/staffSettings
         }
     }
    
-    if ($partialFail == true) {
-        $URL .= '&return=error2';
-        header("Location: {$URL}");
-    } else {
-        //Success 0
-        getSystemSettings($guid, $connection2);
-        $URL .= '&return=success0';
-        header("Location: {$URL}");
-    }
+    $URL .= $partialFail
+        ? '&return=error2'
+        : '&return=success0';
+    header("Location: {$URL}");
 }

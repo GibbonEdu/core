@@ -1,6 +1,4 @@
 <?php
-
-use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -19,7 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../gibbon.php';
+use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
+
+require_once '../../gibbon.php';
 
 $gibbonStaffAbsenceTypeID = $_POST['gibbonStaffAbsenceTypeID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/staffSettings_manage_edit.php&gibbonStaffAbsenceTypeID='.$gibbonStaffAbsenceTypeID;
@@ -34,10 +34,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/staffSettings
     $data = [
         'name'             => $_POST['name'] ?? '',
         'nameShort'        => $_POST['nameShort'] ?? '',
-        'active'           => $_POST['active'] ?? '',
+        'active'           => $_POST['active'] ?? 'Y',
         'reasons'          => $_POST['reasons'] ?? '',
         'sequenceNumber'   => $_POST['sequenceNumber'] ?? '',
-        'requiresApproval' => $_POST['requiresApproval'] ?? '',
+        'requiresApproval' => $_POST['requiresApproval'] ?? 'N',
     ];
 
     if (empty($data['name']) || empty($data['nameShort'])) {
@@ -60,7 +60,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/staffSettings
 
     $updated = $staffAbsenceTypeGateway->update($gibbonStaffAbsenceTypeID, $data);
 
-    $URL .= $updated ? "&return=success0" : "&return=error1";
+    $URL .= !$updated
+        ? "&return=error1"
+        : "&return=success0";
     header("Location: {$URL}");
-    exit;
 }

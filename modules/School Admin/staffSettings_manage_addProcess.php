@@ -1,6 +1,4 @@
 <?php
-
-use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -19,7 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../gibbon.php';
+use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
+
+require_once '../../gibbon.php';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/staffSettings_manage_add.php';
 
@@ -31,10 +31,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/staffSettings
     $data = [
         'name'             => $_POST['name'] ?? '',
         'nameShort'        => $_POST['nameShort'] ?? '',
-        'active'           => $_POST['active'] ?? '',
+        'active'           => $_POST['active'] ?? 'Y',
         'reasons'          => $_POST['reasons'] ?? '',
         'sequenceNumber'   => $_POST['sequenceNumber'] ?? '',
-        'requiresApproval' => $_POST['requiresApproval'] ?? '',
+        'requiresApproval' => $_POST['requiresApproval'] ?? 'N',
     ];
 
     if (empty($data['name']) || empty($data['nameShort'])) {
@@ -53,6 +53,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/staffSettings
 
     $inserted = $staffAbsenceTypeGateway->insert($data);
 
-    $URL .= $inserted ? "&return=success0&editID=$inserted" : "&return=error1";
+    $URL .= !$inserted
+        ? "&return=error1"
+        : "&return=success0&editID=$inserted";
     header("Location: {$URL}");
 }

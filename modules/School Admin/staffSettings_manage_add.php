@@ -18,12 +18,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/staffSettings_manage_add.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Proceed!
+    // Proceed!
     $page->breadcrumbs
         ->add(__('Manage Staff Settings'), 'staffSettings.php')
         ->add(__('Absence Type'));
@@ -36,8 +37,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/staffSettings
         returnProcess($guid, $_GET['return'], $editLink, null);
     }
 
-    $form = Form::create('staffAbsence', $_SESSION[$guid]['absoluteURL'].'/modules/School Admin/staffSettings_manage_addProcess.php');
-    
+    $form = Form::create('staffAbsenceType', $_SESSION[$guid]['absoluteURL'].'/modules/School Admin/staffSettings_manage_addProcess.php');
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
     $row = $form->addRow();
@@ -58,11 +60,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/staffSettings
 
     $row = $form->addRow();
         $row->addLabel('reasons', __('Reasons'))->description(__('An optional, comma-separated list of reasons which are available when submitting this type of absence.'));
-        $row->addTextArea('reasons')->setRows(8);
+        $row->addTextArea('reasons')->setRows(4);
 
     $row = $form->addRow();
         $row->addLabel('sequenceNumber', __('Sequence Number'));
-        $row->addNumber('sequenceNumber')->maxLength(3);
+        $row->addSequenceNumber('sequenceNumber', 'gibbonStaffAbsenceType')->maxLength(3);
 
     $row = $form->addRow();
         $row->addFooter();
