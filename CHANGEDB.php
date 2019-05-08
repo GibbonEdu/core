@@ -849,88 +849,10 @@ DROP TABLE gibbonUnitBlockStar;end
 ALTER TABLE `gibbonRollGroup` CHANGE `name` `name` VARCHAR(20) NOT NULL, CHANGE `nameShort` `nameShort` VARCHAR(8) NOT NULL;end
 DELETE FROM gibbonSetting WHERE (name='prefillClass' OR name='prefillPerson') AND scope='Attendance';end
 UPDATE gibbonSetting SET name='countClassAsSchool', nameDisplay='Count Class Attendance as School Attendance', description='Should attendance from the class context be used to prefill and inform school attendance?' WHERE name='prefillRollGroup' AND scope='Attendance';end
-CREATE TABLE `gibbonStaffAbsenceType` (
-    `gibbonStaffAbsenceTypeID` INT(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(60) NULL,
-    `nameShort` VARCHAR(10) NULL,
-    `active` ENUM('N','Y') DEFAULT 'Y',
-    `requiresApproval` ENUM('N','Y') DEFAULT 'N',
-    `reasons` TEXT NULL,
-    `sequenceNumber` INT(3) NOT NULL,
-    PRIMARY KEY (`gibbonStaffAbsenceTypeID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
-CREATE TABLE `gibbonSubstitute` (
-    `gibbonSubstituteID` INT(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
-    `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
-    `active` ENUM('Y','N') DEFAULT 'Y',
-    `type` VARCHAR(60) NULL,
-    `details` VARCHAR(255) NULL,
-    `priority` INT(2) NOT NULL DEFAULT '0',
-    UNIQUE KEY `gibbonPersonID` (`gibbonPersonID`),
-    PRIMARY KEY (`gibbonSubstituteID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
-CREATE TABLE `gibbonStaffAbsence` (
-    `gibbonStaffAbsenceID` INT(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
-    `gibbonStaffAbsenceTypeID` INT(6) UNSIGNED ZEROFILL NOT NULL,
-    `gibbonSchoolYearID` INT(3) UNSIGNED ZEROFILL NOT NULL,
-    `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
-    `reason` VARCHAR(60) NULL,
-    `comment` TEXT NULL,
-    `commentConfidential` TEXT NULL,
-    `status` ENUM('Pending Approval','Approved','Declined') DEFAULT 'Approved',
-    `coverageRequired` ENUM('N','Y') DEFAULT 'N',
-    `gibbonPersonIDApproval` int(10) UNSIGNED ZEROFILL NULL,
-    `timestampApproval` timestamp NULL,
-    `notesApproval` TEXT NULL,
-    `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
-    `timestampCreator` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `notificationSent` ENUM('N','Y') DEFAULT 'N',
-    `notificationList` TEXT NULL,
-    `gibbonGroupID` INT(8) UNSIGNED ZEROFILL NULL,
-    `googleCalendarEventID` TEXT NULL,
-    PRIMARY KEY (`gibbonStaffAbsenceID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
-CREATE TABLE `gibbonStaffAbsenceDate` (
-    `gibbonStaffAbsenceDateID` INT(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
-    `gibbonStaffAbsenceID` INT(14) UNSIGNED ZEROFILL NULL,
-    `date` DATE NULL,
-    `allDay` ENUM('N','Y') DEFAULT 'Y',
-    `timeStart` time NULL DEFAULT NULL,
-    `timeEnd` time NULL DEFAULT NULL,
-    `value` DECIMAL(2,1) NOT NULL DEFAULT '1.0',
-    PRIMARY KEY (`gibbonStaffAbsenceDateID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
-CREATE TABLE `gibbonStaffCoverage` (
-    `gibbonStaffCoverageID` INT(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
-    `gibbonStaffAbsenceID` INT(14) UNSIGNED ZEROFILL NULL,
-    `gibbonSchoolYearID` INT(3) UNSIGNED ZEROFILL NOT NULL,
-    `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
-    `status` ENUM('Requested','Accepted','Declined','Cancelled') DEFAULT 'Requested',
-    `requestType` ENUM('Individual','Broadcast','Assigned') DEFAULT 'Broadcast',
-    `substituteTypes` VARCHAR(255) NULL,
-    `gibbonPersonIDStatus` int(10) UNSIGNED ZEROFILL NOT NULL,
-    `timestampStatus` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `notesStatus` TEXT NULL,
-    `gibbonPersonIDCoverage` int(10) UNSIGNED ZEROFILL NULL,
-    `timestampCoverage` timestamp NULL,
-    `notesCoverage` TEXT NULL,
-    `attachmentType` enum('File','HTML','Link') NULL,
-    `attachmentContent` TEXT NULL,
-    `notificationSent` ENUM('N','Y') DEFAULT 'N',
-    `notificationList` TEXT NULL,
-    PRIMARY KEY (`gibbonStaffCoverageID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
-CREATE TABLE `gibbonStaffCoverageDate` (
-    `gibbonStaffCoverageDateID` INT(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
-    `gibbonStaffCoverageID` INT(14) UNSIGNED ZEROFILL NULL,
-    `gibbonStaffAbsenceDateID` INT(14) UNSIGNED ZEROFILL NULL,
-    `date` DATE NULL,
-    `allDay` ENUM('N','Y') DEFAULT 'Y',
-    `timeStart` time NULL DEFAULT NULL,
-    `timeEnd` time NULL DEFAULT NULL,
-    `value` DECIMAL(2,1) NOT NULL DEFAULT '1.0',
-    `gibbonPersonIDUnavailable` INT(10) UNSIGNED ZEROFILL NULL,
-    `reason` VARCHAR(255) NULL,
-    PRIMARY KEY (`gibbonStaffCoverageDateID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
+CREATE TABLE `gibbonStaffAbsenceType` (`gibbonStaffAbsenceTypeID` INT(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, `name` VARCHAR(60) NULL, `nameShort` VARCHAR(10) NULL, `active` ENUM('N','Y') DEFAULT 'Y', `requiresApproval` ENUM('N','Y') DEFAULT 'N', `reasons` TEXT NULL, `sequenceNumber` INT(3) NOT NULL, PRIMARY KEY (`gibbonStaffAbsenceTypeID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
+CREATE TABLE `gibbonSubstitute` (`gibbonSubstituteID` INT(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL, `active` ENUM('Y','N') DEFAULT 'Y', `type` VARCHAR(60) NULL, `details` VARCHAR(255) NULL, `priority` INT(2) NOT NULL DEFAULT '0', UNIQUE KEY `gibbonPersonID` (`gibbonPersonID`), PRIMARY KEY (`gibbonSubstituteID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
+CREATE TABLE `gibbonStaffAbsence` (`gibbonStaffAbsenceID` INT(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, `gibbonStaffAbsenceTypeID` INT(6) UNSIGNED ZEROFILL NOT NULL, `gibbonSchoolYearID` INT(3) UNSIGNED ZEROFILL NOT NULL, `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL, `reason` VARCHAR(60) NULL, `comment` TEXT NULL, `commentConfidential` TEXT NULL, `status` ENUM('Pending Approval','Approved','Declined') DEFAULT 'Approved', `coverageRequired` ENUM('N','Y') DEFAULT 'N', `gibbonPersonIDApproval` int(10) UNSIGNED ZEROFILL NULL, `timestampApproval` timestamp NULL, `notesApproval` TEXT NULL, `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL, `timestampCreator` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, `notificationSent` ENUM('N','Y') DEFAULT 'N', `notificationList` TEXT NULL, `gibbonGroupID` INT(8) UNSIGNED ZEROFILL NULL, `googleCalendarEventID` TEXT NULL, PRIMARY KEY (`gibbonStaffAbsenceID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
+CREATE TABLE `gibbonStaffAbsenceDate` (`gibbonStaffAbsenceDateID` INT(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, `gibbonStaffAbsenceID` INT(14) UNSIGNED ZEROFILL NULL, `date` DATE NULL, `allDay` ENUM('N','Y') DEFAULT 'Y', `timeStart` time NULL DEFAULT NULL, `timeEnd` time NULL DEFAULT NULL, `value` DECIMAL(2,1) NOT NULL DEFAULT '1.0', PRIMARY KEY (`gibbonStaffAbsenceDateID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
+CREATE TABLE `gibbonStaffCoverage` (`gibbonStaffCoverageID` INT(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, `gibbonStaffAbsenceID` INT(14) UNSIGNED ZEROFILL NULL, `gibbonSchoolYearID` INT(3) UNSIGNED ZEROFILL NOT NULL, `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL, `status` ENUM('Requested','Accepted','Declined','Cancelled') DEFAULT 'Requested', `requestType` ENUM('Individual','Broadcast','Assigned') DEFAULT 'Broadcast', `substituteTypes` VARCHAR(255) NULL, `gibbonPersonIDStatus` int(10) UNSIGNED ZEROFILL NOT NULL, `timestampStatus` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, `notesStatus` TEXT NULL, `gibbonPersonIDCoverage` int(10) UNSIGNED ZEROFILL NULL, `timestampCoverage` timestamp NULL, `notesCoverage` TEXT NULL, `attachmentType` enum('File','HTML','Link') NULL, `attachmentContent` TEXT NULL, `notificationSent` ENUM('N','Y') DEFAULT 'N', `notificationList` TEXT NULL, PRIMARY KEY (`gibbonStaffCoverageID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
+CREATE TABLE `gibbonStaffCoverageDate` (`gibbonStaffCoverageDateID` INT(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, `gibbonStaffCoverageID` INT(14) UNSIGNED ZEROFILL NULL, `gibbonStaffAbsenceDateID` INT(14) UNSIGNED ZEROFILL NULL, `date` DATE NULL, `allDay` ENUM('N','Y') DEFAULT 'Y', `timeStart` time NULL DEFAULT NULL, `timeEnd` time NULL DEFAULT NULL, `value` DECIMAL(2,1) NOT NULL DEFAULT '1.0', `gibbonPersonIDUnavailable` INT(10) UNSIGNED ZEROFILL NULL, `reason` VARCHAR(255) NULL, PRIMARY KEY (`gibbonStaffCoverageDateID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
 ";
