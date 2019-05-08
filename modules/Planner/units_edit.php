@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Module\Planner\Forms\PlannerFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -174,73 +175,89 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                         $form->addRow()->addHeading(__('Classes'))->append(__('Select classes which will have access to this unit.'));
 
                         if ($_SESSION[$guid]['gibbonSchoolYearIDCurrent'] == $gibbonSchoolYearID && $_SESSION[$guid]['gibbonSchoolYearIDCurrent'] == $_SESSION[$guid]['gibbonSchoolYearID']) {
-                            try {
-                                $dataClass = array('gibbonUnitID' => $gibbonUnitID);
-                                $sqlClass = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.nameShort, running, gibbonUnitClassID
+
+                            $dataClass = array('gibbonUnitID' => $gibbonUnitID);
+                            $sqlClass = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.nameShort, running, gibbonUnitClassID, gibbonUnitID
                                         FROM gibbonCourseClass
                                         LEFT JOIN gibbonUnitClass ON (gibbonUnitClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID)
                                         WHERE gibbonCourseID=$gibbonCourseID
                                         ORDER BY name";
-                                $resultClass = $connection2->prepare($sqlClass);
-                                $resultClass->execute($dataClass);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
+                            $resultClass = $pdo->select($sqlClass, $dataClass)->toDataSet();
 
-                            if ($resultClass->rowCount() < 1) {
+                            if (count($resultClass) == 0) {
                                 $form->addRow()->addAlert(__('There are no records to display.'), 'error');
                             } else {
-                                $table = $form->addRow()->addTable()->addClass('colorOddEven');
-
-                                $header = $table->addHeaderRow();
-                                $header->addContent(__('Class'));
-                                $header->addContent(__('Running'))->append("<br/><small>".__('Is class studying this unit?')."</small>");
-                                $header->addContent(__('First Lesson'))->append("<br/><small>".$_SESSION[$guid]['i18n']['dateFormat'] ?? 'dd/mm/yyyy'."</small>");
-                                $header->addContent(__('Actions'));
-
-
                                 $classCount = 0;
-                                while ($rowClass = $resultClass->fetch()) {
-                                    $row = $table->addRow();
-                                        $row->addContent($courseNameShort.'.'.$rowClass['nameShort']);
-                                        $row->addYesNo("running$classCount")->selected(!is_null($rowClass['running']) ? $rowClass['running'] : 'N');
-                                        $firstLesson = null;
-                                        if ($rowClass['running'] == 'Y') {
-                                            try {
-                                                $dataDate = array('gibbonCourseClassID' => $rowClass['gibbonCourseClassID'], 'gibbonUnitID' => $gibbonUnitID);
-                                                $sqlDate = 'SELECT date FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID ORDER BY date, timeStart';
-                                                $resultDate = $connection2->prepare($sqlDate);
-                                                $resultDate->execute($dataDate);
-                                            } catch (PDOException $e) {}
-                                            if ($resultDate->rowCount() > 0) {
-                                                $rowDate = $resultDate->fetch();
-                                                $firstLesson = dateConvertBack($guid, $rowDate['date']);
-                                            }
-                                        }
-                                        $row->addContent($firstLesson);
-                                        if ($rowClass['running'] == 'Y') {
-                                            $column = $row->addColumn();
-                                                if ($resultDate->rowCount() < 1) {
-                                                    $column->addWebLink('<img title="'.__('Edit Unit').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/config.png"/></a>')
-                                                        ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_edit_deploy.php&gibbonCourseClassID='.$rowClass['gibbonCourseClassID']."&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonUnitClassID=".$rowClass['gibbonUnitClassID']);
-                                                }
-                                                else {
-                                                    $column->addWebLink('<img title="'.__('Edit Unit').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/config.png"/></a>')
-                                                        ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_edit_working.php&gibbonCourseClassID='.$rowClass['gibbonCourseClassID']."&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonUnitClassID=".$rowClass['gibbonUnitClassID']);
-                                                }
-                                                $column->addWebLink('<img title="'.__('View Planner').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/planner.png"/></a>')
-                                                    ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/planner.php&gibbonCourseClassID='.$rowClass['gibbonCourseClassID']."&viewBy=class");
-                                                $column->addWebLink('<img title="'.__('Copy Back').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/copyback.png"/></a>')
-                                                    ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_edit_copyBack.php&gibbonCourseClassID='.$rowClass['gibbonCourseClassID']."&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonUnitClassID=".$rowClass['gibbonUnitClassID']);
-                                                $column->addWebLink('<img title="'.__('Copy Forward').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/copyforward.png"/></a>')
-                                                    ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_edit_copyForward.php&gibbonCourseClassID='.$rowClass['gibbonCourseClassID']."&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonUnitClassID=".$rowClass['gibbonUnitClassID']);
-                                                $column->addWebLink('<img title="'.__('Smart Blockify').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/run.png"/></a>')
-                                                    ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_edit_smartBlockify.php&gibbonCourseClassID='.$rowClass['gibbonCourseClassID']."&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonUnitClassID=".$rowClass['gibbonUnitClassID']);
-                                        }
-                                    $form->addHiddenValue("gibbonCourseClassID$classCount", $rowClass['gibbonCourseClassID']);
-                                    ++$classCount;
-                                }
 
+                                // Add the firstLesson date to each class, and 
+                                $resultClass->transform(function (&$class) use ($pdo, &$classCount, &$form) {
+                                    if ($class['running'] == 'Y') {
+                                        $dataDate = array('gibbonCourseClassID' => $class['gibbonCourseClassID'], 'gibbonUnitID' => $class['gibbonUnitID']);
+                                        $sqlDate = "SELECT date FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID ORDER BY date, timeStart";
+                                        $class['firstLesson'] = $pdo->selectOne($sqlDate, $dataDate);
+                                    }
+
+                                    $form->addHiddenValue("gibbonCourseClassID{$classCount}", $class['gibbonCourseClassID']);
+                                    $class['count'] = $classCount;
+                                    $classCount++;
+                                });
+
+                                // Nested DataTable for course classes
+                                $table = $form->addRow()->addDataTable('classes')->withData($resultClass);
+
+                                $table->addColumn('class', __('Class'))
+                                    ->width('20%')
+                                    ->format(Format::using('courseClassName', [$courseNameShort, 'nameShort']));
+
+                                $table->addColumn('running', __('Running'))
+                                    ->description(__('Is class studying this unit?'))
+                                    ->width('25%')
+                                    ->format(function ($class) use (&$form) {
+                                        return $form->getFactory()
+                                            ->createYesNo('running'.$class['count'])
+                                            ->setClass('w-32 float-none')
+                                            ->selected($class['running'] ?? 'N')
+                                            ->getOutput();
+                                    });
+
+                                $table->addColumn('firstLesson', __('First Lesson'))
+                                    ->description($_SESSION[$guid]['i18n']['dateFormat'] ?? 'dd/mm/yyyy')
+                                    ->width('15%')
+                                    ->format(function ($class) {
+                                        return !empty($class['firstLesson']) ? Format::date($class['firstLesson']) : '';
+                                    });
+
+                                $table->addActionColumn()
+                                    ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+                                    ->addParam('gibbonUnitID', $gibbonUnitID)
+                                    ->addParam('gibbonCourseID', $gibbonCourseID)
+                                    ->addParam('gibbonCourseClassID')
+                                    ->addParam('gibbonUnitClassID')
+                                    ->format(function ($class, $actions) {
+                                        if ($class['running'] == 'N') return;
+
+                                        $actions->addAction('edit', __('Edit Unit'))
+                                                ->setURL(empty($class['firstLesson'])
+                                                    ? '/modules/Planner/units_edit_deploy.php'
+                                                    : '/modules/Planner/units_edit_working.php');
+
+                                        $actions->addAction('view', __('View Planner'))
+                                                ->addParam('viewBy', 'class')
+                                                ->setIcon('planner')
+                                                ->setURL('/modules/Planner/planner.php');
+
+                                        $actions->addAction('copyBack', __('Copy Back'))
+                                                ->setIcon('copyback')
+                                                ->setURL('/modules/Planner/units_edit_copyBack.php');
+
+                                        $actions->addAction('copyForward', __('Copy Forward'))
+                                                ->setIcon('copyforward')
+                                                ->setURL('/modules/Planner/units_edit_copyForward.php');
+                                                
+                                        $actions->addAction('smartBlockify', __('Smart Blockify'))
+                                                ->setIcon('run')
+                                                ->setURL('/modules/Planner/units_edit_smartBlockify.php');
+                                    });
                             }
                         }
                         else {
