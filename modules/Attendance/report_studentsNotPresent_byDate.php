@@ -93,8 +93,52 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
         //Produce array of attendance data
         try {
+            $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
             $data = array('date' => $currentDate);
-            $sql = 'SELECT * FROM gibbonAttendanceLogPerson WHERE date=:date ORDER BY gibbonPersonID, gibbonAttendanceLogPersonID DESC';
+            $sql = 'SELECT *
+                FROM gibbonAttendanceLogPerson
+                WHERE date=:date';
+                if ($countClassAsSchool == "N") {
+                    $sql .= ' AND NOT context=\'Class\'';
+                }
+                $sql .= ' ORDER BY gibbonPersonID, gibbonAttendanceLogPersonID DESC';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            echo "<div class='error'>".$e->getMessage().'</div>';
+        }
+
+        $log = array();
+        $currentStudent = '';
+        $lastStudent = '';
+        $count = 0 ;
+        while ($row = $result->fetch()) {
+            $currentStudent = $row['gibbonPersonID'];
+            if ( $attendance->isTypePresent($row['type']) and $currentStudent != $lastStudent) {
+                $log[$row['gibbonPersonID']] = true;
+            }
+            $lastStudent = $currentStudent;
+        }
+
+        try {
+            $orderBy = 'ORDER BY surname, preferredName, LENGTH(rollGroup), rollGroup';
+            if ($sort == 'preferredName')
+                $orderBy = 'ORDER BY preferredName, surname, LENGTH(rollGroup), rollGroup';
+            if ($sort == 'rollGroup')
+                $orderBy = 'ORDER BY LENGTH(rollGroup), rollGroup, surname, preferredName';
+
+            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+
+            $whereExtra = '';
+            if (is_array($gibbonYearGroupIDList)) {
+                $data['gibbonYearGroupIDList'] = implode(",", $gibbonYearGroupIDList);
+                $whereExtra = ' AND FIND_IN_SET (gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupIDList)';
+            }
+
+            $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.name as rollGroupName, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID $whereExtra";
+
+            $sql .= $orderBy;
+
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -106,141 +150,105 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
             echo __('There are no records to display.');
             echo '</div>';
         } else {
-            $log = array();
-            $currentStudent = '';
-            $lastStudent = '';
-            $count = 0 ;
+            echo "<div class='linkTop'>";
+            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_studentsNotPresent_byDate_print.php&currentDate='.dateConvertBack($guid, $currentDate)."&allStudents=" . $allStudents . "&sort=" . $sort . "&gibbonYearGroupIDList=";
+            if (is_array($gibbonYearGroupIDList)) {
+                echo implode(",", $gibbonYearGroupIDList);
+            }
+            echo "'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+            echo '</div>';
+
+            $lastPerson = '';
+
+            echo '<table cellspacing="0" class="fullWidth colorOddEven" >';
+            echo "<tr class='head'>";
+            echo '<th>';
+            echo __('Count');
+            echo '</th>';
+            echo '<th style="width:80px">';
+            echo __('Roll Group');
+            echo '</th>';
+            echo '<th>';
+            echo __('Name');
+            echo '</th>';
+            echo '<th>';
+            echo __('Status');
+            echo '</th>';
+            echo '<th>';
+            echo __('Reason');
+            echo '</th>';
+            echo '<th>';
+            echo __('Comment');
+            echo '</th>';
+            echo '</tr>';
+
+
             while ($row = $result->fetch()) {
-                $currentStudent = $row['gibbonPersonID'];
-                if ( $attendance->isTypePresent($row['type']) and $currentStudent != $lastStudent) {
-                    $log[$row['gibbonPersonID']] = true;
-                }
-                $lastStudent = $currentStudent;
-            }
+                if (isset($log[$row['gibbonPersonID']]) == false) {
 
-            try {
-                $orderBy = 'ORDER BY surname, preferredName, LENGTH(rollGroup), rollGroup';
-                if ($sort == 'preferredName')
-                    $orderBy = 'ORDER BY preferredName, surname, LENGTH(rollGroup), rollGroup';
-                if ($sort == 'rollGroup')
-                    $orderBy = 'ORDER BY LENGTH(rollGroup), rollGroup, surname, preferredName';
-
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-
-                $whereExtra = '';
-                if (is_array($gibbonYearGroupIDList)) {
-                    $data['gibbonYearGroupIDList'] = implode(",", $gibbonYearGroupIDList);
-                    $whereExtra = ' AND FIND_IN_SET (gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupIDList)';
-                }
-
-                $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.name as rollGroupName, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID $whereExtra";
-
-                $sql .= $orderBy;
-
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-
-            if ($result->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __('There are no records to display.');
-                echo '</div>';
-            } else {
-                echo "<div class='linkTop'>";
-                echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_studentsNotPresent_byDate_print.php&currentDate='.dateConvertBack($guid, $currentDate)."&allStudents=" . $allStudents . "&sort=" . $sort . "&gibbonYearGroupIDList=";
-                if (is_array($gibbonYearGroupIDList)) {
-                    echo implode(",", $gibbonYearGroupIDList);
-                }
-                echo "'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
-                echo '</div>';
-
-                $lastPerson = '';
-
-                echo '<table cellspacing="0" class="fullWidth colorOddEven" >';
-                echo "<tr class='head'>";
-                echo '<th>';
-                echo __('Count');
-                echo '</th>';
-                echo '<th style="width:80px">';
-                echo __('Roll Group');
-                echo '</th>';
-                echo '<th>';
-                echo __('Name');
-                echo '</th>';
-                echo '<th>';
-                echo __('Status');
-                echo '</th>';
-                echo '<th>';
-                echo __('Reason');
-                echo '</th>';
-                echo '<th>';
-                echo __('Comment');
-                echo '</th>';
-                echo '</tr>';
-
-
-                while ($row = $result->fetch()) {
-                    if (isset($log[$row['gibbonPersonID']]) == false) {
-
-                        try {
-                            $dataAttendance = array('date' => $currentDate, 'gibbonPersonID' => $row['gibbonPersonID']);
-                            $sqlAttendance = 'SELECT * FROM gibbonAttendanceLogPerson WHERE date=:date AND gibbonPersonID=:gibbonPersonID ORDER BY gibbonAttendanceLogPersonID DESC';
-                            $resultAttendance = $connection2->prepare($sqlAttendance);
-                            $resultAttendance->execute($dataAttendance);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
-
-                        // Skip rows with no record if we're not displaying all students
-                        if ($resultAttendance->rowCount()<1 && $allStudents == FALSE) {
-                            continue;
-                        }
-
-                        $count ++;
-
-                        // ROW
-                        echo "<tr>";
-                        echo '<td>';
-                            echo $count;
-                        echo '</td>';
-                        echo '<td>';
-                            echo $row['rollGroupName'];
-                        echo '</td>';
-                        echo '<td>';
-                            echo formatName('', $row['preferredName'], $row['surname'], 'Student', ($sort != 'preferredName') );
-                        echo '</td>';
-                        echo '<td>';
-                        $rowRollAttendance = null;
-
-                        if ($resultAttendance->rowCount() < 1) {
-                            echo '<i>Not registered</i>';
-                        } else {
-                            $rowRollAttendance = $resultAttendance->fetch();
-                            echo $rowRollAttendance['type'];
-                        }
-                        echo '</td>';
-                        echo '<td>';
-                            echo $rowRollAttendance['reason'];
-                        echo '</td>';
-                        echo '<td>';
-                            echo $rowRollAttendance['comment'];
-                        echo '</td>';
-                        echo '</tr>';
-
-                        $lastPerson = $row['gibbonPersonID'];
+                    try {
+                        $dataAttendance = array('date' => $currentDate, 'gibbonPersonID' => $row['gibbonPersonID']);
+                        $sqlAttendance = 'SELECT *
+                            FROM gibbonAttendanceLogPerson
+                            WHERE date=:date
+                            AND gibbonPersonID=:gibbonPersonID';
+                            if ($countClassAsSchool == "N") {
+                                $sqlAttendance .= ' AND NOT context=\'Class\'';
+                            }
+                            $sqlAttendance .= ' ORDER BY gibbonAttendanceLogPersonID DESC';
+                        $resultAttendance = $connection2->prepare($sqlAttendance);
+                        $resultAttendance->execute($dataAttendance);
+                    } catch (PDOException $e) {
+                        echo "<div class='error'>".$e->getMessage().'</div>';
                     }
-                }
-                if ($count == 0) {
+
+                    // Skip rows with no record if we're not displaying all students
+                    if ($resultAttendance->rowCount()<1 && $allStudents == FALSE) {
+                        continue;
+                    }
+
+                    $count ++;
+
+                    // ROW
                     echo "<tr>";
-                    echo '<td colspan=5>';
-                    echo __('All students are present.');
+                    echo '<td>';
+                        echo $count;
+                    echo '</td>';
+                    echo '<td>';
+                        echo $row['rollGroupName'];
+                    echo '</td>';
+                    echo '<td>';
+                        echo formatName('', $row['preferredName'], $row['surname'], 'Student', ($sort != 'preferredName') );
+                    echo '</td>';
+                    echo '<td>';
+                    $rowRollAttendance = null;
+
+                    if ($resultAttendance->rowCount() < 1) {
+                        echo '<i>Not registered</i>';
+                    } else {
+                        $rowRollAttendance = $resultAttendance->fetch();
+                        echo $rowRollAttendance['type'];
+                    }
+                    echo '</td>';
+                    echo '<td>';
+                        echo $rowRollAttendance['reason'];
+                    echo '</td>';
+                    echo '<td>';
+                        echo $rowRollAttendance['comment'];
                     echo '</td>';
                     echo '</tr>';
+
+                    $lastPerson = $row['gibbonPersonID'];
                 }
-                echo '</table>';
             }
+            if ($count == 0) {
+                echo "<tr>";
+                echo '<td colspan=5>';
+                echo __('All students are present.');
+                echo '</td>';
+                echo '</tr>';
+            }
+            echo '</table>';
         }
     }
 }
