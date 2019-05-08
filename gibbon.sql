@@ -5015,8 +5015,6 @@ CREATE TABLE `gibbonYearGroup` (
   `gibbonPersonIDHOY` int(10) UNSIGNED ZEROFILL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- --------------------------------------------------------
-
 --
 -- Dumping data for table `gibbonYearGroup`
 --
