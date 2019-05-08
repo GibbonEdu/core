@@ -34,7 +34,7 @@ class GroupGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonGroup';
-    private static $searchableColumns = [];
+    private static $searchableColumns = ['gibbonGroup.name'];
     
     /**
      * Queries the list of groups for the messenger Manage Groups page.

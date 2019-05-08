@@ -1,6 +1,4 @@
 <?php
-
-use Gibbon\Services\Format;
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -19,14 +17,17 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+use Gibbon\Domain\Staff\StaffGateway;
+
 // Gibbon system-wide include
 require_once '../../gibbon.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == false) {
-    die( __('Your request failed because you do not have access to this action.') );
+    // Access denied
+    die(__('Your request failed because you do not have access to this action.'));
 } else {
-
-    $searchTerm = (isset($_REQUEST['q']))? $_REQUEST['q'] : '';
+    $searchTerm = $_REQUEST['q'] ?? '';
 
     // Allow for * as wildcard (as well as %)
     $searchTerm = str_replace('*', '%', $searchTerm);
@@ -34,22 +35,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
     // Cancel out early for empty searches
     if (empty($searchTerm)) die('[]');
 
-    $resultSet = array();
+    // Search
+    $staffGateway = $container->get(StaffGateway::class);
+    $criteria = $staffGateway->newQueryCriteria()
+        ->searchBy($staffGateway->getSearchableColumns(), $searchTerm)
+        ->sortBy(['preferredName', 'surname']);
 
-    // STAFF
-    $data = array('search' => '%'.$searchTerm.'%', 'today' => date('Y-m-d') );
-    $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, username, image_240, gibbonStaff.type, gibbonStaff.jobTitle
-            FROM gibbonPerson
-            JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID)
-            WHERE status='Full'
-            AND (dateStart IS NULL OR dateStart<=:today)
-            AND (dateEnd IS NULL  OR dateEnd>=:today)
-            AND (gibbonPerson.surname LIKE :search
-                OR gibbonPerson.preferredName LIKE :search
-                OR gibbonPerson.username LIKE :search)
-            ORDER BY preferredName, surname";
-
-    $resultSet = $pdo->select($sql, $data)->fetchAll();
+    $results = $staffGateway->queryAllStaff($criteria)->toArray();
 
     $absoluteURL = $gibbon->session->get('absoluteURL');
     $list = array_map(function ($token) use ($absoluteURL) {
@@ -59,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
             'jobTitle' => !empty($token['jobTitle']) ? $token['jobTitle'] : $token['type'],
             'image'    => $absoluteURL.'/'.$token['image_240'],
         ];
-    }, $resultSet);
+    }, $results);
 
     // Output the json
     echo json_encode($list);

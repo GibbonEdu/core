@@ -17,33 +17,34 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Messenger\GroupGateway;
+
 // Gibbon system-wide include
 require_once '../../gibbon.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/staffSettings.php') == false) {
     // Access denied
-    die( __('Your request failed because you do not have access to this action.') );
+    die(__('Your request failed because you do not have access to this action.') );
 } else {
-    $searchTerm = (isset($_REQUEST['q']))? $_REQUEST['q'] : '';
+    $searchTerm = $_REQUEST['q'] ?? '';
 
     // Cancel out early for empty searches
     if (empty($searchTerm)) die('[]');
 
-    $resultSet = array();
+    // Search
+    $groupGateway = $container->get(GroupGateway::class);
+    $criteria = $groupGateway->newQueryCriteria()
+        ->searchBy($groupGateway->getSearchableColumns(), $searchTerm)
+        ->sortBy('name');
 
-    // STAFF
-    $data = array('search' => '%'.$searchTerm.'%', 'today' => date('Y-m-d') );
-    $sql = "SELECT gibbonGroupID, name FROM gibbonGroup ORDER BY name";
+    $results = $groupGateway->queryGroups($criteria, $gibbon->session->get('gibbonSchoolYearID'))->toArray();
 
-    $resultSet = $pdo->select($sql, $data)->fetchAll();
-
-    $absoluteURL = $gibbon->session->get('absoluteURL');
-    $list = array_map(function ($token) use ($absoluteURL) {
+    $list = array_map(function ($token) {
         return [
             'id'       => $token['gibbonGroupID'],
             'name'     => $token['name'],
         ];
-    }, $resultSet);
+    }, $results);
 
     // Output the json
     echo json_encode($list);
