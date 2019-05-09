@@ -48,11 +48,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     $currentDate = isset($_GET['currentDate'])? dateConvert($guid, $_GET['currentDate']) : $today;
     $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : null;
 
-    echo '<h2>'.__('Choose Student')."</h2>";
-
     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
+    $form->setTitle(__('Choose Student'));
 
     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/attendance_take_byPerson.php');
 
@@ -85,17 +84,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 //Get last 5 school days from currentDate within the last 100
                 $timestamp = dateConvertToTimestamp($currentDate);
 
+                // Get school-wide attendance logs
                 $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
                 $criteria = $attendanceLogGateway->newQueryCriteria()
                     ->sortBy('timestampTaken')
+                    ->filterBy('notClass', $countClassAsSchool == 'N')
                     ->pageSize(0);
-
-                if ($countClassAsSchool == 'N') {
-                    $criteria->filterBy('notClass', true);
-                }
 
                 $logs = $attendanceLogGateway->queryByPersonAndDate($criteria, $gibbonPersonID, $currentDate);
                 $lastLog = $logs->getRow(count($logs) - 1);
+
+                // Get class attendance logs
+                $classLogCount = 0;
+                if ($countClassAsSchool == 'N') {
+                    $criteria = $attendanceLogGateway->newQueryCriteria()
+                        ->sortBy(['timeStart', 'timeEnd', 'timestampTaken'])
+                        ->pageSize(0);
+
+                    $classLogs = $attendanceLogGateway->queryClassAttendanceByPersonAndDate($criteria, $gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, $currentDate);
+                    $classLogs->transform(function (&$log) use (&$classLogCount) {
+                        if (!empty($log['gibbonAttendanceLogPersonID'])) $classLogCount++;
+                    });
+                }
 
                 // DATA TABLE: Show attendance log for the current day
                 $table = DataTable::create('attendanceLogs');
@@ -133,6 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     });
 
                 $table->addColumn('where', __('Where'))
+                    ->width('25%')
                     ->format(function ($log) {
                         return ($log['context'] == 'Class' && !empty($log['gibbonCourseClassID']))
                             ? __($log['context']).' ('.Format::courseClassName($log['courseName'], $log['className']).')'
@@ -140,6 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     });
 
                 $table->addColumn('timestampTaken', __('Recorded By'))
+                    ->width('22%')
                     ->format(Format::using('name', ['title', 'preferredName', 'surname', 'Staff', false, true]));
 
                 // ACTIONS
@@ -159,43 +171,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         });
                 }
 
-                // School-wide attendance
+                // School-wide attendance: Roll Group, Person, Future and Self Registration
                 $schoolTable = clone $table;
                 $schoolTable->setTitle(__('Attendance Log'));
                 $schoolTable->setDescription(count($logs) > 0 ? __('The following attendance log has been recorded for the selected student today:') : '');
-                $schoolTable->addMetaData('blankSlate', __('There is currently no attendance data today for the selected student.'));
                 $schoolTable->removeColumn('period');
+
+                if (count($logs) + $classLogCount == 0) {
+                    $schoolTable->addMetaData('blankSlate', __('There is currently no attendance data today for the selected student.'));
+                }
 
                 echo $schoolTable->render($logs);
 
                 // Class Attendance
                 if ($countClassAsSchool == 'N') {
-                    $criteria = $attendanceLogGateway->newQueryCriteria()
-                        ->sortBy(['timeStart', 'timeEnd', 'timestampTaken'])
-                        ->pageSize(0);
-
-                    $logCount = 0;
-                    $logs = $attendanceLogGateway->queryClassAttendanceByPersonAndDate($criteria, $gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, $currentDate);
-                    $logs->transform(function (&$log) use (&$logCount) {
-                        if (!empty($log['gibbonAttendanceLogPersonID'])) $logCount++;
-                    });
-
-                    if ($logCount > 0) {
+                    if ($classLogCount > 0) {
                         $classTable = clone $table;
                         $classTable->setTitle(__('Class Attendance'));
 
-                        echo $classTable->render($logs);
+                        echo $classTable->render($classLogs);
                     }
                 }
-                
                 echo '<br/>';
 
-                // FORM: Attendance by Person
+                // FORM: Take Attendance by Person
                 $form = Form::create('attendanceByPerson', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']. '/attendance_take_byPersonProcess.php?gibbonPersonID='.$gibbonPersonID);
                 $form->setAutocomplete('off');
 
                 if ($currentDate < $today) {
-                    $form->addConfirmation('The selected date for attendance is in the past. Are you sure you want to continue?');
+                    $form->addConfirmation(__('The selected date for attendance is in the past. Are you sure you want to continue?'));
                 }
 
                 $form->addHiddenValue('address', $_SESSION[$guid]['address']);

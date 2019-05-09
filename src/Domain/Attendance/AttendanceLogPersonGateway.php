@@ -91,7 +91,9 @@ class AttendanceLogPersonGateway extends QueryableGateway
                 AND gibbonAttendanceLogPerson.context = 'Class'")
             ->leftJoin('gibbonPerson as takenBy', 'gibbonAttendanceLogPerson.gibbonPersonIDTaker=takenBy.gibbonPersonID')
 
-            ->where("gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonCourseClassPerson.role = 'Student'")
+            ->where("gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID")
+            ->where("gibbonCourseClassPerson.role = 'Student'")
+            ->where("gibbonCourseClass.attendance='Y'")
             ->bindValue('gibbonPersonID', $gibbonPersonID)
             ->where('gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
