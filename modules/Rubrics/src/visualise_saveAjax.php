@@ -24,6 +24,7 @@ $uploadsFolder = $fileUploader->getUploadsFolderByDate();
 
 $img = (!empty($_POST['img'])) ? $_POST['img'] : null;
 $gibbonPersonID = (!empty($_POST['gibbonPersonID'])) ? str_pad($_POST['gibbonPersonID'], 10, '0', STR_PAD_LEFT) : null;
+$uploadsFolder = (!empty($_POST['path'])) ? $_POST['path'] : $uploadsFolder;
 
 list($type, $img) = explode(';', $img);
 list(, $img)      = explode(',', $img);
