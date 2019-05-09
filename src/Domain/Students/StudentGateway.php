@@ -220,6 +220,7 @@ class StudentGateway extends QueryableGateway
                 FROM gibbonStudentEnrolment 
                 JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) 
                 WHERE gibbonPersonID=:gibbonPersonID 
+                AND (gibbonSchoolYear.status='Current' OR gibbonSchoolYear.status='Past')
                 ORDER BY sequenceNumber DESC";
 
         return $this->db()->select($sql, $data);
