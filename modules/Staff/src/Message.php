@@ -59,11 +59,21 @@ abstract class Message
         return ['mail'];
     }
 
+    /**
+     * Format the message to send via SMS.
+     *
+     * @return string
+     */
     public function toSMS() : string
     {
         return $this->getText();
     }
 
+    /**
+     * Format the message to send via Mail.
+     *
+     * @return array
+     */
     public function toMail() : array
     {
         return [
@@ -78,6 +88,11 @@ abstract class Message
         ];
     }
 
+    /**
+     * Format the message to send via Database.
+     *
+     * @return array
+     */
     public function toDatabase() : array
     {
         return [

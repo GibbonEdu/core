@@ -27,6 +27,10 @@ use DateInterval;
 use DatePeriod;
 
 /**
+ * AbsenceCalendar
+ * 
+ * A reusable DataTable class for displaying absences in a colour-coded calendar view.
+ * 
  * @version v18
  * @since   v18
  */
@@ -97,7 +101,7 @@ class AbsenceCalendar
 
                     $cell->addClass($day['date']->format('Y-m-d') == date('Y-m-d') ? 'border-2 border-gray-700' : 'border');
                     
-                    if ($day['count'] > 0) $cell->addClass('bg-color'.($day['absence']['sequenceNumber'] % 10));
+                    if ($day['count'] > 0) $cell->addClass('bg-chart'.($day['absence']['sequenceNumber'] % 10));
                     elseif ($day['weekend']) $cell->addClass('bg-gray-200');
                     else $cell->addClass('bg-white');
 

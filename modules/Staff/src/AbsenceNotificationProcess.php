@@ -42,19 +42,23 @@ class AbsenceNotificationProcess extends BackgroundProcess
     protected $messageSender;
     protected $urgencyThreshold;
 
-    public function __construct(
-        StaffAbsenceGateway $staffAbsenceGateway,
-        GroupGateway $groupGateway,
-        SettingGateway $settingGateway,
-        MessageSender $messageSender
-    ) {
+    public function __construct(StaffAbsenceGateway $staffAbsenceGateway, GroupGateway $groupGateway, SettingGateway $settingGateway, MessageSender $messageSender)
+    {
         $this->staffAbsenceGateway = $staffAbsenceGateway;
         $this->groupGateway = $groupGateway;
         $this->messageSender = $messageSender;
 
+        $this->urgentNotifications = $settingGateway->getSettingByScope('Staff', 'urgentNotifications');
         $this->urgencyThreshold = $settingGateway->getSettingByScope('Staff', 'urgencyThreshold') * 86400;
     }
     
+    /**
+     * Sends a message to alert users of a new absence in the system. Includes anyone selected in a notification
+     * group or optional additional list of people to notify.
+     *
+     * @param string $gibbonStaffAbsenceID
+     * @return array
+     */
     public function runNewAbsence($gibbonStaffAbsenceID)
     {
         $absence = $this->getAbsenceDetailsByID($gibbonStaffAbsenceID);
@@ -85,6 +89,12 @@ class AbsenceNotificationProcess extends BackgroundProcess
         return $sent;
     }
 
+    /**
+     * Sends a message back to a staff member that their absence was approved (or declined).
+     *
+     * @param string $gibbonStaffAbsenceID
+     * @return array
+     */
     public function runAbsenceApproval($gibbonStaffAbsenceID)
     {
         $absence = $this->getAbsenceDetailsByID($gibbonStaffAbsenceID);
@@ -96,6 +106,12 @@ class AbsenceNotificationProcess extends BackgroundProcess
         return $this->messageSender->send($message, $recipients, $absence['gibbonPersonIDApproval']);
     }
 
+    /**
+     * Sends a message to the selected approval to notify them of a new absence neeing approval.
+     *
+     * @param string $gibbonStaffAbsenceID
+     * @return array
+     */
     public function runAbsencePendingApproval($gibbonStaffAbsenceID)
     {
         $absence = $this->getAbsenceDetailsByID($gibbonStaffAbsenceID);
@@ -107,11 +123,21 @@ class AbsenceNotificationProcess extends BackgroundProcess
         return $this->messageSender->send($message, $recipients, $absence['gibbonPersonID']);
     }
 
+    /**
+     * Gets the absence details from a gateway and appends the urgency information based on the Staff settings.
+     *
+     * @param string $gibbonStaffAbsenceID
+     * @return array
+     */
     private function getAbsenceDetailsByID($gibbonStaffAbsenceID)
     {
         if ($absence = $this->staffAbsenceGateway->getAbsenceDetailsByID($gibbonStaffAbsenceID)) {
-            $relativeSeconds = strtotime($absence['dateStart']) - time();
-            $absence['urgent'] = $relativeSeconds <= $this->urgencyThreshold;
+            if ($this->urgentNotifications == 'Y') {
+                $relativeSeconds = strtotime($absence['dateStart']) - time();
+                $absence['urgent'] = $relativeSeconds <= $this->urgencyThreshold;
+            } else {
+                $absence['urgent'] = false;
+            }
         }
 
         return $absence ?? [];

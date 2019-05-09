@@ -25,9 +25,10 @@ use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 // use Gibbon\Domain\Staff\StaffCoverageGateway;
 
-
 /**
  * AbsenceView
+ *
+ * A view composer class: receives an absence ID and displays the status information for the absence.
  *
  * @version v18
  * @since   v18

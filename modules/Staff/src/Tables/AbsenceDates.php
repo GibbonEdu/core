@@ -30,6 +30,8 @@ use Gibbon\Contracts\Database\Connection;
 /**
  * AbsenceDates
  *
+ * Reusable DataTable class for displaying the info and actions available for absence dates.
+ *
  * @version v18
  * @since   v18
  */

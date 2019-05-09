@@ -51,13 +51,22 @@ class MessageSender
         $this->sms = $sms;
     }
 
-    public function send(Message $message, array $recipients, $senderID = '')
+    /**
+     * Send a message class to a group of recipients via multiple channels.
+     *
+     * @param Message   $message
+     * @param array     $recipients gibbonPersonID
+     * @param string    $senderID   gibbonPersonID
+     * @return array
+     */
+    public function send(Message $message, array $recipients, $senderID = '') : array
     {
         // Get the user data per gibbonPersonID
         $sender = !empty($senderID) ? $this->userGateway->getByID($senderID) : [];
         $recipients = array_map(function ($gibbonPersonID) {
             return $this->userGateway->getByID($gibbonPersonID);
         }, array_filter(array_unique($recipients)));
+
         $result = [];
 
         foreach ($message->via() as $via) {
@@ -80,6 +89,13 @@ class MessageSender
         return $result;
     }
 
+    /**
+     * Sends the message via SMS and returns an array of the successful phone numbers.
+     *
+     * @param Message   $message
+     * @param array     $recipients
+     * @return array
+     */
     protected function sendViaSMS(Message $message, array $recipients = []) : array
     {
         if (empty($this->sms)) return [];
@@ -95,6 +111,14 @@ class MessageSender
         return is_array($sent) ? $sent : [$sent];
     }
 
+    /**
+     * Sends the message via Email and returns an array of the successful email addresses.
+     *
+     * @param Message   $message
+     * @param array     $recipients
+     * @param array     $sender
+     * @return array
+     */
     protected function sendViaMail(Message $message, array $recipients = [], array $sender = []) : array
     {
         if (empty($this->mail)) return [];
@@ -121,6 +145,13 @@ class MessageSender
         return $sent;
     }
 
+    /**
+     * Inserts a message into the Notification table and returns an array of gibbonPersonID.
+     *
+     * @param Message   $message
+     * @param array     $recipients
+     * @return array
+     */
     protected function sendViaDatabase(Message $message, array $recipients = []) : array
     {
         if (empty($this->notificationGateway)) return [];

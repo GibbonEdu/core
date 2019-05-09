@@ -52,6 +52,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
     $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
     $staffAbsenceTypeGateway = $container->get(StaffAbsenceTypeGateway::class);
 
+    // Get absence types & format them for the chained select lists
+    $types = $staffAbsenceTypeGateway->selectAllTypes()->fetchAll();
+    $typesRequiringApproval = $staffAbsenceTypeGateway->selectTypesRequiringApproval()->fetchAll(\PDO::FETCH_COLUMN, 0);
+
+    $approverOptions = explode(',', getSettingByScope($connection2, 'Staff', 'absenceApprovers'));
+    $typesWithReasons = $reasonsOptions = $reasonsChained = [];
+
+    $types = array_reduce($types, function ($group, $item) use (&$reasonsOptions, &$reasonsChained, &$typesWithReasons) {
+        $id = $item['gibbonStaffAbsenceTypeID'];
+        $group[$id] = $item['name'];
+        $reasons = array_filter(array_map('trim', explode(',', $item['reasons'])));
+        if (!empty($reasons)) {
+            $typesWithReasons[] = $id;
+            foreach ($reasons as $reason) {
+                $reasonsOptions[$reason] = $reason;
+                $reasonsChained[$reason] = $id;
+            }
+        }
+        return $group;
+    }, []);
+
+    // FORM
     $form = Form::create('staffAbsence', $_SESSION[$guid]['absoluteURL'].'/modules/Staff/absences_addProcess.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -68,29 +90,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
         $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
         $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
     }
-
-    $types = $staffAbsenceTypeGateway->selectAllTypes()->fetchAll();
-    $typesRequiringApproval = $staffAbsenceTypeGateway->selectTypesRequiringApproval()->fetchAll(\PDO::FETCH_COLUMN, 0);
-
-    $approverOptions = explode(',', getSettingByScope($connection2, 'Staff', 'absenceApprovers'));
-
-    $typesWithReasons = [];
-    $reasonsOptions = [];
-    $reasonsChained = [];
-
-    $types = array_reduce($types, function ($group, $item) use (&$reasonsOptions, &$reasonsChained, &$typesWithReasons) {
-        $id = $item['gibbonStaffAbsenceTypeID'];
-        $group[$id] = $item['name'];
-        $reasons = array_filter(array_map('trim', explode(',', $item['reasons'])));
-        if (!empty($reasons)) {
-            $typesWithReasons[] = $id;
-            foreach ($reasons as $reason) {
-                $reasonsOptions[$reason] = $reason;
-                $reasonsChained[$reason] = $id;
-            }
-        }
-        return $group;
-    }, []);
 
     $row = $form->addRow();
         $row->addLabel('gibbonStaffAbsenceTypeID', __('Type'));
@@ -109,6 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
             ->placeholder()
             ->isRequired();
 
+    // DATES
     $date = $_GET['date'] ?? '';
     $row = $form->addRow();
         $row->addLabel('dateStart', __('Start Date'));
@@ -148,6 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
             ->setClass('text-right pr-1')
             ->setValue('Y');
 
+    // APPROVAL
     if (!empty($typesRequiringApproval)) {
         $form->toggleVisibilityByClass('approvalRequired')->onSelect('gibbonStaffAbsenceTypeID')->when($typesRequiringApproval);
         $form->toggleVisibilityByClass('approvalNotRequired')->onSelect('gibbonStaffAbsenceTypeID')->whenNot(array_merge($typesRequiringApproval, ['Please select...']));
@@ -168,6 +169,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
             $row->addLabel('commentConfidential', __('Confidential Comment'))->description(__('This message is only shared with the selected approver.'));
             $row->addTextArea('commentConfidential')->setRows(3);
     }
+
+    // NOTIFICATIONS
     $form->addRow()->addHeading(__('Notifications'));
 
     $row = $form->addRow()->addClass('approvalRequired hidden');
@@ -209,6 +212,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
         $row->addLabel('comment', __('Comment'))->description(__('This message is shared with the people notified of this absence and users who manage staff absences.'));
         $row->addTextArea('comment')->setRows(3);
 
+    // COVERAGE
     if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php')) {
         $form->addRow()->addHeading(__('Coverage'))->addClass('approvalNotRequired');
 

@@ -47,16 +47,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     font-size: 0;
 }
 
-.bg-color0 { background: rgba(153, 102, 255, 1.0) !important; }
-.bg-color1 { background: rgba(255, 99, 132, 1.0) !important; }
-.bg-color2 { background: rgba(255, 206, 86, 1.0) !important; }
-.bg-color3 { background: rgba(54, 162, 235, 1.0) !important; }
-.bg-color4 { background: rgba(133, 233, 194, 1.0) !important; }
-.bg-color5 { background: rgba(255, 159, 64, 1.0) !important; }
-.bg-color6 { background: rgba(237, 85, 88, 1.0) !important; }
-.bg-color7 { background: rgba(75, 192, 192, 1.0) !important; }
-.bg-color8 { background: rgba(161, 89, 173, 1.0) !important; }
-.bg-color9 { background: rgba(29, 109, 163, 1.0) !important; }
+.bg-chart0 { background: rgba(153, 102, 255, 1.0) !important; } 
+.bg-chart1 { background: rgba(255, 99, 132, 1.0) !important; } 
+.bg-chart2 { background: rgba(255, 206, 86, 1.0) !important; } 
+.bg-chart3 { background: rgba(54, 162, 235, 1.0) !important; } 
+.bg-chart4 { background: rgba(133, 233, 194, 1.0) !important; } 
+.bg-chart5 { background: rgba(255, 159, 64, 1.0) !important; } 
+.bg-chart6 { background: rgba(237, 85, 88, 1.0) !important; } 
+.bg-chart7 { background: rgba(75, 192, 192, 1.0) !important; } 
+.bg-chart8 { background: rgba(161, 89, 173, 1.0) !important; } 
+.bg-chart9 { background: rgba(29, 109, 163, 1.0) !important; } 
 
 .half-day-am::after {
     content: '';

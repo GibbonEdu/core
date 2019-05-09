@@ -27,6 +27,8 @@ use Gibbon\View\Page;
 
 /**
  * StaffCard
+ * 
+ * A view composer class for the staff card template: set a gibbonPersonID and display the staff details and links to their info.
  *
  * @version v18
  * @since   v18
@@ -70,14 +72,14 @@ class StaffCard
         $connection2 = $this->db->getConnection();
 
         $page->writeFromTemplate('staffCard.twig.html', [
-            'staff' => $this->staffGateway->selectStaffByID($this->gibbonPersonID ?? '')->fetch(),
-            'rollGroup' => $this->rollGroupGateway->selectRollGroupsByTutor($this->gibbonPersonID ?? '')->fetch(),
-            'canViewProfile' => isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php'),
-            'canViewAbsences' => isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPerson.php', 'View Absences_any'),
-            'canViewTimetable' => isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php'),
+            'staff'             => $this->staffGateway->selectStaffByID($this->gibbonPersonID ?? '')->fetch(),
+            'rollGroup'         => $this->rollGroupGateway->selectRollGroupsByTutor($this->gibbonPersonID ?? '')->fetch(),
+            'canViewProfile'    => isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php'),
+            'canViewAbsences'   => isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPerson.php', 'View Absences_any'),
+            'canViewTimetable'  => isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php'),
             'canViewRollGroups' => isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php'),
-            'status' => $this->status,
-            'tag' => $this->tag,
+            'status'            => $this->status,
+            'tag'               => $this->tag,
         ]);
     }
 }

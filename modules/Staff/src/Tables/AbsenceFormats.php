@@ -22,6 +22,8 @@ namespace Gibbon\Module\Staff\Tables;
 use Gibbon\Services\Format;
 
 /**
+ * Reusable formats for displaying absence and coverage info in tables.
+ * 
  * @version v18
  * @since   v18
  */
