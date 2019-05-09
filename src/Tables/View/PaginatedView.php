@@ -56,6 +56,7 @@ class PaginatedView extends DataTableView implements RendererInterface
     public function renderTable(DataTable $table, DataSet $dataSet)
     {
         $this->addData('table', $table);
+        $this->addData('blankSlate', $table->getMetaData('blankSlate'));
 
         $this->preProcessTable($table);
         
@@ -70,7 +71,6 @@ class PaginatedView extends DataTableView implements RendererInterface
             'path'       => './fullscreen.php?'.http_build_query($_GET),
             'identifier' => $this->criteria->getIdentifier(),
 
-            'blankSlate'     => $table->getMetaData('blankSlate'),
             'searchText'     => $this->criteria->getSearchText(),
             'pageSize'       => $this->getSelectPageSize($dataSet, $filters),
             'filterOptions'  => $this->getSelectFilterOptions($dataSet, $filters),

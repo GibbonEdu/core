@@ -41,6 +41,7 @@ class GridView extends DataTableView implements RendererInterface
     public function renderTable(DataTable $table, DataSet $dataSet)
     {
         $this->addData('table', $table);
+        $this->addData('blankSlate', $table->getMetaData('blankSlate'));
 
         if ($dataSet->count() > 0) {
             $this->addData([

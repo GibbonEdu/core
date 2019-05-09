@@ -45,6 +45,7 @@ class DataTableView extends View implements RendererInterface
     public function renderTable(DataTable $table, DataSet $dataSet)
     {
         $this->addData('table', $table);
+        $this->addData('blankSlate', $table->getMetaData('blankSlate'));
 
         if ($dataSet->count() > 0) {
             $this->preProcessTable($table);
@@ -53,7 +54,6 @@ class DataTableView extends View implements RendererInterface
                 'headers'    => $this->getTableHeaders($table),
                 'columns'    => $table->getColumns(),
                 'rows'       => $this->getTableRows($table, $dataSet),
-                'blankSlate' => $table->getMetaData('blankSlate'),
             ]);
         }
 
