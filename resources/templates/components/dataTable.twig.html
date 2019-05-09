@@ -33,7 +33,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% if not rows and not isFiltered %}
         <div class="rounded-sm border overflow-hidden">
             {% block blankslate %}
-            <div class="w-full h-64 flex flex-col items-center justify-center bg-gray-100 shadow-inner text-gray-600 text-lg">
+            <div class="w-full h-48 flex flex-col items-center justify-center bg-gray-100 shadow-inner text-gray-600 text-lg">
                 {% if isFiltered %}
                     {{ __('No results matched your search.') }}
                 {% elseif blankSlate %}
