@@ -53,8 +53,6 @@ class NewAbsence extends Message
     public function getText() : string
     {
         return __("{name} will be absent on {date} for {type}.", $this->details);
-
-        // Add details if they're also seeking coverage, and from whom.
     }
 
     public function getDetails() : array

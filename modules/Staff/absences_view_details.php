@@ -37,7 +37,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_detail
     }
 
     if (isset($_GET['return'])) {
+        ob_start();
         returnProcess($guid, $_GET['return'], null, null);
+        $page->write(ob_get_clean());
     }
 
     $gibbonStaffAbsenceID = $_GET['gibbonStaffAbsenceID'] ?? '';

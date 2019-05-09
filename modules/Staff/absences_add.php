@@ -170,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
     }
     $form->addRow()->addHeading(__('Notifications'));
 
-    $row = $form->addRow()->addClass('approvalRequired displayNone');
+    $row = $form->addRow()->addClass('approvalRequired hidden');
         $row->addAlert(__('The following people will only be notified if this absence is approved.'), 'message');
 
     // Get the most recent absence and pre-fill the notification group & list of people
