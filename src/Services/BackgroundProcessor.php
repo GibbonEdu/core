@@ -156,17 +156,22 @@ class BackgroundProcessor implements ContainerAwareInterface
             throw new \RuntimeException('You do not have access to this action.');
         }
 
+        // Handle PHP fatal errors which are not caught by a try-catch
+        register_shutdown_function(function () use ($processID, $processData) {
+            $this->handleShutdown($processID, $processData);
+        });
+        set_exception_handler(function ($e) use ($processID, $processData) {
+            $this->handleException($processID, $processData, $e);
+        });
+
         // Create the process via the DI container
         try {
             $process = $this->getContainer()->get($processData['class']);
             $this->updateProcess($processID, [
                 'status' => 'Running',
             ] + $processData);
-        } catch (Exception $e) {
-            return $this->endProcess($processID, [
-                'status' => 'Failed',
-                'output' => $e->getMessage(),
-            ] + $processData);
+        } catch (\Exception $e) {
+            return $this->handleException($processID, $processData, $e);
         }
 
         // Run the process
@@ -176,11 +181,8 @@ class BackgroundProcessor implements ContainerAwareInterface
                 'status' => 'Complete',
                 'output' => $output,
             ] + $processData);
-        } catch (Exception $e) {
-            return $this->endProcess($processID, [
-                'status' => 'Failed',
-                'output' => $e->getMessage(),
-            ] + $processData);
+        } catch (\Exception $e) {
+            return $this->handleException($processID, $processData, $e);
         }
     }
 
@@ -298,6 +300,25 @@ class BackgroundProcessor implements ContainerAwareInterface
         }
         
         return false;
+    }
+
+    protected function handleShutdown($processID, $processData)
+    {
+        $lastError = error_get_last();
+        if ($lastError['type'] === E_ERROR) {
+            $this->endProcess($processID, [
+                'status' => 'Error',
+                'output' => $lastError['message'],
+            ] + $processData);
+        }
+    }
+
+    protected function handleException($processID, $processData, $e)
+    {
+        return $this->endProcess($processID, [
+            'status' => 'Error',
+            'output' => $e->getMessage(),
+        ] + $processData);
     }
 
     /**
