@@ -69,7 +69,17 @@ class Visualise
         $this->contexts = $contexts;
     }
 
-    public function renderVisualise($legend = true, $image = false)
+    /**
+     * renderVisualise
+     *
+     * @version  v18
+     * @since    v18
+     * @param   $legend should the legend be included?
+     * @param   $image should the chart be saved as an image
+     * @param   $path if image is saved, where should it be saved (defaults to standard upload location)
+     * @return   void
+     */
+    public function renderVisualise($legend = true, $image = false, $path = '')
     {
         //Filter out columns to ignore from visualisation
         $this->columns = array_filter($this->columns, function ($item) {
@@ -133,11 +143,12 @@ class Visualise
                 ]
             ];
             if ($image) {
+                $path = ($path != '') ? ", path: '$path'" : '';
                 $options['animation'] = [
                     'duration' => 0,
                     'onComplete' => $chart->addFunction('function(e) {
                         var img = visualisation.toDataURL("image/png");
-                        $.ajax({ url: "'.$this->absoluteURL.'/modules/Rubrics/src/visualise_saveAjax.php", type: "POST", data: {img: img, gibbonPersonID: '.$this->gibbonPersonID.'}, dataType: "html"})
+                        $.ajax({ url: "'.$this->absoluteURL.'/modules/Rubrics/src/visualise_saveAjax.php", type: "POST", data: {img: img, gibbonPersonID: '.$this->gibbonPersonID.$path.'}, dataType: "html"})
                         $.ajax({ url: "./"});
                     }'),
                 ];
