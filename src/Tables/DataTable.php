@@ -246,6 +246,21 @@ class DataTable implements OutputableInterface
     }
 
     /**
+     * Remove a column by id.
+     *
+     * @param string $id
+     * @return self
+     */
+    public function removeColumn($id)
+    {
+        if (isset($this->columns[$id])) {
+            unset($this->columns[$id]);
+        }
+
+        return $this;
+    }
+
+    /**
      * Get all columns in the table.
      *
      * @return array
