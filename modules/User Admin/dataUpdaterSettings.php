@@ -33,7 +33,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
     }
 
     $form = Form::create('dataUpdaterSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/dataUpdaterSettingsProcess.php');
-
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
     $row = $form->addRow()->addHeading(__('Settings'));
@@ -75,195 +74,102 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
     
 
     echo '<h2>'.__('Required Fields for Personal Updates').'</h2>';
-	echo '<p>'.__('These required field settings apply to all users, except those who hold the ability to submit a data update request for all users in the system (generally just admins).').'</p>';
+    echo '<p>'.__('These required field settings apply to all users, except those who hold the ability to submit a data update request for all users in the system (generally just admins).').'</p>';
 
     $form = Form::create('dataUpdaterSettingsFields', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/dataUpdaterSettingsFieldsProcess.php');
     
-    $form->setClass('fullWidth');
+    $form->setClass('fullWidth rowHighlight');
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
     
     // Default settings
-    $settingDefaults = array('title' => 'N', 'surname' => 'Y', 'firstName' => 'N', 'preferredName' => 'Y', 'officialName' => 'Y', 'nameInCharacters' => 'N', 'dob' => 'N', 'email' => 'N', 'emailAlternate' => 'N', 'phone1' => 'N', 'phone2' => 'N', 'phone3' => 'N', 'phone4' => 'N', 'languageFirst' => 'N', 'languageSecond' => 'N', 'languageThird' => 'N', 'countryOfBirth' => 'N', 'ethnicity' => 'N', 'citizenship1' => 'N', 'citizenship1Passport' => 'N', 'citizenship2' => 'N', 'citizenship2Passport' => 'N', 'religion' => 'N', 'nationalIDCardNumber' => 'N', 'residencyStatus' => 'N', 'visaExpiryDate' => 'N', 'profession' => 'N', 'employer' => 'N', 'jobTitle' => 'N', 'emergency1Name' => 'N', 'emergency1Number1' => 'N', 'emergency1Number2' => 'N', 'emergency1Relationship' => 'N', 'emergency2Name' => 'N', 'emergency2Number1' => 'N', 'emergency2Number2' => 'N', 'emergency2Relationship' => 'N', 'vehicleRegistration' => 'N');
+    $settingDefaults = [
+        'title'                  => ['label' => __('Title'), 'default' => 'required'],
+        'surname'                => ['label' => __('Surname'), 'default' => 'required'],
+        'firstName'              => ['label' => __('First Name'), 'default' => ''],
+        'preferredName'          => ['label' =>  __('Preferred Name'), 'default' => 'required'],
+        'officialName'           => ['label' => __('Official Name'), 'default' => 'required'],
+        'nameInCharacters'       => ['label' => __('Name In Characters'), 'default' => ''],
+        'dob'                    => ['label' => __('Date of Birth'), 'default' => ''],
+        'email'                  => ['label' => __('Email'), 'default' => ''],
+        'emailAlternate'         => ['label' => __('Alternate Email'), 'default' => ''],
+        'address1'               => ['label' => __('Address 1'), 'default' => 'fixed'],
+        'address1District'       => ['label' => __('Address 1 District'), 'default' => 'fixed'],
+        'address1Country'        => ['label' => __('Address 1 Country'), 'default' => 'fixed'],
+        'address2'               => ['label' => __('Address 2'), 'default' => 'fixed'],
+        'address2District'       => ['label' => __('Address 2 District'), 'default' => 'fixed'],
+        'address2Country'        => ['label' => __('Address 2 Country'), 'default' => 'fixed'],
+        'phone1'                 => ['label' => __('Phone 1'), 'default' => ''],
+        'phone2'                 => ['label' => __('Phone 2'), 'default' => ''],
+        'phone3'                 => ['label' => __('Phone 3'), 'default' => ''],
+        'phone4'                 => ['label' => __('Phone 4'), 'default' => ''],
+        'languageFirst'          => ['label' => __('First Language'), 'default' => ''],
+        'languageSecond'         => ['label' => __('Second Language'), 'default' => ''],
+        'languageThird'          => ['label' => __('Third Language'), 'default' => ''],
+        'countryOfBirth'         => ['label' => __('Country of Birth'), 'default' => ''],
+        'ethnicity'              => ['label' => __('Ethnicity'), 'default' => ''],
+        'religion'               => ['label' => __('Religion'), 'default' => ''],
+        'citizenship1'           => ['label' => __('Citizenship 1'), 'default' => ''],
+        'citizenship1Passport'   => ['label' => __('Citizenship 1 Passport'), 'default' => ''],
+        'citizenship2'           => ['label' => __('Citizenship 2'), 'default' => ''],
+        'citizenship2Passport'   => ['label' => __('Citizenship 2 Passport'), 'default' => ''],
+        'nationalIDCardNumber'   => ['label' => __('National ID Card Number'), 'default' => ''],
+        'residencyStatus'        => ['label' => __('Residency Status'), 'default' => ''],
+        'visaExpiryDate'         => ['label' => __('Visa Expiry Date'), 'default' => ''],
+        'profession'             => ['label' => __('Profession'), 'default' => ''],
+        'employer'               => ['label' => __('Employer'), 'default' => ''],
+        'jobTitle'               => ['label' => __('Job Title'), 'default' => ''],
+        'emergency1Name'         => ['label' => __('Emergency 1 Name'), 'default' => ''],
+        'emergency1Number1'      => ['label' => __('Emergency 1 Number 1'), 'default' => ''],
+        'emergency1Number2'      => ['label' => __('Emergency 1 Number 2'), 'default' => ''],
+        'emergency1Relationship' => ['label' => __('Emergency 1 Relationship'), 'default' => ''],
+        'emergency2Name'         => ['label' => __('Emergency 2 Name'), 'default' => ''],
+        'emergency2Number1'      => ['label' => __('Emergency 2 Number 1'), 'default' => ''],
+        'emergency2Number2'      => ['label' => __('Emergency 2 Number 2'), 'default' => ''],
+        'emergency2Relationship' => ['label' => __('Emergency 2 Relationship'), 'default' => ''],
+        'vehicleRegistration'    => ['label' => __('Vehicle Registration'), 'default' => '']
+    ];
 
-    //Get setting and unserialize
+    // Get setting and unserialize
     $settings = unserialize(getSettingByScope($connection2, 'User Admin', 'personalDataUpdaterRequiredFields'));
-    $required = array();
 
-    foreach ($settingDefaults as $name => $defaultValue) {
-        $required[$name] = (isset($settings[$name]))? $settings[$name] : $defaultValue;
+    // Convert original Y/N settings
+    if (!isset($settings['Staff'])) {
+        foreach ($settingDefaults as $name => $field) {
+            $value = (isset($settings[$name]) && $settings[$name]=='Y')? 'required' : $field['default'];
+            $settings['Staff'][$name] = $value;
+            $settings['Student'][$name] = $value;
+        }
     }
+
+    $options = [
+        ''         => '',
+        'required' => __('Required'),
+        'readonly' => __('Read Only'),
+        'hidden'   => __('Hidden'),
+    ];
 
     $row = $form->addRow()->setClass('break heading');
-    	$row->addContent(__('Field')); $row->addContent(__('Required'));
+        $row->addContent(__('Field'));
+        $row->addContent(__('Staff'));
+        $row->addContent(__('Student'));
+        $row->addContent(__('Parent'));
+        $row->addContent(__('Other'));
     
-    $row = $form->addRow();
-    	$row->addLabel('title', __('Title'));
-    	$row->addCheckbox('title')->setValue('Y')->checked($required['title'])->setClass();
+    foreach ($settingDefaults as $id => $field) {
+        $row = $form->addRow();
+        $row->addLabel($id, $field['label']);
 
-    $row = $form->addRow();
-    	$row->addLabel('surname', __('Surname'));
-    	$row->addCheckbox('surname')->setValue('Y')->checked($required['surname'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('firstName', __('First Name'));
-    	$row->addCheckbox('firstName')->setValue('Y')->checked($required['firstName'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('preferredName', __('Preferred Names'));
-    	$row->addCheckbox('preferredName')->setValue('Y')->checked($required['preferredName'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('officialName', __('Official Name'));
-    	$row->addCheckbox('officialName')->setValue('Y')->checked($required['officialName'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('nameInCharacters', __('Name In Characters'));
-    	$row->addCheckbox('nameInCharacters')->setValue('Y')->checked($required['nameInCharacters'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('dob', __('Date of Birth'));
-    	$row->addCheckbox('dob')->setValue('Y')->checked($required['dob'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('email', __('Email'));
-    	$row->addCheckbox('email')->setValue('Y')->checked($required['email'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('emailAlternate', __('Alternate Email'));
-    	$row->addCheckbox('emailAlternate')->setValue('Y')->checked($required['emailAlternate'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('', __('Address 1'));
-    	$row->addContent('<i>'.__('This field cannot be required').'</i>.');
-
-    $row = $form->addRow();
-    	$row->addLabel('', __('Address 1 District'));
-    	$row->addContent('<i>'.__('This field cannot be required').'</i>.');
-
-    $row = $form->addRow();
-    	$row->addLabel('', __('Address 1 Country'));
-    	$row->addContent('<i>'.__('This field cannot be required').'</i>.');
-
-    $row = $form->addRow();
-    	$row->addLabel('', __('Address 2'));
-    	$row->addContent('<i>'.__('This field cannot be required').'</i>.');
-
-    $row = $form->addRow();
-    	$row->addLabel('', __('Address 2 District'));
-    	$row->addContent('<i>'.__('This field cannot be required').'</i>.');
-
-    $row = $form->addRow();
-    	$row->addLabel('', __('Address 2 Country'));
-    	$row->addContent('<i>'.__('This field cannot be required').'</i>.');
-
-    for ($i = 1; $i < 5; ++$i) {
-    	$row = $form->addRow();
-    	$row->addLabel('phone'.$i, sprintf(__('Phone %1$s'), $i));
-    	$row->addCheckbox('phone'.$i)->setValue('Y')->checked($required['phone'.$i])->setClass();
+        if ($field['default'] == 'fixed') {
+            $row->addContent('<i>'.__('This field cannot be required').'</i>.');
+        } else {
+            $row->addSelect("settings[Staff][{$id}]")->fromArray($options)->selected($settings['Staff'][$id] ??  $field['default'])->setClass('w-24 float-none')->setTitle(__('Staff'));
+            $row->addSelect("settings[Student][{$id}]")->fromArray($options)->selected($settings['Student'][$id] ??  $field['default'])->setClass('w-24 float-none')->setTitle(__('Student'));
+            $row->addSelect("settings[Parent][{$id}]")->fromArray($options)->selected($settings['Parent'][$id] ??  $field['default'])->setClass('w-24 float-none')->setTitle(__('Parent'));
+            $row->addSelect("settings[Other][{$id}]")->fromArray($options)->selected($settings['Other'][$id] ??  $field['default'])->setClass('w-24 float-none')->setTitle(__('Other'));
+        }
     }
 
     $row = $form->addRow();
-    	$row->addLabel('languageFirst', __('First Language'));
-    	$row->addCheckbox('languageFirst')->setValue('Y')->checked($required['languageFirst'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('languageSecond', __('Second Language'));
-    	$row->addCheckbox('languageSecond')->setValue('Y')->checked($required['languageSecond'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('languageThird', __('Third Language'));
-    	$row->addCheckbox('languageThird')->setValue('Y')->checked($required['languageThird'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('countryOfBirth', __('Country of Birth'));
-    	$row->addCheckbox('countryOfBirth')->setValue('Y')->checked($required['countryOfBirth'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('ethnicity', __('Ethnicity'));
-    	$row->addCheckbox('ethnicity')->setValue('Y')->checked($required['ethnicity'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('citizenship1', __('Citizenship 1'));
-    	$row->addCheckbox('citizenship1')->setValue('Y')->checked($required['citizenship1'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('citizenship1Passport', __('Citizenship 1 Passport'));
-    	$row->addCheckbox('citizenship1Passport')->setValue('Y')->checked($required['citizenship1Passport'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('citizenship2', __('Citizenship 2'));
-    	$row->addCheckbox('citizenship2')->setValue('Y')->checked($required['citizenship2'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('citizenship2Passport', __('Citizenship 2 Passport'));
-    	$row->addCheckbox('citizenship2Passport')->setValue('Y')->checked($required['citizenship2Passport'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('religion', __('Religion'));
-    	$row->addCheckbox('religion')->setValue('Y')->checked($required['religion'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('nationalIDCardNumber', __('National ID Card Number'));
-    	$row->addCheckbox('nationalIDCardNumber')->setValue('Y')->checked($required['nationalIDCardNumber'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('residencyStatus', __('Residency Status'));
-    	$row->addCheckbox('residencyStatus')->setValue('Y')->checked($required['residencyStatus'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('visaExpiryDate', __('Visa Expiry Date'));
-    	$row->addCheckbox('visaExpiryDate')->setValue('Y')->checked($required['visaExpiryDate'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('profession', __('Profession'));
-    	$row->addCheckbox('profession')->setValue('Y')->checked($required['profession'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('employer', __('Employer'));
-    	$row->addCheckbox('employer')->setValue('Y')->checked($required['employer'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('jobTitle', __('Job Title'));
-    	$row->addCheckbox('jobTitle')->setValue('Y')->checked($required['jobTitle'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('emergency1Name', __('Emergency 1 Name'));
-    	$row->addCheckbox('emergency1Name')->setValue('Y')->checked($required['emergency1Name'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('emergency1Number1', __('Emergency 1 Number 1'));
-    	$row->addCheckbox('emergency1Number1')->setValue('Y')->checked($required['emergency1Number1'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('emergency1Number2', __('Emergency 1 Number 2'));
-    	$row->addCheckbox('emergency1Number2')->setValue('Y')->checked($required['emergency1Number2'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('emergency1Relationship', __('Emergency 1 Relationship'));
-    	$row->addCheckbox('emergency1Relationship')->setValue('Y')->checked($required['emergency1Relationship'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('emergency2Name', __('Emergency 2 Name'));
-    	$row->addCheckbox('emergency2Name')->setValue('Y')->checked($required['emergency2Name'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('emergency2Number1', __('Emergency 2 Number 1'));
-    	$row->addCheckbox('emergency2Number1')->setValue('Y')->checked($required['emergency2Number1'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('emergency2Number2', __('Emergency 2 Number 2'));
-    	$row->addCheckbox('emergency2Number2')->setValue('Y')->checked($required['emergency2Number2'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('emergency2Relationship', __('Emergency 2 Relationship'));
-    	$row->addCheckbox('emergency2Relationship')->setValue('Y')->checked($required['emergency2Relationship'])->setClass();
-
-    $row = $form->addRow();
-    	$row->addLabel('vehicleRegistration', __('Vehicle Registration'));
-    	$row->addCheckbox('vehicleRegistration')->setValue('Y')->checked($required['vehicleRegistration'])->setClass();
-
-    $row = $form->addRow();
-        $row->addFooter();
         $row->addSubmit();
     
     echo $form->getOutput();
