@@ -118,6 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                 $table->addColumn('period', __('Period'))
                     ->format(function ($log) {
+                        if (empty($log['period'])) return Format::small(__('N/A'));
                         return $log['period'].'<br/>'.Format::small(Format::timeRange($log['timeStart'], $log['timeEnd']));
                     });
 
