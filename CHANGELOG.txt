@@ -30,6 +30,7 @@ v18.0.00
     Significant Changes
         System: added a webpack-based build process for javascript and css files
         Attendance: added ability to set future absence for multiple students
+        Attendance: replaced the attendance pre-fill settings with Count Class Attendance as School Attendance
         Rubrics: added ability to export Visualise chart to PNG
 
     Security
@@ -42,6 +43,7 @@ v18.0.00
         System: added Omani Rial as a currency option
         System: added an option to select SMTP encryption in Third Party Settings
         Data Updater: differentiate required field settings by role, add hidden & read-only options
+        Attendance: updated Take Attendance by Person logs to separate class and school wide attendance
         Form Groups: hide student count from non-staff
         Students: added link from student profile to Individual Needs edit screen
         School Admin: add a Manage Staff Settings page
