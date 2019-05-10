@@ -69,7 +69,7 @@ class ActionColumn extends Column
      * @param string $value
      * @return self
      */
-    public function addParam($name, $value = '')
+    public function addParam($name, $value = null)
     {
         $this->params[$name] = $value;
 
