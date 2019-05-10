@@ -222,8 +222,14 @@ class Action extends WebLink
 
         $queryParams = !$this->direct ? array('q' => $this->url) : array();
 
-        foreach (array_merge($params, $this->params) as $key => $value) {
-            $queryParams[$key] = (empty($value) && !empty($data[$key]))? $data[$key] : $value;
+        // Allow ActionColumn level params to auto-fill from the row data, if they're not set
+        foreach ($params as $key => $value) {
+            $queryParams[$key] = (is_null($value) && !empty($data[$key]))? $data[$key] : $value;
+        }
+
+        // Load excplicit params from the Action itself
+        foreach ($this->params as $key => $value) {
+            $queryParams[$key] = $value;
         }
 
         if ($this->external) {
