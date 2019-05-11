@@ -323,7 +323,7 @@ class Form implements OutputableInterface
      * @param array $data
      * @return void
      */
-    public function loadStateFrom($method, &$data)
+    public function loadStateFrom($method, $data)
     {
         foreach ($this->getRows() as $row) {
             $row->loadState($method, $data);

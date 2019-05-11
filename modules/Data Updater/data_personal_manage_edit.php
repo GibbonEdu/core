@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 include './modules/User Admin/moduleFunctions.php';
@@ -186,8 +187,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 $isNonUnique = false;
 
                 if ($fieldName == 'dob' || $fieldName == 'visaExpiryDate') {
-                    $oldValue = dateConvertBack($guid, $oldValue);
-                    $newValue = dateConvertBack($guid, $newValue);
+                    $oldValue = Format::date($oldValue);
+                    $newValue = Format::date($newValue);
                 }
 
                 if ($fieldName == 'email') {

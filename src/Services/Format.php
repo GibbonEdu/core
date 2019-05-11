@@ -80,6 +80,7 @@ class Format
      */
     public static function date($dateString, $format = false)
     {
+        if (empty($dateString)) return '';
         $date = static::createDateTime($dateString);
         return $date ? $date->format($format ? $format : static::$settings['dateFormatPHP']) : $dateString;
     }
@@ -92,6 +93,7 @@ class Format
      */
     public static function dateConvert($dateString)
     {
+        if (empty($dateString)) return '';
         $date = static::createDateTime($dateString, static::$settings['dateFormatPHP']);
         return $date ? $date->format('Y-m-d') : $dateString;
     }
