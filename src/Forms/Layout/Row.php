@@ -165,7 +165,7 @@ class Row
      * @param array $data
      * @return self
      */
-    public function loadState($method, &$data, $extract = true)
+    public function loadState($method, $data, $extract = true)
     {
         foreach ($this->getElements() as $element) {
             $name = $this->getUniqueIdentifier($element);
