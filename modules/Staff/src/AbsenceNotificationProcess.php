@@ -49,7 +49,7 @@ class AbsenceNotificationProcess extends BackgroundProcess
         $this->messageSender = $messageSender;
 
         $this->urgentNotifications = $settingGateway->getSettingByScope('Staff', 'urgentNotifications');
-        $this->urgencyThreshold = $settingGateway->getSettingByScope('Staff', 'urgencyThreshold') * 86400;
+        $this->urgencyThreshold = intval($settingGateway->getSettingByScope('Staff', 'urgencyThreshold')) * 86400;
     }
     
     /**
