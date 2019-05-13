@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_approval_ac
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Proceed!
+    // Proceed!
     $gibbonStaffAbsenceID = $_GET['gibbonStaffAbsenceID'] ?? '';
     $status = $_GET['status'] ?? '';
 

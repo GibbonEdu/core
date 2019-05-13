@@ -20,15 +20,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
-use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
-use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
 use Gibbon\Module\Staff\Tables\AbsenceFormats;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_approval.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Proceed!
+    // Proceed!
     $page->breadcrumbs->add(__('Approve Staff Absences'));
 
     if (isset($_GET['return'])) {
@@ -42,13 +40,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_approval.ph
     $dateEnd = $_GET['dateEnd'] ?? '';
 
     $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
-    $staffAbsenceTypeGateway = $container->get(StaffAbsenceTypeGateway::class);
-    $staffAbsenceDateGateway = $container->get(StaffAbsenceDateGateway::class);
 
     // QUERY
     $criteria = $staffAbsenceGateway->newQueryCriteria()
         ->searchBy($staffAbsenceGateway->getSearchableColumns(), $search)
-        ->sortBy('status', 'ASC');
+        ->sortBy('status', 'ASC')
+        ->fromPOST();
 
     $absences = $staffAbsenceGateway->queryAbsencesByApprover($criteria, $_SESSION[$guid]['gibbonPersonID']);
 
@@ -63,9 +60,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_approval.ph
     });
     
     $table->addMetaData('filterOptions', [
-        'date:upcoming'    => __('Upcoming'),
-        'date:today'       => __('Today'),
-        'date:past'        => __('Past'),
+        'date:upcoming'           => __('Upcoming'),
+        'date:today'              => __('Today'),
+        'date:past'               => __('Past'),
         'status:pending approval' => __('Status').': '.__('Pending Approval'),
         'status:approved'         => __('Status').': '.__('Approved'),
         'status:declined'         => __('Status').': '.__('Declined'),
@@ -95,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_approval.ph
     // ACTIONS
     $table->addActionColumn()
         ->addParam('gibbonStaffAbsenceID')
-        ->format(function ($absence, $actions) use ($guid) {
+        ->format(function ($absence, $actions) {
             $actions->addAction('view', __('View Details'))
                 ->isModal(800, 550)
                 ->setURL('/modules/Staff/absences_view_details.php');
