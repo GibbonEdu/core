@@ -195,7 +195,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     // Phone number filtering
                     for ($i = 1; $i <= 4; $i++) {
                         $data["phone{$i}"] = preg_replace('/[^0-9+]/', '', $data["phone{$i}"]);
-                        if (!empty($data["phone{$i}"]) && empty($data["phone{$i}type"])) {
+                        if (!empty($data["phone{$i}"]) && empty($data["phone{$i}Type"])) {
                             $data["phone{$i}Type"] = 'Other';
                         }
                     }
