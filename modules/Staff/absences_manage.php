@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
@@ -30,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage.php'
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Proceed!
+    // Proceed!
     $page->breadcrumbs->add(__('Manage Staff Absences'));
 
     if (isset($_GET['return'])) {
@@ -115,17 +114,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage.php'
             ->setIcon('planner')
             ->setURL('/modules/Staff/report_absences_summary.php')
             ->displayLabel()
-            ->append('&nbsp;|&nbsp;');
-    }
-
-    $calendarID = $container->get(SettingGateway::class)->getSettingByScope('Staff', 'absenceGoogleCalendarID');
-    if (!empty($calendarID)) {
-        $table->addHeaderAction('sync', __('Sync with Google'))
-            ->setIcon('refresh')
-            ->setURL('/modules/Staff/absences_manage_syncProcess.php')
-            ->addConfirmation(__('Are you sure you wish to process this action? It cannot be undone.'))
-            ->displayLabel()
-            ->directLink()
             ->append('&nbsp;|&nbsp;');
     }
 

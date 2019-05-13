@@ -20,11 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
 
 $_POST['address'] = '/modules/Staff/absences_manage_edit.php';
-
-require_once '../../gibbon.php';
-
 $gibbonStaffAbsenceID = $_GET['gibbonStaffAbsenceID'] ?? '';
 $gibbonStaffAbsenceDateID = $_GET['gibbonStaffAbsenceDateID'] ?? '';
+
+require_once '../../gibbon.php';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/absences_manage_edit.php&gibbonStaffAbsenceID='.$gibbonStaffAbsenceID;
 
@@ -53,5 +52,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_edit
         : '&return=success0';
 
     header("Location: {$URL}");
-    exit;
 }

@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_edit
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Proceed!
+    // Proceed!
     $page->breadcrumbs
         ->add(__('Manage Staff Absences'), 'absences_manage.php')
         ->add(__('Edit Absence'));
@@ -57,24 +57,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_edit
         return;
     }
 
-    $form = Form::create('staffAbsenceEdit', $_SESSION[$guid]['absoluteURL'].'/modules/Staff/absences_manage_editProcess.php');
-
-    $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-    $form->addHiddenValue('gibbonStaffAbsenceID', $gibbonStaffAbsenceID);
-
-    $form->addRow()->addHeading(__('Basic Information'));
-
-    $row = $form->addRow();
-        $row->addLabel('gibbonPersonID', __('Person'));
-        $row->addSelectStaff('gibbonPersonID')->placeholder()->isRequired()->readonly();
-
+    // Get absence types & format them for the chained select lists
     $type = $staffAbsenceTypeGateway->getByID($values['gibbonStaffAbsenceTypeID']);
     $types = $staffAbsenceTypeGateway->selectAllTypes()->fetchAll();
 
-    $typesWithReasons = [];
-    $reasonsOptions = [];
-    $reasonsChained = [];
+    $typesWithReasons = $reasonsOptions = $reasonsChained = [];
 
     $types = array_reduce($types, function ($group, $item) use (&$reasonsOptions, &$reasonsChained, &$typesWithReasons) {
         $id = $item['gibbonStaffAbsenceTypeID'];
@@ -89,6 +76,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_edit
         }
         return $group;
     }, []);
+
+    // FORM
+    $form = Form::create('staffAbsenceEdit', $_SESSION[$guid]['absoluteURL'].'/modules/Staff/absences_manage_editProcess.php');
+
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('gibbonStaffAbsenceID', $gibbonStaffAbsenceID);
+
+    $form->addRow()->addHeading(__('Basic Information'));
+
+    $row = $form->addRow();
+        $row->addLabel('gibbonPersonID', __('Person'));
+        $row->addSelectStaff('gibbonPersonID')->placeholder()->isRequired()->readonly();
 
     if ($type['requiresApproval'] == 'Y') {
         $approver = '';
@@ -140,6 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_edit
 
     // Absence Dates
     $table = $container->get(AbsenceDates::class)->create($gibbonStaffAbsenceID, true);
+    $table->setTitle(__('Dates'));
     echo $table->getOutput();
 
     $form = Form::create('staffAbsenceAdd', $_SESSION[$guid]['absoluteURL'].'/modules/Staff/absences_manage_edit_addProcess.php');
@@ -162,13 +163,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_edit
 
     $row = $form->addRow()->addClass('timeOptions');
         $row->addLabel('time', __('Time'));
-        $col = $row->addColumn('time')->addClass('right');
+        $col = $row->addColumn('time');
         $col->addTime('timeStart')
-            ->addClass('timeOptions')
+            ->addClass('w-full mr-1')
             ->isRequired();
         $col->addTime('timeEnd')
             ->chainedTo('timeStart', false)
-            ->addClass('timeOptions')
+            ->addClass('w-full')
             ->isRequired();
 
     $row = $form->addRow();

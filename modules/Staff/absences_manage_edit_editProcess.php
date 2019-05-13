@@ -59,5 +59,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_edit
         : '&return=success0';
 
     header("Location: {$URL}");
-    exit;
 }

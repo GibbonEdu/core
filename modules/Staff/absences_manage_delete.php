@@ -24,7 +24,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_dele
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Proceed!
+    // Proceed!
     $gibbonStaffAbsenceID = $_GET['gibbonStaffAbsenceID'] ?? '';
     $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
     

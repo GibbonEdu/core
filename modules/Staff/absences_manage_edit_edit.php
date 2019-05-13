@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_edit
     $gibbonStaffAbsenceID = $_GET['gibbonStaffAbsenceID'] ?? '';
     $gibbonStaffAbsenceDateID = $_GET['gibbonStaffAbsenceDateID'] ?? '';
 
-    //Proceed!
+    // Proceed!
     $page->breadcrumbs
         ->add(__('Manage Staff Absences'), 'absences_manage.php')
         ->add(__('Edit Absence'), 'absences_manage_edit.php', ['gibbonStaffAbsenceID' => $gibbonStaffAbsenceID])
@@ -77,13 +77,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_edit
 
     $row = $form->addRow()->addClass('timeOptions');
         $row->addLabel('time', __('Time'));
-        $col = $row->addColumn('time')->addClass('right inline');
+        $col = $row->addColumn('time');
         $col->addTime('timeStart')
-            ->setClass('shortWidth')
+            ->setClass('w-full mr-1')
             ->isRequired();
         $col->addTime('timeEnd')
+            ->setClass('w-full')
             ->chainedTo('timeStart', false)
-            ->setClass('shortWidth')
             ->isRequired();
 
     $row = $form->addRow();

@@ -21,11 +21,10 @@ use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
 
 $_POST['address'] = '/modules/Staff/absences_manage.php';
-
-require_once '../../gibbon.php';
-
 $gibbonStaffAbsenceID = $_GET['gibbonStaffAbsenceID'] ?? '';
 $search = $_POST['search'] ?? '';
+
+require_once '../../gibbon.php';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/absences_manage.php&search='.$search;
 
@@ -64,5 +63,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_dele
         : '&return=success0';
 
     header("Location: {$URL}");
-    exit;
 }
