@@ -41,8 +41,8 @@ class NewAbsence extends Message
     public function via() : array
     {
         return $this->absence['urgent']
-            ? ['mail']
-            : ['mail'];
+            ? ['database', 'mail']
+            : ['database', 'mail'];
     }
 
     public function getTitle() : string
