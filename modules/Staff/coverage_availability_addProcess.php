@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availabilit
     $substituteGateway = $container->get(SubstituteGateway::class);
     $staffCoverageDateGateway = $container->get(StaffCoverageDateGateway::class);
     
-    $substitute = $substituteGateway->selectBy('gibbonPersonID', $gibbonPersonID)->fetch();
+    $substitute = $substituteGateway->selectBy(['gibbonPersonID' => $gibbonPersonID])->fetch();
 
     if (empty($substitute)) {
         $URL .= '&return=error2';
