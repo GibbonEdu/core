@@ -323,7 +323,7 @@ $page->stylesheets->addMultiple([
     'jquery-ui'    => 'lib/jquery-ui/css/blitzer/jquery-ui.css',
     'jquery-time'  => 'lib/jquery-timepicker/jquery.timepicker.css',
     'thickbox'     => 'lib/thickbox/thickbox.css',
-]);
+], ['weight' => -1]);
 
 // Add right-to-left stylesheet
 if ($session->get('i18n')['rtl'] == 'Y') {
