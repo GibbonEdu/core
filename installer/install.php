@@ -28,8 +28,6 @@ include '../gibbon.php';
 //Module includes
 require_once '../modules/System Admin/moduleFunctions.php';
 
-$gibbon->session->set('absolutePath', realpath('../'));
-
 // Sanitize the whole $_POST array
 $validator = new Validator();
 $_POST = $validator->sanitize($_POST);
@@ -54,13 +52,22 @@ if (empty($step)) {
     $guid = isset($_POST['guid'])? $_POST['guid'] : '';
     $guid = preg_replace('/[^a-z0-9-]/', '', substr($guid, 0, 36));
 }
-
+//Use the POSTed GUID in place of "undefined". 
+//Later steps have the guid in the config file but without 
+//a way to store variables relibly prior to that, installation can fail
+$gibbon->session->setGuid($guid); 
+$gibbon->session->set('absolutePath', realpath('../'));
 // Generate and save a nonce for forms on this page to use
 $nonce = hash('sha256', substr(mt_rand().date('zWy'), 0, 36));
-$_SESSION[$guid]['nonce'][$step+1] = $nonce;
+$sessionNonce = $gibbon->session->get('nonce',array());
+$sessionNonce[$step+1] = $nonce;
+$gibbon->session->set('nonce',$sessionNonce);
 
 // Deal with non-existent stringReplacement session
-$_SESSION[$guid]['stringReplacement'] = array();
+$gibbon->session->set('stringReplacement',array());
+echo json_encode($sessionNonce);
+echo "<br/><br/>";
+echo $gibbon->session->guid();
 
 ?>
 
@@ -136,8 +143,8 @@ $_SESSION[$guid]['stringReplacement'] = array();
                             // Check session for the presence of a valid nonce; if found, remove it so it's used only once
                             if ($step >= 1) {
                                 $checkNonce = isset($_POST['nonce'])? $_POST['nonce'] : '';
-                                if (!empty($_SESSION[$guid]['nonce'][$step]) && $_SESSION[$guid]['nonce'][$step] == $checkNonce) {
-                                    unset($_SESSION[$guid]['nonce'][$step]);
+                                if (!empty($sessionNonce[$step]) && $sessionNonce[$step] == $checkNonce) {
+                                    unset($sessionNonce[$step]);
                                 } else {
                                     $isNonceValid = false;
                                 }
