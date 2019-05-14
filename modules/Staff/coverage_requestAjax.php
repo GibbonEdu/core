@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     $staffAbsenceDateGateway = $container->get(StaffAbsenceDateGateway::class);
 
     // DATA TABLE
-    $substitute = $substituteGateway->selectBy('gibbonPersonID', $gibbonPersonIDCoverage)->fetch();
+    $substitute = $substituteGateway->selectBy(['gibbonPersonID' => $gibbonPersonIDCoverage])->fetch();
     $person = $container->get(UserGateway::class)->getByID($gibbonPersonIDCoverage);
     $absenceDates = $staffAbsenceDateGateway->selectDatesByAbsence($gibbonStaffAbsenceID)->toDataSet();
     $unavailable = $substituteGateway->selectUnavailableDatesBySub($gibbonPersonIDCoverage)->fetchGrouped();
