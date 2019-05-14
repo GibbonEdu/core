@@ -78,10 +78,10 @@ $_SESSION[$guid]['stringReplacement'] = array();
         <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico"/>
         <script type="text/javascript" src="../lib/LiveValidation/livevalidation_standalone.compressed.js"></script>
         <link rel='stylesheet' type='text/css' href='../themes/Default/css/main.css' />
-        <script type='text/javascript' src='../themes/Default/js/common.js'></script>
-        <script type='text/javascript' src='../resources/assets/js/core.js'></script>
         <script type="text/javascript" src="../lib/jquery/jquery.js"></script>
         <script type="text/javascript" src="../lib/jquery/jquery-migrate.min.js"></script>
+        <script type='text/javascript' src='../themes/Default/js/common.js'></script>
+        <script type='text/javascript' src='../resources/assets/js/core.js'></script>
     </head>
     <body style="background: url('../themes/Default/img/backgroundPage.jpg') repeat fixed center top #A88EDB!important;">
         <div id="wrapOuter">
@@ -335,7 +335,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                     $config .= "//Sets globally unique id, to allow multiple installs on the server server.\n";
                                     $config .= '$guid="'.$guid."\" ;\n";
                                     $config .= "\n";
-                                    $config .= "//Sets system-wide caching factor, used to baalance performance and freshness. Value represents number of page loads between cache refresh. Must be posititve integer. 1 means no caching.\n";
+                                    $config .= "//Sets system-wide caching factor, used to balance performance and freshness. Value represents number of page loads between cache refresh. Must be posititve integer. 1 means no caching.\n";
                                     $config .= "\$caching=10 ;\n";
                                     $config .= "?>\n";
 
