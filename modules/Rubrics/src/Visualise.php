@@ -125,7 +125,7 @@ class Visualise
 
             $this->page->scripts->add('chart');
 
-            $chart = Chart::create('visualisation', 'polarArea')
+            $chart = Chart::create('visualisation'.$this->gibbonPersonID, 'polarArea')
                 ->setLegend(['display' => $legend, 'position' => 'right'])
                 ->setLabels(array_column($means, 'title'))
                 ->setColorOpacity(0.6);
@@ -147,8 +147,8 @@ class Visualise
                 $options['animation'] = [
                     'duration' => 0,
                     'onComplete' => $chart->addFunction('function(e) {
-                        var img = visualisation.toDataURL("image/png");
-                        $.ajax({ url: "'.$this->absoluteURL.'/modules/Rubrics/src/visualise_saveAjax.php", type: "POST", data: {img: img, gibbonPersonID: '.$this->gibbonPersonID.$path.'}, dataType: "html"})
+                        var img = visualisation'.$this->gibbonPersonID.'.toDataURL("image/png");
+                        $.ajax({ url: "'.$this->absoluteURL.'/modules/Rubrics/src/visualise_saveAjax.php", type: "POST", data: {img: img, gibbonPersonID: \''.$this->gibbonPersonID.$path.'\'}, dataType: "html"})
                         $.ajax({ url: "./"});
                     }'),
                 ];
