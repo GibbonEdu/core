@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
     $substituteGateway = $container->get(SubstituteGateway::class);
 
     // DATA TABLE
-    $substitute = $substituteGateway->selectBy('gibbonPersonID', $gibbonPersonIDCoverage)->fetch();
+    $substitute = $substituteGateway->selectBy(['gibbonPersonID'=> $gibbonPersonIDCoverage])->fetch();
     $person = $container->get(UserGateway::class)->getByID($gibbonPersonIDCoverage);
     $unavailable = $substituteGateway->selectUnavailableDatesBySub($gibbonPersonIDCoverage)->fetchGrouped();
 

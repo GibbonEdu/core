@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
     }
 
     // Validate the database relationships exist
-    $substitute = $container->get(SubstituteGateway::class)->selectBy('gibbonPersonID', $data['gibbonPersonIDCoverage'])->fetch();
+    $substitute = $container->get(SubstituteGateway::class)->selectBy(['gibbonPersonID'=> $data['gibbonPersonIDCoverage']])->fetch();
 
     if (empty($substitute)) {
         $URL .= '&return=error2';
