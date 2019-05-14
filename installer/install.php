@@ -65,9 +65,6 @@ $gibbon->session->set('nonce',$sessionNonce);
 
 // Deal with non-existent stringReplacement session
 $gibbon->session->set('stringReplacement',array());
-echo json_encode($sessionNonce);
-echo "<br/><br/>";
-echo $gibbon->session->guid();
 
 ?>
 
