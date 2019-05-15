@@ -30,7 +30,7 @@ $gibbonStaffAbsenceID = $_POST['gibbonStaffAbsenceID'] ?? '';
 $gibbonPersonIDCoverage = $_POST['gibbonPersonIDCoverage'] ?? '';
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php') == false) {
-    die(Format::alert(__('Your request failed because you do not have access to this action.')));
+    die(Format::alert(__('You do not have access to this action.')));
 } elseif (empty($gibbonStaffAbsenceID) || empty($gibbonPersonIDCoverage)|| $gibbonPersonIDCoverage == 'Please select...') {
     die();
 } else {
@@ -52,10 +52,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
         die();
     }
 
-    $absenceDates->transform(function (&$absence) use (&$unavailable) {
+    $absenceDates->transform(function (&$absence) use (&$unavailable, $gibbonPersonIDCoverage) {
         // Has this date already been requested?
         if (!empty($absence['gibbonStaffCoverageID'])) {
-            $absence['unavailable'] = __('Requested');
+            $absence['unavailable'] = !empty($absence['preferredNameCoverage'])
+                ? Format::name($absence['titleCoverage'], $absence['preferredNameCoverage'], $absence['surnameCoverage'], 'Staff', false, true)
+                : __('Requested');
+            return;
         }
 
         // Allow coverage request form to override absence times
@@ -88,7 +91,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     $table->setDescription('<strong>'.$fullName.'</strong><br/><br/>'.$substitute['details']);
     $table->getRenderer()->addData('class', 'bulkActionForm');
 
-    $table->modifyRows(function ($values, $row) {
+    $table->modifyRows(function ($absence, $row) {
+        if (!empty($absence['gibbonStaffCoverageID'])) return; // Hide requested dates?
         return $row->addClass('h-10');
     });
 

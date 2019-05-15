@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Proceed!
+    // Proceed!
     $page->breadcrumbs->add(__('New Coverage Request'));
 
     if (isset($_GET['return'])) {
@@ -70,6 +70,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
         ->sortBy(['surname', 'preferredName']);
 
     $availableSubs = array_reduce($absenceDates, function ($group, $date) use ($substituteGateway, &$criteria) {
+        if (!empty($date['gibbonStaffCoverageID'])) return $group;
+
         $availableByDate = $substituteGateway->queryAvailableSubsByDate($criteria, $date['date'], $date['timeStart'], $date['timeEnd'])->toArray();
         return array_merge($group, $availableByDate);
     }, []);
@@ -183,14 +185,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
 
     $row = $form->addRow()->addClass('timeOptions');
         $row->addLabel('timeStart', __('Time'));
-        $col = $row->addColumn('timeStart')->addClass('right inline');
+        $col = $row->addColumn('timeStart');
         $col->addTime('timeStart')
-            ->setClass('shortWidth')
+            ->setClass('w-full mr-1')
             ->isRequired()
             ->setValue($dateStart['timeStart'] ?? $weekday['schoolStart']);
         $col->addTime('timeEnd')
             ->chainedTo('timeStart')
-            ->setClass('shortWidth')
+            ->setClass('w-full')
             ->isRequired()
             ->setValue($dateStart['timeEnd'] ?? $weekday['schoolEnd']);
 
@@ -202,9 +204,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
         $row->addLabel('notesStatus', __('Comment'))->description(__('This message is shared with substitutes, and is also visible to users who manage staff coverage.'));
         $row->addTextArea('notesStatus')->setRows(3);
 
-    $row = $form->addRow();
+    $row = $form->addRow()->addClass('coverageSubmit');
         $row->addFooter();
-        $row->addSubmit();
+        $row->addSubmit()->prepend('<div class="coverageNoSubmit text-right text-xs text-gray-600 italic pr-1">'.__('Select at least one date before continuing.').'</div>');
 
     echo $form->getOutput();
 }
@@ -214,6 +216,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
 $(document).ready(function() {
     $('#gibbonPersonIDCoverage, #allDay, #timeStart, #timeEnd').on('change', function() {
         if ($('#gibbonPersonIDCoverage').val() == '') return;
+        if ($('#requestType').val() == 'Broadcast') return;
 
         $('.datesTable').load('./modules/Staff/coverage_requestAjax.php', {
             'gibbonStaffAbsenceID': '<?php echo $gibbonStaffAbsenceID ?? ''; ?>',
@@ -226,8 +229,25 @@ $(document).ready(function() {
             $('.bulkActionForm').find('.bulkCheckbox :checkbox').each(function () {
                 $(this).closest('tr').toggleClass('selected', $(this).prop('checked'));
             });
+
+            $('#requestType').trigger('change');
         });
     });
+
+    // Individual requests: Prevent clicking submit until at least one date has been selected
+    $(document).on('change', '#requestType, input[name="requestDates[]"]', function() {
+        var checked = $('input[name="requestDates[]"]:checked');
+
+        if ($('#requestType').val() == 'Individual' && checked.length <= 0) {
+            $('.coverageNoSubmit').show();
+            $('.coverageSubmit :input').prop('disabled', true);
+        } else {
+            $('.coverageNoSubmit').hide();
+            $('.coverageSubmit :input').prop('disabled', false);
+        }
+    });
+
+    $('#requestType').trigger('change');
 
 }) ;
 </script>
