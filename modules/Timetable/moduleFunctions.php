@@ -171,6 +171,8 @@ function getSpaceBookingEventsSpace($guid, $connection2, $startDayStamp, $gibbon
 //Returns events from a Google Calendar XML field, between the time and date specified
 function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDayStamp)
 {
+    global $container;
+
     $googleOAuth = getSettingByScope($connection2, 'System', 'googleOAuth');
 
     if ($googleOAuth == 'Y' and isset($_SESSION[$guid]['googleAPIAccessToken'])) {
@@ -178,40 +180,11 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
         $start = date("Y-m-d\TH:i:s", strtotime(date('Y-m-d', $startDayStamp)));
         $end = date("Y-m-d\TH:i:s", (strtotime(date('Y-m-d', $endDayStamp)) + 86399));
 
-        $client = new Google_Client();
-        $client->setAccessToken($_SESSION[$guid]['googleAPIAccessToken']);
-
-        if ($client->isAccessTokenExpired()) { //Need to refresh the token
-            //Get API details
-            $googleClientName = getSettingByScope($connection2, 'System', 'googleClientName');
-            $googleClientID = getSettingByScope($connection2, 'System', 'googleClientID');
-            $googleClientSecret = getSettingByScope($connection2, 'System', 'googleClientSecret');
-            $googleRedirectUri = getSettingByScope($connection2, 'System', 'googleRedirectUri');
-            $googleDeveloperKey = getSettingByScope($connection2, 'System', 'googleDeveloperKey');
-
-            //Re-establish $client
-            $client->setApplicationName($googleClientName); // Set your application name
-            $client->setScopes(array('https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/plus.me', 'https://www.googleapis.com/auth/calendar')); // set scope during user login
-            $client->setClientId($googleClientID); // paste the client id which you get from google API Console
-            $client->setClientSecret($googleClientSecret); // set the client secret
-            $client->setRedirectUri($googleRedirectUri); // paste the redirect URI where you given in APi Console. You will get the Access Token here during login success
-            $client->setDeveloperKey($googleDeveloperKey); // Developer key
-            $client->setAccessType('offline');
-            if ($_SESSION[$guid]['googleAPIRefreshToken'] == '') {
-                echo "<div class='error'>";
-                echo __('Your request failed due to a database error.');
-                echo '</div>';
-            }
-            else {
-                $client->refreshToken($_SESSION[$guid]['googleAPIRefreshToken']);
-                $_SESSION[$guid]['googleAPIAccessToken'] = $client->getAccessToken();
-            }
-        }
-
-        $getFail = false;
+        $service = $container->get('Google_Service_Calendar');
+        $getFail = empty($service);
+        
         $calendarListEntry = array();
         try {
-            $service = new Google_Service_Calendar($client);
             $optParams = array('timeMin' => $start.'+00:00', 'timeMax' => $end.'+00:00', 'singleEvents' => true);
             $calendarListEntry = $service->events->listEvents($xml, $optParams);
         } catch (Exception $e) {
@@ -735,7 +708,8 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
             $count = 0;
 
-            $output .= "<table cellspacing='0' class='mini' cellspacing='0' style='width: ";
+            $output .= '<div class="overflow-x-scroll sm:overflow-x-auto overflow-y-hidden mb-6">';
+            $output .= "<table cellspacing='0' class='mini mb-1' cellspacing='0' style='width: ";
             if ($narrow == 'trim') {
                 $output .= '700px';
             } elseif ($narrow == 'narrow') {
@@ -743,7 +717,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             } else {
                 $output .= '750px';
             }
-            $output .= "; margin: 0px 0px 30px 0px;'>";
+            $output .= ";'>";
                 //Spit out controls for displaying calendars
                 if ($self == true and ($_SESSION[$guid]['calendarFeed'] != '' or $_SESSION[$guid]['calendarFeedPersonal'] != '' or $_SESSION[$guid]['viewCalendarSpaceBooking'] != '')) {
                     $output .= "<tr class='head' style='height: 37px;'>";
@@ -951,6 +925,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             }
             $output .= '</tr>';
             $output .= '</table>';
+            $output .= '</div>';
         }
     }
 

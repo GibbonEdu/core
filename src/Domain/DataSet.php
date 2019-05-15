@@ -206,9 +206,9 @@ class DataSet implements \Countable, \IteratorAggregate
      * @param int $endSize
      * @return array
      */
-    public function getPaginatedRange($placeholder = '...', $midSize = 2, $endSize = 2)
+    public function getPaginatedRange($placeholder = '...', $midSize = 1, $endSize = 2)
     {
-        $range = range(1, $this->getPageCount());
+        $range = $this->getPageCount() > 1 ? range(1, $this->getPageCount()) : [1];
         $countFromEnd = count($range) - $this->page;
 
         // Collapse the leading page numbers

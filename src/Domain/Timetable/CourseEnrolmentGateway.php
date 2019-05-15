@@ -45,7 +45,7 @@ class CourseEnrolmentGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonCourseClass.gibbonCourseClassID', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.status', 'gibbonPerson.email', 'gibbonCourseClassPerson.reportable', 'gibbonCourseClassPerson.role', "(CASE WHEN gibbonCourseClassPerson.role NOT LIKE 'Student%' THEN 0 ELSE 1 END) as roleSortOrder"
+                'gibbonCourseClass.gibbonCourseClassID', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.title', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.status', 'gibbonPerson.email', 'gibbonPerson.privacy', 'gibbonPerson.image_240', 'gibbonPerson.dob', 'gibbonCourseClassPerson.reportable', 'gibbonCourseClassPerson.role', "(CASE WHEN gibbonCourseClassPerson.role NOT LIKE 'Student%' THEN 0 ELSE 1 END) as roleSortOrder"
             ])
             ->innerJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID')
             ->innerJoin('gibbonCourse', 'gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID')
@@ -61,6 +61,12 @@ class CourseEnrolmentGateway extends QueryableGateway
         } else {
             $query->where("gibbonCourseClassPerson.role NOT LIKE '%Left'");
         }
+
+        $criteria->addFilterRules([
+            'nonStudents' => function ($query, $role) {
+                return $query->where("gibbonCourseClassPerson.role NOT LIKE 'Student%'");
+            },
+        ]);
 
         return $this->runQuery($query, $criteria);
     }

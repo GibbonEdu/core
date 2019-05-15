@@ -43,12 +43,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
     $setting = getSettingByScope($connection2, 'Finance', 'email', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addEmail($setting['name'])->setValue($setting['value'])->isRequired();
+        $row->addEmail($setting['name'])->setValue($setting['value'])->required();
 
     $setting = getSettingByScope($connection2, 'Finance', 'financeOnlinePaymentEnabled', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $form->toggleVisibilityByClass('onlinePayment')->onSelect($setting['name'])->when('Y');
 
@@ -73,15 +73,24 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
+    $invoiceeNameStyle = array(
+        'Surname, Preferred Name' => __('Surname') . ', ' . __('Preferred Name'),
+        'Official Name' => __('Official Name')
+    );
     $setting = getSettingByScope($connection2, 'Finance', 'invoiceeNameStyle', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelect($setting['name'])->fromString('"Surname, Preferred Name", Official Name')->selected($setting['value'])->isRequired();
+        $row->addSelect($setting['name'])->fromArray($invoiceeNameStyle)->selected($setting['value'])->required();
 
+    $invoiceNumber = array(
+        'Invoice ID' => __('Invoice ID'), 
+        'Person ID + Invoice ID' => __('Person ID')  . ' + ' . __('Invoice ID'), 
+        'Student ID + Invoice ID' => __('Student ID') . ' + ' . __('Invoice ID')
+    );
     $setting = getSettingByScope($connection2, 'Finance', 'invoiceNumber', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelect($setting['name'])->fromString('Invoice ID, Person ID + Invoice ID, Student ID + Invoice ID')->selected($setting['value'])->isRequired();
+        $row->addSelect($setting['name'])->fromArray($invoiceNumber)->selected($setting['value'])->required();
 
     $row = $form->addRow()->addHeading(__('Receipts'));
 
@@ -98,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
     $setting = getSettingByScope($connection2, 'Finance', 'hideItemisation', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $row = $form->addRow()->addHeading(__('Reminders'));
 
@@ -122,17 +131,17 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
     $setting = getSettingByScope($connection2, 'Finance', 'budgetCategories', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextArea($setting['name'])->setValue($setting['value'])->isRequired();
+        $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
 
     $setting = getSettingByScope($connection2, 'Finance', 'expenseApprovalType', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelect($setting['name'])->fromString('One Of, Two Of, Chain Of All')->selected($setting['value'])->isRequired();
+        $row->addSelect($setting['name'])->fromString('One Of, Two Of, Chain Of All')->selected($setting['value'])->required();
 
     $setting = getSettingByScope($connection2, 'Finance', 'budgetLevelExpenseApproval', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $setting = getSettingByScope($connection2, 'Finance', 'expenseRequestTemplate', true);
     $row = $form->addRow();
@@ -142,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
     $setting = getSettingByScope($connection2, 'Finance', 'allowExpenseAdd', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $setting = getSettingByScope($connection2, 'Finance', 'purchasingOfficer', true);
     $row = $form->addRow();

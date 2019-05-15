@@ -75,20 +75,20 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));
-                $row->addTextField('name')->isRequired()->maxLength(50);
+                $row->addTextField('name')->required()->maxLength(50);
 
             $row = $form->addRow();
                 $row->addLabel('category', __('Category'));
-                $row->addTextField('category')->isRequired()->maxLength(50);
+                $row->addTextField('category')->required()->maxLength(50);
 
             $row = $form->addRow();
                 $row->addLabel('order', __('Order'))->description(__('Order in which fields appear within category<br/>Should be unique for this category.'));
-                $row->addNumber('order')->isRequired()->maxLength(4);
+                $row->addNumber('order')->required()->maxLength(4);
 
             $sql = "SELECT gibbonScaleID as value, name FROM gibbonScale WHERE (active='Y') ORDER BY name";
             $row = $form->addRow();
                 $row->addLabel('gibbonScaleID', __('Grade Scale'))->description(__('Grade scale used to control values that can be assigned.'));
-                $row->addSelect('gibbonScaleID')->fromQuery($pdo, $sql)->isRequired()->placeholder();
+                $row->addSelect('gibbonScaleID')->fromQuery($pdo, $sql)->required()->placeholder();
 
             $row = $form->addRow();
                 $row->addLabel('yearGroups', __('Year Groups'))->description(__('Year groups to which this field is relevant.'));

@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
                     $row = $form->addRow();
                         $row->addLabel('description', __('Description'));
-                        $row->addTextField('description')->isRequired()->maxLength(1000);
+                        $row->addTextField('description')->required()->maxLength(1000);
 
                     $row = $form->addRow();
                         $row->addLabel('file', __('Attachment'));

@@ -78,13 +78,13 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
     $row = $form->addRow();
     $row->addLabel('gibbonCourseClassID', __('Class'));
     $row->addSelectClass('gibbonCourseClassID', $_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID'], array('attendance' => 'Y'))
-        ->isRequired()
+        ->required()
         ->selected($gibbonCourseClassID)
         ->placeholder();
 
     $row = $form->addRow();
     $row->addLabel('currentDate', __('Date'));
-    $row->addDate('currentDate')->isRequired()->setValue(dateConvertBack($guid, $currentDate));
+    $row->addDate('currentDate')->required()->setValue(dateConvertBack($guid, $currentDate));
 
     $row = $form->addRow();
     $row->addSearchSubmit($gibbon->session);
@@ -102,7 +102,6 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                 echo __("School is closed on the specified date, and so attendance information cannot be recorded.");
                 echo "</div>";
             } else {
-                $prefillAttendanceType = getSettingByScope($connection2, 'Attendance', 'prefillClass');
                 $defaultAttendanceType = getSettingByScope($connection2, 'Attendance', 'defaultClassAttendanceType');
 
                 // Check class
@@ -214,20 +213,30 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
 
                         // Build the attendance log data per student
                         foreach ($students as $key => $student) {
-                            $data = array('gibbonPersonID' => $student['gibbonPersonID'], 'date' => $currentDate . '%');
+                            $data = array('gibbonPersonID' => $student['gibbonPersonID'], 'date' => $currentDate . '%', 'gibbonCourseClassID' => $gibbonCourseClassID);
                             $sql = "SELECT type, reason, comment, context, timestampTaken FROM gibbonAttendanceLogPerson
                                     JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                                     WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
-                                    AND date LIKE :date";
-
-                            if ($prefillAttendanceType == 'N') {
-                                $data['gibbonCourseClassID'] = $gibbonCourseClassID;
-                                $sql .= " AND context='Class' AND gibbonCourseClassID=:gibbonCourseClassID";
-                            }
-                            $sql .= " ORDER BY timestampTaken DESC";
+                                    AND date LIKE :date
+                                    AND context='Class' AND gibbonCourseClassID=:gibbonCourseClassID
+                                    ORDER BY timestampTaken DESC";
                             $result = $pdo->executeQuery($data, $sql);
 
                             $log = ($result->rowCount() > 0) ? $result->fetch() : $defaults;
+
+                            //Check for school prefill if attendance not taken in this class
+                            if ($result->rowCount() == 0 ) {
+                                $data = array('gibbonPersonID' => $student['gibbonPersonID'], 'date' => $currentDate . '%');
+                                $sql = "SELECT type, reason, comment, context, timestampTaken FROM gibbonAttendanceLogPerson
+                                        JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                                        WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
+                                        AND date LIKE :date
+                                        AND NOT context='Class'
+                                        ORDER BY timestampTaken DESC";
+                                $result = $pdo->executeQuery($data, $sql);
+
+                                $log = ($result->rowCount() > 0) ? $result->fetch() : $log;
+                            }
 
                             $students[$key]['cellHighlight'] = '';
                             if ($attendance->isTypeAbsent($log['type'])) {
@@ -252,7 +261,6 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
 
                         $form = Form::create('attendanceByClass', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/attendance_take_byCourseClassProcess.php');
                         $form->setAutocomplete('off');
-                        $form->addClass('attendanceGrid');
 
                         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
                         $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
@@ -261,32 +269,35 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
 
                         $form->addRow()->addHeading(__('Take Attendance') . ': ' . htmlPrep($class['course']) . '.' . htmlPrep($class['class']));
 
-                        $grid = $form->addRow()->addGrid('attendance')->setColumns(4);
+                        $grid = $form->addRow()->addGrid('attendance')->setBreakpoints('w-1/2 sm:w-1/4 md:w-1/5 lg:w-1/4');
 
                         foreach ($students as $student) {
                             $form->addHiddenValue($count . '-gibbonPersonID', $student['gibbonPersonID']);
 
-                            $cell = $grid->addCell()->addClass('textCenter stacked')->addClass($student['cellHighlight']);
+                            $cell = $grid->addCell()
+                                ->setClass('text-center py-2 px-1 -mr-px -mb-px flex flex-col justify-between')
+                                ->addClass($student['cellHighlight']);
+
                             $cell->addContent(getUserPhoto($guid, $student['image_240'], 75));
                             $cell->addWebLink(formatName('', htmlPrep($student['preferredName']), htmlPrep($student['surname']), 'Student', false))
                                 ->setURL('index.php?q=/modules/Students/student_view_details.php')
                                 ->addParam('gibbonPersonID', $student['gibbonPersonID'])
                                 ->addParam('subpage', 'Attendance')
-                                ->wrap('<b>', '</b>');
-                            $cell->addContent($student['absenceCount'])->wrap('<span class="small emphasis">', '<span>');
+                                ->setClass('pt-2 font-bold underline');
+                            $cell->addContent($student['absenceCount'])->wrap('<div class="text-xxs italic py-2">', '</div>');
                             $cell->addSelect($count . '-type')
                                 ->fromArray(array_keys($attendance->getAttendanceTypes()))
                                 ->selected($student['log']['type'])
-                                ->setClass('attendanceField floatNone shortWidth');
+                                ->setClass('mx-auto float-none w-32 m-0 mb-px');
                             $cell->addSelect($count . '-reason')
                                 ->fromArray($attendance->getAttendanceReasons())
                                 ->selected($student['log']['reason'])
-                                ->setClass('attendanceField attendanceFieldStacked floatNone shortWidth');
+                                ->setClass('mx-auto float-none w-32 m-0 mb-px');
                             $cell->addTextField($count . '-comment')
                                 ->maxLength(255)
                                 ->setValue($student['log']['comment'])
-                                ->setClass('attendanceField attendanceFieldStacked floatNone shortWidth');
-                            $cell->addContent($attendance->renderMiniHistory($student['gibbonPersonID']));
+                                ->setClass('mx-auto float-none w-32 m-0 mb-2');
+                            $cell->addContent($attendance->renderMiniHistory($student['gibbonPersonID'], 'Class', $gibbonCourseClassID));
 
                             $count++;
                         }
@@ -297,12 +308,16 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                             ->wrap('<b>', '</b>');
 
                         $row = $form->addRow();
+
                         // Drop-downs to change the whole group at once
-                        $col = $row->addColumn()->addClass('inline');
-                        $col->addSelect('set-all-type')->fromArray(array_keys($attendance->getAttendanceTypes()))->setClass('attendanceField');
-                        $col->addSelect('set-all-reason')->fromArray($attendance->getAttendanceReasons())->setClass('attendanceField');
-                        $col->addTextField('set-all-comment')->maxLength(255)->setClass('attendanceField');
-                        $col->addButton(__('Change All'))->setID('set-all');
+                        $row->addButton(__('Change All').'?')->addData('toggle', '.change-all')->addClass('w-32 m-px sm:self-center');
+
+                        $col = $row->addColumn()->setClass('change-all hidden flex flex-col sm:flex-row items-stretch sm:items-center');
+                            $col->addSelect('set-all-type')->fromArray(array_keys($attendance->getAttendanceTypes()))->addClass('m-px');
+                            $col->addSelect('set-all-reason')->fromArray($attendance->getAttendanceReasons())->addClass('m-px');
+                            $col->addTextField('set-all-comment')->maxLength(255)->addClass('m-px');
+                        $col->addButton(__('Apply'))->setID('set-all');
+
                         $row->addSubmit();
 
                         echo $form->getOutput();

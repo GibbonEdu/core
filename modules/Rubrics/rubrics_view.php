@@ -32,6 +32,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view.php')
     //Proceed!
     $page->breadcrumbs->add(__('View Rubrics'));
 
+    // Register scripts available to the core, but not included by default
+    $page->scripts->add('chart');
+
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
@@ -113,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view.php')
         ->format(function ($rubric, $actions) {
             $actions->addAction('view', __('View'))
                 ->setURL('/modules/Rubrics/rubrics_view_full.php')
-                ->isModal(1100, 550);
+                ->modalWindow(1100, 550);
         });
 
     echo $table->render($rubrics);

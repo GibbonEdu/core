@@ -43,9 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_add
     }
 
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/budgets_manage_addProcess.php');
-
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('smallIntBorder fullWidth');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
@@ -53,15 +51,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_add
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
-        $row->addTextField('name')->maxLength(100)->isRequired();
+        $row->addTextField('name')->maxLength(100)->required();
 
     $row = $form->addRow();
         $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
-        $row->addTextField('nameShort')->maxLength(14)->isRequired();
+        $row->addTextField('nameShort')->maxLength(14)->required();
 
     $row = $form->addRow();
         $row->addLabel('active', __('Active'));
-        $row->addYesNo('active')->isRequired();
+        $row->addYesNo('active')->required();
 
     $categories = getSettingByScope($connection2, 'Finance', 'budgetCategories');
     if (empty($categories)) {
@@ -69,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_add
     }
     $row = $form->addRow();
         $row->addLabel('category', __('Category'));
-        $row->addSelect('category')->fromString($categories)->placeholder()->isRequired();
+        $row->addSelect('category')->fromString($categories)->placeholder()->required();
 
     $form->addRow()->addHeading(__('Staff'));
 

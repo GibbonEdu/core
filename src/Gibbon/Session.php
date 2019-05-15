@@ -62,7 +62,7 @@ class Session implements SessionInterface
             if (version_compare(phpversion(), '7.3.0', '>=')) {
                 $options['cookie_samesite'] = 'Strict';
             }
-        
+
             session_start($options);
 
             header('X-Frame-Options: SAMEORIGIN');
@@ -70,7 +70,7 @@ class Session implements SessionInterface
 
         // Backwards compatibility for external modules
         $this->guid = $container->has('config')? $container->get('config')->guid() : $guid;
-        
+
         // Detect the current module from the GET 'q' param. Fallback to the POST 'address',
         // which is currently used in many Process pages.
         // TODO: replace this logic when switching to routing.
@@ -79,6 +79,7 @@ class Session implements SessionInterface
         $this->set('address', $address);
         $this->set('module', $address ? getModuleName($address) : '');
         $this->set('action', $address ? getActionName($address) : '');
+        $this->set('guid', $this->guid);
     }
 
     /**
@@ -133,7 +134,7 @@ class Session implements SessionInterface
         foreach ($keys as $key) {
             $has &= !empty($_SESSION[$this->guid][$key]);
         }
-        
+
         return $has;
     }
 
@@ -173,7 +174,7 @@ class Session implements SessionInterface
     {
         $keyValuePairs = is_array($key)? $key : [$key => $value];
 
-        foreach ($keyValuePairs as $key => $value) { 
+        foreach ($keyValuePairs as $key => $value) {
             $_SESSION[$this->guid][$key] = $value ;
         }
     }
@@ -191,7 +192,7 @@ class Session implements SessionInterface
 
         return $value;
     }
-    
+
     /**
      * Remove one or many items from the session.
      *
@@ -257,11 +258,22 @@ class Session implements SessionInterface
         $this->set('dateStart', $userData['dateStart']);
         $this->set('personalBackground', $userData['personalBackground']);
         $this->set('messengerLastBubble', $userData['messengerLastBubble']);
-        $this->set('gibbonThemeIDPersonal', $userData['gibbonThemeIDPersonal']);
         $this->set('gibboni18nIDPersonal', $userData['gibboni18nIDPersonal']);
         $this->set('googleAPIRefreshToken', $userData['googleAPIRefreshToken']);
         $this->set('receiveNotificationEmails', $userData['receiveNotificationEmails']);
         $this->set('gibbonHouseID', $userData['gibbonHouseID']);
+
+        //Deal with themes
+        $this->set('gibbonThemeIDPersonal', null);
+        if (!empty($userData['gibbonThemeIDPersonal'])) {
+            $data = array( 'gibbonThemeID' => $userData['gibbonThemeIDPersonal']);
+            $sql = "SELECT gibbonThemeID FROM gibbonTheme WHERE active='Y' AND gibbonThemeID=:gibbonThemeID";
+            $result = $this->pdo->executeQuery($data, $sql);
+
+            if ($result->rowCount() > 0) {
+                $this->set('gibbonThemeIDPersonal', $userData['gibbonThemeIDPersonal']);
+            }
+        }
 
         // Cache FF actions on login
         $this->cacheFastFinderActions($userData['gibbonRoleIDPrimary']);

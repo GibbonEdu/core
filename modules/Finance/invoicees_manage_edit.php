@@ -103,19 +103,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
             // COMPANY DETAILS
             $row = $form->addRow()->addClass('paymentCompany');
                 $row->addLabel('companyName', __('Company Name'));
-                $row->addTextField('companyName')->isRequired()->maxLength(100);
+                $row->addTextField('companyName')->required()->maxLength(100);
 
             $row = $form->addRow()->addClass('paymentCompany');
                 $row->addLabel('companyContact', __('Company Contact Person'));
-                $row->addTextField('companyContact')->isRequired()->maxLength(100);
+                $row->addTextField('companyContact')->required()->maxLength(100);
 
             $row = $form->addRow()->addClass('paymentCompany');
                 $row->addLabel('companyAddress', __('Company Address'));
-                $row->addTextField('companyAddress')->isRequired()->maxLength(255);
+                $row->addTextField('companyAddress')->required()->maxLength(255);
 
             $row = $form->addRow()->addClass('paymentCompany');
                 $row->addLabel('companyEmail', __('Company Emails'))->description(__('Comma-separated list of email address'));
-                $row->addTextField('companyEmail')->isRequired();
+                $row->addTextField('companyEmail')->required();
 
             $row = $form->addRow()->addClass('paymentCompany');
                 $row->addLabel('companyCCFamily', __('CC Family?'))->description(__('Should the family be sent a copy of billing emails?'));

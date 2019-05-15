@@ -33,9 +33,11 @@ class Column
 
     protected $label;
     protected $description;
+    protected $contexts = [];
     protected $width = 'auto';
     protected $depth = 0;
     protected $sortable = false;
+    protected $translatable = false;
     protected $formatter;
 
     protected $columns = array();
@@ -90,6 +92,23 @@ class Column
     public function getDepth()
     {
         return $this->depth;
+    }
+
+    public function context($context)
+    {
+        $this->contexts[] = $context;
+
+        return $this;
+    }
+
+    public function getContexts()
+    {
+        return $this->contexts;
+    }
+
+    public function hasContext($context)
+    {
+        return in_array($context, $this->contexts);
     }
 
     /**
@@ -173,6 +192,28 @@ class Column
         return !empty($this->formatter) && is_callable($this->formatter);
     }
 
+    /**
+     * Sets that this column of table must be translated
+     *
+     * @return self
+     */
+    public function translatable() 
+    {
+        $this->translatable = true;
+        
+        return $this;
+    }    
+
+    /**
+     * Gets if the column of table must be translated or not
+     *
+     * @return bool
+     */
+    public function getTranslatable()
+    {
+        return $this->translatable;
+    }    
+    
     /**
      * Set a callable function that can modify each cell and/or row based on that row's data.
      *
@@ -277,7 +318,8 @@ class Column
         if ($this->hasFormatter()) {
             return call_user_func($this->formatter, $data);
         } else {
-            return isset($data[$this->getID()])? $data[$this->getID()] : '';
+            $content = isset($data[$this->getID()])? $data[$this->getID()] : '';
+            return $this->getTranslatable() ? __($content) : $content;
         }
     }
 }

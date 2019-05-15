@@ -62,19 +62,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
 
         $row = $form->addRow();
             $row->addLabel('gibbonPersonID', __('Patient'));
-            $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->placeholder()->isRequired();
+            $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->placeholder()->required();
 
         $row = $form->addRow();
             $row->addLabel('name', __('First Aider'));
-            $row->addTextField('name')->setValue(Format::name('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Student'))->isRequired()->readonly();
+            $row->addTextField('name')->setValue(Format::name('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Student'))->required()->readonly();
 
         $row = $form->addRow();
             $row->addLabel('date', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-            $row->addDate('date')->setValue(date($_SESSION[$guid]['i18n']['dateFormatPHP']))->isRequired();
+            $row->addDate('date')->setValue(date($_SESSION[$guid]['i18n']['dateFormatPHP']))->required();
 
         $row = $form->addRow();
             $row->addLabel('timeIn', __('Time In'))->description("Format: hh:mm (24hr)");
-            $row->addTime('timeIn')->setValue(date("H:i"))->isRequired();
+            $row->addTime('timeIn')->setValue(date("H:i"))->required();
 
         $row = $form->addRow();
             $column = $row->addColumn();

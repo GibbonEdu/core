@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_emergencyS
 
     $row = $form->addRow();
         $row->addLabel('transport', __('Transport'));
-        $row->addSelectTransport('transport', true)->isRequired()->selected($transport);
+        $row->addSelectTransport('transport', true)->required()->selected($transport);
 
     $row = $form->addRow();
         $row->addLabel('prefix', __('Prefix'));

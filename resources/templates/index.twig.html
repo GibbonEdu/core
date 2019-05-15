@@ -11,35 +11,47 @@ TODO: add template variable details.
 <!DOCTYPE html>
 <html {{ rightToLeft ? 'dir="rtl"' : '' }}>
     <head>
+        {% block head %}
         {{ include('head.twig.html') }}
+        {% endblock head %}
     </head>
     <body style="{{ bodyBackground }}">
-        <div id="wrapOuter">
-            <div class="minorLinks{{ not gibbonHouseIDLogo ? ' minorLinksTopGap' : '' }}">
+        <div id="wrapOuter" class="sm:px-6">
+            <div class="mx-auto max-w-6xl text-right text-white text-xs md:text-sm px-2 xl:px-0 {{ gibbonHouseIDLogo ? 'mt-2' : 'mt-6' }}">
                 {{ minorLinks|raw }}
             </div>
 
-            <div id="wrap">
+            <div id="wrap" class="mx-auto max-w-6xl m-2 shadow-container rounded">
                 {% block header %}
-                <div id="header">
-                    <div id="header-logo">
-                        <a href="{{ absoluteURL }}" style="display: block;max-height:121px;">
-                            <img class="logo" alt="Logo" src="{{ absoluteURL }}/{{ organisationLogo|default("/themes/Default/img/logo.png") }}" height="100px" width="400px"/>
-                        </a>
-                    </div>
+                <div id="header" class="relative bg-white flex justify-between items-center rounded-t h-24 sm:h-32">
 
-                    <div id="header-finder">
+                    <a id="header-logo" class="block max-w-xs sm:max-w-full leading-none" href="{{ absoluteURL }}">
+                        <img class="block max-w-full" alt="Logo" src="{{ absoluteURL }}/{{ organisationLogo|default("/themes/Default/img/logo.png") }}" width="400"/>
+                    </a>
+
+                    <div class="flex-grow flex justify-end">
                         {{ fastFinder|raw }}
                     </div>
-
-                    <div id="header-menu">
-                        {{ include('menu.twig.html') }}
-                    </div>
                 </div>
+
+                <nav id="header-menu" class="w-full bg-gray-200 justify-between">
+                    {{ include('menu.twig.html') }}
+                </nav>
+
                 {% endblock %}
 
-                <div id="content-wrap">
-                    <div id="{{ not sidebar ? 'content-wide' : 'content' }}">
+                <div id="content-wrap" class="relative w-full min-h-1/2 flex content-start {{ sidebar ? 'flex-wrap lg:flex-no-wrap' : 'flex-col' }} lg:flex-row-reverse bg-transparent-100 clearfix">
+
+                    {% if sidebar %}
+                        <div id="sidebar" class="w-full lg:w-sidebar px-6 lg:border-l">
+                            {% block sidebar %}
+                            {{ include('navigation.twig.html') }}
+                            {% endblock sidebar %}
+                        </div>
+                        <br style="clear: both">
+                    {% endif %}
+
+                    <div id="content" class="w-full {{ sidebar ? 'lg:w-content' : 'pt-0 sm:pt-6' }} lg:max-w-full p-6 lg:pt-0 overflow-x-scroll sm:overflow-x-auto">
 
                         {% block page %}
 
@@ -48,17 +60,17 @@ TODO: add template variable details.
                         {% endif %}
 
                         {% if page.breadcrumbs %}
-                        <div class="trail">
-                            <div class="trailHead">
-                            {% for title, src in page.breadcrumbs %}
-                                {% if loop.last %}
-                                    </div><div class="trailEnd">{{ title }}
-                                {% elseif loop.revindex > 5 and loop.index != 1 %}
-                                    <a href="{{ absoluteURL }}/{{ src }}">...</a> > 
-                                {% else %}
-                                    <a href="{{ absoluteURL }}/{{ src }}">{{ title }}</a> > 
-                                {% endif %}
-                            {% endfor %}
+                        <div class="sm:pt-10 lg:pt-0">
+                            <div class="absolute lg:static top-0 my-6 text-xs text-blue-700">
+                                {% for title, src in page.breadcrumbs %}
+                                    {% if loop.last %}
+                                        <span class="trailEnd">{{ title }}</span>
+                                    {% elseif loop.revindex > 5 and loop.index != 1 %}
+                                        <a class="text-blue-700 underline" href="{{ absoluteURL }}/{{ src }}">...</a> > 
+                                    {% else %}
+                                        <a class="text-blue-700 underline" href="{{ absoluteURL }}/{{ src }}">{{ title }}</a> > 
+                                    {% endif %}
+                                {% endfor %}
                             </div>
                         </div>
                         {% endif %}
@@ -75,46 +87,33 @@ TODO: add template variable details.
                         {% endblock %}
                     </div>
 
-                    {% if sidebar %}
-                        <div id="sidebar">
-                            {% for code in page.extraSidebar if sidebarPosition != 'bottom' %}
-                                {{ code|raw }}
-                            {% endfor %}
-
-                            {{ sidebarContents|raw }}
-
-                            {{ include('navigation.twig.html') }}
-
-                            {% for code in page.extraSidebar if sidebarPosition == 'bottom' %}
-                                {{ code|raw }}
-                            {% endfor %}
-
-                        </div>
-                        <br style="clear: both">
-                    {% endif %}
+                    
                 </div>
 
                 {% block footer %}
-                <div id="footer">
-                    {{ __('Powered by') }} <a target='_blank' href='https://gibbonedu.org'>Gibbon</a> {{ versionName }} 
-                    | &#169; <a target='_blank' href='http://rossparker.org'>Ross Parker</a> 2010-{{ 'now'|date('Y') }}
+                <div class="relative bg-transparent-600 text-white text-center text-sm p-6 mb-10 leading-normal rounded-b">
+                    <span class="inline-block">
+                        {{ __('Powered by') }} <a class="link-white" target='_blank' href='https://gibbonedu.org'>Gibbon</a> {{ versionName }}</span> 
+                    <span class="inline-block">|  &#169; <a class="link-white" target='_blank' href='http://rossparker.org'>Ross Parker</a> 2010-{{ 'now'|date('Y') }}</span>
                     <br/>
 
-                    <span style="font-size: 90%;">
-                        {{ __('Created under the') }} <a target='_blank' href='https://www.gnu.org/licenses/gpl.html'>GNU GPL</a> 
-                        at <a target='_blank' href='http://www.ichk.edu.hk'>ICHK</a> | 
-                        <a target='_blank' href='https://gibbonedu.org/about/#ourTeam'>{{ __('Credits') }}</a> | 
-                        <a target='_blank' href='https://gibbonedu.org/about/#translators'>{{ __('Translators') }}</a>
+                    <span class="text-xs">
+                        {{ __('Created under the') }} <a class="link-white" target='_blank' href='https://www.gnu.org/licenses/gpl.html'>GNU GPL</a> 
+                        at <a class="link-white" target='_blank' href='http://www.ichk.edu.hk'>ICHK</a> | 
+                        <a class="link-white" target='_blank' href='https://gibbonedu.org/about/#ourTeam'>{{ __('Credits') }}</a> | 
+                        <a class="link-white" target='_blank' href='https://gibbonedu.org/about/#translators'>{{ __('Translators') }}</a>
                         <br/>
                         {{ footerThemeAuthor }}<br/>
                     </span>
 
-                    <img id="footer-logo" alt="Logo Small" src="{{ absoluteURL }}/themes/{{ gibbonThemeName|default("Default") }}/img/logoFooter.png"/>
+                    <img class="absolute right-0 top-0 -mt-2 sm:mr-0 md:mr-12 opacity-75 hidden sm:block" alt="Logo Small" src="{{ absoluteURL }}/themes/{{ gibbonThemeName|default("Default") }}/img/logoFooter.png"/>
                 </div>
                 {% endblock %}
             </div>
         </div>
 
+        {% block foot %}
         {{ include('foot.twig.html') }}
+        {% endblock foot %}
     </body>
 </html>

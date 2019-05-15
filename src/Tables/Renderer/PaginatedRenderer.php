@@ -298,8 +298,8 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
 
         if (empty($bulkActions)) return '';
 
-        $output = '<div class="column bulkActionPanel inline right displayNone">';
-        $output .= '<div class="bulkActionCount"><span>0</span> '.__('Selected').'</div>';
+        $output = '<div class="bulkActionPanel hidden absolute top-0 right-0 w-full flex items-center justify-between px-1 pt-1 bg-purple-600 rounded-t">';
+        $output .= '<div class="bulkActionCount flex-grow text-white text-sm text-right pr-3"><span>0</span> '.__('Selected').'</div>';
         $output .= $bulkActions->getOutput();
         $output .= '<script>';
         $output .= $bulkActions->getValidationOutput();

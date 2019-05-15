@@ -70,8 +70,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
             __('Example').': '.formatName($title, $preferredName, $surname, 'Staff', false, false).'<br/>'.
             __('Reversed').': '.formatName($title, $preferredName, $surname, 'Staff', true, false));
         $col = $row->addColumn($setting['name'])->addClass('stacked');
-        $col->addTextField($setting['name'])->isRequired()->maxLength(60)->setValue($setting['value']);
-        $col->addTextField($settingRev['name'])->isRequired()->maxLength(60)->setTitle(__('Reversed'))->setValue($settingRev['value']);
+        $col->addTextField($setting['name'])->required()->maxLength(60)->setValue($setting['value']);
+        $col->addTextField($settingRev['name'])->required()->maxLength(60)->setTitle(__('Reversed'))->setValue($settingRev['value']);
 
     $setting = getSettingByScope($connection2, 'System', 'nameFormatStaffInformal', true);
     $settingRev = getSettingByScope($connection2, 'System', 'nameFormatStaffInformalReversed', true);
@@ -81,8 +81,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
             __('Example').': '.formatName($title, $preferredName, $surname, 'Staff', false, true).'<br/>'.
             __('Reversed').': '.formatName($title, $preferredName, $surname, 'Staff', true, true));
         $col = $row->addColumn($setting['name'])->addClass('stacked right');
-        $col->addTextField($setting['name'])->isRequired()->maxLength(60)->setValue($setting['value']);
-        $col->addTextField($settingRev['name'])->isRequired()->maxLength(60)->setTitle(__('Reversed'))->setValue($settingRev['value']);
+        $col->addTextField($setting['name'])->required()->maxLength(60)->setValue($setting['value']);
+        $col->addTextField($settingRev['name'])->required()->maxLength(60)->setTitle(__('Reversed'))->setValue($settingRev['value']);
 
     $form->loadAllValuesFrom($formats);
 

@@ -59,37 +59,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
             } else {
                 $row = $result->fetch();
 
-                //CHECK IF UNIT IS GIBBON OR HOOKED
-                if ($row['gibbonHookID'] == null) {
-                    $hooked = false;
-                    $gibbonUnitID = $row['gibbonUnitID'];
-                } else {
-                    $hooked = true;
-                    $gibbonUnitIDToken = $row['gibbonUnitID'];
-                    $gibbonHookIDToken = $row['gibbonHookID'];
-
-                    try {
-                        $dataHooks = array('gibbonHookID' => $gibbonHookIDToken);
-                        $sqlHooks = "SELECT * FROM gibbonHook WHERE type='Unit' AND gibbonHookID=:gibbonHookID ORDER BY name";
-                        $resultHooks = $connection2->prepare($sqlHooks);
-                        $resultHooks->execute($dataHooks);
-                    } catch (PDOException $e) {
-                    }
-                    if ($resultHooks->rowCount() == 1) {
-                        $rowHooks = $resultHooks->fetch();
-                        $hookOptions = unserialize($rowHooks['options']);
-                        if ($hookOptions['unitTable'] != '' and $hookOptions['unitIDField'] != '' and $hookOptions['unitCourseIDField'] != '' and $hookOptions['unitNameField'] != '' and $hookOptions['unitDescriptionField'] != '' and $hookOptions['classLinkTable'] != '' and $hookOptions['classLinkJoinFieldUnit'] != '' and $hookOptions['classLinkJoinFieldClass'] != '' and $hookOptions['classLinkIDField'] != '') {
-                            try {
-                                $data = array('unitIDField' => $gibbonUnitIDToken);
-                                $sql = 'SELECT '.$hookOptions['unitTable'].'.*, gibbonCourse.nameShort FROM '.$hookOptions['unitTable'].' JOIN gibbonCourse ON ('.$hookOptions['unitTable'].'.'.$hookOptions['unitCourseIDField'].'=gibbonCourse.gibbonCourseID) WHERE '.$hookOptions['unitIDField'].'=:unitIDField';
-                                $result = $connection2->prepare($sql);
-                                $result->execute($data);
-                            } catch (PDOException $e) {
-                            }
-                        }
-                    }
-                }
-
                 $partialFail = false;
                 if ($mode == 'view') {
                     $ids = $_POST['gibbonUnitClassBlockID'];
@@ -105,13 +74,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             }
                             //Write to database
                             try {
-                                if ($hooked == false) {
-                                    $data = array('complete' => $complete, 'gibbonUnitClassBlockID' => $ids[$i]);
-                                    $sql = 'UPDATE gibbonUnitClassBlock SET complete=:complete WHERE gibbonUnitClassBlockID=:gibbonUnitClassBlockID';
-                                } else {
-                                    $data = array('complete' => $complete, 'gibbonUnitClassBlockID' => $ids[$i]);
-                                    $sql = 'UPDATE '.$hookOptions['classSmartBlockTable'].' SET complete=:complete WHERE '.$hookOptions['classSmartBlockIDField'].'=:gibbonUnitClassBlockID';
-                                }
+                                $data = array('complete' => $complete, 'gibbonUnitClassBlockID' => $ids[$i]);
+                                $sql = 'UPDATE gibbonUnitClassBlock SET complete=:complete WHERE gibbonUnitClassBlockID=:gibbonUnitClassBlockID';
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             } catch (PDOException $e) {
@@ -141,26 +105,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             }
                         }
 
-                        //Deal with outcomes
-                        $gibbonOutcomeIDList = '';
-                        if (isset($_POST['outcomes'.$i])) {
-                            if (is_array($_POST['outcomes'.$i])) {
-                                foreach ($_POST['outcomes'.$i] as $outcome) {
-                                    $gibbonOutcomeIDList .= $outcome.',';
-                                }
-                            }
-                            $gibbonOutcomeIDList = substr($gibbonOutcomeIDList, 0, -1);
-                        }
-
                         //Write to database
                         try {
-                            if ($hooked == false) {
-                                $data = array('title' => $title, 'type' => $type, 'length' => $length, 'contents' => $contents, 'teachersNotes' => $teachersNotes, 'complete' => $complete, 'sequenceNumber' => $seq, 'gibbonOutcomeIDList' => $gibbonOutcomeIDList, 'gibbonUnitClassBlockID' => $id);
-                                $sql = 'UPDATE gibbonUnitClassBlock SET title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, complete=:complete, sequenceNumber=:sequenceNumber, gibbonOutcomeIDList=:gibbonOutcomeIDList WHERE gibbonUnitClassBlockID=:gibbonUnitClassBlockID';
-                            } else {
-                                $data = array('title' => $title, 'type' => $type, 'length' => $length, 'contents' => $contents, 'teachersNotes' => $teachersNotes, 'complete' => $complete, 'sequenceNumber' => $seq, 'gibbonUnitClassBlockID' => $id);
-                                $sql = 'UPDATE '.$hookOptions['classSmartBlockTable'].' SET '.$hookOptions['classSmartBlockTitleField'].'=:title, '.$hookOptions['classSmartBlockTypeField'].'=:type, '.$hookOptions['classSmartBlockLengthField'].'=:length, '.$hookOptions['classSmartBlockContentsField'].'=:contents, '.$hookOptions['classSmartBlockTeachersNotesField'].'=:teachersNotes, '.$hookOptions['classSmartBlockCompleteField'].'=:complete, '.$hookOptions['classSmartBlockSequenceNumberField'].'=:sequenceNumber WHERE '.$hookOptions['classSmartBlockIDField'].'=:gibbonUnitClassBlockID';
-                            }
+                            $data = array('title' => $title, 'type' => $type, 'length' => $length, 'contents' => $contents, 'teachersNotes' => $teachersNotes, 'complete' => $complete, 'sequenceNumber' => $seq, 'gibbonUnitClassBlockID' => $id);
+                            $sql = 'UPDATE gibbonUnitClassBlock SET title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, complete=:complete, sequenceNumber=:sequenceNumber WHERE gibbonUnitClassBlockID=:gibbonUnitClassBlockID';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
@@ -168,24 +116,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         }
                         ++$seq;
                     }
-                }
 
-                $summaryBlocks = substr($summaryBlocks, 0, -2);
-                if (strlen($summaryBlocks) > 75) {
-                    $summaryBlocks = substr($summaryBlocks, 0, 72).'...';
-                }
-                if ($summaryBlocks) {
-                    $summary = $summaryBlocks;
-                }
+                    $summaryBlocks = substr($summaryBlocks, 0, -2);
+                    if (strlen($summaryBlocks) > 75) {
+                        $summaryBlocks = substr($summaryBlocks, 0, 72).'...';
+                    }
+                    if ($summaryBlocks) {
+                        $summary = $summaryBlocks;
+                    }
 
-                //Write to database
-                try {
-                    $data = array('summary' => $summary, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                    $sql = 'UPDATE gibbonPlannerEntry SET summary=:summary WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    $partialFail = true;
+                    //Write to database
+                    try {
+                        $data = array('summary' => $summary, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
+                        $sql = 'UPDATE gibbonPlannerEntry SET summary=:summary WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID';
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        $partialFail = true;
+                    }
                 }
 
                 //Return final verdict

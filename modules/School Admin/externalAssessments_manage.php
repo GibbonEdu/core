@@ -56,9 +56,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
     });
 
     $table->addColumn('name', __('Name'))->format(function ($externalAssessment) {
-        return '<strong>' . $externalAssessment['name'] . '</strong>';
+        return '<strong>' . __($externalAssessment['name']) . '</strong>';
       });
-    $table->addColumn('description', __('description'));
+    $table->addColumn('description', __('description'))->translatable();
     $table->addColumn('active', __('Active'))->format(Format::using('yesNo', ['active']));
     $table->addColumn('allowFileUpload', __('File Upload'))->format(Format::using('yesNo', ['allowFileUpload']));
         

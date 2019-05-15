@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                     if (strtoupper($tokens[0]) == 'CREATE' && (strtoupper($tokens[1]) == 'TABLE' || strtoupper($tokens[1]) == 'VIEW')) {
                         $type = ucfirst(strtolower($tokens[1]));
                         $name = str_replace('`', '', $tokens[2]);
-                        $group[$type.'-'.$name] = '<b>'.$type.'</b>: '.$name;
+                        $group[$type.'-'.$name] = '<b>'.__($type).'</b>: '.$name;
                     }
         
                     return $group;

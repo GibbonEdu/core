@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -59,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
 
             $row = $form->addRow();
                 $row->addLabel('gibbonPersonID', __('Student'));
-                $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonPersonID)->placeholder()->isRequired();
+                $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonPersonID)->placeholder()->required();
 
             $row = $form->addRow();
                 $row->addFooter();
@@ -158,10 +159,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                         $row = $form->addRow();
                             $row->addLabel('gibbonPersonID', __('Child'));
                             if ($countChild > 1) {
-                                $row->addSelect('gibbonPersonID')->fromArray($options)->selected($gibbonPersonID)->placeholder()->isRequired();
+                                $row->addSelect('gibbonPersonID')->fromArray($options)->selected($gibbonPersonID)->placeholder()->required();
                             }
                             else {
-                                $row->addSelect('gibbonPersonID')->fromArray($options)->selected($gibbonPersonID)->isRequired();
+                                $row->addSelect('gibbonPersonID')->fromArray($options)->selected($gibbonPersonID)->required();
                             }
                     }
 

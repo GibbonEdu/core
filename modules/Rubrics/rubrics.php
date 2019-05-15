@@ -39,6 +39,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics.php') == f
         //Proceed!
         $page->breadcrumbs->add(__('Manage Rubrics'));
 
+        // Register scripts available to the core, but not included by default
+        $page->scripts->add('chart');
+    
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);
         }
@@ -145,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics.php') == f
                 if ($rubric['active'] == 'Y') {
                     $actions->addAction('view', __('View'))
                         ->setURL('/modules/Rubrics/rubrics_view_full.php')
-                        ->isModal(1100, 550);
+                        ->modalWindow(1100, 550);
                     }
             });
 

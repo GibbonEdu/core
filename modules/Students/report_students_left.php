@@ -54,17 +54,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_l
 
         $row = $form->addRow();
             $row->addLabel('type', __('Type'));
-            $row->addSelect('type')->fromArray(array('Current School Year' => __('Current School Year'), 'Date Range' => __('Date Range')))->selected($type)->isRequired();
+            $row->addSelect('type')->fromArray(array('Current School Year' => __('Current School Year'), 'Date Range' => __('Date Range')))->selected($type)->required();
 
         $form->toggleVisibilityByClass('dateRange')->onSelect('type')->when('Date Range');
 
         $row = $form->addRow()->addClass('dateRange');
             $row->addLabel('endDateFrom', __('From Date'))->description('Earliest student end date to include.')->append('<br/>')->append(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
-            $row->addDate('endDateFrom')->setValue($endDateFrom)->isRequired();
+            $row->addDate('endDateFrom')->setValue($endDateFrom)->required();
 
         $row = $form->addRow()->addClass('dateRange');
             $row->addLabel('endDateTo', __('To Date'))->description('Latest student end date to include.')->append('<br/>')->append(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
-            $row->addDate('endDateTo')->setValue($endDateTo)->isRequired();
+            $row->addDate('endDateTo')->setValue($endDateTo)->required();
 
         $row = $form->addRow()->addClass('dateRange');
             $row->addLabel('ignoreStatus', __('Ignore Status'))->description('This is useful for picking up students who have not yet left, but have an End Date set.');

@@ -1,0 +1,131 @@
+details:
+    type: timetableComplete
+    name: Timetable - Complete
+    table: gibbonTTDayRowClass
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Timetable Admin
+    action: Manage Timetables
+primaryKey:
+    gibbonTTDayRowClassID
+uniqueKeys:
+    - [ gibbonCourseClassID, gibbonTTDayID, gibbonTTColumnRowID ]
+fields:
+    gibbonSchoolYearID:
+        name: "School Year"
+        desc: "School year name, as set in School Admin. Must already exist."
+        args: { filter: schoolyear, required: true, custom: true, readonly: [gibbonCourseClass, gibbonCourseClassPerson, gibbonTTDayRowClass] }
+        relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
+    gibbonTTID:
+        name: "Timetable"
+        desc: "Short Name"
+        args: { filter: string, required: true, custom: true, readonly: true }
+        relationship: { table: gibbonTT, key: gibbonTTID, field: [nameShort, gibbonSchoolYearID]  }
+    gibbonCourse.nameShort:
+        name: "Course Short Name"
+        desc: "e.g. DR10 for Year 10 Drama"
+        args: { filter: string, required: true, custom: true }
+    gibbonCourse.name:
+        name: "Course"
+        desc: "Name"
+        args: { filter: string, linked: gibbonCourse.nameShort }
+    gibbonCourseID:
+        name: "Course"
+        desc: "ID"
+        args: { filter: string, linked: gibbonCourse.nameShort, readonly: [ gibbonCourseClassPerson, gibbonTTDayRowClass ] }
+        relationship: { table: gibbonCourse, key: gibbonCourseID, field: [ nameShort, gibbonSchoolYearID ]  }
+    gibbonYearGroupIDList:
+        name: "Year Groups"
+        desc: ""
+        args: { filter: string, linked: gibbonTTID }
+        relationship: { table: gibbonTT, key: gibbonYearGroupIDList, field: [ gibbonTTID ]  }
+    gibbonCourseClass.nameShort:
+        name: "Class Short Name"
+        desc: "e.g 1 for DR10.1"
+        args: { filter: string, required: true, custom: true }
+    gibbonCourseClass.name:
+        name: "Class"
+        desc: "Name"
+        args: { filter: string, linked: gibbonCourseClass.nameShort }
+    gibbonCourseClassID:
+        name: "Class"
+        desc: "ID"
+        args: { filter: string, linked: gibbonCourseClass.nameShort }
+        relationship: { table: gibbonCourseClass, key: gibbonCourseClassID, field: [ nameShort, gibbonCourseID ]  }
+    gibbonTTDayID:
+        name: "Day Name"
+        desc: "as used in the target timetable"
+        args: { filter: string, required: true, custom: true }
+        relationship: { table: gibbonTTDay, key: gibbonTTDayID, field: [ name, gibbonTTID ]  }
+    gibbonTTColumnID:
+        name: "Timetable Column"
+        desc: "Linked"
+        args: { filter: string, required: true, custom: true, readonly: true, linked: gibbonTTDayID }
+        relationship: { table: gibbonTTColumn, key: gibbonTTColumnID, join: gibbonTTDay, on: [gibbonTTColumnID, gibbonTTColumnID], field: [ gibbonTTDayID ] }
+    gibbonTTColumnRowID:
+        name: "Row Name"
+        desc: "as used in the target timetable"
+        args: { filter: string, required: true, custom: true }
+        relationship: { table: gibbonTTColumnRow, key: gibbonTTColumnRowID, field: [ name, gibbonTTColumnID ]  }
+    gibbonPersonID:
+        name: "Teacher"
+        desc: "Username"
+        args: { filter: string, required: true, custom: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+    role:
+        name: "Role"
+        desc: ""
+        value: "Teacher"
+        args: { filter: string, hidden: true }
+    gibbonSpaceID:
+        name: "Space Name"
+        desc: ""
+        args: { filter: string, required: true, custom: true }
+        relationship: { table: gibbonSpace, key: gibbonSpaceID, field: name }
+tables:
+    gibbonCourse:
+        primaryKey:
+            gibbonCourseID
+        uniqueKeys:
+            - [ gibbonSchoolYearID, gibbonCourse.name ]
+            - [ gibbonSchoolYearID, gibbonCourse.nameShort ]
+        fields:
+            - gibbonSchoolYearID
+            - gibbonTTID
+            - gibbonCourse.name
+            - gibbonCourse.nameShort
+            - gibbonYearGroupIDList
+    gibbonCourseClass:
+        primaryKey:
+            gibbonCourseClassID
+        uniqueKeys:
+            - [ gibbonCourseID, gibbonCourseClass.nameShort ]
+        fields:
+            - gibbonSchoolYearID
+            - gibbonCourseID
+            - gibbonCourseClass.name
+            - gibbonCourseClass.nameShort
+    gibbonCourseClassPerson:
+        primaryKey:
+            gibbonCourseClassPersonID
+        uniqueKeys:
+            - [ gibbonCourseClassID, gibbonPersonID ]
+        fields:
+            - gibbonSchoolYearID
+            - gibbonCourseID
+            - gibbonCourseClassID
+            - gibbonPersonID
+            - role
+    gibbonTTDayRowClass:
+        primaryKey:
+            gibbonTTDayRowClassID
+        uniqueKeys:
+            - [ gibbonCourseClassID, gibbonTTDayID, gibbonTTColumnRowID ]
+        fields:
+            - gibbonSchoolYearID
+            - gibbonTTID
+            - gibbonCourseClassID
+            - gibbonTTDayID
+            - gibbonTTColumnID
+            - gibbonTTColumnRowID
+            - gibbonSpaceID

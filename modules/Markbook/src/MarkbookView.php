@@ -58,7 +58,7 @@ class MarkbookView
     protected $columnsPerPage = 25;
     protected $columnsThisPage = -1;
     protected $columnCountTotal = -1;
-    protected $minSequenceNumber = -1;
+    protected $minSequenceNumber = 9999999;
 
     /**
      * Cache markbook values to reduce queries
@@ -322,17 +322,15 @@ class MarkbookView
         $this->columnCountTotal = $dataSet->getResultCount();
         $this->columnsThisPage = count($dataSet);
 
-        // Grab the minimum sequenceNumber for the current page set, to pass to markbook_viewAjax.php
-        $this->minSequenceNumber = array_reduce($this->columns, function ($minimum, $item) {
-            return min($minimum, $item['sequenceNumber']);
-        }, 0);
-
         // Build a markbookColumn object for each row
         foreach ($dataSet as $i => $columnData) {
             if ($column = new MarkbookColumn($columnData, $this->settings['enableEffort'], $this->settings['enableRubrics'])) {
                 $this->columns[$i] = $column;
-
-                // Attach planner info to help determine if theres homework submissions for this column
+				
+				// Grab the minimum sequenceNumber for the current page set, to pass to markbook_viewAjax.php
+				$this->minSequenceNumber = min($this->minSequenceNumber, $columnData['sequenceNumber']);
+                
+				// Attach planner info to help determine if theres homework submissions for this column
                 if (!empty($columnData['gibbonPlannerEntry'])) {
                     $column->setSubmissionDetails($columnData['gibbonPlannerEntry']);
                 }
