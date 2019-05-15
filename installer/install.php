@@ -306,7 +306,7 @@ if ($canInstall == false) {
         $config .= "//Sets globally unique id, to allow multiple installs on the server server.\n";
         $config .= '$guid="'.$guid."\" ;\n";
         $config .= "\n";
-        $config .= "//Sets system-wide caching factor, used to baalance performance and freshness. Value represents number of page loads between cache refresh. Must be posititve integer. 1 means no caching.\n";
+        $config .= "//Sets system-wide caching factor, used to balance performance and freshness. Value represents number of page loads between cache refresh. Must be posititve integer. 1 means no caching.\n";
         $config .= "\$caching=10 ;\n";
         $config .= "?>\n";
 
