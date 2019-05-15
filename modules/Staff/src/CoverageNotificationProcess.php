@@ -66,7 +66,8 @@ class CoverageNotificationProcess extends BackgroundProcess
         $this->groupGateway = $groupGateway;
         $this->messageSender = $messageSender;
 
-        $this->urgencyThreshold = $settingGateway->getSettingByScope('Staff', 'urgencyThreshold') * 86400;
+        $this->urgentNotifications = $settingGateway->getSettingByScope('Staff', 'urgentNotifications');
+        $this->urgencyThreshold = intval($settingGateway->getSettingByScope('Staff', 'urgencyThreshold')) * 86400;
         $this->organisationHR = $settingGateway->getSettingByScope('System', 'organisationHR');
     }
 
@@ -183,8 +184,12 @@ class CoverageNotificationProcess extends BackgroundProcess
     private function getCoverageDetailsByID($gibbonStaffCoverageID)
     {
         if ($coverage = $this->staffCoverageGateway->getCoverageDetailsByID($gibbonStaffCoverageID)) {
-            $relativeSeconds = strtotime($coverage['dateStart']) - time();
-            $coverage['urgent'] = $relativeSeconds <= $this->urgencyThreshold;
+            if ($this->urgentNotifications == 'Y') {
+                $relativeSeconds = strtotime($coverage['dateStart']) - time();
+                $coverage['urgent'] = $relativeSeconds <= $this->urgencyThreshold;
+            } else {
+                $coverage['urgent'] = false;
+            }
         }
 
         return $coverage ?? [];

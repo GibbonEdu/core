@@ -42,8 +42,8 @@ class NewCoverage extends Message
     public function via() : array
     {
         return $this->coverage['urgent']
-            ? ['mail']
-            : ['mail'];
+            ? ['database', 'mail']
+            : ['database', 'mail'];
     }
 
     public function getTitle() : string

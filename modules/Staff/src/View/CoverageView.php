@@ -22,12 +22,13 @@ namespace Gibbon\Module\Staff\View;
 use Gibbon\View\Page;
 use Gibbon\Services\Format;
 use Gibbon\Domain\User\UserGateway;
-use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
 
 
 /**
  * CoverageView
+ * 
+ * A view composer class: receives a coverage ID and displays the status information.
  *
  * @version v18
  * @since   v18

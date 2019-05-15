@@ -76,8 +76,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
         header("Location: {$URL}");
         exit;
     }
-
-    
     
     if ($data['requestType'] == 'Individual') {
         // Return a custom error message if no dates have been selected
@@ -165,5 +163,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
         : "&return=success0";
 
     header("Location: {$URLSuccess}&gibbonStaffCoverageID={$gibbonStaffCoverageID}");
-    exit;
 }

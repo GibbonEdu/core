@@ -34,8 +34,8 @@ class IndividualRequest extends Message
     public function via() : array
     {
         return $this->coverage['urgent']
-            ? ['mail', 'sms', 'database']
-            : ['mail', 'database'];
+            ? ['database', 'mail', 'sms', 'database']
+            : ['database', 'mail', 'database'];
     }
 
     public function getTitle() : string

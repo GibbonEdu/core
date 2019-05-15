@@ -23,7 +23,8 @@ use Gibbon\View\Page;
 use Gibbon\Services\Format;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
-// use Gibbon\Domain\Staff\StaffCoverageGateway;
+use Gibbon\Domain\Staff\StaffCoverageGateway;
+use Gibbon\Module\Staff\View\CoverageView;
 
 /**
  * AbsenceView
@@ -37,15 +38,15 @@ class AbsenceView
 {
     protected $staffAbsenceGateway;
     protected $userGateway;
-    // protected $staffCoverageGateway;
-    // protected $coverageView;
+    protected $staffCoverageGateway;
+    protected $coverageView;
 
-    public function __construct(StaffAbsenceGateway $staffAbsenceGateway, UserGateway $userGateway)
+    public function __construct(StaffAbsenceGateway $staffAbsenceGateway, StaffCoverageGateway $staffCoverageGateway, UserGateway $userGateway, CoverageView $coverageView)
     {
         $this->staffAbsenceGateway = $staffAbsenceGateway;
         $this->userGateway = $userGateway;
-        // $this->staffCoverageGateway = $staffCoverageGateway;
-        // $this->coverageView = $coverageView;
+        $this->staffCoverageGateway = $staffCoverageGateway;
+        $this->coverageView = $coverageView;
     }
 
     public function setAbsence($gibbonStaffAbsenceID, $gibbonPersonIDViewing)
@@ -88,14 +89,14 @@ class AbsenceView
             ]);
         }
 
-        // $coverageList = $this->staffCoverageGateway->selectCoverageByAbsenceID($absence['gibbonStaffAbsenceID'])->fetchAll();
+        $coverageList = $this->staffCoverageGateway->selectCoverageByAbsenceID($absence['gibbonStaffAbsenceID'])->fetchAll();
         
-        // // Coverage Details
-        // if (!empty($coverageList)) {
-        //     foreach ($coverageList as $coverage) {
-        //         $this->coverageView->setCoverage($coverage['gibbonStaffCoverageID'])->compose($page);
-        //     }
-        // }
+        // Coverage Details
+        if (!empty($coverageList)) {
+            foreach ($coverageList as $coverage) {
+                $this->coverageView->setCoverage($coverage['gibbonStaffCoverageID'])->compose($page);
+            }
+        }
     }
 
     protected function getStatusColor($status)

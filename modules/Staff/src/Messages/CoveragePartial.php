@@ -39,8 +39,8 @@ class CoveragePartial extends Message
     public function via() : array
     {
         return $this->coverage['urgent']
-            ? ['mail', 'sms']
-            : ['mail'];
+            ? ['database', 'mail', 'sms']
+            : ['database', 'mail'];
     }
 
     public function getTitle() : string

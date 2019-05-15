@@ -27,6 +27,8 @@ use Gibbon\Module\Staff\Tables\AbsenceFormats;
 /**
  * CoverageDates
  *
+ * Reusable DataTable class for displaying the info for coverage dates.
+ *
  * @version v18
  * @since   v18
  */
