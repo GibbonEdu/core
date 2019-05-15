@@ -20,28 +20,28 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
         <div class="w-full sm:w-1/2 flex flex-grow justify-between sm:justify-end items-center text-xs text-center mt-4 sm:mt-0">
             {% if canViewProfile %}
-                <a class="px-0 sm:px-2 w-20 thickbox" href="{{ absoluteURL }}/fullscreen.php?q=/modules/Staff/staff_view_details.php&width=800&height=500&gibbonPersonID={{ staff.gibbonPersonID }}">
+                <a class="px-0 sm:px-2 w-20" href="{{ absoluteURL }}/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID={{ staff.gibbonPersonID }}">
                     <img class="" src="{{ absoluteURL }}/themes/Default/img/plus.png" title="{{ __('Profile') }}" width="25" height="25">
                     <div class="mt-1">{{ __('Profile') }}</div>
                 </a>
             {% endif %}
 
             {% if canViewAbsences %}
-                <a class="px-0 sm:px-2 w-20 thickbox" href="{{ absoluteURL }}/fullscreen.php?q=/modules/Staff/absences_view_byPerson.php&width=800&height=500&gibbonPersonID={{ staff.gibbonPersonID }}">
+                <a class="px-0 sm:px-2 w-20" href="{{ absoluteURL }}/index.php?q=/modules/Staff/absences_view_byPerson.php&gibbonPersonID={{ staff.gibbonPersonID }}">
                     <img class="" src="{{ absoluteURL }}/themes/Default/img/planner.png" title="{{ __('Absences') }}" width="25" height="25">
                     <div class="mt-1">{{ __('Absences') }}</div>
                 </a>
             {% endif %}
 
             {% if canViewTimetable %}
-                <a class="px-0 sm:px-2 w-20 thickbox" href="{{ absoluteURL }}/fullscreen.php?q=/modules/Timetable/tt_view.php&width=800&height=500&gibbonPersonID={{ staff.gibbonPersonID }}&allUsers=on">
+                <a class="px-0 sm:px-2 w-20" href="{{ absoluteURL }}/index.php?q=/modules/Timetable/tt_view.php&gibbonPersonID={{ staff.gibbonPersonID }}&allUsers=on">
                     <img class="" src="{{ absoluteURL }}/themes/Default/img/markbook.png" title="{{ __('Timetable') }}" width="25" height="25">
                     <div class="mt-1">{{ __('Timetable') }}</div>
                 </a>
             {% endif %}
 
             {% if canViewRollGroups and rollGroup %}
-                <a class="px-0 sm:px-2 w-20 thickbox" href="{{ absoluteURL }}/fullscreen.php?q=/modules/Roll Groups/rollGroups_details.php&width=800&height=500&gibbonRollGroupID={{ rollGroup.gibbonRollGroupID }}">
+                <a class="px-0 sm:px-2 w-20" href="{{ absoluteURL }}/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID={{ rollGroup.gibbonRollGroupID }}">
                     <img class="" src="{{ absoluteURL }}/themes/Default/img/attendance.png" title="{{ __('Homeroom') }}" width="25" height="25">
                     <div class="mt-1">{{ __('Homeroom') }}</div>
                 </a>
