@@ -89,27 +89,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
 
         $row = $form->addRow();
             $row->addLabel('schoolYear', __('School Year'));
-            $row->addTextField('schoolYear')->isRequired()->readonly()->setValue($schoolYearName);
+            $row->addTextField('schoolYear')->required()->readonly()->setValue($schoolYearName);
 
         $row = $form->addRow();
             $row->addLabel('gibbonFinanceInvoiceeIDs', __('Invoicees'))->append(sprintf(__('Visit %1$sManage Invoicees%2$s to automatically generate missing students.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/invoicees_manage.php'>", '</a>'));
-            $row->addSelectInvoicee('gibbonFinanceInvoiceeIDs', $gibbonSchoolYearID)->isRequired()->selectMultiple();
+            $row->addSelectInvoicee('gibbonFinanceInvoiceeIDs', $gibbonSchoolYearID)->required()->selectMultiple();
 
         $scheduling = array('Scheduled' => __('Scheduled'), 'Ad Hoc' => __('Ad Hoc'));
         $row = $form->addRow();
             $row->addLabel('scheduling', __('Scheduling'))->description(__('When using scheduled, invoice due date is linked to and determined by the schedule.'));
-            $row->addRadio('scheduling')->fromArray($scheduling)->isRequired()->inline()->checked('Scheduled');
+            $row->addRadio('scheduling')->fromArray($scheduling)->required()->inline()->checked('Scheduled');
 
         $form->toggleVisibilityByClass('schedulingScheduled')->onRadio('scheduling')->when('Scheduled');
         $form->toggleVisibilityByClass('schedulingAdHoc')->onRadio('scheduling')->when('Ad Hoc');
 
         $row = $form->addRow()->addClass('schedulingScheduled');
             $row->addLabel('gibbonFinanceBillingScheduleID', __('Billing Schedule'));
-            $row->addSelectBillingSchedule('gibbonFinanceBillingScheduleID', $gibbonSchoolYearID)->isRequired()->selected($gibbonFinanceBillingScheduleID);
+            $row->addSelectBillingSchedule('gibbonFinanceBillingScheduleID', $gibbonSchoolYearID)->required()->selected($gibbonFinanceBillingScheduleID);
 
         $row = $form->addRow()->addClass('schedulingAdHoc');
             $row->addLabel('invoiceDueDate', __('Invoice Due Date'))->description(__('For fees added to existing invoice, specified date will override existing due date.'));
-            $row->addDate('invoiceDueDate')->isRequired();
+            $row->addDate('invoiceDueDate')->required();
 
         $row = $form->addRow();
             $row->addLabel('notes', __('Notes'))->description(__('Notes will be displayed on the final invoice and receipt.'));
@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
         // Block template
         $blockTemplate = $form->getFactory()->createTable()->setClass('blank');
             $row = $blockTemplate->addRow();
-                $row->addTextField('name')->setClass('standardWidth floatLeft noMargin title')->isRequired()->placeholder(__('Fee Name'))
+                $row->addTextField('name')->setClass('standardWidth floatLeft noMargin title')->required()->placeholder(__('Fee Name'))
                     ->append('<input type="hidden" id="gibbonFinanceFeeID" name="gibbonFinanceFeeID" value="">')
                     ->append('<input type="hidden" id="feeType" name="feeType" value="">');
                 
@@ -135,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
 
                 $col->addCurrency('fee')
                     ->setClass('shortWidth floatLeft')
-                    ->isRequired()
+                    ->required()
                     ->placeholder(__('Value').(!empty($_SESSION[$guid]['currency'])? ' ('.$_SESSION[$guid]['currency'].')' : ''));
                 
             $col = $blockTemplate->addRow()->addClass('showHide fullWidth')->addColumn();

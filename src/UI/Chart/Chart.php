@@ -38,13 +38,13 @@ class Chart
         'rgba(255, 99, 132, 1.0)',
         'rgba(255, 206, 86, 1.0)',
         'rgba(54, 162, 235, 1.0)',
-        'rgba(152, 221, 95, 1.0)',
+        'rgba(133, 233, 194, 1.0)',
         'rgba(255, 159, 64, 1.0)',
         'rgba(237, 85, 88, 1.0)',
         'rgba(75, 192, 192, 1.0)',
         'rgba(161, 89, 173, 1.0)',
         'rgba(29, 109, 163, 1.0)',
-        'rgba(133, 233, 194, 1.0)',
+        'rgba(152, 221, 95, 1.0)',
     ];
 
     private $allowedChartTypes = [
@@ -92,7 +92,7 @@ class Chart
     {
         return $this->elementID;
     }
-    
+
     /**
      * Set the HTML element ID for the chart.
      * @param string $id
@@ -164,7 +164,7 @@ class Chart
     public function setOptions($options)
     {
         $this->options = array_replace($this->options, $options);
-        
+
         return $this;
     }
 
@@ -369,11 +369,11 @@ class Chart
         foreach ($this->datasets as $dataset) {
             $chartDataset = $dataset->getProperties();
             $chartDataset['data'] = $dataset->getData();
-            
+
             if (!empty($dataset->getLabel())) {
                 $chartDataset['label'] = $dataset->getLabel();
             }
-            
+
             if ($this->useDefaultColors) {
                 if (in_array($this->chartType, array('doughnut', 'pie', 'polarArea'))) {
                     $chartDataset['backgroundColor'] = [];

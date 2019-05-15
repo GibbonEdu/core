@@ -42,7 +42,7 @@ class Username extends TextField
         $alertText .= __('Primary Role').', '.__('Preferred Name').', '.__('First Name').', '.__('Surname')."\n";
 
         $button = $form->getFactory()->createButton(__('Generate'));
-        $button->addClass('generateUsername alignRight')
+        $button->addClass('generateUsername -ml-px')
             ->addData('alert', $alertText)
             ->setTabIndex(-1);
 
@@ -58,7 +58,7 @@ class Username extends TextField
     protected function getElement()
     {
         $this->maxLength(20)
-            ->isUnique('./publicRegistrationCheck.php', ['currentUsername' => $this->getValue()])
+            ->uniqueField('./publicRegistrationCheck.php', ['currentUsername' => $this->getValue()])
             ->addValidation('Validate.Format', 'pattern: /^[a-zA-Z0-9_\-\.]*$/, failureMessage: "'.__('Must be alphanumeric').'"');
 
         return parent::getElement();

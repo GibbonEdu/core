@@ -109,11 +109,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
             
             $row = $form->addRow();
                 $row->addLabel('name', __('Assessment Type'));
-                $row->addTextField('name')->isRequired()->readOnly()->setValue(__($values['assessment']));
+                $row->addTextField('name')->required()->readOnly()->setValue(__($values['assessment']));
 
             $row = $form->addRow();
                 $row->addLabel('date', __('Date'));
-                $row->addDate('date')->isRequired()->loadFrom($values);
+                $row->addDate('date')->required()->loadFrom($values);
 
             if ($values['allowFileUpload'] == 'Y') {
                 $row = $form->addRow();

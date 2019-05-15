@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
 
 	$form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/curriculumMapping_outcomesByCourse.php');
 
-	
+
 	$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
 	$sql = "SELECT gibbonCourse.gibbonCourseID, gibbonCourse.name, gibbonDepartment.name AS department FROM gibbonCourse LEFT JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonYearGroupIDList='' ORDER BY department, gibbonCourse.nameShort";
 	$result = $pdo->executeQuery($data, $sql);
@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
 
 	$row = $form->addRow();
 		$row->addLabel('gibbonCourseID', __('Course'));
-		$row->addSelect('gibbonCourseID')->fromArray($courses)->isRequired()->selected($gibbonCourseID)->placeholder();
+		$row->addSelect('gibbonCourseID')->fromArray($courses)->required()->selected($gibbonCourseID)->placeholder();
 
 	$row = $form->addRow();
 		$row->addSearchSubmit($gibbon->session, __('Clear Filters'));
@@ -108,8 +108,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
                 try {
                     $dataOutcomes = array('gibbonCourseID1' => $gibbonCourseID, 'gibbonCourseID2' => $gibbonCourseID);
                     $sqlOutcomes = "(SELECT 'Unit' AS type, gibbonCourseClass.gibbonCourseClassID, gibbonOutcome.* FROM gibbonOutcome JOIN gibbonUnitOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) JOIN gibbonUnit ON (gibbonUnitOutcome.gibbonUnitID=gibbonUnit.gibbonUnitID) JOIN gibbonUnitClass ON (gibbonUnitClass.gibbonUnitID=gibbonUnit.gibbonUnitID) JOIN gibbonCourseClass ON (gibbonUnitClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonCourseClass.gibbonCourseID=:gibbonCourseID1 AND gibbonOutcome.active='Y' AND running='Y')
-					UNION ALL
-					(SELECT 'Working Block' AS type, gibbonCourseClass.gibbonCourseClassID, gibbonOutcome.* FROM gibbonOutcome JOIN gibbonUnitClassBlock ON (gibbonUnitClassBlock.gibbonOutcomeIDList LIKE concat('%', gibbonOutcome.gibbonOutcomeID, '%')) JOIN gibbonUnitClass ON (gibbonUnitClassBlock.gibbonUnitClassID=gibbonUnitClass.gibbonUnitClassID) JOIN gibbonCourseClass ON (gibbonUnitClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonCourseClass.gibbonCourseID=:gibbonCourseID2 AND gibbonOutcome.active='Y' AND running='Y')
 					UNION ALL
 					(SELECT 'Planner Entry' AS type, gibbonCourseClass.gibbonCourseClassID, gibbonOutcome.* FROM gibbonOutcome JOIN gibbonPlannerEntryOutcome ON (gibbonPlannerEntryOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) JOIN gibbonPlannerEntry ON (gibbonPlannerEntryOutcome.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonCourseClass.gibbonCourseID=:gibbonCourseID2 AND gibbonOutcome.active='Y')";
                     $resultOutcomes = $connection2->prepare($sqlOutcomes);

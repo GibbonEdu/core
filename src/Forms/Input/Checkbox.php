@@ -173,7 +173,7 @@ class Checkbox extends Input
                     $output .= '<input type="checkbox" '.$this->getAttributeString().'>&nbsp;';
                     $output .= '<label for="'.$this->getID().'">'.$label.'</label>&nbsp;&nbsp;';
                 } else {
-                    $output .= '<label for="'.$this->getID().'">'.$label.'</label> ';
+                    $output .= '<label class="leading-normal" for="'.$this->getID().'">'.$label.'</label> ';
                     $output .= '<input type="checkbox" '.$this->getAttributeString().'><br/>';
                 }
 

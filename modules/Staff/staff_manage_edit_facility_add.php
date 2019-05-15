@@ -71,15 +71,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_fa
             }
 
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/staff_manage_edit_facility_addProcess.php?gibbonPersonID=$gibbonPersonID&gibbonStaffID=$gibbonStaffID&search=$search");
-
             $form->setFactory(DatabaseFormFactory::create($pdo));
-            $form->setClass('smallIntBorder fullWidth');
-
+            
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
             $row = $form->addRow();
                 $row->addLabel('person', __('Person'));
-                $row->addTextField('person')->setValue(Format::name('', $values['preferredName'], $values['surname'], 'Student'))->readonly()->isRequired();
+                $row->addTextField('person')->setValue(Format::name('', $values['preferredName'], $values['surname'], 'Student'))->readonly()->required();
 
             $data = array('gibbonPersonID' => $gibbonPersonID);
             $sql = "SELECT gibbonSpace.gibbonSpaceID AS value, name
@@ -89,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_fa
                 ORDER BY gibbonSpace.name";
             $row = $form->addRow();
                 $row->addLabel('gibbonSpaceID', __('Facility'));
-                $row->addSelect('gibbonSpaceID')->fromQuery($pdo, $sql, $data)->placeholder()->isRequired();
+                $row->addSelect('gibbonSpaceID')->fromQuery($pdo, $sql, $data)->placeholder()->required();
 
             $row = $form->addRow();
                 $row->addLabel('usageType', __('Usage Type'));

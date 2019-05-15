@@ -9,32 +9,42 @@ Page Foot: Outputs the contents of the HTML <head> tag. This includes
 all stylesheets and scripts with a 'head' context.
 -->#}
 
-<title>{{ page.title }}</title>
-<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-<meta http-equiv="content-language" content="{{ locale }}"/>
-<meta name="author" content="Ross Parker, International College Hong Kong"/>
-<meta name="robots" content="none"/>
-<meta name="Referrer‐Policy" value="no‐referrer | same‐origin"/>
-<link rel="shortcut icon" type="image/x-icon" href="./favicon.ico"/>
+{% block meta %}
+    <title>{{ page.title }}</title>
 
-{% for asset in page.stylesheets %}
-    {% set assetVersion = asset.version is not empty ? asset.version : version %}
-    {% if asset.type == 'inline' %}
-        <style type="text/css">{{ asset.src|raw }}</style>
-    {% else %}
-        <link rel="stylesheet" href="{{ absoluteURL }}/{{ asset.src }}?v={{ assetVersion }}" type="text/css" media="{{ asset.media }}" />
-    {% endif %}
-{% endfor %}
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="content-language" content="{{ locale }}"/>
+    <meta name="author" content="Ross Parker, International College Hong Kong"/>
+    <meta name="robots" content="none"/>
+    <meta name="Referrer‐Policy" value="no‐referrer | same‐origin"/>
+    <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico"/>
+{% endblock meta %}
 
-{% for asset in page.scriptsHead %}
-    {% set assetVersion = asset.version is not empty ? asset.version : version %}
-    {% if asset.type == 'inline' %}
-        <script type="text/javascript">{{ asset.src|raw }}</script>
-    {% else %}
-        <script type="text/javascript" src="{{ absoluteURL }}/{{ asset.src }}?v={{ assetVersion }}"></script>
-    {% endif %}
-{% endfor %}
 
-{% for code in page.extraHead %}
-    {{ code|raw }}
-{% endfor %}
+{% block styles %}
+    {% for asset in page.stylesheets %}
+        {% set assetVersion = asset.version is not empty ? asset.version : version %}
+        {% if asset.type == 'inline' %}
+            <style type="text/css">{{ asset.src|raw }}</style>
+        {% else %}
+            <link rel="stylesheet" href="{{ absoluteURL }}/{{ asset.src }}?v={{ assetVersion }}" type="text/css" media="{{ asset.media }}" />
+        {% endif %}
+    {% endfor %}
+{% endblock styles %}
+
+
+{% block scripts %}
+    {% for asset in page.scriptsHead %}
+        {% set assetVersion = asset.version is not empty ? asset.version : version %}
+        {% if asset.type == 'inline' %}
+            <script type="text/javascript">{{ asset.src|raw }}</script>
+        {% else %}
+            <script type="text/javascript" src="{{ absoluteURL }}/{{ asset.src }}?v={{ assetVersion }}"></script>
+        {% endif %}
+    {% endfor %}
+
+    {% for code in page.extraHead %}
+        {{ code|raw }}
+    {% endfor %}
+{% endblock scripts %}

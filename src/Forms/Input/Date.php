@@ -27,6 +27,9 @@ namespace Gibbon\Forms\Input;
  */
 class Date extends TextField
 {
+    protected $from;
+    protected $to;
+
     /**
      * Overload the base loadFrom method to handle converting date formats.
      * @param   array  &$data
@@ -73,6 +76,32 @@ class Date extends TextField
     }
 
     /**
+     * Provide the ID of another date input to connect the input values in a date range.
+     * Chaining a value TO another date range will set the upper limit to that date's value.
+     * @param   string  $value
+     * @return  self
+     */
+    public function chainedTo($value)
+    {
+        $this->to = $value;
+
+        return $this;
+    }
+
+    /**
+     * Provide the ID of another date input to connect the input values in a date range.
+     * Chaining a value FROM another date range will set the lower limit to that date's value.
+     * @param   string  $value
+     * @return  self
+     */
+    public function chainedFrom($value)
+    {
+        $this->from = $value;
+
+        return $this;
+    }
+
+    /**
      * Gets the HTML output for this form element.
      * @return  string
      */
@@ -81,19 +110,21 @@ class Date extends TextField
         global $guid;
 
         $validationFormat = '';
+        $dateFormat = $_SESSION[$guid]['i18n']['dateFormat'];
+        $dateFormatRegex = $_SESSION[$guid]['i18n']['dateFormatRegEx'];
         
         $this->setAttribute('autocomplete', 'off');
 
-        if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
+        if ($dateFormatRegex == '') {
             $validationFormat .= "pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
         } else {
-            $validationFormat .= 'pattern: '.$_SESSION[$guid]['i18n']['dateFormatRegEx'];
+            $validationFormat .= 'pattern: '.$dateFormatRegex;
         }
 
-        if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+        if ($dateFormat == '') {
             $validationFormat .= ', failureMessage: "Use dd/mm/yyyy"';
         } else {
-            $validationFormat .= ', failureMessage: "Use '.$_SESSION[$guid]['i18n']['dateFormat'].'"';
+            $validationFormat .= ', failureMessage: "Use '.$dateFormat.'"';
         }
 
         $this->addValidation('Validate.Format', $validationFormat);
@@ -102,8 +133,37 @@ class Date extends TextField
 
         $output = '<input type="text" '.$this->getAttributeString().' maxlength="10">';
 
+        $onSelect = 'function(){$(this).blur();}';
+
+        if ($this->from) {
+            $onSelect = 'function() {
+                '.$this->from.'.datepicker( "option", "maxDate", getDate(this) );
+                $(this).blur();
+            }';
+        }
+        if ($this->to) {
+            $onSelect = 'function() {
+                '.$this->to.'.datepicker( "option", "minDate", getDate(this) );
+                if ($("#'.$this->to.'").val() == "") {
+                    '.$this->to.'.datepicker( "setDate", getDate(this) );
+                }
+                $(this).blur();
+            }';
+        }
+
         $output .= '<script type="text/javascript">';
-        $output .= '$(function() { $("#'.$this->getID().'").datepicker({onSelect: function(){$(this).blur();}, onClose: function(){$(this).change();} }); })';
+        $output .= '$(function() { '.$this->getID().' = $("#'.$this->getID().'").datepicker({onSelect: '.$onSelect.', onClose: function(){$(this).change();} }); });';
+
+        if ($this->to || $this->from) {
+            $output .= 'function getDate(element) {
+                try {
+                  return $.datepicker.parseDate("'.substr($dateFormat, 0, 8).'", element.value);
+                } catch( error ) {
+                  return null;
+                }
+            }';
+        }
+
         $output .= '</script>';
 
         return $output;

@@ -99,30 +99,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
 
 			$row = $form->addRow();
                 $row->addLabel('schoolYear', __('School Year'));
-				$row->addTextField('schoolYear')->isRequired()->readonly();
+				$row->addTextField('schoolYear')->required()->readonly();
 				
 			$row = $form->addRow();
                 $row->addLabel('personName', __('Invoicee'));
-                $row->addTextField('personName')->isRequired()->readonly()->setValue(formatName('', $values['preferredName'], $values['surname'], 'Student', true));
+                $row->addTextField('personName')->required()->readonly()->setValue(formatName('', $values['preferredName'], $values['surname'], 'Student', true));
 
             $row = $form->addRow();
                 $row->addLabel('billingScheduleType', __('Scheduling'));
-				$row->addTextField('billingScheduleType')->isRequired()->readonly();
+				$row->addTextField('billingScheduleType')->required()->readonly();
 				
 			if ($values['billingScheduleType'] == 'Scheduled') {
 				$row = $form->addRow();
 					$row->addLabel('billingScheduleName', __('Billing Schedule'));
-					$row->addTextField('billingScheduleName')->isRequired()->readonly();
+					$row->addTextField('billingScheduleName')->required()->readonly();
 					$form->addHiddenValue('invoiceDueDate', dateConvertBack($guid, $values['billingScheduleInvoiceDueDate']));
 			} else {
 				$row = $form->addRow();
 					$row->addLabel('invoiceDueDate', __('Invoice Due Date'));
-					$row->addDate('invoiceDueDate')->isRequired()->readonly();
+					$row->addDate('invoiceDueDate')->required()->readonly();
 			}
 
 			$row = $form->addRow();
 				$row->addLabel('status', __('Status'));
-				$row->addTextField('status')->isRequired()->readonly();
+				$row->addTextField('status')->required()->readonly();
 
 			$row = $form->addRow();
                 $row->addLabel('notes', __('Notes'))->description(__('Notes will be displayed on the final invoice and receipt.'));
@@ -133,11 +133,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
 			$totalFee = getInvoiceTotalFee($pdo, $gibbonFinanceInvoiceID, $values['status']);
 			$row = $form->addRow();
 				$row->addLabel('totalFee', __('Total'))->description('<small><i>('.$_SESSION[$guid]['currency'].')</i></small>');
-				$row->addTextField('totalFee')->isRequired()->readonly()->setValue(number_format($totalFee, 2));
+				$row->addTextField('totalFee')->required()->readonly()->setValue(number_format($totalFee, 2));
 
 			$row = $form->addRow();
 				$row->addLabel('invoiceTo', __('Invoice To'));
-				$row->addTextField('invoiceTo')->isRequired()->readonly();
+				$row->addTextField('invoiceTo')->required()->readonly();
 
 			$form->addRow()->addHeading(__('Email Invoice'));
 

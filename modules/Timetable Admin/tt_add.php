@@ -74,23 +74,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_add.php
 
             $row = $form->addRow();
                 $row->addLabel('schoolYear', __('School Year'));
-                $row->addTextField('schoolYear')->maxLength(20)->isRequired()->readonly()->setValue($values['schoolYear']);
+                $row->addTextField('schoolYear')->maxLength(20)->required()->readonly()->setValue($values['schoolYear']);
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'))->description(__('Must be unique for this school year.'));
-                $row->addTextField('name')->maxLength(30)->isRequired();
+                $row->addTextField('name')->maxLength(30)->required();
 
             $row = $form->addRow();
                 $row->addLabel('nameShort', __('Short Name'));
-                $row->addTextField('nameShort')->maxLength(12)->isRequired();
+                $row->addTextField('nameShort')->maxLength(12)->required();
 
             $row = $form->addRow();
                 $row->addLabel('nameShortDisplay', __('Day Column Name'));
-                $row->addSelect('nameShortDisplay')->fromArray(array('Day Of The Week' => __('Day Of The Week'), 'Timetable Day Short Name' => __('Timetable Day Short Name')))->isRequired();
+                $row->addSelect('nameShortDisplay')->fromArray(array('Day Of The Week' => __('Day Of The Week'), 'Timetable Day Short Name' => __('Timetable Day Short Name')))->required();
 
             $row = $form->addRow();
                 $row->addLabel('active', __('Active'));
-                $row->addYesNo('active')->isRequired();
+                $row->addYesNo('active')->required();
 
             $yearGroupsOptions = $timetableGateway->getNonTimetabledYearGroups($gibbonSchoolYearID);
             $row = $form->addRow();

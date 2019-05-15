@@ -19,6 +19,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 Add any extra code here to make right to left languages (such as Arabic) work.
 */
+@font-face {
+    font-family: Droid Arabic Kufi;
+    src: local("DroidKufi-Regular"),
+    url(../fonts/DroidKufi-Regular.ttf) format('truetype');
+}
+body {
+    font-family: "Droid Arabic Kufi", Arial, sans-serif!important;
+}
 
 
 #header-finder {
@@ -147,6 +155,88 @@ div.notificationTray {
 }
 
 td.right {
-    text-align: left !important;
+    text-align: right !important;
 }
 
+#sidebar h2, div.sidebarExtra h2 {
+    font-size: 10pt;
+}
+
+.ui-widget {
+    font-family: "Droid Arabic Kufi", Arial, sans-serif;
+}
+
+.ui-dialog .ui-dialog-content {
+    font-family: "Droid Arabic Kufi", Arial, sans-serif;
+    font-size: 12px ;
+}
+
+div.ui-dialog div.ui-dialog-titlebar {
+    font-family: "Droid Arabic Kufi", Arial, sans-serif;
+}
+
+input[type="submit"] {
+    font-family: "Droid Arabic Kufi", Arial, sans-serif;
+}
+
+input[type="submit"].buttonLink {
+    font-size: 11px;
+}
+input[type="submit"].buttonLink:hover, input[type="button"].buttonLink:hover {
+    font-size: 11px;
+}
+input[type="button"] {
+    font-family: "Droid Arabic Kufi", Arial, sans-serif;
+}
+input[type="text"], input[type="password"], input[type="file"] {
+    font-family: "Droid Arabic Kufi", Arial, sans-serif;
+}
+select {
+    float:left;
+    font-size: 12px ;
+    font-family: "Droid Arabic Kufi", Arial, sans-serif;
+}
+
+div.message {
+    border-right: 6px solid #3B73AF;
+    border-left: none;
+}
+
+div.error {
+    border-right: 6px solid #CC0000;
+    border-left: none;
+}
+
+div.warning {
+    border-right: 6px solid #D65602;
+    border-left: none;
+}
+
+div.success {
+    border-right: 6px solid #390;
+    border-left: none;
+}
+
+div.exception {
+    border-right: 6px solid #444;
+    border-left: none;
+}
+
+div.ui-dialog button.ui-button {
+    font-family: "Droid Arabic Kufi", Arial, sans-serif !important;
+}
+
+#TB_window {
+    font: 10px "Droid Arabic Kufi", Helvetica, sans-serif;
+        font-family: "Droid Arabic Kufi", Helvetica, sans-serif;
+}
+
+table.smallIntBorder td:last-child {
+    text-align: right;
+}
+
+/*
+table.mini th {
+    font-size: 10px ;
+}
+*/

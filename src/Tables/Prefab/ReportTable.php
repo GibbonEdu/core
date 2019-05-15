@@ -52,7 +52,7 @@ class ReportTable extends DataTable
             ->addParam('format', 'print')
             ->addParam('search', $criteria->getSearchText(true))
             ->setTarget('_blank')
-            ->isDirect()
+            ->directLink()
             ->append('&nbsp;');
 
         $table->addHeaderAction('export', __('Export'))
@@ -60,7 +60,7 @@ class ReportTable extends DataTable
             ->addParams($_GET)
             ->addParam('format', 'export')
             ->addParam('search', $criteria->getSearchText(true))
-            ->isDirect();
+            ->directLink();
 
         return $table;
     }

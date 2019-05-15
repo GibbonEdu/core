@@ -93,12 +93,16 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
     $setting = getSettingByScope($connection2, 'Students', 'enableStudentNotes', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $setting = getSettingByScope($connection2, 'Students', 'noteCreationNotification', true);
+    $noteCreationNotificationRoles = array(
+        'Tutors' => __('Tutors'), 
+        'Tutors & Teachers' => __('Tutors & Teachers')
+    );
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelect($setting['name'])->fromString('Tutors, Tutors & Teachers')->selected($setting['value'])->isRequired();
+        $row->addSelect($setting['name'])->fromArray($noteCreationNotificationRoles)->selected($setting['value'])->required();
 
     $form->addRow()->addHeading(__('Alerts'));
 
@@ -111,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
             ->decimalPlaces(0)
             ->minimum(0)
             ->maximum(50)
-            ->isRequired();
+            ->required();
 
     $setting = getSettingByScope($connection2, 'Students', 'academicAlertMediumThreshold', true);
     $row = $form->addRow();
@@ -122,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
             ->decimalPlaces(0)
             ->minimum(0)
             ->maximum(50)
-            ->isRequired();
+            ->required();
 
     $setting = getSettingByScope($connection2, 'Students', 'academicAlertHighThreshold', true);
     $row = $form->addRow();
@@ -133,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
             ->decimalPlaces(0)
             ->minimum(0)
             ->maximum(50)
-            ->isRequired();
+            ->required();
 
         $setting = getSettingByScope($connection2, 'Students', 'behaviourAlertLowThreshold', true);
         $row = $form->addRow();
@@ -144,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
                 ->decimalPlaces(0)
                 ->minimum(0)
                 ->maximum(50)
-                ->isRequired();
+                ->required();
 
         $setting = getSettingByScope($connection2, 'Students', 'behaviourAlertMediumThreshold', true);
         $row = $form->addRow();
@@ -155,7 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
                 ->decimalPlaces(0)
                 ->minimum(0)
                 ->maximum(50)
-                ->isRequired();
+                ->required();
 
         $setting = getSettingByScope($connection2, 'Students', 'behaviourAlertHighThreshold', true);
         $row = $form->addRow();
@@ -166,14 +170,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
                 ->decimalPlaces(0)
                 ->minimum(0)
                 ->maximum(50)
-                ->isRequired();
+                ->required();
 
     $form->addRow()->addHeading(__('Miscellaneous'));
 
     $setting = getSettingByScope($connection2, 'Students', 'extendedBriefProfile', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $setting = getSettingByScope($connection2, 'School Admin', 'studentAgreementOptions', true);
     $row = $form->addRow();

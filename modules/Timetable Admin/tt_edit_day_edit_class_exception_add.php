@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
 
             $row = $form->addRow();
                 $row->addLabel('Members', __('Participants'));
-                $row->addSelect('Members')->fromArray($participants)->selectMultiple()->isRequired()->setSize(8);
+                $row->addSelect('Members')->fromArray($participants)->selectMultiple()->required()->setSize(8);
 
             $row = $form->addRow();
                 $row->addFooter();

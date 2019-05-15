@@ -105,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
             $row->addLabel('gibbonFinanceInvoiceeID', __('Invoicee'))->description(__('Individual for whom invoices are generated.'));
             $row->addSelect('gibbonFinanceInvoiceeID')
                 ->fromArray($invoicees)
-                ->isRequired()
+                ->required()
                 ->selected($gibbonFinanceInvoiceeID)
                 ->placeholder();
         

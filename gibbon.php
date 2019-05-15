@@ -28,7 +28,15 @@ $container = new League\Container\Container();
 $container->delegate(new League\Container\ReflectionContainer);
 $container->add('autoloader', $autoloader);
 
+$container->inflector(\League\Container\ContainerAwareInterface::class)
+          ->invokeMethod('setContainer', [$container]);
+          
+$container->inflector(\Gibbon\Services\BackgroundProcess::class)
+          ->invokeMethod('setProcessor', [\Gibbon\Services\BackgroundProcessor::class]);
+
 $container->addServiceProvider(new Gibbon\Services\CoreServiceProvider(__DIR__));
+$container->addServiceProvider(new Gibbon\Services\ViewServiceProvider());
+$container->addServiceProvider(new Gibbon\Services\GoogleServiceProvider());
 
 // Globals for backwards compatibility
 $gibbon = $container->get('config');

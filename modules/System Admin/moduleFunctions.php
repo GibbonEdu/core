@@ -292,6 +292,8 @@ function i18nCheckAndUpdateVersion($container, $version = null)
  */
 function removeDirectoryContents($dir, $removeSelf = false)
 {
+    if (!is_dir($dir)) return;
+
     $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::CHILD_FIRST);
     foreach ($iterator as $filename => $fileInfo) {
         if ($fileInfo->isDir()) {

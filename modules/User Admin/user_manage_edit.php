@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 			}
 
 			echo '<div class="warning">';
-			echo __('Note that certain fields are hidden or revealed depending on the role categories (Staff, Student, Parent) that a user is assigned to. For example, parents do not get Emergency Contact fields, and stunders/staff do not get Employment fields.');
+			echo __('Note that certain fields are hidden or revealed depending on the role categories (Staff, Student, Parent) that a user is assigned to. For example, parents do not get Emergency Contact fields, and students/staff do not get Employment fields.');
 			echo '</div>';
 
 			$form = Form::create('addUser', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/user_manage_editProcess.php?gibbonPersonID='.$gibbonPersonID.'&search='.$search);
@@ -105,19 +105,19 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 			$row = $form->addRow();
 				$row->addLabel('surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
-				$row->addTextField('surname')->isRequired()->maxLength(60);
+				$row->addTextField('surname')->required()->maxLength(60);
 
 			$row = $form->addRow();
 				$row->addLabel('firstName', __('First Name'))->description(__('First name as shown in ID documents.'));
-				$row->addTextField('firstName')->isRequired()->maxLength(60);
+				$row->addTextField('firstName')->required()->maxLength(60);
 
 			$row = $form->addRow();
 				$row->addLabel('preferredName', __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
-				$row->addTextField('preferredName')->isRequired()->maxLength(60);
+				$row->addTextField('preferredName')->required()->maxLength(60);
 
 			$row = $form->addRow();
 				$row->addLabel('officialName', __('Official Name'))->description(__('Full name as shown in ID documents.'));
-				$row->addTextField('officialName')->isRequired()->maxLength(150)->setTitle(__('Please enter full name as shown in ID documents'));
+				$row->addTextField('officialName')->required()->maxLength(150)->setTitle(__('Please enter full name as shown in ID documents'));
 
 			$row = $form->addRow();
 				$row->addLabel('nameInCharacters', __('Name In Characters'))->description(__('Chinese or other character-based name.'));
@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 			$row = $form->addRow();
 				$row->addLabel('gender', __('Gender'));
-				$row->addSelectGender('gender')->isRequired();
+				$row->addSelectGender('gender')->required();
 
 			$row = $form->addRow();
 				$row->addLabel('dob', __('Date of Birth'));
@@ -186,7 +186,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 			} else {
                 $row = $form->addRow();
                 $row->addLabel('gibbonRoleIDPrimary', __('Primary Role'))->description(__('Controls what a user can do and see.'));
-                $row->addSelect('gibbonRoleIDPrimary')->fromArray($availableRoles)->isRequired()->placeholder();
+                $row->addSelect('gibbonRoleIDPrimary')->fromArray($availableRoles)->required()->placeholder();
 			}
 
 			// Grab the selected roles, and break apart into selectable roles and restricted roles
@@ -205,27 +205,27 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 				$restrictedRolesList = implode(', ', array_column($restrictedRoles, 'name'));
 
 				$row = $form->addRow();
-					$row->addLabel('gibbonRoleIDRestricted', __('Resticted Roles'));
+					$row->addLabel('gibbonRoleIDRestricted', __('Restricted Roles'));
 					$row->addTextField('gibbonRoleIDRestricted')->readOnly()->setValue($restrictedRolesList)->setClass('standardWidth');
 			}
 
             $row = $form->addRow();
                 $row->addLabel('username', __('Username'))->description(__('System login name.'));
                 $row->addUsername('username')
-                    ->isRequired()
+                    ->required()
                     ->setValue($values['username']);
 
 			$row = $form->addRow();
 				$row->addLabel('status', __('Status'))->description(__('This determines visibility within the system.'));
-				$row->addSelectStatus('status')->isRequired();
+				$row->addSelectStatus('status')->required();
 
 			$row = $form->addRow();
 				$row->addLabel('canLogin', __('Can Login?'));
-				$row->addYesNo('canLogin')->isRequired();
+				$row->addYesNo('canLogin')->required();
 
 			$row = $form->addRow();
 				$row->addLabel('passwordForceReset', __('Force Reset Password?'))->description(__('User will be prompted on next login.'));
-				$row->addYesNo('passwordForceReset')->isRequired();
+				$row->addYesNo('passwordForceReset')->required();
 
 			// CONTACT INFORMATION
 			$form->addRow()->addHeading(__('Contact Information'));
@@ -236,7 +236,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 			$uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
 			if ($uniqueEmailAddress == 'Y') {
-				$email->isUnique('./modules/User Admin/user_manage_emailAjax.php', array('gibbonPersonID' => $gibbonPersonID));
+				$email->uniqueField('./modules/User Admin/user_manage_emailAjax.php', array('gibbonPersonID' => $gibbonPersonID));
 			}
 
 			$row = $form->addRow();

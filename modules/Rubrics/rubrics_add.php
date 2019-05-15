@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
             $row = $form->addRow();
                 $row->addLabel('scope', 'Scope');
             if ($highestAction == 'Manage Rubrics_viewEditAll') {
-                $row->addSelect('scope')->fromArray($scopes)->isRequired()->placeholder();
+                $row->addSelect('scope')->fromArray($scopes)->required()->placeholder();
                 $form->toggleVisibilityByClass('learningAreaRow')->onSelect('scope')->when('Learning Area');
             } else if ($highestAction == 'Manage Rubrics_viewAllEditLearningArea') {
                 $row->addTextField('scope')->readOnly()->setValue('Learning Area');
@@ -97,15 +97,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
 
             $row = $form->addRow()->addClass('learningAreaRow');
                 $row->addLabel('gibbonDepartmentID', __('Learning Area'));
-                $row->addSelect('gibbonDepartmentID')->fromQuery($pdo, $sql, $data)->isRequired()->placeholder();
+                $row->addSelect('gibbonDepartmentID')->fromQuery($pdo, $sql, $data)->required()->placeholder();
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));
-                $row->addTextField('name')->maxLength(50)->isRequired();
+                $row->addTextField('name')->maxLength(50)->required();
 
             $row = $form->addRow();
                 $row->addLabel('active', __('Active'));
-                $row->addYesNo('active')->isRequired();
+                $row->addYesNo('active')->required();
 
             $sql = "SELECT DISTINCT category FROM gibbonRubric ORDER BY category";
             $result = $pdo->executeQuery(array(), $sql);
@@ -132,11 +132,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
 
             $row = $form->addRow();
                 $row->addLabel('rows', __('Initial Rows'))->description(__('Rows store assessment strands.'));
-                $row->addSelect('rows')->fromArray(range(1, 10))->isRequired();
+                $row->addSelect('rows')->fromArray(range(1, 10))->required();
 
             $row = $form->addRow();
                 $row->addLabel('columns', __('Initial Columns'))->description(__('Columns store assessment levels.'));
-                $row->addSelect('columns')->fromArray(range(1, 10))->isRequired();
+                $row->addSelect('columns')->fromArray(range(1, 10))->required();
             
             $row = $form->addRow();
                 $row->addFooter();

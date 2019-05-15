@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Module\Attendance\AttendanceView;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -103,18 +104,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
 
     $row = $form->addRow();
         $row->addLabel('dateStart', __('Start Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-        $row->addDate('dateStart')->setValue(dateConvertBack($guid, $dateStart))->isRequired();
+        $row->addDate('dateStart')->setValue(dateConvertBack($guid, $dateStart))->required();
 
     $row = $form->addRow();
         $row->addLabel('dateEnd', __('End Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-        $row->addDate('dateEnd')->setValue(dateConvertBack($guid, $dateEnd))->isRequired();
+        $row->addDate('dateEnd')->setValue(dateConvertBack($guid, $dateEnd))->required();
 
     $typeOptions = array_column($attendance->getAttendanceTypes(), 'name');
+    $typeOptions = array_map('__', $typeOptions);
+
     $row = $form->addRow();
         $row->addLabel('types', __('Types'));
         $row->addSelect('types')->fromArray($typeOptions)->selectMultiple()->selected($types);
 
     $reasonOptions = $attendance->getAttendanceReasons();
+    $reasonOptions = array_map('__', $reasonOptions);
+
     $row = $form->addRow();
         $row->addLabel('reasons', __('Reasons'));
         $row->addSelect('reasons')->fromArray($reasonOptions)->selectMultiple()->selected($reasons);
@@ -228,7 +233,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
                 labels: [
                     <?php
                         foreach ( $days as $date) {
-                            echo "'".date('M j', strtotime($date) )."',";
+                            echo "'".Format::dateReadable($date,'%b %d')."',";
                         }
                     ?>
                 ],
@@ -238,7 +243,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
                     foreach ($data as $typeName => $dates) :
                     ?>
                     {
-                        label: "<?php echo $typeName; ?>",
+                        label: "<?php echo __($typeName); ?>",
 
                         fill: false,
                         backgroundColor: "<?php echo 'rgba('.$colors[ $datasetCount % $colorCount ].',1)'; ?>",

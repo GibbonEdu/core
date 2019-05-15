@@ -58,9 +58,11 @@ class FormFactory implements FormFactoryInterface
         return new Layout\Table($this, $id);
     }
 
-    public function createDataTable($id, $criteria)
+    public function createDataTable($id, $criteria = null)
     {
-        return DataTable::createPaginated($id, $criteria);
+        return !empty($criteria)
+            ? DataTable::createPaginated($id, $criteria)
+            : DataTable::create($id);
     }
 
     public function createTableCell($content = '')
@@ -214,6 +216,11 @@ class FormFactory implements FormFactoryInterface
     public function createUsername($name)
     {
         return new Input\Username($name);
+    }
+
+    public function createSelectPerson($name)
+    {
+        return new Input\Person($name);
     }
 
     /* PRE-DEFINED LAYOUT --------------------------- */
@@ -371,6 +378,7 @@ class FormFactory implements FormFactoryInterface
             'tr_TR' => 'Türkçe - Türkiye',
             'ar_SA' => 'العربية - المملكة العربية السعودية',
             'th_TH' => 'ภาษาไทย - ราชอาณาจักรไทย',
+            'ur_PK' => 'پاکستان - اُردُو',
             'zh_CN' => '汉语 - 中国',
             'zh_HK' => '體字 - 香港',
         );
@@ -429,6 +437,7 @@ class FormFactory implements FormFactoryInterface
                 'NAD N$' => 'Namibian Dollar (N$)',
                 'NPR ₨' => 'Nepalese Rupee (₨)',
                 'NGN ₦' => 'Nigerian Naira (₦)',
+                'OMR ر.ع.' => 'Omani Rial (ر.ع.)',
                 'PKR ₨' => 'Pakistani Rupee (₨)',
                 'RUB ₽' => 'Russian Ruble (₽)',
                 'SAR ﷼‎' => 'Saudi Riyal (﷼‎)',

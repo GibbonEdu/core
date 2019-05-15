@@ -294,7 +294,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                                 echo '<td>';
                                 echo "<span title='".htmlPrep($rowEntry['description'])."'><b><u>".$rowEntry['name'].'</u></b></span><br/>';
                                 echo "<span style='font-size: 90%; font-style: italic; font-weight: normal'>";
-                                $unit = getUnit($connection2, $rowEntry['gibbonUnitID'], $rowEntry['gibbonHookID'], $rowEntry['gibbonCourseClassID']);
+                                $unit = getUnit($connection2, $rowEntry['gibbonUnitID'], $rowEntry['gibbonCourseClassID']);
                                 if (isset($unit[0])) {
                                     echo $unit[0].'<br/>';
                                     if ($unit[1] != '') {
@@ -486,7 +486,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                                             if (date('Y-m-d H:i:s') < $rowSub['homeworkDueDateTime']) {
                                                 echo "<span title='Pending'>".__('Pending').'</span>';
                                             } else {
-                                                if ($row['dateStart'] > $rowSub['date']) {
+                                                if ($rowChild['dateStart'] > $rowSub['date']) {
                                                     echo "<span title='".__('Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>".__('NA').'</span>';
                                                 } else {
                                                     if ($rowSub['homeworkSubmissionRequired'] == 'Compulsory') {

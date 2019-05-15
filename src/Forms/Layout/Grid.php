@@ -43,22 +43,21 @@ class Grid implements OutputableInterface, ValidatableInterface
      * @param  FormFactoryInterface  $factory
      * @param  string                $id
      */
-    public function __construct(FormFactoryInterface $factory, $id = '', $columns = 1)
+    public function __construct(FormFactoryInterface $factory, $id = '', $breakpoints = 'w-1/2 sm:w-1/3')
     {
         $this->factory = $factory;
-        $this->setColumns($columns);
+        $this->setBreakpoints($breakpoints);
         $this->setID($id);
-        $this->setClass('fullWidth grid');
     }
 
     /**
-     * Sets the number of columns wide to render the grid.
+     * Sets the breakpoints in the grid with css classes, eg: w-1/2 sm:w-1/3
      * @param int $columns
      * @return self
      */
-    public function setColumns($columns)
+    public function setBreakpoints($breakpoints)
     {
-        $this->columns = $columns;
+        $this->breakpoints = $breakpoints;
 
         return $this;
     }
@@ -91,26 +90,19 @@ class Grid implements OutputableInterface, ValidatableInterface
      */
     public function getOutput()
     {
-        $output = '<table '.$this->getAttributeString().' cellspacing="0">';
-        $output .= '<tbody>';
+        $this->addClass('w-full flex flex-wrap items-stretch');
 
-        $cellWidth = 100 / $this->columns;
-        $emptyCell = $this->factory->createColumn();
-        $rows = array_chunk($this->getElements(), $this->columns);
+        $output = '<div '.$this->getAttributeString().'>';
         
-        foreach ($rows as $cells) {
-            $cells = array_pad($cells, $this->columns, $emptyCell);
+        foreach ($this->getElements() as $cell) {
+            $cell->addClass($this->breakpoints);
 
-            $output .= '<tr>';
-            foreach ($cells as $cell) {
-                $output .= '<td class="' . $cell->getClass() . '" style="width: '.$cellWidth.'%">';
-                $output .= $cell->getOutput();
-                $output .= '</td>';
-            }
-            $output .= '</tr>';
+            $output .= '<div '.$cell->getAttributeString().'>';
+            $output .= $cell->getOutput();
+            $output .= '</div>';
         }
-        $output .= '</tbody>';
-        $output .= '</table>';
+
+        $output .= '</div>';
 
         return $output;
     }
