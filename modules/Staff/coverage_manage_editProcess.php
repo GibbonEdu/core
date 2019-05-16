@@ -55,5 +55,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_edit
         : '&return=success0';
 
     header("Location: {$URL}");
-    exit;
 }

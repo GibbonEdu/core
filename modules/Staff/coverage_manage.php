@@ -40,6 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     $urgencyThreshold = getSettingByScope($connection2, 'Staff', 'urgencyThreshold');
     $StaffCoverageGateway = $container->get(StaffCoverageGateway::class);
     
+    // SEARCH FORM
     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setTitle(__('Filter'));
     $form->setClass('noIntBorder fullWidth');

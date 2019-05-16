@@ -49,6 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_dele
     $coverageDates = $staffCoverageDateGateway->selectDatesByCoverage($gibbonStaffCoverageID)->fetchAll();
     $partialFail = false;
 
+    // Delete each date first
     foreach ($coverageDates as $date) {
         $partialFail &= !$staffCoverageDateGateway->delete($date['gibbonStaffCoverageDateID']);
     }
@@ -61,5 +62,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_dele
         : '&return=success0';
 
     header("Location: {$URL}");
-    exit;
 }
