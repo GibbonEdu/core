@@ -70,6 +70,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
     $table->setDescription('<strong>'.$fullName.'</strong><br/><br/>'.$substitute['details']);
     $table->getRenderer()->addData('class', 'bulkActionForm');
 
+    $table->modifyRows(function ($values, $row) {
+        return $row->addClass('h-10');
+    });
+
     $table->addColumn('dateLabel', __('Date'))
         ->format(Format::using('dateReadable', 'date'));
 
