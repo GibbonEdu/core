@@ -151,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
             $row->addCheckbox('substituteTypes')->fromArray($availableSubsByType)->checkAll()->wrap('<div class="standardWidth floatRight">', '</div>');
         }
     } else {
-        $row->addAlert(__("There are no substitutes currently available for this time period. You should still send a request, as sub availability may change, but you cannot select a specific sub at this time. A notification will be sent to admin."), 'warning');
+        $row->addAlert(__("There are no substitutes currently available for this time period. You should still send a request, as substitute availability may change, but you cannot select a specific substitute at this time. A notification will be sent to administration."), 'warning');
     }
 
     // Individual
@@ -196,7 +196,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
             ->isRequired()
             ->setValue($dateStart['timeEnd'] ?? $weekday['schoolEnd']);
 
-    // Loaded via AJAX
+    // Dates selection - Loaded via AJAX
     $row = $form->addRow()->addClass('individualOptions');
         $row->addContent('<div class="datesTable"></div>');
 
@@ -205,8 +205,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
         $row->addTextArea('notesStatus')->setRows(3);
 
     $row = $form->addRow()->addClass('coverageSubmit');
-        $row->addFooter();
-        $row->addSubmit()->prepend('<div class="coverageNoSubmit text-right text-xs text-gray-600 italic pr-1">'.__('Select at least one date before continuing.').'</div>');
+        $row->addSubmit()->prepend('<div class="coverageNoSubmit inline text-right text-xs text-gray-600 italic pr-1">'.__('Select a substitute and at least one date before continuing.').'</div>');
 
     echo $form->getOutput();
 }
@@ -218,6 +217,7 @@ $(document).ready(function() {
         if ($('#gibbonPersonIDCoverage').val() == '') return;
         if ($('#requestType').val() == 'Broadcast') return;
 
+        // Individual requests: Load the available dates per sub via AJAX
         $('.datesTable').load('./modules/Staff/coverage_requestAjax.php', {
             'gibbonStaffAbsenceID': '<?php echo $gibbonStaffAbsenceID ?? ''; ?>',
             'gibbonPersonIDCoverage': $('#gibbonPersonIDCoverage').val(),
@@ -248,6 +248,5 @@ $(document).ready(function() {
     });
 
     $('#requestType').trigger('change');
-
 }) ;
 </script>

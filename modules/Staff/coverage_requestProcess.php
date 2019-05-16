@@ -110,6 +110,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
 
     // Create a coverage date for each absence date, allow coverage request form to override absence times
     foreach ($absenceDates as $absenceDate) {
+        // Skip any absence dates that have already been covered
+        if (!empty($absenceDate['gibbonStaffCoverageID'])) {
+            continue;
+        }
 
         // Skip dates that were not selected for Individual requests
         if ($data['requestType'] == 'Individual' && !in_array($absenceDate['date'], $requestDates)) {
@@ -125,6 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
             'timeEnd'   => $_POST['timeEnd'] ?? $absenceDate['timeEnd'],
         ];
 
+        // Calculate the day 'value' of each date, based on thresholds from Staff Settings.
         if ($dateData['allDay'] == 'Y') {
             $dateData['value'] = 1.0;
         } else {

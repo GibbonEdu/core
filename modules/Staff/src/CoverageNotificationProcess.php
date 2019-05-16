@@ -99,7 +99,9 @@ class CoverageNotificationProcess extends BackgroundProcess
         // Get available subs
         $availableSubs = [];
         foreach ($coverageDates as $date) {
-            $criteria = $this->substituteGateway->newQueryCriteria()->filterBy('substituteTypes', $coverage['substituteTypes']);
+            $criteria = $this->substituteGateway
+                ->newQueryCriteria()
+                ->filterBy('substituteTypes', $coverage['substituteTypes']);
             $availableByDate = $this->substituteGateway->queryAvailableSubsByDate($criteria, $date['date'])->toArray();
             $availableSubs = array_merge($availableSubs, $availableByDate);
         }
