@@ -156,17 +156,20 @@ class MessageSender
     {
         if (empty($this->notificationGateway)) return [];
 
+        $sent = [];
         foreach ($recipients as $person) {
             $notification = $message->toDatabase() + ['gibbonPersonID' => $person['gibbonPersonID']];
             $row = $this->notificationGateway->selectNotificationByStatus($notification, 'New')->fetch();
 
-            if (!empty($row)) {
-                $this->notificationGateway->updateNotificationCount($row['gibbonNotificationID'], $row['count']+1);
-            } else {
-                $this->notificationGateway->insertNotification($notification);
+            $success = !empty($row)
+                ? $this->notificationGateway->updateNotificationCount($row['gibbonNotificationID'], $row['count']+1)
+                : $this->notificationGateway->insertNotification($notification);
+
+            if ($success) {
+                $sent[] = $person['gibbonPersonID'];
             }
         }
 
-        return $recipients;
+        return $sent;
     }
 }

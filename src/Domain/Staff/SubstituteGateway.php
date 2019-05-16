@@ -93,7 +93,7 @@ class SubstituteGateway extends QueryableGateway
             ->newQuery()
             ->from('gibbonPerson')
             ->cols([
-                'gibbonPerson.gibbonPersonID as groupBy', 'gibbonPerson.gibbonPersonID', 'gibbonSubstitute.details', 'gibbonSubstitute.type', 'gibbonSubstitute.contactCall', 'gibbonSubstitute.contactEmail', 'gibbonSubstitute.contactSMS', 'gibbonSubstitute.priority', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.status', 'gibbonPerson.image_240', 'gibbonPerson.email', 'gibbonPerson.phone1', 'gibbonPerson.phone1Type', 'gibbonPerson.phone1CountryCode', 'gibbonStaff.gibbonStaffID',
+                'gibbonPerson.gibbonPersonID as groupBy', 'gibbonPerson.gibbonPersonID', 'gibbonSubstitute.details', 'gibbonSubstitute.type', 'gibbonSubstitute.priority', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.status', 'gibbonPerson.image_240', 'gibbonPerson.email', 'gibbonPerson.phone1', 'gibbonPerson.phone1Type', 'gibbonPerson.phone1CountryCode', 'gibbonStaff.gibbonStaffID',
                 '(absence.ID IS NULL AND coverage.ID IS NULL AND timetable.ID IS NULL AND unavailable.gibbonStaffCoverageDateID IS NULL) as available',
                 'absence.status as absence', 'coverage.status as coverage', 'timetable.status as timetable', 'unavailable.reason as unavailable',
             ])
@@ -123,7 +123,7 @@ class SubstituteGateway extends QueryableGateway
                     LEFT JOIN gibbonStaffAbsence ON (gibbonStaffAbsence.gibbonStaffAbsenceID=gibbonStaffCoverage.gibbonStaffAbsenceID)
                     LEFT JOIN gibbonPerson as absence ON (absence.gibbonPersonID=gibbonStaffAbsence.gibbonPersonID)
                     LEFT JOIN gibbonPerson as status ON (status.gibbonPersonID=gibbonStaffCoverage.gibbonPersonID)
-                    WHERE gibbonStaffCoverage.status <> 'Declined' AND gibbonStaffCoverage.status <> 'Cancelled'",
+                    WHERE gibbonStaffCoverage.status = 'Accepted'",
                 'coverage',
                 "coverage.gibbonPersonIDCoverage=gibbonPerson.gibbonPersonID AND coverage.date = :date 
                     AND (coverage.allDay='Y' OR (coverage.allDay='N' AND coverage.timeStart <= :timeEnd AND coverage.timeEnd >= :timeStart))"
@@ -173,7 +173,7 @@ class SubstituteGateway extends QueryableGateway
                     LEFT JOIN gibbonStaffAbsence ON (gibbonStaffAbsence.gibbonStaffAbsenceID=gibbonStaffCoverage.gibbonStaffAbsenceID)
                     LEFT JOIN gibbonPerson as absence ON (absence.gibbonPersonID=gibbonStaffAbsence.gibbonPersonID)
                     LEFT JOIN gibbonPerson as status ON (status.gibbonPersonID=gibbonStaffCoverage.gibbonPersonID)
-                    WHERE gibbonStaffCoverage.status <> 'Declined' AND gibbonStaffCoverage.status <> 'Cancelled'
+                    WHERE gibbonStaffCoverage.status = 'Accepted'
                     ",
                 'coverage',
                 'coverage.gibbonPersonIDCoverage=gibbonPerson.gibbonPersonID AND coverage.date = :date'
