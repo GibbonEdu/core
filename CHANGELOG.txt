@@ -40,7 +40,7 @@ v18.0.00
         System: updated Google login scopes to remove plus.me, based on Google API changes
         System: made disabled checkboxes more visible
         System: method for columns that require the translation, and update the columns where this is applicable
-        System: added Omani Rial as a currency option
+        System: added Omani Rial & Albanian Lek as a currency option
         System: added an option to select SMTP encryption in Third Party Settings
         Data Updater: differentiate required field settings by role, add hidden & read-only options
         Attendance: updated Take Attendance by Person logs to separate class and school wide attendance
