@@ -108,5 +108,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_cancel
         : "&return=success0";
 
     header("Location: {$URLSuccess}");
-    exit;
 }

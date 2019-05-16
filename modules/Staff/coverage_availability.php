@@ -30,11 +30,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availabilit
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Proceed!
-    
-    if (isActionAccessible($guid, $connection2, '/modules/Staff/subs_manage.php')) {
+    // Proceed!
+    if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage.php')) {
         $page->breadcrumbs
-            ->add(__('Manage Substitutes'), 'subs_manage.php')
+            ->add(__('Manage Substitutes'), 'substitutes_manage.php')
             ->add(__('Edit Availability'));
 
         $gibbonPersonID = $_GET['gibbonPersonID'] ?? $_SESSION[$guid]['gibbonPersonID'];
@@ -48,7 +47,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availabilit
             $row->addSelectUsers('person')->readonly()->selected($gibbonPersonID);
 
         echo $form->getOutput();
-
     } else {
         $page->breadcrumbs
             ->add(__('My Coverage'), 'coverage_my.php')

@@ -50,5 +50,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availabilit
         : '&return=success0';
 
     header("Location: {$URL}");
-    exit;
 }

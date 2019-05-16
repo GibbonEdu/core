@@ -32,6 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
+    // Proceed!
     $page->breadcrumbs->add(__('My Coverage'));
 
     if (isset($_GET['return'])) {
@@ -86,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
         ->fromPOST('staffCoverageSelf');
 
     $coverage = $staffCoverageGateway->queryCoverageByPersonAbsent($criteria, $gibbonPersonID);
-    if ($coverage->getResultCount() > 0) {
+    if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php') || $coverage->getResultCount() > 0) {
         $table = DataTable::createPaginated('staffCoverageSelf', $criteria);
         $table->setTitle(__('My Coverage'));
 
@@ -136,8 +137,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
                     ->isModal(800, 550)
                     ->setURL('/modules/Staff/coverage_view_details.php');
 
-                $actions->addAction('edit', __('Edit'))
-                    ->setURL('/modules/Staff/coverage_view_edit.php');
+                if ($coverage['status'] == 'Requested' || $coverage['status'] == 'Accepted') {
+                    $actions->addAction('edit', __('Edit'))
+                        ->setURL('/modules/Staff/coverage_view_edit.php');
+                }
                     
                 if ($coverage['status'] == 'Requested' || ($coverage['status'] == 'Accepted' && $coverage['dateEnd'] < date('Y-m-d'))) {
                     $actions->addAction('cancel', __('Cancel'))
@@ -152,7 +155,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
     // SUBSTITUTE COVERAGE
     $substitute = $substituteGateway->getSubstituteByPerson($gibbonPersonID);
     if (!empty($substitute)) {
-
         $criteria = $staffCoverageGateway->newQueryCriteria()->pageSize(0);
 
         $coverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID, false);

@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_cancel
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Proceed!
+    // Proceed!
     $page->breadcrumbs
         ->add(__('My Coverage'), 'coverage_my.php')
         ->add(__('Cancel Coverage Request'));

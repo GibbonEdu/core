@@ -89,5 +89,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_edit.p
         : "&return=success0";
 
     header("Location: {$URL}");
-    exit;
 }

@@ -27,6 +27,10 @@ use DateInterval;
 use DatePeriod;
 
 /**
+ * CoverageCalendar
+ *
+ * A reusable DataTable class for displaying coverage and availability in a colour-coded calendar view.
+ *
  * @version v18
  * @since   v18
  */
@@ -130,8 +134,8 @@ class CoverageCalendar
                     $cell->addClass($day['date']->format('Y-m-d') == date('Y-m-d') ? 'border-2 border-gray-700' : 'border');
                     
                     switch ($day['coverage']['status']) {
-                        case 'Requested': $cellColor = 'bg-color2'; break;
-                        case 'Accepted':  $cellColor = 'bg-color0'; break;
+                        case 'Requested': $cellColor = 'bg-chart2'; break;
+                        case 'Accepted':  $cellColor = 'bg-chart0'; break;
                         default:          $cellColor = 'bg-gray-500';
                     }
                     
