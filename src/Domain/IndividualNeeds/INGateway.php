@@ -96,4 +96,51 @@ class INGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    public function queryINCountsBySchoolYear(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonYearGroupID = '')
+    {
+        $query = $this
+            ->newQuery()
+            ->distinct()
+            ->from('gibbonStudentEnrolment')
+            ->cols(['gibbonYearGroup.name as labelName',
+                    'gibbonYearGroup.gibbonYearGroupID as labelID',
+                    'COUNT(DISTINCT gibbonStudentEnrolment.gibbonPersonID) as studentCount',
+                    'COUNT(DISTINCT gibbonINPersonDescriptor.gibbonPersonID) as inCount',
+            ])
+            ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
+            ->innerJoin('gibbonYearGroup', 'gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID')
+            ->innerJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
+            ->leftJoin('gibbonINPersonDescriptor', 'gibbonINPersonDescriptor.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->where("gibbonPerson.status='Full'")
+            ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today)')
+            ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:today)')
+            ->bindValue('today', date('Y-m-d'))
+            ->where('gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+
+        if (!empty($gibbonYearGroupID)) {
+            // Grouped by Roll Groups within a Year Group
+            $query->cols([
+                'gibbonRollGroup.name as labelName',
+                'gibbonRollGroup.gibbonRollGroupID as labelID',
+                'COUNT(DISTINCT gibbonStudentEnrolment.gibbonPersonID) as studentCount',
+                'COUNT(DISTINCT gibbonINPersonDescriptor.gibbonPersonID) as inCount',
+            ])
+            ->where('gibbonStudentEnrolment.gibbonYearGroupID = :gibbonYearGroupID')
+            ->bindValue('gibbonYearGroupID', $gibbonYearGroupID)
+            ->groupBy(['gibbonRollGroup.gibbonRollGroupID']);
+        } else {
+            // Grouped by Year Group
+            $query->cols([
+                'gibbonYearGroup.name as labelName',
+                'gibbonYearGroup.gibbonYearGroupID as labelID',
+                'COUNT(DISTINCT gibbonStudentEnrolment.gibbonPersonID) as studentCount',
+                'COUNT(DISTINCT gibbonINPersonDescriptor.gibbonPersonID) as inCount',
+            ])
+            ->groupBy(['gibbonYearGroup.gibbonYearGroupID']);
+        }
+
+        return $this->runQuery($query, $criteria);
+    }
 }
