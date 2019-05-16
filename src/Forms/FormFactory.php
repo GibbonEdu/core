@@ -416,6 +416,7 @@ class FormFactory implements FormFactoryInterface
                 'USD $' => 'U.S. Dollar ($)',
                 ),
             'OTHERS' => array(
+                'ALL L' => 'Albanian Lek (L)',
                 'BDT ó' => 'Bangladeshi Taka (ó)',
                 'BTC' => 'Bitcoin',
                 'BGN лв.' => 'Bulgarian Lev (лв.)',
