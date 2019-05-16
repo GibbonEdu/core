@@ -47,6 +47,16 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         $fail = true;
     }
 
+    $crossFillClasses = (isset($_POST['crossFillClasses'])) ? $_POST['crossFillClasses'] : NULL;
+    try {
+        $data = array('value' => $crossFillClasses);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='crossFillClasses'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
     $defaultRollGroupAttendanceType = (isset($_POST['defaultRollGroupAttendanceType'])) ? $_POST['defaultRollGroupAttendanceType'] : NULL;
     try {
         $data = array('value' => $defaultRollGroupAttendanceType);

@@ -103,6 +103,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                 echo "</div>";
             } else {
                 $defaultAttendanceType = getSettingByScope($connection2, 'Attendance', 'defaultClassAttendanceType');
+                $crossFillClasses = getSettingByScope($connection2, 'Attendance', 'crossFillClasses');
 
                 // Check class
                 try {
@@ -230,9 +231,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                                 $sql = "SELECT type, reason, comment, context, timestampTaken FROM gibbonAttendanceLogPerson
                                         JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                                         WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
-                                        AND date LIKE :date
-                                        AND NOT context='Class'
-                                        ORDER BY timestampTaken DESC";
+                                        AND date LIKE :date";
+                                if ($crossFillClasses == "N") {
+                                    $sql .= " AND NOT context='Class'";
+                                }
+                                $sql .= " ORDER BY timestampTaken DESC";
                                 $result = $pdo->executeQuery($data, $sql);
 
                                 $log = ($result->rowCount() > 0) ? $result->fetch() : $log;

@@ -1427,6 +1427,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                         // Get attendance pre-fill and default settings
                         $defaultAttendanceType = getSettingByScope($connection2, 'Attendance', 'defaultClassAttendanceType');
+                        $crossFillClasses = getSettingByScope($connection2, 'Attendance', 'crossFillClasses');
 
                         $attendance = new Gibbon\Module\Attendance\AttendanceView($gibbon, $pdo);
 
@@ -1512,9 +1513,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     $sqlLog = "SELECT type, reason, comment, context, timestampTaken FROM gibbonAttendanceLogPerson
                                             JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                                             WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
-                                            AND date LIKE :date
-                                            AND NOT context='Class'
-                                            ORDER BY timestampTaken DESC";
+                                            AND date LIKE :date";
+                                    if ($crossFillClasses == "N") {
+                                        $sqlLog .= " AND NOT context='Class'";
+                                    }
+                                    $sqlLog .= " ORDER BY timestampTaken DESC";
                                     $resultLog = $pdo->executeQuery($dataLog, $sqlLog);
 
                                     if ($resultLog && $resultLog->rowCount() > 0 ) {
