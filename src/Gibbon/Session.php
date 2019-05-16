@@ -82,6 +82,11 @@ class Session implements SessionInterface
         $this->set('guid', $this->guid);
     }
 
+    public function setGuid(string $_guid)
+    {
+        $this->guid = $_guid;
+    }
+
     /**
      * Set Database Connection
      * @version  v13
