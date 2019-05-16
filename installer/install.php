@@ -264,7 +264,7 @@ if ($canInstall == false) {
 
     //Check for db values
     if (!empty($databaseServer) && !empty($databaseName) && !empty($databaseUsername) && !empty($demoData)) {
-        //Estabish db connection without database name
+        //Establish db connection without database name
 
         $config = compact('databaseServer', 'databaseUsername', 'databasePassword');
         $mysqlConnector = new MySqlConnector();
@@ -282,38 +282,8 @@ if ($canInstall == false) {
         echo '</div>';
     } else {
         //Set up config.php
-        $config = '';
-        $config .= "<?php\n";
-        $config .= "/*\n";
-        $config .= "Gibbon, Flexible & Open School System\n";
-        $config .= "Copyright (C) 2010, Ross Parker\n";
-        $config .= "\n";
-        $config .= "This program is free software: you can redistribute it and/or modify\n";
-        $config .= "it under the terms of the GNU General Public License as published by\n";
-        $config .= "the Free Software Foundation, either version 3 of the License, or\n";
-        $config .= "(at your option) any later version.\n";
-        $config .= "\n";
-        $config .= "This program is distributed in the hope that it will be useful,\n";
-        $config .= "but WITHOUT ANY WARRANTY; without even the implied warranty of\n";
-        $config .= "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n";
-        $config .= "GNU General Public License for more details.\n";
-        $config .= "\n";
-        $config .= "You should have received a copy of the GNU General Public License\n";
-        $config .= "along with this program.  If not, see <http://www.gnu.org/licenses/>.\n";
-        $config .= "*/\n";
-        $config .= "\n";
-        $config .= "//Sets database connection information\n";
-        $config .= '$databaseServer="'.$databaseServer."\" ;\n";
-        $config .= '$databaseUsername="'.$databaseUsername."\" ;\n";
-        $config .= "\$databasePassword='".$databasePassword."' ;\n";
-        $config .= '$databaseName="'.$databaseName."\" ;\n";
-        $config .= "\n";
-        $config .= "//Sets globally unique id, to allow multiple installs on the server server.\n";
-        $config .= '$guid="'.$guid."\" ;\n";
-        $config .= "\n";
-        $config .= "//Sets system-wide caching factor, used to balance performance and freshness. Value represents number of page loads between cache refresh. Must be posititve integer. 1 means no caching.\n";
-        $config .= "\$caching=10 ;\n";
-        $config .= "?>\n";
+        $configData = compact('databaseServer', 'databaseUsername', 'databasePassword', 'databaseName', 'guid');
+        $config = $page->fetchFromTemplate('installer/config.twig.html', $configData);
 
         //Write config
         $fp = fopen('../config.php', 'wb');
@@ -939,4 +909,4 @@ $page->addData([
     'sidebar'         => true
 ]);
 
-echo $page->render('install.twig.html');
+echo $page->render('installer/install.twig.html');
