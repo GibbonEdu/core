@@ -1,0 +1,101 @@
+details:
+    type: staffAbsence
+    category: Substitute
+    name: Staff Absences
+    table: gibbonStaffAbsence
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Staff
+    action: Manage Staff Absences
+fields:
+    gibbonSchoolYearID: 
+        name: "School Year"
+        desc: "School year name, as set in School Admin. Must already exist."
+        args: { filter: schoolyear, required: true, custom: true, readonly: [gibbonStaffAbsenceDate]  }
+        relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
+    gibbonPersonID:
+        name: "Staff Member"
+        desc: "Username"
+        args: { filter: nospaces, required: true, readonly: [gibbonStaffAbsenceDate]  }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+    gibbonStaffAbsenceTypeID:
+        name: "Type"
+        desc: ""
+        args: { filter: string, custom: true, required: true }
+        relationship: { table: gibbonStaffAbsenceType, key: gibbonStaffAbsenceTypeID, field: name  }
+    reason:
+        name: "Reason"
+        desc: ""
+        args: { filter: string, custom: true }
+    comment:
+        name: "Comment"
+        desc: ""
+        args: { filter: string, custom: true, readonly: [gibbonStaffAbsenceDate] }
+    status:
+        name: "Status"
+        desc: ""
+        args: { filter: string, custom: true }
+    date: 
+        name: "Date"
+        desc: "Must be unique. Format: YYYY-MM-DD"
+        args: { filter: date, required: true }
+    allDay:
+        name: "All Day"
+        desc: ""
+        args: { filter: yesno, custom: true, required: true }
+    timeStart:
+        name: "Start Time"
+        desc: "Format: hh:mm (24hr)"
+        args: { filter: time, custom: true }
+    timeEnd:
+        name: "End Time"
+        desc: "Format: hh:mm (24hr)"
+        args: { filter: time, custom: true }
+    value:
+        name: "Value"
+        desc: ""
+        args: { filter: decimal, custom: true, required: true }
+    timestampCreator:
+        name: "Created On"
+        desc: ""
+        args: { filter: timestamp, custom: true }
+    gibbonPersonIDCreator:
+        name: "Created By"
+        desc: "Username"
+        args: { filter: nospaces, custom: true, required: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+    gibbonStaffAbsenceID:
+        name: "Absence ID"
+        desc: ""
+        args: { filter: string, linked: comment, readonly: [gibbonStaffAbsence] }
+        relationship: { table: gibbonStaffAbsence, key: gibbonStaffAbsenceID, field: [comment, gibbonPersonID, gibbonSchoolYearID]  }
+tables:
+    gibbonStaffAbsence: 
+        primaryKey:
+            gibbonStaffAbsenceID
+        uniqueKeys:
+            - [comment, gibbonPersonID, gibbonSchoolYearID]
+        fields:
+            - gibbonSchoolYearID
+            - gibbonPersonID
+            - gibbonStaffAbsenceTypeID
+            - reason
+            - comment
+            - status
+            - timestampCreator
+            - gibbonPersonIDCreator
+    gibbonStaffAbsenceDate: 
+        primaryKey:
+            gibbonStaffAbsenceDateID
+        uniqueKeys:
+            - [ gibbonStaffAbsenceID, date ]
+        fields:
+            - gibbonStaffAbsenceID
+            - date
+            - allDay
+            - timeStart
+            - timeEnd
+            - value
+            - comment
+            - gibbonPersonID
+            - gibbonSchoolYearID
