@@ -112,6 +112,7 @@ class AbsenceFormats
             return $coverage['status'];
         }
 
+        $urgencyThreshold = intval($urgencyThreshold);
         $relativeSeconds = strtotime($coverage['dateStart']) - time();
         if ($relativeSeconds <= 0) {
             return '<span class="tag dull">'.__('Overdue').'</span>';
