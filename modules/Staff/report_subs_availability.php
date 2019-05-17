@@ -142,10 +142,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
             $output = '';
 
             if ($person['available']) {
-                if ($person['contactEmail'] == 'Y' && !empty($person['email'])) {
+                if (!empty($person['email'])) {
                     $output .= $person['email'].'<br/>';
                 }
-                if ($person['contactCall'] == 'Y' && !empty($person['phone1'])) {
+                if (!empty($person['phone1'])) {
                     $output .= Format::phone($person['phone1'], $person['phone1CountryCode'], $person['phone1Type']).'<br/>';
                 }
             } else {
