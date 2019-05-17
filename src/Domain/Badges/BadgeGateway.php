@@ -14,6 +14,7 @@ class BadgeGateway extends QueryableGateway
 
     public function queryBadges(QueryCriteria $criteria, $gibbonSchoolYearID)
     {
+        var_dump($criteria);
         $query = $this
             ->newQuery()
             ->from($this->getTableName() . ' as bb')
@@ -25,6 +26,7 @@ class BadgeGateway extends QueryableGateway
                 'bb.description as description',
                 'bbs.date as date',
                 'bbs.comment as comment',
+                'p.gibbonPersonID as gibbonPersonID',
                 'p.title as title',
                 'p.surname as surname',
                 'p.preferredName as preferredName'
@@ -35,10 +37,35 @@ class BadgeGateway extends QueryableGateway
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
         $criteria->addFilterRules([
-            'name' => function($query,$needle)
+            'studentName' => function($query,$needle)
             {
                 return $query
                     ->where("(p.surname like '%:needle%' or p.preferredName like '%:needle%')")
+                    ->bindValue('needle',$needle);
+            },
+            'badgeId' => function($query,$needle)
+            {
+                return $query
+                    ->where("bb.bagdesBadgeID = :needle")
+                    ->bindValue('needle',$needle);
+            },
+            'studentId' => function($query,$needle)
+            {
+                return $query
+                    ->where("p.gibbonPersonID = :needle")
+                    ->bindValue('needle',$needle);
+            },
+            'studentIdMulti' => function($query,$needle)
+            {
+                $needle = implode($needle,',');
+                return $query
+                    ->where("p.gibbonPersonID = :needle")
+                    ->bindValue('needle',$needle);
+            },
+            'badgeStudentID' => function($query,$needle)
+            {
+                return $query
+                    ->where("bbs.badgesBadgeStudent.badgesBadgeStudentID = :needle")
                     ->bindValue('needle',$needle);
             }
         ]);
