@@ -51,7 +51,7 @@ class Header
         if (isset($_SESSION[$guid]['username']) != false) {
             //MESSAGE WALL!
             if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
-                $return .= "<div id='messageWall'>";
+                $return .= "<div id='messageWall' class='relative'>";
 
                 require_once './modules/Messenger/moduleFunctions.php';
 
@@ -101,6 +101,8 @@ class Header
                         }
                         $_SESSION[$guid]['messageWallOutput'] = $output;
                     }
+                } else {
+                    $output = $_SESSION[$guid]['messageWallOutput'] ?? '';
                 }
 
                 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Messenger/messageWall_view.php';
@@ -111,7 +113,8 @@ class Header
                         $return .= "<a class='inactive inline-block relative mr-4' title='".__('Message Wall')."' href='$URL'><img class='minorLinkIcon' style='margin-left: 4px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
                     } else {
                         $return .= "<a class='inline-block relative mr-4' title='".__('Message Wall')."' href='$URL'><span class='badge -mr-2 right-0'>".$_SESSION[$guid]['messageWallCount']."</span><img class='minorLinkIcon' style='margin-left: 4px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
-                        if ($_SESSION[$guid]['pageLoads'] == 0 and ($_SESSION[$guid]['messengerLastBubble'] == null or $_SESSION[$guid]['messengerLastBubble'] < date('Y-m-d'))) {
+
+                        if (empty($_SESSION[$guid]['pageLoads']) and ($_SESSION[$guid]['messengerLastBubble'] == null or $_SESSION[$guid]['messengerLastBubble'] < date('Y-m-d'))) {
                             $messageBubbleBGColor = getSettingByScope($connection2, 'Messenger', 'messageBubbleBGColor');
                             $bubbleBG = '';
                             if ($messageBubbleBGColor != '') {
@@ -122,16 +125,14 @@ class Header
                             }
                             $messageBubbleWidthType = getSettingByScope($connection2, 'Messenger', 'messageBubbleWidthType');
                             $bubbleWidth = 300;
-                            $bubbleLeft = 755;
                             if ($messageBubbleWidthType == 'Wide') {
                                 $bubbleWidth = 700;
-                                $bubbleLeft = 415;
                             }
-                            $return .= "<div id='messageBubbleArrow' style=\"left: 1058px; top: 162px; z-index: 9999\" class='arrow top'></div>";
-                            $return .= "<div id='messageBubble' style=\"left: ".$bubbleLeft.'px; top: 178px; width: '.$bubbleWidth.'px; min-width: '.$bubbleWidth.'px; max-width: '.$bubbleWidth.'px; min-height: 100px; text-align: center; padding-bottom: 10px" class="ui-tooltip ui-widget ui-corner-all ui-widget-content" role="tooltip">';
+                            $return .= "<div id='messageBubbleArrow' style=\"left: 25px; top: 40px; z-index: 9999\" class='arrow top'></div>";
+                            $return .= "<div id='messageBubble' style=\"right: -25px; top: 56px; width: ".$bubbleWidth.'px; min-width: '.$bubbleWidth.'px; max-width: 100vw; min-height: 100px; text-align: center; padding-bottom: 10px" class="ui-tooltip ui-widget ui-corner-all ui-widget-content" role="tooltip">';
                             $return .= '<div class="ui-tooltip-content">';
                             $return .= "<div style='font-weight: bold; font-style: italic; font-size: 120%; margin-top: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dotted rgba(255,255,255,0.5); display: block'>".__('New Messages').'</div>';
-                            $test = count($output);
+                            $test = isset($output) ? count($output) : 0;
                             if ($test > 3) {
                                 $test = 3;
                             }
@@ -146,7 +147,7 @@ class Header
                                 $return .= '</span><br/>';
                                 $return .= '<i>'.$output[$i]['author'].'</i><br/><br/>';
                             }
-                            if (count($output) > 3) {
+                            if ($test > 3) {
                                 $return .= '<i>'.__('Plus more').'...</i>';
                             }
                             $return .= '</div>';
