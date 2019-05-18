@@ -196,12 +196,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     $staff = $student = $parent = $other = false;
                     $roles = explode(',', $rowSelect['gibbonRoleIDAll']);
                     $primaryRoleCategory = getRoleCategory($rowSelect['gibbonRoleIDPrimary'], $connection2);
+                    $roleCategories = [];
                     foreach ($roles as $role) {
                         $roleCategory = getRoleCategory($role, $connection2);
                         $staff = $staff || ($roleCategory == 'Staff');
                         $student = $student || ($roleCategory == 'Student');
                         $parent = $parent || ($roleCategory == 'Parent');
                         $other = $other || ($roleCategory == 'Other');
+                        $roleCategories[$roleCategory] = $roleCategory;
                     }
                 }
 
@@ -211,14 +213,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 $requiredFields = [];
                 
                 if ($highestAction != 'Update Personal Data_any') {
-                    $requiredFields = unserialize(getSettingByScope($connection2, 'User Admin', 'personalDataUpdaterRequiredFields'));
-                    if (is_array($requiredFields)) {
-                        if (!isset($requiredFields[$primaryRoleCategory])) {
+                    $requiredFieldsSetting = unserialize(getSettingByScope($connection2, 'User Admin', 'personalDataUpdaterRequiredFields'));
+                    if (is_array($requiredFieldsSetting)) {
+                        if (!isset($requiredFieldsSetting[$primaryRoleCategory])) {
+                            // If there's no per-role settings then handle the original required field Y/N settings
                             $requiredFields = array_map(function ($item) {
                                 return $item == 'Y'? 'required' : '';
+                            }, $requiredFieldsSetting);
+                        } elseif (is_array($roleCategories) && count($roleCategories) > 1) {
+                            // Flip the array from role=>field=>value to field=>role=>value
+                            // Loop by only the roles categories this user has.
+                            foreach ($roleCategories as $roleCategory) {
+                                $fields = $requiredFieldsSetting[$roleCategory] ?? [];
+                                foreach ($fields as $name => $value) {
+                                    $requiredFields[$name][$roleCategory] = $value;
+                                }
+                            }
+                            // Reduce each field to the setting with the greatest priority.
+                            // Eg: required by at least one role = a required field.
+                            $requiredFields = array_map(function ($field) {
+                                if (in_array('required', $field)) return 'required';
+                                if (in_array('', $field, true)) return '';
+                                if (in_array('readonly', $field)) return 'readonly';
+                                if (in_array('hidden', $field)) return 'hidden';
+                                return '';
                             }, $requiredFields);
                         } else {
-                            $requiredFields = $requiredFields[$primaryRoleCategory];
+                            // Grab the required fields for the users primary roles
+                            $requiredFields = $requiredFieldsSetting[$primaryRoleCategory];
                         }
                     }
                 }
@@ -282,6 +304,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     // Closure: check if any field in a given array are visible.
                     // Useful to hide headings in sections if not needed.
                     $anyVisible = function ($names) use ($requiredFields) {
+                        if (empty($requiredFields)) return true;
                         $fields = array_intersect_key($requiredFields, array_flip($names));
                         $visible = array_filter($fields, function ($item) {
                             return empty($item) || $item != 'hidden';
@@ -329,7 +352,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
                     // EMERGENCY CONTACTS
                     if ($student || $staff) {
-                        $form->addRow()->addHeading(__('Emergency Contacts'));
+                        $form->addRow()
+                            ->onlyIf($anyVisible(['emergency1Name', 'emergency1Relationship', 'emergency1Number1', 'emergency1Number2', 'emergency2Name', 'emergency2Relationship', 'emergency2Number1', 'emergency2Number2']))
+                            ->addHeading(__('Emergency Contacts'));
 
                         $form->addRow()->addContent(__('These details are used when immediate family members (e.g. parent, spouse) cannot be reached first. Please try to avoid listing immediate family members.'));
 
