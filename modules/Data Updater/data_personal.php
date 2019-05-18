@@ -625,7 +625,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
                             $row = $form->addRow();
                                 $row->addLabel('privacyOptions[]', __('Privacy Options'));
-                                $row->addCheckbox('privacyOptions[]')->fromArray($options)->loadFromCSV($values);
+                                $row->addCheckbox('privacyOptions[]')->fromArray($options)->loadFromCSV($values)->addClass('md:max-w-lg');
                         }
                     }
 
