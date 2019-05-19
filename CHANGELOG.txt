@@ -44,6 +44,7 @@ v18.0.00
         System: added an option to select SMTP encryption in Third Party Settings
         Data Updater: differentiate required field settings by role, add hidden & read-only options
         Attendance: updated Take Attendance by Person logs to separate class and school wide attendance
+        Attendance: updated the Student History page to be responsive, added tooltip information
         Form Groups: hide student count from non-staff
         Individual Needs: add an Individual Needs Overview report with chart
         Students: added link from student profile to Individual Needs edit screen
