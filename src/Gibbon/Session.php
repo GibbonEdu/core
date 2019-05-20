@@ -48,7 +48,7 @@ class Session implements SessionInterface
     {
         global $guid;
 
-        // Start the session (this should be the first time called)
+        // Start the session (this should be the first time called)    
         if (session_status() !== PHP_SESSION_ACTIVE) {
             //Prevent breakage of back button on POST pages
             ini_set('session.cache_limiter', 'private');
@@ -160,7 +160,6 @@ class Session implements SessionInterface
 
             return $retrieve($_SESSION[$this->guid], $key, $default);
         }
-
         return (isset($_SESSION[$this->guid][$key]))? $_SESSION[$this->guid][$key] : $default;
     }
 

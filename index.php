@@ -40,6 +40,7 @@ require_once './modules/Messenger/moduleFunctions.php';
 $page = $container->get('page');
 $session = $container->get('session');
 
+$session->get('username');
 $isLoggedIn = $session->has('username') && $session->has('gibbonRoleIDCurrent');
 
 /**
@@ -511,7 +512,7 @@ if ($isLoggedIn) {
  * TODO: move queries into Gateway classes.
  * TODO: rewrite dashboards as template files.
  */
-if (!$session->has('address')) {
+if (!$session->has('address'))  {
     // Welcome message
     if (!$isLoggedIn) {
         // Create auto timeout message
