@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
         ->add(__('Edit Expense Approver'));    
 
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('error3' => 'Your request failed because some inputs did not meet a requirement for uniqueness.'));
+        returnProcess($guid, $_GET['return']);
     }
 
     //Check if school year specified

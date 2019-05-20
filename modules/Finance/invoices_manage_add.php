@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
         $error3 .= '<li>'.$_GET['invoiceFailCount'].' '.__('invoices encountered problems.').'</li>';
     }
     if (!empty($_GET['invoiceFeeFailCount'])) {
-        $error3 .= '<li>'.$_GET['invoiceFeeFailCount'].' '.__('fee entires encountered problems.').'</li>';
+        $error3 .= '<li>'.$_GET['invoiceFeeFailCount'].' '.__('fee entries encountered problems.').'</li>';
     }
     $error3 .= '</ul>'.__('It is recommended that you remove all pending invoices and try to recreate them.');
 

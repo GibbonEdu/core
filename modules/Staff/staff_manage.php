@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
         $row->addTextField('search')->setValue($criteria->getSearchText())->maxLength(20);
 
     $row = $form->addRow();
-        $row->addLabel('allStaff', __('All Staff'))->description('Include Expected and Left.');
+        $row->addLabel('allStaff', __('All Staff'))->description(__('Include Expected and Left.'));
         $row->addCheckbox('allStaff')->checked($allStaff);
 
     $row = $form->addRow();

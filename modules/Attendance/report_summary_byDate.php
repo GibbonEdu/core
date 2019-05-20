@@ -39,6 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 
     $today = date('Y-m-d');
 
+    $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
     $dateEnd = (isset($_REQUEST['dateEnd']))? dateConvert($guid, $_REQUEST['dateEnd']) : date('Y-m-d');
     $dateStart = (isset($_REQUEST['dateStart']))? dateConvert($guid, $_REQUEST['dateStart']) : date('Y-m-d', strtotime( $dateEnd.' -1 month') );
 
@@ -217,6 +218,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
             if ( !empty($gibbonAttendanceCodeID) ) {
                 $data['gibbonAttendanceCodeID'] = $gibbonAttendanceCodeID;
                 $sql .= ' AND gibbonAttendanceCode.gibbonAttendanceCodeID=:gibbonAttendanceCodeID';
+            }
+
+            if ($countClassAsSchool == 'N' && $group != 'class') {
+                $sql .= " AND NOT context='Class'";
             }
 
             $sql .= ' '. $groupBy . ' '. $orderBy;

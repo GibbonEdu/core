@@ -130,4 +130,45 @@ class AttendanceLogPersonGateway extends QueryableGateway
 
         return $this->runSelect($query);
     }
-}
+  
+    public function queryAttendanceCountsByType($criteria, $gibbonSchoolYearID, $rollGroups, $dateStart, $dateEnd)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('gibbonAttendanceLogPerson')
+            ->cols([
+                'gibbonAttendanceCode.name', 'gibbonAttendanceLogPerson.reason', 'count(DISTINCT gibbonAttendanceLogPerson.gibbonPersonID) as count', 'gibbonAttendanceLogPerson.date'
+            ])
+            ->innerJoin('gibbonAttendanceCode', 'gibbonAttendanceLogPerson.type=gibbonAttendanceCode.name')
+            ->joinSubSelect(
+                'INNER',
+                'SELECT gibbonPersonID, date, MAX(timestampTaken) as maxTimestamp, context
+                FROM gibbonAttendanceLogPerson WHERE date>=:dateStart AND date<=:dateEnd GROUP BY gibbonPersonID, date',
+                'log',
+                'gibbonAttendanceLogPerson.gibbonPersonID=log.gibbonPersonID AND gibbonAttendanceLogPerson.date=log.date'
+            )
+            ->where('gibbonAttendanceLogPerson.timestampTaken=log.maxTimestamp')
+            ->where('gibbonAttendanceLogPerson.date>=:dateStart')
+            ->bindValue('dateStart', $dateStart)
+            ->where('gibbonAttendanceLogPerson.date<=:dateEnd')
+            ->bindValue('dateEnd', $dateEnd)
+            ->groupBy(['gibbonAttendanceLogPerson.date', 'gibbonAttendanceCode.name', 'gibbonAttendanceLogPerson.reason'])
+            ->orderBy(['gibbonAttendanceLogPerson.date', 'gibbonAttendanceCode.direction DESC', 'gibbonAttendanceCode.name']);
+
+        $countClassAsSchool = getSettingByScope($this->db()->getConnection(), 'Attendance', 'countClassAsSchool');
+        if ($countClassAsSchool == 'N') {
+            $query->where("gibbonAttendanceLogPerson.context <> 'Class'")
+                  ->where("log.context <> 'Class'");
+        }
+
+        if ($rollGroups != array('all')) {
+            $query
+                ->innerJoin('gibbonStudentEnrolment', 'gibbonAttendanceLogPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
+                ->where('FIND_IN_SET(gibbonStudentEnrolment.gibbonRollGroupID, :rollGroups)')
+                ->bindValue('rollGroups', implode(',', $rollGroups))
+                ->where('gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID')
+                ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+        }
+
+        return $this->runQuery($query, $criteria);
+    }

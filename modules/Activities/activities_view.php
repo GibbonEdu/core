@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
         $page->breadcrumbs->add(__('View Activities'));          
 
         if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, array('success0' => 'Registration was successful.', 'success1' => 'Unregistration was successful.', 'success2' => 'Registration was successful, but the activity is full, so you are on the waiting list.'));
+            returnProcess($guid, $_GET['return'], null, array('success0' => __('Registration was successful.'), 'success1' => __('Unregistration was successful.'), 'success2' => __('Registration was successful, but the activity is full, so you are on the waiting list.')));
         }
 
         //Get current role category
@@ -138,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
             if ($countChild > 0 and $roleCategory == 'Parent' and $highestAction == 'View Activities_studentRegisterByParent') {
                 $row = $form->addRow();
-                    $row->addLabel('gibbonPersonID', __('Child'))->description('Choose the child you are registering for.');
+                    $row->addLabel('gibbonPersonID', __('Child'))->description(__('Choose the child you are registering for.'));
                     $row->addSelect('gibbonPersonID')->fromArray($options)->selected($gibbonPersonID)->placeholder(($countChild > 1)? '' : null);
             }
 
