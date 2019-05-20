@@ -21,6 +21,7 @@ namespace Gibbon\Services;
 
 use DateTime;
 use Gibbon\Session;
+use DateTimeImmutable;
 
 /**
  * Format values based on locale and system settings.
@@ -619,7 +620,7 @@ class Format
 
     private static function createDateTime($dateOriginal, $expectedFormat = null, $timezone = null)
     {
-        if ($dateOriginal instanceof DateTime) return $dateOriginal;
+        if ($dateOriginal instanceof DateTime || $dateOriginal instanceof DateTimeImmutable) return $dateOriginal;
 
         return !empty($expectedFormat)
             ? DateTime::createFromFormat($expectedFormat, $dateOriginal, $timezone)

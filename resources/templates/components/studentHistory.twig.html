@@ -1,0 +1,212 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% extends "components/dataTable.twig.html" %}
+{% import _self as attendance  %}
+
+{% block tableInner %}
+
+    <div class="flex flex-wrap justify-center md:justify-between rounded bg-gray-100 border">
+        <div class="md:flex-1 p-4 text-sm text-gray-700">
+            <h3 class="mt-2 border-b-0">
+                {{ __('Summary') }}
+            </h3>
+
+            {% if summary.total %}
+                {% if summary.total != (summary.present + summary.absent) %}
+                    <div class="italic mb-4 text-xs">
+                    {{ __('It appears that this student is missing attendance data for some school days:') }}
+                    </div>
+                {% endif %}
+
+                <div class="leading-snug">
+                    <strong>{{ __('Total number of school days to date:') }} {{ summary.total }}</strong><br/>
+                    {{ __('Total number of school days attended:') }} {{ summary.present }}<br/>
+                    {{ __('Total number of school days absent:') }} {{ summary.absent }}<br/>
+                </div>
+            {% endif %}
+        </div>
+
+        {% if not printView %}
+        <div class=" p-4">
+            {{ chart|raw }}
+        </div>
+        {% endif %}
+    </div>
+
+
+    <div id="studentHistory">
+    {% for term in dataSet %}
+        <h4>
+        {{ term.name }}
+        </h4>
+
+        {% set daysOfWeek = term.weeks|first %}
+        {% set blockWidth = "w-1/" ~ daysOfWeek|length %}
+        {% set dayClass = "flex flex-col justify-center border-t border-b border-r py-2 px-1 -mt-px " %}
+
+        <div class="flex flex-wrap border-t border-l border-gray-500">
+
+            {#<!-- Days of the Week Header: only shows one week on mobile -->#}
+            <div class="w-full flex items-stretch text-xs text-center text-gray-700 font-bold bg-gray-200 border-b border-r border-gray-500">
+                {% for day in daysOfWeek %}
+                    <div class="{{ blockWidth }} py-1" title="{{ __(day.name) }}">
+                        {{ __(day.nameShort) }}
+                    </div>
+                {% endfor %}
+
+                {% for day in daysOfWeek %}
+                    <div class="hidden md:block {{ blockWidth }} py-1" title="{{ __(day.name) }}">
+                        {{ __(day.nameShort) }}
+                    </div>
+                {% endfor %}
+            </div>
+
+            {#<!-- Attendance Days: grouped by week -->#}
+            {% for weekNumber, week in term.weeks %}
+                <div class="w-full md:w-1/2 flex items-stretch text-xxs text-center text-gray-600" style="min-height: 55px;">
+
+                {% for day in week %}
+                    {% if day.outsideTerm %}
+                        <div class="{{ blockWidth }} {{ dayClass }} bg-gray-400 border-gray-600 text-gray-500">
+                        </div>
+                    {% elseif day.beforeStartDate %}
+                        <div class="{{ blockWidth }} {{ dayClass }} bg-gray-400 border-gray-600 text-gray-500" title="{{ __('Before Start Date') }}">
+                            {{ day.dateDisplay }}<br/>
+                            {{ __('Before Start Date') }}
+                        </div>
+                    {% elseif day.afterEndDate %}
+                        <div class="{{ blockWidth }} {{ dayClass }} bg-gray-400 border-gray-600 text-gray-500" title="{{ __('After End Date') }}">
+                            {{ day.dateDisplay }}<br/>
+                            {{ __('After End Date') }}
+                        </div>
+                    {% elseif day.specialDay %}
+                        <div class="{{ blockWidth }} {{ dayClass }} bg-gray-400 border-gray-600 text-gray-500" title="{{ __('School Closed') }}">
+                            {{ day.specialDay }}
+                        </div>
+                    {% elseif day.logs is empty %}
+                        <div class="{{ blockWidth }} {{ dayClass }} bg-gray-200 border-gray-600 text-gray-700" title="{{ __('No Data') }}">
+                            {{ day.dateDisplay }}
+                        </div>
+                    {% else %}
+                        <a class="{{ blockWidth }} {{ dayClass }} {{ day.endOfDay.statusClass }} relative z-10" data-log="{{ attendance.tooltip(day) }}"
+                            {% if canTakeAttendanceByPerson %}
+                                href="{{ absoluteURL }}/index.php?q=/modules/Attendance/attendance_take_byPerson.php&gibbonPersonID={{ day.gibbonPersonID }}&currentDate={{ day.date }}"
+                            {% endif %}>
+
+                            {{ attendance.badge(day) }}
+
+                            <span>{{ day.dateDisplay }}</span>
+                            <span class="mt-1 font-bold">{{ day.endOfDay.type }}</span>
+
+                            {% if printView %}
+                                <span class="mt-1">
+                                {% for log in day.logs %}
+                                    {{ log.code }}
+                                    {{- not loop.last ? " : " -}}
+                                {% endfor %}
+                                </span>
+                            {% endif %}
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+    </div>
+
+
+{% endblock tableInner %}
+
+{#<!--
+    Tooltip Macro: 
+    Display a tooltip of attendance data for a single day. Should not contain " double quotes.
+-->#}
+{% macro tooltip(day) %}
+    <section class='-mx-2 p-4 border text-center {{ day.endOfDay.statusClass }}'>
+        {{ day.dateDisplay }}<br/>
+        
+        <span class='font-bold text-base leading-normal'>{{ __(day.endOfDay.type) }}</span><br/>
+
+        {% if day.endOfDay.reason %}
+            <span class='mt-1 text-xs'>{{ __(day.endOfDay.reason) }}</span><br/>
+        {% endif %}
+
+        <ul class='list-none ml-0 mt-4 text-xs text-left'>
+        {% for log in day.logs %}
+            <li class='{{ log.statusClass }} leading-relaxed'>
+                {{ log.timestampTaken|date( log.timestampTaken|date('Y-m-d') == day.date ? 'H:i' : 'H:i Y-m-d') }} -
+                {{ __(log.type) }} {{- log.reason ? ', ' ~ __(log.reason) }} - 
+                {{ log.contextName ? log.contextName : __(log.context) }}
+            </li>
+        {% endfor %}
+    </section>
+{% endmacro tooltip %}
+
+
+{#<!--
+    Badge Macro:
+    Display a badge number for attendance days with partial absence / presence.
+-->#}
+{% macro badge(day) %}
+    {% if day.absentCount > 0 and "Present" in day.endOfDay.type %}
+    <div class="absolute top-0 right-0 mt-1 mr-1 z-10 rounded-full bg-gray-600 text-white no-underline leading-tight font-sans" style="padding: 1px 3px; font-size: 8px">
+        {{ day.absentCount }}
+    </div>
+    {% endif %}
+
+    {% if day.presentCount > 0 and "Absent" in day.endOfDay.type %}
+    <div class="absolute top-0 right-0 mt-1 mr-1 z-10 rounded-full bg-gray-600 text-white no-underline leading-tight font-sans" style="padding: 1px 3px; font-size: 8px">
+        {{ day.presentCount }}
+    </div>
+    {% endif %}
+{% endmacro badge %}
+
+
+{% block footer %}
+
+
+{#<!--
+    Configure a custom tooltip for Student History. This ensures it doesn't 
+    conflict with existing tooltips, and also displays on mobile devices.
+-->#}
+<style>
+    .tooltip-reset {
+        background: #ffffff !important;
+        min-width: 16rem;
+    }
+    .w-1\/7 {
+        width: 14.28%;
+    }
+</style>
+<script>
+$('#studentHistory').tooltip({
+    items: "a[data-log]",
+    show: 800,
+    hide: false,
+    content: function () {
+        return $(this).data('log');
+    },
+    tooltipClass: "tooltip-reset",
+    position: {
+        my: "center bottom-5",
+        at: "center top",
+        using: function (position, feedback) {
+            $(this).css(position);
+            $("<div>").
+                addClass("arrow").
+                addClass(feedback.vertical).
+                addClass(feedback.horizontal).
+                appendTo(this);
+        }
+    }
+});
+</script>
+
+{% endblock footer %}

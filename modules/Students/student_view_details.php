@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Module\Attendance\StudentHistoryData;
+use Gibbon\Module\Attendance\StudentHistoryView;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -29,6 +32,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
+    $page->scripts->add('chart');
+    
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
@@ -1992,7 +1997,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo '</div>';
                         } else {
                             include './modules/Attendance/moduleFunctions.php';
-                            report_studentHistory($guid, $gibbonPersonID, true, $_SESSION[$guid]['absoluteURL']."/report.php?q=/modules/Attendance/report_studentHistory_print.php&gibbonPersonID=$gibbonPersonID", $connection2, $row['dateStart'], $row['dateEnd']);
+                            include './modules/Attendance/src/StudentHistoryData.php';
+                            include './modules/Attendance/src/StudentHistoryView.php';
+
+                            // ATTENDANCE DATA
+                            $attendanceData = $container->get(StudentHistoryData::class)
+                                ->getAttendanceData($_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID'], $row['dateStart'], $row['dateEnd']);
+
+                            // DATA TABLE
+                            $renderer = $container->get(StudentHistoryView::class);
+                            $table = DataTable::create('studentHistory', $renderer);
+                            echo $table->render($attendanceData);
                         }
                     } elseif ($subpage == 'Markbook') {
                         if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') == false) {
