@@ -187,7 +187,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                     echo '</div>';
                                 } else {
                                     if (isset($_GET['return'])) {
-                                        returnProcess($guid, $_GET['return'], null, array('error3' => 'Registration failed because you are already registered in this activity.'));
+                                        returnProcess($guid, $_GET['return'], null, array('error3' => __('Registration failed because you are already registered in this activity.')));
                                     }
 
                                     //Check registration limit...

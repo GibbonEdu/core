@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
 
         if ($highestAction == 'View Staff Profile_full') {
             $row = $form->addRow();
-                $row->addLabel('allStaff', __('All Staff'))->description('Include all staff, regardless of status, start date, end date, etc.');
+                $row->addLabel('allStaff', __('All Staff'))->description(__('Include all staff, regardless of status, start date, end date, etc.'));
                 $row->addCheckbox('allStaff')->checked($allStaff);
         }
 
