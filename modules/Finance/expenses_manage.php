@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
         $page->breadcrumbs->add(__('Manage Expenses'));
 
         if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.', 'success1' => 'Your request was completed successfully, but notifications could not be sent out.'));
+            returnProcess($guid, $_GET['return'], null, array('success0' => __('Your request was completed successfully.'), 'success1' => __('Your request was completed successfully, but notifications could not be sent out.')));
         }
 
         echo '<p>';

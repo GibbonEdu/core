@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
                 }
 
                 if ($result->rowCount() > 0) {
-                    $URL .= '&return=error3';
+                    $URL .= '&return=error7';
                     header("Location: {$URL}");
                 } else {
                     //Scan through staff
