@@ -946,7 +946,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
         $row = $form->addRow();
             $row->addLabel('privacyOptions[]', __('Privacy'));
-            $row->addCheckbox('privacyOptions[]')->fromArray($options)->checked($checked);
+            $row->addCheckbox('privacyOptions[]')->fromArray($options)->checked($checked)->addClass('md:max-w-lg');
     }
 
     // ⋆⋆⋆ Magic ⋆⋆⋆

@@ -171,7 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     $row = $form->addRow();
         $emailLabel = $row->addLabel('email', __('Email'));
         $email = $row->addEmail('email');
-        
+
     $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
     if ($uniqueEmailAddress == 'Y') {
         $email->uniqueField($_SESSION[$guid]['absoluteURL'].'/modules/User Admin/user_manage_emailAjax.php');
@@ -455,7 +455,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
         $row = $form->addRow();
             $row->addLabel('privacyOptions[]', __('Privacy'))->description(__('Check to indicate which privacy options are required.'));
-            $row->addCheckbox('privacyOptions[]')->fromArray($options);
+            $row->addCheckbox('privacyOptions[]')->fromArray($options)->addClass('md:max-w-lg');
     }
 
     $studentAgreementOptions = getSettingByScope($connection2, 'School Admin', 'studentAgreementOptions');
