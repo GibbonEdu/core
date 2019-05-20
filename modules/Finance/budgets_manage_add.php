@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_add
         $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/budgets_manage_edit.php&gibbonFinanceBudgetID='.$_GET['editID'];
     }
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink, array('error3' => 'Your request failed because some inputs did not meet a requirement for uniqueness.', 'warning1' => 'Your request was successful, but some data was not properly saved.'));
+        returnProcess($guid, $_GET['return'], $editLink);
     }
 
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/budgets_manage_addProcess.php');

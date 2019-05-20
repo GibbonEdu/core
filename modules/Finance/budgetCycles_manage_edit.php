@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
         ->add(__('Edit Budget Cycle'));
 
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('error3' => 'Your request failed because some inputs did not meet a requirement for uniqueness.', 'warning1' => 'Your request was successful, but some data was not properly saved.'));
+        returnProcess($guid, $_GET['return']);
     }
 
     //Check if school year specified

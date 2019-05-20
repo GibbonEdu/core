@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
         ->add(__('Edit Budget'));
 
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('error3' => 'Your request failed because some inputs did not meet a requirement for uniqueness.', 'error4' => 'Your request failed due to an attachment error.'));
+        returnProcess($guid, $_GET['return'], null, array('error4' => __('Your request failed due to an attachment error.')));
     }
 
     //Check if school year specified

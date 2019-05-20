@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
     
 
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('success1' => 'Your request was completed successfully, but notifications could not be sent out.'));
+        returnProcess($guid, $_GET['return'], null, array('success1' => __('Your request was completed successfully, but notifications could not be sent out.')));
     }
 
     //Check if school year specified
