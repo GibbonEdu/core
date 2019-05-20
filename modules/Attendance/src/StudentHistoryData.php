@@ -93,7 +93,7 @@ class StudentHistoryData
             $dateRange = new DatePeriod(
                 $firstDay->modify($firstDayOfTheWeek == 'Monday' ? "Monday this week" : "Sunday last week"),
                 new DateInterval('P1D'),
-                $lastDay
+                $lastDay->modify('+1 day')
             );
 
             $dayCount = 0;
