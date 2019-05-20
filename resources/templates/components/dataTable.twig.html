@@ -30,9 +30,9 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% endblock header %}
     </header>
 
-    {% if not rows and not isFiltered %}
+    {% if not rows and not isFiltered and dataSet.getResultCount == 0 %}
+        {% block blankslate %}
         <div class="rounded-sm border overflow-hidden">
-            {% block blankslate %}
             <div class="w-full h-48 flex flex-col items-center justify-center bg-gray-100 shadow-inner text-gray-600 text-lg">
                 {% if isFiltered %}
                     {{ __('No results matched your search.') }}
@@ -42,10 +42,11 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     {{ __('There are no records to display.') }}
                 {% endif %}
             </div>
-            {% endblock blankslate %}
         </div>
+        {% endblock blankslate %}
     {% else %}
 
+    {% block tableInner %}
     <div class="overflow-x-auto overflow-y-visible">
         <table class="{{ class }} w-full" cellspacing=0>
             <thead>
@@ -121,6 +122,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             </tbody>
         </table>
     </div>
+    {% endblock tableInner %}
     {% endif %}
 
     <footer>

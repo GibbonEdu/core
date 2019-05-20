@@ -106,6 +106,31 @@ class AttendanceLogPersonGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    public function selectAllAttendanceLogsByPerson($gibbonSchoolYearID, $gibbonPersonID, $countClassAsSchool)
+    {
+        $query = $this
+            ->newSelect()
+            ->from('gibbonSchoolYear')
+            ->cols([
+                'gibbonAttendanceLogPerson.date as groupBy','gibbonAttendanceLogPerson.date', 'gibbonAttendanceLogPerson.type', 'gibbonAttendanceLogPerson.reason', 'gibbonAttendanceLogPerson.timestampTaken', 'gibbonAttendanceCode.nameShort as code', 'gibbonAttendanceCode.direction', 'gibbonAttendanceCode.scope', 'gibbonAttendanceLogPerson.context', "(CASE WHEN gibbonCourse.gibbonCourseID IS NOT NULL THEN CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) END) as contextName",
+            ])
+            ->innerJoin('gibbonAttendanceLogPerson', 'gibbonAttendanceLogPerson.date >= firstDay AND gibbonAttendanceLogPerson.date <= lastDay')
+            ->innerJoin('gibbonAttendanceCode', 'gibbonAttendanceLogPerson.type=gibbonAttendanceCode.name')
+            ->leftJoin('gibbonCourseClass', "gibbonCourseClass.gibbonCourseClassID=gibbonAttendanceLogPerson.gibbonCourseClassID AND gibbonAttendanceLogPerson.context='Class'")
+            ->leftJoin('gibbonCourse', 'gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID')
+            ->where('gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where('gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID')
+            ->bindValue('gibbonPersonID', $gibbonPersonID)
+            ->orderBy(['timestampTaken ASC']);
+
+        if ($countClassAsSchool == 'N') {
+            $query->where("NOT gibbonAttendanceLogPerson.context='Class'");
+        }
+
+        return $this->runSelect($query);
+    }
+  
     public function queryAttendanceCountsByType($criteria, $gibbonSchoolYearID, $rollGroups, $dateStart, $dateEnd)
     {
         $query = $this
@@ -147,4 +172,3 @@ class AttendanceLogPersonGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
-}

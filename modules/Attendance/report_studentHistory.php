@@ -18,14 +18,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Module\Attendance\StudentHistoryData;
+use Gibbon\Module\Attendance\StudentHistoryView;
 
-//Module includes
+// Module includes
 require_once __DIR__ . '/moduleFunctions.php';
-
-// set page breadcrumb
-$page->breadcrumbs->add(__('Student History'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentHistory.php') == false) {
     //Acess denied
@@ -34,6 +35,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
     echo '</div>';
 } else {
     //Proceed!
+    $page->breadcrumbs->add(__('Student History'));
+    $page->scripts->add('chart');
+
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
@@ -41,6 +45,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
+        
+        $canTakeAttendanceByPerson = isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson.php');
+        $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+
         if ($highestAction == 'Student History_all') {
             echo '<h2>';
             echo __('Choose Student');
@@ -60,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
 
             $row = $form->addRow();
                 $row->addLabel('gibbonPersonID', __('Student'));
-                $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonPersonID)->placeholder()->required();
+                $row->addSelectStudent('gibbonPersonID', $gibbonSchoolYearID)->selected($gibbonPersonID)->placeholder()->required();
 
             $row = $form->addRow();
                 $row->addFooter();
@@ -88,7 +96,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                     echo '</div>';
                 } else {
                     $row = $result->fetch();
-                    report_studentHistory($guid, $gibbonPersonID, true, $_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module']."/report_studentHistory_print.php&gibbonPersonID=$gibbonPersonID", $connection2, $row['dateStart'], $row['dateEnd']);
+
+                    // ATTENDANCE DATA
+                    $attendanceData = $container
+                        ->get(StudentHistoryData::class)
+                        ->getAttendanceData($gibbonSchoolYearID, $gibbonPersonID, $row['dateStart'], $row['dateEnd']);
+
+                    // DATA TABLE
+                    $renderer = $container->get(StudentHistoryView::class);
+                    $renderer->addData('canTakeAttendanceByPerson', $canTakeAttendanceByPerson);
+
+                    $table = DataTable::create('studentHistory', $renderer);
+                    $table->addHeaderAction('print', __('Print'))
+                        ->setURL('/report.php')
+                        ->addParam('q', '/modules/Attendance/report_studentHistory_print.php')
+                        ->addParam('gibbonPersonID', $gibbonPersonID)
+                        ->addParam('viewMode', 'print')
+                        ->setIcon('print')
+                        ->setTarget('_blank')
+                        ->directLink()
+                        ->displayLabel();
+
+                    echo $table->render($attendanceData);
                 }
             }
         }
@@ -116,7 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                 $options = [];
                 while ($row = $result->fetch()) {
                     try {
-                        $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                        $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $gibbonSchoolYearID);
                         $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
                         $resultChild = $connection2->prepare($sqlChild);
                         $resultChild->execute($dataChild);
@@ -211,7 +240,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                                 echo '</div>';
                             } else {
                                 $row = $result->fetch();
-                                report_studentHistory($guid, $gibbonPersonID, false, '', $connection2, $row['dateStart'], $row['dateEnd']);
+
+                                // ATTENDANCE DATA
+                                $attendanceData = $container
+                                    ->get(StudentHistoryData::class)
+                                    ->getAttendanceData($gibbonSchoolYearID, $gibbonPersonID, $row['dateStart'], $row['dateEnd']);
+
+                                // DATA TABLE
+                                $renderer = $container->get(StudentHistoryView::class);
+                                $table = DataTable::create('studentHistory', $renderer);
+                                echo $table->render($attendanceData);
                             }
                         }
                     }
@@ -238,7 +276,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                 echo '</div>';
             } else {
                 $row = $result->fetch();
-                report_studentHistory($guid, $_SESSION[$guid]['gibbonPersonID'], false, '', $connection2, $row['dateStart'], $row['dateEnd']);
+
+                // ATTENDANCE DATA
+                $attendanceData = $container
+                    ->get(StudentHistoryData::class)
+                    ->getAttendanceData($gibbonSchoolYearID, $_SESSION[$guid]['gibbonPersonID'], $row['dateStart'], $row['dateEnd']);
+
+                // DATA TABLE
+                $renderer = $container->get(StudentHistoryView::class);
+                $table = DataTable::create('studentHistory', $renderer);
+                echo $table->render($attendanceData);
             }
         }
     }
