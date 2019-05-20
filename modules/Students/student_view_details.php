@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
     echo '</div>';
 } else {
     $page->scripts->add('chart');
-    
+
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
@@ -2002,7 +2002,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                             // ATTENDANCE DATA
                             $attendanceData = $container->get(StudentHistoryData::class)
-                                ->getAttendanceData($_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID'], $row['dateStart'], $row['dateEnd']);
+                                ->getAttendanceData($_SESSION[$guid]['gibbonSchoolYearID'], $gibbonPersonID, $row['dateStart'], $row['dateEnd']);
 
                             // DATA TABLE
                             $renderer = $container->get(StudentHistoryView::class);
@@ -3146,7 +3146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $_SESSION[$guid]['sidebarExtra'] .= $alert;
                     }
                     $_SESSION[$guid]['sidebarExtra'] .= '</div>';
-                    
+
                     $_SESSION[$guid]['sidebarExtra'] .= getUserPhoto($guid, $studentImage, 240);
 
                     //PERSONAL DATA MENU ITEMS
