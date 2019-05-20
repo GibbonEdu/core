@@ -137,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                     }
 
                     //Copy Lessons & resources
-                    if ($copyLessons == 'Yes') {
+                    if ($copyLessons == 'Y') {
                         $gibbonCourseClassIDSource = $_POST['gibbonCourseClassIDSource'];
                         $gibbonCourseClassIDTarget = null;
                         if (isset($_POST['gibbonCourseClassIDTarget'])) {
