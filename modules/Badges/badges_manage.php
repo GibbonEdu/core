@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Badges/badges_manage.php')
 
     $badges = $badgesGateway->queryBadges($criteria,$gibbon->session->get('gibbonSchoolYearID'));
     
-    $table = DataTable::create('badges');
+    $table = DataTable::createPaginated('badges',$criteria);
     $table->AddColumn('logo',__('Logo'))->format(Format::using('userPhoto','logo'));
     $table->AddColumn('name',__('Name'));
     $table->AddColumn('category',__('Category'));
@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Badges/badges_manage.php')
     $actions = $table->AddActionColumn('actions',__('Actions'));
         $actions->AddAction('edit',__('Edit'));
         $actions->AddAction('delete',__('Delete'));
-        $actions->AddAction('description',__('Show Description'));
+        $actions->AddAction('view',__('Show Description'));
 
     //TODO: Pagination
     echo $table->render($badges);
