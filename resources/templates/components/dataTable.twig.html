@@ -30,7 +30,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% endblock header %}
     </header>
 
-    {% if dataSet.getResultCount == 0 and not isFiltered %}
+    {% if not rows and not isFiltered and dataSet.getResultCount == 0 %}
         {% block blankslate %}
         <div class="rounded-sm border overflow-hidden">
             <div class="w-full h-48 flex flex-col items-center justify-center bg-gray-100 shadow-inner text-gray-600 text-lg">
