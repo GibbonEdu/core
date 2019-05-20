@@ -45,7 +45,7 @@ class BadgeGateway extends QueryableGateway
             'badgeId' => function($query,$needle)
             {
                 return $query
-                    ->where("bb.bagdesBadgeID = :needle")
+                    ->where("bb.badgesBadgeID = :needle")
                     ->bindValue('needle',$needle);
             },
             'studentId' => function($query,$needle)

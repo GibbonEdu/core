@@ -205,6 +205,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Badges/badges_grant.php') 
             {
                 $criteria->filterBy('studentIdMulti',$_GET['gibbonPersonIDMulti']);
             }
+            if(isset($_GET['badgesBadgeID']) && $_GET['badgesBadgeID'] != "")
+            {
+                $criteria->filterBy('badgeId',$_GET['badgesBadgeID']);
+            }
             $criteria
                 ->fromPOST();
 
