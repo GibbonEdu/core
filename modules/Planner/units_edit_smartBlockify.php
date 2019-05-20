@@ -37,7 +37,7 @@ $page->breadcrumbs
         'gibbonCourseID' => $gibbonCourseID,
         'gibbonUnitID' => $gibbonUnitID,
     ])
-    ->add(__('Smark Block'));
+    ->add(__('Smart Block'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_smartBlockify.php') == false) {
     //Acess denied
