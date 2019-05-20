@@ -315,8 +315,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                             $column->addCheckbox('homeworkCrowdAssessClassmatesRead')->setValue('Y')->description(__('Classmates'));
                             $column->addCheckbox('homeworkCrowdAssessOtherStudentsRead')->setValue('Y')->description(__('Other Students'));
                             $column->addCheckbox('homeworkCrowdAssessOtherTeachersRead')->setValue('Y')->description(__('Other Teachers'));
-                            $column->addCheckbox('homeworkCrowdAssessSubmitterParentsRead')->setValue('Y')->description(__('Submitter\'s Parents'));
-                            $column->addCheckbox('homeworkCrowdAssessClassmatesParentsRead')->setValue('Y')->description(__('Classmates\'s Parents'));
+                            $column->addCheckbox('homeworkCrowdAssessSubmitterParentsRead')->setValue('Y')->description(__("Submitter's Parents"));
+                            $column->addCheckbox('homeworkCrowdAssessClassmatesParentsRead')->setValue('Y')->description(__("Classmates's Parents"));
                             $column->addCheckbox('homeworkCrowdAssessOtherParentsRead')->setValue('Y')->description(__('Other Parents'));
                 }
 

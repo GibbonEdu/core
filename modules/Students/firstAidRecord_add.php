@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
             $editID = $_GET['editID'];
         }
         if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], $editLink, array('warning1' => 'Your request was successful, but some data was not properly saved.', 'success1' => 'Your request was completed successfully. You can now add extra information below if you wish.'));
+            returnProcess($guid, $_GET['return'], $editLink, array('warning1' => __('Your request was successful, but some data was not properly saved.'), 'success1' => __('Your request was completed successfully. You can now add extra information below if you wish.')));
         }
 
         $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/firstAidRecord_addProcess.php?gibbonRollGroupID='.$gibbonRollGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID);

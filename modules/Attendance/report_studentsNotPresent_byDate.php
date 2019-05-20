@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
         $row->addSelect('sort')->fromArray(array('surname' => __('Surname'), 'preferredName' => __('Preferred Name'), 'rollGroup' => __('Roll Group')))->selected($sort)->required();
 
     $row = $form->addRow();
-        $row->addLabel('allStudents', __('All Students'))->description('Include all students, even those where attendance has not yet been recorded.');
+        $row->addLabel('allStudents', __('All Students'))->description(__('Include all students, even those where attendance has not yet been recorded.'));
         $row->addCheckbox('allStudents')->checked($allStudents);
 
     $row = $form->addRow();

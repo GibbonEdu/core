@@ -138,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     $row->addTextField('qualifications')->maxlength(80);
 
                 $row = $form->addRow();
-                    $row->addLabel('biographicalGrouping', __('Grouping'));
+                    $row->addLabel('biographicalGrouping', __('Grouping'))->description(__('Used to group staff when creating a staff directory.'));
                     $row->addTextField('biographicalGrouping')->maxlength(100);
 
                 $row = $form->addRow();

@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_l
             $row->addDate('endDateTo')->setValue($endDateTo)->required();
 
         $row = $form->addRow()->addClass('dateRange');
-            $row->addLabel('ignoreStatus', __('Ignore Status'))->description('This is useful for picking up students who have not yet left, but have an End Date set.');
+            $row->addLabel('ignoreStatus', __('Ignore Status'))->description(__('This is useful for picking up students who have not yet left, but have an End Date set.'));
             $row->addCheckbox('ignoreStatus')->checked($ignoreStatus);
 
         $row = $form->addRow();

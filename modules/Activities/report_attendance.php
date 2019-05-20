@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
         $row->addSelect('gibbonActivityID')->fromQuery($pdo, $sql, $data)->selected($gibbonActivityID)->required()->placeholder();
 
     $row = $form->addRow();
-        $row->addLabel('allColumns', __('All Columns'))->description('Include empty columns with unrecorded attendance.');
+        $row->addLabel('allColumns', __('All Columns'))->description(__('Include empty columns with unrecorded attendance.'));
         $row->addCheckbox('allColumns')->checked($allColumns);
 
     $row = $form->addRow();

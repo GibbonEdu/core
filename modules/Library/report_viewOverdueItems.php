@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
     $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_viewOverdueItems.php");
 
     $row = $form->addRow();
-        $row->addLabel('ignoreStatus', __('Ignore Status'))->description('Include all users, regardless of status and current enrolment.');
+        $row->addLabel('ignoreStatus', __('Ignore Status'))->description(__('Include all users, regardless of status and current enrolment.'));
         $row->addCheckbox('ignoreStatus')->checked($ignoreStatus);
 
     $row = $form->addRow();

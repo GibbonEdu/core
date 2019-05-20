@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
             $row->addDate('startDateTo')->setValue($startDateTo)->required();
 
         $row = $form->addRow()->addClass('dateRange');
-            $row->addLabel('ignoreEnrolment', __('Ignore Enrolment'))->description('This is useful for picking up students who are set to Full, have a start date but are not yet enroled.');
+            $row->addLabel('ignoreEnrolment', __('Ignore Enrolment'))->description(__('This is useful for picking up students who are set to Full, have a start date but are not yet enroled.'));
             $row->addCheckbox('ignoreEnrolment')->checked($ignoreEnrolment);
 
         $row = $form->addRow();

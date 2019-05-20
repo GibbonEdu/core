@@ -71,11 +71,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
         $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_rollGroupSummary.php");
 
         $row = $form->addRow();
-            $row->addLabel('dateFrom', __('From Date'))->description('Start date must be before this date.')->append('<br/>')->append(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
+            $row->addLabel('dateFrom', __('From Date'))->description(__('Start date must be before this date.'))->append('<br/>')->append(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
             $row->addDate('dateFrom')->setValue($dateFrom);
 
         $row = $form->addRow();
-            $row->addLabel('dateTo', __('To Date'))->description('End date must be after this date.')->append('<br/>')->append(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
+            $row->addLabel('dateTo', __('To Date'))->description(__('End date must be after this date.'))->append('<br/>')->append(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
             $row->addDate('dateTo')->setValue($dateTo);
 
 
