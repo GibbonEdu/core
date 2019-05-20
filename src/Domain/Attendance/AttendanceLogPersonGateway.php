@@ -35,7 +35,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
     private static $primaryKey = 'gibbonAttendanceLogPersonID';
 
     private static $searchableColumns = [''];
-    
+
     /**
      * @param QueryCriteria $criteria
      * @return DataSet
@@ -87,8 +87,8 @@ class AttendanceLogPersonGateway extends QueryableGateway
             ])
             ->innerJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID')
             ->innerJoin('gibbonCourse', 'gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID')
-            ->leftJoin('gibbonAttendanceLogPerson', "gibbonAttendanceLogPerson.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID 
-                AND gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID 
+            ->leftJoin('gibbonAttendanceLogPerson', "gibbonAttendanceLogPerson.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID
+                AND gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID
                 AND gibbonAttendanceLogPerson.date=:date
                 AND gibbonAttendanceLogPerson.context = 'Class'")
             ->leftJoin('gibbonPerson as takenBy', 'gibbonAttendanceLogPerson.gibbonPersonIDTaker=takenBy.gibbonPersonID')
@@ -102,7 +102,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
             ->where('NOT (gibbonAttendanceLogPerson.gibbonAttendanceLogPersonID IS NULL AND timetable.gibbonCourseClassID IS NULL)')
             ->bindValue('date', $date)
             ->groupBy(['gibbonAttendanceLogPerson.gibbonAttendanceLogPersonID', 'timetable.gibbonTTDayRowClassID']);
-        
+
         return $this->runQuery($query, $criteria);
     }
 
@@ -130,7 +130,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
 
         return $this->runSelect($query);
     }
-  
+
     public function queryAttendanceCountsByType($criteria, $gibbonSchoolYearID, $rollGroups, $dateStart, $dateEnd)
     {
         $query = $this
@@ -172,3 +172,4 @@ class AttendanceLogPersonGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+}
