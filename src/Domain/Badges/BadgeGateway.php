@@ -14,7 +14,6 @@ class BadgeGateway extends QueryableGateway
 
     public function queryBadges(QueryCriteria $criteria, $gibbonSchoolYearID)
     {
-        var_dump($criteria);
         $query = $this
             ->newQuery()
             ->from($this->getTableName() . ' as bb')

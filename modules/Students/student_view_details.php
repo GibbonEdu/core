@@ -21,7 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
 //Module includes for User Admin (for custom fields)
-include './modules/User Admin/moduleFunctions.php';
+include './modules/'.$gibbon->session->get('module').'/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php') == false) {
     //Acess denied
