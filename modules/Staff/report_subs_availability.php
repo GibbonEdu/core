@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
             ->isRequired()
             ->setValue($timeEnd);
 
-    if (isActionAccessible($guid, $connection2, '/modules/Staff/subs_manage.php')) {
+    if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage.php')) {
         $row = $form->addRow();
             $row->addLabel('allStaff', __('All Staff'))->description(__('Include all teaching staff.'));
             $row->addCheckbox('allStaff')->checked($allStaff);
