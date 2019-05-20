@@ -18,42 +18,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Module\Attendance\AttendanceView;
+use Gibbon\UI\Chart\Chart;
 use Gibbon\Services\Format;
+use Gibbon\Module\Attendance\AttendanceView;
+use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 
-//Module includes
+// Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-// set page breadcrumb
-$page->breadcrumbs->add(__('Attendance Trends'));
-
-function getDateRange($guid, $connection2, $first, $last, $step = '+1 day', $output_format = 'Y-m-d' ) {
-
-    $dates = array();
-    $current = strtotime($first);
-    $last = strtotime($last);
-
-    while( $current <= $last ) {
-        $date = date($output_format, $current);
-        if (isSchoolOpen($guid, $date, $connection2 )) {
-            $dates[] = $date;
-        }
-        $current = strtotime($step, $current);
-    }
-
-    return $dates;
-}
-
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_byType.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
-    //Proceed!
-    echo '<h2>';
-    echo __('Choose Date');
-    echo '</h2>';
+    // Proceed!
+    $page->breadcrumbs->add(__('Attendance Trends'));
+    $page->scripts->add('chart');
 
     $dateEnd = (isset($_POST['dateEnd']))? dateConvert($guid, $_POST['dateEnd']) : date('Y-m-d');
     $dateStart = (isset($_POST['dateStart']))? dateConvert($guid, $_POST['dateStart']) : date('Y-m-d', strtotime( $dateEnd.' -1 month') );
@@ -75,10 +54,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
     }
 
     $sort = !empty($_POST['sort'])? $_POST['sort'] : 'surname, preferredName';
-    $mode = !empty($_POST['mode'])? $_POST['mode'] : 'endofday';
 
     // Get the roll groups - revert to All if it's selected
-    $rollGroups = !empty($_POST['gibbonRollGroupID'])? $_POST['gibbonRollGroupID'] : array('all');
+    $rollGroups = $_POST['gibbonRollGroupID'] ?? array('all');
     if (in_array('all', $rollGroups)) $rollGroups = array('all');
 
     require_once __DIR__ . '/src/AttendanceView.php';
@@ -88,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
         $types = $_POST['types'];
     } else {
         if (!isset($_POST['dateStart'])) {
-            $types = array_keys( $attendance->getAttendanceTypes() );
+            $types = array_keys($attendance->getAttendanceTypes());
             unset($types[0]);
         } else {
             $types = array();
@@ -99,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
 
     // Options & Filters
     $form = Form::create('attendanceTrends', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_graph_byType.php');
-
+    $form->setTitle(__('Choose Date'));
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
     $row = $form->addRow();
@@ -124,10 +102,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
         $row->addLabel('reasons', __('Reasons'));
         $row->addSelect('reasons')->fromArray($reasonOptions)->selectMultiple()->selected($reasons);
 
-    $row = $form->addRow();
-        $row->addLabel('mode', __('Mode'));
-        $row->addSelect('mode')->fromArray( array('endofday' => __('End of Day Only'), 'all' => __('All Attendance Logs')) )->selected($mode);
-
     $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
     $sql = "SELECT gibbonRollGroupID as value, name FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY LENGTH(name), name";
     $row = $form->addRow();
@@ -147,166 +121,91 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
         echo '<p><span class="small emphasis">'.__('Click a legend item to toggle visibility.').'</span></p>';
 
         //Produce array of attendance data
-        try {
+        $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
+        $rows = $attendanceLogGateway->queryAttendanceCountsByType(
+            $attendanceLogGateway->newQueryCriteria(),
+            $_SESSION[$guid]['gibbonSchoolYearID'],
+            $rollGroups,
+            $dateStart,
+            $dateEnd
+        );
 
-            $data = array('dateStart' => $dateStart, 'dateEnd' => $dateEnd);
-            $rollGroupJoin = '';
-
-            // If any roll groups are selected, use a MySQL IN() on gibboNRollGroupID to determing the subset of students to select
-            if ($rollGroups != array('all')) {
-                $data['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
-                $rollGroupString = implode(',', array_map(function ($str) { return intval($str); }, $rollGroups)); // Implode and cast to numbers only
-                $rollGroupJoin = "JOIN gibbonStudentEnrolment e ON (l.gibbonPersonID=e.gibbonPersonID AND e.gibbonSchoolYearID=:gibbonSchoolYearID AND e.gibbonRollGroupID IN (".$rollGroupString."))";
-            }
-
-
-            if ($mode == 'endofday') {
-                // End of Day filters attendance logs by the last timestamp for a student on a given day
-                $sql = "SELECT c.name, l.reason, count(DISTINCT l.gibbonPersonID) as count, l.date FROM gibbonAttendanceLogPerson l JOIN gibbonAttendanceCode c ON (l.type=c.name) INNER JOIN (SELECT gibbonPersonID, date, MAX(timestampTaken) as maxTimestamp FROM gibbonAttendanceLogPerson WHERE date>=:dateStart AND date<=:dateEnd GROUP BY gibbonPersonID, date) AS log ON (l.gibbonPersonID=log.gibbonPersonID AND l.date=log.date) ".$rollGroupJoin." WHERE l.timestampTaken=log.maxTimestamp AND l.date>=:dateStart AND l.date<=:dateEnd GROUP BY l.date, c.name, l.reason ORDER BY l.date, c.direction DESC, c.name";
-            } else {
-                // Count all records
-                $sql = "SELECT c.name, l.reason, count(DISTINCT l.gibbonPersonID) as count, l.date FROM gibbonAttendanceLogPerson l JOIN gibbonAttendanceCode c ON (l.type=c.name) ".$rollGroupJoin." WHERE l.date>=:dateStart AND l.date<=:dateEnd GROUP BY l.date, c.name, l.reason ORDER BY l.date, c.direction DESC, c.name";
-            }
-
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
-
-        if ($result->rowCount() < 1) {
+        if (empty($rows)) {
             echo "<div class='error'>";
             echo __('There are no records to display.');
             echo '</div>';
         } else {
+            $data = [];
+            $days = [];
 
-            $rows = $result->fetchAll();
-            $days = getDateRange( $guid, $connection2, $dateStart, $dateEnd );
-
-            $data = array();
-
-            foreach ($types as $type) {
-                foreach ($days as $date) {
-                    $data[ $type ][ $date ] = 0;
+            // Get the date range and filter school days
+            $dateRange = new DatePeriod(
+                new DateTime($dateStart),
+                new DateInterval('P1D'),
+                (new DateTime($dateEnd))->modify('+1 day')
+            );
+            foreach ($dateRange as $dateObject) {
+                $date = $dateObject->format('Y-m-d');
+                if (isSchoolOpen($guid, $date, $connection2)) {
+                    $days[] = $date;
                 }
             }
+
+            // Fill each date with zeroes for each type & reason
+            foreach ($dateRange as $dateObject) {
+                $date = $dateObject->format('Y-m-d');
+                foreach ($types as $type) {
+                    $data[$type][$date] = 0;
+                }
+                foreach ($reasons as $reason) {
+                    if ($reason == '') continue;
+                    $data[$reason][$date] = 0;
+                }
+            }
+
+            // Sum the counts for each type and reason
             foreach ($rows as $row) {
-                if ( isset($data[ $row['name'] ][ $row['date'] ]) ) {
-                    $data[ $row['name'] ][ $row['date'] ] += $row['count'];
+                if (in_array($row['name'], $types)) {
+                    $data[$row['name']][$row['date']] += $row['count'];
                 }
-
-            }
-
-            foreach ($reasons as $reason) {
-                if ($reason == '') continue;
-                foreach ($days as $date) {
-                    $data[ $reason ][ $date ] = 0;
+                if (in_array($row['reason'], $types)) {
+                    $data[$row['reason']][$row['date']] += $row['count'];
                 }
             }
 
-            foreach ($rows as $row) {
-                if ( isset($data[ $row['reason'] ][ $row['date'] ]) ) {
-                    $data[ $row['reason'] ][ $row['date'] ] += $row['count'];
-                }
+            $chart = Chart::create('attendance', 'line')
+                ->setOptions([
+                    'fill' => false,
+                    'showTooltips' => true,
+                    'tooltips' => [
+                        'mode' => 'single',
+                    ],
+                    'hover' => [
+                        'mode' => 'dataset',
+                    ],
+                    'scales' => [
+                        'xAxes' => [[
+                            'ticks' => [
+                                'autoSkip'    => true,
+                                'maxRotation' => 0,
+                                'padding'     => 30,
+                            ]
+                        ]],
+                    ],
+                ])
+                ->useFillZero(true)
+                ->setLabels(array_map(function ($date) {
+                    return Format::dateReadable($date, '%b %d');
+                }, $days));
 
+            foreach ($data as $typeName => $dates) {
+                $chart->addDataset($typeName)
+                    ->setLabel(__($typeName))
+                    ->setProperties(['fill' => false, 'borderWidth' => 1])
+                    ->setData($dates);
             }
 
-            // print '<pre>';
-            // print_r($data);
-            // print '<pre>';
-
-            //PLOT DATA
-            echo '<script type="text/javascript" src="'.$_SESSION[$guid]['absoluteURL'].'/lib/Chart.js/2.0/Chart.bundle.min.js"></script>';
-
-            echo '<div style="width:100%">';
-            echo '<div>';
-            echo '<canvas id="canvas"></canvas>';
-            echo '</div>';
-            echo '</div>';
-
-            $colors = getColourArray();
-            $colorCount = count($colors);
-            ?>
-            <script>
-            var chartData = {
-
-                labels: [
-                    <?php
-                        foreach ( $days as $date) {
-                            echo "'".Format::dateReadable($date,'%b %d')."',";
-                        }
-                    ?>
-                ],
-                datasets: [
-                    <?php
-                    $datasetCount = 0;
-                    foreach ($data as $typeName => $dates) :
-                    ?>
-                    {
-                        label: "<?php echo __($typeName); ?>",
-
-                        fill: false,
-                        backgroundColor: "<?php echo 'rgba('.$colors[ $datasetCount % $colorCount ].',1)'; ?>",
-                        borderColor: "<?php echo 'rgba('.$colors[ $datasetCount % $colorCount ].',1)'; ?>",
-                        pointBackgroundColor: "<?php echo 'rgba('.$colors[ $datasetCount % $colorCount ].',1)'; ?>",
-                        borderWidth: 1,
-                        data: [
-                        <?php
-                            foreach ($dates as $dateName => $count) {
-                                echo "'".$count."',";
-                            }
-                        ?>
-                        ],
-                    },
-                    <?php
-                    $datasetCount++;
-                    endforeach;
-                    ?>
-                ]
-
-            }
-
-            window.onload = function(){
-                var ctx = document.getElementById("canvas").getContext("2d");
-                var myLineChart = new Chart(ctx, {
-                    type: 'line',
-                    data: chartData,
-                    options:
-                        {
-                            fill: false,
-                            responsive: true,
-                            showTooltips: true,
-                            tooltips: {
-                                mode: 'single',
-                            },
-                            hover: {
-                                mode: 'dataset',
-                                //onHover: function() { alert('Foo'); }
-                            },
-                            scales: {
-                                xAxes: [{
-                                    // type: 'time',
-                                    // time: {
-                                    //     displayFormats: {
-                                    //        'day': 'MMM DD'
-                                    //     }
-                                    // },
-
-                                    ticks: {
-                                        autoSkip: true,
-                                        maxRotation: 0,
-                                        padding: 30,
-                                    }
-                                }]
-                            }
-                        }
-                    }
-                 );
-            }
-        </script>
-        <?php
-
+            echo $chart->render();
         }
     }
 }
-?>
