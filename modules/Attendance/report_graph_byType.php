@@ -123,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
         //Produce array of attendance data
         $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
         $rows = $attendanceLogGateway->queryAttendanceCountsByType(
-            $attendanceLogGateway->newQueryCriteria(),
+            $attendanceLogGateway->newQueryCriteria()->pageSize(0),
             $_SESSION[$guid]['gibbonSchoolYearID'],
             $rollGroups,
             $dateStart,
@@ -152,8 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
             }
 
             // Fill each date with zeroes for each type & reason
-            foreach ($dateRange as $dateObject) {
-                $date = $dateObject->format('Y-m-d');
+            foreach ($days as $date) {
                 foreach ($types as $type) {
                     $data[$type][$date] = 0;
                 }
@@ -165,10 +164,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
 
             // Sum the counts for each type and reason
             foreach ($rows as $row) {
-                if (in_array($row['name'], $types)) {
+                if (isset($data[$row['name']][$row['date']])) {
                     $data[$row['name']][$row['date']] += $row['count'];
                 }
-                if (in_array($row['reason'], $types)) {
+                if (isset($data[$row['reason']][$row['date']])) {
                     $data[$row['reason']][$row['date']] += $row['count'];
                 }
             }
@@ -193,7 +192,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
                         ]],
                     ],
                 ])
-                ->useFillZero(true)
                 ->setLabels(array_map(function ($date) {
                     return Format::dateReadable($date, '%b %d');
                 }, $days));
