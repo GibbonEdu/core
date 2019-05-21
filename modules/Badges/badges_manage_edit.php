@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Badges/badges_manage_edit.
     }
 
     //Check if school year specified
-    $badgesBadgeID = $_GET['badgesBadgeID'];
+    $badgesBadgeID = $_GET['badgeID'];
     if ($badgesBadgeID == '') { echo "<div class='error'>";
         echo 'You have not specified a policy.';
         echo '</div>';

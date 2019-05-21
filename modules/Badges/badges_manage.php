@@ -71,7 +71,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Badges/badges_manage.php')
 
     $form = Form::create('search', $gibbon->session->get('absoluteURL','').'/index.php', 'get');
     $form->setTitle(__('Search & Filter'));
-    $form->addClass('noIntBorder');
 
     $form->addHiddenValue('q', '/modules/'.$gibbon->session->get('module').'/badges_manage.php');
     $form->addHiddenValue('address', '/modules/' . $gibbon->session->get('address'));
@@ -124,8 +123,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Badges/badges_manage.php')
     $table->AddColumn('name',__('Name'));
     $table->AddColumn('category',__('Category'));
 
-    $actions = $table->AddActionColumn('actions',__('Actions'));
-        $actions->AddAction('edit',__('Edit'));
+    $actions = $table->addActionColumn('actions',__('Actions'))
+        ->addParam('badgeID')
+        ->addParam('return','success0')
+        ->addParam('category')
+        ->addParam('search');
+        $actions->AddAction('edit',__('Edit'))->setURL('/modules/Badges/badges_manage_edit.php');
         $actions->AddAction('delete',__('Delete'));
         $actions->AddAction('view',__('Show Description'));
 

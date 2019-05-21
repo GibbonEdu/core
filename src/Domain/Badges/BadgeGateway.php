@@ -19,6 +19,7 @@ class BadgeGateway extends QueryableGateway
             ->from($this->getTableName() . ' as bb')
             ->cols([
                 'bbs.badgesBadgeStudentID as badgesBadgeStudentID',
+                'bb.badgesBadgeID as badgeID',
                 'bb.logo as logo',
                 'bb.name as name',
                 'bb.category as category',
