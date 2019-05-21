@@ -101,15 +101,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Badges/badges_manage.php')
         ->filterBy('badgeName',$_GET['search'] ?? '')
         ->fromPOST();
 
-    $badges = $badgesGateway->queryBadges($criteria,$gibbon->session->get('gibbonSchoolYearID'));
+    $badges = $badgesGateway->queryBadges($criteria);
     
     $table = DataTable::createPaginated('badges',$criteria);
-    $table->addExpandableColumn('comments')
+    $table->addHeaderAction('add',__('Add'))->setURL('/modules/Badges/badges_manage_add.php')
+        ->addParam('search',$_GET['search'] ?? '')
+        ->addParam('category',$_GET['category'] ?? '');
+    $table->addExpandableColumn('description')
         ->format(function($row) {
             $output = '';
-            if (!empty($row['comment']) && $row['comment'] != '') {
-                $output .= '<b>'.__('Comment').'</b><br/>';
-                $output .= nl2brr($row['comment']).'<br/><br/>';
+            if (!empty($row['description']) && $row['description'] != '') {
+                $output .= '<b>'.__('Description').'</b><br/>';
+                $output .= nl2brr($row['description']).'<br/><br/>';
             }
             return $output;
         });
@@ -124,13 +127,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Badges/badges_manage.php')
     $table->AddColumn('category',__('Category'));
 
     $actions = $table->addActionColumn('actions',__('Actions'))
-        ->addParam('badgeID')
-        ->addParam('return','success0')
-        ->addParam('category')
-        ->addParam('search');
+        ->addParam('badgesBadgeID')
+        ->addParam('category',$_GET['category'] ?? '')
+        ->addParam('search',$_GET['search'] ?? '');
         $actions->AddAction('edit',__('Edit'))->setURL('/modules/Badges/badges_manage_edit.php');
-        $actions->AddAction('delete',__('Delete'));
-        $actions->AddAction('view',__('Show Description'));
+        $actions->AddAction('delete',__('Delete'))->setURL('/modules/Badges/badges_manage_delete.php');
 
     echo $table->render($badges);
     

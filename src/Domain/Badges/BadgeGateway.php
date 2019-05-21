@@ -12,14 +12,14 @@ class BadgeGateway extends QueryableGateway
     private static $tableName = 'badgesBadge';
     private static $searchableColumns = ['p.firstname' , 'p.surname', 'bb.name', 'bb.category'];
 
-    public function queryBadges(QueryCriteria $criteria, $gibbonSchoolYearID)
+    public function queryBadgesStudents(QueryCriteria $criteria, $gibbonSchoolYearID)
     {
         $query = $this
             ->newQuery()
             ->from($this->getTableName() . ' as bb')
             ->cols([
                 'bbs.badgesBadgeStudentID as badgesBadgeStudentID',
-                'bb.badgesBadgeID as badgeID',
+                'bb.badgesBadgeID as badgesBadgeID',
                 'bb.logo as logo',
                 'bb.name as name',
                 'bb.category as category',
@@ -81,6 +81,45 @@ class BadgeGateway extends QueryableGateway
                 return $query
                     ->where("bbs.badgesBadgeStudentID = :badgeStudentID")
                     ->bindValue('badgeStudentID',$badgeStudentID);
+            },
+            'badgeName' => function($query,$badgeNameNeedle)
+            {
+                $badgeNameNeedle = '%' . $badgeNameNeedle . '%'; //Surround in wildcards
+                return $query
+                    ->where("(bb.name like :badgeNameNeedle)")
+                    ->bindValue('badgeNameNeedle',$badgeNameNeedle);
+            },
+            'badgeCategory' => function($query,$category)
+            {
+                return $query
+                    ->where("(bb.category = :category)")
+                    ->bindValue('category',$category);
+
+            }
+        ]);
+
+        return $this->runQuery($query,$criteria);
+    }
+
+    public function queryBadges(QueryCriteria $criteria)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName() . ' as bb')
+            ->cols([
+                'bb.badgesBadgeID as badgesBadgeID',
+                'bb.logo as logo',
+                'bb.name as name',
+                'bb.category as category',
+                'bb.description as description'
+            ]);
+
+        $criteria->addFilterRules([
+            'badgeId' => function($query,$badgeID)
+            {
+                return $query
+                    ->where("bb.badgesBadgeID = :badgeID")
+                    ->bindValue('badgeID',$badgeID);
             },
             'badgeName' => function($query,$badgeNameNeedle)
             {

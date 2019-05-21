@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Badges/badges_manage_add.p
     }
 
 
-    $form = Form::create('badges', $gibbon->session->get('absoluteURL','').'/modules/'.$gibbon->session->get('module').'/badges_manage_addProcess.php');
+    $form = Form::create('badges', $gibbon->session->get('absoluteURL','').'/modules/'.$gibbon->session->get('module').'/badges_manage_addProcess.php','POST');
     
     $form->addHiddenValue('address', $gibbon->session->get('address'));
 

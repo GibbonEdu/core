@@ -39,7 +39,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Badges/badges_manage_edit.
     }
 
     //Check if school year specified
-    $badgesBadgeID = $_GET['badgeID'];
+    $badgesBadgeID = $_GET['badgesBadgeID'] ?? '';
+    $search = $_GET['search'] ?? '';
+    $category = $_GET['category'] ?? '';
     if ($badgesBadgeID == '') { echo "<div class='error'>";
         echo 'You have not specified a policy.';
         echo '</div>';
@@ -61,13 +63,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Badges/badges_manage_edit.
             //Let's go!
             $values = $result->fetch();
 
-            if ($_GET['search'] != '' || $_GET['category'] != '') {
+            if ($category != '' || $category != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$gibbon->session->get('absoluteURL','').'/index.php?q=/modules/Badges/badges_manage.php&search='.$_GET['search'].'&category='.$_GET['category']."'>Back to Search Results</a>";
+                echo "<a href='".$gibbon->session->get('absoluteURL','').'/index.php?q=/modules/Badges/badges_manage.php&search='.$search.'&category='.$category."'>Back to Search Results</a>";
                 echo '</div>';
             }
 
-            $form = Form::create('badges', $gibbon->session->get('absoluteURL','').'/modules/'.$gibbon->session->get('module').'/badges_manage_editProcess.php?badgesBadgeID='.$badgesBadgeID.'&search='.$_GET['search'].'&category='.$_GET['category']);
+            $form = Form::create('badges', $gibbon->session->get('absoluteURL','').'/modules/'.$gibbon->session->get('module').'/badges_manage_editProcess.php?badgesBadgeID='.$badgesBadgeID.'&search='.$category.'&category='.$category);
     
             $form->addHiddenValue('address', $gibbon->session->get('address'));
 

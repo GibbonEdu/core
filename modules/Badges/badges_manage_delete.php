@@ -58,13 +58,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Badges/badges_manage_delet
             //Let's go!
             $row = $result->fetch();
 
-            if ($_GET['search'] != '' || $_GET['category'] != '') {
+            if ($_GET['category'] != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='" . $gibbon->session->get('absoluteURL','') . '/index.php?q=/modules/Badges/badges_manage.php&search=' . $_GET['search'] . '&category=' . $_GET['category'] . "'>Back to Search Results</a>";
+                echo "<a href='" . $gibbon->session->get('absoluteURL','') . '/index.php?q=/modules/Badges/badges_manage.php&search=' . $_GET['search'] ?? '' . '&category=' . $_GET['category'] ?? ''. "'>Back to Search Results</a>";
                 echo '</div>';
             }
 
-            $form = DeleteForm::createForm($gibbon->session->get('absoluteURL','').'/modules/'.$gibbon->session->get('module')."/badges_manage_deleteProcess.php?badgesBadgeID=$badgesBadgeID&search=".$_GET['search']."&&category=" . $_GET['category']);
+            $form = DeleteForm::createForm($gibbon->session->get('absoluteURL','').'/modules/'.$gibbon->session->get('module')."/badges_manage_deleteProcess.php?badgesBadgeID=$badgesBadgeID&search=".$_GET['category']."&category=" . $_GET['category']);
             echo $form->getOutput();
         }
     }

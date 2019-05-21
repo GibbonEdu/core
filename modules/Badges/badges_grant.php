@@ -162,7 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Badges/badges_grant.php') 
             ->filterBy('badgeId',$_GET['badgesBadgeID'] ?? '')
             ->fromPOST();
 
-        $badges = $badgesGateway->queryBadges($criteria,$gibbonSchoolYearID);
+        $badges = $badgesGateway->queryBadgesStudents($criteria,$gibbonSchoolYearID);
         $table = DataTable::createPaginated('badges',$criteria);
 
         //Setup params

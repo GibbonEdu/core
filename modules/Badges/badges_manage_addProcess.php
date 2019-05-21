@@ -20,8 +20,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 include './moduleFunctions.php';
-
-$URL = $gibbon->session->get('absoluteURL','').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/badges_manage_add.php&search='.$_GET['search'].'&category='.$_GET['category'];
+$category = $_GET['category'] ?? '';
+$search = $_GET['search'] ?? '';
+$URL = $gibbon->session->get('absoluteURL','').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/badges_manage_add.php&search='. $search .'&category='.$category ?? '';
 
 if (isActionAccessible($guid, $connection2, '/modules/Badges/badges_manage_add.php') == false) {
     //Fail 0
