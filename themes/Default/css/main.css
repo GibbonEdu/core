@@ -1099,13 +1099,13 @@ table.smallIntBorder td.noPadding {
     max-height: 74px !important;
 }
 
-.blockInputs input,
+.blockInputs input:not([type=submit]),
 .blockInputs select,
 .blockInputs textarea:not(.tinymce) {
     background: transparent;
 }
 
-.blockInputs input:not([readonly]) {
+.blockInputs input:not([readonly]):not([type=submit]) {
     border: 1px solid #d2e4f2;
 }
 
