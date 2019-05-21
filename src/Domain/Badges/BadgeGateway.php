@@ -97,8 +97,6 @@ class BadgeGateway extends QueryableGateway
             }
         ]);
 
-        /*var_dump($criteria);
-        echo "<br/><br/><br/>";*/
         return $this->runQuery($query,$criteria);
     }
 }
