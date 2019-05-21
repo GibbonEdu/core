@@ -178,6 +178,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Badges/badges_grant.php') 
             ->addParam('gibbonSchoolYearID',$gibbonSchoolYearID);
 
         //Setup columns
+        $table->addExpandableColumn('comment')
+        ->format(function($row) {
+            $output = '';
+            if (!empty($row['comment']) && $row['comment'] != '') {
+                $output .= '<b>'.__('Comment').'</b><br/>';
+                $output .= nl2brr($row['comment']).'<br/><br/>';
+            }
+            return $output;
+        });
+
         $table
             ->addColumn('badge',__('Badge'))
             ->format(function ($row){
@@ -187,18 +197,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Badges/badges_grant.php') 
             ->addColumn('student',__('Student'))
             ->format(function($row) use ($gibbonHookID,$gibbon)
             {
-                $link = Format::link($gibbon->session->get('absoluteURL').'/index.php?q=modules/Students/student_view_details.php',Format::name(null,$row['preferredName'],$row['surname'],'Student',true,false));
-                /* TODO
-                Need to add these params:
-                ,[
-                    "gibbonPersonID" => $row['gibbonPersonID'],
-                    "hook" => "Badges",
-                    "action" => "View Badges_all",
-                    "gibbonHookID" => $gibbonHookID,
-                    "search" => "",
-                    "allStudents" => "",
-                    "sort" => "surname, preferredName"
-                ]);*/
+                $link = Format::link($gibbon->session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php?gibbonPersonID=' . $row['gibbonPersonID'] . '&hook=Badges&action=View Badges_all&gibbonHookID=' . $gibbonHookID . '&search=&allStudents=&sort=surname, preferredName',
+                    Format::name(null,$row['preferredName'],$row['surname'],'Student',true,false));
                 return $link;
             });
 
@@ -227,8 +227,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Badges/badges_grant.php') 
             } else {
                 echo "<img class='user' style='margin-bottom: 10px; max-width: 150px' src='".$gibbon->session->get('absoluteURL').'/themes/'.$gibbon->session->get('gibbonThemeName')."/img/anonymous_240_square.jpg'/>";
             }
-        */
-        //TODO: Add expander column containing the comment                
+        */          
     }
 }
 ?>
