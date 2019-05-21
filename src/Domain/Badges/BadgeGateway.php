@@ -10,7 +10,7 @@ class BadgeGateway extends QueryableGateway
 {
     use TableAware;
     private static $tableName = 'badgesBadge';
-    private static $searchableColumns = ['p.firstname' , 'p.surname', 'p.'];
+    private static $searchableColumns = ['p.firstname' , 'p.surname', 'bb.name', 'bb.category'];
 
     public function queryBadges(QueryCriteria $criteria, $gibbonSchoolYearID)
     {
@@ -36,39 +36,56 @@ class BadgeGateway extends QueryableGateway
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
         $criteria->addFilterRules([
-            'studentName' => function($query,$needle)
+            'studentName' => function($query,$nameNeedle)
+            {
+                $nameNeedle = '%' . $nameNeedle . '%';
+                return $query
+                    ->where("(p.surname like :nameNeedle or p.preferredName like :nameNeedle)")
+                    ->bindValue('nameNeedle',$nameNeedle);
+            },
+            'badgeId' => function($query,$badgeID)
             {
                 return $query
-                    ->where("(p.surname like '%:needle%' or p.preferredName like '%:needle%')")
-                    ->bindValue('needle',$needle);
+                    ->where("bb.badgesBadgeID = :badgeID")
+                    ->bindValue('badgeID',$badgeID);
             },
-            'badgeId' => function($query,$needle)
+            'studentId' => function($query,$studentID)
             {
                 return $query
-                    ->where("bb.badgesBadgeID = :needle")
-                    ->bindValue('needle',$needle);
+                    ->where("p.gibbonPersonID = :studentID")
+                    ->bindValue('studentID',$studentID);
             },
-            'studentId' => function($query,$needle)
-            {
-                return $query
-                    ->where("p.gibbonPersonID = :needle")
-                    ->bindValue('needle',$needle);
-            },
-            'studentIdMulti' => function($query,$needle)
+            'studentIdMulti' => function($query,$studentIDArr)
             {
                 $needle = implode($needle,',');
                 return $query
-                    ->where("p.gibbonPersonID = :needle")
+                    ->where("p.gibbonPersonID in :needle")
                     ->bindValue('needle',$needle);
             },
-            'badgeStudentID' => function($query,$needle)
+            'badgeStudentID' => function($query,$badgeStudentID)
             {
                 return $query
-                    ->where("bbs.badgesBadgeStudent.badgesBadgeStudentID = :needle")
-                    ->bindValue('needle',$needle);
+                    ->where("bbs.badgesBadgeStudentID = :badgeStudentID")
+                    ->bindValue('badgeStudentID',$badgeStudentID);
+            },
+            'badgeName' => function($query,$badgeNameNeedle)
+            {
+                $badgeNameNeedle = '%' . $badgeNameNeedle . '%'; //Surround in wildcards
+                return $query
+                    ->where("(bb.name like :badgeNameNeedle)")
+                    ->bindValue('badgeNameNeedle',$badgeNameNeedle);
+            },
+            'badgeCategory' => function($query,$category)
+            {
+                return $query
+                    ->where("(bb.category = :category)")
+                    ->bindValue('category',$category);
+
             }
         ]);
 
+        /*var_dump($criteria);
+        echo "<br/><br/><br/>";*/
         return $this->runQuery($query,$criteria);
     }
 }

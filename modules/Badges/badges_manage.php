@@ -97,14 +97,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Badges/badges_manage.php')
 
 
     $badgesGateway = $container->get(BadgeGateway::class);
-    $criteria = $badgesGateway->newQueryCriteria();
-    if(isset($_GET['gibbonPersonIDMulti']) && $_GET['gibbonPersonIDMulti'] != "")
-    {
-        $criteria->filterBy('studentIdMulti',$_GET['gibbonPersonIDMulti']);
-    }
-    $criteria
+    $criteria = $badgesGateway->newQueryCriteria()
+        ->filterBy('badgeCategory',$_GET['category'] ?? '')
+        ->filterBy('badgeName',$_GET['search'] ?? '')
         ->fromPOST();
-
 
     $badges = $badgesGateway->queryBadges($criteria,$gibbon->session->get('gibbonSchoolYearID'));
     
@@ -118,8 +114,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Badges/badges_manage.php')
         $actions->AddAction('delete',__('Delete'));
         $actions->AddAction('view',__('Show Description'));
 
-    //TODO: Pagination
     echo $table->render($badges);
+    
 
 /* Logo classes
     if ($row['logo'] != '') {
