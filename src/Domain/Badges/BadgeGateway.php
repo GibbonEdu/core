@@ -57,10 +57,23 @@ class BadgeGateway extends QueryableGateway
             },
             'studentIdMulti' => function($query,$studentIDArr)
             {
-                $needle = implode($needle,',');
-                return $query
-                    ->where("p.gibbonPersonID in :needle")
-                    ->bindValue('needle',$needle);
+                $colName = 'p.gibbonPersonID';
+                $whereClause = "(";
+                foreach($studentIDArr as $key => $studentID )
+                {
+                    $whereClause .= $colName . " = :needle_" . $key;
+
+                    if($key != (sizeof($studentIDArr) - 1))
+                    {
+                        $whereClause .= ' OR ';
+                    }
+                    $query
+                        ->bindValue('needle_' . $key ,$studentID);
+                }
+                $whereClause .= ")";
+                $query->where($whereClause);
+                return $query;
+                
             },
             'badgeStudentID' => function($query,$badgeStudentID)
             {

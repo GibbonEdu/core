@@ -314,8 +314,23 @@ class QueryCriteria
         }
 
         if (!empty($value)) {
-            $name = preg_replace('/[^a-zA-Z0-9\.\-\_]/', '', $name);
-            $this->criteria['filterBy'][$name] = $value;
+            if(!is_array($value))
+            {
+                //An array was not provided, treat the value as a single input
+                $name = preg_replace('/[^a-zA-Z0-9\.\-\_]/', '', $name);
+                $this->criteria['filterBy'][$name] = $value;
+            }
+            else
+            {
+                //The provided value was an array and we should make a JSON array
+                $sanitisedArr = [];
+                $name = preg_replace('/[^a-zA-Z0-9\.\-\_]/', '', $name); //Cleanse the name
+                foreach($value as $val)
+                {
+                    array_push($sanitisedArr,str_replace('"', '', $val)); //Push the cleansed value.
+                }
+                $this->criteria['filterBy'][$name] = $sanitisedArr;
+            }
         }
 
         return $this;

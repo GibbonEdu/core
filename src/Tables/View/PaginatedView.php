@@ -121,12 +121,21 @@ class PaginatedView extends DataTableView implements RendererInterface
     {
         $criteriaUsed = [];
         foreach ($this->criteria->getFilterBy() as $name => $value) {
-            $key = $name.':'.$value;
-            $criteriaUsed[$name] = isset($filters[$key]) 
-                ? $filters[$key] 
-                : __(ucwords(preg_replace('/(?<=[a-z])(?=[A-Z])/', ' $0', $name))) . ($name == 'in'? ': '.ucfirst($value) : ''); // camelCase => Title Case
+            if(!is_array($value))
+            {
+                $key = $name.':'.$value;
+                $criteriaUsed[$name] = isset($filters[$key]) 
+                    ? $filters[$key] 
+                    : __(ucwords(preg_replace('/(?<=[a-z])(?=[A-Z])/', ' $0', $name))); // camelCase => Title Case
+            }
+            else {
+                //You can't toString an array
+                $key = $name;
+                $criteriaUsed[$name] = isset($filters[$key])
+                    ? $filters[$key]
+                    : __(ucwords(preg_replace('/(?<=[a-z])(?=[A-Z])/', ' $0', $name)));
+            }
         }
-
         return $criteriaUsed;
     }
     
