@@ -31,8 +31,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     </header>
 
     {% if not rows and not isFiltered and dataSet.getResultCount == 0 %}
-        {% block blankslate %}
         <div class="rounded-sm border overflow-hidden">
+        {% block blankslate %}
             <div class="w-full h-48 flex flex-col items-center justify-center bg-gray-100 shadow-inner text-gray-600 text-lg">
                 {% if isFiltered %}
                     {{ __('No results matched your search.') }}
@@ -42,8 +42,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     {{ __('There are no records to display.') }}
                 {% endif %}
             </div>
-        </div>
         {% endblock blankslate %}
+        </div>
     {% else %}
 
     {% block tableInner %}
