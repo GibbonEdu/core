@@ -105,10 +105,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Badges/badges_manage.php')
     $badges = $badgesGateway->queryBadges($criteria,$gibbon->session->get('gibbonSchoolYearID'));
     
     $table = DataTable::createPaginated('badges',$criteria);
-    $table->AddColumn('logo',__('Logo'))->format(Format::using('userPhoto','logo'));
+    $table->addExpandableColumn('comments')
+        ->format(function($row) {
+            $output = '';
+            if (!empty($row['comment']) && $row['comment'] != '') {
+                $output .= '<b>'.__('Comment').'</b><br/>';
+                $output .= nl2brr($row['comment']).'<br/><br/>';
+            }
+            return $output;
+        });
+    $table->AddColumn('logo',__('Logo'))->width('155px')->format(function($row) use ($gibbon){
+        if ($row['logo'] != '') {
+            echo "<img class='user' style='max-width: 150px' src='" . $gibbon->session->get('absoluteURL','') . '/' . $row['logo'] . "'/>";
+        } else {
+            echo "<img class='user' style='max-width: 150px' src='" . $gibbon->session->get('absoluteURL','') . '/themes/' . $gibbon->session->get('gibbonThemeName') . "/img/anonymous_240_square.jpg'/>";
+        }
+    });
     $table->AddColumn('name',__('Name'));
     $table->AddColumn('category',__('Category'));
-    //TODO: Expander column for comments
+
     $actions = $table->AddActionColumn('actions',__('Actions'));
         $actions->AddAction('edit',__('Edit'));
         $actions->AddAction('delete',__('Delete'));
@@ -116,14 +131,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Badges/badges_manage.php')
 
     echo $table->render($badges);
     
-
-/* Logo classes
-    if ($row['logo'] != '') {
-        echo "<img class='user' style='max-width: 150px' src='" . $gibbon->session->get('absoluteURL','') . '/' . $row['logo'] . "'/>";
-    } else {
-        echo "<img class='user' style='max-width: 150px' src='" . $gibbon->session->get('absoluteURL','') . '/themes/' . $gibbon->session->get('gibbonThemeName') . "/img/anonymous_240_square.jpg'/>";
-    }
-*/
   
 }
 

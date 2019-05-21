@@ -39,10 +39,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Badges/badges_grant.php') 
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    $gibbonSchoolYearID = '';
-    if (isset($_GET['gibbonSchoolYearID'])) {
-        $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    }
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ??  '';
+
     if ($gibbonSchoolYearID == '' or $gibbonSchoolYearID == $gibbon->session->get('gibbonSchoolYearID')) {
         $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
         $gibbonSchoolYearName = $gibbon->session->get('gibbonSchoolYearName');
@@ -124,8 +122,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Badges/badges_grant.php') 
         $row->addSearchSubmit($gibbon->session);
 
         $form->addHiddenValue('q',$_GET['q']);
-        $form->addRow();
-        $form->addRow()->addHeading(__('Badges'));
         echo $form->getOutput();
         ?>
         
@@ -179,19 +175,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Badges/badges_grant.php') 
 
         //Setup columns
         $table->addExpandableColumn('comment')
-        ->format(function($row) {
-            $output = '';
-            if (!empty($row['comment']) && $row['comment'] != '') {
-                $output .= '<b>'.__('Comment').'</b><br/>';
-                $output .= nl2brr($row['comment']).'<br/><br/>';
-            }
-            return $output;
-        });
+            ->format(function($row) {
+                $output = '';
+                if (!empty($row['comment']) && $row['comment'] != '') {
+                    $output .= '<b>'.__('Comment').'</b><br/>';
+                    $output .= nl2brr($row['comment']).'<br/><br/>';
+                }
+                return $output;
+            });
 
         $table
             ->addColumn('badge',__('Badge'))
-            ->format(function ($row){
-                return (Format::userPhoto($row['logo'])) . "<br/>" . $row['name']; //TODO: Set image to 150x150. Current available sizes are 75 and 240.
+            ->width('155px')
+            ->format(function($row) use ($gibbon){
+                if ($row['logo'] != '') {
+                    echo "<img class='user' style='max-width: 150px' src='" . $gibbon->session->get('absoluteURL','') . '/' . $row['logo'] . "'/>";
+                } else {
+                    echo "<img class='user' style='max-width: 150px' src='" . $gibbon->session->get('absoluteURL','') . '/themes/' . $gibbon->session->get('gibbonThemeName') . "/img/anonymous_240_square.jpg'/>";
+                }
+                echo "<br/><p class='emphasis small textCenter'>" . $row['name'] . "</p>";
             });
         $table
             ->addColumn('student',__('Student'))
@@ -206,28 +208,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Badges/badges_grant.php') 
 
         //Setup actions
         $actions = $table->addActionColumn();
-        $actions->format(function ($row,$actions) use ($gibbon){
+        $actions->format(function ($row,$actions) use ($gibbon,$gibbonSchoolYearID){
             $actions->addAction('delete',__('Delete'))
                 ->setURL('/modules/Badges/badges_grant_delete.php')
-                ->addParam('badgesBadgeStudentID',$row['badgesBadgeStudentID']);
-
-            $actions->addAction('view',__('View'))
-                ->setIcon('page_down')
-                ->onClick("#");
+                ->addParam('badgesBadgeStudentID',$row['badgesBadgeStudentID'])
+                ->addParam('gibbonSchoolYearID',$gibbonSchoolYearID);
         });
-            
-            //&gibbonPersonID2='.$gibbonPersonID2.'&badgesBadgeID2='.$badgesBadgeID2.'&gibbonSchoolYearID='.$gibbonSchoolYearID.'&width=650&height=135');
-        echo $table->render($badges);
-
-        //TODO: Italicised text in the badge logo footer
-        //TODO: Add logos using the class/style below
-        /*
-            if ($row['logo'] != '') {
-                echo "<img class='user' style='margin-bottom: 10px; max-width: 150px' src='".$gibbon->session->get('absoluteURL').'/'.$row['logo']."'/>";
-            } else {
-                echo "<img class='user' style='margin-bottom: 10px; max-width: 150px' src='".$gibbon->session->get('absoluteURL').'/themes/'.$gibbon->session->get('gibbonThemeName')."/img/anonymous_240_square.jpg'/>";
-            }
-        */          
+        echo $table->render($badges);         
     }
 }
 ?>
