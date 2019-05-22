@@ -2006,6 +2006,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                             // DATA TABLE
                             $renderer = $container->get(StudentHistoryView::class);
+                            $renderer->addData('canTakeAttendanceByPerson', isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson.php'));
+
                             $table = DataTable::create('studentHistory', $renderer);
                             echo $table->render($attendanceData);
                         }
