@@ -13,7 +13,9 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {{ block("header") }}
 
     {% if dataSet.getResultCount == 0 %}
-
+        <div class="h-24 ">
+        {{ block('blankslate') }}
+        </div>
     {% else %}
     <div class="flex flex-wrap {{ table.getMetaData('gridClass')|default('py-2') }}">
         <div class="w-full">
