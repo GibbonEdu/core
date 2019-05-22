@@ -26,6 +26,7 @@ v18.0.00
 
     Changes With Important Notices
         System: removed Likes/Stars feature
+        Messenger: messages targeted to Applicants now only go to Accepted
 
     Significant Changes
         System: added a webpack-based build process for javascript and css files
