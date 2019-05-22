@@ -1217,7 +1217,7 @@ else {
 			//Applicants
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_applicants")) {
 				if ($_POST["applicants"] == "Y") {
-					$applicantsWhere = "AND NOT status IN ('Waiting List', 'Rejected', 'Withdrawn')";
+					$applicantsWhere = "AND NOT status IN ('Waiting List', 'Rejected', 'Withdrawn', 'Pending')";
 
 					$choices=$_POST["applicantList"] ;
 					if ($choices!="") {
