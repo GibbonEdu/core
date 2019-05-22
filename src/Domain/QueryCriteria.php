@@ -322,7 +322,7 @@ class QueryCriteria
             }
             else
             {
-                //The provided value was an array and we should make a JSON array
+                //The provided value was an array. Cleanse then store it.
                 $sanitisedArr = [];
                 $name = preg_replace('/[^a-zA-Z0-9\.\-\_]/', '', $name); //Cleanse the name
                 foreach($value as $val)
