@@ -40,7 +40,6 @@ require_once './modules/Messenger/moduleFunctions.php';
 $page = $container->get('page');
 $session = $container->get('session');
 
-$session->get('username');
 $isLoggedIn = $session->has('username') && $session->has('gibbonRoleIDCurrent');
 
 /**
