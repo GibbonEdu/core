@@ -24,7 +24,7 @@ use Gibbon\Module\Attendance\StudentHistoryData;
 use Gibbon\Module\Attendance\StudentHistoryView;
 
 //Module includes for User Admin (for custom fields)
-include './modules/User Admin/moduleFunctions.php';
+include './modules/'.$gibbon->session->get('module').'/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php') == false) {
     //Acess denied
