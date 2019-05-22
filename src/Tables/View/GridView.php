@@ -40,17 +40,14 @@ class GridView extends DataTableView implements RendererInterface
      */
     public function renderTable(DataTable $table, DataSet $dataSet)
     {
-        $this->addData('table', $table);
-        $this->addData('blankSlate', $table->getMetaData('blankSlate'));
-
-        if ($dataSet->count() > 0) {
-            $this->addData([
-                'columns' => $table->getColumns(),
-                'dataSet' => $dataSet,
-                'gridHeader' => $table->getMetaData('gridHeader'),
-                'gridFooter' => $table->getMetaData('gridFooter'),
-            ]);
-        }
+        $this->addData([
+            'table'      => $table,
+            'columns'    => $table->getColumns(),
+            'dataSet'    => $dataSet,
+            'gridHeader' => $table->getMetaData('gridHeader'),
+            'gridFooter' => $table->getMetaData('gridFooter'),
+            'blankSlate' => $table->getMetaData('blankSlate'),
+        ]);
 
         return $this->render('components/gridTable.twig.html');
     }
