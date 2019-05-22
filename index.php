@@ -511,7 +511,7 @@ if ($isLoggedIn) {
  * TODO: move queries into Gateway classes.
  * TODO: rewrite dashboards as template files.
  */
-if (!$session->has('address'))  {
+if (!$session->has('address')) {
     // Welcome message
     if (!$isLoggedIn) {
         // Create auto timeout message
