@@ -107,6 +107,22 @@ class DatabaseFormFactory extends FormFactory
             return $this->createSelect($name)->fromArray(array("*" => "All"))->fromResults($results)->placeholder();
     }
 
+    public function createSelectHouse($name)
+    {
+        $data = [];
+        $sql = "SELECT gibbonHouseID as value, name FROM gibbonHouse;";
+        try
+        {
+            $results = $this->pdo->executeQuery($data, $sql);
+        }
+        catch(PDOException $e)
+        {
+            throw $e;
+        }
+
+        return $this->createSelect($name)->fromResults($results)->placeholder()->placeholder();
+    }
+
     public function createSelectClass($name, $gibbonSchoolYearID, $gibbonPersonID = null, $params = array())
     {
         $classes = array();
