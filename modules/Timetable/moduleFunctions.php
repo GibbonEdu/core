@@ -430,7 +430,9 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $output .= '</td>';
             $output .= "<td style='vertical-align: top; text-align: right'>";
             $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=$q&gibbonTTID=".$row['gibbonTTID']."$params'>";
-            $output .= "<input name='ttDate' id='ttDate' maxlength=10 value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], $startDayStamp)."' type='text' style='height: 22px; width:100px; margin-right: 0px; float: none'> ";
+            $output .= '<span class="relative">';
+            $output .= "<input name='ttDate' id='ttDate' maxlength=10 value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], $startDayStamp)."' type='text' style='height: 28px; width:120px; margin-right: 0px; float: none'> ";
+            $output .= '</span>';
             $output .= '<script type="text/javascript">';
             $output .= "var ttDate=new LiveValidation('ttDate');";
             $output .= 'ttDate.add( Validate.Format, {pattern:';
