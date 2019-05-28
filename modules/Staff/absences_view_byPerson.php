@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
     }
 
     
-    $absences = $staffAbsenceDateGateway->selectAbsenceDatesByPerson($gibbonPersonID)->fetchGrouped();
+    $absences = $staffAbsenceDateGateway->selectApprovedAbsenceDatesByPerson($gibbonPersonID)->fetchGrouped();
     $schoolYear = $schoolYearGateway->getSchoolYearByID($gibbonSchoolYearID);
 
     // CALENDAR VIEW
