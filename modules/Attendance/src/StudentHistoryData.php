@@ -114,6 +114,10 @@ class StudentHistoryData
                         $log['status'] = 'absent';
                         $log['statusClass'] = 'error';
                         $absentCount++;
+                    } elseif ($log['scope'] == 'Onsite - Late') {
+                        $log['status'] = 'late';
+                        $log['statusClass'] = 'warning';
+                        $presentCount++;
                     } else {
                         $log['status'] = 'present';
                         $log['statusClass'] = $log['scope'] == 'Offsite' ? 'message' : 'success';
