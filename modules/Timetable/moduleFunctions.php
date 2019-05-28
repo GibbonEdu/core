@@ -1102,11 +1102,9 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         $height = '30px';
                         $top = (($maxAllDays * -31) - 8 + ($allDay * 30)).'px';
                         $output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
-                        if (!empty($event[5])) {
-                            $output .= "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>';
-                        } else {
-                            $output .= "<a target=_blank style='color: #fff'>".$label.'</a>';
-                        }
+                        $output .= !empty($event[5])
+                            ? "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>'
+                            : $label;
                         $output .= '</div>';
                         ++$allDay;
                     } else {
@@ -1123,11 +1121,9 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         }
                         $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$gridTimeStart)) / 60 )).'px';
                         $output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
-                        if (!empty($event[5])) {
-                            $output .= "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>';
-                        } else {
-                            $output .= "<a target=_blank style='color: #fff'>".$label.'</a>';
-                        }
+                        $output .= !empty($event[5])
+                            ? "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>'
+                            : $label;
                         $output .= '</div>';
                     }
                     ++$zCount;
@@ -1492,11 +1488,9 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                             $height = '30px';
                             $top = (($maxAllDays * -31) - 8 + ($allDay * 30)).'px';
                             $output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
-                            if (!empty($event[5])) {
-                                $output .= "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>';
-                            } else {
-                                $output .= "<a target=_blank style='color: #fff'>".$label.'</a>';
-                            }
+                            $output .= !empty($event[5])
+                                ? "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>'
+                                : $label;
                             $output .= '</div>';
                             ++$allDay;
                         } else {
@@ -1513,11 +1507,9 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                             }
                             $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$gridTimeStart)) / 60 )).'px';
                             $output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
-                            if (!empty($event[5])) {
-                                $output .= "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>';
-                            } else {
-                                $output .= "<a target=_blank style='color: #fff'>".$label.'</a>';
-                            }
+                            $output .= !empty($event[5])
+                                ? "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>'
+                                : $label;
                             $output .= '</div>';
                         }
                         ++$zCount;
