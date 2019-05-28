@@ -58,7 +58,7 @@ class StudentHistoryView extends DataTableView implements RendererInterface
 
     protected function getSummaryCounts(DataSet $dataSet)
     {
-        $summary = ['total' => 0, 'absent' => 0, 'present' => 0, '' => 0];
+        $summary = ['total' => 0, 'present' => 0, 'late' => 0, 'absent' => 0, '' => 0];
 
         foreach ($dataSet as $terms) {
             if (empty($terms['weeks'])) continue;
@@ -80,11 +80,11 @@ class StudentHistoryView extends DataTableView implements RendererInterface
     {
         $chart = Chart::create('attendanceSummary', 'doughnut')
             ->setOptions(['height' => 200])
-            ->setLabels([__('Present'), __('Absent'), __('No Data')])
-            ->setColors(['#9AE6B4', '#FC8181', 'rgba(0, 0, 0, 0.05)']);
+            ->setLabels([__('Present'), __('Present - Late'), __('Absent'), __('No Data')])
+            ->setColors(['#9AE6B4', '#FFD2A8', '#FC8181', 'rgba(0, 0, 0, 0.05)']);
     
         $chart->addDataset('pie')
-            ->setData([$summary['present'], $summary['absent'], $summary['']]);
+            ->setData([$summary['present'], $summary['late'], $summary['absent'], $summary['']]);
 
         return $chart->render();
     }
