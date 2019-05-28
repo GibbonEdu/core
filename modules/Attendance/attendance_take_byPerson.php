@@ -111,7 +111,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 $table = DataTable::create('attendanceLogs');
 
                 $table->modifyRows(function ($log, $row) {
-                    if ($log['direction'] == 'Out') $row->addClass('error');
+                    if ($log['scope'] == 'Onsite - Late' || $log['scope'] == 'Offsite - Left') $row->addClass('warning');
+                    elseif ($log['direction'] == 'Out') $row->addClass('error');
                     elseif (!empty($log['direction'])) $row->addClass('current');
                     return $row;
                 });
