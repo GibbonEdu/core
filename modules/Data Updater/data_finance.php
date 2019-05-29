@@ -68,24 +68,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
         echo '<h2>';
         echo __('Choose User');
         echo '</h2>';
-		
+
 		$gibbonFinanceInvoiceeID = isset($_GET['gibbonFinanceInvoiceeID'])? $_GET['gibbonFinanceInvoiceeID'] : null;
 
         $form = Form::create('selectInvoicee', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
         $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/data_finance.php');
-    
+
         if ($highestAction == 'Update Finance Data_any') {
             $data = array();
             $sql = "SELECT username, surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFinanceInvoiceeID FROM gibbonFinanceInvoicee JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
         } else {
             $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
             $sql = "SELECT gibbonFamilyAdult.gibbonFamilyID, gibbonFamily.name as familyName, child.surname, child.preferredName, child.gibbonPersonID, gibbonFinanceInvoicee.gibbonFinanceInvoiceeID
-					FROM gibbonFamilyAdult 
-					JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) 
+					FROM gibbonFamilyAdult
+					JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
 					JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
-					JOIN gibbonPerson as child ON (gibbonFamilyChild.gibbonPersonID=child.gibbonPersonID) 
+					JOIN gibbonPerson as child ON (gibbonFamilyChild.gibbonPersonID=child.gibbonPersonID)
 					JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=child.gibbonPersonID)
-					WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID 
+					WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID
 					AND gibbonFamilyAdult.childDataAccess='Y' AND child.status='Full'
 					ORDER BY gibbonFamily.name, child.surname, child.preferredName";
 		}
@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
 			}
 			return $carry;
 		}, array());
-		
+
         $row = $form->addRow();
             $row->addLabel('gibbonFinanceInvoiceeID', __('Invoicee'))->description(__('Individual for whom invoices are generated.'));
             $row->addSelect('gibbonFinanceInvoiceeID')
@@ -108,12 +108,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
                 ->required()
                 ->selected($gibbonFinanceInvoiceeID)
                 ->placeholder();
-        
+
         $row = $form->addRow();
             $row->addSubmit();
-        
-		echo $form->getOutput();    
-		
+
+		echo $form->getOutput();
+
 
         if ($gibbonFinanceInvoiceeID != '') {
             echo '<h2>';
@@ -204,7 +204,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
                 if ($proceed == true) {
 
                     //Let's go!
-					$values = $result->fetch(); 
+					$values = $result->fetch();
 
 					$required = ($highestAction != 'Update Finance Data_any');
 
@@ -212,7 +212,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
 
                     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 					$form->addHiddenValue('existing', isset($values['gibbonFinanceInvoiceeUpdateID'])? $values['gibbonFinanceInvoiceeUpdateID'] : 'N');
-					
+
 					$form->addRow()->addHeading(__('Invoice To'));
 
 					$form->addRow()->addContent(__('If you choose family, future invoices will be sent according to your family\'s contact preferences, which can be changed at a later date by contacting the school. For example you may wish both parents to receive the invoice, or only one. Alternatively, if you choose Company, you can choose for all or only some fees to be covered by the specified company.'))->wrap('<p>', '</p>');
@@ -263,7 +263,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
 
 						$form->toggleVisibilityByClass('paymentCompanyCategories')->onRadio('companyAll')->when('N');
 
-						$row = $form->addRow()->addClass('paymentCompany')->addClass('paymentCompanyCategories');
+						$row = $form->addRow()->addClass('paymentCompanyCategories');
 						$row->addLabel('gibbonFinanceFeeCategoryIDList[]', __('Company Fee Categories'))
 							->description(__('If the specified company is not paying all fees, which categories are they paying?'));
 						$row->addCheckbox('gibbonFinanceFeeCategoryIDList[]')
