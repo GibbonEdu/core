@@ -31,6 +31,12 @@ $session = $container->get('session');
 
 $page->breadcrumbs->add(__('View Daily Attendance'));
 
+// show access denied message, if needed
+if (!isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php')) {
+    $page->addError(__("You do not have access to this action."));
+    return;
+}
+
 // rendering parameters
 $currentDate = isset($_GET['currentDate']) ? Format::dateConvert($_GET['currentDate']) : date('Y-m-d');
 $today = date("Y-m-d");
@@ -39,12 +45,6 @@ $accessNotRegistered = isActionAccessible($guid, $connection2, "/modules/Attenda
     && isActionAccessible($guid, $connection2, "/modules/Attendance/report_courseClassesNotRegistered_byDate.php");
 $gibbonPersonID = ($accessNotRegistered && isset($_GET['gibbonPersonID'])) ?
     $_GET['gibbonPersonID'] : $session->get('gibbonPersonID');
-
-// show access denied message, if needed
-if (!isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php')) {
-    $page->addError(__("You do not have access to this action."));
-    return;
-}
 
 // define attendance filter form, if user is permit to view it
 $form = Form::create('action', $session->get('absoluteURL') . '/index.php', 'get');
@@ -70,6 +70,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
 $row = $form->addRow();
 $row->addFooter();
 $row->addSearchSubmit($gibbon->session);
+
+$page->write($form->getOutput());
+
 
 // define attendance tables, if user is permit to view them
 if (isset($_SESSION[$guid]["username"])) {
@@ -186,9 +189,11 @@ if (isset($_SESSION[$guid]["username"])) {
     };
 
     if ($currentDate > $today) {
-        $page->addError(__("The specified date is in the future: it must be today or earlier."));
+        $page->write(Format::alert(__("The specified date is in the future: it must be today or earlier.")));
+        return;
     } elseif (isSchoolOpen($guid, $currentDate, $connection2)==false) {
-        $page->addError(__("School is closed on the specified date, and so attendance information cannot be recorded."));
+        $page->write(Format::alert(__("School is closed on the specified date, and so attendance information cannot be recorded.")));
+        return;
     }
 
     if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
@@ -440,9 +445,6 @@ if (isset($_SESSION[$guid]["username"])) {
 //
 // write page outputs
 //
-if (isset($form)) {
-    $page->write($form->getOutput());
-}
 if (isset($attendanceByRollGroupTable)) {
     $page->write($attendanceByRollGroupTable->getOutput());
 }
