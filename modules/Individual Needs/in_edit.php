@@ -125,8 +125,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 $form->setClass('blank fullWidth');
                 $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-                $col = $form->addRow()->addColumn()->addClass('inline right');
-                    $col->addLabel('gibbonINArchiveID', __('Archived Plans'));
+                $col = $form->addRow()->addColumn()->addClass('flex justify-end items-center');
+                    $col->addLabel('gibbonINArchiveID', __('Archived Plans'))->addClass('mr-1');
                     $col->addSelect('gibbonINArchiveID')
                         ->fromArray(array('' => __('Current Plan')))
                         ->fromArray($archiveOptions)
