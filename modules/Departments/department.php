@@ -198,11 +198,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
                     return $carry;
                 }, array());
 
-                $row = $form->addRow();
+                $row = $form->addRow()->addClass('items-center');
                     $row->addSelect('gibbonCourseID')
                         ->fromArray($courses)
                         ->placeholder()
-                        ->setClass('fullWidth');
+                        ->setClass('w-48 float-none');
                     $row->addSubmit(__('Go'));
 
                 $sidebarExtra .= $form->getOutput();
