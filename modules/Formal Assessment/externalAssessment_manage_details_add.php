@@ -350,7 +350,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                     }
 
                     $form = Form::create('addAssessment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/externalAssessment_manage_details_addProcess.php?search='.$search.'&allStudents='.$allStudents);
-                    $form->removeClass('standardForm');
 
                     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
                     $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
