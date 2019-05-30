@@ -78,6 +78,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
     // Options & Filters
     $form = Form::create('attendanceTrends', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_graph_byType.php');
     $form->setTitle(__('Choose Date'));
+    $form->setClass('noIntBorder fullWidth');
+
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
     $row = $form->addRow();
@@ -108,7 +110,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
         $row->addLabel('gibbonRollGroupID', __('Roll Group'));
         $row->addSelect('gibbonRollGroupID')->fromArray(array('all' => __('All')))->fromQuery($pdo, $sql, $data)->selectMultiple()->selected($rollGroups);
 
-    $form->addRow()->addSubmit();
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSearchSubmit($gibbon->session);
 
     echo $form->getOutput();
 
