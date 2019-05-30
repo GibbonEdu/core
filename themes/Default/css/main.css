@@ -568,6 +568,7 @@ div.ui-dialog button.ui-button {
 
 div#ui-datepicker-div {
     z-index: 1000 !important;
+    width: 220px;
 }
 
 /* From WP for tinymce display */
