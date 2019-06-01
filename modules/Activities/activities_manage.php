@@ -151,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $table->addColumn('days', __('Days'))
         ->notSortable()
         ->format(function($activity) use ($activityGateway) {
-            return implode(', ', $activityGateway->selectWeekdayNamesByActivity($activity['gibbonActivityID'])->fetchAll(\PDO::FETCH_COLUMN));
+            return implode(', ', array_map('__', $activityGateway->selectWeekdayNamesByActivity($activity['gibbonActivityID'])->fetchAll(\PDO::FETCH_COLUMN)));
         });
 
     $table->addColumn('yearGroups', __('Years'))
