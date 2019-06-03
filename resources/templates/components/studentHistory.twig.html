@@ -18,7 +18,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             </h3>
 
             {% if summary.total %}
-                {% if summary.total != (summary.present + summary.absent) %}
+                {% if summary.total != (summary.present + summary.partial + summary.absent) %}
                     <div class="italic mb-4 text-xs">
                     {{ __('It appears that this student is missing attendance data for some school days:') }}
                     </div>
@@ -26,7 +26,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
                 <div class="leading-snug">
                     <strong>{{ __('Total number of school days to date:') }} {{ summary.total }}</strong><br/>
-                    {{ __('Total number of school days attended:') }} {{ summary.present }}<br/>
+                    {{ __('Total number of school days attended:') }} {{ summary.present + summary.partial }}<br/>
                     {{ __('Total number of school days absent:') }} {{ summary.absent }}<br/>
                 </div>
             {% endif %}
@@ -155,15 +155,15 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     Display a badge number for attendance days with partial absence / presence.
 -->#}
 {% macro badge(day) %}
-    {% if day.absentCount > 0 and "Present" in day.endOfDay.type %}
+    {% if (day.absentCount > 0 or day.partialCount > 0) and "Present" in day.endOfDay.type %}
     <div class="absolute top-0 right-0 mt-1 mr-1 z-10 rounded-full bg-gray-600 text-white no-underline leading-tight font-sans" style="padding: 1px 3px; font-size: 8px">
-        {{ day.absentCount }}
+        {{ day.absentCount + day.partialCount }}
     </div>
     {% endif %}
 
-    {% if day.presentCount > 0 and "Absent" in day.endOfDay.type %}
+    {% if (day.presentCount > 0 or day.partialCount > 0) and "Absent" in day.endOfDay.type %}
     <div class="absolute top-0 right-0 mt-1 mr-1 z-10 rounded-full bg-gray-600 text-white no-underline leading-tight font-sans" style="padding: 1px 3px; font-size: 8px">
-        {{ day.presentCount }}
+        {{ day.presentCount + day.partialCount }}
     </div>
     {% endif %}
 {% endmacro badge %}

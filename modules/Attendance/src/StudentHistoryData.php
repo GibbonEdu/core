@@ -107,9 +107,9 @@ class StudentHistoryData
 
                 if (!isset($daysOfWeek[$weekday])) continue;
 
-                $absentCount = $presentCount = 0;
+                $absentCount = $presentCount = $partialCount = 0;
 
-                $logs[$dateYmd] = array_map(function ($log) use (&$absentCount, &$presentCount) {
+                $logs[$dateYmd] = array_map(function ($log) use (&$absentCount, &$presentCount, &$partialCount) {
                     if ($log['direction'] == 'Out' && $log['scope'] == 'Offsite') {
                         $log['status'] = 'absent';
                         $log['statusClass'] = 'error';
@@ -117,7 +117,7 @@ class StudentHistoryData
                     } elseif ($log['scope'] == 'Onsite - Late' || $log['scope'] == 'Offsite - Left') {
                         $log['status'] = 'partial';
                         $log['statusClass'] = 'warning';
-                        $presentCount++;
+                        $partialCount++;
                     } else {
                         $log['status'] = 'present';
                         $log['statusClass'] = $log['scope'] == 'Offsite' ? 'message' : 'success';
@@ -142,6 +142,7 @@ class StudentHistoryData
                     'afterEndDate'    => !empty($dateEnd) && $dateYmd > $dateEnd,
                     'absentCount'     => $absentCount,
                     'presentCount'    => $presentCount,
+                    'partialCount'    => $partialCount,
                     'gibbonPersonID'  => $gibbonPersonID,
                 ];
 
