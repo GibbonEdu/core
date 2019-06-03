@@ -51,6 +51,7 @@ v18.0.00
         Planner: improved icon consistency to Concept Explorer
         Students: added link from student profile to Individual Needs edit screen
         School Admin: add a Manage Staff Settings page
+        School Admin: updated action categories Teaching & Learning to Learn
         System Admin: updated importer to add Skip Non-Required Fields option when importing partial data
         Timetable: update View Timetable by Person to access Expected users when All Users filter is enabled
 
