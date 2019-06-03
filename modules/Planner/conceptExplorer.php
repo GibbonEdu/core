@@ -209,7 +209,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
                 echo '<td>';
                     if ($canEdit) {
                         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_edit.php&gibbonUnitID='.$row['gibbonUnitID']."&gibbonCourseID=".$row['gibbonCourseID']."&gibbonSchoolYearID=".$row['gibbonSchoolYearID']."'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_dump.php&gibbonCourseID=".$row['gibbonCourseID']."&gibbonUnitID=".$row['gibbonUnitID']."&gibbonSchoolYearID=".$row['gibbonSchoolYearID']."&sidebar=false'><img title='".__('Export')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_dump.php&gibbonCourseID=".$row['gibbonCourseID']."&gibbonUnitID=".$row['gibbonUnitID']."&gibbonSchoolYearID=".$row['gibbonSchoolYearID']."&sidebar=false'><img title='".__('View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a>";
                     }
                 echo '</td>';
                 echo '</tr>';
