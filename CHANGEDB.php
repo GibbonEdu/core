@@ -894,7 +894,6 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Staff' AND gibbonAction.name='Weekly Absences'));end
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Staff'), 'Substitute Availability', 0, 'Coverage', 'Allows users to view the availability of subs by date.', 'report_subs_availability.php', 'report_subs_availability.php', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'Y');end
 INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Staff' AND gibbonAction.name='Substitute Availability'));end
-
 UPDATE gibbonAction SET category='Learn' WHERE category='Teaching & Learning' AND (SELECT gibbonModuleID FROM gibbonModule WHERE name='School Admin');end
-
+UPDATE gibbonAction SET category='Assess' WHERE category='Assessment' AND (SELECT gibbonModuleID FROM gibbonModule WHERE name='School Admin');end
 ";
