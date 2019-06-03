@@ -187,13 +187,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                                 echo '</h2>';
 
                                 $gibbonCourseIDTarget = $_POST['gibbonCourseIDTarget'] ?? '';
-                                
+
                                 if ($gibbonCourseIDTarget == '') {
                                     echo "<div class='error'>";
                                     echo __('You have not specified one or more required parameters.');
                                     echo '</div>';
                                 } else {
-                                    
+
                                     try {
                                         $dataSelect2 = array('gibbonCourseID' => $gibbonCourseIDTarget);
                                         $sqlSelect2 = 'SELECT gibbonCourse.name AS course, gibbonSchoolYear.name AS year FROM gibbonCourse JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonCourseID=:gibbonCourseID';
@@ -207,7 +207,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                                         $course = $rowSelect2['course'];
                                         $year = $rowSelect2['year'];
                                     }
-                                    
+
                                     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'] . "/modules/" . $_SESSION[$guid]['module'] ."/units_duplicateProcess.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&address=".$_GET['q']);
                                     $form->setFactory(DatabaseFormFactory::create($pdo));
 
@@ -217,9 +217,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                                     $row = $form->addRow();
                                         $row->addLabel('copyLessons', __('Copy Lessons?'));
                                         $row->addYesNoRadio('copyLessons')->required()->setClass('copyLessons right');
-                                    
+
                                     $form->toggleVisibilityByClass('targetClass')->onRadio('copyLessons')->when('Y');
-                                    
+
                                     $form->addRow()->addHeading(__('Source'));
 
                                     $row = $form->addRow();
@@ -235,7 +235,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                                         $row->addTextField('unitName')->readonly()->setValue($values['name']);
 
                                     $dataSelectClassSource= array('gibbonCourseID' => $gibbonCourseID);
-                                    $sqlSelectClassSource = "SELECT gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourseClass.gibbonCourseID=:gibbonCourseID";
+                                    $sqlSelectClassSource = "SELECT gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourseClass.gibbonCourseID=:gibbonCourseID ORDER BY name";
 
                                     $row = $form->addRow()->addClass('targetClass');
                                         $row->addLabel('gibbonCourseClassIDSource', __('Source Class'));
@@ -246,7 +246,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                                     $row = $form->addRow();
                                         $row->addLabel('year', __('School Year'));
                                         $row->addTextField('year')->readonly()->setValue($year);
-                                    
+
                                     $row = $form->addRow();
                                         $row->addLabel('course', __('Course'));
                                         $row->addTextField('course')->readonly()->setValue($course);
@@ -254,20 +254,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                                     $row = $form->addRow();
                                         $row->addLabel('unitName', __('Unit'));
                                         $row->addTextField('unitName')->readonly()->setValue($values['name']);
-                                    
+
                                     $dataSelectClassTarget= array('gibbonCourseID' => $gibbonCourseIDTarget);
-                                    $sqlSelectClassTarget = "SELECT gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourseClass.gibbonCourseID=:gibbonCourseID";
+                                    $sqlSelectClassTarget = "SELECT gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourseClass.gibbonCourseID=:gibbonCourseID ORDER BY name";
 
                                     $row = $form->addRow()->addClass('targetClass');
                                         $row->addLabel('gibbonCourseClassIDTarget[]', __('Classes'));
-                                        $row->addSelect('gibbonCourseClassIDTarget[]')->fromQuery($pdo, $sqlSelectClassTarget, $dataSelectClassTarget)->required()->selectMultiple();                                    
+                                        $row->addSelect('gibbonCourseClassIDTarget[]')->fromQuery($pdo, $sqlSelectClassTarget, $dataSelectClassTarget)->required()->selectMultiple();
 
                                     $row = $form->addRow();
                                         $row->addFooter();
                                         $row->addSubmit();
 
-                                    echo $form->getOutput();                                    
-                                    
+                                    echo $form->getOutput();
+
                                 }
                             }
                         }
