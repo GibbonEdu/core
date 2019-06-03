@@ -535,7 +535,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                                     echo $rowFacility['phoneInternal'];
                                     echo '</td>';
                                     echo '<td>';
-                                    echo $rowFacility['usageType'];
+                                    echo __($rowFacility['usageType']);
                                     echo '</td>';
                                     echo '</tr>';
                                 }
