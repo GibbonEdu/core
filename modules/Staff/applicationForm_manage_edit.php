@@ -110,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             if (!empty($milestonesList)) {
                 $row = $form->addRow();
                     $row->addLabel('milestones', __('Milestones'));
-                    $column = $row->addColumn()->setClass('right');
+                    $column = $row->addColumn()->setClass('flex-col items-end');
 
                 $milestonesChecked = array_map('trim', explode(',', $values['milestones']));
                 $milestonesArray = array_map('trim', explode(',', $milestonesList));
