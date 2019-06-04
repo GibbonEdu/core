@@ -190,7 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     echo $values['rollGroupNameShort'];
                     echo '</td>';
                     echo '<td>';
-                    echo $values['status'];
+                    echo __($values['status']);
                     echo '</td>';
                     echo '<td>';
                     echo dateConvertBack($guid, substr($values['timestamp'], 0, 10)).' at '.substr($values['timestamp'], 11, 5);

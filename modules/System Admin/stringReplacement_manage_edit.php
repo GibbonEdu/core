@@ -30,17 +30,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
         ->add(__('Manage String Replacements'), 'stringReplacement_manage.php')
         ->add(__('Edit String'));
 
-    $search = '';
-    if (isset($_GET['search'])) {
-        $search = $_GET['search'];
-    }
+    $search = $_GET['search'] ?? '';
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    //Check if school year specified
-    $gibbonStringID = $_GET['gibbonStringID'];
+    //Check if StringID specified
+    $gibbonStringID = $_GET['gibbonStringID'] ?? '';
+    
     if ($gibbonStringID == '') {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');

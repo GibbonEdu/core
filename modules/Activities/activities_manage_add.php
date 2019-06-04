@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         echo '</div>';
 	}
 
-	$search = isset($_GET['search'])? $_GET['search'] : null;
+	$search = $_GET['search'] ?? null;
 
 	$form = Form::create('activity', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_manage_addProcess.php?search='.$search.'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID']);
 	$form->setFactory(DatabaseFormFactory::create($pdo));

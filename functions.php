@@ -697,7 +697,7 @@ function getYearGroupsFromIDList($guid, $connection2, $ids, $vertical = false, $
         $years = explode(',', $ids);
         if (count($years) > 0 and $years[0] != '') {
             if (count($years) == $resultYears->rowCount()) {
-                $output = '<i>All</i>';
+                $output = '<i>'.__('All').'</i>';
             } else {
                 try {
                     $dataYears = array();
@@ -736,7 +736,7 @@ function getYearGroupsFromIDList($guid, $connection2, $ids, $vertical = false, $
                 }
             }
         } else {
-            $output = '<i>None</i>';
+            $output = '<i>'.__('None').'</i>';
         }
     } catch (PDOException $e) {
     }
