@@ -65,7 +65,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 
 {% block footer %}
-    {% if dataSet.getResultCount > 25 %}
+    {% if dataSet.getResultCount > dataSet.getPageSize %}
     <div class="flex flex-col sm:flex-row sm:items-end justify-end mt-2">
         {{ block('pagination') }}
     </div>
@@ -108,7 +108,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     
     {% set buttonStyle = 'border -ml-px px-2 py-1 font-bold leading-loose' %}
     
-    {% if dataSet.getResultCount > 25 or filterOptions %}
+    {% if dataSet.getResultCount > dataSet.getPageSize or filterOptions %}
     <div class="pagination mb-2">
         <button type="button" class="paginate rounded-l text-gray-600 bg-gray-200 border-gray-500 {{ not dataSet.isFirstPage ? 'hover:bg-gray-400'}} {{ buttonStyle }}" data-page="{{ dataSet.getPrevPageNumber }}" {{ dataSet.isFirstPage ? 'disabled'}}>
             {{ __('Prev') }}
