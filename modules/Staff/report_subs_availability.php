@@ -22,6 +22,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\DataSet;
 use Gibbon\Domain\Staff\SubstituteGateway;
+use Gibbon\Module\Staff\Tables\CoverageMiniCalendar;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availability.php') == false) {
     // Access denied
@@ -111,6 +112,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     }
 
     $subs = $subGateway->queryAvailableSubsByDate($criteria, $date, $timeStart, $timeEnd);
+
+    $availability = $subGateway->selectUnavailableDatesByDateRange($date, $date)->fetchGrouped();
+    $subs->transform(function (&$sub) use (&$availability) {
+        $sub['dates'] = $availability[intval($sub['gibbonPersonID'])] ?? [];
+    });
     
     // DATA TABLE
     $table = DataTable::createPaginated('subsManage', $criteria);
@@ -152,9 +158,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $table->addColumn('details', __('Details'));
 
     $table->addColumn('contact', __('Contact'))
+        ->description(__('Availability'))
         ->context('primary')
         ->notSortable()
-        ->format(function ($person) {
+        ->format(function ($person) use ($dateObject) {
             $output = '';
 
             if ($person['available']) {
@@ -172,7 +179,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
                 if (!empty($person['unavailable'])) $reason .= __($person['unavailable']).'<br/>';
 
                 $output .= !empty($reason)? $reason : __('Not Available');
+
+                $output .= '<br/>';
+                $output .= CoverageMiniCalendar::renderTimeRange($person['dates'] ?? [], $dateObject);
             }
+            
+            
+            
             return $output;
         });
 

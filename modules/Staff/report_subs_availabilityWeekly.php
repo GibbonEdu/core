@@ -22,6 +22,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\DataSet;
 use Gibbon\Domain\Staff\SubstituteGateway;
+use Gibbon\Module\Staff\Tables\CoverageMiniCalendar;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availability.php') == false) {
     // Access denied
@@ -134,43 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
             ->notSortable()
             ->description(Format::date($weekday))
             ->format(function ($values) use ($weekday) {
-                $availabilityByDate = $values['dates'][$weekday->format('Y-m-d')] ?? [];
-
-                $title = '';
-                foreach ($availabilityByDate as $availability) {
-                    $title .= $availability['status'].': ';
-                    $title .= $availability['allDay'] == 'N'
-                        ? Format::timeRange($availability['timeStart'], $availability['timeEnd'])
-                        : __('All Day');
-                    $title .= '<br/>';
-                }
-
-                $output = '<div class="flex h-12 border" style="min-width: 8rem;" title="'.$title.'">';
-
-                $timeRange = new DatePeriod($weekday->modify('8:30am'), new DateInterval('PT10M'), $weekday->modify('4pm'));
-
-                foreach ($timeRange as $time) {
-                    $class = 'bg-white';
-
-                    $timeStart = $time->format('H:i:s');
-                    $timeEnd = $time->modify('+9 minutes')->format('H:i:s');
-
-                    foreach ($availabilityByDate as $availability) {
-                        switch ($availability['status']) {
-                            case 'Not Available':   $highlight = 'bg-gray-500'; break;
-                            case 'Absent':          $highlight = 'bg-gray-500'; break;
-                            case 'Teaching':        $highlight = 'bg-blue-500'; break;
-                            default:                $highlight = 'bg-purple-500';
-                        }
-
-                        if ($availability['allDay'] == 'Y') $class = $highlight;
-                        if ($timeStart <= $availability['timeEnd'] && $timeEnd >= $availability['timeStart']) $class = $highlight;
-                    }
-                    $output .= '<div class="flex-1 '.$class.'"></div>';
-                }
-                $output .= '</div>';
-
-                return $output;
+                return CoverageMiniCalendar::renderTimeRange($values['dates'][$weekday->format('Y-m-d')] ?? [], $weekday);
             })
             ->modifyCells(function ($values, $cell) use ($weekday) {
                 if ($weekday->format('Y-m-d') == date('Y-m-d')) $cell->addClass('bg-yellow-100');
