@@ -22,7 +22,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Students\StudentNoteGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSettings.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSettings.php') == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
     $table = DataTable::createPaginated('studentNoteCategoriesManage', $criteria);
 
     $table->addHeaderAction('add', __('Add'))
-        ->setURL('/modules/School Admin/studentsSettings_noteCategory_add.php')
+        ->setURL('/modules/User Admin/studentsSettings_noteCategory_add.php')
         ->displayLabel();
 
     $table->modifyRows(function ($values, $row) {
@@ -72,10 +72,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
         ->addParam('gibbonStudentNoteCategoryID')
         ->format(function ($values, $actions) {
             $actions->addAction('edit', __('Edit'))
-                ->setURL('/modules/School Admin/studentsSettings_noteCategory_edit.php');
+                ->setURL('/modules/User Admin/studentsSettings_noteCategory_edit.php');
 
             $actions->addAction('delete', __('Delete'))
-                ->setURL('/modules/School Admin/studentsSettings_noteCategory_delete.php');
+                ->setURL('/modules/User Admin/studentsSettings_noteCategory_delete.php');
         });
 
     echo $table->render($studentNoteCategories);

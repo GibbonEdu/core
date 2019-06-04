@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSettings_noteCategory_add.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSettings_noteCategory_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/studentsSettings_noteCategory_edit.php&gibbonStudentNoteCategoryID='.$_GET['editID'];
+        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/studentsSettings_noteCategory_edit.php&gibbonStudentNoteCategoryID='.$_GET['editID'];
     }
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], $editLink, null);

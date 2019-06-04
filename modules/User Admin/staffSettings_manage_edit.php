@@ -18,29 +18,37 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/staffSettings_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings_manage_edit.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    // Proceed!
+    //Proceed!
     $page->breadcrumbs
         ->add(__('Manage Staff Settings'), 'staffSettings.php')
         ->add(__('Absence Type'));
 
-    $editLink = '';
-    if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/staffSettings_manage_edit.php&gibbonStaffAbsenceTypeID='.$_GET['editID'];
-    }
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink, null);
+        returnProcess($guid, $_GET['return'], null, null);
     }
 
-    $form = Form::create('staffAbsenceType', $_SESSION[$guid]['absoluteURL'].'/modules/School Admin/staffSettings_manage_addProcess.php');
+    $gibbonStaffAbsenceTypeID = $_GET['gibbonStaffAbsenceTypeID'] ?? '';
+    $staffAbsenceTypeGateway = $container->get(StaffAbsenceTypeGateway::class);
+
+    $values = $staffAbsenceTypeGateway->getByID($gibbonStaffAbsenceTypeID);
+
+    if (empty($values)) {
+        $page->addError(__('The specified record cannot be found.'));
+        return;
+    }
+
+    $form = Form::create('staffAbsenceType', $_SESSION[$guid]['absoluteURL'].'/modules/User Admin/staffSettings_manage_editProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('gibbonStaffAbsenceTypeID', $gibbonStaffAbsenceTypeID);
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
@@ -64,11 +72,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/staffSettings
 
     $row = $form->addRow();
         $row->addLabel('sequenceNumber', __('Sequence Number'));
-        $row->addSequenceNumber('sequenceNumber', 'gibbonStaffAbsenceType')->maxLength(3);
+        $row->addSequenceNumber('sequenceNumber', 'gibbonStaffAbsenceType', $values['sequenceNumber'])->maxLength(3);
 
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();
+
+    $form->loadAllValuesFrom($values);
 
     echo $form->getOutput();
 }
