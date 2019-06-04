@@ -21,13 +21,16 @@ use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
 
 require_once '../../gibbon.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/staffSettings_manage_add.php';
+$gibbonStaffAbsenceTypeID = $_POST['gibbonStaffAbsenceTypeID'] ?? '';
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/staffSettings_manage_edit.php&gibbonStaffAbsenceTypeID='.$gibbonStaffAbsenceTypeID;
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/staffSettings_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings_manage_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
     // Proceed!
+    $staffAbsenceTypeGateway = $container->get(StaffAbsenceTypeGateway::class);
+
     $data = [
         'name'             => $_POST['name'] ?? '',
         'nameShort'        => $_POST['nameShort'] ?? '',
@@ -43,18 +46,22 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/staffSettings
         exit;
     }
 
-    $staffAbsenceTypeGateway = $container->get(StaffAbsenceTypeGateway::class);
+    if (!$staffAbsenceTypeGateway->exists($gibbonStaffAbsenceTypeID)) {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+        exit;
+    }
 
-    if (!$staffAbsenceTypeGateway->unique($data, ['name', 'nameShort'])) {
+    if (!$staffAbsenceTypeGateway->unique($data, ['name', 'nameShort'], $gibbonStaffAbsenceTypeID)) {
         $URL .= '&return=error7';
         header("Location: {$URL}");
         exit;
     }
 
-    $inserted = $staffAbsenceTypeGateway->insert($data);
+    $updated = $staffAbsenceTypeGateway->update($gibbonStaffAbsenceTypeID, $data);
 
-    $URL .= !$inserted
+    $URL .= !$updated
         ? "&return=error1"
-        : "&return=success0&editID=$inserted";
+        : "&return=success0";
     header("Location: {$URL}");
 }

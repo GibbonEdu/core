@@ -55,6 +55,7 @@ v18.0.00
         School Admin: updated action categories Assessment to Assess
         System Admin: updated importer to add Skip Non-Required Fields option when importing partial data
         Timetable: update View Timetable by Person to access Expected users when All Users filter is enabled
+        User Admin: moved Manage Student Settings into User Admin module
 
     Bug Fixes
         System: fixed non-rendering HTML issue in Welcome text on logged-out index

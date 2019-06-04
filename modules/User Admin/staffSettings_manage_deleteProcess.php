@@ -17,22 +17,36 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\Prefab\DeleteForm;
 use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/staffSettings_manage_delete.php') == false) {
-    // Access denied
-    $page->addError(__('You do not have access to this action.'));
+require_once '../../gibbon.php';
+
+$gibbonStaffAbsenceTypeID = $_GET['gibbonStaffAbsenceTypeID'] ?? '';
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/staffSettings.php';
+
+if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings_manage_delete.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
 } else {
     // Proceed!
-    $gibbonStaffAbsenceTypeID = $_GET['gibbonStaffAbsenceTypeID'] ?? '';
     $staffAbsenceTypeGateway = $container->get(StaffAbsenceTypeGateway::class);
 
-    if (!$staffAbsenceTypeGateway->exists($gibbonStaffAbsenceTypeID)) {
-        $page->addError(__('The specified record cannot be found.'));
-        return;
+    if (empty($gibbonStaffAbsenceTypeID)) {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+        exit;
     }
 
-    $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/School Admin/staffSettings_manage_deleteProcess.php?gibbonStaffAbsenceTypeID='.$gibbonStaffAbsenceTypeID);
-    echo $form->getOutput();
+    if (!$staffAbsenceTypeGateway->exists($gibbonStaffAbsenceTypeID)) {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    $deleted = $staffAbsenceTypeGateway->delete($gibbonStaffAbsenceTypeID);
+
+    $URL .= !$deleted
+        ? "&return=error1"
+        : "&return=success0";
+    header("Location: {$URL}");
 }
