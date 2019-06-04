@@ -21,7 +21,7 @@ include '../../gibbon.php';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/studentsSettings_noteCategory_add.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSettings_noteCategory_add.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSettings_noteCategory_add.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

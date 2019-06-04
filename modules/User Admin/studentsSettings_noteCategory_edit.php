@@ -17,19 +17,22 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\Prefab\DeleteForm;
+use Gibbon\Forms\Form;
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSettings_noteCategory_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSettings_noteCategory_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
+    $page->breadcrumbs
+        ->add(__('Manage Students Settings'), 'studentsSettings.php')
+        ->add(__('Edit Note Category'));
+
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
-
     //Check if school year specified
     $gibbonStudentNoteCategoryID = $_GET['gibbonStudentNoteCategoryID'];
     if ($gibbonStudentNoteCategoryID == '') {
@@ -51,7 +54,31 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
             echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
-            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/studentsSettings_noteCategory_deleteProcess.php?gibbonStudentNoteCategoryID=$gibbonStudentNoteCategoryID");
+            //Let's go!
+            $values = $result->fetch(); 
+            
+            $form = Form::create('noteCategory', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/studentsSettings_noteCategory_editProcess.php?gibbonStudentNoteCategoryID='.$gibbonStudentNoteCategoryID);
+            
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+        
+            $row = $form->addRow();
+                $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
+                $row->addTextField('name')->required()->maxLength(30);
+            
+            $row = $form->addRow();
+                $row->addLabel('active', __('Active'));
+                $row->addYesNo('active')->required();
+        
+            $row = $form->addRow();
+                $row->addLabel('template', __('Template'))->description(__('HTML code to be inserted into blank note.'));
+                $row->addTextArea('template')->setRows(8);
+        
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            $form->loadAllValuesFrom($values);
+        
             echo $form->getOutput();
         }
     }
