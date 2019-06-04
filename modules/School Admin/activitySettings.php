@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
 
     $setting = getSettingByScope($connection2, 'Activities', 'maxPerTerm', true);
     $row = $form->addRow()->addClass('perTerm');
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])->fromString('0,1,2,3,4,5')->selected($setting['value'])->required();
 
     $accessTypes = array(
@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
     ); 
     $setting = getSettingByScope($connection2, 'Activities', 'access', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])->fromArray($accessTypes)->selected($setting['value'])->required();
 
     $paymentTypes = array(
@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
     );    
     $setting = getSettingByScope($connection2, 'Activities', 'payment', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])->fromArray($paymentTypes)->selected($setting['value'])->required();
 
     $enrolmentTypes = array(
@@ -79,28 +79,28 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
     ); 
     $setting = getSettingByScope($connection2, 'Activities', 'enrolmentType', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])->fromArray($enrolmentTypes)->selected($setting['value'])->required();
 
     $setting = getSettingByScope($connection2, 'Activities', 'backupChoice', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
 
     $setting = getSettingByScope($connection2, 'Activities', 'activityTypes', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextarea($setting['name'])->setValue($setting['value']);
 
     $setting = getSettingByScope($connection2, 'Activities', 'disableExternalProviderSignup', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $setting = getSettingByScope($connection2, 'Activities', 'hideExternalProviderCost', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $row = $form->addRow();
