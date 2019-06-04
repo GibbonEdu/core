@@ -54,12 +54,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
     }
 
     //Allow tag selection
-    echo '<h2>';
-    echo __('Choose Concept');
-    echo '</h2>';
-
     $form = Form::create('conceptExplorer', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
+    
+    $form->setTitle(__('Choose Concept'));
+    $form->setClass('noIntBorder fullWidth');
 
     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/conceptExplorer.php');
 
