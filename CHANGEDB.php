@@ -897,4 +897,6 @@ INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001',
 UPDATE gibbonAction SET category='Learn' WHERE category='Teaching & Learning' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='School Admin');end
 UPDATE gibbonAction SET category='Assess' WHERE category='Assessment' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='School Admin');end
 UPDATE gibbonAction SET gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin'), category='User Management' WHERE name='Manage Students Settings' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='School Admin');end
+UPDATE `gibbonAction` SET `URLList` = 'staffSettings.php,staffSettings_manage_add.php,staffSettings_manage_edit.php,staffSettings_manage_delete.php' WHERE name='Manage Staff Settings' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin');end
+DELETE FROM `gibbonAction` WHERE name='Manage Staff Settings' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='School Admin');end
 ";
