@@ -29,8 +29,8 @@ $request = [
     'dateStart' => $_POST['dateStart'] ?? '',
     'dateEnd'   => $_POST['dateEnd'] ?? '',
     'allDay'    => $_POST['allDay'] ?? 'N',
-    'timeStart' => $_POST['timeStart'] ?? '',
-    'timeEnd'   => $_POST['timeEnd'] ?? '',
+    'timeStart' => isset($_POST['timeStart']) ? $_POST['timeStart'].':00' : '',
+    'timeEnd'   => isset($_POST['timeEnd']) ? $_POST['timeEnd'].':00' : '',
 ];
 
 $gibbonPersonIDCoverage = $_POST['gibbonPersonIDCoverage'] ?? '';
@@ -91,8 +91,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
                     if ($time['allDay'] == 'Y' 
                     || ($time['allDay'] == 'N' && $request['allDay'] == 'Y')
                     || ($time['allDay'] == 'N' && $request['allDay'] == 'N'
-                        && $time['timeStart'] <= $request['timeEnd']
-                        && $time['timeEnd'] >= $request['timeStart'])) {
+                        && $time['timeStart'] < $request['timeEnd']
+                        && $time['timeEnd'] > $request['timeStart'])) {
                         return Format::small(__($time['status'] ?? 'Not Available'));
                     }
                 }
