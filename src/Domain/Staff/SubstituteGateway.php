@@ -112,7 +112,7 @@ class SubstituteGateway extends QueryableGateway
 
             // Not available?
             $query->leftJoin('gibbonStaffCoverageDate as unavailable', "unavailable.gibbonPersonIDUnavailable=gibbonPerson.gibbonPersonID AND unavailable.date = :date 
-                    AND (unavailable.allDay='Y' OR (unavailable.allDay='N' AND unavailable.timeStart <= :timeEnd AND unavailable.timeEnd >= :timeStart))");
+                    AND (unavailable.allDay='Y' OR (unavailable.allDay='N' AND unavailable.timeStart < :timeEnd AND unavailable.timeEnd > :timeStart))");
 
             // Already covering?
             $query->joinSubSelect(
@@ -126,7 +126,7 @@ class SubstituteGateway extends QueryableGateway
                     WHERE gibbonStaffCoverage.status = 'Accepted'",
                 'coverage',
                 "coverage.gibbonPersonIDCoverage=gibbonPerson.gibbonPersonID AND coverage.date = :date 
-                    AND (coverage.allDay='Y' OR (coverage.allDay='N' AND coverage.timeStart <= :timeEnd AND coverage.timeEnd >= :timeStart))"
+                    AND (coverage.allDay='Y' OR (coverage.allDay='N' AND coverage.timeStart < :timeEnd AND coverage.timeEnd > :timeStart))"
             );
 
             // Already absent?
@@ -139,7 +139,7 @@ class SubstituteGateway extends QueryableGateway
                     WHERE gibbonStaffAbsence.status <> 'Declined'",
                 'absence',
                 "absence.gibbonPersonID=gibbonPerson.gibbonPersonID AND absence.date = :date 
-                    AND (absence.allDay='Y' OR (absence.allDay='N' AND absence.timeStart <= :timeEnd AND absence.timeEnd >= :timeStart))"
+                    AND (absence.allDay='Y' OR (absence.allDay='N' AND absence.timeStart < :timeEnd AND absence.timeEnd > :timeStart))"
             );
 
             // Already teaching?
@@ -157,7 +157,7 @@ class SubstituteGateway extends QueryableGateway
                     WHERE gibbonCourseClassPerson.role = 'Teacher'",
                 'timetable',
                 "timetable.gibbonPersonID=gibbonPerson.gibbonPersonID AND timetable.date = :date 
-                    AND timetable.timeStart <= :timeEnd AND timetable.timeEnd >= :timeStart"
+                    AND timetable.timeStart < :timeEnd AND timetable.timeEnd > :timeStart"
             );
         } else {
             // Not available?
