@@ -63,21 +63,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
 
         // Allow coverage request form to override absence times
         $absence['allDay'] = $_POST['allDay'] ?? 'N';
-        $absence['timeStart'] = $_POST['timeStart'] ?? $absence['timeStart'];
-        $absence['timeEnd'] = $_POST['timeEnd'] ?? $absence['timeEnd'];
+        $absence['timeStart'] = isset($_POST['timeStart']) ? $_POST['timeStart'].':00' : $absence['timeStart'];
+        $absence['timeEnd'] = isset($_POST['timeEnd']) ? $_POST['timeEnd'].':00' : $absence['timeEnd'];
 
         // Is this date unavailable: absent, already booked, or has an availability exception
         if (isset($unavailable[$absence['date']])) {
             $times = $unavailable[$absence['date']];
 
             foreach ($times as $time) {
-            
                 // Handle full day and partial day unavailability
                 if ($time['allDay'] == 'Y' 
                 || ($time['allDay'] == 'N' && $absence['allDay'] == 'Y')
                 || ($time['allDay'] == 'N' && $absence['allDay'] == 'N'
-                    && $time['timeStart'] <= $absence['timeEnd']
-                    && $time['timeEnd'] >= $absence['timeStart'])) {
+                    && $time['timeStart'] < $absence['timeEnd']
+                    && $time['timeEnd'] > $absence['timeStart'])) {
                     $absence['unavailable'] = Format::small(__($time['status'] ?? 'Not Available'));
                 }
             }
