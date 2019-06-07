@@ -36,16 +36,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
     } else {
         //Proceed!
         $page->breadcrumbs->add(__('Manage Facility Changes'));
+
+        if (isset($_GET['return'])) {
+            returnProcess($guid, $_GET['return'], null, null);
+        }
+
         if ($highestAction == 'Manage Facility Changes_allClasses') {
             echo '<p>'.__('This page allows you to create and manage one-off location changes within any class in the timetable. Only current and future changes are shown: past changes are hidden.').'</p>';
         } else if ($highestAction == 'Manage Facility Changes_myDepartment') {
             echo '<p>'.__('This page allows you to create and manage one-off location changes within any of the classes departments for which have have the role Coordinator. Only current and future changes are shown: past changes are hidden.').'</p>';
         } else {
             echo '<p>'.__('This page allows you to create and manage one-off location changes within any of your classes in the timetable. Only current and future changes are shown: past changes are hidden.').'</p>';
-        }
-
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
         }
 
         $facilityChangeGateway = $container->get(FacilityChangeGateway::class);
