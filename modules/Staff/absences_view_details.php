@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_detail
         return;
     }
 
-    if ($highestAction == 'View Absences_my' && $absence['gibbonPersonID'] != $_SESSION[$guid]['gibbonPersonID']) {
+    if ($highestAction == 'View Absences_mine' && $absence['gibbonPersonID'] != $_SESSION[$guid]['gibbonPersonID']) {
         $page->addError(__('You do not have access to this action.'));
         return;
     }
