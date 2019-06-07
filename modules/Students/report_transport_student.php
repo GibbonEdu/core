@@ -65,9 +65,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
     $table = ReportTable::createPaginated('studentTransport', $criteria)->setViewMode($viewMode, $gibbon->session);
     $table->setTitle(__('Student Transport'));
 
-    $table->addColumn('transport', __('Transport'));
-    $table->addColumn('rollGroup', __('Roll Group'))->width('10%');
+    $table->addColumn('transport', __('Transport'))
+        ->context('primary');
+    $table->addColumn('rollGroup', __('Roll Group'))
+        ->context('secondary')
+        ->width('10%');
     $table->addColumn('student', __('Student'))
+        ->context('primary')
         ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
         ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true]));
     
@@ -84,6 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
         });
 
     $table->addColumn('contacts', __('Parental Contacts'))
+        ->context('secondary')
         ->width('30%')
         ->notSortable()
         ->format(function ($student) use ($view) {
