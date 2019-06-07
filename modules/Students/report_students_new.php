@@ -118,15 +118,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
 
     $table->addRowCountColumn($students->getPageFrom());
     $table->addColumn('student', __('Student'))
+        ->context('primary')
         ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
         ->format(function ($student) {
             return Format::name('', $student['preferredName'], $student['surname'], 'Student', true, true) 
                  . '<br/><small><i>'.Format::userStatusInfo($student).'</i></small>';
         });
-    $table->addColumn('rollGroup', __('Roll Group'));
+    $table->addColumn('rollGroup', __('Roll Group'))
+        ->context('primary');
     $table->addColumn('username', __('Username'));
     $table->addColumn('dateStart', __('Start Date'))
-          ->format(Format::using('date', 'dateStart'));
+        ->context('secondary')
+        ->format(Format::using('date', 'dateStart'));
     $table->addColumn('lastSchool', __('Last School'));
 
     $view = new View($container->get('twig'));
