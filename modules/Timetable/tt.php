@@ -57,12 +57,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
                 ->filterBy('all', $allUsers)
                 ->fromPOST();
 
-            echo '<h2>';
-            echo __('Filters');
-            echo '</h2>';
 
-            $form = Form::create('tt', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+            $form = Form::create('ttView', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
             $form->setClass('noIntBorder fullWidth');
+            $form->setTitle(__('Search'));
 
             $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/tt.php');
 
