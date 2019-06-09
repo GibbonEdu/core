@@ -2,7 +2,7 @@
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update Student Settings');
 $I->loginAsAdmin();
-$I->amOnModulePage('School Admin', 'studentsSettings.php');
+$I->amOnModulePage('User Admin', 'studentsSettings.php');
 
 // Grab Original Settings --------------------------------------
 
