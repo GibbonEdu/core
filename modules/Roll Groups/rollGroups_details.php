@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_det
             }
             echo '</table>';
 
-            $sortBy = $_GET['sortBy'] ?? '';
+            $sortBy = $_GET['sortBy'] ?? 'rollOrder, surname, preferredName';
 
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
 
