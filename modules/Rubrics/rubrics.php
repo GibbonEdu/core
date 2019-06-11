@@ -103,6 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics.php') == f
         // COLUMNS
         $table->addExpandableColumn('description');
         $table->addColumn('scope', __('Scope'))
+            ->context('primary')
             ->width('15%')
             ->format(function($rubric) {
                 if ($rubric['scope'] == 'School') {
@@ -112,7 +113,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics.php') == f
                 }
             });
         $table->addColumn('category', __('Category'))->width('15%');
-        $table->addColumn('name', __('Name'))->width('35%');
+        $table->addColumn('name', __('Name'))
+            ->context('primary')
+            ->width('35%');
         $table->addColumn('yearGroups', __('Year Groups'))
             ->format(function($activity) use ($yearGroups) {
                 return ($activity['yearGroupCount'] >= count($yearGroups)/2)? '<i>'.__('All').'</i>' : $activity['yearGroups'];
