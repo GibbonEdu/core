@@ -48,7 +48,7 @@ class RollGroupTable extends DataTable
         $this->studentGateway = $studentGateway;
     }
 
-    public function build($gibbonRollGroupID, $canViewConfidential, $canPrint, $sortBy)
+    public function build($gibbonRollGroupID, $canViewConfidential, $canPrint, $sortBy = 'rollOrder, surname, preferredName')
     {
         $guid = $this->session->get('guid');
         $connection2 = $this->db->getConnection();
@@ -65,9 +65,10 @@ class RollGroupTable extends DataTable
             $canPrint = false;
         }
 
+        $sortByArray = array_map('trim', explode(',', $sortBy));
         $criteria = $this->studentGateway
             ->newQueryCriteria()
-            ->sortBy(['surname', 'preferredName'])
+            ->sortBy($sortByArray)
             ->pageSize(0);
 
         $students = $this->studentGateway->queryStudentEnrolmentByRollGroup($criteria, $gibbonRollGroupID);
