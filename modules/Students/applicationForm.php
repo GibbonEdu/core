@@ -451,26 +451,22 @@ if ($proceed == false) {
 
             if (!empty($application['parent1gibbonPersonID'])) {
                 // Get parent info from sibling application
-                $parent1username = $application['parent1username'];
-                $parent1email = $application['parent1email'];
-                $parent1surname = $application['parent1surname'];
-                $parent1preferredName = $application['parent1preferredName'];
-                $parent1fields = $application['parent1fields'];
                 $parent1gibbonPersonID = $application['parent1gibbonPersonID'];
             } else {
                 // Get parent info from gibbonPersonID
-                $dataParent = array('gibbonPersonID' => $gibbonPersonID);
-                $sqlParent = 'SELECT username, email, surname, preferredName, fields FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-                $resultParent= $pdo->executeQuery($dataParent, $sqlParent);
+                $parent1gibbonPersonID = $gibbonPersonID;
+            }
 
-                if ($parent = $resultParent->fetch()) {
-                    $parent1username = $parent['username'];
-                    $parent1email = $parent['email'];
-                    $parent1surname = $parent['surname'];
-                    $parent1preferredName = $parent['preferredName'];
-                    $parent1fields = $parent['fields'];
-                    $parent1gibbonPersonID = $gibbonPersonID;
-                }
+            $dataParent = array('gibbonPersonID' => $parent1gibbonPersonID);
+            $sqlParent = 'SELECT username, email, surname, preferredName, fields FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
+            $resultParent= $pdo->executeQuery($dataParent, $sqlParent);
+
+            if ($parent = $resultParent->fetch()) {
+                $parent1username = $parent['username'];
+                $parent1email = $parent['email'];
+                $parent1surname = $parent['surname'];
+                $parent1preferredName = $parent['preferredName'];
+                $parent1fields = $parent['fields'];
             }
 
             $form->addRow()->addHeading(__('Parent/Guardian').' 1');
