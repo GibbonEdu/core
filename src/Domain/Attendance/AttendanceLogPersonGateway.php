@@ -133,8 +133,19 @@ class AttendanceLogPersonGateway extends QueryableGateway
         return $this->runSelect($query);
     }
 
-    public function queryAttendanceCountsByType($criteria, $gibbonSchoolYearID, $rollGroups, $dateStart, $dateEnd)
+    public function queryAttendanceCountsByType($criteria, $gibbonSchoolYearID, $rollGroups, $dateStart, $dateEnd, $countClassAsSchool)
     {
+        $subSelect = $this
+            ->newSelect()
+            ->from('gibbonAttendanceLogPerson')
+            ->cols(['gibbonPersonID', 'date', 'MAX(timestampTaken) as maxTimestamp', 'context'])
+            ->where("date>=:dateStart AND date<=:dateEnd")
+            ->groupBy(['gibbonPersonID', 'date']);
+
+        if ($countClassAsSchool == 'N') {
+            $subSelect->where("context <> 'Class'");
+        }
+
         $query = $this
             ->newQuery()
             ->from('gibbonAttendanceLogPerson')
@@ -144,8 +155,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
             ->innerJoin('gibbonAttendanceCode', 'gibbonAttendanceLogPerson.type=gibbonAttendanceCode.name')
             ->joinSubSelect(
                 'INNER',
-                'SELECT gibbonPersonID, date, MAX(timestampTaken) as maxTimestamp, context
-                FROM gibbonAttendanceLogPerson WHERE date>=:dateStart AND date<=:dateEnd GROUP BY gibbonPersonID, date',
+                $subSelect,
                 'log',
                 'gibbonAttendanceLogPerson.gibbonPersonID=log.gibbonPersonID AND gibbonAttendanceLogPerson.date=log.date'
             )
@@ -157,10 +167,8 @@ class AttendanceLogPersonGateway extends QueryableGateway
             ->groupBy(['gibbonAttendanceLogPerson.date', 'gibbonAttendanceCode.name', 'gibbonAttendanceLogPerson.reason'])
             ->orderBy(['gibbonAttendanceLogPerson.date', 'gibbonAttendanceCode.direction DESC', 'gibbonAttendanceCode.name']);
 
-        $countClassAsSchool = getSettingByScope($this->db()->getConnection(), 'Attendance', 'countClassAsSchool');
         if ($countClassAsSchool == 'N') {
-            $query->where("gibbonAttendanceLogPerson.context <> 'Class'")
-                  ->where("log.context <> 'Class'");
+            $query->where("gibbonAttendanceLogPerson.context <> 'Class'");
         }
 
         if ($rollGroups != array('all')) {
