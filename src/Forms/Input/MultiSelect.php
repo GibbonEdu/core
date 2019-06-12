@@ -190,7 +190,7 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
                 var values = null;
 
                 if (window[name+"sortBy"] != \'Sort by Name\' && window[name+"sortBy"] != null) {
-                    values = $(\'#\' + name).data(\'sortable\')[window[name+"sortBy"]];
+                    values = $(\'#\' + name +\'Container\').data(\'sortable\')[window[name+"sortBy"]];
                 }
 
                 sortSelect($(\'#\' + name + "Source"), values);
