@@ -1117,6 +1117,14 @@ table.smallIntBorder td.noPadding {
     font-size: 16px;
 }
 
+.blockInputs .LV_validation_message {
+    background-color: #edf7ff;
+}
+
+.blockInputs .LV_invalid_field {
+    border-color: #c53030 !important;
+}
+
 /* v16 NEW CLASSES */
 
 .displayNone {
