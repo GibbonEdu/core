@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_particip
 
     // CRITERIA
     $criteria = $activityGateway->newQueryCriteria()
-        ->searchBy($activityGateway->getSearchableColumns(), isset($_GET['search'])? $_GET['search'] : '')
+        ->searchBy($activityGateway->getSearchableColumns(), $_GET['search'] ?? '')
         ->sortBy(['surname', 'preferredName'])
         ->pageSize(!empty($viewMode) ? 0 : 50)
         ->fromPOST();
@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_particip
             $name = Format::name('', $student['preferredName'], $student['surname'], 'Student', true);
             return Format::link($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'].'&subpage=Activities', $name);
         });
-    $table->addColumn('status', __('Status'));
+    $table->addColumn('status', __('Status'))->translatable();
 
     $view = new View($container->get('twig'));
 
