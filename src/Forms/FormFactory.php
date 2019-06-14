@@ -449,7 +449,8 @@ class FormFactory implements FormFactoryInterface
                 'AED د.إ' => 'United Arab Emirates Dirham (د.إ)',
                 'VND ₫‎' => 'Vietnamese Dong (₫‎)',
                 'XCD $' => 'Eastern Caribbean Dollars ($)',
-                'XOF FCFA' => 'West African Francs (FCFA)'
+                'XOF FCFA' => 'West African Francs (FCFA)',
+                'ZMW ZK' => 'Zambian Kwacha (ZMW)',
             ),
         );
 
