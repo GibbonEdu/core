@@ -59,7 +59,7 @@ class Username extends TextField
     {
         $this->maxLength(20)
             ->uniqueField('./publicRegistrationCheck.php', ['currentUsername' => $this->getValue()])
-            ->addValidation('Validate.Format', 'pattern: /^[a-zA-Z0-9_\-\.]*$/, failureMessage: "'.__('Must be alphanumeric').'"');
+            ->addValidation('Validate.Format', 'pattern: /^[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF\u3040-\u309F\u3400-\u4DBF\u4E00-\u9FFF\u2B740–\u2B81F0-9_\-\.]*$/u, failureMessage: "'.__('Must be alphanumeric').'"');
 
         return parent::getElement();
     }
