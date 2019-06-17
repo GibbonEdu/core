@@ -287,7 +287,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                 }
                 if ($resultSpace->rowCount() == 1) {
                     $rowSpace = $resultSpace->fetch();
-                    echo __($rowSpace['name']).'<br/>';
+                    echo $rowSpace['name'].'<br/>';
                 }
             }
             if ($row['locationDetail'] != '') {
