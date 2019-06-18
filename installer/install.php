@@ -91,9 +91,11 @@ if ($step >= 1) {
 }
 
 //Set language pre-install
-$gibbon->locale->setLocale($code);
-bindtextdomain('gibbon', '../i18n');
-textdomain('gibbon');
+if (function_exists('gettext')) {
+    $gibbon->locale->setLocale($code);
+    bindtextdomain('gibbon', '../i18n');
+    textdomain('gibbon');
+}
 
 echo '<h2>'.sprintf(__('Installation - Step %1$s'), ($step + 1)).'</h2>';
 
