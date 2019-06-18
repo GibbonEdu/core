@@ -39,21 +39,17 @@ class CourseEnrolmentGateway extends QueryableGateway
      * @param QueryCriteria $criteria
      * @return DataSet
      */
-    public function queryCourseEnrolmentByClass(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonCourseClassID, $left = false)
+    public function queryCourseEnrolmentByClass(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonCourseClassID, $left = false, $includeExpected = false)
     {
         $query = $this
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonCourseClass.gibbonCourseClassID', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.title', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.status', 'gibbonPerson.email', 'gibbonPerson.privacy', 'gibbonPerson.image_240', 'gibbonPerson.dob', 'gibbonCourseClassPerson.reportable', 'gibbonCourseClassPerson.role', "(CASE WHEN gibbonCourseClassPerson.role NOT LIKE 'Student%' THEN 0 ELSE 1 END) as roleSortOrder"
+                'gibbonCourseClass.gibbonCourseClassID', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.title', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.status', 'gibbonPerson.dateStart', 'gibbonPerson.dateEnd', 'gibbonPerson.email', 'gibbonPerson.privacy', 'gibbonPerson.image_240', 'gibbonPerson.dob', 'gibbonCourseClassPerson.reportable', 'gibbonCourseClassPerson.role', "(CASE WHEN gibbonCourseClassPerson.role NOT LIKE 'Student%' THEN 0 ELSE 1 END) as roleSortOrder", "'Student' as roleCategory", 'gibbonCourse.gibbonYearGroupIDList as yearGroup'
             ])
             ->innerJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID')
             ->innerJoin('gibbonCourse', 'gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID')
             ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID')
-            ->where("(gibbonPerson.status = 'Full' OR gibbonPerson.status = 'Expected')")
-            ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :today)')
-            ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :today)')
-            ->bindValue('today', date('Y-m-d'))
             ->where('gibbonCourse.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->where('gibbonCourseClassPerson.gibbonCourseClassID = :gibbonCourseClassID')
@@ -63,6 +59,17 @@ class CourseEnrolmentGateway extends QueryableGateway
             $query->where("gibbonCourseClassPerson.role LIKE '%Left'");
         } else {
             $query->where("gibbonCourseClassPerson.role NOT LIKE '%Left'");
+        }
+
+        if ($includeExpected) {
+            $query->where("(gibbonPerson.status = 'Full' OR gibbonPerson.status = 'Expected')")
+                  ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :today)')
+                  ->bindValue('today', date('Y-m-d'));
+        } else {
+            $query->where("gibbonPerson.status = 'Full'")
+                  ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :today)')
+                  ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :today)')
+                  ->bindValue('today', date('Y-m-d'));
         }
 
         $criteria->addFilterRules([
