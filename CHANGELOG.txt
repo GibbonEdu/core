@@ -19,8 +19,10 @@ CHANGELOG
 v18.0.00
 --------
     Headlines
-        Fully responsive layouts and navigation on all screen sizes
-        Added responsive HTML email templates for outgoing notifications and messages
+        Mobile responsive layouts and improved navigation on all screen sizes
+        Responsive HTML email templates for outgoing notifications and messages
+        New staff absence tracking feature, including approval and reports
+        New tools for booking substitute coverage and notifying users
         Activated Urdu and Croatian as available languages
         Added Burmese as a development language
 
@@ -29,55 +31,59 @@ v18.0.00
         Messenger: messages targeted to Applicants now only go to Accepted
 
     Significant Changes
-        System: added a webpack-based build process for javascript and css files
+        System: added Tailwind CSS and a webpack-based build process
         Attendance: added ability to set future absence for multiple students
         Attendance: replaced the attendance pre-fill settings with Count Class Attendance as School Attendance
         Rubrics: added ability to export Visualise chart to PNG
 
-    Security
-
     Tweaks & Additions
-        System: updated the Google login button to be responsive and translatable
-        System: updated Google login scopes to remove plus.me, based on Google API changes
-        System: made disabled checkboxes more visible
-        System: method for columns that require the translation, and update the columns where this is applicable
-        System: added Omani Rial, Albanian Lek & Zambian Kwacha as a currency option
         System: added an option to select SMTP encryption in Third Party Settings
+        System: added Omani Rial, Albanian Lek & Zambian Kwacha as a currency option
+        System: added a nicer Arabic font, improved RTL layouts
+        System: improved the form validation highlighting of invalid fields
+        System: improved translation of data table columns and date/time values
+        System: made disabled checkboxes more visible
+        System: refactored all breadcrumbs
+        System: updated Google login scopes to remove plus.me, based on Google API changes
+        System: updated the Google login button to be responsive and translatable
         Attendance: updated Take Attendance by Person logs to separate class and school wide attendance
         Attendance: updated the Student History page to be responsive, added tooltip information
         Data Updater: differentiate required field settings by role, add hidden & read-only options
         Form Groups: hide student count from non-staff
-        Individual Needs: add an Individual Needs Overview report with chart
+        Individual Needs: added an Individual Needs Overview report with chart
+        Markbook: added a Reset Order button in View Markbook
         Planner: improved icon consistency to Concept Explorer
-        Students: added link from student profile to Individual Needs edit screen
-        School Admin: add a Manage Staff Settings page
-        School Admin: updated action categories Teaching & Learning to Learn
+        School Admin: increased field lengths for Roll Group name and nameShort
         School Admin: updated action categories Assessment to Assess
+        School Admin: updated action categories Teaching & Learning to Learn
+        Students: added link from student profile to Individual Needs edit screen
+        System Admin: added a clear cache option under System Check
         System Admin: updated importer to add Skip Non-Required Fields option when importing partial data
         Timetable: update View Timetable by Person to access Expected users when All Users filter is enabled
+        User Admin: added staff absence and coverage settings to Manage Staff Settings
         User Admin: moved Manage Student Settings into User Admin module
+        User Admin: updated username validation to allow latin and CJK characters
 
     Bug Fixes
-        System: fixed non-rendering HTML issue in Welcome text on logged-out index
-        System: fixed missing globals in custom index scripts
-        System: fixed index_custom.php content not loading on first login
-        System: fixed SQL key integer length in database tables to ensure referential integrity
-        System: fixed issue leading to no theme on login if a personal theme has been removed from the system
         System: fixed errant HTML issue in Smart Workflow on Deadlines page
+        System: fixed index_custom.php content not loading on first login
+        System: fixed issue leading to no theme on login if a personal theme has been removed from the system
+        System: fixed missing globals in custom index scripts
+        System: fixed non-rendering HTML issue in Welcome text on logged-out index
+        System: fixed SQL key integer length in database tables to ensure referential integrity
         Finance: fixed spelling error in Manage Invoices
         Library: fixed bug leading to loss of main user/owner field value in item edit
         Library: removed lending icon for items that are not borrowable
-        Markbook: fixed column title showing term's name when the term filter is applied in View Markbook
         Markbook: fixed bug preventing parents and students from viewing the markbook with work submitted to a lesson plan
+        Markbook: fixed column order not persisting when more than 25 columns
+        Markbook: fixed column title showing term's name when the term filter is applied in View Markbook
         Markbook: fixed column widths when modified assessment is enabled
         School Admin: fixed interface string typos
-        School Admin: increased field lengths for Roll Group name and nameShort
         Staff: fixed staff photo not displaying on Facilities sub-page in staff profile
-        Staff: added translation to Usage table entry in Facilities in Staff profile
+        Staff: fixed translation of facilities table in Staff profile
         System Admin: fixed typo in Google integration settings
-        System Admin: added a clear cache option under System Check
-        Timetable: fixed some staff not showing up in View Timetable by Person
         Timetable Admin: fixed malformed translatable interface strings
+        Timetable: fixed some staff not showing up in View Timetable by Person
         User Admin: fixed issue preventing action names from being translated in Manage Permissions
         User Admin: improved interface string consistency
 
