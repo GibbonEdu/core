@@ -417,7 +417,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
             echo Format::alert('Your request failed because your inputs were invalid.');
             return;
         } elseif ($mode != "sync" and $mode != "insert" and $mode != "update") {
-            echo Format::alert(__('Import cannot proceed, as the "Mode" field have been left blank.'));
+            echo Format::alert(__('Import cannot proceed, as the "Mode" field has been left blank.'));
         } elseif (($mode == 'sync' || $mode == 'update') && (!empty($syncField) && $syncColumn < 0)) {
             echo Format::alert(__("Your request failed because your inputs were invalid."));
             return;
