@@ -72,6 +72,7 @@ v18.0.00
         System: fixed non-rendering HTML issue in Welcome text on logged-out index
         System: fixed SQL key integer length in database tables to ensure referential integrity
         System: fixed PHP fatal error when gettext not installed
+        System: disable template cache when upgrading the core
         Finance: fixed spelling error in Manage Invoices
         Library: fixed bug leading to loss of main user/owner field value in item edit
         Library: removed lending icon for items that are not borrowable
