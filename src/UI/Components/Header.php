@@ -75,7 +75,7 @@ class Header
                     try {
                         $resultPosts = $connection2->prepare($messages[1]);
                         $resultPosts->execute($messages[0]);
-                    } catch (PDOException $e) {
+                    } catch (\PDOException $e) {
                     }
 
                     $_SESSION[$guid]['messageWallCount'] = 0;
@@ -178,7 +178,7 @@ class Header
                                 $sql = 'UPDATE gibbonPerson SET messengerLastBubble=:messengerLastBubble WHERE gibbonPersonID=:gibbonPersonID';
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
-                            } catch (PDOException $e) {
+                            } catch (\PDOException $e) {
                             }
                         }
                     }
@@ -195,7 +195,7 @@ class Header
                 ORDER BY timestamp DESC, source, text";
                 $resultNotifications = $connection2->prepare($sqlNotifications);
                 $resultNotifications->execute($dataNotifications);
-            } catch (PDOException $e) { }
+            } catch (\PDOException $e) { }
 
             //Refresh notifications every 10 seconds for staff, 120 seconds for everyone else
             $interval = 120000;

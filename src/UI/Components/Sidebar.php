@@ -366,7 +366,7 @@ class Sidebar implements OutputableInterface
                     ORDER BY homeworkDueDateTime, type";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
+                } catch (\PDOException $e) {
                     echo $e->getMessage();
                 }
                 if ($result->rowCount() < 1) {
@@ -388,7 +388,7 @@ class Sidebar implements OutputableInterface
                                     $sqlCompletion = "SELECT gibbonPlannerEntryID FROM gibbonPlannerEntryStudentTracker WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID AND homeworkComplete='Y'";
                                     $resultCompletion = $connection2->prepare($sqlCompletion);
                                     $resultCompletion->execute($dataCompletion);
-                                } catch (PDOException $e) {
+                                } catch (\PDOException $e) {
                                 }
                                 if ($resultCompletion->rowCount() == 1) {
                                     $style .= '; background-color: #B3EFC2';
@@ -400,7 +400,7 @@ class Sidebar implements OutputableInterface
                                     $sqlCompletion = "SELECT gibbonPlannerEntryID FROM gibbonPlannerEntryStudentHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID AND homeworkComplete='Y'";
                                     $resultCompletion = $connection2->prepare($sqlCompletion);
                                     $resultCompletion->execute($dataCompletion);
-                                } catch (PDOException $e) {
+                                } catch (\PDOException $e) {
                                 }
                                 if ($resultCompletion->rowCount() == 1) {
                                     $style .= '; background-color: #B3EFC2';
@@ -412,7 +412,7 @@ class Sidebar implements OutputableInterface
                                     $sqlCompletion = "SELECT gibbonPlannerEntryID FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID AND version='Final'";
                                     $resultCompletion = $connection2->prepare($sqlCompletion);
                                     $resultCompletion->execute($dataCompletion);
-                                } catch (PDOException $e) {
+                                } catch (\PDOException $e) {
                                 }
                                 if ($resultCompletion->rowCount() == 1) {
                                     $style .= '; background-color: #B3EFC2';
@@ -452,7 +452,7 @@ class Sidebar implements OutputableInterface
                     $sqlEntry = "SELECT gibbonMarkbookEntryID, gibbonMarkbookColumn.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonIDStudent=:gibbonPersonID AND complete='Y' AND completeDate<='".date('Y-m-d')."' AND viewableStudents='Y' ORDER BY completeDate DESC, name";
                     $resultEntry = $connection2->prepare($sqlEntry);
                     $resultEntry->execute($dataEntry);
-                } catch (PDOException $e) {
+                } catch (\PDOException $e) {
                 }
 
                 if ($resultEntry->rowCount() > 0) {
@@ -482,7 +482,7 @@ class Sidebar implements OutputableInterface
                 $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.attendance FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role LIKE '% - Left%' ORDER BY course, class";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) {
+            } catch (\PDOException $e) {
             }
 
             if ($result->rowCount() > 0) {
