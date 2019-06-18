@@ -316,7 +316,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             }
             echo '</td>';
             echo '<td>';
-            echo $row['status'].'<br/>';
+            echo __($row['status']).'<br/>';
             echo "<span style='font-size: 85%; font-style: italic'>".ynExpander($guid, $row['borrowable']).'</span>';
             echo '</td>';
             echo '<td>';

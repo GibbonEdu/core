@@ -37,20 +37,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        $gibbonPersonID = $_GET['gibbonPersonID'];
-        if ($gibbonPersonID == false) {
+        $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+        if ($gibbonPersonID == '' ) {
             echo "<div class='error'>";
             echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
-            $search = null;
-            if (isset($_GET['search'])) {
-                $search = $_GET['search'];
-            }
-            $allStaff = '';
-            if (isset($_GET['allStaff'])) {
-                $allStaff = $_GET['allStaff'];
-            }
+            $search = $_GET['search'] ?? '';
+            $allStaff = $_GET['allStaff'] ?? '';
 
             if ($highestAction == 'View Staff Profile_brief') {
                 //Proceed!

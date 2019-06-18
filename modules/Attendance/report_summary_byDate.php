@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
@@ -144,7 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
             echo '</div>';
     } else {
         echo '<h2>';
-        echo __('Report Data').': '. date('M j', strtotime($dateStart) ) .' - '. date('M j, Y', strtotime($dateEnd) );
+        echo __('Report Data').': '. Format::dateRangeReadable($dateStart, $dateEnd);        
         echo '</h2>';
 
         try {
