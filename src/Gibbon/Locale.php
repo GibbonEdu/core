@@ -39,6 +39,8 @@ class Locale implements LocaleInterface
 
     protected $stringReplacements;
 
+    protected $supportsGetText = true;
+
 
     /**
      * Construct
@@ -51,6 +53,7 @@ class Locale implements LocaleInterface
     {
         $this->absolutePath = $absolutePath;
         $this->session = $session;
+        $this->supportsGetText = function_exists('gettext');
     }
 
     /**
@@ -122,6 +125,8 @@ class Locale implements LocaleInterface
      */
     public function setSystemTextDomain($absolutePath)
     {
+        if (!$this->supportsGetText) return;
+
         bindtextdomain('gibbon', $absolutePath.'/i18n');
         bind_textdomain_codeset('gibbon', 'UTF-8');
         textdomain('gibbon');
@@ -135,6 +140,8 @@ class Locale implements LocaleInterface
      */
     public function setModuleTextDomain($module, $absolutePath)
     {
+        if (!$this->supportsGetText) return;
+        
         bindtextdomain($module, $absolutePath.'/modules/'.$module.'/i18n');
     }
 
@@ -245,9 +252,11 @@ class Locale implements LocaleInterface
         $domain = $options['domain'] ?? '';
 
         // get raw translated string with or without domain.
-        $text = empty($domain) ?
-            gettext($text) :
-            dgettext($domain, $text);
+        if ($this->supportsGetText) {
+            $text = empty($domain) ?
+                gettext($text) :
+                dgettext($domain, $text);
+        }
 
         // apply named replacement parameters, if presents.
         $text = static::formatString($text, $params);
@@ -286,9 +295,11 @@ class Locale implements LocaleInterface
         $domain = $options['domain'] ?? '';
 
         // get raw translated string with or without domain.
-        $text = empty($domain) ?
-            ngettext($singular, $plural, $n) :
-            dngettext($domain, $singular, $plural, $n);
+        if ($this->supportsGetText) {
+            $text = empty($domain) ?
+                ngettext($singular, $plural, $n) :
+                dngettext($domain, $singular, $plural, $n);
+        }
 
         // apply named replacement parameters, if presents.
         $text = static::formatString($text, $params);
