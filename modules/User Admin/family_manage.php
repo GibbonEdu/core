@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage.p
     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/family_manage.php');
 
     $row = $form->addRow();
-        $row->addLabel('search', __('Search For'))->description('Family name.');
+        $row->addLabel('search', __('Search For'))->description(_('Family Name'));
         $row->addTextField('search')->setValue($criteria->getSearchText());
 
     $row = $form->addRow();
@@ -87,13 +87,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage.p
         ->displayLabel();
 
     $table->addColumn('name', __('Name'));
-    $table->addColumn('status', __('Marital Status'));
+    $table->addColumn('status', __('Marital Status'))->translatable();
     $table->addColumn('adults', __('Adults'))
         ->notSortable()
         ->format(function($row) {
             array_walk($row['adults'], function(&$person) {
                 if ($person['status'] == 'Left' || $person['status'] == 'Expected') {
-                    $person['surname'] .= ' <i>('.$person['status'].')</i>';
+                    $person['surname'] .= ' <i>('.__($person['status']).')</i>';
                 }
             });
             return Format::nameList($row['adults'], 'Parent');
@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage.p
         ->format(function($row) {
             array_walk($row['children'], function(&$person) {
                 if ($person['status'] == 'Left' || $person['status'] == 'Expected') {
-                    $person['surname'] .= ' <i>('.$person['status'].')</i>';
+                    $person['surname'] .= ' <i>('.__($person['status']).')</i>';
                 }
             });
             return Format::nameList($row['children'], 'Student');

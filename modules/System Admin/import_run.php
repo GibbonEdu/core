@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
         $availableModes = array();
         $modes = $importType->getDetail('modes');
         if (!empty($modes['update']) && !empty($modes['insert'])) {
-            $availableModes['sync'] = __('Update').' & '.__('Insert');
+            $availableModes['sync'] = __('Update & Insert');
         }
         if (!empty($modes['update'])) {
             $availableModes['update'] = __('Update');

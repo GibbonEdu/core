@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             //IF PARENT, SET UP LIST OF CHILDREN
             $countChild = 0;
             if ($roleCategory == 'Parent' and $highestAction == 'View Activities_studentRegisterByParent') {
-                $gibbonPersonID = $_GET['gibbonPersonID'] ?? null;
+                $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
                 try {
                     $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
                     $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
