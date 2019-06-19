@@ -1720,11 +1720,11 @@ else {
                                       $resultSMS->execute($dataSMS);
                                     }
                                     catch(PDOException $e) { }
-                                    while ($rowSMS=$resultSMS->fetch()) {
+                                    while ($rowEmail=$resultSMS->fetch()) {
 										$countryCodeTemp = $countryCode;
 	  									  if ($rowEmail["countryCode"]=="")
 	  										  $countryCodeTemp = $rowEmail["countryCode"];
-	  									  $report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Role', $t, 'Attendance', $countryCodeTemp.$rowEmail["phone"]);
+	  									  $report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Attendance', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
                                     }
                                   }
                                 }
@@ -1742,7 +1742,7 @@ else {
                                   }
                                 }
                                 catch(PDOException $e) { }
-                                while ($rowSMS=$resultSMS->fetch()) {
+                                while ($rowEmail=$resultSMS->fetch()) {
 									$countryCodeTemp = $countryCode;
 	   								 if ($rowEmail["countryCode"]=="")
 	   									 $countryCodeTemp = $rowEmail["countryCode"];
