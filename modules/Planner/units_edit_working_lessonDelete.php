@@ -26,16 +26,6 @@ $gibbonUnitID = $_GET['gibbonUnitID'];
 $gibbonUnitClassID = $_GET['gibbonUnitClassID'];
 $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
 
-//IF UNIT DOES NOT CONTAIN HYPHEN, IT IS A GIBBON UNIT
-$gibbonUnitID = $_GET['gibbonUnitID'];
-if (strpos($gibbonUnitID, '-') == false) {
-    $hooked = false;
-} else {
-    $hooked = true;
-    $gibbonHookIDToken = substr($gibbonUnitID, 11);
-    $gibbonUnitIDToken = substr($gibbonUnitID, 0, 10);
-}
-
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/units_edit_working.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitClassID=$gibbonUnitClassID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working.php') == false) {
@@ -74,44 +64,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                 header("Location: {$URL}");
             } else {
                 //Check existence of specified unit
-                if ($hooked == false) {
-                    try {
-                        $data = array('gibbonUnitID' => $gibbonUnitID, 'gibbonCourseID' => $gibbonCourseID);
-                        $sql = 'SELECT gibbonCourse.nameShort AS courseName, gibbonUnit.* FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonUnitID=:gibbonUnitID AND gibbonUnit.gibbonCourseID=:gibbonCourseID';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $URL .= '&deployReturn=error2';
-                        header("Location: {$URL}");
-                        exit();
-                    }
-                } else {
-                    try {
-                        $dataHooks = array('gibbonHookID' => $gibbonHookIDToken);
-                        $sqlHooks = "SELECT * FROM gibbonHook WHERE type='Unit' AND gibbonHookID=:gibbonHookID ORDER BY name";
-                        $resultHooks = $connection2->prepare($sqlHooks);
-                        $resultHooks->execute($dataHooks);
-                    } catch (PDOException $e) {
-                        $URL .= '&deployReturn=error2';
-                        header("Location: {$URL}");
-                        exit();
-                    }
-                    if ($resultHooks->rowCount() == 1) {
-                        $rowHooks = $resultHooks->fetch();
-                        $hookOptions = unserialize($rowHooks['options']);
-                        if ($hookOptions['unitTable'] != '' and $hookOptions['unitIDField'] != '' and $hookOptions['unitCourseIDField'] != '' and $hookOptions['unitNameField'] != '' and $hookOptions['unitDescriptionField'] != '' and $hookOptions['classLinkTable'] != '' and $hookOptions['classLinkJoinFieldUnit'] != '' and $hookOptions['classLinkJoinFieldClass'] != '' and $hookOptions['classLinkIDField'] != '') {
-                            try {
-                                $data = array('unitIDField' => $gibbonUnitIDToken);
-                                $sql = 'SELECT '.$hookOptions['unitTable'].'.*, gibbonCourse.nameShort FROM '.$hookOptions['unitTable'].' JOIN gibbonCourse ON ('.$hookOptions['unitTable'].'.'.$hookOptions['unitCourseIDField'].'=gibbonCourse.gibbonCourseID) WHERE '.$hookOptions['unitIDField'].'=:unitIDField';
-                                $result = $connection2->prepare($sql);
-                                $result->execute($data);
-                            } catch (PDOException $e) {
-                                $URL .= '&deployReturn=error2';
-                                header("Location: {$URL}");
-                                exit();
-                            }
-                        }
-                    }
+                try {
+                    $data = array('gibbonUnitID' => $gibbonUnitID, 'gibbonCourseID' => $gibbonCourseID);
+                    $sql = 'SELECT gibbonCourse.nameShort AS courseName, gibbonUnit.* FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonUnitID=:gibbonUnitID AND gibbonUnit.gibbonCourseID=:gibbonCourseID';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    $URL .= '&deployReturn=error2';
+                    header("Location: {$URL}");
+                    exit();
                 }
 
                 if ($result->rowCount() != 1) {

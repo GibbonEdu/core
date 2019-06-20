@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php'
 
 					$row = $form->addRow();
                         $row->addLabel('scope', 'Scope');
-                        $row->addTextField('scope')->isRequired()->readOnly();
+                        $row->addTextField('scope')->required()->readOnly();
 
                     if ($values['scope'] == 'Learning Area') {
                         $sql = "SELECT name FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID";
@@ -107,20 +107,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php'
                         $form->addHiddenValue('gibbonDepartmentID', $values['gibbonDepartmentID']);
                         $row = $form->addRow();
                             $row->addLabel('departmentName', __('Learning Area'));
-                            $row->addTextField('departmentName')->isRequired()->readOnly()->setValue($learningArea);
+                            $row->addTextField('departmentName')->required()->readOnly()->setValue($learningArea);
 					}
 					
 					$row = $form->addRow();
 						$row->addLabel('name', __('Name'));
-						$row->addTextField('name')->isRequired()->maxLength(100);
+						$row->addTextField('name')->required()->maxLength(100);
 
 					$row = $form->addRow();
 						$row->addLabel('nameShort', __('Short Name'));
-						$row->addTextField('nameShort')->isRequired()->maxLength(14);
+						$row->addTextField('nameShort')->required()->maxLength(14);
 
 					$row = $form->addRow();
 						$row->addLabel('active', __('Active'));
-						$row->addYesNo('active')->isRequired();
+						$row->addYesNo('active')->required();
 
 					$sql = "SELECT DISTINCT category FROM gibbonOutcome ORDER BY category";
 					$result = $pdo->executeQuery(array(), $sql);

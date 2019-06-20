@@ -18,6 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
+use Gibbon\Domain\Staff\StaffAbsenceGateway;
+use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -35,20 +37,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        $gibbonPersonID = $_GET['gibbonPersonID'];
-        if ($gibbonPersonID == false) {
+        $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+        if ($gibbonPersonID == '' ) {
             echo "<div class='error'>";
             echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
-            $search = null;
-            if (isset($_GET['search'])) {
-                $search = $_GET['search'];
-            }
-            $allStaff = '';
-            if (isset($_GET['allStaff'])) {
-                $allStaff = $_GET['allStaff'];
-            }
+            $search = $_GET['search'] ?? '';
+            $allStaff = $_GET['allStaff'] ?? '';
 
             if ($highestAction == 'View Staff Profile_brief') {
                 //Proceed!
@@ -87,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     echo '</td>';
                     echo "<td style='width: 33%; vertical-align: top'>";
                     echo "<span style='font-size: 115%; font-weight: bold'>".__('Staff Type').'</span><br/>';
-                    echo '<i>'.$row['type'].'</i>';
+                    echo '<i>'.__($row['type']).'</i>';
                     echo '</td>';
                     echo "<td style='width: 33%; vertical-align: top'>";
                     echo "<span style='font-size: 115%; font-weight: bold'>".__('Job Title').'</span><br/>';
@@ -187,6 +183,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             echo '</div>';
                         }
 
+                        // Display a message if the staff member is absent today.
+                        $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
+                        $staffAbsenceDateGateway = $container->get(StaffAbsenceDateGateway::class);
+
+                        $criteria = $staffAbsenceGateway->newQueryCriteria()->filterBy('date', 'Today')->filterBy('status', 'Approved');
+                        $absences = $staffAbsenceGateway->queryAbsencesByPerson($criteria, $gibbonPersonID)->toArray();
+
+                        if (count($absences) > 0) {
+                            $absenceMessage = __('{name} is absent today.', [
+                                'name' => Format::name($row['title'], $row['preferredName'], $row['surname'], 'Staff', false, true),
+                            ]);
+                            $absenceMessage .= '<br/><br/><ul>';
+                            foreach ($absences as $absence) {
+                                $details = $staffAbsenceDateGateway->getByAbsenceAndDate($absence['gibbonStaffAbsenceID'], date('Y-m-d'));
+                                $time = $details['allDay'] == 'N' ? Format::timeRange($details['timeStart'], $details['timeEnd']) : __('All Day');
+
+                                $absenceMessage .= '<li>'.Format::dateRangeReadable($absence['dateStart'], $absence['dateEnd']).'  '.$time.'</li>';
+                                if ($details['coverage'] == 'Accepted') {
+                                    $absenceMessage .= '<li>'.__('Coverage').': '.Format::name($details['titleCoverage'], $details['preferredNameCoverage'], $details['surnameCoverage'], 'Staff', false, true).'</li>';
+                                }
+                            }
+                            $absenceMessage .= '</ul>';
+
+                            echo Format::alert($absenceMessage, 'warning');
+                        }
+
                         //General Information
                         echo '<h4>';
                         echo __('General Information');
@@ -199,7 +221,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         echo '</td>';
                         echo "<td style='width: 33%; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Staff Type').'</span><br/>';
-                        echo '<i>'.$row['type'].'</i>';
+                        echo '<i>'.__($row['type']).'</i>';
                         echo '</td>';
                         echo "<td style='width: 33%; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Job Title').'</span><br/>';
@@ -293,7 +315,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         echo '</td>';
                         echo "<td style='width: 33%; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Staff Type').'</span><br/>';
-                        echo '<i>'.$row['type'].'</i>';
+                        echo '<i>'.__($row['type']).'</i>';
                         echo '</td>';
                         echo "<td style='width: 33%; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Job Title').'</span><br/>';
@@ -458,11 +480,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     } elseif ($subpage == 'Facilities') {
                         try {
                             $data = array('gibbonPersonID1' => $gibbonPersonID, 'gibbonPersonID2' => $gibbonPersonID, 'gibbonPersonID3' => $gibbonPersonID, 'gibbonPersonID4' => $gibbonPersonID, 'gibbonPersonID5' => $gibbonPersonID, 'gibbonPersonID6' => $gibbonPersonID, 'gibbonSchoolYearID1' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                            $sql = '(SELECT gibbonSpace.*, gibbonSpacePersonID, usageType, NULL AS \'exception\' FROM gibbonSpacePerson JOIN gibbonSpace ON (gibbonSpacePerson.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonPersonID=:gibbonPersonID1)
+                            $sql = '(SELECT gibbonSpace.*, gibbonSpacePersonID, usageType, NULL AS \'exception\', gibbonSpace.phoneInternal FROM gibbonSpacePerson JOIN gibbonSpace ON (gibbonSpacePerson.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonPersonID=:gibbonPersonID1)
                             UNION
-                            (SELECT DISTINCT gibbonSpace.*, NULL AS gibbonSpacePersonID, \'Roll Group\' AS usageType, NULL AS \'exception\' FROM gibbonRollGroup JOIN gibbonSpace ON (gibbonRollGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE (gibbonPersonIDTutor=:gibbonPersonID2 OR gibbonPersonIDTutor2=:gibbonPersonID3 OR gibbonPersonIDTutor3=:gibbonPersonID4) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID1)
+                            (SELECT DISTINCT gibbonSpace.*, NULL AS gibbonSpacePersonID, \'Roll Group\' AS usageType, NULL AS \'exception\', gibbonSpace.phoneInternal FROM gibbonRollGroup JOIN gibbonSpace ON (gibbonRollGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE (gibbonPersonIDTutor=:gibbonPersonID2 OR gibbonPersonIDTutor2=:gibbonPersonID3 OR gibbonPersonIDTutor3=:gibbonPersonID4) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID1)
                             UNION
-                            (SELECT DISTINCT gibbonSpace.*, NULL AS gibbonSpacePersonID, \'Timetable\' AS usageType, gibbonTTDayRowClassException.gibbonPersonID AS \'exception\' FROM gibbonSpace JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND (gibbonTTDayRowClassException.gibbonPersonID=:gibbonPersonID6 OR gibbonTTDayRowClassException.gibbonPersonID IS NULL)) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID5)
+                            (SELECT DISTINCT gibbonSpace.*, NULL AS gibbonSpacePersonID, \'Timetable\' AS usageType, gibbonTTDayRowClassException.gibbonPersonID AS \'exception\', gibbonSpace.phoneInternal FROM gibbonSpace JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND (gibbonTTDayRowClassException.gibbonPersonID=:gibbonPersonID6 OR gibbonTTDayRowClassException.gibbonPersonID IS NULL)) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID5)
                             ORDER BY name';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
@@ -481,14 +503,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             echo __('Name');
                             echo '</th>';
                             echo '<th>';
+                            echo __('Extension');
+                            echo '</th>';
+                            echo '<th>';
                             echo __('Usage').'<br/>';
                             echo '</th>';
                             echo '</tr>';
 
                             $count = 0;
                             $rowNum = 'odd';
-                            while ($row = $result->fetch()) {
-                                if ($row['exception'] == null) {
+                            while ($rowFacility = $result->fetch()) {
+                                if ($rowFacility['exception'] == null) {
                                     if ($count % 2 == 0) {
                                         $rowNum = 'even';
                                     } else {
@@ -498,10 +523,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                                     echo "<tr class=$rowNum>";
                                     echo '<td>';
-                                    echo $row['name'];
+                                    echo $rowFacility['name'];
                                     echo '</td>';
                                     echo '<td>';
-                                    echo $row['usageType'];
+                                    echo $rowFacility['phoneInternal'];
+                                    echo '</td>';
+                                    echo '<td>';
+                                    echo __($rowFacility['usageType']);
                                     echo '</td>';
                                     echo '</tr>';
                                 }
@@ -672,6 +700,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     $_SESSION[$guid]['sidebarExtra'] .= getUserPhoto($guid, $row['image_240'], 240);
 
                     //PERSONAL DATA MENU ITEMS
+                    $_SESSION[$guid]['sidebarExtra'] .= '<div class="column-no-break">';
                     $_SESSION[$guid]['sidebarExtra'] .= '<h4>Personal</h4>';
                     $_SESSION[$guid]['sidebarExtra'] .= "<ul class='moduleMenu'>";
                     $style = '';
@@ -702,6 +731,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&allStaff=$allStaff&subpage=Timetable'>".__('Timetable').'</a></li>';
                     }
                     $_SESSION[$guid]['sidebarExtra'] .= '</ul>';
+                    $_SESSION[$guid]['sidebarExtra'] .= '</div>';
                 }
             }
         }

@@ -17,6 +17,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
+/* Odd use-case for Activity Attendance double-scroll container */
+/* #attendance table.blank, 
+#attendance table.blank > tbody > tr,
+#attendance table.blank > tbody > tr > td {
+    display: block !important;
+} */
 
 /* These could be moved to style.css */
 .hidden {
@@ -28,94 +34,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 	font-weight: bold;
 }
 
-/* Double-scroll */
-
-.doublescroll-wrapper {
-	position: relative;
-	background: #FBFBFB none repeat scroll 0% 0%;
-	border: 1px solid #CCC;
-	border-radius: 3px;
-
+#attendance .blank > tbody {
+    display: block;
 }
 
-.doublescroll-top {
-	overflow-x:auto;
-	margin-left:175px;
-}
-
-.doublescroll-top-tablewidth {
-	width: 1400px;
-	height: 0.1px;
-}
-
-.doublescroll-container {
-	overflow-x: auto;
-	overflow-y:visible;
-	margin-left:175px;
-}
-
-.doublescroll-container table {
-	margin:0;
-	border-width: 0px 1px 0px 0px;
-}
-
-.doublescroll-container .highlight,
-.doublescroll-container table tr[data-student]:hover td,
-.doublescroll-container table tr[data-student]:focus td {
-	background: #EDF7FF !important;
-}
-
-.doublescroll-container tr.head th:first-of-type,
-.doublescroll-container td:first-of-type {
-	position:absolute; 
-    width:150px; 
-    left:1px;
-    top:auto;
-    padding: 5px 12px 5px !important;
-    border-right: 1px solid #666;
-    margin:0;
-    z-index: 1;
-}
-
-.doublescroll-container td {
-	height: 15px;
-	text-align: center;
-}
-
-.doublescroll-container::after {
-	content: "";
-	position: absolute;
-	top: 60px;
-	left: 175px;
-	background: #666 none repeat scroll 0% 0%;
-	height: calc(100% - 60px);
-	width: 1px;
-	z-index: 1;
+#attendance .doublescroll-wrapper {
+    border: 1px solid #ccc !important;
+    border-radius: 3px;
+    background: #fbfbfb !important;
 }
 
 /* Print Styles */
-
 @media all {
 	.page-break	{ display: none; }
 }
 
 @media print {
 	.page-break	{ display: block; page-break-before: always; }
-}
-
-
-/* Attendance */
-
-.attendanceRowHeader {
-	width: 155px;
-}
-
-td.attendanceDateHeader {
-	vertical-align: top;
-	height: 65px;
-}
-
-.attendanceDate {
-	width: 45px;
-	margin-bottom: 10px;
 }

@@ -148,7 +148,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                                 $comment = $_POST['comment'];
 
                                 if ($approval == '') {
-                                    $URL .= '&return=error3';
+                                    $URL .= '&return=error7';
                                     header("Location: {$URL}");
                                 } else {
                                     //Write budget change

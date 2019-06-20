@@ -74,8 +74,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_rejectProcess.php?gibbonApplicationFormID=$gibbonApplicationFormID&search=$search");
 
-            $form->setClass('smallIntBorder fullWidth');
-
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
             $form->addHiddenValue('gibbonApplicationFormID', $gibbonApplicationFormID);

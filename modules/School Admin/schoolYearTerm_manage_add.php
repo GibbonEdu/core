@@ -46,27 +46,27 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
 
     $row = $form->addRow();
         $row->addLabel('gibbonSchoolYearID', __('School Year'));
-        $row->addSelectSchoolYear('gibbonSchoolYearID')->isRequired();
+        $row->addSelectSchoolYear('gibbonSchoolYearID')->required();
 
     $row = $form->addRow();
         $row->addLabel('sequenceNumber', __('Sequence Number'))->description(__('Must be unique. Controls chronological ordering.'));
-        $row->addSequenceNumber('sequenceNumber', 'gibbonSchoolYearTerm')->isRequired()->maxLength(3);
+        $row->addSequenceNumber('sequenceNumber', 'gibbonSchoolYearTerm')->required()->maxLength(3);
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'));
-        $row->addTextField('name')->isRequired()->maxLength(20);
+        $row->addTextField('name')->required()->maxLength(20);
 
     $row = $form->addRow();
         $row->addLabel('nameShort', __('Short Name'));
-        $row->addTextField('nameShort')->isRequired()->maxLength(4);
+        $row->addTextField('nameShort')->required()->maxLength(4);
 
     $row = $form->addRow();
         $row->addLabel('firstDay', __('First Day'));
-        $row->addDate('firstDay')->isRequired();
+        $row->addDate('firstDay')->required();
 
     $row = $form->addRow();
         $row->addLabel('lastDay', __('Last Day'));
-        $row->addDate('lastDay')->isRequired();
+        $row->addDate('lastDay')->required();
 
     $row = $form->addRow();
         $row->addFooter();

@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
     $page->breadcrumbs
         ->add(__('View All Assessments'), 'crowdAssess.php')
         ->add(__('View Assessment'), 'crowdAssess_view.php', $urlParams)
-        ->add(__('Discuss'));    
+        ->add(__('Discuss'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -119,11 +119,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                         } else {
                             echo "<span title='".$rowWork['version'].'. Submitted at '.substr($rowWork['timestamp'], 11, 5).' on '.dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10))."'><a target='_blank' href='".$rowWork['location']."'>$linkText</a></span>";
                         }
-                        echo '</td>';
-                        echo "<td style='width: 34%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>Like Count</span><br/>";
-                        $likesTotal = countLikesByContext($connection2, 'Crowd Assessment', 'gibbonPlannerEntryHomeworkID', $rowWork['gibbonPlannerEntryHomeworkID']);
-                        echo ' x '.$likesTotal;
                         echo '</td>';
                         echo '</tr>';
                         echo '</table>';

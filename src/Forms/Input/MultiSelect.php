@@ -48,28 +48,28 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
         $this->sourceSelect = $factory->createSelect($name . "Source")
             ->selectMultiple(true)
             ->setSize(8)
-            ->setClass('mediumWidth')
+            ->setClass('w-full')
             ->addClass("floatNone");
         $this->destinationSelect = $factory->createSelect($name)
             ->selectMultiple(true)
             ->setSize(8)
-            ->setClass('mediumWidth');
+            ->setClass('w-full');
 
         $this->sortBySelect = $factory->createSelect($name . "Sort")
             ->placeholder(__("Sort by Name"))
-            ->setClass("shortWidth")
+            ->setClass("w-48 mt-1")
             ->addClass("floatNone");
 
         $this->addButton = $factory->createButton(__("Add"))
             ->onClick('optionTransfer(\'' . $this->name . '\', true)')
-            ->setClass("shortWidth");
+            ->addClass("w-48");
         $this->removeButton = $factory->createButton(__("Remove"))
             ->onClick('optionTransfer(\'' . $this->name . '\', false)')
-            ->setClass("shortWidth");
+            ->addClass("w-48 mt-1");
 
         $this->searchBox = $factory->createTextField($name . "Search")
             ->placeholder(__("Search"))
-            ->setClass("smallWidth")
+            ->setClass("w-48 mt-1")
             ->addClass("floatNone");
     }
 
@@ -190,7 +190,7 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
                 var values = null;
 
                 if (window[name+"sortBy"] != \'Sort by Name\' && window[name+"sortBy"] != null) {
-                    values = $(\'#\' + name).data(\'sortable\')[window[name+"sortBy"]];
+                    values = $(\'#\' + name +\'Container\').data(\'sortable\')[window[name+"sortBy"]];
                 }
 
                 sortSelect($(\'#\' + name + "Source"), values);
@@ -200,26 +200,26 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
         ';
         $output .= '</script>';
 
-        $output .= '<table id="'.$this->name.'Container" class="blank fullWidth" data-sortable="'.htmlentities(json_encode($this->sortableAttributes)).'"><tr>';
+        $output .= '<div id="'.$this->name.'Container" class="w-full flex flex-wrap items-center" data-sortable="'.htmlentities(json_encode($this->sortableAttributes)).'">';
 
-        $output .= '<td style="width:35%; vertical-align:top;">';
+        $output .= '<div class="w-full sm:w-1/3">';
             $output .= $this->sourceSelect->getOutput();
-        $output .= '</td>';
+        $output .= '</div>';
 
-        $output .= '<td style="width:30%; text-align:center">';
-            $output .= $this->addButton->getOutput() . '<br/>';
+        $output .= '<div class="w-full sm:w-1/3 text-center py-2 sm:py-0">';
+            $output .= $this->addButton->getOutput();
             $output .= $this->removeButton->getOutput();
             if (!empty($this->sortableAttributes)) {
-                $output .= '<br/>' . $this->sortBySelect->getOutput();
+                $output .= $this->sortBySelect->getOutput();
             }
-            $output .= '<br/>' . $this->searchBox->getOutput();
-        $output .= '</td>';
+            $output .= $this->searchBox->getOutput();
+        $output .= '</div>';
 
-        $output .= '<td style="width:35%; vertical-align:top;">';
+        $output .= '<div  class="w-full sm:w-1/3">';
             $output .= $this->destinationSelect->getOutput();
-        $output .= '</td>';
+        $output .= '</div>';
 
-        $output .= '</tr></table>';
+        $output .= '</div>';
 
         return $output;
     }

@@ -66,7 +66,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/medicalForm_manage_editProcess.php?gibbonPersonMedicalID='.$gibbonPersonMedicalID."&search=$search");
 
             $form->setFactory(DatabaseFormFactory::create($pdo));
-            $form->setClass('smallIntBorder fullWidth');
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
@@ -74,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Student'));
-                $row->addTextField('name')->setValue(Format::name('', htmlPrep($values['preferredName']), htmlPrep($values['surname']), 'Student'))->isRequired()->readonly();
+                $row->addTextField('name')->setValue(Format::name('', htmlPrep($values['preferredName']), htmlPrep($values['surname']), 'Student'))->required()->readonly();
 
             $row = $form->addRow();
                 $row->addLabel('bloodType', __('Blood Type'));

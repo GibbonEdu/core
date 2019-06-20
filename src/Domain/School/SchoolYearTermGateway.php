@@ -54,6 +54,31 @@ class SchoolYearTermGateway extends QueryableGateway
             ])
             ->innerJoin('gibbonSchoolYear', 'gibbonSchoolYear.gibbonSchoolYearID=gibbonSchoolYearTerm.gibbonSchoolYearID');
 
+        $criteria->addFilterRules([
+            'schoolYear' => function ($query, $gibbonSchoolYearID) {
+                return $query
+                    ->where('gibbonSchoolYearTerm.gibbonSchoolYearID=:gibbonSchoolYearID')
+                    ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+            },
+            'firstDay' => function ($query, $firstDay) {
+                return $query
+                    ->where('gibbonSchoolYearTerm.firstDay <= :firstDay')
+                    ->bindValue('firstDay', $firstDay);
+            },
+        ]);
+
         return $this->runQuery($query, $criteria);
+    }
+
+    public function selectSchoolClosuresByTerm($gibbonSchoolYearTermID)
+    {
+        $data = array('gibbonSchoolYearTermID' => $gibbonSchoolYearTermID);
+        $sql = "SELECT date, name 
+                FROM gibbonSchoolYearSpecialDay 
+                WHERE gibbonSchoolYearTermID=:gibbonSchoolYearTermID 
+                AND type='School Closure' 
+                ORDER BY date";
+
+        return $this->db()->select($sql, $data);
     }
 }

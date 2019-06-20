@@ -51,7 +51,7 @@ if (!isset($_SESSION[$guid]["username"])) {
     $returns['successa'] = __('Your account has been successfully updated. You can now continue to use the system as per normal.');
     $returns['error4'] = __('Your request failed due to non-matching passwords.');
     $returns['error3'] = __('Your request failed due to incorrect current password.');
-    $returns['error6'] = __('Your request failed because your password to not meet the minimum requirements for strength.');
+    $returns['error6'] = __('Your request failed because your password does not meet the minimum requirements for strength.');
     $returns['error7'] = __('Your request failed because your new password is the same as your current password.');
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, $returns);
@@ -81,7 +81,7 @@ if (!isset($_SESSION[$guid]["username"])) {
     $row = $form->addRow();
         $row->addLabel('password', __('Current Password'));
         $row->addPassword('password')
-            ->isRequired()
+            ->required()
             ->maxLength(30);
 
     $row = $form->addRow();
@@ -90,14 +90,14 @@ if (!isset($_SESSION[$guid]["username"])) {
         $row->addPassword('passwordNew')
             ->addPasswordPolicy($pdo)
             ->addGeneratePasswordButton($form)
-            ->isRequired()
+            ->required()
             ->maxLength(30);
 
     $row = $form->addRow();
         $row->addLabel('passwordConfirm', __('Confirm New Password'));
         $row->addPassword('passwordConfirm')
             ->addConfirmation('passwordNew')
-            ->isRequired()
+            ->required()
             ->maxLength(30);
 
     $row = $form->addRow();

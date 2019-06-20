@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                 $informStudent = (getSettingByScope($connection2, 'Application Form', 'notificationStudentDefault') == 'Y');
                 $col->addCheckbox('informStudent')
-                    ->description(__('Automatically inform <u>student</u> of their Gibbon login details by email?'))
+                    ->description(__('Automatically inform <u>student</u> of Gibbon login details by email?'))
                     ->inline(true)
                     ->checked($informStudent)
                     ->setClass('');
@@ -137,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 }
 
                 if (!empty($values['gibbonFamilyID']) || !empty($linkedApplication['gibbonFamilyID'])) {
-                    $list->append('<li>'.__('Link the student to their family (who are already in Gibbon).').'</li>');
+                    $list->append('<li>'.__('Link student to family (who are already in Gibbon).').'</li>');
                 } else {
                     $list->append('<li>'.__('Create a new family.').'</li>')
                          ->append('<li>'.__('Create user accounts for the parents.').'</li>')
@@ -162,7 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                         $col->addContent(__('The system can optionally perform the following actions:'))->wrap('<i><u>', '</u></i>');
                         $col->addCheckbox('autoEnrolStudent')
-                            ->description(__('Automatically enrol student in classes for their Roll Group.'))
+                            ->description(__('Automatically enrol student in classes for Roll Group.'))
                             ->inline(true)
                             ->setValue('Y')
                             ->checked($autoEnrolStudent? 'Y' : 'N')
@@ -542,7 +542,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 if (!$pdo->getQuerySuccess()) {
                                     echo '<li class="warning">'.__('Student could not be automatically enroled in courses, so this will have to be done manually at a later date.').'</li>';
                                 } else {
-                                    echo '<li>'.__('The student has automatically been enroled in courses for their Roll Group.').'</li>';
+                                    echo '<li>'.__('The student has automatically been enroled in courses for Roll Group.').'</li>';
                                 }
                             }
 
@@ -1358,7 +1358,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         echo '<li>'.__('Create an individual needs record for the student.').'</li>';
                         echo '<li>'.__('Create a note of the student\'s scholarship information outside of Gibbon.').'</li>';
                         echo '<li>'.__('Create a timetable for the student.').'</li>';
-                        echo '<li>'.__('Inform the student and their parents of their Gibbon login details (if this was not done automatically).').'</li>';
+                        echo '<li>'.__('Inform the student and parents of their Gibbon login details (if this was not done automatically).').'</li>';
                         echo '</ol>';
                         echo '</div>';
                     }

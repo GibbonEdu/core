@@ -52,7 +52,7 @@ class Module
         $this->stylesheets->add(
             'module',
             'modules/'.$this->name.'/css/module.css',
-            ['version' => $this->version]
+            ['version' => $this->version, 'weight' => 0.5]
         );
         $this->scripts->add(
             'module',

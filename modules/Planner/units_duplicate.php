@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -58,10 +61,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
             try {
                 if ($highestAction == 'Unit Planner_all') {
                     $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID);
-                    $sql = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID';
+                    $sql = 'SELECT gibbonCourseID, gibbonCourse.name, gibbonCourse.nameShort, gibbonSchoolYear.name AS schoolYear
+                        FROM gibbonCourse
+                        JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+                        WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID
+                        AND gibbonCourseID=:gibbonCourseID';
                 } elseif ($highestAction == 'Unit Planner_learningAreas') {
                     $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                    $sql = "SELECT gibbonCourseID, gibbonCourse.name, gibbonCourse.nameShort FROM gibbonCourse JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID ORDER BY gibbonCourse.nameShort";
+                    $sql = "SELECT gibbonCourseID, gibbonCourse.name, gibbonCourse.nameShort, gibbonSchoolYear.name AS schoolYear
+                        FROM gibbonCourse
+                            JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID)
+                            JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID)
+                            JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+                        WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID
+                            AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)')
+                            AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID
+                        ORDER BY gibbonCourse.nameShort";
                 }
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
@@ -74,8 +89,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                 echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
-                $row = $result->fetch();
-                $yearName = $row['name'];
+                $values = $result->fetch();
+                $courseName = $values['name'];
+                $yearName = $values['schoolYear'];
 
                 //Check if unit specified
                 if ($gibbonUnitID == '') {
@@ -103,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                             echo '</div>';
                         } else {
                             //Let's go!
-                            $row = $result->fetch();
+                            $values = $result->fetch();
 
                             $step = null;
                             if (isset($_GET['step'])) {
@@ -118,344 +134,139 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                                 echo '<h2>';
                                 echo __('Step 1');
                                 echo '</h2>';
-                                ?>
-								<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_duplicate.php&step=2&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID" ?>">
-									<table class='smallIntBorder fullWidth' cellspacing='0'>	
-										<tr class='break'>
-											<td colspan=2> 
-												<h3><?php echo __('Source') ?></h3>
-											</td>
-										</tr>
-										<tr>
-											<td style='width: 275px'> 
-												<b><?php echo __('School Year') ?> *</b><br/>
-												<span class="emphasis small"><?php echo __('This value cannot be changed.') ?></span>
-											</td>
-											<td class="right">
-												<?php
-                                                try {
-                                                    $dataYear = array('gibbonSchoolYearID' => $row['gibbonSchoolYearID']);
-                                                    $sqlYear = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-                                                    $resultYear = $connection2->prepare($sqlYear);
-                                                    $resultYear->execute($dataYear);
-                                                } catch (PDOException $e) {
-                                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                                }
 
-												if ($resultYear->rowCount() != 1) {
-													echo '<i>'.__('Unknown').'</i>';
-												} else {
-													$rowYear = $resultYear->fetch();
-													echo "<input readonly value='".$rowYear['name']."' type='text' style='width: 300px'>";
-												}
-												?>
-											</td>
-										</tr>
-										<tr>
-											<td> 
-												<b><?php echo __('Course') ?> *</b><br/>
-												<span class="emphasis small"><?php echo __('This value cannot be changed.') ?></span>
-											</td>
-											<td class="right">
-												<?php echo "<input readonly value='".$row['courseName']."' type='text' style='width: 300px'>"; ?>
-											</td>
-										</tr>
-										<tr>
-											<td> 
-												<b><?php echo __('Unit') ?> *</b><br/>
-												<span class="emphasis small"><?php echo __('This value cannot be changed.') ?></span>
-											</td>
-											<td class="right">
-												<?php echo "<input readonly value='".$row['name']."' type='text' style='width: 300px'>"; ?>
-											</td>
-										</tr>
-										
-										<tr class='break'>
-											<td colspan=2> 
-												<h3><?php echo __('Target') ?></h3>
-											</td>
-										</tr>
-												
-										<tr>
-											<td> 
-												<b><?php echo __('Year') ?> *</b><br/>
-											</td>
-											<td class="right">
-												<select name="gibbonSchoolYearIDCopyTo" id="gibbonSchoolYearIDCopyTo" class="standardWidth">
-													<?php
-                                                    echo "<option value='Please select...'>".__('Please select...').'</option>';
-													try {
-														$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-														$sqlSelect = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-														$resultSelect = $connection2->prepare($sqlSelect);
-														$resultSelect->execute($dataSelect);
-													} catch (PDOException $e) {
-													}
-													if ($resultSelect->rowCount() == 1) {
-														$rowSelect = $resultSelect->fetch();
-														try {
-															$dataSelect2 = array('sequenceNumber' => $rowSelect['sequenceNumber']);
-															$sqlSelect2 = 'SELECT * FROM gibbonSchoolYear WHERE sequenceNumber>=:sequenceNumber ORDER BY sequenceNumber ASC';
-															$resultSelect2 = $connection2->prepare($sqlSelect2);
-															$resultSelect2->execute($dataSelect2);
-														} catch (PDOException $e) {
-														}
-														while ($rowSelect2 = $resultSelect2->fetch()) {
-															echo "<option value='".$rowSelect2['gibbonSchoolYearID']."'>".htmlPrep($rowSelect2['name']).'</option>';
-														}
-													}
-													?>				
-												</select>
-												<script type="text/javascript">
-													var gibbonSchoolYearIDCopyTo=new LiveValidation('gibbonSchoolYearIDCopyTo');
-													gibbonSchoolYearIDCopyTo.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __('Select something!') ?>"});
-												</script>
-											</td>
-										</tr>
-										<tr>
-											<td> 
-												<b><?php echo __('Course') ?> *</b><br/>
-											</td>
-											<td class="right">
-												<select name="gibbonCourseIDTarget" id="gibbonCourseIDTarget" class="standardWidth">
-													<?php
-                                                    try {
-                                                        if ($highestAction == 'Unit Planner_all') {
-                                                            $dataSelect = array();
-                                                            $sqlSelect = 'SELECT gibbonCourse.nameShort AS course, gibbonSchoolYear.name AS year, gibbonCourseID, gibbonSchoolYear.gibbonSchoolYearID FROM gibbonCourse JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) ORDER BY nameShort';
-                                                        } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                                                            $dataSelect = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                                                            $sqlSelect = "SELECT gibbonCourse.nameShort AS course, gibbonSchoolYear.name AS year, gibbonCourseID, gibbonSchoolYear.gibbonSchoolYearID FROM gibbonCourse JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') ORDER BY gibbonCourse.nameShort";
-                                                        }
-                                                        $resultSelect = $connection2->prepare($sqlSelect);
-                                                        $resultSelect->execute($dataSelect);
-                                                    } catch (PDOException $e) {
-                                                    }
-													while ($rowSelect = $resultSelect->fetch()) {
-														echo "<option class='".$rowSelect['gibbonSchoolYearID']."' value='".$rowSelect['gibbonCourseID']."'>".htmlPrep($rowSelect['course']).'</option>';
-													}
+                                $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_duplicate.php&step=2&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID");
+                                $form->setFactory(DatabaseFormFactory::create($pdo));
 
-													?>				
-												</select>
-												<script type="text/javascript">
-													$("#gibbonCourseIDTarget").chainedTo("#gibbonSchoolYearIDCopyTo");
-												</script>
-											</td>
-										</tr>
-										<tr>
-											<td> 
-												<b><?php echo __('Unit') ?> *</b><br/>
-												<span class="emphasis small"><?php echo __('This value cannot be changed.') ?></span>
-											</td>
-											<td class="right">
-												<?php echo "<input readonly value='".$row['name']."' type='text' style='width: 300px'>"; ?>
-											</td>
-										</tr>
-										
-										<tr>
-											<td>
-												<span class="emphasis small">* <?php echo __('denotes a required field');?></span>
-											</td>
-											<td class="right">
-												<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-												<input type="submit" value="<?php echo __('Submit'); ?>">
-											</td>
-										</tr>
-									</table>
-								</form>
-								<?php
+                                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+                                $form->addRow()->addHeading(__('Source'));
+
+                                $row = $form->addRow();
+                                    $row->addLabel('yearName', __('School Year'));
+                                    $row->addTextField('yearName')->readonly()->setValue($yearName);
+
+                                $row = $form->addRow();
+                                    $row->addLabel('courseName', __('Course'));
+                                    $row->addTextField('courseName')->readonly()->setValue($values['courseName']);
+
+                                $row = $form->addRow();
+                                    $row->addLabel('unitName', __('Unit'));
+                                    $row->addTextField('unitName')->readonly()->setValue($values['name']);
+
+                                $form->addRow()->addHeading(__('Target'));
+
+                                $row = $form->addRow();
+                                    $row->addLabel('gibbonSchoolYearIDCopyTo', __('School Year'));
+                                    $row->addSelectSchoolYear('gibbonSchoolYearIDCopyTo', 'Active')->required();
+
+                                if ($highestAction == 'Unit Planner_all') {
+                                    $data = array();
+                                    $sql = 'SELECT gibbonCourse.gibbonSchoolYearID as chainedTo, gibbonCourseID AS value, gibbonCourse.nameShort AS name FROM gibbonCourse JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) ORDER BY nameShort';
+                                } elseif ($highestAction == 'Unit Planner_learningAreas') {
+                                    $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                                    $sql = "SELECT gibbonCourse.gibbonSchoolYearID as chainedTo, gibbonCourseID AS value, gibbonCourse.nameShort AS name FROM gibbonCourse JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') ORDER BY gibbonCourse.nameShort";
+                                }
+                                $row = $form->addRow();
+                                    $row->addLabel('gibbonCourseIDTarget', __('Course'));
+                                    $row->addSelect('gibbonCourseIDTarget')->fromQueryChained($pdo, $sql, $data, 'gibbonSchoolYearIDCopyTo')->required()->placeholder();
+
+                                $row = $form->addRow();
+                                    $row->addLabel('unitName', __('Unit'));
+                                    $row->addTextField('unitName')->readonly()->setValue($values['name']);
+
+                                $row = $form->addRow();
+                                    $row->addFooter();
+                                    $row->addSubmit();
+
+                                echo $form->getOutput();
 
                             } elseif ($step == 2) {
                                 echo '<h2>';
                                 echo __('Step 2');
                                 echo '</h2>';
 
-                                $gibbonCourseIDTarget = $_POST['gibbonCourseIDTarget'];
+                                $gibbonCourseIDTarget = $_POST['gibbonCourseIDTarget'] ?? '';
+
                                 if ($gibbonCourseIDTarget == '') {
                                     echo "<div class='error'>";
                                     echo __('You have not specified one or more required parameters.');
                                     echo '</div>';
                                 } else {
-                                    ?>
-									<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/units_duplicateProcess.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&address=".$_GET['q'] ?>">
-										<table class='smallIntBorder fullWidth' cellspacing='0'>	
-											<script type="text/javascript">
-												/* Resource 1 Option Control */
-												$(document).ready(function(){
-													$(".copyLessons").click(function(){
-														if ($('input[name=copyLessons]:checked').val()=="Yes" ) {
-															$("#sourceClass").slideDown("fast", $("#sourceClass").css("display","table-row")); 
-															$("#targetClass").slideDown("fast", $("#targetClass").css("display","table-row")); 
-														} else {
-															$("#sourceClass").css("display","none");
-															$("#targetClass").css("display","none");
-														}
-													 });
-												});
-											</script>
-											<tr>
-												<td style='width: 275px'> 
-													<b><?php echo __('Copy Lessons?') ?> *</b>
-												</td>
-												<td class="right">
-													<input checked type="radio" name="copyLessons" value="Yes" class="copyLessons" /> Yes
-													<input type="radio" name="copyLessons" value="No" class="copyLessons" /> No
-												</td>
-											</tr>
-											<tr class='break'>
-												<td colspan=2> 
-													<h3><?php echo __('Source') ?></h3>
-												</td>
-											</tr>
-											<tr>
-												<td> 
-													<b><?php echo __('School Year') ?> *</b><br/>
-													<span class="emphasis small"><?php echo __('This value cannot be changed.') ?></span>
-												</td>
-												<td class="right">
-													<?php
-                                                    try {
-                                                        $dataYear = array('gibbonSchoolYearID' => $row['gibbonSchoolYearID']);
-                                                        $sqlYear = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-                                                        $resultYear = $connection2->prepare($sqlYear);
-                                                        $resultYear->execute($dataYear);
-                                                    } catch (PDOException $e) {
-                                                        echo "<div class='error'>".$e->getMessage().'</div>';
-                                                    }
-													if ($resultYear->rowCount() != 1) {
-														echo '<i>'.__('Unknown').'</i>';
-													} else {
-														$rowYear = $resultYear->fetch();
-														echo "<input readonly value='".$rowYear['name']."' type='text' style='width: 300px'>";
-													}
-													?>
-												</td>
-											</tr>
-											<tr>
-												<td> 
-													<b><?php echo __('Course') ?> *</b><br/>
-													<span class="emphasis small"><?php echo __('This value cannot be changed.') ?></span>
-												</td>
-												<td class="right">
-													<?php echo "<input readonly value='".$row['courseName']."' type='text' style='width: 300px'>"; ?>
-												</td>
-											</tr>
-											<tr>
-												<td> 
-													<b><?php echo __('Unit') ?> *</b><br/>
-													<span class="emphasis small"><?php echo __('This value cannot be changed.') ?></span>
-												</td>
-												<td class="right">
-													<?php echo "<input readonly value='".$row['name']."' type='text' style='width: 300px'>"; ?>
-												</td>
-											</tr>
-											<tr id="sourceClass">
-												<td> 
-													<b><?php echo __('Source Class') ?> *</b><br/>
-												</td>
-												<td class="right">
-													<select name="gibbonCourseClassIDSource" id="gibbonCourseClassIDSource" class="standardWidth">
-														<?php
-                                                        echo "<option value='Please select...'>".__('Please select...').'</option>';
-														try {
-															$dataSelect = array('gibbonCourseID' => $gibbonCourseID);
-															$sqlSelect = 'SELECT gibbonCourseClassID, gibbonCourseClass.nameShort AS class, gibbonCourse.nameShort AS course FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourseClass.gibbonCourseID=:gibbonCourseID';
-															$resultSelect = $connection2->prepare($sqlSelect);
-															$resultSelect->execute($dataSelect);
-														} catch (PDOException $e) {
-														}
-														while ($rowSelect = $resultSelect->fetch()) {
-															echo "<option value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
-														}
-														?>				
-													</select>
-												</td>
-											</tr>
-											
-											<?php
-                                            try {
-                                                $dataSelect2 = array('gibbonCourseID' => $gibbonCourseIDTarget);
-                                                $sqlSelect2 = 'SELECT gibbonCourse.name AS course, gibbonSchoolYear.name AS year FROM gibbonCourse JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonCourseID=:gibbonCourseID';
-                                                $resultSelect2 = $connection2->prepare($sqlSelect2);
-                                                $resultSelect2->execute($dataSelect2);
-                                            } catch (PDOException $e) {
-                                            }
-											if ($resultSelect2->rowCount() == 1) {
-												$rowSelect2 = $resultSelect2->fetch();
-												$access = true;
-												$course = $rowSelect2['course'];
-												$year = $rowSelect2['year'];
-											}
-											?>
-											
-											<tr class='break'>
-												<td colspan=2> 
-													<h3><?php echo __('Target') ?></h3>
-												</td>
-											</tr>
-											
-											<tr>
-												<td> 
-													<b><?php echo __('School Year') ?>*</b><br/>
-													<span class="emphasis small"><?php echo __('This value cannot be changed.') ?></span>
-												</td>
-												<td class="right">
-													<?php echo "<input readonly value='$year' type='text' style='width: 300px'>"; ?>
-												</td>
-											</tr>
-											<tr>
-												<td> 
-													<b><?php echo __('Course') ?> *</b><br/>
-													<span class="emphasis small"><?php echo __('This value cannot be changed.') ?></span>
-												</td>
-												<td class="right">
-													<?php echo "<input readonly value='$course' type='text' style='width: 300px'>"; ?>
-												</td>
-											</tr>
-											<tr>
-												<td> 
-													<b><?php echo __('Unit') ?> *</b><br/>
-													<span class="emphasis small"><?php echo __('This value cannot be changed.') ?></span>
-												</td>
-												<td class="right">
-													<?php echo "<input readonly value='".$row['name']."' type='text' style='width: 300px'>"; ?>
-												</td>
-											</tr>
-											<tr id="targetClass">
-												<td> 
-													<b><?php echo __('Classes') ?> *</b><br/>
-													<span class="emphasis small"><?php echo __('Use Control, Command and/or Shift to select multiple.') ?></span>
-												</td>
-												<td class="right">
-													<select name="gibbonCourseClassIDTarget[]" id="gibbonCourseClassIDTarget[]" multiple style="width: 302px; height: 100px">
-														<?php
-                                                        try {
-                                                            $dataSelect = array('gibbonCourseIDTarget' => $gibbonCourseIDTarget);
-                                                            $sqlSelect = 'SELECT gibbonCourseClassID, gibbonCourseClass.nameShort AS class, gibbonCourse.nameShort AS course FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourseClass.gibbonCourseID=:gibbonCourseIDTarget';
-                                                            $resultSelect = $connection2->prepare($sqlSelect);
-                                                            $resultSelect->execute($dataSelect);
-                                                        } catch (PDOException $e) {
-                                                        }
-														while ($rowSelect = $resultSelect->fetch()) {
-															echo "<option value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
-														}
-														?>				
-													</select>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="emphasis small">* <?php echo __('denotes a required field'); ?></span>
-												</td>
-												<td class="right">
-													<input type="hidden" name="gibbonCourseIDTarget" value="<?php echo $gibbonCourseIDTarget ?>">
-													<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-													<input type="submit" value="<?php echo __('Submit'); ?>">
-												</td>
-											</tr>
-										</table>
-									</form>
-									<?php
+
+                                    try {
+                                        $dataSelect2 = array('gibbonCourseID' => $gibbonCourseIDTarget);
+                                        $sqlSelect2 = 'SELECT gibbonCourse.name AS course, gibbonSchoolYear.name AS year FROM gibbonCourse JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonCourseID=:gibbonCourseID';
+                                        $resultSelect2 = $connection2->prepare($sqlSelect2);
+                                        $resultSelect2->execute($dataSelect2);
+                                    } catch (PDOException $e) {
+                                    }
+                                    if ($resultSelect2->rowCount() == 1) {
+                                        $rowSelect2 = $resultSelect2->fetch();
+                                        $access = true;
+                                        $course = $rowSelect2['course'];
+                                        $year = $rowSelect2['year'];
+                                    }
+
+                                    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'] . "/modules/" . $_SESSION[$guid]['module'] ."/units_duplicateProcess.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&address=".$_GET['q']);
+                                    $form->setFactory(DatabaseFormFactory::create($pdo));
+
+                                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                                    $form->addHiddenValue('gibbonCourseIDTarget', $gibbonCourseIDTarget);
+
+                                    $row = $form->addRow();
+                                        $row->addLabel('copyLessons', __('Copy Lessons?'));
+                                        $row->addYesNoRadio('copyLessons')->required()->setClass('copyLessons right');
+
+                                    $form->toggleVisibilityByClass('targetClass')->onRadio('copyLessons')->when('Y');
+
+                                    $form->addRow()->addHeading(__('Source'));
+
+                                    $row = $form->addRow();
+                                        $row->addLabel('yearName', __('School Year'));
+                                        $row->addTextField('yearName')->readonly()->setValue($yearName);
+
+                                    $row = $form->addRow();
+                                        $row->addLabel('courseName', __('Course'));
+                                        $row->addTextField('courseName')->readonly()->setValue($values['courseName']);
+
+                                    $row = $form->addRow();
+                                        $row->addLabel('unitName', __('Unit'));
+                                        $row->addTextField('unitName')->readonly()->setValue($values['name']);
+
+                                    $dataSelectClassSource= array('gibbonCourseID' => $gibbonCourseID);
+                                    $sqlSelectClassSource = "SELECT gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourseClass.gibbonCourseID=:gibbonCourseID ORDER BY name";
+
+                                    $row = $form->addRow()->addClass('targetClass');
+                                        $row->addLabel('gibbonCourseClassIDSource', __('Source Class'));
+                                        $row->addSelect('gibbonCourseClassIDSource')->fromQuery($pdo, $sqlSelectClassSource, $dataSelectClassSource)->required()->placeholder();
+
+                                    $form->addRow()->addHeading(__('Target'));
+
+                                    $row = $form->addRow();
+                                        $row->addLabel('year', __('School Year'));
+                                        $row->addTextField('year')->readonly()->setValue($year);
+
+                                    $row = $form->addRow();
+                                        $row->addLabel('course', __('Course'));
+                                        $row->addTextField('course')->readonly()->setValue($course);
+
+                                    $row = $form->addRow();
+                                        $row->addLabel('unitName', __('Unit'));
+                                        $row->addTextField('unitName')->readonly()->setValue($values['name']);
+
+                                    $dataSelectClassTarget= array('gibbonCourseID' => $gibbonCourseIDTarget);
+                                    $sqlSelectClassTarget = "SELECT gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourseClass.gibbonCourseID=:gibbonCourseID ORDER BY name";
+
+                                    $row = $form->addRow()->addClass('targetClass');
+                                        $row->addLabel('gibbonCourseClassIDTarget[]', __('Classes'));
+                                        $row->addSelect('gibbonCourseClassIDTarget[]')->fromQuery($pdo, $sqlSelectClassTarget, $dataSelectClassTarget)->required()->selectMultiple();
+
+                                    $row = $form->addRow();
+                                        $row->addFooter();
+                                        $row->addSubmit();
+
+                                    echo $form->getOutput();
 
                                 }
                             }

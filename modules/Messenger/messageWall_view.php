@@ -50,17 +50,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
 
 	$form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-	$row = $form->addRow();
+	$row = $form->addRow()->addClass('flex flex-wrap');
 
 	$link = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/messageWall_view.php';
 	$prevDay = DateTime::createFromFormat($dateFormat, $date)->modify('-1 day')->format($dateFormat);
 	$nextDay = DateTime::createFromFormat($dateFormat, $date)->modify('+1 day')->format($dateFormat);
 
-	$col = $row->addColumn()->addClass('inline');
-		$col->addButton(__('Previous Day'))->addClass('buttonLink')->onClick("window.location.href='{$link}&date={$prevDay}'");
+	$col = $row->addColumn()->addClass('flex items-center');
+		$col->addButton(__('Previous Day'))->addClass('buttonLink mr-px')->onClick("window.location.href='{$link}&date={$prevDay}'");
 		$col->addButton(__('Next Day'))->addClass('buttonLink')->onClick("window.location.href='{$link}&date={$nextDay}'");
 
-	$col = $row->addColumn()->addClass('inline right');
+	$col = $row->addColumn()->addClass('flex items-center justify-end');
 		$col->addDate('date')->setValue($date)->setClass('shortWidth');
 		$col->addSubmit(__('Go'));
 

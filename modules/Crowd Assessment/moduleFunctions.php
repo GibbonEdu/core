@@ -304,24 +304,30 @@ function getThread($guid, $connection2, $gibbonPlannerEntryHomeworkID, $parent, 
     } else {
         while ($rowDiscuss = $resultDiscuss->fetch()) {
             $classExtra = '';
+            $namePerson = __('{name} said', [
+                'name' => formatName($rowDiscuss['title'], $rowDiscuss['preferredName'], $rowDiscuss['surname'], $rowDiscuss['category'])
+            ]);
+            $datetimePosted = __('Posted at {hourPosted} on {datePosted}', [
+                'hourPosted' => '<b>'.substr($rowDiscuss['timestamp'], 11, 5).'</b>', 
+                'datePosted' => '<b>'.dateConvertBack($guid, substr($rowDiscuss['timestamp'], 0, 10)).'</b>'
+            ]);
             if ($level == 0) {
                 $classExtra = 'chatBoxFirst';
             }
 
             $output .= "<a name='".$rowDiscuss['gibbonCrowdAssessDiscussID']."'></a>";
             $output .= "<table class='noIntBorder chatBox $classExtra' cellspacing='0' style='width: ".(755 - ($level * 15)).'px; margin-left: '.($level * 15)."px'>";
-            $output .= '<tr>';
-            $output .= '<td><i>'.formatName($rowDiscuss['title'], $rowDiscuss['preferredName'], $rowDiscuss['surname'], $rowDiscuss['category']).' said</i>:</td>';
-            $output .= "<td style='text-align: right'><i>Posted at <b>".substr($rowDiscuss['timestamp'], 11, 5).'</b> on <b>'.dateConvertBack($guid, substr($rowDiscuss['timestamp'], 0, 10)).'</b></i></td>';
-            $output .= '</tr>';
-            $output .= '<tr>';
+            $output .= "<tr>";
+            $output .= "<td><i>".$namePerson.'</i>:</td>';
+            $output .= "<td style='text-align: right'><i>".$datetimePosted."</i></td>";         
+            $output .= "</tr>";
+            $output .= "<tr>";
             $output .= "<td style='padding: 1px 4px' colspan=2><b>".$rowDiscuss['comment'].'</b></td>';
-            $output .= '</tr>';
-            $output .= '<tr>';
+            $output .= "</tr>";
+            $output .= "<tr>";
             $output .= "<td style='text-align: right' colspan=2><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/crowdAssess_view_discuss_post.php&gibbonPersonID=$gibbonPersonID&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&replyTo=".$rowDiscuss['gibbonCrowdAssessDiscussID']."'>Reply</a></td>";
-            $output .= '</tr>';
-
-            $output .= '</table>';
+            $output .= "</tr>";
+            $output .= "</table>";
 
             //Get any replies
             try {

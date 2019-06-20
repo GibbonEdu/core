@@ -242,7 +242,7 @@ select[id$="effortValue"] {
 
 .doublescroll-container tr.head th.firstColumn {
 	position:absolute; 
-    width:151px; 
+    width:174px; 
     height: 170px;
     left:1px;
     top:0;
@@ -259,7 +259,7 @@ select[id$="effortValue"] {
 
 .doublescroll-container td.firstColumn {
 	position:absolute; 
-    width:150px; 
+    width:175px; 
     left:1px;
     top:auto;
     padding: 5px 12px 5px !important;
@@ -269,7 +269,6 @@ select[id$="effortValue"] {
 }
 
 .doublescroll-container td {
-	height: 15px;
 	text-align: center;
 }
 
@@ -296,7 +295,7 @@ select[id$="effortValue"] {
 
 .dragtable-drag-handle{
 	cursor: move;
-	height: 2px;
+	height: 7px;
 	width: 31px;
 	max-width: 31px;
 	min-width: 31px;
@@ -343,7 +342,6 @@ select[id$="effortValue"] {
 
 .dragtable-drag-col tbody td {
 	padding: 0px 5px !important;
-	height: 15px;
 }
 
 /*

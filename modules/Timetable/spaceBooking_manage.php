@@ -37,14 +37,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
         //Proceed!
         $page->breadcrumbs->add(__('Manage Facility Bookings'));
 
+        if (isset($_GET['return'])) {
+            returnProcess($guid, $_GET['return'], null, null);
+        }
+
         if ($highestAction == 'Manage Facility Bookings_allBookings') {
             echo '<p>'.__('This page allows you to create facility and library bookings, whilst managing bookings created by all users. Only current and future bookings are shown: past bookings are hidden.').'</p>';
         } else {
             echo '<p>'.__('This page allows you to create and manage facility and library bookings. Only current and future changes are shown: past bookings are hidden.').'</p>';
-        }
-
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
         }
 
         $facilityBookingGateway = $container->get(FacilityBookingGateway::class);

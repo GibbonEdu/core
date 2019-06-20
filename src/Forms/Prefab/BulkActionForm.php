@@ -31,19 +31,15 @@ use Gibbon\Forms\FormRenderer;
  */
 class BulkActionForm extends Form
 {
-    public static function create($id, $action, $method = 'post', $class = 'smallIntBorder fullWidth bulkActionForm')
+    public static function create($id, $action, $method = 'post', $class = 'w-full blank bulkActionForm border-0 bg-transparent p-0')
     {
-        $factory = FormFactory::create();
-        $renderer = FormRenderer::create();
+        global $container;
 
-        $renderer->setWrapper('form', 'div');
-        $renderer->setWrapper('row', 'div');
-        $renderer->setWrapper('cell', 'fieldset');
-
-        $form = new BulkActionForm($factory, $renderer, $action, $method);
-
-        $form->setID($id);
-        $form->setClass($class);
+        $form = $container->get(BulkActionForm::class)
+            ->setID($id)
+            ->setClass($class)
+            ->setAction($action)
+            ->setMethod($method);
 
         $form->addConfirmation(__('Are you sure you wish to process this action? It cannot be undone.'));
         $form->addHiddenValue('address', $_GET['q']);
@@ -51,22 +47,22 @@ class BulkActionForm extends Form
         return $form;
     }
 
-    public function addBulkActionRow($actions = array())
+    public function addBulkActionRow($actions = [])
     {
-        $row = $this->addRow()->setClass('right');
+        $row = $this->addRow()->setClass('');
         $col = $row->addElement($this->createBulkActionColumn($actions));
 
         return $col;
     }
 
-    public function createBulkActionColumn($actions = array())
+    public function createBulkActionColumn($actions = [])
     {
-        $col = $this->getFactory()->createColumn()->addClass('inline right');
+        $col = $this->getFactory()->createColumn()->addClass('');
 
         $col->addSelect('action')
             ->fromArray($actions)
-            ->isRequired()
-            ->setClass('shortWidth')
+            ->required()
+            ->setClass('relative w-32 sm:w-48 mr-1 flex items-center')
             ->placeholder(__('Select action'));
 
         return $col;

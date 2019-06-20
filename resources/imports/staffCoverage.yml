@@ -1,0 +1,121 @@
+details:
+    type: staffCoverage
+    category: Substitute
+    name: Staff Coverage
+    table: gibbonStaffCoverage
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Staff
+    action: Manage Staff Coverage
+fields:
+    gibbonSchoolYearID: 
+        name: "School Year"
+        desc: "School year name, as set in School Admin. Must already exist."
+        args: { filter: schoolyear, required: true, custom: true, readonly: [gibbonStaffAbsenceDate]  }
+        relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
+    gibbonPersonID:
+        name: "Teacher"
+        desc: "Username"
+        args: { filter: nospaces, required: true, readonly: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+    date: 
+        name: "Date"
+        desc: "Must be unique. Format: YYYY-MM-DD"
+        args: { filter: date, required: true, readonly: [gibbonStaffCoverage] }
+    allDay:
+        name: "All Day"
+        desc: ""
+        args: { filter: yesno, custom: true, required: true, readonly: [gibbonStaffCoverage] }
+    timeStart:
+        name: "Start Time"
+        desc: "Format: hh:mm (24hr)"
+        args: { filter: time, custom: true }
+    timeEnd:
+        name: "End Time"
+        desc: "Format: hh:mm (24hr)"
+        args: { filter: time, custom: true }
+    status:
+        name: "Status"
+        desc: ""
+        value: "Accepted"
+        args: { filter: string, hidden: true }
+    requestType:
+        name: "Request Type"
+        desc: ""
+        value: "Individual"
+        args: { filter: string, hidden: true }
+
+    gibbonPersonIDCoverage:
+        name: "Substitute"
+        desc: "Username"
+        args: { filter: nospaces, required: true, readonly: [gibbonStaffAbsenceDate] }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+
+    gibbonPersonIDStatus:
+        name: "Created By"
+        desc: "Username"
+        args: { filter: nospaces, required: true, linked: gibbonPersonID, readonly: [gibbonStaffAbsenceDate] }
+    notesStatus:
+        name: "Notes"
+        desc: ""
+        args: { filter: string, custom: true }
+    timestampStatus:
+        name: "Created On"
+        desc: ""
+        args: { filter: timestamp, custom: true }
+    timestampCoverage:
+        name: "Substitute Timestamp"
+        desc: ""
+        args: { filter: timestamp, linked: timestampStatus }
+
+    gibbonStaffAbsenceID:
+        name: "Absence ID"
+        desc: ""
+        args: { filter: string, linked: date }
+        relationship: { table: gibbonStaffAbsenceDate, key: gibbonStaffAbsenceID, join: gibbonStaffAbsence, on: [gibbonStaffAbsenceID, gibbonStaffAbsenceID], field: [ date, allDay, gibbonPersonID, gibbonSchoolYearID ]  }
+    gibbonStaffCoverageID:
+        name: "Coverage ID"
+        desc: ""
+        args: { filter: string, linked: notesCoverage, readonly: [gibbonStaffCoverage] }
+        relationship: { table: gibbonStaffCoverage, key: gibbonStaffCoverageID, field: [ notesCoverage, gibbonPersonIDStatus, gibbonSchoolYearID ]  }
+    notesCoverage:
+        name: "Unique ID"
+        desc: ""
+        args: { filter: string, custom: true, readonly: [gibbonStaffAbsenceDate] }
+tables:
+    gibbonStaffCoverage: 
+        primaryKey:
+            gibbonStaffCoverageID
+        uniqueKeys:
+            - [ notesCoverage, gibbonPersonIDStatus, gibbonSchoolYearID ]
+        fields:
+            - gibbonSchoolYearID
+            - gibbonPersonID
+            - date
+            - allDay
+            - gibbonStaffAbsenceID
+            - status
+            - requestType
+            - gibbonPersonIDStatus
+            - timestampStatus
+            - notesStatus
+            - gibbonPersonIDCoverage
+            - timestampCoverage
+            - notesCoverage
+    gibbonStaffAbsenceDate: 
+        primaryKey:
+            gibbonStaffAbsenceDateID
+        uniqueKeys:
+            - [ gibbonStaffCoverageID, date ]
+            - [ gibbonStaffAbsenceID, date ]
+        fields:
+            - gibbonStaffCoverageID
+            - gibbonStaffAbsenceID
+            - date
+            - allDay
+            - timeStart
+            - timeEnd
+            - gibbonPersonIDStatus
+            - gibbonSchoolYearID
+            - gibbonPersonID
+            - notesCoverage

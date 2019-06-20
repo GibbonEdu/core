@@ -348,8 +348,10 @@ class ImportType
                 continue;
             }
 
-            if (isset($columns[$fieldName])) {
-                foreach ($columns[$fieldName] as $columnName => $columnField) {
+            $columnFieldName = stripos($fieldName, '.') !== false ? trim(strrchr($fieldName, '.'), '.') : $fieldName;
+
+            if (isset($columns[$columnFieldName])) {
+                foreach ($columns[$columnFieldName] as $columnName => $columnField) {
                     if ($columnName == 'Type') {
                         $this->parseTableValueType($fieldName, $columnField);
                     } else {

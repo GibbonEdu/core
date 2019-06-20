@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
@@ -39,6 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 
     $today = date('Y-m-d');
 
+    $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
     $dateEnd = (isset($_REQUEST['dateEnd']))? dateConvert($guid, $_REQUEST['dateEnd']) : date('Y-m-d');
     $dateStart = (isset($_REQUEST['dateStart']))? dateConvert($guid, $_REQUEST['dateStart']) : date('Y-m-d', strtotime( $dateEnd.' -1 month') );
 
@@ -76,11 +78,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 
     $row = $form->addRow();
         $row->addLabel('dateStart', __('Start Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-        $row->addDate('dateStart')->setValue(dateConvertBack($guid, $dateStart))->isRequired();
+        $row->addDate('dateStart')->setValue(dateConvertBack($guid, $dateStart))->required();
 
     $row = $form->addRow();
         $row->addLabel('dateEnd', __('End Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-        $row->addDate('dateEnd')->setValue(dateConvertBack($guid, $dateEnd))->isRequired();
+        $row->addDate('dateEnd')->setValue(dateConvertBack($guid, $dateEnd))->required();
 
     $options = array("all" => __('All Students'));
     if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
@@ -91,21 +93,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
     }
     $row = $form->addRow();
         $row->addLabel('group', __('Group By'));
-        $row->addSelect('group')->fromArray($options)->selected($group)->isRequired();
+        $row->addSelect('group')->fromArray($options)->selected($group)->required();
 
     $form->toggleVisibilityByClass('class')->onSelect('group')->when('class');
     $row = $form->addRow()->addClass('class');
         $row->addLabel('gibbonCourseClassID', __('Class'));
-        $row->addSelectClass('gibbonCourseClassID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonCourseClassID)->placeholder()->isRequired();
+        $row->addSelectClass('gibbonCourseClassID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonCourseClassID)->placeholder()->required();
 
     $form->toggleVisibilityByClass('rollGroup')->onSelect('group')->when('rollGroup');
     $row = $form->addRow()->addClass('rollGroup');
         $row->addLabel('gibbonRollGroupID', __('Roll Group'));
-        $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->placeholder()->isRequired();
+        $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->placeholder()->required();
 
     $row = $form->addRow();
         $row->addLabel('sort', __('Sort By'));
-        $row->addSelect('sort')->fromArray(array('surname' => __('Surname'), 'preferredName' => __('Preferred Name'), 'rollGroup' => __('Roll Group')))->selected($sort)->isRequired();
+        $row->addSelect('sort')->fromArray(array('surname' => __('Surname'), 'preferredName' => __('Preferred Name'), 'rollGroup' => __('Roll Group')))->selected($sort)->required();
 
     $row = $form->addRow();
         $row->addFooter();
@@ -143,7 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
             echo '</div>';
     } else {
         echo '<h2>';
-        echo __('Report Data').': '. date('M j', strtotime($dateStart) ) .' - '. date('M j, Y', strtotime($dateEnd) );
+        echo __('Report Data').': '. Format::dateRangeReadable($dateStart, $dateEnd);        
         echo '</h2>';
 
         try {
@@ -217,6 +219,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
             if ( !empty($gibbonAttendanceCodeID) ) {
                 $data['gibbonAttendanceCodeID'] = $gibbonAttendanceCodeID;
                 $sql .= ' AND gibbonAttendanceCode.gibbonAttendanceCodeID=:gibbonAttendanceCodeID';
+            }
+
+            if ($countClassAsSchool == 'N' && $group != 'class') {
+                $sql .= " AND NOT context='Class'";
             }
 
             $sql .= ' '. $groupBy . ' '. $orderBy;

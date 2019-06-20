@@ -61,9 +61,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
     $table->addColumn('name', __('Name'))
           ->description(__('Short Name'))
           ->format(function ($gradeScale) {
-            return '<strong>' . $gradeScale['name'] . '</strong><br/><small><i>' . $gradeScale['nameShort'] . '</i></small>';
+            return '<strong>' . __($gradeScale['name']) . '</strong><br/><small><i>' . __($gradeScale['nameShort']) . '</i></small>';
           });
-    $table->addColumn('usage', __('Usage'));
+    $table->addColumn('usage', __('Usage'))->translatable();
     $table->addColumn('active', __('Active'))->format(Format::using('yesNo', ['active']));
     $table->addColumn('numeric', __('Numeric'))->format(Format::using('yesNo', ['numeric']));
         

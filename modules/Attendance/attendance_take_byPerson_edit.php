@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
 			$row = $form->addRow();
 				$row->addLabel('date', __('Date'));
-				$row->addDate('date')->readonly()->setValue(dateConvertBack($guid, $currentDate));
+				$row->addDate('date')->readonly()->setValue($currentDate);
 
 			$row = $form->addRow();
 				$row->addLabel('recordedBy', __('Recorded By'));

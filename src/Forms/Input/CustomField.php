@@ -86,13 +86,15 @@ class CustomField extends Input
         }
 
         if ($fields['required'] == 'Y') {
-            $this->customField->isRequired();
-            $this->isRequired();
+            $this->customField->required();
+            $this->required();
         }
 
         if (!empty($fields['default'])) {
             $this->customField->setValue($fields['default']);
         }
+
+        $this->customField->setClass('w-full');
 
         parent::__construct($name);
     }

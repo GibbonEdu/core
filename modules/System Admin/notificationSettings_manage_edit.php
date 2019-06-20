@@ -61,11 +61,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
 
             $row = $form->addRow();
                 $row->addLabel('event', __('Event'));
-                $row->addTextField('event')->setValue($event['moduleName'].': '.$event['event'])->readOnly();
+                $row->addTextField('event')->setValue(__($event['moduleName']).': '.__($event['event']))->readOnly();
 
             $row = $form->addRow();
                 $row->addLabel('permission', __('Permission Required'));
-                $row->addTextField('permission')->setValue($event['actionName'])->readOnly();
+                $row->addTextField('permission')->setValue(__($event['actionName']))->readOnly();
 
             $row = $form->addRow();
                 $row->addLabel('active', __('Active'));
@@ -132,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
                     } else {
                         switch($listener['scopeType']) {
                             case 'gibbonPersonIDStudent':   $data = array('gibbonPersonID' => $listener['scopeID']);
-                                                            $sql = "SELECT 'Student' as scopeTypeName, CONCAT(surname, ' ', preferredName) as scopeIDName FROM gibbonperson WHERE gibbonPersonID=:gibbonPersonID";
+                                                            $sql = "SELECT 'Student' as scopeTypeName, CONCAT(surname, ' ', preferredName) as scopeIDName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID";
                                                             break;
 
                             case 'gibbonYearGroupID':       $data = array('gibbonYearGroupID' => $listener['scopeID']);
@@ -186,7 +186,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
 
                 $row = $form->addRow();
                     $row->addLabel('gibbonPersonID', __('Person'))->description(__('Available only to users with the required permission.'));
-                    $row->addSelect('gibbonPersonID')->fromArray($staffMembers)->placeholder(__('Please select...'))->isRequired();
+                    $row->addSelect('gibbonPersonID')->fromArray($staffMembers)->placeholder(__('Please select...'))->required();
 
                 if ($event['scopes'] == 'All') {
                     $form->addHiddenValue('scopeType', 'All');
@@ -208,17 +208,17 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
                     $form->toggleVisibilityByClass('scopeTypeStudent')->onSelect('scopeType')->when('gibbonPersonIDStudent');
                     $row = $form->addRow()->addClass('scopeTypeStudent');
                         $row->addLabel('gibbonPersonIDStudent', __('Student'));
-                        $row->addSelectStudent('gibbonPersonIDStudent', $_SESSION[$guid]['gibbonSchoolYearID'])->isRequired()->placeholder();
+                        $row->addSelectStudent('gibbonPersonIDStudent', $_SESSION[$guid]['gibbonSchoolYearID'])->required()->placeholder();
 
                     $form->toggleVisibilityByClass('scopeTypeStaff')->onSelect('scopeType')->when('gibbonPersonIDStaff');
                     $row = $form->addRow()->addClass('scopeTypeStaff');
                         $row->addLabel('gibbonPersonIDStaff', __('Student'));
-                        $row->addSelectStaff('gibbonPersonIDStaff')->isRequired()->placeholder();
+                        $row->addSelectStaff('gibbonPersonIDStaff')->required()->placeholder();
 
                     $form->toggleVisibilityByClass('scopeTypeYearGroup')->onSelect('scopeType')->when('gibbonYearGroupID');
                     $row = $form->addRow()->addClass('scopeTypeYearGroup');
                         $row->addLabel('gibbonYearGroupID', __('Year Group'));
-                        $row->addSelectYearGroup('gibbonYearGroupID')->isRequired()->placeholder();
+                        $row->addSelectYearGroup('gibbonYearGroupID')->required()->placeholder();
                 }
 
                 $row = $form->addRow();

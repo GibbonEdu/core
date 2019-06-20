@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 
 			$row = $form->addRow();
 				$row->addLabel('schoolYearName', __('School Year'));
-				$row->addTextField('schoolYearName')->isRequired()->readonly()->setValue($values['yearName']);
+				$row->addTextField('schoolYearName')->required()->readonly()->setValue($values['yearName']);
 
 			$sql = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
 			$row = $form->addRow();
@@ -101,11 +101,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 
 			$row = $form->addRow();
 				$row->addLabel('name', __('Name'))->description(__('Must be unique for this school year.'));
-				$row->addTextField('name')->isRequired()->maxLength(60);
+				$row->addTextField('name')->required()->maxLength(60);
 
 			$row = $form->addRow();
 				$row->addLabel('nameShort', __('Short Name'));
-				$row->addTextField('nameShort')->isRequired()->maxLength(12);
+				$row->addTextField('nameShort')->required()->maxLength(12);
 
 			$row = $form->addRow();
 				$row->addLabel('orderBy', __('Order'))->description(__('May be used to adjust arrangement of courses in reports.'));
@@ -118,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 
 			$row = $form->addRow();
 				$row->addLabel('map', __('Include In Curriculum Map'));
-                $row->addYesNo('map')->isRequired();
+                $row->addYesNo('map')->required();
 
 			$row = $form->addRow();
 				$row->addLabel('gibbonYearGroupIDList', __('Year Groups'))->description(__('Enrolable year groups.'));

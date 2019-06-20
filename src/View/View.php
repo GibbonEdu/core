@@ -36,7 +36,7 @@ class View implements \ArrayAccess
      *
      * @param $templateEngine
      */
-    public function __construct($templateEngine = null)
+    public function __construct(\Twig_Environment $templateEngine = null)
     {
         // Do some duck typing, since Twig does not have a common Interface.
         if (!is_null($templateEngine) && !method_exists($templateEngine, 'render')) {

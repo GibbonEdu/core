@@ -71,27 +71,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
             }
 
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/staff_manage_edit_contract_editProcess.php?gibbonStaffContractID=$gibbonStaffContractID&gibbonStaffID=$gibbonStaffID&search=$search");
-
             $form->setFactory(DatabaseFormFactory::create($pdo));
-            $form->setClass('smallIntBorder fullWidth');
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
             $row = $form->addRow();
                 $row->addLabel('person', __('Person'));
-                $row->addTextField('person')->setValue(Format::name('', $values['preferredName'], $values['surname'], 'Student'))->readonly()->isRequired();
+                $row->addTextField('person')->setValue(Format::name('', $values['preferredName'], $values['surname'], 'Student'))->readonly()->required();
 
             $row = $form->addRow();
                 $row->addLabel('title', __('Title'))->description(__('A name to identify this contract.'));
-                $row->addTextField('title')->maxlength(100)->isRequired();
+                $row->addTextField('title')->maxlength(100)->required();
 
             $row = $form->addRow();
                 $row->addLabel('status', __('Status'));
-                $row->addSelect('status')->fromArray(array('Pending' => __('Pending'), 'Active' => __('Active'), 'Expired' => __('Expired')))->isRequired()->placeholder();
+                $row->addSelect('status')->fromArray(array('Pending' => __('Pending'), 'Active' => __('Active'), 'Expired' => __('Expired')))->required()->placeholder();
 
             $row = $form->addRow();
                 $row->addLabel('dateStart', __('Start Date'));
-                $row->addDate('dateStart')->isRequired();
+                $row->addDate('dateStart')->required();
 
             $row = $form->addRow();
                 $row->addLabel('dateEnd', __('End Date'));

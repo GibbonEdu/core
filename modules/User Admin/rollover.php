@@ -168,23 +168,23 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                     $row = $form->addRow();
                         $row->addLabel('nextname', __('School Year Name'))->description(__('Must be unique.'));
-                        $row->addTextField('nextname')->isRequired()->maxLength(9);
+                        $row->addTextField('nextname')->required()->maxLength(9);
 
                     $row = $form->addRow();
                         $row->addLabel('nextstatus', __('Status'));
-                        $row->addTextField('nextstatus')->setValue(__('Upcoming'))->isRequired()->readonly();
+                        $row->addTextField('nextstatus')->setValue(__('Upcoming'))->required()->readonly();
 
                     $row = $form->addRow();
                         $row->addLabel('nextsequenceNumber', __('Sequence Number'))->description(__('Must be unique. Controls chronological ordering.'));
-                        $row->addSequenceNumber('nextsequenceNumber', 'gibbonSchoolYear', '', 'sequenceNumber')->isRequired()->maxLength(3)->readonly();
+                        $row->addSequenceNumber('nextsequenceNumber', 'gibbonSchoolYear', '', 'sequenceNumber')->required()->maxLength(3)->readonly();
 
                     $row = $form->addRow();
                         $row->addLabel('nextfirstDay', __('First Day'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-                        $row->addDate('nextfirstDay')->isRequired();
+                        $row->addDate('nextfirstDay')->required();
 
                     $row = $form->addRow();
                         $row->addLabel('nextlastDay', __('Last Day'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-                        $row->addDate('nextlastDay')->isRequired();
+                        $row->addDate('nextlastDay')->required();
                 }
 
                 //SET EXPECTED USERS TO FULL
@@ -217,7 +217,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                             $row->addColumn()->addContent(__($rowExpect['name']));
                             $row->addColumn()->addContent(__('Expected'));
                             $column = $row->addColumn();
-                                $column->addSelect($count."-expect-status")->fromArray($statuses)->isRequired()->setClass('shortWidth floatNone');
+                                $column->addSelect($count."-expect-status")->fromArray($statuses)->required()->setClass('shortWidth floatNone');
                     }
                     $form->addHiddenValue("expect-count", $count);
                 }
@@ -258,9 +258,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                 $column = $row->addColumn();
                                     $column->addCheckbox($count."-enrol-enrol")->setValue('Y')->checked('Y');
                                 $column = $row->addColumn();
-                                    $column->addSelect($count."-enrol-gibbonYearGroupID")->fromArray($yearGroups)->isRequired()->setClass('shortWidth floatNone');
+                                    $column->addSelect($count."-enrol-gibbonYearGroupID")->fromArray($yearGroups)->required()->setClass('shortWidth floatNone');
                                 $column = $row->addColumn();
-                                    $column->addSelect($count."-enrol-gibbonRollGroupID")->fromArray($rollGroups)->isRequired()->setClass('shortWidth floatNone');
+                                    $column->addSelect($count."-enrol-gibbonRollGroupID")->fromArray($rollGroups)->required()->setClass('shortWidth floatNone');
                         }
                         $form->addHiddenValue("enrol-count", $count);
                     }
@@ -350,9 +350,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                     $column = $row->addColumn();
                                         $column->addCheckbox($count."-enrolFull-enrol")->setValue('Y')->checked('Y');
                                     $column = $row->addColumn();
-                                        $column->addSelect($count."-enrolFull-gibbonYearGroupID")->fromArray($yearGroups)->isRequired()->setClass('shortWidth floatNone')->selected($yearGroupSelect);
+                                        $column->addSelect($count."-enrolFull-gibbonYearGroupID")->fromArray($yearGroups)->required()->setClass('shortWidth floatNone')->selected($yearGroupSelect);
                                     $column = $row->addColumn();
-                                        $column->addSelect($count."-enrolFull-gibbonRollGroupID")->fromArray($rollGroups)->isRequired()->setClass('shortWidth floatNone')->selected($rollGroupSelect);
+                                        $column->addSelect($count."-enrolFull-gibbonRollGroupID")->fromArray($rollGroups)->required()->setClass('shortWidth floatNone')->selected($rollGroupSelect);
                             }
                             $form->addHiddenValue("enrolFull-count", $count);
                         }
@@ -424,9 +424,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                     $enrolmentCheckRollGroup=$rowReenrol['gibbonRollGroupIDNext'];
                                 }
                                 $column = $row->addColumn();
-                                    $column->addSelect($count."-reenrol-gibbonYearGroupID")->fromArray($yearGroups)->isRequired()->setClass('shortWidth floatNone')->selected($enrolmentCheckYearGroup);
+                                    $column->addSelect($count."-reenrol-gibbonYearGroupID")->fromArray($yearGroups)->required()->setClass('shortWidth floatNone')->selected($enrolmentCheckYearGroup);
                                 $column = $row->addColumn();
-                                        $column->addSelect($count."-reenrol-gibbonRollGroupID")->fromArray($rollGroups)->isRequired()->setClass('shortWidth floatNone')->selected($enrolmentCheckRollGroup);
+                                        $column->addSelect($count."-reenrol-gibbonRollGroupID")->fromArray($rollGroups)->required()->setClass('shortWidth floatNone')->selected($enrolmentCheckRollGroup);
                         }
                         $form->addHiddenValue("reenrol-count", $count);
                     }
@@ -462,7 +462,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                             $row->addColumn()->addContent(__($rowFinal['name']));
                             $row->addColumn()->addContent(__('Full'));
                             $column = $row->addColumn();
-                                $column->addSelect($count."-final-status")->fromArray($statuses)->isRequired()->setClass('shortWidth floatNone')->selected('Left');
+                                $column->addSelect($count."-final-status")->fromArray($statuses)->required()->setClass('shortWidth floatNone')->selected('Left');
                     }
                     $form->addHiddenValue("final-count", $count);
                 }
@@ -499,7 +499,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                             $column = $row->addColumn();
                                 $column->addCheckbox($count."-register-enrol")->setValue('Y')->checked('Y');
                             $column = $row->addColumn();
-                                $column->addSelect($count."-register-type")->fromArray(array('Teaching' => __('Teaching'), 'Support' => __('Support')))->isRequired()->setClass('shortWidth floatNone');
+                                $column->addSelect($count."-register-type")->fromArray(array('Teaching' => __('Teaching'), 'Support' => __('Support')))->required()->setClass('shortWidth floatNone');
                             $column = $row->addColumn();
                                 $column->addtextField($count."-register-jobTitle")->setClass('shortWidth floatNone')->maxLength(100);
                     }

@@ -21,7 +21,7 @@ include '../../gibbon.php';
 
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
 $gibbonCourseID = $_GET['gibbonCourseID'];
-$classCount = $_POST['classCount'];
+$classCount = $_POST['classCount'] ?? null;
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/units_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID";
 $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/units_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID";
 
@@ -34,8 +34,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
         $URL .= "&return=error0$params";
         header("Location: {$URL}");
     } else {
-        if (!(isset($_POST))) {
-            $URL .= '&return=warning1';
+        if (empty($_POST)) {
+            $URL .= '&return=error6';
             header("Location: {$URL}");
         } else {
             //Proceed!
@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
             $map = $_POST['map'];
             $ordering = $_POST['ordering'];
             $details = $_POST['details'];
-            $license = $_POST['license'];
+            $license = $_POST['license'] ?? null;
             $sharedPublic = null;
             if (isset($_POST['sharedPublic'])) {
                 $sharedPublic = $_POST['sharedPublic'];
@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                     $AI = str_pad($rowAI['Auto_increment'], 10, '0', STR_PAD_LEFT);
 
                     $partialFail = false;
-                    
+
                     //Move attached file, if there is one
                     if (!empty($_FILES['file']['tmp_name'])) {
                         $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);

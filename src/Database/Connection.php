@@ -21,6 +21,7 @@ namespace Gibbon\Database;
 
 use Gibbon\Contracts\Database\Connection as ConnectionInterface;
 use PDO;
+use Psr\Log\LoggerInterface;
 
 /**
  * Database Connection.
@@ -48,11 +49,16 @@ class Connection implements ConnectionInterface
     protected $result = null;
 
     /**
+     * @var LoggerInterface|null
+     */
+    private $logger;
+
+    /**
      * Create the connection wrapper around a \PDO instance.
      * @param \PDO $pdo
      * @param array $config
      */
-    public function __construct($pdo, array $config = [])
+    public function __construct(PDO $pdo, array $config = [])
     {
         $this->pdo = $pdo;
         $this->config = $config;
@@ -119,7 +125,7 @@ class Connection implements ConnectionInterface
      */
     public function update($query, $bindings = [])
     {
-        return $this->affectingStatement($query, $bindings);
+        return $this->statement($query, $bindings);
     }
 
     /**
@@ -231,5 +237,24 @@ class Connection implements ConnectionInterface
     public function getResult()
     {
         return $this->result;
+    }
+
+    /**
+     * @param LoggerInterface|null $logger
+     * @return Connection
+     */
+    public function setLogger(LoggerInterface $logger): Connection
+    {
+        $this->logger = $logger;
+        return $this;
+    }
+
+    /**
+     * hasLogger
+     * @return bool
+     */
+    private function hasLogger(): bool
+    {
+        return $this->logger instanceof LoggerInterface;
     }
 }

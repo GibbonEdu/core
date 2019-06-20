@@ -106,8 +106,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 
                     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/expenseRequest_manage_reimburseProcess.php');
 
-                    $form->setClass('smallIntBorder fullWidth');
-
                     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
                     $form->addHiddenValue('status2', $status2);
                     $form->addHiddenValue('gibbonFinanceBudgetID2', $gibbonFinanceBudgetID2);
@@ -121,16 +119,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                     $cycleName = getBudgetCycleName($gibbonFinanceBudgetCycleID, $connection2);
                     $row = $form->addRow();
                         $row->addLabel('nameBudget', __('Budget Cycle'));
-                        $row->addTextField('nameBudget')->setValue($cycleName)->maxLength(20)->isRequired()->readonly();
+                        $row->addTextField('nameBudget')->setValue($cycleName)->maxLength(20)->required()->readonly();
 
                     $form->addHiddenValue('gibbonFinanceBudgetID', $values['gibbonFinanceBudgetID']);
                     $row = $form->addRow();
                         $row->addLabel('budget', __('Budget'));
-                        $row->addTextField('budget')->setValue($values['budget'])->maxLength(20)->isRequired()->readonly();
+                        $row->addTextField('budget')->setValue($values['budget'])->maxLength(20)->required()->readonly();
 
                     $row = $form->addRow();
                         $row->addLabel('title', __('Title'));
-                        $row->addTextField('title')->maxLength(60)->isRequired()->readonly()->setValue($values['title']);
+                        $row->addTextField('title')->maxLength(60)->required()->readonly()->setValue($values['title']);
 
                     $row = $form->addRow();
                         $row->addLabel('status', __('Status'));
@@ -139,9 +137,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                             if ($values['status'] == 'Approved') {
                                 $statuses['Paid'] = __('Paid');
                             }
-                            $row->addSelect('status')->fromArray($statuses)->selected('Paid')->isRequired();
+                            $row->addSelect('status')->fromArray($statuses)->selected('Paid')->required();
                         } else {
-                            $row->addTextField('status')->maxLength(60)->isRequired()->readonly()->setValue($values['status']);
+                            $row->addTextField('status')->maxLength(60)->required()->readonly()->setValue($values['status']);
                         }
 
                     $row = $form->addRow();
@@ -151,15 +149,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 
                     $row = $form->addRow();
                         $row->addLabel('cost', __('Total Cost'));
-                        $row->addCurrency('cost')->isRequired()->maxLength(15)->readonly()->setValue($values['cost']);
+                        $row->addCurrency('cost')->required()->maxLength(15)->readonly()->setValue($values['cost']);
 
                     $row = $form->addRow();
                         $row->addLabel('countAgainstBudget', __('Count Against Budget'));
-                        $row->addTextField('countAgainstBudget')->maxLength(3)->isRequired()->readonly()->setValue(ynExpander($guid, $values['countAgainstBudget']));
+                        $row->addTextField('countAgainstBudget')->maxLength(3)->required()->readonly()->setValue(ynExpander($guid, $values['countAgainstBudget']));
 
                     $row = $form->addRow();
                         $row->addLabel('purchaseBy', __('Purchase By'));
-                        $row->addTextField('purchaseBy')->isRequired()->readonly()->setValue($values['purchaseBy']);
+                        $row->addTextField('purchaseBy')->required()->readonly()->setValue($values['purchaseBy']);
 
                     $row = $form->addRow();
                         $column = $row->addColumn();
@@ -183,16 +181,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 
                     $row = $form->addRow()->addClass('payment');
                         $row->addLabel('paymentDate', __('Date Paid'))->description(__('Date of payment, not entry to system.'));
-                        $row->addDate('paymentDate')->isRequired();
+                        $row->addDate('paymentDate')->required();
 
                     $row = $form->addRow()->addClass('payment');
                     	$row->addLabel('paymentAmount', __('Amount paid'))->description(__('Final amount paid.'));
-            			$row->addCurrency('paymentAmount')->isRequired()->maxLength(15);
+            			$row->addCurrency('paymentAmount')->required()->maxLength(15);
 
                     $form->addHiddenValue('gibbonPersonIDPayment', $_SESSION[$guid]['gibbonPersonID']);
                     $row = $form->addRow()->addClass('payment');
                         $row->addLabel('name', __('Payee'))->description(__('Staff who made, or arranged, the payment.'));
-                        $row->addTextField('name')->isRequired()->readonly()->setValue(formatName('', ($_SESSION[$guid]['preferredName']), htmlPrep($_SESSION[$guid]['surname']), 'Staff', true, true));
+                        $row->addTextField('name')->required()->readonly()->setValue(formatName('', ($_SESSION[$guid]['preferredName']), htmlPrep($_SESSION[$guid]['surname']), 'Staff', true, true));
 
                     $methods = array(
                         'Bank Transfer' => __('Bank Transfer'),
@@ -203,13 +201,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                     );
                     $row = $form->addRow()->addClass('payment');
                         $row->addLabel('paymentMethod', __('Payment Method'));
-                        $row->addSelect('paymentMethod')->fromArray($methods)->placeholder()->isRequired();
+                        $row->addSelect('paymentMethod')->fromArray($methods)->placeholder()->required();
 
                     $row = $form->addRow()->addClass('payment');;
                         $row->addLabel('file', __('Payment Receipt'))->description(__('Digital copy of the receipt for this payment.'));
                         $row->addFileUpload('file')
                             ->accepts('.jpg,.jpeg,.gif,.png,.pdf')
-                            ->isRequired();
+                            ->required();
 
                     $row = $form->addRow();
                         $row->addFooter();

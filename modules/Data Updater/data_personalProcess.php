@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Services\Format;
 
 include '../../gibbon.php';
 
@@ -117,168 +118,111 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     $row = $result->fetch();
 
                     //Get categories
-                    $staff = false;
-                    $student = false;
-                    $parent = false;
-                    $other = false;
+                    $staff = $student = $parent = $other = false;
                     $roles = explode(',', $row['gibbonRoleIDAll']);
                     foreach ($roles as $role) {
                         $roleCategory = getRoleCategory($role, $connection2);
-                        if ($roleCategory == 'Staff') {
-                            $staff = true;
-                        }
-                        if ($roleCategory == 'Student') {
-                            $student = true;
-                        }
-                        if ($roleCategory == 'Parent') {
-                            $parent = true;
-                        }
-                        if ($roleCategory == 'Other') {
-                            $other = true;
-                        }
+                        $staff = $staff || ($roleCategory == 'Staff');
+                        $student = $student || ($roleCategory == 'Student');
+                        $parent = $parent || ($roleCategory == 'Parent');
+                        $other = $other || ($roleCategory == 'Other');
                     }
 
                     //Proceed!
-                    $title = $_POST['title'];
-                    $surname = trim($_POST['surname']);
-                    $firstName = trim($_POST['firstName']);
-                    $preferredName = trim($_POST['preferredName']);
-                    $officialName = trim($_POST['officialName']);
-                    $nameInCharacters = $_POST['nameInCharacters'];
-                    $dob = $_POST['dob'];
-                    if ($dob == '') {
-                        $dob = null;
-                    } else {
-                        $dob = dateConvert($guid, $dob);
-                    }
-                    $email = trim($_POST['email']);
-                    $emailAlternate = trim($_POST['emailAlternate']);
-                    $address1 = isset($_POST['address1'])? $_POST['address1'] : '';
-                    $address1District = isset($_POST['address1District'])? $_POST['address1District'] : '';
-                    $address1Country = isset($_POST['address1Country'])? $_POST['address1Country'] : '';
-                    $address2 = isset($_POST['address2'])? $_POST['address2'] : '';
-                    $address2District = isset($_POST['address2District'])? $_POST['address2District'] : '';
-                    $address2Country = isset($_POST['address2Country'])? $_POST['address2Country'] : '';
-                    $phone1Type = $_POST['phone1Type'];
-                    if ($_POST['phone1'] != '' and $phone1Type == '') {
-                        $phone1Type = 'Other';
-                    }
-                    $phone1CountryCode = $_POST['phone1CountryCode'];
-                    $phone1 = preg_replace('/[^0-9+]/', '', $_POST['phone1']);
-                    $phone2Type = $_POST['phone2Type'];
-                    if ($_POST['phone2'] != '' and $phone2Type == '') {
-                        $phone2Type = 'Other';
-                    }
-                    $phone2CountryCode = $_POST['phone2CountryCode'];
-                    $phone2 = preg_replace('/[^0-9+]/', '', $_POST['phone2']);
-                    $phone3Type = $_POST['phone3Type'];
-                    if ($_POST['phone3'] != '' and $phone3Type == '') {
-                        $phone3Type = 'Other';
-                    }
-                    $phone3CountryCode = $_POST['phone3CountryCode'];
-                    $phone3 = preg_replace('/[^0-9+]/', '', $_POST['phone3']);
-                    $phone4Type = $_POST['phone4Type'];
-                    if ($_POST['phone4'] != '' and $phone4Type == '') {
-                        $phone4Type = 'Other';
-                    }
-                    $phone4CountryCode = $_POST['phone4CountryCode'];
-                    $phone4 = preg_replace('/[^0-9+]/', '', $_POST['phone4']);
-                    $languageFirst = $_POST['languageFirst'];
-                    $languageSecond = $_POST['languageSecond'];
-                    $languageThird = $_POST['languageThird'];
-                    $countryOfBirth = $_POST['countryOfBirth'];
-                    $ethnicity = $_POST['ethnicity'];
-                    $citizenship1 = $_POST['citizenship1'];
-                    $citizenship1Passport = $_POST['citizenship1Passport'];
-                    $citizenship2 = $_POST['citizenship2'];
-                    $citizenship2Passport = $_POST['citizenship2Passport'];
-                    $religion = $_POST['religion'];
-                    $nationalIDCardNumber = $_POST['nationalIDCardNumber'];
-                    $residencyStatus = $_POST['residencyStatus'];
-                    $visaExpiryDate = $_POST['visaExpiryDate'];
-                    if ($visaExpiryDate == '') {
-                        $visaExpiryDate = null;
-                    } else {
-                        $visaExpiryDate = dateConvert($guid, $visaExpiryDate);
-                    }
-                    $profession = null;
-                    if (isset($_POST['profession'])) {
-                        $profession = $_POST['profession'];
-                    }
-                    $employer = null;
-                    if (isset($_POST['employer'])) {
-                        $employer = $_POST['employer'];
-                    }
-                    $jobTitle = null;
-                    if (isset($_POST['jobTitle'])) {
-                        $jobTitle = $_POST['jobTitle'];
-                    }
-                    $emergency1Name = null;
-                    if (isset($_POST['emergency1Name'])) {
-                        $emergency1Name = $_POST['emergency1Name'];
-                    }
-                    $emergency1Number1 = null;
-                    if (isset($_POST['emergency1Number1'])) {
-                        $emergency1Number1 = $_POST['emergency1Number1'];
-                    }
-                    $emergency1Number2 = null;
-                    if (isset($_POST['emergency1Number2'])) {
-                        $emergency1Number2 = $_POST['emergency1Number2'];
-                    }
-                    $emergency1Relationship = null;
-                    if (isset($_POST['emergency1Relationship'])) {
-                        $emergency1Relationship = $_POST['emergency1Relationship'];
-                    }
-                    $emergency2Name = null;
-                    if (isset($_POST['emergency2Name'])) {
-                        $emergency2Name = $_POST['emergency2Name'];
-                    }
-                    $emergency2Number1 = null;
-                    if (isset($_POST['emergency2Number1'])) {
-                        $emergency2Number1 = $_POST['emergency2Number1'];
-                    }
-                    $emergency2Number2 = null;
-                    if (isset($_POST['emergency2Number2'])) {
-                        $emergency2Number2 = $_POST['emergency2Number2'];
-                    }
-                    $emergency2Relationship = null;
-                    if (isset($_POST['emergency2Relationship'])) {
-                        $emergency2Relationship = $_POST['emergency2Relationship'];
-                    }
-                    $vehicleRegistration = $_POST['vehicleRegistration'];
-                    $privacy = null;
-                    if (isset($_POST['privacyOptions'])) {
-                        $privacyOptions = $_POST['privacyOptions'];
-                        foreach ($privacyOptions as $privacyOption) {
-                            if ($privacyOption != '') {
-                                $privacy .= $privacyOption.', ';
-                            }
-                        }
-                        if ($privacy != '') {
-                            $privacy = substr($privacy, 0, -2);
-                        } else {
-                            $privacy = null;
+                    $data = [
+                        'gibbonSchoolYearID'     => $_SESSION[$guid]['gibbonSchoolYearID'],
+                        'gibbonPersonID'         => $_POST['gibbonPersonID'] ?? $row['gibbonPersonID'],
+                        'title'                  => $_POST['title'] ?? $row['title'],
+                        'surname'                => $_POST['surname'] ?? $row['surname'],
+                        'firstName'              => $_POST['firstName'] ?? $row['firstName'],
+                        'preferredName'          => $_POST['preferredName'] ?? $row['preferredName'],
+                        'officialName'           => $_POST['officialName'] ?? $row['officialName'],
+                        'nameInCharacters'       => $_POST['nameInCharacters'] ?? $row['nameInCharacters'],
+                        'dob'                    => isset($_POST['dob']) ? Format::dateConvert($_POST['dob']) : $row['dob'],
+                        'email'                  => $_POST['email'] ?? $row['email'],
+                        'emailAlternate'         => $_POST['emailAlternate'] ?? $row['emailAlternate'],
+                        'address1'               => $_POST['address1'] ?? $row['address1'],
+                        'address1District'       => $_POST['address1District'] ?? $row['address1District'],
+                        'address1Country'        => $_POST['address1Country'] ?? $row['address1Country'],
+                        'address2'               => $_POST['address2'] ?? $row['address2'],
+                        'address2District'       => $_POST['address2District'] ?? $row['address2District'],
+                        'address2Country'        => $_POST['address2Country'] ?? $row['address2Country'],
+                        'phone1Type'             => $_POST['phone1Type'] ?? $row['phone1Type'],
+                        'phone1CountryCode'      => $_POST['phone1CountryCode'] ?? $row['phone1CountryCode'],
+                        'phone1'                 => $_POST['phone1'] ?? $row['phone1'],
+                        'phone2Type'             => $_POST['phone2Type'] ?? $row['phone2Type'],
+                        'phone2CountryCode'      => $_POST['phone2CountryCode'] ?? $row['phone2CountryCode'],
+                        'phone2'                 => $_POST['phone2'] ?? $row['phone2'],
+                        'phone3Type'             => $_POST['phone3Type'] ?? $row['phone3Type'],
+                        'phone3CountryCode'      => $_POST['phone3CountryCode'] ?? $row['phone3CountryCode'],
+                        'phone3'                 => $_POST['phone3'] ?? $row['phone3'],
+                        'phone4Type'             => $_POST['phone4Type'] ?? $row['phone4Type'],
+                        'phone4CountryCode'      => $_POST['phone4CountryCode'] ?? $row['phone4CountryCode'],
+                        'phone4'                 => $_POST['phone4'] ?? $row['phone4'],
+                        'languageFirst'          => $_POST['languageFirst'] ?? $row['languageFirst'],
+                        'languageSecond'         => $_POST['languageSecond'] ?? $row['languageSecond'],
+                        'languageThird'          => $_POST['languageThird'] ?? $row['languageThird'],
+                        'countryOfBirth'         => $_POST['countryOfBirth'] ?? $row['countryOfBirth'],
+                        'ethnicity'              => $_POST['ethnicity'] ?? $row['ethnicity'],
+                        'citizenship1'           => $_POST['citizenship1'] ?? $row['citizenship1'],
+                        'citizenship1Passport'   => $_POST['citizenship1Passport'] ?? $row['citizenship1Passport'],
+                        'citizenship2'           => $_POST['citizenship2'] ?? $row['citizenship2'],
+                        'citizenship2Passport'   => $_POST['citizenship2Passport'] ?? $row['citizenship2Passport'],
+                        'religion'               => $_POST['religion'] ?? $row['religion'],
+                        'nationalIDCardNumber'   => $_POST['nationalIDCardNumber'] ?? $row['nationalIDCardNumber'],
+                        'residencyStatus'        => $_POST['residencyStatus'] ?? $row['residencyStatus'],
+                        'visaExpiryDate'         => isset($_POST['visaExpiryDate']) ? Format::dateConvert($_POST['visaExpiryDate']) : $row['visaExpiryDate'],
+                        'emergency1Name'         => $_POST['emergency1Name'] ?? $row['emergency1Name'],
+                        'emergency1Number1'      => $_POST['emergency1Number1'] ?? $row['emergency1Number1'],
+                        'emergency1Number2'      => $_POST['emergency1Number2'] ?? $row['emergency1Number2'],
+                        'emergency1Relationship' => $_POST['emergency1Relationship'] ?? $row['emergency1Relationship'],
+                        'emergency2Name'         => $_POST['emergency2Name'] ?? $row['emergency2Name'],
+                        'emergency2Number1'      => $_POST['emergency2Number1'] ?? $row['emergency2Number1'],
+                        'emergency2Number2'      => $_POST['emergency2Number2'] ?? $row['emergency2Number2'],
+                        'emergency2Relationship' => $_POST['emergency2Relationship'] ?? $row['emergency2Relationship'],
+                        'profession'             => $_POST['profession'] ?? $row['profession'],
+                        'employer'               => $_POST['employer'] ?? $row['employer'],
+                        'jobTitle'               => $_POST['jobTitle'] ?? $row['jobTitle'],
+                        'vehicleRegistration'    => $_POST['vehicleRegistration'] ?? $row['vehicleRegistration'],
+                    ];
+ 
+                    $data = array_map('trim', $data);
+
+                    // Date handling - ensure NULL value
+                    if (empty($data['dob'])) $data['dob'] = null;
+                    if (empty($data['visaExpiryDate'])) $data['visaExpiryDate'] = null;
+
+                    // Phone number filtering
+                    for ($i = 1; $i <= 4; $i++) {
+                        $data["phone{$i}"] = preg_replace('/[^0-9+]/', '', $data["phone{$i}"]);
+                        if (!empty($data["phone{$i}"]) && empty($data["phone{$i}Type"])) {
+                            $data["phone{$i}Type"] = 'Other';
                         }
                     }
+                    
+                    // Student privacy settings
+                    $data['privacy'] = isset($_POST['privacyOptions']) && is_array($_POST['privacyOptions'])
+                        ? implode(', ', $_POST['privacyOptions'])
+                        : null;
+                        
 
                     //DEAL WITH CUSTOM FIELDS
                     //Prepare field values
                     $customRequireFail = false;
                     $resultFields = getCustomFields($connection2, $guid, $student, $staff, $parent, $other, null, true);
-                    $fields = array();
+                    $fields = [];
                     if ($resultFields->rowCount() > 0) {
                         while ($rowFields = $resultFields->fetch()) {
-                            if (isset($_POST['custom'.$rowFields['gibbonPersonFieldID']])) {
-                                if ($rowFields['type'] == 'date') {
-                                    $fields[$rowFields['gibbonPersonFieldID']] = dateConvert($guid, $_POST['custom'.$rowFields['gibbonPersonFieldID']]);
-                                } else {
-                                    $fields[$rowFields['gibbonPersonFieldID']] = $_POST['custom'.$rowFields['gibbonPersonFieldID']];
-                                }
+                            $fieldID = $rowFields['gibbonPersonFieldID'];
+                            $fieldValue = $_POST['custom'.$fieldID] ?? null;
+
+                            if (!is_null($fieldValue)) {
+                                $fields[$fieldID] = ($rowFields['type'] == 'date')
+                                    ? Format::dateConvert($fieldValue)
+                                    : $fieldValue;
                             }
-                            if ($highestAction != 'Update Personal Data_any' && $rowFields['required'] == 'Y') {
-                                if (isset($_POST['custom'.$rowFields['gibbonPersonFieldID']]) == false) {
-                                    $customRequireFail = true;
-                                } elseif ($_POST['custom'.$rowFields['gibbonPersonFieldID']] == '') {
+                            if ($highestAction != 'Update Personal Data_any') {
+                                if ($rowFields['required'] == 'Y' && empty($fieldValue)) {
                                     $customRequireFail = true;
                                 }
                             }
@@ -288,17 +232,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         $URL .= '&return=error1';
                         header("Location: {$URL}");
                     } else {
-                        $fields = serialize($fields);
+                        $data['fields'] = serialize($fields);
 
                         //Write to database
-                        $existing = $_POST['existing'];
+                        $existing = $_POST['existing'] ?? 'N';
 
                         try {
+                            $data['gibbonPersonIDUpdater'] = $_SESSION[$guid]['gibbonPersonID'];
                             if ($existing != 'N') {
-                                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'],  'gibbonPersonID' => $gibbonPersonID, 'title' => $title, 'surname' => $surname, 'firstName' => $firstName, 'preferredName' => $preferredName, 'officialName' => $officialName, 'nameInCharacters' => $nameInCharacters, 'dob' => $dob, 'email' => $email, 'emailAlternate' => $emailAlternate, 'address1' => $address1, 'address1District' => $address1District, 'address1Country' => $address1Country, 'address2' => $address2, 'address2District' => $address2District, 'address2Country' => $address2Country, 'phone1Type' => $phone1Type, 'phone1CountryCode' => $phone1CountryCode, 'phone1' => $phone1, 'phone2Type' => $phone2Type, 'phone2CountryCode' => $phone2CountryCode, 'phone2' => $phone2, 'phone3Type' => $phone3Type, 'phone3CountryCode' => $phone3CountryCode, 'phone3' => $phone3, 'phone4Type' => $phone4Type, 'phone4CountryCode' => $phone4CountryCode, 'phone4' => $phone4, 'languageFirst' => $languageFirst, 'languageSecond' => $languageSecond, 'languageThird' => $languageThird, 'countryOfBirth' => $countryOfBirth, 'ethnicity' => $ethnicity, 'citizenship1' => $citizenship1, 'citizenship1Passport' => $citizenship1Passport, 'citizenship2' => $citizenship2, 'citizenship2Passport' => $citizenship2Passport, 'religion' => $religion, 'nationalIDCardNumber' => $nationalIDCardNumber, 'residencyStatus' => $residencyStatus, 'visaExpiryDate' => $visaExpiryDate, 'emergency1Name' => $emergency1Name, 'emergency1Number1' => $emergency1Number1, 'emergency1Number2' => $emergency1Number2, 'emergency1Relationship' => $emergency1Relationship, 'emergency2Name' => $emergency2Name, 'emergency2Number1' => $emergency2Number1, 'emergency2Number2' => $emergency2Number2, 'emergency2Relationship' => $emergency2Relationship, 'profession' => $profession, 'employer' => $employer, 'jobTitle' => $jobTitle, 'vehicleRegistration' => $vehicleRegistration, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID'], 'privacy' => $privacy, 'fields' => $fields, 'gibbonPersonUpdateID' => $existing);
+                                $data['gibbonPersonUpdateID'] = $existing;
                                 $sql = 'UPDATE gibbonPersonUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonID=:gibbonPersonID, title=:title, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, dob=:dob, email=:email, emailAlternate=:emailAlternate, address1=:address1, address1District=:address1District, address1Country=:address1Country, address2=:address2, address2District=:address2District, address2Country=:address2Country, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, phone3Type=:phone3Type, phone3CountryCode=:phone3CountryCode, phone3=:phone3, phone4Type=:phone4Type, phone4CountryCode=:phone4CountryCode, phone4=:phone4, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, ethnicity=:ethnicity, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, citizenship2=:citizenship2, citizenship2Passport=:citizenship2Passport, religion=:religion, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, emergency1Name=:emergency1Name, emergency1Number1=:emergency1Number1, emergency1Number2=:emergency1Number2, emergency1Relationship=:emergency1Relationship, emergency2Name=:emergency2Name, emergency2Number1=:emergency2Number1, emergency2Number2=:emergency2Number2, emergency2Relationship=:emergency2Relationship, profession=:profession, employer=:employer, jobTitle=:jobTitle, vehicleRegistration=:vehicleRegistration, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, privacy=:privacy, fields=:fields, timestamp=NOW() WHERE gibbonPersonUpdateID=:gibbonPersonUpdateID';
                             } else {
-                                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'],  'gibbonPersonID' => $gibbonPersonID, 'title' => $title, 'surname' => $surname, 'firstName' => $firstName, 'preferredName' => $preferredName, 'officialName' => $officialName, 'nameInCharacters' => $nameInCharacters, 'dob' => $dob, 'email' => $email, 'emailAlternate' => $emailAlternate, 'address1' => $address1, 'address1District' => $address1District, 'address1Country' => $address1Country, 'address2' => $address2, 'address2District' => $address2District, 'address2Country' => $address2Country, 'phone1Type' => $phone1Type, 'phone1CountryCode' => $phone1CountryCode, 'phone1' => $phone1, 'phone2Type' => $phone2Type, 'phone2CountryCode' => $phone2CountryCode, 'phone2' => $phone2, 'phone3Type' => $phone3Type, 'phone3CountryCode' => $phone3CountryCode, 'phone3' => $phone3, 'phone4Type' => $phone4Type, 'phone4CountryCode' => $phone4CountryCode, 'phone4' => $phone4, 'languageFirst' => $languageFirst, 'languageSecond' => $languageSecond, 'languageThird' => $languageThird, 'countryOfBirth' => $countryOfBirth, 'ethnicity' => $ethnicity, 'citizenship1' => $citizenship1, 'citizenship1Passport' => $citizenship1Passport, 'citizenship2' => $citizenship2, 'citizenship2Passport' => $citizenship2Passport, 'religion' => $religion, 'nationalIDCardNumber' => $nationalIDCardNumber, 'residencyStatus' => $residencyStatus, 'visaExpiryDate' => $visaExpiryDate, 'emergency1Name' => $emergency1Name, 'emergency1Number1' => $emergency1Number1, 'emergency1Number2' => $emergency1Number2, 'emergency1Relationship' => $emergency1Relationship, 'emergency2Name' => $emergency2Name, 'emergency2Number1' => $emergency2Number1, 'emergency2Number2' => $emergency2Number2, 'emergency2Relationship' => $emergency2Relationship, 'profession' => $profession, 'employer' => $employer, 'jobTitle' => $jobTitle, 'vehicleRegistration' => $vehicleRegistration, 'privacy' => $privacy, 'fields' => $fields, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID']);
                                 $sql = 'INSERT INTO gibbonPersonUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonID=:gibbonPersonID, title=:title, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, dob=:dob, email=:email, emailAlternate=:emailAlternate, address1=:address1, address1District=:address1District, address1Country=:address1Country, address2=:address2, address2District=:address2District, address2Country=:address2Country, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, phone3Type=:phone3Type, phone3CountryCode=:phone3CountryCode, phone3=:phone3, phone4Type=:phone4Type, phone4CountryCode=:phone4CountryCode, phone4=:phone4, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, ethnicity=:ethnicity, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, citizenship2=:citizenship2, citizenship2Passport=:citizenship2Passport, religion=:religion, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, emergency1Name=:emergency1Name, emergency1Number1=:emergency1Number1, emergency1Number2=:emergency1Number2, emergency1Relationship=:emergency1Relationship, emergency2Name=:emergency2Name, emergency2Number1=:emergency2Number1, emergency2Number2=:emergency2Number2, emergency2Relationship=:emergency2Relationship, profession=:profession, employer=:employer, jobTitle=:jobTitle, vehicleRegistration=:vehicleRegistration, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, privacy=:privacy, fields=:fields';
                             }
                             $result = $connection2->prepare($sql);

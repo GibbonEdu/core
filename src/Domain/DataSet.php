@@ -54,8 +54,9 @@ class DataSet implements \Countable, \IteratorAggregate
      */
     public function setResultCount($resultCount = null, $totalCount = null)
     {
-        $this->resultCount = isset($resultCount) ? $resultCount : $this->count();
-        $this->totalCount = isset($totalCount) ? $totalCount : $this->resultCount;
+        $this->resultCount = !is_null($resultCount) ? $resultCount : $this->count();
+        $this->totalCount = !is_null($totalCount) ? $totalCount : $this->resultCount;
+        $this->totalCount = max($this->totalCount, $this->resultCount);
 
         return $this;
     }
@@ -206,9 +207,9 @@ class DataSet implements \Countable, \IteratorAggregate
      * @param int $endSize
      * @return array
      */
-    public function getPaginatedRange($placeholder = '...', $midSize = 2, $endSize = 2)
+    public function getPaginatedRange($placeholder = '...', $midSize = 1, $endSize = 2)
     {
-        $range = range(1, $this->getPageCount());
+        $range = $this->getPageCount() > 1 ? range(1, $this->getPageCount()) : [1];
         $countFromEnd = count($range) - $this->page;
 
         // Collapse the leading page numbers

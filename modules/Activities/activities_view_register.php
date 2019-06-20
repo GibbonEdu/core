@@ -187,7 +187,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                     echo '</div>';
                                 } else {
                                     if (isset($_GET['return'])) {
-                                        returnProcess($guid, $_GET['return'], null, array('error3' => 'Registration failed because you are already registered in this activity.'));
+                                        returnProcess($guid, $_GET['return'], null, array('error3' => __('Registration failed because you are already registered in this activity.')));
                                     }
 
                                     //Check registration limit...
@@ -273,10 +273,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                                             $row = $form->addRow();
                                                 $row->addLabel('gibbonActivityIDBackup', __('Backup Choice'))
-                                                    ->description(sprintf(__('Incase %1$s is full.'), $values['name']));
+                                                    ->description(sprintf(__('In case %1$s is full.'), $values['name']));
                                                 $row->addSelect('gibbonActivityIDBackup')
                                                     ->fromResults($result)
-                                                    ->isRequired($result->rowCount() > 0)
+                                                    ->required($result->rowCount() > 0)
                                                     ->placeholder();
                                         }
 

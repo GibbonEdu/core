@@ -48,6 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     $enableMailerSMTP = (isset($_POST['enableMailerSMTP']))? $_POST['enableMailerSMTP'] : '';
     $mailerSMTPHost = (isset($_POST['mailerSMTPHost']))? $_POST['mailerSMTPHost'] : '';
     $mailerSMTPPort = (isset($_POST['mailerSMTPPort']))? $_POST['mailerSMTPPort'] : '';
+    $mailerSMTPSecure = (isset($_POST['mailerSMTPSecure']))? $_POST['mailerSMTPSecure'] : '';
     $mailerSMTPUsername = (isset($_POST['mailerSMTPUsername']))? $_POST['mailerSMTPUsername'] : '';
     $mailerSMTPPassword = (isset($_POST['mailerSMTPPassword']))? $_POST['mailerSMTPPassword'] : '';
 
@@ -241,6 +242,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
             try {
                 $data = array('value' => $mailerSMTPPort);
                 $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='mailerSMTPPort'";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $fail = true;
+            }
+
+            try {
+                $data = array('value' => $mailerSMTPSecure);
+                $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='mailerSMTPSecure'";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {

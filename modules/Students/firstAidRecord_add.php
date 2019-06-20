@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
             $editID = $_GET['editID'];
         }
         if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], $editLink, array('warning1' => 'Your request was successful, but some data was not properly saved.', 'success1' => 'Your request was completed successfully. You can now add extra information below if you wish.'));
+            returnProcess($guid, $_GET['return'], $editLink, array('warning1' => __('Your request was successful, but some data was not properly saved.'), 'success1' => __('Your request was completed successfully. You can now add extra information below if you wish.')));
         }
 
         $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/firstAidRecord_addProcess.php?gibbonRollGroupID='.$gibbonRollGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID);
@@ -62,19 +62,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
 
         $row = $form->addRow();
             $row->addLabel('gibbonPersonID', __('Patient'));
-            $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->placeholder()->isRequired();
+            $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->placeholder()->required();
 
         $row = $form->addRow();
             $row->addLabel('name', __('First Aider'));
-            $row->addTextField('name')->setValue(Format::name('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Student'))->isRequired()->readonly();
+            $row->addTextField('name')->setValue(Format::name('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Student'))->required()->readonly();
 
         $row = $form->addRow();
             $row->addLabel('date', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-            $row->addDate('date')->setValue(date($_SESSION[$guid]['i18n']['dateFormatPHP']))->isRequired();
+            $row->addDate('date')->setValue(date($_SESSION[$guid]['i18n']['dateFormatPHP']))->required();
 
         $row = $form->addRow();
             $row->addLabel('timeIn', __('Time In'))->description("Format: hh:mm (24hr)");
-            $row->addTime('timeIn')->setValue(date("H:i"))->isRequired();
+            $row->addTime('timeIn')->setValue(date("H:i"))->required();
 
         $row = $form->addRow();
             $column = $row->addColumn();

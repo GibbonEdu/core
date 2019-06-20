@@ -31,7 +31,7 @@ class DeleteForm extends Form
 {
     public static function createForm($action, $confirmation = false, $submit = true)
     {
-        $form = parent::create('deleteRecord', $action);
+        $form = parent::create('deleteRecord'.substr(md5(random_bytes(10)), 0, 20), $action);
         $form->addHiddenValue('address', $_GET['q']);
 
         foreach ($_GET as $key => $value) {
@@ -48,7 +48,7 @@ class DeleteForm extends Form
             $row = $form->addRow();
             $row->addLabel('confirm', sprintf(__('Type %1$s to confirm'), __('DELETE')));
             $row->addTextField('confirm')
-                ->isRequired()
+                ->required()
                 ->addValidation(
                     'Validate.Inclusion',
                     'within: [\''.__('DELETE').'\'], failureMessage: "'.__('Please enter the text exactly as it is displayed to confirm this action.').'", caseSensitive: false')

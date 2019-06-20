@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 
     $row = $form->addRow();
         $row->addLabel('gibbonRollGroupID', __('Roll Group'));
-        $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->isRequired();
+        $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->required();
 
     $row = $form->addRow();
         $row->addFooter();

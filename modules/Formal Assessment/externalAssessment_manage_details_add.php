@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                 $sql = "SELECT gibbonExternalAssessmentID as value, name FROM gibbonExternalAssessment WHERE active='Y' ORDER BY name";
                 $row = $form->addRow();
                     $row->addLabel('gibbonExternalAssessmentID', __('Choose Assessment'));
-                    $row->addSelect('gibbonExternalAssessmentID')->fromQuery($pdo, $sql)->isRequired()->placeholder();
+                    $row->addSelect('gibbonExternalAssessmentID')->fromQuery($pdo, $sql)->required()->placeholder();
 
                 $form->toggleVisibilityByClass('copyToGCSE')->onSelect('gibbonExternalAssessmentID')->when('0002');
                 $row = $form->addRow()->addClass('copyToGCSE');
@@ -350,7 +350,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                     }
 
                     $form = Form::create('addAssessment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/externalAssessment_manage_details_addProcess.php?search='.$search.'&allStudents='.$allStudents);
-                    $form->removeClass('standardForm');
 
                     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
                     $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
@@ -358,11 +357,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 
                     $row = $form->addRow();
                     $row->addLabel('name', __('Assessment Type'));
-                    $row->addTextField('name')->isRequired()->readOnly()->setValue(__($rowSelect['name']));
+                    $row->addTextField('name')->required()->readOnly()->setValue(__($rowSelect['name']));
 
                     $row = $form->addRow();
                     $row->addLabel('date', __('Date'));
-                    $row->addDate('date')->isRequired();
+                    $row->addDate('date')->required();
 
                     if ($rowSelect['allowFileUpload'] == 'Y') {
                         $row = $form->addRow();

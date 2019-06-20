@@ -130,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
         $slots = array();
         if ($resultSlots->rowCount() > 0) {
             while ($rowSlots = $resultSlots->fetch()) {
-                $slots[] = $rowSlots['nameShort'].': '.substr($rowSlots['timeStart'], 0, 5).' - '.substr($rowSlots['timeEnd'], 0, 5);
+                $slots[] = __($rowSlots['nameShort']).': '.substr($rowSlots['timeStart'], 0, 5).' - '.substr($rowSlots['timeEnd'], 0, 5);
             }
         }
         $infoRowLines = max($infoRowLines, count($slots));

@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Module\Attendance\StudentHistoryData;
+use Gibbon\Module\Attendance\StudentHistoryView;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -29,6 +32,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
+    $page->scripts->add('chart');
+
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
@@ -1715,7 +1720,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $highestColour = $alert[3];
                                 $highestColourBG = $alert[4];
                                 echo "<div class='error' style='background-color: #".$highestColourBG.'; border: 1px solid #'.$highestColour.'; color: #'.$highestColour."'>";
-                                echo '<b>'.sprintf(__('This student has one or more %1$s risk medical conditions'), strToLower($highestLevel)).'</b>.';
+                                echo '<b>'.sprintf(__('This student has one or more %1$s risk medical conditions.'), strToLower($highestLevel)).'</b>.';
                                 echo '</div>';
                             }
 
@@ -1992,7 +1997,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo '</div>';
                         } else {
                             include './modules/Attendance/moduleFunctions.php';
-                            report_studentHistory($guid, $gibbonPersonID, true, $_SESSION[$guid]['absoluteURL']."/report.php?q=/modules/Attendance/report_studentHistory_print.php&gibbonPersonID=$gibbonPersonID", $connection2, $row['dateStart'], $row['dateEnd']);
+                            include './modules/Attendance/src/StudentHistoryData.php';
+                            include './modules/Attendance/src/StudentHistoryView.php';
+
+                            // ATTENDANCE DATA
+                            $attendanceData = $container->get(StudentHistoryData::class)
+                                ->getAttendanceData($_SESSION[$guid]['gibbonSchoolYearID'], $gibbonPersonID, $row['dateStart'], $row['dateEnd']);
+
+                            // DATA TABLE
+                            $renderer = $container->get(StudentHistoryView::class);
+                            $renderer->addData('canTakeAttendanceByPerson', isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson.php'));
+
+                            $table = DataTable::create('studentHistory', $renderer);
+                            echo $table->render($attendanceData);
                         }
                     } elseif ($subpage == 'Markbook') {
                         if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') == false) {
@@ -2000,6 +2017,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo __('Your request failed because you do not have access to this action.');
                             echo '</div>';
                         } else {
+                            // Register scripts available to the core, but not included by default
+                            $page->scripts->add('chart');
+
                             $highestAction = getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $connection2);
                             if ($highestAction == false) {
                                 echo "<div class='error'>";
@@ -2256,7 +2276,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                 echo '<td>';
                                                 echo "<span title='".htmlPrep($rowEntry['description'])."'><b><u>".$rowEntry['name'].'</u></b></span><br/>';
                                                 echo "<span style='font-size: 90%; font-style: italic; font-weight: normal'>";
-                                                $unit = getUnit($connection2, $rowEntry['gibbonUnitID'], $rowEntry['gibbonHookID'], $rowEntry['gibbonCourseClassID']);
+                                                $unit = getUnit($connection2, $rowEntry['gibbonUnitID'], $rowEntry['gibbonCourseClassID']);
                                                 if (isset($unit[0])) {
                                                     echo $unit[0].'<br/>';
                                                 }
@@ -2535,6 +2555,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo __('Your request failed because you do not have access to this action.');
                             echo '</div>';
                         } else {
+                            //Edit link
+                            if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.php') == true) {
+                                echo "<div class='linkTop'>";
+                                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Individual Needs/in_edit.php&gibbonPersonID=$gibbonPersonID'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                                echo '</div>';
+                            }
+
                             //Module includes
                             include './modules/Individual Needs/moduleFunctions.php';
 
@@ -2871,9 +2898,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $dataHistory['gibbonPersonID'] = $gibbonPersonID;
                                 $dataHistory['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
                                 $sqlHistory = "
-                                (SELECT 'teacherRecorded' AS type, gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, role, homeworkDueDateTime, homeworkDetails, homeworkSubmission, homeworkSubmissionRequired FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND homework='Y' AND gibbonSchoolYearID=:gibbonSchoolYearID AND (date<'".date('Y-m-d')."' OR (date='".date('Y-m-d')."' AND timeEnd<='".date('H:i:s')."')) $filter)
+                                (SELECT 'teacherRecorded' AS type, gibbonPlannerEntryID, gibbonUnitID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, role, homeworkDueDateTime, homeworkDetails, homeworkSubmission, homeworkSubmissionRequired FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND homework='Y' AND gibbonSchoolYearID=:gibbonSchoolYearID AND (date<'".date('Y-m-d')."' OR (date='".date('Y-m-d')."' AND timeEnd<='".date('H:i:s')."')) $filter)
                                 UNION
-                                (SELECT 'studentRecorded' AS type, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, 'Y' AS viewableStudents, 'Y' AS viewableParents, 'Y' AS homework, role, gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS homeworkDueDateTime, gibbonPlannerEntryStudentHomework.homeworkDetails AS homeworkDetails, 'N' AS homeworkSubmission, '' AS homeworkSubmissionRequired FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND gibbonSchoolYearID=:gibbonSchoolYearID AND (date<'".date('Y-m-d')."' OR (date='".date('Y-m-d')."' AND timeEnd<='".date('H:i:s')."')) $filter)
+                                (SELECT 'studentRecorded' AS type, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, 'Y' AS viewableStudents, 'Y' AS viewableParents, 'Y' AS homework, role, gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS homeworkDueDateTime, gibbonPlannerEntryStudentHomework.homeworkDetails AS homeworkDetails, 'N' AS homeworkSubmission, '' AS homeworkSubmissionRequired FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND gibbonSchoolYearID=:gibbonSchoolYearID AND (date<'".date('Y-m-d')."' OR (date='".date('Y-m-d')."' AND timeEnd<='".date('H:i:s')."')) $filter)
                                 ORDER BY date DESC, timeStart DESC";
                                 $resultHistory = $connection2->prepare($sqlHistory);
                                 $resultHistory->execute($dataHistory);
@@ -3114,9 +3141,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                     //Show alerts
                     $alert = getAlertBar($guid, $connection2, $gibbonPersonID, $row['privacy'], '', false, true);
-                    $_SESSION[$guid]['sidebarExtra'] .= "<div style='background-color: none; font-size: 12px; margin: 3px 0 0px 0; width: 240px; text-align: left; height: 40px; padding: 2px 0px;'>";
+                    $_SESSION[$guid]['sidebarExtra'] .= '<div class="w-48 sm:w-64 h-10 mb-2">';
                     if ($alert == '') {
-                        $_SESSION[$guid]['sidebarExtra'] .= '<b>'.__('No Current Alerts').'</b>';
+                        $_SESSION[$guid]['sidebarExtra'] .= '<span class="text-gray-500 text-xs">'.__('No Current Alerts').'</span>';
                     } else {
                         $_SESSION[$guid]['sidebarExtra'] .= $alert;
                     }
@@ -3125,6 +3152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     $_SESSION[$guid]['sidebarExtra'] .= getUserPhoto($guid, $studentImage, 240);
 
                     //PERSONAL DATA MENU ITEMS
+                    $_SESSION[$guid]['sidebarExtra'] .= '<div class="column-no-break">';
                     $_SESSION[$guid]['sidebarExtra'] .= '<h4>'.__('Personal').'</h4>';
                     $_SESSION[$guid]['sidebarExtra'] .= "<ul class='moduleMenu'>";
                     $style = '';
@@ -3283,7 +3311,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Behaviour'>".__('Behaviour').'</a></li>';
                         ++$studentMenuCount;
                     }
-                    
+
 
                     //Check for hooks, and slot them into array
                     try {
@@ -3352,6 +3380,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             }
                         }
                     }
+
+                    $_SESSION[$guid]['sidebarExtra'] .= '</div>';
                 }
             }
         }

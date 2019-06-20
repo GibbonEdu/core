@@ -140,7 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
             $row = $form->addRow();
             $row->addLabel('status', __('Status'));
-            $row->addSelect('status')->fromArray($statuses)->isRequired();
+            $row->addSelect('status')->fromArray($statuses)->required();
 			
             $row = $form->addRow();
             $row->addFooter();

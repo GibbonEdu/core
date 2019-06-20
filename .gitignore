@@ -28,3 +28,10 @@ nbproject/
 /vendor/**/unitTests
 /vendor/**/Examples
 /vendor/**/examples
+/vendor/**/samples
+/vendor/**/docs
+
+
+# Var Folder
+var/*
+!var/.htaccess

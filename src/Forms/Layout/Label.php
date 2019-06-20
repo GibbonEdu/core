@@ -33,7 +33,6 @@ class Label extends Element implements RowDependancyInterface
 
     protected $label;
     protected $description;
-    protected $for = '';
 
     /**
      * Create a label element with a for attribute linking to an input.
@@ -43,7 +42,7 @@ class Label extends Element implements RowDependancyInterface
     public function __construct($for, $label)
     {
         $this->label = $label;
-        $this->for = $for;
+        $this->setAttribute('for', $for);
     }
 
     /**
@@ -61,7 +60,7 @@ class Label extends Element implements RowDependancyInterface
      */
     public function getName()
     {
-        return 'label'.$this->for;
+        return 'label'.$this->getAttribute('for');
     }
 
     /**
@@ -70,7 +69,7 @@ class Label extends Element implements RowDependancyInterface
      */
     public function getID()
     {
-        return 'label'.$this->for;
+        return 'label'.$this->getAttribute('for');
     }
 
     /**
@@ -151,11 +150,11 @@ class Label extends Element implements RowDependancyInterface
 
     protected function getLinkedElement()
     {
-        if (empty($this->for) || empty($this->row)) {
+        if (empty($this->getAttribute('for')) || empty($this->row)) {
             return false;
         }
 
-        return $this->row->getElement($this->for);
+        return $this->row->getElement($this->getAttribute('for'));
     }
 
     /**
@@ -166,9 +165,11 @@ class Label extends Element implements RowDependancyInterface
     {
         $output = '';
 
-        if (!empty($this->label)) {
-            $output .= '<label for="'.$this->for.'"><b>'.$this->label.' '.( ($this->getRequired())? '*' : '').'</b></label><br/>';
-        }
+        $this->addClass('inline-block mt-4 sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs');
+
+        
+        $output .= '<label '.$this->getAttributeString().'>'.$this->label.' '.( ($this->getRequired())? '*' : '');
+        
 
         if ($this->getReadonly()) {
             if (!empty($this->description)) {
@@ -178,16 +179,17 @@ class Label extends Element implements RowDependancyInterface
             $this->description .= __('This value cannot be changed.');
         }
 
-        if ($context = $this->getLabelContext())
-        {
+        if ($context = $this->getLabelContext()) {
             $this->description($context);
         }
 
         if (!empty($this->description)) {
-            $output .= '<span class="emphasis small">';
+            $output .= '<br/><span class="text-xxs text-gray-600 italic font-normal mt-1 sm:mt-0">';
             $output .= $this->getDescription();
-            $output .= '</span><br/>';
+            $output .= '</span>';
         }
+
+        $output .= '</label>';
 
         $output .= $this->content;
 

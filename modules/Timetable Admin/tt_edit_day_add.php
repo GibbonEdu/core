@@ -70,19 +70,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
 
             $row = $form->addRow();
                 $row->addLabel('schoolYear', __('School Year'));
-                $row->addTextField('schoolYear')->maxLength(20)->isRequired()->readonly()->setValue($values['schoolYear']);
+                $row->addTextField('schoolYear')->maxLength(20)->required()->readonly()->setValue($values['schoolYear']);
 
             $row = $form->addRow();
                 $row->addLabel('ttName', __('Timetable'));
-                $row->addTextField('ttName')->maxLength(20)->isRequired()->readonly()->setValue($values['ttName']);
+                $row->addTextField('ttName')->maxLength(20)->required()->readonly()->setValue($values['ttName']);
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'))->description(__('Must be unique for this school year.'));
-                $row->addTextField('name')->maxLength(12)->isRequired();
+                $row->addTextField('name')->maxLength(12)->required();
 
             $row = $form->addRow();
                 $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique for this school year.'));
-                $row->addTextField('nameShort')->maxLength(4)->isRequired();
+                $row->addTextField('nameShort')->maxLength(4)->required();
 
             $row = $form->addRow();
                 $row->addLabel('color', __('Header Background Colour'))->description(__('RGB Hex value, without leading #.'));
@@ -96,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
             $sql = "SELECT gibbonTTColumnID as value, name FROM gibbonTTColumn ORDER BY name";
             $row = $form->addRow();
                 $row->addLabel('gibbonTTColumnID', __('Timetable Column'));
-                $row->addSelect('gibbonTTColumnID')->fromQuery($pdo, $sql, $data)->isRequired()->placeholder();
+                $row->addSelect('gibbonTTColumnID')->fromQuery($pdo, $sql, $data)->required()->placeholder();
 
             $row = $form->addRow();
                 $row->addFooter();

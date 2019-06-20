@@ -193,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
 
                     $row = $form->addRow();
                         $row->addLabel('scope', 'Scope');
-                        $row->addTextField('scope')->isRequired()->readOnly();
+                        $row->addTextField('scope')->required()->readOnly();
 
                     if ($values['scope'] == 'Learning Area') {
                         $sql = "SELECT name FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID";
@@ -203,16 +203,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                         $form->addHiddenValue('gibbonDepartmentID', $values['gibbonDepartmentID']);
                         $row = $form->addRow();
                             $row->addLabel('departmentName', __('Learning Area'));
-                            $row->addTextField('departmentName')->isRequired()->readOnly()->setValue($learningArea);
+                            $row->addTextField('departmentName')->required()->readOnly()->setValue($learningArea);
                     }
 
                     $row = $form->addRow();
                         $row->addLabel('name', __('Name'));
-                        $row->addTextField('name')->maxLength(50)->isRequired();
+                        $row->addTextField('name')->maxLength(50)->required();
 
                     $row = $form->addRow();
                         $row->addLabel('active', __('Active'));
-                        $row->addYesNo('active')->isRequired();
+                        $row->addYesNo('active')->required();
 
                     $sql = "SELECT DISTINCT category FROM gibbonRubric ORDER BY category";
                     $result = $pdo->executeQuery(array(), $sql);

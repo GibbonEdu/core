@@ -21,7 +21,7 @@ class DbHelper extends \Codeception\Module
      */
     public function deleteFromDatabase($table, $criteria)
     {
-        $dbh = $this->getModule('Db')->dbh;
+        $dbh = $this->getModule('Db')->_getDbh();
         $query = "delete from %s where %s";
         $params = [];
         foreach ($criteria as $k => $v) {
@@ -46,7 +46,7 @@ class DbHelper extends \Codeception\Module
  */
     public function updateFromDatabase($table, $data, $criteria)
     {
-        $dbh = $this->getModule('Db')->dbh;
+        $dbh = $this->getModule('Db')->_getDbh();
         $query = "update %s set %s where %s";
         $params = $dataset =[];
         foreach ($criteria as $k => $v) {
@@ -73,7 +73,7 @@ class DbHelper extends \Codeception\Module
      */
     public function executeOnDatabase($sql)
     {
-        $dbh = $this->getModule('Db')->dbh;
+        $dbh = $this->getModule('Db')->_getDbh();
         $this->debugSection('Query', $sql);
         $sth = $dbh->prepare($sql);
 

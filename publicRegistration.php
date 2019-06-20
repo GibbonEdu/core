@@ -44,7 +44,7 @@ if ($proceed == false) {
 
     $returns = array();
     $returns['fail5'] = sprintf(__('Your request failed because you do not meet the minimum age for joining this site (%1$s years of age).'), $publicRegistrationMinimumAge);
-    $returns['fail7'] = __('Your request failed because your password to not meet the minimum requirements for strength.');
+    $returns['fail7'] = __('Your request failed because your password does not meet the minimum requirements for strength.');
     $returns['success1'] = __('Your registration was successfully submitted and is now pending approval. Our team will review your registration and be in touch in due course.');
     $returns['success0'] = __('Your registration was successfully submitted, and you may now log into the system using your new username and password.');
     if (isset($_GET['return'])) {
@@ -64,42 +64,41 @@ if ($proceed == false) {
 
     $form = Form::create('publicRegistration', $_SESSION[$guid]['absoluteURL'].'/publicRegistrationProcess.php');
 
-    $form->setClass('smallIntBorder fullWidth');
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
     $form->addRow()->addHeading(__('Account Details'));
 
     $row = $form->addRow();
         $row->addLabel('surname', __('Surname'));
-        $row->addTextField('surname')->isRequired()->maxLength(30);
+        $row->addTextField('surname')->required()->maxLength(30);
 
     $row = $form->addRow();
         $row->addLabel('firstName', __('First Name'));
-        $row->addTextField('firstName')->isRequired()->maxLength(30);
+        $row->addTextField('firstName')->required()->maxLength(30);
 
     $row = $form->addRow();
         $row->addLabel('email', __('Email'));
-        $email = $row->addEmail('email')->isRequired();
+        $email = $row->addEmail('email')->required();
 
     $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
     if ($uniqueEmailAddress == 'Y') {
-        $email->isUnique('./publicRegistrationCheck.php');
+        $email->uniqueField('./publicRegistrationCheck.php');
     }
 
     $row = $form->addRow();
         $row->addLabel('gender', __('Gender'));
-        $row->addSelectGender('gender')->isRequired();
+        $row->addSelectGender('gender')->required();
 
     $row = $form->addRow();
         $row->addLabel('dob', __('Date of Birth'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-        $row->addDate('dob')->isRequired();
+        $row->addDate('dob')->required();
 
     $row = $form->addRow();
         $row->addLabel('usernameCheck', __('Username'));
         $row->addTextField('usernameCheck')
             ->maxLength(20)
-            ->isRequired()
-            ->isUnique('./publicRegistrationCheck.php', array('fieldName' => 'username'));
+            ->required()
+            ->uniqueField('./publicRegistrationCheck.php', array('fieldName' => 'username'));
 
     $policy = getPasswordPolicy($guid, $connection2);
     if ($policy != false) {
@@ -111,7 +110,7 @@ if ($proceed == false) {
         $row->addPassword('passwordNew')
             ->addPasswordPolicy($pdo)
             ->addGeneratePasswordButton($form)
-            ->isRequired()
+            ->required()
             ->maxLength(30);
     
     // CUSTOM FIELDS
@@ -140,7 +139,7 @@ if ($proceed == false) {
 
         $row = $form->addRow();
             $row->addLabel('agreement', __('Do you agree to the above?'));
-            $row->addCheckbox('agreement')->isRequired()->prepend('Yes');
+            $row->addCheckbox('agreement')->description(__('Yes'))->required();
     }
 
     $row = $form->addRow();

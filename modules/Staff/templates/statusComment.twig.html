@@ -1,0 +1,57 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+<div class="flex justify-between my-4 {{ comment is empty and html is empty and message is empty ? 'sm:items-center'}}">
+    
+    {% if photo or icon %}
+    <div class="w-12 sm:w-16 mr-4 flex flex-col items-center">
+        <div class="{{ photo ? 'flex-none' : 'flex items-center justify-center' }} overflow-hidden w-12 sm:w-16 h-12 sm:h-16 rounded-full bg-gray-200 border border-solid">
+            {% if photo %}
+                <img class="w-full" src="{{ absoluteURL }}/{{ photo }}" />
+            {% elseif icon %}
+                <img class="w-6 h-6" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/{{ icon }}.png" />
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="flex-1">
+        
+        <div class="relative bg-gray-100 rounded text-gray-800 text-sm leading-snug border ">
+            {% if photo or icon %}
+                <div class="absolute top-0 left-0 border-transparent" style="margin: 15px 0 0 -18px; border-width: 9px; border-right-color: #d2d0d0;"></div>
+                <div class="absolute top-0 left-0 border-8 border-transparent" style="margin: 16px 0 0 -16px; border-width: 8px; border-right-color: #fafafa;"></div>
+            {% endif %}
+
+            <div class="px-4 py-3 text-gray-700 text-sm font-sans leading-relaxed">
+                <span class="inline-block font-semibold">{{ name }}</span> {{ action|lower }} <span class="whitespace-no-wrap">{{ date|lower|raw }}</span>
+
+                {% if status %}
+                    <span class="mx-2 tag {{ tag }}">{{ status }}</span>
+                {% endif %}
+
+                {% if attachment %}
+                    <span class="tag px-0 break-all">{{ attachment|raw }}</span>
+                {% endif %}
+            </div>
+
+            {% if comment or html %}
+            <div class="p-4 bg-white border-t rounded-b">
+                {{ html ? html|raw : comment|nl2br }}
+                {% if html %}<div class="-mb-4"></div>{% endif %}
+            </div>
+            {% endif %}
+
+            {% if message %}
+            <div class="px-4 py-2 bg-white border-t rounded-b text-xs italic text-gray-600">
+                {{ message|nl2br }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>

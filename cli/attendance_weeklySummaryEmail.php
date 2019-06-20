@@ -36,6 +36,7 @@ if (!isCommandLineInterface()) {
     require_once __DIR__ . '/../modules/Attendance/src/AttendanceView.php';
     $attendance = new AttendanceView($gibbon, $pdo);
     
+    $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
     $firstDayOfTheWeek = $gibbon->session->get('firstDayOfTheWeek');
     $dateFormat = $_SESSION[$guid]['i18n']['dateFormat'];
     
@@ -58,8 +59,13 @@ if (!isCommandLineInterface()) {
             LEFT JOIN gibbonCourseClass ON (gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
             LEFT JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
             WHERE gibbonAttendanceLogPerson.date BETWEEN :dateStart AND :dateEnd
-            AND gibbonPerson.status='Full'
-            AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+            AND gibbonPerson.status='Full' ";
+
+    if ($countClassAsSchool == 'N') {
+        $sql .= "AND NOT gibbonAttendanceLogPerson.context='Class' ";
+    }
+
+    $sql .= "AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
             ORDER BY gibbonYearGroup.sequenceNumber, gibbonRollGroup.nameShort, gibbonPerson.surname, gibbonPerson.preferredName, gibbonAttendanceLogPerson.date, gibbonAttendanceLogPerson.timestampTaken
     ";
 

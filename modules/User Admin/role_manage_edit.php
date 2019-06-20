@@ -79,50 +79,50 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edi
             $row = $form->addRow();
                 $row->addLabel('category', __('Category'));
             if ($isReadOnly) {
-                $row->addTextField('category')->isRequired()->readonly()->setValue($role['category']);
+                $row->addTextField('category')->required()->readonly()->setValue($role['category']);
             } else {
-                $row->addSelect('category')->fromArray($categories)->isRequired()->placeholder()->selected($role['category']);
+                $row->addSelect('category')->fromArray($categories)->required()->placeholder()->selected($role['category']);
             }
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));
-                $row->addTextField('name')->isRequired()->maxLength(20)->readonly($isReadOnly)->setValue($role['name']);
+                $row->addTextField('name')->required()->maxLength(20)->readonly($isReadOnly)->setValue($role['name']);
 
             $row = $form->addRow();
                 $row->addLabel('nameShort', __('Short Name'));
-                $row->addTextField('nameShort')->isRequired()->maxLength(4)->readonly($isReadOnly)->setValue($role['nameShort']);
+                $row->addTextField('nameShort')->required()->maxLength(4)->readonly($isReadOnly)->setValue($role['nameShort']);
 
             $row = $form->addRow();
                 $row->addLabel('description', __('Description'));
-                $row->addTextField('description')->isRequired()->maxLength(60)->readonly($isReadOnly)->setValue($role['description']);
+                $row->addTextField('description')->required()->maxLength(60)->readonly($isReadOnly)->setValue($role['description']);
 
             $row = $form->addRow();
                 $row->addLabel('type', __('Type'));
-                $row->addTextField('type')->isRequired()->readonly()->setValue($role['type']);
+                $row->addTextField('type')->required()->readonly()->setValue($role['type']);
 
             $row = $form->addRow();
                 $row->addLabel('canLoginRole', __('Can Login?'))->description(__('Are users with this primary role able to login?'));
                 if ($role['name'] == 'Administrator') {
-                    $row->addTextField('canLoginRole')->isRequired()->readonly()->setValue(__('Yes'));
+                    $row->addTextField('canLoginRole')->required()->readonly()->setValue(__('Yes'));
                 } else {
-                    $row->addYesNo('canLoginRole')->isRequired()->selected($role['canLoginRole']);
+                    $row->addYesNo('canLoginRole')->required()->selected($role['canLoginRole']);
                     $form->toggleVisibilityByClass('loginOptions')->onSelect('canLoginRole')->when('Y');
                 }
 
             $row = $form->addRow()->addClass('loginOptions');
                 $row->addLabel('pastYearsLogin', __('Login To Past Years'));
-                $row->addYesNo('pastYearsLogin')->isRequired()->selected($role['pastYearsLogin']);
+                $row->addYesNo('pastYearsLogin')->required()->selected($role['pastYearsLogin']);
 
             $row = $form->addRow()->addClass('loginOptions');
                 $row->addLabel('futureYearsLogin', __('Login To Future Years'));
-                $row->addYesNo('futureYearsLogin')->isRequired()->selected($role['futureYearsLogin']);
+                $row->addYesNo('futureYearsLogin')->required()->selected($role['futureYearsLogin']);
 
             $row = $form->addRow();
                 $row->addLabel('restriction', __('Restriction'))->description('Determines who can grant or remove this role in Manage Users.');
             if ($role['name'] == 'Administrator') {
-                $row->addTextField('restriction')->isRequired()->readonly()->setValue('Admin Only');
+                $row->addTextField('restriction')->required()->readonly()->setValue('Admin Only');
             } else {
-                $row->addSelect('restriction')->fromArray($restrictions)->isRequired()->selected($role['restriction']);
+                $row->addSelect('restriction')->fromArray($restrictions)->required()->selected($role['restriction']);
             }
 
             $row = $form->addRow();

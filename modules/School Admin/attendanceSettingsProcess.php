@@ -37,30 +37,20 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         $fail = true;
     }
 
-    $prefillRollGroup = (isset($_POST['prefillRollGroup'])) ? $_POST['prefillRollGroup'] : NULL;
+    $countClassAsSchool = (isset($_POST['countClassAsSchool'])) ? $_POST['countClassAsSchool'] : NULL;
     try {
-        $data = array('value' => $prefillRollGroup);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='prefillRollGroup'";
+        $data = array('value' => $countClassAsSchool);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='countClassAsSchool'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
         $fail = true;
     }
 
-    $prefillClass = (isset($_POST['prefillClass'])) ? $_POST['prefillClass'] : NULL;
+    $crossFillClasses = (isset($_POST['crossFillClasses'])) ? $_POST['crossFillClasses'] : NULL;
     try {
-        $data = array('value' => $prefillClass);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='prefillClass'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    $prefillPerson = (isset($_POST['prefillPerson'])) ? $_POST['prefillPerson'] : NULL;
-    try {
-        $data = array('value' => $prefillPerson);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='prefillPerson'";
+        $data = array('value' => $crossFillClasses);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='crossFillClasses'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {

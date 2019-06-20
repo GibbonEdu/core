@@ -98,8 +98,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_smartBl
 
                         //MAKE NEW BLOCK
                         try {
-                            $dataBlock = array('gibbonUnitID' => $gibbonUnitID, 'title' => $row['name'], 'type' => '', 'length' => $length, 'contents' => $row['description'], 'teachersNotes' => $row['teachersNotes'], 'sequenceNumber' => $sequenceNumber, 'gibbonOutcomeIDList' => '');
-                            $sqlBlock = 'INSERT INTO gibbonUnitBlock SET gibbonUnitID=:gibbonUnitID, title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, sequenceNumber=:sequenceNumber, gibbonOutcomeIDList=:gibbonOutcomeIDList';
+                            $dataBlock = array('gibbonUnitID' => $gibbonUnitID, 'title' => $row['name'], 'type' => '', 'length' => $length, 'contents' => $row['description'], 'teachersNotes' => $row['teachersNotes'], 'sequenceNumber' => $sequenceNumber);
+                            $sqlBlock = 'INSERT INTO gibbonUnitBlock SET gibbonUnitID=:gibbonUnitID, title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, sequenceNumber=:sequenceNumber';
                             $resultBlock = $connection2->prepare($sqlBlock);
                             $resultBlock->execute($dataBlock);
                         } catch (PDOException $e) {
@@ -112,8 +112,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_smartBl
                             $gibbonUnitBlockID = $connection2->lastInsertID();
                             $blockFail2 = false;
                             try {
-                                $dataBlock2 = array('gibbonUnitClassID' => $gibbonUnitClassID, 'gibbonPlannerEntryID' => $row['gibbonPlannerEntryID'], 'gibbonUnitBlockID' => $gibbonUnitBlockID, 'title' => $row['name'], 'type' => '', 'length' => $length, 'contents' => $row['description'], 'teachersNotes' => $row['teachersNotes'], 'sequenceNumber' => 1, 'gibbonOutcomeIDList' => '');
-                                $sqlBlock2 = 'INSERT INTO gibbonUnitClassBlock SET gibbonUnitClassID=:gibbonUnitClassID, gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonUnitBlockID=:gibbonUnitBlockID, title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, sequenceNumber=:sequenceNumber, gibbonOutcomeIDList=:gibbonOutcomeIDList';
+                                $dataBlock2 = array('gibbonUnitClassID' => $gibbonUnitClassID, 'gibbonPlannerEntryID' => $row['gibbonPlannerEntryID'], 'gibbonUnitBlockID' => $gibbonUnitBlockID, 'title' => $row['name'], 'type' => '', 'length' => $length, 'contents' => $row['description'], 'teachersNotes' => $row['teachersNotes'], 'sequenceNumber' => 1);
+                                $sqlBlock2 = 'INSERT INTO gibbonUnitClassBlock SET gibbonUnitClassID=:gibbonUnitClassID, gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonUnitBlockID=:gibbonUnitBlockID, title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, sequenceNumber=:sequenceNumber';
                                 $resultBlock2 = $connection2->prepare($sqlBlock2);
                                 $resultBlock2->execute($dataBlock2);
                             } catch (PDOException $e) {

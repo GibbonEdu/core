@@ -49,9 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
     }
 
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/staff_manage_addProcess.php?search=$search&allStaff=$allStaff");
-
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('smallIntBorder fullWidth');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
@@ -59,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Person'))->description(__('Must be unique.'));
-        $row->addSelectUsers('gibbonPersonID')->placeholder()->isRequired();
+        $row->addSelectUsers('gibbonPersonID')->placeholder()->required();
 
     $row = $form->addRow();
         $row->addLabel('initials', __('Initials'))->description(__('Must be unique if set.'));
@@ -71,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
     $types[__('System Roles')] = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
     $row = $form->addRow();
         $row->addLabel('type', __('Type'));
-        $row->addSelect('type')->fromArray($types)->placeholder()->isRequired();
+        $row->addSelect('type')->fromArray($types)->placeholder()->required();
 
     $row = $form->addRow();
         $row->addLabel('jobTitle', __('Job Title'));
@@ -100,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
         $row->addTextField('qualifications')->maxlength(80);
 
     $row = $form->addRow();
-        $row->addLabel('biographicalGrouping', __('Grouping'));
+        $row->addLabel('biographicalGrouping', __('Grouping'))->description(__('Used to group staff when creating a staff directory.'));
         $row->addTextField('biographicalGrouping')->maxlength(100);
 
     $row = $form->addRow();

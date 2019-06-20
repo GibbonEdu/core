@@ -1,0 +1,41 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+
+Fast Finder
+-->#}
+
+<button data-toggle="#fastFinder" class="flex md:hidden items-center rounded bg-gray-300 mr-4 px-4 py-3 text-base">
+    <span class="hidden sm:inline text-gray-600 text-xs font-bold uppercase pr-2">{{ __('Fast Finder') }}</span>
+    <img src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/search.png" width="25" height="25">
+</button>
+
+<div id="fastFinder" class="hidden md:block absolute md:static top-0 left-0 w-full md:max-w-md p-2 sm:p-4">
+    <div  class="z-10 rounded border border-solid border-gray-300" style="background-color: #fbfbfb">
+        
+        <a data-toggle="#fastFinder" class="p-2 pl-4 float-right text-xs underline md:hidden" href="#">{{ __('close') }}</a>
+
+        <div class="py-2 md:py-1 px-2 border-solid border-0 border-b border-gray-300 md:text-right text-gray-700 text-xxs font-bold uppercase">
+            {{ __('Fast Finder') }}: 
+            {{ __('Actions') }}
+            {{- classIsAccessible ? ", " ~ __('Classes') }}
+            {{- studentIsAccessible ? ", " ~ __('Students') }}
+            {{- staffIsAccessible ? ", " ~ __('Staff') }}
+        </div>
+
+        <div class="w-full px-2 sm:py-2">
+        {{ form|raw }}
+        </div>
+
+        {% if roleCategory == 'Staff' and enrolmentCount %}
+        <div class="py-1 px-2 text-right text-gray-500 text-xxs font-normal italic">
+            {{ __('Total Student Enrolment:') }}
+            {{ enrolmentCount }}
+        </div>
+        {% endif %}
+    </div>
+</div>
+

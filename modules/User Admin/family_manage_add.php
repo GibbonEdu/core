@@ -47,21 +47,19 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_a
     }
 
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_addProcess.php?search=$search");
-
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('smallIntBorder fullWidth');
-
+    
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
     $form->addRow()->addHeading(__('General Information'));
 
     $row = $form->addRow();
         $row->addLabel('name', __('Family Name'));
-        $row->addTextField('name')->maxLength(100)->isRequired();
+        $row->addTextField('name')->maxLength(100)->required();
 
     $row = $form->addRow();
 		$row->addLabel('status', __('Marital Status'));
-		$row->addSelectMaritalStatus('status')->isRequired();
+		$row->addSelectMaritalStatus('status')->required();
 
     $row = $form->addRow();
         $row->addLabel('languageHomePrimary', __('Home Language - Primary'));
@@ -73,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_a
 
     $row = $form->addRow();
         $row->addLabel('nameAddress', __('Address Name'))->description(__('Formal name to address parents with.'));
-        $row->addTextField('nameAddress')->maxLength(100)->isRequired();
+        $row->addTextField('nameAddress')->maxLength(100)->required();
 
     $row = $form->addRow();
         $row->addLabel('homeAddress', __('Home Address'))->description(__('Unit, Building, Street'));

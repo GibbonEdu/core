@@ -17,25 +17,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-.attendanceGrid .grid {
-	border-collapse: collapse; 
-}
-
-.attendanceGrid td {
-	padding: 5px !important;
-	border: 0;
-}
-
-.attendanceField {
-	display:inline-block;
-	width: 133px;
-	margin-right: 8px;
-}
-
-.attendanceFieldStacked {
-	margin-top: -4px;
-}
-
 .verticalHeader {
 	overflow: hidden;
 	padding: 4px !important;
@@ -195,7 +176,7 @@ td.center {
 
 .historyCalendarKey ul {
 	font-size: 12px;
-	margin: -15px 0px 0px 80px;
+	margin: 10px 0px 0px 80px;
 }
 
 .historyCalendarKey .highlightPresent,
@@ -206,49 +187,20 @@ td.center {
 
 .historyCalendarKey .arrow-one {
 	position: absolute;
-	top: -76px;
-	left: 61px;
+	top: -64px;
+	left: 64px;
 	font-size:32px;
 	color: #333333;
 }
 
 .historyCalendarKey .arrow-two {
 	position: absolute;
-	top: -76px;
-	left: 154px;
+	top: -64px;
+	left: 158px;
 	font-size: 32px;
 	color: #333333;
 }
 
 #periodSelectContainer{
     float: right;   
-}
-
-/**
- * daily attendance table, by roll or by course class
- * (attendance.php)
- */
-.dailyAttendanceTable {
-    table-layout: fixed;
-}
-.dailyAttendanceTable th {
-    font-size: 60%;
-    text-align: center;
-    text-transform: uppercase;
-}
-.dailyAttendanceTable th:first-child {
-    font-size: 85%;
-    text-align: left;
-}
-.dailyAttendanceTable tr td:nth-child(n+3) {
-    text-align: center;
-}
-.dailyAttendanceTable tr td div.month {
-    font-size: 65%;
-}
-.dailyAttendanceTable tr td table.historyCalendarMini {
-    border-spacing: 0;
-    border-collapse: separate;
-    width:160px;
-    margin:0;
 }

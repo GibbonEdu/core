@@ -54,11 +54,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     $sql = "SELECT gibbonActivityID AS value, name FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name, programStart";
     $row = $form->addRow();
         $row->addLabel('gibbonActivityID', __('Activity'));
-        $row->addSelect('gibbonActivityID')->fromQuery($pdo, $sql, $data)->selected($gibbonActivityID)->isRequired()->placeholder();
+        $row->addSelect('gibbonActivityID')->fromQuery($pdo, $sql, $data)->selected($gibbonActivityID)->required()->placeholder();
 
     $row = $form->addRow();
         $row->addLabel('numberOfColumns', __('Number of Columns'));
-        $row->addNumber('numberOfColumns')->decimalPlaces(0)->maximum(20)->maxLength(2)->setValue($numberOfColumns)->isRequired();
+        $row->addNumber('numberOfColumns')->decimalPlaces(0)->maximum(20)->maxLength(2)->setValue($numberOfColumns)->required();
 
     $row = $form->addRow();
         $row->addFooter();

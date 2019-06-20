@@ -71,15 +71,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_editChildProcess.php?gibbonPersonID=$gibbonPersonID&gibbonFamilyID=$gibbonFamilyID&search=$search");
 
-            $form->setClass('smallIntBorder fullWidth');
-
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
             $form->addRow()->addHeading(__('Edit Child'));
 
             $row = $form->addRow();
                 $row->addLabel('child', __('Childs\'s Name'));
-                $row->addTextField('child')->setValue(formatName(htmlPrep($values['title']), htmlPrep($values['preferredName']), htmlPrep($values['surname']), 'Parent'))->isRequired()->readonly();
+                $row->addTextField('child')->setValue(formatName(htmlPrep($values['title']), htmlPrep($values['preferredName']), htmlPrep($values['surname']), 'Parent'))->required()->readonly();
 
             $row = $form->addRow();
                 $row->addLabel('comment', __('Comment'))->description(__('Data displayed in full Student Profile'));

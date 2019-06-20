@@ -97,7 +97,11 @@ class AssetBundle
     public function addMultiple(array $assets, array $options = [])
     {
         foreach ($assets as $name => $src) {
-            $this->add($name, $src, $options);
+            if (is_array($src)) {
+                $this->add($name, $src['src'], $src);
+            } else {
+                $this->add($name, $src, $options);
+            }
         }
     }
 

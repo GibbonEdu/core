@@ -51,8 +51,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/fileExtension
         ->displayLabel();
 
     $table->addColumn('extension', __('Extension'));
-    $table->addColumn('name', __('Name'));
-    $table->addColumn('type', __('Type'));
+    $table->addColumn('name', __('Name'))->translatable();
+    $table->addColumn('type', __('Type'))->translatable();
         
     // ACTIONS
     $table->addActionColumn()

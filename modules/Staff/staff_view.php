@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
 
         if ($highestAction == 'View Staff Profile_full') {
             $row = $form->addRow();
-                $row->addLabel('allStaff', __('All Staff'))->description('Include all staff, regardless of status, start date, end date, etc.');
+                $row->addLabel('allStaff', __('All Staff'))->description(__('Include all staff, regardless of status, start date, end date, etc.'));
                 $row->addCheckbox('allStaff')->checked($allStaff);
         }
 
@@ -91,6 +91,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
             ->addParam('search', $search)
             ->displayLabel();
 
+        $table->modifyRows(function ($person, $row) {
+            if (!empty($person['status']) && $person['status'] != 'Full') $row->addClass('error');
+            return $row;
+        });
+
         if ($highestAction == 'View Staff Profile_full') {
             $table->addMetaData('filterOptions', [
                 'all:on'        => __('All Staff'),
@@ -110,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
                     .'<br/><span style="font-size: 85%; font-style: italic">'.$person['initials']."</span>";
             });
 
-        $table->addColumn('type', __('Type'))->width('25%');
+        $table->addColumn('type', __('Type'))->width('25%')->translatable();
         $table->addColumn('jobTitle', __('Job Title'))->width('25%');
 
         // ACTIONS

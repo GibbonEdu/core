@@ -1216,7 +1216,9 @@ else {
 
 			//Applicants
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_applicants")) {
-				if ($_POST["applicants"]=="Y") {
+				if ($_POST["applicants"] == "Y") {
+					$applicantsWhere = "AND NOT status IN ('Waiting List', 'Rejected', 'Withdrawn', 'Pending')";
+
 					$choices=$_POST["applicantList"] ;
 					if ($choices!="") {
 						foreach ($choices as $t) {
@@ -1234,7 +1236,7 @@ else {
 								//Get applicant emails
 								try {
 									$dataEmail=array("gibbonSchoolYearIDEntry"=>$t);
-									$sqlEmail="SELECT DISTINCT email FROM gibbonApplicationForm WHERE NOT email='' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry AND NOT status='Rejected' AND NOT status='Withdrawn'" ;
+									$sqlEmail="SELECT DISTINCT email FROM gibbonApplicationForm WHERE NOT email='' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry $applicantsWhere" ;
 									$resultEmail=$connection2->prepare($sqlEmail);
 									$resultEmail->execute($dataEmail);
 								}
@@ -1246,31 +1248,31 @@ else {
 								//Get parent 1 emails
 								try {
 									$dataEmail=array("gibbonSchoolYearIDEntry"=>$t);
-									$sqlEmail="SELECT DISTINCT parent1email FROM gibbonApplicationForm WHERE NOT parent1email='' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry AND NOT status='Rejected' AND NOT status='Withdrawn'" ;
+									$sqlEmail="SELECT DISTINCT parent1email FROM gibbonApplicationForm WHERE NOT parent1email='' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry $applicantsWhere" ;
 									$resultEmail=$connection2->prepare($sqlEmail);
 									$resultEmail->execute($dataEmail);
 								}
 								catch(PDOException $e) { }
 								while ($rowEmail=$resultEmail->fetch()) {
-									$report = reportAdd($report, $emailReceipt, NULL, 'Applicants', $t, 'Email', $rowEmail["email"]);
+									$report = reportAdd($report, $emailReceipt, NULL, 'Applicants', $t, 'Email', $rowEmail["parent1email"]);
 								}
 
 								//Get parent 2 emails
 								try {
 									$dataEmail=array("gibbonSchoolYearIDEntry"=>$t);
-									$sqlEmail="SELECT DISTINCT parent2email FROM gibbonApplicationForm WHERE NOT parent2email='' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry AND NOT status='Rejected' AND NOT status='Withdrawn'" ;
+									$sqlEmail="SELECT DISTINCT parent2email FROM gibbonApplicationForm WHERE NOT parent2email='' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry $applicantsWhere" ;
 									$resultEmail=$connection2->prepare($sqlEmail);
 									$resultEmail->execute($dataEmail);
 								}
 								catch(PDOException $e) { }
 								while ($rowEmail=$resultEmail->fetch()) {
-									$report = reportAdd($report, $emailReceipt, NULL, 'Applicants', $t, 'Email', $rowEmail["email"]);
+									$report = reportAdd($report, $emailReceipt, NULL, 'Applicants', $t, 'Email', $rowEmail["parent2email"]);
 								}
 
 								//Get parent ID emails (when no family in system, but user is in system)
 								try {
 									$dataEmail=array("gibbonSchoolYearIDEntry"=>$t);
-									$sqlEmail="SELECT gibbonPerson.email, gibbonPerson.gibbonPersonID FROM gibbonApplicationForm JOIN gibbonPerson ON (gibbonApplicationForm.parent1gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE NOT parent1gibbonPersonID='' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry AND NOT gibbonApplicationForm.status='Rejected' AND NOT gibbonApplicationForm.status='Withdrawn'" ;
+									$sqlEmail="SELECT gibbonPerson.email, gibbonPerson.gibbonPersonID FROM gibbonApplicationForm JOIN gibbonPerson ON (gibbonApplicationForm.parent1gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE NOT parent1gibbonPersonID='' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry $applicantsWhere" ;
 									$resultEmail=$connection2->prepare($sqlEmail);
 									$resultEmail->execute($dataEmail);
 								}
@@ -1282,7 +1284,7 @@ else {
 								//Get family emails
 								try {
 									$dataEmail=array("gibbonSchoolYearIDEntry"=>$t);
-									$sqlEmail="SELECT * FROM gibbonApplicationForm WHERE NOT gibbonFamilyID='' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry AND NOT gibbonApplicationForm.status='Rejected' AND NOT gibbonApplicationForm.status='Withdrawn'" ;
+									$sqlEmail="SELECT * FROM gibbonApplicationForm WHERE NOT gibbonFamilyID='' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry $applicantsWhere" ;
 									$resultEmail=$connection2->prepare($sqlEmail);
 									$resultEmail->execute($dataEmail);
 								}
@@ -1304,8 +1306,8 @@ else {
 								//Get applicant phone numbers
 								try {
 									$dataEmail=array("gibbonSchoolYearIDEntry"=>$t);
-									$sqlEmail="(SELECT phone1 AS phone, phone1CountryCode AS countryCode FROM gibbonApplicationForm WHERE NOT phone1='' AND phone1Type='Mobile' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry AND NOT status='Rejected' AND NOT status='Withdrawn')" ;
-									$sqlEmail.=" UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode FROM gibbonApplicationForm WHERE NOT phone2='' AND phone2Type='Mobile' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry AND NOT status='Rejected' AND NOT status='Withdrawn')" ;
+									$sqlEmail="(SELECT phone1 AS phone, phone1CountryCode AS countryCode FROM gibbonApplicationForm WHERE NOT phone1='' AND phone1Type='Mobile' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry $applicantsWhere)" ;
+									$sqlEmail.=" UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode FROM gibbonApplicationForm WHERE NOT phone2='' AND phone2Type='Mobile' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry $applicantsWhere)" ;
 									$resultEmail=$connection2->prepare($sqlEmail);
 									$resultEmail->execute($dataEmail);
 								}
@@ -1320,8 +1322,8 @@ else {
 								//Get parent 1 numbers
 								try {
 									$dataEmail=array("gibbonSchoolYearIDEntry"=>$t);
-									$sqlEmail="(SELECT CONCAT(parent1phone1CountryCode,parent1phone1) AS phone FROM gibbonApplicationForm WHERE NOT parent1phone1='' AND parent1phone1Type='Mobile' AND parent1phone1CountryCode='$countryCode' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry AND NOT status='Rejected' AND NOT status='Withdrawn')" ;
-									$sqlEmail.=" UNION (SELECT CONCAT(parent1phone2CountryCode,parent1phone2) AS phone FROM gibbonApplicationForm WHERE NOT parent1phone2='' AND parent1phone2Type='Mobile' AND parent1phone2CountryCode='$countryCode' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry AND NOT status='Rejected' AND NOT status='Withdrawn')" ;
+									$sqlEmail="(SELECT CONCAT(parent1phone1CountryCode,parent1phone1) AS phone, parent1phone1CountryCode AS countryCode FROM gibbonApplicationForm WHERE NOT parent1phone1='' AND parent1phone1Type='Mobile' AND parent1phone1CountryCode='$countryCode' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry $applicantsWhere)" ;
+									$sqlEmail.=" UNION (SELECT CONCAT(parent1phone2CountryCode,parent1phone2) AS phone, parent1phone2CountryCode AS countryCode FROM gibbonApplicationForm WHERE NOT parent1phone2='' AND parent1phone2Type='Mobile' AND parent1phone2CountryCode='$countryCode' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry $applicantsWhere)" ;
 									$resultEmail=$connection2->prepare($sqlEmail);
 									$resultEmail->execute($dataEmail);
 								}
@@ -1336,8 +1338,8 @@ else {
 								//Get parent 2 numbers
 								try {
 									$dataEmail=array("gibbonSchoolYearIDEntry"=>$t);
-									$sqlEmail="(SELECT CONCAT(parent2phone1CountryCode,parent2phone1) AS phone FROM gibbonApplicationForm WHERE NOT parent2phone1='' AND parent2phone1Type='Mobile' AND parent2phone1CountryCode='$countryCode' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry AND NOT status='Rejected' AND NOT status='Withdrawn')" ;
-									$sqlEmail.=" UNION (SELECT CONCAT(parent2phone2CountryCode,parent2phone2) AS phone FROM gibbonApplicationForm WHERE NOT parent2phone2='' AND parent2phone2Type='Mobile' AND parent2phone2CountryCode='$countryCode' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry AND NOT status='Rejected' AND NOT status='Withdrawn')" ;
+									$sqlEmail="(SELECT CONCAT(parent2phone1CountryCode,parent2phone1) AS phone, parent2phone1CountryCode AS countryCode FROM gibbonApplicationForm WHERE NOT parent2phone1='' AND parent2phone1Type='Mobile' AND parent2phone1CountryCode='$countryCode' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry $applicantsWhere)" ;
+									$sqlEmail.=" UNION (SELECT CONCAT(parent2phone2CountryCode,parent2phone2) AS phone, parent2phone2CountryCode AS countryCode FROM gibbonApplicationForm WHERE NOT parent2phone2='' AND parent2phone2Type='Mobile' AND parent2phone2CountryCode='$countryCode' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry $applicantsWhere)" ;
 									$resultEmail=$connection2->prepare($sqlEmail);
 									$resultEmail->execute($dataEmail);
 								}
@@ -1352,10 +1354,10 @@ else {
 								//Get parent ID numbers (when no family in system, but user is in system)
 								try {
 									$dataEmail=array("gibbonSchoolYearIDEntry"=>$t);
-									$sqlEmail="(SELECT CONCAT(gibbonPerson.phone1CountryCode,gibbonPerson.phone1) AS phone, gibbonPerson.gibbonPersonID FROM gibbonApplicationForm JOIN gibbonPerson ON (gibbonApplicationForm.parent1gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE NOT gibbonPerson.phone1='' AND gibbonPerson.phone1Type='Mobile' AND gibbonPerson.phone1CountryCode='$countryCode' AND NOT parent1gibbonPersonID='' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry AND NOT gibbonApplicationForm.status='Rejected' AND NOT gibbonApplicationForm.status='Withdrawn')" ;
-									$sqlEmail.=" UNION (SELECT CONCAT(gibbonPerson.phone2CountryCode,gibbonPerson.phone2) AS phone, gibbonPerson.gibbonPersonID FROM gibbonApplicationForm JOIN gibbonPerson ON (gibbonApplicationForm.parent1gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE NOT gibbonPerson.phone2='' AND gibbonPerson.phone2Type='Mobile' AND gibbonPerson.phone2CountryCode='$countryCode' AND NOT parent1gibbonPersonID='' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry AND NOT gibbonApplicationForm.status='Rejected' AND NOT gibbonApplicationForm.status='Withdrawn')" ;
-									$sqlEmail.=" UNION (SELECT CONCAT(gibbonPerson.phone3CountryCode,gibbonPerson.phone3) AS phone, gibbonPerson.gibbonPersonID FROM gibbonApplicationForm JOIN gibbonPerson ON (gibbonApplicationForm.parent1gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE NOT gibbonPerson.phone3='' AND gibbonPerson.phone3Type='Mobile' AND gibbonPerson.phone3CountryCode='$countryCode' AND NOT parent1gibbonPersonID='' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry AND NOT gibbonApplicationForm.status='Rejected' AND NOT gibbonApplicationForm.status='Withdrawn')" ;
-									$sqlEmail.=" UNION (SELECT CONCAT(gibbonPerson.phone4CountryCode,gibbonPerson.phone4) AS phone, gibbonPerson.gibbonPersonID FROM gibbonApplicationForm JOIN gibbonPerson ON (gibbonApplicationForm.parent1gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE NOT gibbonPerson.phone4='' AND gibbonPerson.phone4Type='Mobile' AND gibbonPerson.phone4CountryCode='$countryCode' AND NOT parent1gibbonPersonID='' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry AND NOT gibbonApplicationForm.status='Rejected' AND NOT gibbonApplicationForm.status='Withdrawn')" ;
+									$sqlEmail="(SELECT CONCAT(gibbonPerson.phone1CountryCode,gibbonPerson.phone1) AS phone, gibbonPerson.gibbonPersonID FROM gibbonApplicationForm JOIN gibbonPerson ON (gibbonApplicationForm.parent1gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE NOT gibbonPerson.phone1='' AND gibbonPerson.phone1Type='Mobile' AND gibbonPerson.phone1CountryCode='$countryCode' AND NOT parent1gibbonPersonID='' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry $applicantsWhere)" ;
+									$sqlEmail.=" UNION (SELECT CONCAT(gibbonPerson.phone2CountryCode,gibbonPerson.phone2) AS phone, gibbonPerson.gibbonPersonID FROM gibbonApplicationForm JOIN gibbonPerson ON (gibbonApplicationForm.parent1gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE NOT gibbonPerson.phone2='' AND gibbonPerson.phone2Type='Mobile' AND gibbonPerson.phone2CountryCode='$countryCode' AND NOT parent1gibbonPersonID='' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry $applicantsWhere)" ;
+									$sqlEmail.=" UNION (SELECT CONCAT(gibbonPerson.phone3CountryCode,gibbonPerson.phone3) AS phone, gibbonPerson.gibbonPersonID FROM gibbonApplicationForm JOIN gibbonPerson ON (gibbonApplicationForm.parent1gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE NOT gibbonPerson.phone3='' AND gibbonPerson.phone3Type='Mobile' AND gibbonPerson.phone3CountryCode='$countryCode' AND NOT parent1gibbonPersonID='' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry $applicantsWhere)" ;
+									$sqlEmail.=" UNION (SELECT CONCAT(gibbonPerson.phone4CountryCode,gibbonPerson.phone4) AS phone, gibbonPerson.gibbonPersonID FROM gibbonApplicationForm JOIN gibbonPerson ON (gibbonApplicationForm.parent1gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE NOT gibbonPerson.phone4='' AND gibbonPerson.phone4Type='Mobile' AND gibbonPerson.phone4CountryCode='$countryCode' AND NOT parent1gibbonPersonID='' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry $applicantsWhere)" ;
 									$resultEmail=$connection2->prepare($sqlEmail);
 									$resultEmail->execute($dataEmail);
 								}
@@ -1370,7 +1372,7 @@ else {
 								//Get family numbers
 								try {
 									$dataEmail=array("gibbonSchoolYearIDEntry"=>$t);
-									$sqlEmail="SELECT * FROM gibbonApplicationForm WHERE NOT gibbonFamilyID='' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry AND NOT gibbonApplicationForm.status='Rejected' AND NOT gibbonApplicationForm.status='Withdrawn'" ;
+									$sqlEmail="SELECT * FROM gibbonApplicationForm WHERE NOT gibbonFamilyID='' AND gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry $applicantsWhere" ;
 									$resultEmail=$connection2->prepare($sqlEmail);
 									$resultEmail->execute($dataEmail);
 								}
@@ -1935,9 +1937,6 @@ else {
 			}
 
 			if ($email=="Y") {
-				//Prep message
-				$bodyFin = "<p style='font-style: italic'>" . sprintf(__('Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
-
 				//Set up email
 				$emailCount=0 ;
 				$mail= $container->get(Mailer::class);
@@ -1952,8 +1951,10 @@ else {
 				$mail->Encoding="base64" ;
 				$mail->IsHTML(true);
 				$mail->Subject=$subject ;
-				$mail->Body = $body.$bodyFin ;
-				$mail->AltBody = emailBodyConvert($body.$bodyFin) ;
+				$mail->renderBody('mail/email.twig.html', [
+					'title'  => $subject,
+					'body'   => $body
+				]);
 
 				//Send to sender, if not in recipient list
 				$includeSender = true ;
@@ -2002,17 +2003,19 @@ else {
 						if ($emailReceipt == 'Y') {
 							$bodyReadReceipt = "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID=$AI&gibbonPersonID=".$reportEntry[0]."&key=".$reportEntry[5]."'>".$emailReceiptText."</a>";
 							if (is_numeric(strpos($body, '[confirmLink]'))) {
-								$bodyOut = str_replace('[confirmLink]', $bodyReadReceipt, $body).$bodyFin;
+								$bodyOut = str_replace('[confirmLink]', $bodyReadReceipt, $body);
 							}
 							else {
-								$bodyOut = $body.$bodyReadReceipt.$bodyFin;
+								$bodyOut = $body.$bodyReadReceipt;
 							}
 						}
 						else {
-							$bodyOut = $body.$bodyFin;
+							$bodyOut = $body;
 						}
-						$mail->Body = $bodyOut ;
-						$mail->AltBody = emailBodyConvert($bodyOut);
+						$mail->renderBody('mail/email.twig.html', [
+							'title'  => $subject,
+							'body'   => $bodyOut
+						]);
 						if(!$mail->Send()) {
 							$partialFail = TRUE ;
 							setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], getModuleID($connection2, $_POST["address"]), $_SESSION[$guid]['gibbonPersonID'], 'Email Send Status', array('Status' => 'Not OK', 'Result' => $mail->ErrorInfo, 'Recipients' => $reportEntry[4]));
@@ -2036,9 +2039,11 @@ else {
                     $sender = formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff');
                     $date = dateConvertBack($guid, date('Y-m-d')).' '.date('H:i:s');
 
-                    $mail->Body = __('Message Bcc').': '.sprintf(__('The following message was sent by %1$s on %2$s and delivered to %3$s recipients.'), $sender, $date, $emailCount).'<br/><br/>'.$body.$bodyFin;
-                    $mail->AltBody = emailBodyConvert($mail->Body);
-                    $mail->Send();
+                    $mail->renderBody('mail/email.twig.html', [
+						'title'  => $subject,
+						'body'   => __('Message Bcc').': '.sprintf(__('The following message was sent by %1$s on %2$s and delivered to %3$s recipients.'), $sender, $date, $emailCount).'<br/><br/>'.$body
+					]);
+					$mail->Send();
                 }
 
                 $mail->smtpClose();

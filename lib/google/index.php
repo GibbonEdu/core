@@ -15,11 +15,7 @@ $_SESSION[$guid]["pageLoads"] = NULL;
 
 $URL = "index.php";
 
-//Cleint ID and Secret
-$client_id = getSettingByScope($connection2, "System", "googleClientID" );
-$client_secret = getSettingByScope($connection2, "System", "googleClientSecret" );
 $redirect_uri = getSettingByScope($connection2, "System", "googleRedirectUri" );
-
 
 /************************************************
   Make an API request on behalf of a user. In
@@ -28,14 +24,7 @@ $redirect_uri = getSettingByScope($connection2, "System", "googleRedirectUri" );
   through a login flow. To do this we need some
   information from our API console project.
  ************************************************/
-$client = new Google_Client();
-$client->setClientId($client_id);
-$client->setClientSecret($client_secret);
-$client->setRedirectUri($redirect_uri);
-$client->setAccessType('offline');
-$client->setScopes(array('https://www.googleapis.com/auth/userinfo.email',
-    'https://www.googleapis.com/auth/plus.me',
-    'https://www.googleapis.com/auth/calendar')); // set scope during user login
+$client = $container->get('Google_Client');
 
 /************************************************
   When we create the service here, we pass the
@@ -51,6 +40,11 @@ $service = new Google_Service_Oauth2($client);
   function. We store the resultant access token
   bundle in the session, and redirect to ourself.
 */
+
+if (isset($_GET['error'])) {
+    header('Location: '.getSettingByScope($connection2, 'System', 'absoluteURL').'?loginReturn=fail7');
+    exit;
+}
 
 if (isset($_GET['code'])) {
   $client->authenticate($_GET['code']);
@@ -83,7 +77,12 @@ if (isset($authUrl)){
 	//show login url
     echo '<div>';
         $themeName = isset($_SESSION[$guid]['gibbonThemeName'])? $_SESSION[$guid]['gibbonThemeName'] : 'Default';
-		print '<a target=\'_top\' class="login" href="' . $authUrl . '" onclick="addGoogleLoginParams(this)"><img style=\'width: 260px; height: 55px; margin-left: -4px\' src="themes/' . $themeName . '/img/g_login_btn.png" /></a>';
+        echo '<a target=\'_top\' class="login" href="' . $authUrl . '" onclick="addGoogleLoginParams(this)">';
+            echo '<button class="w-full bg-white rounded shadow border border-gray-400 flex items-center px-2 py-1 mb-2 text-gray-600 hover:shadow-md hover:border-blue-600 hover:text-blue-600">';
+                echo '<img class="w-10 h-10" src="themes/'.$themeName.'/img/google-login.svg">';
+                echo '<span class="flex-grow text-lg">'.__('Sign in with Google').'</span>';
+            echo '</button>';
+        echo '</a>';
 
         $form = \Gibbon\Forms\Form::create('loginFormGoogle', '#');
         $form->setFactory(\Gibbon\Forms\DatabaseFormFactory::create($pdo));

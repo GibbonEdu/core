@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
         ->add(__('Edit Expense Approver'));    
 
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('error3' => 'Your request failed because some inputs did not meet a requirement for uniqueness.'));
+        returnProcess($guid, $_GET['return']);
     }
 
     //Check if school year specified
@@ -60,21 +60,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
             $values = $result->fetch();
 
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/expenseApprovers_manage_editProcess.php?gibbonFinanceExpenseApproverID=$gibbonFinanceExpenseApproverID");
-
             $form->setFactory(DatabaseFormFactory::create($pdo));
-            $form->setClass('smallIntBorder fullWidth');
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
             $row = $form->addRow();
                 $row->addLabel('gibbonPersonID', __('Staff'));
-                $row->addSelectStaff('gibbonPersonID')->isRequired()->placeholder();
+                $row->addSelectStaff('gibbonPersonID')->required()->placeholder();
 
             $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
             if ($expenseApprovalType == 'Chain Of All') {
                 $row = $form->addRow();
                     $row->addLabel('sequenceNumber', __('Sequence Number'))->description(__('Must be unique.'));
-                    $row->addSequenceNumber('sequenceNumber', 'gibbonFinanceExpenseApprover', $values['sequenceNumber'])->isRequired()->maxLength(3);
+                    $row->addSequenceNumber('sequenceNumber', 'gibbonFinanceExpenseApprover', $values['sequenceNumber'])->required()->maxLength(3);
             }
 
             $form->loadAllValuesFrom($values);

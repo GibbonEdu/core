@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
 			
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));
-                $row->addTextField('name')->isRequired();
+                $row->addTextField('name')->required();
 
             $row = $form->addRow();
                 $row->addLabel('members', __('Add Members'));

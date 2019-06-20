@@ -66,16 +66,16 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_dup
 
             $row = $form->addRow();
                 $row->addLabel('role', __('Role'));
-                $row->addTextField('role')->isRequired()->readonly()->setValue($role['name']);
+                $row->addTextField('role')->required()->readonly()->setValue($role['name']);
 
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));
-                $row->addTextField('name')->isRequired()->maxLength(20);
+                $row->addTextField('name')->required()->maxLength(20);
 
             $row = $form->addRow();
                 $row->addLabel('nameShort', __('Short Name'));
-                $row->addTextField('nameShort')->isRequired()->maxLength(4);
+                $row->addTextField('nameShort')->required()->maxLength(4);
 
             $row = $form->addRow();
                 $row->addFooter();

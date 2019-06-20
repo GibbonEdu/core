@@ -107,6 +107,16 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
     }
 
     /**
+     * Get the HTML output of the content element.
+     * @return  string
+     */
+    public function getOutput()
+    {
+        $class = $this instanceof Checkbox ? 'inline flex-1 relative' : 'flex-1 relative';
+        return $this->prepended."<div class='{$class}'>".$this->getElement()."</div>".$this->appended;
+    }
+
+    /**
      * Gets the HTML output for this form element.
      * @return  string
      */
@@ -115,10 +125,12 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
         $output = '';
 
         if ($this->hasValidation()) {
-            $output .= 'var '.$this->getID().'Validate=new LiveValidation(\''.$this->getID().'\', {'.implode(',', $this->validationOptions).' }); '."\r";
+            $safeID = 'lv'.preg_replace('/[^a-zA-Z0-9_]/', '', $this->getID());
+            
+            $output .= 'var '.$safeID.'Validate=new LiveValidation(\''.$this->getID().'\', {'.implode(',', $this->validationOptions).' }); '."\r";
 
             foreach ($this->buildValidations() as $valid) {
-                $output .= $this->getID().'Validate.add('.$valid['type'].', {'.$valid['params'].' } ); '."\r";
+                $output .= $safeID.'Validate.add('.$valid['type'].', {'.$valid['params'].' } ); '."\r";
             }
         }
 

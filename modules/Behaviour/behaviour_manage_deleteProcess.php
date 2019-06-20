@@ -66,8 +66,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     exit();
                 }
 
-                $return = deleteLike($connection2, 'Behaviour', 'gibbonBehaviourID', $gibbonBehaviourID, $_SESSION[$guid]['gibbonPersonID'], $row['gibbonPersonID'], 'Positive Behaviour');
-
                 $URLDelete = $URLDelete.'&return=success0';
                 header("Location: {$URLDelete}");
             }

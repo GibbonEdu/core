@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
 
     $returns = array();
     $returns['error5'] = __('Your request failed because your passwords did not match.');
-    $returns['error6'] = __('Your request failed because your password to not meet the minimum requirements for strength.');
+    $returns['error6'] = __('Your request failed because your password does not meet the minimum requirements for strength.');
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, $returns);
     }
@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
 
             // Acess denied for users changing a password if they do not have system access to this role
             if ( ($role['restriction'] == 'Admin Only' && !isset($userRoles['001']) ) 
-              || ($role['restriction'] == 'Same Role' && !isset($userRoles[$role['gibbonRoleID']]) )) {
+              || ($role['restriction'] == 'Same Role' && !isset($userRoles[$role['gibbonRoleID']]) && !isset($userRoles['001']) )) {
                 echo "<div class='error'>";
                 echo __('You do not have access to this action.');
                 echo '</div>';
@@ -95,26 +95,26 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
 
             $row = $form->addRow();
                 $row->addLabel('username', __('Username'));
-                $row->addTextField('username')->isRequired()->readOnly()->setValue($values['username']);
+                $row->addTextField('username')->required()->readOnly()->setValue($values['username']);
 
             $row = $form->addRow();
                 $row->addLabel('passwordNew', __('Password'));
                 $row->addPassword('passwordNew')
                     ->addPasswordPolicy($pdo)
                     ->addGeneratePasswordButton($form)
-                    ->isRequired()
+                    ->required()
                     ->maxLength(30);
 
             $row = $form->addRow();
                 $row->addLabel('passwordConfirm', __('Confirm Password'));
                 $row->addPassword('passwordConfirm')
                     ->addConfirmation('passwordNew')
-                    ->isRequired()
+                    ->required()
                     ->maxLength(30);
 
             $row = $form->addRow();
                 $row->addLabel('passwordForceReset', __('Force Reset Password?'))->description(__('User will be prompted on next login.'));
-                $row->addYesNo('passwordForceReset')->isRequired()->selected('N');
+                $row->addYesNo('passwordForceReset')->required()->selected('N');
 
             $row = $form->addRow();
                 $row->addFooter();

@@ -22,8 +22,11 @@ namespace Gibbon\Tables\Renderer;
 use Gibbon\Domain\DataSet;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\Layout\Element;
-use Gibbon\Tables\Columns\Column;
-use Gibbon\Tables\Renderer\RendererInterface;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 
 /**
  * SpreadsheetRenderer
@@ -48,24 +51,24 @@ class SpreadsheetRenderer implements RendererInterface
      */
     public function renderTable(DataTable $table, DataSet $dataSet)
     {
-        // Create new PHPExcel object
-        $excel = new \PHPExcel();
+        // Create new PHPSpreadsheet object
+        $excel = new Spreadsheet();
 
         // Create styles
         $headerStyle = [
             'fill' => [
-                'type' => \PHPExcel_Style_Fill::FILL_SOLID, 
+                'type' => Fill::FILL_SOLID,
                 'color' => ['rgb' => 'eeeeee'],
             ],
             'borders' => [
-                'allborders' => ['style' => \PHPExcel_Style_Border::BORDER_THIN, 'color' => ['argb' => '444444'], ], 
+                'allborders' => ['style' => Border::BORDER_THIN, 'color' => ['argb' => '444444'], ],
             ],
             'font' => [
                 'size' => 12,
                 'bold' => true,
             ],
             'alignment' => [
-                'vertical' => \PHPExcel_Style_Alignment::VERTICAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
             ],
         ];
         $rowStyle = [
@@ -74,10 +77,10 @@ class SpreadsheetRenderer implements RendererInterface
             ],
         ];
 
-        $currentStyle = ['fill' => [ 'type' => \PHPExcel_Style_Fill::FILL_SOLID, 'color' => ['rgb' => 'B3EFC2'],]];
-        $errorStyle = ['fill' => [ 'type' => \PHPExcel_Style_Fill::FILL_SOLID, 'color' => ['rgb' => 'F6CECB'],]];
-        $warningStyle = ['fill' => [ 'type' => \PHPExcel_Style_Fill::FILL_SOLID, 'color' => ['rgb' => 'FFD2A9'],]];
-        $rowStripeStyle = ['fill' => [ 'type' => \PHPExcel_Style_Fill::FILL_SOLID, 'color' => ['rgb' => 'FAFAFA'],]];
+        $currentStyle = ['fill' => [ 'type' => Fill::FILL_SOLID, 'color' => ['rgb' => 'B3EFC2'],]];
+        $errorStyle = ['fill' => [ 'type' => Fill::FILL_SOLID, 'color' => ['rgb' => 'F6CECB'],]];
+        $warningStyle = ['fill' => [ 'type' => Fill::FILL_SOLID, 'color' => ['rgb' => 'FFD2A9'],]];
+        $rowStripeStyle = ['fill' => [ 'type' => Fill::FILL_SOLID, 'color' => ['rgb' => 'FAFAFA'],]];
 
         // Set document properties
         $excel->getProperties()->setCreator($table->getMetaData('creator'))
@@ -175,20 +178,32 @@ class SpreadsheetRenderer implements RendererInterface
         $exportFileType = $table->getMetaData('filetype');
         if (empty($exportFileType)) $exportFileType = 'Excel2007';
 
-        switch($exportFileType) {
-            case 'Excel2007': 		$filename .= '.xlsx'; 
-                                    $mimetype = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'; break;
-            case 'Excel5': 			$filename .= '.xls';  
-                                    $mimetype = 'application/vnd.ms-excel'; break;
-            case 'OpenDocument': 	$filename .= '.ods';  
-                                    $mimetype = 'application/vnd.oasis.opendocument.spreadsheet'; break;
-            case 'CSV': 			$filename .= '.csv';  
-                                    $mimetype = 'text/csv'; break;
-        }
-
         // FINALIZE THE DOCUMENT SO IT IS READY FOR DOWNLOAD
         // Set active sheet index to the first sheet, so Excel opens this as the first sheet
         $excel->setActiveSheetIndex(0);
+
+        switch($exportFileType) {
+            case 'Excel2007':
+                $filename .= '.xlsx';
+                $mimetype = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+                $objWriter = IOFactory::createWriter($excel, 'Xlsx');
+                break;
+            case 'Excel5':
+                $filename .= '.xls';
+                $mimetype = 'application/vnd.ms-excel';
+                $objWriter = IOFactory::createWriter($excel, 'Xls');
+                break;
+            case 'OpenDocument':
+                $filename .= '.ods';
+                $mimetype = 'application/vnd.oasis.opendocument.spreadsheet';
+                $objWriter = IOFactory::createWriter($excel, 'Ods');
+                break;
+            case 'CSV':
+                $filename .= '.csv';
+                $mimetype = 'text/csv';
+                $objWriter = IOFactory::createWriter($excel, 'Csv');
+                break;
+        }
 
         // Redirect output to a client’s web browser (Excel2007)
         header('Content-Type: '.$mimetype);
@@ -201,7 +216,6 @@ class SpreadsheetRenderer implements RendererInterface
         header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
         header ('Pragma: public'); // HTTP/1.0
 
-        $objWriter = \PHPExcel_IOFactory::createWriter($excel, $exportFileType);
         $objWriter->save('php://output');
 
         return;

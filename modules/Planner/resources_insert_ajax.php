@@ -65,8 +65,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
     $output .= '};';
     $output .= '</script>';
 
-    $output .= '<style>#'.$id.'ajaxFormSearch ul.token-input-list-facebook { margin: 0 10px; width: 610px !important; float: none }</style>';
-
     $output .= "<table cellspacing='0' style='width: 100%'>";
     $output .= "<tr id='".$id."resourceInsert'>";
     $output .= "<td colspan=2 style='padding-top: 0px'>";

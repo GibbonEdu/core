@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
 
 				$row = $form->addRow();
                     $row->addLabel('gibbonTTDayID', __('Day'));
-                    $row->addSelect('gibbonTTDayID')->fromQuery($pdo, $sql, $data)->isRequired()->placeholder();
+                    $row->addSelect('gibbonTTDayID')->fromQuery($pdo, $sql, $data)->required()->placeholder();
 
 				$row = $form->addRow();
 					$row->addFooter();

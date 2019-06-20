@@ -45,13 +45,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'));
-        $row->addTextField('name')->isRequired()->setValue();
+        $row->addTextField('name')->required()->setValue();
 
     $row = $form->addRow();
         $row->addLabel('members', __('Members'));
         $row->addSelectUsers('members', $_SESSION[$guid]['gibbonSchoolYearID'], ['includeStudents' => true])
             ->selectMultiple()
-            ->isRequired();
+            ->required();
 
     $row = $form->addRow();
         $row->addFooter();

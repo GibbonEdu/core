@@ -8,11 +8,11 @@ $I->amOnModulePage('School Admin', 'schoolYear_manage.php');
 $I->clickNavigation('Add');
 $I->seeBreadcrumb('Add School Year');
 
-$I->fillField('name', '2020-2021');
+$I->fillField('name', '2050-2051');
 $I->selectOption('status', 'Upcoming');
 $I->fillField('sequenceNumber', 100);
-$I->fillField('firstDay', '01/01/2020');
-$I->fillField('lastDay', '31/12/2020');
+$I->fillField('firstDay', '01/01/2050');
+$I->fillField('lastDay', '31/12/2050');
 $I->click('Submit');
 
 $I->see('Your request was completed successfully.', '.success');

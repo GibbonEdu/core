@@ -37,6 +37,7 @@ class ExpandableColumn extends Column
     {
         parent::__construct($id);
         $this->sortable(false)->width('5%');
+        $this->context('action');
 
         $table->modifyRows(function($data, $row, $columnCount) {
             return $row->append($this->getExpandedContent($data, $columnCount));
