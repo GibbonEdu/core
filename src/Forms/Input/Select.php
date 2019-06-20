@@ -37,7 +37,7 @@ class Select extends Input
     protected $hasSelected = false;
 
     protected $chainedToID;
-    protected $chainedToValues;
+    protected $chainedToValues = [];
 
     /**
      * Sets the selected element(s) of the select input.
@@ -111,12 +111,8 @@ class Select extends Input
      */
     public function chainedTo($id, $values)
     {
-        if (count($values) != count($this->options)) {
-            throw new \InvalidArgumentException(sprintf('Element %s: chainedTo expects the number of values to match the number of options, %s found.', $this->name, count($values)));
-        }
-
         $this->chainedToID = $id;
-        $this->chainedToValues = $values;
+        $this->chainedToValues = array_merge($this->chainedToValues, $values);
 
         return $this;
     }
@@ -175,6 +171,19 @@ class Select extends Input
     {
         $output = '';
 
+        if ($this->getReadonly()) {
+            $options = [];
+            $selected = is_array($this->selected)? $this->selected : [$this->selected];
+
+            array_walk_recursive($this->options, function ($item, $key) use (&$selected, &$options) {
+                if (in_array($key, $selected)) {
+                    $options[$key] = $item;
+                }
+            });
+            $this->options = $options;
+            $this->setRequired(false)->placeholder(null);
+        }
+
         if (!empty($this->getAttribute('multiple'))) {
             if (empty($this->getAttribute('size'))) {
                 $this->setAttribute('size', 8);
@@ -208,7 +217,8 @@ class Select extends Input
                     $output .= '<optgroup label="-- '.$value.' --">';
                     foreach ($label as $subvalue => $sublabel) {
                         $selected = ($this->isOptionSelected($subvalue))? 'selected' : '';
-                        $output .= '<option value="'.$subvalue.'" '.$selected.'>'.$sublabel.'</option>';
+                        $class = (!empty($this->chainedToValues[$subvalue]))? ' class="'.$this->chainedToValues[$subvalue].'" ' : '';
+                        $output .= '<option value="'.$subvalue.'" '.$selected.$class.'>'.$sublabel.'</option>';
                     }
                     $output .= '</optgroup>';
                 } else {
@@ -223,7 +233,7 @@ class Select extends Input
 
         if (!empty($this->chainedToID)) {
             $output .= '<script type="text/javascript">';
-            $output .= '$("#'.$this->getID().'").chainedTo("#'.$this->chainedToID.'");';
+            $output .= '$(function() {$("#'.$this->getID().'").chainedTo("#'.$this->chainedToID.'");});';
             $output .= '</script>';
         }
 

@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
         $page->breadcrumbs->add(__('View Activities'));          
 
         if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, array('success0' => 'Registration was successful.', 'success1' => 'Unregistration was successful.', 'success2' => 'Registration was successful, but the activity is full, so you are on the waiting list.'));
+            returnProcess($guid, $_GET['return'], null, array('success0' => __('Registration was successful.'), 'success1' => __('Unregistration was successful.'), 'success2' => __('Registration was successful, but the activity is full, so you are on the waiting list.')));
         }
 
         //Get current role category
@@ -73,10 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             //IF PARENT, SET UP LIST OF CHILDREN
             $countChild = 0;
             if ($roleCategory == 'Parent' and $highestAction == 'View Activities_studentRegisterByParent') {
-                $gibbonPersonID = null;
-                if (isset($_GET['gibbonPersonID'])) {
-                    $gibbonPersonID = $_GET['gibbonPersonID'];
-                }
+                $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
                 try {
                     $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
                     $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
@@ -129,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             echo __('Filter & Search');
             echo '</h2>';
 
-            $search = isset($_GET['search'])? $_GET['search'] : null;
+            $search = $_GET['search'] ?? '';
 
             $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
             $form->setClass('noIntBorder fullWidth');
@@ -138,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
             if ($countChild > 0 and $roleCategory == 'Parent' and $highestAction == 'View Activities_studentRegisterByParent') {
                 $row = $form->addRow();
-                    $row->addLabel('gibbonPersonID', __('Child'))->description('Choose the child you are registering for.');
+                    $row->addLabel('gibbonPersonID', __('Child'))->description(__('Choose the child you are registering for.'));
                     $row->addSelect('gibbonPersonID')->fromArray($options)->selected($gibbonPersonID)->placeholder(($countChild > 1)? '' : null);
             }
 
@@ -156,10 +153,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             echo '</h2>';
 
             //Set pagination variable
-            $page = 1;
-            if (isset($_GET['page'])) {
-                $page = $_GET['page'];
-            }
+            $page = $_GET['page'] ?? 1;
+            
             if ((!is_numeric($page)) or $page < 1) {
                 $page = 1;
             }
@@ -371,7 +366,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         if ($row['provider'] == 'School') {
                             echo $_SESSION[$guid]['organisationNameShort'];
                         } else {
-                            echo 'External';
+                            echo __('External');
                         }
                         echo '</td>';
                         echo '<td>';

@@ -422,7 +422,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 //DEAL WITH CUSTOM FIELDS
                 //Prepare field values
                 $resultFields = getCustomFields($connection2, $guid, $student, $staff, $parent, $other, null, true);
-                $fields = array();
+                $fields = isset($row2['fields']) ? unserialize($row2['fields']) : [];
                 if ($resultFields->rowCount() > 0) {
                     while ($rowFields = $resultFields->fetch()) {
                         if (isset($_POST['newcustom'.$rowFields['gibbonPersonFieldID'].'On'])) {

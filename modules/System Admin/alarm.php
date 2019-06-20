@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
 
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelect($setting['name'])->fromArray($alarmTypes)->selected($setting['value'])->isRequired();
+        $row->addSelect($setting['name'])->fromArray($alarmTypes)->selected($setting['value'])->required();
 
     $row = $form->addRow();
         $row->addFooter();

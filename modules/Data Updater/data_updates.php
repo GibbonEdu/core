@@ -17,19 +17,20 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\Form;
+use Gibbon\Tables\Action;
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
 use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
+use Gibbon\Forms\Layout\Element;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.php') == false) {
-    //Acess denied
-    echo '<div class="error">';
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
-    //Proceed!
+    // Proceed!
     $page->breadcrumbs->add(__('My Data Updates'));
 
     if (isset($_GET['return'])) {
@@ -37,9 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
     }
 
     $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
-
-    $gateway = new DataUpdaterGateway($pdo);
-    $updatablePeople = $gateway->selectUpdatableUsersByPerson($gibbonPersonID);
+    $dataUpdaterGateway = $container->get(DataUpdaterGateway::class);
 
     // Get the data updater settings for required updates
     $requiredUpdates = getSettingByScope($connection2, 'Data Updater', 'requiredUpdates');
@@ -64,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
     echo '</p>';
 
     if ($requiredUpdates == 'Y') {
-        $updatesRequiredCount = $gateway->countAllRequiredUpdatesByPerson($gibbonPersonID);
+        $updatesRequiredCount = $dataUpdaterGateway->countAllRequiredUpdatesByPerson($gibbonPersonID);
 
         if ($updatesRequiredCount > 0) {
             echo '<div class="warning">';
@@ -80,84 +79,86 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
         }
     }
 
-    echo '<h2>';
-    echo __('Data Updates');
-    echo '</h2>';
-
-    if ($updatablePeople->rowCount() == 0 || empty($updatableDataTypes)) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
-    } else {
-        echo '<table cellspacing="0" class="fullWidth colorOddEven">';
-        echo '<tr class="head">';
-        echo '<th>';
-        echo __('Photo');
-        echo '</th>';
-        echo '<th>';
-        echo __('Name');
-        echo '</th>';
-        foreach ($updatableDataTypes as $type) {
-            echo '<th>';
-            echo __($type.' Data');
-            echo '</th>';
-        }
-        echo '</tr>';
-
-        while ($person = $updatablePeople->fetch()) {
-            echo '<tr>';
-
-            echo '<td>';
-            echo getUserPhoto($guid, $person['image_240'], 75);
-            echo '</td>';
-
-            echo '<td>';
-            echo formatName('', $person['preferredName'], $person['surname'], 'Student', true);
-            echo '</td>';
-
-            $dataUpdatesByType = $gateway->selectDataUpdatesByPerson($person['gibbonPersonID'], $gibbonPersonID)->fetchGrouped();
-
-            foreach ($updatableDataTypes as $type) {
-                $updateRequired = false;
-                $output = '';
-
-                if (!empty($dataUpdatesByType[$type])) {
-                    foreach ($dataUpdatesByType[$type] as $dataUpdate) {
-                        $output .= '<a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_'.strtolower($type).'.php&'.$dataUpdate['idType'].'='.$dataUpdate['id'].'" style="display:block;">';
-
-                        $lastUpdate = !empty($dataUpdate['lastUpdated'])? __('Last Updated').': '.date('F j, Y', strtotime($dataUpdate['lastUpdated'])) : '';
-                        
-                        if (!in_array($type, $requiredUpdatesByType) || empty($cutoffDate)) {
-                            // Display an edit link if updates aren't required or no cutoff date is set
-                            $output .= "<img title='".__('Edit').'<br/>'.$lastUpdate."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/><br/>";
-                            $output .= $dataUpdate['name'];
-                        } else if (empty($dataUpdate['lastUpdated']) || $dataUpdate['lastUpdated'] < $cutoffDate ) {
-                            // Display an arrow and highlight the cell if the most recent update is before the cutoff date
-                            $output .= "<img title='".__('Update Required').'<br/>'.$lastUpdate."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copyforward.png'/>";
-                            if ($dataUpdate['name'] != '') {
-                                $output .= "<br/>".$dataUpdate['name'];
-                            }
-                            $output .= "<br/>".__('Update Required');
-                            $updateRequired = true;
-                        } else {
-                            // Display a checkmark if the most recent data is up-to-date
-                            $output .= "<img title='".__('Up to date').'<br/>'.$lastUpdate."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/><br/>";
-                            $output .= $dataUpdate['name'];
-                        }
-                        $output .= '</a><br/>';
-                    }
+    // Get the data updates per person and indicate required updates
+    $updatablePeople = $dataUpdaterGateway->selectUpdatableUsersByPerson($gibbonPersonID)->toDataSet();
+    $updatablePeople->transform(function (&$person) use ($dataUpdaterGateway, $gibbonPersonID, &$requiredUpdatesByType, &$cutoffDate) {
+        $person['updates'] = $dataUpdaterGateway->selectDataUpdatesByPerson($person['gibbonPersonID'], $gibbonPersonID)->fetchGrouped();
+        
+        foreach ($person['updates'] as $type => $dataUpdates) {
+            foreach ($dataUpdates as $index => $dataUpdate) {
+                if (!in_array($type, $requiredUpdatesByType) || empty($cutoffDate)) {
+                    $person['updates'][$type][$index]['required'] = 'N/A';
+                } elseif (empty($dataUpdate['lastUpdated']) || $dataUpdate['lastUpdated'] < $cutoffDate) {
+                    $person['updates'][$type][$index]['required'] = 'Y';
+                    $person['updatesRequired'][$type] = true;
                 } else {
-                    $output .= '<span class="small subdued emphasis">'.__('N/A').'</span>';
+                    $person['updates'][$type][$index]['required'] = 'N';
+                }
+            }
+        }
+    });
+
+    // DATA TABLE
+    $table = DataTable::create('dataUpdates');
+    $table->setTitle(__('Data Updates'));
+
+    $table->addColumn('image_240', __('Photo'))
+        ->context('secondary')
+        ->notSortable()
+        ->format(Format::using('userPhoto', ['image_240', 'sm']));
+
+    $table->addColumn('fullName', __('Name'))
+        ->context('primary')
+        ->sortable(['surname', 'preferredName'])
+        ->format(Format::using('name', ['title', 'preferredName', 'surname', 'Student', true]));
+
+    foreach ($updatableDataTypes as $type) {
+        $table->addColumn($type, __($type.' Data'))
+            ->context('primary')
+            ->format(function ($person) use ($type) {
+                $output = '';
+                if (empty($person['updates'][$type])) {
+                    return Format::small(__('N/A'));
                 }
 
-                echo '<td class="'.($updateRequired? 'error' : '').'">';
-                echo $output;
-                echo '</td>';
-            }
+                foreach ($person['updates'][$type] as $dataUpdate) {
+                    $lastUpdate = !empty($dataUpdate['lastUpdated'])
+                        ? __('Last Updated').': '.date('F j, Y', strtotime($dataUpdate['lastUpdated'])) 
+                        : '';
 
-            echo '</tr>';
-        }
+                    // Create an action icon for this type of update
+                    $action = (new Action('edit', __('Edit')))
+                        ->setURL('/modules/Data Updater/data_'.strtolower($type).'.php')
+                        ->addParam($dataUpdate['idType'], $dataUpdate['id'])
+                        ->setClass('block underline');
 
-        echo '</table>';
+                    // Add the family name if there's more than one family
+                    if (!empty($dataUpdate['name']) && count($person['updates'][$type]) > 1) {
+                        $action->addEmbeddedElement(new Element('<br/>'.$dataUpdate['name']));
+                    }
+
+                    // Change the label/icon based on required updates
+                    if ($dataUpdate['required'] == 'N') {
+                        $action->setLabel(__('Up to date').'<br/>'.$lastUpdate)
+                               ->setIcon('iconTick');
+                    } elseif ($dataUpdate['required'] == 'Y') {
+                        $action->setLabel(__('Update Required').'<br/>'.$lastUpdate)
+                               ->setIcon('copyforward')
+                               ->addEmbeddedElement(new Element('<br/>'.__('Update Required')));
+                    }
+
+                    $output .= $action->getOutput();
+                }
+
+                return $output;
+            })
+            ->modifyCells(function ($person, $cell) use ($type) {
+                if (!empty($person['updatesRequired'][$type])) {
+                    $cell->addClass('error');
+                }
+                return $cell;
+            });
     }
+
+    echo $table->render($updatablePeople);
 }

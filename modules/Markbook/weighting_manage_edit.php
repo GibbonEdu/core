@@ -128,11 +128,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
 
                     $row = $form->addRow();
                         $row->addLabel('description', __('Description'));
-                        $row->addTextField('description')->isRequired()->maxLength(50);
+                        $row->addTextField('description')->required()->maxLength(50);
 
                     $row = $form->addRow();
                         $row->addLabel('weighting', __('Weighting'))->description(__('Percent: 0 to 100'));
-                        $row->addNumber('weighting')->isRequired()->maxLength(6)->minimum(0)->maximum(100)->onlyInteger(false);
+                        $row->addNumber('weighting')->required()->maxLength(6)->minimum(0)->maximum(100)->onlyInteger(false);
 
                     $percentOptions = array(
                         'term' => __('Cumulative Average'),

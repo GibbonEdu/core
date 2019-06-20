@@ -405,7 +405,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         echo '</tr>';
                         echo '<tr>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Parent 1 Second Langage').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Parent 1 Second Language').'</span><br/>';
                         echo $rowMember['languageSecond'];
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
@@ -474,7 +474,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     echo '</tr>';
                     echo '<tr>';
                     echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Parent %1$s Second Langage'), $i).'</span><br/>';
+                    echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Parent %1$s Second Language'), $i).'</span><br/>';
                     echo $row['parent'.$i.'languageSecond'];
                     echo '</td>';
                     echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
@@ -608,7 +608,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             echo '</tr>';
                             echo '<tr>';
                             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Parent %1$s Second Langage'), $count).'</span><br/>';
+                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Parent %1$s Second Language'), $count).'</span><br/>';
                             echo $rowMember['languageSecond'];
                             echo '</td>';
                             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";

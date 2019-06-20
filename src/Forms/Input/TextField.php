@@ -72,7 +72,22 @@ class TextField extends Input
         return $this;
     }
 
-    public function isUnique($ajaxURL, $data = array())
+    /**
+     * @deprecated Remove setters that start with isXXX for code consistency.
+     */
+    public function isUnique($ajaxURL, $data = [])
+    {
+        return $this->uniqueField($ajaxURL, $data);
+    }
+
+    /**
+     * Add an AJAX uniqueness check to this field using the given URL.
+     *
+     * @param string $ajaxURL
+     * @param array $data
+     * @return self
+     */
+    public function uniqueField($ajaxURL, $data = [])
     {
         $label = $this->row->getElement('label'.$this->getName());
         $fieldLabel = (!empty($label))? $label->getLabelText() : ucfirst($this->getName());

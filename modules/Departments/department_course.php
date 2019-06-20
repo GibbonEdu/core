@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             }
 
             $urlParams = ['gibbonDepartmentID' => $gibbonDepartmentID];
-            
+
             $page->breadcrumbs
                 ->add(__('View All'), 'departments.php')
                 ->add($row['department'], 'department.php', $urlParams)
@@ -107,43 +107,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 echo '</p>';
             }
 
-            try {
-                $dataHooks = array();
-                $sqlHooks = "SELECT * FROM gibbonHook WHERE type='Unit'";
-                $resultHooks = $connection2->prepare($sqlHooks);
-                $resultHooks->execute($dataHooks);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-
-            while ($rowHooks = $resultHooks->fetch()) {
-                $hookOptions = unserialize($rowHooks['options']);
-                if ($hookOptions['unitTable'] != '' and $hookOptions['unitIDField'] != '' and $hookOptions['unitCourseIDField'] != '' and $hookOptions['unitNameField'] != '' and $hookOptions['unitDescriptionField'] != '' and $hookOptions['classLinkTable'] != '' and $hookOptions['classLinkJoinFieldUnit'] != '' and $hookOptions['classLinkJoinFieldClass'] != '' and $hookOptions['classLinkIDField'] != '') {
-                    try {
-                        $dataHookUnits = array('gibbonCourseID' => $gibbonCourseID);
-                        $sqlHookUnits = 'SELECT DISTINCT '.$hookOptions['unitTable'].'.'.$hookOptions['unitNameField'].', '.$hookOptions['unitTable'].'.'.$hookOptions['unitDescriptionField'].' FROM '.$hookOptions['unitTable'].' JOIN '.$hookOptions['classLinkTable'].' ON ('.$hookOptions['unitTable'].'.'.$hookOptions['unitIDField'].'='.$hookOptions['classLinkTable'].'.'.$hookOptions['classLinkJoinFieldUnit'].') WHERE '.$hookOptions['classLinkTable'].'.'.$hookOptions['unitCourseIDField'].'=:gibbonCourseID ORDER BY '.$hookOptions['classLinkTable'].'.'.$hookOptions['classLinkIDField'];
-                        $resultHookUnits = $connection2->prepare($sqlHookUnits);
-                        $resultHookUnits->execute($dataHookUnits);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
-
-                    while ($rowHookUnits = $resultHookUnits->fetch()) {
-                        echo '<h4>';
-                        echo $rowHookUnits[$hookOptions['unitNameField']];
-                        if ($rowHooks['name'] != '') {
-                            echo "<br/><span style='font-size: 75%; font-style: italic; font-weight: normal'>".$rowHooks['name'].' Unit</span>';
-                        }
-                        echo '</h4>';
-                        echo '<p>';
-                        echo $rowHookUnits[$hookOptions['unitDescriptionField']];
-                        echo '</p>';
-                    }
-                }
-            }
-
             //Print sidebar
-            $_SESSION[$guid]['sidebarExtra'] = '';
+            $sidebarExtra = '';
 
             if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php')) {
                 //Print class list
@@ -157,15 +122,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 }
 
                 if ($resultCourse->rowCount() > 0) {
-                    $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra'].'<h2>';
-                    $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra'].__('Class List');
-                    $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra'].'</h2>';
+                    $sidebarExtra .= '<div class="column-no-break">';
+                    $sidebarExtra .= '<h2>';
+                    $sidebarExtra .= __('Class List');
+                    $sidebarExtra .= '</h2>';
 
-                    $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra'].'<ul>';
+                    $sidebarExtra .= '<ul>';
                     while ($rowCourse = $resultCourse->fetch()) {
-                        $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra']."<li><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Departments/department_course_class.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=".$rowCourse['gibbonCourseClassID']."'>".$rowCourse['course'].'.'.$rowCourse['class'].'</a></li>';
+                        $sidebarExtra .= "<li><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Departments/department_course_class.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=".$rowCourse['gibbonCourseClassID']."'>".$rowCourse['course'].'.'.$rowCourse['class'].'</a></li>';
                     }
-                    $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra'].'</ul>';
+                    $sidebarExtra .= '</ul>';
+                    $sidebarExtra .= '</div>';
+
+                    $_SESSION[$guid]['sidebarExtra'] = $sidebarExtra;
                 }
             }
         }

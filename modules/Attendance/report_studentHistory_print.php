@@ -1,4 +1,8 @@
 <?php
+
+use Gibbon\Tables\DataTable;
+use Gibbon\Module\Attendance\StudentHistoryData;
+use Gibbon\Module\Attendance\StudentHistoryView;
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -45,6 +49,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
         echo __('Attendance History for').' '.formatName('', $row['preferredName'], $row['surname'], 'Student');
         echo '</h2>';
 
-        report_studentHistory($guid, $gibbonPersonID, false, $_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module']."/report_studentHistory_print.php&gibbonPersonID=$gibbonPersonID", $connection2, $row['dateStart'], $row['dateEnd']);
+        // ATTENDANCE DATA
+        $attendanceData = $container
+            ->get(StudentHistoryData::class)
+            ->getAttendanceData($_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID'], $row['dateStart'], $row['dateEnd']);
+
+        // DATA TABLE
+        $renderer = $container->get(StudentHistoryView::class);
+        $renderer->addData('printView', true);
+        $table = DataTable::create('studentHistory', $renderer);
+        $table->addHeaderAction('print', __('Print'))
+            ->setExternalURL('javascript:window.print()')
+            ->setIcon('print')
+            ->displayLabel();
+
+        echo $table->render($attendanceData);
     }
 }

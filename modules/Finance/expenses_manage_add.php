@@ -83,16 +83,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
 			$cycleName = getBudgetCycleName($gibbonFinanceBudgetCycleID, $connection2);
 			$row = $form->addRow();
 				$row->addLabel('name', __('Budget Cycle'));
-				$row->addTextField('name')->setValue($cycleName)->maxLength(20)->isRequired()->readonly();
+				$row->addTextField('name')->setValue($cycleName)->maxLength(20)->required()->readonly();
 
 			$sql = "SELECT gibbonFinanceBudgetID as value, name FROM gibbonFinanceBudget WHERE active='Y' ORDER BY name";
 			$row = $form->addRow();
 				$row->addLabel('gibbonFinanceBudgetID', __('Budget'));
-				$row->addSelect('gibbonFinanceBudgetID')->fromQuery($pdo, $sql)->isRequired()->placeholder();
+				$row->addSelect('gibbonFinanceBudgetID')->fromQuery($pdo, $sql)->required()->placeholder();
 
 			$row = $form->addRow();
 				$row->addLabel('title', __('Title'));
-				$row->addTextField('title')->maxLength(60)->isRequired();
+				$row->addTextField('title')->maxLength(60)->required();
 
 			$statuses = array(
 				'Approved' => __('Approved'),
@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
 			);
 			$row = $form->addRow();
 				$row->addLabel('status', __('Status'));
-				$row->addSelect('status')->fromArray($statuses)->isRequired()->placeholder();
+				$row->addSelect('status')->fromArray($statuses)->required()->placeholder();
 
 			$expenseRequestTemplate = getSettingByScope($connection2, 'Finance', 'expenseRequestTemplate');
 			$row = $form->addRow();
@@ -111,15 +111,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
 
 			$row = $form->addRow();
 				$row->addLabel('cost', __('Total Cost'));
-				$row->addCurrency('cost')->isRequired()->maxLength(15);
+				$row->addCurrency('cost')->required()->maxLength(15);
 
 			$row = $form->addRow();
 				$row->addLabel('countAgainstBudget', __('Count Against Budget'))->description(__('For tracking purposes, should the item be counted against the budget? If immediately offset by some revenue, perhaps not.'));
-				$row->addYesNo('countAgainstBudget')->isRequired();
+				$row->addYesNo('countAgainstBudget')->required();
 
 			$row = $form->addRow();
 				$row->addLabel('purchaseBy', __('Purchase By'));
-				$row->addSelect('purchaseBy')->fromArray(array('School' => __('School'), 'Self' => __('Self')))->isRequired();
+				$row->addSelect('purchaseBy')->fromArray(array('School' => __('School'), 'Self' => __('Self')))->required();
 
 			$row = $form->addRow();
 				$column = $row->addColumn();
@@ -132,15 +132,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
 
 			$row = $form->addRow()->addClass('paymentInfo');
 				$row->addLabel('paymentDate', __('Date Paid'))->description(__('Date of payment, not entry to system.'));
-				$row->addDate('paymentDate')->isRequired();
+				$row->addDate('paymentDate')->required();
 
 			$row = $form->addRow()->addClass('paymentInfo');
 				$row->addLabel('paymentAmount', __('Amount Paid'))->description(__('Final amount paid.'));
-				$row->addCurrency('paymentAmount')->isRequired()->maxLength(15);
+				$row->addCurrency('paymentAmount')->required()->maxLength(15);
 
 			$row = $form->addRow()->addClass('paymentInfo');
 				$row->addLabel('gibbonPersonIDPayment', __('Payee'))->description(__('Staff who made, or arranged, the payment.'));
-				$row->addSelectStaff('gibbonPersonIDPayment')->isRequired()->placeholder();
+				$row->addSelectStaff('gibbonPersonIDPayment')->required()->placeholder();
 
 			$methods = array(
 				'Bank Transfer' => __('Bank Transfer'),
@@ -151,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
 			);
 			$row = $form->addRow()->addClass('paymentInfo');
 				$row->addLabel('paymentMethod', __('Payment Method'));
-				$row->addSelect('paymentMethod')->fromArray($methods)->placeholder()->isRequired();
+				$row->addSelect('paymentMethod')->fromArray($methods)->placeholder()->required();
 
 			$row = $form->addRow()->addClass('paymentInfo');
 				$row->addLabel('paymentID', __('Payment ID'))->description(__('Transaction ID to identify this payment.'));

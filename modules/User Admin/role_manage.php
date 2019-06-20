@@ -49,11 +49,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage.php
         ->setURL('/modules/User Admin/role_manage_add.php')
         ->displayLabel();
 
-    $table->addColumn('category', __('Category'));
-    $table->addColumn('name', __('Name'));
+    $table->addColumn('category', __('Category'))->translatable();
+    $table->addColumn('name', __('Name'))->translatable();
     $table->addColumn('nameShort', __('Short Name'));
-    $table->addColumn('description', __('Description'));
-    $table->addColumn('type', __('Type'));
+    $table->addColumn('description', __('Description'))->translatable();
+    $table->addColumn('type', __('Type'))->translatable();
     $table->addColumn('loginYear', __('Login Years'))
         ->notSortable()
         ->format(function ($row) {

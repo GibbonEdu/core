@@ -1,0 +1,28 @@
+{
+  "name": "gibbon-build",
+  "version": "18.0.0",
+  "description": "Laravel Mix + Tailwind build process for Gibbon core",
+  "main": "tailwind.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GibbonEdu/core.git"
+  },
+  "dependencies": {
+    "cross-env": "^5.2.0",
+    "laravel-mix": "^4.0.15",
+    "tailwindcss": "^1.0.0-beta.3"
+  },
+  "devDependencies": {
+    "resolve-url-loader": "^2.3.1",
+    "sass": "^1.17.3",
+    "sass-loader": "^7.1.0",
+    "vue-template-compiler": "^2.6.9"
+  },
+  "scripts": {
+    "build": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "watch": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "dev": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+  },
+  "author": "",
+  "license": "GPL-3.0"
+}

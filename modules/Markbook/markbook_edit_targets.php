@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
                 $result = $pdo->executeQuery($data, $sql);
 
                 if ($result->rowCount() > 0) {
-                    $header->addContent(__('Attainment Target'))->setClass('standardWidth');
+                    $header->addContent(__('Attainment Target'))->setClass('w-64');
 
                     $sql = "SELECT gibbonScale.gibbonScaleID, gibbonScaleGradeID as value, gibbonScaleGrade.value as name 
                             FROM gibbonScaleGrade 

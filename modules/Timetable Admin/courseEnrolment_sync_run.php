@@ -80,12 +80,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     }
 
     $form = Form::create('courseEnrolmentSyncRun', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_sync_runProcess.php');
+    $form->setClass('w-full blank');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-
-    // To render the form as multiple tables
-    $form->getRenderer()->setWrapper('form', 'div');
-    $form->getRenderer()->setWrapper('row', 'div');
-    $form->getRenderer()->setWrapper('cell', 'div');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
     $form->addHiddenValue('gibbonYearGroupIDList', $gibbonYearGroupIDList);
