@@ -311,20 +311,20 @@ input.vis-configuration.vis-config-range:focus::-ms-fill-upper {
 div.vis-tooltip {
   position: absolute;
   visibility: hidden;
-  padding: 5px;
-  white-space: nowrap;
+  padding: 0.9rem;
+  max-width: 360px;
 
-  font-family: verdana;
+  font-family: Helvetica,Arial,sans-serif;
   font-size:14px;
-  color:#000000;
-  background-color: #f5f4ed;
+  color:#454545;
+  background-color: #fefefe;
 
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   border-radius: 3px;
-  border: 1px solid #808074;
+  border: 1px solid #bbbbbb;
 
-  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   pointer-events: none;
 
   z-index: 5;
@@ -987,6 +987,7 @@ div.vis-network div.vis-navigation div.vis-button.vis-zoomExtends {
   white-space: nowrap;
   box-sizing: border-box;
   padding: 5px;
+  
 }
 
 .vis-item .vis-onUpdateTime-tooltip {
@@ -1168,6 +1169,7 @@ div.vis-network div.vis-navigation div.vis-button.vis-zoomExtends {
   color: #4d4d4d;
 
   box-sizing: border-box;
+
 }
 
 .vis-labelset .vis-label {
