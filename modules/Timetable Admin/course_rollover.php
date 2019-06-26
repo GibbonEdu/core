@@ -145,7 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
 
                 $form = Form::create('courseRollover', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_rollover.php&step=3');
                 $form->setClass('w-full blank');
- 
+
                 $form->addHiddenValue('nextYear', $nextYear);
 
                 $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth');
@@ -241,7 +241,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                         //Get current enrolment, exclude people already enrolled or their status is not Full
                         try {
                             $dataCurrent = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonCourseClassIDNext' => $gibbonCourseClassIDNext);
-                            $sqlCurrent = "SELECT gibbonCourseClassPerson.gibbonPersonID, gibbonCourseClassPerson.role
+                            $sqlCurrent = "SELECT gibbonCourseClassPerson.gibbonPersonID, gibbonCourseClassPerson.role, gibbonCourseClassPerson.reportable
                             FROM gibbonCourseClassPerson
                             JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                             LEFT JOIN gibbonCourseClassPerson as gibbonCourseClassPersonNext ON (gibbonCourseClassPersonNext.gibbonCourseClassID=:gibbonCourseClassIDNext AND gibbonCourseClassPersonNext.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
@@ -257,8 +257,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                         if ($resultCurrent->rowCount() > 0) {
                             while ($rowCurrent = $resultCurrent->fetch()) {
                                 try {
-                                    $dataInsert = array('gibbonCourseClassID' => $gibbonCourseClassIDNext, 'gibbonPersonID' => $rowCurrent['gibbonPersonID'], 'role' => $rowCurrent['role']);
-                                    $sqlInsert = 'INSERT INTO gibbonCourseClassPerson SET gibbonCourseClassID=:gibbonCourseClassID, gibbonPersonID=:gibbonPersonID, role=:role';
+                                    $dataInsert = array('gibbonCourseClassID' => $gibbonCourseClassIDNext, 'gibbonPersonID' => $rowCurrent['gibbonPersonID'], 'role' => $rowCurrent['role'], 'reportable' => $rowCurrent['reportable']);
+                                    $sqlInsert = 'INSERT INTO gibbonCourseClassPerson SET gibbonCourseClassID=:gibbonCourseClassID, gibbonPersonID=:gibbonPersonID, role=:role, reportable=:reportable';
                                     $resultInsert = $connection2->prepare($sqlInsert);
                                     $resultInsert->execute($dataInsert);
                                 } catch (PDOException $e) {
