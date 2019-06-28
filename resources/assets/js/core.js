@@ -33,6 +33,21 @@ jQuery(function($){
     });
 
     /**
+     * Sidebar toggle switch
+     */
+    $('#sidebarToggle').click(function() {
+        if ($('#sidebar').hasClass('lg:w-sidebar')) {
+            $('#sidebar').removeClass('lg:w-sidebar')
+            $('#sidebar').addClass('lg:hidden');
+            $(this).html('«');
+        } else {
+            $('#sidebar').removeClass('lg:hidden')
+            $('#sidebar').addClass('lg:w-sidebar');
+            $(this).html('»');
+        }
+    });
+
+    /**
      * Form Class: generic check All/None checkboxes
      */
     $(document).on('click', '.checkall', function () {

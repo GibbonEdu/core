@@ -51,9 +51,11 @@ TODO: add template variable details.
                         <br style="clear: both">
                     {% endif %}
 
-                    <div id="content" class="w-full {{ sidebar ? 'lg:w-content' : 'pt-0 sm:pt-6' }} lg:max-w-full p-6 lg:pt-0 overflow-x-scroll sm:overflow-x-auto">
+                    <div id="content" class="w-full {{ not sidebar ?'pt-0 sm:pt-6' }} lg:flex-1  p-6 lg:pt-0 overflow-x-scroll sm:overflow-x-auto">
 
                         {% block page %}
+
+                        <button id="sidebarToggle" class="hidden lg:block absolute top-0 right-0 m-1 px-2 pb-1 text-gray-500 text-2xl bg-transparent font-sans rounded hover:bg-gray-600 hover:text-white leading-tight">»</button>
 
                         {% if content and not sidebar %}
                             {{ include('navigation.twig.html') }}
