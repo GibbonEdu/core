@@ -47,8 +47,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% else %}
 
     {% block tableInner %}
-    <div class="overflow-x-auto overflow-y-visible">
-        <table class="{{ class }} w-full" cellspacing=0>
+    <div id="{{ table.getID }}" class="dataTable overflow-x-auto overflow-y-visible">
+        <table class="{{ class }} w-full" cellspacing=0 {% if draggable %}data-drag-url="{{ draggable.url }}" data-drag-data="{{ draggable.data }}"{% endif %}>
             <thead>
             {% for headerRow in headers %}
                 <tr class="head text-xs">
@@ -86,7 +86,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     {% for columnIndex, column in columns %}
                         {% set cell = rowData.cells[columnIndex] %}
                         
-                        <td {{ cell.getAttributeString|raw }}>
+                        <td {{ cell.getAttributeString|raw }} style="width: {{ column.getWidth }}">
                             {{ cell.getPrepended|raw }}
 
                             {% if column.getID == "actions" %} 
