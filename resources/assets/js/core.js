@@ -148,6 +148,33 @@ jQuery(function($){
             }
         });
     });
+
+    /**
+    * Data Table: Simple Drag-Drop
+    */
+    $('.dataTable table[data-drag-url]').each(function () {
+        var table = this;
+        $('tbody', table).sortable({
+            placeholder: "drag-placeholder bg-gray-400 shadow-inner",
+            handle: ".drag-handle",
+            update: function() {
+                var elementOrder = new Array();
+                $('.draggable', this).each(function() {
+                    elementOrder.push($(this).data('drag-id'));
+                });
+                $.ajax({
+                    url: $(table).data('drag-url'),
+                    data: {
+                        data: $(table).data('drag-data'),
+                        order: JSON.stringify(elementOrder)
+                    },
+                    type: 'POST',
+                    success: function(data) {
+                    }
+                });
+            }
+        }).disableSelection();
+    });
 });
 
 // Form API Functions

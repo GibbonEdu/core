@@ -1172,15 +1172,24 @@ table.smallIntBorder td.noPadding {
 }
 
 
-.dataTable .expandable {
+.dataTable .expandable,
+.dataTable .draggable {
     border-right: 0px !important;
     padding: 0px !important;
     overflow: visible;
 }
 
 .dataTable .expandable + td {
-    border-left: 0px !important;
     padding-left: 4px !important;
+    border-left: 0px !important;
+}
+
+.dataTable .draggable + td {
+    border-left: 0px !important;
+}
+
+.dataTable .drag-placeholder td {
+    height: 52px;
 }
 
 .dataTable .expander {
@@ -1209,6 +1218,7 @@ table.smallIntBorder td.noPadding {
     transform: rotate(45deg);
     -webkit-transform: rotate(45deg);
 }
+
 
 @-moz-keyframes spin {
     from {
