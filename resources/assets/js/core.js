@@ -157,6 +157,11 @@ jQuery(function($){
         $('tbody', table).sortable({
             placeholder: "drag-placeholder bg-gray-400 shadow-inner",
             handle: ".drag-handle",
+            start: function(event, ui) {
+                $(ui.placeholder).children('td').each(function() {
+                    $(this).outerHeight($(ui.item).outerHeight())
+                });
+            },
             update: function() {
                 var elementOrder = new Array();
                 $('.draggable', this).each(function() {

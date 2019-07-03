@@ -1188,10 +1188,6 @@ table.smallIntBorder td.noPadding {
     border-left: 0px !important;
 }
 
-.dataTable .drag-placeholder td {
-    height: 52px;
-}
-
 .dataTable .expander {
     display: block;
     padding: 15px 10px;
