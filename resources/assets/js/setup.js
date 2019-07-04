@@ -23,25 +23,27 @@ $(document).ready(function(){
 
 
     // Initialize tooltip
-    $(document).tooltip({
-        show: 800,
-        hide: false,
-        content: function () {
-            return $(this).prop('title');
-        },
-        position: {
-            my: "center bottom-20",
-            at: "center top",
-            using: function (position, feedback) {
-                $(this).css(position);
-                $("<div>").
-                    addClass("arrow").
-                    addClass(feedback.vertical).
-                    addClass(feedback.horizontal).
-                    appendTo(this);
+    if ($(window).width() > 768) {
+        $(document).tooltip({
+            show: 800,
+            hide: false,
+            content: function () {
+                return $(this).prop('title');
+            },
+            position: {
+                my: "center bottom-20",
+                at: "center top",
+                using: function (position, feedback) {
+                    $(this).css(position);
+                    $("<div>").
+                        addClass("arrow").
+                        addClass(feedback.vertical).
+                        addClass(feedback.horizontal).
+                        appendTo(this);
+                }
             }
-        }
-    });
+        });
+    }
 
     // Initialize latex
     $(".latex").latex();
@@ -49,9 +51,9 @@ $(document).ready(function(){
     // Initialize tinymce
     tinymce.init({
         selector: "div#editorcontainer textarea",
-        width: '738px',
+        width: '100%',
         menubar : false,
-        toolbar: 'bold, italic, underline,forecolor,backcolor,|,alignleft, aligncenter, alignright, alignjustify, |, formatselect, fontselect, fontsizeselect, |, table, |, bullist, numlist,outdent, indent, |, link, unlink, image, media, hr, charmap, subscript, superscript, |, cut, copy, paste, undo, redo, fullscreen',
+        toolbar: 'bold, italic, underline,forecolor,backcolor,|,alignleft, aligncenter, alignright, alignjustify, |, formatselect, |, fontselect, fontsizeselect, |, table, |, bullist, numlist,outdent, indent, |, link, unlink, image, media, hr, charmap, subscript, superscript, |, cut, copy, paste, undo, redo, fullscreen',
         plugins: 'table, template, paste, visualchars, link, template, textcolor, hr, charmap, fullscreen',
         statusbar: false,
         valid_elements: Gibbon.config.tinymce.valid_elements,

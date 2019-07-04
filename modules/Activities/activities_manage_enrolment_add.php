@@ -154,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
 			$row = $form->addRow();
                 $row->addLabel('Members[]', __('Students'));
-				$row->addSelect('Members[]')->fromArray($students)->selectMultiple()->isRequired();
+				$row->addSelect('Members[]')->fromArray($students)->selectMultiple()->required();
 				
 			$statuses = array('Accepted' => __('Accepted'));
 			$enrolment = getSettingByScope($connection2, 'Activities', 'enrolmentType');
@@ -166,7 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
 			$row = $form->addRow();
                 $row->addLabel('status', __('Status'));
-                $row->addSelect('status')->fromArray($statuses)->isRequired();
+                $row->addSelect('status')->fromArray($statuses)->required();
 			
 			$row = $form->addRow();
                 $row->addFooter();

@@ -42,12 +42,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
 
     $row = $form->addRow();
         $row->addLabel('gibbonYearGroupIDList', __('Year Groups'));
-        $row->addSelectYearGroup('gibbonYearGroupIDList')->selectMultiple()->isRequired();
+        $row->addSelectYearGroup('gibbonYearGroupIDList')->selectMultiple()->required();
 
     $sql = "SELECT gibbonHouseID as value, name FROM gibbonHouse ORDER BY name";
     $row = $form->addRow();
         $row->addLabel('gibbonHouseIDList', __('Houses'));
-        $row->addSelect('gibbonHouseIDList')->fromQuery($pdo, $sql)->isRequired()->selectMultiple()->selectAll();
+        $row->addSelect('gibbonHouseIDList')->fromQuery($pdo, $sql)->required()->selectMultiple()->selectAll();
 
     $row = $form->addRow();
         $row->addLabel('balanceGender', __('Balance by Gender?'));

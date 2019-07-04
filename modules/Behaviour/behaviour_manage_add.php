@@ -83,25 +83,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             echo '</div>';
 
             $form = Form::create('addform', $_SESSION[$guid]['absoluteURL'].'/modules/Behaviour/behaviour_manage_addProcess.php?step=1&gibbonPersonID='.$gibbonPersonID.'&gibbonRollGroupID='.$gibbonRollGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&type='.$type);
-                $form->setClass('smallIntBorder fullWidth');
-                $form->setFactory(DatabaseFormFactory::create($pdo));
-                $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
-                $form->addRow()->addHeading(__('Step 1'));
+            $form->setFactory(DatabaseFormFactory::create($pdo));
+            $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
+            $form->addRow()->addHeading(__('Step 1'));
 
             //Student
             $row = $form->addRow();
             	$row->addLabel('gibbonPersonID', __('Student'));
-            	$row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->placeholder(__('Please select...'))->selected($gibbonPersonID)->isRequired();
+            	$row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->placeholder(__('Please select...'))->selected($gibbonPersonID)->required();
 
             //Date
             $row = $form->addRow();
             	$row->addLabel('date', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-            	$row->addDate('date')->setValue(date($_SESSION[$guid]['i18n']['dateFormatPHP']))->isRequired();
+            	$row->addDate('date')->setValue(date($_SESSION[$guid]['i18n']['dateFormatPHP']))->required();
 
             //Type
             $row = $form->addRow();
             	$row->addLabel('type', __('Type'));
-            	$row->addSelect('type')->fromArray(array('Positive' => __('Positive'), 'Negative' => __('Negative')))->selected($type)->isRequired();
+            	$row->addSelect('type')->fromArray(array('Positive' => __('Positive'), 'Negative' => __('Negative')))->selected($type)->required();
 
             //Descriptor
             if ($enableDescriptors == 'Y') {
@@ -120,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         ->fromArray($positiveDescriptors)
                         ->fromArray($negativeDescriptors)
                         ->chainedTo('type', $chainedTo)
-                        ->isRequired()
+                        ->required()
                         ->placeholder();
             }
 
@@ -176,11 +175,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     $values = $result->fetch();
 
                     $form = Form::create('addform', $_SESSION[$guid]['absoluteURL'].'/modules/Behaviour/behaviour_manage_addProcess.php?step=2&gibbonPersonID='.$gibbonPersonID.'&gibbonRollGroupID='.$gibbonRollGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&type='.$type);
-                        $form->setClass('smallIntBorder fullWidth');
-                        $form->setFactory(DatabaseFormFactory::create($pdo));
-                        $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
-                        $form->addHiddenValue('gibbonBehaviourID', $gibbonBehaviourID);
-                        $form->addRow()->addHeading(__('Step 2 (Optional)'));
+                    $form->setFactory(DatabaseFormFactory::create($pdo));
+                    $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
+                    $form->addHiddenValue('gibbonBehaviourID', $gibbonBehaviourID);
+                    $form->addRow()->addHeading(__('Step 2 (Optional)'));
 
                     //Student
                     $row = $form->addRow();

@@ -144,11 +144,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                 }, $currentCourses);
 
                 $form = Form::create('courseRollover', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_rollover.php&step=3');
-
-                $form->getRenderer()->setWrapper('form', 'div');
-                $form->getRenderer()->setWrapper('row', 'div');
-                $form->getRenderer()->setWrapper('cell', 'div');
-
+                $form->setClass('w-full blank');
+ 
                 $form->addHiddenValue('nextYear', $nextYear);
 
                 $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth');

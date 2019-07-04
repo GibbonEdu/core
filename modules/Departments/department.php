@@ -18,6 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Tables\View\GridView;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -77,78 +80,60 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
             }
 
             //Print staff
-            try {
-                $dataStaff = array('gibbonDepartmentID' => $gibbonDepartmentID);
-                $sqlStaff = "SELECT gibbonPerson.gibbonPersonID, gibbonDepartmentStaff.role, title, surname, preferredName, image_240, gibbonStaff.jobTitle FROM gibbonDepartmentStaff JOIN gibbonPerson ON (gibbonDepartmentStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND gibbonDepartmentID=:gibbonDepartmentID ORDER BY role, surname, preferredName";
-                $resultStaff = $connection2->prepare($sqlStaff);
-                $resultStaff->execute($dataStaff);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
+            $dataStaff = array('gibbonDepartmentID' => $gibbonDepartmentID);
+            $sqlStaff = "SELECT gibbonPerson.gibbonPersonID, gibbonDepartmentStaff.role, title, surname, preferredName, image_240, gibbonStaff.jobTitle FROM gibbonDepartmentStaff JOIN gibbonPerson ON (gibbonDepartmentStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND gibbonDepartmentID=:gibbonDepartmentID ORDER BY role, surname, preferredName";
+           
+            $staff = $pdo->select($sqlStaff, $dataStaff)->toDataSet();
 
-            if ($resultStaff->rowCount() > 0) {
-                echo '<h2>';
-                echo __('Staff');
-                echo '</h2>';
-                echo "<table class='noIntBorder' cellspacing='0' style='width:100%; margin-top: 20px'>";
-                $count = 0;
-                $columns = 5;
+            // Data Table
+            $gridRenderer = new GridView($container->get('twig'));
+            $table = $container->get(DataTable::class)->setRenderer($gridRenderer);
+            $table->setTitle(__('Staff'));
+            $table->addMetaData('gridClass', 'rounded-sm bg-blue-100 border py-2');
+            $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/4 md:w-1/5 my-2 text-center');
 
-                while ($rowStaff = $resultStaff->fetch()) {
-                    if ($count % $columns == 0) {
-                        echo '<tr>';
-                    }
-                    echo "<td style='width:20%; text-align: center; vertical-align: top'>";
-                    if ($rowStaff['image_240'] == '' or file_exists($_SESSION[$guid]['absolutePath'].'/'.$rowStaff['image_240']) == false) {
-                        echo "<img style='height: 100px; width: 75px' class='user' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/anonymous_75.jpg'/><br/>";
-                    } else {
-                        echo "<img style='height: 100px; width: 75px' class='user' src='".$_SESSION[$guid]['absoluteURL'].'/'.$rowStaff['image_240']."'/><br/>";
-                    }
-                    if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php')) {
-                        echo "<div style='padding-top: 5px'><b><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowStaff['gibbonPersonID']."'>".formatName($rowStaff['title'], $rowStaff['preferredName'], $rowStaff['surname'], 'Staff').'</a></b><br/><i>';
-                    } else {
-                        echo "<div style='padding-top: 5px'><b>".formatName($rowStaff['title'], $rowStaff['preferredName'], $rowStaff['surname'], 'Staff').'</b><br/><i>';
-                    }
-                    if ($rowStaff['jobTitle'] != '') {
-                        echo $rowStaff['jobTitle'];
-                    } else {
-                        echo $rowStaff['role'];
-                    }
-                    echo '</i><br/></div>';
-                    echo '</td>';
+            $table->addColumn('image_240')
+                ->format(function ($person) {
+                    return Format::userPhoto($person['image_240'], 'sm', '');
+                });
 
-                    if ($count % $columns == ($columns - 1)) {
-                        echo '</tr>';
-                    }
-                    ++$count;
-                }
+            $canViewProfile = isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php');
+            $table->addColumn('name')
+                ->setClass('text-xs font-bold mt-1')
+                ->format(function ($person) use ($canViewProfile) {
+                    $name = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff');
+                    $url = "./index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID=".$person['gibbonPersonID'];
+                    return $canViewProfile
+                        ? Format::link($url, $name)
+                        : $name;
+                });
 
-                for ($i = 0;$i < $columns - ($count % $columns);++$i) {
-                    echo '<td></td>';
-                }
+            $table->addColumn('jobTitle')
+                ->setClass('text-xs text-gray-600 italic leading-snug')
+                ->format(function ($person) {
+                    return !empty($person['jobTitle']) ? $person['jobTitle'] : __($person['role']);
+                });
 
-                if ($count % $columns != 0) {
-                    echo '</tr>';
-                }
+            echo $table->render($staff);
 
-                echo '</table>';
-            }
 
             //Print sidebar
-            $_SESSION[$guid]['sidebarExtra'] = '';
+            $sidebarExtra = '';
 
             //Print subject list
             if ($row['subjectListing'] != '') {
-                $_SESSION[$guid]['sidebarExtra'] .= '<h4>';
-                $_SESSION[$guid]['sidebarExtra'] .= __('Subject List');
-                $_SESSION[$guid]['sidebarExtra'] .= '</h4>';
+                $sidebarExtra .= '<div class="column-no-break">';
+                $sidebarExtra .= '<h4>';
+                $sidebarExtra .= __('Subject List');
+                $sidebarExtra .= '</h4>';
 
-                $_SESSION[$guid]['sidebarExtra'] .= '<ul>';
+                $sidebarExtra .= '<ul>';
                 $subjects = explode(',', $row['subjectListing']);
                 for ($i = 0;$i < count($subjects);++$i) {
-                    $_SESSION[$guid]['sidebarExtra'] .= '<li>'.$subjects[$i].'</li>';
+                    $sidebarExtra .= '<li>'.$subjects[$i].'</li>';
                 }
-                $_SESSION[$guid]['sidebarExtra'] .= '</ul>';
+                $sidebarExtra .= '</ul>';
+                $sidebarExtra .= '</div>';
             }
 
             //Print current course list
@@ -168,33 +153,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
             }
 
             if ($resultCourse->rowCount() > 0) {
+                $sidebarExtra .= '<div class="column-no-break">';
                 if ($role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)') {
-                    $_SESSION[$guid]['sidebarExtra'] .= '<h4>';
-                    $_SESSION[$guid]['sidebarExtra'] .= __('Current Courses');
-                    $_SESSION[$guid]['sidebarExtra'] .= '</h4>';
+                    $sidebarExtra .= '<h4>';
+                    $sidebarExtra .= __('Current Courses');
+                    $sidebarExtra .= '</h4>';
                 } else {
-                    $_SESSION[$guid]['sidebarExtra'] .= '<h4>';
-                    $_SESSION[$guid]['sidebarExtra'] .= __('Course List');
-                    $_SESSION[$guid]['sidebarExtra'] .= '</h4>';
+                    $sidebarExtra .= '<h4>';
+                    $sidebarExtra .= __('Course List');
+                    $sidebarExtra .= '</h4>';
                 }
 
-                $_SESSION[$guid]['sidebarExtra'] .= '<ul>';
+                $sidebarExtra .= '<ul>';
                 while ($rowCourse = $resultCourse->fetch()) {
-                    $_SESSION[$guid]['sidebarExtra'] .= "<li><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Departments/department_course.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=".$rowCourse['gibbonCourseID']."'>".$rowCourse['nameShort']."</a> <span style='font-size: 85%; font-style: italic'>".$rowCourse['name'].'</span></li>';
+                    $sidebarExtra .= "<li><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Departments/department_course.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=".$rowCourse['gibbonCourseID']."'>".$rowCourse['nameShort']."</a> <span style='font-size: 85%; font-style: italic'>".$rowCourse['name'].'</span></li>';
                 }
-                $_SESSION[$guid]['sidebarExtra'] .= '</ul>';
+                $sidebarExtra .= '</ul>';
+                $sidebarExtra .= '</div>';
             }
 
             //Print other courses
             if ($role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Teacher') {
-                $_SESSION[$guid]['sidebarExtra'] .= '<h4>';
-                $_SESSION[$guid]['sidebarExtra'] .= __('Non-Current Courses');
-                $_SESSION[$guid]['sidebarExtra'] .= '</h4>';
-
-                $form = Form::create('courseSelect', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
-                $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/department_course.php');
-                $form->addHiddenValue('gibbonDepartmentID', $gibbonDepartmentID);
-
                 $data = array('gibbonDepartmentID' => $gibbonDepartmentID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                 $sql = "SELECT gibbonSchoolYear.name AS year, gibbonCourse.gibbonCourseID as value, gibbonCourse.name AS name
                         FROM gibbonCourse
@@ -210,14 +189,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
                     return $carry;
                 }, array());
 
-                $row = $form->addRow();
-                    $row->addSelect('gibbonCourseID')
-                        ->fromArray($courses)
-                        ->placeholder()
-                        ->setClass('fullWidth');
+                if (!empty($courses)) {
+                    $form = Form::create('courseSelect', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+                    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/department_course.php');
+                    $form->addHiddenValue('gibbonDepartmentID', $gibbonDepartmentID);
+
+                    $row = $form->addRow()->addClass('items-center');
+                        $row->addSelect('gibbonCourseID')
+                            ->fromArray($courses)
+                            ->placeholder()
+                            ->setClass('w-48 float-none');
                     $row->addSubmit(__('Go'));
 
-                $_SESSION[$guid]['sidebarExtra'] .= $form->getOutput();
+                    $sidebarExtra .= '<div class="column-no-break">';
+                    $sidebarExtra .= '<h4>';
+                    $sidebarExtra .= __('Non-Current Courses');
+                    $sidebarExtra .= '</h4>';
+                    
+                    $sidebarExtra .= $form->getOutput();
+                    $sidebarExtra .= '</div>';
+                }
             }
 
             //Print useful reading
@@ -231,23 +222,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
             }
 
             if ($resultReading->rowCount() > 0 or $role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Director' or $role == 'Manager') {
-                $_SESSION[$guid]['sidebarExtra'] .= '<h4>';
-                $_SESSION[$guid]['sidebarExtra'] .= __('Useful Reading');
+                $sidebarExtra .= '<div class="column-no-break">';
+                $sidebarExtra .= '<h4>';
+                $sidebarExtra .= __('Useful Reading');
                 if ($role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Director' or $role == 'Manager') {
-                    $_SESSION[$guid]['sidebarExtra'] .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/department_edit.php&gibbonDepartmentID=$gibbonDepartmentID'><img style='margin-left: 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                    $sidebarExtra .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/department_edit.php&gibbonDepartmentID=$gibbonDepartmentID'><img style='margin-left: 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                 }
-                $_SESSION[$guid]['sidebarExtra'] .= '</h4>';
+                $sidebarExtra .= '</h4>';
 
-                $_SESSION[$guid]['sidebarExtra'] .= '<ul>';
+                $sidebarExtra .= '<ul>';
                 while ($rowReading = $resultReading->fetch()) {
                     if ($rowReading['type'] == 'Link') {
-                        $_SESSION[$guid]['sidebarExtra'] .= "<li><a target='_blank' href='".$rowReading['url']."'>".$rowReading['name'].'</a></li>';
+                        $sidebarExtra .= "<li><a target='_blank' href='".$rowReading['url']."'>".$rowReading['name'].'</a></li>';
                     } else {
-                        $_SESSION[$guid]['sidebarExtra'] .= "<li><a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowReading['url']."'>".$rowReading['name'].'</a></li>';
+                        $sidebarExtra .= "<li><a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowReading['url']."'>".$rowReading['name'].'</a></li>';
                     }
                 }
-                $_SESSION[$guid]['sidebarExtra'] .= '</ul>';
+                $sidebarExtra .= '</ul>';
+                $sidebarExtra .= '</div>';
             }
+
+            $_SESSION[$guid]['sidebarExtra'] = $sidebarExtra;
         }
     }
 }

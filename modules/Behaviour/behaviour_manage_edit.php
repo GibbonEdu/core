@@ -91,9 +91,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 $values = $result->fetch();
 
                 $form = Form::create('addform', $_SESSION[$guid]['absoluteURL'].'/modules/Behaviour/behaviour_manage_editProcess.php?gibbonBehaviourID='.$gibbonBehaviourID.'&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']);
-                    $form->setClass('smallIntBorder fullWidth');
-                    $form->setFactory(DatabaseFormFactory::create($pdo));
-                    $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
+                $form->setFactory(DatabaseFormFactory::create($pdo));
+                $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
 
                 //Student
                 $row = $form->addRow();
@@ -104,12 +103,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 //Date
                 $row = $form->addRow();
                 	$row->addLabel('date', __('Date'));
-                	$row->addDate('date')->setValue(dateConvertBack($guid, $values['date']))->isRequired()->readonly();
+                	$row->addDate('date')->setValue(dateConvertBack($guid, $values['date']))->required()->readonly();
 
                 //Date
                 $row = $form->addRow();
                     $row->addLabel('type', __('Type'));
-                    $row->addTextField('type')->setValue($values['type'])->isRequired()->readonly();
+                    $row->addTextField('type')->setValue($values['type'])->required()->readonly();
 
                 //Descriptor
                 if ($enableDescriptors == 'Y') {
@@ -126,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         $row->addSelect('descriptor')
                             ->fromArray($descriptors)
                             ->selected($values['descriptor'])
-                            ->isRequired()
+                            ->required()
                             ->placeholder();
                 }
 

@@ -86,19 +86,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                 $form->addHiddenValue('gibbonLibraryTypeID', $values['gibbonLibraryTypeID']);
                 $row = $form->addRow();
                     $row->addLabel('type', __('Type'));
-                    $row->addTextField('type')->setValue($values['type'])->readonly()->isRequired();
+                    $row->addTextField('type')->setValue($values['type'])->readonly()->required();
 
                 $row = $form->addRow();
                     $row->addLabel('name', __('Name'));
-                    $row->addTextField('name')->setValue($values['name'])->readonly()->isRequired();
+                    $row->addTextField('name')->setValue($values['name'])->readonly()->required();
 
                 $row = $form->addRow();
                     $row->addLabel('id', __('ID'));
-                    $row->addTextField('id')->setValue($values['id'])->readonly()->isRequired();
+                    $row->addTextField('id')->setValue($values['id'])->readonly()->required();
 
                 $row = $form->addRow();
                     $row->addLabel('producer', __('Author/Brand'));
-                    $row->addTextField('producer')->setValue($values['producer'])->readonly()->isRequired();
+                    $row->addTextField('producer')->setValue($values['producer'])->readonly()->required();
 
                 $options = array();
                 for ($i = 1; $i < 21; ++$i) {
@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                 }
                 $row = $form->addRow();
                     $row->addLabel('number', __('Number of Copies'))->description('How many copies do you want to make of this item?');
-                    $row->addSelect('number')->fromArray($options)->isRequired();
+                    $row->addSelect('number')->fromArray($options)->required();
 
                 $row = $form->addRow();
                     $row->addFooter();
@@ -137,8 +137,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                     $row = $form->addRow();
                         $row->addLabel('id'.$i, sprintf(__('Copy %1$s ID'), $i));
                         $row->addTextField('id'.$i)
-                            ->isUnique('./modules/Library/library_manage_catalog_idCheckAjax.php', array('fieldName' => 'id'))
-                            ->isRequired()
+                            ->uniqueField('./modules/Library/library_manage_catalog_idCheckAjax.php', array('fieldName' => 'id'))
+                            ->required()
                             ->maxLength(255);
                 }
 

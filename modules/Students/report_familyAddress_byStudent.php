@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
     $page->breadcrumbs->add(__('Family Address by Student'));
 
     echo '<p>';
-    echo __('This report attempts to print the family address(es) based on parents who are labelled as Contract Priority 1.');
+    echo __('This report attempts to print the family address(es) based on parents who are labelled as Contact Priority 1.');
     echo '</p>';
 
     $choices = null;
@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Students'));
-        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array("allStudents" => false, "byName" => true, "byRoll" => true))->isRequired()->placeholder()->selectMultiple()->selected($choices);
+        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array("allStudents" => false, "byName" => true, "byRoll" => true))->required()->placeholder()->selectMultiple()->selected($choices);
 
     $row = $form->addRow();
         $row->addFooter();

@@ -8,27 +8,28 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 Main Menu: Displays the top-level categories and active modules.
 -->#}
 
-<ul id="nav">
-    <li>
-        <a href="{{ absoluteURL }}/index.php">{{ __('Home') }}</a>
+<ul class="list-none flex flex-wrap items-center m-0 px-2 border-t border-b">
+    <li class="pl-2 mt-1">
+        <a class="block uppercase font-bold text-sm text-gray-800 hover:text-purple-500 no-underline px-2 py-3" href="{{ absoluteURL }}/index.php">{{ __('Home') }}</a>
     </li>
 
     {% for categoryName, items in menuMain if isLoggedIn %}
-    <li>
-        <a href="#">{{ __(categoryName) }}</a>
-        <ul>
+    <li class="sm:relative group mt-1">
+        <a class="block uppercase font-bold text-sm text-gray-800 hover:text-purple-500 no-underline px-2 py-3" href="#">{{ __(categoryName) }}</a>
 
-        {% for item in items %}
-            <li>
-                <a href="{{ item.url }}">{{ __(item.name, item.textDomain) }}</a>
+        <ul class="list-none bg-transparent-900 absolute hidden group-hover:block w-full sm:w-48 left-0 m-0 -mt-1 py-1 sm:p-1 z-50">
+            {% for item in items %}
+            <li class="hover:bg-purple-700">
+                <a class="block text-sm text-white focus:text-purple-200 text-left no-underline px-1 py-2 md:py-1 leading-normal" href="{{ item.url }}">{{ __(item.name, item.textDomain) }}</a>
             </li>
-        {% endfor %}
-
+            {% endfor %}
         </ul>
     </li>
     {% endfor %}
+
+    <li class="notificationTray self-end flex-grow">
+        {{ notificationTray|raw }}
+    </li>
 </ul>
 
-<div class='notificationTray'>
-    {{ notificationTray|raw }}
-</div>
+

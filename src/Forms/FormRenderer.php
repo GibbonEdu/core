@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms;
 
-use Gibbon\Forms\FormRendererInterface;
+use Gibbon\Forms\View\FormRendererInterface;
 
 /**
  * FormRenderer

@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
 
              $row = $form->addRow();
                 $row->addLabel('category', __('Category'))->description(__('Determines menu structure'));
-                $row->addTextField('category')->isRequired()->maxLength(10);
+                $row->addTextField('category')->required()->maxLength(10);
 
             $row = $form->addRow();
                 $row->addLabel('active', __('Active'));

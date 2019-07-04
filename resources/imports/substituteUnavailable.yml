@@ -1,0 +1,35 @@
+details:
+    type: substituteUnavailable
+    category: Substitute
+    name: Substitute Unavailability
+    table: gibbonStaffCoverageDate
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Staff
+    action: Manage Substitutes
+primaryKey:
+    gibbonStaffCoverageDateID
+uniqueKeys:
+    - [ gibbonPersonID, date ]
+table:
+    gibbonPersonIDUnavailable:
+        name: "Substitute User"
+        desc: "Username"
+        args: { filter: nospaces, required: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+    date: 
+        name: "Date"
+        desc: "Must be unique. Format: YYYY-MM-DD"
+        args: { filter: date, required: true }
+    allDay:
+        name: "All Day"
+        desc: ""
+        args: { filter: yesno, custom: true }
+    timeStart:
+        name: "Start Time"
+        desc: "Format: hh:mm (24hr)"
+        args: { filter: time, required: true }
+    timeEnd:
+        name: "End Time"
+        desc: "Format: hh:mm (24hr)"
+        args: { filter: time, required: true }

@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/publicRegistrat
     $setting = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $setting = getSettingByScope($connection2, 'User Admin', 'publicRegistrationMinimumAge', true);
     $row = $form->addRow();
@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/publicRegistrat
     $setting = getSettingByScope($connection2, 'User Admin', 'publicRegistrationDefaultStatus', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelect($setting['name'])->fromString('Full, Pending Approval')->selected($setting['value'])->isRequired();
+        $row->addSelect($setting['name'])->fromString('Full, Pending Approval')->selected($setting['value'])->required();
 
     $sql = "SELECT gibbonRoleID AS value, name FROM gibbonRole ORDER BY name";
     $setting = getSettingByScope($connection2, 'User Admin', 'publicRegistrationDefaultRole', true);
@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/publicRegistrat
         $row->addSelect($setting['name'])
             ->fromQuery($pdo, $sql)
             ->selected($setting['value'])
-            ->isRequired();
+            ->required();
 
     $row = $form->addRow()->addHeading(__('Interface Options'));
 

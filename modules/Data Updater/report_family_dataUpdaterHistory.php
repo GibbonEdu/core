@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
 
     $row = $form->addRow();
         $row->addLabel('date', __('Date'))->description(__('Earliest acceptable update'));
-        $row->addDate('date')->setValue($date)->isRequired();
+        $row->addDate('date')->setValue($date)->required();
 
     $row = $form->addRow();
         $row->addLabel('nonCompliant', __('Show Only Non-Compliant?'))->description(__('If not checked, show all. If checked, show only non-compliant students.'));

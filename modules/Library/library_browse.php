@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     echo "<div style='width: 1050px; border: 1px solid #444; margin-bottom: 30px; background-repeat: no-repeat; min-height: 450px; $browseBGColorStyle $browseBGImageStyle'>";
     echo "<div style='width: 762px; margin: 0 auto'>";
     //Display filters
-    echo "<table class='noIntBorder borderGrey' cellspacing='0' style='width: 100%; background-color: rgba(255,255,255,0.8); margin-top: 30px'>";
+    echo "<table class='noIntBorder borderGrey mb-1' cellspacing='0' style='width: 100%; background-color: rgba(255,255,255,0.8); margin-top: 30px'>";
     echo '<tr>';
     echo "<td style='width: 10px'></td>";
     echo "<td style='width: 50%; padding-top: 5px; text-align: center; vertical-align: top'>";

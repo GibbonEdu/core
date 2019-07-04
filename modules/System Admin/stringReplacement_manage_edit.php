@@ -30,17 +30,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
         ->add(__('Manage String Replacements'), 'stringReplacement_manage.php')
         ->add(__('Edit String'));
 
-    $search = '';
-    if (isset($_GET['search'])) {
-        $search = $_GET['search'];
-    }
+    $search = $_GET['search'] ?? '';
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    //Check if school year specified
-    $gibbonStringID = $_GET['gibbonStringID'];
+    //Check if StringID specified
+    $gibbonStringID = $_GET['gibbonStringID'] ?? '';
+    
     if ($gibbonStringID == '') {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');
@@ -75,11 +73,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
 
             $row = $form->addRow();
                 $row->addLabel('original', __('Original String'));
-                $row->addTextField('original')->isRequired()->maxLength(100)->setValue($values['original']);
+                $row->addTextField('original')->required()->maxLength(100)->setValue($values['original']);
 
             $row = $form->addRow();
                 $row->addLabel('replacement', __('Replacement String'));
-                $row->addTextField('replacement')->isRequired()->maxLength(100)->setValue($values['replacement']);
+                $row->addTextField('replacement')->required()->maxLength(100)->setValue($values['replacement']);
 
             $row = $form->addRow();
                 $row->addLabel('mode', __('Mode'));
@@ -89,11 +87,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
 
             $row = $form->addRow();
                 $row->addLabel('caseSensitive', __('Case Sensitive'));
-                $row->addYesNo('caseSensitive')->selected('N')->isRequired()->selected($values['caseSensitive']);
+                $row->addYesNo('caseSensitive')->selected('N')->required()->selected($values['caseSensitive']);
 
             $row = $form->addRow();
                 $row->addLabel('priority', __('Priority'))->description(__('Higher priorities are substituted first.'));
-                $row->addNumber('priority')->isRequired()->maxLength(2)->setValue($values['priority']);
+                $row->addNumber('priority')->required()->maxLength(2)->setValue($values['priority']);
 
             $row = $form->addRow();
                 $row->addFooter();

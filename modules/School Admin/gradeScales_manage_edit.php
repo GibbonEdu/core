@@ -71,23 +71,23 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
-                $row->addTextField('name')->isRequired()->maxLength(40);
+                $row->addTextField('name')->required()->maxLength(40);
 
             $row = $form->addRow();
                 $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
-                $row->addTextField('nameShort')->isRequired()->maxLength(5);
+                $row->addTextField('nameShort')->required()->maxLength(5);
 
             $row = $form->addRow();
                 $row->addLabel('usage', __('Usage'))->description(__('Brief description of how scale is used.'));
-                $row->addTextField('usage')->isRequired()->maxLength(50);
+                $row->addTextField('usage')->required()->maxLength(50);
 
             $row = $form->addRow();
                 $row->addLabel('active', __('Active'));
-                $row->addYesNo('active')->isRequired();
+                $row->addYesNo('active')->required();
 
             $row = $form->addRow();
                 $row->addLabel('numeric', __('Numeric'))->description(__('Does this scale use only numeric grades? Note, grade "Incomplete" is exempt.'));
-                $row->addYesNo('numeric')->isRequired();
+                $row->addYesNo('numeric')->required();
 
             $data = array('gibbonScaleID' => $gibbonScaleID);
             $sql = "SELECT sequenceNumber as value, gibbonScaleGrade.value as name FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID ORDER BY sequenceNumber";

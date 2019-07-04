@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
 					echo __('Step 1 - Select CSV Files');
 				echo '</h2>';
 				echo '<p>';
-					echo __('This page allows you to import timetable data from a CSV file. The import includes all classes and their teachers. There is no support for importing students: these need to be entered manually into the relavent classes. The system will do its best to keep existing data in tact, whilst updating what is necessary (note: you will lose student exceptions from timetabled classes). Select the CSV files you wish to use for the synchronise operation.')."<br/>";
+					echo __('This page allows you to import timetable data from a CSV file. The import includes all classes and their teachers. There is no support for importing students: these need to be entered manually into the relevant classes. The system will do its best to keep existing data intact, whilst updating what is necessary (note: you will lose student exceptions from timetabled classes). Select the CSV files you wish to use for the synchronise operation.')."<br/>";
 				echo '</p>';
 
                 $form = Form::create('importTimetable', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/tt_import.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&step=2");
@@ -99,15 +99,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
 
                 $row = $form->addRow();
                     $row->addLabel('file', __('CSV File'))->description(__('See Notes below for specification.'));
-                    $row->addFileUpload('file')->isRequired();
+                    $row->addFileUpload('file')->required();
 
                 $row = $form->addRow();
                     $row->addLabel('fieldDelimiter', __('Field Delimiter'));
-                    $row->addTextField('fieldDelimiter')->isRequired()->maxLength(1)->setValue(',');
+                    $row->addTextField('fieldDelimiter')->required()->maxLength(1)->setValue(',');
 
                 $row = $form->addRow();
                     $row->addLabel('stringEnclosure', __('String Enclosure'));
-                    $row->addTextField('stringEnclosure')->isRequired()->maxLength(1)->setValue('"');
+                    $row->addTextField('stringEnclosure')->required()->maxLength(1)->setValue('"');
 
                 $row = $form->addRow();
                     $row->addFooter();
@@ -125,12 +125,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
 					echo '<li>'.__('The import does not include student lists.').'</li>';
 					echo '<li>'.__('The submitted file must have the following fields in the following order:').'</li>';
 						echo '<ol>';
-							echo '<li><b>'.__('Course Short Name</b> - e.g. DR10 for Year 10 Drama').'</li>';
-							echo '<li><b>'.__('Class Short Name</b> - e.g 1 for DR10.1').'</li>';
-							echo '<li><b>'.__('Day Name</b> - as used in the target timetable').'</li>';
-							echo '<li><b>'.__('Row Long Name</b> - as used in the target timetable').'</li>';
-							echo '<li><b>'.__('Teacher Username</b> - comma-separated list of Gibbon usernames for teacher(s) of the lesson. Alternatively, give each teacher their own row.').'</li>';
-							echo '<li><b>'.__('Space Name</b> - the Gibbon name for the room the lesson takes place in.').'</li>';
+							echo '<li>'.__('Course Short Name - e.g. DR10 for Year 10 Drama').'</li>';
+							echo '<li>'.__('Class Short Name - e.g 1 for DR10.1').'</li>';
+							echo '<li>'.__('Day Name - as used in the target timetable').'</li>';
+							echo '<li>'.__('Row Long Name - as used in the target timetable').'</li>';
+							echo '<li>'.__('Teacher Username - comma-separated list of Gibbon usernames for teacher(s) of the lesson. Alternatively, give each teacher their own row.').'</li>';
+							echo '<li>'.__('Space Name - the Gibbon name for the room the lesson takes place in.').'</li>';
 						echo '</ol>';
 					echo '</li>';
 					echo '<li>'.__('Do not include a header row in the CSV files.').'</li>';

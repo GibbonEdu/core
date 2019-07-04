@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
         $row->addTextField('search')->setValue($criteria->getSearchText())->maxLength(20);
 
     $row = $form->addRow();
-        $row->addLabel('allStaff', __('All Staff'))->description('Include Expected and Left.');
+        $row->addLabel('allStaff', __('All Staff'))->description(__('Include Expected and Left.'));
         $row->addCheckbox('allStaff')->checked($allStaff);
 
     $row = $form->addRow();
@@ -84,12 +84,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
     $form->addHiddenValue('search', $search);
 
     $bulkActions = array(
-        'Left' => __('Mark as Left'),
+        'Left' => __('Mark as left'),
     );
 
     $col = $form->createBulkActionColumn($bulkActions);
         $col->addDate('dateEnd')
-            ->isRequired()
+            ->required()
             ->placeholder(__('Date End'))
             ->setClass('shortWidth dateEnd');
         $col->addSubmit(__('Go'));
@@ -132,8 +132,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
                 .'<br/><span style="font-size: 85%; font-style: italic">'.$person['initials']."</span>";
         });
 
-    $table->addColumn('type', __('Staff Type'))->width('20%');
-    $table->addColumn('status', __('Status'))->width('10%');
+    $table->addColumn('type', __('Staff Type'))->width('20%')->translatable();
+    $table->addColumn('status', __('Status'))->width('10%')->translatable();
     $table->addColumn('jobTitle', __('Job Title'))->width('20%');
 
     // ACTIONS
