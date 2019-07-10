@@ -60,10 +60,9 @@ class BulkActionForm extends Form
         $col = $this->getFactory()->createColumn()->addClass('');
 
         $col->addSelect('action')
-            ->fromArray($actions)
+            ->fromArray([__('Select action') => $actions])
             ->required()
-            ->setClass('relative w-32 sm:w-48 mr-1 flex items-center')
-            ->placeholder(__('Select action'));
+            ->setClass('relative w-32 sm:w-48 mr-1 flex items-center');
 
         return $col;
     }
