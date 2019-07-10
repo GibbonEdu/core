@@ -1,8 +1,4 @@
 <?php
-
-use Gibbon\Tables\DataTable;
-use Gibbon\Module\Attendance\StudentHistoryData;
-use Gibbon\Module\Attendance\StudentHistoryView;
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -21,43 +17,40 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Module\Attendance\StudentHistoryData;
+use Gibbon\Module\Attendance\StudentHistoryView;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentHistory_print.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
-    $gibbonPersonID = $_GET['gibbonPersonID'];
+    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
-    try {
-        $data = array('gibbonPersonID' => $gibbonPersonID);
-        $sql = 'SELECT surname, preferredName, dateStart, dateEnd FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
+    if ($highestAction != 'Student History_all' || empty($gibbonPersonID)) {
+        $page->addError(__('The selected record does not exist, or you do not have access to it.'));
+        return;
     }
 
-    $row = $result->fetch();
+    $student = $container->get(UserGateway::class)->getByID($gibbonPersonID);
 
-    if ($gibbonPersonID != '') {
-        $output = '';
-        echo '<h2>';
-        echo __('Attendance History for').' '.formatName('', $row['preferredName'], $row['surname'], 'Student');
-        echo '</h2>';
-
+    if (!empty($student)) {
         // ATTENDANCE DATA
         $attendanceData = $container
             ->get(StudentHistoryData::class)
-            ->getAttendanceData($_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID'], $row['dateStart'], $row['dateEnd']);
+            ->getAttendanceData($_SESSION[$guid]['gibbonSchoolYearID'], $student['gibbonPersonID'], $student['dateStart'], $student['dateEnd']);
 
         // DATA TABLE
         $renderer = $container->get(StudentHistoryView::class);
         $renderer->addData('printView', true);
+        
         $table = DataTable::create('studentHistory', $renderer);
+        $table->setTitle(__('Attendance History for').' '.formatName('', $student['preferredName'], $student['surname'], 'Student'));
         $table->addHeaderAction('print', __('Print'))
             ->setExternalURL('javascript:window.print()')
             ->setIcon('print')
