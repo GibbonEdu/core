@@ -84,7 +84,7 @@ trait TableAware
     public function getByID($primaryKeyValue) : array
     {
         if (empty($primaryKeyValue)) {
-            throw new \InvalidArgumentException("Gateway getByID method for {$this->getTableName()} must provide a primary key value.");
+            return [];
         }
 
         $query = $this
@@ -93,8 +93,11 @@ trait TableAware
             ->from($this->getTableName())
             ->where($this->getPrimaryKey().' = :primaryKey')
             ->bindValue('primaryKey', $primaryKeyValue);
-
-        return $this->runSelect($query)->fetch();
+        
+        $result = $this->runSelect($query);
+        return $result->isNotEmpty()
+            ? $result->fetch()
+            : [];
     }
 
     /**
