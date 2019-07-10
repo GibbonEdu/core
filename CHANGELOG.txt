@@ -30,6 +30,7 @@ v19.0.00
         Timetable Admin: included student reportable flag in student enrolment 
 
     Bug Fixes
+        Attendance: fixed missing data in printable view of Student History
 
 v18.0.00
 --------
