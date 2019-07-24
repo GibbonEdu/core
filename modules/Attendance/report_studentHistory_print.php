@@ -21,6 +21,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -46,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
     if ($gibbonPersonID != '') {
         $output = '';
         echo '<h2>';
-        echo __('Attendance History for').' '.formatName('', $row['preferredName'], $row['surname'], 'Student');
+        echo __('Attendance History for').' '.Format::name('', $row['preferredName'], $row['surname'], 'Student');
         echo '</h2>';
 
         // ATTENDANCE DATA

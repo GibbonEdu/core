@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Returns amount paid on an particular table/ID combo
 function getAmountPaid($connection2, $guid, $foreignTable, $foreignTableID)
 {
@@ -118,7 +120,7 @@ function getPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $gib
                 $return .= $row['type'];
                 $return .= '</td>';
                 $return .= '<td>';
-                $return .= formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
+                $return .= Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
                 $return .= '</td>';
                 $return .= '<td>';
                 $return .= $row['paymentTransactionID'];
@@ -589,7 +591,7 @@ function getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2, $commentsOp
             //COLOR ROW BY STATUS!
             $output .= "<tr class=$rowNum>";
             $output .= '<td>';
-            $output .= formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
+            $output .= Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
             $output .= '</td>';
             $output .= '<td>';
             $output .= dateConvertBack($guid, substr($row['timestamp'], 0, 10));
@@ -967,7 +969,7 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
                 while ($rowParents = $resultParents->fetch()) {
                     $return .= '<li>';
                     $invoiceTo = '';
-                    $invoiceTo .= '<b>'.formatName(htmlPrep($rowParents['title']), htmlPrep($rowParents['preferredName']), htmlPrep($rowParents['surname']), 'Parent', false).'</b>, ';
+                    $invoiceTo .= '<b>'.Format::name(htmlPrep($rowParents['title']), htmlPrep($rowParents['preferredName']), htmlPrep($rowParents['surname']), 'Parent', false).'</b>, ';
                     if ($rowParents['email'] != '') {
                         $invoiceTo .= $rowParents['email'].', ';
                     }
@@ -1003,7 +1005,7 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
             $return .= htmlPrep($row['officialName'])."<br/><span style='font-style: italic; font-size: 85%'>".__('Roll Group').' '.$row['rollgroup'].'</span><br/>';
         }
         else {
-            $return .= formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true)."<br/><span style='font-style: italic; font-size: 85%'>".__('Roll Group').' '.$row['rollgroup'].'</span><br/>';
+            $return .= Format::name('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true)."<br/><span style='font-style: italic; font-size: 85%'>".__('Roll Group').' '.$row['rollgroup'].'</span><br/>';
         }
         $return .= '</td>';
         $return .= "<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style4'>";
@@ -1289,7 +1291,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
                 while ($rowParents = $resultParents->fetch()) {
                     $return .= '<li>';
                     $invoiceTo = '';
-                    $invoiceTo .= '<b>'.formatName(htmlPrep($rowParents['title']), htmlPrep($rowParents['preferredName']), htmlPrep($rowParents['surname']), 'Parent', false).'</b>, ';
+                    $invoiceTo .= '<b>'.Format::name(htmlPrep($rowParents['title']), htmlPrep($rowParents['preferredName']), htmlPrep($rowParents['surname']), 'Parent', false).'</b>, ';
                     if ($rowParents['email'] != '') {
                         $invoiceTo .= $rowParents['email'].', ';
                     }
@@ -1325,7 +1327,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
             $return .= htmlPrep($row['officialName'])."<br/><span style='font-style: italic; font-size: 85%'>".__('Roll Group').' '.$row['rollgroup'].'</span><br/>';
         }
         else {
-            $return .= formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true)."<br/><span style='font-style: italic; font-size: 85%'>".__('Roll Group').' '.$row['rollgroup'].'</span><br/>';
+            $return .= Format::name('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true)."<br/><span style='font-style: italic; font-size: 85%'>".__('Roll Group').' '.$row['rollgroup'].'</span><br/>';
         }
         $return .= '</td>';
         $return .= "<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style4'>";

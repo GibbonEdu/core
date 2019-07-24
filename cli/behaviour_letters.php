@@ -21,6 +21,7 @@ use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Services\Format;
 
 require getcwd().'/../gibbon.php';
 
@@ -72,7 +73,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
 
             if ($result->rowCount() > 0) {
                 while ($row = $result->fetch()) { //For every student
-                    $studentName = formatName('', $row['preferredName'], $row['surname'], 'Student', false);
+                    $studentName = Format::name('', $row['preferredName'], $row['surname'], 'Student', false);
                     $rollGroup = $row['rollGroup'];
 
                     //Check count of negative behaviour records in the current year

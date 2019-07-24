@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -102,12 +103,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             if ($resultChild->rowCount() == 1) {
                                 $rowChild = $resultChild->fetch();
                                 $gibbonPersonID = $rowChild['gibbonPersonID'];
-                                $options[$rowChild['gibbonPersonID']] = formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
+                                $options[$rowChild['gibbonPersonID']] = Format::name('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
                                 ++$countChild;
                             }
                             else {
                                 while ($rowChild = $resultChild->fetch()) {
-                                    $options[$rowChild['gibbonPersonID']] = formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
+                                    $options[$rowChild['gibbonPersonID']] = Format::name('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
                                     ++$countChild;
                                 }
                             }

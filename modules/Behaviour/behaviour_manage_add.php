@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -183,7 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     //Student
                     $row = $form->addRow();
                     	$row->addLabel('students', __('Student'));
-                    	$row->addTextField('students')->setValue(formatName('', $values['preferredName'], $values['surname'], 'Student'))->readonly();
+                    	$row->addTextField('students')->setValue(Format::name('', $values['preferredName'], $values['surname'], 'Student'))->readonly();
                         $form->addHiddenValue('gibbonPersonID', $values['gibbonPersonID']);
 
                     //Lessons

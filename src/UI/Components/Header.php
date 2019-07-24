@@ -21,6 +21,7 @@ namespace Gibbon\UI\Components;
 
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Services\Format;
 
 /**
  * Header View Composer
@@ -90,7 +91,7 @@ class Header
                                 $output[$_SESSION[$guid]['messageWallCount']]['photo'] = $rowPosts['image_240'];
                                 $output[$_SESSION[$guid]['messageWallCount']]['subject'] = $rowPosts['subject'];
                                 $output[$_SESSION[$guid]['messageWallCount']]['details'] = $rowPosts['body'];
-                                $output[$_SESSION[$guid]['messageWallCount']]['author'] = formatName($rowPosts['title'], $rowPosts['preferredName'], $rowPosts['surname'], $rowPosts['category']);
+                                $output[$_SESSION[$guid]['messageWallCount']]['author'] = Format::name($rowPosts['title'], $rowPosts['preferredName'], $rowPosts['surname'], $rowPosts['category']);
                                 $output[$_SESSION[$guid]['messageWallCount']]['source'] = $rowPosts['source'];
                                 $output[$_SESSION[$guid]['messageWallCount']]['gibbonMessengerID'] = $rowPosts['gibbonMessengerID'];
 

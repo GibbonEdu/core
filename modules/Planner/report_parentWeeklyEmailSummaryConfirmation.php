@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -114,10 +115,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_parentWeekl
             //COLOR ROW BY STATUS!
             echo "<tr class=$rowNum>";
             echo '<td>';
-            echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$row['gibbonPersonIDStudent']."&subpage=Homework'>".formatName('', $row['studentPreferredName'], $row['studentSurname'], 'Student', true).'</a>';
+            echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$row['gibbonPersonIDStudent']."&subpage=Homework'>".Format::name('', $row['studentPreferredName'], $row['studentSurname'], 'Student', true).'</a>';
             echo '</td>';
             echo '<td>';
-            echo formatName($row['parentTitle'], $row['parentPreferredName'], $row['parentSurname'], 'Parent', true);
+            echo Format::name($row['parentTitle'], $row['parentPreferredName'], $row['parentSurname'], 'Parent', true);
             echo '</td>';
             echo "<td style='width:15%'>";
             try {

@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Gibbon system-wide includes
 include './gibbon.php';
 
@@ -46,7 +48,7 @@ if ($gibbonAlarmID == '' or $gibbonPersonID == '') { echo "<div class='error'>";
         $rowConfirm = $resultConfirm->fetch();
 
         echo "<td style='color: #fff'>";
-        echo formatName('', $rowConfirm['preferredName'], $rowConfirm['surname'], 'Staff', true, true).'<br/>';
+        echo Format::name('', $rowConfirm['preferredName'], $rowConfirm['surname'], 'Staff', true, true).'<br/>';
         echo '</td>';
         echo "<td style='color: #fff'>";
         if ($rowConfirm['sounder'] == $rowConfirm['confirmer']) {

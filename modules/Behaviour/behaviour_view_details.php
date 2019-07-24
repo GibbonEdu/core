@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -73,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view_d
             echo '<tr>';
             echo "<td style='width: 34%; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
-            echo formatName('', $row['preferredName'], $row['surname'], 'Student');
+            echo Format::name('', $row['preferredName'], $row['surname'], 'Student');
             echo '</td>';
             echo "<td style='width: 33%; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__('Year Group').'</span><br/>';

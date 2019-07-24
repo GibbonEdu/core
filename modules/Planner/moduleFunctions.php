@@ -2,6 +2,7 @@
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 /*
 Gibbon, Flexible & Open School System
@@ -195,7 +196,7 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
         while ($rowDiscuss = $resultDiscuss->fetch()) {
             $classExtra = '';
             $namePerson = __('{name} said', [
-                'name' => formatName($rowDiscuss['title'], $rowDiscuss['preferredName'], $rowDiscuss['surname'], $rowDiscuss['category'])
+                'name' => Format::name($rowDiscuss['title'], $rowDiscuss['preferredName'], $rowDiscuss['surname'], $rowDiscuss['category'])
             ]);
             $datetimePosted = __('Posted at {hourPosted} on {datePosted}', [
                 'hourPosted' => '<b>'.substr($rowDiscuss['timestamp'], 11, 5).'</b>', 

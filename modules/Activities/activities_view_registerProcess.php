@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Services\Format;
 
 include '../../gibbon.php';
 
@@ -193,7 +194,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                     // Raise a new notification event
                                     $event = new NotificationEvent('Activities', 'New Activity Registration');
 
-                                    $studentName = formatName('', $row['preferredName'], $row['surname'], 'Student', false);
+                                    $studentName = Format::name('', $row['preferredName'], $row['surname'], 'Student', false);
                                     $notificationText = sprintf(__('%1$s has registered for the activity %2$s (%3$s)'), $studentName, $row['name'], $status);
 
                                     $event->setNotificationText($notificationText);
@@ -250,7 +251,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 if (time() >= $activityTimespan['start'] && time() <= $activityTimespan['end']) {
                                     $event = new NotificationEvent('Activities', 'Student Withdrawn');
 
-                                    $studentName = formatName('', $row['preferredName'], $row['surname'], 'Student', false);
+                                    $studentName = Format::name('', $row['preferredName'], $row['surname'], 'Student', false);
                                     $notificationText = sprintf(__('%1$s has withdrawn from the activity %2$s'), $studentName, $row['name']);
 
                                     $event->setNotificationText($notificationText);
@@ -350,7 +351,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                         //Raise notifications
                                         $event = new NotificationEvent('Activities', 'Student Bumped');
 
-                                        $studentName = formatName('', $rowBumps['preferredName'], $rowBumps['surname'], 'Student', false);
+                                        $studentName = Format::name('', $rowBumps['preferredName'], $rowBumps['surname'], 'Student', false);
                                         $notificationText = sprintf(__('%1$s has been bumped into activity %2$s'), $studentName, $rowBumps['name']);
 
                                         $event->setNotificationText($notificationText);

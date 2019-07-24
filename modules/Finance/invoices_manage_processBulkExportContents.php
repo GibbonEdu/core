@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 include '../../config.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.php') == false) {
@@ -149,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 			}
             $excel->getActiveSheet()->getStyleByColumnAndRow(0, $r)->applyFromArray($style_border);
 			//Column B
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(1, $r, formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true));
+			$excel->getActiveSheet()->setCellValueByColumnAndRow(1, $r, Format::name("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true));
             $excel->getActiveSheet()->getStyleByColumnAndRow(1, $r)->applyFromArray($style_border);
 			//Column C
 			$excel->getActiveSheet()->setCellValueByColumnAndRow(2, $r, $row["rollGroup"]);
