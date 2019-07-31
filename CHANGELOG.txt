@@ -27,10 +27,11 @@ v19.0.00
     Security
 
     Tweaks & Additions
-        Timetable Admin: included student reportable flag in student enrolment 
+        Timetable Admin: included student reportable flag in student enrolment
 
     Bug Fixes
         Attendance: fixed missing data in printable view of Student History
+        Planner: fixed non-functional Smart Block Template setting
 
 v18.0.00
 --------
