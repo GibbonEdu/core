@@ -16,6 +16,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v19.0.00
+--------
+    Headlines
+
+    Changes With Important Notices
+
+    Significant Changes
+
+    Security
+
+    Tweaks & Additions
+        Timetable Admin: included student reportable flag in student enrolment 
+
+    Bug Fixes
+        Attendance: fixed missing data in printable view of Student History
+
 v18.0.00
 --------
     Headlines
