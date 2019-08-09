@@ -31,6 +31,7 @@ v19.0.00
 
     Bug Fixes
         Attendance: fixed missing data in printable view of Student History
+        Library: set Bookable to No by default on Add record screen
         Planner: fixed non-functional Smart Block Template setting
 
 v18.0.00

@@ -152,7 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
     $row = $form->addRow()->addClass('general');
         $row->addLabel('bookable', __('Bookable As Facility?'))->description(__('Can item be booked via Facility Booking in Timetable? Useful for laptop carts, etc.'));
-        $row->addYesNo('bookable');
+        $row->addYesNo('bookable')->selected('N');
 
     $row = $form->addRow()->addClass('general');
         $row->addLabel('borrowable', __('Borrowable?'))->description(__('Is item available for loan?'));
