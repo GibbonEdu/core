@@ -27,6 +27,7 @@ v19.0.00
     Security
 
     Tweaks & Additions
+        Behaviour: new Copy To Notes feature
         Timetable Admin: included student reportable flag in student enrolment
 
     Bug Fixes

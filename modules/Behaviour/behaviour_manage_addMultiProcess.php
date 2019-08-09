@@ -50,6 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     }
     $comment = $_POST['comment'];
     $followup = $_POST['followup'];
+    $copyToNotes = $_POST['copyToNotes'] ?? null;
 
     if (is_null($gibbonPersonIDMulti) == true or $date == '' or $type == '' or ($descriptor == '' and $enableDescriptors == 'Y')) {
         $URL .= '&return=error1';
@@ -115,6 +116,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                             $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor3'], $notificationText, 'Behaviour', $actionLink);
                         }
                     }
+                }
+            }
+
+            if ($copyToNotes == 'on') {
+                //Write to notes
+                $notes = $comment;
+                $notes = (empty($followup) ? $comment : $comment."<br/><br/>".$followup );
+                try {
+                    $data = array('title' => 'Behaviour Incident', 'note' => $notes, 'gibbonPersonID' => $gibbonPersonID, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'timestamp' => date('Y-m-d H:i:s', time()));
+                    $sql = 'INSERT INTO gibbonStudentNote SET title=:title, note=:note, gibbonPersonID=:gibbonPersonID, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestamp=:timestamp';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    $URL .= '&return=error2';
+                    header("Location: {$URL}");
+                    exit();
                 }
             }
         }
