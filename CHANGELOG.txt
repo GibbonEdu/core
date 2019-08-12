@@ -33,6 +33,7 @@ v19.0.00
         Attendance: fixed missing data in printable view of Student History
         Library: set Bookable to No by default on Add record screen
         Planner: fixed non-functional Smart Block Template setting
+        Students: adjusted official name size in ID card for long-named students
 
 v18.0.00
 --------
