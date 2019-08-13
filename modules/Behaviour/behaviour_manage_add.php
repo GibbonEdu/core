@@ -146,6 +146,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             	$column->addLabel('followup', __('Follow Up'));
             	$column->addTextArea('followup')->setRows(5)->setClass('fullWidth');
 
+            //Copy to Notes
+            $row = $form->addRow();
+                $row->addLabel('copyToNotes', __('Copy To Notes'));
+                $row->addCheckbox('copyToNotes');
+
             $row = $form->addRow();
             	$row->addFooter();
             	$row->addSubmit();
