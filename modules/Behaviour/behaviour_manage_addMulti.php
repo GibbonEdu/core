@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     //Get action with highest precendence
     $page->breadcrumbs
         ->add(__('Manage Behaviour Records'), 'behaviour_manage.php')
-        ->add(__('Add Multiple'));    
+        ->add(__('Add Multiple'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -118,6 +118,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $column = $row->addColumn();
         $column->addLabel('followup', __('Follow Up'));
         $column->addTextArea('followup')->setRows(5)->setClass('fullWidth');
+
+    //Copy to Notes
+    $row = $form->addRow();
+        $row->addLabel('copyToNotes', __('Copy To Notes'));
+        $row->addCheckbox('copyToNotes');
 
     $row = $form->addRow();
         $row->addFooter();

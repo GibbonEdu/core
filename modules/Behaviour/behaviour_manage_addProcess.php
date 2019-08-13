@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Domain\Students\StudentNoteGateway;
 
 include '../../gibbon.php';
 
@@ -65,6 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             }
             $comment = $_POST['comment'];
             $followup = $_POST['followup'];
+            $copyToNotes = $_POST['copyToNotes'] ?? null;
 
             if ($gibbonPersonID == '' or $date == '' or $type == '' or ($descriptor == '' and $enableDescriptors == 'Y')) {
                 $URL .= '&return=error1&step=1';
@@ -136,6 +138,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                         // Send all notifications
                         $notificationSender->sendNotifications();
+                    }
+                }
+
+                if ($copyToNotes == 'on') {
+                    //Write to notes
+                    $noteGateway = $container->get(StudentNoteGateway::class);
+                    $note = [
+                        'title'                       => __('Behaviour').': '.$descriptor,
+                        'note'                        => empty($followup) ? $comment : $comment.' <br/><br/>'.$followup,
+                        'gibbonPersonID'              => $gibbonPersonID,
+                        'gibbonPersonIDCreator'       => $_SESSION[$guid]['gibbonPersonID'],
+                        'gibbonStudentNoteCategoryID' => $noteGateway->getNoteCategoryIDByName('Behaviour') ?? null,
+                        'timestamp'                   => date('Y-m-d H:i:s', time()),
+                    ];
+
+                    $inserted = $noteGateway->insert($note);
+
+                    if (!$inserted) {
+                        $URL .= "&return=warning1&step=2&gibbonBehaviourID=$gibbonBehaviourID&editID=$AI";
+                        header("Location: {$URL}");
+                        exit;
                     }
                 }
 

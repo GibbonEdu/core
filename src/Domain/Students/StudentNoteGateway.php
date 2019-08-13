@@ -31,7 +31,8 @@ class StudentNoteGateway extends QueryableGateway
 {
     use TableAware;
 
-    private static $tableName = 'gibbonStudentNoteCategory';
+    private static $tableName = 'gibbonStudentNote';
+    private static $primaryKey = 'gibbonStudentNoteID';
 
     private static $searchableColumns = ['name'];
     
@@ -43,12 +44,20 @@ class StudentNoteGateway extends QueryableGateway
     {
         $query = $this
             ->newQuery()
-            ->from($this->getTableName())
+            ->from('gibbonStudentNoteCategory')
             ->cols([
                 'gibbonStudentNoteCategoryID', 'name', 'template', 'active'
             ]);
 
 
         return $this->runQuery($query, $criteria);
+    }
+
+    public function getNoteCategoryIDByName($name)
+    {
+        $data = ['name' => $name];
+        $sql = "SELECT gibbonStudentNoteCategoryID FROM gibbonStudentNoteCategory WHERE name=:name";
+
+        return $this->db()->selectOne($sql, $data);
     }
 }
