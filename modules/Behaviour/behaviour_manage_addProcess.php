@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Domain\Students\StudentNoteGateway;
 
 include '../../gibbon.php';
 
@@ -142,17 +143,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                 if ($copyToNotes == 'on') {
                     //Write to notes
-                    $notes = $comment;
-                    $notes = (empty($followup) ? $comment : $comment."<br/><br/>".$followup );
-                    try {
-                        $data = array('title' => 'Behaviour Incident', 'note' => $notes, 'gibbonPersonID' => $gibbonPersonID, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'timestamp' => date('Y-m-d H:i:s', time()));
-                        $sql = 'INSERT INTO gibbonStudentNote SET title=:title, note=:note, gibbonPersonID=:gibbonPersonID, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestamp=:timestamp';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $URL .= '&return=error2';
+                    $noteGateway = $container->get(StudentNoteGateway::class);
+                    $note = [
+                        'title'                       => __('Behaviour').': '.$descriptor,
+                        'note'                        => empty($followup) ? $comment : $comment.' <br/><br/>'.$followup,
+                        'gibbonPersonID'              => $gibbonPersonID,
+                        'gibbonPersonIDCreator'       => $_SESSION[$guid]['gibbonPersonID'],
+                        'gibbonStudentNoteCategoryID' => $noteGateway->getNoteCategoryIDByName('Behaviour') ?? null,
+                        'timestamp'                   => date('Y-m-d H:i:s', time()),
+                    ];
+
+                    $inserted = $noteGateway->insert($note);
+
+                    if (!$inserted) {
+                        $URL .= "&return=warning1&step=2&gibbonBehaviourID=$gibbonBehaviourID&editID=$AI";
                         header("Location: {$URL}");
-                        exit();
+                        exit;
                     }
                 }
 
