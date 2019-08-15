@@ -146,6 +146,25 @@ trait TableAware
     }
 
     /**
+     * Inserts a row into the table and returns the primary key.
+     *
+     * @param array $data
+     * @return void
+     */
+    public function insertAndUpdate(array $data, array $updateCols)
+    {
+        unset($data[$this->getPrimaryKey()]);
+
+        $query = $this
+            ->newInsert()
+            ->into($this->getTableName())
+            ->cols($data)
+            ->onDuplicateKeyUpdateCols($updateCols);
+
+        return $this->runInsert($query);
+    }
+
+    /**
      * Updates a row in the table based on primary key and returns true on success.
      *
      * @param string $primaryKeyValue
