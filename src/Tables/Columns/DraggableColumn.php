@@ -38,7 +38,7 @@ class DraggableColumn extends Column
         parent::__construct('draggable');
         $this->sortable(false)
              ->context('action')
-             ->width('1.8rem');
+             ->width('1%; max-width: 1.8rem;');
 
         $this->format(function ($values) {
             return '<div class="drag-handle w-2 h-6 ml-3 px-px border-4 border-dotted cursor-move"></div>';
