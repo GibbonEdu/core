@@ -79,46 +79,46 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
 
     $setting = getSettingByScope($connection2, 'User Admin', 'nationality', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $setting = getSettingByScope($connection2, 'User Admin', 'ethnicity', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $setting = getSettingByScope($connection2, 'User Admin', 'religions', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $setting = getSettingByScope($connection2, 'User Admin', 'residencyStatus', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $setting = getSettingByScope($connection2, 'User Admin', 'departureReasons', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $row = $form->addRow()->addHeading(__('Privacy Options'));
 
     $setting = getSettingByScope($connection2, 'User Admin', 'privacy', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $form->toggleVisibilityByClass('privacy')->onSelect($setting['name'])->when('Y');
 
     $setting = getSettingByScope($connection2, 'User Admin', 'privacyBlurb', true);
     $row = $form->addRow()->addClass('privacy');
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $setting = getSettingByScope($connection2, 'User Admin', 'privacyOptions', true);
     $row = $form->addRow()->addClass('privacy');
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $row = $form->addRow()->addHeading(__('User Data Options'));
@@ -132,19 +132,19 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
 
     $setting = getSettingByScope($connection2, 'User Admin', 'personalBackground', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $row = $form->addRow()->addHeading(__('Day-Type Options'));
 
     $setting = getSettingByScope($connection2, 'User Admin', 'dayTypeOptions', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $setting = getSettingByScope($connection2, 'User Admin', 'dayTypeText', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $row = $form->addRow();
