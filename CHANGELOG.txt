@@ -31,6 +31,7 @@ v19.0.00
         Timetable Admin: included student reportable flag in student enrolment
 
     Bug Fixes
+        Activities: improved interface string advising users of disabled external activity registration
         Attendance: fixed missing data in printable view of Student History
         Library: set Bookable to No by default on Add record screen
         Planner: fixed non-functional Smart Block Template setting

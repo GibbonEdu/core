@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        $page->breadcrumbs->add(__('View Activities'));          
+        $page->breadcrumbs->add(__('View Activities'));
 
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, array('success0' => __('Registration was successful.'), 'success1' => __('Unregistration was successful.'), 'success2' => __('Registration was successful, but the activity is full, so you are on the waiting list.')));
@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             $disableExternalProviderSignup = getSettingByScope($connection2, 'Activities', 'disableExternalProviderSignup');
             if ($disableExternalProviderSignup == 'Y') {
                 echo "<div class='warning'>";
-                echo __('Registration for activities offered by outside providers is disabled. Check activity details for instructions on how to register for such acitvities.');
+                echo __('Please check activity details for instructions on how to register for activities offered by outside providers.');
                 echo '</div>';
             }
 
@@ -154,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
             //Set pagination variable
             $page = $_GET['page'] ?? 1;
-            
+
             if ((!is_numeric($page)) or $page < 1) {
                 $page = 1;
             }
