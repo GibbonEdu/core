@@ -16,6 +16,29 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v19.0.00
+--------
+    Headlines
+
+    Changes With Important Notices
+
+    Significant Changes
+
+    Security
+
+    Tweaks & Additions
+        Behaviour: new Copy To Notes feature
+        Timetable Admin: included student reportable flag in student enrolment
+
+    Bug Fixes
+        System: fix installer bug where passwords are unnecessarily encoded
+        Activities: improved interface string advising users of disabled external activity registration
+        Attendance: fixed missing data in printable view of Student History
+        Library: set Bookable to No by default on Add record screen
+        Planner: fixed non-functional Smart Block Template setting
+        Planner: fixed Unit Planner bug causing actions to appear in Classes table for newly created units
+        Students: adjusted official name size in ID card for long-named students
+
 v18.0.01
 --------
     Bug Fixes

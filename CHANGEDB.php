@@ -908,3 +908,8 @@ UPDATE `gibbonAction` SET name='Manage Custom Fields' WHERE name='Manage User Cu
 ++$count;
 $sql[$count][0] = '18.0.01';
 $sql[$count][1] = "";
+
+//v19.0.00
+++$count;
+$sql[$count][0] = '19.0.00';
+$sql[$count][1] = "";
