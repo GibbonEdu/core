@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Input;
 
+use DateTime;
+
 /**
  * Date
  *
@@ -27,6 +29,8 @@ namespace Gibbon\Forms\Input;
  */
 class Date extends TextField
 {
+    protected $min;
+    protected $max;
     protected $from;
     protected $to;
 
@@ -73,6 +77,32 @@ class Date extends TextField
         }
 
         return false;
+    }
+
+    /**
+     * Define a minimum for this date. Accepts YYYY-MM-DD strings as well as an
+     * integer for relative date values eg: -20. See DatePicker docs:
+     * https://api.jqueryui.com/datepicker/#option-minDate
+     * @param   string|int  $value
+     * @return  self
+     */
+    public function minimum($value)
+    {
+        $this->min = $value;
+        return $this;
+    }
+
+    /**
+     * Define a maximum for this date. Accepts YYYY-MM-DD strings as well as an
+     * integer for relative date values eg: 20. See DatePicker docs:
+     * https://api.jqueryui.com/datepicker/#option-maxDate
+     * @param   string|int  $value
+     * @return  self
+     */
+    public function maximum($value)
+    {
+        $this->max = $value;
+        return $this;
     }
 
     /**
@@ -133,6 +163,7 @@ class Date extends TextField
 
         $output = '<input type="text" '.$this->getAttributeString().' maxlength="10">';
 
+        $minDate = $maxDate = 'null';
         $onSelect = 'function(){$(this).blur();}';
 
         if ($this->from) {
@@ -151,8 +182,19 @@ class Date extends TextField
             }';
         }
 
+        if ($this->min) {
+            $minDate = is_string($this->min)
+                ? 'new Date("'.$this->min.'")'
+                : $this->min;
+        }
+        if ($this->max) {
+            $maxDate = is_string($this->max)
+                ? 'new Date("'.$this->max.'")'
+                : $this->max;
+        }
+
         $output .= '<script type="text/javascript">';
-        $output .= '$(function() { '.$this->getID().' = $("#'.$this->getID().'").datepicker({onSelect: '.$onSelect.', onClose: function(){$(this).change();} }); });';
+        $output .= '$(function() { '.$this->getID().' = $("#'.$this->getID().'").datepicker({onSelect: '.$onSelect.', onClose: function(){$(this).change();}, minDate: '.$minDate.', maxDate: '.$maxDate.' }); });';
 
         if ($this->to || $this->from) {
             $output .= 'function getDate(element) {
