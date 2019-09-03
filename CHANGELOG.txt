@@ -29,6 +29,7 @@ v19.0.00
     Tweaks & Additions
         System: added Maldivian Rufiyaa as a currency option
         Behaviour: new Copy To Notes feature
+        Students: improved display of Teachers' emails in student profile
         Timetable Admin: included student reportable flag in student enrolment
 
     Bug Fixes
