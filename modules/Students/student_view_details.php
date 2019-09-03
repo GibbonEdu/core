@@ -627,7 +627,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                         //Get and display a list of student's teachers
                         echo '<h4>';
-                        echo sprintf(__('Teachers Of %1$s'), $row['preferredName']);
+                        echo __('Teachers Of {student}', ['student' => $row['preferredName']]);
                         echo '</h4>';
                         echo '<p>';
                         echo __('Includes Teachers, Tutors, Educational Assistants and Head of Year.');
