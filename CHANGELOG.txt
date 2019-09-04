@@ -28,12 +28,14 @@ v19.0.00
 
     Tweaks & Additions
         System: added Maldivian Rufiyaa as a currency option
+        System: update DatePicker to use gibboni18n date format
         Behaviour: new Copy To Notes feature
         Students: improved display of Teachers' emails in student profile
         Timetable Admin: included student reportable flag in student enrolment
 
     Bug Fixes
         System: fix installer bug where passwords are unnecessarily encoded
+        System: fixed date picker validation error for Polish language
         Activities: improved interface string advising users of disabled external activity registration
         Attendance: fixed missing data in printable view of Student History
         Finance: fixed missing payment info in invoice receipt email for multiple partial payments
