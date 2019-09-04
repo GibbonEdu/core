@@ -189,8 +189,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
 
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']))->description(
-            __('Example').': '.formatName($title, $preferredName, $surname, 'Staff', false, false).'<br/>'.
-            __('Reversed').': '.formatName($title, $preferredName, $surname, 'Staff', true, false));
+            __('Example').': '.Format::name($title, $preferredName, $surname, 'Staff', false, false).'<br/>'.
+            __('Reversed').': '.Format::name($title, $preferredName, $surname, 'Staff', true, false));
         $col = $row->addColumn($setting['name'])->addClass('stacked');
         $col->addTextField($setting['name'])->required()->maxLength(60)->setValue($setting['value']);
         $col->addTextField($settingRev['name'])->required()->maxLength(60)->setTitle(__('Reversed'))->setValue($settingRev['value']);
@@ -200,8 +200,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
 
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']))->description(
-            __('Example').': '.formatName($title, $preferredName, $surname, 'Staff', false, true).'<br/>'.
-            __('Reversed').': '.formatName($title, $preferredName, $surname, 'Staff', true, true));
+            __('Example').': '.Format::name($title, $preferredName, $surname, 'Staff', false, true).'<br/>'.
+            __('Reversed').': '.Format::name($title, $preferredName, $surname, 'Staff', true, true));
         $col = $row->addColumn($setting['name'])->addClass('stacked right');
         $col->addTextField($setting['name'])->required()->maxLength(60)->setValue($setting['value']);
         $col->addTextField($settingRev['name'])->required()->maxLength(60)->setTitle(__('Reversed'))->setValue($settingRev['value']);

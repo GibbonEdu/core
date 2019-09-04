@@ -21,6 +21,7 @@ use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
+use Gibbon\Services\Format;
 
 include '../../gibbon.php';
 
@@ -88,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 if ($resultDetail->rowCount() == 1) {
                     $rowDetail = $resultDetail->fetch();
 
-                    $studentName = formatName('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false);
+                    $studentName = Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false);
                     $actionLink = "/index.php?q=/modules/Behaviour/behaviour_view_details.php&gibbonPersonID=$gibbonPersonID&search=";
 
                     // Raise a new notification event

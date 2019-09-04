@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\Prefab\RollGroupTable;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_details.php') == false) {
     //Acess denied
@@ -77,9 +78,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_det
             $primaryTutor240 = '';
             while ($rowTutor = $resultTutor->fetch()) {
                 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php')) {
-                    echo "<i><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowTutor['gibbonPersonID']."'>".formatName('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', false, true).'</a></i>';
+                    echo "<i><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowTutor['gibbonPersonID']."'>".Format::name('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', false, true).'</a></i>';
                 } else {
-                    echo '<i>'.formatName('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', false, true);
+                    echo '<i>'.Format::name('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', false, true);
                 }
                 if ($rowTutor['gibbonPersonID'] == $row['gibbonPersonIDTutor']) {
                     $primaryTutor240 = $rowTutor['image_240'];
@@ -102,9 +103,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_det
             }
             while ($rowTutor = $resultTutor->fetch()) {
                 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php')) {
-                    echo "<i><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowTutor['gibbonPersonID']."'>".formatName('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', false, true).'</a></i>';
+                    echo "<i><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowTutor['gibbonPersonID']."'>".Format::name('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', false, true).'</a></i>';
                 } else {
-                    echo '<i>'.formatName('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', false, true);
+                    echo '<i>'.Format::name('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', false, true);
                 }
                 echo '</i><br/>';
             }

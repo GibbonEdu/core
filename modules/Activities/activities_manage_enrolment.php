@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -179,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     //COLOR ROW BY STATUS!
                     echo "<tr class=$rowNum>";
                     echo '<td>';
-                    $studentName = formatName('', $values['preferredName'], $values['surname'], 'Student', true);
+                    $studentName = Format::name('', $values['preferredName'], $values['surname'], 'Student', true);
                     if ($canViewStudentDetails) {
                         echo sprintf('<a href="%2$s">%1$s</a>', $studentName, $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$values['gibbonPersonID'].'&subpage=Activities');
                     } else {

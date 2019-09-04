@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage_edit.php")==FALSE) {
 	//Acess denied
@@ -699,7 +700,7 @@ else {
 					// Build a set of individuals by ID => formatted name
 					$individuals = ($result->rowCount() > 0)? $result->fetchAll() : array();
 					$individuals = array_reduce($individuals, function($group, $item){
-						$group[$item['gibbonPersonID']] = formatName("", $item['preferredName'], $item['surname'], 'Student', true) . ' ('.$item['username'].', '.__($item['category']).')';
+						$group[$item['gibbonPersonID']] = Format::name("", $item['preferredName'], $item['surname'], 'Student', true) . ' ('.$item['username'].', '.__($item['category']).')';
 						return $group;
 					}, array());
 

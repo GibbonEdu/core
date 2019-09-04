@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -94,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
 
 		$invoicees = array_reduce($resultSet, function($carry, $person) use ($highestAction) {
 			$id = $person['gibbonFinanceInvoiceeID'];
-			$carry[$id] = formatName('', htmlPrep($person['preferredName']), htmlPrep($person['surname']), 'Student', true);
+			$carry[$id] = Format::name('', htmlPrep($person['preferredName']), htmlPrep($person['surname']), 'Student', true);
 			if ($highestAction == 'Update Finance Data_any') {
 				$carry[$id] .= ' ('.$person['username'].')';
 			}

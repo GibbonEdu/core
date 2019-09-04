@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Module\Markbook\MarkbookView;
+use Gibbon\Services\Format;
 
 include __DIR__ . '/../../config.php';
 
@@ -222,7 +223,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                 $r++;
                 ++$count;
 				//Column A
-				$excel->getActiveSheet()->setCellValueByColumnAndRow(0, $r, formatName('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student', true));
+				$excel->getActiveSheet()->setCellValueByColumnAndRow(0, $r, Format::name('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student', true));
                 $excel->getActiveSheet()->getStyleByColumnAndRow(0, $r)->applyFromArray($style_border);
 
 				//Columns following A

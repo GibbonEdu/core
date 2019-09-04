@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\RollGroups\RollGroupGateway;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Services\Format;
 
 include '../../gibbon.php';
 
@@ -106,8 +107,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                     $student = $studentGateway->selectActiveStudentByPerson($_SESSION[$guid]['gibbonSchoolYearID'], $gibbonPersonID)->fetch();
                     if (!empty($student)) {
-                        $studentName = formatName('', $student['preferredName'], $student['surname'], 'Student', false);
-                        $editorName = formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', false);
+                        $studentName = Format::name('', $student['preferredName'], $student['surname'], 'Student', false);
+                        $editorName = Format::name('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', false);
                         $actionLink = "/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=&gibbonYearGroupID=&type=$type&gibbonBehaviourID=$gibbonBehaviourID";
 
                         // Raise a new notification event

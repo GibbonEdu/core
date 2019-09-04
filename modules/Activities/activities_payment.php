@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -97,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
 
             $row = $table->addRow();
             $row->addContent($student['rollGroup']);
-            $row->addContent(formatName('', $student['preferredName'], $student['surname'], 'Student', true));
+            $row->addContent(Format::name('', $student['preferredName'], $student['surname'], 'Student', true));
             $row->addContent($student['name']);
             $row->addCurrency("payment[$gibbonActivityStudentID]")->required()->setValue($student['payment']);
             $row->addCheckbox("gibbonActivityStudentID[$gibbonActivityStudentID]")->setValue($student['gibbonActivityStudentID'])->setClass('');
@@ -158,7 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
             echo $row['rollGroup'];
             echo '</td>';
             echo '<td>';
-            echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
+            echo Format::name('', $row['preferredName'], $row['surname'], 'Student', true);
             echo '</td>';
             echo '<td>';
             echo $row['name'];

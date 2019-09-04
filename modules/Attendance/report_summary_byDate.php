@@ -311,7 +311,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                 echo '</td>';
                 echo '<td>';
                     echo '<a href="index.php?q=/modules/Attendance/report_studentHistory.php&gibbonPersonID='.$row['gibbonPersonID'].'" target="_blank">';
-                    echo formatName('', $row['preferredName'], $row['surname'], 'Student', ($sort != 'preferredName') );
+                    echo Format::name('', $row['preferredName'], $row['surname'], 'Student', ($sort != 'preferredName') );
                     echo '</a>';
                 echo '</td>';
 
