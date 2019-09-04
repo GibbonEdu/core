@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_edit.php') == false) {
     //Acess denied
@@ -207,14 +208,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                 $row = $form->addRow()->addClass('head break');
                     $row->addContent(__('Adults'));
                     foreach ($children as $child) {
-                        $row->addContent(formatName('', $child['preferredName'], $child['surname'], 'Student'));
+                        $row->addContent(Format::name('', $child['preferredName'], $child['surname'], 'Student'));
                     }
 
                 $count = 0;
                 foreach ($adults as $adult) {
                     ++$count;
                     $row = $form->addRow();
-                        $row->addContent(formatName($adult['title'], $adult['preferredName'], $adult['surname'], 'Parent'));
+                        $row->addContent(Format::name($adult['title'], $adult['preferredName'], $adult['surname'], 'Parent'));
                         foreach ($children as $child) {
                             $form->addHiddenValue('gibbonPersonID1[]', $adult['gibbonPersonID']);
                             $form->addHiddenValue('gibbonPersonID2[]', $child['gibbonPersonID']);
@@ -278,7 +279,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                     echo getUserPhoto($guid, $child['image_240'], 75);
                     echo '</td>';
                     echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID='.$child['gibbonPersonID']."'>".formatName('', $child['preferredName'], $child['surname'], 'Student').'</a>';
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID='.$child['gibbonPersonID']."'>".Format::name('', $child['preferredName'], $child['surname'], 'Student').'</a>';
                     echo '</td>';
                     echo '<td>';
                     echo $child['status'];
@@ -390,7 +391,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                     //COLOR ROW BY STATUS!
                     echo "<tr class=$rowNum>";
                     echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID='.$adult['gibbonPersonID']."'>".formatName($adult['title'], $adult['preferredName'], $adult['surname'], 'Parent').'</a>';
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID='.$adult['gibbonPersonID']."'>".Format::name($adult['title'], $adult['preferredName'], $adult['surname'], 'Parent').'</a>';
                     echo '</td>';
                     echo '<td>';
                     echo $adult['status'];
@@ -443,7 +444,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
             } catch (PDOException $e) { }
             while ($rowSelect = $resultSelect->fetch()) {
                 $expected = (($rowSelect['status'] == 'Expected') ? ' ('.__('Expected').')' : '');
-                $adults[$rowSelect['gibbonPersonID']] = formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Parent', true, true).' ('.$rowSelect['username'].')'.$expected;
+                $adults[$rowSelect['gibbonPersonID']] = Format::name('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Parent', true, true).' ('.$rowSelect['username'].')'.$expected;
             }
             $row = $form->addRow();
                 $row->addLabel('gibbonPersonID2', __('Adult\'s Name'));

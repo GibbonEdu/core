@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
 use Gibbon\Module\Attendance\AttendanceView;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -175,7 +176,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                         echo __("Attendance has been taken at the following times for the specified date for this group:");
                         echo "<ul>";
                         while ($rowLog = $resultLog->fetch()) {
-                            echo "<li>" . sprintf(__('Recorded at %1$s on %2$s by %3$s.'), substr($rowLog["timestampTaken"], 11), dateConvertBack($guid, substr($rowLog["timestampTaken"], 0, 10)), formatName("", $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true)) . "</li>";
+                            echo "<li>" . sprintf(__('Recorded at %1$s on %2$s by %3$s.'), substr($rowLog["timestampTaken"], 11), dateConvertBack($guid, substr($rowLog["timestampTaken"], 0, 10)), Format::name("", $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true)) . "</li>";
                         }
                         echo "</ul>";
                         echo "</div>";
@@ -282,7 +283,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                                 ->addClass($student['cellHighlight']);
 
                             $cell->addContent(getUserPhoto($guid, $student['image_240'], 75));
-                            $cell->addWebLink(formatName('', htmlPrep($student['preferredName']), htmlPrep($student['surname']), 'Student', false))
+                            $cell->addWebLink(Format::name('', htmlPrep($student['preferredName']), htmlPrep($student['surname']), 'Student', false))
                                 ->setURL('index.php?q=/modules/Students/student_view_details.php')
                                 ->addParam('gibbonPersonID', $student['gibbonPersonID'])
                                 ->addParam('subpage', 'Attendance')

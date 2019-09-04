@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 include '../../config.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.php') == false) {
@@ -126,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
 			$excel->getActiveSheet()->setCellValueByColumnAndRow(5, $count, number_format($row['cost'], 2, '.', ','));
             $excel->getActiveSheet()->getStyleByColumnAndRow(5, $count)->applyFromArray($style_border);
  			//Column G
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(6, $count, formatName('', $row['preferredName'], $row['surname'], 'Staff', true, true));
+			$excel->getActiveSheet()->setCellValueByColumnAndRow(6, $count, Format::name('', $row['preferredName'], $row['surname'], 'Staff', true, true));
             $excel->getActiveSheet()->getStyleByColumnAndRow(6, $count)->applyFromArray($style_border);
  			//Column H
 			$excel->getActiveSheet()->setCellValueByColumnAndRow(7, $count, $row['timestampCreator']);

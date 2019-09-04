@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -114,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
             //COLOR ROW BY STATUS!
             echo "<tr class=$rowNum>";
             echo '<td>';
-            echo formatName('', $row['preferredName'], $row['surname'], 'Staff', true, true);
+            echo Format::name('', $row['preferredName'], $row['surname'], 'Staff', true, true);
             echo '</td>';
             if ($expenseApprovalType == 'Chain Of All') {
                 echo '<td>';

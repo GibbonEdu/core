@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Rubric includes
 require_once __DIR__ . '/../Rubrics/moduleFunctions.php';
 
@@ -117,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 
                         echo "<h2 style='margin-bottom: 10px;'>";
                         echo $row3['name'].'<br/>';
-                        echo "<span style='font-size: 65%; font-style: italic'>".formatName('', $row4['preferredName'], $row4['surname'], 'Student', true).'</span>';
+                        echo "<span style='font-size: 65%; font-style: italic'>".Format::name('', $row4['preferredName'], $row4['surname'], 'Student', true).'</span>';
                         echo '</h2>';
 
                         $mark = true;

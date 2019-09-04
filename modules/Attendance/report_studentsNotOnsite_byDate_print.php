@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
 use Gibbon\Module\Attendance\AttendanceView;
 
 //Module includes
@@ -183,7 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                     echo $row['rollGroupName'];
                 echo '</td>';
                 echo '<td>';
-                    echo formatName('', $row['preferredName'], $row['surname'], 'Student', ($sort != 'preferredName') );
+                    echo Format::name('', $row['preferredName'], $row['surname'], 'Student', ($sort != 'preferredName') );
                 echo '</td>';
                 echo '<td>';
                 $rowRollAttendance = null;

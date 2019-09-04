@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Prefab\BulkActionForm;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage_report.php")==FALSE) {
 	//Acess denied
@@ -199,9 +200,9 @@ else {
 								$countTotal++;
 								$count++;
 
-								$studentName = formatName('', $recipient['preferredName'], $recipient['surname'], 'Student', true);
-								$parent1Name = formatName('', $recipient['parent1preferredName'], $recipient['parent1surname'], 'Parent', true);
-								$parent2Name = formatName('', $recipient['parent2preferredName'], $recipient['parent2surname'], 'Parent', true);
+								$studentName = Format::name('', $recipient['preferredName'], $recipient['surname'], 'Student', true);
+								$parent1Name = Format::name('', $recipient['parent1preferredName'], $recipient['parent1surname'], 'Parent', true);
+								$parent2Name = Format::name('', $recipient['parent2preferredName'], $recipient['parent2surname'], 'Parent', true);
 
 								//Tests for row completion, to set colour
 								$studentReceived = isset($receipts[$recipient['gibbonPersonID']]);
@@ -308,7 +309,7 @@ else {
 						foreach ($recipients as $count => $recipient) {
 							$row = $table->addRow();
 								$row->addContent($count+1);
-								$row->addContent(($recipient['preferredName'] != '' && $recipient['surname'] != '') ? formatName('', $recipient['preferredName'], $recipient['surname'], 'Student', true) : __('N/A'));
+								$row->addContent(($recipient['preferredName'] != '' && $recipient['surname'] != '') ? Format::name('', $recipient['preferredName'], $recipient['surname'], 'Student', true) : __('N/A'));
 								$row->addContent($recipient['roleCategory']);
 								$row->addContent($recipient['contactType']);
 								$row->addContent($recipient['contactDetail']);

@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 include '../../config.php';
 
 //Module includes
@@ -120,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
             //COLOR ROW BY STATUS!
 			$r++;
 			//Column A
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(0, $r, formatName('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student', true));
+			$excel->getActiveSheet()->setCellValueByColumnAndRow(0, $r, Format::name('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student', true));
             $excel->getActiveSheet()->getStyleByColumnAndRow(0, $r)->applyFromArray($style_border);
 
             //Column B

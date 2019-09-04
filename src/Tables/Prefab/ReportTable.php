@@ -21,6 +21,7 @@ namespace Gibbon\Tables\Prefab;
 
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\QueryCriteria;
+use Gibbon\Services\Format;
 use Gibbon\Tables\Renderer\PaginatedRenderer;
 use Gibbon\Tables\Renderer\PrintableRenderer;
 use Gibbon\Tables\Renderer\SpreadsheetRenderer;
@@ -74,7 +75,7 @@ class ReportTable extends DataTable
         }
 
         $this->addMetaData('filename', 'gibbonExport_'.$this->getID());
-        $this->addMetaData('creator', formatName('', $session->get('preferredName'), $session->get('surname'), 'Staff'));
+        $this->addMetaData('creator', Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff'));
 
         return $this;
     }

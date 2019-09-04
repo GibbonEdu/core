@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Services\Format;
 
 require getcwd().'/../gibbon.php';
 
@@ -73,8 +74,8 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
             $report .= __('Daily Behaviour Summary').': '.$result->rowCount().' '.__('Records').'<br/><br/>';
             while ($row = $result->fetch()) {
 
-                $studentName = formatName('', $row['preferredName'], $row['surname'], 'Student', false);
-                $staffName = formatName('', $row['staffPreferredName'], $row['staffSurname'], 'Staff', false, true);
+                $studentName = Format::name('', $row['preferredName'], $row['surname'], 'Student', false);
+                $staffName = Format::name('', $row['staffPreferredName'], $row['staffSurname'], 'Staff', false, true);
 
                 $report .= date('g:i a', strtotime($row['timestamp'])).' - '.__('Negative').' '.__('Behaviour').' - '.$row['level'];
                 $report .= '<br/>';

@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -102,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
         // Collect a list of people with formatted names, add username for Data_any access
         $people = array_reduce($resultSet, function($carry, $person) use ($highestAction) {
             $id = str_pad($person['gibbonPersonID'], 10, '0', STR_PAD_LEFT);
-            $carry[$id] = formatName('', htmlPrep($person['preferredName']), htmlPrep($person['surname']), 'Student', true);
+            $carry[$id] = Format::name('', htmlPrep($person['preferredName']), htmlPrep($person['surname']), 'Student', true);
             if ($highestAction == 'Update Personal Data_any') {
                 $carry[$id] .= ' ('.$person['username'].')';
             }
@@ -111,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
         // Add self to people if not in the list
         if (array_key_exists($_SESSION[$guid]['gibbonPersonID'], $people) == false) {
-            $people[$_SESSION[$guid]['gibbonPersonID']] = formatName('', htmlPrep($_SESSION[$guid]['preferredName']), htmlPrep($_SESSION[$guid]['surname']), 'Student', true);
+            $people[$_SESSION[$guid]['gibbonPersonID']] = Format::name('', htmlPrep($_SESSION[$guid]['preferredName']), htmlPrep($_SESSION[$guid]['surname']), 'Student', true);
         }
         
         $row = $form->addRow();
@@ -461,7 +462,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                             $table = $row->addTable()->setClass('standardWidth');
 
                             while ($rowAddress = $resultAddress->fetch()) {
-                                $adressee = formatName($rowAddress['title'], $rowAddress['preferredName'], $rowAddress['surname'], $rowAddress['category']).' ('.$rowAddress['category'].')';
+                                $adressee = Format::name($rowAddress['title'], $rowAddress['preferredName'], $rowAddress['surname'], $rowAddress['category']).' ('.$rowAddress['category'].')';
 
                                 $row = $table->addRow()->addClass('address');
                                 $row->addTextField($addressCount.'-matchAddressLabel')->readOnly()->setValue($adressee)->setClass('fullWidth');

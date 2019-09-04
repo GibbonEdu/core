@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Module\Attendance\AttendanceView;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -81,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
 			$row = $form->addRow();
 				$row->addLabel('student', __('Student'));
-				$row->addTextField('student')->readonly()->setValue(formatName('', htmlPrep($values['preferredName']), htmlPrep($values['surname']), 'Student', true));
+				$row->addTextField('student')->readonly()->setValue(Format::name('', htmlPrep($values['preferredName']), htmlPrep($values['surname']), 'Student', true));
 
 			$row = $form->addRow();
 				$row->addLabel('date', __('Date'));
@@ -89,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
 			$row = $form->addRow();
 				$row->addLabel('recordedBy', __('Recorded By'));
-				$row->addTextField('recordedBy')->readonly()->setValue(formatName('', htmlPrep($values['teacherPreferredName']), htmlPrep($values['teacherSurname']), 'Staff', false, true));
+				$row->addTextField('recordedBy')->readonly()->setValue(Format::name('', htmlPrep($values['teacherPreferredName']), htmlPrep($values['teacherSurname']), 'Staff', false, true));
 
 			$row = $form->addRow();
 				$row->addLabel('time', __('Time'));

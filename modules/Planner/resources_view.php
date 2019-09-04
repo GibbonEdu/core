@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -182,7 +183,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
             echo "<tr class=$rowNum>";
             echo '<td>';
             echo getResourceLink($guid, $row['gibbonResourceID'], $row['type'], $row['name'], $row['content']);
-            echo "<span style='font-size: 85%; font-style: italic'>".formatName($row['title'], $row['preferredName'], $row['surname'], 'Staff').'</span>';
+            echo "<span style='font-size: 85%; font-style: italic'>".Format::name($row['title'], $row['preferredName'], $row['surname'], 'Staff').'</span>';
             echo '</td>';
             echo '<td>';
             echo $row['type'];

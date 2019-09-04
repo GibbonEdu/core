@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php') == false) {
     //Acess denied
@@ -65,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                         echo "<div class='error'>".$e->getMessage().'</div>';
                     }
                     while ($rowChild = $resultChild->fetch()) {
-                        $options[$rowChild['gibbonPersonID']]=formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
+                        $options[$rowChild['gibbonPersonID']]=Format::name('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
                     }
                 }
 
@@ -261,7 +262,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
 
                             echo "<tr class=$rowNum>";
                             echo '<td>';
-                            echo '<b>'.formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true).'</b><br/>';
+                            echo '<b>'.Format::name('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true).'</b><br/>';
                             echo "<span style='font-style: italic; font-size: 85%'>".$row['invoiceTo'].'</span>';
                             echo '</td>';
                             echo '<td>';

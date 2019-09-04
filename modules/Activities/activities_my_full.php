@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -143,7 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my_f
                 } else {
                     echo "<ul style='margin-left: 15px'>";
                     while ($rowStaff = $resultStaff->fetch()) {
-                        echo '<li>'.formatName($rowStaff['title'], $rowStaff['preferredName'], $rowStaff['surname'], 'Staff').'</li>';
+                        echo '<li>'.Format::name($rowStaff['title'], $rowStaff['preferredName'], $rowStaff['surname'], 'Staff').'</li>';
                     }
                     echo '</ul>';
                 }
@@ -220,7 +222,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my_f
                     } else {
                         echo "<ul style='margin-left: 15px'>";
                         while ($rowStudent = $resultStudents->fetch()) {
-                            echo '<li>'.formatName('', $rowStudent['preferredName'], $rowStudent['surname'], 'Student').'</li>';
+                            echo '<li>'.Format::name('', $rowStudent['preferredName'], $rowStudent['surname'], 'Student').'</li>';
                         }
                         echo '</ul>';
                     }
@@ -238,7 +240,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my_f
                         echo '<h3>'.__('Waiting List').'</h3>';
                         echo "<ol style='margin-left: 15px'>";
                         while ($rowStudent = $resultStudents->fetch()) {
-                            echo '<li>'.formatName('', $rowStudent['preferredName'], $rowStudent['surname'], 'Student').'</li>';
+                            echo '<li>'.Format::name('', $rowStudent['preferredName'], $rowStudent['surname'], 'Student').'</li>';
                         }
                         echo '</ol>';
                     }

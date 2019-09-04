@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Gibbon system-wide includes
 include './gibbon.php';
 
@@ -153,7 +155,7 @@ if ($type == 'general' or $type == 'lockdown' or $type == 'custom') {
 								</script>';
                             $output .= "<tr id='row".$rowCount."'>";
                             $output .= "<td style='color: #fff'>";
-                            $output .= formatName('', $rowConfirm['preferredName'], $rowConfirm['surname'], 'Staff', true, true).'<br/>';
+                            $output .= Format::name('', $rowConfirm['preferredName'], $rowConfirm['surname'], 'Staff', true, true).'<br/>';
                             $output .= '</td>';
                             $output .= "<td style='color: #fff'>";
                             if ($row['gibbonPersonID'] == $rowConfirm['gibbonPersonID']) {

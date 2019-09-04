@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.php') == false) {
     //Acess denied
@@ -184,7 +185,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.p
             //COLOR ROW BY STATUS!
             echo "<tr class=$rowNum>";
             echo '<td>';
-            echo '<b>'.formatName('', $row['preferredName'], $row['surname'], 'Student', true).'</b><br/>';
+            echo '<b>'.Format::name('', $row['preferredName'], $row['surname'], 'Student', true).'</b><br/>';
             echo '</td>';
             echo '<td>';
             echo $row['status'];

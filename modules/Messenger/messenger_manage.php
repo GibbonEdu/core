@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 $page->breadcrumbs->add(__('Manage Messages'));
 
@@ -203,7 +204,7 @@ else {
 							}
 						print "</td>" ;
 						print "<td>" ;
-							print formatName($row["title"], $row["preferredName"], $row["surname"], $row["category"]) ;
+							print Format::name($row["title"], $row["preferredName"], $row["surname"], $row["category"]) ;
 						print "</td>" ;
 						print "<td>" ;
 							try {
@@ -358,7 +359,7 @@ else {
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . __($rowTargets["type"]) . "</b> - " . formatName("", $rowTarget["preferredName"], $rowTarget["surname"], "Student", true) . "<br/>" ;
+										$targets.="<b>" . __($rowTargets["type"]) . "</b> - " . Format::name("", $rowTarget["preferredName"], $rowTarget["surname"], "Student", true) . "<br/>" ;
 									}
 								}
 								else if ($rowTargets["type"]=="Group") {

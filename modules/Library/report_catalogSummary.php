@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 $_SESSION[$guid]['report_student_emergencySummary.php_choices'] = '';
 
@@ -248,7 +249,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
 				}
 				if ($resultPerson->rowCount() == 1) {
 					$rowPerson = $resultPerson->fetch();
-					echo "<span style='font-size: 85%; font-style: italic'>".formatName($rowPerson['title'], $rowPerson['preferredName'], $rowPerson['surname'], 'Staff', false, true).'</span>';
+					echo "<span style='font-size: 85%; font-style: italic'>".Format::name($rowPerson['title'], $rowPerson['preferredName'], $rowPerson['surname'], 'Staff', false, true).'</span>';
 				}
 			}
 			echo '</td>';

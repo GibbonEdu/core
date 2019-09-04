@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Helps builds report array for setting gibbonMessengerReceipt
 function reportAdd($report, $emailReceipt, $gibbonPersonID, $targetType, $targetID, $contactType, $contactDetail)
 {
@@ -62,7 +64,7 @@ function getSignature($guid, $connection2, $gibbonPersonID)
         $row = $result->fetch();
 
         $return = '<br/><br/>----<br/>';
-        $return .= "<span style='font-weight: bold; color: #447CAA'>".formatName('', $row['preferredName'], $row['surname'], 'Student').'</span><br/>';
+        $return .= "<span style='font-weight: bold; color: #447CAA'>".Format::name('', $row['preferredName'], $row['surname'], 'Student').'</span><br/>';
         $return .= "<span style='font-style: italic'>";
         if ($row['jobTitle'] != '') {
             $return .= $row['jobTitle'].'<br/>';
@@ -622,7 +624,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
                     $output[$count]['photo'] = $rowPosts['image_240'];
                     $output[$count]['subject'] = $rowPosts['subject'];
                     $output[$count]['details'] = $rowPosts['body'];
-                    $output[$count]['author'] = formatName($rowPosts['title'], $rowPosts['preferredName'], $rowPosts['surname'], $rowPosts['category']);
+                    $output[$count]['author'] = Format::name($rowPosts['title'], $rowPosts['preferredName'], $rowPosts['surname'], $rowPosts['category']);
                     $output[$count]['source'] = $rowPosts['source'];
                     $output[$count]['gibbonMessengerID'] = $rowPosts['gibbonMessengerID'];
                     $output[$count]['gibbonPersonID'] = $rowPosts['gibbonPersonID'];

@@ -23,13 +23,13 @@ use Gibbon\Domain\Markbook\MarkbookColumnGateway;
 use Gibbon\Module\Markbook\MarkbookView;
 use Gibbon\Services\Format;
 
-	// Lock the file so other scripts cannot call it
-	if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $_SESSION[$guid]['gibbonPersonID'] ) . date('zWy') ) return;
+// Lock the file so other scripts cannot call it
+if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $_SESSION[$guid]['gibbonPersonID'] ) . date('zWy') ) return;
 
-	require_once __DIR__ . '/src/MarkbookView.php';
-	require_once __DIR__ . '/src/MarkbookColumn.php';
+require_once __DIR__ . '/src/MarkbookView.php';
+require_once __DIR__ . '/src/MarkbookColumn.php';
 
-    //Check for access to multiple column add
+   //Check for access to multiple column add
     $multiAdd = false;
     //Add multiple columns
     if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php')) {
@@ -143,12 +143,12 @@ use Gibbon\Services\Format;
     $markbookGateway = $container->get(MarkbookColumnGateway::class);
     $plannerGateway = $container->get(PlannerEntryGateway::class);
 	
-	//reset ordering
-	if(isset($_GET['reset']) && $_GET['reset']==1){
-		$data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-		$sql = 'SET @count:=0;UPDATE gibbonMarkbookColumn SET `sequenceNumber`=@count:=@count+1 WHERE `gibbonCourseClassID` = :gibbonCourseClassID order by gibbonMarkbookColumnID ASC';
-		$result = $pdo->executeQuery($data, $sql);
-	}
+    //reset ordering
+    if(isset($_GET['reset']) && $_GET['reset']==1){
+        $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
+        $sql = 'SET @count:=0;UPDATE gibbonMarkbookColumn SET `sequenceNumber`=@count:=@count+1 WHERE `gibbonCourseClassID` = :gibbonCourseClassID order by gibbonMarkbookColumnID ASC';
+        $result = $pdo->executeQuery($data, $sql);
+    }
 
     // Build the markbook object for this class
     $markbook = new MarkbookView($gibbon, $pdo, $gibbonCourseClassID);
@@ -658,7 +658,7 @@ use Gibbon\Services\Format;
                 echo "<a class='studentName' href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowStudents['gibbonPersonID'].'&subpage=Markbook#'.$gibbonCourseClassID."'>";
 
                 $reverseName = ( $studentOrderBy == 'surname' or $studentOrderBy == 'rollOrder' or empty($studentOrderBy) );
-                echo formatName('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student', $reverseName);
+                echo Format::name('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student', $reverseName);
 
                 echo '</a>';
                 echo '</td>';

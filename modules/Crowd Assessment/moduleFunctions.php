@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 function getLessons($guid, $connection2, $and = '')
 {
     $today = date('Y-m-d');
@@ -305,7 +307,7 @@ function getThread($guid, $connection2, $gibbonPlannerEntryHomeworkID, $parent, 
         while ($rowDiscuss = $resultDiscuss->fetch()) {
             $classExtra = '';
             $namePerson = __('{name} said', [
-                'name' => formatName($rowDiscuss['title'], $rowDiscuss['preferredName'], $rowDiscuss['surname'], $rowDiscuss['category'])
+                'name' => Format::name($rowDiscuss['title'], $rowDiscuss['preferredName'], $rowDiscuss['surname'], $rowDiscuss['category'])
             ]);
             $datetimePosted = __('Posted at {hourPosted} on {datePosted}', [
                 'hourPosted' => '<b>'.substr($rowDiscuss['timestamp'], 11, 5).'</b>', 

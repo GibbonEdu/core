@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -256,7 +257,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
                                     $sql = "SELECT title, surname, preferredName FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID";
                                     $result = $pdo->executeQuery($data, $sql);
                                     $payee = $result->rowCount() == 1? $result->fetch() : null;
-                                    $payeeName = !empty($payee)? formatName($payee['title'], $payee['preferredName'], $payee['surname'], 'Staff', true, true) : '';
+                                    $payeeName = !empty($payee)? Format::name($payee['title'], $payee['preferredName'], $payee['surname'], 'Staff', true, true) : '';
                                     $row->addTextField('payee')->required()->readonly()->setValue($payeeName);
                                     $form->addHiddenValue('gibbonPersonIDPayment', $values['gibbonPersonIDPayment']);
                                 } else {
