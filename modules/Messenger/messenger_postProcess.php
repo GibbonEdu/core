@@ -1720,11 +1720,11 @@ else {
                                       $resultSMS->execute($dataSMS);
                                     }
                                     catch(PDOException $e) { }
-                                    while ($rowEmail=$resultSMS->fetch()) {
+                                    while ($rowSMS=$resultSMS->fetch()) {
 										$countryCodeTemp = $countryCode;
-	  									  if ($rowEmail["countryCode"]=="")
-	  										  $countryCodeTemp = $rowEmail["countryCode"];
-	  									  $report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Attendance', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
+	  									  if ($rowSMS["countryCode"]=="")
+	  										  $countryCodeTemp = $rowSMS["countryCode"];
+	  									  $report = reportAdd($report, $emailReceipt, $rowSMS['gibbonPersonID'], 'Attendance', $t, 'SMS', $countryCodeTemp.$rowSMS["phone"]);
                                     }
                                   }
                                 }
@@ -1742,11 +1742,11 @@ else {
                                   }
                                 }
                                 catch(PDOException $e) { }
-                                while ($rowEmail=$resultSMS->fetch()) {
+                                while ($rowSMS=$resultSMS->fetch()) {
 									$countryCodeTemp = $countryCode;
-	   								 if ($rowEmail["countryCode"]=="")
-	   									 $countryCodeTemp = $rowEmail["countryCode"];
-	   								 $report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Attendance', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
+	   								 if ($rowSMS["countryCode"]=="")
+	   									 $countryCodeTemp = $rowSMS["countryCode"];
+	   								 $report = reportAdd($report, $emailReceipt, $rowSMS['gibbonPersonID'], 'Attendance', $t, 'SMS', $countryCodeTemp.$rowSMS["phone"]);
                                 }
                               }
                             } //END SMS
