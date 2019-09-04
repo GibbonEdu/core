@@ -38,6 +38,7 @@ v19.0.00
         Attendance: fixed missing data in printable view of Student History
         Finance: fixed missing payment info in invoice receipt email for multiple partial payments
         Library: set Bookable to No by default on Add record screen
+        Messenger: fixed bug when sending parent and student SMS for Attendance status
         Planner: fixed non-functional Smart Block Template setting
         Planner: fixed Unit Planner bug causing actions to appear in Classes table for newly created units
         Students: adjusted official name size in ID card for long-named students
