@@ -36,8 +36,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     echo __('Choose Roll Group');
     echo '</h2>';
 
-    $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : '';
-    $status = isset($_GET['status'])? $_GET['status'] : '';
+    $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
+    $status = $_GET['status'] ?? '';
 
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
 
@@ -95,8 +95,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
                 echo '<td>';
 
                 try {
-					$dataActivities = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-					$sqlActivities = "SELECT gibbonActivity.*, gibbonActivityStudent.status, GROUP_CONCAT(CONCAT(gibbonDaysOfWeek.nameShort, ' ', TIME_FORMAT(gibbonActivitySlot.timeStart, '%H:%i'), ' - ', (CASE WHEN gibbonActivitySlot.gibbonSpaceID IS NOT NULL THEN gibbonSpace.name ELSE gibbonActivitySlot.locationExternal END)) SEPARATOR '<br/>') as days
+                    $dataActivities = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                    $sqlActivities = "SELECT gibbonActivity.*, gibbonActivityStudent.status, GROUP_CONCAT(CONCAT(gibbonDaysOfWeek.nameShort, ' ', TIME_FORMAT(gibbonActivitySlot.timeStart, '%H:%i'), ' - ', (CASE WHEN gibbonActivitySlot.gibbonSpaceID IS NOT NULL THEN gibbonSpace.name ELSE gibbonActivitySlot.locationExternal END)) SEPARATOR '<br/>') as days
                         FROM gibbonActivity 
                         JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) 
                         JOIN gibbonActivitySlot ON (gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID)
@@ -106,10 +106,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
                         AND gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID 
                         GROUP BY gibbonActivity.gibbonActivityID 
                         ORDER BY gibbonActivity.name";
-					$resultActivities = $connection2->prepare($sqlActivities);
-					$resultActivities->execute($dataActivities);
-				} catch (PDOException $e) {
-					echo "<div class='error'>".$e->getMessage().'</div>';
+                    $resultActivities = $connection2->prepare($sqlActivities);
+                    $resultActivities->execute($dataActivities);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
                 }
 
                 if ($resultActivities->rowCount() > 0) {

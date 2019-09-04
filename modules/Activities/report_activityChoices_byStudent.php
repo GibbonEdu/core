@@ -36,11 +36,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     echo __('Choose Student');
     echo '</h2>';
 
-    $gibbonPersonID = null;
-    if (isset($_GET['gibbonPersonID'])) {
-        $gibbonPersonID = $_GET['gibbonPersonID'];
-    }
-
+    $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+    
     $form = Form::create('action',  $_SESSION[$guid]['absoluteURL']."/index.php", "get");
 
     $form->setClass('noIntBorder fullWidth');
@@ -194,7 +191,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
                             echo '</td>';
                             echo '<td>';
                             if ($row['status'] != '') {
-                                echo $row['status'];
+                                echo __($row['status']);
                             } else {
                                 echo '<i>'.__('NA').'</i>';
                             }

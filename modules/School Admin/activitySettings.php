@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
     );  
     $setting = getSettingByScope($connection2, 'Activities', 'dateType', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])->fromArray($dateTypes)->selected($setting['value'])->required();    
 
     $form->toggleVisibilityByClass('perTerm')->onSelect($setting['name'])->when('Term');
