@@ -1337,9 +1337,10 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
             if (is_numeric($receiptNumber) == false) {
                 $paymentFail = true;
             } else {
+                $receiptIndex = $receiptNumber-1;
                 try {
                     $dataPayment = array('foreignTable' => 'gibbonFinanceInvoice', 'foreignTableID' => $gibbonFinanceInvoiceID);
-                    $sqlPayment = "SELECT gibbonPayment.*, surname, preferredName FROM gibbonPayment JOIN gibbonPerson ON (gibbonPayment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID LIMIT $receiptNumber, 1";
+                    $sqlPayment = "SELECT gibbonPayment.*, surname, preferredName FROM gibbonPayment JOIN gibbonPerson ON (gibbonPayment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID LIMIT $receiptIndex, 1";
                     $resultPayment = $connection2->prepare($sqlPayment);
                     $resultPayment->execute($dataPayment);
                 } catch (PDOException $e) {
@@ -1401,7 +1402,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         if ($receiptNumber != null) {
             $return .= '<br/>';
             $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Receipt Number (on this invoice)').'</span><br/>';
-            $return .= ($receiptNumber + 1);
+            $return .= $receiptNumber;
         }
         $return .= '</td>';
         if($row['notes']) {
