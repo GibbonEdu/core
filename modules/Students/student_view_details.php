@@ -42,21 +42,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
         echo '</div>';
         return;
     } else {
-        $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
-        $search = null;
-        if (isset($_GET['search'])) {
-            $search = $_GET['search'];
-        }
-        $allStudents = '';
-        if (isset($_GET['allStudents'])) {
-            $allStudents = $_GET['allStudents'];
-        }
-        $sort = '';
-        if (isset($_GET['sort'])) {
-            $sort = $_GET['sort'];
-        }
+        $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+        $search = $_GET['search'] ?? '';
+        $allStudents = $_GET['allStudents'] ?? '';
+        $sort = $_GET['sort'] ?? '';
 
-        if (empty($gibbonPersonID)) {
+        if ($gibbonPersonID == '') {
             echo "<div class='error'>";
             echo __('You have not specified one or more required parameters.');
             echo '</div>';
@@ -349,23 +340,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     ->add(__('View Student Profiles'), 'student_view.php')
                     ->add(Format::name('', $row['preferredName'], $row['surname'], 'Student'));
 
-
-                    $subpage = null;
-                    if (isset($_GET['subpage'])) {
-                        $subpage = $_GET['subpage'];
-                    }
-                    $hook = null;
-                    if (isset($_GET['hook'])) {
-                        $hook = $_GET['hook'];
-                    }
-                    $module = null;
-                    if (isset($_GET['module'])) {
-                        $module = $_GET['module'];
-                    }
-                    $action = null;
-                    if (isset($_GET['action'])) {
-                        $action = $_GET['action'];
-                    }
+                    $subpage = $_GET['subpage'] ?? '';
+                    $hook = $_GET['hook'] ?? '';
+                    $module = $_GET['module'] ?? '';
+                    $action = $_GET['action'] ?? '';
 
                     // When viewing left students, they won't have a year group ID
                     if (empty($row['gibbonYearGroupID'])) $row['gibbonYearGroupID'] = '';
@@ -382,7 +360,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                     echo '<h2>';
                     if ($subpage != '') {
-                        echo $subpage;
+                        echo __($subpage);
                     } else {
                         echo $hook;
                     }
@@ -474,8 +452,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Tutors').'</span><br/>';
                         if (isset($rowDetail['gibbonPersonIDTutor'])) {
                             try {
-                                $dataDetail = array('gibbonPersonIDTutor' => $rowDetail['gibbonPersonIDTutor'], 'gibbonPersonIDTutor2' => $rowDetail['gibbonPersonIDTutor2'], 'gibbonPersonIDTutor3' => $rowDetail['gibbonPersonIDTutor3']);
-                                $sqlDetail = 'SELECT gibbonPersonID, title, surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonIDTutor OR gibbonPersonID=:gibbonPersonIDTutor2 OR gibbonPersonID=:gibbonPersonIDTutor3';
+                                $dataDetail = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
+                                $sqlDetail = 'SELECT gibbonPersonID, title, surname, preferredName FROM gibbonRollGroup JOIN gibbonPerson ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID) WHERE gibbonRollGroupID=:gibbonRollGroupID ORDER BY surname, preferredName';
                                 $resultDetail = $connection2->prepare($sqlDetail);
                                 $resultDetail->execute($dataDetail);
                             } catch (PDOException $e) {
@@ -627,14 +605,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                         //Get and display a list of student's teachers
                         echo '<h4>';
-                        echo __("Student's Teachers");
+                        echo __('Teachers Of {student}', ['student' => $row['preferredName']]);
                         echo '</h4>';
+                        echo '<p>';
+                        echo __('Includes Teachers, Tutors, Educational Assistants and Head of Year.');
+                        echo '</p>';
                         try {
-                            $dataDetail = array('gibbonPersonID' => $gibbonPersonID, 'gibbonYearGroupID' => $row['gibbonYearGroupID']);
+                            $dataDetail = array('gibbonPersonID1' => $gibbonPersonID, 'gibbonYearGroupID' => $row['gibbonYearGroupID'], 'gibbonPersonID2' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID3' => $gibbonPersonID, 'gibbonRollGroupID' => $row['gibbonRollGroupID']);
                             $sqlDetail = "
-                                (SELECT DISTINCT teacher.surname, teacher.preferredName, teacher.email FROM gibbonPerson AS teacher JOIN gibbonCourseClassPerson AS teacherClass ON (teacherClass.gibbonPersonID=teacher.gibbonPersonID)  JOIN gibbonCourseClassPerson AS studentClass ON (studentClass.gibbonCourseClassID=teacherClass.gibbonCourseClassID) JOIN gibbonPerson AS student ON (studentClass.gibbonPersonID=student.gibbonPersonID) JOIN gibbonCourseClass ON (studentClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE teacher.status='Full' AND teacherClass.role='Teacher' AND studentClass.role='Student' AND student.gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY teacher.preferredName, teacher.surname, teacher.email)
+                                (SELECT DISTINCT teacher.surname, teacher.preferredName, teacher.email FROM gibbonPerson AS teacher JOIN gibbonCourseClassPerson AS teacherClass ON (teacherClass.gibbonPersonID=teacher.gibbonPersonID)  JOIN gibbonCourseClassPerson AS studentClass ON (studentClass.gibbonCourseClassID=teacherClass.gibbonCourseClassID) JOIN gibbonPerson AS student ON (studentClass.gibbonPersonID=student.gibbonPersonID) JOIN gibbonCourseClass ON (studentClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE teacher.status='Full' AND teacherClass.role='Teacher' AND studentClass.role='Student' AND student.gibbonPersonID=:gibbonPersonID1 AND gibbonCourse.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY teacher.preferredName, teacher.surname, teacher.email)
                                 UNION
                                 (SELECT DISTINCT surname, preferredName, email FROM gibbonPerson JOIN gibbonYearGroup ON (gibbonYearGroup.gibbonPersonIDHOY=gibbonPersonID) WHERE status='Full' AND gibbonYearGroupID=:gibbonYearGroupID)
+                                UNION
+                                (SELECT DISTINCT surname, preferredName, email
+                                    FROM gibbonPerson
+                                        JOIN gibbonINAssistant ON (gibbonINAssistant.gibbonPersonIDAssistant=gibbonPerson.gibbonPersonID)
+                                    WHERE status='Full'
+                                        AND gibbonPersonIDStudent=:gibbonPersonID2)
+                                UNION
+                                (SELECT DISTINCT surname, preferredName, email
+                                    FROM gibbonPerson
+                                        JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonPersonIDEA=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDEA2=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDEA3=gibbonPerson.gibbonPersonID)
+                                        JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                                        JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+                                    WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                                        AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID3
+                                )
+                                UNION
+                                (SELECT surname, preferredName, email FROM gibbonRollGroup JOIN gibbonPerson ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID) WHERE gibbonRollGroupID=:gibbonRollGroupID)
                                 ORDER BY preferredName, surname, email";
                             $resultDetail = $connection2->prepare($sqlDetail);
                             $resultDetail->execute($dataDetail);
@@ -646,45 +644,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo __('There are no records to display.');
                             echo '</div>';
                         } else {
-                            echo '<ul>';
-                            while ($rowDetail = $resultDetail->fetch()) {
-                                echo '<li>'.htmlPrep(Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false));
-                                if ($rowDetail['email'] != '') {
-                                    echo htmlPrep(' <'.$rowDetail['email'].'>');
-                                }
-                                echo '</li>';
-                            }
-                            echo '</ul>';
-                        }
-
-                        //Get and display a list of student's educational assistants
-                        try {
-                            $dataDetail = array('gibbonPersonID1' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID2' => $gibbonPersonID);
-                            $sqlDetail = "(SELECT DISTINCT surname, preferredName, email
-                                FROM gibbonPerson
-                                    JOIN gibbonINAssistant ON (gibbonINAssistant.gibbonPersonIDAssistant=gibbonPerson.gibbonPersonID)
-                                WHERE status='Full'
-                                    AND gibbonPersonIDStudent=:gibbonPersonID1)
-                            UNION
-                            (SELECT DISTINCT surname, preferredName, email
-                                FROM gibbonPerson
-                                    JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonPersonIDEA=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDEA2=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDEA3=gibbonPerson.gibbonPersonID)
-                                    JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
-                                    JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-                                WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                                    AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID2
-                            )
-                            ORDER BY preferredName, surname, email";
-                            $resultDetail = $connection2->prepare($sqlDetail);
-                            $resultDetail->execute($dataDetail);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
-                        if ($resultDetail->rowCount() > 0) {
-                            echo '<h4>';
-                            echo __("Student's Educational Assistants");
-                            echo '</h4>';
-
                             echo '<ul>';
                             while ($rowDetail = $resultDetail->fetch()) {
                                 echo '<li>'.htmlPrep(Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false));
@@ -2216,7 +2175,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                                             $teachers = '<p><b>'.__('Taught by:').'</b> ';
                                             while ($rowTeachers = $resultTeachers->fetch()) {
-                                                $teachers = $teachers.formatName($rowTeachers['title'], $rowTeachers['preferredName'], $rowTeachers['surname'], 'Staff', false, false).', ';
+                                                $teachers = $teachers.Format::name($rowTeachers['title'], $rowTeachers['preferredName'], $rowTeachers['surname'], 'Staff', false, false).', ';
                                             }
                                             $teachers = substr($teachers, 0, -2);
                                             $teachers = $teachers.'</p>';

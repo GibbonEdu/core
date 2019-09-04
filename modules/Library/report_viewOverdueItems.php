@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -113,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
 		//COLOR ROW BY STATUS!
 		echo "<tr class=$rowNum>";
         echo '<td>';
-        echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
+        echo Format::name('', $row['preferredName'], $row['surname'], 'Student', true);
         echo '</td>';
         echo '<td>';
         echo $row['email'];

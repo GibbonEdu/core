@@ -434,6 +434,7 @@ class FormFactory implements FormFactoryInterface
                 'KES KSh' => 'Kenyan Shilling (KSh)',
                 'LKR Rs' => 'Sri Lankan Rupee (Rs)',
                 'MOP' => 'Macanese Pataca (MOP)',
+                'MVR Rf' => 'Maldivian Rufiyaa (Rf)',
                 'MMK K' => 'Myanmar Kyat (K)',
                 'MAD' => 'Moroccan Dirham (MAD)',
                 'NAD N$' => 'Namibian Dollar (N$)',

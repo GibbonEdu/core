@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -221,7 +223,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                         echo getUserPhoto($guid, $rowPerson['image_240'], 75);
                     }
                     if (is_array($rowPerson)) {
-                        echo "<div style='margin-top: 3px; font-weight: bold'>".formatName($rowPerson['title'], $rowPerson['preferredName'], $rowPerson['surname'], 'Staff', false, true).'</div>';
+                        echo "<div style='margin-top: 3px; font-weight: bold'>".Format::name($rowPerson['title'], $rowPerson['preferredName'], $rowPerson['surname'], 'Staff', false, true).'</div>';
                     }
                     echo '</td>';
                     echo '<td>';
@@ -258,7 +260,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                         if ($resultPerson->rowCount() == 1) {
                             $rowPerson = $resultPerson->fetch();
                         }
-                        echo __('Out:').' '.formatName($rowPerson['title'], $rowPerson['preferredName'], $rowPerson['surname'], 'Staff', false, true).'<br/>';
+                        echo __('Out:').' '.Format::name($rowPerson['title'], $rowPerson['preferredName'], $rowPerson['surname'], 'Staff', false, true).'<br/>';
                     }
                     if ($rowEvent['gibbonPersonIDIn'] != '') {
                         try {
@@ -272,7 +274,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                         if ($resultPerson->rowCount() == 1) {
                             $rowPerson = $resultPerson->fetch();
                         }
-                        echo __('In:').' '.formatName($rowPerson['title'], $rowPerson['preferredName'], $rowPerson['surname'], 'Staff', false, true);
+                        echo __('In:').' '.Format::name($rowPerson['title'], $rowPerson['preferredName'], $rowPerson['surname'], 'Staff', false, true);
                     }
                     echo '</td>';
                     echo '<td>';

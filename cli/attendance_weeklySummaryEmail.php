@@ -21,6 +21,7 @@ use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Module\Attendance\AttendanceView;
+use Gibbon\Services\Format;
 
 require getcwd().'/../gibbon.php';
 
@@ -132,7 +133,7 @@ if (!isCommandLineInterface()) {
             foreach ($logsByStudent as $gibbonPersonID => $student) {
                 $report .= '<li>';
                 $report .= '<a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Attendance/report_studentHistory.php&gibbonPersonID='.$gibbonPersonID.'" target="_blank">';
-                $report .= formatName('', $student['preferredName'], $student['surname'], 'Student', true, true);
+                $report .= Format::name('', $student['preferredName'], $student['surname'], 'Student', true, true);
                 $report .= '</a>';
 
                 foreach ($student['days'] as $date => $logs) {

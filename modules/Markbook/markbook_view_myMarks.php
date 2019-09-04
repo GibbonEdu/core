@@ -18,16 +18,17 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-    use Gibbon\Forms\Form;
+use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
-    $page->breadcrumbs->add(__('View Markbook'));
+$page->breadcrumbs->add(__('View Markbook'));
 
-	// Lock the file so other scripts cannot call it
-	if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $_SESSION[$guid]['gibbonPersonID'] ) . date('zWy') ) return;
+// Lock the file so other scripts cannot call it
+if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $_SESSION[$guid]['gibbonPersonID'] ) . date('zWy') ) return;
 
-	//Get settings
-	$enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
-	$enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
+    //Get settings
+    $enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
+    $enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
     $showStudentAttainmentWarning = getSettingByScope($connection2, 'Markbook', 'showStudentAttainmentWarning');
     $showStudentEffortWarning = getSettingByScope($connection2, 'Markbook', 'showStudentEffortWarning');
     $attainmentAltName = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
@@ -162,7 +163,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                 $teachers = '<p><b>'.__('Taught by:').'</b> ';
                 while ($rowTeachers = $resultTeachers->fetch()) {
-                    $teachers = $teachers.formatName($rowTeachers['title'], $rowTeachers['preferredName'], $rowTeachers['surname'], 'Staff', false, false).', ';
+                    $teachers = $teachers.Format::name($rowTeachers['title'], $rowTeachers['preferredName'], $rowTeachers['surname'], 'Staff', false, false).', ';
                 }
                 $teachers = substr($teachers, 0, -2);
                 $teachers = $teachers.'</p>';

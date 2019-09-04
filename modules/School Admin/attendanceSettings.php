@@ -194,7 +194,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         if (in_array($rowSelect['gibbonPersonID'], $users) !== false) {
             array_push($selected, $rowSelect['gibbonPersonID']);
         }
-        $inputs[$rowSelect["roleName"]][$rowSelect['gibbonPersonID']] = formatName("", $rowSelect["preferredName"], $rowSelect["surname"], "Staff", true, true);
+        $inputs[$rowSelect["roleName"]][$rowSelect['gibbonPersonID']] = Format::name("", $rowSelect["preferredName"], $rowSelect["surname"], "Staff", true, true);
     }
 
     $row = $form->addRow();

@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                         $resultChild->execute($dataChild);
                     } catch (PDOException $e) {}
                     while ($rowChild = $resultChild->fetch()) {
-                        $options[$rowChild['gibbonPersonID']] = formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student');
+                        $options[$rowChild['gibbonPersonID']] = Format::name('', $rowChild['preferredName'], $rowChild['surname'], 'Student');
                         $gibbonPersonIDArray[$count] = $rowChild['gibbonPersonID'];
                         ++$count;
                     }

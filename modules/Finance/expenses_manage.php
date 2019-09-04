@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Prefab\BulkActionForm;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -317,7 +318,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                                 $row->addContent($expense['title'])
                                     ->wrap('<b>', '</b>')
                                     ->append('<br/><span class="small emphasis">'.$expense['budget'].'</span>');
-                                $row->addContent(formatName('', $expense['preferredName'], $expense['surname'], 'Staff', false, true));
+                                $row->addContent(Format::name('', $expense['preferredName'], $expense['surname'], 'Staff', false, true));
                                 $row->addContent($expense['status'])
                                     ->append('<br/><span class="small emphasis">'.$expense['paymentReimbursementStatus'].'</span>');
                                 $row->addContent(number_format($expense['cost'], 2, '.', ','));

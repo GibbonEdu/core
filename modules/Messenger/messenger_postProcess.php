@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Contracts\Comms\SMS;
+use Gibbon\Services\Format;
 
 include '../../gibbon.php';
 
@@ -2036,7 +2037,7 @@ else {
                         $mail->AddBCC($recipient, '');
                     }
 
-                    $sender = formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff');
+                    $sender = Format::name('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff');
                     $date = dateConvertBack($guid, date('Y-m-d')).' '.date('H:i:s');
 
                     $mail->renderBody('mail/email.twig.html', [

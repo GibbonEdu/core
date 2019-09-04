@@ -223,7 +223,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                     echo $row['rollGroup'];
                 echo '</td>';
                 echo '<td>';
-                    echo formatName('', $row['preferredName'], $row['surname'], 'Student', ($sort != 'preferredName') );
+                    echo Format::name('', $row['preferredName'], $row['surname'], 'Student', ($sort != 'preferredName') );
                 echo '</td>';
 
                 if ($reportType == 'types') {
