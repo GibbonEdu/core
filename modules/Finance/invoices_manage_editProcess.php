@@ -199,20 +199,6 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                 } catch (PDOException $e) {
                 }
                 
-                if ($status == 'Paid' or $status == 'Paid - Partial') {
-                    if ($_POST['status'] == 'Paid') {
-                        $statusLog = 'Complete';
-                    } elseif ($_POST['status'] == 'Paid - Partial') {
-                        $statusLog = 'Partial';
-                    } elseif ($_POST['status'] == 'Paid - Complete') {
-                        $statusLog = 'Final';
-                    }
-                    $logFail = setPaymentLog($connection2, $guid, 'gibbonFinanceInvoice', $gibbonFinanceInvoiceID, $paymentType, $statusLog, $paidAmountLog, null, null, null, null, $paymentTransactionID, null, $paidDate);
-                    if ($logFail == false) {
-                        $partialFail = true;
-                    }
-                }
-
                 // Log the payment
                 if ($status == 'Paid' or $status == 'Paid - Partial') {
                     if ($_POST['status'] == 'Paid') {
