@@ -42,21 +42,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
         echo '</div>';
         return;
     } else {
-        $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
-        $search = null;
-        if (isset($_GET['search'])) {
-            $search = $_GET['search'];
-        }
-        $allStudents = '';
-        if (isset($_GET['allStudents'])) {
-            $allStudents = $_GET['allStudents'];
-        }
-        $sort = '';
-        if (isset($_GET['sort'])) {
-            $sort = $_GET['sort'];
-        }
+        $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+        $search = $_GET['search'] ?? '';
+        $allStudents = $_GET['allStudents'] ?? '';
+        $sort = $_GET['sort'] ?? '';
 
-        if (empty($gibbonPersonID)) {
+        if ($gibbonPersonID == '') {
             echo "<div class='error'>";
             echo __('You have not specified one or more required parameters.');
             echo '</div>';
@@ -349,23 +340,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     ->add(__('View Student Profiles'), 'student_view.php')
                     ->add(Format::name('', $row['preferredName'], $row['surname'], 'Student'));
 
-
-                    $subpage = null;
-                    if (isset($_GET['subpage'])) {
-                        $subpage = $_GET['subpage'];
-                    }
-                    $hook = null;
-                    if (isset($_GET['hook'])) {
-                        $hook = $_GET['hook'];
-                    }
-                    $module = null;
-                    if (isset($_GET['module'])) {
-                        $module = $_GET['module'];
-                    }
-                    $action = null;
-                    if (isset($_GET['action'])) {
-                        $action = $_GET['action'];
-                    }
+                    $subpage = $_GET['subpage'] ?? '';
+                    $hook = $_GET['hook'] ?? '';
+                    $module = $_GET['module'] ?? '';
+                    $action = $_GET['action'] ?? '';
 
                     // When viewing left students, they won't have a year group ID
                     if (empty($row['gibbonYearGroupID'])) $row['gibbonYearGroupID'] = '';
@@ -382,7 +360,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                     echo '<h2>';
                     if ($subpage != '') {
-                        echo $subpage;
+                        echo __($subpage);
                     } else {
                         echo $hook;
                     }
