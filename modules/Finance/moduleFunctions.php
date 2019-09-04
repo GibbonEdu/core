@@ -1207,8 +1207,22 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
     }
 }
 
-//$receiptNumber is the numerical position (counting from 0) of the payment within a series of payments. NULL $receipt Number means it is an old receipt, prior to multiple payments (e.g. before v11)
-function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $currency = '', $email = false, $receiptNumber)
+/**
+ * Get HTML receipt contents for emailing
+ *
+ * $receiptNumber is the numerical position (counting from 0) of the payment within a series of payments.
+ * NULL $receipt Number means it is an old receipt, prior to multiple payments (e.g. before v11)
+ *
+ * @param string $guid
+ * @param Connection $connection2
+ * @param string $gibbonFinanceInvoiceID
+ * @param string $gibbonSchoolYearID
+ * @param string $currency
+ * @param bool $email
+ * @param int $receiptNumber
+ * @return void
+ */
+function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $currency = '', $email = false, $receiptNumber = null)
 {
     $return = '';
 
@@ -1337,10 +1351,9 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
             if (is_numeric($receiptNumber) == false) {
                 $paymentFail = true;
             } else {
-                $receiptIndex = $receiptNumber-1;
                 try {
                     $dataPayment = array('foreignTable' => 'gibbonFinanceInvoice', 'foreignTableID' => $gibbonFinanceInvoiceID);
-                    $sqlPayment = "SELECT gibbonPayment.*, surname, preferredName FROM gibbonPayment JOIN gibbonPerson ON (gibbonPayment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID LIMIT $receiptIndex, 1";
+                    $sqlPayment = "SELECT gibbonPayment.*, surname, preferredName FROM gibbonPayment JOIN gibbonPerson ON (gibbonPayment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID LIMIT $receiptNumber, 1";
                     $resultPayment = $connection2->prepare($sqlPayment);
                     $resultPayment->execute($dataPayment);
                 } catch (PDOException $e) {
@@ -1402,7 +1415,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         if ($receiptNumber !== null) {
             $return .= '<br/>';
             $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Receipt Number (on this invoice)').'</span><br/>';
-            $return .= $receiptNumber;
+            $return .= ($receiptNumber + 1);
         }
         $return .= '</td>';
         if($row['notes']) {
