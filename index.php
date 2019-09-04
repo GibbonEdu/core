@@ -255,6 +255,7 @@ $javascriptConfig = [
     'config' => [
         'datepicker' => [
             'locale' => $datepickerLocale,
+            'dateFormat' => str_replace('yyyy', 'yy', $session->get('i18n')['dateFormat']),
         ],
         'thickbox' => [
             'pathToImage' => $session->get('absoluteURL').'/lib/thickbox/loadingAnimation.gif',
