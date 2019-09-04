@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\RollGroups\RollGroupGateway;
+use Gibbon\Domain\School\YearGroupGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php') == false) {
     //Acess denied
@@ -29,6 +30,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('View Roll Groups'));
+
+    echo '<h3>';
+    echo __('Roll Groups');
+    echo '</h3>';
 
     echo '<p>';
     echo __('This page shows all roll groups in the current school year.');
@@ -59,4 +64,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php
             ->setURL('/modules/Roll Groups/rollGroups_details.php');
 
     echo $table->render($rollGroups->toDataSet());
+
+    //Display year group table for staff
+    $roleCategory = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
+    if ($roleCategory == 'Staff') {
+        echo '<h3>';
+        echo __('Year Group Summary');
+        echo '</h3>';
+
+        $yearGroupgateway = $container->get(YearGroupGateway::class);
+
+        $criteria = $yearGroupgateway->newQueryCriteria()
+            ->sortBy(['gibbonYearGroup.sequenceNumber'])
+            ->fromPOST('clinics');
+
+        $yearGroups = $yearGroupgateway->queryYearGroups($criteria);
+
+        $table = DataTable::create('yearGroups');
+
+        $table->addColumn('name', __('Name'));
+        $table->addColumn('students', __('Students'))
+            ->format(function($row) use ($yearGroupgateway) {
+                return $yearGroupgateway->studentCountByYearGroup($row['gibbonYearGroupID']);
+            });
+
+        echo $table->render($yearGroups);
+    }
 }
