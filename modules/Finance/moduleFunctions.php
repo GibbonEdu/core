@@ -1330,7 +1330,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         $return .= '</td>';
         $return .= "<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style4'>";
         $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Status').'</span><br/>';
-        if ($receiptNumber == null) { //Old style receipt, before multiple payments
+        if ($receiptNumber === null) { //Old style receipt, before multiple payments
             $return .= $row['status'];
         } else {
             $paymentFail = false;
@@ -1399,7 +1399,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         } else {
             $return .= ltrim($gibbonFinanceInvoiceID, '0');
         }
-        if ($receiptNumber != null) {
+        if ($receiptNumber !== null) {
             $return .= '<br/>';
             $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Receipt Number (on this invoice)').'</span><br/>';
             $return .= $receiptNumber;
@@ -1518,7 +1518,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         }
 
         //Payment details
-        if ($receiptNumber == null) { //Old style receipt, before multiple payments
+        if ($receiptNumber === null) { //Old style receipt, before multiple payments
             $return .= "<h3 style='padding-top: 40px; padding-left: 10px; margin: 0px; $style4'>";
             $return .= __('Payment Details');
             $return .= '</h3>';
@@ -1564,7 +1564,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         //Display balance
         if ($row['status'] == 'Paid' or $row['status'] == 'Paid - Partial' or $row['status'] == 'Refunded') {
             if (@$rowPayment['status'] == 'Partial') {
-                if ($receiptNumber != null) { //New style receipt, with multiple payments
+                if ($receiptNumber !== null) { //New style receipt, with multiple payments
                     $balanceFail = false;
                     $amountPaid = 0;
                     //Get amount paid until this point
