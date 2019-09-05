@@ -915,4 +915,5 @@ $sql[$count][0] = '19.0.00';
 $sql[$count][1] = "
 UPDATE `gibboni18n` SET dateFormatRegEx = '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i' WHERE gibboni18n.code = 'pl_PL';end
 UPDATE `gibboni18n` SET dateFormatRegEx = '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i' WHERE gibboni18n.code = 'pl_PL';end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Attendance', 'recordFirstClassAsSchool', 'Enable First Class as School Attendance', 'Should the first class in a day have the option to record class attendance as school-wide attendance?', 'N');end
 ";
