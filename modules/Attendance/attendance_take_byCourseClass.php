@@ -104,6 +104,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                 echo "</div>";
             } else {
                 $defaultAttendanceType = getSettingByScope($connection2, 'Attendance', 'defaultClassAttendanceType');
+                $recordFirstClassAsSchool = getSettingByScope($connection2, 'Attendance', 'recordFirstClassAsSchool');
                 $crossFillClasses = getSettingByScope($connection2, 'Attendance', 'crossFillClasses');
 
                 // Check class
@@ -208,6 +209,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                     } else {
                         $count = 0;
                         $countPresent = 0;
+                        $countLogs = 0;
                         $columns = 4;
 
                         $defaults = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '');
@@ -225,6 +227,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                             $result = $pdo->executeQuery($data, $sql);
 
                             $log = ($result->rowCount() > 0) ? $result->fetch() : $defaults;
+                            $countLogs += $result->rowCount();
 
                             //Check for school prefill if attendance not taken in this class
                             if ($result->rowCount() == 0 ) {
@@ -240,6 +243,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                                 $result = $pdo->executeQuery($data, $sql);
 
                                 $log = ($result->rowCount() > 0) ? $result->fetch() : $log;
+                                $countLogs += $result->rowCount();
                             }
 
                             $students[$key]['cellHighlight'] = '';
@@ -304,6 +308,12 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                             $cell->addContent($attendance->renderMiniHistory($student['gibbonPersonID'], 'Class', $gibbonCourseClassID));
 
                             $count++;
+                        }
+
+                        // Option to record first class in a day as school-wide attendance
+                        if ($recordFirstClassAsSchool == 'Y' && $countLogs == 0) {
+                            $row = $form->addRow();
+                                $row->addCheckbox('recordSchoolAttendance')->setValue('Y')->description(__('Record as school-wide attendance'))->checked('Y');
                         }
 
                         $form->addRow()->addAlert(__('Total students:') . ' ' . $count, 'success')->setClass('right')
