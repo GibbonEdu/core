@@ -31,14 +31,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php
     //Proceed!
     $page->breadcrumbs->add(__('View Roll Groups'));
 
-    echo '<h3>';
-    echo __('Roll Groups');
-    echo '</h3>';
-
-    echo '<p>';
-    echo __('This page shows all roll groups in the current school year.');
-    echo '</p>';
-
     $gateway = $container->get(RollGroupGateway::class);
     $rollGroups = $gateway->selectRollGroupsBySchoolYear($_SESSION[$guid]['gibbonSchoolYearID']);
 
@@ -50,6 +42,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php
     };
 
     $table = DataTable::create('rollGroups');
+    $table->setTitle(__('Roll Groups'));
+    $table->setDescription(__('This page shows all roll groups in the current school year.'));
 
     $table->addColumn('name', __('Name'));
     $table->addColumn('tutors', __('Form Tutors'))->format($formatTutorsList);
@@ -68,24 +62,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php
     //Display year group table for staff
     $roleCategory = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
     if ($roleCategory == 'Staff') {
-        echo '<h3>';
-        echo __('Year Group Summary');
-        echo '</h3>';
+        $yearGroupGateway = $container->get(YearGroupGateway::class);
 
-        $yearGroupgateway = $container->get(YearGroupGateway::class);
-
-        $criteria = $yearGroupgateway->newQueryCriteria()
+        $criteria = $yearGroupGateway->newQueryCriteria()
             ->sortBy(['gibbonYearGroup.sequenceNumber'])
             ->fromPOST('clinics');
 
-        $yearGroups = $yearGroupgateway->queryYearGroups($criteria);
+        $yearGroups = $yearGroupGateway->queryYearGroups($criteria);
 
         $table = DataTable::create('yearGroups');
+        $table->setTitle(__('Year Group Summary'));
 
         $table->addColumn('name', __('Name'));
+        $table->addColumn('gibbonPersonIDHOY', __('Head of Year'))
+            ->format(function ($values) {
+                if (!empty($values['preferredName']) && !empty($values['surname'])) {
+                    return Format::name('', $values['preferredName'], $values['surname'], 'Staff', false, true);
+                }
+            });
         $table->addColumn('students', __('Students'))
-            ->format(function($row) use ($yearGroupgateway) {
-                return $yearGroupgateway->studentCountByYearGroup($row['gibbonYearGroupID']);
+            ->format(function ($values) use ($yearGroupGateway) {
+                return $yearGroupGateway->studentCountByYearGroup($values['gibbonYearGroupID']);
             });
 
         echo $table->render($yearGroups);
