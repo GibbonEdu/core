@@ -129,7 +129,8 @@ else {
                         die();
                     }
 
-                    $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class); 
+                    $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
+
                     $recordSchoolAttendance = $_POST['recordSchoolAttendance'] ?? 'N';
                     $count=$_POST["count"] ;
                     $partialFail=FALSE ;
@@ -172,16 +173,17 @@ else {
                         }
 
                         $data = [
-                            'gibbonPersonID'      => $gibbonPersonID,
-                            'context'             => 'Class',
-                            'direction'           => $direction,
-                            'type'                => $type,
-                            'reason'              => $reason,
-                            'comment'             => $comment,
-                            'gibbonPersonIDTaker' => $_SESSION[$guid]['gibbonPersonID'],
-                            'gibbonCourseClassID' => $gibbonCourseClassID,
-                            'date'                => $currentDate,
-                            'timestampTaken'      => date('Y-m-d H:i:s'),
+                            'gibbonAttendanceCodeID' => $attendanceCode['gibbonAttendanceCodeID'],
+                            'gibbonPersonID'         => $gibbonPersonID,
+                            'context'                => 'Class',
+                            'direction'              => $direction,
+                            'type'                   => $type,
+                            'reason'                 => $reason,
+                            'comment'                => $comment,
+                            'gibbonPersonIDTaker'    => $_SESSION[$guid]['gibbonPersonID'],
+                            'gibbonCourseClassID'    => $gibbonCourseClassID,
+                            'date'                   => $currentDate,
+                            'timestampTaken'         => date('Y-m-d H:i:s'),
                         ];
                         
                         if (!$existing) {

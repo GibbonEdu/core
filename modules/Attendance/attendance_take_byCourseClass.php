@@ -218,7 +218,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                         // Build the attendance log data per student
                         foreach ($students as $key => $student) {
                             $data = array('gibbonPersonID' => $student['gibbonPersonID'], 'date' => $currentDate . '%', 'gibbonCourseClassID' => $gibbonCourseClassID);
-                            $sql = "SELECT type, reason, comment, context, timestampTaken FROM gibbonAttendanceLogPerson
+                            $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, context, timestampTaken FROM gibbonAttendanceLogPerson
                                     JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                                     WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
                                     AND date LIKE :date
@@ -230,11 +230,13 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                             $countLogs += $result->rowCount();
 
                             //Check for school prefill if attendance not taken in this class
-                            if ($result->rowCount() == 0 ) {
+                            if ($result->rowCount() == 0) {
                                 $data = array('gibbonPersonID' => $student['gibbonPersonID'], 'date' => $currentDate . '%');
-                                $sql = "SELECT type, reason, comment, context, timestampTaken FROM gibbonAttendanceLogPerson
+                                $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, context, timestampTaken FROM gibbonAttendanceLogPerson
                                         JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                                        JOIN gibbonAttendanceCode ON (gibbonAttendanceCode.gibbonAttendanceCodeID=gibbonAttendanceLogPerson.gibbonAttendanceCodeID)
                                         WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
+                                        AND gibbonAttendanceCode.prefill='Y'
                                         AND date LIKE :date";
                                 if ($crossFillClasses == "N") {
                                     $sql .= " AND NOT context='Class'";
