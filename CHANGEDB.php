@@ -919,4 +919,6 @@ INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `val
 ALTER TABLE `gibbonAttendanceCode` ADD `prefill` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `future`;end
 UPDATE `gibbonAttendanceCode` SET prefill='N' WHERE name='Present - Late';end
 ALTER TABLE `gibbonAttendanceLogPerson` ADD `gibbonRollGroupID` INT(5) UNSIGNED ZEROFILL NULL AFTER gibbonPersonIDTaker;end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Attendance'), 'Consecutive Absences', 0, 'Reports', 'Returns a list of students who have had a specified number of consecutive days absent.', 'report_consecutiveAbsences.php', 'report_consecutiveAbsences.php', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'Y');end
+INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Attendance' AND gibbonAction.name='Consecutive Absences'));end
 ";
