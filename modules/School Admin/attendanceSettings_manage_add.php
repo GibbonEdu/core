@@ -86,6 +86,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         $row->addYesNo('reportable')->required();
 
     $row = $form->addRow();
+        $row->addLabel('prefill', __('Prefillable'))->description(__('Can this code prefill when taking attendance?'));
+        $row->addYesNo('prefill')->required();
+
+    $row = $form->addRow();
         $row->addLabel('future', __('Allow Future Use'))->description(__('Can this code be used in Set Future Absence?'));
         $row->addYesNo('future')->required();
 

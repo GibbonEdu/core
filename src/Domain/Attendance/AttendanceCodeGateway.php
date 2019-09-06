@@ -32,6 +32,7 @@ class AttendanceCodeGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonAttendanceCode';
+    private static $primaryKey = 'gibbonAttendanceCodeID';
 
     private static $searchableColumns = ['name', 'nameShort'];
     

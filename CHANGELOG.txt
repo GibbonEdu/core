@@ -29,6 +29,8 @@ v19.0.00
     Tweaks & Additions
         System: added Maldivian Rufiyaa as a currency option
         System: update DatePicker to use gibboni18n date format
+        Attendance: added an option to record the first class attendance in a day as school-wide attendance
+        Attendance: added an option to disable prefilling by attendance code, applied to Present - Late by default
         Behaviour: new Copy To Notes feature
         Form Groups: added staff-only summary of Year Groups after Form Group listing
         Students: improved display of Teachers' emails in student profile
