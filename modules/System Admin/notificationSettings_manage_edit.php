@@ -162,7 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
                     JOIN gibbonPermission ON (gibbonRole.gibbonRoleID=gibbonPermission.gibbonRoleID)
                     JOIN gibbonAction ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
                     WHERE gibbonPerson.status='Full'
-                    AND (gibbonAction.name=:action)
+                    AND (gibbonAction.name=:action OR gibbonAction.name LIKE CONCAT(:action, '_%'))
                     GROUP BY gibbonPerson.gibbonPersonID
                     ORDER BY gibbonRole.gibbonRoleID, surname, preferredName" ;
             $resultSelect=$pdo->executeQuery($data, $sql);

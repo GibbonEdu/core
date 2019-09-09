@@ -127,7 +127,7 @@ class NotificationGateway
                 JOIN gibbonPermission ON (gibbonRole.gibbonRoleID=gibbonPermission.gibbonRoleID)
                 JOIN gibbonAction ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
                 WHERE gibbonNotificationListener.gibbonNotificationEventID=:gibbonNotificationEventID
-                AND gibbonNotificationEvent.actionName=gibbonAction.name";
+                AND (gibbonNotificationEvent.actionName=gibbonAction.name OR gibbonAction.name LIKE CONCAT(gibbonNotificationEvent.actionName, '_%'))";
 
         if ($groupByPerson) {
             $sql .= " GROUP BY gibbonNotificationListener.gibbonPersonID";
