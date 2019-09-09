@@ -93,8 +93,6 @@ function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $date
 
 //Get last N school days from currentDate within the last 100
 function getLastNSchoolDays( $guid, $connection2, $date, $n = 5, $inclusive = false ) {
-
-
     $timestamp = dateConvertToTimestamp($date);
     if ($inclusive == true)  $timestamp += 86400;
 
