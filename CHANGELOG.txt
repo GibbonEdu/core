@@ -34,6 +34,7 @@ v19.0.00
         Behaviour: new Copy To Notes feature
         Form Groups: added staff-only summary of Year Groups after Form Group listing
         Students: improved display of Teachers' emails in student profile
+        Students: added extra permission allowing editing of all Notes
         Timetable Admin: included student reportable flag in student enrolment
 
     Bug Fixes

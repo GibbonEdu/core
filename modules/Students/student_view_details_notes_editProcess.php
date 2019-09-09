@@ -32,61 +32,73 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $enableStudentNotes = getSettingByScope($connection2, 'Students', 'enableStudentNotes');
-    if ($enableStudentNotes != 'Y') {
-        $URL .= '&return=error0';
+    $highestAction = getHighestGroupedAction($guid, $_POST['address'], $connection2);
+    if ($highestAction == false) {
+        $URL .= "&return=error0";
         header("Location: {$URL}");
     } else {
-        //Proceed!
-        //Check if note specified
-        if ($gibbonStudentNoteID == '' or $gibbonPersonID == '' or $subpage == '') {
-            echo 'Fatal error loading this page!';
+        $enableStudentNotes = getSettingByScope($connection2, 'Students', 'enableStudentNotes');
+        if ($enableStudentNotes != 'Y') {
+            $URL .= '&return=error0';
+            header("Location: {$URL}");
         } else {
-            try {
-                $data = array('gibbonStudentNoteID' => $gibbonStudentNoteID, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID']);
-                $sql = 'SELECT * FROM gibbonStudentNote WHERE gibbonStudentNoteID=:gibbonStudentNoteID AND gibbonPersonIDCreator=:gibbonPersonIDCreator';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
-
-            if ($result->rowCount() != 1) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
+            //Proceed!
+            //Check if note specified
+            if ($gibbonStudentNoteID == '' or $gibbonPersonID == '' or $subpage == '') {
+                echo 'Fatal error loading this page!';
             } else {
-                $row = $result->fetch();
-                //Validate Inputs
-                $title = $_POST['title'];
-                $gibbonStudentNoteCategoryID = $_POST['gibbonStudentNoteCategoryID'];
-                if ($gibbonStudentNoteCategoryID == '') {
-                    $gibbonStudentNoteCategoryID = null;
+                try {
+                    if ($highestAction == "View Student Profile_fullEditAllNotes") {
+                        $data = array('gibbonStudentNoteID' => $gibbonStudentNoteID);
+                        $sql = 'SELECT * FROM gibbonStudentNote WHERE gibbonStudentNoteID=:gibbonStudentNoteID';
+                    }
+                    else {
+                        $data = array('gibbonStudentNoteID' => $gibbonStudentNoteID, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID']);
+                        $sql = 'SELECT * FROM gibbonStudentNote WHERE gibbonStudentNoteID=:gibbonStudentNoteID AND gibbonPersonIDCreator=:gibbonPersonIDCreator';
+                    }
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    $URL .= '&return=error2';
+                    header("Location: {$URL}");
+                    exit();
                 }
-                $note = $_POST['note'];
 
-                if ($note == '') {
-                    $URL .= '&return=error3';
+                if ($result->rowCount() != 1) {
+                    $URL .= '&return=error2';
                     header("Location: {$URL}");
                 } else {
-                    //Write to database
-                    try {
-                        $data = array('gibbonStudentNoteCategoryID' => $gibbonStudentNoteCategoryID, 'title' => $title, 'note' => $note, 'gibbonStudentNoteID' => $gibbonStudentNoteID);
-                        $sql = 'UPDATE gibbonStudentNote SET gibbonStudentNoteCategoryID=:gibbonStudentNoteCategoryID, title=:title, note=:note WHERE gibbonStudentNoteID=:gibbonStudentNoteID';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $URL .= '&return=error2';
-                        header("Location: {$URL}");
-                        exit();
+                    $row = $result->fetch();
+                    //Validate Inputs
+                    $title = $_POST['title'];
+                    $gibbonStudentNoteCategoryID = $_POST['gibbonStudentNoteCategoryID'];
+                    if ($gibbonStudentNoteCategoryID == '') {
+                        $gibbonStudentNoteCategoryID = null;
                     }
+                    $note = $_POST['note'];
 
-                    //Attempt to write logo
-                    setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], getModuleIDFromName($connection2, 'Students'), $_SESSION[$guid]['gibbonPersonID'], 'Student Profile - Note Edit', array('gibbonStudentNoteID' => $gibbonStudentNoteID, 'noteOriginal' => $row['note'], 'noteNew' => $note), $_SERVER['REMOTE_ADDR']);
+                    if ($note == '') {
+                        $URL .= '&return=error3';
+                        header("Location: {$URL}");
+                    } else {
+                        //Write to database
+                        try {
+                            $data = array('gibbonStudentNoteCategoryID' => $gibbonStudentNoteCategoryID, 'title' => $title, 'note' => $note, 'gibbonStudentNoteID' => $gibbonStudentNoteID);
+                            $sql = 'UPDATE gibbonStudentNote SET gibbonStudentNoteCategoryID=:gibbonStudentNoteCategoryID, title=:title, note=:note WHERE gibbonStudentNoteID=:gibbonStudentNoteID';
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
+                        } catch (PDOException $e) {
+                            $URL .= '&return=error2';
+                            header("Location: {$URL}");
+                            exit();
+                        }
 
-                    $URL .= '&return=success0';
-                    header("Location: {$URL}");
+                        //Attempt to write logo
+                        setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], getModuleIDFromName($connection2, 'Students'), $_SESSION[$guid]['gibbonPersonID'], 'Student Profile - Note Edit', array('gibbonStudentNoteID' => $gibbonStudentNoteID, 'noteOriginal' => $row['note'], 'noteNew' => $note), $_SERVER['REMOTE_ADDR']);
+
+                        $URL .= '&return=success0';
+                        header("Location: {$URL}");
+                    }
                 }
             }
         }
