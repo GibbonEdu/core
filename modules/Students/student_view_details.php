@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
             $skipBrief = false;
 
             //Skip brief for those with _full or _fullNoNotes, and _brief
-            if ($highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
+            if ($highestAction == 'View Student Profile_fullEditAllNotes' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
                 $skipBrief = true;
             }
 
@@ -299,7 +299,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full'
                             AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)";
                     }
-                    else if ($highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
+                    else if ($highestAction == 'View Student Profile_fullEditAllNotes' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
                         if ($allStudents != 'on') {
                             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d'));
                             $sql = "SELECT * FROM gibbonPerson
@@ -1924,7 +1924,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         echo Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
                                         echo '</td>';
                                         echo '<td>';
-                                        if ($row['gibbonPersonIDCreator'] == $_SESSION[$guid]['gibbonPersonID']) {
+                                        if ($row['gibbonPersonIDCreator'] == $_SESSION[$guid]['gibbonPersonID'] || $highestAction == "View Student Profile_fullEditAllNotes") {
                                             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/student_view_details_notes_edit.php&search='.$search.'&gibbonStudentNoteID='.$row['gibbonStudentNoteID']."&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Notes&category=$category'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                                         }
                                         echo "<script type='text/javascript'>";
