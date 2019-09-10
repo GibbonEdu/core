@@ -108,7 +108,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function selectAllAttendanceLogsByPerson($gibbonSchoolYearID, $gibbonPersonID, $countClassAsSchool)
+    public function selectAllAttendanceLogsByPerson($gibbonSchoolYearID, $gibbonPersonID)
     {
         $query = $this
             ->newSelect()
@@ -125,10 +125,6 @@ class AttendanceLogPersonGateway extends QueryableGateway
             ->where('gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID')
             ->bindValue('gibbonPersonID', $gibbonPersonID)
             ->orderBy(['timestampTaken ASC']);
-
-        if ($countClassAsSchool == 'N') {
-            $query->where("NOT gibbonAttendanceLogPerson.context='Class'");
-        }
 
         return $this->runSelect($query);
     }
