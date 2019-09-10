@@ -49,6 +49,7 @@ v19.0.00
         Messenger: fixed bug when sending parent and student SMS for Attendance status
         Planner: fixed non-functional Smart Block Template setting
         Planner: fixed Unit Planner bug causing actions to appear in Classes table for newly created units
+        Staff: fixed Cancel Coverage button not available for future coverage
         Students: adjusted official name size in ID card for long-named students
 
 v18.0.01
