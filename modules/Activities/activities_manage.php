@@ -22,6 +22,7 @@ use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
+use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -39,8 +40,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    $search = isset($_GET['search'])? $_GET['search'] : '';
-    $gibbonSchoolYearTermID = isset($_GET['gibbonSchoolYearTermID'])? $_GET['gibbonSchoolYearTermID'] : '';
+    $search = $_GET['search'] ?? '';
+    $gibbonSchoolYearTermID = $_GET['gibbonSchoolYearTermID'] ?? '';
+    $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
     $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
     $enrolmentType = getSettingByScope($connection2, 'Activities', 'enrolmentType');
     $schoolTerms = getTerms($connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
@@ -52,6 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $criteria = $activityGateway->newQueryCriteria()
         ->searchBy($activityGateway->getSearchableColumns(), $search)
         ->filterBy('term', $gibbonSchoolYearTermID)
+        ->filterBy('yearGroup', $gibbonYearGroupID)
         ->sortBy($dateType != 'Date' ? 'gibbonSchoolYearTermIDList' : 'programStart', $dateType != 'Date' ? 'ASC' : 'DESC')
         ->sortBy('name');
 
@@ -64,6 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $paymentOn = getSettingByScope($connection2, 'Activities', 'payment') != 'None' and getSettingByScope($connection2, 'Activities', 'payment') != 'Single';
 
     $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
     $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/activities_manage.php");
@@ -79,6 +83,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $row->addLabel('gibbonSchoolYearTermID', __('Term'));
             $row->addSelect('gibbonSchoolYearTermID')->fromQuery($pdo, $sql, $data)->selected($gibbonSchoolYearTermID)->placeholder();
     }
+
+    $row = $form->addRow();
+        $row->addLabel('gibbonYearGroupID', __('Year Group'));
+        $row->addSelectYearGroup('gibbonYearGroupID')->placeholder()->selected($gibbonYearGroupID);
 
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session, __('Clear Search'));
@@ -197,7 +205,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
     $table->addColumn('enrolment', __('Enrolment'))
         ->format(function($activity) {
-            return $activity['enrolment'] 
+            return $activity['enrolment'] .' / '. $activity['maxParticipants']
                 . (!empty($activity['waiting'])? '<br><small><i>' .$activity['waiting'].' '.__('Waiting') .'</i></small>' : '')
                 . (!empty($activity['pending'])? '<br><small><i>' .$activity['pending'].' '.__('Pending') .'</i></small>' : '');
         });
