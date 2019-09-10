@@ -21,6 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationSettings_manage_edit.php') == false) {
     //Acess denied
@@ -77,87 +78,80 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
 
             echo $form->getOutput();
 
-            echo '<h3>';
-            echo __('Edit Subscribers');
-            echo '</h3>';
-
+            $description = '';
             if ($event['active'] == 'N') {
-                echo "<div class='warning'>";
-                echo __('This notification event is not active. The following subscribers will not receive any notifications until the event is set to active.');
-                echo '</div>';
+                $description .= Format::alert(__('This notification event is not active. The following subscribers will not receive any notifications until the event is set to active.'), 'warning');
             }
 
             if ($event['type'] == 'CLI') {
-                echo "<div class='message'>";
-                echo __('This is a CLI notification event. It will only run if the corresponding CLI script has been setup on the server.');
-                echo '</div>';
+                $description .= Format::alert(__('This is a CLI notification event. It will only run if the corresponding CLI script has been setup on the server.'), 'message');
             }
 
             $gateway = new NotificationGateway($pdo);
             $result = $gateway->selectAllNotificationListeners($gibbonNotificationEventID, false);
 
-            if ($result->rowCount() == 0) {
-                echo "<div class='error'>";
-                echo __('There are no records to display.');
-                echo '</div>';
-            } else {
-                echo '<table class="colorOddEven fullWidth" cellspacing="0">';
-                echo '<tr class="head">';
-                echo '<th>';
-                echo __('Name');
-                echo '</th>';
-                echo '<th style="width: 120px;" title="'.__('Notifications can always be viewed on screen.').'">';
-                echo __('Receive Email Notifications?');
-                echo '</th>';
-                echo '<th>';
-                echo __('Scope');
-                echo '</th>';
-                echo '<th style="width: 80px;">';
-                echo __('Actions');
-                echo '</th>';
-                echo '</tr>';
+            $table = DataTable::create('subscribers');
+            $table->setTitle(__('Edit Subscribers'));
+            $table->setDescription($description);
 
-                while ($listener = $result->fetch()) {
-                    echo '<tr class="'.(($listener['receiveNotificationEmails'] == 'N')? 'warning' : '').'">';
-                    echo '<td>';
-                    echo Format::name($listener['title'], $listener['preferredName'], $listener['surname'], 'Staff', false, true);
-                    echo '</td>';
-                    echo '<td>';
-                    echo ynExpander($guid, $listener['receiveNotificationEmails']);
-                    echo '</td>';
-                    echo '<td>';
+            $table->modifyRows(function ($listener, $row) {
+                if ($listener['status'] <> 'Full') $row->addClass('error');
+                if ($listener['receiveNotificationEmails'] == 'N') $row->addClass('warning');
+                return $row;
+            });
 
-                    if ($listener['scopeType'] == 'All') {
-                        echo __('All');
-                    } else {
-                        switch($listener['scopeType']) {
-                            case 'gibbonPersonIDStudent':   $data = array('gibbonPersonID' => $listener['scopeID']);
-                                                            $sql = "SELECT 'Student' as scopeTypeName, CONCAT(surname, ' ', preferredName) as scopeIDName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID";
-                                                            break;
+            $table->addColumn('name', __('Name'))
+                ->sortable(['surname', 'preferredName'])
+                ->format(function ($person) {
+                    return Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', false, true)
+                        .'<br/>'.Format::small(Format::userStatusInfo($person));
+                });
 
-                            case 'gibbonYearGroupID':       $data = array('gibbonYearGroupID' => $listener['scopeID']);
-                                                            $sql = "SELECT 'Year Group' as scopeTypeName, name as scopeIDName FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID";
-                                                            break;
+            $table->addColumn('receiveNotificationEmails', __('Receive Email Notifications?'))
+                ->setTitle(__('Notifications can always be viewed on screen.'))
+                ->width('15%')
+                ->format(Format::using('yesNo', 'receiveNotificationEmails'));
 
-                            default:                        $data = array();
-                                                            $sql = "SELECT 'Scope' as scopeTypeName, 'Unknown' as scopeIDName";
-                        }
+            $table->addColumn('scope', __('Scope'))->format(function ($listener) use (&$pdo) {
+                if ($listener['scopeType'] == 'All') {
+                    return __('All');
+                } else {
+                    switch($listener['scopeType']) {
+                        case 'gibbonPersonIDStudent':   $data = array('gibbonPersonID' => $listener['scopeID']);
+                                                        $sql = "SELECT 'Student' as scopeTypeName, CONCAT(surname, ' ', preferredName) as scopeIDName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID";
+                                                        break;
 
-                        $resultScope = $pdo->executeQuery($data, $sql);
-                        if ($resultScope && $resultScope->rowCount() > 0) {
-                            $scopeDetails = $resultScope->fetch();
-                            echo __($scopeDetails['scopeTypeName']).' - '.$scopeDetails['scopeIDName'];
-                        }
+                        case 'gibbonYearGroupID':       $data = array('gibbonYearGroupID' => $listener['scopeID']);
+                                                        $sql = "SELECT 'Year Group' as scopeTypeName, name as scopeIDName FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID";
+                                                        break;
+
+                        default:                        $data = array();
+                                                        $sql = "SELECT 'Scope' as scopeTypeName, 'Unknown' as scopeIDName";
                     }
 
-                    echo '</td>';
-                    echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/notificationSettings_manage_listener_deleteProcess.php?gibbonNotificationEventID=".$listener['gibbonNotificationEventID']."&gibbonNotificationListenerID=".$listener['gibbonNotificationListenerID']."&address=".$_SESSION[$guid]['address']."'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-                    echo '</td>';
-                    echo '</tr>';
+                    $resultScope = $pdo->executeQuery($data, $sql);
+                    if ($resultScope && $resultScope->rowCount() > 0) {
+                        $scopeDetails = $resultScope->fetch();
+                        return __($scopeDetails['scopeTypeName']).' - '.$scopeDetails['scopeIDName'];
+                    }
+                    return'';
                 }
-                echo '</table>';
-            }
+            });
+
+            // ACTIONS
+            $table->addActionColumn()
+                ->addParam('gibbonNotificationEventID')
+                ->addParam('gibbonNotificationListenerID')
+                ->format(function ($listener, $actions) {
+                    $actions->addAction('deleteDirect', __('Delete'))
+                            ->setIcon('garbage')
+                            ->directLink()
+                            ->addParam('address', $_GET['q'])
+                            ->setURL('/modules/System Admin/notificationSettings_manage_listener_deleteProcess.php');
+                });
+
+            echo $table->render($result->toDataSet());
+            echo '<br/>';
 
             // Filter users who can have permissions for the notification event action
             $staffMembers = array();
@@ -168,7 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
                     JOIN gibbonPermission ON (gibbonRole.gibbonRoleID=gibbonPermission.gibbonRoleID)
                     JOIN gibbonAction ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
                     WHERE gibbonPerson.status='Full'
-                    AND (gibbonAction.name=:action)
+                    AND (gibbonAction.name=:action OR gibbonAction.name LIKE CONCAT(:action, '_%'))
                     GROUP BY gibbonPerson.gibbonPersonID
                     ORDER BY gibbonRole.gibbonRoleID, surname, preferredName" ;
             $resultSelect=$pdo->executeQuery($data, $sql);
