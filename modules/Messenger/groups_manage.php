@@ -57,16 +57,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
     if ($highestAction == 'Manage Groups_all') {
         // BULK ACTIONS
         $bulkActions = array(
-            'Copy' => __('Copy To Next Year'),
-            'CopyMembers' => __('Copy With Members'),
+            'Duplicate' => __('Duplicate'),
+            'DuplicateMembers' => __('Duplicate With Members'),
+            'Delete' => __('Delete'),
         );
         $col = $form->createBulkActionColumn($bulkActions);
-            $col->addSelectSchoolYear('gibbonSchoolYearIDCopyTo', 'Active', 'DESC')
+            $col->addSelectSchoolYear('gibbonSchoolYearIDCopyTo', 'Active')
                 ->setClass('shortWidth schoolYear')
                 ->placeholder(null);
             $col->addSubmit(__('Go'));
 
-        $form->toggleVisibilityByClass('schoolYear')->onSelect('action')->when(array('Copy', 'CopyMembers'));
+        $form->toggleVisibilityByClass('schoolYear')->onSelect('action')->when(array('Duplicate', 'DuplicateMembers'));
 
         // DATA TABLE
         $table = $form->addRow()->addDataTable('groupsManage', $criteria)->withData($groups);

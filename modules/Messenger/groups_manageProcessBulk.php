@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
     $gibbonGroupIDList = $_POST['gibbonGroupIDList'] ?? '';
     $gibbonSchoolYearIDCopyTo = $_POST['gibbonSchoolYearIDCopyTo'] ?? array();
 
-    if (empty($action) || empty($gibbonSchoolYearIDCopyTo) || empty($gibbonGroupIDList)) {
+    if (empty($action) || empty($gibbonGroupIDList)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
@@ -41,27 +41,41 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
         $groupGateway = $container->get(GroupGateway::class);
         $partialFail = false;
 
-        foreach ($gibbonGroupIDList as $gibbonGroupID) {
-            $data = $groupGateway->getByID($gibbonGroupID);
-            $data['gibbonSchoolYearID'] = $gibbonSchoolYearIDCopyTo;
+        if ($action == 'Duplicate' || $action == 'DuplicateMembers') {
+            foreach ($gibbonGroupIDList as $gibbonGroupID) {
+                $data = $groupGateway->getByID($gibbonGroupID);
+                $data['gibbonSchoolYearID'] = $gibbonSchoolYearIDCopyTo;
 
-            // Copy groups to selected year
-            $inserted = $groupGateway->insert($data);
-            $partialFail &= !$inserted;
+                // Copy groups to selected year
+                $inserted = $groupGateway->insert($data);
+                $partialFail &= !$inserted;
 
-            // Optionally add members to new group
-            if ($inserted && $action == 'CopyMembers') {
-                $members = $groupGateway->selectPersonIDsByGroup($gibbonGroupID)->fetchAll();
-                if (empty($members)) continue;
+                // Optionally add members to new group
+                if ($inserted && $action == 'DuplicateMembers') {
+                    $members = $groupGateway->selectPersonIDsByGroup($gibbonGroupID)->fetchAll();
+                    if (empty($members)) continue;
 
-                foreach ($members as $member) {
-                    $insertedMember = $groupGateway->insertGroupPerson([
-                        'gibbonGroupID' => $inserted,
-                        'gibbonPersonID' => $member['gibbonPersonID'],
-                    ]);
-                    $partialFail &= !$insertedMember;
+                    foreach ($members as $member) {
+                        $insertedMember = $groupGateway->insertGroupPerson([
+                            'gibbonGroupID' => $inserted,
+                            'gibbonPersonID' => $member['gibbonPersonID'],
+                        ]);
+                        $partialFail &= !$insertedMember;
+                    }
                 }
             }
+        } elseif ($action == 'Delete') {
+            foreach ($gibbonGroupIDList as $gibbonGroupID) {
+                $deleted = $groupGateway->delete($gibbonGroupID);
+                $partialFail &= !$deleted;
+
+                $deleted = $groupGateway->deletePeopleByGroupID($gibbonGroupID);
+                $partialFail &= !$deleted;
+            }
+        } else {
+            $URL .= '&return=error1';
+            header("Location: {$URL}");
+            exit;
         }
 
         $URL .= $partialFail
