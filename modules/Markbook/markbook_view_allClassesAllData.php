@@ -143,12 +143,16 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
     $markbookGateway = $container->get(MarkbookColumnGateway::class);
     $plannerGateway = $container->get(PlannerEntryGateway::class);
 	
-    //reset ordering
-    if(isset($_GET['reset']) && $_GET['reset']==1){
-        $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-        $sql = 'SET @count:=0;UPDATE gibbonMarkbookColumn SET `sequenceNumber`=@count:=@count+1 WHERE `gibbonCourseClassID` = :gibbonCourseClassID order by gibbonMarkbookColumnID ASC';
-        $result = $pdo->executeQuery($data, $sql);
-    }
+	//reset ordering
+	if(isset($_GET['reset']) && $_GET['reset']==1){
+		$data = array('gibbonCourseClassID' => $gibbonCourseClassID);
+		$sql = 'SET @count:=0;UPDATE gibbonMarkbookColumn SET `sequenceNumber`=@count:=@count+1 WHERE `gibbonCourseClassID` = :gibbonCourseClassID order by gibbonMarkbookColumnID ASC';
+		$result = $pdo->executeQuery($data, $sql);
+	}else if(isset($_GET['reset']) && $_GET['reset']==2){
+		$data = array('gibbonCourseClassID' => $gibbonCourseClassID);
+		$sql = 'SET @count:=0;UPDATE gibbonMarkbookColumn SET `sequenceNumber`=@count:=@count+1 WHERE `gibbonCourseClassID` = :gibbonCourseClassID order by `date` ASC';
+		$result = $pdo->executeQuery($data, $sql);
+	}
 
     // Build the markbook object for this class
     $markbook = new MarkbookView($gibbon, $pdo, $gibbonCourseClassID);
@@ -253,12 +257,21 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Add')."<img title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a> | ";
 			echo '<script>
 					function resetOrder(){
-						var cf = confirm("'.__('Are you sure you want to reset the ordering of all the columns in this class?').'");
-						if(cf){
-							window.location.href = window.location.href + "&reset=1";
+					    $( "#dialog" ).dialog();
+					}
+					function resetOrderAction(order){
+						if(order==1){
+							window.location.href = window.location.href.substr(0,window.location.href.length-1) + "&reset=1";
+						}else if(order==2){
+							window.location.href = window.location.href.substr(0,window.location.href.length-1) + "&reset=2";
 						}
 					}
 				</script>';
+			echo '<div id="dialog" title="'.__('Reset Order').'" style="display:none;">
+                      '.__('Are you sure you want to reset the ordering of all the columns in this class?').'<br>
+                      <button onclick="resetOrderAction(1)" class="my-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">'.__('Reset by entry order').'</button><br>
+                      <button onclick="resetOrderAction(2)" class="my-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">'.__('Reset by date').'</button>
+                    </div>';
 			echo "<a href='#' onclick='resetOrder()'>".__('Reset Order')."<img title='".__('Reset Order')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/reincarnate.png'/></a> | ";
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_targets.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Targets')."<img title='".__('Set Personalised Attainment Targets')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/target.png'/></a> | ";
             if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
