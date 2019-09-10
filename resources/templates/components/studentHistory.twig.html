@@ -89,7 +89,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                         <div class="{{ blockWidth }} {{ dayClass }} bg-gray-400 border-gray-600 text-gray-500" title="{{ __('School Closed') }}">
                             {{ day.specialDay }}
                         </div>
-                    {% elseif day.logs is empty %}
+                    {% elseif day.logs is empty and day.classLogs is empty %}
                         <div class="{{ blockWidth }} {{ dayClass }} bg-gray-200 border-gray-600 text-gray-700" title="{{ __('No Data') }}">
                             {{ day.dateDisplay }}
                         </div>
@@ -139,13 +139,27 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% endif %}
 
         <ul class='list-none ml-0 mt-4 text-xs text-left'>
-        {% for log in day.logs %}
-            <li class='{{ log.statusClass }} leading-relaxed'>
-                {{ log.timestampTaken|date( log.timestampTaken|date('Y-m-d') == day.date ? 'H:i' : 'H:i Y-m-d') }} -
-                {{ __(log.type) }} {{- log.reason ? ', ' ~ __(log.reason) }} - 
-                {{ log.contextName ? log.contextName : __(log.context) }}
-            </li>
-        {% endfor %}
+            <li class='text-xxs  font-bold'>{{ __('School Attendance') }}:</li>
+            {% for log in day.logs %}
+                <li class='{{ log.statusClass }} leading-relaxed'>
+                    {{ log.timestampTaken|date( log.timestampTaken|date('Y-m-d') == day.date ? 'H:i' : 'H:i Y-m-d') }} -
+                    {{ __(log.type) }} {{- log.reason ? ', ' ~ __(log.reason) }} - 
+                    {{ log.contextName ? log.contextName : __(log.context) }}
+                </li>
+            {% else %}
+                <li class='text-xxs'>{{ __('Not Available') }}</li>
+            {% endfor %}
+
+        {%if day.classLogs %}
+            <li class='text-xxs  font-bold mt-2'>{{ __('Class Attendance') }}:</li>
+            {% for log in day.classLogs %}
+                <li class='{{ log.statusClass }} leading-relaxed'>
+                    {{ log.timestampTaken|date( log.timestampTaken|date('Y-m-d') == day.date ? 'H:i' : 'H:i Y-m-d') }} -
+                    {{ __(log.type) }} {{- log.reason ? ', ' ~ __(log.reason) }} - 
+                    {{ log.contextName ? log.contextName : __(log.context) }}
+                </li>
+            {% endfor %}
+        {% endif %}
     </section>
 {% endmacro tooltip %}
 
