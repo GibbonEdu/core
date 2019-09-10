@@ -42,6 +42,7 @@ v19.0.00
     Bug Fixes
         System: fix installer bug where passwords are unnecessarily encoded
         System: fixed date picker validation error for Polish language
+        System: fixed Notification Events to only send to users who have status Full
         Activities: improved interface string advising users of disabled external activity registration
         Attendance: fixed missing data in printable view of Student History
         Finance: fixed missing payment info in invoice receipt email for multiple partial payments

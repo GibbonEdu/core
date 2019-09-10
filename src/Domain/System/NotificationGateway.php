@@ -119,7 +119,7 @@ class NotificationGateway
     public function selectAllNotificationListeners($gibbonNotificationEventID, $groupByPerson = true)
     {
         $data = array('gibbonNotificationEventID' => $gibbonNotificationEventID);
-        $sql = "SELECT gibbonNotificationListener.*, gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.title, gibbonPerson.receiveNotificationEmails
+        $sql = "SELECT gibbonNotificationListener.*, gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.title, gibbonPerson.receiveNotificationEmails, gibbonPerson.status
                 FROM gibbonNotificationListener
                 JOIN gibbonNotificationEvent ON (gibbonNotificationListener.gibbonNotificationEventID=gibbonNotificationEvent.gibbonNotificationEventID)
                 JOIN gibbonPerson ON (gibbonNotificationListener.gibbonPersonID=gibbonPerson.gibbonPersonID)
@@ -127,7 +127,7 @@ class NotificationGateway
                 JOIN gibbonPermission ON (gibbonRole.gibbonRoleID=gibbonPermission.gibbonRoleID)
                 JOIN gibbonAction ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
                 WHERE gibbonNotificationListener.gibbonNotificationEventID=:gibbonNotificationEventID
-                AND gibbonNotificationEvent.actionName=gibbonAction.name";
+                AND (gibbonNotificationEvent.actionName=gibbonAction.name OR gibbonAction.name LIKE CONCAT(gibbonNotificationEvent.actionName, '_%'))";
 
         if ($groupByPerson) {
             $sql .= " GROUP BY gibbonNotificationListener.gibbonPersonID";
@@ -140,8 +140,13 @@ class NotificationGateway
 
     public function selectNotificationListenersByScope($gibbonNotificationEventID, $scopes = array())
     {
-        $data = array('gibbonNotificationEventID' => $gibbonNotificationEventID);
-        $sql = "SELECT DISTINCT gibbonPersonID FROM gibbonNotificationListener WHERE gibbonNotificationEventID=:gibbonNotificationEventID";
+        $data = array('gibbonNotificationEventID' => $gibbonNotificationEventID, 'today' => date('Y-m-d'));
+        $sql = "SELECT DISTINCT gibbonPerson.gibbonPersonID FROM gibbonNotificationListener 
+                JOIN gibbonPerson ON (gibbonNotificationListener.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                WHERE gibbonNotificationEventID=:gibbonNotificationEventID
+                AND gibbonPerson.status='Full'
+                AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today) 
+                AND (gibbonPerson.dateEnd IS NULL  OR gibbonPerson.dateEnd>=:today)";
 
         if (is_array($scopes) && count($scopes) > 0) {
             $sql .= " AND (scopeType='All' ";
