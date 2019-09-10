@@ -422,7 +422,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
     $row = $form->addRow();
         $row->addLabel('studentID', __('Student ID'))->description(__('Must be unique if set.'));
-        $row->addTextField('studentID')->maxLength(10);
+        $row->addTextField('studentID')->maxLength(15);
 
     $sql = "SELECT DISTINCT transport FROM gibbonPerson
             JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)

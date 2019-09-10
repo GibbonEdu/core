@@ -562,7 +562,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             if ($student) {
                 $row = $form->addRow();
                 	$row->addLabel('studentID', __('Student ID'))->description(__('Must be unique if set.'));
-                	$row->addTextField('studentID')->maxLength(10);
+                	$row->addTextField('studentID')->maxLength(15);
             }
 
 			if ($student || $staff) {

@@ -37,6 +37,7 @@ v19.0.00
         Students: improved display of Teachers' emails in student profile
         Students: added extra permission allowing editing of all Notes
         Timetable Admin: included student reportable flag in student enrolment
+        User Admin: increased Student ID field max length to 15
 
     Bug Fixes
         System: fix installer bug where passwords are unnecessarily encoded
