@@ -205,7 +205,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
     $table->addColumn('enrolment', __('Enrolment'))
         ->format(function($activity) {
-            return $activity['enrolment'] 
+            return $activity['enrolment'] .' / '. $activity['maxParticipants']
                 . (!empty($activity['waiting'])? '<br><small><i>' .$activity['waiting'].' '.__('Waiting') .'</i></small>' : '')
                 . (!empty($activity['pending'])? '<br><small><i>' .$activity['pending'].' '.__('Pending') .'</i></small>' : '');
         });
