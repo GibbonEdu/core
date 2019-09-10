@@ -34,6 +34,7 @@ class GroupGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonGroup';
+    private static $primaryKey = 'gibbonGroupID';
     private static $searchableColumns = ['gibbonGroup.name'];
     
     /**
