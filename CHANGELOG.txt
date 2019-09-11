@@ -41,6 +41,7 @@ v19.0.00
         Students: added extra permission allowing editing of all Notes
         Timetable Admin: included student reportable flag in student enrolment
         User Admin: increased Student ID field max length to 15
+        User Admin: added a View Role page in Manage Roles to display all actions and users per role
 
     Bug Fixes
         System: fix installer bug where passwords are unnecessarily encoded
