@@ -27,7 +27,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage.php
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Roles'));  
+    $page->breadcrumbs->add(__('Manage Roles'));
+
+    $highestAction = getHighestGroupedAction($guid, '/modules/User Admin/role_manage.php', $connection2);
+    if (empty($highestAction)) {
+        $page->addError(__('You do not have access to this action.'));
+        return;
+    }
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -45,9 +51,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage.php
     // DATA TABLE
     $table = DataTable::createPaginated('roleManage', $criteria);
 
-    $table->addHeaderAction('add', __('Add'))
-        ->setURL('/modules/User Admin/role_manage_add.php')
-        ->displayLabel();
+    if ($highestAction == 'Manage Roles_all') {
+        $table->addHeaderAction('add', __('Add'))
+            ->setURL('/modules/User Admin/role_manage_add.php')
+            ->displayLabel();
+    }
 
     $table->addColumn('category', __('Category'))->translatable();
     $table->addColumn('name', __('Name'))->translatable();
@@ -72,18 +80,23 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage.php
 
     $table->addActionColumn()
         ->addParam('gibbonRoleID')
-        ->format(function ($row, $actions) {
-            $actions->addAction('edit', __('Edit'))
-                ->setURL('/modules/User Admin/role_manage_edit.php');
+        ->format(function ($row, $actions) use ($highestAction) {
+            $actions->addAction('view', __('View'))
+                    ->setURL('/modules/User Admin/role_manage_view.php');
 
-            if ($row['type'] == 'Additional') {
-                $actions->addAction('delete', __('Delete'))
-                    ->setURL('/modules/User Admin/role_manage_delete.php');
+            if ($highestAction == 'Manage Roles_all') {
+                $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/User Admin/role_manage_edit.php');
+
+                if ($row['type'] == 'Additional') {
+                    $actions->addAction('delete', __('Delete'))
+                        ->setURL('/modules/User Admin/role_manage_delete.php');
+                }
+
+                $actions->addAction('duplciate', __('Duplicate'))
+                    ->setIcon('copy')
+                    ->setURL('/modules/User Admin/role_manage_duplicate.php');
             }
-
-            $actions->addAction('duplciate', __('Duplicate'))
-                ->setIcon('copy')
-                ->setURL('/modules/User Admin/role_manage_duplicate.php');
         });
 
     echo $table->render($roles);

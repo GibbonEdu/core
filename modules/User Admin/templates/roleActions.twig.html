@@ -1,0 +1,29 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+<h2>
+    {{ __('Actions') }}: {{ __(role.name) }}
+</h2>
+
+<div class="column-2 mb-8">
+{% for moduleName, moduleActions in actions %}
+    <div class="column-no-break">
+        <h5 class="border-0 mb-1">
+            {{ __(moduleName) }}
+        </h5>
+
+        <ul>
+        {% for action in moduleActions %}
+            <li>
+                <span title="{{ __(action.description) }}">{{ __(action.name) }}</span>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+{% endfor %}
+</div>
