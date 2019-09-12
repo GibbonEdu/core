@@ -49,6 +49,7 @@ v19.0.00
         System: fixed Notification Events to only send to users who have status Full
         Activities: improved interface string advising users of disabled external activity registration
         Attendance: fixed missing data in printable view of Student History
+        Attendance: fixed Set Future Absence to only allow future dates
         Finance: fixed missing payment info in invoice receipt email for multiple partial payments
         Library: set Bookable to No by default on Add record screen
         Messenger: fixed bug when sending parent and student SMS for Attendance status
