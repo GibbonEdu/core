@@ -71,29 +71,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
         echo '<h2>';
         echo __('Choose User');
         echo '</h2>';
-        
+
         $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : null;
 
         $form = Form::create('selectPerson', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
         $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/data_personal.php');
-    
+
         if ($highestAction == 'Update Personal Data_any') {
             $data = array();
             $sql = "SELECT username, surname, preferredName, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE status='Full' ORDER BY surname, preferredName";
         } else {
             $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
             $sql = "(SELECT gibbonFamilyAdult.gibbonFamilyID, gibbonFamily.name as familyName, child.surname, child.preferredName, child.gibbonPersonID
-                    FROM gibbonFamilyAdult 
-                    JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) 
+                    FROM gibbonFamilyAdult
+                    JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
                     JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
-                    JOIN gibbonPerson as child ON (gibbonFamilyChild.gibbonPersonID=child.gibbonPersonID) 
-                    WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID 
-                    AND gibbonFamilyAdult.childDataAccess='Y' AND child.status='Full') 
-                UNION (SELECT gibbonFamily.gibbonFamilyID, gibbonFamily.name as familyName, adult.surname, adult.preferredName, adult.gibbonPersonID 
-                    FROM gibbonFamilyAdult 
+                    JOIN gibbonPerson as child ON (gibbonFamilyChild.gibbonPersonID=child.gibbonPersonID)
+                    WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID
+                    AND gibbonFamilyAdult.childDataAccess='Y' AND child.status='Full')
+                UNION (SELECT gibbonFamily.gibbonFamilyID, gibbonFamily.name as familyName, adult.surname, adult.preferredName, adult.gibbonPersonID
+                    FROM gibbonFamilyAdult
                     JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
                     JOIN gibbonFamilyAdult as familyAdult ON (familyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
-                    JOIN gibbonPerson as adult ON (familyAdult.gibbonPersonID=adult.gibbonPersonID) 
+                    JOIN gibbonPerson as adult ON (familyAdult.gibbonPersonID=adult.gibbonPersonID)
                     WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID AND adult.status='Full')
                 ORDER BY surname, preferredName";
         }
@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
         if (array_key_exists($_SESSION[$guid]['gibbonPersonID'], $people) == false) {
             $people[$_SESSION[$guid]['gibbonPersonID']] = Format::name('', htmlPrep($_SESSION[$guid]['preferredName']), htmlPrep($_SESSION[$guid]['surname']), 'Student', true);
         }
-        
+
         $row = $form->addRow();
             $row->addLabel('gibbonPersonID', __('Person'));
             $row->addSelect('gibbonPersonID')
@@ -122,11 +122,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 ->required()
                 ->selected($gibbonPersonID)
                 ->placeholder();
-        
+
         $row = $form->addRow();
             $row->addSubmit();
-        
-        echo $form->getOutput();    
+
+        echo $form->getOutput();
 
         if ($gibbonPersonID != '') {
             echo '<h2>';
@@ -212,7 +212,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 $existing = false;
                 $proceed = false;
                 $requiredFields = [];
-                
+
                 if ($highestAction != 'Update Personal Data_any') {
                     $requiredFieldsSetting = unserialize(getSettingByScope($connection2, 'User Admin', 'personalDataUpdaterRequiredFields'));
                     if (is_array($requiredFieldsSetting)) {
@@ -319,7 +319,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
                     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
                     $form->addHiddenValue('existing', isset($values['gibbonPersonUpdateID'])? $values['gibbonPersonUpdateID'] : 'N');
-                    
+
                     // BASIC INFORMATION
                     $form->addRow()->addHeading(__('Basic Information'));
 
@@ -413,7 +413,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     $row = $form->addRow();
                         $row->addLabel('showAddresses', __('Enter Personal Address?'));
                         $row->addCheckbox('showAddresses')->setValue('Yes')->checked($addressSet);
-                    
+
                     $form->toggleVisibilityByClass('address')->onCheckbox('showAddresses')->when('Yes');
 
                     $row = $form->addRow()->addClass('address');
@@ -439,14 +439,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     if ($values['address1'] != '') {
                         try {
                             $dataAddress = array(
-                                'gibbonPersonID' => $values['gibbonPersonID'], 
+                                'gibbonPersonID' => $values['gibbonPersonID'],
                                 'addressMatch' => '%'.strtolower(preg_replace('/ /', '%', preg_replace('/,/', '%', $values['address1']))).'%',
                                 'gibbonFamilyPeople' => implode(',', array_keys($people)),
                             );
-                            $sqlAddress = "SELECT gibbonPersonID, title, preferredName, surname, category 
-                                FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) 
-                                WHERE status='Full' AND address1 LIKE :addressMatch 
-                                AND FIND_IN_SET(gibbonPersonID, :gibbonFamilyPeople) AND NOT gibbonPersonID=:gibbonPersonID 
+                            $sqlAddress = "SELECT gibbonPersonID, title, preferredName, surname, category
+                                FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)
+                                WHERE status='Full' AND address1 LIKE :addressMatch
+                                AND FIND_IN_SET(gibbonPersonID, :gibbonFamilyPeople) AND NOT gibbonPersonID=:gibbonPersonID
                                 ORDER BY surname, preferredName";
                             $resultAddress = $connection2->prepare($sqlAddress);
                             $resultAddress->execute($dataAddress);
@@ -607,7 +607,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     $form->addRow()
                         ->onlyIf($anyVisible(['vehicleRegistration']))
                         ->addHeading(__('Miscellaneous'));
-                    
+
                     $row = $form->addRow()->onlyIf($isVisible('vehicleRegistration'));
                         $row->addLabel('vehicleRegistration', __('Vehicle Registration'));
                         $row->addTextField('vehicleRegistration')->maxLength(20);
@@ -617,7 +617,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         $privacyBlurb = getSettingByScope($connection2, 'User Admin', 'privacyBlurb');
                         $privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
 
-                        if ($privacySetting == 'Y' && !empty($privacyBlurb) && !empty($privacyOptions)) {
+                        if ($privacySetting == 'Y' && !empty($privacyOptions)) {
 
                             $form->addRow()->addSubheading(__('Privacy'))->append($privacyBlurb);
 
@@ -649,7 +649,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     $row = $form->addRow();
                         $row->addFooter();
                         $row->addSubmit();
-                        
+
                     $form->loadStateFrom('required', array_filter($requiredFields, function ($item) {
                         return $item == 'required';
                     }));
@@ -657,7 +657,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     $form->loadStateFrom('readonly', array_filter($requiredFields, function ($item) {
                         return $item == 'readonly';
                     }));
-                    
+
                     $form->loadAllValuesFrom($values);
 
                     echo $form->getOutput();

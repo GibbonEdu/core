@@ -935,7 +935,7 @@ if ($proceed == false) {
     $privacyBlurb = getSettingByScope($connection2, 'User Admin', 'privacyBlurb');
     $privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
 
-    if ($privacySetting == 'Y' && !empty($privacyBlurb) && !empty($privacyOptions)) {
+    if ($privacySetting == 'Y' && !empty($privacyOptions)) {
 
         $form->addRow()->addSubheading(__('Privacy'))->append($privacyBlurb);
 
