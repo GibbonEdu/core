@@ -137,6 +137,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                             }
                         }
 
+                        if (getSettingByScope($connection2, 'Behaviour', 'notifyEducationalAssistants') == 'Y') {
+                            
+                        }
+
                         // Send all notifications
                         $notificationSender->sendNotifications();
                     }

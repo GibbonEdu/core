@@ -96,6 +96,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 
     $row = $form->addRow()->addHeading(__('Miscellaneous'));
 
+    $setting = getSettingByScope($connection2, 'Behaviour', 'notifyEducationalAssistants', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value']);
+
     $setting = getSettingByScope($connection2, 'Behaviour', 'policyLink', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
