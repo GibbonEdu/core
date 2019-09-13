@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Year Groups'));
+    $page->breadcrumbs->add(__('Manage Year Groups'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
                 return Format::name('', $values['preferredName'], $values['surname'], 'Staff', false, true);
             }
         });
-
+        
     // ACTIONS
     $table->addActionColumn()
         ->addParam('gibbonYearGroupID')

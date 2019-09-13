@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('School Years'), 'schoolYear_manage.php')
+        ->add(__('Manage School Years'), 'schoolYear_manage.php')
         ->add(__('Add School Year'));
 
     $editLink = '';

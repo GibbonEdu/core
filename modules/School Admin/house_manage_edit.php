@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Houses'), 'house_manage.php')
+        ->add(__('Manage Houses'), 'house_manage.php')
         ->add(__('Edit House'));
 
     if (isset($_GET['return'])) {

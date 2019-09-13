@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
     $lastDay = $_GET['lastDay'] ?? '';
 
     $page->breadcrumbs
-        ->add(__('Special Days'), 'schoolYearSpecialDay_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+        ->add(__('Manage Special Days'), 'schoolYearSpecialDay_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
         ->add(__('Add Special Day'));
 
     if ($gibbonSchoolYearID == '' or $dateStamp == '' or $gibbonSchoolYearTermID == '' or $firstDay == '' or $lastDay == '') {
