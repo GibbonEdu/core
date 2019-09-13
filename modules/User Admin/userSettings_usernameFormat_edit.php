@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Manage User Settings'), 'userSettings.php')
+        ->add(__('User Settings'), 'userSettings.php')
         ->add(__('Edit Username Format'));
 
     if (isset($_GET['return'])) {

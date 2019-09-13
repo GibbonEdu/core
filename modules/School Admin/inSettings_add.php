@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings_ad
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Manage Individual Needs Settings'), 'inSettings.php')
+        ->add(__('Individual Needs Settings'), 'inSettings.php')
         ->add(__('Add Descriptor'));
 
     $editLink = '';
@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings_ad
     $row = $form->addRow();
         $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
         $row->addTextField('name')->required()->maxLength(50);
-    
+
     $row = $form->addRow();
         $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
         $row->addTextField('nameShort')->required()->maxLength(5);

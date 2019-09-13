@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Messenger Settings'));
+    $page->breadcrumbs->add(__('Messenger Settings'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
