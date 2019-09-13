@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/fileExtension
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Manage File Extensions'), 'fileExtensions_manage.php')
+        ->add(__('File Extensions'), 'fileExtensions_manage.php')
         ->add(__('Add File Extension'));
 
     $editLink = '';

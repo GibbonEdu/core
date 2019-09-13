@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage School Years'));
+    $page->breadcrumbs->add(__('School Years'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
           ->format(Format::using('dateRange', ['firstDay', 'lastDay']))
           ->sortable(['firstDay', 'lastDay']);
     $table->addColumn('status', __('Status'))->translatable();
-        
+
     // ACTIONS
     $table->addActionColumn()
         ->addParam('gibbonSchoolYearID')

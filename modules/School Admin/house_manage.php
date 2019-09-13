@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage.
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Houses'));
+    $page->breadcrumbs->add(__('Houses'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage.
 
     $table->addColumn('logo', __('Logo'))
     ->notSortable()
-    ->format(function($values) use ($guid) { 
+    ->format(function($values) use ($guid) {
         $return = null;
         $return .= ($values['logo'] != '') ? "<img class='user' style='max-width: 75px' src='".$_SESSION[$guid]['absoluteURL'].'/'.$values['logo']."'/>":"<img class='user' style='max-width: 75px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/anonymous_240_square.jpg'/>";
         return $return;

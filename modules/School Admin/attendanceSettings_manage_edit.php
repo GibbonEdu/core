@@ -24,14 +24,14 @@ use Gibbon\Forms\DatabaseFormFactory;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSettings_manage_edit.php') == false) {
-    //Acess denied
+    //Access denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Manage Attendance Settings'), 'attendanceSettings.php')
+        ->add(__('Attendance Settings'), 'attendanceSettings.php')
         ->add(__('Edit Attendance Code'));
 
     if (isset($_GET['return'])) {
@@ -60,21 +60,21 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 	        echo '</div>';
 	    } else {
 	        //Let's go!
-            $values = $result->fetch(); 
-            
+            $values = $result->fetch();
+
             $form = Form::create('attendanceCode', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/attendanceSettings_manage_editProcess.php?gibbonAttendanceCodeID='.$gibbonAttendanceCodeID);
             $form->setFactory(DatabaseFormFactory::create($pdo));
-        
+
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-        
+
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
                 $row->addTextField('name')->required()->maxLength(30);
-            
+
             $row = $form->addRow();
                 $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
                 $row->addTextField('nameShort')->required()->maxLength(4);
-        
+
             $directions = array(
                 'In'     => __('In Class'),
                 'Out' => __('Out of Class'),
@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
             $row = $form->addRow();
                 $row->addLabel('direction', __('Direction'));
                 $row->addSelect('direction')->required()->fromArray($directions);
-        
+
             $scopes = array(
                 'Onsite'         => __('Onsite'),
                 'Onsite - Late'  => __('Onsite - Late'),
@@ -92,19 +92,19 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
             $row = $form->addRow();
                 $row->addLabel('scope', __('Scope'));
                 $row->addSelect('scope')->required()->fromArray($scopes);
-        
+
             $row = $form->addRow();
                 $row->addLabel('sequenceNumber', __('Sequence Number'));
                 $row->addSequenceNumber('sequenceNumber', 'gibbonAttendanceCode', $values['sequenceNumber'])->required()->maxLength(3);
-        
+
             $row = $form->addRow();
                 $row->addLabel('active', __('Active'));
                 $row->addYesNo('active')->required();
-        
+
             $row = $form->addRow();
                 $row->addLabel('reportable', __('Reportable'));
                 $row->addYesNo('reportable')->required();
-        
+
             $row = $form->addRow();
                 $row->addLabel('prefill', __('Prefillable'))->description(__('Can this code prefill when taking attendance?'));
                 $row->addYesNo('prefill')->required();
@@ -112,17 +112,17 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
             $row = $form->addRow();
                 $row->addLabel('future', __('Allow Future Use'))->description(__('Can this code be used in Set Future Absence?'));
                 $row->addYesNo('future')->required();
-        
+
             $row = $form->addRow();
                 $row->addLabel('gibbonRoleIDAll', __('Available to Roles'))->description(__('Controls who can use this code.'));
                 $row->addSelectRole('gibbonRoleIDAll')->selectMultiple()->loadFromCSV($values);
-        
+
             $row = $form->addRow();
                 $row->addFooter();
                 $row->addSubmit();
 
             $form->loadAllValuesFrom($values);
-        
+
             echo $form->getOutput();
 		}
 	}

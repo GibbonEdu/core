@@ -23,13 +23,13 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\Attendance\AttendanceCodeGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSettings.php') == false) {
-    //Acess denied
+    //Access denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Attendance Settings'));
+    $page->breadcrumbs->add(__('Attendance Settings'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);

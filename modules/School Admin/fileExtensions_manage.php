@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/fileExtension
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage File Extensions'));
+    $page->breadcrumbs->add(__('File Extensions'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/fileExtension
     $table->addColumn('extension', __('Extension'));
     $table->addColumn('name', __('Name'))->translatable();
     $table->addColumn('type', __('Type'))->translatable();
-        
+
     // ACTIONS
     $table->addActionColumn()
         ->addParam('gibbonFileExtensionID')
