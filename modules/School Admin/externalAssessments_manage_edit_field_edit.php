@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
             $values['gibbonYearGroupIDList'] = explode(',', $values['gibbonYearGroupIDList']);
 
             $page->breadcrumbs
-                ->add(__('External Assessments'), 'externalAssessments_manage.php')
+                ->add(__('Manage External Assessments'), 'externalAssessments_manage.php')
                 ->add(__('Edit External Assessment'), 'externalAssessments_manage_edit.php', ['gibbonExternalAssessmentID' => $gibbonExternalAssessmentID])
                 ->add(__('Edit Field'));
 

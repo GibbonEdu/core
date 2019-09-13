@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Terms'), 'schoolYearTerm_manage.php')
+        ->add(__('Manage Terms'), 'schoolYearTerm_manage.php')
         ->add(__('Add Term'));
 
     $editLink = '';
@@ -74,3 +74,4 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
 
     echo $form->getOutput();
 }
+
