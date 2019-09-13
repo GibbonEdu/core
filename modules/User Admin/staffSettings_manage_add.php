@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings_m
 } else {
     // Proceed!
     $page->breadcrumbs
-        ->add(__('Manage Staff Settings'), 'staffSettings.php')
+        ->add(__('Staff Settings'), 'staffSettings.php')
         ->add(__('Absence Type'));
 
     $editLink = '';
@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings_m
     $row = $form->addRow();
         $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
         $row->addTextField('name')->required()->maxLength(60);
-    
+
     $row = $form->addRow();
         $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
         $row->addTextField('nameShort')->required()->maxLength(10);
