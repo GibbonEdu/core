@@ -26,13 +26,13 @@ use Gibbon\Domain\Messenger\GroupGateway;
 use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.php') == false) {
-    //Acess denied
+    //Access denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Staff Settings'));
+    $page->breadcrumbs->add(__('Staff Settings'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/User Admin/staffSettings_manage_add.php')
         ->displayLabel();
-    
+
     $table->addColumn('nameShort', __('Short Name'));
     $table->addColumn('name', __('Name'));
     $table->addColumn('reasons', __('Reasons'));
@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addNumber($setting['name'])->required()->onlyInteger(false)->setValue($setting['value']);
-                
+
     $form->addRow()->addHeading(__('Staff Coverage'));
 
     $setting = $settingGateway->getSettingByScope('Staff', 'substituteTypes', true);
@@ -145,7 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
             $row->addYesNo($setting['name'])->required()->selected($setting['value']);
-            
+
         $form->toggleVisibilityByClass('urgency')->onSelect('urgentNotifications')->when('Y');
 
         $thresholds = array_map(function ($count) {

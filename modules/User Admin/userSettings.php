@@ -23,13 +23,13 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Domain\User\UsernameFormatGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.php') == false) {
-    //Acess denied
+    //Access denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage User Settings'));
+    $page->breadcrumbs->add(__('User Settings'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
                     ->setURL('/modules/User Admin/userSettings_usernameFormat_delete.php');
             }
         });
-    
+
     echo $table->render($usernameFormats->toDataSet());
 
     echo '<br/>';
