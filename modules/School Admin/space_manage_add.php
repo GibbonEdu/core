@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Manage Facilities'), 'space_manage.php')
+        ->add(__('Facilities'), 'space_manage.php')
         ->add(__('Add Facility'));
 
     $editLink = '';

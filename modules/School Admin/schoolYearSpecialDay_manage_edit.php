@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 
     $page->breadcrumbs
-        ->add(__('Manage Special Days'), 'schoolYearSpecialDay_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+        ->add(__('Special Days'), 'schoolYearSpecialDay_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
         ->add(__('Edit Special Day'));
 
     if (empty($gibbonSchoolYearSpecialDayID) && empty($gibbonSchoolYearID)) {

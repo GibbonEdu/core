@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings_ed
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Manage Individual Needs Settings'), 'inSettings.php')
+        ->add(__('Individual Needs Settings'), 'inSettings.php')
         ->add(__('Edit Descriptor'));
 
     if (isset($_GET['return'])) {
@@ -58,36 +58,35 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings_ed
         } else {
             //Let's go!
             $values = $result->fetch();
-            
+
             $form = Form::create('inDescriptor', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/inSettings_editProcess.php?gibbonINDescriptorID='.$gibbonINDescriptorID);
             $form->setFactory(DatabaseFormFactory::create($pdo));
-        
+
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-        
+
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
                 $row->addTextField('name')->required()->maxLength(50);
-            
+
             $row = $form->addRow();
                 $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
                 $row->addTextField('nameShort')->required()->maxLength(5);
-        
+
             $row = $form->addRow();
                 $row->addLabel('sequenceNumber', __('Sequence Number'));
                 $row->addSequenceNumber('sequenceNumber', 'gibbonINDescriptor', $values['sequenceNumber'])->required()->maxLength(5);
-        
+
             $row = $form->addRow();
                 $row->addLabel('description', __('Description'));
                 $row->addTextArea('description')->setRows(8);
-        
+
             $row = $form->addRow();
                 $row->addFooter();
                 $row->addSubmit();
 
             $form->loadAllValuesFrom($values);
-        
+
             echo $form->getOutput();
         }
     }
 }
-

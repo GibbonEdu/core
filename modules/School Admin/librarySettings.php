@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Library Settings'));
+    $page->breadcrumbs->add(__('Library Settings'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);

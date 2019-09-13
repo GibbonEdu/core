@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Terms'));
+    $page->breadcrumbs->add(__('Terms'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
     $table->addColumn('dates', __('Dates'))
           ->format(Format::using('dateRange', ['firstDay', 'lastDay']))
           ->sortable(['firstDay', 'lastDay']);
-        
+
     // ACTIONS
     $table->addActionColumn()
         ->addParam('gibbonSchoolYearTermID')
