@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
     $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
 
     $page->breadcrumbs
-        ->add(__('Manage Roll Groups'), 'rollGroup_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+        ->add(__('Roll Groups'), 'rollGroup_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
         ->add(__('Add Roll Group'));
 
     $editLink = '';
@@ -125,4 +125,3 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
         }
     }
 }
-

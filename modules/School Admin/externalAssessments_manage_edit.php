@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Manage External Assessments'), 'externalAssessments_manage.php')
+        ->add(__('External Assessments'), 'externalAssessments_manage.php')
         ->add(__('Edit External Assessment'));
 
     if (isset($_GET['return'])) {
@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
             $table->addColumn('name', __('Name'));
             $table->addColumn('category', __('Category'));
             $table->addColumn('order', __('Order'));
-                
+
             // ACTIONS
             $table->addActionColumn()
                 ->addParam('gibbonExternalAssessmentID', $gibbonExternalAssessmentID)

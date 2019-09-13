@@ -20,13 +20,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/dashboardSettings.php') == false) {
-    //Acess denied
+    //Access denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Dashboard Settings'));
+    $page->breadcrumbs->add(__('Dashboard Settings'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/dashboardSett
     $staffDashboardDefaultTabTypes = array(
         '' => '',
         'Planner' => __('Planner')
-    );     
+    );
     $setting = getSettingByScope($connection2, 'School Admin', 'staffDashboardDefaultTab', true);
     $row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/dashboardSett
     $studentDashboardDefaultTabTypes = array(
         '' => '',
         'Planner' => __('Planner')
-    );        
+    );
     $setting = getSettingByScope($connection2, 'School Admin', 'studentDashboardDefaultTab', true);
     $row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/dashboardSett
         'Learning Overview' => __('Learning Overview'),
         'Timetable' => __('Timetable'),
         'Activities' => __('Activities')
-    );         
+    );
     $setting = getSettingByScope($connection2, 'School Admin', 'parentDashboardDefaultTab', true);
     $row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));

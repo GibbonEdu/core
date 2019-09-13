@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Grade Scales'));
+    $page->breadcrumbs->add(__('Grade Scales'));
     echo '<p>';
     echo __('Grade scales are used through the Assess modules to control what grades can be entered into the system. Editing some of the inbuilt scales can impact other areas of the system: it is advised to take a backup of the entire system before doing this.');
     echo '</p>';
@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
     $table->addColumn('usage', __('Usage'))->translatable();
     $table->addColumn('active', __('Active'))->format(Format::using('yesNo', ['active']));
     $table->addColumn('numeric', __('Numeric'))->format(Format::using('yesNo', ['numeric']));
-        
+
     // ACTIONS
     $table->addActionColumn()
         ->addParam('gibbonScaleID')

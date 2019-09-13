@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Manage Grade Scales'), 'gradeScales_manage.php')
+        ->add(__('Grade Scales'), 'gradeScales_manage.php')
         ->add(__('Add Grade Scale'));
 
     $editLink = '';

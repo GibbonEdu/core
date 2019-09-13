@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings.ph
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Individual Needs Settings'));
+    $page->breadcrumbs->add(__('Individual Needs Settings'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings.ph
         ->setURL('/modules/School Admin/inSettings_add.php')
         ->displayLabel();
 
-    
+
     $table->addColumn('sequenceNumber', __('Sequence'));
     $table->addColumn('name', __('Name').'<br/>'.Format::small(__('Short Name')))
         ->width('15%')

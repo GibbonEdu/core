@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage.
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Facilities'));
+    $page->breadcrumbs->add(__('Facilities'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage.
     $table->addColumn('capacity', __('Capacity'));
     $table->addColumn('facilities', __('Facilities'))
         ->notSortable()
-        ->format(function($values) { 
+        ->format(function($values) {
             $return = null;
             $return .= ($values['computer'] == 'Y') ? __('Teaching computer').'<br/>':'';
             $return .= ($values['computerStudent'] > 0) ? $values['computerStudent'].' '.__('student computers').'<br/>':'';

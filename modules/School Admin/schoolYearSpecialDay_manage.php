@@ -24,7 +24,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Special Days'));
+    $page->breadcrumbs->add(__('Special Days'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);

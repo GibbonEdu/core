@@ -24,14 +24,14 @@ use Gibbon\Forms\DatabaseFormFactory;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSettings_manage_add.php') == false) {
-    //Acess denied
+    //Access denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Manage Attendance Settings'), 'attendanceSettings.php')
+        ->add(__('Attendance Settings'), 'attendanceSettings.php')
         ->add(__('Add Attendance Code'));
 
     $editLink = '';
@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     $row = $form->addRow();
         $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
         $row->addTextField('name')->required()->maxLength(30);
-    
+
     $row = $form->addRow();
         $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
         $row->addTextField('nameShort')->required()->maxLength(4);

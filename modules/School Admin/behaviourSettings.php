@@ -24,13 +24,13 @@ $enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
 $enableBehaviourLetters = getSettingByScope($connection2, 'Behaviour', 'enableBehaviourLetters');
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSettings.php') == false) {
-    //Acess denied
+    //Access denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Behaviour Settings'));
+    $page->breadcrumbs->add(__('Behaviour Settings'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
