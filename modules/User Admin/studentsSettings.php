@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Students Settings'));
+    $page->breadcrumbs->add(__('Students Settings'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
         if ($values['active'] == 'N') $row->addClass('error');
         return $row;
     });
-    
+
     $table->addColumn('name', __('Name'));
     $table->addColumn('active', __('Active'))->format(Format::using('yesNo', 'active'));
 
@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
 
     $setting = getSettingByScope($connection2, 'Students', 'noteCreationNotification', true);
     $noteCreationNotificationRoles = array(
-        'Tutors' => __('Tutors'), 
+        'Tutors' => __('Tutors'),
         'Tutors & Teachers' => __('Tutors & Teachers')
     );
     $row = $form->addRow();

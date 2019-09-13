@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Manage Students Settings'), 'studentsSettings.php')
+        ->add(__('Students Settings'), 'studentsSettings.php')
         ->add(__('Add Note Category'));
 
     $editLink = '';
@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
     $row = $form->addRow();
         $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
         $row->addTextField('name')->required()->maxLength(30);
-    
+
     $row = $form->addRow();
         $row->addLabel('active', __('Active'));
         $row->addYesNo('active')->required();
