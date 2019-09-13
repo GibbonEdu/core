@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Finance Settings'));
+    $page->breadcrumbs->add(__('Finance Settings'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -83,8 +83,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
         $row->addSelect($setting['name'])->fromArray($invoiceeNameStyle)->selected($setting['value'])->required();
 
     $invoiceNumber = array(
-        'Invoice ID' => __('Invoice ID'), 
-        'Person ID + Invoice ID' => __('Person ID')  . ' + ' . __('Invoice ID'), 
+        'Invoice ID' => __('Invoice ID'),
+        'Person ID + Invoice ID' => __('Person ID')  . ' + ' . __('Invoice ID'),
         'Student ID + Invoice ID' => __('Student ID') . ' + ' . __('Invoice ID')
     );
     $setting = getSettingByScope($connection2, 'Finance', 'invoiceNumber', true);

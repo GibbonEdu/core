@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Planner Settings'));
+    $page->breadcrumbs->add(__('Planner Settings'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);

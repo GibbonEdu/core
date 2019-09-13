@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/resourceSetti
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Resource Settings'));
+    $page->breadcrumbs->add(__('Resource Settings'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
