@@ -23,14 +23,14 @@ use Gibbon\Forms\Form;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAssessments_manage_add.php') == false) {
-    //Access denied
+    //Acess denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('External Assessments'), 'externalAssessments_manage.php')
+        ->add(__('Manage External Assessments'), 'externalAssessments_manage.php')
         ->add(__('Add External Assessment'));
 
     $editLink = '';

@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Grade Scales'), 'gradeScales_manage.php')
+        ->add(__('Manage Grade Scales'), 'gradeScales_manage.php')
         ->add(__('Edit Grade Scale'));
 
     if (isset($_GET['return'])) {
@@ -129,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
             $table->addColumn('descriptor', __('Descriptor'));
             $table->addColumn('sequenceNumber', __('Sequence Number'));
             $table->addColumn('isDefault', __('Is Default?'))->format(Format::using('yesNo', ['isDefault']));
-
+                
             // ACTIONS
             $table->addActionColumn()
                 ->addParam('gibbonScaleID')

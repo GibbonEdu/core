@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Year Groups'), 'yearGroup_manage.php')
+        ->add(__('Manage Year Groups'), 'yearGroup_manage.php')
         ->add(__('Add Year Group'));
 
     $editLink = '';
@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
     $row = $form->addRow();
         $row->addLabel('gibbonPersonIDHOY', __('Head of Year'));
         $row->addSelectStaff('gibbonPersonIDHOY')->placeholder();
-
+        
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();

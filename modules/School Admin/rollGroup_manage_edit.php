@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 
     $page->breadcrumbs
-        ->add(__('Roll Groups'), 'rollGroup_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+        ->add(__('Manage Roll Groups'), 'rollGroup_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
         ->add(__('Edit Roll Group'));
 
     if (isset($_GET['return'])) {

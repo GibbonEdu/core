@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
             $values = $result->fetch();
 
             $page->breadcrumbs
-                ->add(__('Grade Scales'), 'gradeScales_manage.php')
+                ->add(__('Manage Grade Scales'), 'gradeScales_manage.php')
                 ->add(__('Edit Grade Scale'), 'gradeScales_manage_edit.php', ['gibbonScaleID' => $gibbonScaleID])
                 ->add(__('Edit Grade'));
 

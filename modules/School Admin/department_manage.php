@@ -26,12 +26,12 @@ use Gibbon\Domain\Departments\DepartmentGateway;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_manage.php') == false) {
-    //Access denied
+    //Acess denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    $page->breadcrumbs->add(__('Departments'));
+    $page->breadcrumbs->add(__('Manage Departments'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -83,11 +83,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
         ->sortable(false)
         ->format(function($row) use ($departmentGateway) {
             $staff = $departmentGateway->selectStaffByDepartment($row['gibbonDepartmentID'])->fetchAll();
-            return (!empty($staff))
+            return (!empty($staff)) 
                 ? Format::nameList($staff, 'Staff', true, true)
                 : '<i>'.__('None').'</i>';
         });
-
+        
     // ACTIONS
     $table->addActionColumn()
         ->addParam('gibbonDepartmentID')
