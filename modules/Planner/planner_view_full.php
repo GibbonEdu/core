@@ -243,7 +243,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             echo "<p style='text-align: right; margin-top: 10px'>";
                             echo "<span style='font-size: 85%'>".__('For this class:').'</span><br/>';
                             try {
-                                if ($row['role'] == 'Teacher') {
+                                if ($row['role'] == 'Teacher' or $highestAction == 'Lesson Planner_viewOnly') {
                                     $dataPrevious = array('gibbonCourseClassID' => $row['gibbonCourseClassID'], 'date1' => $row['date'], 'date2' => $row['date'], 'timeStart' => $row['timeStart']);
                                     $sqlPrevious = "SELECT gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, 'Teacher' AS role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID AND (date<:date1 OR (date=:date2 AND timeStart<:timeStart)) ORDER BY date DESC, timeStart DESC";
                                 } else {
@@ -270,7 +270,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             echo ' | ';
 
                             try {
-                                if ($row['role'] == 'Teacher') {
+                                if ($row['role'] == 'Teacher' or $highestAction == 'Lesson Planner_viewOnly') {
                                     $dataNext = array('gibbonCourseClassID' => $row['gibbonCourseClassID'], 'date1' => $row['date'], 'date2' => $row['date'], 'timeStart' => $row['timeStart']);
                                     $sqlNext = "SELECT gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, 'Teacher' AS role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID AND (date>:date1 OR (date=:date2 AND timeStart>:timeStart)) ORDER BY date, timeStart";
                                 } else {
