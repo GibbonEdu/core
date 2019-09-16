@@ -36,7 +36,7 @@ class StaffCoverageGateway extends QueryableGateway
     private static $tableName = 'gibbonStaffCoverage';
     private static $primaryKey = 'gibbonStaffCoverageID';
 
-    private static $searchableColumns = ['absence.preferredName', 'absence.surname', 'coverage.preferredName', 'coverage.surname', 'status.preferredName', 'status.surname', 'gibbonStaffCoverage.status'];
+    private static $searchableColumns = ['absence.username', 'absence.preferredName', 'absence.surname', 'coverage.username', 'coverage.preferredName', 'coverage.surname', 'status.preferredName', 'status.surname', 'gibbonStaffCoverage.status'];
 
     /**
      * @param QueryCriteria $criteria
