@@ -22,6 +22,7 @@ use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
 use Gibbon\Services\Format;
+use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
 
 include '../../gibbon.php';
 
@@ -77,6 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
             $gibbonBehaviourID = $connection2->lastInsertID();
 
+            // Attempt to notify tutor(s) and EA(s) of negative behaviour
             if ($type == 'Negative') {
                 try {
                     $dataDetail = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
@@ -101,21 +103,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
                     $event->addScope('gibbonYearGroupID', $rowDetail['gibbonYearGroupID']);
 
+                    // Add notifications for Educational Assistants
+                    if (getSettingByScope($connection2, 'Behaviour', 'notifyEducationalAssistants') == 'Y') {
+                        $educationalAssistants = $container->get(INAssistantGateway::class)->selectINAssistantsByStudent($gibbonPersonID)->fetchAll();
+                        foreach ($educationalAssistants as $ea) {
+                            $event->addRecipient($ea['gibbonPersonID']);
+                        }
+                    }
+
                     // Add event listeners to the notification sender
                     $event->pushNotifications($notificationGateway, $notificationSender);
 
                     // Add direct notifications to roll group tutors
                     if ($event->getEventDetails($notificationGateway, 'active') == 'Y') {
-                        $notificationText = sprintf(__('Someone has created a negative behaviour record for your tutee, %1$s.'), $studentName);
+                        if (getSettingByScope($connection2, 'Behaviour', 'notifyTutors') == 'Y') {
+                            $notificationText = sprintf(__('Someone has created a negative behaviour record for your tutee, %1$s.'), $studentName);
 
-                        if ($rowDetail['gibbonPersonIDTutor'] != null and $rowDetail['gibbonPersonIDTutor'] != $_SESSION[$guid]['gibbonPersonID']) {
-                            $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor'], $notificationText, 'Behaviour', $actionLink);
-                        }
-                        if ($rowDetail['gibbonPersonIDTutor2'] != null and $rowDetail['gibbonPersonIDTutor2'] != $_SESSION[$guid]['gibbonPersonID']) {
-                            $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor2'], $notificationText, 'Behaviour', $actionLink);
-                        }
-                        if ($rowDetail['gibbonPersonIDTutor3'] != null and $rowDetail['gibbonPersonIDTutor3'] != $_SESSION[$guid]['gibbonPersonID']) {
-                            $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor3'], $notificationText, 'Behaviour', $actionLink);
+                            if ($rowDetail['gibbonPersonIDTutor'] != null and $rowDetail['gibbonPersonIDTutor'] != $_SESSION[$guid]['gibbonPersonID']) {
+                                $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor'], $notificationText, 'Behaviour', $actionLink);
+                            }
+                            if ($rowDetail['gibbonPersonIDTutor2'] != null and $rowDetail['gibbonPersonIDTutor2'] != $_SESSION[$guid]['gibbonPersonID']) {
+                                $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor2'], $notificationText, 'Behaviour', $actionLink);
+                            }
+                            if ($rowDetail['gibbonPersonIDTutor3'] != null and $rowDetail['gibbonPersonIDTutor3'] != $_SESSION[$guid]['gibbonPersonID']) {
+                                $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor3'], $notificationText, 'Behaviour', $actionLink);
+                            }
                         }
                     }
                 }
