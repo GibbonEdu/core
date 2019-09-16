@@ -21,6 +21,7 @@ use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\RollGroups\RollGroupGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Services\Format;
+use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
 
 include '../../gibbon.php';
 
@@ -104,7 +105,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     // Send a notification to student's tutors and anyone subscribed to the notification event
                     $studentGateway = $container->get(StudentGateway::class);
                     $rollGroupGateway = $container->get(RollGroupGateway::class);
+                    $inAssistantGateway = $container->get(INAssistantGateway::class);
 
+                    // Send behaviour notifications
                     $student = $studentGateway->selectActiveStudentByPerson($_SESSION[$guid]['gibbonSchoolYearID'], $gibbonPersonID)->fetch();
                     if (!empty($student)) {
                         $studentName = Format::name('', $student['preferredName'], $student['surname'], 'Student', false);
@@ -126,9 +129,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         }
 
                         // Add direct notifications to roll group tutors
-                        $tutors = $rollGroupGateway->selectTutorsByRollGroup($student['gibbonRollGroupID'])->fetchAll();
-                        foreach ($tutors as $tutor) {
-                            $event->addRecipient($tutor['gibbonPersonID']);
+                        if (getSettingByScope($connection2, 'Behaviour', 'notifyTutors') == 'Y') {
+                            $tutors = $rollGroupGateway->selectTutorsByRollGroup($student['gibbonRollGroupID'])->fetchAll();
+                            foreach ($tutors as $tutor) {
+                                $event->addRecipient($tutor['gibbonPersonID']);
+                            }
+                        }
+
+                        // Add notifications for Educational Assistants
+                        if (getSettingByScope($connection2, 'Behaviour', 'notifyEducationalAssistants') == 'Y') {
+                            $educationalAssistants = $inAssistantGateway->selectINAssistantsByStudent($gibbonPersonID)->fetchAll();
+                            foreach ($educationalAssistants as $ea) {
+                                $event->addRecipient($ea['gibbonPersonID']);
+                            }
                         }
 
                         $event->sendNotificationsAsBcc($pdo, $gibbon->session);
