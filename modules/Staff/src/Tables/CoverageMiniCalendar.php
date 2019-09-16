@@ -31,8 +31,8 @@ use DatePeriod;
  *
  * A reusable DataTable class for displaying coverage and availability in a colour-coded calendar view.
  *
- * @version v18
- * @since   v18
+ * @version v19
+ * @since   v19
  */
 class CoverageMiniCalendar
 {
