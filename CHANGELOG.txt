@@ -24,6 +24,7 @@ v19.0.00
 
     Significant Changes
         System: added Year Switcher to staff homepage sidebar
+        Planner: added "View Only" sub-action to Lesson Planner
 
     Security
 
