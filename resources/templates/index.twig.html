@@ -55,10 +55,10 @@ TODO: add template variable details.
 
                         {% block page %}
 
-                        <button id="sidebarToggle" class="hidden lg:block absolute top-0 right-0 m-1 px-2 pb-1 text-gray-500 text-2xl bg-transparent font-sans rounded hover:bg-gray-600 hover:text-white leading-tight">»</button>
-
                         {% if content and not sidebar %}
                             {{ include('navigation.twig.html') }}
+                        {% else %}
+                            <button id="sidebarToggle" class="hidden lg:block absolute top-0 right-0 m-1 px-2 pb-1 text-gray-500 text-2xl bg-transparent font-sans rounded hover:bg-gray-600 hover:text-white leading-tight">»</button>
                         {% endif %}
 
                         {% if page.breadcrumbs %}
