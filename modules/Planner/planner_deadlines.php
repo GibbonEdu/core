@@ -456,7 +456,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
                 }
             }
         }
-    } elseif ($highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses') {
+    } elseif ($highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewOnly') {
         //Get current role category
         $category = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
 
