@@ -291,3 +291,16 @@ input.button, a.button, button.button {
         height: auto !important;
     }
 }
+
+/*
+ --------------------------------------------------------------------------
+  Print Only
+ --------------------------------------------------------------------------
+*/
+
+@media print {
+    .linkTop {
+        display: none;
+        visibility: hidden;
+    }
+}
