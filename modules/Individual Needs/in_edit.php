@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -91,10 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
             }
 
             // Grab educational assistant data
-            $data = array('gibbonPersonIDStudent' => $gibbonPersonID);
-            $sql = "SELECT gibbonPersonIDAssistant, preferredName, surname, comment FROM gibbonINAssistant JOIN gibbonPerson ON (gibbonINAssistant.gibbonPersonIDAssistant=gibbonPerson.gibbonPersonID) WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
-            $result = $pdo->executeQuery($data, $sql);
-            $educationalAssistants = ($result->rowCount() > 0)? $result->fetchAll() : array();
+            $educationalAssistants = $container->get(INAssistantGateway::class)->selectINAssistantsByStudent($gibbonPersonID)->fetchAll();
 
             // Grab IEP data
             $data = array('gibbonPersonID' => $gibbonPersonID);

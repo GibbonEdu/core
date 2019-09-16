@@ -22,6 +22,7 @@ use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
 use Gibbon\Services\Format;
+use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
 
 include '../../gibbon.php';
 
@@ -137,8 +138,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                             }
                         }
 
+                        // Add notifications for Educational Assistants
                         if (getSettingByScope($connection2, 'Behaviour', 'notifyEducationalAssistants') == 'Y') {
-                            
+                            $educationalAssistants = $container->get(INAssistantGateway::class)->selectINAssistantsByStudent($gibbonPersonID)->fetchAll();
+                            foreach ($educationalAssistants as $ea) {
+                                $event->addRecipient($ea['gibbonPersonID']);
+                            }
                         }
 
                         // Send all notifications
