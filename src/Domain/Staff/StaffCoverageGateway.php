@@ -204,6 +204,15 @@ class StaffCoverageGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function deleteCoverageByAbsenceID($gibbonStaffAbsenceID)
+    {
+        $data = ['gibbonStaffAbsenceID' => $gibbonStaffAbsenceID];
+        $sql = "DELETE FROM gibbonStaffCoverage
+                WHERE gibbonStaffCoverage.gibbonStaffAbsenceID = :gibbonStaffAbsenceID";
+
+        return $this->db()->delete($sql, $data);
+    }
+
     protected function getSharedFilterRules()
     {
         return [
