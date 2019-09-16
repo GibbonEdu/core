@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
+use Gibbon\Domain\Staff\StaffCoverageGateway;
+use Gibbon\Domain\Staff\StaffCoverageDateGateway;
 
 $_POST['address'] = '/modules/Staff/absences_manage.php';
 $gibbonStaffAbsenceID = $_GET['gibbonStaffAbsenceID'] ?? '';
@@ -50,7 +52,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_dele
     $absenceDates = $staffAbsenceDateGateway->selectDatesByAbsence($gibbonStaffAbsenceID)->fetchAll();
     $partialFail = false;
 
-    // Delete each date first
+    // First delete any coverage attached to this absence
+    $partialFail &= $container->get(StaffCoverageDateGateway::class)->deleteCoverageDatesByAbsenceID($gibbonStaffAbsenceID);
+    $partialFail &= $container->get(StaffCoverageGateway::class)->deleteCoverageByAbsenceID($gibbonStaffAbsenceID);
+
+    // Delete each absence date
     foreach ($absenceDates as $log) {
         $partialFail &= $staffAbsenceDateGateway->delete($log['gibbonStaffAbsenceDateID']);
     }

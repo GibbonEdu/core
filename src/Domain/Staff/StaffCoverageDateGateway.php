@@ -51,4 +51,14 @@ class StaffCoverageDateGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    public function deleteCoverageDatesByAbsenceID($gibbonStaffAbsenceID)
+    {
+        $data = ['gibbonStaffAbsenceID' => $gibbonStaffAbsenceID];
+        $sql = "DELETE gibbonStaffCoverageDate FROM gibbonStaffCoverageDate
+                JOIN gibbonStaffAbsenceDate ON (gibbonStaffAbsenceDate.gibbonStaffAbsenceDateID=gibbonStaffCoverageDate.gibbonStaffAbsenceDateID)
+                WHERE gibbonStaffAbsenceDate.gibbonStaffAbsenceID = :gibbonStaffAbsenceID";
+
+        return $this->db()->delete($sql, $data);
+    }
 }
