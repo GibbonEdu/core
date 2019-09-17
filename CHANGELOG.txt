@@ -41,6 +41,7 @@ v19.0.00
         Form Groups: added staff-only summary of Year Groups after Form Group listing
         Messenger: added a Copy to Next Year bulk-option for Manage Groups
         Staff: added a Weekly View and Daily View to Substitute Availability report
+        Staff: added a Substitute Information setting for displaying text on My Coverage page
         Students: improved display of Teachers' emails in student profile
         Students: added extra permission allowing editing of all Notes
         Students: adjusted Privacy options to display even if blurb is not set
