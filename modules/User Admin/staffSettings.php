@@ -122,11 +122,16 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
 
     $form->addRow()->addHeading(__('Staff Coverage'));
 
+    $setting = getSettingByScope($connection2, 'Staff', 'substituteInfo', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value']);
+
     $setting = $settingGateway->getSettingByScope('Staff', 'substituteTypes', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setRows(3)->required()->setValue($setting['value']);
-
+    
     $form->addRow()->addHeading(__('Notifications'));
 
     $setting = $settingGateway->getSettingByScope('Staff', 'absenceNotificationGroups', true);

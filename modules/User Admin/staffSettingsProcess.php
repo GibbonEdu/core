@@ -35,6 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
     $settingsToUpdate = [
         'Staff' => [
             'absenceApprovers',
+            'substituteInfo',
             'substituteTypes',
             'urgentNotifications',
             'urgencyThreshold',
