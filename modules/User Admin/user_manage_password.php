@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Domain\User\RoleGateway;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_password.php') == false) {
     //Acess denied
@@ -45,23 +47,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
         echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
-        try {
-            $data = array('gibbonPersonID' => $gibbonPersonID);
-            $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
+        $userGateway = $container->get(UserGateway::class);
+        $values = $userGateway->getByID($gibbonPersonID);
 
-        if ($result->rowCount() != 1) {
+        if (empty($values)) {
             echo "<div class='error'>";
             echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!
-            $values = $result->fetch();
-
             $roleGateway = $container->get(RoleGateway::class);
             $role = $roleGateway->getRoleByID($values['gibbonRoleIDPrimary']);
             $userRoles = $roleGateway->selectAllRolesByPerson($_SESSION[$guid]['gibbonPersonID'])->fetchGroupedUnique();
@@ -119,6 +113,47 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
             $row = $form->addRow();
                 $row->addFooter();
                 $row->addSubmit();
+
+            echo $form->getOutput();
+            echo '<br/>';
+
+            // LOGIN TROUBLESHOOTING
+            $trueIcon = "<img title='" . __('Yes'). "' src='".$gibbon->session->get('absoluteURL')."/themes/".$gibbon->session->get('gibbonThemeName')."/img/iconTick.png' class='w-5 h-5 mr-4 float-right' />";
+            $falseIcon = "<img title='" . __('No'). "' src='".$gibbon->session->get('absoluteURL')."/themes/".$gibbon->session->get('gibbonThemeName')."/img/iconCross.png' class='w-5 h-5 mr-4 float-right' />";
+
+            $form = Form::create('loginAccess', "")->setClass('smallIntBorder w-full');
+            $form->setTitle(__('Login Troubleshooting'));
+
+            $statusFull = $values['status'] == 'Full';
+            $canLoginUser = $values['canLogin'] == 'Y';
+            $canLoginRole = $role['canLoginRole'] == 'Y';
+            $failedLogins = $values['failCount'] < 3;
+            $emailUnique = $userGateway->unique($values, ['email'], $gibbonPersonID);
+
+            $row = $form->addRow();
+                $row->addLabel('statusLabel', __('User').': '.__('Status'));
+                $row->addTextField('status')->setValue($values['status'])->readonly();
+                $row->addContent($statusFull? $trueIcon : $falseIcon);
+
+            $row = $form->addRow();
+                $row->addLabel('failedLoginsLabel', __('User').': '.__('Failed Logins'));
+                $row->addTextField('failedLogins')->setValue($values['failCount'])->readonly();
+                $row->addContent($failedLogins? $trueIcon : $falseIcon);
+
+            $row = $form->addRow();
+                $row->addLabel('canLoginLabel', __('User').': '.__('Can Login'));
+                $row->addTextField('canLogin')->setValue($canLoginUser ? __('Yes') : __('No'))->readonly();
+                $row->addContent($canLoginUser? $trueIcon : $falseIcon);
+
+            $row = $form->addRow();
+                $row->addLabel('canLoginRoleLabel', __('Role').': '.__('Can Login'));
+                $row->addTextField('canLoginRole')->setValue(($canLoginRole ? __('Yes') : __('No')).' - '.$role['name'])->readonly();
+                $row->addContent($canLoginRole? $trueIcon : $falseIcon);
+
+            $row = $form->addRow();
+                $row->addLabel('canLoginRoleLabel', __('Email').': '.__('Must be unique'));
+                $row->addTextField('canLoginRole')->setValue($values['email'])->setClass('w-64')->readonly();
+                $row->addContent($emailUnique? $trueIcon : $falseIcon);
 
             echo $form->getOutput();
         }
