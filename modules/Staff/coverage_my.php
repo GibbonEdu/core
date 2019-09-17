@@ -60,6 +60,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
     if (count($todaysCoverage) > 0) {
         $page->write('<h2>'.__("Today's Coverage").'</h2>');
 
+        $substituteInfo = getSettingByScope($connection2, 'Staff', 'substituteInfo');
+        if (!empty($substituteInfo)) {
+            $page->write('<p>'.$substituteInfo.'</p>');
+        }
+
         foreach ($todaysCoverage as $coverage) {
             $status = Format::dateRangeReadable($coverage['dateStart'], $coverage['dateEnd']).' - ';
             $status .= $coverage['allDay'] == 'Y'
