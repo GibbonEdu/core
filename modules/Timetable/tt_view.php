@@ -35,22 +35,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        $gibbonPersonID = null;
-        if (isset($_GET['gibbonPersonID'])) {
-            $gibbonPersonID = $_GET['gibbonPersonID'];
-        }
-        $search = null;
-        if (isset($_GET['search'])) {
-            $search = $_GET['search'];
-        }
-        $allUsers = null;
-        if (isset($_GET['allUsers'])) {
-            $allUsers = $_GET['allUsers'];
-        }
-        $gibbonTTID = null;
-        if (isset($_GET['gibbonTTID'])) {
-            $gibbonTTID = $_GET['gibbonTTID'];
-        }
+        $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+        $search = $_GET['search'] ?? '';
+        $allUsers = $_GET['allUsers'] ?? '';
+        $gibbonTTID = $_GET['gibbonTTID'] ?? '';
+
+
+        $canViewAllTimetables = $highestAction == 'View Timetable by Person' || $highestAction == 'View Timetable by Person_allYears';
 
         try {
             if ($highestAction == 'View Timetable by Person_myChildren') {
@@ -66,8 +57,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
                     AND gibbonPerson.gibbonPersonID=:gibbonPersonID2
                     AND gibbonPerson.status='Full' AND gibbonFamilyAdult.childDataAccess='Y'
                     GROUP BY gibbonPerson.gibbonPersonID";
-            } elseif ($highestAction == 'View Timetable by Person' || $highestAction == 'View Timetable by Person_allYears') {
-                if ($allUsers == 'on' && $gibbon->session->get('gibbonRoleIDCurrentCategory') == 'Staff') {
+            } else {
+                if ($allUsers == 'on' && $canViewAllTimetables && $gibbon->session->get('gibbonRoleIDCurrentCategory') == 'Staff') {
                     $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
                     $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, title, image_240, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, 'Student' AS type, gibbonRoleIDPrimary FROM gibbonPerson LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) 
                     WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName";
