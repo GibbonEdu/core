@@ -51,27 +51,36 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
         $userReport = array();
         $adminReport = array( 'rollGroup' => array(), 'classes' => array() );
 
-        $enabledByRollGroup = getSettingByScope($connection2, 'Attendance', 'attendanceCLINotifyByRollGroup');
+        $enabledByClass = getSettingByScope($connection2, 'Attendance', 'attendanceCLINotifyByClass');
         $additionalUsersList = getSettingByScope($connection2, 'Attendance', 'attendanceCLIAdditionalUsers');
 
-        if ($enabledByRollGroup != 'Y') {
+        if ($enabledByClass != 'Y') {
             die('Attendance CLI cancelled: Notifications not enabled in Attendance Settings.');
         }
 
-        //Produce array of attendance data ------------------------------------------------------------------------------------------------------
-
-        if ($enabledByRollGroup == 'Y') {
+        //Produce array of attendance data for Classes ------------------------------------------------------------------------------------------------------
+        if ($enabledByClass == 'Y') {
             try {
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date' => $currentDate, 'time' => date("H:i:s"));
 
-                // Looks for roll groups with attendance='Y', also grabs primary tutor name
-                $sql = "SELECT gibbonRollGroupID, gibbonRollGroup.name, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPerson.preferredName, gibbonPerson.surname, (SELECT count(*) FROM gibbonStudentEnrolment WHERE gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AS studentCount
-                FROM gibbonRollGroup
-                JOIN gibbonPerson ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID)
-                WHERE gibbonSchoolYearID=:gibbonSchoolYearID
-                AND attendance = 'Y'
+                // Looks for only courses that are scheduled on the current day and have attendance='Y', also grabs tutor name
+                $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.name as class, gibbonCourse.name as course, gibbonCourse.nameShort as courseShort,  gibbonCourseClassPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname, (SELECT count(*) FROM gibbonCourseClassPerson JOIN gibbonPerson AS student ON (gibbonCourseClassPerson.gibbonPersonID=student.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND student.status='Full' AND (student.dateStart IS NULL OR student.dateStart<=:date) AND (student.dateEnd IS NULL OR student.dateEnd>=:date)) AS studentCount
+                FROM gibbonCourseClass
+                JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+                JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID)
+                JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)
+                LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                WHERE gibbonTTDayDate.date=:date
+                AND gibbonTTColumnRow.timeStart<=:time
+                AND gibbonCourseClassPerson.role='Teacher'
+                AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID
+                AND gibbonCourseClass.attendance='Y'
+                AND gibbonTTDayRowClassException.gibbonTTDayRowClassExceptionID IS NULL
                 AND gibbonPerson.status='Full'
-                ORDER BY LENGTH(gibbonRollGroup.name), gibbonRollGroup.name";
+                ORDER BY gibbonPerson.surname, gibbonCourse.nameShort, gibbonCourseClass.nameShort";
 
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
@@ -79,57 +88,63 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                 $partialFail = true;
             }
 
-            // Proceed if we have attendance-able Roll Groups
+            // Proceed if we have attendance-able Classes
             if ($result->rowCount() > 0) {
 
                 try {
                     $data = array('date' => $currentDate);
-                    $sql = 'SELECT gibbonRollGroupID FROM gibbonAttendanceLogRollGroup WHERE date=:date';
+                    $sql = 'SELECT gibbonCourseClassID FROM gibbonAttendanceLogCourseClass WHERE date=:date';
                     $resultLog = $connection2->prepare($sql);
                     $resultLog->execute($data);
                 } catch (PDOException $e) {
                     $partialFail = true;
                 }
 
-                // Gather the current Roll Group logs for the day
+                // Gather the current Class logs for the day
                 $log = array();
                 while ($row = $resultLog->fetch()) {
-                    $log[$row['gibbonRollGroupID']] = true;
+                    $log[$row['gibbonCourseClassID']] = true;
                 }
 
                 while ($row = $result->fetch()) {
-                    // Skip roll groups with no students
+                    // Skip classes with no students
                     if ($row['studentCount'] <= 0) continue;
 
                     // Check for a current log
-                    if (isset($log[$row['gibbonRollGroupID']]) == false) {
+                    if (isset($log[$row['gibbonCourseClassID']]) == false) {
 
-                        $rollGroupInfo = array( 'gibbonRollGroupID' => $row['gibbonRollGroupID'], 'name' => $row['name'] );
+                        $className = $row['course'].' ('.$row['courseShort'].'.'.$row['class'].')';
+                        $classInfo = array( 'gibbonCourseClassID' => $row['gibbonCourseClassID'], 'name' => $className );
 
                         // Compile info for Admin report
-                        $adminReport['rollGroup'][] = '<b>'.$row['name'] .'</b> - '. $row['preferredName'].' '.$row['surname'];
+                        $adminReport['classes'][ $row['preferredName'].' '.$row['surname'] ][] = $className;
 
                         // Compile info for User reports
-                        if ($row['gibbonPersonIDTutor'] != '') {
-                            $userReport[ $row['gibbonPersonIDTutor'] ]['rollGroup'][] = $rollGroupInfo;
-                        }
-                        if ($row['gibbonPersonIDTutor2'] != '') {
-                            $userReport[ $row['gibbonPersonIDTutor2'] ]['rollGroup'][] = $rollGroupInfo;
-                        }
-                        if ($row['gibbonPersonIDTutor3'] != '') {
-                            $userReport[ $row['gibbonPersonIDTutor3'] ]['rollGroup'][] = $rollGroupInfo;
+                        if ($row['gibbonPersonID'] != '') {
+                            $userReport[ $row['gibbonPersonID'] ]['classes'][] = $classInfo;
                         }
                     }
                 }
 
-                // Use the roll group counts to generate a report
-                if ( isset($adminReport['rollGroup']) && count($adminReport['rollGroup']) > 0) {
-                    $reportInner = implode('<br>', $adminReport['rollGroup']);
+                // Use the class counts to generate reports
+                if ( isset($adminReport['classes']) && count($adminReport['classes']) > 0) {
+                    $reportInner = '';
+
+                    // Output the reports grouped by teacher
+                    foreach ($adminReport['classes'] as $teacherName => $classes) {
+                        $reportInner .= '<b>' . $teacherName;
+                        $reportInner .= (count($classes) > 1)? ' ('.count($classes).')</b><br/>' : '</b><br/>';
+                        foreach ($classes as $className) {
+                            $reportInner .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $className .'<br/>';
+                        }
+                        $reportInner .= '<br>';
+                    }
+
                     $report .= '<br/><br/>';
-                    $report .= sprintf(__('%1$s form groups have not been registered today  (%2$s).'), count($adminReport['rollGroup']), dateConvertBack($guid, $currentDate) ).'<br/><br/>'.$reportInner;
+                    $report .= sprintf(__('%1$s classes have not been registered today (%2$s).'), count($adminReport['classes']), dateConvertBack($guid, $currentDate)).'<br/><br/>'.$reportInner;
                 } else {
                     $report .= '<br/><br/>';
-                    $report .= sprintf(__('All form groups have been registered today (%1$s).'), dateConvertBack($guid, $currentDate));
+                    $report .= sprintf(__('All classes have been registered today (%1$s).'), dateConvertBack($guid, $currentDate));
                 }
             }
         }
@@ -147,15 +162,15 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
 
                 $notificationText = __('You have not taken attendance yet today. Please do so as soon as possible.');
 
-                if ($enabledByRollGroup == 'Y') {
-                    // Output the roll groups the particular user is a part of
-                    if ( isset($items['rollGroup']) && count($items['rollGroup']) > 0) {
+                if ($enabledByClass == 'Y') {
+                    // Output the classes the particular user is a part of
+                    if ( isset($items['classes']) && count($items['classes']) > 0) {
                         $notificationText .= '<br/><br/>';
-                        $notificationText .= '<b>'.__('Roll Group').':</b><br/>';
-                        foreach ($items['rollGroup'] as $rollGroup) {
-                            $notificationText .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $rollGroup['name'] .'<br/>';
+                        $notificationText .= '<b>'.__('Classes').':</b><br/>';
+                        foreach ($items['classes'] as $class) {
+                            $notificationText .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $class['name'] .'<br/>';
                         }
-
+                        $notificationText .= '<br/>';
                     }
                 }
 
@@ -189,7 +204,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
         }
 
         $event->setNotificationText(__('An Attendance CLI script has run.').' '.$report);
-        $event->setActionLink('/index.php?q=/modules/Attendance/report_rollGroupsNotRegistered_byDate.php');
+        $event->setActionLink('/index.php?q=/modules/Attendance/report_courseClassesNotRegistered_byDate.php');
 
         // Add admin, then push the event to the notification sender
         $event->addRecipient($_SESSION[$guid]['organisationAdministrator']);
