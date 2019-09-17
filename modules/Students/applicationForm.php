@@ -758,7 +758,7 @@ if ($proceed == false) {
     $languageOptionsBlurb = getSettingByScope($connection2, 'Application Form', 'languageOptionsBlurb');
     $languageOptionsLanguageList = getSettingByScope($connection2, 'Application Form', 'languageOptionsLanguageList');
 
-    if ($languageOptionsActive == 'Y' && $languageOptionsLanguageList != '') {
+    if ($languageOptionsActive == 'Y' && ($languageOptionsBlurb != '' OR $languageOptionsLanguageList != '')) {
 
         $heading = $form->addRow()->addHeading(__('Language Selection'));
 
@@ -766,16 +766,18 @@ if ($proceed == false) {
             $heading->append($languageOptionsBlurb)->wrap('<p>','</p>');
         }
 
-        $languages = array_map(function($item) { return trim($item); }, explode(',', $languageOptionsLanguageList));
+        if ($languageOptionsLanguageList != '') {
+            $languages = array_map(function($item) { return trim($item); }, explode(',', $languageOptionsLanguageList));
 
-        $row = $form->addRow();
-            $row->addLabel('languageChoice', __('Language Choice'))->description(__('Please choose preferred additional language to study.'));
-            $row->addSelect('languageChoice')->fromArray($languages)->required()->placeholder();
+            $row = $form->addRow();
+                $row->addLabel('languageChoice', __('Language Choice'))->description(__('Please choose preferred additional language to study.'));
+                $row->addSelect('languageChoice')->fromArray($languages)->required()->placeholder();
 
-        $row = $form->addRow();
-            $column = $row->addColumn();
-            $column->addLabel('languageChoiceExperience', __('Language Choice Experience'))->description(__('Has the applicant studied the selected language before? If so, please describe the level and type of experience.'));
-            $column->addTextArea('languageChoiceExperience')->required()->setRows(5)->setClass('fullWidth');
+            $row = $form->addRow();
+                $column = $row->addColumn();
+                $column->addLabel('languageChoiceExperience', __('Language Choice Experience'))->description(__('Has the applicant studied the selected language before? If so, please describe the level and type of experience.'));
+                $column->addTextArea('languageChoiceExperience')->required()->setRows(5)->setClass('fullWidth');
+        }
     }
 
     // SCHOLARSHIPS
