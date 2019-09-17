@@ -141,7 +141,7 @@ class StudentGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function queryStudentsAndTeachersBySchoolYear(QueryCriteria $criteria, $gibbonSchoolYearID) 
+    public function queryStudentsAndTeachersBySchoolYear(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonRoleIDCurrentCategory) 
     {
         $query = $this
             ->newQuery()
@@ -159,7 +159,7 @@ class StudentGateway extends QueryableGateway
             
             ->groupBy(['gibbonPerson.gibbonPersonID']);
 
-        if (!$criteria->hasFilter('all')) {
+        if (!$criteria->hasFilter('all') || $gibbonRoleIDCurrentCategory != 'Staff') {
             $query->where("(gibbonStudentEnrolment.gibbonStudentEnrolmentID IS NOT NULL OR (gibbonStaff.gibbonStaffID IS NOT NULL AND gibbonRole.category='Staff') )")
                   ->where("gibbonPerson.status = 'Full'")
                   ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :today)')

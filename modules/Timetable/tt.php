@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
 
         } else if ($canViewAllTimetables) {
 
-            $users = $studentGateway->queryStudentsAndTeachersBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
+            $users = $studentGateway->queryStudentsAndTeachersBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID'], $gibbon->session->get('gibbonRoleIDCurrentCategory'));
 
             $table = DataTable::createPaginated('timetables', $criteria);
 

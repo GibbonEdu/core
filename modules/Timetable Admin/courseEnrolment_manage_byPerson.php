@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         echo __('View');
         echo '</h3>';
             
-        $users = $studentGateway->queryStudentsAndTeachersBySchoolYear($criteria, $gibbonSchoolYearID);
+        $users = $studentGateway->queryStudentsAndTeachersBySchoolYear($criteria, $gibbonSchoolYearID, $gibbon->session->get('gibbonRoleIDCurrentCategory'));
 
         // DATA TABLE
         $table = DataTable::createPaginated('courseEnrolmentByPerson', $criteria);
