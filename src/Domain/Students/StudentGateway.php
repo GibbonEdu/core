@@ -159,9 +159,7 @@ class StudentGateway extends QueryableGateway
             
             ->groupBy(['gibbonPerson.gibbonPersonID']);
 
-        if ($criteria->hasFilter('all')) {
-            $query->where("(gibbonPerson.status = 'Full' OR gibbonPerson.status = 'Expected')");
-        } else {
+        if (!$criteria->hasFilter('all')) {
             $query->where("(gibbonStudentEnrolment.gibbonStudentEnrolmentID IS NOT NULL OR (gibbonStaff.gibbonStaffID IS NOT NULL AND gibbonRole.category='Staff') )")
                   ->where("gibbonPerson.status = 'Full'")
                   ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :today)')

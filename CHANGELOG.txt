@@ -45,6 +45,7 @@ v19.0.00
         Students: added extra permission allowing editing of all Notes
         Students: adjusted Privacy options to display even if blurb is not set
         Timetable Admin: included student reportable flag in student enrolment
+        Timetable Admin: enable users who can search All Users to also see Left students
         User Admin: increased Student ID field max length to 15
         User Admin: added a View Role page in Manage Roles to display all actions and users per role
 
