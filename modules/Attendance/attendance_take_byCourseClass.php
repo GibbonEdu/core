@@ -245,7 +245,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                                 $result = $pdo->executeQuery($data, $sql);
 
                                 $log = ($result->rowCount() > 0) ? $result->fetch() : $log;
-                                $countLogs += $result->rowCount();
+                                if ($log['context'] == 'Roll Group') {
+                                    $countLogs += 1;
+                                }
                             }
 
                             $students[$key]['cellHighlight'] = '';
