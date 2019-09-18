@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         echo __('View');
         echo '</h3>';
             
-        $users = $studentGateway->queryStudentsAndTeachersBySchoolYear($criteria, $gibbonSchoolYearID);
+        $users = $studentGateway->queryStudentsAndTeachersBySchoolYear($criteria, $gibbonSchoolYearID, $gibbon->session->get('gibbonRoleIDCurrentCategory'));
 
         // DATA TABLE
         $table = DataTable::createPaginated('courseEnrolmentByPerson', $criteria);
@@ -115,14 +115,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         $table->modifyRows($studentGateway->getSharedUserRowHighlighter());
 
         $table->addMetaData('filterOptions', [
-            'all:on'          => __('All Users'),
             'role:student'    => __('Role').': '.__('Student'),
             'role:staff'      => __('Role').': '.__('Staff'),
         ]);
 
         if ($criteria->hasFilter('all')) {
             $table->addMetaData('filterOptions', [
+                'all:on'          => __('All Users'),
                 'status:full'     => __('Status').': '.__('Full'),
+                'status:left'     => __('Status').': '.__('Left'),
                 'status:expected' => __('Status').': '.__('Expected'),
                 'date:starting'   => __('Before Start Date'),
                 'date:ended'      => __('After End Date'),
