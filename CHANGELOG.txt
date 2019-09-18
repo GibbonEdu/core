@@ -48,6 +48,7 @@ v19.0.00
         Students: adjusted Privacy options to display even if blurb is not set
         Students: adjusted Application Form to allow showing of Language Selection blurb without fields
         Timetable Admin: included student reportable flag in student enrolment
+        Timetable Admin: enable users who can search All Users to also see Left students
         User Admin: increased Student ID field max length to 15
         User Admin: added a View Role page in Manage Roles to display all actions and users per role
         User Admin: added a Login Troubleshooting section to Reset Password page
