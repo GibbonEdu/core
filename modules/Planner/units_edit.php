@@ -265,7 +265,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                 $row->addAlert(__('You are currently not logged into the current year and/or are looking at units in another year, and so you cannot access your classes. Please log back into the current school year, and look at units in the current year.'), 'warning');
                         }
 
-                        $form->addHiddenValue('classCount', $classCount);
+                        $form->addHiddenValue('classCount', $classCount ?? 0);
 
                         //UNIT OUTLINE
                         $form->addRow()->addHeading(__('Unit Outline'));
