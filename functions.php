@@ -1010,7 +1010,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
     $alerts = [];
 
     $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
-    if ($highestAction == 'View Student Profile_full' or $highestAction == 'View Student Profile_fullNoNotes') {
+    if ($highestAction == 'View Student Profile_full' or $highestAction == 'View Student Profile_fullNoNotes' or $highestAction == 'View Student Profile_fullEditAllNotes') {
 
         // Individual Needs
         try {
