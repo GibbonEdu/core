@@ -804,8 +804,8 @@ body .ui-tooltip {
 .ui-widget select,
 .ui-widget textarea,
 .ui-widget button {
-	font-family: Arial,sans-serif;
-	font-size: 1em;
+	/* font-family: Arial,sans-serif; */
+	/* font-size: 1em; */
 }
 .ui-widget-content {
 	border: 1px solid #eeeeee;
