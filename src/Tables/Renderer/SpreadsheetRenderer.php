@@ -156,7 +156,7 @@ class SpreadsheetRenderer implements RendererInterface
 
                     $cellContent = $this->stripTags($column->getOutput($data));
 
-                    $sheet->setCellValue( $alpha.$rowCount, $cellContent);
+                    $sheet->setCellValueExplicit( $alpha.$rowCount, $cellContent, \PHPExcel_Cell_DataType::TYPE_STRING);
                     $sheet->getStyle($alpha.$rowCount)->applyFromArray($rowStyle);
 
                     $cellStyle = null;
@@ -166,7 +166,7 @@ class SpreadsheetRenderer implements RendererInterface
                     else if ($rowCount % 2 != 0) $cellStyle = $rowStripeStyle;
 
                     if (!empty($cellStyle)) $sheet->getStyle($alpha.$rowCount)->applyFromArray($cellStyle);
-                    
+
 
                     $cellCount++;
                 }
