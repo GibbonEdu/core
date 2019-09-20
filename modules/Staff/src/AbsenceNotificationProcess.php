@@ -75,10 +75,8 @@ class AbsenceNotificationProcess extends BackgroundProcess
             $recipients = array_merge($recipients, $groupRecipients);
         }
 
-        // Add the absent person, if this was created by someone else
-        if ($absence['gibbonPersonID'] != $absence['gibbonPersonIDCreator']) {
-            $recipients[] = $absence['gibbonPersonID'];
-        }
+        // Add the absent person
+        $recipients[] = $absence['gibbonPersonID'];
 
         if ($sent = $this->messageSender->send($message, $recipients, $absence['gibbonPersonID'])) {
             $this->staffAbsenceGateway->update($gibbonStaffAbsenceID, [
