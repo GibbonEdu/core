@@ -66,12 +66,13 @@ class RollGroupGateway extends QueryableGateway
     public function selectRollGroupsBySchoolYear($gibbonSchoolYearID)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'today' => date('Y-m-d'));
-        $sql = "SELECT gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.name, gibbonRollGroup.nameShort, gibbonSpace.name AS space, gibbonRollGroup.website, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, COUNT(DISTINCT students.gibbonPersonID) as students, (SELECT sequenceNumber FROM gibbonYearGroup WHERE gibbonYearGroup.gibbonYearGroupID=students.gibbonYearGroupID) as sequenceNumber
+        $sql = "SELECT gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.name, gibbonRollGroup.nameShort, gibbonSpace.name AS space, gibbonRollGroup.website, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, COUNT(DISTINCT students.gibbonPersonID) as students, (SELECT MAX(sequenceNumber) FROM gibbonYearGroup JOIN gibbonStudentEnrolment ON (gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID) WHERE gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) as sequenceNumber
                 FROM gibbonRollGroup 
                 LEFT JOIN (
-                    SELECT gibbonStudentEnrolment.gibbonPersonID, gibbonStudentEnrolment.gibbonRollGroupID, gibbonStudentEnrolment.gibbonYearGroupID FROM gibbonStudentEnrolment 
+                    SELECT gibbonStudentEnrolment.gibbonPersonID, gibbonStudentEnrolment.gibbonRollGroupID FROM gibbonStudentEnrolment 
                     JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
                     WHERE status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)
+                    ORDER BY gibbonStudentEnrolment.gibbonYearGroupID
                 ) AS students ON (students.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
                 LEFT JOIN gibbonSpace ON (gibbonRollGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID) 
                 WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID 
