@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Students\StudentNoteGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -1863,90 +1864,65 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
 
-                                echo "<div class='linkTop'>";
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/student_view_details_notes_add.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&search=$search&allStudents=$allStudents&subpage=Notes&category=$category'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-                                echo '</div>';
+                                $notes = $pdo->select($sql, $data);
+                                $noteGateway = $container->get(StudentNoteGateway::class);
 
-                                if ($result->rowCount() < 1) {
-                                    echo "<div class='error'>";
-                                    echo __('There are no records to display.');
-                                    echo '</div>';
-                                } else {
-                                    echo "<table cellspacing='0' style='width: 100%'>";
-                                    echo "<tr class='head'>";
-                                    echo '<th>';
-                                    echo __('Date').'<br/>';
-                                    echo "<span style='font-size: 75%; font-style: italic'>".__('Time').'</span>';
-                                    echo '</th>';
-                                    echo '<th>';
-                                    echo __('Category');
-                                    echo '</th>';
-                                    echo '<th>';
-                                    echo __('Title').'<br/>';
-                                    echo "<span style='font-size: 75%; font-style: italic'>".__('Overview').'</span>';
-                                    echo '</th>';
-                                    echo '<th>';
-                                    echo __('Note Taker');
-                                    echo '</th>';
-                                    echo '<th>';
-                                    echo __('Actions');
-                                    echo '</th>';
-                                    echo '</tr>';
+                                // DATA TABLE
+                                $table = DataTable::createPaginated('studentNotes', $noteGateway->newQueryCriteria());
 
-                                    $count = 0;
-                                    $rowNum = 'odd';
-                                    while ($row = $result->fetch()) {
-                                        if ($count % 2 == 0) {
-                                            $rowNum = 'even';
-                                        } else {
-                                            $rowNum = 'odd';
-                                        }
-                                        ++$count;
+                                $table->addExpandableColumn('note');
 
-                                        //COLOR ROW BY STATUS!
-                                        echo "<tr class=$rowNum>";
-                                        echo '<td>';
-                                        echo dateConvertBack($guid, substr($row['timestamp'], 0, 10)).'<br/>';
-                                        echo "<span style='font-size: 75%; font-style: italic'>".substr($row['timestamp'], 11, 5).'</span>';
-                                        echo '</td>';
-                                        echo '<td>';
-                                        echo $row['category'];
-                                        echo '</td>';
-                                        echo '<td>';
-                                        if ($row['title'] == '') {
-                                            echo '<i>'.__('NA').'</i><br/>';
-                                        } else {
-                                            echo $row['title'].'<br/>';
+                                $table->addHeaderAction('add', __('Add'))
+                                    ->setURL('/modules/Students/student_view_details_notes_add.php')
+                                    ->addParam('gibbonPersonID', $gibbonPersonID)
+                                    ->addParam('allStudents', $allStudents)
+                                    ->addParam('search', $search)
+                                    ->addParam('subpage', 'Notes')
+                                    ->addParam('category', $category ?? '')
+                                    ->displayLabel();
+
+                                $table->addColumn('date', __('Date'))
+                                    ->description(__('Time'))
+                                    ->format(function ($note) {
+                                        return Format::date($note['timestamp']).'<br/>'.Format::small(Format::time($note['timestamp']));
+                                    });
+
+                                $table->addColumn('category', __('Category'))
+                                    ->translatable();
+
+                                $table->addColumn('title', __('Title'))
+                                    ->description(__('Overview'))
+                                    ->format(function ($note) {
+                                        $title = !empty($note['title'])? $note['title'] : __('N/A');
+                                        $overview = substr(strip_tags($note['note']), 0, 60);
+
+                                        return $title.'<br/><span style="font-size: 75%; font-style: italic">'.$overview.'</span>';
+                                    });
+
+                                $table->addColumn('noteTaker', __('Note Taker'))
+                                      ->format(Format::using('name', ['', 'preferredName', 'surname', 'Staff', false, true]));
+                                    
+                                // ACTIONS
+                                $table->addActionColumn()
+                                    ->addParam('gibbonStudentNoteID')
+                                    ->addParam('gibbonPersonID', $gibbonPersonID)
+                                    ->addParam('allStudents', $allStudents)
+                                    ->addParam('search', $search)
+                                    ->addParam('subpage', 'Notes')
+                                    ->addParam('category', $category ?? '')
+                                    ->format(function ($note, $actions) use ($highestAction, $guid) {
+                                        if ($note['gibbonPersonIDCreator'] == $_SESSION[$guid]['gibbonPersonID'] || $highestAction == "View Student Profile_fullEditAllNotes") {
+                                            $actions->addAction('edit', __('Edit'))
+                                                    ->setURL('/modules/Students/student_view_details_notes_edit.php');
                                         }
-                                        echo "<span style='font-size: 75%; font-style: italic'>".substr(strip_tags($row['note']), 0, 60).'</span>';
-                                        echo '</td>';
-                                        echo '<td>';
-                                        echo Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
-                                        echo '</td>';
-                                        echo '<td>';
-                                        if ($row['gibbonPersonIDCreator'] == $_SESSION[$guid]['gibbonPersonID'] || $highestAction == "View Student Profile_fullEditAllNotes") {
-                                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/student_view_details_notes_edit.php&search='.$search.'&gibbonStudentNoteID='.$row['gibbonStudentNoteID']."&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Notes&category=$category'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+
+                                        if ($highestAction == "View Student Profile_fullEditAllNotes") {
+                                            $actions->addAction('delete', __('Delete'))
+                                                    ->setURL('/modules/Students/student_view_details_notes_delete.php');
                                         }
-                                        echo "<script type='text/javascript'>";
-                                        echo '$(document).ready(function(){';
-                                        echo "\$(\".note-$count\").hide();";
-                                        echo "\$(\".show_hide-$count\").fadeIn(1000);";
-                                        echo "\$(\".show_hide-$count\").click(function(){";
-                                        echo "\$(\".note-$count\").fadeToggle(1000);";
-                                        echo '});';
-                                        echo '});';
-                                        echo '</script>';
-                                        echo "<a title='".__('View Description')."' class='show_hide-$count' onclick='return false;' href='#'><img title='".__('View Details')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png'/></a></span><br/>";
-                                        echo '</td>';
-                                        echo '</tr>';
-                                        echo "<tr class='note-$count' id='note-$count'>";
-                                        echo '<td colspan=6>';
-                                        echo $row['note'];
-                                        echo '</td>';
-                                        echo '</tr>';
-                                    }
-                                    echo '</table>';
-                                }
+                                    });
+
+                                echo $table->render($notes->toDataSet());
                             }
                         }
                     } elseif ($subpage == 'Attendance') {
