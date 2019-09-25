@@ -69,6 +69,7 @@ v19.0.00
         Staff: fixed Cancel Coverage button not available for future coverage
         Staff: fixed Delete Staff Absence to also delete any related coverage
         Students: adjusted official name size in ID card for long-named students
+        Students: fixed timetable chooser not working on student profile pages
 
 v18.0.01
 --------
