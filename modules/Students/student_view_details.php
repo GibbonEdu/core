@@ -678,7 +678,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             if (isset($_POST['ttDate'])) {
                                 $ttDate = dateConvertToTimestamp(dateConvert($guid, $_POST['ttDate']));
                             }
-                            $tt = renderTT($guid, $connection2, $gibbonPersonID, '', false, $ttDate, '/modules/Students/student_view_details.php', "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents#timetable");
+                            $tt = renderTT($guid, $connection2, $gibbonPersonID, $_GET['gibbonTTID'] ?? '', false, $ttDate, '/modules/Students/student_view_details.php', "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents#timetable");
                             if ($tt != false) {
                                 echo $tt;
                             } else {
@@ -2616,7 +2616,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             if (isset($_POST['ttDate'])) {
                                 $ttDate = dateConvertToTimestamp(dateConvert($guid, $_POST['ttDate']));
                             }
-                            $tt = renderTT($guid, $connection2, $gibbonPersonID, '', false, $ttDate, '/modules/Students/student_view_details.php', "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Timetable");
+                            $tt = renderTT($guid, $connection2, $gibbonPersonID, $_GET['gibbonTTID'] ?? '', false, $ttDate, '/modules/Students/student_view_details.php', "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Timetable");
                             if ($tt != false) {
                                 echo $tt;
                             } else {
