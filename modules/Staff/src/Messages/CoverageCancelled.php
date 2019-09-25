@@ -45,16 +45,20 @@ class CoverageCancelled extends Message
 
     public function getText() : string
     {
+        $name = !empty($this->coverage['preferredNameAbsence'])
+            ? Format::name($this->coverage['titleAbsence'], $this->coverage['preferredNameAbsence'], $this->coverage['surnameAbsence'], 'Staff', false, true)
+            : Format::name($this->coverage['titleStatus'], $this->coverage['preferredNameStatus'], $this->coverage['surnameStatus'], 'Staff', false, true);
+            
         return __("{name}'s coverage request for {date} has been cancelled.", [
             'date' => Format::dateRangeReadable($this->coverage['dateStart'], $this->coverage['dateEnd']),
-            'name' => Format::name($this->coverage['titleAbsence'], $this->coverage['preferredNameAbsence'], $this->coverage['surnameAbsence'], 'Staff', false, true),
+            'name' => $name,
         ]);
     }
 
     public function getDetails() : array
     {
         return [
-            __('Reply') => $this->coverage['notesCoverage'],
+            __('Comment') => $this->coverage['notesStatus'],
         ];
     }
 

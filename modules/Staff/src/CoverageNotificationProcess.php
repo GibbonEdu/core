@@ -177,7 +177,7 @@ class CoverageNotificationProcess extends BackgroundProcess
         $coverage = $this->getCoverageDetailsByID($gibbonStaffCoverageID);
         if (empty($coverage)) return false;
 
-        $recipients = [$coverage['gibbonPersonIDCoverage']];
+        $recipients = [$coverage['gibbonPersonID'], $coverage['gibbonPersonIDCoverage']];
         $message = new CoverageCancelled($coverage);
 
         return $this->messageSender->send($message, $recipients, $coverage['gibbonPersonID']);
@@ -188,7 +188,7 @@ class CoverageNotificationProcess extends BackgroundProcess
         if ($coverage = $this->staffCoverageGateway->getCoverageDetailsByID($gibbonStaffCoverageID)) {
             if ($this->urgentNotifications == 'Y') {
                 $relativeSeconds = strtotime($coverage['dateStart']) - time();
-                $coverage['urgent'] = $relativeSeconds <= $this->urgencyThreshold;
+                $coverage['urgent'] = $relativeSeconds > 0 && $relativeSeconds <= $this->urgencyThreshold;
             } else {
                 $coverage['urgent'] = false;
             }
