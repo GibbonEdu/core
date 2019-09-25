@@ -178,4 +178,43 @@ class AttendanceLogPersonGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    public function queryStudentsNotInClass($criteria, $gibbonSchoolYearID, $date)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('gibbonAttendanceLogPerson')
+            ->cols([
+                'gibbonAttendanceLogPersonID', 'gibbonAttendanceLogPerson.type', 'gibbonAttendanceLogPerson.reason', 'gibbonAttendanceLogPerson.comment', 'gibbonAttendanceLogPerson.date','gibbonAttendanceLogPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.username', 'gibbonPerson.status', 'gibbonRollGroup.nameShort as rollGroup', 'gibbonYearGroup.nameShort as yearGroup', 'gibbonCourse.nameShort as courseName', 'gibbonCourseClass.nameShort as className'
+            ])
+            ->innerJoin('gibbonPerson', 'gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->innerJoin('gibbonRollGroup', 'gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID')
+            ->innerJoin('gibbonYearGroup', 'gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID')
+            ->leftJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseClassID=gibbonAttendanceLogPerson.gibbonCourseClassID')
+            ->leftJoin('gibbonCourse', 'gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID')
+            ->where("gibbonAttendanceLogPerson.context='Class'")
+            ->where("gibbonAttendanceLogPerson.type<>'Present'")
+            ->where('gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where('gibbonAttendanceLogPerson.date=:date')
+            ->bindValue('date', $date)
+            ->where("gibbonPerson.status='Full'")
+            ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today)')
+            ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:today)')
+            ->bindValue('today', date('Y-m-d'));
+
+        $criteria->addFilterRules([
+            'yearGroup' => function ($query, $gibbonYearGroupIDList) {
+                return $query->where('FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList)')
+                             ->bindValue('gibbonYearGroupIDList', $gibbonYearGroupIDList);
+            },
+            'types' => function ($query, $types) {
+                return $query->where('FIND_IN_SET(gibbonAttendanceLogPerson.gibbonAttendanceCodeID, :types)')
+                             ->bindValue('types', $types);
+            },
+        ]);
+
+        return $this->runQuery($query, $criteria);
+    }
 }
