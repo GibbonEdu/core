@@ -141,11 +141,11 @@ class StudentHistoryData
                 $endOfDay = isset($logs[$dateYmd]) ? end($logs[$dateYmd]) : [];
 
                 // Handle cases where school-wide attendance does not exist, but class attendance does
-                if (empty($endOfDay)) {
+                if (empty($endOfDay) && !empty($classLogs)) {
                     $endOfDay = [
                         'date'        => $dateYmd,
                         'type'        => 'Incomplete',
-                        'status'      => 'partial',
+                        'status'      => '',
                         'statusClass' => 'dull border-gray-700',
                     ];
                 }
