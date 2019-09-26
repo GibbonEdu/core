@@ -55,7 +55,7 @@ class RollGroupTable extends DataTable
 
         $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
         
-        $canViewStudents = ($highestAction == 'View Student Profile_brief' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes');
+        $canViewStudents = ($highestAction == 'View Student Profile_brief' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes' || $highestAction == 'View Student Profile_fullEditAllNotes');
         
         if ($canViewConfidential && !$canViewStudents) {
             $canViewConfidential = false;
