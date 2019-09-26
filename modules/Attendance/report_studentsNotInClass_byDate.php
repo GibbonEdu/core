@@ -33,6 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 } else {
     // Proceed!
     $viewMode = $_REQUEST['format'] ?? '';
+    $allStudents = $_GET['allStudents'] ?? '';
     $currentDate = isset($_GET['currentDate'])
             ? Format::dateConvert($_GET['currentDate'])
             : date('Y-m-d');
@@ -65,6 +66,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
             $row->addSelect('types')->fromArray($typeOptions)->selectMultiple()->selected($types);
 
         $row = $form->addRow();
+            $row->addLabel('allStudents', __('All Students'))->description(__('Include all students, even those who have already been marked absent from school. By default, this report shows only class absences for students who are present in school.'));
+            $row->addCheckbox('allStudents')->checked($allStudents)->setValue('Y');
+
+        $row = $form->addRow();
             $row->addLabel('gibbonYearGroupIDList', __('Year Groups'))->description(__('Relevant student year groups'));
             if (!empty($gibbonYearGroupIDList)) {
                 $values['gibbonYearGroupIDList'] = $gibbonYearGroupIDList;
@@ -91,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
             ->pageSize(!empty($viewMode) ? 0 : 50)
             ->fromPOST();
 
-        $logs = $attendanceLogGateway->queryStudentsNotInClass($criteria, $gibbon->session->get('gibbonSchoolYearID'), $currentDate);
+        $logs = $attendanceLogGateway->queryStudentsNotInClass($criteria, $gibbon->session->get('gibbonSchoolYearID'), $currentDate, $allStudents);
 
         // DATA TABLE
         $table = ReportTable::createPaginated('studentsNotInClass', $criteria)->setViewMode($viewMode, $gibbon->session);

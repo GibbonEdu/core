@@ -179,7 +179,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function queryStudentsNotInClass($criteria, $gibbonSchoolYearID, $date)
+    public function queryStudentsNotInClass($criteria, $gibbonSchoolYearID, $date, $allStudents = null)
     {
         $query = $this
             ->newQuery()
@@ -203,6 +203,11 @@ class AttendanceLogPersonGateway extends QueryableGateway
             ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today)')
             ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:today)')
             ->bindValue('today', date('Y-m-d'));
+
+        if ($allStudents != 'Y') {
+            $query->cols(["(SELECT type FROM gibbonAttendanceLogPerson as schoolAttendance WHERE schoolAttendance.gibbonPersonID=gibbonPerson.gibbonPersonID AND schoolAttendance.date=gibbonAttendanceLogPerson.date AND schoolAttendance.context<>'Class' ORDER BY schoolAttendance.timestampTaken DESC LIMIT 1) as schoolAttendanceType"])
+                  ->having("schoolAttendanceType NOT LIKE '%Absent%'");
+        }
 
         $criteria->addFilterRules([
             'yearGroup' => function ($query, $gibbonYearGroupIDList) {
