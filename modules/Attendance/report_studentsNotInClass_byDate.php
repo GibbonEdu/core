@@ -27,7 +27,7 @@ use Gibbon\Domain\Attendance\AttendanceCodeGateway;
 // Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentsNotOnsite_byDate.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentsNotInClass_byDate.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
