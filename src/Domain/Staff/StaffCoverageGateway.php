@@ -80,7 +80,7 @@ class StaffCoverageGateway extends QueryableGateway
                 'gibbonStaffCoverage.gibbonStaffCoverageID', 'gibbonStaffCoverage.status',  'gibbonStaffAbsenceType.name as type', 'gibbonStaffAbsence.reason', 'date', 'COUNT(*) as days', 'MIN(date) as dateStart', 'MAX(date) as dateEnd', 'allDay', 'timeStart', 'timeEnd', 'timestampStatus', 'timestampCoverage', 'gibbonStaffCoverage.gibbonPersonIDCoverage', 
                 'gibbonStaffCoverage.gibbonPersonID', 'absence.title AS titleAbsence', 'absence.preferredName AS preferredNameAbsence', 'absence.surname AS surnameAbsence',
                 'gibbonStaffCoverage.gibbonPersonIDStatus', 'status.title as titleStatus', 'status.preferredName as preferredNameStatus', 'status.surname as surnameStatus',
-                'gibbonStaffCoverage.notesStatus', 'absenceStaff.jobTitle as jobTitleAbsence', 'SUM(gibbonStaffCoverageDate.value) as value'
+                'gibbonStaffCoverage.notesStatus', 'absenceStaff.jobTitle as jobTitleAbsence', 'GREATEST(SUM(gibbonStaffCoverageDate.value), 0.5) as value'
             ])
             ->leftJoin('gibbonStaffCoverageDate', 'gibbonStaffCoverageDate.gibbonStaffCoverageID=gibbonStaffCoverage.gibbonStaffCoverageID')
             ->leftJoin('gibbonStaffAbsence', 'gibbonStaffCoverage.gibbonStaffAbsenceID=gibbonStaffAbsence.gibbonStaffAbsenceID')
@@ -105,7 +105,7 @@ class StaffCoverageGateway extends QueryableGateway
         $query = $this
             ->newSelect()
             ->from('gibbonStaffCoverage')
-            ->cols(['gibbonStaffCoverage.gibbonPersonIDCoverage', 'gibbonStaffCoverageDate.date', 'gibbonStaffCoverageDate.value'])
+            ->cols(['gibbonStaffCoverage.gibbonPersonIDCoverage', 'gibbonStaffCoverageDate.date', 'GREATEST(gibbonStaffCoverageDate.value, 0.5) as value'])
             ->innerJoin('gibbonStaffCoverageDate', 'gibbonStaffCoverage.gibbonStaffCoverageID=gibbonStaffCoverageDate.gibbonStaffCoverageID')
             ->where('gibbonStaffCoverageDate.date BETWEEN :dateStart AND :dateEnd')
             ->where("gibbonStaffCoverage.status = 'Accepted'")

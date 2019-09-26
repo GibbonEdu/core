@@ -117,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
             ->filterBy('dateEnd', $dateEnd->format('Y-m-d'))
             ->fromPOST('staffCoverage'.$gibbonPersonID);
 
-        $coverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID);
+        $coverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID, false);
 
         // DATA TABLE
         $table = ReportTable::createPaginated('staffCoverage'.$gibbonPersonID, $criteria)->setViewMode($viewMode, $gibbon->session);
