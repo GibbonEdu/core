@@ -245,7 +245,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                                 $result = $pdo->executeQuery($data, $sql);
 
                                 $log = ($result->rowCount() > 0) ? $result->fetch() : $log;
-                                if ($log['context'] == 'Roll Group') {
+                                if ($log['context'] == 'Roll Group' || $log['context'] == 'Person') {
                                     $countLogs += 1;
                                 }
                             }
@@ -315,7 +315,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                         }
 
                         // Option to record first class in a day as school-wide attendance
-                        if ($recordFirstClassAsSchool == 'Y' && $countLogs == 0) {
+                        if ($recordFirstClassAsSchool == 'Y' && $countLogs < $countPresent) {
                             $row = $form->addRow();
                                 $row->addCheckbox('recordSchoolAttendance')->setValue('Y')->description(__('Record as school-wide attendance'))->checked('Y');
                         }
