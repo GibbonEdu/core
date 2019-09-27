@@ -81,7 +81,7 @@ class CheckboxColumn extends Column
 
         return !empty($contents)
             ? $contents 
-            : (new Checkbox($this->getID().'[]'))
+            : ((new Checkbox($this->getID().'[]'))->wrap('<label for="'.$this->getID().$value.'" class="-m-4 p-4">', '</label>'))
             ->setID($this->getID().$value)
             ->setValue($value)
             ->checked($this->checked ? $value : false)

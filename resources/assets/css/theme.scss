@@ -274,6 +274,9 @@ input.button, a.button, button.button {
     min-height: 25vh;
     margin: 0 auto;
 }
+#TB_iframeContent {
+    max-width: 100%;
+}
 
 /* Wrangle the Thickbox into displaying somewhat usably on mobile */
 @media only screen and (max-width: 1000px) {
