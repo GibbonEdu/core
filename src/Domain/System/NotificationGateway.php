@@ -184,7 +184,7 @@ class NotificationGateway
     public function getNotificationPreference($gibbonPersonID)
     {
         $data = array('gibbonPersonID' => $gibbonPersonID);
-        $sql = "SELECT email, receiveNotificationEmails FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID AND receiveNotificationEmails='Y' AND NOT email=''";
+        $sql = "SELECT email, (CASE WHEN status='Full' THEN receiveNotificationEmails ELSE 'N' END) as receiveNotificationEmails FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID AND receiveNotificationEmails='Y' AND NOT email=''";
 
         return $this->pdo->selectOne($sql, $data);
     }
