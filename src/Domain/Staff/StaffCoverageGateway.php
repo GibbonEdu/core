@@ -80,7 +80,7 @@ class StaffCoverageGateway extends QueryableGateway
                 'gibbonStaffCoverage.gibbonStaffCoverageID', 'gibbonStaffCoverage.status',  'gibbonStaffAbsenceType.name as type', 'gibbonStaffAbsence.reason', 'date', 'COUNT(*) as days', 'MIN(date) as dateStart', 'MAX(date) as dateEnd', 'allDay', 'timeStart', 'timeEnd', 'timestampStatus', 'timestampCoverage', 'gibbonStaffCoverage.gibbonPersonIDCoverage', 
                 'gibbonStaffCoverage.gibbonPersonID', 'absence.title AS titleAbsence', 'absence.preferredName AS preferredNameAbsence', 'absence.surname AS surnameAbsence',
                 'gibbonStaffCoverage.gibbonPersonIDStatus', 'status.title as titleStatus', 'status.preferredName as preferredNameStatus', 'status.surname as surnameStatus',
-                'gibbonStaffCoverage.notesStatus', 'absenceStaff.jobTitle as jobTitleAbsence'
+                'gibbonStaffCoverage.notesStatus', 'absenceStaff.jobTitle as jobTitleAbsence', 'SUM(gibbonStaffCoverageDate.value) as value'
             ])
             ->leftJoin('gibbonStaffCoverageDate', 'gibbonStaffCoverageDate.gibbonStaffCoverageID=gibbonStaffCoverage.gibbonStaffCoverageID')
             ->leftJoin('gibbonStaffAbsence', 'gibbonStaffCoverage.gibbonStaffAbsenceID=gibbonStaffAbsence.gibbonStaffAbsenceID')
@@ -96,6 +96,27 @@ class StaffCoverageGateway extends QueryableGateway
         $criteria->addFilterRules($this->getSharedFilterRules());
 
         return $this->runQuery($query, $criteria);
+    }
+
+    public function selectCoverageByDateRange($dateStart, $dateEnd = null)
+    {
+        if (empty($dateEnd)) $dateEnd = $dateStart;
+
+        $query = $this
+            ->newSelect()
+            ->from('gibbonStaffCoverage')
+            ->cols(['gibbonStaffCoverage.gibbonPersonIDCoverage', 'gibbonStaffCoverageDate.date', 'gibbonStaffCoverageDate.value'])
+            ->innerJoin('gibbonStaffCoverageDate', 'gibbonStaffCoverage.gibbonStaffCoverageID=gibbonStaffCoverageDate.gibbonStaffCoverageID')
+            ->where('gibbonStaffCoverageDate.date BETWEEN :dateStart AND :dateEnd')
+            ->where("gibbonStaffCoverage.status = 'Accepted'")
+            ->bindValue('dateStart', $dateStart)
+            ->bindValue('dateEnd', $dateEnd);
+
+        if (!empty($gibbonPersonID)) {
+            $query->where('gibbonStaffCoverage.gibbonPersonIDCoverage=:gibbonPersonID')->bindValue('gibbonPersonID', $gibbonPersonID);
+        }
+
+        return $this->runSelect($query);
     }
 
     public function queryCoverageByPersonAbsent(QueryCriteria $criteria, $gibbonPersonID)
