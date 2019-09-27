@@ -57,7 +57,8 @@ class PaginatedView extends DataTableView implements RendererInterface
     {
         $this->addData('table', $table);
         $this->addData('blankSlate', $table->getMetaData('blankSlate'));
-
+        $this->addData('draggable', $table->getMetaData('draggable'));
+        
         $this->preProcessTable($table);
         
         $filters = $table->getMetaData('filterOptions', []);

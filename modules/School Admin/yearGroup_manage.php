@@ -39,6 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
     // QUERY
     $criteria = $yearGroupGateway->newQueryCriteria()
         ->sortBy(['sequenceNumber'])
+        ->pageSize(0)
         ->fromPOST();
 
     $yearGroups = $yearGroupGateway->queryYearGroups($criteria);
@@ -50,7 +51,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
         ->setURL('/modules/School Admin/yearGroup_manage_add.php')
         ->displayLabel();
 
-    $table->addColumn('sequenceNumber', __('sequenceNumber'));
+    $table->addDraggableColumn('gibbonYearGroupID', $gibbon->session->get('absoluteURL').'/modules/School Admin/yearGroup_manage_editOrderAjax.php');
+
     $table->addColumn('name', __('Name'));
     $table->addColumn('nameShort', __('Short Name'));
     $table->addColumn('gibbonPersonIDHOY', __('Head of Year'))

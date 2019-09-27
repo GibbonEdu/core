@@ -34,6 +34,7 @@ class YearGroupGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonYearGroup';
+    private static $primaryKey = 'gibbonYearGroupID';
     private static $searchableColumns = [];
 
     public function queryYearGroups(QueryCriteria $criteria)
