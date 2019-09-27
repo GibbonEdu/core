@@ -186,7 +186,7 @@ class Sidebar implements OutputableInterface
                     echo __('Register');
                     echo '</h2>';
                     echo '<p>';
-                    echo sprintf(__('%1$sJoin our learning community.%2$s'), "<a href='".$this->session->get('absoluteURL')."/index.php?q=/publicRegistration.php'>", '</a>').' '.__("It's free!");
+                    echo "<a href='".$this->session->get('absoluteURL')."/index.php?q=/publicRegistration.php'>".__('Join our learning community.')."</a> ".__("It's free!");
                     echo '</p>';
                     echo '</div>';
                 }
