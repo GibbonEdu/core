@@ -504,7 +504,7 @@ DataTable = (function(element, basePath, filters, identifier) {
     var _ = this;
 
     _.table = $(element);
-    _.path = basePath + " #" + $(element).attr('id') + " .dataTable";
+    _.path = basePath + " #" + $(element).attr('id') + " > .dataTable";
     _.filters = filters;
     _.identifier = identifier;
     if (_.filters.sortBy.length == 0) _.filters.sortBy = {};
