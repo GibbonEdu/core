@@ -73,7 +73,7 @@ class FamilyGateway extends QueryableGateway
     {
         $gibbonFamilyIDList = is_array($gibbonFamilyIDList) ? implode(',', $gibbonFamilyIDList) : $gibbonFamilyIDList;
         $data = array('gibbonFamilyIDList' => $gibbonFamilyIDList);
-        $sql = "SELECT gibbonFamilyAdult.gibbonFamilyID, gibbonPerson.gibbonPerson.ID, gibbonPerson.title, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.status, gibbonPerson.email
+        $sql = "SELECT gibbonFamilyAdult.gibbonFamilyID, gibbonPerson.gibbonPersonID, gibbonPerson.title, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.status, gibbonPerson.email
             FROM gibbonFamilyAdult
             JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID)
             WHERE FIND_IN_SET(gibbonFamilyAdult.gibbonFamilyID, :gibbonFamilyIDList) 
