@@ -42,8 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
     $staffCoverageDateGateway = $container->get(StaffCoverageDateGateway::class);
     $staffAbsenceDateGateway = $container->get(StaffAbsenceDateGateway::class);
-    $fullDayThreshold =  floatval(getSettingByScope($connection2, 'Staff', 'absenceFullDayThreshold'));
-    $halfDayThreshold = floatval(getSettingByScope($connection2, 'Staff', 'absenceHalfDayThreshold'));
+    $fullDayThreshold =  floatval(getSettingByScope($connection2, 'Staff', 'coverageFullDayThreshold'));
 
     $requestDates = $_POST['requestDates'] ?? [];
     $substituteTypes = $_POST['substituteTypes'] ?? [];
@@ -137,14 +136,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
             $end = new DateTime($absenceDate['date'].' '.$dateData['timeEnd']);
 
             $timeDiff = $end->getTimestamp() - $start->getTimestamp();
-            $hoursAbsent = abs($timeDiff / 3600);
+            $hoursCovered = abs($timeDiff / 3600);
             
-            if ($hoursAbsent < $halfDayThreshold) {
-                $dateData['value'] = 0.0;
-            } elseif ($hoursAbsent < $fullDayThreshold) {
-                $dateData['value'] = 0.5;
-            } else {
+            if ($hoursCovered > $fullDayThreshold) {
                 $dateData['value'] = 1.0;
+            } else {
+                $dateData['value'] = 0.5;
             }
         }
 

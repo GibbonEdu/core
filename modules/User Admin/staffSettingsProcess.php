@@ -45,6 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
             'salaryScalePositions',
             'responsibilityPosts',
             'jobOpeningDescriptionTemplate',
+            'coverageFullDayThreshold',
         ],
         'System' => [
             'nameFormatStaffFormal',

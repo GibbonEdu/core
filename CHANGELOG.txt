@@ -46,6 +46,7 @@ v19.0.00
         Messenger: added a Copy to Next Year bulk-option for Manage Groups
         Staff: added a Weekly View and Daily View to Substitute Availability report
         Staff: added a Substitute Information setting for displaying text on My Coverage page
+        Staff: added a Staff Coverage Summary report with total days covered per substitute
         Students: improved display of Teachers' emails in student profile
         Students: added extra permission allowing editing and deleting of all Notes
         Students: adjusted Privacy options to display even if blurb is not set
@@ -63,6 +64,7 @@ v19.0.00
         System: adjusted date formats for German language
         Activities: improved interface string advising users of disabled external activity registration
         Attendance: fixed missing data in printable view of Student History
+        Attendance: fixed Set Future Absence to only allow future dates
         Finance: fixed missing payment info in invoice receipt email for multiple partial payments
         Library: set Bookable to No by default on Add record screen
         Messenger: fixed bug when sending parent and student SMS for Attendance status
