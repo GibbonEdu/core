@@ -15,6 +15,10 @@ all stylesheets and scripts with a 'head' context.
         <u>{{ family.name }}</u><br/>
     {% endif %}
 
+    {% if includeAddressName %}
+        {{ family.nameAddress }}<br/>
+    {% endif %}
+
     {{ formatUsing('address', family.homeAddress, family.homeAddressDistrict, family.homeAddressCountry) }}
 
     {% if not loop.last %}<br/><br/>{% endif %}
