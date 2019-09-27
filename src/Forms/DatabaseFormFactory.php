@@ -110,6 +110,21 @@ class DatabaseFormFactory extends FormFactory
             return $this->createSelect($name)->fromArray(array("*" => "All"))->fromResults($results)->placeholder();
     }
 
+    public function createSelectCourseByYearGroup($name, $gibbonSchoolYearID, $gibbonYearGroupIDList = '')
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList];
+        $sql = "SELECT gibbonCourse.gibbonCourseID as value, CONCAT(gibbonCourse.nameShort, ' - ', gibbonCourse.name) as name 
+                FROM gibbonCourse 
+                JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonCourse.gibbonYearGroupIDList)) 
+                WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID 
+                AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList) 
+                GROUP BY gibbonCourse.gibbonCourseID
+                ORDER BY gibbonCourse.nameShort";
+        $results = $this->pdo->executeQuery($data, $sql);
+
+        return $this->createSelect($name)->fromResults($results)->placeholder();
+    }
+
     public function createSelectClass($name, $gibbonSchoolYearID, $gibbonPersonID = null, $params = array())
     {
         $classes = array();
