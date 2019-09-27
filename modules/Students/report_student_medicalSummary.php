@@ -37,6 +37,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_me
     //Proceed!
     $viewMode = $_REQUEST['format'] ?? '';
     $choices = $_POST['gibbonPersonID'] ?? [];
+    //If $choices is blank, check to see if session is being used to inject gibbonPersonID list
+    if (count($choices) == 0) {
+        $choices = $_SESSION[$guid]['report_student_medicalSummary.php_choices'];
+    }
     $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
 
     if (isset($_GET['gibbonPersonIDList'])) {
