@@ -17,11 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\View\View;
+use Gibbon\Services\Format;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Services\Format;
-
-$_SESSION[$guid]['report_student_medicalSummary.php_choices'] = '';
+use Gibbon\Tables\Prefab\ReportTable;
+use Gibbon\Domain\Students\MedicalGateway;
+use Gibbon\Domain\Students\StudentReportGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -33,221 +35,102 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_me
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Student Medical Data Summary'));
+    $viewMode = $_REQUEST['format'] ?? '';
+    $choices = $_POST['gibbonPersonID'] ?? [];
+    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
 
-    echo '<p>';
-    echo __('This report prints a summary of medical data for the selected students.');
-    echo '</p>';
-
-    echo '<h2>';
-    echo __('Choose Students');
-    echo '</h2>';
-
-    $choices = isset($_POST['gibbonPersonID'])? $_POST['gibbonPersonID'] : array();
-
-    $form = Form::create('action',  $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/report_student_medicalSummary.php");
-
-    $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
-
-    $row = $form->addRow();
-        $row->addLabel('gibbonPersonID', __('Students'));
-        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array("allStudents" => false, "byName" => true, "byRoll" => true))->required()->placeholder()->selectMultiple()->selected($choices);
-
-    $row = $form->addRow();
-        $row->addFooter();
-        $row->addSearchSubmit($gibbon->session);
-
-    echo $form->getOutput();
-
-    if (count($choices) > 0) {
-        $_SESSION[$guid]['report_student_medicalSummary.php_choices'] = $choices;
-
-        echo '<h2>';
-        echo __('Report Data');
-        echo '</h2>';
-
-        try {
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-            $sqlWhere = ' AND (';
-            for ($i = 0; $i < count($choices); ++$i) {
-                $data[$choices[$i]] = $choices[$i];
-                $sqlWhere = $sqlWhere.'gibbonPerson.gibbonPersonID=:'.$choices[$i].' OR ';
-            }
-            $sqlWhere = substr($sqlWhere, 0, -4);
-            $sqlWhere = $sqlWhere.')';
-            $sql = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonRollGroup.name AS name FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE status='Full' AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID $sqlWhere ORDER BY surname, preferredName";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
-
-        echo "<div class='linkTop'>";
-        echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module']."/report_student_medicalSummary_print.php'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
-        echo '</div>';
-
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __('Student');
-        echo '</th>';
-        echo '<th>';
-        echo __('Medical Form?');
-        echo '</th>';
-        echo '<th>';
-        echo __('Blood Type');
-        echo '</th>';
-        echo '<th>';
-        echo __('Tetanus').'<br/>';
-        echo "<span style='font-size: 80%'><i>".__('10 Years').'</span>';
-        echo '</th>';
-        echo '<th>';
-        echo __('Last Update');
-        echo '</th>';
-        echo '</tr>';
-
-        $count = 0;
-        $rowNum = 'odd';
-        while ($row = $result->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
-            }
-            ++$count;
-
-            try {
-                $dataForm = array('gibbonPersonID' => $row['gibbonPersonID']);
-                $sqlForm = 'SELECT * FROM gibbonPersonMedical WHERE gibbonPersonID=:gibbonPersonID';
-                $resultForm = $connection2->prepare($sqlForm);
-                $resultForm->execute($dataForm);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-
-            if ($resultForm->rowCount() == 1) {
-                $rowForm = $resultForm->fetch();
-                echo "<tr class=$rowNum>";
-                echo '<td>';
-                echo Format::name('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
-                echo '</td>';
-                echo '<td>';
-                echo __('Yes');
-                echo '</td>';
-                echo '<td>';
-                echo $rowForm['bloodType'];
-                echo '</td>';
-                echo '<td>';
-                echo $rowForm['tetanusWithin10Years'];
-                echo '</td>';
-                echo '<td>';
-                            //Get details of last medical form update
-                            try {
-                                $dataMedical = array('gibbonPersonID' => $row['gibbonPersonID']);
-                                $sqlMedical = "SELECT * FROM gibbonPersonMedicalUpdate WHERE gibbonPersonID=:gibbonPersonID AND status='Complete' ORDER BY timestamp DESC";
-                                $resultMedical = $connection2->prepare($sqlMedical);
-                                $resultMedical->execute($dataMedical);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
-                if ($resultMedical->rowCount() > 0) {
-                    $rowMedical = $resultMedical->fetch();
-                                //Is last update more recent than 90 days?
-                                if (substr($rowMedical['timestamp'], 0, 10) > date('Y-m-d', (time() - (90 * 24 * 60 * 60)))) {
-                                    echo dateConvertBack($guid, substr($rowMedical['timestamp'], 0, 10));
-                                } else {
-                                    echo "<span style='color: #ff0000; font-weight: bold'>".dateConvertBack($guid, substr($rowMedical['timestamp'], 0, 10)).'</span>';
-                                }
-                } else {
-                    echo "<span style='color: #ff0000; font-weight: bold'>".__('NA').'</span>';
-                }
-                echo '</td>';
-                echo '</tr>';
-
-                    //Long term medication
-                    if ($rowForm['longTermMedication'] == 'Y') {
-                        echo "<tr class=$rowNum>";
-                        echo '<td></td>';
-                        echo "<td colspan=4 style='border-top: 1px solid #aaa'>";
-                        echo '<b><i>'.__('Long Term Medication').'</i></b>: '.$rowForm['longTermMedication'].'<br/>';
-                        echo '<u><i>'.__('Details').'</i></u>: '.$rowForm['longTermMedicationDetails'].'<br/>';
-                        echo '</td>';
-                        echo '</tr>';
-                    }
-
-                    //Conditions
-                    $condCount = 1;
-                try {
-                    $dataConditions = array('gibbonPersonMedicalID' => $rowForm['gibbonPersonMedicalID']);
-                    $sqlConditions = 'SELECT * FROM gibbonPersonMedicalCondition WHERE gibbonPersonMedicalID=:gibbonPersonMedicalID';
-                    $resultConditions = $connection2->prepare($sqlConditions);
-                    $resultConditions->execute($dataConditions);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-
-                while ($rowConditions = $resultConditions->fetch()) {
-                    $alert = getAlert($guid, $connection2, $rowConditions['gibbonAlertLevelID']);
-                    if ($alert != false) {
-                        $conditionStyle = "style='border-top: 2px solid #".$alert['color']."'";
-                        echo "<tr class=$rowNum>";
-                        echo '<td></td>';
-                        echo "<td colspan=4 $conditionStyle>";
-                        echo '<b><i>'.__('Condition')." $condCount</i></b>: ".__($rowConditions['name']).'<br/>';
-                        echo '<u><i>'.__('Risk')."</i></u>: <span style='color: #".$alert['color']."; font-weight: bold'>".__($alert['name']).'</span><br/>';
-                        if ($rowConditions['triggers'] != '') {
-                            echo '<u><i>'.__('Triggers').'</i></u>: '.$rowConditions['triggers'].'<br/>';
-                        }
-                        if ($rowConditions['reaction'] != '') {
-                            echo '<u><i>'.__('Reaction').'</i></u>: '.$rowConditions['reaction'].'<br/>';
-                        }
-                        if ($rowConditions['response'] != '') {
-                            echo '<u><i>'.__('Response').'</i></u>: '.$rowConditions['response'].'<br/>';
-                        }
-                        if ($rowConditions['medication'] != '') {
-                            echo '<u><i>'.__('Medication').'</i></u>: '.$rowConditions['medication'].'<br/>';
-                        }
-                        if ($rowConditions['lastEpisode'] != '' or $rowConditions['lastEpisodeTreatment'] != '') {
-                            echo '<u><i>'.__('Last Episode').'</i></u>: ';
-                            if ($rowConditions['lastEpisode'] != '') {
-                                echo dateConvertBack($guid, $rowConditions['lastEpisode']);
-                            }
-                            if ($rowConditions['lastEpisodeTreatment'] != '') {
-                                if ($rowConditions['lastEpisode'] != '') {
-                                    echo ' | ';
-                                }
-                                echo $rowConditions['lastEpisodeTreatment'];
-                            }
-                            echo '<br/>';
-                        }
-
-                        if ($rowConditions['comment'] != '') {
-                            echo '<u><i>'.__('Comment').'</i></u>: '.$rowConditions['comment'].'<br/>';
-                        }
-                        echo '</td>';
-                        echo '</tr>';
-                        ++$condCount;
-                    }
-                }
-            } else {
-                echo "<tr class=$rowNum>";
-                echo '<td>';
-                echo Format::name('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
-                echo '</td>';
-                echo '<td colspan=4>';
-                echo "<span style='color: #ff0000; font-weight: bold'>".__('No').'</span>';
-                echo '</td>';
-                echo '</tr>';
-            }
-        }
-        if ($count == 0) {
-            echo "<tr class=$rowNum>";
-            echo '<td colspan=2>';
-            echo __('There are no records to display.');
-            echo '</td>';
-            echo '</tr>';
-        }
-        echo '</table>';
+    if (isset($_GET['gibbonPersonIDList'])) {
+        $choices = explode(',', $_GET['gibbonPersonIDList']);
+    } else {
+        $_GET['gibbonPersonIDList'] = implode(',', $choices);
     }
+
+    if (empty($viewMode)) {
+        $page->breadcrumbs->add(__('Student Medical Data Summary'));
+
+        echo '<p>';
+        echo __('This report prints a summary of medical data for the selected students.');
+        echo '</p>';
+
+        $choices = isset($_POST['gibbonPersonID'])? $_POST['gibbonPersonID'] : array();
+
+        $form = Form::create('action', $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/report_student_medicalSummary.php");
+        $form->setTitle(__('Choose Students'));
+        $form->setFactory(DatabaseFormFactory::create($pdo));
+        $form->setClass('noIntBorder fullWidth');
+
+        $row = $form->addRow();
+            $row->addLabel('gibbonPersonID', __('Students'));
+            $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array("allStudents" => false, "byName" => true, "byRoll" => true))
+                ->isRequired()
+                ->selectMultiple()
+                ->selected($choices);
+
+        $row = $form->addRow();
+            $row->addFooter();
+            $row->addSearchSubmit($gibbon->session);
+
+        echo $form->getOutput();
+    }
+
+
+    if (empty($choices)) {
+        return;
+    }
+
+    $cutoffDate = getSettingByScope($connection2, 'Data Updater', 'cutoffDate');
+    if (empty($cutoffDate)) $cutoffDate = Format::dateFromTimestamp(time() - (604800 * 26));
+
+    $reportGateway = $container->get(StudentReportGateway::class);
+    $medicalGateway = $container->get(MedicalGateway::class);
+
+    // CRITERIA
+    $criteria = $reportGateway->newQueryCriteria()
+        ->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+        ->pageSize(!empty($viewMode) ? 0 : 50)
+        ->fromPOST();
+
+    $students = $reportGateway->queryStudentDetails($criteria, $choices);
+
+    // Join a set of medical conditions per student
+    $medicalIDs = $students->getColumn('gibbonPersonMedicalID');
+    $medicalConditions = $medicalGateway->selectMedicalConditionsByID($medicalIDs)->fetchGrouped();
+    $students->joinColumn('gibbonPersonMedicalID', 'medicalConditions', $medicalConditions);
+
+    // DATA TABLE
+    $table = ReportTable::createPaginated('studentEmergencySummary', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table->setTitle(__('Student Medical Data Summary'));
+
+    $table->addMetaData('post', ['gibbonPersonID' => $choices]);
+
+    $table->addColumn('student', __('Student'))
+        ->description(__('Last Update'))
+        ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+        ->format(function ($student) use ($cutoffDate) {
+            $output = Format::name('', $student['preferredName'], $student['surname'], 'Student', true, true).'<br/><br/>';
+
+            $output .= ($student['lastMedicalUpdate'] < $cutoffDate) ? '<span style="color: #ff0000; font-weight: bold"><i>' : '<span><i>';
+            $output .= !empty($student['lastMedicalUpdate']) ? Format::date($student['lastMedicalUpdate']) : __('N/A');
+            $output .= '</i></span>';
+
+            return $output;
+        });
+
+    $view = new View($container->get('twig'));
+
+    $table->addColumn('medicalForm', __('Medical Form?'))
+        ->width('16%')
+        ->sortable('gibbonPersonMedicalID')
+        ->format(function ($student) use ($view) {
+            return $view->fetchFromTemplate('formats/medicalForm.twig.html', $student);
+        });
+
+    $table->addColumn('conditions', __('Medical Conditions'))
+        ->width('60%')
+        ->notSortable()
+        ->format(function ($student) use ($view) {
+            return $view->fetchFromTemplate('formats/medicalConditions.twig.html', $student);
+        });
+
+    echo $table->render($students);
 }
