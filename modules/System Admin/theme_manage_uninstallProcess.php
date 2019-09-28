@@ -67,9 +67,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage_
             }
 
             if ($orphaned != 'true') {
-                $URLDelete = $URLDelete.'&return=success0';
-            } else {
                 $URLDelete = $URLDelete.'&return=warning0';
+            } else {
+                $URLDelete = $URLDelete.'&return=success2';
             }
             header("Location: {$URLDelete}");
         }
