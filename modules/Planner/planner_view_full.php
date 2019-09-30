@@ -1475,7 +1475,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     $_SESSION[$guid]['sidebarExtra'] .= __('Attendance has been taken at the following times for this lesson:');
                                     $_SESSION[$guid]['sidebarExtra'] .= "<ul style='margin-left: 20px'>";
                                     while ($rowLog = $resultLog->fetch()) {
-                                        $_SESSION[$guid]['sidebarExtra'] .= '<li><a style="color:inherit;" href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$gibbonCourseClassID.'&currentDate='.dateConvertBack($guid, $row['date'] ).'">'.substr($rowLog['timestampTaken'], 11, 5).' '.dateConvertBack($guid, substr($rowLog['timestampTaken'], 0, 10)).' '.__('by').' '.Format::name($rowLog['title'], $rowLog['preferredName'], $rowLog['surname'], 'Staff', false, true).'</a></li>';
+                                        $_SESSION[$guid]['sidebarExtra'] .= '<li><a style="color:inherit;" href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$gibbonCourseClassID.'&currentDate='.dateConvertBack($guid, $row['date'] ).'">'.substr($rowLog['timestampTaken'], 11, 5).' '.dateConvertBack($guid, substr($rowLog['timestampTaken'], 0, 10)).' '.__('by').' '.Format::name('', $rowLog['preferredName'], $rowLog['surname'], 'Staff', false, true).'</a></li>';
                                     }
                                     $_SESSION[$guid]['sidebarExtra'] .= '</ul>';
                                     $_SESSION[$guid]['sidebarExtra'] .= '</div>';
