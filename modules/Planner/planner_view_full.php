@@ -1593,6 +1593,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                             if ($rowClassGroup['role'] == 'Student' && $canAccessProfile) {
                                 $_SESSION[$guid]['sidebarExtra'] .= "<div style='padding-top: 5px'><b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowClassGroup['gibbonPersonID']."'>".Format::name('', $rowClassGroup['preferredName'], $rowClassGroup['surname'], 'Student').'</a></b><br/>';
+                            } else if ($rowClassGroup['role'] == 'Student') {
+                                $_SESSION[$guid]['sidebarExtra'] .= "<div style='padding-top: 5px'><b>".Format::name('', $rowClassGroup['preferredName'], $rowClassGroup['surname'], 'Student').'</b><br/>';
                             } else {
                                 $_SESSION[$guid]['sidebarExtra'] .= "<div style='padding-top: 5px'><b>".Format::name($rowClassGroup['title'], $rowClassGroup['preferredName'], $rowClassGroup['surname'], 'Staff').'</b><br/>';
                             }
