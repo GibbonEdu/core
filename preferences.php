@@ -142,20 +142,6 @@ if (!isset($_SESSION[$guid]["username"])) {
             $row->addLabel('receiveNotificationEmails', __('Receive Email Notifications?'))->description(__('Notifications can always be viewed on screen.'));
             $row->addYesNo('receiveNotificationEmails');
 
-        if ($staff) {
-            $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-            $sql = "SELECT smartWorkflowHelp FROM gibbonStaff WHERE gibbonPersonID=:gibbonPersonID";
-            $result = $pdo->executeQuery($data, $sql);
-
-            if ($result && $result->rowCount() > 0) {
-                $smartWorkflowHelp = $result->fetchColumn(0);
-
-                $row = $form->addRow();
-                    $row->addLabel('smartWorkflowHelp', __('Enable Smart Workflow Help?'));
-                    $row->addYesNo('smartWorkflowHelp')->selected($smartWorkflowHelp);
-            }
-        }
-
         $row = $form->addRow();
             $row->addFooter();
             $row->addSubmit();

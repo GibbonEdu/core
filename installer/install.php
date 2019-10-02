@@ -645,7 +645,7 @@ if ($canInstall == false) {
 
                 try {
                     $dataStaff = array('gibbonPersonID' => 1, 'type' => 'Teaching');
-                    $sqlStaff = "INSERT INTO gibbonStaff SET gibbonPersonID=1, type='Teaching', smartWorkflowHelp='Y'";
+                    $sqlStaff = "INSERT INTO gibbonStaff SET gibbonPersonID=1, type='Teaching'";
                     $resultStaff = $connection2->prepare($sqlStaff);
                     $resultStaff->execute($dataStaff);
                 } catch (PDOException $e) {

@@ -76,6 +76,9 @@ v19.0.00
         Students: adjusted official name size in ID card for long-named students
         Students: fixed timetable chooser not working on student profile pages
 
+    Deprecations
+        System: removed Smart Workflow Help feature
+
 v18.0.01
 --------
     Bug Fixes
