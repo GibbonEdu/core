@@ -496,15 +496,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                     'classDesc' => dateConvertBack($guid, $date),
                 ]));
 
-                //Get Smart Workflow help message
-                $category = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
-                if ($category == 'Staff') {
-                    $smartWorkflowHelp = getSmartWorkflowHelp($connection2, $guid, 3);
-                    if ($smartWorkflowHelp != false) {
-                        echo $smartWorkflowHelp;
-                    }
-                }
-
                 if (isset($_GET['return'])) {
                     returnProcess($guid, $_GET['return'], null, null);
                 }
@@ -702,15 +693,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                         $page->breadcrumbs->add(__('Planner for {classDesc}', [
                             'classDesc' => $row['course'].'.'.$row['class'],
                         ]));
-
-                        //Get Smart Workflow help message
-                        $category = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
-                        if ($category == 'Staff') {
-                            $smartWorkflowHelp = getSmartWorkflowHelp($connection2, $guid, 3);
-                            if ($smartWorkflowHelp != false) {
-                                echo $smartWorkflowHelp;
-                            }
-                        }
 
                         $returns = array();
                         $returns['success1'] = __('Bump was successful. It is possible that some lessons have not been moved (if there was no space for them), but a reasonable effort has been made.');
