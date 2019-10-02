@@ -107,15 +107,6 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    //Get Smart Workflow help message
-    $category = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
-    if ($category == 'Staff') {
-        $smartWorkflowHelp = getSmartWorkflowHelp($connection2, $guid, 5);
-        if ($smartWorkflowHelp != false) {
-            echo $smartWorkflowHelp;
-        }
-    }
-
     //Add multiple columns
     if ($multiAdd) {
         echo "<div class='linkTop'>";

@@ -46,16 +46,7 @@ class StaffDashboard implements OutputableInterface
 
     public function getOutput()
     {
-        $guid = $this->session->get('guid');
-        $connection2 = $this->db->getConnection();
-
-        $output = '';
-        $smartWorkflowHelp = getSmartWorkflowHelp($connection2, $guid);
-        if ($smartWorkflowHelp != false) {
-            $output .= $smartWorkflowHelp;
-        }
-
-        $output .= '<h2>'.
+        $output = '<h2>'.
             __('Staff Dashboard').
             '</h2>'.
             "<div style='margin-bottom: 30px; margin-left: 1%; float: left; width: 100%'>";

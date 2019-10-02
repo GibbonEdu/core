@@ -464,15 +464,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
             ->add(__('Planner'), 'planner.php', $params)
             ->add(__('Homework + Deadlines'));
 
-        //Get Smart Workflow help message
-        $category = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
-        if ($category == 'Staff') {
-            $smartWorkflowHelp = getSmartWorkflowHelp($connection2, $guid, 4);
-            if ($smartWorkflowHelp != false) {
-                echo $smartWorkflowHelp;
-            }
-        }
-
         //Proceed!
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);

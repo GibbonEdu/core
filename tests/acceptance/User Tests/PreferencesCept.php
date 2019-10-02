@@ -20,7 +20,6 @@ $newFormValues = array(
 $I->selectOption('gibbonThemeIDPersonal', '0013');
 $I->selectOption('gibboni18nIDPersonal', '0002');
 $I->selectOption('receiveNotificationEmails', 'N');
-$I->selectOption('smartWorkflowHelp', 'N');
 
 $I->submitForm('#preferences', $newFormValues, 'Submit');
 
