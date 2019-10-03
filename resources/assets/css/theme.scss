@@ -51,6 +51,10 @@ body {
     @apply text-gray-400 underline;
 }
 
+hr {
+    @apply border-gray-300 border my-6;
+}
+
 /*
  --------------------------------------------------------------------------
   Alerts
