@@ -7,7 +7,7 @@ SET SESSION sql_mode = 'ONLY_FULL_GROUP_BY,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FO
 INSERT INTO `gibbonPerson` (`title`, `surname`, `firstName`, `preferredName`, `officialName`, `nameInCharacters`, `username`, `password`, `passwordStrong`, `passwordStrongSalt`, `passwordForceReset`, `status`, `canLogin`, `gibbonRoleIDPrimary`, `gibbonRoleIDAll`) VALUES
 ('Ms. ', 'TestUser', 'Admin', 'Admin', 'Admin TestUser', '', 'testingadmin', '', '015261d879c7fc2789d19b9193d189364baac34a98561fa205cd5f37b313cdb0', '/aBcEHKLnNpPrsStTUyz47', 'N', 'Full', 'Y', 001, '001,002,003,004,006') ON DUPLICATE KEY UPDATE lastTimestamp=NOW(), `passwordStrong`=VALUES(passwordStrong), `passwordStrongSalt`=VALUES(passwordStrongSalt), failCount=0;
 
-INSERT INTO `gibbonStaff` (`gibbonPersonID`, `type`, `jobTitle`, `smartWorkflowHelp`) VALUES ((SELECT `gibbonPersonID` FROM `gibbonPerson` WHERE `username`='testingadmin' LIMIT 1), 'Support', 'Test Admin', 'Y') ON DUPLICATE KEY UPDATE `jobTitle`='Test Admin';
+INSERT INTO `gibbonStaff` (`gibbonPersonID`, `type`, `jobTitle`) VALUES ((SELECT `gibbonPersonID` FROM `gibbonPerson` WHERE `username`='testingadmin' LIMIT 1), 'Support', 'Test Admin') ON DUPLICATE KEY UPDATE `jobTitle`='Test Admin';
 
 --- User: testingteacher     m86GVNLH7DbV
 INSERT INTO `gibbonPerson` (`title`, `surname`, `firstName`, `preferredName`, `officialName`, `nameInCharacters`, `username`, `password`, `passwordStrong`, `passwordStrongSalt`, `passwordForceReset`, `status`, `canLogin`, `gibbonRoleIDPrimary`, `gibbonRoleIDAll`) VALUES
