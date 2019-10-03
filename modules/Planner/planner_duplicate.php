@@ -96,10 +96,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
             try {
                 if ($viewBy == 'date') {
                     $data = array('date' => $date, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                    $sql = 'SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE date=:date AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
+                    $sql = 'SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, gibbonPlannerEntry.homework, gibbonPlannerEntry.homeworkSubmission FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE date=:date AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
                 } else {
                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                    $sql = 'SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
+                    $sql = 'SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, gibbonPlannerEntry.homework, gibbonPlannerEntry.homeworkSubmission FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
                 }
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
@@ -301,6 +301,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                         $row = $form->addRow();
                             $row->addLabel('timeEnd', __('End Time'))->description("Format: hh:mm (24hr)");
                             $row->addTime('timeEnd')->setValue(substr($nextTimeEnd, 0, 5))->required();
+
+                        if ($values['homework'] == 'Y') {
+                            $form->addRow()->addHeading(__('Homework'));
+
+                            $row = $form->addRow();
+                                $row->addLabel('homeworkDueDate', __('Homework Due Date'));
+                                $row->addDate('homeworkDueDate')->setValue(dateConvertBack($guid, $nextDate))->required();
+
+                            $row = $form->addRow();
+                                $row->addLabel('homeworkDueDateTime', __('Homework Due Date Time'))->description("Format: hh:mm (24hr)");
+                                $row->addTime('homeworkDueDateTime')->setValue(substr($nextTimeStart, 0, 5))->required();
+
+                            if ($values['homeworkSubmission'] == 'Y') {
+                                $row = $form->addRow();
+                                    $row->addLabel('homeworkSubmissionDateOpen', __('Submission Open Date'));
+                                    $row->addDate('homeworkSubmissionDateOpen')->setValue(dateConvertBack($guid, $nextDate))->required();
+                            }
+                        }
 
                         $row = $form->addRow();
                             $row->addFooter();
