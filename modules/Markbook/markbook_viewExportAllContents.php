@@ -278,7 +278,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                     $finalColumnNum = 1 + ($columns * (3-$effortAdjust));
 
                     // Cumulative Average
-                    $cumulativeAverage = round($markbook->getCumulativeAverage($rowStudents['gibbonPersonID']), 0).$markSuffix;
+                    $cumulativeAverage =  number_format(round($markbook->getCumulativeAverage($rowStudents['gibbonPersonID']), 2),2).$markSuffix;
                     $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, $r, $cumulativeAverage);
                     $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->applyFromArray($style_border);
                     $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->getNumberFormat()->setFormatCode($markFormat);
@@ -288,7 +288,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 
                         foreach ($markbook->getGroupedMarkbookTypes('year') as $type) {
                             // Final Weighted Types
-                            $typeAverage = round($markbook->getTypeAverage($rowStudents['gibbonPersonID'], 'final', $type), 0).$markSuffix;
+                            $typeAverage = number_format(round($markbook->getTypeAverage($rowStudents['gibbonPersonID'], 'final', $type), 2), 2).$markSuffix;
                             $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, $r, $typeAverage);
                             $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->applyFromArray($style_border);
                             $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->getNumberFormat()->setFormatCode($markFormat);
@@ -296,7 +296,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                         }
 
                         // Final Grade
-                        $finalAverage = round($markbook->getFinalGradeAverage($rowStudents['gibbonPersonID']), 0).$markSuffix;
+                        $finalAverage = number_format(round($markbook->getFinalGradeAverage($rowStudents['gibbonPersonID']), 2), 2).$markSuffix;
                         $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, $r, $finalAverage);
                         $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->applyFromArray($style_border);
                         $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->getNumberFormat()->setFormatCode($markFormat);
