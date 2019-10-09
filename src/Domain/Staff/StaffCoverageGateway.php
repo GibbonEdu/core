@@ -142,7 +142,7 @@ class StaffCoverageGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function queryCoverageWithNoPersonAssigned(QueryCriteria $criteria)
+    public function queryCoverageWithNoPersonAssigned(QueryCriteria $criteria, $substituteType = '')
     {
         $query = $this
             ->newQuery()
@@ -158,6 +158,11 @@ class StaffCoverageGateway extends QueryableGateway
             ->leftJoin('gibbonStaff AS absenceStaff', 'absence.gibbonPersonID=absenceStaff.gibbonPersonID')
             ->where('gibbonStaffCoverage.gibbonPersonIDCoverage IS NULL')
             ->groupBy(['gibbonStaffCoverage.gibbonStaffCoverageID']);
+
+        if (!empty($substituteType)) {
+            $query->where('(gibbonStaffCoverage.substituteTypes IS NULL OR FIND_IN_SET(:substituteType, gibbonStaffCoverage.substituteTypes))')
+                  ->bindValue('substituteType', $substituteType);
+        }
 
         $criteria->addFilterRules($this->getSharedFilterRules());
 
