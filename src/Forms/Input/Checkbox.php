@@ -35,6 +35,7 @@ class Checkbox extends Input
     protected $checked = array();
     protected $checkall = false;
     protected $inline = false;
+    protected $labelClass = '';
 
     /**
      * Create a checkpox input with a default value of on when checked.
@@ -56,6 +57,27 @@ class Checkbox extends Input
     {
         $this->description = $value;
         return $this;
+    }
+
+    /**
+     * Sets the css class for the inline checkbox label.
+     * @param   string  $value
+     * @return  self
+     */
+    public function setLabelClass($value = '')
+    {
+        $this->labelClass = $value;
+        return $this;
+    }
+
+    /**
+     * Sets the css class for the inline checkbox label.
+     * @param   string  $value
+     * @return  self
+     */
+    public function getLabelClass()
+    {
+        return $this->labelClass;
     }
 
     /**
@@ -171,9 +193,9 @@ class Checkbox extends Input
 
                 if ($this->inline) {
                     $output .= '<input type="checkbox" '.$this->getAttributeString().'>&nbsp;';
-                    $output .= '<label for="'.$this->getID().'">'.$label.'</label>&nbsp;&nbsp;';
+                    $output .= '<label class="'.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label>&nbsp;&nbsp;';
                 } else {
-                    $output .= '<label class="leading-normal" for="'.$this->getID().'">'.$label.'</label> ';
+                    $output .= '<label class="leading-normal '.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label> ';
                     $output .= '<input type="checkbox" '.$this->getAttributeString().'><br/>';
                 }
 
