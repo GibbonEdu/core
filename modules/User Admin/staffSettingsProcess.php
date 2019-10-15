@@ -42,6 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
             'absenceFullDayThreshold',
             'absenceHalfDayThreshold',
             'absenceNotificationGroups',
+            'absenceCommentTemplate',
             'salaryScalePositions',
             'responsibilityPosts',
             'jobOpeningDescriptionTemplate',
@@ -63,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
             $partialFail &= !$updated;
         }
     }
-   
+
     $URL .= $partialFail
         ? '&return=error2'
         : '&return=success0';
