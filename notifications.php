@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-if (!isset($_SESSION[$guid]['username'])) {
+if (!$gibbon->session->exists('username')) {
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
     echo '</div>';
@@ -29,12 +29,12 @@ if (!isset($_SESSION[$guid]['username'])) {
     }
 
     echo "<div class='linkTop'>";
-    echo "<a onclick='return confirm(\"Are you sure you want to delete these records.\")' href='".$_SESSION[$guid]['absoluteURL']."/notificationsDeleteAllProcess.php'>".__('Delete All Notifications')." <img style='vertical-align: -25%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'></a>";
+    echo "<a onclick='return confirm(\"Are you sure you want to delete these records.\")' href='".$gibbon->session->get('absoluteURL')."/notificationsDeleteAllProcess.php'>".__('Delete All Notifications')." <img style='vertical-align: -25%' src='".$gibbon->session->get('absoluteURL').'/themes/'.$gibbon->session->get('gibbonThemeName')."/img/garbage.png'></a>";
     echo '</div>';
 
     //Get and show newnotifications
     try {
-        $dataNotifications = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
+        $dataNotifications = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'), 'gibbonPersonID2' => $gibbon->session->get('gibbonPersonID'));
         $sqlNotifications = "(SELECT gibbonNotification.*, gibbonModule.name AS source FROM gibbonNotification JOIN gibbonModule ON (gibbonNotification.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonPersonID=:gibbonPersonID AND status='New')
 		UNION
 		(SELECT gibbonNotification.*, 'System' AS source FROM gibbonNotification WHERE gibbonModuleID IS NULL AND gibbonPersonID=:gibbonPersonID2 AND status='New')
@@ -100,8 +100,8 @@ if (!isset($_SESSION[$guid]['username'])) {
             echo $row['count'];
             echo '</td>';
             echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/notificationsActionProcess.php?action='.urlencode($row['actionLink']).'&gibbonNotificationID='.$row['gibbonNotificationID']."'><img title='".__('Action & Archive')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/notificationsDeleteProcess.php?gibbonNotificationID='.$row['gibbonNotificationID']."'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+            echo "<a href='".$gibbon->session->get('absoluteURL').'/notificationsActionProcess.php?action='.urlencode($row['actionLink']).'&gibbonNotificationID='.$row['gibbonNotificationID']."'><img title='".__('Action & Archive')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/plus.png'/></a> ";
+            echo "<a href='".$gibbon->session->get('absoluteURL').'/notificationsDeleteProcess.php?gibbonNotificationID='.$row['gibbonNotificationID']."'><img title='".__('Delete')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/garbage.png'/></a> ";
             echo '</td>';
             echo '</tr>';
         }
@@ -110,7 +110,7 @@ if (!isset($_SESSION[$guid]['username'])) {
 
     //Get and show newnotifications
     try {
-        $dataNotifications = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
+        $dataNotifications = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'), 'gibbonPersonID2' => $gibbon->session->get('gibbonPersonID'));
         $sqlNotifications = "(SELECT gibbonNotification.*, gibbonModule.name AS source FROM gibbonNotification JOIN gibbonModule ON (gibbonNotification.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonPersonID=:gibbonPersonID AND status='Archived')
 		UNION
 		(SELECT gibbonNotification.*, 'System' AS source FROM gibbonNotification WHERE gibbonModuleID IS NULL AND gibbonPersonID=:gibbonPersonID2 AND status='Archived')
@@ -175,8 +175,8 @@ if (!isset($_SESSION[$guid]['username'])) {
             echo $row['count'];
             echo '</td>';
             echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/notificationsActionProcess.php?action='.urlencode($row['actionLink']).'&gibbonNotificationID='.$row['gibbonNotificationID']."'><img title='".__('Action')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/notificationsDeleteProcess.php?gibbonNotificationID='.$row['gibbonNotificationID']."'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+            echo "<a href='".$gibbon->session->get('absoluteURL').'/notificationsActionProcess.php?action='.urlencode($row['actionLink']).'&gibbonNotificationID='.$row['gibbonNotificationID']."'><img title='".__('Action')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/plus.png'/></a> ";
+            echo "<a href='".$gibbon->session->get('absoluteURL').'/notificationsDeleteProcess.php?gibbonNotificationID='.$row['gibbonNotificationID']."'><img title='".__('Delete')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/garbage.png'/></a> ";
             echo '</td>';
             echo '</tr>';
         }

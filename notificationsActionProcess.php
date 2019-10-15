@@ -19,16 +19,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include './gibbon.php';
 
-$URLBack = $_SESSION[$guid]['absoluteURL'].'/index.php?q=notifications.php';
+$URLBack = $gibbon->session->get('absoluteURL').'/index.php?q=notifications.php';
 $gibbonNotificationID = $_GET['gibbonNotificationID'] ?? '';
 
-if (empty($gibbonNotificationID) || empty($_SESSION[$guid]['gibbonPersonID'])) {
+if (empty($gibbonNotificationID) || !$gibbon->session->has('gibbonPersonID')) {
     $URLBack = $URLBack.'&return=error1';
     header("Location: {$URLBack}");
     exit();
 } else {
     // Check for existence of notification, belonging to this user
-    $data = array('gibbonNotificationID' => $gibbonNotificationID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+    $data = array('gibbonNotificationID' => $gibbonNotificationID, 'gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
     $sql = "SELECT * FROM gibbonNotification WHERE gibbonPersonID=:gibbonPersonID AND gibbonNotificationID=:gibbonNotificationID";
     
     $notification = $pdo->selectOne($sql, $data);
@@ -38,10 +38,10 @@ if (empty($gibbonNotificationID) || empty($_SESSION[$guid]['gibbonPersonID'])) {
         header("Location: {$URLBack}");
         exit();
     } else {
-        $URL = $_SESSION[$guid]['absoluteURL'].$notification['actionLink'];
+        $URL = $gibbon->session->get('absoluteURL').$notification['actionLink'];
 
         //Archive notification
-        $data = array('gibbonNotificationID' => $gibbonNotificationID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+        $data = array('gibbonNotificationID' => $gibbonNotificationID, 'gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
         $sql = "UPDATE gibbonNotification SET status='Archived' WHERE gibbonPersonID=:gibbonPersonID AND gibbonNotificationID=:gibbonNotificationID";
             
         $pdo->update($sql, $data);
