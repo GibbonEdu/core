@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include './gibbon.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=notifications.php';
+$URL = $gibbon->session->get('absoluteURL').'/index.php?q=notifications.php';
 
 if (isset($_GET['gibbonNotificationID']) == false) {
     $URL = $URL.'&return=error1';
@@ -30,7 +30,7 @@ if (isset($_GET['gibbonNotificationID']) == false) {
 
     //Check for existence of notification, beloning to this user
     try {
-        $data = array('gibbonNotificationID' => $gibbonNotificationID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+        $data = array('gibbonNotificationID' => $gibbonNotificationID, 'gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
         $sql = 'SELECT * FROM gibbonNotification WHERE gibbonPersonID=:gibbonPersonID AND gibbonNotificationID=:gibbonNotificationID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
@@ -48,7 +48,7 @@ if (isset($_GET['gibbonNotificationID']) == false) {
     } else {
         //Delete notification
         try {
-            $data = array('gibbonNotificationID' => $gibbonNotificationID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+            $data = array('gibbonNotificationID' => $gibbonNotificationID, 'gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
             $sql = 'DELETE FROM gibbonNotification WHERE gibbonPersonID=:gibbonPersonID AND gibbonNotificationID=:gibbonNotificationID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
