@@ -178,7 +178,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
 
     // Get the most recent absence and pre-fill the notification group & list of people
     $recentAbsence = $staffAbsenceGateway->getMostRecentAbsenceByPerson($gibbonPersonID);
-    
+
     $notificationSetting = $container->get(SettingGateway::class)->getSettingByScope('Staff', 'absenceNotificationGroups');
     $notificationGroups = $container->get(GroupGateway::class)->selectGroupsByIDList($notificationSetting)->fetchKeyPair();
 
@@ -208,9 +208,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
             ->setParameter('resultsLimit', 10)
             ->resultsFormatter('function(item){ return "<li class=\'\'><div class=\'inline-block bg-cover w-12 h-12 ml-2 rounded-full bg-gray-200 border border-gray-400 bg-no-repeat\' style=\'background-image: url(" + item.image + ");\'></div><div class=\'inline-block px-4 truncate\'>" + item.name + "<br/><span class=\'inline-block opacity-75 truncate text-xxs\'>" + item.jobTitle + "</span></div></li>"; }');
 
+    $commentTemplate = $container->get(SettingGateway::class)->getSettingByScope('Staff', 'absenceCommentTemplate');
     $row = $form->addRow();
         $row->addLabel('comment', __('Comment'))->description(__('This message is shared with the people notified of this absence and users who manage staff absences.'));
-        $row->addTextArea('comment')->setRows(3);
+        $row->addTextArea('comment')->setRows(5)->setValue($commentTemplate);
 
     // COVERAGE
     if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php')) {
@@ -219,9 +220,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
         $row = $form->addRow()->addClass('approvalNotRequired');
             $row->addLabel('coverageRequired', __('Substitute Required'));
             $row->addYesNo('coverageRequired')->isRequired()->selected('N');
-    
+
         $form->toggleVisibilityByClass('coverageOptions')->onSelect('coverageRequired')->whenNot('N');
-            
+
         $row = $form->addRow()->addClass('coverageOptions approvalNotRequired');
             $row->addAlert(__("You'll have the option to send a coverage request after submitting this form."), 'success');
     } else {
