@@ -2031,6 +2031,7 @@ else {
 						$emailCount ++;
 						$mail->ClearAddresses();
 						$mail->AddAddress($reportEntry[4]);
+
 						//Deal with email receipt and body finalisation
 						if ($emailReceipt == 'Y') {
 							$bodyReadReceipt = "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID=$AI&gibbonPersonID=".$reportEntry[0]."&key=".$reportEntry[5]."'>".$emailReceiptText."</a>";
@@ -2044,6 +2045,21 @@ else {
 						else {
 							$bodyOut = $body;
 						}
+
+						//Deal with student names
+						$studentNames = '';
+						if ($reportEntry[7] != '') {
+							$lastComma = strrpos($reportEntry[7], ',');
+							if ($lastComma != false) {
+								$reportEntry[7] = substr_replace($reportEntry[7], ' &', $lastComma, 1);
+								$studentNames = '<i>'.__('This email relates to the following students: ').$reportEntry[7].'</i><br/><br/>';
+							}
+							else {
+								$studentNames = '<i>'.__('This email relates to the following student: ').$reportEntry[7].'</i><br/><br/>';
+							}
+						}
+						$bodyOut = $studentNames.$bodyOut;
+
 						$mail->renderBody('mail/email.twig.html', [
 							'title'  => $subject,
 							'body'   => $bodyOut
