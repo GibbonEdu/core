@@ -173,18 +173,35 @@ else {
 						$rollGroups = $result->fetchAll(\PDO::FETCH_GROUP);
 						$countTotal = 0;
 
-						//Merge gibbonPersonIDListStudent from $receipts into $recipients
-
+						// Merge gibbonPersonIDListStudent into $receipts as an array
+                        $receipts = array_map(function ($item) {
+                            $item['gibbonPersonIDListStudent'] = explode(',', $item['gibbonPersonIDListStudent']);
+                            return $item;
+                        }, $receipts);
 
 						foreach ($rollGroups as $rollGroupName => $recipients) {
 							$count = 0;
 
 							// Filter the array for only those individuals involved in the message (student or parent)
 							$recipients = array_filter($recipients, function($recipient) use (&$receipts) {
-								return array_key_exists($recipient['gibbonPersonID'], $receipts)
-									|| array_key_exists($recipient['parent1gibbonPersonID'], $receipts)
-									|| array_key_exists($recipient['parent2gibbonPersonID'], $receipts);
+                                if (array_key_exists($recipient['gibbonPersonID'], $receipts)) {
+                                    return true;
+                                }
+
+                                if (array_key_exists($recipient['parent1gibbonPersonID'], $receipts)
+                                && in_array($recipient['gibbonPersonID'], $receipts[$recipient['parent1gibbonPersonID']]['gibbonPersonIDListStudent'])) {
+                                        return true;
+                                }
+
+                                if (array_key_exists($recipient['parent2gibbonPersonID'], $receipts)
+                                && in_array($recipient['gibbonPersonID'], $receipts[$recipient['parent2gibbonPersonID']]['gibbonPersonIDListStudent'])) {
+                                        return true;
+                                }
+
+                                return false;
 							});
+
+							//print_r($recipients);exit;
 
 							// Skip this roll group if there's no involved individuals
 							if (empty($recipients)) continue;
@@ -200,8 +217,8 @@ else {
 								$header->addContent(__('Parent 2'))->addClass('mediumWidth');
 
 							foreach ($recipients as $recipient) {
-								print_r($recipient);
-								echo "<br/><br/>";
+								// print_r($recipient);
+								// echo "<br/><br/>";
 
 								$countTotal++;
 								$count++;

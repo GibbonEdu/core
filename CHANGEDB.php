@@ -944,5 +944,5 @@ INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`val
 UPDATE gibbonSetting SET value='br[style],strong[style],em[style],span[style],p[style],address[style],pre[style|class],h1[style],h2[style],h3[style],h4[style],h5[style],h6[style],table[style],thead[style],tbody[style],tfoot[style],tr[style],td[style|colspan|rowspan],ol[style],ul[style],li[style],blockquote[style],a[style|target|href],img[style|class|src|width|height],video[style],source[style],hr[style],iframe[style|width|height|src|frameborder|allowfullscreen],embed[style],div[style],sup[style],sub[style],code[style|class],details[style|class],summary[style|class]' WHERE name='allowableHTML' AND scope='System';end
 ALTER TABLE `gibbonStaff` DROP `smartWorkflowHelp`;end
 INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES ('Staff', 'absenceCommentTemplate', 'Absence Comment Template', 'Default text for the Comment field in New Absence.', '');end
-ALTER TABLE `gibbonMessengerReceipt` ADD `gibbonPersonIDListStudent` TEXT NULL DEFAULT NULL AFTER `confirmedTimestamp`, ADD `nameStudent` TEXT NULL DEFAULT NULL AFTER `gibbonPersonIDListStudent`;end
+ALTER TABLE `gibbonMessengerReceipt` ADD `gibbonPersonIDListStudent` TEXT NULL DEFAULT NULL AFTER `confirmedTimestamp`;end
 ";
