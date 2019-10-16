@@ -51,8 +51,8 @@ function reportAdd($report, $emailReceipt, $gibbonPersonID, $targetType, $target
             $report[$count][7] = $nameStudent;
         }
         else { //Entry is not unique, so apend student details
-            $report[$uniqueCount][6] .= ','.$gibbonPersonIDListStudent;
-            $report[$uniqueCount][7] .= ','.$nameStudent;
+            $report[$uniqueCount][6] = ($report[$uniqueCount][6] == '') ? $gibbonPersonIDListStudent : $report[$uniqueCount][6].','.$gibbonPersonIDListStudent;
+            $report[$uniqueCount][7] = ($report[$uniqueCount][7] == '') ? $nameStudent : $report[$uniqueCount][7].','.$nameStudent;
         }
     }
 
