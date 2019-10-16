@@ -46,7 +46,7 @@ else {
 		echo '<h2>';
 		echo __('Report Data');
 		echo '</h2>';
-		
+
 		$nonConfirm = 0;
 		$noConfirm = 0;
 		$yesConfirm = 0;
@@ -158,7 +158,7 @@ else {
 						//Store receipt for this message data in an array
 						try {
 							$dataReceipts = array('gibbonMessengerID' => $gibbonMessengerID);
-							$sqlReceipts = "SELECT gibbonPersonID, gibbonMessengerReceiptID, confirmed, `key` FROM gibbonMessengerReceipt WHERE gibbonMessengerID=:gibbonMessengerID";
+							$sqlReceipts = "SELECT gibbonPersonID, gibbonMessengerReceiptID, confirmed, `key`, gibbonPersonIDListStudent FROM gibbonMessengerReceipt WHERE gibbonMessengerID=:gibbonMessengerID";
 							$resultReceipts = $connection2->prepare($sqlReceipts);
 							$resultReceipts->execute($dataReceipts);
 						} catch (PDOException $e) {}
@@ -172,6 +172,9 @@ else {
 
 						$rollGroups = $result->fetchAll(\PDO::FETCH_GROUP);
 						$countTotal = 0;
+
+						//Merge gibbonPersonIDListStudent from $receipts into $recipients
+
 
 						foreach ($rollGroups as $rollGroupName => $recipients) {
 							$count = 0;
@@ -197,6 +200,9 @@ else {
 								$header->addContent(__('Parent 2'))->addClass('mediumWidth');
 
 							foreach ($recipients as $recipient) {
+								print_r($recipient);
+								echo "<br/><br/>";
+
 								$countTotal++;
 								$count++;
 

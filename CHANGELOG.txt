@@ -44,6 +44,7 @@ v19.0.00
         Behaviour: added settings to toggle notifications for Tutors and Education Assistants
         Form Groups: added staff-only summary of Year Groups after Form Group listing
         Messenger: added a Copy to Next Year bulk-option for Manage Groups
+        Messenger: eliminated non-recipient siblings from Send Report
         Staff: added a Weekly View and Daily View to Substitute Availability report
         Staff: added a Substitute Information setting for displaying text on My Coverage page
         Staff: added a Staff Coverage Summary report with total days covered per substitute

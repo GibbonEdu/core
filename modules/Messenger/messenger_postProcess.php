@@ -424,7 +424,7 @@ else {
 								if ($parents=="Y") {
 									try {
 										$dataStudents=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonYearGroupID"=>$t);
-										$sqlStudents="SELECT gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonYearGroupID=:gibbonYearGroupID" ;
+										$sqlStudents="SELECT gibbonPerson.gibbonPersonID, surname, preferredName FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonYearGroupID=:gibbonYearGroupID" ;
 										$resultStudents=$connection2->prepare($sqlStudents);
 										$resultStudents->execute($dataStudents);
 									}
@@ -446,7 +446,7 @@ else {
 											}
 											catch(PDOException $e) { }
 											while ($rowEmail=$resultEmail->fetch()) {
-												$report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Year Group', $t, 'Email', $rowEmail["email"]);
+												$report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Year Group', $t, 'Email', $rowEmail["email"], $rowStudents['gibbonPersonID'], Format::name('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student'));
 											}
 										}
 									}
@@ -2080,10 +2080,11 @@ else {
 			foreach ($report as $reportEntry) {
 				try {
 					$confirmed = null ;
-					if ($reportEntry[5] != '')
+					if ($reportEntry[5] != '') {
 						$confirmed = 'N';
-					$data=array("gibbonMessengerID"=>$AI, "gibbonPersonID"=>$reportEntry[0], "targetType"=>$reportEntry[1], "targetID"=>$reportEntry[2], "contactType"=>$reportEntry[3], "contactDetail"=>$reportEntry[4], "key"=>$reportEntry[5], "confirmed" => $confirmed);
-					$sql="INSERT INTO gibbonMessengerReceipt SET gibbonMessengerID=:gibbonMessengerID, gibbonPersonID=:gibbonPersonID, targetType=:targetType, targetID=:targetID, contactType=:contactType, contactDetail=:contactDetail, `key`=:key, confirmed=:confirmed" ;
+					}
+					$data=array("gibbonMessengerID"=>$AI, "gibbonPersonID"=>$reportEntry[0], "targetType"=>$reportEntry[1], "targetID"=>$reportEntry[2], "contactType"=>$reportEntry[3], "contactDetail"=>$reportEntry[4], "key"=>$reportEntry[5], "confirmed" => $confirmed, "gibbonPersonIDListStudent" => $reportEntry[6], "nameStudent" => $reportEntry[7]);
+					$sql="INSERT INTO gibbonMessengerReceipt SET gibbonMessengerID=:gibbonMessengerID, gibbonPersonID=:gibbonPersonID, targetType=:targetType, targetID=:targetID, contactType=:contactType, contactDetail=:contactDetail, `key`=:key, confirmed=:confirmed, gibbonPersonIDListStudent=:gibbonPersonIDListStudent, nameStudent=:nameStudent" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}
