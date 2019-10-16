@@ -175,7 +175,7 @@ else {
 
 						// Merge gibbonPersonIDListStudent into $receipts as an array
                         $receipts = array_map(function ($item) {
-                            $item['gibbonPersonIDListStudent'] = explode(',', $item['gibbonPersonIDListStudent']);
+                            $item['gibbonPersonIDListStudent'] = (empty($item['gibbonPersonIDListStudent'])) ? null : explode(',', $item['gibbonPersonIDListStudent']);
                             return $item;
                         }, $receipts);
 
@@ -189,12 +189,12 @@ else {
                                 }
 
                                 if (array_key_exists($recipient['parent1gibbonPersonID'], $receipts)
-                                && in_array($recipient['gibbonPersonID'], $receipts[$recipient['parent1gibbonPersonID']]['gibbonPersonIDListStudent'])) {
+                                && (is_null($receipts[$recipient['parent1gibbonPersonID']]['gibbonPersonIDListStudent']) || in_array($recipient['gibbonPersonID'], $receipts[$recipient['parent1gibbonPersonID']]['gibbonPersonIDListStudent']))) {
                                         return true;
                                 }
 
                                 if (array_key_exists($recipient['parent2gibbonPersonID'], $receipts)
-                                && in_array($recipient['gibbonPersonID'], $receipts[$recipient['parent2gibbonPersonID']]['gibbonPersonIDListStudent'])) {
+                                && (is_null($receipts[$recipient['parent2gibbonPersonID']]['gibbonPersonIDListStudent']) || in_array($recipient['gibbonPersonID'], $receipts[$recipient['parent2gibbonPersonID']]['gibbonPersonIDListStudent']))) {
                                         return true;
                                 }
 
