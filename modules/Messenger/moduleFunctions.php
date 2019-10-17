@@ -20,16 +20,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 
 //Helps builds report array for setting gibbonMessengerReceipt
-function reportAdd($report, $emailReceipt, $gibbonPersonID, $targetType, $targetID, $contactType, $contactDetail)
+function reportAdd($report, $emailReceipt, $gibbonPersonID, $targetType, $targetID, $contactType, $contactDetail, $gibbonPersonIDListStudent = null, $nameStudent = null)
 {
     if ($contactDetail != '' AND is_null($contactDetail) == false) {
+        $count = 0;
         $unique = true;
+        $uniqueCount = 0;
         foreach ($report as $reportEntry) {
-            if ($reportEntry[4] == $contactDetail)
+            if ($reportEntry[4] == $contactDetail && $unique) {
                 $unique = false;
+                $uniqueCount = $count;
+            }
+            $count ++;
         }
 
-        if ($unique) {
+        if ($unique) { //Entry is unique, so create
             $count = count($report);
             $report[$count][0] = $gibbonPersonID;
             $report[$count][1] = $targetType;
@@ -42,6 +47,12 @@ function reportAdd($report, $emailReceipt, $gibbonPersonID, $targetType, $target
             else {
                 $report[$count][5] = null;
             }
+            $report[$count][6] = $gibbonPersonIDListStudent;
+            $report[$count][7] = $nameStudent;
+        }
+        else { //Entry is not unique, so apend student details
+            $report[$uniqueCount][6] = (empty($report[$uniqueCount][6])) ? $gibbonPersonIDListStudent : (!empty($gibbonPersonIDListStudent) ? $report[$uniqueCount][6].','.$gibbonPersonIDListStudent : $report[$uniqueCount][6]);
+            $report[$uniqueCount][7] = (empty($report[$uniqueCount][7])) ? $nameStudent : (!empty($nameStudent) ? $report[$uniqueCount][7].', '.$nameStudent : $report[$uniqueCount][7]);
         }
     }
 
