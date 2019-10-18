@@ -945,4 +945,5 @@ UPDATE gibbonSetting SET value='br[style],strong[style],em[style],span[style],p[
 ALTER TABLE `gibbonStaff` DROP `smartWorkflowHelp`;end
 INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES ('Staff', 'absenceCommentTemplate', 'Absence Comment Template', 'Default text for the Comment field in New Absence.', '');end
 ALTER TABLE `gibbonMessengerReceipt` ADD `gibbonPersonIDListStudent` TEXT NULL DEFAULT NULL AFTER `confirmedTimestamp`;end
+UPDATE gibboni18n SET active='Y' WHERE code='de_DE';end
 ";
