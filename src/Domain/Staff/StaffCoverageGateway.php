@@ -160,7 +160,7 @@ class StaffCoverageGateway extends QueryableGateway
             ->groupBy(['gibbonStaffCoverage.gibbonStaffCoverageID']);
 
         if (!empty($substituteType)) {
-            $query->where('(gibbonStaffCoverage.substituteTypes IS NULL OR FIND_IN_SET(:substituteType, gibbonStaffCoverage.substituteTypes))')
+            $query->where("(gibbonStaffCoverage.substituteTypes = '' OR gibbonStaffCoverage.substituteTypes IS NULL OR FIND_IN_SET(:substituteType, gibbonStaffCoverage.substituteTypes))")
                   ->bindValue('substituteType', $substituteType);
         }
 
