@@ -19,6 +19,7 @@ CHANGELOG
 v19.0.00
 --------
     Headlines
+        Activated German as an available language
 
     Changes With Important Notices
         System: split Daily Attendance CLI into separate form group and class scripts
