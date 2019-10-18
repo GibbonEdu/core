@@ -248,7 +248,7 @@ else {
 
 		//Individual naming
 		$row = $form->addRow();
-			$row->addLabel('individualNaming', __('Individual Naming'))->description(__('the names of relevant students will be preppended to messages.'));
+			$row->addLabel('individualNaming', __('Individual Naming'))->description(__('The names of relevant students will be prepended to messages.'));
 			$row->addYesNoRadio('individualNaming')->checked('Y')->required();
 
 
