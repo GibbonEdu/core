@@ -100,10 +100,12 @@ else {
 		$body=stripslashes($_POST["body"]) ;
 		$emailReceipt = $_POST["emailReceipt"] ;
 		$emailReceiptText = null;
-		if (isset($_POST["emailReceiptText"]))
+		if (isset($_POST["emailReceiptText"])) {
 			$emailReceiptText = $_POST["emailReceiptText"] ;
+		}
+		$individualNaming = $_POST["individualNaming"] ;
 
-		if ($subject == "" OR $body == "" OR ($email == "Y" AND $from == "") OR $emailReceipt == '' OR ($emailReceipt == "Y" AND $emailReceiptText == "")) {
+		if ($subject == "" OR $body == "" OR ($email == "Y" AND $from == "") OR $emailReceipt == '' OR ($emailReceipt == "Y" AND $emailReceiptText == "") OR $individualNaming == "") {
 			//Fail 3
 			$URL.="&addReturn=fail3" ;
 			header("Location: {$URL}");
@@ -2047,18 +2049,20 @@ else {
 						}
 
 						//Deal with student names
-						$studentNames = '';
-						if ($reportEntry[7] != '') {
-							$lastComma = strrpos($reportEntry[7], ',');
-							if ($lastComma != false) {
-								$reportEntry[7] = substr_replace($reportEntry[7], ' &', $lastComma, 1);
-								$studentNames = '<i>'.__('This email relates to the following students: ').$reportEntry[7].'</i><br/><br/>';
+						if ($individualNaming == "Y") {
+							$studentNames = '';
+							if ($reportEntry[7] != '') {
+								$lastComma = strrpos($reportEntry[7], ',');
+								if ($lastComma != false) {
+									$reportEntry[7] = substr_replace($reportEntry[7], ' &', $lastComma, 1);
+									$studentNames = '<i>'.__('This email relates to the following students: ').$reportEntry[7].'</i><br/><br/>';
+								}
+								else {
+									$studentNames = '<i>'.__('This email relates to the following student: ').$reportEntry[7].'</i><br/><br/>';
+								}
 							}
-							else {
-								$studentNames = '<i>'.__('This email relates to the following student: ').$reportEntry[7].'</i><br/><br/>';
-							}
+							$bodyOut = $studentNames.$bodyOut;
 						}
-						$bodyOut = $studentNames.$bodyOut;
 
 						$mail->renderBody('mail/email.twig.html', [
 							'title'  => $subject,

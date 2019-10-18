@@ -144,7 +144,7 @@ else {
 				$form->toggleVisibilityByClass('sms')->onRadio('sms')->when('Y');
 
 				$smsAlert = __('SMS messages are sent to local and overseas numbers, but not all countries are supported. Please see the SMS Gateway provider\'s documentation or error log to see which countries are not supported. The subject does not get sent, and all HTML tags are removed. Each message, to each recipient, will incur a charge (dependent on your SMS gateway provider). Messages over 140 characters will get broken into smaller messages, and will cost more.');
-                
+
                 $sms = $container->get(SMS::class);
 
                 if ($smsCredits = $sms->getCreditBalance()) {
@@ -225,25 +225,31 @@ else {
 	        $col->addEditor('body', $guid)->required()->setRows(20)->showMedia(true)->setValue($signature);
 
 
+		$form->addRow()->addHeading(__('Customisation'));
+
 		//READ RECEIPTS
 		if (!isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_readReceipts")) {
 			$form->addHiddenValue('emailReceipt', 'N');
 		}
 		else {
-			$form->addRow()->addHeading(__('Email Read Receipts'));
-			$form->addRow()->addContent(__('With read receipts enabled, the text [confirmLink] can be included in a message to add a unique, login-free read receipt link. If [confirmLink] is not included, the link will be appended to the end of the message.'));
-
 			$row = $form->addRow();
 				$row->addLabel('emailReceipt', __('Enable Read Receipts'))->description(__('Each email recipient will receive a personalised confirmation link.'));
 				$row->addYesNoRadio('emailReceipt')->checked('N')->required();
 
 			$form->toggleVisibilityByClass('emailReceipt')->onRadio('emailReceipt')->when('Y');
 
+			$form->addRow()->addClass('emailReceipt')
+				->addContent(__('With read receipts enabled, the text [confirmLink] can be included in a message to add a unique, login-free read receipt link. If [confirmLink] is not included, the link will be appended to the end of the message.'));
+
 			$row = $form->addRow()->addClass('emailReceipt');
 				$row->addLabel('emailReceiptText', __('Link Text'))->description(__('Confirmation link text to display to recipient.'));
 				$row->addTextArea('emailReceiptText')->setRows(4)->required()->setValue(__('By clicking on this link I confirm that I have read, and agree to, the text contained within this email, and give consent for my child to participate.'));
-
 		}
+
+		//Individual naming
+		$row = $form->addRow();
+			$row->addLabel('individualNaming', __('Individual Naming'))->description(__('the names of relevant students will be preppended to messages.'));
+			$row->addYesNoRadio('individualNaming')->checked('N')->required();
 
 
 		//TARGETS
@@ -558,7 +564,7 @@ else {
                 $row->addLabel('attendanceParents', __('Include Parents?'));
                 $row->addYesNo('attendanceParents')->selected('Y');
 		}
-		
+
 		 // Group
 		 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_any")) {
             $row = $form->addRow();
