@@ -577,7 +577,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                 ->filterBy('endDate', date('Y-m-d', $endDayStamp))
                 ->filterBy('status', 'Accepted')
                 ->pageSize(0);
-            $coverageList = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID);
+            $coverageList = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID, false);
 
             foreach ($coverageList as $coverage) {
                 $fullName = Format::name($coverage['titleAbsence'], $coverage['preferredNameAbsence'], $coverage['surnameAbsence'], 'Staff', false, true);
