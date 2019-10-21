@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include './gibbon.php';
 
 //Check to see if academic year id variables are set, if not set them
-if (isset($_SESSION[$guid]['gibbonAcademicYearID']) == false or isset($_SESSION[$guid]['gibbonSchoolYearName']) == false) {
+if ($gibbon->session->exists('gibbonAcademicYearID') == false or $gibbon->session->exists('gibbonSchoolYearName') == false) {
     setCurrentSchoolYear($guid, $connection2);
 }
 
@@ -34,7 +34,7 @@ $gibbonThemeIDPersonal = !empty($_POST['gibbonThemeIDPersonal'])? $_POST['gibbon
 $gibboni18nIDPersonal = !empty($_POST['gibboni18nIDPersonal'])? $_POST['gibboni18nIDPersonal'] : null;
 $receiveNotificationEmails = isset($_POST['receiveNotificationEmails'])? $_POST['receiveNotificationEmails'] : 'N';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=preferences.php';
+$URL = $gibbon->session->get('absoluteURL').'/index.php?q=preferences.php';
 
 $validated = true;
 
@@ -55,7 +55,7 @@ if (!$validated) {
 }
 
 try {
-    $data = array('calendarFeedPersonal' => $calendarFeedPersonal, 'personalBackground' => $personalBackground, 'gibbonThemeIDPersonal' => $gibbonThemeIDPersonal, 'gibboni18nIDPersonal' => $gibboni18nIDPersonal, 'receiveNotificationEmails' => $receiveNotificationEmails, 'username' => $_SESSION[$guid]['username']);
+    $data = array('calendarFeedPersonal' => $calendarFeedPersonal, 'personalBackground' => $personalBackground, 'gibbonThemeIDPersonal' => $gibbonThemeIDPersonal, 'gibboni18nIDPersonal' => $gibboni18nIDPersonal, 'receiveNotificationEmails' => $receiveNotificationEmails, 'username' => $gibbon->session->get('username'));
     $sql = 'UPDATE gibbonPerson SET calendarFeedPersonal=:calendarFeedPersonal, personalBackground=:personalBackground, gibbonThemeIDPersonal=:gibbonThemeIDPersonal, gibboni18nIDPersonal=:gibboni18nIDPersonal, receiveNotificationEmails=:receiveNotificationEmails WHERE (username=:username)';
     $result = $connection2->prepare($sql);
     $result->execute($data);
@@ -66,11 +66,11 @@ try {
 }
 
 //Update personal preferences in session
-$_SESSION[$guid]['calendarFeedPersonal'] = $calendarFeedPersonal;
-$_SESSION[$guid]['personalBackground'] = $personalBackground;
-$_SESSION[$guid]['gibbonThemeIDPersonal'] = $gibbonThemeIDPersonal;
-$_SESSION[$guid]['gibboni18nIDPersonal'] = $gibboni18nIDPersonal;
-$_SESSION[$guid]['receiveNotificationEmails'] = $receiveNotificationEmails;
+$gibbon->session->set('calendarFeedPersonal', $calendarFeedPersonal);
+$gibbon->session->set('personalBackground', $personalBackground);
+$gibbon->session->set('gibbonThemeIDPersonal', $gibbonThemeIDPersonal);
+$gibbon->session->set('gibboni18nIDPersonal', $gibboni18nIDPersonal);
+$gibbon->session->set('receiveNotificationEmails', $receiveNotificationEmails);
 
 //Update language settings in session (to personal preference if set, or system default if not)
 if (!is_null($gibboni18nIDPersonal)) {
@@ -99,6 +99,6 @@ if (!is_null($gibboni18nIDPersonal)) {
     }
 }
 
-$_SESSION[$guid]['pageLoads'] = null;
+$gibbon->session->set('pageLoads', null);
 $URL .= '&return=success0';
 header("Location: {$URL}");
