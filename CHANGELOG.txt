@@ -47,7 +47,7 @@ v19.0.00
         Messenger: added a Copy to Next Year bulk-option for Manage Groups
         Messenger: eliminated non-recipient siblings from Send Report
         Messenger: addition of student name(s) to emails sent to parents
-        Messenger: adjust the default sending options for non-staff users
+        Messenger: adjusted the default sending options for non-staff users
         Staff: added a Weekly View and Daily View to Substitute Availability report
         Staff: added a Substitute Information setting for displaying text on My Coverage page
         Staff: added a Staff Coverage Summary report with total days covered per substitute
@@ -74,6 +74,7 @@ v19.0.00
         Finance: fixed missing payment info in invoice receipt email for multiple partial payments
         Library: set Bookable to No by default on Add record screen
         Messenger: fixed bug when sending parent and student SMS for Attendance status
+        Messenger: fixed bug where users could create a message with no available delivery options
         Planner: fixed non-functional Smart Block Template setting
         Planner: fixed Unit Planner bug causing actions to appear in Classes table for newly created units
         Staff: fixed Cancel Coverage button not available for future coverage
