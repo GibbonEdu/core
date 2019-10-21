@@ -78,7 +78,8 @@ v19.0.00
         Staff: fixed Cancel Coverage button not available for future coverage
         Staff: fixed Delete Staff Absence to also delete any related coverage
         Staff: limited open coverage requests to the type of sub requested
-        Staff: fix staff coverage date not removed when deleting absence date
+        Staff: fixed staff coverage date not removed when deleting absence date
+        Staff: fixed multi-day coverage only showing one day on the timetable
         Students: adjusted official name size in ID card for long-named students
         Students: fixed timetable chooser not working on student profile pages
 
