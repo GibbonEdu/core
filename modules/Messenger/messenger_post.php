@@ -73,19 +73,26 @@ else {
 				print $addReturnMessage;
 			print "</div>" ;
 		}
-
-		print "<div class='warning'>" ;
-			print sprintf(__('Each family in Gibbon must have one parent who is contact priority 1, and who must be enabled to receive email and SMS messages from %1$s. As a result, when targetting parents, you can be fairly certain that messages should get through to each family.'), $_SESSION[$guid]["organisationNameShort"]) ;
-		print "</div>" ;
-
+        
 		$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/messenger_postProcess.php');
-
 		$form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
 		//DELIVERY MODE
-		$form->addRow()->addHeading(__('Delivery Mode'));
+        $form->addRow()->addHeading(__('Delivery Mode'));
+        
+        $deliverByEmail = isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_byEmail");
+        $deliverByWall = isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_byMessageWall");
+        $deliverBySMS = isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_bySMS");
+
+        if (!$deliverByEmail && !$deliverByWall && !$deliverBySMS) {
+            $page->addError(__('You do not have access to this action.'));
+            return;
+        }
+
+        $page->addWarning(sprintf(__('Each family in Gibbon must have one parent who is contact priority 1, and who must be enabled to receive email and SMS messages from %1$s. As a result, when targetting parents, you can be fairly certain that messages should get through to each family.'), $_SESSION[$guid]["organisationNameShort"]));
+
 		//Delivery by email
-		if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_byEmail")) {
+		if ($deliverByEmail) {
 			$row = $form->addRow();
 				$row->addLabel('email', __('Email'))->description(__('Deliver this message to user\'s primary email account?'));
 				$row->addYesNoRadio('email')->checked('Y')->required();
@@ -111,7 +118,7 @@ else {
 		}
 
 		//Delivery by message wall
-		if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_byMessageWall")) {
+		if ($deliverByWall) {
 			$row = $form->addRow();
 				$row->addLabel('messageWall', __('Message Wall'))->description(__('Place this message on user\'s message wall?'));
 				$row->addYesNoRadio('messageWall')->checked('N')->required();
@@ -127,7 +134,7 @@ else {
 		}
 
         //Delivery by SMS
-		if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_bySMS")) {
+		if ($deliverBySMS) {
             $smsGateway = getSettingByScope($connection2, 'Messenger', 'smsGateway');
 			$smsUsername = getSettingByScope($connection2, 'Messenger', 'smsUsername');
 
@@ -225,13 +232,12 @@ else {
 	        $col->addEditor('body', $guid)->required()->setRows(20)->showMedia(true)->setValue($signature);
 
 
-		$form->addRow()->addHeading(__('Customisation'));
-
 		//READ RECEIPTS
 		if (!isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_readReceipts")) {
 			$form->addHiddenValue('emailReceipt', 'N');
-		}
-		else {
+		} else {
+            $form->addRow()->addHeading(__('Customisation'));
+
 			$row = $form->addRow();
 				$row->addLabel('emailReceipt', __('Enable Read Receipts'))->description(__('Each email recipient will receive a personalised confirmation link.'));
 				$row->addYesNoRadio('emailReceipt')->checked('N')->required();
@@ -246,15 +252,24 @@ else {
 				$row->addTextArea('emailReceiptText')->setRows(4)->required()->setValue(__('By clicking on this link I confirm that I have read, and agree to, the text contained within this email, and give consent for my child to participate.'));
 		}
 
-		//Individual naming
-		$row = $form->addRow();
-			$row->addLabel('individualNaming', __('Individual Naming'))->description(__('The names of relevant students will be prepended to messages.'));
-			$row->addYesNoRadio('individualNaming')->checked('Y')->required();
+        $roleCategory = getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2);
 
+        //Individual naming
+        if ($roleCategory == 'Staff') {
+            $row = $form->addRow();
+                $row->addLabel('individualNaming', __('Individual Naming'))->description(__('The names of relevant students will be prepended to messages.'));
+                $row->addYesNoRadio('individualNaming')->checked('Y')->required();
+        } else {
+            $form->addHiddenValue('individualNaming', 'N');
+        }
 
 		//TARGETS
 		$form->addRow()->addHeading(__('Targets'));
-		$roleCategory = getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2);
+        
+        $defaultSendStaff = ($roleCategory == 'Staff' || $roleCategory == 'Student')? 'Y' : 'N';
+        $defaultSendStudents = ($roleCategory == 'Staff' || $roleCategory == 'Student')? 'Y' : 'N';
+        $defaultSendParents = ($roleCategory == 'Parent')? 'Y' : 'N';
+
 		//Role
 		if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_role")) {
 			$row = $form->addRow();
@@ -299,16 +314,16 @@ else {
 
 			$row = $form->addRow()->addClass('yearGroup hiddenReveal');
 		        $row->addLabel('yearGroupsStaff', __('Include Staff?'));
-				$row->addYesNo('yearGroupsStaff')->selected('Y');
+				$row->addYesNo('yearGroupsStaff')->selected($defaultSendStaff);
 
 			$row = $form->addRow()->addClass('yearGroup hiddenReveal');
 		        $row->addLabel('yearGroupsStudents', __('Include Students?'));
-				$row->addYesNo('yearGroupsStudents')->selected('Y');
+				$row->addYesNo('yearGroupsStudents')->selected($defaultSendStudents);
 
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_yearGroups_parents")) {
 				$row = $form->addRow()->addClass('yearGroup hiddenReveal');
 			        $row->addLabel('yearGroupsParents', __('Include Parents?'));
-					$row->addYesNo('yearGroupsParents')->selected('N');
+					$row->addYesNo('yearGroupsParents')->selected($defaultSendParents);
 			}
 		}
 
@@ -340,16 +355,16 @@ else {
 
 			$row = $form->addRow()->addClass('rollGroup hiddenReveal');
 		        $row->addLabel('rollGroupsStaff', __('Include Staff?'));
-				$row->addYesNo('rollGroupsStaff')->selected('Y');
+				$row->addYesNo('rollGroupsStaff')->selected($defaultSendStaff);
 
 			$row = $form->addRow()->addClass('rollGroup hiddenReveal');
 		        $row->addLabel('rollGroupsStudents', __('Include Students?'));
-				$row->addYesNo('rollGroupsStudents')->selected('Y');
+				$row->addYesNo('rollGroupsStudents')->selected($defaultSendStudents);
 
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_rollGroups_parents")) {
 				$row = $form->addRow()->addClass('rollGroup hiddenReveal');
 			        $row->addLabel('rollGroupsParents', __('Include Parents?'));
-					$row->addYesNo('rollGroupsParents')->selected('N');
+					$row->addYesNo('rollGroupsParents')->selected($defaultSendParents);
 			}
         }
 
@@ -375,16 +390,16 @@ else {
 
 			$row = $form->addRow()->addClass('course hiddenReveal');
 		        $row->addLabel('coursesStaff', __('Include Staff?'));
-				$row->addYesNo('coursesStaff')->selected('Y');
+				$row->addYesNo('coursesStaff')->selected($defaultSendStaff);
 
 			$row = $form->addRow()->addClass('course hiddenReveal');
 		        $row->addLabel('coursesStudents', __('Include Students?'));
-				$row->addYesNo('coursesStudents')->selected('Y');
+				$row->addYesNo('coursesStudents')->selected($defaultSendStudents);
 
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_parents")) {
 				$row = $form->addRow()->addClass('course hiddenReveal');
 			        $row->addLabel('coursesParents', __('Include Parents?'));
-					$row->addYesNo('coursesParents')->selected('N');
+					$row->addYesNo('coursesParents')->selected($defaultSendParents);
 			}
         }
 
@@ -410,16 +425,16 @@ else {
 
 			$row = $form->addRow()->addClass('class hiddenReveal');
 		        $row->addLabel('classesStaff', __('Include Staff?'));
-				$row->addYesNo('classesStaff')->selected('Y');
+				$row->addYesNo('classesStaff')->selected($defaultSendStaff);
 
 			$row = $form->addRow()->addClass('class hiddenReveal');
 		        $row->addLabel('classesStudents', __('Include Students?'));
-				$row->addYesNo('classesStudents')->selected('Y');
+				$row->addYesNo('classesStudents')->selected($defaultSendStudents);
 
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_parents")) {
 				$row = $form->addRow()->addClass('class hiddenReveal');
 			        $row->addLabel('classesParents', __('Include Parents?'));
-					$row->addYesNo('classesParents')->selected('N');
+					$row->addYesNo('classesParents')->selected($defaultSendParents);
 			}
         }
 
@@ -449,16 +464,16 @@ else {
 
 			$row = $form->addRow()->addClass('activity hiddenReveal');
 		        $row->addLabel('activitiesStaff', __('Include Staff?'));
-				$row->addYesNo('activitiesStaff')->selected('Y');
+				$row->addYesNo('activitiesStaff')->selected($defaultSendStaff);
 
 			$row = $form->addRow()->addClass('activity hiddenReveal');
 		        $row->addLabel('activitiesStudents', __('Include Students?'));
-				$row->addYesNo('activitiesStudents')->selected('Y');
+				$row->addYesNo('activitiesStudents')->selected($defaultSendStudents);
 
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_parents")) {
 				$row = $form->addRow()->addClass('activity hiddenReveal');
 			        $row->addLabel('activitiesParents', __('Include Parents?'));
-					$row->addYesNo('activitiesParents')->selected('N');
+					$row->addYesNo('activitiesParents')->selected($defaultSendParents);
 			}
         }
 
@@ -511,16 +526,16 @@ else {
 
 			$row = $form->addRow()->addClass('transport hiddenReveal');
 		        $row->addLabel('transportStaff', __('Include Staff?'));
-				$row->addYesNo('transportStaff')->selected('Y');
+				$row->addYesNo('transportStaff')->selected($defaultSendStaff);
 
 			$row = $form->addRow()->addClass('transport hiddenReveal');
 		        $row->addLabel('transportStudents', __('Include Students?'));
-				$row->addYesNo('transportStudents')->selected('Y');
+				$row->addYesNo('transportStudents')->selected($defaultSendStudents);
 
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_transport_parents")) {
 				$row = $form->addRow()->addClass('transport hiddenReveal');
 			        $row->addLabel('transportParents', __('Include Parents?'));
-					$row->addYesNo('transportParents')->selected('N');
+					$row->addYesNo('transportParents')->selected($defaultSendParents);
 			}
         }
 
@@ -591,16 +606,16 @@ else {
 
 			$row = $form->addRow()->addClass('messageGroup hiddenReveal');
 		        $row->addLabel('groupsStaff', __('Include Staff?'));
-				$row->addYesNo('groupsStaff')->selected('Y');
+				$row->addYesNo('groupsStaff')->selected($defaultSendStaff);
 
 			$row = $form->addRow()->addClass('messageGroup hiddenReveal');
 		        $row->addLabel('groupsStudents', __('Include Students?'));
-				$row->addYesNo('groupsStudents')->selected('Y');
+				$row->addYesNo('groupsStudents')->selected($defaultSendStudents);
 
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_parents")) {
 				$row = $form->addRow()->addClass('messageGroup hiddenReveal');
 			        $row->addLabel('groupsParents', __('Include Parents?'))->description('Parents who are members, and parents of student members.');
-					$row->addYesNo('groupsParents')->selected('N');
+					$row->addYesNo('groupsParents')->selected($defaultSendParents);
 			}
         }
 
