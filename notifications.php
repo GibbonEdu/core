@@ -17,6 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+
 if (!$gibbon->session->exists('username')) {
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
@@ -32,154 +36,67 @@ if (!$gibbon->session->exists('username')) {
     echo "<a onclick='return confirm(\"Are you sure you want to delete these records.\")' href='".$gibbon->session->get('absoluteURL')."/notificationsDeleteAllProcess.php'>".__('Delete All Notifications')." <img style='vertical-align: -25%' src='".$gibbon->session->get('absoluteURL').'/themes/'.$gibbon->session->get('gibbonThemeName')."/img/garbage.png'></a>";
     echo '</div>';
 
-    //Get and show newnotifications
-    try {
-        $dataNotifications = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'), 'gibbonPersonID2' => $gibbon->session->get('gibbonPersonID'));
-        $sqlNotifications = "(SELECT gibbonNotification.*, gibbonModule.name AS source FROM gibbonNotification JOIN gibbonModule ON (gibbonNotification.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonPersonID=:gibbonPersonID AND status='New')
-		UNION
-		(SELECT gibbonNotification.*, 'System' AS source FROM gibbonNotification WHERE gibbonModuleID IS NULL AND gibbonPersonID=:gibbonPersonID2 AND status='New')
-		ORDER BY timestamp DESC, source, text";
-        $resultNotifications = $connection2->prepare($sqlNotifications);
-        $resultNotifications->execute($dataNotifications);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
+    
+    // Notifications
+    $notificationGateway = $container->get(NotificationGateway::class);
+    
+    $criteria = $notificationGateway->newQueryCriteria()
+        ->fromPOST('notifications');
 
-    echo '<h2>';
-    echo __('New Notifications')." <span style='font-size: 65%; font-style: italic; font-weight: normal'> x".$resultNotifications->rowCount().'</span>';
-    echo '</h2>';
+    $notifications = $notificationGateway->queryNotificationsByPerson($criteria, $gibbon->session->get('gibbonPersonID'));
 
-    echo "<table cellspacing='0' style='width: 100%'>";
-    echo "<tr class='head'>";
-    echo "<th style='width: 18%'>";
-    echo __('Source');
-    echo '</th>';
-    echo "<th style='width: 12%'>";
-    echo __('Date');
-    echo '</th>';
-    echo "<th style='width: 51%'>";
-    echo __('Message');
-    echo '</th>';
-    echo "<th style='width: 7%'>";
-    echo __('Count');
-    echo '</th>';
-    echo "<th style='width: 12%'>";
-    echo __('Actions');
-    echo '</th>';
-    echo '</tr>';
+    $table = DataTable::createPaginated('notifications', $criteria);
 
-    $count = 0;
-    $rowNum = 'odd';
-    if ($resultNotifications->rowCount() < 1) {
-        echo "<tr class=$rowNum>";
-        echo '<td colspan=5>';
-        echo __('There are no records to display.');
-        echo '</td>';
-        echo '</tr>';
-    } else {
-        while ($row = $resultNotifications->fetch() and $count < 20) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
-            }
-            ++$count;
+    $table->setTitle(__('New Notifications'));
 
-                //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo $row['source'];
-            echo '</td>';
-            echo '<td>';
-            echo dateConvertBack($guid, substr($row['timestamp'], 0, 10));
-            echo '</td>';
-            echo '<td>';
-            echo $row['text'];
-            echo '</td>';
-            echo '<td>';
-            echo $row['count'];
-            echo '</td>';
-            echo '<td>';
-            echo "<a href='".$gibbon->session->get('absoluteURL').'/notificationsActionProcess.php?action='.urlencode($row['actionLink']).'&gibbonNotificationID='.$row['gibbonNotificationID']."'><img title='".__('Action & Archive')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/plus.png'/></a> ";
-            echo "<a href='".$gibbon->session->get('absoluteURL').'/notificationsDeleteProcess.php?gibbonNotificationID='.$row['gibbonNotificationID']."'><img title='".__('Delete')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/garbage.png'/></a> ";
-            echo '</td>';
-            echo '</tr>';
-        }
-    }
-    echo '</table>';
+    $table->addColumn('source', __('Source'));
+    $table->addColumn('timestamp', __('Date'))->format(Format::using('date', 'timestamp'));
+    $table->addColumn('text', __('Message'));
+    $table->addColumn('count', __('Count'));
 
-    //Get and show newnotifications
-    try {
-        $dataNotifications = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'), 'gibbonPersonID2' => $gibbon->session->get('gibbonPersonID'));
-        $sqlNotifications = "(SELECT gibbonNotification.*, gibbonModule.name AS source FROM gibbonNotification JOIN gibbonModule ON (gibbonNotification.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonPersonID=:gibbonPersonID AND status='Archived')
-		UNION
-		(SELECT gibbonNotification.*, 'System' AS source FROM gibbonNotification WHERE gibbonModuleID IS NULL AND gibbonPersonID=:gibbonPersonID2 AND status='Archived')
-		ORDER BY timestamp DESC, source, text LIMIT 0, 50";
-        $resultNotifications = $connection2->prepare($sqlNotifications);
-        $resultNotifications->execute($dataNotifications);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
+    $table->addActionColumn()
+        ->addParam('gibbonNotificationID')
+        ->format(function ($row, $actions) use ($guid) {
+            $actions->addAction('view', __('Action & Archive'))
+                    ->addParam('action', urlencode($row['actionLink']))
+                    ->setURL('/notificationsActionProcess.php');
 
-    echo '<h2>';
-    echo __('Archived Notifications');
-    echo '</h2>';
-    echo "<table cellspacing='0' style='width: 100%'>";
-    echo "<tr class='head'>";
-    echo "<th style='width: 18%'>";
-    echo __('Source');
-    echo '</th>';
-    echo "<th style='width: 12%'>";
-    echo __('Date');
-    echo '</th>';
-    echo "<th style='width: 51%'>";
-    echo __('Message');
-    echo '</th>';
-    echo "<th style='width: 7%'>";
-    echo __('Count');
-    echo '</th>';
-    echo "<th style='width: 12%'>";
-    echo __('Actions');
-    echo '</th>';
-    echo '</tr>';
+            $actions->addAction('deleteImmediate', __('Delete'))
+                    ->setIcon('garbage')
+                    ->setURL('/notificationsDeleteProcess.php');
+        });
 
-    $count = 0;
-    $rowNum = 'odd';
-    if ($resultNotifications->rowCount() < 1) {
-        echo "<tr class=$rowNum>";
-        echo '<td colspan=5>';
-        echo __('There are no records to display.');
-        echo '</td>';
-        echo '</tr>';
-    } else {
-        while ($row = $resultNotifications->fetch() and $count < 20) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
-            }
-            ++$count;
 
-			//COLOR ROW BY STATUS!
-			echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo $row['source'];
-            echo '</td>';
-            echo '<td>';
-            echo dateConvertBack($guid, substr($row['timestamp'], 0, 10));
-            echo '</td>';
-            echo '<td>';
-            echo $row['text'];
-            echo '</td>';
-            echo '<td>';
-            echo $row['count'];
-            echo '</td>';
-            echo '<td>';
-            echo "<a href='".$gibbon->session->get('absoluteURL').'/notificationsActionProcess.php?action='.urlencode($row['actionLink']).'&gibbonNotificationID='.$row['gibbonNotificationID']."'><img title='".__('Action')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/plus.png'/></a> ";
-            echo "<a href='".$gibbon->session->get('absoluteURL').'/notificationsDeleteProcess.php?gibbonNotificationID='.$row['gibbonNotificationID']."'><img title='".__('Delete')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/garbage.png'/></a> ";
-            echo '</td>';
-            echo '</tr>';
-        }
-    }
-    echo '</table>';
+    echo $table->render($notifications);
+
+
+    // Archived Notifications
+    $criteria = $notificationGateway->newQueryCriteria()
+        ->fromPOST('archivedNotifications');
+
+    $archivedNotifications = $notificationGateway->queryNotificationsByPerson($criteria, $gibbon->session->get('gibbonPersonID'), 'Archived');
+
+    $table = DataTable::createPaginated('archivedNotifications', $criteria);
+
+    $table->setTitle(__('Archived Notifications'));
+
+    $table->addColumn('source', __('Source'));
+    $table->addColumn('timestamp', __('Date'))->format(Format::using('date', 'timestamp'));
+    $table->addColumn('text', __('Message'));
+    $table->addColumn('count', __('Count'));
+
+    $table->addActionColumn()
+        ->addParam('gibbonNotificationID')
+        ->format(function ($row, $actions) use ($guid) {
+            $actions->addAction('view', __('Action & Archive'))
+                    ->addParam('action', urlencode($row['actionLink']))
+                    ->setURL('/notificationsActionProcess.php');
+
+            $actions->addAction('deleteImmediate', __('Delete'))
+                    ->setIcon('garbage')
+                    ->setURL('/notificationsDeleteProcess.php');
+        });
+
+
+    echo $table->render($archivedNotifications);
 }
