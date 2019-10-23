@@ -102,6 +102,14 @@ class StaffAbsenceGateway extends QueryableGateway
 
         $criteria->addFilterRules($this->getSharedFilterRules());
 
+        $criteria->addFilterRules([
+            'schoolYear' => function ($query, $gibbonSchoolYearID) {
+                return $query
+                    ->where('gibbonStaffAbsence.gibbonSchoolYearID = :gibbonSchoolYearID')
+                    ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+            }
+        ]);
+
         return $this->runQuery($query, $criteria);
     }
 
