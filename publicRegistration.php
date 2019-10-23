@@ -24,7 +24,7 @@ include './modules/User Admin/moduleFunctions.php';
 
 $proceed = false;
 
-if (isset($_SESSION[$guid]['username']) == false) {
+if ($gibbon->session->exists('username') == false) {
     $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
     if ($enablePublicRegistration == 'Y') {
         $proceed = true;
@@ -38,7 +38,7 @@ if ($proceed == false) {
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add($_SESSION[$guid]['organisationNameShort'].' '.__('Public Registration'));
+    $page->breadcrumbs->add($gibbon->session->get('organisationNameShort').' '.__('Public Registration'));
 
     $publicRegistrationMinimumAge = getSettingByScope($connection2, 'User Admin', 'publicRegistrationMinimumAge');
 
@@ -62,9 +62,9 @@ if ($proceed == false) {
         echo '</p>';
     }
 
-    $form = Form::create('publicRegistration', $_SESSION[$guid]['absoluteURL'].'/publicRegistrationProcess.php');
+    $form = Form::create('publicRegistration', $gibbon->session->get('absoluteURL').'/publicRegistrationProcess.php');
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $gibbon->session->get('address'));
 
     $form->addRow()->addHeading(__('Account Details'));
 
@@ -90,7 +90,7 @@ if ($proceed == false) {
         $row->addSelectGender('gender')->required();
 
     $row = $form->addRow();
-        $row->addLabel('dob', __('Date of Birth'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('dob', __('Date of Birth'))->description($gibbon->session->get('i18n')['dateFormat'])->prepend(__('Format:'));
         $row->addDate('dob')->required();
 
     $row = $form->addRow();
