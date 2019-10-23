@@ -56,7 +56,7 @@ if (!$gibbon->session->exists('username')) {
 
     $table->addActionColumn()
         ->addParam('gibbonNotificationID')
-        ->format(function ($row, $actions) use ($guid) {
+        ->format(function ($row, $actions) {
             $actions->addAction('view', __('Action & Archive'))
                     ->addParam('action', urlencode($row['actionLink']))
                     ->setURL('/notificationsActionProcess.php');
@@ -87,8 +87,8 @@ if (!$gibbon->session->exists('username')) {
 
     $table->addActionColumn()
         ->addParam('gibbonNotificationID')
-        ->format(function ($row, $actions) use ($guid) {
-            $actions->addAction('view', __('Action & Archive'))
+        ->format(function ($row, $actions) {
+            $actions->addAction('view', __('Action'))
                     ->addParam('action', urlencode($row['actionLink']))
                     ->setURL('/notificationsActionProcess.php');
 
