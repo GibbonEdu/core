@@ -41,11 +41,11 @@ if (!$gibbon->session->exists('username')) {
     $notificationGateway = $container->get(NotificationGateway::class);
     
     $criteria = $notificationGateway->newQueryCriteria()
-        ->fromPOST('notifications');
+        ->fromPOST('newNotifications');
 
     $notifications = $notificationGateway->queryNotificationsByPerson($criteria, $gibbon->session->get('gibbonPersonID'));
 
-    $table = DataTable::createPaginated('notifications', $criteria);
+    $table = DataTable::createPaginated('newNotifications', $criteria);
 
     $table->setTitle(__('New Notifications'));
 
