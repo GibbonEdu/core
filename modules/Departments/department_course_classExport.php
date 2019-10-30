@@ -24,14 +24,22 @@ include './moduleFunctions.php';
 
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/department_course_class.php&gibbonCourseClassID=$gibbonCourseClassID";
+$highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
 
-if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php') == false or getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2) != 'View Student Profile_full') {
+if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php') == false || empty($highestAction)) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
+
+    if ($highestAction != 'View Student Profile_full' && $highestAction != 'View Student Profile_fullNoNotes'  && $highestAction != 'View Student Profile_fullEditAllNotes') {
+        $URL .= '&return=error0';
+        header("Location: {$URL}");
+        exit;
+    }
     if ($gibbonCourseClassID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
+        exit;
     } else {
         try {
             $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
@@ -44,6 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
         if ($result->rowCount() < 1) {
             $URL .= '&return=error1';
             header("Location: {$URL}");
+            exit;
         } else {
             //Proceed!
 
