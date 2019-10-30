@@ -34,6 +34,7 @@ class RollGroupGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonRollGroup';
+    private static $primaryKey = 'gibbonRollGroupID';
     private static $searchableColumns = [];
 
     public function queryRollGroups(QueryCriteria $criteria, $gibbonSchoolYearID)
