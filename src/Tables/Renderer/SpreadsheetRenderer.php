@@ -205,6 +205,12 @@ class SpreadsheetRenderer implements RendererInterface
                 break;
         }
 
+        // Fix mimetype so that spreadsheet files can be viewed on iOS devices
+        if(stristr($_SERVER['HTTP_USER_AGENT'], 'ipad') !== false or stristr($_SERVER['HTTP_USER_AGENT'], 'iphone') !== false or stristr($_SERVER['HTTP_USER_AGENT'], 'ipod') !== false) {
+            $mimetype = 'application/octet-stream';
+            header('Content-type: application/octet-stream');
+        }
+
         // Redirect output to a client’s web browser (Excel2007)
         header('Content-Type: '.$mimetype);
         header('Content-Disposition: attachment;filename="'.$filename.'"');
