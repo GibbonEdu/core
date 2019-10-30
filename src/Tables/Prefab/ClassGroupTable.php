@@ -57,7 +57,7 @@ class ClassGroupTable extends DataTable
 
         $canViewStaff = isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php');
         $canViewStudents = ($highestAction == 'View Student Profile_brief' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes' || $highestAction == 'View Student Profile_fullEditAllNotes');
-        $canViewConfidential = $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes';
+        $canViewConfidential = $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes'  || $highestAction == 'View Student Profile_fullEditAllNotes';
 
         $criteria = $this->enrolmentGateway
             ->newQueryCriteria()
