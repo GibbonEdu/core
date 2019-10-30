@@ -24,8 +24,13 @@ class Excel extends \PHPExcel
 
 	private function setHeader()//this function used to set the header variable
 	{
-		header('Content-type: application/vnd.ms-excel');
-		header('Content-Disposition: attachment; filename="' . $this->fileName . '"');
+        if(stristr($_SERVER['HTTP_USER_AGENT'], 'ipad') !== false or stristr($_SERVER['HTTP_USER_AGENT'], 'iphone') !== false or stristr($_SERVER['HTTP_USER_AGENT'], 'ipod') !== false) {
+            header('Content-type: application/octet-stream');
+        } else {
+            header('Content-type: application/vnd.ms-excel');
+        }
+
+        header('Content-Disposition: attachment; filename="' . $this->fileName . '"');
 		header("Expires: 0");
 		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 		header("Cache-Control: private", false);
