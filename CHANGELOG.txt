@@ -73,6 +73,7 @@ v19.0.00
         Attendance: fixed missing data in printable view of Student History
         Attendance: fixed Set Future Absence to only allow future dates
         Departments: fixed permission check causing Export to Excel to fail
+        Departments: fixed Export to Excel to work on iOS devices
         Finance: fixed missing payment info in invoice receipt email for multiple partial payments
         Library: set Bookable to No by default on Add record screen
         Messenger: fixed bug when sending parent and student SMS for Attendance status
