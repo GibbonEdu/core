@@ -97,17 +97,19 @@ class Radio extends Input
                 $this->checked($firstOption);
             }
 
+            $count = 0;
             foreach ($this->getOptions() as $value => $label) {
 
                 $this->setAttribute('checked', $this->getIsChecked($value));
 
                 if ($this->inline) {
-                    $output .= '&nbsp;&nbsp;<input type="radio" value="'.$value.'" '.$this->getAttributeString().'>&nbsp;';
-                    $output .= '<label title="'.$label.'">'.$label.'</label>';
+                    $output .= '&nbsp;&nbsp;<input type="radio" value="'.$value.'" id="'.$this->getName().$count.'" '.$this->getAttributeString().'>&nbsp;';
+                    $output .= '<label for="'.$this->getName().$count.'">'.$label.'</label>';
                 } else {
-                    $output .= '<label title="'.$label.'">'.$label.'</label>&nbsp;';
-                    $output .= '<input type="radio" value="'.$value.'" '.$this->getAttributeString().'><br/>';
+                    $output .= '<label for="'.$this->getName().$count.'">'.$label.'</label>&nbsp;';
+                    $output .= '<input type="radio" value="'.$value.'" id="'.$this->getName().$count.'" '.$this->getAttributeString().'><br/>';
                 }
+                $count++;
             }
         }
 
