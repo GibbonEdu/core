@@ -75,6 +75,11 @@ class FormFactory implements FormFactoryInterface
         return new Layout\Grid($this, $id, $columns);
     }
 
+    public function createDetails($id = '')
+    {
+        return new Layout\Details($this, $id);
+    }
+
     public function createTrigger($selector = '')
     {
         return new Layout\Trigger($selector);
