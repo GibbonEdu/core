@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\IndividualNeeds\INInvestigationsGateway;
+use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
 
 require_once '../../gibbon.php';
 
@@ -38,8 +38,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
     exit;
 } else {
     // Proceed!
-    $investigationsGateway = $container->get(INInvestigationsGateway::class);
-    $values = $investigationsGateway->getByID($gibbonINInvestigationID);
+    $investigationGateway = $container->get(INInvestigationGateway::class);
+    $values = $investigationGateway->getByID($gibbonINInvestigationID);
 
     if (empty($values)) {
         $URL .= '&return=error2';
@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         exit;
     }
 
-    $deleted = $investigationsGateway->delete($gibbonINInvestigationID);
+    $deleted = $investigationGateway->delete($gibbonINInvestigationID);
 
     $URL .= !$deleted
         ? '&return=error2'

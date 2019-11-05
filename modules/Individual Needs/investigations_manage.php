@@ -21,7 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
-use Gibbon\Domain\IndividualNeeds\INInvestigationsGateway;
+use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -73,10 +73,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
 
         echo $form->getOutput();
 
-        $investigationsGateway = $container->get(INInvestigationsGateway::class);
+        $investigationGateway = $container->get(INInvestigationGateway::class);
 
         // CRITERIA
-        $criteria = $investigationsGateway->newQueryCriteria()
+        $criteria = $investigationGateway->newQueryCriteria()
             ->sortBy('date', 'DESC')
             ->filterBy('student', $gibbonPersonID)
             ->filterBy('rollGroup', $gibbonRollGroupID)
@@ -85,9 +85,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
 
 
         if ($highestAction == 'Manage Investigations_all') {
-            $records = $investigationsGateway->queryInvestigations($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
+            $records = $investigationGateway->queryInvestigations($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
         } else if ($highestAction == 'Manage Investigations_my') {
-            $records = $investigationsGateway->queryInvestigations($criteria, $_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID']);
+            $records = $investigationGateway->queryInvestigations($criteria, $_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID']);
         } else {
             return;
         }

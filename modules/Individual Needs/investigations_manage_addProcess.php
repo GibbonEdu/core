@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
-use Gibbon\Domain\IndividualNeeds\INInvestigationsGateway;
+use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
 use Gibbon\Services\Format;
 
 require_once '../../gibbon.php';
@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
     exit;
 } else {
     // Proceed!
-    $investigationsGateway = $container->get(INInvestigationsGateway::class);
+    $investigationGateway = $container->get(INInvestigationGateway::class);
 
     $data = [
         'gibbonSchoolYearID'    => $gibbon->session->get('gibbonSchoolYearID'),
@@ -58,14 +58,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
     }
 
     // Create the record
-    $gibbonINInvestigationID = $investigationsGateway->insert($data);
+    $gibbonINInvestigationID = $investigationGateway->insert($data);
 
     //Notify form tutors
     $notificationGateway = new NotificationGateway($pdo);
     $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
 
-    $criteria = $investigationsGateway->newQueryCriteria();
-    $investigation = $investigationsGateway->queryInvestigationsByID($criteria, $gibbonINInvestigationID, $_SESSION[$guid]['gibbonSchoolYearID']);
+    $criteria = $investigationGateway->newQueryCriteria();
+    $investigation = $investigationGateway->queryInvestigationsByID($criteria, $gibbonINInvestigationID, $_SESSION[$guid]['gibbonSchoolYearID']);
     $investigation = $investigation->getRow(0);
     if ($investigation['gibbonPersonIDTutor'] != '') {
         $notificationSender->addNotification($investigation['gibbonPersonIDTutor'], sprintf(__('A new Individual Needs investigation has been created for %1$s.'), Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true)), "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");

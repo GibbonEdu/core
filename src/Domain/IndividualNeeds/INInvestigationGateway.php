@@ -29,7 +29,7 @@ use Gibbon\Domain\QueryableGateway;
  * @version v17
  * @since   v17
  */
-class INInvestigationsGateway extends QueryableGateway
+class INInvestigationGateway extends QueryableGateway
 {
     use TableAware;
 
@@ -61,7 +61,7 @@ class INInvestigationsGateway extends QueryableGateway
             ->innerJoin('gibbonStudentEnrolment', 'student.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
             ->innerJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
             ->leftJoin('gibbonPerson AS creator', 'gibbonINInvestigation.gibbonPersonIDCreator=creator.gibbonPersonID')
-            ->where('gibbonINInvestigation.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->where('gibbonINInvestigation.gibbonSchoolYearID=:gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->where('gibbonStudentEnrolment.gibbonSchoolYearID=gibbonINInvestigation.gibbonSchoolYearID');
 
@@ -73,17 +73,17 @@ class INInvestigationsGateway extends QueryableGateway
         $criteria->addFilterRules([
             'student' => function ($query, $gibbonPersonID) {
                 return $query
-                    ->where('gibbonINInvestigation.gibbonPersonIDStudent = :gibbonPersonID')
+                    ->where('gibbonINInvestigation.gibbonPersonIDStudent=:gibbonPersonID')
                     ->bindValue('gibbonPersonID', $gibbonPersonID);
             },
             'rollGroup' => function ($query, $gibbonRollGroupID) {
                 return $query
-                    ->where('gibbonStudentEnrolment.gibbonRollGroupID = :gibbonRollGroupID')
+                    ->where('gibbonStudentEnrolment.gibbonRollGroupID=:gibbonRollGroupID')
                     ->bindValue('gibbonRollGroupID', $gibbonRollGroupID);
             },
             'yearGroup' => function ($query, $gibbonYearGroupID) {
                 return $query
-                    ->where('gibbonStudentEnrolment.gibbonYearGroupID = :gibbonYearGroupID')
+                    ->where('gibbonStudentEnrolment.gibbonYearGroupID=:gibbonYearGroupID')
                     ->bindValue('gibbonYearGroupID', $gibbonYearGroupID);
             },
         ]);
@@ -113,7 +113,7 @@ class INInvestigationsGateway extends QueryableGateway
             ->innerJoin('gibbonStudentEnrolment', 'student.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
             ->innerJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
             ->leftJoin('gibbonPerson AS creator', 'gibbonINInvestigation.gibbonPersonIDCreator=creator.gibbonPersonID')
-            ->where('gibbonINInvestigation.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->where('gibbonINInvestigation.gibbonSchoolYearID=:gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->where('gibbonStudentEnrolment.gibbonSchoolYearID=gibbonINInvestigation.gibbonSchoolYearID')
             ->bindValue('gibbonINInvestigationID', $gibbonINInvestigationID)

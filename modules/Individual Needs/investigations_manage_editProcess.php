@@ -19,7 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
-use Gibbon\Domain\IndividualNeeds\INInvestigationsGateway;
+use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
+use Gibbon\Domain\IndividualNeeds\INInvestigationContributionGateway;
 use Gibbon\Services\Format;
 
 require_once '../../gibbon.php';
@@ -44,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
     }
 
     // Proceed!
-    $investigationsGateway = $container->get(INInvestigationsGateway::class);
+    $investigationGateway = $container->get(INInvestigationGateway::class);
 
     $data = [
         'reason'                => $_POST['reason'] ?? '',
@@ -61,9 +62,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
     }
 
     // Validate the database record exist
-    $criteria = $investigationsGateway->newQueryCriteria();
-    $investigation = $investigationsGateway->queryInvestigationsByID($criteria, $gibbonINInvestigationID, $_SESSION[$guid]['gibbonSchoolYearID']);
+    $criteria = $investigationGateway->newQueryCriteria();
+    $investigation = $investigationGateway->queryInvestigationsByID($criteria, $gibbonINInvestigationID, $_SESSION[$guid]['gibbonSchoolYearID']);
     $investigation = $investigation->getRow(0);
+
+    if (empty($investigation)) {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+        exit;
+    }
 
     $canEdit = false ;
     if ($highestAction == 'Manage Investigations_all' || ($highestAction == 'Manage Investigations_my' && ($investigation['gibbonPersonIDCreator'] == $_SESSION[$guid]['gibbonPersonID']))) {
@@ -75,35 +82,77 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         $isTutor = true ;
     }
 
-    if (empty($investigation) || (!$canEdit && !$isTutor)) {
+    if (!$canEdit && !$isTutor) {
         $URL .= '&return=error2';
         header("Location: {$URL}");
         exit;
     }
 
     // Update the record
-    $updated = $investigationsGateway->update($gibbonINInvestigationID, $data);
+    $updated = $investigationGateway->update($gibbonINInvestigationID, $data);
 
     //Deal with resolution
     if ($isTutor && $investigation['status'] == 'Referral') {
+        $notificationGateway = new NotificationGateway($pdo);
+        $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+
         $status = ($_POST['resolvable'] == 'Y') ? 'Resolved' : 'Investigation';
 
-        $data = [
-            'resolutionDetails'      => $_POST['resolutionDetails'] ?? '',
-            'status'                => $status,
-        ];
-
-        $updated = $investigationsGateway->update($gibbonINInvestigationID, $data);
-
         if ($status == 'Resolved') { //Notify the requesting teacher
-            $notificationGateway = new NotificationGateway($pdo);
-            $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+            $data = [
+                'resolutionDetails'      => $_POST['resolutionDetails'] ?? '',
+                'status'                => $status,
+            ];
+
+            $updated = $investigationGateway->update($gibbonINInvestigationID, $data);
+
             $notificationSender->addNotification($investigation['gibbonPersonIDCreator'], sprintf(__('An Individual Needs investigation for %1$s has been resolved.'), Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true)), "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
             $notificationSender->sendNotifications();
         }
         else if ($status == 'Investigation') { //Notify requestion teacher, and start further investigation
-            $notificationGateway = new NotificationGateway($pdo);
-            $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+            $contributionGateway = $container->get(INInvestigationContributionGateway::class);
+
+            //Get list of checked contributors
+            $contributorsCount = 0;
+            $contributors = array();
+            if (!empty($_POST['gibbonPersonIDHOY'])) {
+                $contributors[$contributorsCount]['type'] = 'Head of Year' ;
+                $contributors[$contributorsCount]['gibbonPersonID'] = $_POST['gibbonPersonIDHOY'] ;
+                $contributors[$contributorsCount]['gibbonCourseClassPersonID'] = null ;
+                $contributorsCount++;
+            }
+            $gibbonCourseClassPersonIDs = $_POST['gibbonCourseClassPersonID'] ?? array();
+            foreach ($gibbonCourseClassPersonIDs AS $gibbonCourseClassPersonID) {
+                $contributors[$contributorsCount]['type'] = 'Teacher' ;
+                $contributors[$contributorsCount]['gibbonPersonID'] = substr($gibbonCourseClassPersonID, 0, 10) ;
+                $contributors[$contributorsCount]['gibbonCourseClassPersonID'] = substr($gibbonCourseClassPersonID, 11, 10) ;
+                $contributorsCount++;
+            }
+
+            if (count($contributors) <1) {
+                $URL .= '&return=error2';
+                header("Location: {$URL}");
+                exit;
+            }
+            else {
+                //Update investigation status
+                $data = [
+                    'status'                => $status,
+                ];
+                $updated = $investigationGateway->update($gibbonINInvestigationID, $data);
+
+                foreach ($contributors AS $contributor) {
+                    $contributor['gibbonINInvestigationID'] = $gibbonINInvestigationID;
+
+                    //Insert contributor
+                    $insert = $contributionGateway->insert($contributor);
+
+                    //Notify contributor
+                    $notificationSender->addNotification($contributor['gibbonPersonID'], sprintf(__('Your input has been requested for an Individual Needs investigation on %1$s.'), Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true)), "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_submit_detail.php&gibbonINInvestigationContributionID=$insert");
+                }
+            }
+
+            //Notify requesting teacher
             $notificationSender->addNotification($investigation['gibbonPersonIDCreator'], sprintf(__('An Individual Needs investigation for %1$s requires further investigation.'), Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true)), "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
             $notificationSender->sendNotifications();
         }
