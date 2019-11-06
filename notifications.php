@@ -36,10 +36,10 @@ if (!$gibbon->session->exists('username')) {
     echo "<a onclick='return confirm(\"Are you sure you want to delete these records.\")' href='".$gibbon->session->get('absoluteURL')."/notificationsDeleteAllProcess.php'>".__('Delete All Notifications')." <img style='vertical-align: -25%' src='".$gibbon->session->get('absoluteURL').'/themes/'.$gibbon->session->get('gibbonThemeName')."/img/garbage.png'></a>";
     echo '</div>';
 
-    
+
     // Notifications
     $notificationGateway = $container->get(NotificationGateway::class);
-    
+
     $criteria = $notificationGateway->newQueryCriteria()
         ->sortBy('timestamp', 'DESC')
         ->fromPOST('newNotifications');
@@ -73,6 +73,7 @@ if (!$gibbon->session->exists('username')) {
 
     // Archived Notifications
     $criteria = $notificationGateway->newQueryCriteria()
+        ->sortBy('timestamp', 'DESC')
         ->fromPOST('archivedNotifications');
 
     $archivedNotifications = $notificationGateway->queryNotificationsByPerson($criteria, $gibbon->session->get('gibbonPersonID'), 'Archived');
