@@ -35,6 +35,7 @@ v19.0.00
         System: updated DatePicker to use gibboni18n date format
         System: updated SpreadsheetRenderer to write cell contents as plain text
         System: updated TinyMCE allowable HTML to include details, summary and code blocks
+        System: improved the display of checkbox and radio list items in forms
         Activities: added a Year Group filter in Manage Activities
         Activities: fixed bug preventing viewing activity details in Activity Choices by Student when listing closed
         Attendance: added an option to record the first class attendance in a day as school-wide attendance
