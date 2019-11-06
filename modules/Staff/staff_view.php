@@ -121,6 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
         // ACTIONS
         $table->addActionColumn()
             ->addParam('gibbonPersonID')
+            ->addParam('allStaff', $allStaff)
             ->addParam('search', $criteria->getSearchText(true))
             ->format(function ($person, $actions) use ($guid) {
                 $actions->addAction('view', __('View Details'))
