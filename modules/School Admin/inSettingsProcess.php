@@ -29,6 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings.ph
     $targetsTemplate = $_POST['targetsTemplate'];
     $teachingStrategiesTemplate = $_POST['teachingStrategiesTemplate'];
     $notesReviewTemplate = $_POST['notesReviewTemplate'];
+    $investigationNotificationRole = $_POST['investigationNotificationRole'];
 
     //Write to database
     $fail = false;
@@ -54,6 +55,15 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings.ph
     try {
         $data = array('value' => $notesReviewTemplate);
         $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Individual Needs' AND name='notesReviewTemplate'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    try {
+        $data = array('value' => $investigationNotificationRole);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Individual Needs' AND name='investigationNotificationRole'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
