@@ -205,6 +205,8 @@ class Checkbox extends Input
             }
 
             $count = 0;
+            $totalOptions = count($this->options);
+
             foreach ($this->options as $value => $label) {
                 if ($hasMultiple) {
                     $this->setID($identifier.$count);
@@ -217,12 +219,12 @@ class Checkbox extends Input
                     $output .= '<input type="checkbox" '.$this->getAttributeString().'>&nbsp;';
                     $output .= '<label class="'.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label>&nbsp;&nbsp;';
                 } elseif ($this->align == 'left') {
-                    $output .= '<div class="flex my-2 text-left">';
+                    $output .= '<div class="flex text-left '.($totalOptions > 1 ? 'my-2' : 'my-px').'">';
                     $output .= '<input type="checkbox" '.$this->getAttributeString().'>';
                     $output .= '<label class="leading-compact ml-2 '.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label><br/>';
                     $output .= '</div>';
                 } else  {
-                    $output .= '<div class="flex my-2 justify-end text-right">';
+                    $output .= '<div class="flex justify-end text-right '.($totalOptions > 1 ? 'my-2' : 'my-px').'">';
                     $output .= '<label class="leading-compact mr-1 '.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label> ';
                     $output .= '<input type="checkbox" '.$this->getAttributeString().'><br/>';
                     $output .= '</div>';

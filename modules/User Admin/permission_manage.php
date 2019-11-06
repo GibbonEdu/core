@@ -161,7 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
                         $checked = !$readonly && $checked;
 
                         $name = 'permission['.$rowActions['gibbonActionID'].']['.$role['gibbonRoleID'].']';
-                        $row->addCheckbox($name)->setDisabled($readonly)->checked($checked)->setClass('');
+                        $row->addCheckbox($name)->setDisabled($readonly)->checked($checked)->alignLeft();
 
                         ++$totalCount;
                     }
