@@ -20,6 +20,7 @@ v19.0.00
 --------
     Headlines
         Activated German as an available language
+        Individual Needs Investigations functionality allows data gathering around students with individual needs
 
     Changes With Important Notices
         System: split Daily Attendance CLI into separate form group and class scripts
@@ -50,6 +51,7 @@ v19.0.00
         Messenger: eliminated non-recipient siblings from Send Report
         Messenger: addition of student name(s) to emails sent to parents
         Messenger: adjusted the default sending options for non-staff users
+        School Admin: renamed IN Settings to Individual Needs Settings
         Staff: added a Weekly View and Daily View to Substitute Availability report
         Staff: added a Substitute Information setting for displaying text on My Coverage page
         Staff: added a Staff Coverage Summary report with total days covered per substitute
