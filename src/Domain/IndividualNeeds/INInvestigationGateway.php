@@ -27,7 +27,7 @@ use Gibbon\Domain\QueryableGateway;
  * Investigations Gateway
  *
  * @version v19
- * @since   v17
+ * @since   v19
  */
 class INInvestigationGateway extends QueryableGateway
 {
