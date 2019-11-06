@@ -22,6 +22,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
+use Gibbon\Domain\IndividualNeeds\INInvestigationContributionGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -74,8 +75,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         echo $form->getOutput();
 
         $investigationGateway = $container->get(INInvestigationGateway::class);
-
-        // CRITERIA
         $criteria = $investigationGateway->newQueryCriteria()
             ->sortBy('date', 'DESC')
             ->filterBy('student', $gibbonPersonID)
@@ -83,6 +82,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             ->filterBy('yearGroup', $gibbonYearGroupID)
             ->fromPOST();
 
+        $contributionsGateway = $container->get(INInvestigationContributionGateway::class);
+        $criteria2 = $contributionsGateway->newQueryCriteria();
 
         if ($highestAction == 'Manage Investigations_all') {
             $records = $investigationGateway->queryInvestigations($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
@@ -104,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             ->displayLabel();
 
         $table->modifyRows(function ($investigations, $row) {
-            if ($investigations['status'] == 'Resolved') $row->addClass('success');
+            if ($investigations['status'] == 'Resolved' || $investigations['status'] == 'Investigation Complete') $row->addClass('success');
             if ($investigations['status'] == 'Investigation') $row->addClass('warning');
             return $row;
         });
@@ -134,9 +135,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                 return $output;
             });
 
+        echo "<style>
+                .progressBar {
+                    display: inline-block;
+                    height:22px;
+                    background: rgba(0,0,0,0.035);
+                    vertical-align: middle;
+                    border: 1px solid rgba(0,0,0,0.5);
+                }
+
+                .progressBar .complete {
+                    display: inline-block;
+                    height: 100%;
+                    background: #A88EDB;
+                }
+            </style>";
+
         $table->addColumn('status', __('Status'))
-            ->format(function($investigations) {
-                return $investigations['status'];
+            ->description(__('Progress'))
+            ->format(function($investigations) use ($contributionsGateway, $criteria2) {
+                $output = $investigations['status'];
+                if ($investigations['status'] == 'Investigation') {
+                    $completion = $contributionsGateway->queryInvestigationCompletion($criteria2, $investigations['gibbonINInvestigationID']);
+                    $output .= '<br/><small><i>'.$completion['complete'].'/'.$completion['total'].'</i></small>';
+                    $progressWidth = ($completion['total'] > 0) ? (($completion['complete']/$completion['total'])*100) : 0;
+                    $output .= '<div class="progressBar" style="width:100%"><div class="complete" style="width:'.$progressWidth.'%;"></div></div>';
+                }
+                return $output;
             });
 
         $table->addColumn('student', __('Student'))

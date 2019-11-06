@@ -148,12 +148,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                     $insert = $contributionGateway->insert($contributor);
 
                     //Notify contributor
-                    $notificationSender->addNotification($contributor['gibbonPersonID'], sprintf(__('Your input has been requested for an Individual Needs investigation on %1$s.'), Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true)), "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_submit_detail.php&gibbonINInvestigationContributionID=$insert");
+                    $notificationSender->addNotification($contributor['gibbonPersonID'], sprintf(__('Your input has been requested for an Individual Needs investigation on %1$s.'), Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true)), "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_submit_detail.php&gibbonINInvestigationID=$gibbonINInvestigationID&gibbonINInvestigationContributionID=$insert");
                 }
             }
 
             //Notify requesting teacher
-            $notificationSender->addNotification($investigation['gibbonPersonIDCreator'], sprintf(__('An Individual Needs investigation for %1$s requires further investigation.'), Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true)), "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
+            $notificationSender->addNotification($investigation['gibbonPersonIDCreator'], sprintf(__('Further inquiry into the Individual Needs investigation for %1$s has been initiated.'), Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true)), "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
             $notificationSender->sendNotifications();
         }
     }

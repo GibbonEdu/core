@@ -40,6 +40,7 @@ class INInvestigationContributionGateway extends QueryableGateway
 
     /**
      * @param QueryCriteria $criteria
+     * @param int $gibbonINInvestigationID
      * @return DataSet
      */
     public function queryContributionsByInvestigation(QueryCriteria $criteria, $gibbonINInvestigationID)
@@ -48,8 +49,16 @@ class INInvestigationContributionGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                '*'
+                'gibbonINInvestigationContribution.*',
+                'surname',
+                'preferredName',
+                'gibbonCourse.nameShort AS course',
+                'gibbonCourseClass.nameShort AS class'
             ])
+            ->innerJoin('gibbonPerson','gibbonINInvestigationContribution.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->leftJoin('gibbonCourseClassPerson', 'gibbonINInvestigationContribution.gibbonCourseClassPersonID=gibbonCourseClassPerson.gibbonCourseClassPersonID')
+            ->leftJoin('gibbonCourseClass', 'gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID')
+            ->leftJoin('gibbonCourse', 'gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID')
             ->where('gibbonINInvestigationID=:gibbonINInvestigationID')
             ->bindValue('gibbonINInvestigationID', $gibbonINInvestigationID);
 
@@ -58,6 +67,8 @@ class INInvestigationContributionGateway extends QueryableGateway
 
     /**
      * @param QueryCriteria $criteria
+     * @param int $gibbonPersonID
+     * @param string $status
      * @return DataSet
      */
     public function queryContributionsByPerson(QueryCriteria $criteria, $gibbonPersonID, $status = null)
@@ -99,6 +110,7 @@ class INInvestigationContributionGateway extends QueryableGateway
 
     /**
      * @param QueryCriteria $criteria
+     * @param int $gibbonINInvestigationContributionID
      * @return DataSet
      */
     public function queryContributionsByID(QueryCriteria $criteria, $gibbonINInvestigationContributionID)
@@ -131,5 +143,81 @@ class INInvestigationContributionGateway extends QueryableGateway
             ->bindValue('gibbonINInvestigationContributionID', $gibbonINInvestigationContributionID);
 
         return $this->runQuery($query, $criteria);
+    }
+
+    /**
+     * @param QueryCriteria $criteria
+     * @return array
+     */
+    public function queryInvestigationCompletion(QueryCriteria $criteria, $gibbonINInvestigationID)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                '*'
+            ])
+            ->where('gibbonINInvestigationID=:gibbonINInvestigationID')
+            ->bindValue('gibbonINInvestigationID', $gibbonINInvestigationID);
+
+        $results = $this->runQuery($query, $criteria);
+
+        $complete = 0 ;
+        foreach ($results AS $result) {
+            $result['status'] == 'Complete' ? $complete++ : $complete;
+        }
+        $return = array(
+            'complete' => $complete,
+            'total' => $results->count()
+        );
+
+        return $return;
+    }
+
+    /**
+     * @param QueryCriteria $criteria
+     * @return array
+     */
+    public function queryInvestigationStatistics(QueryCriteria $criteria, $gibbonINInvestigationID)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                '*'
+            ])
+            ->where('gibbonINInvestigationID=:gibbonINInvestigationID')
+            ->bindValue('gibbonINInvestigationID', $gibbonINInvestigationID);
+
+        $results = $this->runQuery($query, $criteria);
+
+        //Turn data into statistical table
+        $strands = getInvestigationCriteriaStrands(true);
+        $count = 0 ;
+        for ($i = 0; $i < count($strands); $i++) {
+            $strands[$i]['data'] = array();
+            $criteria = getInvestigationCriteriaArray($strands[$i]['nameHuman']);
+            foreach ($criteria as $criterion) {
+                $strands[$i]['data'][$criterion] = 0;
+                foreach ($results as $result) {
+                    $resultData = @unserialize($result[$strands[$i]['name']]);
+                    if (is_array($resultData)) {
+                        foreach ($resultData AS $resultDatum) {
+                            if ($resultDatum == $criterion) {
+                                $strands[$i]['data'][$criterion] ++;
+                            }
+                        }
+                    }
+                    else {
+                        $resultData = $result[$strands[$i]['name']];
+                        if ($resultData == $criterion) {
+                            $strands[$i]['data'][$criterion] ++;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $strands;
     }
 }

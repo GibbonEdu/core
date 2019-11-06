@@ -40,6 +40,8 @@ class INInvestigationGateway extends QueryableGateway
 
     /**
      * @param QueryCriteria $criteria
+     * @param int $gibbonSchoolYearID
+     * @param int $gibbonPersonIDCreator
      * @return DataSet
      */
     public function queryInvestigations(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonPersonIDCreator = null)
@@ -91,6 +93,12 @@ class INInvestigationGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    /**
+     * @param QueryCriteria $criteria
+     * @param int $gibbonINInvestigationID
+     * @param int $gibbonSchoolYearID
+     * @return DataSet
+     */
     public function queryInvestigationsByID(QueryCriteria $criteria, $gibbonINInvestigationID, $gibbonSchoolYearID)
     {
         $query = $this
@@ -108,10 +116,12 @@ class INInvestigationGateway extends QueryableGateway
                 'gibbonRollGroup.gibbonPersonIDTutor',
                 'gibbonRollGroup.gibbonPersonIDTutor2',
                 'gibbonRollGroup.gibbonPersonIDTutor3',
+                'gibbonYearGroup.gibbonPersonIDHOY'
             ])
             ->innerJoin('gibbonPerson AS student', 'gibbonINInvestigation.gibbonPersonIDStudent=student.gibbonPersonID')
             ->innerJoin('gibbonStudentEnrolment', 'student.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
             ->innerJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
+            ->innerJoin('gibbonYearGroup', 'gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID')
             ->leftJoin('gibbonPerson AS creator', 'gibbonINInvestigation.gibbonPersonIDCreator=creator.gibbonPersonID')
             ->where('gibbonINInvestigation.gibbonSchoolYearID=:gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)

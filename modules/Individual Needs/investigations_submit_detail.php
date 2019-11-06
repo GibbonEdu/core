@@ -127,23 +127,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             }
 
             //Cognition
-            $options = array(
-                'There is limited understanding of concepts generally' => __('There is limited understanding of concepts generally'),
-                'Learning new concepts is a challenge' => __('Learning new concepts is a challenge'),
-                'Simple concepts and processes with one or two steps can be understood and applied to classroom learning' => __('Simple concepts and processes with one or two steps can be understood and applied to classroom learning'),
-                'New concepts can be understood with ease and used consistently in a structured learning environment' => __('New concepts can be understood with ease and used consistently in a structured learning environment')
-            );
+            $options = getInvestigationCriteriaArray('Cognition') ;
             $row = $form->addRow();
                 $row->addLabel('cognition', __('Cognition'))->description(__('Please choose one description that is most relevant to the student in your subject.'));
-                $row->addRadio('cognition')->fromArray($options)->required()->addClass('py-4');
+                $row->addRadio('cognition')->fromArray($options)->required()->addClass('py-4')->checked(false);
 
             //Memory
-            $options = array(
-                'The ability to hold and use important information in work­ing mem­ory over a short period of time' => __('The ability to hold and use important information in work­ing mem­ory over a short period of time'),
-                'The ability to hold several ideas in mind at once' => __('The ability to hold several ideas in mind at once'),
-                'The ability to remember what has been learnt in recent lessons' => __('The ability to remember what has been learnt in recent lessons'),
-                'The ability to retrieve information from long-term memory' => __('The ability to retrieve information from long-term memory'),
-            );
+            $options = getInvestigationCriteriaArray('Memory') ;
             $row = $form->addRow();
                 $row->addLabel('memory', __('Memory'))->description(__('Please tick any areas that you think the student struggles with'));
                 $column = $row->addColumn()->setClass('flex-col items-end');
@@ -157,13 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                 }
 
             //Self-Management
-            $options = array(
-                'Setting goals' => __('Setting goals'),
-                'Managing time' => __('Managing time'),
-                'Being organised' => __('Being organised'),
-                'Monitoring, controlling and self directing aspects of learning for themselves' => __('Monitoring, controlling and self directing aspects of learning for themselves'),
-                'Emotional self-regulation' => __('Emotional self-regulation'),
-            );
+            $options = getInvestigationCriteriaArray('Self-Management') ;
             $row = $form->addRow();
                 $row->addLabel('selfManagement', __('Self-Management'))->description(__('Please tick any areas that you think the student struggles with.'));
                 $column = $row->addColumn()->setClass('flex-col items-end');
@@ -177,13 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                 }
 
             //Attention
-            $options = array(
-                'Sus­taining con­cen­tra­tion and attention in lessons' => __('Sus­taining con­cen­tra­tion and attention in lessons'),
-                'Paying attention to relevant information' => __('Paying attention to relevant information'),
-                'Shifting attention when needed' => __('Shifting attention when needed'),
-                'Monitoring, controlling and self directing aspects of learning for themselves' => __('Monitoring, controlling and self directing aspects of learning for themselves'),
-                'Resisting distraction and internal urges to do other things than the task at hand' => __('Resisting distraction and internal urges to do other things than the task at hand'),
-            );
+            $options = getInvestigationCriteriaArray('Attention') ;
             $row = $form->addRow();
                 $row->addLabel('attention', __('Attention'))->description(__('Please tick any areas that you think the student struggles with.'));
                 $column = $row->addColumn()->setClass('flex-col items-end');
@@ -196,12 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                     $count++;
                 }
             //Social Interaction
-            $options = array(
-                'Approaching others and making friends' => __('Approaching others and making friends'),
-                'Ability to hold a conversation' => __('Ability to hold a conversation'),
-                'Ability to use appropriate non-verbal communication (eye contact, facial expressions, gestures, body language)' => __('Ability to use appropriate non-verbal communication (eye contact, facial expressions, gestures, body language)'),
-                'Adjusting behaviour to suit contexts' => __('Adjusting behaviour to suit contexts'),
-            );
+            $options = getInvestigationCriteriaArray('Social Interaction') ;
             $row = $form->addRow();
                 $row->addLabel('socialInteraction', __('Social Interaction'))->description(__('Please tick any areas that you think the student struggles with.'));
                 $column = $row->addColumn()->setClass('flex-col items-end');
@@ -215,15 +188,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                 }
 
             //Communication
-            $options = array(
-                'Word reading accuracy (ability to sound out words)' => __('Word reading accuracy (ability to sound out words)'),
-                'Reading rate or fluency (speed)' => __('Reading rate or fluency (speed)'),
-                'Reading comprehension (understanding of texts)' => __('Reading comprehension (understanding of texts)'),
-                'Spelling accuracy' => __('Spelling accuracy'),
-                'Grammar and punctuation accuracy' => __('Grammar and punctuation accuracy'),
-                'Clarity or organization of written expression' => __('Clarity or organization of written expression'),
-                'Verbal articulation of meaning with an awareness of audience' => __('Verbal articulation of meaning with an awareness of audience')
-            );
+            $options = getInvestigationCriteriaArray('Communication') ;
             $row = $form->addRow();
                 $row->addLabel('communication', __('Communication'))->description(__('Please tick any areas that you think the student struggles with.'));
                 $column = $row->addColumn()->setClass('flex-col items-end');

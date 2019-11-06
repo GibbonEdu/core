@@ -20,7 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\UI\Chart\Chart;
 use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
+use Gibbon\Domain\IndividualNeeds\INInvestigationContributionGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -42,6 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         $page->breadcrumbs
             ->add(__('Manage Investigations'), 'investigations_manage.php')
             ->add(__('Edit'));
+        $page->scripts->add('chart');
 
         $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
         $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
@@ -211,6 +215,98 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                                     ->readonly(!$isTutor)
                                     ->checked($rowClass['gibbonPersonID'].'-'.$rowClass['gibbonCourseClassPersonID']);
                             }
+                        }
+                    }
+
+                    if ($investigation['status'] == 'Investigation' || $investigation['status'] == 'Investigation Complete') {
+                        $form->addRow()->addHeading(__('Investigation Details'));
+
+                        $contributionsGateway = $container->get(INInvestigationContributionGateway::class);
+                        $criteria2 = $contributionsGateway->newQueryCriteria()
+                            ->sortBy(['course', 'class'])
+                            ->pageSize(0);
+                        $contributions = $contributionsGateway->queryContributionsByInvestigation($criteria2, $gibbonINInvestigationID);
+
+                        //Response overview table
+                        $table = DataTable::createPaginated('responseOverviewTable', $criteria2);
+
+                        $table->modifyRows(function ($investigations, $row) {
+                            if ($investigations['status'] == 'Complete') $row->addClass('success');
+                            if ($investigations['status'] == 'Pending') $row->addClass('warning');
+                            return $row;
+                        });
+
+                        $table->addExpandableColumn('comment')
+                            ->format(function($investigations) {
+                                $output = '';
+                                if (!empty($investigations['cognition'])) {
+                                    $output .= '<strong>'.__('Cognition').'</strong><br/>';
+                                    $output .= nl2brr($investigations['cognition']).'<br/>';
+                                }
+                                $fields = getInvestigationCriteriaStrands();
+                                foreach ($fields as $field) {
+                                    if (!empty($investigations[$field['name']])) {
+                                        $output .= '<br/><strong>'.__($field['nameHuman']).'</strong><br/>';
+                                        $output .= '<ul>';
+                                        foreach (unserialize($investigations[$field['name']]) as $entry) {
+                                            $output .= '<li>'.$entry.'</li>';
+                                        }
+                                        $output .= '</ul>';
+                                    }
+                                }
+                                if (!empty($investigations['comment'])) {
+                                    $output .= '<strong>'.__('Comment').'</strong><br/>';
+                                    $output .= nl2brr($investigations['comment']).'<br/>';
+                                }
+                                return $output;
+                            });
+                        $table->addColumn('name', __('name'))
+                            ->format(function($person) use ($guid) {
+                                return Format::name('', $person['preferredName'], $person['surname'], 'Student', true);
+                            });
+                        $table->addColumn('type', __('Type'));
+                        $table->addColumn('class', __('Class'))
+                            ->format(function($investigations) {
+                                if ($investigations['type'] == 'Teacher') {
+                                    return ($investigations['course'].'.'.$investigations['class']);
+                                }
+                            });
+                        $table->addColumn('status', __('Status'));
+
+                        //Response overview row
+                        $row = $form->addRow();
+                            $column = $row->addColumn();
+                            $column->addLabel('responseOverview', __('Response Details'));
+                            $column->addContent($table->render($contributions));
+
+
+                        //CHARTS!
+                        $strands = getInvestigationCriteriaStrands(true);
+                        $criteria3 = $contributionsGateway->newQueryCriteria();
+                        $stats = $contributionsGateway->queryInvestigationStatistics($criteria3, $gibbonINInvestigationID);
+
+                        $count = 0 ;
+                        for ($i = 0; $i < count($strands); $i++) {
+                            //Chart
+                            
+                            $options = getInvestigationCriteriaArray($stats[$i]['nameHuman']) ;
+                            $chart = Chart::create($stats[$i]['name'].'Chart', 'doughnut')
+                                ->setOptions(['height' => 150])
+                                ->setLabels($options);
+
+                            $data = array();
+                            foreach ($stats[$i]['data'] as $stat) {
+                                array_push($data, $stat);
+                            }
+
+                            $chart->addDataset('pie')
+                                ->setData($data);
+
+                            //Row
+                            $row = $form->addRow();
+                                $column = $row->addColumn();
+                                $column->addLabel($stats[$i]['name'].'Summary', __($stats[$i]['nameHuman']));
+                                $column->addContent($chart->render());
                         }
                     }
 

@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        
+
         $canTakeAttendanceByPerson = isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson.php');
         $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
 
