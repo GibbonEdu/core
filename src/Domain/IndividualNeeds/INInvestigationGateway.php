@@ -171,7 +171,7 @@ class INInvestigationGateway extends QueryableGateway
         $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName
             FROM gibbonStudentEnrolment
                 JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
-                LEFT JOIN gibbonPerson ON (gibbonYearGroup.gibbonPersonIDHOY=gibbonPerson.gibbonPersonID)
+                JOIN gibbonPerson ON (gibbonYearGroup.gibbonPersonIDHOY=gibbonPerson.gibbonPersonID)
             WHERE gibbonSchoolYearID=:gibbonSchoolYearID
                 AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID";
         $result = $this->db()->select($sql, $data);
