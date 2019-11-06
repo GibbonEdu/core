@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_particip
     $familyGateway = $container->get(FamilyGateway::class);
 
     // CRITERIA
-    $criteria = $activityGateway->newQueryCriteria()
+    $criteria = $activityGateway->newQueryCriteria(true)
         ->searchBy($activityGateway->getSearchableColumns(), $_GET['search'] ?? '')
         ->sortBy(['surname', 'preferredName'])
         ->pageSize(!empty($viewMode) ? 0 : 50)

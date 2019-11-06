@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     }
 
     // CRITERIA
-    $criteria = $activityGateway->newQueryCriteria()
+    $criteria = $activityGateway->newQueryCriteria(true)
         ->searchBy($activityGateway->getSearchableColumns(), isset($_GET['search'])? $_GET['search'] : '')
         ->sortBy($defaultSort)
         ->pageSize(!empty($viewMode) ? 0 : 50)

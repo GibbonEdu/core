@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
     $familyGateway = $container->get(FamilyGateway::class);
 
     // CRITERIA
-    $criteria = $familyGateway->newQueryCriteria()
+    $criteria = $familyGateway->newQueryCriteria(true)
         ->sortBy(['gibbonFamily.name'])
         ->pageSize(!empty($viewMode) ? 0 : 50)
         ->fromPOST();

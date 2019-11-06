@@ -68,8 +68,7 @@ class RollGroupTable extends DataTable
         $sortByArray = is_array($sortBy) ? $sortBy : array_map('trim', explode(',', $sortBy));
         $criteria = $this->studentGateway
             ->newQueryCriteria()
-            ->sortBy($sortByArray)
-            ->pageSize(0);
+            ->sortBy($sortByArray);
 
         $students = $this->studentGateway->queryStudentEnrolmentByRollGroup($criteria, $gibbonRollGroupID);
         $this->withData($students);

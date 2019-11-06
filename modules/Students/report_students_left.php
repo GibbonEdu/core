@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_l
     $familyGateway = $container->get(FamilyGateway::class);
 
     // CRITERIA
-    $criteria = $reportGateway->newQueryCriteria()
+    $criteria = $reportGateway->newQueryCriteria(true)
         ->sortBy(['rollGroup', 'gibbonPerson.surname', 'gibbonPerson.preferredName'])
         ->pageSize(!empty($viewMode) ? 0 : 50)
         ->fromPOST();

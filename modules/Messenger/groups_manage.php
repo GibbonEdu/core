@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
 
     $groupGateway = $container->get(GroupGateway::class);
 
-    $criteria = $groupGateway->newQueryCriteria()
+    $criteria = $groupGateway->newQueryCriteria(true)
         ->sortBy(['schoolYear', 'name'])
         ->fromPOST();
 

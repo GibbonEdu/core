@@ -53,7 +53,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
     // CRITERIA
     $criteria = $i18nGateway->newQueryCriteria()
         ->sortBy('code')
-        ->pageSize(0)
         ->fromArray($_POST);
 
 

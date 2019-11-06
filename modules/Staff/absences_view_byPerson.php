@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
     echo $table->render(new DataSet([$types]));
 
     // QUERY
-    $criteria = $staffAbsenceGateway->newQueryCriteria()
+    $criteria = $staffAbsenceGateway->newQueryCriteria(true)
         ->sortBy('date', 'DESC')
         ->filterBy('schoolYear', $gibbonSchoolYearID)
         ->fromPOST();

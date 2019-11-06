@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage.php'
 
 
     // QUERY
-    $criteria = $staffAbsenceGateway->newQueryCriteria()
+    $criteria = $staffAbsenceGateway->newQueryCriteria(true)
         ->searchBy($staffAbsenceGateway->getSearchableColumns(), $search)
         ->sortBy('date', 'ASC')
         ->filterBy('dateStart', Format::dateConvert($dateStart))

@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
         $canViewAllTimetables = $highestAction == 'View Timetable by Person' || $highestAction == 'View Timetable by Person_allYears';
 
         if ($canViewAllTimetables) {
-            $criteria = $studentGateway->newQueryCriteria()
+            $criteria = $studentGateway->newQueryCriteria(true)
                 ->searchBy($studentGateway->getSearchableColumns(), $search)
                 ->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
                 ->filterBy('all', $allUsers)

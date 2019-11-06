@@ -198,8 +198,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
 
                         $contributionsGateway = $container->get(INInvestigationContributionGateway::class);
                         $criteria2 = $contributionsGateway->newQueryCriteria()
-                            ->sortBy(['course', 'class'])
-                            ->pageSize(0);
+                            ->sortBy(['course', 'class']);
                         $contributions = $contributionsGateway->queryContributionsByInvestigation($criteria2, $gibbonINInvestigationID);
 
                         //Response overview table

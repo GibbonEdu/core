@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
     $stringGateway = $container->get(StringGateway::class);
 
     // CRITERIA
-    $criteria = $stringGateway->newQueryCriteria()
+    $criteria = $stringGateway->newQueryCriteria(true)
         ->searchBy($stringGateway->getSearchableColumns(), $search)
         ->sortBy('priority', 'DESC')
         ->fromPOST();

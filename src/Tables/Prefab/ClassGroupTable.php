@@ -62,8 +62,7 @@ class ClassGroupTable extends DataTable
         $criteria = $this->enrolmentGateway
             ->newQueryCriteria()
             ->sortBy(['roleSortOrder', 'surname', 'preferredName'])
-            ->filterBy('nonStudents', !$canViewStudents)
-            ->pageSize(0);
+            ->filterBy('nonStudents', !$canViewStudents);
 
         $participants = $this->enrolmentGateway->queryCourseEnrolmentByClass($criteria, $gibbonSchoolYearID, $gibbonCourseClassID);
         $this->withData($participants);

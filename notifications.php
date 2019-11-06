@@ -40,7 +40,7 @@ if (!$gibbon->session->exists('username')) {
     // Notifications
     $notificationGateway = $container->get(NotificationGateway::class);
     
-    $criteria = $notificationGateway->newQueryCriteria()
+    $criteria = $notificationGateway->newQueryCriteria(true)
         ->fromPOST('newNotifications');
 
     $notifications = $notificationGateway->queryNotificationsByPerson($criteria, $gibbon->session->get('gibbonPersonID'));
@@ -71,7 +71,7 @@ if (!$gibbon->session->exists('username')) {
 
 
     // Archived Notifications
-    $criteria = $notificationGateway->newQueryCriteria()
+    $criteria = $notificationGateway->newQueryCriteria(true)
         ->fromPOST('archivedNotifications');
 
     $archivedNotifications = $notificationGateway->queryNotificationsByPerson($criteria, $gibbon->session->get('gibbonPersonID'), 'Archived');

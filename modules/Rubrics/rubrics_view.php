@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view.php')
     $rubricGateway = $container->get(RubricGateway::class);
 
     // QUERY
-    $criteria = $rubricGateway->newQueryCriteria()
+    $criteria = $rubricGateway->newQueryCriteria(true)
         ->searchBy($rubricGateway->getSearchableColumns(), $search)
         ->sortBy(['scope', 'category', 'name'])
         ->filterBy('department', $department)
