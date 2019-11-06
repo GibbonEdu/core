@@ -41,6 +41,7 @@ if (!$gibbon->session->exists('username')) {
     $notificationGateway = $container->get(NotificationGateway::class);
     
     $criteria = $notificationGateway->newQueryCriteria()
+        ->sortBy('timestamp', 'DESC')
         ->fromPOST('newNotifications');
 
     $notifications = $notificationGateway->queryNotificationsByPerson($criteria, $gibbon->session->get('gibbonPersonID'));
