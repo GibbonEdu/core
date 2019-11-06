@@ -35,6 +35,7 @@ class Checkbox extends Input
     protected $checked = array();
     protected $checkall = false;
     protected $inline = false;
+    protected $align = 'right';
     protected $labelClass = '';
 
     /**
@@ -46,6 +47,7 @@ class Checkbox extends Input
         $this->setName($name);
         $this->setID($name);
         $this->setValue('on');
+        $this->addClass('md:max-w-lg');
     }
 
     /**
@@ -138,6 +140,26 @@ class Checkbox extends Input
     }
 
     /**
+     * Aligns the list options to the right edge.
+     * @return  self
+     */
+    public function alignRight()
+    {
+        $this->align = 'right';
+        return $this;
+    }
+
+    /**
+     * Aligns the list options to the left edge.
+     * @return  self
+     */
+    public function alignLeft()
+    {
+        $this->align = 'left';
+        return $this;
+    }
+
+    /**
      * Return true if the passed value matches the current checkbox element value(s).
      * @param   mixed  $value
      * @return  bool
@@ -194,9 +216,16 @@ class Checkbox extends Input
                 if ($this->inline) {
                     $output .= '<input type="checkbox" '.$this->getAttributeString().'>&nbsp;';
                     $output .= '<label class="'.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label>&nbsp;&nbsp;';
-                } else {
-                    $output .= '<label class="leading-normal '.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label> ';
+                } elseif ($this->align == 'left') {
+                    $output .= '<div class="flex my-2 text-left">';
+                    $output .= '<input type="checkbox" '.$this->getAttributeString().'>';
+                    $output .= '<label class="leading-compact ml-2 '.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label><br/>';
+                    $output .= '</div>';
+                } else  {
+                    $output .= '<div class="flex my-2 justify-end text-right">';
+                    $output .= '<label class="leading-compact mr-1 '.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label> ';
                     $output .= '<input type="checkbox" '.$this->getAttributeString().'><br/>';
+                    $output .= '</div>';
                 }
 
                 $count++;

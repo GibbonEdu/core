@@ -185,12 +185,12 @@ class FormFactory implements FormFactoryInterface
 
     public function createCheckbox($name)
     {
-        return (new Input\Checkbox($name))->setClass('right');
+        return (new Input\Checkbox($name));
     }
 
     public function createRadio($name)
     {
-        return (new Input\Radio($name))->setClass('right');
+        return (new Input\Radio($name));
     }
 
     public function createSelect($name)
