@@ -161,34 +161,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                             $column->addTextArea('resolutionDetails')->setRows(5)->setClass('fullWidth')->readonly(!$isTutor || $investigation['status'] != 'Referral');
 
                         //Not resolvable by tutor
-                        try {
-                            $dataClass = array('gibbonSchoolYearID' => $investigation['gibbonSchoolYearID'], 'gibbonPersonID' => $investigation['gibbonPersonIDStudent']);
-                            $sqlClass = "SELECT gibbonCourseClassTeacher.gibbonCourseClassPersonID, gibbonCourseClassTeacher.gibbonPersonID, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.nameShort AS class, gibbonCourse.nameShort AS course, surname, preferredName
-                                FROM gibbonCourse
-                                    JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
-                                    JOIN gibbonCourseClassPerson AS gibbonCourseClassStudent ON (gibbonCourseClassStudent.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonCourseClassStudent.role='Student')
-                                    JOIN gibbonCourseClassPerson AS gibbonCourseClassTeacher ON (gibbonCourseClassTeacher.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonCourseClassTeacher.role='Teacher')
-                                    JOIN gibbonPerson ON (gibbonCourseClassTeacher.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                                WHERE gibbonSchoolYearID=:gibbonSchoolYearID
-                                    AND gibbonCourseClassStudent.gibbonPersonID=:gibbonPersonID
-                                    AND gibbonCourseClass.reportable='Y'
-                                    AND gibbonCourseClassStudent.reportable='Y'
-                                ORDER BY course, class";
-                            $resultClass = $connection2->prepare($sqlClass);
-                            $resultClass->execute($dataClass);
-                        } catch (PDOException $e) {}
+                        $resultClass = $investigationGateway->queryTeachersByInvestigation($investigation['gibbonSchoolYearID'], $investigation['gibbonPersonIDStudent']);
 
-                        try {
-                            $dataHOY = array('gibbonSchoolYearID' => $investigation['gibbonSchoolYearID'], 'gibbonPersonID' => $investigation['gibbonPersonIDStudent']);
-                            $sqlHOY = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName
-                                FROM gibbonStudentEnrolment
-                                    JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
-                                    LEFT JOIN gibbonPerson ON (gibbonYearGroup.gibbonPersonIDHOY=gibbonPerson.gibbonPersonID)
-                                WHERE gibbonSchoolYearID=:gibbonSchoolYearID
-                                    AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID";
-                            $resultHOY = $connection2->prepare($sqlHOY);
-                            $resultHOY->execute($dataHOY);
-                        } catch (PDOException $e) {}
+                        $resultHOY = $investigationGateway->queryHOYByInvestigation($investigation['gibbonSchoolYearID'], $investigation['gibbonPersonIDStudent']);
 
                         if ($resultClass->rowCount() < 1 && $resultHOY->rowCount() < 1) {
                             $form->addRow()->addClass('invitationDetails')->addAlert(__('There are no records to display.'), 'warning');
@@ -288,7 +263,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                         $count = 0 ;
                         for ($i = 0; $i < count($strands); $i++) {
                             //Chart
-                            
+
                             $options = getInvestigationCriteriaArray($stats[$i]['nameHuman']) ;
                             $chart = Chart::create($stats[$i]['name'].'Chart', 'doughnut')
                                 ->setOptions(['height' => 150])

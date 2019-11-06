@@ -131,4 +131,51 @@ class INInvestigationGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    /**
+     * @param int $gibbonSchoolYearID
+     * @param int $gibbonPersonID
+     * @return result
+     */
+    public function queryTeachersByInvestigation($gibbonSchoolYearID, $gibbonPersonID)
+    {
+        $result = null;
+
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID);
+        $sql = "SELECT gibbonCourseClassTeacher.gibbonCourseClassPersonID, gibbonCourseClassTeacher.gibbonPersonID, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.nameShort AS class, gibbonCourse.nameShort AS course, surname, preferredName
+            FROM gibbonCourse
+                JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+                JOIN gibbonCourseClassPerson AS gibbonCourseClassStudent ON (gibbonCourseClassStudent.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonCourseClassStudent.role='Student')
+                JOIN gibbonCourseClassPerson AS gibbonCourseClassTeacher ON (gibbonCourseClassTeacher.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonCourseClassTeacher.role='Teacher')
+                JOIN gibbonPerson ON (gibbonCourseClassTeacher.gibbonPersonID=gibbonPerson.gibbonPersonID)
+            WHERE gibbonSchoolYearID=:gibbonSchoolYearID
+                AND gibbonCourseClassStudent.gibbonPersonID=:gibbonPersonID
+                AND gibbonCourseClass.reportable='Y'
+                AND gibbonCourseClassStudent.reportable='Y'
+            ORDER BY course, class";
+        $result = $this->db()->select($sql, $data);
+
+        return $result;
+    }
+
+    /**
+     * @param int $gibbonSchoolYearID
+     * @param int $gibbonPersonID
+     * @return result
+     */
+    public function queryHOYByInvestigation($gibbonSchoolYearID, $gibbonPersonID)
+    {
+        $result = null;
+
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID);
+        $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName
+            FROM gibbonStudentEnrolment
+                JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
+                LEFT JOIN gibbonPerson ON (gibbonYearGroup.gibbonPersonIDHOY=gibbonPerson.gibbonPersonID)
+            WHERE gibbonSchoolYearID=:gibbonSchoolYearID
+                AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID";
+        $result = $this->db()->select($sql, $data);
+
+        return $result;
+    }
 }
