@@ -73,6 +73,7 @@ if (!$gibbon->session->exists('username')) {
 
     // Archived Notifications
     $criteria = $notificationGateway->newQueryCriteria(true)
+        ->sortBy('timestamp', 'DESC')
         ->fromPOST('archivedNotifications');
 
     $archivedNotifications = $notificationGateway->queryNotificationsByPerson($criteria, $gibbon->session->get('gibbonPersonID'), 'Archived');
