@@ -1,0 +1,28 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% if totalCount > 0 %}
+<div class="flex items-center">
+    {% set percent = ((progressCount / totalCount) * 100)|round %}
+    {% set colour = progressColour|default('purple') %}
+
+    <div class="{{ width|default('flex-1') }} h-6 border bg-gray-100 border-{{ colour }}-600 flex">
+        <div class="bg-{{ colour }}-{{ colour == 'purple' ? '400' : '300' }} h-full" style="width: {{ percent }}%" title="{{ percent }}% {{ __('Complete')}}"></div>
+
+        {% if partialCount > 0 %}
+            {% set percent = ((partialCount / totalCount) * 100)|round %}
+            {% set colour = partialColour|default('gray') %}
+            <div class="bg-{{ colour }}-300 h-full" style="width: {{ percent }}%" title="{{ percent }}% {{ __('Pending')}}"></div>
+        {% endif %}
+    </div>
+
+    <span class="ml-2 text-xxs text-gray-600">
+        {{ progressCount }}/{{ totalCount }}
+    </span>
+</div>
+{% endif %}
