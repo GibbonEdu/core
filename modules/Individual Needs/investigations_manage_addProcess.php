@@ -64,17 +64,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
     $notificationGateway = new NotificationGateway($pdo);
     $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
 
-    $criteria = $investigationGateway->newQueryCriteria();
-    $investigation = $investigationGateway->queryInvestigationsByID($criteria, $gibbonINInvestigationID, $_SESSION[$guid]['gibbonSchoolYearID']);
-    $investigation = $investigation->getRow(0);
+    $investigation = $investigationGateway->getInvestigationByID($gibbonINInvestigationID);
+    $student = Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true);
+    $notificationString = __('A new Individual Needs investigation has been created for {student}.', ['student' => $student]);
+
     if ($investigation['gibbonPersonIDTutor'] != '') {
-        $notificationSender->addNotification($investigation['gibbonPersonIDTutor'], sprintf(__('A new Individual Needs investigation has been created for %1$s.'), Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true)), "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
+        $notificationSender->addNotification($investigation['gibbonPersonIDTutor'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
     }
     if ($investigation['gibbonPersonIDTutor2'] != '') {
-        $notificationSender->addNotification($investigation['gibbonPersonIDTutor2'], sprintf(__('A new Individual Needs investigation has been created for %1$s.'), Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true)), "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
+        $notificationSender->addNotification($investigation['gibbonPersonIDTutor2'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
     }
     if ($investigation['gibbonPersonIDTutor3'] != '') {
-        $notificationSender->addNotification($investigation['gibbonPersonIDTutor3'], sprintf(__('A new Individual Needs investigation has been created for %1$s.'), Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true)), "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
+        $notificationSender->addNotification($investigation['gibbonPersonIDTutor3'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
     }
     $notificationSender->sendNotifications();
 

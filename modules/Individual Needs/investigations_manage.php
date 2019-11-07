@@ -28,17 +28,13 @@ use Gibbon\Domain\IndividualNeeds\INInvestigationContributionGateway;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investigations_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
-    //Get action with highest precendence
+    // Get action with highest precedence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
-    if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+    if (empty($highestAction)) {
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         $page->breadcrumbs->add(__('Manage Investigations'));
 
@@ -58,15 +54,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         $form->addHiddenValue('q', "/modules/Individual Needs/investigations_manage.php");
 
         $row = $form->addRow();
-            $row->addLabel('gibbonPersonID',__('Student'));
+            $row->addLabel('gibbonPersonID', __('Student'));
             $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonPersonID)->placeholder();
 
         $row = $form->addRow();
-            $row->addLabel('gibbonRollGroupID',__('Roll Group'));
+            $row->addLabel('gibbonRollGroupID', __('Roll Group'));
             $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->placeholder();
 
         $row = $form->addRow();
-            $row->addLabel('gibbonYearGroupID',__('Year Group'));
+            $row->addLabel('gibbonYearGroupID', __('Year Group'));
             $row->addSelectYearGroup('gibbonYearGroupID')->placeholder()->selected($gibbonYearGroupID);
 
         $row = $form->addRow();
@@ -111,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         });
 
         $table->addExpandableColumn('comment')
-            ->format(function($investigations) {
+            ->format(function ($investigations) {
                 $output = '';
                 $output .= '<strong>'.__('Reason').'</strong><br/>';
                 $output .= nl2brr($investigations['reason']).'<br/>';
@@ -135,31 +131,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                 return $output;
             });
 
-        echo "<style>
-                .progressBar {
-                    display: inline-block;
-                    height:22px;
-                    background: rgba(0,0,0,0.035);
-                    vertical-align: middle;
-                    border: 1px solid rgba(0,0,0,0.5);
-                }
-
-                .progressBar .complete {
-                    display: inline-block;
-                    height: 100%;
-                    background: #A88EDB;
-                }
-            </style>";
-
         $table->addColumn('status', __('Status'))
             ->description(__('Progress'))
-            ->format(function($investigations) use ($contributionsGateway, $criteria2) {
+            ->format(function ($investigations) use ($contributionsGateway, &$page) {
                 $output = $investigations['status'];
                 if ($investigations['status'] == 'Investigation') {
-                    $completion = $contributionsGateway->queryInvestigationCompletion($criteria2, $investigations['gibbonINInvestigationID']);
-                    $output .= '<br/><small><i>'.$completion['complete'].'/'.$completion['total'].'</i></small>';
-                    $progressWidth = ($completion['total'] > 0) ? (($completion['complete']/$completion['total'])*100) : 0;
-                    $output .= '<div class="progressBar" style="width:100%"><div class="complete" style="width:'.$progressWidth.'%;"></div></div>';
+                    $completion = $contributionsGateway->getInvestigationCompletion($investigations['gibbonINInvestigationID']);
+                    $output .= $page->fetchFromTemplate('ui/progress.twig.html', [
+                        'progressCount' => $completion['complete'],
+                        'totalCount'    => $completion['total'],
+                        'width'         => 'w-32 mt-1',
+                    ]);
                 }
                 return $output;
             });
@@ -168,21 +150,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             ->description(__('Roll Group'))
             ->sortable(['student.surname', 'student.preferredName'])
             ->width('25%')
-            ->format(function($person) use ($guid) {
-                $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'].'&subpage=Individual Needs&search=&allStudents=&sort=surname,preferredName';
+            ->format(function ($person) {
+                $url = './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'].'&subpage=Individual Needs&search=&allStudents=&sort=surname,preferredName';
                 return '<b>'.Format::link($url, Format::name('', $person['preferredName'], $person['surname'], 'Student', true)).'</b>'
                       .'<br/><small><i>'.$person['rollGroup'].'</i></small>';
             });
 
         $table->addColumn('date', __('Date'))
-            ->format(function($investigations) {
+            ->format(function ($investigations) {
                 return Format::date($investigations['date']);
             });
 
         $table->addColumn('teacher', __('Teacher'))
             ->sortable(['preferredNameCreator', 'surnameCreator'])
             ->width('25%')
-            ->format(function($person) {
+            ->format(function ($person) {
                 return Format::name($person['titleCreator'], $person['preferredNameCreator'], $person['surnameCreator'], 'Staff');
             });
 
