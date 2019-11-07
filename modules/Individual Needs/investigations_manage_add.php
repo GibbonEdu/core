@@ -103,13 +103,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         	$column->addLabel('parentsResponse', __('Parent Response'));
         	$column->addTextArea('parentsResponse')->setRows(5)->setClass('fullWidth');
 
+        $form->addRow()->addAlert(__("Submitting this referral will notify the student's form tutor for further investigation."), 'message');
 
         $row = $form->addRow();
         	$row->addFooter();
         	$row->addSubmit();
 
         echo $form->getOutput();
-
     }
 }
-?>
