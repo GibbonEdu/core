@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         $updated = $contributionsGateway->update($gibbonINInvestigationContributionID, $data);
 
         //Check for completion, update status and issue notifications
-        $completion = $contributionsGateway->queryInvestigationCompletion($criteria2, $gibbonINInvestigationID);
+        $completion = $contributionsGateway->getInvestigationCompletion($gibbonINInvestigationID);
         if ($completion['complete'] == $completion['total']) {
             $data = [
                 'status'            => 'Investigation Complete',

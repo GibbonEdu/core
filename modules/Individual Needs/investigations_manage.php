@@ -133,10 +133,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
 
         $table->addColumn('status', __('Status'))
             ->description(__('Progress'))
-            ->format(function ($investigations) use ($contributionsGateway, $criteria2, &$page) {
+            ->format(function ($investigations) use ($contributionsGateway, &$page) {
                 $output = $investigations['status'];
                 if ($investigations['status'] == 'Investigation') {
-                    $completion = $contributionsGateway->queryInvestigationCompletion($criteria2, $investigations['gibbonINInvestigationID']);
+                    $completion = $contributionsGateway->getInvestigationCompletion($investigations['gibbonINInvestigationID']);
                     $output .= $page->fetchFromTemplate('ui/progress.twig.html', [
                         'progressCount' => $completion['complete'],
                         'totalCount'    => $completion['total'],
