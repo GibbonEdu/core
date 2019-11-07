@@ -109,14 +109,13 @@ class INInvestigationContributionGateway extends QueryableGateway
     }
 
     /**
-     * @param QueryCriteria $criteria
      * @param int $gibbonINInvestigationContributionID
-     * @return DataSet
+     * @return array
      */
-    public function queryContributionsByID(QueryCriteria $criteria, $gibbonINInvestigationContributionID)
+    public function getContributionByID($gibbonINInvestigationContributionID)
     {
         $query = $this
-            ->newQuery()
+            ->newSelect()
             ->from($this->getTableName())
             ->cols([
                 'gibbonINInvestigationContribution.*',
@@ -142,7 +141,7 @@ class INInvestigationContributionGateway extends QueryableGateway
             ->where('gibbonINInvestigationContribution.gibbonINInvestigationContributionID=:gibbonINInvestigationContributionID')
             ->bindValue('gibbonINInvestigationContributionID', $gibbonINInvestigationContributionID);
 
-        return $this->runQuery($query, $criteria);
+        return $this->runSelect($query)->fetch();
     }
 
     /**

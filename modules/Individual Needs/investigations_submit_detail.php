@@ -49,9 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         $investigation = $investigationGateway->getInvestigationByID($gibbonINInvestigationID);
 
         $contributionsGateway = $container->get(INInvestigationContributionGateway::class);
-        $criteria2 = $contributionsGateway->newQueryCriteria();
-        $contribution = $contributionsGateway->queryContributionsByID($criteria2, $gibbonINInvestigationContributionID);
-        $contribution = $contribution->getRow(0);
+        $contribution = $contributionsGateway->getContributionByID($gibbonINInvestigationContributionID);
 
         if (empty($investigation) || empty($contribution) || $contribution['gibbonPersonID'] != $gibbon->session->get('gibbonPersonID')) {
             echo "<div class='error'>";
