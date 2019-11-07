@@ -57,10 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         } else {
             // Validate the database record exist
             $investigationGateway = $container->get(INInvestigationGateway::class);
-            $criteria = $investigationGateway->newQueryCriteria();
-            $investigation = $investigationGateway->queryInvestigationsByID($criteria, $gibbonINInvestigationID, $_SESSION[$guid]['gibbonSchoolYearID']);
-
-            $investigation = $investigation->getRow(0);
+            $investigation = $investigationGateway->getInvestigationByID($gibbonINInvestigationID);
 
             if (empty($investigation)) {
                 $page->addError(__('The selected record does not exist, or you do not have access to it.'));

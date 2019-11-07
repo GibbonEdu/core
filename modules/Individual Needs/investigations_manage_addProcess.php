@@ -64,9 +64,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
     $notificationGateway = new NotificationGateway($pdo);
     $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
 
-    $criteria = $investigationGateway->newQueryCriteria();
-    $investigation = $investigationGateway->queryInvestigationsByID($criteria, $gibbonINInvestigationID, $_SESSION[$guid]['gibbonSchoolYearID']);
-    $investigation = $investigation->getRow(0);
+    $investigation = $investigationGateway->getInvestigationByID($gibbonINInvestigationID);
+
     if ($investigation['gibbonPersonIDTutor'] != '') {
         $notificationSender->addNotification($investigation['gibbonPersonIDTutor'], sprintf(__('A new Individual Needs investigation has been created for %1$s.'), Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true)), "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
     }

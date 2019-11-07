@@ -62,9 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
     }
 
     // Validate the database record exist
-    $criteria = $investigationGateway->newQueryCriteria();
-    $investigation = $investigationGateway->queryInvestigationsByID($criteria, $gibbonINInvestigationID, $_SESSION[$guid]['gibbonSchoolYearID']);
-    $investigation = $investigation->getRow(0);
+    $investigation = $investigationGateway->getInvestigationByID($gibbonINInvestigationID);
 
     if (empty($investigation)) {
         $URL .= '&return=error2';

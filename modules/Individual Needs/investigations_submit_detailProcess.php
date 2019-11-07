@@ -39,9 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
 } else {
     // Validate the database records exist
     $investigationGateway = $container->get(INInvestigationGateway::class);
-    $criteria = $investigationGateway->newQueryCriteria();
-    $investigation = $investigationGateway->queryInvestigationsByID($criteria, $gibbonINInvestigationID, $_SESSION[$guid]['gibbonSchoolYearID']);
-    $investigation = $investigation->getRow(0);
+    $investigation = $investigationGateway->getInvestigationByID($gibbonINInvestigationID);
 
     $contributionsGateway = $container->get(INInvestigationContributionGateway::class);
     $criteria2 = $contributionsGateway->newQueryCriteria();
