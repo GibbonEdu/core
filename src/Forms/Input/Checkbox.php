@@ -212,8 +212,10 @@ class Checkbox extends Input
             
             if (!empty($this->checkall)) {
                 $checked = (count($this->options) == count($this->checked))? 'checked' : '';
-                $output .= '<label for="checkall'.$identifier.'">'.$this->checkall.'</label> ';
+                $output .= '<div class="flex mt-1 '.($this->align == 'right' ? 'justify-end text-right' : '').'">';
+                $output .= '<label for="checkall'.$identifier.'" class="mr-1">'.$this->checkall.'</label> ';
                 $output .= '<input id="checkall'.$identifier.'" class="checkall" type="checkbox" '.$checked.'><br/>';
+                $output .= '</div>';
             }
 
             $count = 0;
