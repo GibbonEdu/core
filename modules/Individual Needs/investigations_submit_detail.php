@@ -27,10 +27,8 @@ use Gibbon\Domain\IndividualNeeds\INInvestigationContributionGateway;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investigations_submit_detail.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs
@@ -44,9 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
     $gibbonINInvestigationID = $_GET['gibbonINInvestigationID'] ?? '';
     $gibbonINInvestigationContributionID = $_GET['gibbonINInvestigationContributionID'] ?? '';
     if ($gibbonINInvestigationContributionID == '' || $gibbonINInvestigationID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         // Validate the database records exist
         $investigationGateway = $container->get(INInvestigationGateway::class);
@@ -191,4 +187,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         }
     }
 }
-?>

@@ -17,8 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\IndividualNeeds\INInvestigationContributionGateway;
@@ -27,10 +25,8 @@ use Gibbon\Domain\IndividualNeeds\INInvestigationContributionGateway;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investigations_submit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $page->breadcrumbs->add(__('Submit Contributions'));
 
@@ -59,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
     });
 
     $table->addColumn('status', __('Status'))
-        ->format(function($investigations) {
+        ->format(function ($investigations) {
             return $investigations['status'];
         });
 
@@ -67,21 +63,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         ->description(__('Roll Group'))
         ->sortable(['student.surname', 'student.preferredName'])
         ->width('25%')
-        ->format(function($person) use ($guid) {
-            $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'].'&subpage=Individual Needs&search=&allStudents=&sort=surname,preferredName';
+        ->format(function ($person) use ($guid) {
+            $url = './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'].'&subpage=Individual Needs&search=&allStudents=&sort=surname,preferredName';
             return '<b>'.Format::link($url, Format::name('', $person['preferredName'], $person['surname'], 'Student', true)).'</b>'
                   .'<br/><small><i>'.$person['rollGroup'].'</i></small>';
         });
 
     $table->addColumn('date', __('Date'))
-        ->format(function($investigations) {
+        ->format(function ($investigations) {
             return Format::date($investigations['date']);
         });
 
     $table->addColumn('type', __('Type'));
 
     $table->addColumn('class', __('Class'))
-        ->format(function($investigations) {
+        ->format(function ($investigations) {
             if ($investigations['type'] == 'Teacher') {
                 return ($investigations['course'].'.'.$investigations['class']);
             }
@@ -90,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
     $table->addColumn('teacher', __('Teacher'))
         ->sortable(['preferredNameCreator', 'surnameCreator'])
         ->width('25%')
-        ->format(function($person) {
+        ->format(function ($person) {
             return Format::name($person['titleCreator'], $person['preferredNameCreator'], $person['surnameCreator'], 'Staff');
         });
 

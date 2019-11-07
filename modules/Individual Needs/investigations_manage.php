@@ -28,17 +28,13 @@ use Gibbon\Domain\IndividualNeeds\INInvestigationContributionGateway;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investigations_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
-    //Get action with highest precendence
+    // Get action with highest precedence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
-    if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+    if (empty($highestAction)) {
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         $page->breadcrumbs->add(__('Manage Investigations'));
 
@@ -58,15 +54,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         $form->addHiddenValue('q', "/modules/Individual Needs/investigations_manage.php");
 
         $row = $form->addRow();
-            $row->addLabel('gibbonPersonID',__('Student'));
+            $row->addLabel('gibbonPersonID', __('Student'));
             $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonPersonID)->placeholder();
 
         $row = $form->addRow();
-            $row->addLabel('gibbonRollGroupID',__('Roll Group'));
+            $row->addLabel('gibbonRollGroupID', __('Roll Group'));
             $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->placeholder();
 
         $row = $form->addRow();
-            $row->addLabel('gibbonYearGroupID',__('Year Group'));
+            $row->addLabel('gibbonYearGroupID', __('Year Group'));
             $row->addSelectYearGroup('gibbonYearGroupID')->placeholder()->selected($gibbonYearGroupID);
 
         $row = $form->addRow();

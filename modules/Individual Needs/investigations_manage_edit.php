@@ -29,17 +29,13 @@ use Gibbon\Domain\IndividualNeeds\INInvestigationContributionGateway;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investigations_manage_edit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
-    if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+    if (empty($highestAction)) {
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Proceed!
         $page->breadcrumbs
@@ -56,10 +52,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         }
 
         $gibbonINInvestigationID = $_GET['gibbonINInvestigationID'];
-        if ($gibbonINInvestigationID == '') {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+        if (empty($gibbonINInvestigationID)) {
+            $page->addError(__('You have not specified one or more required parameters.'));
         } else {
             // Validate the database record exist
             $investigationGateway = $container->get(INInvestigationGateway::class);
@@ -69,9 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             $investigation = $investigation->getRow(0);
 
             if (empty($investigation)) {
-                echo "<div class='error'>";
-                echo __('The selected record does not exist, or you do not have access to it.');
-                echo '</div>';
+                $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
                 $canEdit = false ;
                 if ($highestAction == 'Manage Investigations_all' || ($highestAction == 'Manage Investigations_my' && ($investigation['gibbonPersonIDCreator'] == $_SESSION[$guid]['gibbonPersonID']))) {
@@ -84,9 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                 }
 
                 if (!$canEdit && !$isTutor) {
-                    echo "<div class='error'>";
-                    echo __('The selected record does not exist, or you do not have access to it.');
-                    echo '</div>';
+                    $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                 } else {
 
                     if ($gibbonPersonID != '' or $gibbonRollGroupID != '' or $gibbonYearGroupID != '') {
@@ -212,7 +202,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                         });
 
                         $table->addExpandableColumn('comment')
-                            ->format(function($investigations) {
+                            ->format(function ($investigations) {
                                 $output = '';
                                 if (!empty($investigations['cognition'])) {
                                     $output .= '<strong>'.__('Cognition').'</strong><br/>';
@@ -236,12 +226,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                                 return $output;
                             });
                         $table->addColumn('name', __('name'))
-                            ->format(function($person) use ($guid) {
+                            ->format(function ($person) use ($guid) {
                                 return Format::name('', $person['preferredName'], $person['surname'], 'Student', true);
                             });
                         $table->addColumn('type', __('Type'));
                         $table->addColumn('class', __('Class'))
-                            ->format(function($investigations) {
+                            ->format(function ($investigations) {
                                 if ($investigations['type'] == 'Teacher') {
                                     return ($investigations['course'].'.'.$investigations['class']);
                                 }
@@ -299,4 +289,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         }
     }
 }
-?>
