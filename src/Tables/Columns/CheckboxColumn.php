@@ -63,7 +63,8 @@ class CheckboxColumn extends Column
         return (new Checkbox('checkall'))
             ->setClass('floatNone checkall')
             ->checked($this->checked)
-            ->wrap('<div class="textCenter">', '</div>')
+            ->wrap('<div class="text-center">', '</div>')
+            ->alignCenter()
             ->getOutput();
     }
 
@@ -85,6 +86,7 @@ class CheckboxColumn extends Column
             ->setID($this->getID().$value)
             ->setValue($value)
             ->checked($this->checked ? $value : false)
+            ->alignCenter()
             ->getOutput();
     }
 }

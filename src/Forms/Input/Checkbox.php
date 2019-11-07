@@ -161,6 +161,17 @@ class Checkbox extends Input
     }
 
     /**
+     * Aligns the list options to the center.
+     * @return  self
+     */
+    public function alignCenter()
+    {
+        $this->align = 'center';
+        $this->addClass('text-center');
+        return $this;
+    }
+
+    /**
      * Return true if the passed value matches the current checkbox element value(s).
      * @param   mixed  $value
      * @return  bool
@@ -206,7 +217,6 @@ class Checkbox extends Input
             }
 
             $count = 0;
-            $totalOptions = count($this->options);
 
             foreach ($this->options as $value => $label) {
                 if ($hasMultiple) {
@@ -219,13 +229,16 @@ class Checkbox extends Input
                 if ($this->inline) {
                     $output .= '<input type="checkbox" '.$this->getAttributeString().'>&nbsp;';
                     $output .= '<label class="'.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label>&nbsp;&nbsp;';
+                } elseif ($this->align == 'center') {
+                    $output .= '<input type="checkbox" '.$this->getAttributeString().'>';
+                    $output .= '<label class="'.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label>';
                 } elseif ($this->align == 'left') {
-                    $output .= '<div class="flex text-left '.($totalOptions > 1 ? 'my-2' : 'my-px').'">';
+                    $output .= '<div class="flex text-left '.($hasMultiple ? 'my-2' : 'my-px').'">';
                     $output .= '<input type="checkbox" '.$this->getAttributeString().'>';
                     $output .= '<label class="leading-compact ml-2 '.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label><br/>';
                     $output .= '</div>';
-                } else  {
-                    $output .= '<div class="flex justify-end text-right '.($totalOptions > 1 ? 'my-2' : 'my-px').'">';
+                } else {
+                    $output .= '<div class="flex justify-end text-right '.($hasMultiple ? 'my-2' : 'my-px').'">';
                     $output .= '<label class="leading-compact mr-1 '.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label> ';
                     $output .= '<input type="checkbox" '.$this->getAttributeString().'><br/>';
                     $output .= '</div>';
