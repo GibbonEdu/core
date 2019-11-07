@@ -111,7 +111,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             	$column->addLabel('parentsResponse', __('Parent Response'));
             	$column->addTextArea('parentsResponse')->setRows(5)->setClass('fullWidth')->readonly();
 
-
             $form->addRow()->addHeading(__('Contributor Input'));
 
             //Type
@@ -130,76 +129,51 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             $options = getInvestigationCriteriaArray('Cognition') ;
             $row = $form->addRow();
                 $row->addLabel('cognition', __('Cognition'))->description(__('Please choose one description that is most relevant to the student in your subject.'));
-                $row->addRadio('cognition')->fromArray($options)->required()->addClass('py-4')->checked(false);
+                $row->addRadio('cognition')
+                    ->fromArray($options)
+                    ->required()
+                    ->checked(false)
+                    ->alignLeft();
 
             //Memory
             $options = getInvestigationCriteriaArray('Memory') ;
             $row = $form->addRow();
                 $row->addLabel('memory', __('Memory'))->description(__('Please tick any areas that you think the student struggles with'));
-                $column = $row->addColumn()->setClass('flex-col items-end');
-                $count = 0;
-                foreach ($options AS $option) {
-                    $column->addCheckbox('memory'.$count)
-                        ->setName('memory[]')
-                        ->setValue($option)
-                        ->description(__($option));
-                    $count++;
-                }
+                $row->addCheckbox('memory')
+                    ->fromArray($options)
+                    ->alignLeft();
 
             //Self-Management
             $options = getInvestigationCriteriaArray('Self-Management') ;
             $row = $form->addRow();
                 $row->addLabel('selfManagement', __('Self-Management'))->description(__('Please tick any areas that you think the student struggles with.'));
-                $column = $row->addColumn()->setClass('flex-col items-end');
-                $count = 0;
-                foreach ($options AS $option) {
-                    $column->addCheckbox('selfManagement'.$count)
-                        ->setName('selfManagement[]')
-                        ->setValue($option)
-                        ->description(__($option));
-                    $count++;
-                }
+                $row->addCheckbox('selfManagement')
+                    ->fromArray($options)
+                    ->alignLeft();
 
             //Attention
             $options = getInvestigationCriteriaArray('Attention') ;
             $row = $form->addRow();
                 $row->addLabel('attention', __('Attention'))->description(__('Please tick any areas that you think the student struggles with.'));
-                $column = $row->addColumn()->setClass('flex-col items-end');
-                $count = 0;
-                foreach ($options AS $option) {
-                    $column->addCheckbox('attention'.$count)
-                        ->setName('attention[]')
-                        ->setValue($option)
-                        ->description(__($option));
-                    $count++;
-                }
+                $row->addCheckbox('attention')
+                    ->fromArray($options)
+                    ->alignLeft();
+
             //Social Interaction
             $options = getInvestigationCriteriaArray('Social Interaction') ;
             $row = $form->addRow();
                 $row->addLabel('socialInteraction', __('Social Interaction'))->description(__('Please tick any areas that you think the student struggles with.'));
-                $column = $row->addColumn()->setClass('flex-col items-end');
-                $count = 0;
-                foreach ($options AS $option) {
-                    $column->addCheckbox('socialInteraction'.$count)
-                        ->setName('socialInteraction[]')
-                        ->setValue($option)
-                        ->description(__($option));
-                    $count++;
-                }
+                $row->addCheckbox('socialInteraction')
+                    ->fromArray($options)
+                    ->alignLeft();
 
             //Communication
             $options = getInvestigationCriteriaArray('Communication') ;
             $row = $form->addRow();
                 $row->addLabel('communication', __('Communication'))->description(__('Please tick any areas that you think the student struggles with.'));
-                $column = $row->addColumn()->setClass('flex-col items-end');
-                $count = 0;
-                foreach ($options AS $option) {
-                    $column->addCheckbox('communication'.$count)
-                        ->setName('communication[]')
-                        ->setValue($option)
-                        ->description(__($option));
-                    $count++;
-                }
+                $row->addCheckbox('communication')
+                    ->fromArray($options)
+                    ->alignLeft();
 
             //Comment
             $row = $form->addRow();
