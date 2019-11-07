@@ -136,6 +136,7 @@ class Checkbox extends Input
     public function inline($value = true)
     {
         $this->inline = $value;
+        $this->addClass('right');
         return $this;
     }
 
