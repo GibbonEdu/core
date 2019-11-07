@@ -94,15 +94,13 @@ class INInvestigationGateway extends QueryableGateway
     }
 
     /**
-     * @param QueryCriteria $criteria
      * @param int $gibbonINInvestigationID
-     * @param int $gibbonSchoolYearID
-     * @return DataSet
+     * @return array
      */
-    public function queryInvestigationsByID(QueryCriteria $criteria, $gibbonINInvestigationID, $gibbonSchoolYearID)
+    public function getInvestigationByID($gibbonINInvestigationID)
     {
         $query = $this
-            ->newQuery()
+            ->newSelect()
             ->from($this->getTableName())
             ->cols([
                 'gibbonINInvestigation.*',
@@ -123,13 +121,11 @@ class INInvestigationGateway extends QueryableGateway
             ->innerJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
             ->innerJoin('gibbonYearGroup', 'gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID')
             ->leftJoin('gibbonPerson AS creator', 'gibbonINInvestigation.gibbonPersonIDCreator=creator.gibbonPersonID')
-            ->where('gibbonINInvestigation.gibbonSchoolYearID=:gibbonSchoolYearID')
-            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->where('gibbonStudentEnrolment.gibbonSchoolYearID=gibbonINInvestigation.gibbonSchoolYearID')
             ->bindValue('gibbonINInvestigationID', $gibbonINInvestigationID)
             ->where('gibbonINInvestigation.gibbonINInvestigationID=:gibbonINInvestigationID');
 
-        return $this->runQuery($query, $criteria);
+        return $this->runSelect($query)->fetch();
     }
 
     /**

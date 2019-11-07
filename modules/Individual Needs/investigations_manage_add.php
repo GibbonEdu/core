@@ -22,17 +22,13 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investigations_manage_add.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
-    //Get action with highest precendence
+    // Get action with highest precedence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
-    if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+    if (empty($highestAction)) {
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         $page->breadcrumbs
             ->add(__('Manage Investigations'), 'investigations_manage.php')
@@ -103,13 +99,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         	$column->addLabel('parentsResponse', __('Parent Response'));
         	$column->addTextArea('parentsResponse')->setRows(5)->setClass('fullWidth');
 
+        $form->addRow()->addAlert(__("Submitting this referral will notify the student's form tutor for further investigation."), 'message');
 
         $row = $form->addRow();
         	$row->addFooter();
         	$row->addSubmit();
 
         echo $form->getOutput();
-
     }
 }
-?>

@@ -27,10 +27,8 @@ use Gibbon\Domain\IndividualNeeds\INInvestigationContributionGateway;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investigations_submit_detail.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs
@@ -44,25 +42,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
     $gibbonINInvestigationID = $_GET['gibbonINInvestigationID'] ?? '';
     $gibbonINInvestigationContributionID = $_GET['gibbonINInvestigationContributionID'] ?? '';
     if ($gibbonINInvestigationContributionID == '' || $gibbonINInvestigationID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         // Validate the database records exist
         $investigationGateway = $container->get(INInvestigationGateway::class);
-        $criteria = $investigationGateway->newQueryCriteria();
-        $investigation = $investigationGateway->queryInvestigationsByID($criteria, $gibbonINInvestigationID, $_SESSION[$guid]['gibbonSchoolYearID']);
-        $investigation = $investigation->getRow(0);
+        $investigation = $investigationGateway->getInvestigationByID($gibbonINInvestigationID);
 
         $contributionsGateway = $container->get(INInvestigationContributionGateway::class);
-        $criteria2 = $contributionsGateway->newQueryCriteria();
-        $contribution = $contributionsGateway->queryContributionsByID($criteria2, $gibbonINInvestigationContributionID);
-        $contribution = $contribution->getRow(0);
+        $contribution = $contributionsGateway->getContributionByID($gibbonINInvestigationContributionID);
 
         if (empty($investigation) || empty($contribution) || $contribution['gibbonPersonID'] != $gibbon->session->get('gibbonPersonID')) {
-            echo "<div class='error'>";
-            echo __('The selected record does not exist, or you do not have access to it.');
-            echo '</div>';
+            $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
             $form = Form::create('addform', $_SESSION[$guid]['absoluteURL']."/modules/Individual Needs/investigations_submit_detailProcess.php");
             $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -111,7 +101,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             	$column->addLabel('parentsResponse', __('Parent Response'));
             	$column->addTextArea('parentsResponse')->setRows(5)->setClass('fullWidth')->readonly();
 
-
             $form->addRow()->addHeading(__('Contributor Input'));
 
             //Type
@@ -130,76 +119,51 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             $options = getInvestigationCriteriaArray('Cognition') ;
             $row = $form->addRow();
                 $row->addLabel('cognition', __('Cognition'))->description(__('Please choose one description that is most relevant to the student in your subject.'));
-                $row->addRadio('cognition')->fromArray($options)->required()->addClass('py-4')->checked(false);
+                $row->addRadio('cognition')
+                    ->fromArray($options)
+                    ->required()
+                    ->checked(false)
+                    ->alignLeft();
 
             //Memory
             $options = getInvestigationCriteriaArray('Memory') ;
             $row = $form->addRow();
                 $row->addLabel('memory', __('Memory'))->description(__('Please tick any areas that you think the student struggles with'));
-                $column = $row->addColumn()->setClass('flex-col items-end');
-                $count = 0;
-                foreach ($options AS $option) {
-                    $column->addCheckbox('memory'.$count)
-                        ->setName('memory[]')
-                        ->setValue($option)
-                        ->description(__($option));
-                    $count++;
-                }
+                $row->addCheckbox('memory')
+                    ->fromArray($options)
+                    ->alignLeft();
 
             //Self-Management
             $options = getInvestigationCriteriaArray('Self-Management') ;
             $row = $form->addRow();
                 $row->addLabel('selfManagement', __('Self-Management'))->description(__('Please tick any areas that you think the student struggles with.'));
-                $column = $row->addColumn()->setClass('flex-col items-end');
-                $count = 0;
-                foreach ($options AS $option) {
-                    $column->addCheckbox('selfManagement'.$count)
-                        ->setName('selfManagement[]')
-                        ->setValue($option)
-                        ->description(__($option));
-                    $count++;
-                }
+                $row->addCheckbox('selfManagement')
+                    ->fromArray($options)
+                    ->alignLeft();
 
             //Attention
             $options = getInvestigationCriteriaArray('Attention') ;
             $row = $form->addRow();
                 $row->addLabel('attention', __('Attention'))->description(__('Please tick any areas that you think the student struggles with.'));
-                $column = $row->addColumn()->setClass('flex-col items-end');
-                $count = 0;
-                foreach ($options AS $option) {
-                    $column->addCheckbox('attention'.$count)
-                        ->setName('attention[]')
-                        ->setValue($option)
-                        ->description(__($option));
-                    $count++;
-                }
+                $row->addCheckbox('attention')
+                    ->fromArray($options)
+                    ->alignLeft();
+
             //Social Interaction
             $options = getInvestigationCriteriaArray('Social Interaction') ;
             $row = $form->addRow();
                 $row->addLabel('socialInteraction', __('Social Interaction'))->description(__('Please tick any areas that you think the student struggles with.'));
-                $column = $row->addColumn()->setClass('flex-col items-end');
-                $count = 0;
-                foreach ($options AS $option) {
-                    $column->addCheckbox('socialInteraction'.$count)
-                        ->setName('socialInteraction[]')
-                        ->setValue($option)
-                        ->description(__($option));
-                    $count++;
-                }
+                $row->addCheckbox('socialInteraction')
+                    ->fromArray($options)
+                    ->alignLeft();
 
             //Communication
             $options = getInvestigationCriteriaArray('Communication') ;
             $row = $form->addRow();
                 $row->addLabel('communication', __('Communication'))->description(__('Please tick any areas that you think the student struggles with.'));
-                $column = $row->addColumn()->setClass('flex-col items-end');
-                $count = 0;
-                foreach ($options AS $option) {
-                    $column->addCheckbox('communication'.$count)
-                        ->setName('communication[]')
-                        ->setValue($option)
-                        ->description(__($option));
-                    $count++;
-                }
+                $row->addCheckbox('communication')
+                    ->fromArray($options)
+                    ->alignLeft();
 
             //Comment
             $row = $form->addRow();
@@ -217,4 +181,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         }
     }
 }
-?>

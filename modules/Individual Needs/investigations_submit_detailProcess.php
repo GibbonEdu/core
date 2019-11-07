@@ -39,14 +39,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
 } else {
     // Validate the database records exist
     $investigationGateway = $container->get(INInvestigationGateway::class);
-    $criteria = $investigationGateway->newQueryCriteria();
-    $investigation = $investigationGateway->queryInvestigationsByID($criteria, $gibbonINInvestigationID, $_SESSION[$guid]['gibbonSchoolYearID']);
-    $investigation = $investigation->getRow(0);
+    $investigation = $investigationGateway->getInvestigationByID($gibbonINInvestigationID);
 
     $contributionsGateway = $container->get(INInvestigationContributionGateway::class);
-    $criteria2 = $contributionsGateway->newQueryCriteria();
-    $contribution = $contributionsGateway->queryContributionsByID($criteria2, $gibbonINInvestigationContributionID);
-    $contribution = $contribution->getRow(0);
+    $contribution = $contributionsGateway->getContributionByID($gibbonINInvestigationContributionID);
 
     if (empty($investigation) || empty($contribution) || $contribution['gibbonPersonID'] != $gibbon->session->get('gibbonPersonID')) {
         $URL .= '&return=error0';
@@ -75,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         $updated = $contributionsGateway->update($gibbonINInvestigationContributionID, $data);
 
         //Check for completion, update status and issue notifications
-        $completion = $contributionsGateway->queryInvestigationCompletion($criteria2, $gibbonINInvestigationID);
+        $completion = $contributionsGateway->getInvestigationCompletion($gibbonINInvestigationID);
         if ($completion['complete'] == $completion['total']) {
             $data = [
                 'status'            => 'Investigation Complete',
@@ -85,35 +81,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             $notificationGateway = new NotificationGateway($pdo);
             $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
 
-            $notificationString = __('An Individual Needs investigation for %1$s has been completed.');
+            $studentName = Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true);
+            $notificationString = __('An Individual Needs investigation for {student} has been completed.', ['student' => $studentName]);
 
             //Originating teacher
-            $notificationSender->addNotification($investigation['gibbonPersonIDCreator'], sprintf($notificationString, Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true)), "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
+            $notificationSender->addNotification($investigation['gibbonPersonIDCreator'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
 
             //Form tutors
             if ($investigation['gibbonPersonIDTutor'] != '') {
-                $notificationSender->addNotification($investigation['gibbonPersonIDTutor'], sprintf($notificationString, Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true)), "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
+                $notificationSender->addNotification($investigation['gibbonPersonIDTutor'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
             }
             if ($investigation['gibbonPersonIDTutor2'] != '') {
-                $notificationSender->addNotification($investigation['gibbonPersonIDTutor2'], sprintf($notificationString, Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true)), "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
+                $notificationSender->addNotification($investigation['gibbonPersonIDTutor2'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
             }
             if ($investigation['gibbonPersonIDTutor3'] != '') {
-                $notificationSender->addNotification($investigation['gibbonPersonIDTutor3'], sprintf($notificationString, Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true)), "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
+                $notificationSender->addNotification($investigation['gibbonPersonIDTutor3'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
             }
 
             //HOY
             if ($investigation['gibbonPersonIDHOY'] != '') {
-                $notificationSender->addNotification($investigation['gibbonPersonIDHOY'], sprintf($notificationString, Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true)), "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
+                $notificationSender->addNotification($investigation['gibbonPersonIDHOY'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
             }
 
             //LS role
-            $notificatioRole = getSettingByScope($connection2, 'Individual Needs', 'investigationNotificationRole');
-            if (!empty($notificatioRole)) {
+            $notificationRole = getSettingByScope($connection2, 'Individual Needs', 'investigationNotificationRole');
+            if (!empty($notificationRole)) {
                 $roleGateway = $container->get(RoleGateway::class);
-                $criteria3 = $roleGateway->newQueryCriteria();
-                $users = $roleGateway->queryUsersByRole($criteria3, $notificatioRole);
+                $criteria = $roleGateway->newQueryCriteria();
+                $users = $roleGateway->queryUsersByRole($criteria, $notificationRole);
                 foreach ($users AS $user) {
-                    $notificationSender->addNotification($user['gibbonPersonID'], sprintf($notificationString, Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true)), "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
+                    $notificationSender->addNotification($user['gibbonPersonID'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
                 }
             }
 

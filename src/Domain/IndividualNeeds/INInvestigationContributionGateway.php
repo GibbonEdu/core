@@ -109,14 +109,13 @@ class INInvestigationContributionGateway extends QueryableGateway
     }
 
     /**
-     * @param QueryCriteria $criteria
      * @param int $gibbonINInvestigationContributionID
-     * @return DataSet
+     * @return array
      */
-    public function queryContributionsByID(QueryCriteria $criteria, $gibbonINInvestigationContributionID)
+    public function getContributionByID($gibbonINInvestigationContributionID)
     {
         $query = $this
-            ->newQuery()
+            ->newSelect()
             ->from($this->getTableName())
             ->cols([
                 'gibbonINInvestigationContribution.*',
@@ -142,36 +141,26 @@ class INInvestigationContributionGateway extends QueryableGateway
             ->where('gibbonINInvestigationContribution.gibbonINInvestigationContributionID=:gibbonINInvestigationContributionID')
             ->bindValue('gibbonINInvestigationContributionID', $gibbonINInvestigationContributionID);
 
-        return $this->runQuery($query, $criteria);
+        return $this->runSelect($query)->fetch();
     }
 
     /**
-     * @param QueryCriteria $criteria
+     * @param string $gibbonINInvestigationID
      * @return array
      */
-    public function queryInvestigationCompletion(QueryCriteria $criteria, $gibbonINInvestigationID)
+    public function getInvestigationCompletion($gibbonINInvestigationID)
     {
         $query = $this
-            ->newQuery()
+            ->newSelect()
             ->from($this->getTableName())
             ->cols([
-                '*'
+                "COUNT(DISTINCT CASE WHEN status = 'Complete' THEN gibbonINInvestigationContributionID END) AS complete",
+                "COUNT(DISTINCT gibbonINInvestigationContributionID) AS total"
             ])
             ->where('gibbonINInvestigationID=:gibbonINInvestigationID')
             ->bindValue('gibbonINInvestigationID', $gibbonINInvestigationID);
 
-        $results = $this->runQuery($query, $criteria);
-
-        $complete = 0 ;
-        foreach ($results AS $result) {
-            $result['status'] == 'Complete' ? $complete++ : $complete;
-        }
-        $return = array(
-            'complete' => $complete,
-            'total' => $results->count()
-        );
-
-        return $return;
+        return $this->runSelect($query)->fetch();
     }
 
     /**
