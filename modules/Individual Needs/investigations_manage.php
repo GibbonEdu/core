@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         });
 
         $table->addExpandableColumn('comment')
-            ->format(function($investigations) {
+            ->format(function ($investigations) {
                 $output = '';
                 $output .= '<strong>'.__('Reason').'</strong><br/>';
                 $output .= nl2brr($investigations['reason']).'<br/>';
@@ -135,31 +135,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                 return $output;
             });
 
-        echo "<style>
-                .progressBar {
-                    display: inline-block;
-                    height:22px;
-                    background: rgba(0,0,0,0.035);
-                    vertical-align: middle;
-                    border: 1px solid rgba(0,0,0,0.5);
-                }
-
-                .progressBar .complete {
-                    display: inline-block;
-                    height: 100%;
-                    background: #A88EDB;
-                }
-            </style>";
-
         $table->addColumn('status', __('Status'))
             ->description(__('Progress'))
-            ->format(function($investigations) use ($contributionsGateway, $criteria2) {
+            ->format(function ($investigations) use ($contributionsGateway, $criteria2, &$page) {
                 $output = $investigations['status'];
                 if ($investigations['status'] == 'Investigation') {
                     $completion = $contributionsGateway->queryInvestigationCompletion($criteria2, $investigations['gibbonINInvestigationID']);
-                    $output .= '<br/><small><i>'.$completion['complete'].'/'.$completion['total'].'</i></small>';
-                    $progressWidth = ($completion['total'] > 0) ? (($completion['complete']/$completion['total'])*100) : 0;
-                    $output .= '<div class="progressBar" style="width:100%"><div class="complete" style="width:'.$progressWidth.'%;"></div></div>';
+                    $output .= $page->fetchFromTemplate('ui/progress.twig.html', [
+                        'progressCount' => $completion['complete'],
+                        'totalCount'    => $completion['total'],
+                        'width'         => 'w-32 mt-1',
+                    ]);
                 }
                 return $output;
             });
@@ -168,21 +154,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             ->description(__('Roll Group'))
             ->sortable(['student.surname', 'student.preferredName'])
             ->width('25%')
-            ->format(function($person) use ($guid) {
-                $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'].'&subpage=Individual Needs&search=&allStudents=&sort=surname,preferredName';
+            ->format(function ($person) {
+                $url = './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'].'&subpage=Individual Needs&search=&allStudents=&sort=surname,preferredName';
                 return '<b>'.Format::link($url, Format::name('', $person['preferredName'], $person['surname'], 'Student', true)).'</b>'
                       .'<br/><small><i>'.$person['rollGroup'].'</i></small>';
             });
 
         $table->addColumn('date', __('Date'))
-            ->format(function($investigations) {
+            ->format(function ($investigations) {
                 return Format::date($investigations['date']);
             });
 
         $table->addColumn('teacher', __('Teacher'))
             ->sortable(['preferredNameCreator', 'surnameCreator'])
             ->width('25%')
-            ->format(function($person) {
+            ->format(function ($person) {
                 return Format::name($person['titleCreator'], $person['preferredNameCreator'], $person['surnameCreator'], 'Staff');
             });
 
