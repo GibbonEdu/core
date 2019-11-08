@@ -516,4 +516,5 @@ CREATE TABLE `gibbonINInvestigationContribution` ( `gibbonINInvestigationContrib
 UPDATE gibbonAction SET name='Individual Needs Settings' WHERE name='IN Settings' AND `gibbonModuleID`= (SELECT gibbonModuleID FROM gibbonModule WHERE name='School Admin');end
 INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES ('Individual Needs', 'investigationNotificationsRole', 'Investigations Notification Role', 'Users to notify when an Investigation is complete.', '');end
 UPDATE gibbonSetting set name='investigationNotificationRole' WHERE scope='Individual Needs' AND name='investigationNotificationsRole';end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES ('Students', 'firstAidDescriptionTemplate', 'First Aid Description Template', 'Template text to be included in the Description field of a First Aid Record.', '');end
 ";

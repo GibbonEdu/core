@@ -26,22 +26,21 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $enableStudentNotes = $_POST['enableStudentNotes'];
-    $noteCreationNotification = 'Tutors';
-    if ($_POST['noteCreationNotification'] == 'Tutors & Teachers')
-        $noteCreationNotification = 'Tutors & Teachers';
-    $academicAlertLowThreshold = $_POST['academicAlertLowThreshold'];
-    $academicAlertMediumThreshold = $_POST['academicAlertMediumThreshold'];
-    $academicAlertHighThreshold = $_POST['academicAlertHighThreshold'];
-    $behaviourAlertLowThreshold = $_POST['behaviourAlertLowThreshold'];
-    $behaviourAlertMediumThreshold = $_POST['behaviourAlertMediumThreshold'];
-    $behaviourAlertHighThreshold = $_POST['behaviourAlertHighThreshold'];
-    $extendedBriefProfile = $_POST['extendedBriefProfile'];
+    $enableStudentNotes = $_POST['enableStudentNotes'] ?? '';
+    $noteCreationNotification = ($_POST['noteCreationNotification'] == 'Tutors & Teachers') ? 'Tutors & Teachers' : 'Tutors';
+    $academicAlertLowThreshold = $_POST['academicAlertLowThreshold'] ?? '';
+    $academicAlertMediumThreshold = $_POST['academicAlertMediumThreshold'] ?? '';
+    $academicAlertHighThreshold = $_POST['academicAlertHighThreshold'] ?? '';
+    $behaviourAlertLowThreshold = $_POST['behaviourAlertLowThreshold'] ?? '';
+    $behaviourAlertMediumThreshold = $_POST['behaviourAlertMediumThreshold'] ?? '';
+    $behaviourAlertHighThreshold = $_POST['behaviourAlertHighThreshold'] ?? '';
+    $extendedBriefProfile = $_POST['extendedBriefProfile'] ?? '';
     $studentAgreementOptions = '';
     foreach (explode(',', $_POST['studentAgreementOptions']) as $agreement) {
         $studentAgreementOptions .= trim($agreement).',';
     }
     $studentAgreementOptions = substr($studentAgreementOptions, 0, -1);
+    $firstAidDescriptionTemplate = $_POST['firstAidDescriptionTemplate'] ?? '';
 
     //Write to database
     $fail = false;
@@ -130,6 +129,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
     try {
         $data = array('value' => $studentAgreementOptions);
         $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='School Admin' AND name='studentAgreementOptions'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    try {
+        $data = array('value' => $firstAidDescriptionTemplate);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Students' AND name='firstAidDescriptionTemplate'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
