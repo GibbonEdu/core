@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
         $allStudents = (isset($_GET['allStudents']) ? $_GET['allStudents'] : '');
 
         // CRITERIA
-        $criteria = $studentGateway->newQueryCriteria()
+        $criteria = $studentGateway->newQueryCriteria(true)
             ->searchBy($studentGateway->getSearchableColumns(), $search)
             ->sortBy(['surname', 'preferredName'])
             ->filterBy('all', $allStudents)

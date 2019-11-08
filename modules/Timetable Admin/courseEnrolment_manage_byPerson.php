@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         // CRITERIA
         $studentGateway = $container->get(StudentGateway::class);
 
-        $criteria = $studentGateway->newQueryCriteria()
+        $criteria = $studentGateway->newQueryCriteria(true)
             ->searchBy($studentGateway->getSearchableColumns(), $search)
             ->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
             ->filterBy('all', $allUsers)

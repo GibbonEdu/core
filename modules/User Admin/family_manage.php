@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage.p
     $familyGateway = $container->get(FamilyGateway::class);
 
     // QUERY
-    $criteria = $familyGateway->newQueryCriteria()
+    $criteria = $familyGateway->newQueryCriteria(true)
         ->searchBy($familyGateway->getSearchableColumns(), $search)
         ->sortBy(['name'])
         ->fromPOST();

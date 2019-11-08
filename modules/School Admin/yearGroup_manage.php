@@ -39,7 +39,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
     // QUERY
     $criteria = $yearGroupGateway->newQueryCriteria()
         ->sortBy(['sequenceNumber'])
-        ->pageSize(0)
         ->fromPOST();
 
     $yearGroups = $yearGroupGateway->queryYearGroups($criteria);

@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     $studentGateway = $container->get(StudentGateway::class);
 
     // CRITERIA
-    $criteria = $behaviourGateway->newQueryCriteria()
+    $criteria = $behaviourGateway->newQueryCriteria(true)
         ->sortBy('count', 'DESC')
         ->sortBy('rollGroup')
         ->sortBy(['surname', 'preferredName'])

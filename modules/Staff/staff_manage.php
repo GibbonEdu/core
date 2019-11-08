@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
     $staffGateway = $container->get(StaffGateway::class);
 
     // CRITERIA
-    $criteria = $staffGateway->newQueryCriteria()
+    $criteria = $staffGateway->newQueryCriteria(true)
         ->searchBy($staffGateway->getSearchableColumns(), $search)
         ->filterBy('all', $allStaff)
         ->sortBy(['surname', 'preferredName'])

@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
     $gradeScaleGateway = $container->get(GradeScaleGateway::class);
 
     // QUERY
-    $criteria = $gradeScaleGateway->newQueryCriteria()
+    $criteria = $gradeScaleGateway->newQueryCriteria(true)
         ->sortBy('name')
         ->fromPOST();
 

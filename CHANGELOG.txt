@@ -74,6 +74,7 @@ v19.0.00
         System: fixed Notification Events to only send to users who have status Full
         System: adjusted date formats for German language
         System: fixed translatability issue of Public Registration text
+        System: fixed pagination setting so it correctly controls table size
         Activities: improved interface string advising users of disabled external activity registration
         Attendance: fixed missing data in printable view of Student History
         Attendance: fixed Set Future Absence to only allow future dates

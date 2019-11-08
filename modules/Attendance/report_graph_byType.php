@@ -128,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
         //Produce array of attendance data
         $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
         $rows = $attendanceLogGateway->queryAttendanceCountsByType(
-            $attendanceLogGateway->newQueryCriteria()->pageSize(0),
+            $attendanceLogGateway->newQueryCriteria(),
             $_SESSION[$guid]['gibbonSchoolYearID'],
             $rollGroups,
             $dateStart,

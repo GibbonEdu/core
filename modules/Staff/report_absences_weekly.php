@@ -103,7 +103,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
     $criteria = $staffAbsenceGateway->newQueryCriteria()
         ->sortBy('date')
         ->sortBy('sequenceNumber')
-        ->pageSize(0)
         ->fromPOST();
 
     $absencesThisWeek = $staffAbsenceGateway->queryApprovedAbsencesByDateRange($criteria, $dateStart->format('Y-m-d'), $dateEnd->format('Y-m-d'), false)->toArray();

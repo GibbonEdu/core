@@ -33,7 +33,7 @@ $newFormValues = array(
     'currency'                      => 'BTC',
     'emailLink'                     => 'http://email.test',
     'webLink'                       => 'http://web.test',
-    'pagination'                    => '42',
+    'pagination'                    => '100',
     'analytics'                     => '<script></script>',
 );
 

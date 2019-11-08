@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields.php'
     $userFieldGateway = $container->get(UserFieldGateway::class);
     
     // QUERY
-    $criteria = $userFieldGateway->newQueryCriteria()
+    $criteria = $userFieldGateway->newQueryCriteria(true)
         ->sortBy('name')
         ->fromPOST();
 

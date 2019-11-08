@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 ? array_merge($studentGateway->getSearchableColumns(), ['parent1.email', 'parent1.emailAlternate', 'parent2.email', 'parent2.emailAlternate'])
                 : $studentGateway->getSearchableColumns();
 
-            $criteria = $studentGateway->newQueryCriteria()
+            $criteria = $studentGateway->newQueryCriteria(true)
                 ->searchBy($searchColumns, $search)
                 ->sortBy(array_filter(explode(',', $sort)))
                 ->filterBy('all', $canViewFullProfile ? $allStudents : '')

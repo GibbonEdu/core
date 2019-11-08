@@ -37,7 +37,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/report_gr
     $inGateway = $container->get(INGateway::class);
     $criteria = $inGateway->newQueryCriteria()
         ->sortBy(['gibbonYearGroup.sequenceNumber', 'gibbonRollGroup.name'])
-        ->pageSize(0)
         ->fromPOST();
 
     $inCounts = $inGateway->queryINCountsBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID'], $gibbonYearGroupID);

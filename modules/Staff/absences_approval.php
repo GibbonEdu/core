@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_approval.ph
     $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
 
     // QUERY
-    $criteria = $staffAbsenceGateway->newQueryCriteria()
+    $criteria = $staffAbsenceGateway->newQueryCriteria(true)
         ->searchBy($staffAbsenceGateway->getSearchableColumns(), $search)
         ->sortBy('status', 'ASC')
         ->fromPOST();

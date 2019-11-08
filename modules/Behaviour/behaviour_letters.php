@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_letter
     $behaviourGateway = $container->get(BehaviourGateway::class);
 
     // CRITERIA
-    $criteria = $behaviourGateway->newQueryCriteria()
+    $criteria = $behaviourGateway->newQueryCriteria(true)
         ->sortBy('timestamp', 'DESC')
         ->filterBy('student', $gibbonPersonID)
         ->fromPOST();

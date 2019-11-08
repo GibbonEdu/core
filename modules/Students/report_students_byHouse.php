@@ -42,7 +42,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
     $criteria = $houseGateway->newQueryCriteria()
         ->sortBy(['gibbonYearGroup.sequenceNumber'])
         ->sortBy(['gibbonHouse.name'])
-        ->pageSize(0)
         ->fromPOST();
 
     $houseCounts = $houseGateway->queryStudentHouseCountByYearGroup($criteria, $gibbonSchoolYearID);

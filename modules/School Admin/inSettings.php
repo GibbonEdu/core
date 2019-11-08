@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings.ph
     $INGateway = $container->get(INGateway::class);
 
     // QUERY
-    $criteria = $INGateway->newQueryCriteria()
+    $criteria = $INGateway->newQueryCriteria(true)
         ->sortBy(['sequenceNumber'])
         ->fromArray($_POST);
 

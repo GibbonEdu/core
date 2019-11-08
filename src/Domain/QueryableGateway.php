@@ -41,15 +41,20 @@ abstract class QueryableGateway extends Gateway
      */
     private static $queryFactory;
 
+    private static $pageSize = null;
+
     /**
      * Creates a new QueryCriteria instance.
      *
      * @param array $values
      * @return QueryCriteria
      */
-    public function newQueryCriteria()
+    public function newQueryCriteria($defaultPageSize = false)
     {
-        return new QueryCriteria();
+        if ($defaultPageSize && is_null(self::$pageSize)) {
+            self::$pageSize = $this->db()->selectOne("SELECT value FROM gibbonSetting WHERE scope='System' AND name='pagination' LIMIT 1");
+        }
+        return (new QueryCriteria())->pageSize($defaultPageSize ? self::$pageSize : 0);
     }
 
     /**

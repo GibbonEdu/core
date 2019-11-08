@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
 
     // Search
     $groupGateway = $container->get(GroupGateway::class);
-    $criteria = $groupGateway->newQueryCriteria()
+    $criteria = $groupGateway->newQueryCriteria(true)
         ->searchBy($groupGateway->getSearchableColumns(), $searchTerm)
         ->sortBy('name');
 

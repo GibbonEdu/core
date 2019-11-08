@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
     $familyGateway = $container->get(FamilyGateway::class);
 
     // CRITERIA
-    $criteria = $reportGateway->newQueryCriteria()
+    $criteria = $reportGateway->newQueryCriteria(true)
         ->sortBy(['gibbonPerson.transport', 'gibbonPerson.surname', 'gibbonPerson.preferredName'])
         ->pageSize(!empty($viewMode) ? 0 : 50)
         ->fromPOST();

@@ -76,7 +76,7 @@ class StudentHistoryData
         }
 
         // Get Terms
-        $criteria = $this->termGateway->newQueryCriteria()
+        $criteria = $this->termGateway->newQueryCriteria(true)
             ->filterBy('schoolYear', $gibbonSchoolYearID)
             ->filterBy('firstDay', date('Y-m-d'))
             ->sortBy('firstDay');

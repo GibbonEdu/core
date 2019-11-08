@@ -575,8 +575,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $criteria = $staffCoverageGateway->newQueryCriteria()
                 ->filterBy('startDate', date('Y-m-d', $startDayStamp))
                 ->filterBy('endDate', date('Y-m-d', $endDayStamp))
-                ->filterBy('status', 'Accepted')
-                ->pageSize(0);
+                ->filterBy('status', 'Accepted');
             $coverageList = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID, false);
 
             foreach ($coverageList as $coverage) {
@@ -604,8 +603,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $criteria = $staffAbsenceGateway->newQueryCriteria()
                 ->filterBy('dateStart', date('Y-m-d', $startDayStamp))
                 ->filterBy('dateEnd', date('Y-m-d', $endDayStamp))
-                ->filterBy('status', 'Approved')
-                ->pageSize(0);
+                ->filterBy('status', 'Approved');
             $absenceList = $staffAbsenceGateway->queryAbsencesByPerson($criteria, $gibbonPersonID, false);
             $canViewAbsences = isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPerson.php');
 

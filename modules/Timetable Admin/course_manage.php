@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         $courseGateway = $container->get(CourseGateway::class);
 
         // CRITERIA
-        $criteria = $courseGateway->newQueryCriteria()
+        $criteria = $courseGateway->newQueryCriteria(true)
             ->searchBy($courseGateway->getSearchableColumns(), $search)
             ->sortBy(['gibbonCourse.nameShort', 'gibbonCourse.name'])
             ->filterBy('yearGroup', $gibbonYearGroupID)

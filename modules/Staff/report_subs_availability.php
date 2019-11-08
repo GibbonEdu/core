@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $subGateway = $container->get(SubstituteGateway::class);
     
     // CRITERIA
-    $criteria = $subGateway->newQueryCriteria()
+    $criteria = $subGateway->newQueryCriteria(true)
         ->sortBy('gibbonSubstitute.priority', 'DESC')
         ->sortBy(['surname', 'preferredName'])
         ->filterBy('showUnavailable', 'true')

@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
     $externalAssessmentGateway = $container->get(ExternalAssessmentGateway::class);
 
     // QUERY
-    $criteria = $externalAssessmentGateway->newQueryCriteria()
+    $criteria = $externalAssessmentGateway->newQueryCriteria(true)
         ->sortBy('name')
         ->fromPOST();
 

@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space.php') =
         $facilityGateway = $container->get(FacilityGateway::class);
 
         // CRITERIA
-        $criteria = $facilityGateway->newQueryCriteria()
+        $criteria = $facilityGateway->newQueryCriteria(true)
             ->searchBy($facilityGateway->getSearchableColumns(), $search)
             ->sortBy('name')
             ->fromPOST();

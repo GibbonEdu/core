@@ -187,7 +187,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
                         $staffAbsenceDateGateway = $container->get(StaffAbsenceDateGateway::class);
 
-                        $criteria = $staffAbsenceGateway->newQueryCriteria()->filterBy('date', 'Today')->filterBy('status', 'Approved');
+                        $criteria = $staffAbsenceGateway->newQueryCriteria(true)->filterBy('date', 'Today')->filterBy('status', 'Approved');
                         $absences = $staffAbsenceGateway->queryAbsencesByPerson($criteria, $gibbonPersonID)->toArray();
 
                         if (count($absences) > 0) {

@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
 
         $studentGateway = $container->get(StudentGateway::class);
 
-        $criteria = $studentGateway->newQueryCriteria()
+        $criteria = $studentGateway->newQueryCriteria(true)
             ->searchBy($studentGateway->getSearchableColumns(), $search)
             ->sortBy(['surname', 'preferredName'])
             ->fromPOST();

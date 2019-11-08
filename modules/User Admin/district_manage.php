@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/district_manage
     $districtGateway = $container->get(DistrictGateway::class);
 
     // QUERY
-    $criteria = $districtGateway->newQueryCriteria()
+    $criteria = $districtGateway->newQueryCriteria(true)
         ->sortBy('name')
         ->fromPOST();
 

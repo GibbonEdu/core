@@ -72,7 +72,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
     // Get all substitutes
     $criteria = $substituteGateway->newQueryCriteria()
         ->sortBy(['active', 'surname', 'preferredName'])
-        ->pageSize(0)
         ->fromPOST();
 
     $substitutes = $substituteGateway->queryAllSubstitutes($criteria);
@@ -111,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
 
     if (!empty($gibbonPersonID)) {
         // COVERAGE SUMMARY BY SUBSTITUTE
-        $criteria = $staffCoverageGateway->newQueryCriteria()
+        $criteria = $staffCoverageGateway->newQueryCriteria(true)
             ->sortBy(['date', 'timeStart'])
             ->filterBy('dateStart', $dateStart->format('Y-m-d'))
             ->filterBy('dateEnd', $dateEnd->format('Y-m-d'))

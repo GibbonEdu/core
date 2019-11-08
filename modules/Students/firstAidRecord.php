@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
 
         $firstAidGateway = $container->get(FirstAidGateway::class);
 
-        $criteria = $firstAidGateway->newQueryCriteria()
+        $criteria = $firstAidGateway->newQueryCriteria(true)
             ->sortBy(['date', 'timeIn'], 'DESC')
             ->filterBy('student', $gibbonPersonID)
             ->filterBy('rollGroup', $gibbonRollGroupID)

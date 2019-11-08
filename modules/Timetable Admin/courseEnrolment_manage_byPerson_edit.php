@@ -153,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             echo '</h2>';
 
             // QUERY
-            $criteria = $courseEnrolmentGateway->newQueryCriteria()
+            $criteria = $courseEnrolmentGateway->newQueryCriteria(true)
                 ->sortBy('roleSortOrder')
                 ->sortBy(['course', 'class'])
                 ->fromPOST();

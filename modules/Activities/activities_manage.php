@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $activityGateway = $container->get(ActivityGateway::class);
     
     // CRITERIA
-    $criteria = $activityGateway->newQueryCriteria()
+    $criteria = $activityGateway->newQueryCriteria(true)
         ->searchBy($activityGateway->getSearchableColumns(), $search)
         ->filterBy('term', $gibbonSchoolYearTermID)
         ->filterBy('yearGroup', $gibbonYearGroupID)

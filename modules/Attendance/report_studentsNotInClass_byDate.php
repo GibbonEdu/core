@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
         $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
 
         // CRITERIA
-        $criteria = $attendanceLogGateway->newQueryCriteria()
+        $criteria = $attendanceLogGateway->newQueryCriteria(true)
             ->sortBy(['sequenceNumber', 'rollGroup', 'gibbonPerson.surname', 'gibbonPerson.preferredName'])
             ->filterBy('yearGroup', implode(',', $gibbonYearGroupIDList ?? []))
             ->filterBy('types', implode(',', $types ?? []))

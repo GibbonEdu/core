@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
     $departmentGateway = $container->get(DepartmentGateway::class);
 
     // QUERY
-    $criteria = $departmentGateway->newQueryCriteria()
+    $criteria = $departmentGateway->newQueryCriteria(true)
         ->sortBy('name')
         ->fromPOST();
 

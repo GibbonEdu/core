@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage.p
     $subGateway = $container->get(SubstituteGateway::class);
 
     // CRITERIA
-    $criteria = $subGateway->newQueryCriteria()
+    $criteria = $subGateway->newQueryCriteria(true)
         ->searchBy($subGateway->getSearchableColumns(), $search)
         ->sortBy('active')
         ->sortBy(['surname', 'preferredName'])
