@@ -103,11 +103,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
             ->displayLabel();
 
         // COLUMNS
-        $table->addExpandableColumn('details')->format(function($person) {
+        $table->addExpandableColumn('details')->format(function($person) use ($firstAidGateway) {
             $output = '';
             if ($person['description'] != '') $output .= '<b>'.__('Description').'</b><br/>'.nl2brr($person['description']).'<br/><br/>';
             if ($person['actionTaken'] != '') $output .= '<b>'.__('Action Taken').'</b><br/>'.nl2brr($person['actionTaken']).'<br/><br/>';
-            if ($person['followUp'] != '') $output .= '<b>'.__('Follow Up').'</b><br/>'.nl2brr($person['followUp']);
+            if ($person['followUp'] != '') $output .= '<b>'.__("Follow Up by {name} at {date}", ['name' => Format::name('', $person['preferredNameFirstAider'], $person['surnameFirstAider']), 'date' => Format::dateTimeReadable($person['timestamp'], '%H:%M, %b %d %Y')]).'</b><br/>'.nl2brr($person['followUp']).'<br/><br/>';
+            $resultLog = $firstAidGateway->queryFollowUpByFirstAidID($person['gibbonFirstAidID']);
+            foreach ($resultLog AS $rowLog) {
+                $output .= '<b>'.__("Follow Up by {name} at {date}", ['name' => Format::name('', $rowLog['preferredName'], $rowLog['surname']), 'date' => Format::dateTimeReadable($rowLog['timestamp'], '%H:%M, %b %d %Y')]).'</b><br/>'.nl2brr($rowLog['followUp']).'<br/><br/>';
+            }
+
             return $output;
         });
 
@@ -140,7 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
                 $actions->addAction('edit', __('Edit'))
                     ->setURL('/modules/Students/firstAidRecord_edit.php');
             });
-        
+
         echo $table->render($firstAidRecords);
     }
 }
