@@ -232,11 +232,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                             //Check for school prefill if attendance not taken in this class
                             if ($result->rowCount() == 0) {
                                 $data = array('gibbonPersonID' => $student['gibbonPersonID'], 'date' => $currentDate . '%');
-                                $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, context, timestampTaken FROM gibbonAttendanceLogPerson
+                                $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, context, timestampTaken, gibbonAttendanceCode.prefill
+                                        FROM gibbonAttendanceLogPerson
                                         JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                                         JOIN gibbonAttendanceCode ON (gibbonAttendanceCode.gibbonAttendanceCodeID=gibbonAttendanceLogPerson.gibbonAttendanceCodeID)
                                         WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
-                                        AND gibbonAttendanceCode.prefill='Y'
                                         AND date LIKE :date";
                                 if ($crossFillClasses == "N") {
                                     $sql .= " AND NOT context='Class'";
@@ -247,6 +247,10 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                                 $log = ($result->rowCount() > 0) ? $result->fetch() : $log;
                                 if ($log['context'] == 'Roll Group' || $log['context'] == 'Person') {
                                     $countLogs += 1;
+                                }
+
+                                if ($log['prefill'] == 'N') {
+                                    $log['type'] = $defaultAttendanceType;
                                 }
                             }
 
