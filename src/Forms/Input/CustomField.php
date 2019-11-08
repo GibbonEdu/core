@@ -49,27 +49,44 @@ class CustomField extends Input
         $this->fields = $fields;
 
         //From Enum: 'varchar','text','date','url','select', ('checkboxes' unimplemented?)
-        $this->type = (isset($fields['type']))? $fields['type'] : 'varchar';
-        $options = (isset($fields['options']))? $fields['options'] : '';
+        $this->type = $fields['type'] ?? 'varchar';
+        $options = $fields['options'] ?? '';
 
-        switch($this->type) {
-
+        switch ($this->type) {
             case 'date':
                 $this->customField = $this->factory->createDate($name);
+                break;
+
+            case 'number':
+                $this->customField = $this->factory->createNumber($name)->onlyInteger(false);
+                if (!empty($options)) {
+                    $this->customField->decimalPlaces($options);
+                }
                 break;
 
             case 'url':
                 $this->customField = $this->factory->createURL($name);
                 break;
 
+            case 'image':
+                $this->customField = $this->factory->createFileUpload($name)->accepts('.jpg,.jpeg,.gif,.png');
+                break;
+
+            case 'file':
+                $this->customField = $this->factory->createFileUpload($name);
+                break;
+
             case 'select':
                 $this->customField = $this->factory->createSelect($name);
-                if (!empty($options)) {
+                if (!empty($options) && is_string($options)) {
                     $this->customField->fromString($options)->placeholder();
+                } elseif (!empty($options) && is_array($options)) {
+                    $this->customField->fromArray($options)->placeholder();
                 }
                 break;
 
             case 'text':
+            case 'paragraph':
                 $this->customField = $this->factory->createTextArea($name);
                 if (!empty($options) && intval($options) > 0) {
                     $this->customField->setRows($options);
@@ -77,6 +94,7 @@ class CustomField extends Input
                 break;
 
             default:
+            case 'words':
             case 'varchar':
                 $this->customField = $this->factory->createTextField($name);
                 if (!empty($options) && intval($options) > 0) {
@@ -85,7 +103,7 @@ class CustomField extends Input
                 break;
         }
 
-        if ($fields['required'] == 'Y') {
+        if (isset($fields['required']) && $fields['required'] == 'Y') {
             $this->customField->required();
             $this->required();
         }
@@ -95,6 +113,7 @@ class CustomField extends Input
         }
 
         $this->customField->setClass('w-full');
+        $this->customField->setID(preg_replace('/[^a-zA-Z0-9]/', '', $name));
 
         parent::__construct($name);
     }
@@ -105,6 +124,8 @@ class CustomField extends Input
      */
     public function setValue($value = '')
     {
+        global $guid;
+
         switch($this->type) {
 
             case 'select':
@@ -113,6 +134,11 @@ class CustomField extends Input
 
             case 'date':
                 $this->customField->setDateFromValue($value);
+                break;
+
+            case 'image':
+            case 'file':
+                $this->customField->setAttachment($this->customField->getName(), $_SESSION[$guid]['absoluteURL'], $value);
                 break;
 
             default:
