@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $dateStart = $dateObject->modify($firstDayOfTheWeek == 'Monday' ? "Monday this week" : "Sunday last week");
     $dateEnd = $dateObject->modify($firstDayOfTheWeek == 'Monday' ? "Monday next week" : "Sunday this week");
 
-    $criteria = $subGateway->newQueryCriteria()
+    $criteria = $subGateway->newQueryCriteria(true)
         ->sortBy('priority', 'DESC')
         ->sortBy(['type', 'surname', 'preferredName'])
         ->filterBy('active', 'Y')

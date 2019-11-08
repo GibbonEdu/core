@@ -49,7 +49,6 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
             // CRITERIA
             $criteria = $behaviourGateway->newQueryCriteria()
                 ->sortBy('timestamp', 'DESC')
-                ->pageSize(0)
                 ->fromPOST($schoolYear['gibbonSchoolYearID']);
 
             $behaviourRecords = $behaviourGateway->queryBehaviourRecordsByPerson($criteria, $schoolYear['gibbonSchoolYearID'], $gibbonPersonID);

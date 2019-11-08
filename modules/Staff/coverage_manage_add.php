@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
 
     $substituteGateway = $container->get(SubstituteGateway::class);
 
-    $criteria = $substituteGateway->newQueryCriteria()
+    $criteria = $substituteGateway->newQueryCriteria(true)
         ->sortBy('gibbonSubstitute.priority', 'DESC')
         ->sortBy(['surname', 'preferredName'])
         ->filterBy('active', 'Y')

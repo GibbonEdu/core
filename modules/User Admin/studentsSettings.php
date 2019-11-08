@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
     $studentNoteGateway = $container->get(StudentNoteGateway::class);
 
     // QUERY
-    $criteria = $studentNoteGateway->newQueryCriteria()
+    $criteria = $studentNoteGateway->newQueryCriteria(true)
         ->sortBy(['name'])
         ->fromArray($_POST);
 

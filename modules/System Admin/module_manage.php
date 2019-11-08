@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
 
     // QUERY
     $moduleGateway = $container->get(ModuleGateway::class);
-    $criteria = $moduleGateway->newQueryCriteria()
+    $criteria = $moduleGateway->newQueryCriteria(true)
         ->sortBy('name')
         ->fromPOST();
 

@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
     $gateway = $container->get(FinanceUpdateGateway::class);
 
     // QUERY
-    $criteria = $gateway->newQueryCriteria()
+    $criteria = $gateway->newQueryCriteria(true)
         ->sortBy('status')
         ->sortBy('timestamp', 'DESC')
         ->fromPOST();

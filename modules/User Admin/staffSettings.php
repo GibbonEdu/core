@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
     $absoluteURL = $gibbon->session->get('absoluteURL');
 
     // QUERY
-    $criteria = $staffAbsenceTypeGateway->newQueryCriteria()
+    $criteria = $staffAbsenceTypeGateway->newQueryCriteria(true)
         ->sortBy(['sequenceNumber'])
         ->fromArray($_POST);
 

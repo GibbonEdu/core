@@ -49,7 +49,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view.php') 
         ->sortBy('date', 'ASC')
         ->filterBy('requested', 'Y')
         ->filterBy('date:upcoming')
-        ->pageSize(0)
         ->fromPOST('myCoverage');
 
     $myCoverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID, true);
@@ -58,7 +57,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view.php') 
         ->sortBy('date', 'ASC')
         ->filterBy('requested', 'Y')
         ->filterBy('date:upcoming')
-        ->pageSize(0)
         ->fromPOST('allCoverage');
 
     $allCoverage = $staffCoverageGateway->queryCoverageWithNoPersonAssigned($criteria, $substitute['type']);

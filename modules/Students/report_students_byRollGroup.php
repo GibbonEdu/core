@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
     $medicalGateway = $container->get(MedicalGateway::class);
 
     // QUERY
-    $criteria = $studentGateway->newQueryCriteria()
+    $criteria = $studentGateway->newQueryCriteria(true)
         ->sortBy(['rollGroup', 'surname', 'preferredName'])
         ->pageSize(!empty($viewMode) ? 0 : 50)
         ->filterBy('view', $view)

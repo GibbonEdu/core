@@ -149,7 +149,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
     $markbook = new MarkbookView($gibbon, $pdo, $gibbonCourseClassID);
 
     // QUERY
-    $criteria = $markbookGateway->newQueryCriteria()
+    $criteria = $markbookGateway->newQueryCriteria(true)
         ->searchBy($markbookGateway->getSearchableColumns(), $search)
         ->sortBy(['gibbonMarkbookColumn.sequenceNumber', 'gibbonMarkbookColumn.date', 'gibbonMarkbookColumn.complete', 'gibbonMarkbookColumn.completeDate'])
         ->filterBy('term', $gibbonSchoolYearTermID)

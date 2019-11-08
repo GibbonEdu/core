@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     $attendanceCodeGateway = $container->get(AttendanceCodeGateway::class);
 
     // QUERY
-    $criteria = $attendanceCodeGateway->newQueryCriteria()
+    $criteria = $attendanceCodeGateway->newQueryCriteria(true)
         ->sortBy(['sequenceNumber'])
         ->fromArray($_POST);
 

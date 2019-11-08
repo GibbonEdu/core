@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     $studentGateway = $container->get(StudentGateway::class);
 
     // CRITERIA
-    $criteria = $activityGateway->newQueryCriteria()
+    $criteria = $activityGateway->newQueryCriteria(true)
         ->searchBy($activityGateway->getSearchableColumns(), isset($_GET['search'])? $_GET['search'] : '')
         ->sortBy(['surname', 'preferredName'])
         ->pageSize(!empty($viewMode) ? 0 : 50)

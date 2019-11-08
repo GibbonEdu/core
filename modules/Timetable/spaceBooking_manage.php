@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
 
         $facilityBookingGateway = $container->get(FacilityBookingGateway::class);
 
-        $criteria = $facilityBookingGateway->newQueryCriteria()
+        $criteria = $facilityBookingGateway->newQueryCriteria(true)
             ->sortBy(['date', 'name'])
             ->fromPOST();
 

@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
         // DATA TABLE
         if ($highestAction == 'View Behaviour Records_all') {
             
-            $criteria = $studentGateway->newQueryCriteria()
+            $criteria = $studentGateway->newQueryCriteria(true)
                 ->searchBy($studentGateway->getSearchableColumns(), $search)
                 ->sortBy(['surname', 'preferredName'])
                 ->fromPOST();

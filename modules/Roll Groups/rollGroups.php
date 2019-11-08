@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php
     if ($roleCategory == 'Staff') {
         $yearGroupGateway = $container->get(YearGroupGateway::class);
 
-        $criteria = $yearGroupGateway->newQueryCriteria()
+        $criteria = $yearGroupGateway->newQueryCriteria(true)
             ->sortBy(['gibbonYearGroup.sequenceNumber'])
             ->fromPOST('clinics');
 

@@ -93,7 +93,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
         ->sortBy(['gibbonYearGroup.sequenceNumber', 'gibbonRollGroup.nameShort'])
         ->filterBy('from', Format::dateConvert($dateFrom))
         ->filterBy('to', Format::dateConvert($dateTo))
-        ->pageSize(0)
         ->fromPOST();
 
     $rollGroups = $reportGateway->queryStudentCountByRollGroup($criteria, $gibbonSchoolYearID);

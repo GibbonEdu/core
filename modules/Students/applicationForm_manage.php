@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $familyGateway = $container->get(FamilyGateway::class);
         $applicationGateway = $container->get(ApplicationFormGateway::class);
 
-        $criteria = $applicationGateway->newQueryCriteria()
+        $criteria = $applicationGateway->newQueryCriteria(true)
             ->searchBy($applicationGateway->getSearchableColumns(), $search)
             ->sortBy('gibbonApplicationForm.status')
             ->sortBy('gibbonApplicationForm.priority', 'DESC')
