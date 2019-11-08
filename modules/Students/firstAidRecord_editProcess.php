@@ -54,20 +54,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
-            $timeOut = null;
-            if ($_POST['timeOut'] != '')
-                $timeOut = $_POST['timeOut'];
+            $row = $result->fetch();
+            $gibbonPersonID = $row['gibbonPersonIDFirstAider'];
+            $timeOut = (!empty($_POST['timeOut'])) ? $_POST['timeOut'] : null;
             $followUp = $_POST['followUp'];
 
             try {
-                $data = array('timeOut' => $timeOut, 'followUp' => $followUp, 'gibbonFirstAidID' => $gibbonFirstAidID);
-                $sql = 'UPDATE gibbonFirstAid SET timeOut=:timeOut, followUp=:followUp WHERE gibbonFirstAidID=:gibbonFirstAidID';
+                $data = array('timeOut' => $timeOut, 'gibbonFirstAidID' => $gibbonFirstAidID);
+                $sql = 'UPDATE gibbonFirstAid SET timeOut=:timeOut WHERE gibbonFirstAidID=:gibbonFirstAidID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
                 exit();
+            }
+
+            if (!empty($followUp)) {
+                try {
+                    $data = array('gibbonFirstAidID' => $gibbonFirstAidID, 'gibbonPersonID' => $gibbon->session->get('gibbonPersonID'), 'followUp' => $followUp);
+                    $sql = 'INSERT INTO gibbonFirstAidFollowUp SET gibbonFirstAidID=:gibbonFirstAidID, gibbonPersonID=:gibbonPersonID, followUp=:followUp';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    $URL .= '&return=error2';
+                    header("Location: {$URL}");
+                    exit();
+                }
             }
 
             $URL .= '&return=success0';
