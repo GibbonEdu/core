@@ -52,6 +52,7 @@ v19.0.00
         Messenger: eliminated non-recipient siblings from Send Report
         Messenger: addition of student name(s) to emails sent to parents
         Messenger: adjusted the default sending options for non-staff users
+        Messenger: low SMS credit notification when fewer than 1,000 credits remain
         School Admin: renamed IN Settings to Individual Needs Settings
         Staff: added a Weekly View and Daily View to Substitute Availability report
         Staff: added a Substitute Information setting for displaying text on My Coverage page
