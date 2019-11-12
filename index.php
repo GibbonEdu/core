@@ -550,7 +550,7 @@ if (!$session->has('address')) {
     } else {
         // Pinned Messages
         $pinnedMessagesOnHome = getSettingByScope($connection2, 'Messenger', 'pinnedMessagesOnHome');
-        if ($pinnedMessagesOnHome == 'Y') {
+        if ($pinnedMessagesOnHome == 'Y' && isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
             if ($cacheLoad || !$session->exists('pinnedMessages')) {
                 $pinnedMessages = array_filter(getMessages($guid, $connection2, 'array'), function ($item) {
                     return $item['messageWallPin'] == 'Y';
