@@ -97,7 +97,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
     if ($date == '') {
         $date = date('Y-m-d');
     }
-    if ($mode != 'print' and $mode != 'count' and $mode != 'result') {
+    if ($mode != 'print' and $mode != 'count' and $mode != 'result' and $mode != 'array') {
         $mode = 'print';
     }
 
@@ -611,6 +611,12 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         $resultReturn[1] = $sqlPosts.' ORDER BY messageWallPin DESC, subject, gibbonMessengerID, source';
 
         return serialize($resultReturn);
+    } elseif ($mode == 'array') {
+        $sqlPosts = $sqlPosts.' ORDER BY messageWallPin DESC, subject, gibbonMessengerID, source';
+        $resultPosts = $connection2->prepare($sqlPosts);
+        $resultPosts->execute($dataPosts);
+
+        return  $resultPosts->rowCount() > 0 ? $resultPosts->fetchAll() : [];
     } else {
         $count = 0;
         try {

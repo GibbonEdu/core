@@ -1,0 +1,26 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% if pinnedMessages %}
+<div class="mt-6 bg-white border border-gray-500 rounded p-4 overflow-y-auto" style="max-height: 20rem">
+    {% for index, message in pinnedMessages %}
+    <div class="{{ not loop.last ? 'mb-6'}}">
+        <a href="{{ absoluteURL }}/index.php?q=/modules/Messenger/messageWall_view.php#{{ index+1 }}" class="no-underline hover:underline hover:text-blue-600">
+            <h3 class="mt-0 p-0 border-0 hover:text-blue-600">{{ message.subject }}</h3>
+        </a>
+
+        {{ message.body|raw }}
+
+        <div class="-mt-2 text-xxs text-gray-600">
+            <u>{{ __('Posted By') }}</u>: {{ formatUsing('name', message.title, message.preferredName, message.surname)}},
+            <u>{{ __('Shared Via') }}</u>: {{ message.source }}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
