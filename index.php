@@ -552,15 +552,21 @@ if (!$session->has('address')) {
         $pinnedMessagesOnHome = getSettingByScope($connection2, 'Messenger', 'pinnedMessagesOnHome');
         if ($pinnedMessagesOnHome == 'Y' && isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
             if ($cacheLoad || !$session->exists('pinnedMessages')) {
-                $pinnedMessages = array_filter(getMessages($guid, $connection2, 'array'), function ($item) {
-                    return $item['messageWallPin'] == 'Y';
-                });
-
+                $pinnedMessages = array_reduce(getMessages($guid, $connection2, 'array'), function ($group, $item) {
+                    if ($item['messageWallPin'] == 'Y') {
+                        if (isset($group[$item['gibbonMessengerID']]['source'])) {
+                            $item['source'] .= str_replace(':', ', ', strrchr($group[$item['gibbonMessengerID']]['source'], ':'));
+                        }
+                        $group[$item['gibbonMessengerID']] = $item;
+                    }
+                    return $group;
+                }, []);
+                
                 $session->set('pinnedMessages', $pinnedMessages);
             }
 
             if ($session->has('pinnedMessages')) {
-                $page->writeFromTemplate('ui/pinnedMessages.twig.html', ['pinnedMessages' => $pinnedMessages]);
+                $page->writeFromTemplate('ui/pinnedMessages.twig.html', ['pinnedMessages' => $session->get('pinnedMessages')]);
             }
         }
 
