@@ -89,6 +89,7 @@ v19.0.00
         Messenger: fixed bug where users could create a message with no available delivery options
         Planner: fixed non-functional Smart Block Template setting
         Planner: fixed Unit Planner bug causing actions to appear in Classes table for newly created units
+        School Admin: fixed Browse Library BG Image field length bug
         Staff: fixed Cancel Coverage button not available for future coverage
         Staff: fixed Delete Staff Absence to also delete any related coverage
         Staff: limited open coverage requests to the type of sub requested

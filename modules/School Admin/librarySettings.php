@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
     $setting = getSettingByScope($connection2, 'Library', 'browseBGImage', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextField($setting['name'])->setValue($setting['value'])->maxLength(6);
+        $row->addTextField($setting['name'])->setValue($setting['value'])->maxLength(255);
 
     $row = $form->addRow();
         $row->addFooter();
