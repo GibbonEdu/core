@@ -47,6 +47,7 @@ else {
 			//Proceed!
 			//Validate Inputs
 			$messageWall=$_POST["messageWall"] ;
+			$messageWallPin = ($messageWall == "Y" && isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage.php", "Manage Messages_all") & !empty($_POST['messageWallPin'])) ? $_POST['messageWallPin'] : 'N' ;
 			$date1=NULL ;
 			if (isset($_POST["date1"])) {
 				if ($_POST["date1"]!="") {
@@ -76,8 +77,8 @@ else {
 			else {
 				//Write to database
 				try {
-					$dataUpdate=array("messageWall"=>$messageWall, "messageWall_date1"=>$date1, "messageWall_date2"=>$date2, "messageWall_date3"=>$date3, "subject"=>$subject, "body"=>$body, "timestamp"=>date("Y-m-d H:i:s"), "gibbonMessengerID"=>$gibbonMessengerID);
-					$sqlUpdate="UPDATE gibbonMessenger SET messageWall=:messageWall, messageWall_date1=:messageWall_date1, messageWall_date2=:messageWall_date2, messageWall_date3=:messageWall_date3, subject=:subject, body=:body, timestamp=:timestamp WHERE gibbonMessengerID=:gibbonMessengerID" ;
+					$dataUpdate=array("messageWall"=>$messageWall, "messageWallPin" => $messageWallPin, "messageWall_date1"=>$date1, "messageWall_date2"=>$date2, "messageWall_date3"=>$date3, "subject"=>$subject, "body"=>$body, "timestamp"=>date("Y-m-d H:i:s"), "gibbonMessengerID"=>$gibbonMessengerID);
+					$sqlUpdate="UPDATE gibbonMessenger SET messageWall=:messageWall, messageWallPin=:messageWallPin, messageWall_date1=:messageWall_date1, messageWall_date2=:messageWall_date2, messageWall_date3=:messageWall_date3, subject=:subject, body=:body, timestamp=:timestamp WHERE gibbonMessengerID=:gibbonMessengerID" ;
 					$resultUpdate=$connection2->prepare($sqlUpdate);
 					$resultUpdate->execute($dataUpdate);
 				}
@@ -360,7 +361,7 @@ else {
                     }
                   }
 				}
-				
+
 				//Groups
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_any") || isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_my")) {
 					if ($_POST["group"] == "Y") {
