@@ -170,8 +170,8 @@ else {
 			//SMS Credit notification
 			if ($smsCreditBalance != null && $smsCreditBalance < 1000) {
 				$notificationGateway = new NotificationGateway($pdo);
-			    $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
-				echo $organisationAdministrator = getSettingByScope($connection2, 'System', 'organisationAdministrator');
+			  $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+				$organisationAdministrator = getSettingByScope($connection2, 'System', 'organisationAdministrator');
 				$notificationString = __('Low SMS credit warning.');
 				$notificationSender->addNotification($organisationAdministrator, $notificationString, "Messenger", "/index.php?q=/modules/Messenger/messenger_post.php");
 				$notificationSender->sendNotifications();
