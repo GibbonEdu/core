@@ -125,6 +125,12 @@ else {
 
 			$form->toggleVisibilityByClass('messageWall')->onRadio('messageWall')->when('Y');
 
+			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage.php", "Manage Messages_all")) {
+				$row = $form->addRow()->addClass('messageWall');
+					$row->addLabel('messageWallPin', __('Pin To Top?'));
+					$row->addYesNo('messageWallPin')->selected('N')->required();
+			}
+
 			$row = $form->addRow()->addClass('messageWall');
 		        $row->addLabel('date1', __('Publication Dates'))->description(__('Select up to three individual dates.'));
 				$col = $row->addColumn('date1')->addClass('stacked');

@@ -132,6 +132,12 @@ else {
 
 					$form->toggleVisibilityByClass('messageWall')->onRadio('messageWall')->when('Y');
 
+					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage.php", "Manage Messages_all")) {
+						$row = $form->addRow()->addClass('messageWall');
+							$row->addLabel('messageWallPin', __('Pin To Top?'));
+							$row->addYesNo('messageWallPin')->selected($values['messageWallPin'])->required();
+					}
+
 					$row = $form->addRow()->addClass('messageWall');
 				        $row->addLabel('date1', __('Publication Dates'))->description(__('Select up to three individual dates.'));
 						$col = $row->addColumn('date1')->addClass('stacked');
@@ -147,7 +153,9 @@ else {
 					$smsURL=getSettingByScope( $connection2, "Messenger", "smsURL" ) ;
 					$smsURLCredit=getSettingByScope( $connection2, "Messenger", "smsURLCredit" ) ;
 					if ($smsUsername == "" OR $smsPassword == "" OR $smsURL == "") {
-						$form->addRow()->addAlert(sprintf(__('SMS NOT CONFIGURED. Please contact %1$s for help.'), "<a href='mailto:" . $_SESSION[$guid]["organisationAdministratorEmail"] . "'>" . $_SESSION[$guid]["organisationAdministratorName"] . "</a>"), 'error');
+						$row = $form->addRow()->addClass('sms');
+							$row->addLabel('sms', __('SMS'))->description(__('Deliver this message to user\'s mobile phone?'));
+							$row->addAlert(sprintf(__('SMS NOT CONFIGURED. Please contact %1$s for help.'), "<a href='mailto:" . $_SESSION[$guid]["organisationAdministratorEmail"] . "'>" . $_SESSION[$guid]["organisationAdministratorName"] . "</a>"), 'message');
 					}
 					else {
 						$row = $form->addRow();
@@ -378,9 +386,9 @@ else {
 						$sql = "SELECT gibbonCourseID as value, nameShort as name FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
 					} else {
 						$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-						$sql = "SELECT gibbonCourse.gibbonCourseID as value, gibbonCourse.nameShort as name 
-                                FROM gibbonCourse 
-                                JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) 
+						$sql = "SELECT gibbonCourse.gibbonCourseID as value, gibbonCourse.nameShort as name
+                                FROM gibbonCourse
+                                JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
                                 JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
                                 WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND NOT role LIKE '%- Left' GROUP BY gibbonCourse.gibbonCourseID ORDER BY name";
 					}
@@ -428,10 +436,10 @@ else {
 						$sql = "SELECT gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
 					} else {
 						$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-						$sql = "SELECT gibbonCourseClass.gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name 
-                            FROM gibbonCourse 
-                            JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) 
-                            JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) 
+						$sql = "SELECT gibbonCourseClass.gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name
+                            FROM gibbonCourse
+                            JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+                            JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
                             WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND NOT role LIKE '%- Left' ORDER BY gibbonCourseClass.name";
 					}
 
