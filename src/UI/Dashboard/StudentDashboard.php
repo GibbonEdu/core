@@ -45,7 +45,7 @@ class StudentDashboard implements OutputableInterface
         $output = '<h2>'.
             __('Student Dashboard').
             '</h2>'.
-            "<div style='margin-bottom: 30px; margin-left: 1%; float: left; width: 100%'>";
+            "<div style='margin-bottom: 30px; float: left; width: 100%'>";
 
         $dashboardContents = $this->renderDashboard();
 
