@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Contracts\Comms\SMS;
 use Gibbon\Services\Format;
+use Gibbon\Comms\NotificationSender;
+use Gibbon\Domain\System\NotificationGateway;
 
 include '../../gibbon.php';
 
@@ -96,6 +98,7 @@ else {
 		if ($sms!="Y") {
 			$sms="N" ;
 		}
+		$smsCreditBalance = ($sms == Y && !empty($_POST["smsCreditBalance"])) ? $_POST["smsCreditBalance"] : null;
 		$subject=$_POST["subject"] ;
 		$body=stripslashes($_POST["body"]) ;
 		$emailReceipt = $_POST["emailReceipt"] ;
@@ -163,6 +166,15 @@ else {
 				exit() ;
 			}
 
+			//SMS Credit notification
+			if ($smsCreditBalance != null && $smsCreditBalance < 1000) {
+				$notificationGateway = new NotificationGateway($pdo);
+			    $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+				$organisationAdministrator = getSettingByScope($connection2, 'System', 'organisationAdministrator');
+				$notificationString = __('Low SMS credit warning.');
+				$notificationSender->addNotification($organisationAdministrator, $notificationString, "Messenger", "/index.php?q=/modules/Messenger/messenger_post.php");
+				$notificationSender->sendNotifications();
+			}
 			//TARGETS
 			$partialFail=FALSE ;
 			$report = array();

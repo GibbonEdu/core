@@ -73,13 +73,13 @@ else {
 				print $addReturnMessage;
 			print "</div>" ;
 		}
-        
+
 		$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/messenger_postProcess.php');
 		$form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
 		//DELIVERY MODE
         $form->addRow()->addHeading(__('Delivery Mode'));
-        
+
         $deliverByEmail = isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_byEmail");
         $deliverByWall = isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_byMessageWall");
         $deliverBySMS = isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_bySMS");
@@ -156,6 +156,7 @@ else {
 
                 if ($smsCredits = $sms->getCreditBalance()) {
                     $smsAlert .= "<br/><br/><b>" . sprintf(__('Current balance: %1$s credit(s).'), $smsCredits) . "</u></b>" ;
+					$form->addHiddenValue('smsCreditBalance', $smsCredits);
                 }
 
 				$form->addRow()->addAlert($smsAlert, 'error')->addClass('sms');
@@ -265,7 +266,7 @@ else {
 
 		//TARGETS
 		$form->addRow()->addHeading(__('Targets'));
-        
+
         $defaultSendStaff = ($roleCategory == 'Staff' || $roleCategory == 'Student')? 'Y' : 'N';
         $defaultSendStudents = ($roleCategory == 'Staff' || $roleCategory == 'Student')? 'Y' : 'N';
         $defaultSendParents = ($roleCategory == 'Parent')? 'Y' : 'N';
