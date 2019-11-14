@@ -616,7 +616,17 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         $resultPosts = $connection2->prepare($sqlPosts);
         $resultPosts->execute($dataPosts);
 
-        return  $resultPosts->rowCount() > 0 ? $resultPosts->fetchAll() : [];
+        $arrayPosts = $resultPosts->rowCount() > 0 ? $resultPosts->fetchAll() : [];
+
+        $arrayPosts = array_reduce($arrayPosts, function ($group, $item) {
+            if (isset($group[$item['gibbonMessengerID']]['source'])) {
+                $item['source'] .= str_replace(':', ', ', strrchr($group[$item['gibbonMessengerID']]['source'], ':'));
+            }
+            $group[$item['gibbonMessengerID']] = $item;
+            return $group;
+        }, []);
+
+        return $arrayPosts;
     } else {
         $count = 0;
         try {

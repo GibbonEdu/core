@@ -170,7 +170,7 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
                     $gateway = new DataUpdaterGateway($pdo);
 
                     $updatesRequiredCount = $gateway->countAllRequiredUpdatesByPerson($session->get('gibbonPersonID'));
-                    
+
                     if ($updatesRequiredCount > 0) {
                         $URL = $session->get('absoluteURL').'/index.php?q=/modules/Data Updater/data_updates.php&redirect=true';
                         $session->set('pageLoads', null);
@@ -334,7 +334,7 @@ if ($session->get('i18n')['rtl'] == 'Y') {
     $page->theme->stylesheets->add('theme-rtl', '/themes/'.$session->get('gibbonThemeName').'/css/main_rtl.css', ['weight' => 1]);
 }
 
-// Set personal, organisational or theme background     
+// Set personal, organisational or theme background
 if (getSettingByScope($connection2, 'User Admin', 'personalBackground') == 'Y' && $session->has('personalBackground')) {
     $backgroundImage = htmlPrep($session->get('personalBackground'));
     $backgroundScroll = 'repeat scroll center top';
@@ -455,13 +455,13 @@ if ($isLoggedIn) {
     if ($page->getModule()) {
         $currentModule = $page->getModule()->getName();
         $menuModule = $session->get('menuModuleName');
-        
+
         if ($cacheLoad || !$session->has('menuModuleItems') || $currentModule != $menuModule) {
             $menuModuleItems = $moduleGateway->selectModuleActionsByRole($page->getModule()->getID(), $session->get('gibbonRoleIDCurrent'))->fetchGrouped();
         } else {
             $menuModuleItems = $session->get('menuModuleItems');
         }
-        
+
         // Update the menu items to indicate the current active action
         foreach ($menuModuleItems as $category => &$items) {
             foreach ($items as &$item) {
@@ -477,6 +477,16 @@ if ($isLoggedIn) {
     } else {
         $session->forget(['menuModuleItems', 'menuModuleName']);
     }
+}
+
+//Setup message array
+$addReturn = $_GET['addReturn'] ?? '';
+$updateReturn = $_GET['updateReturn'] ?? '';
+$deleteReturn = $_GET['deleteReturn'] ?? '';
+if ($isLoggedIn && (empty($_SESSION[$guid]['messageWallArray']) || $cacheLoad || (empty($gibbon->session->get('address'))) || ($gibbon->session->get('address') == '/modules/Messenger/messenger_post.php' && $addReturn == 'success0') || ($gibbon->session->get('address') == '/modules/Messenger/messenger_postQuickWall.php' && $addReturn == 'success0') || ($gibbon->session->get('address') == '/modules/Messenger/messenger_manage_edit.php' && $updateReturn == 'success0') or ($gibbon->session->get('address') == '/modules/Messenger/messenger_manage.php' and $deleteReturn == 'success0'))) {
+    $_SESSION[$guid]['messageWallArray'] = getMessages($guid, $connection2, 'array');
+} else {
+    $_SESSION[$guid]['messageWallArray'] = $_SESSION[$guid]['messageWallArray'] ?? array();
 }
 
 /**
@@ -546,24 +556,19 @@ if (!$session->has('address')) {
         }
 
         $page->writeFromTemplate('welcome.twig.html', $templateData);
-        
+
     } else {
         // Pinned Messages
         $pinnedMessagesOnHome = getSettingByScope($connection2, 'Messenger', 'pinnedMessagesOnHome');
         if ($pinnedMessagesOnHome == 'Y' && isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
-            if ($cacheLoad || !$session->exists('pinnedMessages')) {
-                $pinnedMessages = array_reduce(getMessages($guid, $connection2, 'array'), function ($group, $item) {
-                    if ($item['messageWallPin'] == 'Y') {
-                        if (isset($group[$item['gibbonMessengerID']]['source'])) {
-                            $item['source'] .= str_replace(':', ', ', strrchr($group[$item['gibbonMessengerID']]['source'], ':'));
-                        }
-                        $group[$item['gibbonMessengerID']] = $item;
-                    }
-                    return $group;
-                }, []);
-                
-                $session->set('pinnedMessages', $pinnedMessages);
-            }
+            $pinnedMessages = array_reduce($_SESSION[$guid]['messageWallArray'], function ($group, $item) {
+                if ($item['messageWallPin'] == 'Y') {
+                    $group[$item['gibbonMessengerID']] = $item;
+                }
+                return $group;
+            }, []);
+
+            $session->set('pinnedMessages', $pinnedMessages);
 
             if ($session->has('pinnedMessages')) {
                 $page->writeFromTemplate('ui/pinnedMessages.twig.html', ['pinnedMessages' => $session->get('pinnedMessages')]);
@@ -579,14 +584,14 @@ if (!$session->has('address')) {
 
             $session->set('index_custom.php', $page->fetchFromFile('./index_custom.php', $globals));
         }
-        
+
         if ($session->has('index_custom.php')) {
             $page->write($session->get('index_custom.php'));
         }
 
         // DASHBOARDS!
         $category = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
-        
+
         switch ($category) {
             case 'Parent':
                 $page->write($container->get(Gibbon\UI\Dashboard\ParentDashboard::class)->getOutput());

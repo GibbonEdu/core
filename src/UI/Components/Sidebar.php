@@ -217,46 +217,53 @@ class Sidebar implements OutputableInterface
 
         //Show homescreen widget for message wall
         if ($this->session->get('address') == '') {
-            if ($this->session->exists('messageWallOutput')) {
+            if ($this->session->exists('messageWallArray')) {
                 if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
-                    $attainmentAlternativeName = getSettingByScope($connection2, 'Messenger', 'enableHomeScreenWidget');
-                    if ($attainmentAlternativeName == 'Y') {
+                    $enableHomeScreenWidget = getSettingByScope($connection2, 'Messenger', 'enableHomeScreenWidget');
+                    if ($enableHomeScreenWidget == 'Y') {
+                        $unpinnedMessages = array_reduce($_SESSION[$guid]['messageWallArray'], function ($group, $item) {
+                            if ($item['messageWallPin'] == 'N') {
+                                $group[$item['gibbonMessengerID']] = $item;
+                            }
+                            return $group;
+                        }, []);
+
                         echo '<div class="column-no-break">';
                         echo '<h2>';
                         echo __('Message Wall');
                         echo '</h2>';
 
-                        if (count($this->session->get('messageWallOutput')) < 1) {
+                        if (count($unpinnedMessages) < 1) {
                             echo "<div class='warning'>";
                             echo __('There are no records to display.');
                             echo '</div>';
-                        } elseif (is_array($this->session->get('messageWallOutput')) == false) {
+                        } elseif (is_array($unpinnedMessages) == false) {
                             echo "<div class='error'>";
                             echo __('An error occurred.');
                             echo '</div>';
                         } else {
                             $height = 283;
-                            if (count($this->session->get('messageWallOutput')) == 1) {
+                            if (count($unpinnedMessages) == 1) {
                                 $height = 94;
-                            } elseif (count($this->session->get('messageWallOutput')) == 2) {
+                            } elseif (count($unpinnedMessages) == 2) {
                                 $height = 197;
                             }
                             echo "<table id='messageWallWidget' style='width: 100%; height: ".$height."px; border: 1px solid grey; padding: 6px; background-color: #eeeeee'>";
-                                //Content added by JS
-                                $rand = rand(0, count($this->session->get('messageWallOutput')));
-                            $total = count($this->session->get('messageWallOutput'));
+                            //Content added by JS
+                            $rand = rand(0, count($unpinnedMessages));
+                            $total = count($unpinnedMessages);
                             $order = '';
-                            for ($i = 0; $i < $total; ++$i) {
+                            $i = 0;
+                            foreach ($unpinnedMessages as $message) {
                                 $pos = ($rand + $i) % $total;
                                 $order .= "$pos, ";
-                                $message = $this->session->get('messageWallOutput')[$pos];
 
                                 //COLOR ROW BY STATUS!
                                 echo "<tr id='messageWall".$pos."' style='z-index: 1;'>";
                                 echo "<td style='font-size: 95%; letter-spacing: 85%;'>";
                                 //Image
                                 $style = "style='width: 45px; height: 60px; float: right; margin-left: 6px; border: 1px solid black'";
-                                if ($message['photo'] == '' or file_exists($this->session->get('absolutePath').'/'.$message['photo']) == false) {
+                                if ($message['image_240'] == '' or file_exists($this->session->get('absolutePath').'/'.$message['photo']) == false) {
                                     echo "<img $style  src='".$this->session->get('absoluteURL').'/themes/'.$this->session->get('gibbonThemeName')."/img/anonymous_75.jpg'/>";
                                 } else {
                                     echo "<img $style src='".$this->session->get('absoluteURL').'/'.$message['photo']."'/>";
@@ -276,10 +283,10 @@ class Sidebar implements OutputableInterface
                                 //Text
                                 echo "<div style='margin-top: 5px'>";
                                 $message = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $message);
-                                if (strlen(strip_tags($message['details'])) <= 40) {
-                                    echo strip_tags($message['details']).'<br/>';
+                                if (strlen(strip_tags($message['body'])) <= 40) {
+                                    echo strip_tags($message['body']).'<br/>';
                                 } else {
-                                    echo mb_substr(strip_tags($message['details']), 0, 40).'...<br/>';
+                                    echo mb_substr(strip_tags($message['body']), 0, 40).'...<br/>';
                                 }
                                 echo '</div>';
                                 echo '</td>';
@@ -290,6 +297,8 @@ class Sidebar implements OutputableInterface
                                         $(\"#messageWall$pos\").hide();
                                     });
                                 </script>";
+
+                                $i++;
                             }
                             echo '</table>';
                             $order = substr($order, 0, strlen($order) - 2);
