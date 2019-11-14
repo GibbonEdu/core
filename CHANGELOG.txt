@@ -33,7 +33,7 @@ v19.0.00
     Security
 
     Tweaks & Additions
-        System: added Maldivian Rufiyaa as a currency option
+        System: added Maldivian Rufiyaa and Malagasy Ariary as a currency options
         System: updated DatePicker to use gibboni18n date format
         System: updated SpreadsheetRenderer to write cell contents as plain text
         System: updated TinyMCE allowable HTML to include details, summary and code blocks
