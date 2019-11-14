@@ -174,7 +174,10 @@ else {
 					print "<div class='error'>" . $e->getMessage() . "</div>" ;
 				}
 				while ($row=$resultPage->fetch()) {
-					if ($count%2==0) {
+					if ($row['messageWallPin'] == 'Y') {
+						$rowNum="selected" ;
+					}
+					else if ($count%2==0) {
 						$rowNum="even" ;
 					}
 					else {
