@@ -38,7 +38,6 @@ class Radio extends Input
     {
         $this->setID(''); // Cannot share an ID across multiple Radio inputs
         $this->setName($name);
-        $this->addClass('md:max-w-md');
     }
 
     /**

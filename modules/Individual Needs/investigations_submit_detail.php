@@ -123,6 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                     ->fromArray($options)
                     ->required()
                     ->checked(false)
+                    ->addClass('md:max-w-md')
                     ->alignLeft();
 
             //Memory
@@ -131,6 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                 $row->addLabel('memory', __('Memory'))->description(__('Please tick any areas that you think the student struggles with'));
                 $row->addCheckbox('memory')
                     ->fromArray($options)
+                    ->addClass('md:max-w-md')
                     ->alignLeft();
 
             //Self-Management
@@ -139,6 +141,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                 $row->addLabel('selfManagement', __('Self-Management'))->description(__('Please tick any areas that you think the student struggles with.'));
                 $row->addCheckbox('selfManagement')
                     ->fromArray($options)
+                    ->addClass('md:max-w-md')
                     ->alignLeft();
 
             //Attention
@@ -147,6 +150,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                 $row->addLabel('attention', __('Attention'))->description(__('Please tick any areas that you think the student struggles with.'));
                 $row->addCheckbox('attention')
                     ->fromArray($options)
+                    ->addClass('md:max-w-md')
                     ->alignLeft();
 
             //Social Interaction
@@ -155,6 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                 $row->addLabel('socialInteraction', __('Social Interaction'))->description(__('Please tick any areas that you think the student struggles with.'));
                 $row->addCheckbox('socialInteraction')
                     ->fromArray($options)
+                    ->addClass('md:max-w-md')
                     ->alignLeft();
 
             //Communication
@@ -163,6 +168,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                 $row->addLabel('communication', __('Communication'))->description(__('Please tick any areas that you think the student struggles with.'));
                 $row->addCheckbox('communication')
                     ->fromArray($options)
+                    ->addClass('md:max-w-md')
                     ->alignLeft();
 
             //Comment
