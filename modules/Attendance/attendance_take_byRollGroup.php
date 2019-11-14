@@ -173,7 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                             $countPresent = 0;
                             $columns = 4;
 
-                            $defaults = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '');
+                            $defaults = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '', 'prefill' => 'Y', 'gibbonRollGroupID' => 0);
                             $students = $resultRollGroup->fetchAll();
 
                             // Build the attendance log data per student
@@ -195,7 +195,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                 $log = ($result->rowCount() > 0)? $result->fetch() : $defaults;
 
                                 if ($log['prefill'] == 'N' && $log['gibbonRollGroupID'] != $gibbonRollGroupID) {
-                                    $log['type'] = $defaultAttendanceType;
+                                    $log = $defaults;
                                 }
 
                                 $students[$key]['cellHighlight'] = '';
