@@ -212,7 +212,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                         $countLogs = 0;
                         $columns = 4;
 
-                        $defaults = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '');
+                        $defaults = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '', 'prefill' => 'Y');
                         $students = $resultCourseClass->fetchAll();
 
                         // Build the attendance log data per student
@@ -250,7 +250,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                                 }
 
                                 if ($log['prefill'] == 'N') {
-                                    $log['type'] = $defaultAttendanceType;
+                                    $log = $defaults;
                                 }
                             }
 
