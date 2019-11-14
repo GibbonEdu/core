@@ -266,7 +266,7 @@ class Sidebar implements OutputableInterface
                                 if ($message['image_240'] == '' or file_exists($this->session->get('absolutePath').'/'.$message['photo']) == false) {
                                     echo "<img $style  src='".$this->session->get('absoluteURL').'/themes/'.$this->session->get('gibbonThemeName')."/img/anonymous_75.jpg'/>";
                                 } else {
-                                    echo "<img $style src='".$this->session->get('absoluteURL').'/'.$message['photo']."'/>";
+                                    echo "<img $style src='".$this->session->get('absoluteURL').'/'.$message['image_240']."'/>";
                                 }
 
                                 //Message number
