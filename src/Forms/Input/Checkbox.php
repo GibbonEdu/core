@@ -47,7 +47,6 @@ class Checkbox extends Input
         $this->setName($name);
         $this->setID($name);
         $this->setValue('on');
-        $this->addClass('md:max-w-md');
     }
 
     /**
