@@ -56,7 +56,7 @@ class Header
 
                 require_once './modules/Messenger/moduleFunctions.php';
 
-                $messages = $_SESSION[$guid]['messageWallArray'];
+                $messages = $_SESSION[$guid]['messageWallArray'] ?? [];
 
                 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Messenger/messageWall_view.php';
                 if (count($messages) < 1) {
