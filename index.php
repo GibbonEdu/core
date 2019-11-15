@@ -21,6 +21,7 @@ use Gibbon\Domain\System\ModuleGateway;
 use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\Messenger\MessengerGateway;
 
 /**
  * BOOTSTRAP
@@ -479,16 +480,6 @@ if ($isLoggedIn) {
     }
 }
 
-//Setup message array
-$addReturn = $_GET['addReturn'] ?? '';
-$updateReturn = $_GET['updateReturn'] ?? '';
-$deleteReturn = $_GET['deleteReturn'] ?? '';
-if ($isLoggedIn && (empty($_SESSION[$guid]['messageWallArray']) || $cacheLoad || (empty($gibbon->session->get('address'))) || ($gibbon->session->get('address') == '/modules/Messenger/messenger_post.php' && $addReturn == 'success0') || ($gibbon->session->get('address') == '/modules/Messenger/messenger_postQuickWall.php' && $addReturn == 'success0') || ($gibbon->session->get('address') == '/modules/Messenger/messenger_manage_edit.php' && $updateReturn == 'success0') or ($gibbon->session->get('address') == '/modules/Messenger/messenger_manage.php' and $deleteReturn == 'success0'))) {
-    $_SESSION[$guid]['messageWallArray'] = getMessages($guid, $connection2, 'array');
-} else {
-    $_SESSION[$guid]['messageWallArray'] = $_SESSION[$guid]['messageWallArray'] ?? array();
-}
-
 /**
  * TEMPLATE DATA
  *
@@ -558,10 +549,18 @@ if (!$session->has('address')) {
         $page->writeFromTemplate('welcome.twig.html', $templateData);
 
     } else {
+        // Setup cached message array only if there are recent posts
+        $messageWallLatestPost = $container->get(MessengerGateway::class)->getRecentMessageWallTimestamp();
+
+        if (!$gibbon->session->exists('messageWallArray') || $messageWallLatestPost > $gibbon->session->get('messageWallRefreshed', 0)) {
+            $gibbon->session->set('messageWallArray', getMessages($guid, $connection2, 'array'));
+            $gibbon->session->set('messageWallRefreshed', time());
+        }
+
         // Pinned Messages
         $pinnedMessagesOnHome = getSettingByScope($connection2, 'Messenger', 'pinnedMessagesOnHome');
         if ($pinnedMessagesOnHome == 'Y' && isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
-            $pinnedMessages = array_reduce($_SESSION[$guid]['messageWallArray'], function ($group, $item) {
+            $pinnedMessages = array_reduce($gibbon->session->get('messageWallArray'), function ($group, $item) {
                 if ($item['messageWallPin'] == 'Y') {
                     $group[$item['gibbonMessengerID']] = $item;
                 }
