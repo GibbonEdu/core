@@ -478,6 +478,13 @@ if ($isLoggedIn) {
     } else {
         $session->forget(['menuModuleItems', 'menuModuleName']);
     }
+
+    // Setup cached message array only if there are recent posts
+    $messageWallLatestPost = $container->get(MessengerGateway::class)->getRecentMessageWallTimestamp();
+    if (!$gibbon->session->exists('messageWallArray') || $messageWallLatestPost > $gibbon->session->get('messageWallRefreshed', 0)) {
+        $gibbon->session->set('messageWallArray', getMessages($guid, $connection2, 'array'));
+        $gibbon->session->set('messageWallRefreshed', time());
+    }
 }
 
 /**
@@ -549,14 +556,6 @@ if (!$session->has('address')) {
         $page->writeFromTemplate('welcome.twig.html', $templateData);
 
     } else {
-        // Setup cached message array only if there are recent posts
-        $messageWallLatestPost = $container->get(MessengerGateway::class)->getRecentMessageWallTimestamp();
-
-        if (!$gibbon->session->exists('messageWallArray') || $messageWallLatestPost > $gibbon->session->get('messageWallRefreshed', 0)) {
-            $gibbon->session->set('messageWallArray', getMessages($guid, $connection2, 'array'));
-            $gibbon->session->set('messageWallRefreshed', time());
-        }
-
         // Pinned Messages
         $pinnedMessagesOnHome = getSettingByScope($connection2, 'Messenger', 'pinnedMessagesOnHome');
         if ($pinnedMessagesOnHome == 'Y' && isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
