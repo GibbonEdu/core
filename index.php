@@ -600,6 +600,8 @@ if (!$session->has('address')) {
             case 'Staff':
                 $page->write($container->get(Gibbon\UI\Dashboard\StaffDashboard::class)->getOutput());
                 break;
+            case 'Other':
+                break;
             default:
                 $page->write('<div class="error">'.__('Your current role type cannot be determined.').'</div>');
         }
