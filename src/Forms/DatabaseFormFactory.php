@@ -109,18 +109,10 @@ class DatabaseFormFactory extends FormFactory
 
     public function createSelectHouse($name)
     {
-        $data = [];
         $sql = "SELECT gibbonHouseID as value, name FROM gibbonHouse;";
-        try
-        {
-            $results = $this->pdo->executeQuery($data, $sql);
-        }
-        catch(PDOException $e)
-        {
-            throw $e;
-        }
+        $results = $this->pdo->select($sql);
 
-        return $this->createSelect($name)->fromResults($results)->placeholder()->placeholder();
+        return $this->createSelect($name)->fromResults($results)->placeholder();
     }
 
     public function createSelectClass($name, $gibbonSchoolYearID, $gibbonPersonID = null, $params = array())
