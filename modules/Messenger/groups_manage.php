@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Messenger\GroupGateway;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Forms\Prefab\BulkActionForm;
 
 $page->breadcrumbs->add(__('Manage Groups'));
 
@@ -36,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
 
     $groupGateway = $container->get(GroupGateway::class);
 
-    $criteria = $groupGateway->newQueryCriteria()
+    $criteria = $groupGateway->newQueryCriteria(true)
         ->sortBy(['schoolYear', 'name'])
         ->fromPOST();
 
@@ -47,9 +49,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
         $groups = $groupGateway->queryGroups($criteria, $_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID']);
     }
     
+    // FORM
+    $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/groups_manageProcessBulk.php');
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-    // DATA TABLE
-    $table = DataTable::createPaginated('groupsManage', $criteria);
+    if ($highestAction == 'Manage Groups_all') {
+        // BULK ACTIONS
+        $bulkActions = array(
+            'Duplicate' => __('Duplicate'),
+            'DuplicateMembers' => __('Duplicate With Members'),
+            'Delete' => __('Delete'),
+        );
+        $col = $form->createBulkActionColumn($bulkActions);
+            $col->addSelectSchoolYear('gibbonSchoolYearIDCopyTo', 'Active')
+                ->setClass('shortWidth schoolYear')
+                ->placeholder(null);
+            $col->addSubmit(__('Go'));
+
+        $form->toggleVisibilityByClass('schoolYear')->onSelect('action')->when(array('Duplicate', 'DuplicateMembers'));
+
+        // DATA TABLE
+        $table = $form->addRow()->addDataTable('groupsManage', $criteria)->withData($groups);
+
+        $table->addMetaData('bulkActions', $col);
+    } else {
+        // DATA TABLE
+        $table = $form->addRow()->addDataTable('groupsManage', $criteria)->withData($groups);
+    }
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/Messenger/groups_manage_add.php')
@@ -66,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
 
     $table->addActionColumn()
         ->addParam('gibbonGroupID')
-        ->format(function ($person, $actions) use ($guid) {
+        ->format(function ($person, $actions) {
             $actions->addAction('edit', __('Edit'))
                     ->setURL('/modules/Messenger/groups_manage_edit.php');
 
@@ -74,6 +101,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
                     ->setURL('/modules/Messenger/groups_manage_delete.php');
         });
 
-    echo $table->render($groups);
+    if ($highestAction == 'Manage Groups_all') {
+        $table->addCheckboxColumn('gibbonGroupIDList', 'gibbonGroupID');
+    }
 
+    echo $form->getOutput();
 }

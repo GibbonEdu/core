@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
 
     $individualNeedsGateway = $container->get(INGateway::class);
 
-    $criteria = $individualNeedsGateway->newQueryCriteria()
+    $criteria = $individualNeedsGateway->newQueryCriteria(true)
         ->sortBy(['surname', 'preferredName'])
         ->filterBy('descriptor', $gibbonINDescriptorID)
         ->filterBy('alert', $gibbonAlertLevelID)

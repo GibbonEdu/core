@@ -37,20 +37,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        $gibbonPersonID = $_GET['gibbonPersonID'];
-        if ($gibbonPersonID == false) {
+        $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+        if ($gibbonPersonID == '' ) {
             echo "<div class='error'>";
             echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
-            $search = null;
-            if (isset($_GET['search'])) {
-                $search = $_GET['search'];
-            }
-            $allStaff = '';
-            if (isset($_GET['allStaff'])) {
-                $allStaff = $_GET['allStaff'];
-            }
+            $search = $_GET['search'] ?? '';
+            $allStaff = $_GET['allStaff'] ?? '';
 
             if ($highestAction == 'View Staff Profile_brief') {
                 //Proceed!
@@ -193,7 +187,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
                         $staffAbsenceDateGateway = $container->get(StaffAbsenceDateGateway::class);
 
-                        $criteria = $staffAbsenceGateway->newQueryCriteria()->filterBy('date', 'Today')->filterBy('status', 'Approved');
+                        $criteria = $staffAbsenceGateway->newQueryCriteria(true)->filterBy('date', 'Today')->filterBy('status', 'Approved');
                         $absences = $staffAbsenceGateway->queryAbsencesByPerson($criteria, $gibbonPersonID)->toArray();
 
                         if (count($absences) > 0) {
@@ -535,7 +529,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                                     echo $rowFacility['phoneInternal'];
                                     echo '</td>';
                                     echo '<td>';
-                                    echo $rowFacility['usageType'];
+                                    echo __($rowFacility['usageType']);
                                     echo '</td>';
                                     echo '</tr>';
                                 }

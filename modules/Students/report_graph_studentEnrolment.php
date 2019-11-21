@@ -140,7 +140,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_graph_stud
                     LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
                     LEFT JOIN gibbonYearGroup ON (gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID)
                     LEFT JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                    WHERE (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :date)
+                    WHERE (gibbonPerson.status='Full' OR gibbonPerson.status='Expected')
+                    AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :date)
                     AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :date)
                     AND (:date BETWEEN gibbonSchoolYear.firstDay AND gibbonSchoolYear.lastDay)";
 

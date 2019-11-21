@@ -32,8 +32,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
 
     $returns = array(
         'warning0' => __("Uninstall was successful. You will still need to remove the theme's files yourself."),
-        'success0' => __('Uninstall was successful.'),
         'success1' => __('Install was successful.'),
+        'success2' => __('Uninstall was successful.'),
         'error3'   => __('Your request failed because your manifest file was invalid.'),
         'error4'   => __('Your request failed because a theme with the same name is already installed.'),
     );

@@ -88,8 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
                 $criteria = $attendanceLogGateway->newQueryCriteria()
                     ->sortBy('timestampTaken')
-                    ->filterBy('notClass', $countClassAsSchool == 'N')
-                    ->pageSize(0);
+                    ->filterBy('notClass', $countClassAsSchool == 'N');
 
                 $logs = $attendanceLogGateway->queryByPersonAndDate($criteria, $gibbonPersonID, $currentDate);
                 $lastLog = $logs->getRow(count($logs) - 1);
@@ -98,8 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 $classLogCount = 0;
                 if ($countClassAsSchool == 'N') {
                     $criteria = $attendanceLogGateway->newQueryCriteria()
-                        ->sortBy(['timeStart', 'timeEnd', 'timestampTaken'])
-                        ->pageSize(0);
+                        ->sortBy(['timeStart', 'timeEnd', 'timestampTaken']);
 
                     $classLogs = $attendanceLogGateway->queryClassAttendanceByPersonAndDate($criteria, $gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, $currentDate);
                     $classLogs->transform(function (&$log) use (&$classLogCount) {
@@ -111,7 +109,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 $table = DataTable::create('attendanceLogs');
 
                 $table->modifyRows(function ($log, $row) {
-                    if ($log['direction'] == 'Out') $row->addClass('error');
+                    if ($log['scope'] == 'Onsite - Late' || $log['scope'] == 'Offsite - Left') $row->addClass('warning');
+                    elseif ($log['direction'] == 'Out') $row->addClass('error');
                     elseif (!empty($log['direction'])) $row->addClass('current');
                     return $row;
                 });

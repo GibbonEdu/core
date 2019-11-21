@@ -34,6 +34,7 @@ class YearGroupGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonYearGroup';
+    private static $primaryKey = 'gibbonYearGroupID';
     private static $searchableColumns = [];
 
     public function queryYearGroups(QueryCriteria $criteria)
@@ -47,5 +48,22 @@ class YearGroupGateway extends QueryableGateway
             ->leftJoin('gibbonPerson', 'gibbonYearGroup.gibbonPersonIDHOY=gibbonPerson.gibbonPersonID');
 
         return $this->runQuery($query, $criteria);
+    }
+
+    public function studentCountByYearGroup($gibbonYearGroupID)
+    {
+        $data = array('gibbonYearGroupID' => $gibbonYearGroupID, 'today' => date('Y-m-d'));
+        $sql = "SELECT count(*)
+            FROM gibbonStudentEnrolment
+                JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+            WHERE gibbonPerson.status='Full'
+                AND gibbonSchoolYear.status='Current'
+                AND (dateStart IS NULL OR dateStart<=:today)
+                AND (dateEnd IS NULL OR dateEnd>=:today)
+                AND gibbonYearGroupID=:gibbonYearGroupID
+                ";
+
+        return $this->db()->selectOne($sql, $data);
     }
 }

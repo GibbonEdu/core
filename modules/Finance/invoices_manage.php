@@ -154,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         // QUERY
         $invoiceGateway = $container->get(InvoiceGateway::class);
 
-        $criteria = $invoiceGateway->newQueryCriteria()
+        $criteria = $invoiceGateway->newQueryCriteria(true)
             ->sortBy(['defaultSortOrder', 'invoiceIssueDate', 'surname', 'preferredName'])
             ->filterBy('status', $request['status'])
             ->filterBy('invoicee', $request['gibbonFinanceInvoiceeID'])

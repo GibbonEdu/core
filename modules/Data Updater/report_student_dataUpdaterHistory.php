@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_studen
         $gateway = $container->get(PersonUpdateGateway::class);
 
         // QUERY
-        $criteria = $gateway->newQueryCriteria()
+        $criteria = $gateway->newQueryCriteria(true)
             ->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
             ->filterBy('cutoff', $nonCompliant == 'Y'? Format::dateConvert($date) : '')
             ->fromPOST();

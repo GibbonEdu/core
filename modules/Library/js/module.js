@@ -61,9 +61,8 @@ $.prototype.loadGoogleBookData = function (settings) {
                     var image = obj['items'][0]['volumeInfo']['imageLinks']['thumbnail'];
                     if (image) {
                         $("#imageType").val('Link');
-                        $(".imageLink").slideDown("fast", $(".imageLink").css("display", "table-row"));
-                        $("#imageLink").enable();
                         $("#imageLink").val(image);
+                        $("#imageType").change();
                     }
                     $("#fieldLanguage").val(obj['items'][0]['volumeInfo']['language']);
                     var subjects = '';

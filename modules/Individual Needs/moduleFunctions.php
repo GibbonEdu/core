@@ -134,3 +134,79 @@ function printINStatusTable($connection2, $guid, $gibbonPersonID, $mode = '', $a
 
     return $output;
 }
+
+function getInvestigationCriteriaArray($strand) {
+    $options = array();
+
+    if ($strand == 'Cognition') {
+        $options = array(
+            'There is limited understanding of concepts generally' => __('There is limited understanding of concepts generally'),
+            'Learning new concepts is a challenge' => __('Learning new concepts is a challenge'),
+            'Simple concepts and processes with one or two steps can be understood and applied to classroom learning' => __('Simple concepts and processes with one or two steps can be understood and applied to classroom learning'),
+            'New concepts can be understood with ease and used consistently in a structured learning environment' => __('New concepts can be understood with ease and used consistently in a structured learning environment')
+        );
+    }
+    else if ($strand == 'Memory') {
+        $options = array(
+            'The ability to hold and use important information in work­ing mem­ory over a short period of time' => __('The ability to hold and use important information in work­ing mem­ory over a short period of time'),
+            'The ability to hold several ideas in mind at once' => __('The ability to hold several ideas in mind at once'),
+            'The ability to remember what has been learnt in recent lessons' => __('The ability to remember what has been learnt in recent lessons'),
+            'The ability to retrieve information from long-term memory' => __('The ability to retrieve information from long-term memory'),
+        );
+    }
+    else if ($strand == 'Self-Management') {
+        $options = array(
+            'Setting goals' => __('Setting goals'),
+            'Managing time' => __('Managing time'),
+            'Being organised' => __('Being organised'),
+            'Monitoring, controlling and self directing aspects of learning for themselves' => __('Monitoring, controlling and self directing aspects of learning for themselves'),
+            'Emotional self-regulation' => __('Emotional self-regulation'),
+        );
+    }
+    else if ($strand == 'Attention') {
+        $options = array(
+            'Sus­taining con­cen­tra­tion and attention in lessons' => __('Sus­taining con­cen­tra­tion and attention in lessons'),
+            'Paying attention to relevant information' => __('Paying attention to relevant information'),
+            'Shifting attention when needed' => __('Shifting attention when needed'),
+            'Monitoring, controlling and self directing aspects of learning for themselves' => __('Monitoring, controlling and self directing aspects of learning for themselves'),
+            'Resisting distraction and internal urges to do other things than the task at hand' => __('Resisting distraction and internal urges to do other things than the task at hand'),
+        );
+    }
+    else if ($strand == 'Social Interaction') {
+        $options = array(
+            'Approaching others and making friends' => __('Approaching others and making friends'),
+            'Ability to hold a conversation' => __('Ability to hold a conversation'),
+            'Ability to use appropriate non-verbal communication (eye contact, facial expressions, gestures, body language)' => __('Ability to use appropriate non-verbal communication (eye contact, facial expressions, gestures, body language)'),
+            'Adjusting behaviour to suit contexts' => __('Adjusting behaviour to suit contexts'),
+        );
+    }
+    else if ($strand == 'Communication') {
+        $options = array(
+            'Word reading accuracy (ability to sound out words)' => __('Word reading accuracy (ability to sound out words)'),
+            'Reading rate or fluency (speed)' => __('Reading rate or fluency (speed)'),
+            'Reading comprehension (understanding of texts)' => __('Reading comprehension (understanding of texts)'),
+            'Spelling accuracy' => __('Spelling accuracy'),
+            'Grammar and punctuation accuracy' => __('Grammar and punctuation accuracy'),
+            'Clarity or organization of written expression' => __('Clarity or organization of written expression'),
+            'Verbal articulation of meaning with an awareness of audience' => __('Verbal articulation of meaning with an awareness of audience')
+        );
+    }
+
+    return $options;
+}
+
+function getInvestigationCriteriaStrands($includeCognition = false) {
+    $options = array(
+        0 => array('name' => 'memory', 'nameHuman' => 'Memory'),
+        1 => array('name' => 'selfManagement', 'nameHuman' => 'Self-Management'),
+        2 => array('name' => 'attention', 'nameHuman' => 'Attention'),
+        3 => array('name' => 'socialInteraction', 'nameHuman' => 'Social Interaction'),
+        4 => array('name' => 'communication', 'nameHuman' => 'Communication'),
+    );
+
+    if ($includeCognition) {
+        array_unshift($options, array('name' => 'cognition', 'nameHuman' => 'Cognition'));
+    }
+
+    return $options;
+}

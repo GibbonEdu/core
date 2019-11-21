@@ -36,6 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
 
     $dateEnd = (isset($_POST['dateEnd']))? dateConvert($guid, $_POST['dateEnd']) : date('Y-m-d');
     $dateStart = (isset($_POST['dateStart']))? dateConvert($guid, $_POST['dateStart']) : date('Y-m-d', strtotime( $dateEnd.' -1 month') );
+    $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
 
     // Correct inverse date ranges rather than generating an error
     if ($dateStart > $dateEnd) {
@@ -78,6 +79,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
     // Options & Filters
     $form = Form::create('attendanceTrends', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_graph_byType.php');
     $form->setTitle(__('Choose Date'));
+    $form->setClass('noIntBorder fullWidth');
+
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
     $row = $form->addRow();
@@ -108,7 +111,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
         $row->addLabel('gibbonRollGroupID', __('Roll Group'));
         $row->addSelect('gibbonRollGroupID')->fromArray(array('all' => __('All')))->fromQuery($pdo, $sql, $data)->selectMultiple()->selected($rollGroups);
 
-    $form->addRow()->addSubmit();
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSearchSubmit($gibbon->session);
 
     echo $form->getOutput();
 
@@ -123,11 +128,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
         //Produce array of attendance data
         $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
         $rows = $attendanceLogGateway->queryAttendanceCountsByType(
-            $attendanceLogGateway->newQueryCriteria()->pageSize(0),
+            $attendanceLogGateway->newQueryCriteria(),
             $_SESSION[$guid]['gibbonSchoolYearID'],
             $rollGroups,
             $dateStart,
-            $dateEnd
+            $dateEnd,
+            $countClassAsSchool
         );
 
         if (empty($rows)) {

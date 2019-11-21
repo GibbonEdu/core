@@ -17,17 +17,24 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Helps builds report array for setting gibbonMessengerReceipt
-function reportAdd($report, $emailReceipt, $gibbonPersonID, $targetType, $targetID, $contactType, $contactDetail)
+function reportAdd($report, $emailReceipt, $gibbonPersonID, $targetType, $targetID, $contactType, $contactDetail, $gibbonPersonIDListStudent = null, $nameStudent = null)
 {
     if ($contactDetail != '' AND is_null($contactDetail) == false) {
+        $count = 0;
         $unique = true;
+        $uniqueCount = 0;
         foreach ($report as $reportEntry) {
-            if ($reportEntry[4] == $contactDetail)
+            if ($reportEntry[4] == $contactDetail && $unique) {
                 $unique = false;
+                $uniqueCount = $count;
+            }
+            $count ++;
         }
 
-        if ($unique) {
+        if ($unique) { //Entry is unique, so create
             $count = count($report);
             $report[$count][0] = $gibbonPersonID;
             $report[$count][1] = $targetType;
@@ -40,6 +47,12 @@ function reportAdd($report, $emailReceipt, $gibbonPersonID, $targetType, $target
             else {
                 $report[$count][5] = null;
             }
+            $report[$count][6] = $gibbonPersonIDListStudent;
+            $report[$count][7] = $nameStudent;
+        }
+        else { //Entry is not unique, so apend student details
+            $report[$uniqueCount][6] = (empty($report[$uniqueCount][6])) ? $gibbonPersonIDListStudent : (!empty($gibbonPersonIDListStudent) ? $report[$uniqueCount][6].','.$gibbonPersonIDListStudent : $report[$uniqueCount][6]);
+            $report[$uniqueCount][7] = (empty($report[$uniqueCount][7])) ? $nameStudent : (!empty($nameStudent) ? $report[$uniqueCount][7].', '.$nameStudent : $report[$uniqueCount][7]);
         }
     }
 
@@ -62,7 +75,7 @@ function getSignature($guid, $connection2, $gibbonPersonID)
         $row = $result->fetch();
 
         $return = '<br/><br/>----<br/>';
-        $return .= "<span style='font-weight: bold; color: #447CAA'>".formatName('', $row['preferredName'], $row['surname'], 'Student').'</span><br/>';
+        $return .= "<span style='font-weight: bold; color: #447CAA'>".Format::name('', $row['preferredName'], $row['surname'], 'Student').'</span><br/>';
         $return .= "<span style='font-style: italic'>";
         if ($row['jobTitle'] != '') {
             $return .= $row['jobTitle'].'<br/>';
@@ -84,7 +97,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
     if ($date == '') {
         $date = date('Y-m-d');
     }
-    if ($mode != 'print' and $mode != 'count' and $mode != 'result') {
+    if ($mode != 'print' and $mode != 'count' and $mode != 'result' and $mode != 'array') {
         $mode = 'print';
     }
 
@@ -595,13 +608,29 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
     if ($mode == 'result') {
         $resultReturn = array();
         $resultReturn[0] = $dataPosts;
-        $resultReturn[1] = $sqlPosts.' ORDER BY subject, gibbonMessengerID, source';
+        $resultReturn[1] = $sqlPosts.' ORDER BY messageWallPin DESC, subject, gibbonMessengerID, source';
 
         return serialize($resultReturn);
+    } elseif ($mode == 'array') {
+        $sqlPosts = $sqlPosts.' ORDER BY messageWallPin DESC, subject, gibbonMessengerID, source';
+        $resultPosts = $connection2->prepare($sqlPosts);
+        $resultPosts->execute($dataPosts);
+
+        $arrayPosts = $resultPosts->rowCount() > 0 ? $resultPosts->fetchAll() : [];
+
+        $arrayPosts = array_reduce($arrayPosts, function ($group, $item) {
+            if (isset($group[$item['gibbonMessengerID']]['source'])) {
+                $item['source'] .= str_replace(':', ', ', strrchr($group[$item['gibbonMessengerID']]['source'], ':'));
+            }
+            $group[$item['gibbonMessengerID']] = $item;
+            return $group;
+        }, []);
+
+        return $arrayPosts;
     } else {
         $count = 0;
         try {
-            $sqlPosts = $sqlPosts.' ORDER BY subject, gibbonMessengerID, source';
+            $sqlPosts = $sqlPosts.' ORDER BY messageWallPin DESC, subject, gibbonMessengerID, source';
             $resultPosts = $connection2->prepare($sqlPosts);
             $resultPosts->execute($dataPosts);
         } catch (PDOException $e) {
@@ -622,10 +651,11 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
                     $output[$count]['photo'] = $rowPosts['image_240'];
                     $output[$count]['subject'] = $rowPosts['subject'];
                     $output[$count]['details'] = $rowPosts['body'];
-                    $output[$count]['author'] = formatName($rowPosts['title'], $rowPosts['preferredName'], $rowPosts['surname'], $rowPosts['category']);
+                    $output[$count]['author'] = Format::name($rowPosts['title'], $rowPosts['preferredName'], $rowPosts['surname'], $rowPosts['category']);
                     $output[$count]['source'] = $rowPosts['source'];
                     $output[$count]['gibbonMessengerID'] = $rowPosts['gibbonMessengerID'];
                     $output[$count]['gibbonPersonID'] = $rowPosts['gibbonPersonID'];
+                    $output[$count]['messageWallPin'] = $rowPosts['messageWallPin'];
 
                     ++$count;
                     $last = $rowPosts['gibbonMessengerID'];
@@ -644,7 +674,10 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
             $rowCount = 0;
             $rowNum = 'odd';
             for ($i = 0; $i < count($output); ++$i) {
-                if ($rowCount % 2 == 0) {
+                if ($output[$i]['messageWallPin'] == "Y") {
+                    $rowNum = 'selected';
+                }
+                else if ($rowCount % 2 == 0) {
                     $rowNum = 'even';
                 } else {
                     $rowNum = 'odd';
@@ -660,6 +693,11 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
 
                 $return .= '<b><u>'.__('Shared Via').'</b></u><br/>';
                 $return .= $output[$i]['source'].'<br/><br/>';
+
+                if ($output[$i]['messageWallPin'] == "Y") {
+                    $return .= '<i>'.__('Pinned To Top').'</i><br/>';
+                }
+
                 $return .= '</td>';
                 $return .= "<td style='border-left: none; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 640px'>";
                 $return .= "<h3 style='margin-top: 3px'>";

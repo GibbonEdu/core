@@ -84,7 +84,7 @@ trait TableAware
     public function getByID($primaryKeyValue) : array
     {
         if (empty($primaryKeyValue)) {
-            throw new \InvalidArgumentException("Gateway getByID method for {$this->getTableName()} must provide a primary key value.");
+            return [];
         }
 
         $query = $this
@@ -93,8 +93,11 @@ trait TableAware
             ->from($this->getTableName())
             ->where($this->getPrimaryKey().' = :primaryKey')
             ->bindValue('primaryKey', $primaryKeyValue);
-
-        return $this->runSelect($query)->fetch();
+        
+        $result = $this->runSelect($query);
+        return $result->isNotEmpty()
+            ? $result->fetch()
+            : [];
     }
 
     /**
@@ -143,6 +146,25 @@ trait TableAware
     }
 
     /**
+     * Inserts a row into the table and returns the primary key.
+     *
+     * @param array $data
+     * @return void
+     */
+    public function insertAndUpdate(array $data, array $updateCols)
+    {
+        unset($data[$this->getPrimaryKey()]);
+
+        $query = $this
+            ->newInsert()
+            ->into($this->getTableName())
+            ->cols($data)
+            ->onDuplicateKeyUpdateCols($updateCols);
+
+        return $this->runInsert($query);
+    }
+
+    /**
      * Updates a row in the table based on primary key and returns true on success.
      *
      * @param string $primaryKeyValue
@@ -168,6 +190,36 @@ trait TableAware
     }
 
     /**
+     * Updates one or more rows in the table based key=>value pairs, and returns true on success.
+     *
+     * @param array $keysAndValues
+     * @param array $data
+     * @return bool
+     */
+    public function updateWhere(array $keysAndValues, array $data) : bool
+    {
+        if (empty($keysAndValues)) {
+            throw new \InvalidArgumentException("Gateway update method for {$this->getTableName()} must provide an array of keys and values.");
+        }
+        
+        unset($data[$this->getPrimaryKey()]);
+
+        $query = $this
+            ->newUpdate()
+            ->table($this->getTableName())
+            ->cols($data);
+
+        $count = 0;
+        foreach ($keysAndValues as $key => $value) {
+            $query->where($key." = :key{$count}")
+                  ->bindValue("key{$count}", $value);
+            $count++;
+        }
+
+        return $this->runUpdate($query);
+    }
+
+    /**
      * Deletes a row in the table based on primary key and returns true on success.
      *
      * @param string $primaryKeyValue
@@ -184,6 +236,32 @@ trait TableAware
             ->from($this->getTableName())
             ->where($this->getPrimaryKey().' = :primaryKey')
             ->bindValue('primaryKey', $primaryKeyValue);
+
+        return $this->runDelete($query);
+    }
+
+    /**
+     * Deletes one or more rows in the table based key=>value pairs, and returns true on success.
+     *
+     * @param array $keysAndValues
+     * @return bool
+     */
+    public function deleteWhere(array $keysAndValues) : bool
+    {
+        if (empty($keysAndValues)) {
+            throw new \InvalidArgumentException("Gateway update method for {$this->getTableName()} must provide an array of keys and values.");
+        }
+        
+        $query = $this
+            ->newDelete()
+            ->from($this->getTableName());
+
+        $count = 0;
+        foreach ($keysAndValues as $key => $value) {
+            $query->where($key." = :key{$count}")
+                  ->bindValue("key{$count}", $value);
+            $count++;
+        }
 
         return $this->runDelete($query);
     }

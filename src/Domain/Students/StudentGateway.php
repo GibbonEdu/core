@@ -34,6 +34,7 @@ class StudentGateway extends QueryableGateway
     use SharedUserLogic;
 
     private static $tableName = 'gibbonStudentEnrolment';
+    private static $primaryKey = 'gibbonStudentEnrolmentID';
 
     private static $searchableColumns = ['gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.username', 'gibbonPerson.email', 'gibbonPerson.emailAlternate', 'gibbonPerson.studentID', 'gibbonPerson.phone1', 'gibbonPerson.vehicleRegistration'];
     
@@ -141,7 +142,7 @@ class StudentGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function queryStudentsAndTeachersBySchoolYear(QueryCriteria $criteria, $gibbonSchoolYearID) 
+    public function queryStudentsAndTeachersBySchoolYear(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonRoleIDCurrentCategory = null) 
     {
         $query = $this
             ->newQuery()
@@ -159,9 +160,7 @@ class StudentGateway extends QueryableGateway
             
             ->groupBy(['gibbonPerson.gibbonPersonID']);
 
-        if ($criteria->hasFilter('all')) {
-            $query->where("(gibbonPerson.status = 'Full' OR gibbonPerson.status = 'Expected')");
-        } else {
+        if (!$criteria->hasFilter('all') || $gibbonRoleIDCurrentCategory != 'Staff') {
             $query->where("(gibbonStudentEnrolment.gibbonStudentEnrolmentID IS NOT NULL OR (gibbonStaff.gibbonStaffID IS NOT NULL AND gibbonRole.category='Staff') )")
                   ->where("gibbonPerson.status = 'Full'")
                   ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :today)')
@@ -199,7 +198,7 @@ class StudentGateway extends QueryableGateway
     public function selectActiveStudentByPerson($gibbonSchoolYearID, $gibbonPersonID)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d'));
-        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, image_240, gibbonYearGroup.gibbonYearGroupID, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.nameShort AS rollGroup, 'Student' as roleCategory
+        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, image_240, gender, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonYearGroup.gibbonYearGroupID, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.nameShort AS rollGroup, 'Student' as roleCategory
                 FROM gibbonPerson
                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                 JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)

@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availabilit
         ]);
     }
 
-    $criteria = $staffCoverageGateway->newQueryCriteria()->pageSize(0);
+    $criteria = $staffCoverageGateway->newQueryCriteria();
 
     $coverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID, false);
     $exceptions = $substituteGateway->queryUnavailableDatesBySub($criteria, $gibbonPersonID);
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availabilit
     $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
 
     // DATA TABLE
-    $criteria = $substituteGateway->newQueryCriteria()
+    $criteria = $substituteGateway->newQueryCriteria(true)
         ->sortBy('date')
         ->fromPOST();
 

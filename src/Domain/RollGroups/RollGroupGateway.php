@@ -34,6 +34,7 @@ class RollGroupGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonRollGroup';
+    private static $primaryKey = 'gibbonRollGroupID';
     private static $searchableColumns = [];
 
     public function queryRollGroups(QueryCriteria $criteria, $gibbonSchoolYearID)
@@ -66,17 +67,18 @@ class RollGroupGateway extends QueryableGateway
     public function selectRollGroupsBySchoolYear($gibbonSchoolYearID)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'today' => date('Y-m-d'));
-        $sql = "SELECT gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.name, gibbonRollGroup.nameShort, gibbonSpace.name AS space, gibbonRollGroup.website, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, COUNT(DISTINCT students.gibbonPersonID) as students
+        $sql = "SELECT gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.name, gibbonRollGroup.nameShort, gibbonSpace.name AS space, gibbonRollGroup.website, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, COUNT(DISTINCT students.gibbonPersonID) as students, (SELECT MAX(sequenceNumber) FROM gibbonYearGroup JOIN gibbonStudentEnrolment ON (gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID) WHERE gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) as sequenceNumber
                 FROM gibbonRollGroup 
                 LEFT JOIN (
-                    SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolment.gibbonRollGroupID FROM gibbonStudentEnrolment 
+                    SELECT gibbonStudentEnrolment.gibbonPersonID, gibbonStudentEnrolment.gibbonRollGroupID FROM gibbonStudentEnrolment 
                     JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
                     WHERE status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)
+                    ORDER BY gibbonStudentEnrolment.gibbonYearGroupID
                 ) AS students ON (students.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
                 LEFT JOIN gibbonSpace ON (gibbonRollGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID) 
                 WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID 
                 GROUP BY gibbonRollGroup.gibbonRollGroupID
-                ORDER BY gibbonRollGroup.name";
+                ORDER BY sequenceNumber, gibbonRollGroup.name";
 
         return $this->db()->select($sql, $data);
     }

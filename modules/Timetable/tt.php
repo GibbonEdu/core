@@ -51,18 +51,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
         $canViewAllTimetables = $highestAction == 'View Timetable by Person' || $highestAction == 'View Timetable by Person_allYears';
 
         if ($canViewAllTimetables) {
-            $criteria = $studentGateway->newQueryCriteria()
+            $criteria = $studentGateway->newQueryCriteria(true)
                 ->searchBy($studentGateway->getSearchableColumns(), $search)
                 ->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
                 ->filterBy('all', $allUsers)
                 ->fromPOST();
 
-            echo '<h2>';
-            echo __('Filters');
-            echo '</h2>';
 
-            $form = Form::create('tt', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+            $form = Form::create('ttView', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
             $form->setClass('noIntBorder fullWidth');
+            $form->setTitle(__('Search'));
 
             $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/tt.php');
 
@@ -70,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
                 $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username.'));
                 $row->addTextField('search')->setValue($criteria->getSearchText());
 
-            if ($_SESSION[$guid]['gibbonRoleIDCurrentCategory'] == 'Staff') {
+            if ($gibbon->session->get('gibbonRoleIDCurrentCategory') == 'Staff') {
                 $row = $form->addRow();
                     $row->addLabel('allUsers', __('All Users'))->description(__('Include non-staff, non-student users.'));
                     $row->addCheckbox('allUsers')->checked($allUsers);
@@ -105,21 +103,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
 
         } else if ($canViewAllTimetables) {
 
-            $users = $studentGateway->queryStudentsAndTeachersBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
+            $users = $studentGateway->queryStudentsAndTeachersBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID'], $gibbon->session->get('gibbonRoleIDCurrentCategory'));
 
             $table = DataTable::createPaginated('timetables', $criteria);
 
             $table->modifyRows($studentGateway->getSharedUserRowHighlighter());
 
             $table->addMetaData('filterOptions', [
-                'all:on'          => __('All Users'),
                 'role:student'    => __('Role').': '.__('Student'),
                 'role:staff'      => __('Role').': '.__('Staff'),
             ]);
 
             if ($criteria->hasFilter('all')) {
                 $table->addMetaData('filterOptions', [
+                    'all:on'          => __('All Users'),
                     'status:full'     => __('Status').': '.__('Full'),
+                    'status:left'     => __('Status').': '.__('Left'),
                     'status:expected' => __('Status').': '.__('Expected'),
                     'date:starting'   => __('Before Start Date'),
                     'date:ended'      => __('After End Date'),

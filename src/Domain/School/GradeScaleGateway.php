@@ -32,6 +32,7 @@ class GradeScaleGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonScale';
+    private static $primaryKey = 'gibbonScaleID';
 
     private static $searchableColumns = ['name'];
     

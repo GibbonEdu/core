@@ -262,7 +262,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
 
                     if ($resultTutor->rowCount() > 0) {
                         while ($rowTutor = $resultTutor->fetch()) {
-                            echo formatName('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', true, true).'<br/>';
+                            echo Format::name('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', true, true).'<br/>';
                         }
                     }
 

@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_fa
 
     $page->breadcrumbs
         ->add(__('Manage Staff'), 'staff_manage.php')
-        ->add(__('Edit Staff'), 'staff_manage_edit.php', ['gibbonSpacePersonID' => $gibbonSpacePersonID])
+        ->add(__('Edit Staff'), 'staff_manage_edit.php', ['gibbonStaffID' => $gibbonStaffID, 'gibbonSpacePersonID' => $gibbonSpacePersonID])
         ->add(__('Add Facility'));
 
     if (isset($_GET['return'])) {

@@ -65,7 +65,7 @@ class StudentHistoryData
 
         // Get Logs
         $logs = $this->attendanceLogGateway
-            ->selectAllAttendanceLogsByPerson($gibbonSchoolYearID, $gibbonPersonID, $countClassAsSchool)
+            ->selectAllAttendanceLogsByPerson($gibbonSchoolYearID, $gibbonPersonID)
             ->fetchGrouped();
 
         // Get Weekdays
@@ -76,13 +76,14 @@ class StudentHistoryData
         }
 
         // Get Terms
-        $criteria = $this->termGateway->newQueryCriteria()
+        $criteria = $this->termGateway->newQueryCriteria(true)
             ->filterBy('schoolYear', $gibbonSchoolYearID)
             ->filterBy('firstDay', date('Y-m-d'))
             ->sortBy('firstDay');
 
         $terms = $this->termGateway->querySchoolYearTerms($criteria)->toArray();
         $today = new DateTimeImmutable();
+        $classLogs = [];
 
         foreach ($terms as $index => $term) {
             $specialDays = $this->termGateway->selectSchoolClosuresByTerm($term['gibbonSchoolYearTermID'])->fetchKeyPair();
@@ -107,13 +108,17 @@ class StudentHistoryData
 
                 if (!isset($daysOfWeek[$weekday])) continue;
 
-                $absentCount = $presentCount = 0;
+                $absentCount = $presentCount = $partialCount = 0;
 
-                $logs[$dateYmd] = array_map(function ($log) use (&$absentCount, &$presentCount) {
+                $logs[$dateYmd] = array_map(function ($log) use (&$absentCount, &$presentCount, &$partialCount) {
                     if ($log['direction'] == 'Out' && $log['scope'] == 'Offsite') {
                         $log['status'] = 'absent';
                         $log['statusClass'] = 'error';
                         $absentCount++;
+                    } elseif ($log['scope'] == 'Onsite - Late' || $log['scope'] == 'Offsite - Left') {
+                        $log['status'] = 'partial';
+                        $log['statusClass'] = 'warning';
+                        $partialCount++;
                     } else {
                         $log['status'] = 'present';
                         $log['statusClass'] = $log['scope'] == 'Offsite' ? 'message' : 'success';
@@ -123,7 +128,27 @@ class StudentHistoryData
                     return $log;
                 }, $logs[$dateYmd] ?? []);
 
+                // Filter class logs for End of Day purposes
+                if ($countClassAsSchool == 'N') {
+                    $classLogs[$dateYmd] = array_filter($logs[$dateYmd], function ($log) {
+                        return $log['context'] == 'Class';
+                    });
+                    $logs[$dateYmd] = array_filter($logs[$dateYmd], function ($log) {
+                        return $log['context'] <> 'Class';
+                    });
+                }
+                
                 $endOfDay = isset($logs[$dateYmd]) ? end($logs[$dateYmd]) : [];
+
+                // Handle cases where school-wide attendance does not exist, but class attendance does
+                if (empty($endOfDay) && !empty($classLogs)) {
+                    $endOfDay = [
+                        'date'        => $dateYmd,
+                        'type'        => 'Incomplete',
+                        'status'      => '',
+                        'statusClass' => 'dull border-gray-700',
+                    ];
+                }
 
                 $dayData = [
                     'date'            => $dateYmd,
@@ -131,6 +156,7 @@ class StudentHistoryData
                     'name'            => $daysOfWeek[$weekday],
                     'nameShort'       => $weekday,
                     'logs'            => $logs[$dateYmd] ?? [],
+                    'classLogs'       => $classLogs[$dateYmd] ?? [],
                     'endOfDay'        => $endOfDay,
                     'specialDay'      => $specialDays[$dateYmd] ?? '',
                     'outsideTerm'     => $date < $firstDay || $date > $lastDay,
@@ -138,6 +164,7 @@ class StudentHistoryData
                     'afterEndDate'    => !empty($dateEnd) && $dateYmd > $dateEnd,
                     'absentCount'     => $absentCount,
                     'presentCount'    => $presentCount,
+                    'partialCount'    => $partialCount,
                     'gibbonPersonID'  => $gibbonPersonID,
                 ];
 

@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
     $applicationGateway = $container->get(StaffApplicationFormGateway::class);
 
     // CRITERIA
-    $criteria = $applicationGateway->newQueryCriteria()
+    $criteria = $applicationGateway->newQueryCriteria(true)
         ->searchBy($applicationGateway->getSearchableColumns(), $search)
         ->sortBy('gibbonStaffApplicationForm.status')
         ->sortBy(['priority', 'timestamp'], 'DESC')

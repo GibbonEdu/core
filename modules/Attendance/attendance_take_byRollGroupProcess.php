@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Module\Attendance\AttendanceView;
+use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 
 //Gibbon system-wide includes
 require __DIR__ . '/../../gibbon.php';
@@ -92,6 +93,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                             exit();
                         }
 
+                        $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
+                        
                         $count = $_POST['count'];
                         $partialFail = false;
 
@@ -127,25 +130,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                 }
                             }
 
-    						if (!$existing) {
-                                //If no records then create one
-                                try {
-                                    $dataUpdate = array('gibbonPersonID' => $gibbonPersonID, 'direction' => $direction, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'gibbonPersonIDTaker' => $_SESSION[$guid]['gibbonPersonID'], 'date' => $currentDate, 'timestampTaken' => date('Y-m-d H:i:s'));
-                                    $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, context=\'Roll Group\', reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, timestampTaken=:timestampTaken';
-                                    $resultUpdate = $connection2->prepare($sqlUpdate);
-                                    $resultUpdate->execute($dataUpdate);
-                                } catch (PDOException $e) {
-                                    $fail = true;
-                                }
+                            $data = [
+                                'gibbonAttendanceCodeID' => $attendanceCode['gibbonAttendanceCodeID'],
+                                'gibbonPersonID'         => $gibbonPersonID,
+                                'context'                => 'Roll Group',
+                                'direction'              => $direction,
+                                'type'                   => $type,
+                                'reason'                 => $reason,
+                                'comment'                => $comment,
+                                'gibbonPersonIDTaker'    => $_SESSION[$guid]['gibbonPersonID'],
+                                'gibbonRollGroupID'      => $gibbonRollGroupID,
+                                'date'                   => $currentDate,
+                                'timestampTaken'         => date('Y-m-d H:i:s'),
+                            ];
+
+                            if (!$existing) {
+                                // If no records then create one
+                                $inserted = $attendanceLogGateway->insert($data);
+                                $partialFail &= !$inserted;
+
                             } else {
-                                try {
-                                    $dataUpdate = array('gibbonPersonID' => $gibbonPersonID, 'direction' => $direction, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'gibbonPersonIDTaker' => $_SESSION[$guid]['gibbonPersonID'], 'date' => $currentDate, 'timestampTaken' => date('Y-m-d H:i:s'), 'gibbonAttendanceLogPersonID' => $row['gibbonAttendanceLogPersonID']);
-                                    $sqlUpdate = 'UPDATE gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, context=\'Roll Group\', reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, timestampTaken=:timestampTaken WHERE gibbonAttendanceLogPersonID=:gibbonAttendanceLogPersonID';
-                                    $resultUpdate = $connection2->prepare($sqlUpdate);
-                                    $resultUpdate->execute($dataUpdate);
-                                } catch (PDOException $e) {
-                                    $fail = true;
-                                }
+                                $updated = $attendanceLogGateway->update($gibbonAttendanceLogPersonID, $data);
+                                $partialFail &= !$updated;
                             }
                         }
 

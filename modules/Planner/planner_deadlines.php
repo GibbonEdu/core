@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -129,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
                 }
 
                 while ($rowChild = $resultChild->fetch()) {
-                    $options[$rowChild['gibbonPersonID']] = formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student');
+                    $options[$rowChild['gibbonPersonID']] = Format::name('', $rowChild['preferredName'], $rowChild['surname'], 'Student');
                     $gibbonPersonIDArray[$count] = $rowChild['gibbonPersonID'];
                     ++$count;
                 }
@@ -455,22 +456,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
                 }
             }
         }
-    } elseif ($highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses') {
+    } elseif ($highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewOnly') {
         //Get current role category
         $category = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
 
         $page->breadcrumbs
             ->add(__('Planner'), 'planner.php', $params)
             ->add(__('Homework + Deadlines'));
-
-        //Get Smart Workflow help message
-        $category = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
-        if ($category == 'Staff') {
-            $smartWorkflowHelp = getSmartWorkflowHelp($connection2, $guid, 4);
-            if ($smartWorkflowHelp != false) {
-                echo $smartWorkflowHelp;
-            }
-        }
 
         //Proceed!
         if (isset($_GET['return'])) {

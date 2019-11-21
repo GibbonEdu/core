@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
     $stringGateway = $container->get(StringGateway::class);
 
     // CRITERIA
-    $criteria = $stringGateway->newQueryCriteria()
+    $criteria = $stringGateway->newQueryCriteria(true)
         ->searchBy($stringGateway->getSearchableColumns(), $search)
         ->sortBy('priority', 'DESC')
         ->fromPOST();
@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
     // COLUMNS
     $table->addColumn('original', __('Original String'));
     $table->addColumn('replacement', __('Replacement String'));
-    $table->addColumn('mode', __('Mode'));
+    $table->addColumn('mode', __('Mode'))->translatable();
     $table->addColumn('caseSensitive', __('Case Sensitive'))->format(Format::using('yesNo', 'caseSensitive'));
     $table->addColumn('priority', __('Priority'));
 

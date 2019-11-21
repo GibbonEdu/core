@@ -56,14 +56,13 @@ class ClassGroupTable extends DataTable
         $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
 
         $canViewStaff = isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php');
-        $canViewStudents = ($highestAction == 'View Student Profile_brief' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes');
-        $canViewConfidential = $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes';
+        $canViewStudents = ($highestAction == 'View Student Profile_brief' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes' || $highestAction == 'View Student Profile_fullEditAllNotes');
+        $canViewConfidential = $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes'  || $highestAction == 'View Student Profile_fullEditAllNotes';
 
         $criteria = $this->enrolmentGateway
             ->newQueryCriteria()
             ->sortBy(['roleSortOrder', 'surname', 'preferredName'])
-            ->filterBy('nonStudents', !$canViewStudents)
-            ->pageSize(0);
+            ->filterBy('nonStudents', !$canViewStudents);
 
         $participants = $this->enrolmentGateway->queryCourseEnrolmentByClass($criteria, $gibbonSchoolYearID, $gibbonCourseClassID);
         $this->withData($participants);
@@ -71,7 +70,7 @@ class ClassGroupTable extends DataTable
         $this->setTitle(__('Participants'));
 
         $this->addMetaData('gridClass', 'rounded-sm bg-blue-100 border');
-        $this->addMetaData('gridItemClass', 'w-1/2 sm:w-1/3 md:w-1/5 mb-2 sm:mb-4 text-center');
+        $this->addMetaData('gridItemClass', 'w-1/2 sm:w-1/3 md:w-1/5 my-2 sm:my-4 text-center');
 
         if ($canViewConfidential) {
             $this->addHeaderAction('export', __('Export to Excel'))
@@ -88,7 +87,7 @@ class ClassGroupTable extends DataTable
                 ->description(__('Show Confidential Data'))
                 ->checked(true)
                 ->inline()
-                ->wrap('<div class="my-2 text-right text-xxs text-gray-700 italic">', '</div>');
+                ->wrap('<div class="mt-2 text-right text-xxs text-gray-700 italic">', '</div>');
 
             $this->addMetaData('gridHeader', $checkbox->getOutput());
             $this->addMetaData('gridFooter', $this->getCheckboxScript($gibbonCourseClassID));

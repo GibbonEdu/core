@@ -23,6 +23,7 @@ use Gibbon\Forms\OutputableInterface;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Tables\Prefab\RollGroupTable;
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Services\Format;
 
 /**
  * Staff Dashboard View Composer
@@ -45,19 +46,10 @@ class StaffDashboard implements OutputableInterface
 
     public function getOutput()
     {
-        $guid = $this->session->get('guid');
-        $connection2 = $this->db->getConnection();
-
-        $output = '';
-        $smartWorkflowHelp = getSmartWorkflowHelp($connection2, $guid);
-        if ($smartWorkflowHelp != false) {
-            $output .= $smartWorkflowHelp;
-        }
-
-        $output .= '<h2>'.
+        $output = '<h2>'.
             __('Staff Dashboard').
             '</h2>'.
-            "<div style='margin-bottom: 30px; margin-left: 1%; float: left; width: 100%'>";
+            "<div style='margin-bottom: 30px; float: left; width: 100%'>";
 
         $dashboardContents = $this->renderDashboard();
 
@@ -312,7 +304,7 @@ class StaffDashboard implements OutputableInterface
                         //COLOR ROW BY STATUS!
                         $rollGroups[$count][3] .= "<tr class=$rowNum>";
                         $rollGroups[$count][3] .= '<td>';
-                        $rollGroups[$count][3] .= '<b>'.formatName('', $rowBehaviour['preferredNameStudent'], $rowBehaviour['surnameStudent'], 'Student', false).'</b><br/>';
+                        $rollGroups[$count][3] .= '<b>'.Format::name('', $rowBehaviour['preferredNameStudent'], $rowBehaviour['surnameStudent'], 'Student', false).'</b><br/>';
                         if (substr($rowBehaviour['timestamp'], 0, 10) > $rowBehaviour['date']) {
                             $rollGroups[$count][3] .= __('Date Updated').': '.dateConvertBack($guid, substr($rowBehaviour['timestamp'], 0, 10)).'<br/>';
                             $rollGroups[$count][3] .= __('Incident Date').': '.dateConvertBack($guid, $rowBehaviour['date']).'<br/>';
@@ -334,7 +326,7 @@ class StaffDashboard implements OutputableInterface
                         $rollGroups[$count][3] .= trim($rowBehaviour['level']);
                         $rollGroups[$count][3] .= '</td>';
                         $rollGroups[$count][3] .= '<td>';
-                        $rollGroups[$count][3] .= formatName($rowBehaviour['title'], $rowBehaviour['preferredNameCreator'], $rowBehaviour['surnameCreator'], 'Staff', false).'<br/>';
+                        $rollGroups[$count][3] .= Format::name($rowBehaviour['title'], $rowBehaviour['preferredNameCreator'], $rowBehaviour['surnameCreator'], 'Staff', false).'<br/>';
                         $rollGroups[$count][3] .= '</td>';
                         $rollGroups[$count][3] .= '<td>';
                         $rollGroups[$count][3] .= "<script type='text/javascript'>";

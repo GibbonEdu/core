@@ -52,7 +52,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_privacy_st
     // CRITERIA
     $criteria = $reportGateway->newQueryCriteria()
         ->sortBy(['gibbonYearGroup.sequenceNumber', 'gibbonRollGroup.nameShort'])
-        ->pageSize(0)
         ->fromPOST();
 
     $privacyChoices = $reportGateway->queryStudentPrivacyChoices($criteria, $gibbonSchoolYearID);
@@ -61,16 +60,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_privacy_st
     $table = ReportTable::createPaginated('privacyByStudent', $criteria)->setViewMode($viewMode, $gibbon->session);
     $table->setTitle(__('Privacy Choices by Student'));
 
-    $count = 1;
-    $table->addColumn('count', __('Count'))
-        ->notSortable()
-        ->format(function ($student) use (&$count) {
-            return $count++;
-        });
+    $table->addRowCountColumn($privacyChoices->getPageFrom());
     $table->addColumn('rollGroup', __('Roll Group'))
+        ->context('secondary')
         ->sortable(['gibbonYearGroup.sequenceNumber', 'rollGroup']);
 
     $table->addColumn('image_240', __('Student'))
+        ->context('primary')
         ->width('10%')
         ->sortable(['surname', 'preferredName'])
         ->format(function ($student) use ($guid) {
@@ -83,6 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_privacy_st
     $privacyColumn = $table->addColumn('privacy', __('Privacy'));
     foreach ($privacyOptions as $index => $privacyOption) {
         $privacyColumn->addColumn('privacy'.$index, $privacyOption)
+            ->context('primary')
             ->notSortable()
             ->format(function ($student) use ($privacyOption, $guid) {
                 $studentPrivacy = array_map('trim', explode(',', $student['privacy']));

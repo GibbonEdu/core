@@ -23,13 +23,13 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\Attendance\AttendanceCodeGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSettings.php') == false) {
-    //Acess denied
+    //Access denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Attendance Settings'));
+    $page->breadcrumbs->add(__('Attendance Settings'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     $attendanceCodeGateway = $container->get(AttendanceCodeGateway::class);
 
     // QUERY
-    $criteria = $attendanceCodeGateway->newQueryCriteria()
+    $criteria = $attendanceCodeGateway->newQueryCriteria(true)
         ->sortBy(['sequenceNumber'])
         ->fromArray($_POST);
 
@@ -102,6 +102,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     $row = $form->addRow()->addHeading(__('Context & Defaults'));
 
     $setting = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
+
+    $setting = getSettingByScope($connection2, 'Attendance', 'recordFirstClassAsSchool', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
@@ -194,7 +199,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         if (in_array($rowSelect['gibbonPersonID'], $users) !== false) {
             array_push($selected, $rowSelect['gibbonPersonID']);
         }
-        $inputs[$rowSelect["roleName"]][$rowSelect['gibbonPersonID']] = formatName("", $rowSelect["preferredName"], $rowSelect["surname"], "Staff", true, true);
+        $inputs[$rowSelect["roleName"]][$rowSelect['gibbonPersonID']] = Format::name("", $rowSelect["preferredName"], $rowSelect["surname"], "Staff", true, true);
     }
 
     $row = $form->addRow();

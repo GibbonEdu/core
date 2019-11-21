@@ -34,11 +34,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     echo '</div>';
 } else {
     //Proceed!
-    $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : null;
-    $status = isset($_GET['status'])? $_GET['status'] : null;
+    $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
+    $status = $_GET['status'] ?? '' ;
     $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
 
-    $viewMode = isset($_REQUEST['format']) ? $_REQUEST['format'] : '';
+    $viewMode = $_REQUEST['format'] ?? '';
 
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('Activity Spread by Roll Group'));
@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     $studentGateway = $container->get(StudentGateway::class);
 
     // CRITERIA
-    $criteria = $activityGateway->newQueryCriteria()
+    $criteria = $activityGateway->newQueryCriteria(true)
         ->searchBy($activityGateway->getSearchableColumns(), isset($_GET['search'])? $_GET['search'] : '')
         ->sortBy(['surname', 'preferredName'])
         ->pageSize(!empty($viewMode) ? 0 : 50)
@@ -117,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         foreach ($terms as $termName => $days) {
             $termColumn = $table->addColumn($termName, $termName);
             foreach ($days as $day) {
-                $termColumn->addColumn($day['nameShort'], $day['nameShort'])
+                $termColumn->addColumn($day['nameShort'], __($day['nameShort']))
                     ->notSortable()
                     ->format(function($student) use ($displayActivityCount, $day) {
                         $key = $day['gibbonSchoolYearTermID'].'-'.$day['gibbonDaysOfWeekID'];

@@ -198,6 +198,21 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                     $result = $connection2->query($sql);
                 } catch (PDOException $e) {
                 }
+                
+                // Log the payment
+                if ($status == 'Paid' or $status == 'Paid - Partial') {
+                    if ($_POST['status'] == 'Paid') {
+                        $statusLog = 'Complete';
+                    } elseif ($_POST['status'] == 'Paid - Partial') {
+                        $statusLog = 'Partial';
+                    } elseif ($_POST['status'] == 'Paid - Complete') {
+                        $statusLog = 'Final';
+                    }
+                    $logFail = setPaymentLog($connection2, $guid, 'gibbonFinanceInvoice', $gibbonFinanceInvoiceID, $paymentType, $statusLog, $paidAmountLog, null, null, null, null, $paymentTransactionID, null, $paidDate);
+                    if ($logFail == false) {
+                        $partialFail = true;
+                    }
+                }
 
                 $emailFail = false;
                 //Email Receipt
@@ -232,7 +247,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                                 $receiptCount = $resultPayments->rowCount();
 
                                 //Prep message
-                                $body = receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], true, $receiptCount)."<p style='font-style: italic;'>Email sent via ".$_SESSION[$guid]['systemName'].' at '.$_SESSION[$guid]['organisationName'].'.</p>';
+                                $body = receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], true, $receiptCount-1)."<p style='font-style: italic;'>Email sent via ".$_SESSION[$guid]['systemName'].' at '.$_SESSION[$guid]['organisationName'].'.</p>';
                                 $bodyPlain = 'This email is not viewable in plain text: enable rich text/HTML in your email client to view the receipt. Please reply to this email if you have any questions.';
 
                                 $mail = $container->get(Mailer::class);
@@ -328,20 +343,6 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                                 $emailFail = true;
                             }
                         }
-                    }
-                }
-
-                if ($status == 'Paid' or $status == 'Paid - Partial') {
-                    if ($_POST['status'] == 'Paid') {
-                        $statusLog = 'Complete';
-                    } elseif ($_POST['status'] == 'Paid - Partial') {
-                        $statusLog = 'Partial';
-                    } elseif ($_POST['status'] == 'Paid - Complete') {
-                        $statusLog = 'Final';
-                    }
-                    $logFail = setPaymentLog($connection2, $guid, 'gibbonFinanceInvoice', $gibbonFinanceInvoiceID, $paymentType, $statusLog, $paidAmountLog, null, null, null, null, $paymentTransactionID, null, $paidDate);
-                    if ($logFail == false) {
-                        $partialFail = true;
                     }
                 }
 

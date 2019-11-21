@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                         $resultChild->execute($dataChild);
                     } catch (PDOException $e) {}
                     while ($rowChild = $resultChild->fetch()) {
-                        $options[$rowChild['gibbonPersonID']] = formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student');
+                        $options[$rowChild['gibbonPersonID']] = Format::name('', $rowChild['preferredName'], $rowChild['surname'], 'Student');
                         $gibbonPersonIDArray[$count] = $rowChild['gibbonPersonID'];
                         ++$count;
                     }
@@ -271,13 +271,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                             }
                                             ++$count;
 
-											//Highlight class in progress
-											if ((date('H:i:s') > $row['timeStart']) and (date('H:i:s') < $row['timeEnd']) and ($date) == date('Y-m-d')) {
-												$rowNum = 'current';
-											}
+                      											//Highlight class in progress
+                      											if ((date('H:i:s') > $row['timeStart']) and (date('H:i:s') < $row['timeEnd']) and ($date) == date('Y-m-d')) {
+                      												$rowNum = 'current';
+                      											}
 
-											//COLOR ROW BY STATUS!
-											echo "<tr class=$rowNum>";
+                      											//COLOR ROW BY STATUS!
+                      											echo "<tr class=$rowNum>";
                                             echo '<td>';
                                             echo $row['course'].'.'.$row['class'];
                                             echo '</td>';
@@ -489,21 +489,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
             }
         }
         //My Classes
-        elseif ($highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses') {
+        elseif ($highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewOnly') {
             $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
             if ($viewBy == 'date') {
                 $page->breadcrumbs->add(__('Planner for {classDesc}', [
                     'classDesc' => dateConvertBack($guid, $date),
                 ]));
-
-                //Get Smart Workflow help message
-                $category = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
-                if ($category == 'Staff') {
-                    $smartWorkflowHelp = getSmartWorkflowHelp($connection2, $guid, 3);
-                    if ($smartWorkflowHelp != false) {
-                        echo $smartWorkflowHelp;
-                    }
-                }
 
                 if (isset($_GET['return'])) {
                     returnProcess($guid, $_GET['return'], null, null);
@@ -524,7 +515,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                     }
 
                     try {
-                        if ($highestAction == 'Lesson Planner_viewEditAllClasses') {
+                        if ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewOnly') {
                             $data = array('date' => $date);
                             $sql = "SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, 'Teacher' AS role, homeworkSubmission, homeworkCrowdAssess, date, gibbonPlannerEntry.gibbonCourseClassID, NULL AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE date=:date ORDER BY date, timeStart";
                         } elseif ($highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses') {
@@ -660,7 +651,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                     echo __('You have not specified one or more required parameters.');
                     echo '</div>';
                 } else {
-                    if ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses') {
+                    if ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewOnly') {
                         try {
                             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonCourseClassID' => $gibbonCourseClassID);
                             $sql = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID';
@@ -703,15 +694,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                             'classDesc' => $row['course'].'.'.$row['class'],
                         ]));
 
-                        //Get Smart Workflow help message
-                        $category = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
-                        if ($category == 'Staff') {
-                            $smartWorkflowHelp = getSmartWorkflowHelp($connection2, $guid, 3);
-                            if ($smartWorkflowHelp != false) {
-                                echo $smartWorkflowHelp;
-                            }
-                        }
-
                         $returns = array();
                         $returns['success1'] = __('Bump was successful. It is possible that some lessons have not been moved (if there was no space for them), but a reasonable effort has been made.');
                         if (isset($_GET['return'])) {
@@ -719,7 +701,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                         }
 
                         try {
-                            if ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses') {
+                            if ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewOnly') {
                                 if ($subView == 'lesson' or $subView == '') {
                                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
                                     $sql = "SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, 'Teacher' as role, homeworkSubmission, homeworkCrowdAssess, gibbonPlannerEntry.gibbonCourseClassID, NULL AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID ORDER BY date DESC, timeStart DESC";

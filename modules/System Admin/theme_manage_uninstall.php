@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage_
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo 'The specified theme cannot be found or is active and so cannot be removed.';
+            echo __('The specified theme cannot be found or is active and so cannot be removed.');
             echo '</div>';
         } else {
             $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/theme_manage_uninstallProcess.php?gibbonThemeID=$gibbonThemeID&orphaned=$orphaned");

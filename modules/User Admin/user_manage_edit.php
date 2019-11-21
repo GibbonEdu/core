@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -289,7 +290,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 					$table = $row->addTable()->setClass('standardWidth');
 
                     while ($rowAddress = $resultAddress->fetch()) {
-                        $adressee = formatName($rowAddress['title'], $rowAddress['preferredName'], $rowAddress['surname'], $rowAddress['category']).' ('.$rowAddress['category'].')';
+                        $adressee = Format::name($rowAddress['title'], $rowAddress['preferredName'], $rowAddress['surname'], $rowAddress['category']).' ('.$rowAddress['category'].')';
 
                         $row = $table->addRow()->addClass('address');
                         $row->addTextField($addressCount.'-matchAddressLabel')->readOnly()->setValue($adressee)->setClass('fullWidth');
@@ -561,7 +562,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             if ($student) {
                 $row = $form->addRow();
                 	$row->addLabel('studentID', __('Student ID'))->description(__('Must be unique if set.'));
-                	$row->addTextField('studentID')->maxLength(10);
+                	$row->addTextField('studentID')->maxLength(15);
             }
 
 			if ($student || $staff) {

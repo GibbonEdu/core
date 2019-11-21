@@ -23,7 +23,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 .calendarTable td {
     padding: 0px !important;
-    width: 30px;
+    width: 30px !important;
 }
 
 .calendarTable td:first-child {

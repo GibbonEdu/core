@@ -208,7 +208,7 @@ class Format
         $seconds = abs($timeDifference);
 
         switch ($seconds) {
-            case ($seconds < 60):
+            case ($seconds < 60 || empty($seconds)):
                 $time = __('Less than 1 min');
                 break;
             case ($seconds >= 60 && $seconds < 3600):
@@ -458,9 +458,26 @@ class Format
      */
     public static function address($address, $addressDistrict, $addressCountry)
     {
-        if (empty($address)) return '';
+        if (stripos($address, PHP_EOL) === false) {
+            // If the address has no line breaks, collapse lines by comma separation,
+            // breaking up long address lines over 30 characters.
+            $collapseAddress = function ($list, $line = '') use (&$collapseAddress) {
+                $line .= array_shift($list);
 
-        return $address . ($addressDistrict? ', '.$addressDistrict : '') . ($addressCountry? ', '.$addressCountry : '');
+                if (empty($list)) return $line;
+
+                return strlen($line.', '.current($list)) > 30
+                    ? $line.'<br/>'.$collapseAddress($list, '')
+                    : $collapseAddress($list, $line.', ');
+            };
+
+            $addressLines = array_filter(array_map('trim', explode(',', $address)));
+            $address = $collapseAddress($addressLines);
+        } else {
+            $address = nl2br($address);
+        }
+
+        return ($address? $address.'<br/>' : '') . ($addressDistrict? $addressDistrict.'<br/>' : '') . ($addressCountry? $addressCountry.'<br/>' : '');
     }
 
     /**

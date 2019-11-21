@@ -35,15 +35,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        //Get Smart Workflow help message
-        $category = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
-        if ($category == 'Staff') {
-            $smartWorkflowHelp = getSmartWorkflowHelp($connection2, $guid, 2);
-            if ($smartWorkflowHelp != false) {
-                echo $smartWorkflowHelp;
-            }
-        }
-
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);
         }

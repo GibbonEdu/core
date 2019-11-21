@@ -82,8 +82,9 @@ $editFormValues = array(
 
 $I->selectOption('gibbonScaleIDAttainment', '00007');
 $I->selectOption('gibbonScaleIDEffort', '00009');
-$I->selectOption('gibbonRubricIDAttainment', '00000159');
-$I->selectOption('gibbonRubricIDEffort', '00000159');
+
+$I->selectOption('gibbonRubricIDAttainment', '00000238');
+$I->selectOption('gibbonRubricIDEffort', '00000238');
 
 $I->submitForm('#content form', $editFormValues, 'Submit');
 $I->seeSuccessMessage();

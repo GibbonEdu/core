@@ -26,11 +26,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $messageBubbleWidthType = $_POST['messageBubbleWidthType'];
-    $messageBubbleBGColor = $_POST['messageBubbleBGColor'];
-    $messageBubbleAutoHide = $_POST['messageBubbleAutoHide'];
-    $enableHomeScreenWidget = $_POST['enableHomeScreenWidget'];
-    $messageBcc = $_POST['messageBcc'];
+    $messageBubbleWidthType = $_POST['messageBubbleWidthType'] ?? '';
+    $messageBubbleBGColor = $_POST['messageBubbleBGColor'] ?? '';
+    $messageBubbleAutoHide = $_POST['messageBubbleAutoHide'] ?? '';
+    $enableHomeScreenWidget = $_POST['enableHomeScreenWidget'] ?? '';
+    $pinnedMessagesOnHome = $_POST['pinnedMessagesOnHome'] ?? 'N';
+    $messageBcc = $_POST['messageBcc'] ?? '';
 
     //Write to database
     $fail = false;
@@ -74,6 +75,15 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
     try {
         $data = array('value' => $messageBcc);
         $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Messenger' AND name='messageBcc'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    try {
+        $data = array('value' => $pinnedMessagesOnHome);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Messenger' AND name='pinnedMessagesOnHome'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {

@@ -31,15 +31,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Activity Choices By Student'));
-    
+
     echo '<h2>';
     echo __('Choose Student');
     echo '</h2>';
 
-    $gibbonPersonID = null;
-    if (isset($_GET['gibbonPersonID'])) {
-        $gibbonPersonID = $_GET['gibbonPersonID'];
-    }
+    $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
     $form = Form::create('action',  $_SESSION[$guid]['absoluteURL']."/index.php", "get");
 
@@ -194,13 +191,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
                             echo '</td>';
                             echo '<td>';
                             if ($row['status'] != '') {
-                                echo $row['status'];
+                                echo __($row['status']);
                             } else {
                                 echo '<i>'.__('NA').'</i>';
                             }
                             echo '</td>';
                             echo '<td>';
-                            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_view_full.php&gibbonActivityID='.$row['gibbonActivityID']."&width=1000&height=550'><img title='".__('View Details')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
+                            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_my_full.php&gibbonActivityID='.$row['gibbonActivityID']."&width=1000&height=550'><img title='".__('View Details')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
                             echo '</td>';
                             echo '</tr>';
                         }

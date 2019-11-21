@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 $gibbonLibraryItemEventID = trim($_GET['gibbonLibraryItemEventID']) ?? '';
 $gibbonLibraryItemID = trim($_GET['gibbonLibraryItemID']) ?? '';
@@ -107,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
             $form->addHiddenValue('gibbonPersonIDStatusResponsible', $values['gibbonPersonIDStatusResponsible']);
             $row = $form->addRow();
                 $row->addLabel('gibbonPersonIDStatusResponsiblename', __('Responsible User'));
-                $row->addTextField('gibbonPersonIDStatusResponsiblename')->setValue(formatName('', htmlPrep($values['preferredName']), htmlPrep($values['surname']), 'Student', true))->readonly()->required();
+                $row->addTextField('gibbonPersonIDStatusResponsiblename')->setValue(Format::name('', htmlPrep($values['preferredName']), htmlPrep($values['surname']), 'Student', true))->readonly()->required();
 
             $row = $form->addRow();
                 $row->addLabel('returnExpected', __('Expected Return Date'));
@@ -142,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 
             if ($result->rowCount() > 0) {
                 $people['--'.__('Enrolable Students').'--'] = array_reduce($result->fetchAll(), function ($group, $item) {
-                    $group[$item['gibbonPersonID']] = $item['rollGroupName'].' - '.formatName('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Student', true).' ('.$item['username'].')';
+                    $group[$item['gibbonPersonID']] = $item['rollGroupName'].' - '.Format::name('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Student', true).' ('.$item['username'].')';
                     return $group;
                 }, array());
             }
@@ -153,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
             if ($result->rowCount() > 0) {
                 $people['--'.__('All Users').'--'] = array_reduce($result->fetchAll(), function($group, $item) {
                     $expected = ($item['status'] == 'Expected')? '('.__('Expected').')' : '';
-                    $group[$item['gibbonPersonID']] = formatName('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Student', true).' ('.$item['username'].')'.$expected;
+                    $group[$item['gibbonPersonID']] = Format::name('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Student', true).' ('.$item['username'].')'.$expected;
                     return $group;
                 }, array());
             }

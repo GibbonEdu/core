@@ -51,6 +51,10 @@ body {
     @apply text-gray-400 underline;
 }
 
+hr {
+    @apply border-gray-300 border my-6;
+}
+
 /*
  --------------------------------------------------------------------------
   Alerts
@@ -96,7 +100,7 @@ div.message, div.success, div.warning, div.error, div.exception, div.dull {
 }
 
 div.message a, div.success a, div.warning a, div.error a, div.exception a, div.dull a {
-    color: inherit;
+    @apply underline text-red-700;
 }
 
 .badge {
@@ -164,7 +168,7 @@ input, select, textarea {
 
 input:focus, select:focus, textarea:focus {
     @apply shadow-outline border-blue-500;
-    
+
 }
 
 input[readonly]:focus, select[readonly]:focus, textarea[readonly]:focus {
@@ -223,7 +227,7 @@ input.button, a.button, button.button {
 
 .token-input-token-facebook {
     @apply float-left rounded-sm m-px p-1 bg-blue-500 cursor-pointer text-white ;
-    
+
 }
 
 .token-input-selected-token-facebook {
@@ -274,6 +278,9 @@ input.button, a.button, button.button {
     min-height: 25vh;
     margin: 0 auto;
 }
+#TB_iframeContent {
+    max-width: 100%;
+}
 
 /* Wrangle the Thickbox into displaying somewhat usably on mobile */
 @media only screen and (max-width: 1000px) {
@@ -289,5 +296,18 @@ input.button, a.button, button.button {
         overflow: auto;
         padding: 0.5rem;
         height: auto !important;
+    }
+}
+
+/*
+ --------------------------------------------------------------------------
+  Print Only
+ --------------------------------------------------------------------------
+*/
+
+@media print {
+    .linkTop {
+        display: none;
+        visibility: hidden;
     }
 }

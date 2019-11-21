@@ -87,6 +87,11 @@ class ActivityGateway extends QueryableGateway
                 if ($status == 'pending') $query->having('pending > 0');
                 return $query;
             },
+            'yearGroup' => function ($query, $gibbonYearGroupID) {
+                return $query
+                    ->where('FIND_IN_SET(:gibbonYearGroupID, gibbonActivity.gibbonYearGroupIDList)')
+                    ->bindValue('gibbonYearGroupID', $gibbonYearGroupID);
+            },
         ]);
 
         return $this->runQuery($query, $criteria);

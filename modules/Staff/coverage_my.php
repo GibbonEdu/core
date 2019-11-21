@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
     $urgencyThreshold = getSettingByScope($connection2, 'Staff', 'urgencyThreshold');
 
     // TODAY'S COVERAGE
-    $criteria = $staffCoverageGateway->newQueryCriteria()
+    $criteria = $staffCoverageGateway->newQueryCriteria(true)
         ->sortBy('timeStart')
         ->filterBy('status:Accepted')
         ->filterBy('dateStart:'.date('Y-m-d'))
@@ -59,6 +59,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
 
     if (count($todaysCoverage) > 0) {
         $page->write('<h2>'.__("Today's Coverage").'</h2>');
+
+        $substituteInfo = getSettingByScope($connection2, 'Staff', 'substituteInfo');
+        if (!empty($substituteInfo)) {
+            $page->write('<p>'.$substituteInfo.'</p>');
+        }
 
         foreach ($todaysCoverage as $coverage) {
             $status = Format::dateRangeReadable($coverage['dateStart'], $coverage['dateEnd']).' - ';
@@ -81,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
 
 
     // TEACHER COVERAGE
-    $criteria = $staffCoverageGateway->newQueryCriteria()
+    $criteria = $staffCoverageGateway->newQueryCriteria(true)
         ->sortBy('date')
         ->filterBy('date:upcoming')
         ->fromPOST('staffCoverageSelf');
@@ -142,7 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
                         ->setURL('/modules/Staff/coverage_view_edit.php');
                 }
                     
-                if ($coverage['status'] == 'Requested' || ($coverage['status'] == 'Accepted' && $coverage['dateEnd'] < date('Y-m-d'))) {
+                if ($coverage['status'] == 'Requested' || ($coverage['status'] == 'Accepted' && $coverage['dateEnd'] >= date('Y-m-d'))) {
                     $actions->addAction('cancel', __('Cancel'))
                         ->setIcon('iconCross')
                         ->setURL('/modules/Staff/coverage_view_cancel.php');
@@ -155,7 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
     // SUBSTITUTE COVERAGE
     $substitute = $substituteGateway->getSubstituteByPerson($gibbonPersonID);
     if (!empty($substitute)) {
-        $criteria = $staffCoverageGateway->newQueryCriteria()->pageSize(0);
+        $criteria = $staffCoverageGateway->newQueryCriteria();
 
         $coverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID, false);
         $exceptions = $substituteGateway->queryUnavailableDatesBySub($criteria, $gibbonPersonID);
@@ -172,7 +177,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
         echo $table->getOutput().'<br/>';
 
         // QUERY
-        $criteria = $staffCoverageGateway->newQueryCriteria()
+        $criteria = $staffCoverageGateway->newQueryCriteria(true)
             ->sortBy('date')
             ->filterBy('date:upcoming')
             ->fromPOST('staffCoverageOther');

@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Module\Markbook\MarkbookView;
+use Gibbon\Services\Format;
 
 function sidebarExtra($guid, $pdo, $gibbonPersonID, $gibbonCourseClassID = '', $basePage = '')
 {
@@ -220,7 +221,7 @@ function getTeacherList( $pdo, $gibbonCourseClassID ) {
     $teacherList = array();
     if ($result->rowCount() > 0) {
         foreach ($result->fetchAll() as $teacher) {
-            $teacherList[ $teacher['gibbonPersonID'] ] = formatName($teacher['title'], $teacher['preferredName'], $teacher['surname'], 'Staff', false, false);
+            $teacherList[ $teacher['gibbonPersonID'] ] = Format::name($teacher['title'], $teacher['preferredName'], $teacher['surname'], 'Staff', false, false);
         }
     }
 
