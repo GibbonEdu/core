@@ -82,6 +82,8 @@ class Header
                         $return .= "<div id='messageBubble' style=\"right: -25px; top: 56px; width: ".$bubbleWidth.'px; min-width: '.$bubbleWidth.'px; max-width: 100vw; min-height: 100px; text-align: center; padding-bottom: 10px" class="ui-tooltip ui-widget ui-corner-all ui-widget-content" role="tooltip">';
                         $return .= '<div class="ui-tooltip-content">';
                         $return .= "<div style='font-weight: bold; font-style: italic; font-size: 120%; margin-top: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dotted rgba(255,255,255,0.5); display: block'>".__('New Messages').'</div>';
+                        
+                        $output = array_values($messages);
                         $test = isset($output) ? count($output) : 0;
                         if ($test > 3) {
                             $test = 3;
@@ -95,7 +97,7 @@ class Header
                             }
 
                             $return .= '</span><br/>';
-                            $return .= '<i>'.$output[$i]['author'].'</i><br/><br/>';
+                            $return .= '<i>'.Format::name('', $output[$i]['preferredName'], $output[$i]['surname'], 'Staff', false, true).'</i><br/><br/>';
                         }
                         if ($test > 3) {
                             $return .= '<i>'.__('Plus more').'...</i>';
