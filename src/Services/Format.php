@@ -208,7 +208,7 @@ class Format
         $seconds = abs($timeDifference);
 
         switch ($seconds) {
-            case ($seconds < 60):
+            case ($seconds < 60 || empty($seconds)):
                 $time = __('Less than 1 min');
                 break;
             case ($seconds >= 60 && $seconds < 3600):
