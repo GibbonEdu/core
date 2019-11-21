@@ -78,7 +78,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             ->searchBy($courseGateway->getSearchableColumns(), $search)
             ->sortBy(['gibbonCourse.nameShort', 'gibbonCourse.name'])
             ->filterBy('yearGroup', $gibbonYearGroupID)
-            ->pageSize(0)
             ->fromPOST();
 
         echo '<h3>';

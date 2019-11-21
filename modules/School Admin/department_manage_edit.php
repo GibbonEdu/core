@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -135,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 
                 while ($staff = $results->fetch()) {
                     $row = $table->addRow();
-                    $row->addContent(formatName('', $staff['preferredName'], $staff['surname'], 'Staff', true, true));
+                    $row->addContent(Format::name('', $staff['preferredName'], $staff['surname'], 'Staff', true, true));
                     $row->addContent($staff['role']);
                     $row->addContent("<a onclick='return confirm(\"".__('Are you sure you wish to delete this record?')."\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/department_manage_edit_staff_deleteProcess.php?address='.$_GET['q'].'&gibbonDepartmentStaffID='.$staff['gibbonDepartmentStaffID']."&gibbonDepartmentID=$gibbonDepartmentID'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>");
                 }

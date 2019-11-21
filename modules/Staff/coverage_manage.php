@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
 
     // QUERY
     $criteria = $StaffCoverageGateway
-        ->newQueryCriteria()
+        ->newQueryCriteria(true)
         ->searchBy($StaffCoverageGateway->getSearchableColumns(), $search);
 
     if (!$criteria->hasFilter() && !$criteria->hasSearchText()) {

@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 include '../../config.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSummary.php') == false) {
@@ -156,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
 			}
             if ($resultPerson->rowCount() == 1) {
                 $rowPerson = $resultPerson->fetch();
-                $x .= "; ".formatName($rowPerson['title'], $rowPerson['preferredName'], $rowPerson['surname'], 'Staff', false, true);
+                $x .= "; ".Format::name($rowPerson['title'], $rowPerson['preferredName'], $rowPerson['surname'], 'Staff', false, true);
             }
         }
 		$excel->getActiveSheet()->setCellValueByColumnAndRow(4, $r, $x);

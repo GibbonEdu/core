@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -115,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     while ($attendance = $attendanceResult->fetch()) {
         $sessionAttendanceData[ $attendance['date'] ] = array(
             'data' => (!empty($attendance['attendance'])) ? unserialize($attendance['attendance']) : array(),
-            'info' => sprintf(__('Recorded at %1$s on %2$s by %3$s.'), substr($attendance['timestampTaken'], 11), dateConvertBack($guid, substr($attendance['timestampTaken'], 0, 10)), formatName('', $attendance['preferredName'], $attendance['surname'], 'Staff', false, true)),
+            'info' => sprintf(__('Recorded at %1$s on %2$s by %3$s.'), substr($attendance['timestampTaken'], 11), dateConvertBack($guid, substr($attendance['timestampTaken'], 0, 10)), Format::name('', $attendance['preferredName'], $attendance['surname'], 'Staff', false, true)),
         );
     }
 
@@ -234,10 +235,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
                             echo "<td style='vertical-align:top; width: 45px;'>";
                         }
 
-                printf("<span title='%s'>%s</span><br/>&nbsp;<br/>", $sessionAttendanceData[$sessionDate]['info'], date('D<\b\r>M j', $sessionTimestamp));
+                printf("<span title='%s'>%s</span><br/>&nbsp;<br/>", $sessionAttendanceData[$sessionDate]['info'], Format::dateReadable($sessionDate, '%a <br /> %b %e'));
             } else {
                 echo "<td style='color: #bbb; vertical-align:top; width: 45px;'>";
-                echo date('D<\b\r>M j', $sessionTimestamp).'<br/>&nbsp;<br/>';
+                echo Format::dateReadable($sessionDate, '%a <br /> %b %e').'<br/>&nbsp;<br/>';
             }
             echo '</td>';
         }
@@ -254,7 +255,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 
             echo "<tr data-student='$student'>";
             echo '<td>';
-            echo $count.'. '.formatName('', $row['preferredName'], $row['surname'], 'Student', true);
+            echo $count.'. '.Format::name('', $row['preferredName'], $row['surname'], 'Student', true);
             echo '</td>';
 
             foreach ($activitySessions as $sessionDate => $sessionTimestamp) {

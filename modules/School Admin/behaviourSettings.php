@@ -24,13 +24,13 @@ $enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
 $enableBehaviourLetters = getSettingByScope($connection2, 'Behaviour', 'enableBehaviourLetters');
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSettings.php') == false) {
-    //Acess denied
+    //Access denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Behaviour Settings'));
+    $page->breadcrumbs->add(__('Behaviour Settings'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -72,6 +72,18 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
     $row = $form->addRow()->addClass('levels');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
+
+    $row = $form->addRow()->addHeading(__('Notifications'));
+
+    $setting = getSettingByScope($connection2, 'Behaviour', 'notifyTutors', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value']);
+
+    $setting = getSettingByScope($connection2, 'Behaviour', 'notifyEducationalAssistants', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value']);
 
     $row = $form->addRow()->addHeading(__('Behaviour Letters'))->append(sprintf(__('By using an %1$sincluded CLI script%2$s, %3$s can be configured to automatically generate and email behaviour letters to parents and tutors, once certain negative behaviour threshold levels have been reached. In your letter text you may use the following fields: %4$s'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/command-line-tools/'>", '</a>', $_SESSION[$guid]['systemName'], '[studentName], [rollGroup], [behaviourCount], [behaviourRecord]'));
 

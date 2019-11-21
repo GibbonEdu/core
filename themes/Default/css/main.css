@@ -73,7 +73,7 @@ a.active {
 
 a img {
     color: #ffffff;
-    border: none;
+    border-color: none;
 }
 
 /* TYPOGRAPHY */
@@ -568,6 +568,7 @@ div.ui-dialog button.ui-button {
 
 div#ui-datepicker-div {
     z-index: 1000 !important;
+    width: 220px;
 }
 
 /* From WP for tinymce display */
@@ -1116,6 +1117,14 @@ table.smallIntBorder td.noPadding {
     font-size: 16px;
 }
 
+.blockInputs .LV_validation_message {
+    background-color: #edf7ff;
+}
+
+.blockInputs .LV_invalid_field {
+    border-color: #c53030 !important;
+}
+
 /* v16 NEW CLASSES */
 
 .displayNone {
@@ -1163,15 +1172,20 @@ table.smallIntBorder td.noPadding {
 }
 
 
-.dataTable .expandable {
+.dataTable .expandable,
+.dataTable .draggable {
     border-right: 0px !important;
     padding: 0px !important;
     overflow: visible;
 }
 
 .dataTable .expandable + td {
-    border-left: 0px !important;
     padding-left: 4px !important;
+    border-left: 0px !important;
+}
+
+.dataTable .draggable + td {
+    border-left: 0px !important;
 }
 
 .dataTable .expander {
@@ -1200,6 +1214,7 @@ table.smallIntBorder td.noPadding {
     transform: rotate(45deg);
     -webkit-transform: rotate(45deg);
 }
+
 
 @-moz-keyframes spin {
     from {

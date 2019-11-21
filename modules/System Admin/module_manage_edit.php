@@ -64,25 +64,23 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));
-                $row->addTextField('name')->readonly();
+                $row->addTextField('name')->setValue(__($values['name']))->readonly();
 
             $row = $form->addRow();
                 $row->addLabel('description', __('Description'));
-                $row->addTextArea('description')->readonly()->setRows(3);
+                $row->addTextArea('description')->setValue(__($values['description']))->readonly()->setRows(3);
 
-             $row = $form->addRow();
-                $row->addLabel('category', __('Category'))->description(__('Determines menu structure'));
-                $row->addTextField('category')->required()->maxLength(10);
+            $row = $form->addRow();
+               $row->addLabel('category', __('Category'))->description(__('Determines menu structure'));
+               $row->addTextField('category')->setValue(($values['category']))->required()->maxLength(10);
 
             $row = $form->addRow();
                 $row->addLabel('active', __('Active'));
-                $row->addYesNo('active');
+                $row->addYesNo('active')->selected($values['active']);
 
             $row = $form->addRow();
                 $row->addFooter();
                 $row->addSubmit();
-
-            $form->loadAllValuesFrom($values);
 
             echo $form->getOutput();
         }

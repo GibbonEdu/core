@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Attendance\AttendanceCodeGateway;
+
 include '../../gibbon.php';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/attendanceSettings.php";
@@ -26,57 +28,44 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Validate Inputs
-    $name = (isset($_POST['name']))? $_POST['name'] : NULL;
-    $nameShort = (isset($_POST['nameShort']))? $_POST['nameShort'] : NULL;
-    $direction = (isset($_POST['direction']))? $_POST['direction'] : NULL;
-    $scope = (isset($_POST['scope']))? $_POST['scope'] : NULL;
-    $sequenceNumber = (isset($_POST['sequenceNumber']))? $_POST['sequenceNumber'] : NULL;
-    $active = (isset($_POST['active']))? $_POST['active'] : NULL;
-    $reportable = (isset($_POST['reportable']))? $_POST['reportable'] : NULL;
-    $future = (isset($_POST['future']))? $_POST['future'] : NULL;
+    $attendanceCodeGateway = $container->get(AttendanceCodeGateway::class);
 
-    $gibbonRoleIDArray = (isset($_POST['gibbonRoleIDAll']))? $_POST['gibbonRoleIDAll'] : NULL;
-    $gibbonRoleIDAll = (is_array($gibbonRoleIDArray))? implode(',', $gibbonRoleIDArray) : $gibbonRoleIDArray;
+    $data = [
+        'type'           => 'Additional',
+        'name'           => $_POST['name'] ?? null,
+        'nameShort'      => $_POST['nameShort'] ?? null,
+        'direction'      => $_POST['direction'] ?? null,
+        'scope'          => $_POST['scope'] ?? null,
+        'sequenceNumber' => $_POST['sequenceNumber'] ?? null,
+        'active'         => $_POST['active'] ?? null,
+        'reportable'     => $_POST['reportable'] ?? null,
+        'prefill'        => $_POST['prefill'] ?? null,
+        'future'         => $_POST['future'] ?? null,
+    ];
 
-    if ($gibbonRoleIDAll == '' or $name == '' or $nameShort == '' or $direction == '' or $scope == '' or $sequenceNumber == '' or $active == '' or $reportable == '' or $future == '') {
+    $gibbonRoleIDArray = $_POST['gibbonRoleIDAll'] ?? null;
+    $data['gibbonRoleIDAll'] = (is_array($gibbonRoleIDArray))? implode(',', $gibbonRoleIDArray) : $gibbonRoleIDArray;
+
+    // Validate the required values are present
+    if (empty($data['gibbonRoleIDAll']) || empty($data['name']) || empty($data['nameShort']) || empty($data['direction']) || empty($data['scope']) || empty($data['sequenceNumber'])) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
-    } else {
-        //Check unique inputs for uniquness in current school year
-        try {
-            $data = array('name' => $name, 'nameShort' => $nameShort);
-            $sql = 'SELECT name, nameShort FROM gibbonAttendanceCode WHERE (name=:name OR nameShort=:nameShort)';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
-
-        if ($result->rowCount() > 0) {
-            $URL .= '&return=error3';
-            header("Location: {$URL}");
-        } else {
-            //Write to database
-            try {
-                $data = array('name' => $name, 'nameShort' => $nameShort, 'type' => 'Additional', 'direction' => $direction, 'scope' => $scope, 'sequenceNumber' => $sequenceNumber, 'active' => $active, 'reportable' => $reportable, 'future' => $future, 'gibbonRoleIDAll' => $gibbonRoleIDAll  );
-
-                $sql = 'INSERT INTO gibbonAttendanceCode SET name=:name, nameShort=:nameShort, type=:type, direction=:direction, scope=:scope, sequenceNumber=:sequenceNumber, active=:active, reportable=:reportable, future=:future, gibbonRoleIDAll=:gibbonRoleIDAll ';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
-
-            //Last insert ID
-            $AI = str_pad($connection2->lastInsertID(), 5, '0', STR_PAD_LEFT);
-
-            $URL .= "&return=success0&editID=$AI";
-            header("Location: {$URL}");
-        }
+        exit;
     }
+
+    // Validate that this record is unique
+    if (!$attendanceCodeGateway->unique($data, ['name', 'nameShort'])) {
+        $URL .= '&return=error7';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    // Write to database
+    $gibbonAttendanceCodeID = $attendanceCodeGateway->insert($data);
+
+    $URL .= $gibbonAttendanceCodeID
+        ? "&return=success0&editID=$gibbonAttendanceCodeID"
+        : "&return=error2";
+
+    header("Location: {$URL}");
 }

@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -91,10 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
             }
 
             // Grab educational assistant data
-            $data = array('gibbonPersonIDStudent' => $gibbonPersonID);
-            $sql = "SELECT gibbonPersonIDAssistant, preferredName, surname, comment FROM gibbonINAssistant JOIN gibbonPerson ON (gibbonINAssistant.gibbonPersonIDAssistant=gibbonPerson.gibbonPersonID) WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
-            $result = $pdo->executeQuery($data, $sql);
-            $educationalAssistants = ($result->rowCount() > 0)? $result->fetchAll() : array();
+            $educationalAssistants = $container->get(INAssistantGateway::class)->selectINAssistantsByStudent($gibbonPersonID)->fetchAll();
 
             // Grab IEP data
             $data = array('gibbonPersonID' => $gibbonPersonID);
@@ -125,8 +123,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 $form->setClass('blank fullWidth');
                 $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-                $col = $form->addRow()->addColumn()->addClass('inline right');
-                    $col->addLabel('gibbonINArchiveID', __('Archived Plans'));
+                $col = $form->addRow()->addColumn()->addClass('flex justify-end items-center');
+                    $col->addLabel('gibbonINArchiveID', __('Archived Plans'))->addClass('mr-1');
                     $col->addSelect('gibbonINArchiveID')
                         ->fromArray(array('' => __('Current Plan')))
                         ->fromArray($archiveOptions)
@@ -216,12 +214,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth');
 
                 $row = $table->addRow();
-                    $row->addLabel('staff', __('Staff'));
-                    $row->addSelectStaff('staff')->selectMultiple();
+                    $row->addLabel('staff', __('Staff'))->addClass('w-48');
+                    $row->addSelectStaff('staff')->selectMultiple()->addClass('w-full sm:max-w-xs');
 
                 $row = $table->addRow();
                     $row->addLabel('comment', __('Comment'));
-                    $row->addTextArea('comment')->setRows(4);
+                    $row->addTextArea('comment')->setRows(4)->addClass('w-full sm:max-w-xs');
             }
 
             // DISPLAY AND EDIT IEP

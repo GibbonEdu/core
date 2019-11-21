@@ -156,7 +156,7 @@ class SpreadsheetRenderer implements RendererInterface
 
                     $cellContent = $this->stripTags($column->getOutput($data));
 
-                    $sheet->setCellValue( $alpha.$rowCount, $cellContent);
+                    $sheet->setCellValueExplicit( $alpha.$rowCount, $cellContent, \PHPExcel_Cell_DataType::TYPE_STRING);
                     $sheet->getStyle($alpha.$rowCount)->applyFromArray($rowStyle);
 
                     $cellStyle = null;
@@ -166,7 +166,7 @@ class SpreadsheetRenderer implements RendererInterface
                     else if ($rowCount % 2 != 0) $cellStyle = $rowStripeStyle;
 
                     if (!empty($cellStyle)) $sheet->getStyle($alpha.$rowCount)->applyFromArray($cellStyle);
-                    
+
 
                     $cellCount++;
                 }
@@ -203,6 +203,12 @@ class SpreadsheetRenderer implements RendererInterface
                 $mimetype = 'text/csv';
                 $objWriter = IOFactory::createWriter($excel, 'Csv');
                 break;
+        }
+
+        // Fix mimetype so that spreadsheet files can be viewed on iOS devices
+        if(stristr($_SERVER['HTTP_USER_AGENT'], 'ipad') !== false or stristr($_SERVER['HTTP_USER_AGENT'], 'iphone') !== false or stristr($_SERVER['HTTP_USER_AGENT'], 'ipod') !== false) {
+            $mimetype = 'application/octet-stream';
+            header('Content-type: application/octet-stream');
         }
 
         // Redirect output to a client’s web browser (Excel2007)

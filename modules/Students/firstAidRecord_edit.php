@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Domain\Students\FirstAidGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -76,10 +77,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/firstAidRecord_editProcess.php?gibbonFirstAidID=$gibbonFirstAidID&gibbonRollGroupID=".$gibbonRollGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID);
 
             $form->setFactory(DatabaseFormFactory::create($pdo));
-
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-
             $form->addHiddenValue('gibbonPersonID', $values['gibbonPersonIDPatient']);
+
+            $row = $form->addRow()->addHeading(__('Basic Information'));
+
             $row = $form->addRow();
                 $row->addLabel('patient', __('Patient'));
                 $row->addTextField('patient')->setValue(Format::name('', $values['preferredNamePatient'], $values['surnamePatient'], 'Student'))->required()->readonly();
@@ -110,10 +112,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
                 $column->addLabel('actionTaken', __('Action Taken'));
                 $column->addTextArea('actionTaken')->setValue($values['actionTaken'])->setRows(8)->setClass('fullWidth')->readonly();
 
+            $row = $form->addRow()->addHeading(__('Follow Up'));
+
+            //Print old-style followup as first log entry
+            if (!empty($values['followUp'])) {
+                $row = $form->addRow();
+                    $column = $row->addColumn();
+                    $column->addLabel('followUp0', __("Follow Up by {name} at {date}", ['name' => Format::name('', $values['preferredNameFirstAider'], $values['surnameFirstAider']), 'date' => Format::dateTimeReadable($values['timestamp'], '%H:%M, %b %d %Y')]));
+                    $column->addContent($values['followUp'])->setClass('fullWidth');
+            }
+
+            //Print new-style followup as log
+            $firstAidGateway = $container->get(FirstAidGateway::class);
+            $resultLog = $firstAidGateway->queryFollowUpByFirstAidID($gibbonFirstAidID);
+            $count = 0;
+            foreach ($resultLog AS $rowLog) {
+                $row = $form->addRow();
+                    $column = $row->addColumn();
+                    $column->addLabel('followUp'.$count, __("Follow Up by {name} at {date}", ['name' => Format::name('', $rowLog['preferredName'], $rowLog['surname']), 'date' => Format::dateTimeReadable($rowLog['timestamp'], '%H:%M, %b %d %Y')]));
+                    $column->addContent($rowLog['followUp'])->setClass('fullWidth');
+                $count++;
+            }
+
+            //Allow entry of fresh followup
             $row = $form->addRow();
                 $column = $row->addColumn();
-                $column->addLabel('followUp', __('Follow Up'));
-                $column->addTextArea('followUp')->setValue($values['followUp'])->setRows(8)->setClass('fullWidth');
+                $column->addLabel('followUp', __('Further Follow Up'));
+                $column->addTextArea('followUp')->setRows(8)->setClass('fullWidth');
+
 
             $row = $form->addRow();
                 $row->addFooter();

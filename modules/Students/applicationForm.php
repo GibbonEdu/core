@@ -451,26 +451,22 @@ if ($proceed == false) {
 
             if (!empty($application['parent1gibbonPersonID'])) {
                 // Get parent info from sibling application
-                $parent1username = $application['parent1username'];
-                $parent1email = $application['parent1email'];
-                $parent1surname = $application['parent1surname'];
-                $parent1preferredName = $application['parent1preferredName'];
-                $parent1fields = $application['parent1fields'];
                 $parent1gibbonPersonID = $application['parent1gibbonPersonID'];
             } else {
                 // Get parent info from gibbonPersonID
-                $dataParent = array('gibbonPersonID' => $gibbonPersonID);
-                $sqlParent = 'SELECT username, email, surname, preferredName, fields FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-                $resultParent= $pdo->executeQuery($dataParent, $sqlParent);
+                $parent1gibbonPersonID = $gibbonPersonID;
+            }
 
-                if ($parent = $resultParent->fetch()) {
-                    $parent1username = $parent['username'];
-                    $parent1email = $parent['email'];
-                    $parent1surname = $parent['surname'];
-                    $parent1preferredName = $parent['preferredName'];
-                    $parent1fields = $parent['fields'];
-                    $parent1gibbonPersonID = $gibbonPersonID;
-                }
+            $dataParent = array('gibbonPersonID' => $parent1gibbonPersonID);
+            $sqlParent = 'SELECT username, email, surname, preferredName, fields FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
+            $resultParent= $pdo->executeQuery($dataParent, $sqlParent);
+
+            if ($parent = $resultParent->fetch()) {
+                $parent1username = $parent['username'];
+                $parent1email = $parent['email'];
+                $parent1surname = $parent['surname'];
+                $parent1preferredName = $parent['preferredName'];
+                $parent1fields = $parent['fields'];
             }
 
             $form->addRow()->addHeading(__('Parent/Guardian').' 1');
@@ -762,7 +758,7 @@ if ($proceed == false) {
     $languageOptionsBlurb = getSettingByScope($connection2, 'Application Form', 'languageOptionsBlurb');
     $languageOptionsLanguageList = getSettingByScope($connection2, 'Application Form', 'languageOptionsLanguageList');
 
-    if ($languageOptionsActive == 'Y' && $languageOptionsLanguageList != '') {
+    if ($languageOptionsActive == 'Y' && ($languageOptionsBlurb != '' OR $languageOptionsLanguageList != '')) {
 
         $heading = $form->addRow()->addHeading(__('Language Selection'));
 
@@ -770,16 +766,18 @@ if ($proceed == false) {
             $heading->append($languageOptionsBlurb)->wrap('<p>','</p>');
         }
 
-        $languages = array_map(function($item) { return trim($item); }, explode(',', $languageOptionsLanguageList));
+        if ($languageOptionsLanguageList != '') {
+            $languages = array_map(function($item) { return trim($item); }, explode(',', $languageOptionsLanguageList));
 
-        $row = $form->addRow();
-            $row->addLabel('languageChoice', __('Language Choice'))->description(__('Please choose preferred additional language to study.'));
-            $row->addSelect('languageChoice')->fromArray($languages)->required()->placeholder();
+            $row = $form->addRow();
+                $row->addLabel('languageChoice', __('Language Choice'))->description(__('Please choose preferred additional language to study.'));
+                $row->addSelect('languageChoice')->fromArray($languages)->required()->placeholder();
 
-        $row = $form->addRow();
-            $column = $row->addColumn();
-            $column->addLabel('languageChoiceExperience', __('Language Choice Experience'))->description(__('Has the applicant studied the selected language before? If so, please describe the level and type of experience.'));
-            $column->addTextArea('languageChoiceExperience')->required()->setRows(5)->setClass('fullWidth');
+            $row = $form->addRow();
+                $column = $row->addColumn();
+                $column->addLabel('languageChoiceExperience', __('Language Choice Experience'))->description(__('Has the applicant studied the selected language before? If so, please describe the level and type of experience.'));
+                $column->addTextArea('languageChoiceExperience')->required()->setRows(5)->setClass('fullWidth');
+        }
     }
 
     // SCHOLARSHIPS
@@ -939,7 +937,7 @@ if ($proceed == false) {
     $privacyBlurb = getSettingByScope($connection2, 'User Admin', 'privacyBlurb');
     $privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
 
-    if ($privacySetting == 'Y' && !empty($privacyBlurb) && !empty($privacyOptions)) {
+    if ($privacySetting == 'Y' && !empty($privacyOptions)) {
 
         $form->addRow()->addSubheading(__('Privacy'))->append($privacyBlurb);
 

@@ -118,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     while ($attendance = $attendanceResult->fetch()) {
         $sessionAttendanceData[ $attendance['date'] ] = array(
             'data' => (!empty($attendance['attendance'])) ? unserialize($attendance['attendance']) : array(),
-            'info' => sprintf(__('Recorded at %1$s on %2$s by %3$s.'), substr($attendance['timestampTaken'], 11), dateConvertBack($guid, substr($attendance['timestampTaken'], 0, 10)), formatName('', $attendance['preferredName'], $attendance['surname'], 'Staff', false, true)),
+            'info' => sprintf(__('Recorded at %1$s on %2$s by %3$s.'), substr($attendance['timestampTaken'], 11), dateConvertBack($guid, substr($attendance['timestampTaken'], 0, 10)), Format::name('', $attendance['preferredName'], $attendance['surname'], 'Staff', false, true)),
         );
     }
 
@@ -260,7 +260,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 
             $col = $row->addColumn()->addClass('w-48 h-8 absolute left-0 ml-px text-left');
 
-            $col->addWebLink(formatName('', $student['preferredName'], $student['surname'], 'Student', true))
+            $col->addWebLink(Format::name('', $student['preferredName'], $student['surname'], 'Student', true))
                 ->setURl($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php')
                 ->addParam('gibbonPersonID', $student['gibbonPersonID'])
                 ->setClass('')

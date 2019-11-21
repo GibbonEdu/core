@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     $syncGateway = $container->get(CourseSyncGateway::class);
 
     // QUERY
-    $criteria = $syncGateway->newQueryCriteria()
+    $criteria = $syncGateway->newQueryCriteria(true)
         ->sortBy(['gibbonYearGroup.sequenceNumber'])
         ->fromArray($_POST);
 

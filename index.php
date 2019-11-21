@@ -21,6 +21,7 @@ use Gibbon\Domain\System\ModuleGateway;
 use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\Messenger\MessengerGateway;
 
 /**
  * BOOTSTRAP
@@ -170,7 +171,7 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
                     $gateway = new DataUpdaterGateway($pdo);
 
                     $updatesRequiredCount = $gateway->countAllRequiredUpdatesByPerson($session->get('gibbonPersonID'));
-                    
+
                     if ($updatesRequiredCount > 0) {
                         $URL = $session->get('absoluteURL').'/index.php?q=/modules/Data Updater/data_updates.php&redirect=true';
                         $session->set('pageLoads', null);
@@ -255,6 +256,7 @@ $javascriptConfig = [
     'config' => [
         'datepicker' => [
             'locale' => $datepickerLocale,
+            'dateFormat' => str_replace('yyyy', 'yy', $session->get('i18n')['dateFormat']),
         ],
         'thickbox' => [
             'pathToImage' => $session->get('absoluteURL').'/lib/thickbox/loadingAnimation.gif',
@@ -291,12 +293,15 @@ $page->scripts->addMultiple([
 $page->scripts->addMultiple([
     'jquery-latex'    => 'lib/jquery-jslatex/jquery.jslatex.js',
     'jquery-form'     => 'lib/jquery-form/jquery.form.js',
-    //This sets the default for en-US, or changes for none en-US
-    'jquery-date'     => $datepickerLocale === 'en-US' ? '' : 'lib/jquery-ui/i18n/jquery.ui.datepicker-'.$datepickerLocale.'.js',
     'jquery-autosize' => 'lib/jquery-autosize/jquery.autosize.min.js',
     'jquery-timeout'  => 'lib/jquery-sessionTimeout/jquery.sessionTimeout.min.js',
     'jquery-token'    => 'lib/jquery-tokeninput/src/jquery.tokeninput.js',
 ], ['context' => 'foot']);
+
+//This sets the default for en-US, or changes for none en-US
+if($datepickerLocale !== 'en-US'){
+    $page->scripts->add('jquery-date', 'lib/jquery-ui/i18n/jquery.ui.datepicker-'.$datepickerLocale.'.js');
+}
 
 // Set page scripts: foot - misc
 $thickboxInline = 'var tb_pathToImage="'.$session->get('absoluteURL').'/lib/thickbox/loadingAnimation.gif";';
@@ -330,7 +335,7 @@ if ($session->get('i18n')['rtl'] == 'Y') {
     $page->theme->stylesheets->add('theme-rtl', '/themes/'.$session->get('gibbonThemeName').'/css/main_rtl.css', ['weight' => 1]);
 }
 
-// Set personal, organisational or theme background     
+// Set personal, organisational or theme background
 if (getSettingByScope($connection2, 'User Admin', 'personalBackground') == 'Y' && $session->has('personalBackground')) {
     $backgroundImage = htmlPrep($session->get('personalBackground'));
     $backgroundScroll = 'repeat scroll center top';
@@ -451,13 +456,13 @@ if ($isLoggedIn) {
     if ($page->getModule()) {
         $currentModule = $page->getModule()->getName();
         $menuModule = $session->get('menuModuleName');
-        
+
         if ($cacheLoad || !$session->has('menuModuleItems') || $currentModule != $menuModule) {
             $menuModuleItems = $moduleGateway->selectModuleActionsByRole($page->getModule()->getID(), $session->get('gibbonRoleIDCurrent'))->fetchGrouped();
         } else {
             $menuModuleItems = $session->get('menuModuleItems');
         }
-        
+
         // Update the menu items to indicate the current active action
         foreach ($menuModuleItems as $category => &$items) {
             foreach ($items as &$item) {
@@ -472,6 +477,14 @@ if ($isLoggedIn) {
         $session->set('menuModuleName', $currentModule);
     } else {
         $session->forget(['menuModuleItems', 'menuModuleName']);
+    }
+
+    // Setup cached message array only if there are recent posts, or if more than one hour has elapsed
+    $messageWallLatestPost = $container->get(MessengerGateway::class)->getRecentMessageWallTimestamp();
+    $timeDifference = $gibbon->session->get('messageWallRefreshed', 0) - $messageWallLatestPost;
+    if (!$gibbon->session->exists('messageWallArray') || $timeDifference < 0 || $timeDifference > 3600) {
+        $gibbon->session->set('messageWallArray', getMessages($guid, $connection2, 'array'));
+        $gibbon->session->set('messageWallRefreshed', time());
     }
 }
 
@@ -542,8 +555,25 @@ if (!$session->has('address')) {
         }
 
         $page->writeFromTemplate('welcome.twig.html', $templateData);
-        
+
     } else {
+        // Pinned Messages
+        $pinnedMessagesOnHome = getSettingByScope($connection2, 'Messenger', 'pinnedMessagesOnHome');
+        if ($pinnedMessagesOnHome == 'Y' && isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
+            $pinnedMessages = array_reduce($gibbon->session->get('messageWallArray'), function ($group, $item) {
+                if ($item['messageWallPin'] == 'Y') {
+                    $group[$item['gibbonMessengerID']] = $item;
+                }
+                return $group;
+            }, []);
+
+            $session->set('pinnedMessages', $pinnedMessages);
+
+            if ($session->has('pinnedMessages')) {
+                $page->writeFromTemplate('ui/pinnedMessages.twig.html', ['pinnedMessages' => $session->get('pinnedMessages')]);
+            }
+        }
+
         // Custom content loader
         if (!$session->exists('index_custom.php')) {
             $globals = [
@@ -553,14 +583,14 @@ if (!$session->has('address')) {
 
             $session->set('index_custom.php', $page->fetchFromFile('./index_custom.php', $globals));
         }
-        
-        if ($session->exists('index_custom.php')) {
+
+        if ($session->has('index_custom.php')) {
             $page->write($session->get('index_custom.php'));
         }
 
         // DASHBOARDS!
         $category = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
-        
+
         switch ($category) {
             case 'Parent':
                 $page->write($container->get(Gibbon\UI\Dashboard\ParentDashboard::class)->getOutput());
@@ -570,6 +600,8 @@ if (!$session->has('address')) {
                 break;
             case 'Staff':
                 $page->write($container->get(Gibbon\UI\Dashboard\StaffDashboard::class)->getOutput());
+                break;
+            case 'Other':
                 break;
             default:
                 $page->write('<div class="error">'.__('Your current role type cannot be determined.').'</div>');

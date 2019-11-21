@@ -96,10 +96,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
             try {
                 if ($viewBy == 'date') {
                     $data = array('date' => $date, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                    $sql = 'SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE date=:date AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
+                    $sql = 'SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, gibbonPlannerEntry.homework, gibbonPlannerEntry.homeworkSubmission FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE date=:date AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
                 } else {
                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                    $sql = 'SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
+                    $sql = 'SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, gibbonPlannerEntry.homework, gibbonPlannerEntry.homeworkSubmission FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
                 }
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
@@ -273,34 +273,58 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                             $resultNext->execute($dataNext);
                         } catch (PDOException $e) {
                         }
-                        $nextDate = '';
-                        $nextTimeStart = '';
-                        $nextTimeEnd = '';
+                        $next = array('date' => null, 'start' => null, 'end' => null, 'date2' => null, 'start2' => null);
+                        $nextSet = false;
                         while ($rowNext = $resultNext->fetch()) {
-                            try {
-                                $dataPlanner = array('date' => $rowNext['date'], 'timeStart' => $rowNext['timeStart'], 'timeEnd' => $rowNext['timeEnd'], 'gibbonCourseClassID' => $gibbonCourseClassID);
-                                $sqlPlanner = 'SELECT * FROM gibbonPlannerEntry WHERE date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd AND gibbonCourseClassID=:gibbonCourseClassID';
-                                $resultPlanner = $connection2->prepare($sqlPlanner);
-                                $resultPlanner->execute($dataPlanner);
-                            } catch (PDOException $e) {}
-                            if ($resultPlanner->rowCount() == 0) {
-                                $nextDate = $rowNext['date'];
-                                $nextTimeStart = $rowNext['timeStart'];
-                                $nextTimeEnd = $rowNext['timeEnd'];
+                            if ($nextSet == false) {
+                                try {
+                                    $dataPlanner = array('date' => $rowNext['date'], 'timeStart' => $rowNext['timeStart'], 'timeEnd' => $rowNext['timeEnd'], 'gibbonCourseClassID' => $gibbonCourseClassID);
+                                    $sqlPlanner = 'SELECT * FROM gibbonPlannerEntry WHERE date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd AND gibbonCourseClassID=:gibbonCourseClassID';
+                                    $resultPlanner = $connection2->prepare($sqlPlanner);
+                                    $resultPlanner->execute($dataPlanner);
+                                } catch (PDOException $e) {}
+                                if ($resultPlanner->rowCount() == 0) {
+                                    $nextSet = true;
+                                    $next['date'] = $rowNext['date'];
+                                    $next['start'] = $rowNext['timeStart'];
+                                    $next['end'] = $rowNext['timeEnd'];
+                                }
+                            }
+                            else {
+                                $next['date2'] = $rowNext['date'];
+                                $next['start2'] = $rowNext['timeStart'];
                                 break;
                             }
                         }
                         $row = $form->addRow();
                             $row->addLabel('date', __('Date'));
-                            $row->addDate('date')->setValue(dateConvertBack($guid, $nextDate))->required();
+                            $row->addDate('date')->setValue(dateConvertBack($guid, $next['date']))->required();
 
                         $row = $form->addRow();
                             $row->addLabel('timeStart', __('Start Time'))->description("Format: hh:mm (24hr)");
-                            $row->addTime('timeStart')->setValue(substr($nextTimeStart, 0, 5))->required();
+                            $row->addTime('timeStart')->setValue(substr($next['start'], 0, 5))->required();
 
                         $row = $form->addRow();
                             $row->addLabel('timeEnd', __('End Time'))->description("Format: hh:mm (24hr)");
-                            $row->addTime('timeEnd')->setValue(substr($nextTimeEnd, 0, 5))->required();
+                            $row->addTime('timeEnd')->setValue(substr($next['end'], 0, 5))->required();
+
+                        if ($values['homework'] == 'Y') {
+                            $form->addRow()->addHeading(__('Homework'));
+
+                            $row = $form->addRow();
+                                $row->addLabel('homeworkDueDate', __('Homework Due Date'));
+                                $row->addDate('homeworkDueDate')->setValue(dateConvertBack($guid, $next['date2']))->required();
+
+                            $row = $form->addRow();
+                                $row->addLabel('homeworkDueDateTime', __('Homework Due Date Time'))->description("Format: hh:mm (24hr)");
+                                $row->addTime('homeworkDueDateTime')->setValue(substr($next['start2'], 0, 5))->required();
+
+                            if ($values['homeworkSubmission'] == 'Y') {
+                                $row = $form->addRow();
+                                    $row->addLabel('homeworkSubmissionDateOpen', __('Submission Open Date'));
+                                    $row->addDate('homeworkSubmissionDateOpen')->setValue(dateConvertBack($guid, $next['date']))->required();
+                            }
+                        }
 
                         $row = $form->addRow();
                             $row->addFooter();

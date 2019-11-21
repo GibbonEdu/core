@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Students\StudentNoteGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -42,21 +43,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
         echo '</div>';
         return;
     } else {
-        $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
-        $search = null;
-        if (isset($_GET['search'])) {
-            $search = $_GET['search'];
-        }
-        $allStudents = '';
-        if (isset($_GET['allStudents'])) {
-            $allStudents = $_GET['allStudents'];
-        }
-        $sort = '';
-        if (isset($_GET['sort'])) {
-            $sort = $_GET['sort'];
-        }
+        $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+        $search = $_GET['search'] ?? '';
+        $allStudents = $_GET['allStudents'] ?? '';
+        $sort = $_GET['sort'] ?? '';
 
-        if (empty($gibbonPersonID)) {
+        if ($gibbonPersonID == '') {
             echo "<div class='error'>";
             echo __('You have not specified one or more required parameters.');
             echo '</div>';
@@ -66,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
             $skipBrief = false;
 
             //Skip brief for those with _full or _fullNoNotes, and _brief
-            if ($highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
+            if ($highestAction == 'View Student Profile_fullEditAllNotes' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
                 $skipBrief = true;
             }
 
@@ -308,7 +300,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full'
                             AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)";
                     }
-                    else if ($highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
+                    else if ($highestAction == 'View Student Profile_fullEditAllNotes' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
                         if ($allStudents != 'on') {
                             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d'));
                             $sql = "SELECT * FROM gibbonPerson
@@ -349,23 +341,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     ->add(__('View Student Profiles'), 'student_view.php')
                     ->add(Format::name('', $row['preferredName'], $row['surname'], 'Student'));
 
-
-                    $subpage = null;
-                    if (isset($_GET['subpage'])) {
-                        $subpage = $_GET['subpage'];
-                    }
-                    $hook = null;
-                    if (isset($_GET['hook'])) {
-                        $hook = $_GET['hook'];
-                    }
-                    $module = null;
-                    if (isset($_GET['module'])) {
-                        $module = $_GET['module'];
-                    }
-                    $action = null;
-                    if (isset($_GET['action'])) {
-                        $action = $_GET['action'];
-                    }
+                    $subpage = $_GET['subpage'] ?? '';
+                    $hook = $_GET['hook'] ?? '';
+                    $module = $_GET['module'] ?? '';
+                    $action = $_GET['action'] ?? '';
 
                     // When viewing left students, they won't have a year group ID
                     if (empty($row['gibbonYearGroupID'])) $row['gibbonYearGroupID'] = '';
@@ -382,7 +361,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                     echo '<h2>';
                     if ($subpage != '') {
-                        echo $subpage;
+                        echo __($subpage);
                     } else {
                         echo $hook;
                     }
@@ -474,8 +453,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Tutors').'</span><br/>';
                         if (isset($rowDetail['gibbonPersonIDTutor'])) {
                             try {
-                                $dataDetail = array('gibbonPersonIDTutor' => $rowDetail['gibbonPersonIDTutor'], 'gibbonPersonIDTutor2' => $rowDetail['gibbonPersonIDTutor2'], 'gibbonPersonIDTutor3' => $rowDetail['gibbonPersonIDTutor3']);
-                                $sqlDetail = 'SELECT gibbonPersonID, title, surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonIDTutor OR gibbonPersonID=:gibbonPersonIDTutor2 OR gibbonPersonID=:gibbonPersonIDTutor3';
+                                $dataDetail = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
+                                $sqlDetail = 'SELECT gibbonPersonID, title, surname, preferredName FROM gibbonRollGroup JOIN gibbonPerson ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID) WHERE gibbonRollGroupID=:gibbonRollGroupID ORDER BY surname, preferredName';
                                 $resultDetail = $connection2->prepare($sqlDetail);
                                 $resultDetail->execute($dataDetail);
                             } catch (PDOException $e) {
@@ -627,14 +606,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                         //Get and display a list of student's teachers
                         echo '<h4>';
-                        echo __("Student's Teachers");
+                        echo __('Teachers Of {student}', ['student' => $row['preferredName']]);
                         echo '</h4>';
+                        echo '<p>';
+                        echo __('Includes Teachers, Tutors, Educational Assistants and Head of Year.');
+                        echo '</p>';
                         try {
-                            $dataDetail = array('gibbonPersonID' => $gibbonPersonID, 'gibbonYearGroupID' => $row['gibbonYearGroupID']);
+                            $dataDetail = array('gibbonPersonID1' => $gibbonPersonID, 'gibbonYearGroupID' => $row['gibbonYearGroupID'], 'gibbonPersonID2' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID3' => $gibbonPersonID, 'gibbonRollGroupID' => $row['gibbonRollGroupID'] ?? '');
                             $sqlDetail = "
-                                (SELECT DISTINCT teacher.surname, teacher.preferredName, teacher.email FROM gibbonPerson AS teacher JOIN gibbonCourseClassPerson AS teacherClass ON (teacherClass.gibbonPersonID=teacher.gibbonPersonID)  JOIN gibbonCourseClassPerson AS studentClass ON (studentClass.gibbonCourseClassID=teacherClass.gibbonCourseClassID) JOIN gibbonPerson AS student ON (studentClass.gibbonPersonID=student.gibbonPersonID) JOIN gibbonCourseClass ON (studentClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE teacher.status='Full' AND teacherClass.role='Teacher' AND studentClass.role='Student' AND student.gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY teacher.preferredName, teacher.surname, teacher.email)
+                                (SELECT DISTINCT teacher.surname, teacher.preferredName, teacher.email FROM gibbonPerson AS teacher JOIN gibbonCourseClassPerson AS teacherClass ON (teacherClass.gibbonPersonID=teacher.gibbonPersonID)  JOIN gibbonCourseClassPerson AS studentClass ON (studentClass.gibbonCourseClassID=teacherClass.gibbonCourseClassID) JOIN gibbonPerson AS student ON (studentClass.gibbonPersonID=student.gibbonPersonID) JOIN gibbonCourseClass ON (studentClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE teacher.status='Full' AND teacherClass.role='Teacher' AND studentClass.role='Student' AND student.gibbonPersonID=:gibbonPersonID1 AND gibbonCourse.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY teacher.preferredName, teacher.surname, teacher.email)
                                 UNION
                                 (SELECT DISTINCT surname, preferredName, email FROM gibbonPerson JOIN gibbonYearGroup ON (gibbonYearGroup.gibbonPersonIDHOY=gibbonPersonID) WHERE status='Full' AND gibbonYearGroupID=:gibbonYearGroupID)
+                                UNION
+                                (SELECT DISTINCT surname, preferredName, email
+                                    FROM gibbonPerson
+                                        JOIN gibbonINAssistant ON (gibbonINAssistant.gibbonPersonIDAssistant=gibbonPerson.gibbonPersonID)
+                                    WHERE status='Full'
+                                        AND gibbonPersonIDStudent=:gibbonPersonID2)
+                                UNION
+                                (SELECT DISTINCT surname, preferredName, email
+                                    FROM gibbonPerson
+                                        JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonPersonIDEA=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDEA2=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDEA3=gibbonPerson.gibbonPersonID)
+                                        JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                                        JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+                                    WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                                        AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID3
+                                )
+                                UNION
+                                (SELECT surname, preferredName, email FROM gibbonRollGroup JOIN gibbonPerson ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID) WHERE gibbonRollGroupID=:gibbonRollGroupID)
                                 ORDER BY preferredName, surname, email";
                             $resultDetail = $connection2->prepare($sqlDetail);
                             $resultDetail->execute($dataDetail);
@@ -646,45 +645,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo __('There are no records to display.');
                             echo '</div>';
                         } else {
-                            echo '<ul>';
-                            while ($rowDetail = $resultDetail->fetch()) {
-                                echo '<li>'.htmlPrep(Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false));
-                                if ($rowDetail['email'] != '') {
-                                    echo htmlPrep(' <'.$rowDetail['email'].'>');
-                                }
-                                echo '</li>';
-                            }
-                            echo '</ul>';
-                        }
-
-                        //Get and display a list of student's educational assistants
-                        try {
-                            $dataDetail = array('gibbonPersonID1' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID2' => $gibbonPersonID);
-                            $sqlDetail = "(SELECT DISTINCT surname, preferredName, email
-                                FROM gibbonPerson
-                                    JOIN gibbonINAssistant ON (gibbonINAssistant.gibbonPersonIDAssistant=gibbonPerson.gibbonPersonID)
-                                WHERE status='Full'
-                                    AND gibbonPersonIDStudent=:gibbonPersonID1)
-                            UNION
-                            (SELECT DISTINCT surname, preferredName, email
-                                FROM gibbonPerson
-                                    JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonPersonIDEA=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDEA2=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDEA3=gibbonPerson.gibbonPersonID)
-                                    JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
-                                    JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-                                WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                                    AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID2
-                            )
-                            ORDER BY preferredName, surname, email";
-                            $resultDetail = $connection2->prepare($sqlDetail);
-                            $resultDetail->execute($dataDetail);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
-                        if ($resultDetail->rowCount() > 0) {
-                            echo '<h4>';
-                            echo __("Student's Educational Assistants");
-                            echo '</h4>';
-
                             echo '<ul>';
                             while ($rowDetail = $resultDetail->fetch()) {
                                 echo '<li>'.htmlPrep(Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false));
@@ -718,7 +678,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             if (isset($_POST['ttDate'])) {
                                 $ttDate = dateConvertToTimestamp(dateConvert($guid, $_POST['ttDate']));
                             }
-                            $tt = renderTT($guid, $connection2, $gibbonPersonID, '', false, $ttDate, '/modules/Students/student_view_details.php', "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents#timetable");
+                            $tt = renderTT($guid, $connection2, $gibbonPersonID, $_GET['gibbonTTID'] ?? '', false, $ttDate, '/modules/Students/student_view_details.php', "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents#timetable");
                             if ($tt != false) {
                                 echo $tt;
                             } else {
@@ -1720,7 +1680,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $highestColour = $alert[3];
                                 $highestColourBG = $alert[4];
                                 echo "<div class='error' style='background-color: #".$highestColourBG.'; border: 1px solid #'.$highestColour.'; color: #'.$highestColour."'>";
-                                echo '<b>'.sprintf(__('This student has one or more %1$s risk medical conditions'), strToLower($highestLevel)).'</b>.';
+                                echo '<b>'.sprintf(__('This student has one or more %1$s risk medical conditions.'), strToLower($highestLevel)).'</b>.';
                                 echo '</div>';
                             }
 
@@ -1904,90 +1864,65 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
 
-                                echo "<div class='linkTop'>";
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/student_view_details_notes_add.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&search=$search&allStudents=$allStudents&subpage=Notes&category=$category'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-                                echo '</div>';
+                                $notes = $pdo->select($sql, $data);
+                                $noteGateway = $container->get(StudentNoteGateway::class);
 
-                                if ($result->rowCount() < 1) {
-                                    echo "<div class='error'>";
-                                    echo __('There are no records to display.');
-                                    echo '</div>';
-                                } else {
-                                    echo "<table cellspacing='0' style='width: 100%'>";
-                                    echo "<tr class='head'>";
-                                    echo '<th>';
-                                    echo __('Date').'<br/>';
-                                    echo "<span style='font-size: 75%; font-style: italic'>".__('Time').'</span>';
-                                    echo '</th>';
-                                    echo '<th>';
-                                    echo __('Category');
-                                    echo '</th>';
-                                    echo '<th>';
-                                    echo __('Title').'<br/>';
-                                    echo "<span style='font-size: 75%; font-style: italic'>".__('Overview').'</span>';
-                                    echo '</th>';
-                                    echo '<th>';
-                                    echo __('Note Taker');
-                                    echo '</th>';
-                                    echo '<th>';
-                                    echo __('Actions');
-                                    echo '</th>';
-                                    echo '</tr>';
+                                // DATA TABLE
+                                $table = DataTable::createPaginated('studentNotes', $noteGateway->newQueryCriteria(true));
 
-                                    $count = 0;
-                                    $rowNum = 'odd';
-                                    while ($row = $result->fetch()) {
-                                        if ($count % 2 == 0) {
-                                            $rowNum = 'even';
-                                        } else {
-                                            $rowNum = 'odd';
-                                        }
-                                        ++$count;
+                                $table->addExpandableColumn('note');
 
-                                        //COLOR ROW BY STATUS!
-                                        echo "<tr class=$rowNum>";
-                                        echo '<td>';
-                                        echo dateConvertBack($guid, substr($row['timestamp'], 0, 10)).'<br/>';
-                                        echo "<span style='font-size: 75%; font-style: italic'>".substr($row['timestamp'], 11, 5).'</span>';
-                                        echo '</td>';
-                                        echo '<td>';
-                                        echo $row['category'];
-                                        echo '</td>';
-                                        echo '<td>';
-                                        if ($row['title'] == '') {
-                                            echo '<i>'.__('NA').'</i><br/>';
-                                        } else {
-                                            echo $row['title'].'<br/>';
+                                $table->addHeaderAction('add', __('Add'))
+                                    ->setURL('/modules/Students/student_view_details_notes_add.php')
+                                    ->addParam('gibbonPersonID', $gibbonPersonID)
+                                    ->addParam('allStudents', $allStudents)
+                                    ->addParam('search', $search)
+                                    ->addParam('subpage', 'Notes')
+                                    ->addParam('category', $category ?? '')
+                                    ->displayLabel();
+
+                                $table->addColumn('date', __('Date'))
+                                    ->description(__('Time'))
+                                    ->format(function ($note) {
+                                        return Format::date($note['timestamp']).'<br/>'.Format::small(Format::time($note['timestamp']));
+                                    });
+
+                                $table->addColumn('category', __('Category'))
+                                    ->translatable();
+
+                                $table->addColumn('title', __('Title'))
+                                    ->description(__('Overview'))
+                                    ->format(function ($note) {
+                                        $title = !empty($note['title'])? $note['title'] : __('N/A');
+                                        $overview = substr(strip_tags($note['note']), 0, 60);
+
+                                        return $title.'<br/><span style="font-size: 75%; font-style: italic">'.$overview.'</span>';
+                                    });
+
+                                $table->addColumn('noteTaker', __('Note Taker'))
+                                      ->format(Format::using('name', ['', 'preferredName', 'surname', 'Staff', false, true]));
+                                    
+                                // ACTIONS
+                                $table->addActionColumn()
+                                    ->addParam('gibbonStudentNoteID')
+                                    ->addParam('gibbonPersonID', $gibbonPersonID)
+                                    ->addParam('allStudents', $allStudents)
+                                    ->addParam('search', $search)
+                                    ->addParam('subpage', 'Notes')
+                                    ->addParam('category', $category ?? '')
+                                    ->format(function ($note, $actions) use ($highestAction, $guid) {
+                                        if ($note['gibbonPersonIDCreator'] == $_SESSION[$guid]['gibbonPersonID'] || $highestAction == "View Student Profile_fullEditAllNotes") {
+                                            $actions->addAction('edit', __('Edit'))
+                                                    ->setURL('/modules/Students/student_view_details_notes_edit.php');
                                         }
-                                        echo "<span style='font-size: 75%; font-style: italic'>".substr(strip_tags($row['note']), 0, 60).'</span>';
-                                        echo '</td>';
-                                        echo '<td>';
-                                        echo Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
-                                        echo '</td>';
-                                        echo '<td>';
-                                        if ($row['gibbonPersonIDCreator'] == $_SESSION[$guid]['gibbonPersonID']) {
-                                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/student_view_details_notes_edit.php&search='.$search.'&gibbonStudentNoteID='.$row['gibbonStudentNoteID']."&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Notes&category=$category'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+
+                                        if ($highestAction == "View Student Profile_fullEditAllNotes") {
+                                            $actions->addAction('delete', __('Delete'))
+                                                    ->setURL('/modules/Students/student_view_details_notes_delete.php');
                                         }
-                                        echo "<script type='text/javascript'>";
-                                        echo '$(document).ready(function(){';
-                                        echo "\$(\".note-$count\").hide();";
-                                        echo "\$(\".show_hide-$count\").fadeIn(1000);";
-                                        echo "\$(\".show_hide-$count\").click(function(){";
-                                        echo "\$(\".note-$count\").fadeToggle(1000);";
-                                        echo '});';
-                                        echo '});';
-                                        echo '</script>';
-                                        echo "<a title='".__('View Description')."' class='show_hide-$count' onclick='return false;' href='#'><img title='".__('View Details')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png'/></a></span><br/>";
-                                        echo '</td>';
-                                        echo '</tr>';
-                                        echo "<tr class='note-$count' id='note-$count'>";
-                                        echo '<td colspan=6>';
-                                        echo $row['note'];
-                                        echo '</td>';
-                                        echo '</tr>';
-                                    }
-                                    echo '</table>';
-                                }
+                                    });
+
+                                echo $table->render($notes->toDataSet());
                             }
                         }
                     } elseif ($subpage == 'Attendance') {
@@ -2216,7 +2151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                                             $teachers = '<p><b>'.__('Taught by:').'</b> ';
                                             while ($rowTeachers = $resultTeachers->fetch()) {
-                                                $teachers = $teachers.formatName($rowTeachers['title'], $rowTeachers['preferredName'], $rowTeachers['surname'], 'Staff', false, false).', ';
+                                                $teachers = $teachers.Format::name($rowTeachers['title'], $rowTeachers['preferredName'], $rowTeachers['surname'], 'Staff', false, false).', ';
                                             }
                                             $teachers = substr($teachers, 0, -2);
                                             $teachers = $teachers.'</p>';
@@ -2681,7 +2616,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             if (isset($_POST['ttDate'])) {
                                 $ttDate = dateConvertToTimestamp(dateConvert($guid, $_POST['ttDate']));
                             }
-                            $tt = renderTT($guid, $connection2, $gibbonPersonID, '', false, $ttDate, '/modules/Students/student_view_details.php', "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Timetable");
+                            $tt = renderTT($guid, $connection2, $gibbonPersonID, $_GET['gibbonTTID'] ?? '', false, $ttDate, '/modules/Students/student_view_details.php', "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Timetable");
                             if ($tt != false) {
                                 echo $tt;
                             } else {

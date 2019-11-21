@@ -186,6 +186,61 @@ class FileUploader
     }
 
     /**
+     * Resize images on upload.
+     *
+     * @param array $file
+     * @param string $filenameChange
+     * @param int $maxSize
+     * @param int $quality
+     * @return string
+     */
+    public function uploadAndResizeImage($file, $filenameChange = '', $maxSize = 1024, $quality = 80)
+    {
+        // Check for empty data
+        if (empty($file['tmp_name'])) {
+            return false;
+        }
+
+        $this->resizeImage($file['tmp_name'], $file['tmp_name'], $maxSize);
+
+        return $this->uploadFromPost($file, $filenameChange);
+    }
+
+    /**
+     * Resize an image from the sourcePath, placing the new image in the destPath.
+     *
+     * @param string $sourcePath
+     * @param string $destPath
+     * @param int $maxSize
+     * @param int $quality
+     * @return string
+     */
+    public function resizeImage($sourcePath, $destPath, $maxSize = 1024, $quality = 80)
+    {
+        $extension = mb_substr(mb_strrchr(strtolower($sourcePath), '.'), 1);
+        $size = getimagesize($sourcePath);
+        $ratio = $size[0]/$size[1]; // width/height
+        $width = $ratio > 1 ? $maxSize : $maxSize*$ratio;
+        $height = $ratio > 1 ? $maxSize/$ratio : $maxSize;
+
+        if ($src = imagecreatefromstring(file_get_contents($sourcePath))) {
+            $dst = imagecreatetruecolor($width, $height);
+            imagecopyresampled($dst, $src, 0, 0, 0, 0, $width, $height, $size[0], $size[1]);
+
+            if ($extension == 'png') {
+                imagepng($dst, $destPath);
+            } else {
+                imagejpeg($dst, $destPath, $quality);
+            }
+
+            if ($src) imagedestroy($src);
+            if ($dst) imagedestroy($dst);
+        }
+
+        return $destPath;
+    }
+
+    /**
      * Get an absolute uploads folder path based on UNIX timestamp.
      *
      * @version  v14

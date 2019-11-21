@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             $fieldValue = isset($fieldsValues[$field['name']])? $fieldsValues[$field['name']] : '';
 
             $row = $table->addRow()->addClass('flex flex-col sm:flex-row justify-between content-center p-0');
-                $row->addLabel($fieldName, $field['name'])->description($field['description'])->addClass('flex-grow sm:mb-0 border-transparent border-t-0 sm:border-gray-400');
+                $row->addLabel($fieldName, __($field['name']))->description(__($field['description']))->addClass('flex-grow sm:mb-0 border-transparent border-t-0 sm:border-gray-400');
                 $row->addCustomField($fieldName, $field)->setValue($fieldValue)->addClass('w-full max-w-full sm:max-w-xs flex justify-end items-center border-0 sm:border-b');
         }
 

@@ -417,7 +417,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
 
                         $row = $table->addRow()->setID($student['gibbonPersonID']);
 
-                        $row->addWebLink(formatName('', $student['preferredName'], $student['surname'], 'Student', true))
+                        $row->addWebLink(Format::name('', $student['preferredName'], $student['surname'], 'Student', true))
                             ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php')
                             ->addParam('gibbonPersonID', $student['gibbonPersonID'])
                             ->addParam('subpage', 'Markbook')
@@ -444,22 +444,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         $row->onlyIf($hasSubmission)
                             ->addContent($student['submission']);
 
-                        $row->onlyIf($hasAttainment && $hasRawAttainment)
-                            ->addNumber($count.'-attainmentValueRaw')
-                            ->setClass('smallColumn')
-                            ->setValue($student['attainmentValueRaw'])
-                            ->append(' / '.floatval($values['attainmentRawMax']));
+                        $col = $row->onlyIf($hasAttainment && $hasRawAttainment)->addColumn();
+                        $col->addNumber($count.'-attainmentValueRaw')
+                            ->onlyInteger(false)
+                            ->setClass('inline-block')
+                            ->setValue($student['attainmentValueRaw']);
+                        $col->addContent('/ '.floatval($values['attainmentRawMax']))->setClass('inline-block ml-1');
 
-                        $attainment = $row->onlyIf($hasAttainment)
-                            ->addSelectGradeScaleGrade($count.'-attainmentValue', $values['gibbonScaleIDAttainment'])
-                            ->setClass('textCenter gradeSelect')
+                        $col = $row->onlyIf($hasAttainment)->addColumn();
+                        $col->addSelectGradeScaleGrade($count.'-attainmentValue', $values['gibbonScaleIDAttainment'])
+                            ->setClass('textCenter gradeSelect inline-block')
                             ->selected($student['attainmentValue']);
 
                         if ($hasAttainment && $hasAttainmentRubric) {
                             $rubricLink->addParam('gibbonPersonID', $student['gibbonPersonID']);
                             $rubricLink->addParam('gibbonRubricID', $values['gibbonRubricIDAttainment']);
                             $rubricLink->addParam('type', 'attainment');
-                            $attainment->append($rubricLink->getOutput());
+                            $col->addContent($rubricLink->getOutput())->setClass('inline-block ml-1');
                         }
 
                         $effort = $row->onlyIf($hasEffort)

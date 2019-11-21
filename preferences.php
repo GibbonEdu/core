@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
-if (!isset($_SESSION[$guid]["username"])) {
+if (!$gibbon->session->exists("username")) {
     //Acess denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
@@ -47,7 +47,7 @@ if (!isset($_SESSION[$guid]["username"])) {
     }
 
     $returns = array();
-    $returns['errora'] = sprintf(__('Your account status could not be updated, and so you cannot continue to use the system. Please contact %1$s if you have any questions.'), "<a href='mailto:".$_SESSION[$guid]['organisationAdministratorEmail']."'>".$_SESSION[$guid]['organisationAdministratorName'].'</a>');
+    $returns['errora'] = sprintf(__('Your account status could not be updated, and so you cannot continue to use the system. Please contact %1$s if you have any questions.'), "<a href='mailto:".$gibbon->session->get('organisationAdministratorEmail')."'>".$gibbon->session->get('organisationAdministratorName').'</a>');
     $returns['successa'] = __('Your account has been successfully updated. You can now continue to use the system as per normal.');
     $returns['error4'] = __('Your request failed due to non-matching passwords.');
     $returns['error3'] = __('Your request failed due to incorrect current password.');
@@ -58,7 +58,7 @@ if (!isset($_SESSION[$guid]["username"])) {
     }
 
     try {
-        $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+        $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
         $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
@@ -69,7 +69,7 @@ if (!isset($_SESSION[$guid]["username"])) {
         $values = $result->fetch();
     }
 
-    $form = Form::create('resetPassword', $_SESSION[$guid]['absoluteURL'].'/preferencesPasswordProcess.php');
+    $form = Form::create('resetPassword', $gibbon->session->get('absoluteURL').'/preferencesPasswordProcess.php');
 
     $form->addRow()->addHeading(__('Reset Password'));
 
@@ -108,12 +108,12 @@ if (!isset($_SESSION[$guid]["username"])) {
 
     if ($forceReset != 'Y') {
         $staff = false;
-        foreach ($_SESSION[$guid]['gibbonRoleIDAll'] as $role) {
+        foreach ($gibbon->session->get('gibbonRoleIDAll') as $role) {
             $roleCategory = getRoleCategory($role[0], $connection2);
             $staff = $staff || ($roleCategory == 'Staff');
         }
 
-        $form = Form::create('preferences', $_SESSION[$guid]['absoluteURL'].'/preferencesProcess.php');
+        $form = Form::create('preferences', $gibbon->session->get('absoluteURL').'/preferencesProcess.php');
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
         $form->addRow()->addHeading(__('Settings'));
@@ -141,20 +141,6 @@ if (!isset($_SESSION[$guid]["username"])) {
         $row = $form->addRow();
             $row->addLabel('receiveNotificationEmails', __('Receive Email Notifications?'))->description(__('Notifications can always be viewed on screen.'));
             $row->addYesNo('receiveNotificationEmails');
-
-        if ($staff) {
-            $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-            $sql = "SELECT smartWorkflowHelp FROM gibbonStaff WHERE gibbonPersonID=:gibbonPersonID";
-            $result = $pdo->executeQuery($data, $sql);
-
-            if ($result && $result->rowCount() > 0) {
-                $smartWorkflowHelp = $result->fetchColumn(0);
-
-                $row = $form->addRow();
-                    $row->addLabel('smartWorkflowHelp', __('Enable Smart Workflow Help?'));
-                    $row->addYesNo('smartWorkflowHelp')->selected($smartWorkflowHelp);
-            }
-        }
 
         $row = $form->addRow();
             $row->addFooter();

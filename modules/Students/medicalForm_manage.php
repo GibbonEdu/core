@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
     $medicalGateway = $container->get(MedicalGateway::class);
 
     // CRITERIA
-    $criteria = $medicalGateway->newQueryCriteria()
+    $criteria = $medicalGateway->newQueryCriteria(true)
         ->searchBy($medicalGateway->getSearchableColumns(), $search)
         ->sortBy(['surname', 'preferredName'])
         ->fromPOST();

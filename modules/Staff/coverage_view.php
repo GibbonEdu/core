@@ -42,12 +42,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view.php') 
     $schoolYearGateway = $container->get(SchoolYearGateway::class);
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
 
+    $substitute = $container->get(SubstituteGateway::class)->getSubstituteByPerson($gibbonPersonID);
+
     // QUERY
     $criteria = $staffCoverageGateway->newQueryCriteria()
         ->sortBy('date', 'ASC')
         ->filterBy('requested', 'Y')
         ->filterBy('date:upcoming')
-        ->pageSize(0)
         ->fromPOST('myCoverage');
 
     $myCoverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID, true);
@@ -56,10 +57,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view.php') 
         ->sortBy('date', 'ASC')
         ->filterBy('requested', 'Y')
         ->filterBy('date:upcoming')
-        ->pageSize(0)
         ->fromPOST('allCoverage');
 
-    $allCoverage = $staffCoverageGateway->queryCoverageWithNoPersonAssigned($criteria, true);
+    $allCoverage = $staffCoverageGateway->queryCoverageWithNoPersonAssigned($criteria, $substitute['type']);
 
     if ($myCoverage->getResultCount() == 0 && $allCoverage->getResultCount() == 0) {
         echo Format::alert(__('All coverage requests have been filled!'), 'success');
@@ -94,7 +94,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view.php') 
         ->format([AbsenceFormats::class, 'personDetails']);
 
     // Only display the Accept / Decline options for people who are substitutes
-    $substitute = $container->get(SubstituteGateway::class)->getSubstituteByPerson($gibbonPersonID);
     if (!empty($substitute)) {
         $table->addActionColumn()
             ->addParam('gibbonStaffCoverageID')

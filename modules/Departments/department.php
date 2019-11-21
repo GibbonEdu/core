@@ -174,15 +174,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
 
             //Print other courses
             if ($role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Teacher') {
-                $sidebarExtra .= '<div class="column-no-break">';
-                $sidebarExtra .= '<h4>';
-                $sidebarExtra .= __('Non-Current Courses');
-                $sidebarExtra .= '</h4>';
-
-                $form = Form::create('courseSelect', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
-                $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/department_course.php');
-                $form->addHiddenValue('gibbonDepartmentID', $gibbonDepartmentID);
-
                 $data = array('gibbonDepartmentID' => $gibbonDepartmentID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                 $sql = "SELECT gibbonSchoolYear.name AS year, gibbonCourse.gibbonCourseID as value, gibbonCourse.name AS name
                         FROM gibbonCourse
@@ -198,15 +189,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
                     return $carry;
                 }, array());
 
-                $row = $form->addRow();
-                    $row->addSelect('gibbonCourseID')
-                        ->fromArray($courses)
-                        ->placeholder()
-                        ->setClass('fullWidth');
+                if (!empty($courses)) {
+                    $form = Form::create('courseSelect', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+                    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/department_course.php');
+                    $form->addHiddenValue('gibbonDepartmentID', $gibbonDepartmentID);
+
+                    $row = $form->addRow()->addClass('items-center');
+                        $row->addSelect('gibbonCourseID')
+                            ->fromArray($courses)
+                            ->placeholder()
+                            ->setClass('w-48 float-none');
                     $row->addSubmit(__('Go'));
 
-                $sidebarExtra .= $form->getOutput();
-                $sidebarExtra .= '</div>';
+                    $sidebarExtra .= '<div class="column-no-break">';
+                    $sidebarExtra .= '<h4>';
+                    $sidebarExtra .= __('Non-Current Courses');
+                    $sidebarExtra .= '</h4>';
+                    
+                    $sidebarExtra .= $form->getOutput();
+                    $sidebarExtra .= '</div>';
+                }
             }
 
             //Print useful reading

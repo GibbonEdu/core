@@ -91,9 +91,11 @@ if ($step >= 1) {
 }
 
 //Set language pre-install
-$gibbon->locale->setLocale($code);
-bindtextdomain('gibbon', '../i18n');
-textdomain('gibbon');
+if (function_exists('gettext')) {
+    $gibbon->locale->setLocale($code);
+    bindtextdomain('gibbon', '../i18n');
+    textdomain('gibbon');
+}
 
 echo '<h2>'.sprintf(__('Installation - Step %1$s'), ($step + 1)).'</h2>';
 
@@ -643,7 +645,7 @@ if ($canInstall == false) {
 
                 try {
                     $dataStaff = array('gibbonPersonID' => 1, 'type' => 'Teaching');
-                    $sqlStaff = "INSERT INTO gibbonStaff SET gibbonPersonID=1, type='Teaching', smartWorkflowHelp='Y'";
+                    $sqlStaff = "INSERT INTO gibbonStaff SET gibbonPersonID=1, type='Teaching'";
                     $resultStaff = $connection2->prepare($sqlStaff);
                     $resultStaff->execute($dataStaff);
                 } catch (PDOException $e) {

@@ -19,8 +19,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 $(document).ready(function(){
 
     // Initialize datepicker
-    $.datepicker.setDefaults($.datepicker.regional[Gibbon.config.datepicker.locale]);
-
+    var dateDefaults = $.datepicker.regional[Gibbon.config.datepicker.locale];
+    dateDefaults.dateFormat = Gibbon.config.datepicker.dateFormat;
+    
+    $.datepicker.setDefaults(dateDefaults);
+    
 
     // Initialize tooltip
     if ($(window).width() > 768) {

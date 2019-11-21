@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
     }
 
     
-    $absences = $staffAbsenceDateGateway->selectAbsenceDatesByPerson($gibbonPersonID)->fetchGrouped();
+    $absences = $staffAbsenceDateGateway->selectApprovedAbsenceDatesByPerson($gibbonSchoolYearID, $gibbonPersonID)->fetchGrouped();
     $schoolYear = $schoolYearGateway->getSchoolYearByID($gibbonSchoolYearID);
 
     // CALENDAR VIEW
@@ -98,8 +98,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
     echo $table->render(new DataSet([$types]));
 
     // QUERY
-    $criteria = $staffAbsenceGateway->newQueryCriteria()
+    $criteria = $staffAbsenceGateway->newQueryCriteria(true)
         ->sortBy('date', 'DESC')
+        ->filterBy('schoolYear', $gibbonSchoolYearID)
         ->fromPOST();
 
     $absences = $staffAbsenceGateway->queryAbsencesByPerson($criteria, $gibbonPersonID);
@@ -118,6 +119,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
         if ($absence['status'] == 'Declined') $row->addClass('dull');
         return $row;
     });
+
+    $table->addMetaData('filterOptions', [
+        'schoolYear:'.$gibbonSchoolYearID => __('School Year').': '.__('Current'),
+    ]);
 
     $table->addHeaderAction('add', __('New Absence'))
         ->setURL('/modules/Staff/absences_add.php')

@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
 use Gibbon\Module\Attendance\AttendanceView;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -103,6 +104,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                 echo "</div>";
             } else {
                 $defaultAttendanceType = getSettingByScope($connection2, 'Attendance', 'defaultClassAttendanceType');
+                $recordFirstClassAsSchool = getSettingByScope($connection2, 'Attendance', 'recordFirstClassAsSchool');
                 $crossFillClasses = getSettingByScope($connection2, 'Attendance', 'crossFillClasses');
 
                 // Check class
@@ -175,7 +177,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                         echo __("Attendance has been taken at the following times for the specified date for this group:");
                         echo "<ul>";
                         while ($rowLog = $resultLog->fetch()) {
-                            echo "<li>" . sprintf(__('Recorded at %1$s on %2$s by %3$s.'), substr($rowLog["timestampTaken"], 11), dateConvertBack($guid, substr($rowLog["timestampTaken"], 0, 10)), formatName("", $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true)) . "</li>";
+                            echo "<li>" . sprintf(__('Recorded at %1$s on %2$s by %3$s.'), substr($rowLog["timestampTaken"], 11), dateConvertBack($guid, substr($rowLog["timestampTaken"], 0, 10)), Format::name("", $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true)) . "</li>";
                         }
                         echo "</ul>";
                         echo "</div>";
@@ -207,15 +209,16 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                     } else {
                         $count = 0;
                         $countPresent = 0;
+                        $countLogs = 0;
                         $columns = 4;
 
-                        $defaults = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '');
+                        $defaults = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '', 'prefill' => 'Y');
                         $students = $resultCourseClass->fetchAll();
 
                         // Build the attendance log data per student
                         foreach ($students as $key => $student) {
                             $data = array('gibbonPersonID' => $student['gibbonPersonID'], 'date' => $currentDate . '%', 'gibbonCourseClassID' => $gibbonCourseClassID);
-                            $sql = "SELECT type, reason, comment, context, timestampTaken FROM gibbonAttendanceLogPerson
+                            $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, context, timestampTaken FROM gibbonAttendanceLogPerson
                                     JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                                     WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
                                     AND date LIKE :date
@@ -224,12 +227,15 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                             $result = $pdo->executeQuery($data, $sql);
 
                             $log = ($result->rowCount() > 0) ? $result->fetch() : $defaults;
+                            $countLogs += $result->rowCount();
 
                             //Check for school prefill if attendance not taken in this class
-                            if ($result->rowCount() == 0 ) {
+                            if ($result->rowCount() == 0) {
                                 $data = array('gibbonPersonID' => $student['gibbonPersonID'], 'date' => $currentDate . '%');
-                                $sql = "SELECT type, reason, comment, context, timestampTaken FROM gibbonAttendanceLogPerson
+                                $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, context, timestampTaken, gibbonAttendanceCode.prefill
+                                        FROM gibbonAttendanceLogPerson
                                         JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                                        JOIN gibbonAttendanceCode ON (gibbonAttendanceCode.gibbonAttendanceCodeID=gibbonAttendanceLogPerson.gibbonAttendanceCodeID)
                                         WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
                                         AND date LIKE :date";
                                 if ($crossFillClasses == "N") {
@@ -239,6 +245,13 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                                 $result = $pdo->executeQuery($data, $sql);
 
                                 $log = ($result->rowCount() > 0) ? $result->fetch() : $log;
+                                if ($log['context'] == 'Roll Group' || $log['context'] == 'Person') {
+                                    $countLogs += 1;
+                                }
+
+                                if ($log['prefill'] == 'N') {
+                                    $log = $defaults;
+                                }
                             }
 
                             $students[$key]['cellHighlight'] = '';
@@ -282,7 +295,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                                 ->addClass($student['cellHighlight']);
 
                             $cell->addContent(getUserPhoto($guid, $student['image_240'], 75));
-                            $cell->addWebLink(formatName('', htmlPrep($student['preferredName']), htmlPrep($student['surname']), 'Student', false))
+                            $cell->addWebLink(Format::name('', htmlPrep($student['preferredName']), htmlPrep($student['surname']), 'Student', false))
                                 ->setURL('index.php?q=/modules/Students/student_view_details.php')
                                 ->addParam('gibbonPersonID', $student['gibbonPersonID'])
                                 ->addParam('subpage', 'Attendance')
@@ -303,6 +316,12 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                             $cell->addContent($attendance->renderMiniHistory($student['gibbonPersonID'], 'Class', $gibbonCourseClassID));
 
                             $count++;
+                        }
+
+                        // Option to record first class in a day as school-wide attendance
+                        if ($recordFirstClassAsSchool == 'Y' && $countLogs < $countPresent) {
+                            $row = $form->addRow();
+                                $row->addCheckbox('recordSchoolAttendance')->setValue('Y')->description(__('Record as school-wide attendance'))->checked('Y');
                         }
 
                         $form->addRow()->addAlert(__('Total students:') . ' ' . $count, 'success')->setClass('right')

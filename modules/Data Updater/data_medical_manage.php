@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
     $gateway = $container->get(MedicalUpdateGateway::class);
 
     // QUERY
-    $criteria = $gateway->newQueryCriteria()
+    $criteria = $gateway->newQueryCriteria(true)
         ->sortBy('status')
         ->sortBy('timestamp', 'DESC')
         ->fromPOST();

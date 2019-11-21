@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
         $gateway = $container->get(FamilyUpdateGateway::class);
 
         // QUERY
-        $criteria = $gateway->newQueryCriteria()
+        $criteria = $gateway->newQueryCriteria(true)
             ->sortBy(['gibbonFamily.name'])
             ->filterBy('cutoff', $nonCompliant == 'Y'? Format::dateConvert($date) : '')
             ->fromPOST();

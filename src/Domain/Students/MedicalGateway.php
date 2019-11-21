@@ -60,13 +60,14 @@ class MedicalGateway extends QueryableGateway
 
     public function selectMedicalConditionsByID($gibbonPersonMedicalID)
     {
+        $gibbonPersonMedicalID = is_array($gibbonPersonMedicalID) ? implode(',', $gibbonPersonMedicalID) : $gibbonPersonMedicalID;
+
         $data = array('gibbonPersonMedicalID' => $gibbonPersonMedicalID);
-        $sql = "SELECT gibbonPersonMedicalCondition.*, gibbonAlertLevel.name AS risk, gibbonAlertLevel.color as alertColor, (CASE WHEN gibbonMedicalCondition.gibbonMedicalConditionID IS NOT NULL THEN gibbonMedicalCondition.name ELSE gibbonPersonMedicalCondition.name END) as name 
+        $sql = "SELECT gibbonPersonMedicalCondition.gibbonPersonMedicalID, gibbonPersonMedicalCondition.*, gibbonAlertLevel.name AS risk, gibbonAlertLevel.color as alertColor, (CASE WHEN gibbonMedicalCondition.gibbonMedicalConditionID IS NOT NULL THEN gibbonMedicalCondition.name ELSE gibbonPersonMedicalCondition.name END) as name 
                 FROM gibbonPersonMedicalCondition 
                 JOIN gibbonAlertLevel ON (gibbonPersonMedicalCondition.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID) 
                 LEFT JOIN gibbonMedicalCondition ON (gibbonMedicalCondition.gibbonMedicalConditionID=gibbonPersonMedicalCondition.name)
-                WHERE gibbonPersonMedicalCondition.gibbonPersonMedicalID=:gibbonPersonMedicalID 
-                ORDER BY gibbonPersonMedicalCondition.name";
+                WHERE FIND_IN_SET(gibbonPersonMedicalCondition.gibbonPersonMedicalID, :gibbonPersonMedicalID)";
 
         return $this->db()->select($sql, $data);
     }
@@ -77,7 +78,7 @@ class MedicalGateway extends QueryableGateway
         $sql = "SELECT gibbonPersonMedical.*, surname, preferredName
                 FROM gibbonPersonMedical
                 JOIN gibbonPerson ON (gibbonPersonMedical.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                WHERE gibbonPersonMedicalID=:gibbonPersonMedicalID";
+                WHERE gibbonPersonMedical.gibbonPersonMedicalID=:gibbonPersonMedicalID";
 
         return $this->db()->selectOne($sql, $data);
     }

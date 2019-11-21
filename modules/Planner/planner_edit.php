@@ -381,7 +381,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 
                     while ($staff = $results->fetch()) {
                         $row = $table->addRow();
-                        $row->addContent(formatName('', $staff['preferredName'], $staff['surname'], 'Staff', true, true));
+                        $row->addContent(Format::name('', $staff['preferredName'], $staff['surname'], 'Staff', true, true));
                         $row->addContent($staff['role']);
                         $row->addContent("<a onclick='return confirm(\"".__('Are you sure you wish to delete this record?')."\")' href='".$_SESSION[$guid]['absoluteURL']."/modules/".$_SESSION[$guid]['module']."/planner_edit_guest_deleteProcess.php?gibbonPlannerEntryGuestID=".$staff['gibbonPlannerEntryGuestID']."&gibbonPlannerEntryID=".$gibbonPlannerEntryID."&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&address=".$_GET['q']."'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>");
                     }

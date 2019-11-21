@@ -27,6 +27,7 @@ use Gibbon\Tables\Columns\Column;
 use Gibbon\Tables\Columns\ActionColumn;
 use Gibbon\Tables\Columns\CheckboxColumn;
 use Gibbon\Tables\Columns\ExpandableColumn;
+use Gibbon\Tables\Columns\DraggableColumn;
 use Gibbon\Tables\Renderer\RendererInterface;
 use Gibbon\Tables\View\DataTableView;
 use Gibbon\Tables\View\PaginatedView;
@@ -241,6 +242,18 @@ class DataTable implements OutputableInterface
     public function addExpandableColumn($id)
     {
         $this->columns[$id] = new ExpandableColumn($id, $this);
+
+        return $this->columns[$id];
+    }
+
+    /**
+     * Add a drag handle for drag-drop sorting.
+     *
+     * @return DraggableColumn
+     */
+    public function addDraggableColumn($id, $ajaxURL, $data = [])
+    {
+        $this->columns[$id] = new DraggableColumn($id, $ajaxURL, $data, $this);
 
         return $this->columns[$id];
     }

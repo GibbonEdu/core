@@ -212,7 +212,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
 							if ($outcomeCount < 1) {
 								echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
 							} else {
-								echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> x ".$outcomeCount;
+								echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/>&nbsp;x&nbsp;".$outcomeCount;
 							}
 							echo '</td>';
 							echo '<td>';
@@ -225,7 +225,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
 							if ($outcomeCount < 1) {
 								echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
 							} else {
-								echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> x ".$outcomeCount;
+								echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/>&nbsp;x&nbsp;".$outcomeCount;
 							}
 							echo '</td>';
 						}
@@ -290,7 +290,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
 								if ($outcomeCount < 1) {
 									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
 								} else {
-									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> x ".$outcomeCount;
+									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/>&nbsp;x&nbsp;".$outcomeCount;
 								}
 								echo '</td>';
 								echo '<td>';
@@ -303,7 +303,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
 								if ($outcomeCount < 1) {
 									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
 								} else {
-									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> x ".$outcomeCount;
+									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/>&nbsp;x&nbsp;".$outcomeCount;
 								}
 								echo '</td>';
 							}

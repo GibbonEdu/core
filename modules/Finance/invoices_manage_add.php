@@ -125,22 +125,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
         // Block template
         $blockTemplate = $form->getFactory()->createTable()->setClass('blank');
             $row = $blockTemplate->addRow();
-                $row->addTextField('name')->setClass('standardWidth floatLeft noMargin title')->required()->placeholder(__('Fee Name'))
+                $row->addTextField('name')->setClass('w-full pr-10 title')->required()->placeholder(__('Fee Name'))
                     ->append('<input type="hidden" id="gibbonFinanceFeeID" name="gibbonFinanceFeeID" value="">')
                     ->append('<input type="hidden" id="feeType" name="feeType" value="">');
                 
-            $col = $blockTemplate->addRow()->addColumn()->addClass('inline');
+            $col = $blockTemplate->addRow()->addColumn()->addClass('flex mt-1');
                 $col->addSelectFeeCategory('gibbonFinanceFeeCategoryID')
-                    ->setClass('shortWidth floatLeft noMargin');
+                    ->setClass('w-48 m-0');
 
                 $col->addCurrency('fee')
-                    ->setClass('shortWidth floatLeft')
+                    ->setClass('w-48 ml-1')
                     ->required()
                     ->placeholder(__('Value').(!empty($_SESSION[$guid]['currency'])? ' ('.$_SESSION[$guid]['currency'].')' : ''));
                 
-            $col = $blockTemplate->addRow()->addClass('showHide fullWidth')->addColumn();
+            $col = $blockTemplate->addRow()->addClass('showHide w-full')->addColumn();
                 $col->addLabel('description', __('Description'));
-                $col->addTextArea('description')->setRows('auto')->setClass('fullWidth floatNone noMargin');
+                $col->addTextArea('description')->setRows('auto')->setClass('w-full float-none m-0');
 
         // Custom Blocks for Fees
         $row = $form->addRow();

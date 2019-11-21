@@ -53,14 +53,16 @@ class StaffAbsenceDateGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
-    public function selectAbsenceDatesByPerson($gibbonPersonID)
+    public function selectApprovedAbsenceDatesByPerson($gibbonSchoolYearID, $gibbonPersonID)
     {
-        $data = ['gibbonPersonID' => $gibbonPersonID];
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID];
         $sql = "SELECT gibbonStaffAbsenceDate.date as groupBy, gibbonStaffAbsence.*, gibbonStaffAbsenceDate.*, gibbonStaffAbsenceType.name as type, gibbonStaffAbsenceType.sequenceNumber
                 FROM gibbonStaffAbsence 
                 JOIN gibbonStaffAbsenceDate ON (gibbonStaffAbsenceDate.gibbonStaffAbsenceID=gibbonStaffAbsence.gibbonStaffAbsenceID) 
                 JOIN gibbonStaffAbsenceType ON (gibbonStaffAbsenceType.gibbonStaffAbsenceTypeID=gibbonStaffAbsence.gibbonStaffAbsenceTypeID)
-                WHERE gibbonStaffAbsence.gibbonPersonID=:gibbonPersonID
+                WHERE gibbonStaffAbsence.gibbonSchoolYearID=:gibbonSchoolYearID
+                AND gibbonStaffAbsence.gibbonPersonID=:gibbonPersonID
+                AND gibbonStaffAbsence.status='Approved'
                 ORDER BY gibbonStaffAbsenceDate.date";
 
         return $this->db()->select($sql, $data);

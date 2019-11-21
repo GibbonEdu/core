@@ -9,14 +9,14 @@
   },
   "dependencies": {
     "cross-env": "^5.2.0",
-    "laravel-mix": "^4.0.15",
-    "tailwindcss": "^1.0.0-beta.3"
+    "laravel-mix": "^4.1.2",
+    "tailwindcss": "^1.1.2"
   },
   "devDependencies": {
-    "resolve-url-loader": "^2.3.1",
-    "sass": "^1.17.3",
-    "sass-loader": "^7.1.0",
-    "vue-template-compiler": "^2.6.9"
+    "resolve-url-loader": "^2.3.2",
+    "sass": "^1.22.10",
+    "sass-loader": "^7.2.0",
+    "vue-template-compiler": "^2.6.10"
   },
   "scripts": {
     "build": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",

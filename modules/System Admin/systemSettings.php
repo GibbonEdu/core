@@ -257,7 +257,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $setting = getSettingByScope($connection2, 'System', 'pagination', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addNumber($setting['name'])->setValue($setting['value'])->minimum(5)->maxLength(50)->required();
+        $row->addSelect($setting['name'])->fromArray(['10', '25', '50', '100'])->selected($setting['value'])->required();
 
     $setting = getSettingByScope($connection2, 'System', 'analytics', true);
     $row = $form->addRow();

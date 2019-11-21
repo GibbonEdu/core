@@ -33,6 +33,21 @@ jQuery(function($){
     });
 
     /**
+     * Sidebar toggle switch
+     */
+    $('#sidebarToggle').click(function() {
+        if ($('#sidebar').hasClass('lg:w-sidebar')) {
+            $('#sidebar').removeClass('lg:w-sidebar')
+            $('#sidebar').addClass('lg:hidden');
+            $(this).html('«');
+        } else {
+            $('#sidebar').removeClass('lg:hidden')
+            $('#sidebar').addClass('lg:w-sidebar');
+            $(this).html('»');
+        }
+    });
+
+    /**
      * Form Class: generic check All/None checkboxes
      */
     $(document).on('click', '.checkall', function () {
@@ -133,7 +148,42 @@ jQuery(function($){
             }
         });
     });
+
+    /**
+    * Data Table: Simple Drag-Drop
+    */
+    $('.dataTable table[data-drag-url]').each(DraggableDataTable);
+
 });
+
+var DraggableDataTable = function () {
+    var table = this;
+    $('tbody', table).sortable({
+        placeholder: "drag-placeholder bg-gray-400 shadow-inner",
+        handle: ".drag-handle",
+        start: function(event, ui) {
+            $(ui.placeholder).children('td').each(function() {
+                $(this).outerHeight($(ui.item).outerHeight())
+            });
+        },
+        update: function() {
+            var elementOrder = new Array();
+            $('.draggable', this).each(function() {
+                elementOrder.push($(this).data('drag-id'));
+            });
+            $.ajax({
+                url: $(table).data('drag-url'),
+                data: {
+                    data: $(table).data('drag-data'),
+                    order: JSON.stringify(elementOrder)
+                },
+                type: 'POST',
+                success: function(data) {
+                }
+            });
+        }
+    }).disableSelection();
+};
 
 // Form API Functions
 
@@ -454,7 +504,7 @@ DataTable = (function(element, basePath, filters, identifier) {
     var _ = this;
 
     _.table = $(element);
-    _.path = basePath + " #" + $(element).attr('id') + " .dataTable";
+    _.path = basePath + " #" + $(element).attr('id') + " > .dataTable";
     _.filters = filters;
     _.identifier = identifier;
     if (_.filters.sortBy.length == 0) _.filters.sortBy = {};

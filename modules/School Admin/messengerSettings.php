@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Messenger Settings'));
+    $page->breadcrumbs->add(__('Messenger Settings'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -70,6 +70,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
 		$row->addTextArea($setting['name'])->setValue($setting['value'])->setRows(2);
 
+    $setting = getSettingByScope($connection2, 'Messenger', 'pinnedMessagesOnHome', true);
+	$row = $form->addRow();
+    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+    	$row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
 	$row = $form->addRow();
 		$row->addFooter();

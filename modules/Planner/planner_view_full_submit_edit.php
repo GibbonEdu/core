@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -169,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 
                                 $row = $form->addRow();
                                     $row->addLabel('student', __('Student'));
-                                    $row->addTextField('student')->setValue(formatName('', htmlPrep($rowSubmission['preferredName']), htmlPrep($rowSubmission['surname']), 'Student'))->readonly()->required();
+                                    $row->addTextField('student')->setValue(Format::name('', htmlPrep($rowSubmission['preferredName']), htmlPrep($rowSubmission['surname']), 'Student'))->readonly()->required();
 
                                 $statuses = array(
                                     'On Time' => __('On Time'),
@@ -234,7 +235,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 
                                 $row = $form->addRow();
                                     $row->addLabel('student', __('Student'));
-                                    $row->addTextField('student')->setValue(formatName('', htmlPrep($rowSubmission['preferredName']), htmlPrep($rowSubmission['surname']), 'Student'))->readonly()->required();
+                                    $row->addTextField('student')->setValue(Format::name('', htmlPrep($rowSubmission['preferredName']), htmlPrep($rowSubmission['surname']), 'Student'))->readonly()->required();
 
                                 $types = array(
                                     'None' => __('None')

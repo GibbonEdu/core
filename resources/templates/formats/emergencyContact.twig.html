@@ -1,0 +1,26 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+
+Page Foot: Outputs the contents of the HTML <head> tag. This includes 
+all stylesheets and scripts with a 'head' context.
+-->#}
+
+{% if name %}
+    <u>{{ name }}</u><br/>
+{% endif %}
+
+{% if number1 %}
+    <i>{{ __('Number') }}:</i> {{ formatUsing('phone', number1) }}<br/>
+{% endif %}
+
+{% if number2 %}
+    <i>{{ __('Number 2') }}:</i> {{ formatUsing('phone', number2) }}<br/>
+{% endif %}
+
+{% if relationship %}
+    <i>{{ __('Relationship') }}:</i> {{ relationship }}<br/>
+{% endif %}

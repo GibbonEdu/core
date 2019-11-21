@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Module\Attendance\AttendanceView;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -97,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         $form->toggleVisibilityByClass('partialDateRow')->onSelect('absenceType')->when('partial');
         $row = $form->addRow()->addClass('partialDateRow');
             $row->addLabel('date', __('Date'));
-            $row->addDate('date')->required()->setValue($date);
+            $row->addDate('date')->required()->setValue($date)->minimum(date('Y-m-d', strtotime('today +1 day')));
     }
 
     $form->addRow()->addSearchSubmit($gibbon->session);
@@ -107,6 +108,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     if(!empty($gibbonPersonID)) {
         $today = date('Y-m-d');
         $attendanceLog = '';
+
+        if (!empty($date) && Format::dateConvert($date) <= $today) {
+            echo Format::alert(__('The specified date is not in the future, or is not a school day.'), 'error');
+            return;
+        }
 
         if ($scope == 'single') {
             $attendanceLog .= "<div id='attendanceLog'>";
@@ -176,7 +182,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                         }
 
                         $attendanceLog .= '<td>';
-                            $attendanceLog .= formatName('', $rowLog['preferredName'], $rowLog['surname'], 'Staff', false, true);
+                            $attendanceLog .= Format::name('', $rowLog['preferredName'], $rowLog['surname'], 'Staff', false, true);
                         $attendanceLog .= '</td>';
 
                         $attendanceLog .= '<td>'.date("g:i a, M j", strtotime($rowLog['timestampTaken']) ).'</td>';
@@ -203,7 +209,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         if ($absenceType == 'full') {
             $row = $form->addRow();
                 $row->addLabel('dateStart', __('Start Date'));
-                $row->addDate('dateStart')->required();
+                $row->addDate('dateStart')->required()->minimum(date('Y-m-d', strtotime('today +1 day')));
 
             $row = $form->addRow();
                 $row->addLabel('dateEnd', __('End Date'));
