@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Traits;
 
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Domain\DataSet;
 
 /**
  * MultipleOptions
@@ -102,6 +103,42 @@ trait MultipleOptionsTrait
         $results = $pdo->executeQuery($data, $sql);
 
         return $this->fromResults($results, $groupBy);
+    }
+
+    /**
+     * Build options array from a DataSet, as provided by <b>Domain</b> gateways
+     * 
+     * @param Dataset $dataset
+     * @param string $valCol
+     * @param string $nameCol
+     * @param string $groupBy
+     * 
+     * @return self
+     */
+    public function fromDataSet(Dataset $dataset, $valCol, $nameCol, $groupBy = false)
+    {
+        if(empty($dataset) || !is_object($dataset)){
+            throw new \InvalidArgumentException(sprintf('Element %s: fromQuery expects value to be an Object, %s given.', $this->getName(), gettype($dataset)));
+        }
+
+        if($dataset->getTotalCount() > 0)
+        {
+            $options = array_filter($dataset->toArray(), function ($item) use ($valCol,$nameCol) {
+                return isset($item[$valCol]) && isset($item[$nameCol]);
+            });
+        }
+
+        foreach ($options as $option) {
+            $option = array_map('trim', $option);
+
+            if ($groupBy !== false) {
+                $this->options[$option[$groupBy]][$option[$valCol]] = __($option[$nameCol]);
+            } else {
+                $this->options[$option[$valCol]]= __($option[$nameCol]);
+            }
+        }
+
+        return $this;
     }
 
     /**
