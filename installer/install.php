@@ -29,6 +29,8 @@ include '../gibbon.php';
 //Module includes
 require_once '../modules/System Admin/moduleFunctions.php';
 
+$databasePasswordRaw = $_POST['databasePassword'] ?? '';
+
 // Sanitize the whole $_POST array
 $validator = new Validator();
 $_POST = $validator->sanitize($_POST);
@@ -79,7 +81,7 @@ ob_start();
 $databaseServer = (isset($_POST['databaseServer']))? $_POST['databaseServer'] : '';
 $databaseName = (isset($_POST['databaseName']))? $_POST['databaseName'] : '';
 $databaseUsername = (isset($_POST['databaseUsername']))? $_POST['databaseUsername'] : '';
-$databasePassword = (isset($_POST['databasePassword']))? $_POST['databasePassword'] : '';
+$databasePassword = $databasePasswordRaw;
 $demoData = (isset($_POST['demoData']))? $_POST['demoData'] : '';
 $code = (isset($_POST['code']))? $_POST['code'] : 'en_GB';
 
