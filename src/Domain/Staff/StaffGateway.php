@@ -81,6 +81,43 @@ class StaffGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    public function queryStaffDirectory(QueryCriteria $criteria, $gibbonSchoolYearID)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonPerson.gibbonPersonID', 'gibbonPerson.title', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.status', 'gibbonPerson.username', 'gibbonPerson.image_240', 'gibbonPerson.email', 'gibbonPerson.phone1', 'gibbonPerson.phone1Type', 'gibbonPerson.phone1CountryCode', 'gibbonPerson.phone2', 'gibbonPerson.phone2Type', 'gibbonPerson.phone2CountryCode',
+                'gibbonStaff.gibbonStaffID', 'gibbonStaff.initials', 'gibbonStaff.type', 'gibbonStaff.jobTitle',
+                "GROUP_CONCAT(DISTINCT gibbonSpace.name ORDER BY gibbonSpace.name SEPARATOR '<br/>') as facility",
+                "GROUP_CONCAT(DISTINCT gibbonSpace.phoneInternal ORDER BY gibbonSpace.name SEPARATOR '<br/>') as extension",
+            ])
+            ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID')
+            ->leftJoin('gibbonRollGroup', '(gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID)')
+            ->leftJoin('gibbonSpacePerson', 'gibbonSpacePerson.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->leftJoin('gibbonSpace', '(gibbonSpace.gibbonSpaceID=gibbonSpacePerson.gibbonSpaceID OR gibbonSpace.gibbonSpaceID=gibbonRollGroup.gibbonSpaceID)')
+            ->where('gibbonPerson.status = "Full"')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->groupBy(['gibbonPerson.gibbonPersonID']);
+
+        $criteria->addFilterRules([
+            'type' => function ($query, $type) {
+                if ($type == 'other') {
+                    return $query
+                        ->where('gibbonStaff.type <> "Teaching"')
+                        ->where('gibbonStaff.type <> "Support"');
+                } else {
+                    return $query
+                        ->where('gibbonStaff.type = :type')
+                        ->bindValue('type', ucfirst($type));
+                }
+            },
+        ]);
+
+        return $this->runQuery($query, $criteria);
+    }
+    
+
     public function selectStaffByID($gibbonPersonID, $type = null)
     {
         $data = array('gibbonPersonID' => $gibbonPersonID);
