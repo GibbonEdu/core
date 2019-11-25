@@ -50,11 +50,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
             ->sortBy(['surname', 'preferredName'])
             ->fromPOST();
 
-        echo '<h2>';
-        echo __('Search');
-        echo '</h2>';
-
         $form = Form::create('action', $_SESSION[$guid]['absoluteURL']."/index.php", 'get');
+        $form->setTitle(__('Search'));
 
         $form->setClass('noIntBorder fullWidth');
 
@@ -77,19 +74,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
 
         echo $form->getOutput();
 
-        echo '<h2>';
-        echo __('Choose A Staff Member');
-        echo '</h2>';
-
         $staff = $staffGateway->queryAllStaff($criteria);
 
         // DATA TABLE
-        $table = DataTable::createPaginated('staffManage', $criteria);
+        $table = DataTable::createPaginated('staffView', $criteria);
+        $table->setTitle(__('Choose A Staff Member'));
 
-        $table->addHeaderAction('add', __('Add'))
-            ->setURL('/modules/Staff/staff_manage_add.php')
-            ->addParam('search', $search)
-            ->displayLabel();
+        if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php')) {
+            $table->addHeaderAction('add', __('Add'))
+                ->setURL('/modules/Staff/staff_manage_add.php')
+                ->addParam('search', $search)
+                ->displayLabel();
+        }
 
         $table->modifyRows(function ($person, $row) {
             if (!empty($person['status']) && $person['status'] != 'Full') $row->addClass('error');
