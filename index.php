@@ -100,6 +100,21 @@ if ($session->has('passwordForceReset')) {
     }
 }
 
+//Upgrade redirect
+$upgrade = false;
+$versionDB = getSettingByScope($connection2, 'System', 'version');
+$versionCode = $version;
+if (version_compare($versionDB, $versionCode, '<') && isActionAccessible($guid, $connection2, '/modules/System Admin/update.php')) {
+    if ($session->get('address') == '/modules/System Admin/update.php') {
+        $upgrade = true;
+    }
+    else {
+        $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/update.php';
+        header("Location: {$URL}");
+        exit();
+    }
+}
+
 // Redirects after login
 if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First page load, so proceed
 
@@ -425,7 +440,7 @@ if (!$session->has('address') && !empty($_GET['return'])) {
  *
  * TODO: Move this somewhere more sensible.
  */
-if ($isLoggedIn) {
+if ($isLoggedIn && !$upgrade) {
     if ($cacheLoad || !$session->has('fastFinder')) {
         $templateData = getFastFinder($connection2, $guid);
         $templateData['enrolmentCount'] = $container->get(StudentGateway::class)->getStudentEnrolmentCount($session->get('gibbonSchoolYearID'));
