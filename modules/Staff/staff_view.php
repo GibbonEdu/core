@@ -80,11 +80,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
         $table = DataTable::createPaginated('staffView', $criteria);
         $table->setTitle(__('Choose A Staff Member'));
 
+        if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_directory.php')) {
+            $table->addHeaderAction('directory', __('Staff Directory'))
+                ->setURL('/modules/Staff/staff_directory.php')
+                ->addParam('search', $search)
+                ->setIcon('attendance')
+                ->displayLabel();
+        }
+
         if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php')) {
             $table->addHeaderAction('add', __('Add'))
                 ->setURL('/modules/Staff/staff_manage_add.php')
                 ->addParam('search', $search)
-                ->displayLabel();
+                ->displayLabel()
+                ->prepend(' | ');
         }
 
         $table->modifyRows(function ($person, $row) {

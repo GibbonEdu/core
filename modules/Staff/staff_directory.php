@@ -30,15 +30,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_directory.php'
     $page->breadcrumbs->add(__('Staff Directory'));
 
     $search = (isset($_GET['search']) ? $_GET['search'] : '');
-    $allStaff = (isset($_GET['allStaff']) ? $_GET['allStaff'] : '');
 
     $staffGateway = $container->get(StaffGateway::class);
 
     // QUERY
     $criteria = $staffGateway->newQueryCriteria()
         ->searchBy($staffGateway->getSearchableColumns(), $search)
-        ->filterBy('all', $allStaff)
-        ->sortBy(['surname', 'preferredName'])
+        ->sortBy(['biographicalGrouping', 'biographicalGroupingPriority', 'surname', 'preferredName'])
         ->fromPOST();
 
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL']."/index.php", 'get');
@@ -60,14 +58,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_directory.php'
     echo $form->getOutput();
 
 
-    $staff = $staffGateway->queryStaffDirectory($criteria, $gibbon->session->get('gibbonSchoolYearID'));
+    $staff = $staffGateway->queryAllStaff($criteria, $gibbon->session->get('gibbonSchoolYearID'));
+
+    
 
     // DATA TABLE
     $table = DataTable::createPaginated('staffDirectory', $criteria);
     $table->setTitle(__('Staff Directory'));
 
+    $table->modifyRows(function ($data, $row, $columnCount) {
+        return $row->prepend('<tr><td colspan="'.$columnCount.'">Foo</td></tr>');
+    });
+    
     $table->addMetaData('filterOptions', [
-        'all:on'        => __('All Staff'),
         'type:teaching' => __('Staff Type').': '.__('Teaching'),
         'type:support'  => __('Staff Type').': '.__('Support'),
         'type:other'    => __('Staff Type').': '.__('Other'),
@@ -80,20 +83,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_directory.php'
         ->width('20%')
         ->format(function ($person) {
             $text = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', true, true);
-            $url = './index.php?q=/modules/Staff/staff_view.php&gibbonPersonID='.$person['gibbonPersonID'];
+            $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
             return Format::link($url, $text).'<br/>'.Format::small(!empty($person['jobTitle']) ? $person['jobTitle'] : $person['type']);
         });
 
-    // $table->addColumn('jobTitle', __('Job Title'))
-    //     ->description(__('Type'))
-    //     ->format(function($person) {
-    //         return $person['jobTitle'].'<br/>'.Format::small(__($person['type']));
-    //     });
+    $table->addColumn('type', __('Type'));
     $table->addColumn('department', __('Department'));
-    $table->addColumn('facility', __('Facility'));
-    $table->addColumn('extension', __('Extension'));
+    $table->addColumn('facility', __('Facility'))->width('5%');
+    $table->addColumn('extension', __('Extension'))->width('5%');
     $table->addColumn('email', __('Email'));
-    $table->addColumn('phone', __('Phone'))->format(function($person) {
+    $table->addColumn('phone', __('Phone'))->format(function ($person) {
         $output = '';
         if (!empty($person['phone1'])) {
             $output .= Format::tooltip($person['phone1'].' ('.$person['phone1Type'].')', Format::phone($person['phone1'], $person['phone1CountryCode'], $person['phone1Type'])).'<br/>';
@@ -104,16 +103,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_directory.php'
         return $output;
     });
 
-    // // ACTIONS
-    // $table->addActionColumn()
-    //     ->addParam('gibbonPersonID')
-    //     ->addParam('allStaff', $allStaff)
-    //     ->addParam('search', $criteria->getSearchText(true))
-    //     ->format(function ($person, $actions) use ($guid) {
-    //         $actions->addAction('view', __('View Details'))
-    //                 ->setURL('/modules/Staff/staff_view_details.php');
-    //     });
-
     echo $table->render($staff);
-    
 }
