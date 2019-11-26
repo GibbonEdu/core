@@ -58,6 +58,10 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             {% endif %}
         </div>
 
+        {% if listOptions %}
+            {{ include('components/listOptions.twig.html') }}
+        {% endif %}
+
         {{ block('pagination') }}
     </div>
     {% endif %}
@@ -109,7 +113,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% set buttonStyle = 'border -ml-px px-2 py-1 font-bold leading-loose' %}
     
     {% if dataSet.getResultCount > dataSet.getPageSize or filterOptions %}
-    <div class="pagination mb-2">
+    <div class="pagination mb-2 ml-2">
         <button type="button" class="paginate rounded-l text-gray-600 bg-gray-200 border-gray-500 {{ not dataSet.isFirstPage ? 'hover:bg-gray-400'}} {{ buttonStyle }}" data-page="{{ dataSet.getPrevPageNumber }}" {{ dataSet.isFirstPage ? 'disabled'}}>
             {{ __('Prev') }}
         </button>

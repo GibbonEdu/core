@@ -55,6 +55,13 @@ class PaginatedView extends DataTableView implements RendererInterface
      */
     public function renderTable(DataTable $table, DataSet $dataSet)
     {
+        $this->preparePageData($table, $dataSet);
+
+        return $this->render('components/paginatedTable.twig.html');
+    }
+
+    public function preparePageData(DataTable $table, DataSet $dataSet)
+    {
         $this->addData('table', $table);
         $this->addData('blankSlate', $table->getMetaData('blankSlate'));
         $this->addData('draggable', $table->getMetaData('draggable'));
@@ -65,15 +72,20 @@ class PaginatedView extends DataTableView implements RendererInterface
 
         $this->addData([
             'dataSet'    => $dataSet,
+            'dataSet'    => $dataSet,
+            'dataSet'    => $dataSet,
+            'dataSet'    => $dataSet,
 
             'headers'    => $this->getTableHeaders($table),
             'columns'    => $table->getColumns(),
             'rows'       => $this->getTableRows($table, $dataSet),
+            'address'    => $_REQUEST['q'] ?? '',
             'path'       => './fullscreen.php?'.http_build_query($_GET),
             'identifier' => $this->criteria->getIdentifier(),
 
             'searchText'     => $this->criteria->getSearchText(),
             'pageSize'       => $this->getSelectPageSize($dataSet, $filters),
+            'listOptions'    => $table->getMetaData('listOptions'),
             'filterOptions'  => $this->getSelectFilterOptions($dataSet, $filters),
             'filterCriteria' => $this->getFilterCriteria($filters),
             'bulkActions'    => $table->getMetaData('bulkActions'),
@@ -84,8 +96,6 @@ class PaginatedView extends DataTableView implements RendererInterface
         $this->addData('jsonData', !empty($postData)
             ? json_encode(array_replace($postData, $this->criteria->toArray()))
             : $this->criteria->toJson());
-
-        return $this->render('components/paginatedTable.twig.html');
     }
 
     /**
