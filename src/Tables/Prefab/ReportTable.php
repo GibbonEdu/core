@@ -69,7 +69,13 @@ class ReportTable extends DataTable
     public function setViewMode($viewMode, $session)
     {
         switch ($viewMode) {
-            case 'print':   $this->setRenderer(new PrintableRenderer()); break;
+            case 'print':   $this->setRenderer(new PrintableRenderer());
+                $this->setHeader([]);
+                $this->addHeaderAction('print', __('Print'))
+                    ->onClick('javascript:window.print(); return false;')
+                    ->displayLabel();
+                $this->addMetaData('hidePagination', true);
+                break;
             
             case 'export':  $this->setRenderer(new SpreadsheetRenderer($session->get('absolutePath'))); break;
         }

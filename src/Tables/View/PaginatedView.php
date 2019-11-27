@@ -79,7 +79,7 @@ class PaginatedView extends DataTableView implements RendererInterface
             'headers'    => $this->getTableHeaders($table),
             'columns'    => $table->getColumns(),
             'rows'       => $this->getTableRows($table, $dataSet),
-            'address'    => $_REQUEST['q'] ?? '',
+            'url'        => './index.php?'.http_build_query(['view' => ''] + $_GET),
             'path'       => './fullscreen.php?'.http_build_query($_GET),
             'identifier' => $this->criteria->getIdentifier(),
 
@@ -89,6 +89,7 @@ class PaginatedView extends DataTableView implements RendererInterface
             'filterOptions'  => $this->getSelectFilterOptions($dataSet, $filters),
             'filterCriteria' => $this->getFilterCriteria($filters),
             'bulkActions'    => $table->getMetaData('bulkActions'),
+            'hidePagination' => $table->getMetaData('hidePagination'),
             'isFiltered'     => $dataSet->getTotalCount() > 0 && ($this->criteria->hasSearchText() || $this->criteria->hasFilter()),
         ]);
 

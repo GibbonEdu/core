@@ -34,7 +34,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {{ parent() }}
     </div>
 
-    {% if dataSet.getTotalCount > 0 %}
+    {% if dataSet.getTotalCount > 0 and not hidePagination %}
     <div class="flex flex-wrap sm:flex-no-wrap items-stretch justify-between">
         <div class="flex items-stretch h-full">
             {% if pageSize %}
