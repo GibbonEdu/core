@@ -22,6 +22,7 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\View\GridView;
 use Gibbon\Tables\Prefab\ReportTable;
 use Gibbon\Domain\Staff\StaffGateway;
+use Gibbon\View\View;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_directory.php') == false) {
     // Access denied
@@ -105,43 +106,57 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_directory.php'
     $table->addMetaData('listOptions', [
         'list' => __('List'),
         'grid' => __('Grid'),
+        'card' => __('Card'),
     ]);
 
     // COLUMNS
-    if ($urlParams['view'] == 'grid') {
+    if ($urlParams['view'] == 'grid' || $urlParams['view'] == 'card') {
         $table->setRenderer(new GridView($container->get('twig')));
         $table->getRenderer()->setCriteria($criteria);
 
-        $table->addMetaData('gridClass', 'rounded-sm bg-gray-100 border');
-        $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/4 md:w-1/5 my-4 text-center text-xs');
+        if ($urlParams['view'] == 'card') {
+            $table->addMetaData('gridClass', 'items-stretch -mx-2');
+            $table->addMetaData('gridItemClass', 'w-1/2 px-2 mb-4 text-center text-xs items-stretch');
 
-        $table->addColumn('image_240', __('Photo'))
-            ->context('primary')
-            ->notSortable()
-            ->format(function ($person) {
-                $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
-                return Format::link($url, Format::userPhoto($person['image_240'], 'sm'));
-            });
+            $templateView = $container->get(View::class);
+            $table->addColumn('card', '')
+                ->addClass('border rounded bg-gray-100 h-full')
+                ->format(function ($person) use (&$templateView) {
+                    return $templateView->fetchFromTemplate('staffDirectoryCard.twig.html', ['staff' => $person]);
+                });
+        } else {
+            $table->addMetaData('gridClass', 'rounded-sm bg-gray-100 border');
+            $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/4 md:w-1/5 my-4 text-center text-xs');
+
+            $table->addColumn('image_240', __('Photo'))
+                ->context('primary')
+                ->format(function ($person) {
+                    $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
+                    return Format::link($url, Format::userPhoto($person['image_240'], 'sm'));
+                });
+        }
     }
 
-    $table->addColumn('fullName', __('Name'))
-        ->description(__('Initials'))
-        ->sortable(['surname', 'preferredName'])
-        ->width('20%')
-        ->format(function ($person) use ($urlParams) {
-            $text = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', $urlParams['view'] != 'grid', true);
-            $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
-            return Format::link($url, $text, ['class' => 'font-bold underline leading-normal']).'<br/>'.
-                   Format::small($person['initials']);
-        });
+    if ($urlParams['view'] == 'list' || $urlParams['view'] == 'grid') {
+        $table->addColumn('fullName', __('Name'))
+            ->description(__('Initials'))
+            ->sortable(['surname', 'preferredName'])
+            ->width('20%')
+            ->format(function ($person) use ($urlParams) {
+                $text = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', $urlParams['view'] != 'grid', true);
+                $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
+                return Format::link($url, $text, ['class' => 'font-bold underline leading-normal']).'<br/>'.
+                    Format::small($person['initials']);
+            });
 
-    $table->addColumn('jobTitle', __('Job Title'))
-        ->description(__('Roll Group'))
-        ->sortable(['jobTitle', 'gibbonPerson.surname', 'gibbonPerson.preferredName'])
-        ->format(function ($person) {
-            return (!empty($person['jobTitle']) ? $person['jobTitle'] : '').'<br/>'.
-                   (!empty($person['rollGroupName']) ? Format::small($person['rollGroupName']) : '');
-        });
+        $table->addColumn('jobTitle', __('Job Title'))
+            ->description(__('Roll Group'))
+            ->sortable(['jobTitle', 'gibbonPerson.surname', 'gibbonPerson.preferredName'])
+            ->format(function ($person) {
+                return (!empty($person['jobTitle']) ? $person['jobTitle'] : '').'<br/>'.
+                    (!empty($person['rollGroupName']) ? Format::small($person['rollGroupName']) : '');
+            });
+    }
 
     if ($urlParams['view'] == 'list') {
         $table->addColumn('department', __('Department'));

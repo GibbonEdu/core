@@ -1,0 +1,29 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+<!-- <div class="border rounded bg-gray-100 my-4 h-full"> -->
+    <div class="p-4 flex flex-wrap items-start">
+        <div class="w-full sm:w-1/3 text-center sm:text-center">
+
+            {{ formatUsing('userPhoto', staff.image_240, 75)|raw }}
+
+            <div class="text-sm text-gray-800 leading-none mt-2 mb-1 p-0">
+                {{ formatUsing('name', staff.title, staff.preferredName, staff.surname, 'Staff', false, true) }}
+            </div>
+
+            <div class="text-sm text-gray-600 my-1">{{ [staff.jobTitle, staff.rollGroupName]|join(", ")|trim(", ") }}</div>
+
+            <div class="text-sm text-gray-600 my-1">{{ staff.extension ? __('Ext')~". "~staff.extension }}</div>
+        </div>
+
+        <div class="w-full sm:w-2/3 pl-4 text-center sm:text-left text-sm text-gray-700">
+            {{ staff.biography }} Froth doppio, body fair trade bar aroma shop redeye. Acerbic americano grinder at, carajillo, rich ristretto latte cultivar affogato. Mug fair trade aged caramelization sugar dark crema crema. Carajillo, extra crema, plunger pot affogato whipped ristretto, aromatic organic coffee macchiato barista.
+        </div>
+
+    </div>
+<!-- </div> -->
