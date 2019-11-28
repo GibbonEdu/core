@@ -13,7 +13,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             <a class="block" href="{{ absoluteURL }}/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID={{ staff.gibbonPersonID }}">
             {{ formatUsing('userPhoto', staff.image_240, 75)|raw }}
 
-            <div class="block text-sm text-gray-800 leading-none mt-2 mb-1 p-0 over:underline">
+            <div class="block text-sm text-gray-800 leading-none mt-2 mb-1 p-0 hover:underline">
                 {{ formatUsing('name', staff.title, staff.preferredName, staff.surname, 'Staff', false, true) }}
             </div>
             </a>
@@ -32,7 +32,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             {% endif %}
 
             {% if staff.email %}
-                <a class="block mb-2 text-blue-700" href="mailto:{{ staff.email }}">
+                <a class="block mb-2 text-blue-700 underline" href="mailto:{{ staff.email }}">
                     {{ staff.email }}
                 </a>
             {% endif %}
