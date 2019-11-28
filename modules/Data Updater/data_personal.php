@@ -543,6 +543,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         $row->addLabel('citizenship1Passport', __('Citizenship 1 Passport Number'));
                         $row->addTextField('citizenship1Passport')->maxLength(30);
 
+                    $row = $form->addRow();
+                        $row->addLabel('citizenship1PassportExpiry', __('Citizenship 1 Passport Expiry Date'));
+                        $row->addDate('citizenship1PassportExpiry');
+
                     $row = $form->addRow()->onlyIf($isVisible('citizenship2'));
                         $row->addLabel('citizenship2', __('Citizenship 2'));
                         if (!empty($nationalityList)) {
@@ -554,6 +558,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     $row = $form->addRow()->onlyIf($isVisible('citizenship2Passport'));
                         $row->addLabel('citizenship2Passport', __('Citizenship 2 Passport Number'));
                         $row->addTextField('citizenship2Passport')->maxLength(30);
+
+                    $row = $form->addRow();
+                        $row->addLabel('citizenship2PassportExpiry', __('Citizenship 2 Passport Expiry Date'));
+                        $row->addDate('citizenship2PassportExpiry');
 
                     if (!empty($_SESSION[$guid]['country'])) {
                         $nationalIDCardNumberLabel = $_SESSION[$guid]['country'].' '.__('ID Card Number');
