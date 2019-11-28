@@ -50,7 +50,7 @@ class StaffGateway extends QueryableGateway
             ->from($this->getTableName())
             ->cols([
                 'gibbonPerson.gibbonPersonID', 'gibbonPerson.title', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.status', 'gibbonPerson.username', 'gibbonPerson.image_240', 'gibbonPerson.email', 'gibbonPerson.phone1', 'gibbonPerson.phone1Type', 'gibbonPerson.phone1CountryCode', 'gibbonPerson.phone2', 'gibbonPerson.phone2Type', 'gibbonPerson.phone2CountryCode',
-                'gibbonStaff.gibbonStaffID', 'gibbonStaff.initials', 'gibbonStaff.type', 'gibbonStaff.jobTitle', 'gibbonStaff.biographicalGrouping', 'gibbonStaff.biographicalGroupingPriority'
+                'gibbonStaff.gibbonStaffID', 'gibbonStaff.initials', 'gibbonStaff.type', 'gibbonStaff.jobTitle', 'gibbonStaff.biography', 'gibbonStaff.qualifications', 'gibbonStaff.countryOfOrigin','gibbonStaff.biographicalGrouping', 'gibbonStaff.biographicalGroupingPriority'
             ])
             ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID');
 
