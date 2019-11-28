@@ -55,37 +55,46 @@ class PaginatedView extends DataTableView implements RendererInterface
      */
     public function renderTable(DataTable $table, DataSet $dataSet)
     {
-        $this->addData('table', $table);
-        $this->addData('blankSlate', $table->getMetaData('blankSlate'));
-        $this->addData('draggable', $table->getMetaData('draggable'));
-        
-        $this->preProcessTable($table);
-        
-        $filters = $table->getMetaData('filterOptions', []);
-
-        $this->addData([
-            'dataSet'    => $dataSet,
-
-            'headers'    => $this->getTableHeaders($table),
-            'columns'    => $table->getColumns(),
-            'rows'       => $this->getTableRows($table, $dataSet),
-            'path'       => './fullscreen.php?'.http_build_query($_GET),
-            'identifier' => $this->criteria->getIdentifier(),
-
-            'searchText'     => $this->criteria->getSearchText(),
-            'pageSize'       => $this->getSelectPageSize($dataSet, $filters),
-            'filterOptions'  => $this->getSelectFilterOptions($dataSet, $filters),
-            'filterCriteria' => $this->getFilterCriteria($filters),
-            'bulkActions'    => $table->getMetaData('bulkActions'),
-            'isFiltered'     => $dataSet->getTotalCount() > 0 && ($this->criteria->hasSearchText() || $this->criteria->hasFilter()),
-        ]);
-
-        $postData = $table->getMetaData('post');
-        $this->addData('jsonData', !empty($postData)
-            ? json_encode(array_replace($postData, $this->criteria->toArray()))
-            : $this->criteria->toJson());
+        $this->preparePageData($table, $dataSet);
 
         return $this->render('components/paginatedTable.twig.html');
+    }
+
+    public function preparePageData(DataTable $table, DataSet $dataSet)
+    {
+        $this->addData([
+            'table'      => $table,
+            'dataSet'    => $dataSet,
+            'columns'    => $table->getColumns(),
+            'rows'       => $this->getTableRows($table, $dataSet),
+            'blankSlate' => $table->getMetaData('blankSlate'),
+            'draggable'  => $table->getMetaData('draggable'),
+        ]);
+
+        $this->preProcessTable($table);
+        $filters = $table->getMetaData('filterOptions', []);
+
+        if (!empty($this->criteria)) {
+            $this->addData([
+                'url'            => './index.php?'.http_build_query(['view' => ''] + $_GET),
+                'path'           => './fullscreen.php?'.http_build_query($_GET),
+                'headers'        => $this->getTableHeaders($table),
+                'identifier'     => $this->criteria->getIdentifier(),
+                'searchText'     => $this->criteria->getSearchText(),
+                'pageSize'       => $this->getSelectPageSize($dataSet, $filters),
+                'listOptions'    => $table->getMetaData('listOptions'),
+                'filterOptions'  => $this->getSelectFilterOptions($dataSet, $filters),
+                'filterCriteria' => $this->getFilterCriteria($filters),
+                'bulkActions'    => $table->getMetaData('bulkActions'),
+                'hidePagination' => $table->getMetaData('hidePagination'),
+                'isFiltered'     => $dataSet->getTotalCount() > 0 && ($this->criteria->hasSearchText() || $this->criteria->hasFilter()),
+            ]);
+
+            $postData = $table->getMetaData('post');
+            $this->addData('jsonData', !empty($postData)
+                ? json_encode(array_replace($postData, $this->criteria->toArray()))
+                : $this->criteria->toJson());
+        }
     }
 
     /**

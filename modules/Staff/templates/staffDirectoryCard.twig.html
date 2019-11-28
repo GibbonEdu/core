@@ -1,0 +1,49 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+<!-- <div class="border rounded bg-gray-100 my-4 h-full"> -->
+    <div class="p-4 flex flex-wrap items-start">
+        <div class="w-full sm:w-1/3 text-center sm:text-center">
+
+            <a class="block" href="{{ absoluteURL }}/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID={{ staff.gibbonPersonID }}">
+            {{ formatUsing('userPhoto', staff.image_240, 75)|raw }}
+
+            <div class="block text-sm text-gray-800 leading-none mt-2 mb-1 p-0 hover:underline">
+                {{ formatUsing('name', staff.title, staff.preferredName, staff.surname, 'Staff', false, true) }}
+            </div>
+            </a>
+
+            <div class="text-sm text-gray-600 my-1">{{ [staff.jobTitle, staff.rollGroupName]|join(", ")|trim(", ") }}</div>
+
+            <div class="text-sm text-gray-600 my-1">{{ staff.extension ? __('Ext')~". "~staff.extension }}</div>
+        </div>
+
+        <div class="w-full sm:w-2/3 lg:pl-4 text-center sm:text-left text-sm text-gray-700">
+
+            {% if staff.qualifications %}
+                <div class="italic mb-2">
+                    {{ [staff.qualifications, staff.countryOfOrigin]|join(" | ")|trim("| ") }}
+                </div>
+            {% endif %}
+
+            {% if staff.email %}
+                <a class="block mb-2 text-blue-700 underline" href="mailto:{{ staff.email }}">
+                    {{ staff.email }}
+                </a>
+            {% endif %}
+
+            {% if staff.biography %}
+                {{ staff.biography|raw }}
+            {% else %}
+                {{ staff.department|raw }}
+            {% endif %}
+            
+        </div>
+
+    </div>
+<!-- </div> -->

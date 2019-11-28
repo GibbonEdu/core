@@ -28,6 +28,7 @@ v19.0.00
 
     Significant Changes
         System: added Year Switcher to staff homepage sidebar
+        Staff: added an expanded Staff Directory view to the View Staff Profiles page
         Planner: added "View Only" sub-action to Lesson Planner
 
     Security

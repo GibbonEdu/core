@@ -45,6 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
             'absenceCommentTemplate',
             'salaryScalePositions',
             'responsibilityPosts',
+            'biographicalGroupingOrder',
             'jobOpeningDescriptionTemplate',
             'coverageFullDayThreshold',
         ],
