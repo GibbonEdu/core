@@ -191,7 +191,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
 
             if ($urlParams['view'] == 'card') {
                 $table->addMetaData('gridClass', 'items-stretch -mx-2');
-                $table->addMetaData('gridItemClass', 'w-1/2 px-2 mb-4 text-center text-xs items-stretch');
+                $table->addMetaData('gridItemClass', 'w-full lg:w-1/2 px-2 mb-4 text-center text-xs items-stretch');
 
                 $templateView = $container->get(View::class);
                 $table->addColumn('card', '')
