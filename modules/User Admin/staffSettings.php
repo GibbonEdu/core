@@ -185,6 +185,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
+    $setting = getSettingByScope($connection2, 'Staff', 'biographicalGroupingOrder', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value']);
+
     $setting = getSettingByScope($connection2, 'Staff', 'jobOpeningDescriptionTemplate', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
