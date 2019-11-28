@@ -522,4 +522,5 @@ ALTER TABLE `gibbonMessenger` ADD `messageWallPin` ENUM('N','Y') NOT NULL DEFAUL
 INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES ('Messenger', 'pinnedMessagesOnHome', 'Enable Pinned Messages on Home', 'Displays pinned messages on the home page, above the dashboard.', 'N');end
 INSERT INTO gibbonLanguage SET name='Malagasy';end
 UPDATE gibbonAction SET categoryPermissionOther='Y' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Messenger') AND (name='View Message Wall');end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('Staff', 'biographicalGroupingOrder', 'Biographical Grouping Order', 'Comma-separated list of biographical groupings displayed in the staff directory.', '');end
 ";
