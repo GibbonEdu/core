@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
 
         $row = $form->addRow();
             $row->addFooter();
-            $row->addSearchSubmit($gibbon->session);
+            $row->addSearchSubmit($gibbon->session, 'Clear Filters', ['view', 'sidebar']);
 
         echo $form->getOutput();
     }
@@ -135,9 +135,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
 
     } elseif ($highestAction == 'View Staff Profile_full') {
         // FULL STAFF DIRECTORY
-        $criteria->sortBy($urlParams['sortBy'] == 'biographicalGrouping'
-            ? ['biographicalGroupingOrder', 'biographicalGrouping', 'biographicalGroupingPriority', 'surname', 'preferredName']
-            : ['surname', 'preferredName']);
+        if ($urlParams['sortBy'] == 'biographicalGrouping') {
+            $criteria->sortBy(['biographicalGroupingOrder', 'biographicalGrouping'])
+                ->sortBy(['biographicalGroupingPriority'], 'DESC')
+                ->sortBy(['surname', 'preferredName']);
+        } else {
+            $criteria->sortBy(['surname', 'preferredName']);
+        }
 
         $staff = $staffGateway->queryAllStaff($criteria, $gibbon->session->get('gibbonSchoolYearID'));
 
