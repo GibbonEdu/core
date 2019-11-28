@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 include '../../gibbon.php';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/user_manage_add.php&search='.$_GET['search'];
@@ -86,10 +88,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     $ethnicity = $_POST['ethnicity'];
     $citizenship1 = $_POST['citizenship1'];
     $citizenship1Passport = $_POST['citizenship1Passport'];
-    $citizenship1PassportExpiry = $_POST['citizenship1PassportExpiry'] ?? null;
+    $citizenship1PassportExpiry = isset($_POST['citizenship1PassportExpiry']) ? Format::dateConvert($_POST['citizenship1PassportExpiry']) : null;
     $citizenship2 = $_POST['citizenship2'];
     $citizenship2Passport = $_POST['citizenship2Passport'];
-    $citizenship2PassportExpiry = $_POST['citizenship2PassportExpiry'] ?? null;
+    $citizenship2PassportExpiry = isset($_POST['citizenship2PassportExpiry']) ? Format::dateConvert($_POST['citizenship2PassportExpiry']) : null;
     $religion = $_POST['religion'];
     $nationalIDCardNumber = $_POST['nationalIDCardNumber'];
     $residencyStatus = $_POST['residencyStatus'];

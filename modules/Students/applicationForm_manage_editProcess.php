@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 include '../../gibbon.php';
 
 //Module includes from User Admin (for custom fields)
@@ -102,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $countryOfBirth = $_POST['countryOfBirth'];
             $citizenship1 = $_POST['citizenship1'];
             $citizenship1Passport = $_POST['citizenship1Passport'];
-            $citizenship1PassportExpiry = $_POST['citizenship1PassportExpiry'] ?? null;
+            $citizenship1PassportExpiry = isset($_POST['citizenship1PassportExpiry']) ? Format::dateConvert($_POST['citizenship1PassportExpiry']) : null;
             $nationalIDCardNumber = $_POST['nationalIDCardNumber'];
             $residencyStatus = $_POST['residencyStatus'];
             $visaExpiryDate = $_POST['visaExpiryDate'];

@@ -305,7 +305,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 }
                 if (isset($_POST['newcitizenship1PassportExpiryOn'])) {
                     if ($_POST['newcitizenship1PassportExpiryOn'] == 'on') {
-                        $data['citizenship1PassportExpiry'] = $_POST['newcitizenship1PassportExpiry'];
+                        $data['citizenship1PassportExpiry'] = $_POST['newcitizenship1PassportExpiry'] ?? null;
                         $set .= 'gibbonPerson.citizenship1PassportExpiry=:citizenship1PassportExpiry, ';
                     }
                 }
@@ -323,7 +323,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 }
                 if (isset($_POST['newcitizenship2PassportExpiryOn'])) {
                     if ($_POST['newcitizenship2PassportExpiryOn'] == 'on') {
-                        $data['citizenship2PassportExpiry'] = $_POST['newcitizenship2PassportExpiry'];
+                        $data['citizenship2PassportExpiry'] = $_POST['newcitizenship2PassportExpiry'] ?? null;
                         $set .= 'gibbonPerson.citizenship2PassportExpiry=:citizenship2PassportExpiry, ';
                     }
                 }
