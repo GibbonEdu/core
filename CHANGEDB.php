@@ -526,4 +526,8 @@ INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`val
 ALTER TABLE `gibbonPerson` ADD `citizenship1PassportExpiry` DATE NULL AFTER `citizenship1Passport`, ADD `citizenship2PassportExpiry` DATE NULL AFTER `citizenship2Passport`;end
 ALTER TABLE `gibbonPersonUpdate` ADD `citizenship1PassportExpiry` DATE NULL AFTER `citizenship1Passport`, ADD `citizenship2PassportExpiry` DATE NULL AFTER `citizenship2Passport`;end
 ALTER TABLE `gibbonApplicationForm` ADD `citizenship1PassportExpiry` DATE NULL AFTER `citizenship1Passport`;end
+UPDATE gibbonSetting SET description='A name to use instead of \"Attainment\" in the first grade column of the markbook.' WHERE scope='Markbook' AND name='attainmentAlternativeName';end
+UPDATE gibbonSetting SET description='A short name to use instead of \"Attainment\" in the first grade column of the markbook.' WHERE scope='Markbook' AND name='attainmentAlternativeNameAbrev';end
+UPDATE gibbonSetting SET description='A name to use instead of \"Effort\" in the second grade column of the markbook.' WHERE scope='Markbook' AND name='effortAlternativeName';end
+UPDATE gibbonSetting SET description='A short name to use instead of \"Effort\" in the second grade column of the markbook..' WHERE scope='Markbook' AND name='effortAlternativeNameAbrev';end
 ";

@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
         $module['status'] = __('Installed');
         $module['name'] = $module['type'] == 'Core' ? __($module['name']) : __($module['name'], $module['name']);
         $module['versionDisplay'] = $module['type'] == 'Core' ? 'v'.$version : 'v'.$module['version'];
-        
+
         if ($module['type'] == 'Additional') {
             $versionFromFile = getModuleVersion($module['name'], $guid);
             if (version_compare($versionFromFile, $module['version'], '>')) {
@@ -166,7 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
         echo '<h2>';
         echo __('Not Installed');
         echo '</h2>';
-        
+
         $table = DataTable::create('moduleInstall');
 
         $table->modifyRows(function ($module, $row) {
