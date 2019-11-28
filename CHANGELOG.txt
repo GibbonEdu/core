@@ -73,6 +73,7 @@ v19.0.00
         User Admin: increased Student ID field max length to 15
         User Admin: added a View Role page in Manage Roles to display all actions and users per role
         User Admin: added a Login Troubleshooting section to Reset Password page
+        User Admin: added Citizenship 1 and Citizenship 2 Passport Expiry date fields
 
     Bug Fixes
         System: fix installer bug where passwords are unnecessarily encoded
