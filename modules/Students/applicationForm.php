@@ -265,6 +265,10 @@ if ($proceed == false) {
         $row->addTextField('citizenship1Passport')->maxLength(30);
 
     $row = $form->addRow();
+        $row->addLabel('citizenship1PassportExpiry', __('Citizenship 1 Passport Expiry Date'));
+        $row->addDate('citizenship1PassportExpiry');
+
+    $row = $form->addRow();
         $row->addLabel('nationalIDCardNumber', $countryName.__('National ID Card Number'));
         $row->addTextField('nationalIDCardNumber')->maxLength(30);
 
