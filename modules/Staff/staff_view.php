@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
 
     // Proceed!
     $viewMode = $_REQUEST['format'] ?? '';
-    $directoryView = $highestAction == 'View Staff Profile_full' && !empty($_GET['view']);
+    $directoryView = $highestAction == 'Staff Directory_full' && !empty($_GET['view']);
     $_GET['sidebar'] = 'false';
 
     $urlParams = [
@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
 
     // FILTERS
     if (empty($viewMode)) {
-        $page->breadcrumbs->add(__('View Staff Profiles'), 'staff_view.php');
+        $page->breadcrumbs->add(__('Staff Directory'), 'staff_view.php');
 
         if ($directoryView) {
             $page->breadcrumbs->add(__('Staff Directory'));
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
             $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username.'));
             $row->addTextField('search')->setValue($criteria->getSearchText())->maxLength(20);
 
-        if ($highestAction == 'View Staff Profile_full') {
+        if ($highestAction == 'Staff Directory_full') {
             $sortOptions = ['biographicalGrouping' => __('Biographical Grouping'), 'surname' => __('Surname')];
             $row = $form->addRow();
                 $row->addLabel('sortBy', __('Sort By'));
@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
     }
 
 
-    if ($highestAction == 'View Staff Profile_brief') {
+    if ($highestAction == 'Staff Directory_brief') {
         // BASIC STAFF LIST
         $criteria->sortBy(['surname', 'preferredName']);
         $staff = $staffGateway->queryAllStaff($criteria);
@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
         echo $table->render($staff);
         return;
 
-    } elseif ($highestAction == 'View Staff Profile_full') {
+    } elseif ($highestAction == 'Staff Directory_full') {
         // FULL STAFF DIRECTORY
         if ($urlParams['sortBy'] == 'biographicalGrouping') {
             $criteria->sortBy(['biographicalGroupingOrder', 'biographicalGrouping'])

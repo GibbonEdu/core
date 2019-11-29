@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
             $search = $_GET['search'] ?? '';
             $allStaff = $_GET['allStaff'] ?? '';
 
-            if ($highestAction == 'View Staff Profile_brief') {
+            if ($highestAction == 'Staff Directory_brief') {
                 //Proceed!
                 try {
                     $data = array('gibbonPersonID' => $gibbonPersonID);
@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     $row = $result->fetch();
 
                     $page->breadcrumbs
-                        ->add(__('View Staff Profiles'), 'staff_view.php')
+                        ->add(__('Staff Directory'), 'staff_view.php')
                         ->add(Format::name('', $row['preferredName'], $row['surname'], 'Student'));
 
                     if ($search != '') {
@@ -153,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     $row = $result->fetch();
 
                     $page->breadcrumbs
-                        ->add(__('View Staff Profiles'), 'staff_view.php', ['search' => $search, 'allStaff' => $allStaff])
+                        ->add(__('Staff Directory'), 'staff_view.php', ['search' => $search, 'allStaff' => $allStaff])
                         ->add(Format::name('', $row['preferredName'], $row['surname'], 'Student'));
 
                     $subpage = null;

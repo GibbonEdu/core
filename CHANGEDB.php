@@ -530,4 +530,7 @@ UPDATE gibbonSetting SET description='A name to use instead of \"Attainment\" in
 UPDATE gibbonSetting SET description='A short name to use instead of \"Attainment\" in the first grade column of the markbook.' WHERE scope='Markbook' AND name='attainmentAlternativeNameAbrev';end
 UPDATE gibbonSetting SET description='A name to use instead of \"Effort\" in the second grade column of the markbook.' WHERE scope='Markbook' AND name='effortAlternativeName';end
 UPDATE gibbonSetting SET description='A short name to use instead of \"Effort\" in the second grade column of the markbook..' WHERE scope='Markbook' AND name='effortAlternativeNameAbrev';end
+UPDATE gibbonAction SET name='Staff Directory_brief' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Staff') AND name='View Staff Profile_brief';end
+UPDATE gibbonAction SET name='Staff Directory_full' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Staff') AND name='View Staff Profile_full';end
+
 ";
