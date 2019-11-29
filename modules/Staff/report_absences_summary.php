@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
 
         $types = $staffAbsenceTypeGateway->selectAllTypes()->fetchAll();
         $types = array_combine(array_column($types, 'gibbonStaffAbsenceTypeID'), array_column($types, 'name'));
-        
+
         $row = $form->addRow();
         $row->addLabel('gibbonStaffAbsenceTypeID', __('Type'));
         $row->addSelect('gibbonStaffAbsenceTypeID')
@@ -105,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
 
         echo $form->getOutput();
 
-    
+
         // CALENDAR DATA
         $absencesByDate = array_reduce($absences->toArray(), function ($group, $item) {
             $group[$item['date']][] = $item;
@@ -137,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
                 'days'  => $days,
             ];
         }
-        
+
         // CALENDAR TABLE
         $table = DataTable::createPaginated('staffAbsenceCalendar', $criteria);
         $table->setTitle(__('Staff Absence Summary'));
@@ -178,7 +178,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
                     $count = $day['count'] ?? 0;
 
                     $cell->addClass($day['date']->format('Y-m-d') == date('Y-m-d') ? 'border-2 border-gray-700' : 'border');
-                    
+
                     if ($count > ceil($maxAbsence * 0.8)) $cell->addClass('bg-purple-800');
                     elseif ($count > ceil($maxAbsence * 0.5)) $cell->addClass('bg-purple-600');
                     elseif ($count > ceil($maxAbsence * 0.2)) $cell->addClass('bg-purple-400');
@@ -203,13 +203,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
 
     $absenceTypes = $staffAbsenceTypeGateway->selectAllTypes()->fetchAll();
     $types = array_fill_keys(array_column($absenceTypes, 'name'), null);
-    
+
     $absencesByPerson = [];
 
     foreach ($absences as $absence) {
         $id = $absence['gibbonPersonID'];
         if (empty($absencesByPerson[$id])) $absencesByPerson[$id] = $types;
-        
+
         $absencesByPerson[$id][$absence['type']] += $absence['value'];
     }
 
@@ -225,14 +225,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
         }
     });
 
-    
-    
+
+
     // DATA TABLE
     $table = ReportTable::createPaginated('staffAbsences', $criteria)->setViewMode($viewMode, $gibbon->session);
     $table->setTitle(__('Report'));
     $table->setDescription(Format::dateRangeReadable($dateStart->format('Y-m-d'), $dateEnd->format('Y-m-d')));
 
-    if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php', 'View Staff Profile_full')) {
+    if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php', 'Staff Directory_full')) {
         $table->addMetaData('filterOptions', [
             'all:on'        => __('All Staff'),
             'type:teaching' => __('Staff Type').': '.__('Teaching'),
@@ -261,7 +261,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
     }
 
     $table->addColumn('total', __('Total'))->notSortable();
-    
+
 
 
     echo $table->render($allStaff);

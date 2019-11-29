@@ -21,6 +21,8 @@ v19.0.00
     Headlines
         Activated German as an available language
         Individual Needs Investigations functionality allows data gathering around students with individual needs
+        Expanded Staff Directory replaces View Staff Profiles
+
 
     Changes With Important Notices
         System: split Daily Attendance CLI into separate form group and class scripts
@@ -28,7 +30,6 @@ v19.0.00
 
     Significant Changes
         System: added Year Switcher to staff homepage sidebar
-        Staff: added an expanded Staff Directory view to the View Staff Profiles page
         Planner: added "View Only" sub-action to Lesson Planner
 
     Security
