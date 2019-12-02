@@ -37,6 +37,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         include './config.php';
         include './version.php';
 
+        require_once './modules/System Admin/moduleFunctions.php';
+
         $partialFail = false;
 
         $cuttingEdgeCode = getSettingByScope($connection2, 'System', 'cuttingEdgeCode');

@@ -612,9 +612,13 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
 
         return serialize($resultReturn);
     } elseif ($mode == 'array') {
-        $sqlPosts = $sqlPosts.' ORDER BY messageWallPin DESC, subject, gibbonMessengerID, source';
-        $resultPosts = $connection2->prepare($sqlPosts);
-        $resultPosts->execute($dataPosts);
+        try {
+            $sqlPosts = $sqlPosts.' ORDER BY messageWallPin DESC, subject, gibbonMessengerID, source';
+            $resultPosts = $connection2->prepare($sqlPosts);
+            $resultPosts->execute($dataPosts);
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
 
         $arrayPosts = $resultPosts->rowCount() > 0 ? $resultPosts->fetchAll() : [];
 
