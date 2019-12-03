@@ -30,7 +30,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% endblock header %}
     </header>
 
-    <div id="{{ table.getID }}" class="dataTable overflow-x-auto overflow-y-visible">
+    <div id="{{ table.getID }}" class="dataTable {{ not preventOverflow ? 'overflow-x-auto overflow-y-visible' }}">
 
    
     {% if not rows and not isFiltered and dataSet.getResultCount == 0 %}
@@ -52,7 +52,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% block tableInner %}
     
         <table class="{{ class }} w-full" cellspacing=0 {% if draggable %}data-drag-url="{{ draggable.url }}" data-drag-data="{{ draggable.data }}"{% endif %}>
-            <thead>
+            <thead class="sticky top-0 z-10">
             {% for headerRow in headers %}
                 <tr class="head text-xs">
                 {% for columnIndex, column in columns %}
