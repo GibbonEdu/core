@@ -75,6 +75,11 @@ class DataTable implements OutputableInterface
         global $container;
 
         $renderer = !empty($renderer) ? $renderer : $container->get(DataTableView::class);
+
+        // This is a temporary workaround to prevent overflow on pages that have a refactored table.
+        // This enables the sticky headers to work for DataTables without breaking legacy tables.
+        $container->get('page')->addData('preventOverflow', true);
+        $renderer->addData('preventOverflow', true);
         
         return (new static($renderer))->setID($id);
     }
@@ -89,8 +94,13 @@ class DataTable implements OutputableInterface
     public static function createPaginated($id, QueryCriteria $criteria)
     {
         global $container;
-
+        
         $renderer = $container->get(PaginatedView::class)->setCriteria($criteria);
+
+        // This is a temporary workaround to prevent overflow on pages that have a refactored table.
+        // This enables the sticky headers to work for DataTables without breaking legacy tables.
+        $container->get('page')->addData('preventOverflow', true);
+        $renderer->addData('preventOverflow', true);
 
         return (new static($renderer))->setID($id)->setRenderer($renderer);
     }
