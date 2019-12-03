@@ -457,7 +457,7 @@ if ($isLoggedIn && !$upgrade) {
         foreach ($menuMainItems as $category => &$items) {
             foreach ($items as &$item) {
                 $modulePath = '/modules/'.$item['name'];
-                $entryURL = isActionAccessible($guid, $connection2, $modulePath.'/'.$item['entryURL'])
+                $entryURL = ($item['entryURL'] == 'index.php' || isActionAccessible($guid, $connection2, $modulePath.'/'.$item['entryURL']))
                     ? $item['entryURL']
                     : $item['alternateEntryURL'];
 
