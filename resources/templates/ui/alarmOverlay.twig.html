@@ -25,7 +25,7 @@ html, body {
 
         <div class="h-8 pr-4 mb-24 w-full text-right text-base">
         {% if alarm.gibbonPersonID == gibbonPersonID %}
-            <a style='color: #fff' target='_parent' href='{{ absoluteURL }}/modules/System Admin/alarm_cancelProcess.php?gibbonAlarmID={{ alarm.gibbonAlarmID }}'>
+            <a class="text-white" target='_parent' href='{{ absoluteURL }}/modules/System Admin/alarm_cancelProcess.php?gibbonAlarmID={{ alarm.gibbonAlarmID }}'>
             {{ __('Turn Alarm Off') }}
             </a>
             {% endif %}
@@ -60,9 +60,9 @@ html, body {
                 {% if confirmed %}
                     <i>{{ __('You have successfully confirmed receipt of this alarm, which will continue to be displayed until an administrator has cancelled the alarm.') }}</i>
                 {% else %}
-                    <a target="_parent" class="text-white text-4xl sm:text-5xl font-bold" href="{{ absoluteURL }}/index_notification_ajax_alarmProcess.php?gibbonAlarmID={{ alarm.gibbonAlarmID }}">
+                    <a target="_parent" class="block text-white text-4xl sm:text-5xl font-bold p-6" href="{{ absoluteURL }}/index_notification_ajax_alarmProcess.php?gibbonAlarmID={{ alarm.gibbonAlarmID }}">
                         {{ __('Click here to confirm that you have received this alarm.') }}
-                    </a><br/><br/>
+                    </a>
                     <i>{{ __('After confirming receipt, the alarm will continue to be displayed until an administrator has cancelled the alarm.') }}</i>
                 {% endif %}
             </p>
@@ -116,7 +116,7 @@ html, body {
 
                     {% for person in confirmationReport %}
                         <tr id="staff{{ person.gibbonPersonID }}" class="hover:bg-red-700">
-                            <td style="color: #fff" class="text-white text-xs sm:text-base pl-2">
+                            <td class="text-white text-xs sm:text-base pl-2">
                                 {{ formatUsing('name', '', person.preferredName, person.surname, 'Staff', true, true ) }}
                             </td>
                             <td class="text-white text-center sm:text-left h-8">
