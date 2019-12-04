@@ -23,48 +23,71 @@ use Gibbon\Services\Format;
 include './gibbon.php';
 
 $gibbonAlarmID = $_POST['gibbonAlarmID'];
-$gibbonPersonID = $_POST['gibbonPersonID'];
+$gibbonPersonIDSounder = $_POST['gibbonPersonIDSounder'];
 
 //Proceed!
-if ($gibbonAlarmID == '' or $gibbonPersonID == '') { echo "<div class='error'>";
+if ($gibbonAlarmID == '') { echo "<div class='error'>";
     echo __('An error has occurred.');
     echo '</div>';
 } else {
     //Check confirmation of alarm
+    $output = '';
+
     try {
-        $dataConfirm = array('gibbonAlarmID' => $gibbonAlarmID, 'gibbonAlarmID2' => $gibbonAlarmID, 'gibbonPersonID' => $gibbonPersonID);
-        $sqlConfirm = 'SELECT surname, preferredName, gibbonAlarmConfirmID, gibbonPerson.gibbonPersonID AS confirmer, gibbonAlarm.gibbonPersonID as sounder FROM gibbonPerson JOIN gibbonAlarm ON (gibbonAlarm.gibbonAlarmID=:gibbonAlarmID) LEFT JOIN gibbonAlarmConfirm ON (gibbonAlarmConfirm.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAlarmConfirm.gibbonAlarmID=:gibbonAlarmID2) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID';
+        $dataConfirm = array('gibbonAlarmID' => $gibbonAlarmID);
+        $sqlConfirm = "SELECT gibbonPerson.gibbonPersonID, status, surname, preferredName, gibbonAlarmConfirmID FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonAlarmConfirm ON (gibbonAlarmConfirm.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAlarmID=:gibbonAlarmID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
         $resultConfirm = $connection2->prepare($sqlConfirm);
         $resultConfirm->execute($dataConfirm);
     } catch (PDOException $e) {
-        echo $e->getMessage();
+        //$output .= "<div class='error'>".$e->getMessage().'</div>';
     }
 
-    if ($resultConfirm->rowCount() != 1) {
-        echo "<div class='error'>";
-        echo __('An error has occurred.');
-        echo '</div>';
+    if ($resultConfirm->rowCount() < 1) {
+        $output .= "<div class='error'>";
+        $output .= __('There are no records to display.');
+        $output .= '</div>';
     } else {
-        $rowConfirm = $resultConfirm->fetch();
+        $output .= "<table cellspacing='0' style='width: 400px; margin: 0 auto'>";
+        $output .= "<tr class='head'>";
+        $output .= "<th style='color: #fff; text-align: left'>";
+        $output .= __('Name').'<br/>';
+        $output .= '</th>';
+        $output .= "<th style='color: #fff; text-align: left'>";
+        $output .= __('Confirmed');
+        $output .= '</th>';
+        $output .= "<th style='color: #fff; text-align: left'>";
+        $output .= __('Actions');
+        $output .= '</th>';
+        $output .= '</tr>';
 
-        echo "<td style='color: #fff'>";
-        echo Format::name('', $rowConfirm['preferredName'], $rowConfirm['surname'], 'Staff', true, true).'<br/>';
-        echo '</td>';
-        echo "<td style='color: #fff'>";
-        if ($rowConfirm['sounder'] == $rowConfirm['confirmer']) {
-            echo __('NA');
-        } else {
-            if ($rowConfirm['gibbonAlarmConfirmID'] != '') {
-                echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
+        $rowCount = 0;
+        while ($rowConfirm = $resultConfirm->fetch()) {
+            //COLOR ROW BY STATUS!
+            $output .= "<tr id='row".$rowCount."'>";
+            $output .= "<td style='color: #fff'>";
+            $output .= Format::name('', $rowConfirm['preferredName'], $rowConfirm['surname'], 'Staff', true, true).'<br/>';
+            $output .= '</td>';
+            $output .= "<td style='color: #fff'>";
+            if ($gibbonPersonIDSounder == $rowConfirm['gibbonPersonID']) {
+                $output .= __('NA');
+            } else {
+                if ($rowConfirm['gibbonAlarmConfirmID'] != '') {
+                    $output .= "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
+                }
             }
-        }
-        echo '</td>';
-        echo "<td style='color: #fff'>";
-        if ($rowConfirm['sounder'] != $rowConfirm['confirmer']) {
-            if ($rowConfirm['gibbonAlarmConfirmID'] == '') {
-                echo "<a target='_parent' href='".$_SESSION[$guid]['absoluteURL'].'/index_notification_ajax_alarmConfirmProcess.php?gibbonPersonID='.$rowConfirm['confirmer']."&gibbonAlarmID=$gibbonAlarmID'><img title='".__('Confirm')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick_light.png'/></a> ";
+            $output .= '</td>';
+            $output .= "<td style='color: #fff'>";
+            if ($gibbonPersonIDSounder != $rowConfirm['gibbonPersonID']) {
+                if ($rowConfirm['gibbonAlarmConfirmID'] == '') {
+                    $output .= "<a target='_parent' href='".$_SESSION[$guid]['absoluteURL'].'/index_notification_ajax_alarmConfirmProcess.php?gibbonPersonID='.$rowConfirm['gibbonPersonID'].'&gibbonAlarmID='.$gibbonAlarmID."'><img title='".__('Confirm')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick_light.png'/></a> ";
+                }
             }
+            $output .= '</td>';
+            $output .= '</tr>';
+            ++$rowCount;
         }
-        echo '</td>';
+        $output .= '</table>';
     }
+
+    echo $output;
 }

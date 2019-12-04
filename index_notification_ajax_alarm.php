@@ -116,6 +116,16 @@ if ($type == 'general' or $type == 'lockdown' or $type == 'custom') {
                     $output .= __('Receipt Confirmation Report');
                     $output .= '</h3>';
 
+                    $output .= '<script type="text/javascript">
+									$(document).ready(function(){
+										setInterval(function() {
+											$("#confirmWrapper").load("index_notification_ajax_alarm_tickUpdate.php", {"gibbonAlarmID": "'.$row['gibbonAlarmID'].'", "gibbonPersonIDSounder": "'.$row['gibbonPersonID'].'"});
+										}, 5000);
+									});
+								</script>';
+
+                    $output .= '<div id="confirmWrapper">';
+
                     try {
                         $dataConfirm = array('gibbonAlarmID' => $row['gibbonAlarmID']);
                         $sqlConfirm = "SELECT gibbonPerson.gibbonPersonID, status, surname, preferredName, gibbonAlarmConfirmID FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonAlarmConfirm ON (gibbonAlarmConfirm.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAlarmID=:gibbonAlarmID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
@@ -146,13 +156,7 @@ if ($type == 'general' or $type == 'lockdown' or $type == 'custom') {
                         $rowCount = 0;
                         while ($rowConfirm = $resultConfirm->fetch()) {
                             //COLOR ROW BY STATUS!
-                                $output .= '<script type="text/javascript">
-									$(document).ready(function(){
-										setInterval(function() {
-											$("#row'.$rowCount.'").load("index_notification_ajax_alarm_tickUpdate.php", {"gibbonAlarmID": "'.$row['gibbonAlarmID'].'", "gibbonPersonID": "'.$rowConfirm['gibbonPersonID'].'"});
-										}, 5000);
-									});
-								</script>';
+                                
                             $output .= "<tr id='row".$rowCount."'>";
                             $output .= "<td style='color: #fff'>";
                             $output .= Format::name('', $rowConfirm['preferredName'], $rowConfirm['surname'], 'Staff', true, true).'<br/>';
@@ -178,6 +182,8 @@ if ($type == 'general' or $type == 'lockdown' or $type == 'custom') {
                         }
                         $output .= '</table>';
                     }
+
+                    $output .= '</div>';
                 }
         $output .= '</div>';
     }
