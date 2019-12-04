@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             $notificationString = __('An Individual Needs investigation for {student} has been resolved.', ['student' => $studentName]);
             $notificationSender->addNotification($investigation['gibbonPersonIDCreator'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
             $notificationSender->sendNotifications();
-        } else if ($status == 'Investigation') { //Notify requestion teacher, and start further investigation
+        } else if ($status == 'Investigation') { //Notify requesting teacher, and start further investigation
             $contributionGateway = $container->get(INInvestigationContributionGateway::class);
 
             //Get list of checked contributors
@@ -145,7 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                     $insert = $contributionGateway->insert($contributor);
 
                     //Notify contributor
-                    $notificationString = __('An Individual Needs investigation for {student} has been resolved.', ['student' => $studentName]);
+                    $notificationString = __('Your input into an Individual Needs investigation for {student} has been requested.', ['student' => $studentName]);
                     $notificationSender->addNotification($contributor['gibbonPersonID'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_submit_detail.php&gibbonINInvestigationID=$gibbonINInvestigationID&gibbonINInvestigationContributionID=$insert");
                 }
             }
