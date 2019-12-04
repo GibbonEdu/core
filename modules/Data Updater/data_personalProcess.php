@@ -166,10 +166,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         'ethnicity'              => $_POST['ethnicity'] ?? $row['ethnicity'],
                         'citizenship1'           => $_POST['citizenship1'] ?? $row['citizenship1'],
                         'citizenship1Passport'   => $_POST['citizenship1Passport'] ?? $row['citizenship1Passport'],
-                        'citizenship1PassportExpiry'   => isset($_POST['citizenship1PassportExpiry']) ? Format::dateConvert($_POST['citizenship1PassportExpiry']) : $row['citizenship1PassportExpiry'],
+                        'citizenship1PassportExpiry'   => !empty($_POST['citizenship1PassportExpiry']) ? Format::dateConvert($_POST['citizenship1PassportExpiry']) : $row['citizenship1PassportExpiry'],
                         'citizenship2'           => $_POST['citizenship2'] ?? $row['citizenship2'],
                         'citizenship2Passport'   => $_POST['citizenship2Passport'] ?? $row['citizenship2Passport'],
-                        'citizenship2PassportExpiry'   => isset($_POST['citizenship2PassportExpiry']) ? Format::dateConvert($_POST['citizenship2PassportExpiry']) : $row['citizenship2PassportExpiry'],
+                        'citizenship2PassportExpiry'   => !empty($_POST['citizenship2PassportExpiry']) ? Format::dateConvert($_POST['citizenship2PassportExpiry']) : $row['citizenship2PassportExpiry'],
                         'religion'               => $_POST['religion'] ?? $row['religion'],
                         'nationalIDCardNumber'   => $_POST['nationalIDCardNumber'] ?? $row['nationalIDCardNumber'],
                         'residencyStatus'        => $_POST['residencyStatus'] ?? $row['residencyStatus'],
@@ -193,6 +193,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     // Date handling - ensure NULL value
                     if (empty($data['dob'])) $data['dob'] = null;
                     if (empty($data['visaExpiryDate'])) $data['visaExpiryDate'] = null;
+                    if (empty($data['citizenship1PassportExpiry'])) $data['citizenship1PassportExpiry'] = null;
+                    if (empty($data['citizenship2PassportExpiry'])) $data['citizenship2PassportExpiry'] = null;
 
                     // Phone number filtering
                     for ($i = 1; $i <= 4; $i++) {
