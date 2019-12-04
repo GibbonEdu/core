@@ -1,0 +1,144 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+<script type="text/javascript" src="{{ absoluteURL }}/lib/jquery/jquery.js"></script>
+<script type="text/javascript" src="{{ absoluteURL }}/lib/jquery/jquery-migrate.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="{{ absoluteURL }}/resources/assets/css/theme.min.css" />
+<link rel="stylesheet" type="text/css" href="{{ absoluteURL }}/resources/assets/css/core.min.css" />
+
+<style>
+html, body {
+    height: 100%;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+</style>
+
+<div class="w-full text-white m-0" style="min-height: 492px; background-color: #f00;">
+    <div class="pt-3 font-bold font-sans text-center">
+
+        <div class="h-8 pr-4 mb-24 w-full text-right text-base">
+        {% if alarm.gibbonPersonID == gibbonPersonID %}
+            <a style='color: #fff' target='_parent' href='{{ absoluteURL }}/modules/System Admin/alarm_cancelProcess.php?gibbonAlarmID={{ alarm.gibbonAlarmID }}'>
+            {{ __('Turn Alarm Off') }}
+            </a>
+            {% endif %}
+        </div>
+
+        {% if alarm.type == 'General' %}
+            <div style="font-size: 12vw">
+                {{ __('General Alarm!') }}
+            </div>
+            <audio loop autoplay volume=3>
+                <source src="{{ absoluteURL }}/resources/assets/audio/alarm_general.mp3" type="audio/mpeg">
+            </audio>
+        {% elseif alarm.type == 'Lockdown' %}
+            <div style="font-size: 15vw">
+                {{ __('Lockdown!') }}
+            </div>
+            <audio loop autoplay volume=3>
+                <source src="{{ absoluteURL }}/resources/assets/audio/alarm_lockdown.mp3" type="audio/mpeg">
+            </audio>
+        {% elseif alarm.type == 'Custom' %}
+            <div style="font-size: 15vw">
+                {{ __('Alarm!') }}
+            </div>
+            <audio loop autoplay volume=3>
+                <source src="{{ customAlarmSound }}" type="audio/mpeg">
+            </audio>
+        {% endif %}
+
+        <div class="text-center px-4">
+            {% if alarm.gibbonPersonID != gibbonPersonID %}
+            <p>
+                {% if confirmed %}
+                    <i>{{ __('You have successfully confirmed receipt of this alarm, which will continue to be displayed until an administrator has cancelled the alarm.') }}</i>
+                {% else %}
+                    <a target="_parent" class="text-white text-4xl sm:text-5xl font-bold" href="{{ absoluteURL }}/index_notification_ajax_alarmProcess.php?gibbonAlarmID={{ alarm.gibbonAlarmID }}">
+                        {{ __('Click here to confirm that you have received this alarm.') }}
+                    </a><br/><br/>
+                    <i>{{ __('After confirming receipt, the alarm will continue to be displayed until an administrator has cancelled the alarm.') }}</i>
+                {% endif %}
+            </p>
+            {% endif %}
+
+            {% if canViewReport %}
+                <h3 class="text-base sm:text-lg mt-12 mb-4">
+                    {{ __('Receipt Confirmation Report') }}
+                </h3>
+
+                {% if confirmationReport is empty %}
+                    {{ formatUsing('alert', __('There are no records to display.'))}}
+                {% else %}
+
+                <script type="text/javascript">
+                $(document).ready(function(){
+                    setInterval(function() {
+                        $.ajax({
+                            url: "{{ absoluteURL }}/index_notification_ajax_alarm_tickUpdate.php",
+                            data: {
+                                gibbonAlarmID: "{{ alarm.gibbonAlarmID }}",
+                            },
+                            type: "POST",
+                            dataType: "json",
+                            success: function(data) {
+                                for (var index in data) {
+                                    if (data[index] != null) {
+                                        $("#staff"+index+" .alarm-confirm").removeClass("hidden");
+                                        $("#staff"+index+" .alarm-action").remove();
+                                    }
+                                }
+                            }
+                        });
+                    }, 7500);
+                });
+                </script>
+
+                <div id="confirmWrapper">
+                    <table cellspacing='0' class='w-full sm:max-w-lg mx-auto'>
+                    <tr class='head'>
+                        <th class='text-white text-left text-xs sm:text-base pl-2'>
+                        {{ __('Name') }}<br/>
+                        </th>
+                        <th class='text-white text-center sm:text-left text-xs sm:text-base'>
+                        {{ __('Confirmed') }}
+                        </th>
+                        <th class='text-white text-center sm:text-left text-xs sm:text-base'>
+                        {{ __('Actions') }}
+                        </th>
+                    </tr>
+
+                    {% for person in confirmationReport %}
+                        <tr id="staff{{ person.gibbonPersonID }}" class="hover:bg-red-700">
+                            <td style="color: #fff" class="text-white text-xs sm:text-base pl-2">
+                                {{ formatUsing('name', '', person.preferredName, person.surname, 'Staff', true, true ) }}
+                            </td>
+                            <td class="text-white text-center sm:text-left h-8">
+                                {% if person.gibbonPersonID == alarm.gibbonPersonID %}
+                                    <i class="text-xs sm:text-base">{{ __('Sounded Alarm') }}</i>
+                                {% else %}
+                                    <img src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/iconTick.png" class="alarm-confirm {{ person.gibbonAlarmConfirmID is empty ? 'hidden' }}"/> 
+                                {% endif %}
+                            </td>
+                            <td class="text-white text-center sm:text-left h-8">
+                                {% if person.gibbonPersonID != alarm.gibbonPersonID and person.gibbonAlarmConfirmID is empty %}
+                                    <a target="_parent" class="alarm-action" href="{{ absoluteURL }}/index_notification_ajax_alarmConfirmProcess.php?gibbonPersonID={{ person.gibbonPersonID }}&gibbonAlarmID={{ alarm.gibbonAlarmID }}">
+                                        <img title="{{ __('Confirm') }}" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/iconTick_light.png"/>
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </table>
+                </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
