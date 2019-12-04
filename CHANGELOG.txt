@@ -42,6 +42,7 @@ v19.0.00
         System: improved the display of checkbox and radio list items in forms
         System: added Malagasy as a selectable Language
         System: added a sticky header to refactored data tables
+        System: refactored the Sound Alarm system
         Activities: added a Year Group filter in Manage Activities
         Activities: fixed bug preventing viewing activity details in Activity Choices by Student when listing closed
         Attendance: added an option to record the first class attendance in a day as school-wide attendance
