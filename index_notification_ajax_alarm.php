@@ -26,6 +26,9 @@ include './gibbon.php';
 echo '<script type="text/javascript" src="'.$_SESSION[$guid]['absoluteURL'].'/lib/jquery/jquery.js"></script>';
 echo '<script type="text/javascript" src="'.$_SESSION[$guid]['absoluteURL'].'/lib/jquery/jquery-migrate.min.js"></script>';
 
+echo '<link rel="stylesheet" type="text/css" href="'.$_SESSION[$guid]['absoluteURL'].'/resources/assets/css/theme.min.css" />';
+echo '<link rel="stylesheet" type="text/css" href="'.$_SESSION[$guid]['absoluteURL'].'/resources/assets/css/core.min.css" />';
+
 $type = '';
 if (isset($_GET['type'])) {
     $type = $_GET['type'];
@@ -49,7 +52,7 @@ if ($type == 'general' or $type == 'lockdown' or $type == 'custom') {
     if ($result->rowCount() == 1) { //Alarm details OK
         $row = $result->fetch();
 
-        $output .= "<div style='padding-top: 10px; font-size: 120px; font-weight: bold; font-family: arial, sans; text-align: center'>";
+        $output .= "<div style='padding-top: 10px; font-size: 15vw; font-weight: bold; font-family: arial, sans; text-align: center'>";
         //Allow alarm sounder to terminate alarm
         $output .= "<div style='height: 20px; margin-bottom: 120px; width: 100%; text-align: right; font-size: 14px'>";
         if ($row['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID']) {
@@ -102,7 +105,7 @@ if ($type == 'general' or $type == 'lockdown' or $type == 'custom') {
                         }
 
                     if ($resultConfirm->rowCount() == 0) {
-                        $output .= "<a target='_parent' style='font-size: 300%; font-weight: bold; color: #fff' href='".$_SESSION[$guid]['absoluteURL'].'/index_notification_ajax_alarmProcess.php?gibbonAlarmID='.$row['gibbonAlarmID']."'>".__('Click here to confirm that you have received this alarm.').'</a><br/>';
+                        $output .= "<a target='_parent' class='text-4xl sm:text-5xl' style=' font-weight: bold; color: #fff' href='".$_SESSION[$guid]['absoluteURL'].'/index_notification_ajax_alarmProcess.php?gibbonAlarmID='.$row['gibbonAlarmID']."'>".__('Click here to confirm that you have received this alarm.').'</a><br/>';
                         $output .= '<i>'.__('After confirming receipt, the alarm will continue to be displayed until an administrator has cancelled the alarm.').'</i>';
                     } else {
                         $output .= '<i>'.__('You have successfully confirmed receipt of this alarm, which will continue to be displayed until an administrator has cancelled the alarm.').'</i>';
@@ -111,17 +114,33 @@ if ($type == 'general' or $type == 'lockdown' or $type == 'custom') {
                 }
 
                 //Show report to those with permission to sound alarm
-                if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php')) {
-                    $output .= '<h3>';
+                if (true || isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php')) {
+                    $output .= '<br/><br/>';
+                    $output .= '<h3 class="text-base sm:text-lg mb-4">';
                     $output .= __('Receipt Confirmation Report');
                     $output .= '</h3>';
 
                     $output .= '<script type="text/javascript">
-									$(document).ready(function(){
-										setInterval(function() {
-											$("#confirmWrapper").load("index_notification_ajax_alarm_tickUpdate.php", {"gibbonAlarmID": "'.$row['gibbonAlarmID'].'", "gibbonPersonIDSounder": "'.$row['gibbonPersonID'].'"});
-										}, 5000);
-									});
+                                $(document).ready(function(){
+                                    setInterval(function() {
+                                        $.ajax({
+                                            url: "./index_notification_ajax_alarm_tickUpdate.php",
+                                            data: {
+                                                gibbonAlarmID: "'.$row['gibbonAlarmID'].'",
+                                            },
+                                            type: "POST",
+                                            dataType: "json",
+                                            success: function(data) {
+                                                for (var index in data) {
+                                                    if (data[index] != null) {
+                                                        $("#staff"+index+" .alarm-confirm").removeClass("hidden");
+                                                        $("#staff"+index+" .alarm-action").remove();
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }, 7500);
+                                });
 								</script>';
 
                     $output .= '<div id="confirmWrapper">';
@@ -140,15 +159,15 @@ if ($type == 'general' or $type == 'lockdown' or $type == 'custom') {
                         $output .= __('There are no records to display.');
                         $output .= '</div>';
                     } else {
-                        $output .= "<table cellspacing='0' style='width: 400px; margin: 0 auto'>";
+                        $output .= "<table cellspacing='0' class='w-full sm:max-w-md mx-auto'>";
                         $output .= "<tr class='head'>";
-                        $output .= "<th style='color: #fff; text-align: left'>";
+                        $output .= "<th class='text-white text-left text-xs sm:text-base'>";
                         $output .= __('Name').'<br/>';
                         $output .= '</th>';
-                        $output .= "<th style='color: #fff; text-align: left'>";
+                        $output .= "<th class='text-white text-center sm:text-left text-xs sm:text-base'>";
                         $output .= __('Confirmed');
                         $output .= '</th>';
-                        $output .= "<th style='color: #fff; text-align: left'>";
+                        $output .= "<th class='text-white text-center sm:text-left text-xs sm:text-base'>";
                         $output .= __('Actions');
                         $output .= '</th>';
                         $output .= '</tr>';
@@ -157,23 +176,21 @@ if ($type == 'general' or $type == 'lockdown' or $type == 'custom') {
                         while ($rowConfirm = $resultConfirm->fetch()) {
                             //COLOR ROW BY STATUS!
                                 
-                            $output .= "<tr id='row".$rowCount."'>";
-                            $output .= "<td style='color: #fff'>";
+                            $output .= "<tr id='staff".$rowConfirm['gibbonPersonID']."' class='hover:bg-red-700'>";
+                            $output .= '<td style="color: #fff" class="text-white text-xs sm:text-base">';
                             $output .= Format::name('', $rowConfirm['preferredName'], $rowConfirm['surname'], 'Staff', true, true).'<br/>';
                             $output .= '</td>';
-                            $output .= "<td style='color: #fff'>";
+                            $output .= '<td class="text-white text-center sm:text-left">';
                             if ($row['gibbonPersonID'] == $rowConfirm['gibbonPersonID']) {
-                                $output .= __('NA');
+                                $output .= '<i class="text-xs sm:text-base">'.__('Sounded Alarm').'</i>';
                             } else {
-                                if ($rowConfirm['gibbonAlarmConfirmID'] != '') {
-                                    $output .= "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
-                                }
+                                $output .= "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png' class='alarm-confirm ".(empty($rowConfirm['gibbonAlarmConfirmID']) ? 'hidden' : '')."'/> ";
                             }
                             $output .= '</td>';
-                            $output .= "<td style='color: #fff'>";
+                            $output .= '<td class="text-white text-center sm:text-left">';
                             if ($row['gibbonPersonID'] != $rowConfirm['gibbonPersonID']) {
                                 if ($rowConfirm['gibbonAlarmConfirmID'] == '') {
-                                    $output .= "<a target='_parent' href='".$_SESSION[$guid]['absoluteURL'].'/index_notification_ajax_alarmConfirmProcess.php?gibbonPersonID='.$rowConfirm['gibbonPersonID'].'&gibbonAlarmID='.$row['gibbonAlarmID']."'><img title='".__('Confirm')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick_light.png'/></a> ";
+                                    $output .= "<a target='_parent' class='alarm-action' href='".$_SESSION[$guid]['absoluteURL'].'/index_notification_ajax_alarmConfirmProcess.php?gibbonPersonID='.$rowConfirm['gibbonPersonID'].'&gibbonAlarmID='.$row['gibbonAlarmID']."'><img title='".__('Confirm')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick_light.png'/></a> ";
                                 }
                             }
                             $output .= '</td>';

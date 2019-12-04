@@ -17,77 +17,22 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Format;
+// Gibbon system-wide includes
+require_once './gibbon.php';
 
-//Gibbon system-wide includes
-include './gibbon.php';
+$gibbonAlarmID = $_POST['gibbonAlarmID'] ?? '';
 
-$gibbonAlarmID = $_POST['gibbonAlarmID'];
-$gibbonPersonIDSounder = $_POST['gibbonPersonIDSounder'];
-
-//Proceed!
-if ($gibbonAlarmID == '') { echo "<div class='error'>";
-    echo __('An error has occurred.');
-    echo '</div>';
+// Proceed!
+if (empty($_SESSION[$guid]['gibbonPersonID']) || $_SESSION[$guid]['gibbonRoleIDCurrentCategory'] != 'Staff') {
+    die();
+} elseif (empty($gibbonAlarmID)) {
+    die();
 } else {
-    //Check confirmation of alarm
-    $output = '';
+    // Check confirmation of current alarm
+    $data = ['gibbonAlarmID' => $gibbonAlarmID, 'today' => date('Y-m-d')];
+    $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonAlarmConfirmID FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonAlarmConfirm ON (gibbonAlarmConfirm.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAlarmID=:gibbonAlarmID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) ORDER BY surname, preferredName";
 
-    try {
-        $dataConfirm = array('gibbonAlarmID' => $gibbonAlarmID);
-        $sqlConfirm = "SELECT gibbonPerson.gibbonPersonID, status, surname, preferredName, gibbonAlarmConfirmID FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonAlarmConfirm ON (gibbonAlarmConfirm.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAlarmID=:gibbonAlarmID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
-        $resultConfirm = $connection2->prepare($sqlConfirm);
-        $resultConfirm->execute($dataConfirm);
-    } catch (PDOException $e) {
-        //$output .= "<div class='error'>".$e->getMessage().'</div>';
-    }
+    $result = $pdo->select($sql, $data)->fetchKeyPair();
 
-    if ($resultConfirm->rowCount() < 1) {
-        $output .= "<div class='error'>";
-        $output .= __('There are no records to display.');
-        $output .= '</div>';
-    } else {
-        $output .= "<table cellspacing='0' style='width: 400px; margin: 0 auto'>";
-        $output .= "<tr class='head'>";
-        $output .= "<th style='color: #fff; text-align: left'>";
-        $output .= __('Name').'<br/>';
-        $output .= '</th>';
-        $output .= "<th style='color: #fff; text-align: left'>";
-        $output .= __('Confirmed');
-        $output .= '</th>';
-        $output .= "<th style='color: #fff; text-align: left'>";
-        $output .= __('Actions');
-        $output .= '</th>';
-        $output .= '</tr>';
-
-        $rowCount = 0;
-        while ($rowConfirm = $resultConfirm->fetch()) {
-            //COLOR ROW BY STATUS!
-            $output .= "<tr id='row".$rowCount."'>";
-            $output .= "<td style='color: #fff'>";
-            $output .= Format::name('', $rowConfirm['preferredName'], $rowConfirm['surname'], 'Staff', true, true).'<br/>';
-            $output .= '</td>';
-            $output .= "<td style='color: #fff'>";
-            if ($gibbonPersonIDSounder == $rowConfirm['gibbonPersonID']) {
-                $output .= __('NA');
-            } else {
-                if ($rowConfirm['gibbonAlarmConfirmID'] != '') {
-                    $output .= "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
-                }
-            }
-            $output .= '</td>';
-            $output .= "<td style='color: #fff'>";
-            if ($gibbonPersonIDSounder != $rowConfirm['gibbonPersonID']) {
-                if ($rowConfirm['gibbonAlarmConfirmID'] == '') {
-                    $output .= "<a target='_parent' href='".$_SESSION[$guid]['absoluteURL'].'/index_notification_ajax_alarmConfirmProcess.php?gibbonPersonID='.$rowConfirm['gibbonPersonID'].'&gibbonAlarmID='.$gibbonAlarmID."'><img title='".__('Confirm')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick_light.png'/></a> ";
-                }
-            }
-            $output .= '</td>';
-            $output .= '</tr>';
-            ++$rowCount;
-        }
-        $output .= '</table>';
-    }
-
-    echo $output;
+    echo json_encode($result);
 }
