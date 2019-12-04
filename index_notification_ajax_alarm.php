@@ -29,6 +29,13 @@ echo '<script type="text/javascript" src="'.$_SESSION[$guid]['absoluteURL'].'/li
 echo '<link rel="stylesheet" type="text/css" href="'.$_SESSION[$guid]['absoluteURL'].'/resources/assets/css/theme.min.css" />';
 echo '<link rel="stylesheet" type="text/css" href="'.$_SESSION[$guid]['absoluteURL'].'/resources/assets/css/core.min.css" />';
 
+echo '<style>
+html, body {
+    height: 100%;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}</style>';
+
 $type = '';
 if (isset($_GET['type'])) {
     $type = $_GET['type'];
