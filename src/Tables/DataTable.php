@@ -31,6 +31,7 @@ use Gibbon\Tables\Columns\DraggableColumn;
 use Gibbon\Tables\Renderer\RendererInterface;
 use Gibbon\Tables\View\DataTableView;
 use Gibbon\Tables\View\PaginatedView;
+use Gibbon\View\View;
 
 /**
  * DataTable
@@ -79,7 +80,7 @@ class DataTable implements OutputableInterface
         // This is a temporary workaround to prevent overflow on pages that have a refactored table.
         // This enables the sticky headers to work for DataTables without breaking legacy tables.
         $container->get('page')->addData('preventOverflow', true);
-        $renderer->addData('preventOverflow', true);
+        if ($renderer instanceof View) $renderer->addData('preventOverflow', true);
         
         return (new static($renderer))->setID($id);
     }
@@ -100,7 +101,7 @@ class DataTable implements OutputableInterface
         // This is a temporary workaround to prevent overflow on pages that have a refactored table.
         // This enables the sticky headers to work for DataTables without breaking legacy tables.
         $container->get('page')->addData('preventOverflow', true);
-        $renderer->addData('preventOverflow', true);
+        if ($renderer instanceof View) $renderer->addData('preventOverflow', true);
 
         return (new static($renderer))->setID($id)->setRenderer($renderer);
     }
