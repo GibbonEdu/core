@@ -18,36 +18,31 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\View\View;
+use Gibbon\Domain\System\AlarmGateway;
 
 // Gibbon system-wide includes
 include './gibbon.php';
 
 $type = $_GET['type'] ?? '';
 
-
 if (!$gibbon->session->has('gibbonPersonID') || $gibbon->session->get('gibbonRoleIDCurrentCategory') != 'Staff') {
     return;
 } elseif ($type == 'general' or $type == 'lockdown' or $type == 'custom') {
-    $alarm = $pdo->selectOne("SELECT * FROM gibbonAlarm WHERE status='Current'");
+    $alarmGateway = $container->get(AlarmGateway::class);
+
+    $alarm = $alarmGateway->getCurrentAlarm();
     if (empty($alarm)) return;
 
-    $dataConfirm = array('gibbonAlarmID' => $alarm['gibbonAlarmID'], 'gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
-    $sqlConfirm = 'SELECT * FROM gibbonAlarmConfirm WHERE gibbonAlarmID=:gibbonAlarmID AND gibbonPersonID=:gibbonPersonID';
-    $confirmed =  $pdo->selectOne($sqlConfirm, $dataConfirm);
-
+    $confirmed =  $alarmGateway->getAlarmConfirmationByPerson($alarm['gibbonAlarmID'], $gibbon->session->get('gibbonPersonID'));
     $canViewReport = isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php');
-    if ($canViewReport) {
-        $dataConfirm = ['gibbonAlarmID' => $alarm['gibbonAlarmID'], 'today' => date('Y-m-d')];
-        $sqlConfirm = "SELECT gibbonPerson.gibbonPersonID, status, surname, preferredName, gibbonAlarmConfirmID FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonAlarmConfirm ON (gibbonAlarmConfirm.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAlarmID=:gibbonAlarmID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) ORDER BY surname, preferredName";
-        $confirmationReport = $pdo->select($sqlConfirm, $dataConfirm)->fetchAll();
-    }
+    $confirmationReport = $alarmGateway->selectAlarmConfirmation($alarm['gibbonAlarmID'])->fetchAll();
     
     echo $container->get(View::class)->fetchFromTemplate('ui/alarmOverlay.twig.html', [
-        'alarm' => $alarm,
-        'confirmed' => $confirmed,
-        'gibbonPersonID' => $gibbon->session->get('gibbonPersonID'),
-        'customAlarmSound' => getSettingByScope($connection2, 'System Admin', 'customAlarmSound'),
-        'canViewReport' => $canViewReport,
-        'confirmationReport' => $confirmationReport ?? [],
+        'alarm'              => $alarm,
+        'confirmed'          => $confirmed,
+        'gibbonPersonID'     => $gibbon->session->get('gibbonPersonID'),
+        'customAlarmSound'   => getSettingByScope($connection2, 'System Admin', 'customAlarmSound'),
+        'canViewReport'      => $canViewReport,
+        'confirmationReport' => $canViewReport ? $confirmationReport : [],
     ]);
 }
