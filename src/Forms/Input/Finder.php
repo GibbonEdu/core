@@ -77,7 +77,10 @@ class Finder extends TextField
      */
     public function selected($values)
     {
-        if (is_string($values) && $values != '') $values = explode(',', $values);
+        if (is_string($values) && $values != '') {
+            $values = stripslashes(str_replace('\\\\', '', $values));
+            $values = explode(',', $values);
+        }
 
         if (!empty($values) && is_array($values)) {
             if (array_values($values) === $values) {
@@ -134,7 +137,10 @@ class Finder extends TextField
         if (!is_array($items)) $items = [$items];
 
         return array_map(function ($key, $value) {
-            $token = ['id' => addslashes($key)];
+            $key = stripslashes($key);
+            $value = stripslashes($value);
+
+            $token = ['id' => $key];
             $value = is_array($value)? $value : ['name' => $value];
 
             return array_merge($token, $value);
@@ -147,6 +153,7 @@ class Finder extends TextField
      */
     protected function getElement()
     {
+
         $this->addClass('finderInput');
         $output = '<input type="text" '.$this->getAttributeString().'>';
 
