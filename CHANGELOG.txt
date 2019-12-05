@@ -97,6 +97,7 @@ v19.0.00
         Messenger: fixed bug where users could create a message with no available delivery options
         Planner: fixed non-functional Smart Block Template setting
         Planner: fixed Unit Planner bug causing actions to appear in Classes table for newly created units
+        Planner: implemented unit ordering field in Lesson Planner
         School Admin: fixed Browse Library BG Image field length bug
         School Admin: fixed typo to use instead instead of isntead
         Staff: fixed Cancel Coverage button not available for future coverage
