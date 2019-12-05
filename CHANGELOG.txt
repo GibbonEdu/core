@@ -93,6 +93,7 @@ v19.0.00
         Departments: fixed Export to Excel to work on iOS devices
         Finance: fixed missing payment info in invoice receipt email for multiple partial payments
         Library: set Bookable to No by default on Add record screen
+        Markbook: implemented unit ordering and date ordering for unit and lesson fields
         Messenger: fixed bug when sending parent and student SMS for Attendance status
         Messenger: fixed bug where users could create a message with no available delivery options
         Planner: fixed non-functional Smart Block Template setting
