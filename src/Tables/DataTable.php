@@ -31,6 +31,7 @@ use Gibbon\Tables\Columns\DraggableColumn;
 use Gibbon\Tables\Renderer\RendererInterface;
 use Gibbon\Tables\View\DataTableView;
 use Gibbon\Tables\View\PaginatedView;
+use Gibbon\View\View;
 
 /**
  * DataTable
@@ -79,7 +80,7 @@ class DataTable implements OutputableInterface
         // This is a temporary workaround to prevent overflow on pages that have a refactored table.
         // This enables the sticky headers to work for DataTables without breaking legacy tables.
         $container->get('page')->addData('preventOverflow', true);
-        $renderer->addData('preventOverflow', true);
+        if ($renderer instanceof View) $renderer->addData('preventOverflow', true);
         
         return (new static($renderer))->setID($id);
     }
@@ -100,7 +101,7 @@ class DataTable implements OutputableInterface
         // This is a temporary workaround to prevent overflow on pages that have a refactored table.
         // This enables the sticky headers to work for DataTables without breaking legacy tables.
         $container->get('page')->addData('preventOverflow', true);
-        $renderer->addData('preventOverflow', true);
+        if ($renderer instanceof View) $renderer->addData('preventOverflow', true);
 
         return (new static($renderer))->setID($id)->setRenderer($renderer);
     }
@@ -393,7 +394,9 @@ class DataTable implements OutputableInterface
      */
     public function addMetaData($name, $value)
     {
-        $this->meta[$name] = isset($this->meta[$name])? array_replace($this->meta[$name], $value) : $value;
+        $this->meta[$name] = isset($this->meta[$name]) && is_array($this->meta[$name]) && is_array($value)
+            ? array_replace($this->meta[$name], $value)
+            : $value;
 
         return $this;
     }

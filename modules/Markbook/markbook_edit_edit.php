@@ -137,14 +137,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                             $row->addTextField('courseName')->required()->readOnly()->setValue($course['course'].'.'.$course['class']);
 
                         $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                        $sql = "SELECT gibbonUnit.gibbonUnitID as value, gibbonUnit.name FROM gibbonUnit JOIN gibbonUnitClass ON (gibbonUnit.gibbonUnitID=gibbonUnitClass.gibbonUnitID) WHERE running='Y' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY name";
+                        $sql = "SELECT gibbonUnit.gibbonUnitID as value, gibbonUnit.name FROM gibbonUnit JOIN gibbonUnitClass ON (gibbonUnit.gibbonUnitID=gibbonUnitClass.gibbonUnitID) WHERE running='Y' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY ordering, name";
 
                         $row = $form->addRow();
                             $row->addLabel('gibbonUnitID', __('Unit'));
                             $units = $row->addSelect('gibbonUnitID')->fromQuery($pdo, $sql, $data)->placeholder();
 
                         $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                        $sql = "SELECT gibbonUnitID as chainedTo, gibbonPlannerEntryID as value, name FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY name";
+                        $sql = "SELECT gibbonUnitID as chainedTo, gibbonPlannerEntryID as value, name FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY date, name";
                         $row = $form->addRow();
                             $row->addLabel('gibbonPlannerEntryID', __('Lesson'));
                             $row->addSelect('gibbonPlannerEntryID')->fromQueryChained($pdo, $sql, $data, 'gibbonUnitID')->placeholder();

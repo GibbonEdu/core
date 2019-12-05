@@ -217,6 +217,8 @@ class Checkbox extends Input
                 $output .= '</div>';
             }
 
+            $this->addClass('flex-none');
+
             $count = 0;
 
             foreach ($this->options as $value => $label) {
