@@ -394,7 +394,9 @@ class DataTable implements OutputableInterface
      */
     public function addMetaData($name, $value)
     {
-        $this->meta[$name] = isset($this->meta[$name])? array_replace($this->meta[$name], $value) : $value;
+        $this->meta[$name] = isset($this->meta[$name]) && is_array($this->meta[$name]) && is_array($value)
+            ? array_replace($this->meta[$name], $value)
+            : $value;
 
         return $this;
     }
