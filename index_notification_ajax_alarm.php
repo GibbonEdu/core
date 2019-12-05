@@ -35,7 +35,7 @@ if (!$gibbon->session->has('gibbonPersonID') || $gibbon->session->get('gibbonRol
     $sqlConfirm = 'SELECT * FROM gibbonAlarmConfirm WHERE gibbonAlarmID=:gibbonAlarmID AND gibbonPersonID=:gibbonPersonID';
     $confirmed =  $pdo->selectOne($sqlConfirm, $dataConfirm);
 
-    $canViewReport = true || isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php');
+    $canViewReport = isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php');
     if ($canViewReport) {
         $dataConfirm = ['gibbonAlarmID' => $alarm['gibbonAlarmID'], 'today' => date('Y-m-d')];
         $sqlConfirm = "SELECT gibbonPerson.gibbonPersonID, status, surname, preferredName, gibbonAlarmConfirmID FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonAlarmConfirm ON (gibbonAlarmConfirm.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAlarmID=:gibbonAlarmID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) ORDER BY surname, preferredName";
