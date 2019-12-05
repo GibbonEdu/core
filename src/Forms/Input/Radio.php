@@ -119,6 +119,8 @@ class Radio extends Input
                 $this->checked($firstOption);
             }
 
+            $this->addClass('flex-none');
+
             $count = 0;
             $totalOptions = count($this->getOptions());
             foreach ($this->getOptions() as $value => $label) {
