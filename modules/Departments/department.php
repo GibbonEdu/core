@@ -92,17 +92,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
             $table->addMetaData('gridClass', 'rounded-sm bg-blue-100 border py-2');
             $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/4 md:w-1/5 my-2 text-center');
 
-            $table->addColumn('image_240')
-                ->format(function ($person) {
-                    return Format::userPhoto($person['image_240'], 'sm', '');
-                });
-
             $canViewProfile = isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php');
+            $table->addColumn('image_240')
+                ->format(function ($person) use ($canViewProfile) {
+                    $userPhoto = Format::userPhoto($person['image_240'], 'sm', '');
+                    $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
+
+                    return $canViewProfile
+                        ? Format::link($url, $userPhoto)
+                        : $userPhoto;
+                });
+            
             $table->addColumn('name')
                 ->setClass('text-xs font-bold mt-1')
                 ->format(function ($person) use ($canViewProfile) {
                     $name = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff');
-                    $url = "./index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID=".$person['gibbonPersonID'];
+                    $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
                     return $canViewProfile
                         ? Format::link($url, $name)
                         : $name;
