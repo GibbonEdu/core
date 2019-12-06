@@ -238,7 +238,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                     ->setClass('text-center py-2 px-1 -mr-px -mb-px flex flex-col justify-between')
                                     ->addClass($student['cellHighlight']);
 
-                                $cell->addContent(getUserPhoto($guid, $student['image_240'], 75));
+                                $studentLink = './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'].'&subpage=Attendance';
+                                $cell->addContent(Format::link($studentLink, Format::userPhoto($student['image_240'], 75)));
                                 $cell->addWebLink(Format::name('', htmlPrep($student['preferredName']), htmlPrep($student['surname']), 'Student', false))
                                      ->setURL('index.php?q=/modules/Students/student_view_details.php')
                                      ->addParam('gibbonPersonID', $student['gibbonPersonID'])
