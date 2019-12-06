@@ -111,7 +111,9 @@ class RollGroupTable extends DataTable
         $this->addColumn('image_240')
             ->setClass('relative')
             ->format(function ($person) {
-                return Format::userPhoto($person['image_240'], 'md', '').
+                $url =  './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
+                
+                return Format::link($url, Format::userPhoto($person['image_240'], 'md', '')).
                        Format::userBirthdayIcon($person['dob'], $person['preferredName']);
             });
             
