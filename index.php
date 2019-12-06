@@ -496,8 +496,10 @@ if ($isLoggedIn && !$upgrade) {
 
     // Setup cached message array only if there are recent posts, or if more than one hour has elapsed
     $messageWallLatestPost = $container->get(MessengerGateway::class)->getRecentMessageWallTimestamp();
-    $timeDifference = $gibbon->session->get('messageWallRefreshed', 0) - $messageWallLatestPost;
-    if (!$gibbon->session->exists('messageWallArray') || $timeDifference < 0 || $timeDifference > 3600) {
+    $messageWallRefreshed = $gibbon->session->get('messageWallRefreshed', 0);
+
+    $timeDifference = $messageWallRefreshed - $messageWallLatestPost;
+    if (!$gibbon->session->exists('messageWallArray') || ($messageWallLatestPost >= $messageWallRefreshed) || ($messageWallRefreshed - time() > 3600)) {
         $gibbon->session->set('messageWallArray', getMessages($guid, $connection2, 'array'));
         $gibbon->session->set('messageWallRefreshed', time());
     }
