@@ -67,6 +67,9 @@ class Chart
      */
     public function __construct($elementID, $chartType)
     {
+        // Prevent decimal numbers from using commas, which causes invalid data when encoded to JSON.
+        setlocale(LC_NUMERIC, 'C');
+
         if (!preg_match('/^[a-zA-Z_]+[0-9a-zA-Z_]*$/', $elementID)) {
             throw new \InvalidArgumentException('The chartID value must be a valid HTML element id.');
         }
