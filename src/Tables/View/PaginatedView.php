@@ -62,6 +62,9 @@ class PaginatedView extends DataTableView implements RendererInterface
 
     public function preparePageData(DataTable $table, DataSet $dataSet)
     {
+        $this->preProcessTable($table);
+        $filters = $table->getMetaData('filterOptions', []);
+        
         $this->addData([
             'table'      => $table,
             'dataSet'    => $dataSet,
@@ -70,9 +73,6 @@ class PaginatedView extends DataTableView implements RendererInterface
             'blankSlate' => $table->getMetaData('blankSlate'),
             'draggable'  => $table->getMetaData('draggable'),
         ]);
-
-        $this->preProcessTable($table);
-        $filters = $table->getMetaData('filterOptions', []);
 
         if (!empty($this->criteria)) {
             $this->addData([
