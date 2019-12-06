@@ -532,5 +532,5 @@ UPDATE gibbonSetting SET description='A name to use instead of \"Effort\" in the
 UPDATE gibbonSetting SET description='A short name to use instead of \"Effort\" in the second grade column of the markbook..' WHERE scope='Markbook' AND name='effortAlternativeNameAbrev';end
 UPDATE gibbonAction SET name='Staff Directory_brief' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Staff') AND name='View Staff Profile_brief';end
 UPDATE gibbonAction SET name='Staff Directory_full' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Staff') AND name='View Staff Profile_full';end
-
+INSERT INTO gibbonLanguage SET name='Maldivian';end
 ";
