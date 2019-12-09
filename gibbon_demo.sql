@@ -7995,7 +7995,6 @@ LOCK TABLES `gibbonFinanceFeeCategory` WRITE;
 
 INSERT INTO `gibbonFinanceFeeCategory` (`gibbonFinanceFeeCategoryID`, `name`, `nameShort`, `description`, `active`, `gibbonPersonIDCreator`, `timestampCreator`, `gibbonPersonIDUpdate`, `timestampUpdate`)
 VALUES
-	(0001,'Other','OTHR','Category for fees not fitting into any other category.','Y',0000000001,'2013-07-12 08:25:32',NULL,NULL),
 	(0019,'Tuition Fee','TUIT','School Tuition ','Y',0000001810,'2017-04-13 12:43:01',0000000857,'2017-05-23 09:59:14'),
 	(0020,'Debenture','DEB','Non-Refundable Debenture','Y',0000001810,'2017-05-23 09:41:23',0000000857,'2017-05-23 11:29:17'),
 	(0021,'Public Exam Fee','EXAM','','Y',0000000857,'2017-06-16 15:02:52',NULL,NULL),
