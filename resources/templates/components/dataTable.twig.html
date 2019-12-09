@@ -52,7 +52,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% block tableInner %}
     
         <table class="{{ class }} w-full" cellspacing=0 {% if draggable %}data-drag-url="{{ draggable.url }}" data-drag-data="{{ draggable.data }}"{% endif %}>
-            <thead class="sticky top-0 z-10">
+            <thead>
             {% for headerRow in headers %}
                 <tr class="head text-xs">
                 {% for columnIndex, column in columns %}
