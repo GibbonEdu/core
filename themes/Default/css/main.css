@@ -1158,7 +1158,8 @@ table.smallIntBorder td.noPadding {
     top: 18px;
 }
 
-.dataTable select {
+.dataTable select.filters,
+.dataTable select.limit {
     -webkit-appearance: none;
 }
 

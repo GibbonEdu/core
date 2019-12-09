@@ -92,6 +92,8 @@ v19.0.00
         Departments: fixed permission check causing Export to Excel to fail
         Departments: fixed Export to Excel to work on iOS devices
         Finance: fixed missing payment info in invoice receipt email for multiple partial payments
+        Finance: fixed missing Other category for installs with no demo data
+        Finance: fixed Manage Invoices bulk actions not refreshing after changing filters
         Library: set Bookable to No by default on Add record screen
         Markbook: implemented unit ordering and date ordering for unit and lesson fields
         Messenger: fixed bug when sending parent and student SMS for Attendance status
