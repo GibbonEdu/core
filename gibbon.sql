@@ -1744,6 +1744,14 @@ CREATE TABLE `gibbonFinanceFeeCategory` (
   `timestampUpdate` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+--
+-- Dumping data for table `gibbonFinanceFeeCategory`
+--
+
+INSERT INTO `gibbonFinanceFeeCategory` (`gibbonFinanceFeeCategoryID`, `name`, `nameShort`, `description`, `active`, `gibbonPersonIDCreator`, `timestampCreator`, `gibbonPersonIDUpdate`, `timestampUpdate`)
+VALUES (0001,'Other','OTHR','Category for fees not fitting into any other category.','Y',0000000001,'2013-07-12 08:25:32',NULL,NULL);
+
 -- --------------------------------------------------------
 
 --
