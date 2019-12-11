@@ -42,19 +42,19 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
                     $type = 'custom';
                 }
                 $output .= "<script>
-					if ($('div#TB_window').is(':visible')==true && $('div#TB_window').attr('class')!='alarm') {
+					if ($('#TB_window').is(':visible')==true && $('#TB_window').hasClass('alarm') == false) {
 						$(\"#TB_window\").remove();
-						$(\"body\").append(\"<div id='TB_window'></div>\");
+                        $(\"body\").append(\"<div id='TB_window'></div>\");
 					}
-					if ($('div#TB_window').is(':visible')===false) {
+					if ($('#TB_window').is(':visible')==false) {
 						var url = '".$_SESSION[$guid]['absoluteURL'].'/index_notification_ajax_alarm.php?type='.$type."&KeepThis=true&TB_iframe=true&width=1000&height=500';
 						tb_show('', url);
-						$('div#TB_window').addClass('alarm') ;
+						$('#TB_window').addClass('alarm') ;
 					}
 				</script>";
             } else {
                 $output .= "<script>
-					if ($('div#TB_window').is(':visible')==true && $('div#TB_window').attr('class')=='alarm') {
+					if ($('#TB_window').is(':visible')==true && $('#TB_window').hasClass('alarm') ) {
 						tb_remove();
 					}
 				</script>";
