@@ -34,6 +34,7 @@ class SettingGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonSetting';
+    private static $primaryKey = 'gibbonSettingID';
 
     private static $searchableColumns = ['scope', 'name'];
     

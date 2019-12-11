@@ -32,6 +32,7 @@ class CourseGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonCourse';
+    private static $primaryKey = 'gibbonCourseID';
 
     private static $searchableColumns = ['gibbonCourse.name', 'gibbonCourse.nameShort'];
     

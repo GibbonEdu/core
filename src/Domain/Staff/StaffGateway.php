@@ -34,6 +34,7 @@ class StaffGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonStaff';
+    private static $primaryKey = 'gibbonStaffID';
 
     private static $searchableColumns = ['preferredName', 'surname', 'username', 'gibbonStaff.jobTitle'];
 

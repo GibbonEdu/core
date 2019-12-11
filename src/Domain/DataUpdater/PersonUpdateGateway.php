@@ -32,6 +32,7 @@ class PersonUpdateGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonPersonUpdate';
+    private static $primaryKey = 'gibbonPersonUpdateID';
 
     private static $searchableColumns = [''];
     

@@ -34,6 +34,7 @@ class ModuleGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonModule';
+    private static $primaryKey = 'gibbonModuleID';
 
     private static $searchableColumns = ['name'];
     

@@ -32,6 +32,7 @@ class FirstAidGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonFirstAid';
+    private static $primaryKey = 'gibbonFirstAidID';
 
     private static $searchableColumns = [''];
 

@@ -32,6 +32,7 @@ class UserFieldGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonPersonField';
+    private static $primaryKey = 'gibbonPersonFieldID';
 
     private static $searchableColumns = ['name'];
     

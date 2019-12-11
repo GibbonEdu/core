@@ -32,6 +32,7 @@ class DepartmentGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonDepartment';
+    private static $primaryKey = 'gibbonDepartmentID';
 
     private static $searchableColumns = ['name'];
     

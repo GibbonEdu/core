@@ -32,6 +32,7 @@ class FacilityChangeGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonTTSpaceChange';
+    private static $primaryKey = 'gibbonTTSpaceChangeID';
 
     private static $searchableColumns = ['spaceOld.name', 'spaceNew.name'];
     

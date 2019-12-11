@@ -32,6 +32,7 @@ class INGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonIN';
+    private static $primaryKey = 'gibbonINID';
 
     private static $searchableColumns = ['preferredName', 'surname', 'username'];
     

@@ -34,6 +34,7 @@ class StringGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonString';
+    private static $primaryKey = 'gibbonStringID';
 
     private static $searchableColumns = ['original', 'replacement'];
     

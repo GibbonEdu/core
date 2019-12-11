@@ -32,6 +32,7 @@ class RubricGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonRubric';
+    private static $primaryKey = 'gibbonRubricID';
     private static $searchableColumns = ['gibbonRubric.name', 'gibbonRubric.category'];
     
     /**
