@@ -34,6 +34,7 @@ class SchoolYearTermGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonSchoolYearTerm';
+    private static $primaryKey = 'gibbonSchoolYearTermID';
 
     public function querySchoolYearTerms(QueryCriteria $criteria)
     {

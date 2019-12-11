@@ -32,6 +32,7 @@ class CourseSyncGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonCourseClassMap';
+    private static $primaryKey = 'gibbonCourseClassMapID';
     private static $searchableColumns = [];
     
     /**

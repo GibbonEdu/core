@@ -34,6 +34,7 @@ class InvoiceGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonFinanceInvoice';
+    private static $primaryKey = 'gibbonFinanceInvoiceID';
 
     private static $searchableColumns = [];
     

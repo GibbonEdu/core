@@ -32,6 +32,7 @@ class FileExtensionGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonFileExtension';
+    private static $primaryKey = 'gibbonFileExtensionID';
 
     private static $searchableColumns = ['name'];
     

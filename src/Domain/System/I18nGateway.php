@@ -32,6 +32,7 @@ class I18nGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibboni18n';
+    private static $primaryKey = 'gibboni18nID';
 
     private static $searchableColumns = ['name'];
     

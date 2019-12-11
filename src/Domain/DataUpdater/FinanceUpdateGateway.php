@@ -32,6 +32,7 @@ class FinanceUpdateGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonFinanceInvoiceeUpdate';
+    private static $primaryKey = 'gibbonFinanceInvoiceeUpdateID';
 
     private static $searchableColumns = [''];
     

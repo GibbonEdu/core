@@ -34,6 +34,7 @@ class PlannerEntryGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonPlannerEntry';
+    private static $primaryKey = 'gibbonPlannerEntryID';
     private static $searchableColumns = [];
     
     public function getPlannerEntryByID($gibbonPlannerEntryID)

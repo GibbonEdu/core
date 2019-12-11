@@ -34,6 +34,7 @@ class BehaviourGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonBehaviour';
+    private static $primaryKey = 'gibbonBehaviourID';
 
     private static $searchableColumns = [];
     

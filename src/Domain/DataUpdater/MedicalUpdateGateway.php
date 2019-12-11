@@ -32,6 +32,7 @@ class MedicalUpdateGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonPersonMedicalUpdate';
+    private static $primaryKey = 'gibbonPersonMedicalUpdateID';
 
     private static $searchableColumns = [''];
     

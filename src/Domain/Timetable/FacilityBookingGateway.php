@@ -32,6 +32,7 @@ class FacilityBookingGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonTTSpaceBooking';
+    private static $primaryKey = 'gibbonTTSpaceBookingID';
 
     private static $searchableColumns = [''];
     

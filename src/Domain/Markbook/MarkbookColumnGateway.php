@@ -34,6 +34,7 @@ class MarkbookColumnGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonMarkbookColumn';
+    private static $primaryKey = 'gibbonMarkbookColumnID';
     private static $searchableColumns = ['name', 'description', 'type'];
     
     /**

@@ -34,6 +34,7 @@ class ActivityGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonActivity';
+    private static $primaryKey = 'gibbonActivityID';
 
     private static $searchableColumns = ['gibbonActivity.name', 'gibbonActivity.type'];
     

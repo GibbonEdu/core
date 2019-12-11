@@ -32,6 +32,7 @@ class DistrictGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonDistrict';
+    private static $primaryKey = 'gibbonDistrictID';
 
     private static $searchableColumns = ['name'];
     

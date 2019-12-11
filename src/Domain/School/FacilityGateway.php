@@ -32,6 +32,7 @@ class FacilityGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonSpace';
+    private static $primaryKey = 'gibbonSpaceID';
 
     private static $searchableColumns = ['name', 'type'];
     

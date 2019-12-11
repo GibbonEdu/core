@@ -32,6 +32,7 @@ class FamilyGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonFamily';
+    private static $primaryKey = 'gibbonFamilyID';
 
     private static $searchableColumns = ['name'];
     

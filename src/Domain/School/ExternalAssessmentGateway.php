@@ -32,6 +32,7 @@ class ExternalAssessmentGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonExternalAssessment';
+    private static $primaryKey = 'gibbonExternalAssessmentID';
 
     private static $searchableColumns = ['name'];
     
