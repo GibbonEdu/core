@@ -1,0 +1,104 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{{ form|raw }}
+
+<div class="flex mt-4">
+
+    <a href="./fullscreen.php?q=/modules/Reports/templates_preview.php&gibbonReportTemplateID={{ gibbonReportTemplateID }}&TB_iframe=true&width={{ template.orientation == 'P' ? 900 : 1200 }}&height=700" class="thickbox w-full mr-1 py-2 bg-gray-100 border text-gray-700 text-center text-base font-bold leading-normal hover:bg-blue-500 hover:border-blue-700 hover:text-white">{{ __('Preview HTML') }}</a>
+    
+    <a href="./export.php?q=/modules/Reports/templates_preview.php&gibbonReportTemplateID={{ gibbonReportTemplateID }}" class="w-full py-2 bg-gray-100 border text-gray-700 text-center text-base font-bold leading-normal hover:bg-blue-500 hover:border-blue-700 hover:text-white">{{ __('Preview PDF') }}</a>
+</div>
+        
+
+<section class="flex items-stretch">
+    <div class="flex-1">
+        {{ headers|raw }}
+
+        {{ body|raw }}
+
+        {{ footers|raw }}
+    </div>
+
+    <div id="sections" class="h-full pl-6">
+        <h3>
+            {{ __('Add Sections') }} <span class="text-xxs font-normal">{{ __('Drag & Drop') }}</span>
+        </h3>
+        <div class="prototype mt-4 p-4 bg-gray-400 rounded">
+        {% for section in sections %}
+            <div class="prototypeItem relative w-24 sm:w-48 lg:w-64 py-2 mb-2 bg-gray-100 border rounded-sm text-center cursor-move" data-section="{{ section.value }}">
+                <div class="drag-handle absolute w-2 h-4 mt-px ml-3 px-px border-4 border-dotted cursor-move"></div>
+
+                <div class="text-center text-gray-700 text-xs leading-tight mt-px">{{ section.name }}</div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+</section>
+
+<script>
+    $('#sections .prototype .prototypeItem').draggable({
+        helper: "clone",
+        revert: "invalid",
+    });
+
+    var DroppableDataTable = {
+        accept: '.prototypeItem',
+        over: function(event, ui) {
+            $(this).addClass('relative');
+            $(this).append('<div id="droppable-overlay" class="absolute top-0 left-0 w-full h-full opacity-50 bg-gray-800 flex  items-stretch"><div class="flex-1 flex justify-center items-center m-6 border-4 border-dashed border-white text-white text-xl font-bold uppercase">{{ __('Drop Here') }}</div></div>');
+        },
+        out: function(event, ui) {
+            $('#droppable-overlay').remove();
+            $(this).removeClass('relative');
+        },
+        deactivate: function(event, ui) {
+            $('#droppable-overlay').remove();
+            $(this).removeClass('relative');
+        },
+        drop: function(event, ui) {
+            // console.log(ui.draggable.data('section'));
+
+            var table = $(this).hasClass('.blankslate') 
+                ? $(this).parent().parent()
+                : $(this).parents('.dataTable');
+
+            var tableSelector = $(this).hasClass('.blankslate') 
+                ? $(this).prop('id')
+                : $(table).prop('id');
+
+            // console.log(table);
+            // console.log(tableSelector);
+
+            $.ajax({
+                url: '{{ absoluteURL }}/modules/Reports/templates_manage_editDropAjax.php',
+                data: {
+                    gibbonReportTemplateID: {{ gibbonReportTemplateID }},
+                    gibbonReportPrototypeSectionID: ui.draggable.data('section'),
+                    type: $(table).prop('id').replace('Table', '').toUpperCase(),
+                },
+                type: 'POST',
+                complete: function (data) {
+                    reloadDragDropState(table, tableSelector);
+                },
+                
+            });
+        },
+    };
+
+    var reloadDragDropState = function(table, tableSelector) {
+        $(table).load('./fullscreen.php?q=/modules/Reports/templates_manage_edit.php&gibbonReportTemplateID={{ gibbonReportTemplateID }} #'+tableSelector, {}, function(responseText, textStatus, jqXHR) {
+            console.log('reloaded');
+            tb_init('a.thickbox');
+            $('#'+tableSelector+' table[data-drag-url]').each(DraggableDataTable);
+            $('#'+tableSelector+' tbody').droppable(DroppableDataTable);
+        });
+    };
+
+    $('.dataTable tbody, .blankslate').droppable(DroppableDataTable);
+</script>
