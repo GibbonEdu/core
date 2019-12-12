@@ -1,0 +1,88 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+<div class="flex my-4 items-stretch">
+    <a class="block w-32 p-2 items-center rounded-l border bg-gray-100 text-gray-600 hover:bg-blue-200 hover:border-blue-700 hover:text-blue-800" href="{{ absoluteURL }}/index.php?q=/modules/Reports/reporting_write_byStudent.php&gibbonPersonIDStudent={{ prevStudent.gibbonPersonID }}&{{ params|url_encode }}">
+        <img class="inline-block  mr-2 w-4 h-4 align-top" title="{{ __('Prev') }}" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/page_left.png" >
+        <span class="inline-block px-1  text-sm leading-tight">
+            {{ __('Prev') }}
+        </span>
+    </a>
+
+    <a class="flex-1 flex items-center justify-center border-t border-b bg-gray-100 text-gray-700 hover:bg-blue-200 hover:border-blue-700 hover:text-blue-800"  href="{{ absoluteURL }}/index.php?q=/modules/Reports/reporting_write.php&{{ params|url_encode }}">
+        <div class="text-sm text-center leading-tight">
+                <strong>{{ scopeDetails.scopeName }}</strong> - {{ scopeDetails.nameShort }}
+        </div>
+    </a>
+
+    <a class="block w-32 p-2 items-center rounded-r border bg-gray-100 text-gray-600 text-right hover:bg-blue-200 hover:border-blue-700 hover:text-blue-800" href="{{ absoluteURL }}/index.php?q=/modules/Reports/reporting_write_byStudent.php&gibbonPersonIDStudent={{ nextStudent.gibbonPersonID }}&{{ params|url_encode }}">
+        <span class="inline-block px-1  text-sm leading-tight">
+            {{ __('Next') }} 
+        </span>
+        <img class="inline-block  ml-2 w-4 h-4 align-top" title="{{ __('Next') }}" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/page_right.png" >
+    </a>
+</div>
+
+
+<div class="border rounded bg-gray-100 my-4">
+    {% if canWriteReport == false %}
+    <div class="bg-red-200 text-red-700 border-b p-4 text-sm">
+        <img class="w-6 h-6 -my-2 mr-2" src="{{ absoluteURL }}/themes/Default/img/key.png" title="{{ __('Read-only') }}">
+        {{ __('This report is read-only. You do not have access to make changes.') }}
+    </div>
+    {% elseif reportingEnded == true %}
+    <div class="bg-gray-200 text-gray-700 border-b p-4 text-sm">
+        <img class="w-6 h-6 -my-2 mr-2" src="{{ absoluteURL }}/themes/Default/img/planner.png" title="{{ __('Ended') }}">
+        {{ __('This reporting cycle has ended. You have access to edit data, however the report is read-only for most users.') }}
+    </div>
+    {% endif %}
+
+    <div class="p-4 flex flex-wrap items-center">
+        <div class="flex h-32 justify-center sm:justify-start items-center text-xs text-center mt-4 sm:mt-0">
+            {{ formatUsing('userPhoto', student.image_240, 75)|raw }}
+        </div>
+
+        <div class="flex-1 text-center sm:text-left sm:pl-6">
+            <a class="text-lg text-gray-800 leading-none mb-2 p-0" href="{{ absoluteURL }}/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID={{ student.gibbonPersonID }}&allStudents=on" target="_blank">
+                {{ formatUsing('name', student.title, student.preferredName, student.surname, 'Student', false, true) }}
+            </a>
+            <div class="text-sm text-gray-600 mb-0">
+                {{ student.rollGroup }}
+            
+                {% if student.status != 'Full' %}
+                    <span class="tag error">{{ student.status }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="flex-1 flex flex-grow justify-between sm:justify-start items-center text-xs text-center">
+            <a class="thickbox px-0 sm:px-2 w-20" href="{{ absoluteURL }}/fullscreen.php?q=/modules/Students/student_view_details.php&gibbonPersonID={{ student.gibbonPersonID }}&allStudents=on&width=900&height=700">
+                <img class="" src="{{ absoluteURL }}/themes/Default/img/plus.png" title="{{ __('Profile') }}" width="25" height="25">
+                <div class="mt-1">{{ __('Profile') }}</div>
+            </a>
+
+            <a class="thickbox px-0 sm:px-2 w-20" href="{{ absoluteURL }}/fullscreen.php?q=/modules/Students/student_view_details.php&gibbonPersonID={{ student.gibbonPersonID }}&allStudents=on&subpage=Attendance&width=900&height=700">
+                <img class="" src="{{ absoluteURL }}/themes/Default/img/planner.png" title="{{ __('Attendance') }}" width="25" height="25">
+                <div class="mt-1">{{ __('Attendance') }}</div>
+            </a>
+
+            <a class="thickbox px-0 sm:px-2 w-20" href="{{ absoluteURL }}/fullscreen.php?q=/modules/Students/student_view_details.php&gibbonPersonID={{ student.gibbonPersonID }}&allStudents=on&subpage=Markbook&width=900&height=700">
+                <img class="" src="{{ absoluteURL }}/themes/Default/img/markbook.png" title="{{ __('Markbook') }}" width="25" height="25">
+                <div class="mt-1">{{ __('Markbook') }}</div>
+            </a>
+
+            <a class="thickbox px-0 sm:px-2 w-20" href="{{ absoluteURL }}/fullscreen.php?q=/modules/Reports/archive_byStudent_view.php&gibbonSchoolYearID={{ student.gibbonSchoolYearID}}&gibbonYearGroupID={{ student.gibbonYearGroupID }}&gibbonRollGroupID={{ student.gibbonRollGroupID }}&gibbonPersonID={{ student.gibbonPersonID }}&width=900&height=700">
+                <img class="" src="{{ absoluteURL }}/themes/Default/img/internalAssessment.png" title="{{ __('Reports') }}" width="25" height="25">
+                <div class="mt-1">{{ __('Reports') }}</div>
+            </a>
+
+        </div>
+
+        
+    </div>
+</div>

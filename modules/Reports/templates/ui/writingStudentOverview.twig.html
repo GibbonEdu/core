@@ -1,0 +1,75 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% if reportCriteria %}
+
+    <h3>
+        {{ __('Report Overview') }}
+    </h3>
+
+    {% for course, criteriaList in reportCriteria %}
+        {% set criteriaCheck = criteriaList|last %}
+        
+
+        <div class="mb-3">
+        <table class="w-full  {{ canWriteReport and criteriaCheck.progress == 'Complete' ? 'border-green-600'}}">
+        <thead>
+            <tr>
+                <th class="p-2 {{ canWriteReport and criteriaCheck.progress == 'Complete' ? 'success'}}">
+                    <h5 class="m-0 mt-1 p-0 text-sm border-0" href="#">
+                        {{ criteriaCheck.scopeName }}
+                    </h5>
+                    <span class="font-normal leading-normal">
+                        {{ formatUsing('name', '', criteriaCheck.preferredName, criteriaCheck.surname, 'Staff') }}
+                    </span>
+                </th>
+                <th class="p-2 text-right font-normal {{ canWriteReport and criteriaCheck.progress == 'Complete' ? 'success'}}">
+                    {{ criteriaCheck.progress }}
+                </th>
+            </tr>
+        </thead>
+        
+        {% for criteria in criteriaList %}
+            {% if criteria.category is not empty and criteria.category != lastCategory %}
+                <tr class="">
+                    <td colspan=2 class="p-2 font-bold">
+                        {{ criteria.category }}
+                    </td>
+                </tr>
+            {% endif %}
+
+            <tr class="">
+            {% if criteria.valueType == 'Comment' or criteria.valueType == 'Remark' %}
+                <td colspan=2 class="p-2">
+                    <strong class="inline-block pt-1">{{ criteria.name }}</strong>
+
+                    <p class="mt-2 mb-1 ">
+                        {% if criteria.comment %} 
+                            {{ criteria.comment }}
+                        {% else %}
+                            <span class="text-xxs text-gray-600 italic">{{ __('N/A') }} </span>
+                        {% endif%}
+                        </p>
+                </td>
+            {% else %}
+                <td class="p-2 py-1">
+                    <span class="inline-block py-1">{{ criteria.name }}</span>
+                </td>
+                <td class="p-2 py-1 w-48 border-l-0 border-r-0">
+                    {{ criteria.value }}
+                </td>
+            {% endif%}
+            </tr>
+
+            {% set lastCategory = criteria.category %}
+        {% endfor %}
+        </table>
+        </div>
+    {% endfor %}
+
+{% endif %}

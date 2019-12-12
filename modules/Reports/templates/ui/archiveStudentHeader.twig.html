@@ -1,0 +1,29 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+<div class="border rounded bg-gray-100 my-4">
+    <div class="p-4 flex flex-wrap items-center">
+        <div class="flex h-32 justify-center sm:justify-start items-center text-xs text-center mt-4 sm:mt-0">
+            {{ formatUsing('userPhoto', student.image_240, 75)|raw }}
+        </div>
+
+        <div class="flex-1 text-center sm:text-left sm:pl-6">
+            <div class="text-lg text-gray-800 leading-none mb-2 p-0">{{ formatUsing('name', student.title, student.preferredName, student.surname, 'Student', false, true) }}</div>
+
+            <div class="text-sm text-gray-600 mb-0">{{ student.rollGroup }}</div>
+
+            {% if status %}
+                <span class="tag {{ tag|default('success') }} mt-2 mb-0">{{ status }}</span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% if archiveInformation %}
+<p class="text-left mb-8">{{ archiveInformation|nl2br|raw }}</p>
+{% endif %}

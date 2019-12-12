@@ -1,0 +1,41 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+<h2>
+    {{ reportingCycle.name }}
+    <span class="ml-2 text-sm font-normal">
+        {{ formatUsing('dateRangeReadable', reportingCycle.dateStart, reportingCycle.dateEnd) }}
+    </span>
+</h2>
+
+{% if milestones %}
+    <div class="flex flex-wrap rounded border bg-gray-100 mb-8">
+    {% for milestone in milestones %}
+        {% set dateClass = 'now'|date('Y-m-d') > milestone.milestoneDate ? 'bg-gray-400 text-gray-700' : 'text-gray-800' %}
+        
+        <div class="flex-1 flex flex-col justify-start p-4 {{ dateClass }} {{ not loop.last ? 'border-r' }}">
+            <div class="text-xl text-center font-light">{{ formatUsing('dateReadable', milestone.milestoneDate, '%b %e') }}</div>
+            <div class="mt-4 text-xs text-center text-gray-600">{{ milestone.milestoneName }}</div>
+        </div>
+    {% endfor %}
+    </div>
+{% endif %}
+
+{% if proofsTotal > 0 %}
+    <a class="flex items-center rounded border bg-gray-100  -mt-4 mb-8 p-3" href="{{ absoluteURL }}/index.php?q=/modules/Reports/reporting_proofread.php&gibbonPersonID={{ gibbonPersonID }}">
+        
+        <div class="text-sm text-gray-700 mr-2 mt-1">
+            {{ __("Proof Reading") }}
+        </div>
+
+        <div class="flex-1">
+            {{ include('ui/writingProgress.twig.html') }}
+        </div>
+
+        <img class="w-5 h-5 ml-2" src="{{ absoluteURL }}/themes/Default/img/config.png" title="{{ __('Proof Read') }}">
+    </a>
+{% endif %}

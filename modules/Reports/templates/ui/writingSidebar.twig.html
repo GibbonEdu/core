@@ -1,0 +1,54 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% if students %}
+<div class="mt-4 rounded border bg-gray-100 border-gray-400">
+
+    <div class="p-2 border-b border-gray-400 bg-gray-300 text-gray-700 text-xs font-bold">
+        {{ __('Students') }} <span class="text-xxs font-normal">({{ totalCount }})</span>
+    </div>
+
+    {% for student in students %}
+        {% if student.progress == 'Complete' %}
+            {% set progressClass = 'success' %}
+        {% elseif student.progress == 'In Progress' %}
+            {% set progressClass = 'bg-gray-200 text-gray-700' %}
+        {% else %}
+            {% set progressClass = 'text-gray-700' %}
+        {% endif %}
+
+        {% set activeClass = student.gibbonPersonID == gibbonPersonIDStudent ? 'font-bold' : '' %}
+
+        <a class="block flex justify-between items-center px-2 py-1 border-gray-400 leading-normal  hover:bg-blue-200 hover:text-blue-800 {{ progressClass }} {{ activeClass }} {{ not loop.last ? 'border-b' }}" href="{{ absoluteURL }}/index.php?q=/modules/Reports/reporting_write_byStudent.php&gibbonPersonIDStudent={{ student.gibbonPersonID }}&{{ params|url_encode }}" >
+
+            <div class="text-xs">
+                {{ student.surname }}, {{ student.preferredName }}
+
+                {% if student.status != 'Full' %}
+                    <span class="tag error ml-2 text-xxs">{{ student.status }}</span>
+                {% endif %}
+            </div>
+
+            {% if student.progress == 'Complete' %}
+                <img class="w-3 h-3" title="{{ __(student.progress) }}" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/iconTick.png" >
+            {% elseif student.progress == 'In Progress' %}
+                <img class="w-3 h-3" title="{{ __(student.progress) }}" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/config.png" >
+            {% endif %}
+        </a>
+    {% endfor %}
+</div>
+
+{% set params = params|merge({'allStudents': (params.allStudents == 'Y' ? 'N' : 'Y') }) %}
+{% set redirectTo = gibbonPersonIDStudent is not empty ? 'reporting_write_byStudent.php' : 'reporting_write.php' %}
+
+<a class="button mt-2 w-full inline-block" href="{{ absoluteURL }}/index.php?q=/modules/Reports/{{ redirectTo }}&gibbonPersonIDStudent={{ gibbonPersonIDStudent }}&{{ params|url_encode }}">
+    {{ params.allStudents == 'Y' ? __('Show Left Students') : __('Hide Left Students') }}
+</a>
+
+
+{% endif %}
