@@ -30,6 +30,7 @@ return array(
     'Gibbon\\' => array($baseDir . '/src', $baseDir . '/src/Gibbon'),
     'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),
     'FastRoute\\' => array($vendorDir . '/nikic/fast-route/src'),
+    'Faker\\' => array($vendorDir . '/fzaninotto/faker/src/Faker'),
     'Complex\\' => array($vendorDir . '/markbaker/complex/classes/src'),
     'Aura\\SqlQuery\\' => array($vendorDir . '/aura/sqlquery/src'),
 );
