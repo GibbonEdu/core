@@ -79,6 +79,7 @@ $page->addData([
     'time'                           => Format::time(date('H:i:s')),
     'date'                           => Format::date(date('Y-m-d')),
     'rightToLeft'                    => $session->get('i18n')['rtl'] == 'Y',
+    'orientation'                    => $_GET['orientation'] ?? 'P',
 ]);
 
 echo $page->render('report.twig.html');

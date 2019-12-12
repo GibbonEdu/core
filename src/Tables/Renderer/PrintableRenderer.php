@@ -46,6 +46,16 @@ class PrintableRenderer extends SimpleRenderer implements RendererInterface
             ->onClick('javascript:window.print(); return false;')
             ->displayLabel();
 
+        $orientation = $_GET['orientation'] ?? 'P';
+        $table->addHeaderAction('orientation', $orientation == 'P' ? __('Landscape') : __('Portrait'))
+            ->setURL('/report.php')
+            ->addParams($_GET)
+            ->addParam('orientation', $orientation == 'P' ? 'L' : 'P')
+            ->setIcon('refresh')
+            ->displayLabel()
+            ->directLink()
+            ->prepend(' | ');
+
         return parent::renderHeader($table, $dataSet);
     }
 
