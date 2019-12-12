@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_byProofRe
 
         // DATA TABLE
         $table = DataTable::create('progress');
-        $table->setTitle($scope['cycleName'] ?? ''.(!empty($scope['scopeName'])? ': '.$scope['scopeName'] : ''));
+        $table->setTitle(($scope['cycleNameShort'] ?? '').(!empty($scope['scopeName'])? ': '.$scope['scopeName'] : ''));
 
         $table->addColumn('name', __('Name'))->width('30%');
         $table->addColumn('progress', __('Progress'))

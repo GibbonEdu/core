@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
                 $staffByScope = $reportingAccessGateway->selectAccessibleStaffByReportingScope($scope['gibbonReportingScopeID'])->fetchAll();
                 $staff += array_reduce($staffByScope, function ($group, $item) {
                     $gibbonPersonIDStaff = str_pad($item['gibbonPersonID'], 10, '0', STR_PAD_LEFT);
-                    $group[$gibbonPersonIDStaff] = Format::name('', $item['preferredName'], $item['surname'], 'Staff', false, true);
+                    $group[$gibbonPersonIDStaff] = Format::name('', $item['preferredName'], $item['surname'], 'Staff', true, true);
                     return $group;
                 }, []);
             }
@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
 
         // Ensure the current user is always in the list
         if (empty($staff[$gibbon->session->get('gibbonPersonID')])) {
-            $staff[$gibbon->session->get('gibbonPersonID')] = Format::name('', $gibbon->session->get('preferredName'), $gibbon->session->get('surname'), 'Staff', false, true);
+            $staff[$gibbon->session->get('gibbonPersonID')] = Format::name('', $gibbon->session->get('preferredName'), $gibbon->session->get('surname'), 'Staff', true, true);
         }
 
         $row = $form->addRow();

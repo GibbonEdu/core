@@ -35,7 +35,7 @@ class ReportingProofGateway extends QueryableGateway
     {
         $query = $this
             ->newSelect()
-            ->cols(['gibbonReportingScope.gibbonReportingScopeID AS gibbonReportingScopeID', 'gibbonReportingScope.name as scopeName', 'gibbonReportingScope.scopeType', 'gibbonReportingCycle.name as cycleName'])
+            ->cols(['gibbonReportingScope.gibbonReportingScopeID AS gibbonReportingScopeID', 'gibbonReportingScope.name as scopeName', 'gibbonReportingScope.scopeType', 'gibbonReportingCycle.name as cycleName', 'gibbonReportingCycle.nameShort as cycleNameShort'])
             ->from('gibbonReportingCycle')
             ->innerJoin('gibbonReportingScope', 'gibbonReportingScope.gibbonReportingCycleID=gibbonReportingCycle.gibbonReportingCycleID')
             ->innerJoin('gibbonReportingCriteria', 'gibbonReportingCriteria.gibbonReportingScopeID=gibbonReportingScope.gibbonReportingScopeID')
