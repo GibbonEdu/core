@@ -533,4 +533,5 @@ UPDATE gibbonSetting SET description='A short name to use instead of \"Effort\" 
 UPDATE gibbonAction SET name='Staff Directory_brief' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Staff') AND name='View Staff Profile_brief';end
 UPDATE gibbonAction SET name='Staff Directory_full' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Staff') AND name='View Staff Profile_full';end
 INSERT INTO gibbonLanguage SET name='Maldivian';end
+INSERT INTO `gibbonModule` (`name`, `description`, `entryURL`, `type`, `active`, `category`, `version`, `author`, `url`) VALUES ('Reports', 'Report writing, proof reading, and PDF generation.', 'reporting_my.php', 'Core', 'Y', 'Assess', 'v19.0.00', 'Sandra Kuipers', 'https://github.com/SKuipers');end
 ";
