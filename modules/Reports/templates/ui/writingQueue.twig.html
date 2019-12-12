@@ -1,0 +1,62 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% import _self as queue  %}
+
+<div class="flex -mx-2">
+    <div class="w-1/3 mx-2">
+        <h4>
+            {{ __('To Do') }}
+            <span class="ml-1 text-xs text-gray-500 font-normal">{{ progress['Incomplete'] is not empty? progress['Incomplete']|length }}</span>
+        </h4>
+
+        {% for student in progress['Incomplete'] %}
+            {{ queue.studentLink(student, params) }}
+        {% endfor %}
+    </div>
+
+    <div class="w-1/3 mx-2"">
+        <h4>
+            <!-- <img class="inline-block -mt-1 mr-1 w-4 h-4" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/config.png" > -->
+            {{ __('In Progress') }}
+            <span class="ml-1 text-xs text-gray-500 font-normal">{{ progress['In Progress'] is not empty ? progress['In Progress']|length }}</span>
+        </h4>
+
+        {% for student in progress['In Progress'] %}
+            {{ queue.studentLink(student, params) }}
+        {% endfor %}
+    </div>
+
+    <div class="w-1/3 mx-2"">
+        <h4>
+            <!-- <img class="inline-block -mt-1 mr-1 w-4 h-4" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/iconTick.png" > -->
+            {{ __('Complete') }}
+            <span class="ml-1 text-xs text-gray-500 font-normal">{{ progress['Complete'] is not empty ? progress['Complete']|length }}</span>
+        </h4>
+
+        {% for student in progress['Complete'] %}
+            {{ queue.studentLink(student, params) }}
+        {% endfor %}
+    </div>
+</div>
+
+{% macro studentLink(student, params) %}
+    <a href="{{ absoluteURL }}/index.php?q=/modules/Reports/reporting_write_byStudent.php&gibbonPersonIDStudent={{ student.gibbonPersonID }}&{{ params|url_encode }}" class="flex items-center rounded border bg-gray-100 border-gray-400 p-2 mb-2 text-gray-800 hover:bg-blue-200 hover:border-blue-700 hover:text-blue-800 hover:shadow">
+
+        <div class="rounded-full w-8 h-8 overflow-hidden shadow-inner">
+            <img class="w-full" src="{{ student.image_240 }}">
+        </div>
+        <div class="text-xs ml-2 mt-px">
+            {{ student.surname }}, {{ student.preferredName }}
+
+            {% if student.status != 'Full' %}
+                <span class="tag error ml-2 text-xxs">{{ student.status }}</span>
+            {% endif %}
+        </div>
+    </a>
+{% endmacro studentLink %}

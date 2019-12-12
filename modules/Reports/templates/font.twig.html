@@ -1,0 +1,31 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+<style>
+    @font-face {
+      font-family: '{{ fontName }}';
+      src: url('./{{ fontPath }}')  format('truetype'); /* Safari, Android, iOS */
+    }
+</style>
+
+<div class="-my-6" style="font-family: {{ fontName|replace({"/":'\\/'}) }}, '{{ fontName }}';">
+
+    <h1>{{ fontName }}</h1>
+
+    <hr class="border-gray-200 border-solid">
+
+    <p>A B C Č Ć D Đ E F G H I J K L M N O P Q R S Š T U V W X Y Z Ž a b c č ć d đ e f g h i j k l m n o p q r s š t u v w x y z ž А Б В Г Ґ Д Ђ Е Ё Є Ж З Ѕ И І Ї Й Ј К Л Љ М Н Њ О П Р С Т Ћ У Ў Ф Х Ц Ч Џ Ш Щ Ъ Ы Ь Э Ю Я а б в г ґ д ђ е ё є ж з ѕ и і ї й ј к л љ м н њ о п р с т ћ у ў ф х ц ч џ ш щ ъ ы ь э ю я Ă Â Ê Ô Ơ Ư ă â ê ô ơ ư 1 2 3 4 5 6 7 8 9 0 ‘ ? ’ “ ! ” ( % ) [ # ] { @ } / & \ < - + ÷ × = > ® © $ € £ ¥ ¢ : ; , . *</p>
+
+    <hr class="border-gray-200 border-solid">
+
+    <p style="font-size:18px;">The quick brown fox jumps over the lazy dog.</p>
+
+    <p style="font-size:12px;">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+</div>
+
