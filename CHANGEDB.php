@@ -603,5 +603,6 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('002', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Reports' AND gibbonAction.name='Write Reports_mine'));end
 INSERT INTO `gibbonReportingCriteriaType` (`name`, `valueType`, `active`, `characterLimit`, `gibbonScaleID`) VALUES('Comment, Short', 'Comment', 'Y', 500, NULL);end
 INSERT INTO `gibbonReportingCriteriaType` (`name`, `valueType`, `active`, `characterLimit`, `gibbonScaleID`) VALUES('Comment Long', 'Comment', 'Y', 1000, NULL);end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System', 'backgroundProcessing', 'Background Processing', 'Should the system start an external process for long-running commands?', 'Y');end
 
 ";
