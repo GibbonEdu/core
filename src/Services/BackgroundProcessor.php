@@ -102,6 +102,12 @@ class BackgroundProcessor implements ContainerAwareInterface
             'serialisedArray'    => serialize($processData),
         ]);
 
+        // Allow systems to disable background processing
+        if ($this->session->get('backgroundProcessing') == 'N') {
+            $this->runProcess($processID, $processData['key']);
+            return $processID;
+        }
+
         // Create and escape the set of args used in the php command.
         // These should always be non-user-supplied values.
         $args = [$phpFile, $processID, $processData['key'], $this->session->get('module')];
