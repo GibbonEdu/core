@@ -50,10 +50,8 @@ class ReportBuilder
             'fontSizeSmall'     => '8pt',
             'fontSizeMedium'    => '9pt',
             'fontSizeLarge'     => '12pt',
-            'fontSizeComment'   => '11.2pt',
-            'lineHeightComment' => '1.2',
-            'borderWidth'       => '0.6pt',
-            'defaultOutcome'    => 'N/A',
+            'borderWidth'       => '1pt',
+            'accentColor'    => '#97befd',
         ]);
 
         $template->addData([
@@ -73,9 +71,9 @@ class ReportBuilder
         $templateData = $this->templateGateway->getByID($gibbonReportTemplateID ?? '');
         $template->addData([
             'orientation' => $templateData['orientation'],
-            'pageSize' => $templateData['pageSize'],
-            'marginX' => $templateData['marginX'],
-            'marginY' => $templateData['marginY'],
+            'pageSize'    => $templateData['pageSize'],
+            'marginX'     => $templateData['marginX'],
+            'marginY'     => $templateData['marginY'],
             'stylesheet'  => $templateData['stylesheet'],
         ]);
 

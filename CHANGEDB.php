@@ -605,5 +605,7 @@ INSERT INTO `gibbonReportingCriteriaType` (`name`, `valueType`, `active`, `chara
 INSERT INTO `gibbonReportingCriteriaType` (`name`, `valueType`, `active`, `characterLimit`, `gibbonScaleID`) VALUES('Comment Long', 'Comment', 'Y', 1000, NULL);end
 INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System', 'backgroundProcessing', 'Background Processing', 'Should the system start an external process for long-running commands?', 'Y');end
 ALTER TABLE `gibbonReportTemplate` ADD `stylesheet` VARCHAR(120) NULL AFTER `flags`;end
+ALTER TABLE `gibbonReportTemplateSection` DROP `height`;end
+ALTER TABLE `gibbonReportPrototypeSection` ADD `icon` VARCHAR(120) NULL AFTER `dataSources`;end
 
 ";

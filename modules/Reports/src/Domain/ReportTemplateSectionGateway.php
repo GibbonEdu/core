@@ -56,8 +56,19 @@ class ReportTemplateSectionGateway extends QueryableGateway
 
     public function selectPrototypeSections()
     {
-        $sql = "SELECT category, gibbonReportPrototypeSectionID as value, name 
+        $sql = "SELECT category, gibbonReportPrototypeSectionID as value, name, icon
                 FROM gibbonReportPrototypeSection 
+                WHERE types LIKE '%Head%' OR types LIKE '%Foot%' OR types LIKE '%Body%'
+                ORDER BY FIND_IN_SET(category, 'Headers & Footers,Miscellaneous'), category, name";
+
+        return $this->db()->select($sql);
+    }
+
+    public function selectPrototypeStylesheets()
+    {
+        $sql = "SELECT category, templateFile as value, name 
+                FROM gibbonReportPrototypeSection 
+                WHERE types LIKE '%Stylesheet%'
                 ORDER BY name";
 
         return $this->db()->select($sql);
