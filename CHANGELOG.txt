@@ -19,10 +19,11 @@ CHANGELOG
 v19.0.00
 --------
     Headlines
-        Activated German as an available language
+        Reports module enables users to write reports, proofread comments, generate PDFs, and view report archives
         Individual Needs Investigations functionality allows data gathering around students with individual needs
+        Messages can now be pinned to the top of the message wall, and optionally displayed above the dashboard
         Expanded Staff Directory replaces View Staff Profiles
-
+        Activated German as an available language
 
     Changes With Important Notices
         System: split Daily Attendance CLI into separate form group and class scripts
@@ -31,6 +32,7 @@ v19.0.00
     Significant Changes
         System: added Year Switcher to staff homepage sidebar
         Planner: added "View Only" sub-action to Lesson Planner
+        User Admin: added a View Role page in Manage Roles to display all actions and users per role
 
     Security
 
@@ -43,8 +45,8 @@ v19.0.00
         System: added Malagasy and Maldivian as selectable languages
         System: added a sticky header to refactored data tables
         System: refactored the Sound Alarm system
+        System: added a setting to toggle background processing
         Activities: added a Year Group filter in Manage Activities
-        Activities: fixed bug preventing viewing activity details in Activity Choices by Student when listing closed
         Attendance: added an option to record the first class attendance in a day as school-wide attendance
         Attendance: added an option to disable prefilling by attendance code, applied to Present - Late by default
         Attendance: added Consecutive Absence report to list all students who have been absent for the last N school days
@@ -75,9 +77,8 @@ v19.0.00
         Timetable Admin: included student reportable flag in student enrolment
         Timetable Admin: enable users who can search All Users to also see Left students
         User Admin: increased Student ID field max length to 15
-        User Admin: added a View Role page in Manage Roles to display all actions and users per role
-        User Admin: added a Login Troubleshooting section to Reset Password page
         User Admin: added Citizenship 1 and Citizenship 2 Passport Expiry date fields
+        User Admin: added a Login Troubleshooting section to Reset Password page
 
     Bug Fixes
         System: fix installer bug where passwords are unnecessarily encoded
@@ -88,6 +89,7 @@ v19.0.00
         System: fixed pagination setting so it correctly controls table size
         System: fixed Dashboard error for users with role category Other
         Activities: improved interface string advising users of disabled external activity registration
+        Activities: fixed bug preventing viewing activity details in Activity Choices by Student when listing closed
         Attendance: fixed missing data in printable view of Student History
         Attendance: fixed Set Future Absence to only allow future dates
         Departments: fixed permission check causing Export to Excel to fail
@@ -102,6 +104,7 @@ v19.0.00
         Planner: fixed non-functional Smart Block Template setting
         Planner: fixed Unit Planner bug causing actions to appear in Classes table for newly created units
         Planner: implemented unit ordering field in Lesson Planner
+        Rubrics: fixed bug where non-english locales displayed rubric visualization as gray 
         School Admin: fixed Browse Library BG Image field length bug
         School Admin: fixed typo to use instead instead of isntead
         Staff: fixed Cancel Coverage button not available for future coverage
