@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\Students\StudentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -31,12 +33,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 } else {
     $page->breadcrumbs->add(__('View All Assessments'));
 
+    $search = $_GET['search'] ?? '';
+    $allStudents = $_GET['allStudents'] ??  '';
+    $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
+
     echo '<h2>';
     echo __('Search');
     echo '</h2>';
-
-    $search = isset($_GET['search'])? $_GET['search'] : '';
-    $allStudents = isset($_GET['allStudents'])? $_GET['allStudents'] : '';
 
     $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setClass('noIntBorder fullWidth standardForm');
@@ -60,104 +63,55 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
     echo __('Choose A Student');
     echo '</h2>';
 
-    //Set pagination variable
-    $page = 1;
-    if (isset($_GET['page'])) {
-        $page = $_GET['page'];
+    $studentGateway = $container->get(StudentGateway::class);
+
+    $searchColumns = $studentGateway->getSearchableColumns();
+
+    $criteria = $studentGateway->newQueryCriteria(true)
+        ->searchBy($searchColumns, $search)
+        ->sortBy(['surname', 'preferredName'])
+        ->filterBy('all',$allStudents)
+        ->fromPOST();
+    
+    $students = $studentGateway->queryStudentsBySchoolYear($criteria, $gibbonSchoolYearID);
+
+    // DATA TABLE
+    $table = DataTable::createPaginated('students', $criteria);
+    
+    $table->modifyRows($studentGateway->getSharedUserRowHighlighter());
+
+            
+    $table->addMetaData('filterOptions', [
+        'all:on'        => __('All Students')
+    ]);
+     
+    if ($criteria->hasFilter('all')) {
+        $table->addMetaData('filterOptions', [
+            'status:full'     => __('Status').': '.__('Full'),
+            'status:expected' => __('Status').': '.__('Expected'),
+            'date:starting'   => __('Before Start Date'),
+            'date:ended'      => __('After End Date'),
+        ]);
     }
-    if ((!is_numeric($page)) or $page < 1) {
-        $page = 1;
-    }
-
-    try {
-        if ($allStudents != 'on') {
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-            $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, title, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
-            if ($search != '') {
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'search1' => "%$search%", 'search2' => "%$search%", 'search3' => "%$search%");
-                $and = ' AND ((preferredName LIKE :search1) OR (surname LIKE :search2) OR (username LIKE :search3))';
-                $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, title, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' $and ORDER BY surname, preferredName";
-            }
-        } else {
-            $data = array();
-            $sql = 'SELECT DISTINCT gibbonPerson.gibbonPersonID, surname, preferredName, title, NULL AS yearGroup, NULL AS rollGroup FROM gibbonPerson, gibbonStudentEnrolment WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) ORDER BY surname, preferredName';
-            if ($search != '') {
-                $data = array('search1' => "%$search%", 'search2' => "%$search%", 'search3' => "%$search%");
-                $and = ' AND ((preferredName LIKE :search1) OR (surname LIKE :search2) OR (username LIKE :search3))';
-                $sql = "SELECT DISTINCT gibbonPerson.gibbonPersonID, surname, preferredName, title, NULL AS yearGroup, NULL AS rollGroup FROM gibbonPerson, gibbonStudentEnrolment WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) $and ORDER BY surname, preferredName";
-            }
-        }
-        $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
-
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
-    } else {
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "search=$search&allStudents=$allStudents");
-        }
-
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __('Name');
-        echo '</th>';
-        echo '<th>';
-        echo __('Year Group');
-        echo '</th>';
-        echo '<th>';
-        echo __('Roll Group');
-        echo '</th>';
-        echo '<th>';
-        echo __('Actions');
-        echo '</th>';
-        echo '</tr>';
-
-        $count = 0;
-        $rowNum = 'odd';
-        try {
-            $resultPage = $connection2->prepare($sqlPage);
-            $resultPage->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
-        while ($row = $resultPage->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
-            }
-            ++$count;
-
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo Format::name('', $row['preferredName'], $row['surname'], 'Student', true);
-            echo '</td>';
-            echo '<td>';
-            if ($row['yearGroup'] != '') {
-                echo __($row['yearGroup']);
-            }
-            echo '</td>';
-            echo '<td>';
-            echo $row['rollGroup'];
-            echo '</td>';
-            echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/externalAssessment_details.php&gibbonPersonID='.$row['gibbonPersonID']."&search=$search&allStudents=$allStudents'><img title='View Assessments' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
-            echo '</td>';
-            echo '</tr>';
-        }
-        echo '</table>';
-
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "search=$search&allStudents=$allStudents");
-        }
-    }
+            
+    // COLUMNS
+    $table->addColumn('student', __('Student'))
+        ->sortable(['surname', 'preferredName'])
+        ->format(function ($person) {    
+            return Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
+        });
+    $table->addColumn('yearGroup', __('Year Group'));
+    $table->addColumn('rollGroup', __('Roll Group'));
+    
+    $table->addActionColumn()
+        ->addParam('gibbonPersonID')
+        ->addParam('search', $search)
+        ->addParam('allStudents', $allStudents)
+        ->format(function ($row, $actions) {
+            $actions->addAction('view', __('View Details'))
+                ->setURL('/modules/Formal Assessment/externalAssessment_details.php');
+        });
+    
+    echo $table->render($students);
 }
 ?>
