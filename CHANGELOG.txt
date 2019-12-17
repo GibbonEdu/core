@@ -26,6 +26,7 @@ v19.0.00
         Activated German as an available language
 
     Changes With Important Notices
+        System: added a redirect to the Update page when database updates are required
         System: split Daily Attendance CLI into separate form group and class scripts
         System: upgrade path limited to v14.0.00 and higher
 
@@ -64,6 +65,7 @@ v19.0.00
         Messenger: added a setting to display pinned messages above the dashboard
         Messenger: allow access to View Message Wall for roles with category Other
         School Admin: renamed IN Settings to Individual Needs Settings
+        School Admin: removed the prefix Manage from settings pages
         Staff: added a Weekly View and Daily View to Substitute Availability report
         Staff: added a Substitute Information setting for displaying text on My Coverage page
         Staff: added a Staff Coverage Summary report with total days covered per substitute
