@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Module\Reports\Domain\ReportTemplateSectionGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_add.php') == false) {
     // Access denied
@@ -63,6 +64,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_a
         $row->addLabel('context', __('Context'));
         $row->addSelect('context')->fromArray($contexts)->required()->placeholder();
     
+    $stylesheets = $container->get(ReportTemplateSectionGateway::class)->selectPrototypeStylesheets();
+    $row = $form->addRow();
+        $row->addLabel('stylesheet', __('Stylesheet'));
+        $row->addSelect('stylesheet')->fromResults($stylesheets)->placeholder();
+
     $form->addRow()->addHeading(__('Document Setup'));
 
     $orientations = ['P' => __('Portrait'), 'L' => __('Landscape')];

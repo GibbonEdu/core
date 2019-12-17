@@ -40,6 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
         'pageSize'    => $_POST['pageSize'] ?? '',
         'marginX'     => $_POST['marginX'] ?? '',
         'marginY'     => $_POST['marginY'] ?? '',
+        'stylesheet'  => $_POST['stylesheet'] ?? '',
     ];
 
     // Validate the required values are present

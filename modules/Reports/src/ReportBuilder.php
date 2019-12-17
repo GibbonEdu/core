@@ -76,6 +76,7 @@ class ReportBuilder
             'pageSize' => $templateData['pageSize'],
             'marginX' => $templateData['marginX'],
             'marginY' => $templateData['marginY'],
+            'stylesheet'  => $templateData['stylesheet'],
         ]);
 
         $criteria = $this->templateSectionGateway->newQueryCriteria()
