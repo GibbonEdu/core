@@ -24,6 +24,7 @@ use Gibbon\Module\Reports\ReportRenderer;
 use Gibbon\Module\Reports\ReportTemplate;
 use Gibbon\Module\Reports\ReportBuilder;
 use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
+use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_prototypes_preview.php') == false) {
     // Access denied
@@ -42,6 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_prototyp
     $settingGateway = $container->get(SettingGateway::class);
     $twig = $container->get('twig');
 
+    $gibbonReportTemplateID = $_GET['gibbonReportTemplateID'] ?? '';
     $gibbonReportPrototypeSectionID = $_GET['gibbonReportPrototypeSectionID'] ?? '';
     $prototypeSection = $prototypeGateway->getByID($gibbonReportPrototypeSectionID);
 
@@ -54,6 +56,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_prototyp
 
     // Build Mock Report
     $template = $reportBuilder->createTemplate();
+
+    // Optionally add current template stylesheet, otherwise use the default
+    if (!empty($gibbonReportTemplateID)) {
+        $templateData = $container->get(ReportTemplateGateway::class)->getByID($gibbonReportTemplateID);
+    }
+
+    $template->addData(['stylesheet' => $templateData['stylesheet'] ?? 'reports/style.twig.html']);
 
     // Add prototype section
     $template->addSection($prototypeSection['templateFile'])

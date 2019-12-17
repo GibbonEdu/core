@@ -17,7 +17,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         
 
 <section class="flex items-stretch">
-    <div class="flex-1">
+    <div class="flex-1 pr-3">
         {{ headers|raw }}
 
         {{ body|raw }}
@@ -25,16 +25,31 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {{ footers|raw }}
     </div>
 
-    <div id="sections" class="h-full pl-6">
+    <div id="sections" class="w-2/5 h-full pl-3">
         <h3>
             {{ __('Add Sections') }} <span class="text-xxs font-normal">{{ __('Drag & Drop') }}</span>
         </h3>
-        <div class="prototype mt-4 p-4 bg-gray-400 rounded">
-        {% for section in sections %}
-            <div class="prototypeItem relative w-24 sm:w-48 lg:w-64 py-2 mb-2 bg-gray-100 border rounded-sm text-center cursor-move" data-section="{{ section.value }}">
-                <div class="drag-handle absolute w-2 h-4 mt-px ml-3 px-px border-4 border-dotted cursor-move"></div>
+        <div class="prototype mt-3 "><!--p-2 bg-gray-100 rounded-sm border-->
+        {% for category, sectionList in sections %}
 
-                <div class="text-center text-gray-700 text-xs leading-tight mt-px">{{ section.name }}</div>
+            <div class="text-gray-600 text-xs mb-1 {{ not loop.first ? 'mt-3' }}">
+                {{ category|title }}
+            </div>
+
+            <div class="flex flex-wrap">
+
+                {% for section in sectionList %}
+                <div class="prototypeItem flex flex-col items-center justify-around group relative w-24 p-2 mb-2 mr-2 bg-white border rounded hover:shadow-md cursor-move" data-section="{{ section.value }}">
+                    <a class="thickbox absolute top-0 mt-1 right-0 mr-1 hidden group-hover:block opacity-50 hover:opacity-100" href="{{ absoluteURL }}/fullscreen.php?q=/modules/Reports/templates_prototypes_preview.php&gibbonReportTemplateID={{ gibbonReportTemplateID }}&gibbonReportPrototypeSectionID={{ section.value }}&TB_iframe=true&width=900&height=500">
+                        <img class="w-4 h-4" title="{{ __('Preview') }}" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/plus.png" >
+                    </a>
+
+                    <img class="w-8 h-8 opacity-50 mb-2" src="{{ absoluteURL }}/modules/Reports/img/icons/{{ section.icon ? section.icon : 'grip-lines.svg' }}">
+
+                    <div class="text-center text-gray-600 text-xs leading-tight mt-px">{{ section.name }}</div>
+                </div>
+                {% endfor %}
+
             </div>
         {% endfor %}
         </div>

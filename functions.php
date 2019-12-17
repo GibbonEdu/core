@@ -548,6 +548,9 @@ function getEditor($guid, $tinymceInit = true, $id = '', $value = '', $rows = 10
 
     $templateData = compact('tinymceInit', 'id', 'value', 'rows', 'showMedia', 'required', 'initiallyHidden', 'allowUpload', 'initialFilter', 'resourceAlphaSort');
 
+    $templateData['name'] = $templateData['id'];
+    $templateData['id'] = preg_replace('/[^a-zA-Z0-9_-]/', '', $templateData['id']);
+
     $templateData['absoluteURL'] = $_SESSION[$guid]['absoluteURL'];
 
     return $page->fetchFromTemplate('components/editor.twig.html', $templateData);

@@ -85,6 +85,10 @@ class CustomField extends Input
                 }
                 break;
 
+            case 'yesno':
+                $this->customField = $this->factory->createYesNo($name);
+                break;
+
             case 'text':
             case 'paragraph':
                 $this->customField = $this->factory->createTextArea($name);
@@ -129,6 +133,7 @@ class CustomField extends Input
         switch($this->type) {
 
             case 'select':
+            case 'yesno':
                 $this->customField->selected($value);
                 break;
 

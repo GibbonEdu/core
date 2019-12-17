@@ -77,6 +77,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
         $row->addLabel('context', __('Context'));
         $row->addTextField('context')->readonly();
 
+    $stylesheets = $templateSectionGateway->selectPrototypeStylesheets();
+    $row = $form->addRow();
+        $row->addLabel('stylesheet', __('Stylesheet'));
+        $row->addSelect('stylesheet')->fromResults($stylesheets)->placeholder();
+
     $form->addRow()->addHeading(__('Document Setup'));
 
     $orientations = ['P' => __('Portrait'), 'L' => __('Landscape')];
@@ -119,6 +124,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
 
     $table->addColumn('name', __('Name'));
 
+    // Add column to header/footer tables
+    $table->addColumn('page', __('Page'))
+        ->width('20%')
+        ->format(function ($section) {
+            $pages = [
+                '0'      => __('All Pages'),
+                '1'      => __('First Page'),
+                '-1'     => __('Last Page'),
+            ];
+            return $pages[$section['page']] ?? $section['page'];
+        });
+
     $table->addActionColumn()
         ->addParam('gibbonReportTemplateID', $gibbonReportTemplateID)
         ->addParam('gibbonReportTemplateSectionID')
@@ -129,19 +146,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
             $actions->addAction('delete', __('Delete'))
                     ->setURL('/modules/Reports/templates_manage_section_delete.php');
         });
-        
+    
+    // BODY
+    $bodySections = $templateSectionGateway->querySectionsByType($criteria, $gibbonReportTemplateID, 'Body');
+    $bodyTable = clone $table;
+    $bodyTable->setTitle(__('Body'));
+    $bodyTable->setID('bodyTable');
+    $bodyTable->removeColumn('page');
+
 
     // HEADERS
     $headerSections = $templateSectionGateway->querySectionsByType($criteria, $gibbonReportTemplateID, 'Header');
     $headerTable = clone $table;
     $headerTable->setTitle(__('Header'));
     $headerTable->setID('headerTable');
-
-    // BODY
-    $bodySections = $templateSectionGateway->querySectionsByType($criteria, $gibbonReportTemplateID, 'Body');
-    $bodyTable = clone $table;
-    $bodyTable->setTitle(__('Body'));
-    $bodyTable->setID('bodyTable');
 
     // FOOTER
     $footerSections = $templateSectionGateway->querySectionsByType($criteria, $gibbonReportTemplateID, 'Footer');
@@ -150,7 +168,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
     $footerTable->setID('footerTable');
 
     // PROTOTYPE
-    $prototypeSections = $templateSectionGateway->selectPrototypeSections()->fetchAll();
+    $prototypeSections = $templateSectionGateway->selectPrototypeSections()->fetchGrouped();
 
     echo $page->fetchFromTemplate('ui/templateBuilder.twig.html', [
         'gibbonReportTemplateID' => $gibbonReportTemplateID,
