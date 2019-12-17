@@ -1,0 +1,24 @@
+{#<!--
+name: Leadership Comment
+category: Mastery Transcript
+types: Body
+sources:
+    student: Student
+    yearGroupComment: YearGroupComment
+-->#}
+
+{{- include('reports/style.twig.html') -}}
+
+<table>
+    <tr>
+        <td style="width: 100%; text-align:left; font-size: 14px; font-weight: bold;">
+            {{ __('Leadership Comment')}}
+        </td>
+    </tr>
+    <tr>
+        <td style="width: 100%; text-align:left; font-size: 12px; line-height: 1.2;">
+            {{ yearGroupComment.comment }}
+        </td>
+    </tr>
+</table>
+    

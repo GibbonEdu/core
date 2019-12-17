@@ -1,0 +1,52 @@
+{#<!--
+name: Logo - Center
+category: Report Info
+types: Body,Header
+icon: align-center.svg
+sources:
+params:
+    height: 30
+config:
+    headerTextLeft:
+        label: Header Text Left
+        type: text
+        default: 
+    headerTextRight:
+        label: Header Text Right
+        type: text
+        default: 
+    logo:
+        label: Logo
+        type: image
+    logoHeight:
+        label: Logo Height
+        type: number
+        default: 18
+    dividerLine:
+        label: Divider Line
+        type: yesno
+        default: Y
+-->#}
+
+{{- stylesheet ? include(stylesheet) -}}
+<table>
+    <tr>
+        <td style="width:40%;text-align:left;font-size:{{ fontSizeSmall }}; font-weight: bold; color: #606060;">
+            {{- config.headerTextLeft|nl2br -}}
+        </td>
+        <td style="width:20%;text-align:center;font-size:{{ fontSizeSmall }}; font-weight: bold; color: #606060;">
+            <img src="{{ basePath }}/{{ config.logo|default('themes/'~gibbonThemeName~'/img/anonymous_125.jpg') }}" style="display: inline-block; height: {{ config.logoHeight|default(18) }}mm;" >
+        </td>
+        <td style="width:40%;text-align:right;font-size:{{ fontSizeSmall }}; font-weight: bold; color: #606060;">
+            {{- config.headerTextRight|nl2br -}}
+            <br/>
+            Report Date: {{ report.endDate|date("F jS, Y") }} 
+        </td>
+    </tr>
+    {% if config.dividerLine == 'Y' %}
+    <tr>
+        <td colspan="3" class="" style="border-bottom: 1.5pt solid {{ accentColor }}; font-size: 5px;">&nbsp;</td>
+    </tr>
+    {% endif %}
+</table>
+    

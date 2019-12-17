@@ -1,0 +1,44 @@
+{#<!--
+name: Logo - Right
+category: Report Info
+types: Body,Header
+icon: align-right.svg
+sources:
+params:
+    height: 26
+config:
+    headerText:
+        label: Header Text
+        type: text
+        default: 
+    logo:
+        label: Logo
+        type: image
+    logoHeight:
+        label: Logo Height
+        type: number
+        default: 18
+    dividerLine:
+        label: Divider Line
+        type: yesno
+        default: Y
+-->#}
+{{- stylesheet ? include(stylesheet) -}}
+<table>
+    <tr>
+        <td style="width:50%;text-align:left;font-size:{{ fontSizeSmall }}; font-weight: bold; color: #606060;">
+            {{- config.headerText|nl2br -}}
+            <br/>
+            Report Date: {{ report.endDate|date("F jS, Y") }} 
+        </td>
+        <td style="width:50%;text-align:right;font-size:{{ fontSizeSmall }}; font-weight: bold; color: #606060;">
+            <img src="{{ basePath }}/{{ config.logo|default('themes/'~gibbonThemeName~'/img/anonymous_125.jpg') }}" style="display: inline-block; height: {{ config.logoHeight|default(18) }}mm;">
+        </td>
+    </tr>
+    {% if config.dividerLine == 'Y' %}
+    <tr>
+        <td colspan="3" class="border-bottom" style="font-size: 5px;">&nbsp;</td>
+    </tr>
+    {% endif %}
+</table>
+    

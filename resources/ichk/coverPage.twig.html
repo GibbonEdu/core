@@ -1,0 +1,65 @@
+{#<!--
+name: Cover Page
+category: Mastery Transcript
+types: Body
+sources:
+    report: Report
+    student: Student
+fonts:
+    - Lemon/Milk
+-->#}
+
+{{- include('reports/style.twig.html') -}}
+
+<table>
+    <tr>
+        <td colspan=3 style="font-size: 30px;">&nbsp;</td>
+    </tr>
+    <tr>
+        <td colspan=3 style="text-align:center;">
+            <img src="{{ absoluteURL }}/modules/Reports/img/ichk-logo.jpg" width="320">
+        </td>
+    </tr>
+    <tr>
+        <td colspan=3 style="font-size: 15px;">&nbsp;</td>
+    </tr>
+    <tr>
+        <td colspan=3 style="border-top: 0.5px solid #89847F; font-size: 10px;">&nbsp;</td>
+    </tr>
+    <tr>
+        <td colspan=3 style="text-align:center; line-height: 1.1; font-size: 50px; font-weight: bold; color: #444444; font-family:Lemon\/Milk, 'Lemon/Milk';">
+            {{- (student.yearGroupName ~ " Report")|upper -}} 
+        </td>
+    </tr>
+    <tr>
+        <td colspan=3 style="text-align:center; line-height: 1.1; font-size: 40px; font-weight: normal; color: #444444;">
+            {{- student.preferredName }} {{ student.surname -}}
+        </td>
+    </tr>
+    <tr>
+        <td colspan=3 style="border-bottom: 0.5px solid #89847F; font-size: 10px;">&nbsp;</td>
+    </tr>
+    <tr>
+        <td colspan=3 style="font-size: 30px;">&nbsp;</td>
+    </tr>
+    <tr>
+        <td style="width:33%"></td>
+        <td style="width:33%">
+            <table style="width: 168px; height: 216px; border: 0.5px solid #89847F;padding: 4px 4px 3px 3px;">
+                <tr><td>
+                    <img src="{{ absoluteURL }}/{{ student.image_240 }}" width="160" height="210">
+                </td></tr>
+            </table>
+        </td>
+        <td style="width:33%"></td>
+    </tr>
+    <tr>
+        <td colspan=3 style="font-size: 15px;">&nbsp;</td>
+    </tr>
+    <tr>
+        <td colspan=3 style="width: 100%; text-align:center; font-size: 18px; line-height: 1.4; color: #FF6A00;">
+            <i>"{{ student.quote }}"</i> -&nbsp;<b>{{ student.preferredName }}</b>
+        </td>
+    </tr>
+</table>
+    

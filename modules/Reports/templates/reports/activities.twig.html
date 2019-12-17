@@ -1,0 +1,37 @@
+{#<!--
+name: Activity Summary
+category: Student Profile
+types: Body
+sources:
+    student: Student
+    activities: Activities
+config:
+    activityTypes:
+        label: Activity Types
+        type: words
+-->#}
+{{- stylesheet ? include(stylesheet) -}}
+
+<table cellspacing="0" cellpadding="10">
+    <tr>
+        <td class="header bg-primary border-top border-bottom border-left" style="width:66.6%;">Activities</td>
+        <td class="header bg-primary border-top border-bottom border-right" style="width:33.3%;text-align: center;">Dates</td>
+    </tr>
+
+    {% set count = 0 %}
+    {% for activity in activities %}
+        {% if config.activityTypes is empty or activity.type in config.activityTypes %}
+        <tr class="">
+            <td class="border-top border-bottom border-left" style="width:66.6%;">{{ activity.name }}</td>
+            <td class="border-top border-bottom border-right" style="width:33.3%;text-align: center;">{{ activity.programStart|date('M Y') }} to {{ activity.programEnd|date('M Y') }}</td>
+        </tr>
+        {% set count = count + 1 %}
+        {% endif %}
+    {% endfor %}
+
+    {% if count == 0 %}
+        <tr>
+            <td class="border" style="width:99.9%;" colspan="2">{{ student.preferredName }} did not participate in any activities this term.</td>
+        </tr>
+    {% endif %}
+</table>

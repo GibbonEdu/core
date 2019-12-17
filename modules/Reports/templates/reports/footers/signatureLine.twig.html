@@ -1,0 +1,79 @@
+{#<!--
+name: Signature - Line
+category: Headers & Footers
+types: Footer
+icon: signature.svg
+sources:
+    reportingCycle: ReportingCycle
+params:
+    height: 26
+config:
+    signatureTitle1:
+        label: Signature Title 1
+        type: words
+        default: Principal
+    signatureImage1:
+        label: Signature Image 1
+        type: image
+    signatureTitle2:
+        label: Signature Title 2
+        type: words
+        default: Principal
+    signatureImage2:
+        label: Signature Image 2
+        type: image
+    signatureWidth:
+        label: Signature Width
+        type: number
+        default: 240
+    signatureHeight:
+        label: Signature Height
+        type: number
+        default: 80
+-->#}
+{{- stylesheet ? include(stylesheet) -}}
+<style>
+.footer {
+    font-size: 9.5px;
+}
+</style><table cellpadding="2" style="background-color:#ffffff; height: 12mm;">
+    <tr>
+        <td class="footer border-left border-top" style="width:17.5%; font-weight: bold; line-height:2.6;">
+            {{- __('Signature') }}:
+        </td> 
+        <td class="border-right border-top border-bottom" style="width:25%; height: 12mm; line-height: 1;" rowspan="2">
+            {% if isDraft %}
+                <span style="color: #cccccc; font-size: 22px; font-weight: bold; line-height:1.9;">DRAFT</span>
+            {% elseif config.signatureImage1 %}
+                <img src="{{ basePath }}/{{ config.signatureImage1 }}" style="max-height: 12mm; width: auto" width="{{ config.signatureWidth|default('240') }}" height="{{ config.signatureHeight|default('80') }}"/>
+            {% endif %}
+        </td> 
+        <td class="footer border-left border-top" style="width:17.5%; font-weight: bold; line-height:2.6;">
+            {{- __('Signature') }}:
+        </td> 
+        <td class="border-right border-top border-bottom" style="width:25%; height: 12mm; line-height: 1;" rowspan="2">
+            {% if isDraft %}
+                <span style="color: #cccccc; font-size: 22px; font-weight: bold; line-height:1.9;">DRAFT</span>
+            {% elseif config.signatureImage2 %}
+                <img src="{{ basePath }}/{{ config.signatureImage2 }}" style="max-height: 12mm; width: auto" width="{{ config.signatureWidth|default('240') }}" height="{{ config.signatureHeight|default('80') }}"/>
+            {% endif %}
+        </td>
+
+        <td class="footer border" style="width:15%;line-height: 4.2" rowspan="2">
+            {{- reportingCycle.dateEnd|date("j F Y") -}} 
+        </td>
+    </tr>
+    <tr>
+        <td class="footer border-left border-bottom" style="width:17.5%; line-height:1.2;">
+            {{- config.signatureTitle1|default("Principal") -}}
+        </td> 
+        <td class="footer border-left border-bottom" style="width:17.5%; line-height:1.2;">
+            {{- config.signatureTitle2|default("Principal") -}}
+        </td> 
+    </tr>
+</table>
+<table>
+    <tr>
+        <td style="color: #000; text-align:right;line-height:1.8;">Page {{ pageNum -}}</td> 
+    </tr>
+</table>

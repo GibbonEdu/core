@@ -37,26 +37,6 @@ class Tutors extends DataSource
                 'fullName'      => ['sameAs', 'title firstName surname'],
                 'email'         => ['sameAs', 'firstName.surname@example.com'],
             ],
-
-            1 => [
-                'title'         => ['title', $gender],
-                'surname'       => ['lastName'],
-                'firstName'     => ['firstName', $gender],
-                'preferredName' => ['sameAs', 'firstName'],
-                'officialName'  => ['sameAs', 'firstName surname'],
-                'fullName'      => ['sameAs', 'title firstName surname'],
-                'email'         => ['sameAs', 'firstName.surname@example.com'],
-            ],
-
-            2 => [
-                'title'         => ['title', $gender],
-                'surname'       => ['lastName'],
-                'firstName'     => ['firstName', $gender],
-                'preferredName' => ['sameAs', 'firstName'],
-                'officialName'  => ['sameAs', 'firstName surname'],
-                'fullName'      => ['sameAs', 'title firstName surname'],
-                'email'         => ['sameAs', 'firstName.surname@example.com'],
-            ],
         ];
     }
 

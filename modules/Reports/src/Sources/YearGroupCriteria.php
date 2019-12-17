@@ -21,14 +21,15 @@ namespace Gibbon\Module\Reports\Sources;
 
 use Gibbon\Module\Reports\DataSource;
 
-class YearGroupScope extends DataSource
+class YearGroupCriteria extends DataSource
 {
     public function getSchema()
     {
         return [
             'perGroup' => [
                 0 => [
-                    'criteriaName'        => ['words', 3, true],
+                    'scopeName'           => 'Year Group',
+                    'criteriaName'        => 'Year Group Comment',
                     'criteriaDescription' => ['sentence'],
                     'value'               => ['randomDigit'],
                     'comment'             => ['paragraph', 6],
@@ -36,13 +37,7 @@ class YearGroupScope extends DataSource
                 ],
             ],
             'perStudent' => [
-                0 => [
-                    'criteriaName'        => ['words', 3, true],
-                    'criteriaDescription' => ['sentence'],
-                    'value'               => ['randomDigit'],
-                    'comment'             => ['paragraph', 6],
-                    'valueType'           => 'Comment',
-                ],
+
             ],
         ];
     }
@@ -51,10 +46,12 @@ class YearGroupScope extends DataSource
     {
         $data = ['gibbonStudentEnrolmentID' => $ids['gibbonStudentEnrolmentID'], 'gibbonReportingCycleID' => $ids['gibbonReportingCycleID']];
         $sql = "SELECT (CASE WHEN gibbonReportingCriteria.target = 'Per Group' THEN 'perGroup' ELSE 'perStudent' END) AS groupBy, 
+                    gibbonReportingScope.name as scopeName,
                     gibbonReportingCriteria.name as criteriaName,
                     gibbonReportingCriteria.description as criteriaDescription, 
                     gibbonReportingValue.value, 
                     gibbonReportingValue.comment, 
+                    gibbonScaleGrade.descriptor,
                     gibbonReportingCriteriaType.valueType, 
                     gibbonYearGroup.name as yearGroupName, 
                     gibbonYearGroup.nameShort as yearGroupNameShort
@@ -64,15 +61,14 @@ class YearGroupScope extends DataSource
                 JOIN gibbonReportingCriteriaType ON (gibbonReportingCriteriaType.gibbonReportingCriteriaTypeID=gibbonReportingCriteria.gibbonReportingCriteriaTypeID)
                 JOIN gibbonReportingScope ON (gibbonReportingScope.gibbonReportingScopeID=gibbonReportingCriteria.gibbonReportingScopeID)
                 JOIN gibbonYearGroup ON (gibbonYearGroup.gibbonYearGroupID=gibbonReportingCriteria.gibbonYearGroupID)
-                LEFT JOIN gibbonReportingProgress ON (gibbonReportingProgress.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
+                LEFT JOIN gibbonReportingProgress ON (gibbonReportingProgress.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID AND (gibbonReportingProgress.gibbonPersonIDStudent=gibbonStudentEnrolment.gibbonPersonID OR gibbonReportingProgress.gibbonPersonIDStudent=0))
+                LEFT JOIN gibbonScaleGrade ON (gibbonScaleGrade.gibbonScaleID=gibbonReportingCriteriaType.gibbonScaleID AND gibbonScaleGrade.gibbonScaleGradeID=gibbonReportingValue.gibbonScaleGradeID)
                 WHERE gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID
                 AND gibbonReportingCriteria.gibbonReportingCycleID=:gibbonReportingCycleID
                 AND gibbonReportingScope.scopeType='Year Group'
                 AND ((gibbonReportingProgress.status='Complete' AND gibbonReportingCriteria.target = 'Per Student') 
                     OR gibbonReportingCriteria.target = 'Per Group') 
                 ORDER BY gibbonReportingScope.sequenceNumber, gibbonReportingCriteria.sequenceNumber, gibbonYearGroup.sequenceNumber";
-
-        
 
         return $this->db()->select($sql, $data)->fetchGrouped();
     }

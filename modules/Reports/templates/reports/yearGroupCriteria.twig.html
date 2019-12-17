@@ -1,0 +1,54 @@
+{#<!--
+name: Year Group Criteria
+category: Reporting Cycle
+types: Body
+icon: comment-alt.svg
+sources:
+    student: Student
+    reportingCycle: ReportingCycle
+    yearGroupCriteria: YearGroupCriteria
+-->#}
+{{- stylesheet ? include(stylesheet) -}}
+
+{% if yearGroupCriteria.perGroup or yearGroupCriteria.perStudent  %}
+
+<table class="w-full" cellspacing="0" cellpadding="10">
+    <tr>
+        <td class="header bg-primary border-top border-bottom border-left">
+            {{- __('Year Group') }}: {{ student.yearGroupName -}}
+        </td>
+        <td class="subheader bg-primary border-top border-bottom border-right" style="width:50%;text-align:right;">
+
+        </td>
+    </tr>
+    <tr>
+        <td class="border w-full" colspan="2">
+        {%- for criteria in []|merge(yearGroupCriteria.perGroup|default([]))|merge(yearGroupCriteria.perStudent|default([])) -%}
+        <table style="width: 100%; padding: 0;" class="w-full" cellspacing="0" cellpadding="0" nobr="true">
+            {% if criteria.valueType == 'Comment' %}
+            <tr>
+                <td class="w-full header" style="line-height:1.8;" colspan="2">
+                    {{- criteria.criteriaName -}}
+                </td>
+            </tr>
+            <tr>
+                <td class="w-full" style="font-size: {{ fontSizeMedium }}"  colspan="2">
+                    {{- criteria.comment -}}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td class="w-full" style="font-size: {{ fontSizeMedium }}; line-height:1.8;" colspan="2">
+                    <b>{{- criteria.criteriaName }}</b>: {{ criteria.descriptor ? criteria.descriptor : criteria.value -}}
+                </td>
+            </tr>
+            {% endif %}
+        </table>
+        {% if not loop.last %}
+            <table cellspacing="0" cellpadding="6"><tr><td style="font-size: 1px;">&nbsp;</td></tr></table>
+        {% endif %}
+        {%- endfor -%}
+        </td>
+    </tr>
+</table>
+{% endif %}

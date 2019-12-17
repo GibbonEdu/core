@@ -1,0 +1,43 @@
+{#<!--
+name: Student Info
+category: Report Info
+types: Body
+icon: address-card.svg
+sources:
+    student: Student
+    tutors: Tutors
+    report: Report
+-->#}
+{{- stylesheet ? include(stylesheet) -}}
+
+<table class="w-full" cellspacing="0" cellpadding="10">
+    <tr>
+        <td class="border-left border-top border-bottom" style="width: 14%;line-height: 0;height: 33mm"><img src="{{ basePath }}/{{ student.image_240 }}" style="height: 30mm" /></td>
+        <td class="border-right border-top border-bottom" style="width: 86%; line-height: 1.8;">
+            {%- with -%}
+                <span style="font-size: {{ fontSizeLarge }}; font-weight: bold;">{{- student.officialName -}}</span><br/><span style="font-size: {{ fontSizeMedium }};">{{- report.name -}}</span><br/><br/><table class="w-full" cellspacing="0" cellpadding="0" style="width: 100%; font-size: {{ fontSizeSmall }}">
+                    <tr>
+                        <td class="border-right" style="width: 22%">{{ __('Date') }}<br/>
+                            {{- report.date|date("M jS, Y") -}}
+                        </td>
+                        <td style="width: 4mm;"></td>
+                        <td class="border-right" style="width: 22%">{{ __('Year Group') }}<br/>
+                            {{- student.yearGroupName -}}
+                        </td>
+                        <td style="width: 4mm;"></td>
+                        <td class="border-right" style="width: 22%">{{ __('Tutor') }}<br/>
+                            {% set tutor = tutors|first %}
+                            {{ tutor.title }} {{ tutor.preferredName|first }}. {{ tutor.surname }}
+                        </td>
+                        <td style="width: 4mm;"></td>
+                        <td class="" style="width: 22%">{{ __('Student ID') }}<br/>
+                            {{- student.studentID -}}
+                        </td>
+                        <td></td>
+                    </tr>
+                </table>
+            {%- endwith -%}
+        </td>
+    </tr>
+</table>
+

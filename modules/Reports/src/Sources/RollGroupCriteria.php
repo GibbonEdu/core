@@ -26,12 +26,33 @@ class RollGroupCriteria extends DataSource
     public function getSchema()
     {
         return [
-            0 => [
-                'criteriaName'        => ['words', 3, true],
-                'criteriaDescription' => ['sentence'],
-                'value'               => ['randomDigit'],
-                'comment'             => ['paragraph', 6],
-                'valueType'           => 'Comment',
+            'perGroup' => [
+                0 => [
+                    'scopeName'           => 'Roll Group',
+                    'criteriaName'        => 'Roll Group Comment',
+                    'criteriaDescription' => ['sentence'],
+                    'value'               => ['randomDigit'],
+                    'comment'             => ['paragraph', 6],
+                    'valueType'           => 'Comment',
+                ],
+            ],
+            'perStudent' => [
+                0 => [
+                    'scopeName'           => 'Roll Group',
+                    'criteriaName'        => 'Student Comment',
+                    'criteriaDescription' => ['sentence'],
+                    'value'               => ['randomDigit'],
+                    'comment'             => ['paragraph', 6],
+                    'valueType'           => 'Comment',
+                ],
+                1 => [
+                    'scopeName'           => 'Roll Group',
+                    'criteriaName'        => 'Effort',
+                    'criteriaDescription' => ['sentence'],
+                    'value'               => ['randomElement', ['Excellent', 'Very Good', 'Good', 'Satisfactory', 'Needs Improvement']],
+                    'comment'             => '',
+                    'valueType'           => 'Grade Scale',
+                ],
             ],
         ];
     }
@@ -39,21 +60,31 @@ class RollGroupCriteria extends DataSource
     public function getData($ids = [])
     {
         $data = ['gibbonStudentEnrolmentID' => $ids['gibbonStudentEnrolmentID'], 'gibbonReportingCycleID' => $ids['gibbonReportingCycleID']];
-        $sql = "SELECT gibbonReportingCriteria.name as criteriaName, gibbonReportingCriteria.description as criteriaDescription, gibbonReportingValue.value, gibbonReportingValue.comment, gibbonReportingCriteriaType.valueType
+        $sql = "SELECT (CASE WHEN gibbonReportingCriteria.target = 'Per Group' THEN 'perGroup' ELSE 'perStudent' END) AS groupBy, 
+                    gibbonReportingScope.name as scopeName,
+                    gibbonReportingCriteria.name as criteriaName,
+                    gibbonReportingCriteria.description as criteriaDescription, 
+                    gibbonReportingValue.value, 
+                    gibbonReportingValue.comment, 
+                    gibbonScaleGrade.descriptor,
+                    gibbonReportingCriteriaType.valueType, 
+                    gibbonRollGroup.name as rollGroupName, 
+                    gibbonRollGroup.nameShort as rollGroupNameShort
                 FROM gibbonStudentEnrolment 
-                JOIN gibbonReportingProgress ON (gibbonReportingProgress.gibbonPersonIDStudent=gibbonStudentEnrolment.gibbonPersonID)
-                JOIN gibbonReportingValue ON (gibbonReportingValue.gibbonPersonIDStudent=gibbonReportingProgress.gibbonPersonIDStudent)
-                JOIN gibbonReportingCriteria ON (gibbonReportingCriteria.gibbonReportingCriteriaID=gibbonReportingValue.gibbonReportingCriteriaID)
+                JOIN gibbonReportingCriteria ON (gibbonReportingCriteria.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID)
+                JOIN gibbonReportingValue ON (gibbonReportingCriteria.gibbonReportingCriteriaID=gibbonReportingValue.gibbonReportingCriteriaID AND (gibbonReportingValue.gibbonPersonIDStudent=gibbonStudentEnrolment.gibbonPersonID OR gibbonReportingValue.gibbonPersonIDStudent=0))
                 JOIN gibbonReportingCriteriaType ON (gibbonReportingCriteriaType.gibbonReportingCriteriaTypeID=gibbonReportingCriteria.gibbonReportingCriteriaTypeID)
                 JOIN gibbonReportingScope ON (gibbonReportingScope.gibbonReportingScopeID=gibbonReportingCriteria.gibbonReportingScopeID)
+                JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonRollGroupID=gibbonReportingCriteria.gibbonRollGroupID)
+                LEFT JOIN gibbonReportingProgress ON (gibbonReportingProgress.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND (gibbonReportingProgress.gibbonPersonIDStudent=gibbonStudentEnrolment.gibbonPersonID OR gibbonReportingProgress.gibbonPersonIDStudent=0))
+                LEFT JOIN gibbonScaleGrade ON (gibbonScaleGrade.gibbonScaleID=gibbonReportingCriteriaType.gibbonScaleID AND gibbonScaleGrade.gibbonScaleGradeID=gibbonReportingValue.gibbonScaleGradeID)
                 WHERE gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID
-                AND gibbonReportingValue.gibbonReportingCycleID=:gibbonReportingCycleID
-                AND gibbonReportingProgress.gibbonCourseClassID=0
-                AND gibbonReportingProgress.status='Complete'
+                AND gibbonReportingCriteria.gibbonReportingCycleID=:gibbonReportingCycleID
                 AND gibbonReportingScope.scopeType='Roll Group'
-                AND gibbonReportingCriteria.target='Per Student'
-                ORDER BY gibbonReportingScope.sequenceNumber, gibbonReportingCriteria.sequenceNumber";
+                AND ((gibbonReportingProgress.status='Complete' AND gibbonReportingCriteria.target = 'Per Student') 
+                    OR gibbonReportingCriteria.target = 'Per Group') 
+                ORDER BY gibbonReportingScope.sequenceNumber, gibbonReportingCriteria.sequenceNumber, gibbonRollGroup.nameShort";
 
-        return $this->db()->select($sql, $data)->fetchAll();
+        return $this->db()->select($sql, $data)->fetchGrouped();
     }
 }
