@@ -90,6 +90,7 @@ v19.0.00
         System: fixed translatability issue of Public Registration text
         System: fixed pagination setting so it correctly controls table size
         System: fixed Dashboard error for users with role category Other
+        System: fixed Fast Finder bug on mobile when entering search text
         Activities: improved interface string advising users of disabled external activity registration
         Activities: fixed bug preventing viewing activity details in Activity Choices by Student when listing closed
         Attendance: fixed missing data in printable view of Student History
