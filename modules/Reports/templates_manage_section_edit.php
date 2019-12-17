@@ -115,9 +115,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_s
         $configValues = json_decode($values['config'] ?? '', true);
 
         foreach ($config as $configName => $configOptions) {
-            $row = $form->addRow();
+            if ($configOptions['type'] == 'editor') {
+                $col = $form->addRow()->addColumn();
+                $col->addLabel("config[{$configName}]", __($configOptions['label'] ?? ucwords($configName)));
+                $col->addEditor("config[{$configName}]", $guid)->setID("config{$configName}")->setValue($configValues[$configName] ?? '');
+            } else {
+                $row = $form->addRow();
                 $row->addLabel("config[{$configName}]", __($configOptions['label'] ?? ucwords($configName)));
                 $row->addCustomField("config[{$configName}]", $configOptions)->setValue($configValues[$configName] ?? '');
+            }
         }
     }
     

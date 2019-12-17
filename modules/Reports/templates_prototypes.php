@@ -41,12 +41,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_prototyp
 
     // QUERY
     $criteria = $prototypeGateway->newQueryCriteria(true)
-        ->sortBy(['type', 'name'])
+        ->sortBy(['type', 'category', 'name'])
         ->fromPOST();
 
     $templates = $prototypeGateway->queryPrototypes($criteria);
     $fonts = $fontGateway->selectFontList()->fetchKeyPair();
+
+    $templatePath = $gibbon->session->get('absolutePath').'/modules/Reports/templates';
     $customAssetPath = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'customAssetPath');
+
+    $templates->transform(function (&$template) use (&$fonts, &$templatePath, &$customAssetPath) {
+        $fontsUsed = array_filter(explode(',', $template['fonts']));
+        $fontsMissing = array_filter($fontsUsed, function ($fontName) use (&$fonts) {
+            return !isset($fonts[$fontName]);
+        });
+
+        if ($template['type'] == 'Core' && !is_file($templatePath.'/'.$template['templateFile'])) {
+            $template['status'] = __('Not Installed');
+            $template['statusClass'] = 'error';
+        } elseif ($template['type'] == 'Additional' && !is_file($customAssetPath.'/templates/'.$template['templateFile'])) {
+            $template['status'] = __('Not Installed');
+            $template['statusClass'] = 'error';
+        } else if (!empty($fontsMissing)) {
+            $template['status'] = __('Missing Font');
+            $template['statusClass'] = 'warning';
+            $template['statusTitle'] = implode('<br/>', $fontsMissing);
+        } else {
+            $template['status'] = __('Installed');
+            $template['statusClass'] = 'success';
+        }
+    });
 
     // Data TABLE
     $table = DataTable::createPaginated('manageComponents', $criteria);
@@ -64,26 +88,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_prototyp
     $table->addColumn('category', __('Category'));
     $table->addColumn('templateFile', __('File'));
     $table->addColumn('status', __('Status'))
-        ->format(function ($template) use (&$fonts) {
-            $fontsMissing = [];
-            $fontsUsed = array_filter(explode(',', $template['fonts']));
-            foreach ($fontsUsed as $fontName) {
-                if (!isset($fonts[$fontName])) {
-                    $fontsMissing[] = $fontName;
-                }
-            }
-            return !empty($fontsMissing)
-                ? __('Missing Font').':<br/> '.implode('<br/>', $fontsMissing)
-                : '<span class="tag success">'.__('Installed').'</span>';
+        ->format(function ($template) use (&$fonts, &$templatePath, &$customAssetPath) {
+            return '<span class="tag '.($template['statusClass'] ?? '').'" title="'.($template['statusTitle'] ?? '').'">'.$template['status'].'</span>';
         });
 
     $table->addActionColumn()
         ->addParam('gibbonReportPrototypeSectionID')
         ->format(function ($template, $actions) {
-            $actions->addAction('view', __('Preview'))
-                    ->setURL('/modules/Reports/templates_prototypes_preview.php')
-                    ->addParam('TB_iframe', 'true')
-                    ->modalWindow(900, 500);
+            if ($template['status'] == __('Installed')) {
+                $actions->addAction('view', __('Preview'))
+                        ->setURL('/modules/Reports/templates_prototypes_preview.php')
+                        ->addParam('TB_iframe', 'true')
+                        ->modalWindow(900, 500);
+            }
 
             // $actions->addAction('edit', __('Edit'))
             //         ->addParam('sidebar', 'false')

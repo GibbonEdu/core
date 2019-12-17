@@ -74,6 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_prototyp
                     'templateFile'   => $filename,
                     'dataSources'    => json_encode($config['sources'] ?? []),
                     'fonts'          => implode(',', $config['fonts'] ?? []),
+                    'icon'           => $config['icon'] ?? '',
                 ];
     
                 $inserted = $prototypeGateway->insertAndUpdate($data, [
@@ -85,6 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_prototyp
                     'templateParams' => $data['templateParams'],
                     'dataSources'    => $data['dataSources'],
                     'fonts'          => $data['fonts'],
+                    'icon'           => $data['icon'],
                 ]);
 
                 $partialFail &= !$inserted;
