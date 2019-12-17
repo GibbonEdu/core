@@ -170,6 +170,7 @@ class FinanceFormFactory extends DatabaseFormFactory
                 FROM gibbonFinanceFee 
                 JOIN gibbonFinanceFeeCategory ON (gibbonFinanceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) 
                 WHERE gibbonFinanceFee.gibbonSchoolYearID=:gibbonSchoolYearID
+                AND gibbonFinanceFee.active='Y'
                 ORDER BY gibbonFinanceFeeCategory.name, gibbonFinanceFee.name";
 
         return $this->createSelect($name)
