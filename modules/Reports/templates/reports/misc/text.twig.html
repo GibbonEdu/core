@@ -4,14 +4,14 @@ category: Miscellaneous
 types: Body,Header,Footer
 icon: align-justify.svg
 config:
-    title:
-        label: Title
+    heading:
+        label: Heading
         type: words
         default:
-    titleSize:
-        label: Title Size
+    headingSize:
+        label: Heading Size
         type: number
-        default: 16
+        default: 14
     text:
         label: Text
         type: text
@@ -25,10 +25,10 @@ config:
 {{- stylesheet ? include(stylesheet) -}}
 
 <table class="w-full">
-    {% if config.title is not empty or config.title is not defined %}
+    {% if config.heading is not empty or config.heading is not defined %}
     <tr>
-        <td class="w-full" style="font-size: {{ config.titleSize|default(16)}}pt; line-height: 1.4;">
-            {{- config.title|default('Example Text') -}}
+        <td class="w-full" style="font-size: {{ config.headingSize|default(14)}}pt; line-height: 1.4;">
+            {{- config.heading|default('Example Text') -}}
         </td>
     </tr>
     {% endif %}

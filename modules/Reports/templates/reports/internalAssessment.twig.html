@@ -1,0 +1,64 @@
+{#<!--
+name: Internal Assessment
+category: Student Profile
+types: Body
+sources:
+    student: Student
+    internalAssessment: InternalAssessment
+-->#}
+{{- stylesheet ? include(stylesheet) -}}
+
+{% for assessment in internalAssessment %}
+
+    <table class="w-full" cellspacing="0" cellpadding="10" nobr="true">
+        <tr>
+            <td class="header bg-primary border-top border-bottom border-left" style="width:50%;">
+                {{- assessment.courseName -}}
+            </td>
+            <td class="subheader bg-primary border-top border-bottom border-right" style="width:50%;text-align:right;">
+
+            </td>
+        </tr>
+        <tr>
+            <td class="border w-full" colspan="2"><table class="w-full" style="font-size: {{ fontSizeMedium }};" cellspacing="0" cellpadding="0">
+                {% if assessment.attainmentActive == 'Y' %}
+                <tr>
+                    <td style="width: 15%; height: 6mm; vertical-align: top; font-weight: bold;">
+                        {{- __('Attainment') }}:
+                    </td>
+                    <td style="vertical-align: top;">
+                        {{- assessment.attainmentDescriptor ? assessment.attainmentDescriptor : assessment.attainmentValue -}}
+                    </td>
+                </tr>
+                {% endif %}
+
+                {% if assessment.effortActive == 'Y' %}
+                <tr>
+                    <td style="width: 15%; height: 6mm; vertical-align: top; font-weight: bold;">
+                        {{- __('Effort') }}:
+                    </td>
+                    <td style="vertical-align: top;">
+                        {{- assessment.effortDescriptor ? assessment.effortDescriptor : assessment.effortValue -}}
+                    </td>
+                </tr>
+                {% endif %}
+
+                {% if assessment.commentActive == 'Y' %}
+                <tr>
+                    <td style="width: 15%; height: 6mm; vertical-align: top; font-weight: bold;">
+                        {{- __('Comment') }}:
+                    </td>
+                    <td style="vertical-align: top;">
+                        {{- assessment.comment -}}
+                    </td>
+                </tr>
+                {% endif %}
+                </table></td>
+        </tr>
+    </table>
+
+    {% if not loop.last %}
+    <table cellspacing="0" cellpadding="6"><tr><td style="font-size: 1px;">&nbsp;</td></tr></table>
+    {% endif %}
+
+{% endfor %}

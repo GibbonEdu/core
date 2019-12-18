@@ -43,7 +43,7 @@ config:
             Report Date: {{ report.endDate|date("F jS, Y") }} 
         </td>
     </tr>
-    {% if config.dividerLine == 'Y' %}
+    {% if config.dividerLine|default('Y') == 'Y' %}
     <tr>
         <td colspan="3" class="" style="border-bottom: 1.5pt solid {{ accentColor }}; font-size: 5px;">&nbsp;</td>
     </tr>

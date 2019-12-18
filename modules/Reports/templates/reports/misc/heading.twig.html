@@ -1,0 +1,37 @@
+{#<!--
+name: Heading
+category: Miscellaneous
+types: Body,Header,Footer
+icon: heading.svg
+config:
+    heading:
+        label: Heading
+        type: words
+        default:
+    headingSize:
+        label: Heading Size
+        type: number
+        default: 14
+    dividerLine:
+        label: Divider Line
+        type: yesno
+        default: Y
+-->#}
+
+{{- stylesheet ? include(stylesheet) -}}
+
+<table>
+    {% if config.heading is not empty or config.heading is not defined %}
+    <tr>
+        <td class="w-full" style="font-size: {{ config.headingSize|default(14)}}pt; font-weight: bold; line-height: 1.4;">
+            {{- config.heading|default('Example Text') -}}
+        </td>
+    </tr>
+    {% endif %}
+
+    {% if config.dividerLine|default('Y') == 'Y' %}
+    <tr>
+        <td colspan="3" class="" style="border-bottom: 1.5pt solid {{ accentColor }}; font-size: 0px;">&nbsp;</td>
+    </tr>
+    {% endif %}
+</table>

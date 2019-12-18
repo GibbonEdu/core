@@ -25,6 +25,8 @@ class YearGroupCriteria extends DataSource
 {
     public function getSchema()
     {
+        $gender = rand(0, 99) > 50 ? 'female' : 'male';
+
         return [
             'perGroup' => [
                 0 => [
@@ -34,6 +36,11 @@ class YearGroupCriteria extends DataSource
                     'value'               => ['randomDigit'],
                     'comment'             => ['paragraph', 6],
                     'valueType'           => 'Comment',
+                    'title'               => ['title', $gender],
+                    'surname'             => ['lastName'],
+                    'firstName'           => ['firstName', $gender],
+                    'preferredName'       => ['sameAs', 'firstName'],
+                    'officialName'        => ['sameAs', 'firstName surname'],
                 ],
             ],
             'perStudent' => [
@@ -54,7 +61,12 @@ class YearGroupCriteria extends DataSource
                     gibbonScaleGrade.descriptor,
                     gibbonReportingCriteriaType.valueType, 
                     gibbonYearGroup.name as yearGroupName, 
-                    gibbonYearGroup.nameShort as yearGroupNameShort
+                    gibbonYearGroup.nameShort as yearGroupNameShort,
+                    createdBy.title,
+                    createdBy.surname,
+                    createdBy.firstName,
+                    createdBy.preferredName,
+                    createdBy.officialName
                 FROM gibbonStudentEnrolment 
                 JOIN gibbonReportingCriteria ON (gibbonReportingCriteria.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID)
                 JOIN gibbonReportingValue ON (gibbonReportingCriteria.gibbonReportingCriteriaID=gibbonReportingValue.gibbonReportingCriteriaID AND (gibbonReportingValue.gibbonPersonIDStudent=gibbonStudentEnrolment.gibbonPersonID OR gibbonReportingValue.gibbonPersonIDStudent=0))
@@ -63,6 +75,7 @@ class YearGroupCriteria extends DataSource
                 JOIN gibbonYearGroup ON (gibbonYearGroup.gibbonYearGroupID=gibbonReportingCriteria.gibbonYearGroupID)
                 LEFT JOIN gibbonReportingProgress ON (gibbonReportingProgress.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID AND (gibbonReportingProgress.gibbonPersonIDStudent=gibbonStudentEnrolment.gibbonPersonID OR gibbonReportingProgress.gibbonPersonIDStudent=0))
                 LEFT JOIN gibbonScaleGrade ON (gibbonScaleGrade.gibbonScaleID=gibbonReportingCriteriaType.gibbonScaleID AND gibbonScaleGrade.gibbonScaleGradeID=gibbonReportingValue.gibbonScaleGradeID)
+                LEFT JOIN gibbonPerson as createdBy ON (createdBy.gibbonPersonID=gibbonReportingValue.gibbonPersonIDCreated)
                 WHERE gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID
                 AND gibbonReportingCriteria.gibbonReportingCycleID=:gibbonReportingCycleID
                 AND gibbonReportingScope.scopeType='Year Group'

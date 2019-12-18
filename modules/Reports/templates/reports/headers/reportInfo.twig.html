@@ -19,7 +19,7 @@ config:
         <td style="text-align:left;width:50%;"><b>{{- report.name -}}</b> - {{ report.date|date("M jS, Y") -}}</td> 
         <td style="text-align:right;width:50%;"><b>{{ student.officialName }}</b>, {{ student.rollGroupNameShort }}</td> 
     </tr>
-    {% if config.dividerLine == 'Y' %}
+    {% if config.dividerLine|default('Y') == 'Y' %}
     <tr>
         <td colspan="3" class="border-bottom" style="font-size: 5px;">&nbsp;</td>
     </tr>
