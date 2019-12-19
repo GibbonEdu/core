@@ -1,0 +1,154 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+<div class="flex mt-4">
+
+    <a href="./fullscreen.php?q=/modules/Reports/templates_preview.php&gibbonReportTemplateID={{ gibbonReportTemplateID }}&TB_iframe=true&width={{ template.orientation == 'P' ? 900 : 1200 }}&height=700" class="thickbox w-full mr-1 py-3 bg-gray-100 border text-gray-700 text-center text-base font-bold hover:bg-blue-500 hover:border-blue-700 hover:text-white">
+        <img class="w-5 h-5 opacity-50 mr-2 align-text-bottom " src="{{ absoluteURL }}/modules/Reports/img/icons/file-alt.svg">
+        {{ __('Preview HTML') }}
+    </a>
+    
+    <a href="./export.php?q=/modules/Reports/templates_preview.php&gibbonReportTemplateID={{ gibbonReportTemplateID }}" class="w-full py-3 bg-gray-100 border text-gray-700 text-center text-base font-bold hover:bg-blue-500 hover:border-blue-700 hover:text-white">
+        <img class="w-5 h-5 opacity-50 mr-2 align-text-bottom " src="{{ absoluteURL }}/modules/Reports/img/icons/file-pdf.svg">
+        {{ __('Preview PDF') }}
+    </a>
+</div>
+        
+
+<section class="flex items-stretch">
+    <div class="flex-1 pr-6">
+        {{ headers|raw }}
+
+        {{ body|raw }}
+
+        {{ footers|raw }}
+    </div>
+
+    <div id="sections" class="w-2/5 h-full">
+        <h3>
+            {{ __('Add Sections') }} <span class="text-xxs font-normal">{{ __('Drag & Drop') }}</span>
+        </h3>
+
+        <div id='tabs'>
+            <ul>
+                <li><a href='#tabs0'>{{ __('Core') }}</a></li>
+                <li><a href='#tabs1'>{{ __('Additional') }}</a></li>
+                <!-- <li><a href='#tabs2'>{{ __('Settings') }}</a></li> -->
+            </ul>
+
+            <div id="tabs0" class="prototype" style="padding: 1rem 0 0.5rem 1rem !important;">
+            {% for category, sectionList in coreSections %}
+                <div class="text-gray-600 text-xs mb-1 {{ not loop.first ? 'mt-3' }}">
+                    {{ category|title }}
+                </div>
+
+                <div class="flex flex-wrap items-stretch">
+                {% for section in sectionList %}
+
+                    {% block component %}
+                    <div class="prototypeItem w-full sm:w-20 lg:w-24 flex flex-col items-center justify-around group relative p-2 mr-2 mb-2 bg-white border rounded hover:shadow-md hover:border-gray-500 cursor-move z-10" data-section="{{ section.value }}">
+                        <a class="thickbox absolute top-0 mt-1 right-0 mr-1 hidden group-hover:block opacity-50 hover:opacity-100" href="{{ absoluteURL }}/fullscreen.php?q=/modules/Reports/templates_assets_components_preview.php&gibbonReportTemplateID={{ gibbonReportTemplateID }}&gibbonReportPrototypeSectionID={{ section.value }}&TB_iframe=true&width=900&height=500">
+                            <img class="w-4 h-4" title="{{ __('Preview') }}" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/plus.png" >
+                        </a>
+
+                        <img class="w-8 h-8 opacity-50 mb-2" src="{{ absoluteURL }}/modules/Reports/img/icons/{{ section.icon ? section.icon : 'grip-lines.svg' }}">
+                        <div class="text-center text-gray-600 text-xs leading-tight mt-px">{{ section.name }}</div>
+                    </div>
+                    {% endblock %}
+                {% endfor %}
+                </div>
+            {% endfor %}
+            </div>
+
+            <div id="tabs1" class="prototype"  style="padding: 1rem 0 0.5rem 1rem !important;">
+            {% for category, sectionList in additionalSections %}
+                <div class="text-gray-600 text-xs mb-1 {{ not loop.first ? 'mt-3' }}">
+                    {{ category|title }}
+                </div>
+
+                <div class="flex flex-wrap">
+                {% for section in sectionList %}
+                    {{ block('component') }}
+                {% endfor %}
+                </div>
+            {% endfor %}
+            </div>
+
+            <!-- <div id="tabs2" class="prototype" style="padding: 1rem !important;">
+                {{ form|raw }}
+            </div> -->
+        </div>
+    </div>
+</section>
+
+<script>
+
+    $("#tabs").tabs({
+        active: 'tabs0',
+        ajaxOptions: {
+            error: function( xhr, status, index, anchor ) {
+                $(anchor.hash).html("Couldn't load this tab.");
+            }
+        }
+    });
+
+    $('#sections .prototype .prototypeItem').draggable({
+        helper: "clone",
+        revert: "invalid",
+    });
+
+    var DroppableDataTable = {
+        accept: '.prototypeItem',
+        over: function(event, ui) {
+            $(this).addClass('relative');
+            $(this).append('<div id="droppable-overlay" class="absolute top-0 left-0 w-full h-full opacity-50 bg-gray-800 flex  items-stretch"><div class="flex-1 flex justify-center items-center m-3 border-4 border-dashed border-white text-white text-xl font-bold uppercase">{{ __('Drop Here') }}</div></div>');
+        },
+        out: function(event, ui) {
+            $('#droppable-overlay').remove();
+            $(this).removeClass('relative');
+        },
+        deactivate: function(event, ui) {
+            $('#droppable-overlay').remove();
+            $(this).removeClass('relative');
+        },
+        drop: function(event, ui) {
+            var table = $(this).hasClass('.blankslate') 
+                ? $(this).parent().parent()
+                : $(this).parents('.dataTable');
+
+            var tableSelector = $(this).hasClass('.blankslate') 
+                ? $(this).prop('id')
+                : $(table).prop('id');
+
+            $.ajax({
+                url: '{{ absoluteURL }}/modules/Reports/templates_manage_editDropAjax.php',
+                data: {
+                    gibbonReportTemplateID: {{ gibbonReportTemplateID }},
+                    gibbonReportPrototypeSectionID: ui.draggable.data('section'),
+                    type: $(table).prop('id').replace('Table', '').toUpperCase(),
+                },
+                type: 'POST',
+                complete: function (data) {
+                    reloadDragDropState(table, tableSelector);
+                },
+                
+            });
+        },
+    };
+
+    var reloadDragDropState = function(table, tableSelector) {
+        $(table).load('./fullscreen.php?q=/modules/Reports/templates_manage_edit.php&gibbonReportTemplateID={{ gibbonReportTemplateID }} #'+tableSelector, {}, function(responseText, textStatus, jqXHR) {
+            console.log('reloaded');
+            tb_init('a.thickbox');
+            $('#'+tableSelector+' table[data-drag-url]').each(DraggableDataTable);
+            $('#'+tableSelector+' tbody').droppable(DroppableDataTable);
+        });
+    };
+
+    $('.dataTable tbody, .blankslate').droppable(DroppableDataTable);
+</script>
