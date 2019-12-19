@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
     // COMPONENTS
     $criteria = $prototypeGateway->newQueryCriteria(true)
         ->sortBy(['type', 'category', 'name'])
-        ->fromPOST();
+        ->fromPOST('manageComponents');
 
     $templates = $prototypeGateway->queryPrototypes($criteria);
     $fonts = $fontGateway->selectFontList()->fetchKeyPair();
@@ -127,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
     $fontGateway = $container->get(ReportTemplateFontGateway::class);
     $criteria = $fontGateway->newQueryCriteria(true)
         ->sortBy(['fontName'])
-        ->fromPOST();
+        ->fromPOST('manageFonts');
 
     $fonts = $fontGateway->queryFonts($criteria);
     $absolutePath = $gibbon->session->get('absolutePath');
