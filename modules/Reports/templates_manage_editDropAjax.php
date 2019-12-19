@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
 use Gibbon\Module\Reports\Domain\ReportTemplateSectionGateway;
+use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 
 $_POST['address'] = '/modules/Reports/templates_manage_edit.php';
 
@@ -30,6 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
     // Proceed!
     $templateGateway = $container->get(ReportTemplateGateway::class);
     $templateSectionGateway = $container->get(ReportTemplateSectionGateway::class);
+    $prototypeSectionGateway = $container->get(ReportPrototypeSectionGateway::class);
 
     $data = [
         'gibbonReportTemplateID' => $_POST['gibbonReportTemplateID'] ?? '',
@@ -42,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
         exit;
     }
 
-    $prototypeSection = $templateSectionGateway->getPrototypeSectionByID($data['gibbonReportPrototypeSectionID']);
+    $prototypeSection = $prototypeSectionGateway->getByID($data['gibbonReportPrototypeSectionID']);
 
     if ($config = json_decode($prototypeSection['config'] ?? '', true)) {
         $config = array_reduce(array_keys($config), function ($group, $key) use (&$config) {

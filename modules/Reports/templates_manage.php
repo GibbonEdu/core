@@ -44,8 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage.p
     $templates = $templateGateway->queryTemplates($criteria);
 
     // GRID TABLE
-    // $gridRenderer = new GridView($container->get('twig'));
-    $table = $container->get(DataTable::class); //->setRenderer($gridRenderer);
+    $table = $container->get(DataTable::class);
     $table->setTitle(__('Template Library'));
 
     $table->addHeaderAction('add', __('Add'))
@@ -53,15 +52,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage.p
         ->displayLabel()
         ->append(' | ');
 
-    $table->addHeaderAction('fonts', __('Manage Fonts'))
+    $table->addHeaderAction('fonts', __('Manage Assets'))
         ->setIcon('delivery2')
-        ->setURL('/modules/Reports/templates_fonts.php')
-        ->displayLabel()
-        ->append(' | ');
-
-    $table->addHeaderAction('prototypes', __('Manage Components'))
-        ->setIcon('markbook')
-        ->setURL('/modules/Reports/templates_prototypes.php')
+        ->setURL('/modules/Reports/templates_assets.php')
         ->displayLabel();
 
     $table->addMetaData('gridClass', 'content-center justify-center');

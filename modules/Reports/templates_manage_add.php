@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Module\Reports\Domain\ReportTemplateSectionGateway;
+use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_add.php') == false) {
     // Access denied
@@ -56,15 +56,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_a
         $row->addTextField('name')->maxLength(90)->required();
 
     $contexts = [
-        'Student Enrolment' => __('Student Enrolment'),
         'Reporting Cycle'   => __('Reporting Cycle'),
+        'Student Enrolment' => __('Student Enrolment'),
         // 'Custom Query' => __('Custom Query'),
     ];
     $row = $form->addRow();
         $row->addLabel('context', __('Context'));
         $row->addSelect('context')->fromArray($contexts)->required()->placeholder();
     
-    $stylesheets = $container->get(ReportTemplateSectionGateway::class)->selectPrototypeStylesheets();
+    $stylesheets = $container->get(ReportPrototypeSectionGateway::class)->selectPrototypeStylesheets();
     $row = $form->addRow();
         $row->addLabel('stylesheet', __('Stylesheet'));
         $row->addSelect('stylesheet')->fromResults($stylesheets)->placeholder();
