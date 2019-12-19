@@ -26,7 +26,7 @@ use Gibbon\Module\Reports\ReportBuilder;
 use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_prototypes_preview.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_components_preview.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_prototyp
         $templateData = $container->get(ReportTemplateGateway::class)->getByID($gibbonReportTemplateID);
     }
 
-    $template->addData(['stylesheet' => $templateData['stylesheet'] ?? 'reports/style.twig.html']);
+    $template->addData(['stylesheet' => $templateData['stylesheet'] ?? 'reports/stylesheets/style.twig.html']);
 
     // Add prototype section
     $template->addSection($prototypeSection['templateFile'])

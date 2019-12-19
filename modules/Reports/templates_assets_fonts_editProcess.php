@@ -23,9 +23,9 @@ require_once '../../gibbon.php';
 
 $gibbonReportTemplateFontID = $_POST['gibbonReportTemplateFontID'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_fonts_edit.php&gibbonReportTemplateFontID='.$gibbonReportTemplateFontID;
+$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_assets_fonts_edit.php&gibbonReportTemplateFontID='.$gibbonReportTemplateFontID;
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_fonts.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_fonts_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

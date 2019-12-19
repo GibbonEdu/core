@@ -22,14 +22,14 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Module\Reports\Domain\ReportTemplateFontGateway;
 
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_fonts.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_fonts_edit.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
     $page->breadcrumbs
         ->add(__('Template Builder'), 'templates_manage.php')
-        ->add(__('Manage Fonts'), 'templates_fonts.php')
+        ->add(__('Manage Assets'), 'templates_assets.php')
         ->add(__('Edit Font'));
 
     if (isset($_GET['return'])) {
@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_fonts.ph
         return;
     }
 
-    $form = Form::create('templatesFonts', $gibbon->session->get('absoluteURL').'/modules/Reports/templates_fonts_editProcess.php');
+    $form = Form::create('templatesFonts', $gibbon->session->get('absoluteURL').'/modules/Reports/templates_assets_fonts_editProcess.php');
 
     $form->addHiddenValue('address', $gibbon->session->get('address'));
     $form->addHiddenValue('gibbonReportTemplateFontID', $gibbonReportTemplateFontID);

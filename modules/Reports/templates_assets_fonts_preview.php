@@ -22,7 +22,7 @@ use Gibbon\Module\Reports\ReportRenderer;
 use Gibbon\Module\Reports\ReportBuilder;
 use Gibbon\Module\Reports\Domain\ReportTemplateFontGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_prototypes_preview.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_components_preview.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -68,8 +68,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_prototyp
             'pages'     => $renderer->renderToHTML($reports),
             'prototype' => true,
             'name'      => $font['fontName'],
-            'marginX'   => '1',
-            'marginY'   => '1',
+            'marginX'   => '10',
+            'marginY'   => '10',
         ]);
     } else {
         $filename = preg_replace('/[^a-zA-Z0-9-_]/', '', $prototypeSection['name']).__('Preview').'.pdf';

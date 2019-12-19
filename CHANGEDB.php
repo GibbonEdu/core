@@ -607,5 +607,6 @@ INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`val
 ALTER TABLE `gibbonReportTemplate` ADD `stylesheet` VARCHAR(120) NULL AFTER `flags`;end
 ALTER TABLE `gibbonReportTemplateSection` DROP `height`;end
 ALTER TABLE `gibbonReportPrototypeSection` ADD `icon` VARCHAR(120) NULL AFTER `dataSources`;end
+UPDATE `gibbonAction` SET URLList = 'templates_preview.php,templates_manage.php,templates_manage_add.php,templates_manage_edit.php,templates_manage_delete.php,templates_manage_section_add.php,templates_manage_section_edit.php,templates_manage_section_delete.php,templates_assets.php,templates_assets_components_preview.php,templates_assets_components_add.php,templates_assets_components_edit.php,templates_assets_components_delete.php,templates_assets_components_duplicate.php,templates_assets_fonts_preview.php,templates_assets_fonts_edit.php' WHERE name='Template Builder' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Reports');end
 
 ";
