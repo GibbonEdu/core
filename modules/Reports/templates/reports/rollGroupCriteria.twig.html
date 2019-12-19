@@ -18,10 +18,10 @@ sources:
             {{- __('Roll Group') }}: {{ student.rollGroupName -}}
         </td>
         <td class="subheader bg-primary border-top border-bottom border-right" style="width:50%;text-align:right;">
-            {% for tutor in tutors %}
+            {%- for tutor in tutors -%}
                 {{ tutor.title }} {{ tutor.preferredName|first }}. {{ tutor.surname }}
                 {{ not loop.last ? ', ' }}
-            {% endfor %}
+            {%- endfor -%}
         </td>
     </tr>
     <tr>
@@ -35,13 +35,13 @@ sources:
                 </td>
             </tr>
             <tr>
-                <td class="w-full" style="font-size: {{ fontSizeMedium }}"  colspan="2">
+                <td class="w-full" style="font-size: 9pt"  colspan="2">
                     {{- criteria.comment -}}
                 </td>
             </tr>
             {% else %}
             <tr>
-                <td class="w-full" style="font-size: {{ fontSizeMedium }}; line-height:1.8;" colspan="2"><b>{{- criteria.criteriaName }}</b>: 
+                <td class="w-full" style="font-size: 9pt; line-height:1.8;" colspan="2"><b>{{- criteria.criteriaName }}</b>: 
                     {{ criteria.descriptor ? criteria.descriptor : criteria.value -}}
                 </td>
             </tr>

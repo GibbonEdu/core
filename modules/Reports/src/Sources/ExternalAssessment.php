@@ -98,7 +98,7 @@ class ExternalAssessment extends DataSource
                 JOIN gibbonExternalAssessmentStudentEntry ON (gibbonExternalAssessmentStudent.gibbonExternalAssessmentStudentID=gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentStudentID)
                 JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentStudent.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID)
                 JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessmentField.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID)
-                JOIN gibbonScaleGrade ON (gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID AND gibbonExternalAssessmentFieldI.gibbonScaleID=gibbonScaleGrade.gibbonScaleID)
+                JOIN gibbonScaleGrade ON (gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID AND gibbonExternalAssessmentField.gibbonScaleID=gibbonScaleGrade.gibbonScaleID)
                 WHERE gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID
                 ORDER BY gibbonExternalAssessmentStudent.date";
 

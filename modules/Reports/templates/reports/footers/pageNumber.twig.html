@@ -20,17 +20,17 @@ config:
 {{- stylesheet ? include(stylesheet) -}}
 
 <table>
-    {% if config.dividerLine == 'Y' %}
+    {% if config.dividerLine|default('Y') == 'Y' %}
     <tr>
         <td colspan="2" class="border-top" style="font-size: 5px;">&nbsp;</td>
     </tr>
     {% endif %}
     <tr>
-        <td style="width:80%;text-align:left;font-size:{{ fontSizeSmall }}; font-weight: bold; color: #606060;">
+        <td style="width:80%;text-align:left;font-size:8pt;">
             {{- config.footerText|default('Custom Text') -}}
         </td>
-        <td style="width:20%;text-align:right;font-size:{{ fontSizeSmall }}; font-weight: bold; color: #606060;">
-            Page {{ pageNum -}}
+        <td style="width:20%;text-align:right;font-size:8pt;">
+            {{ __('Page') }} {{ pageNum -}}
         </td>
     </tr>
 </table>

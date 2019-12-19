@@ -1,6 +1,6 @@
 {#<!--
 name: Internal Assessment
-category: Student Profile
+category: Student Data
 types: Body
 sources:
     student: Student
@@ -20,7 +20,7 @@ sources:
             </td>
         </tr>
         <tr>
-            <td class="border w-full" colspan="2"><table class="w-full" style="font-size: {{ fontSizeMedium }};" cellspacing="0" cellpadding="0">
+            <td class="border w-full" colspan="2"><table class="w-full" style="font-size: 9pt;" cellspacing="0" cellpadding="0">
                 {% if assessment.attainmentActive == 'Y' %}
                 <tr>
                     <td style="width: 15%; height: 6mm; vertical-align: top; font-weight: bold;">
@@ -48,7 +48,7 @@ sources:
                     <td style="width: 15%; height: 6mm; vertical-align: top; font-weight: bold;">
                         {{- __('Comment') }}:
                     </td>
-                    <td style="vertical-align: top;">
+                    <td style="vertical-align: top; width: 85%;">
                         {{- assessment.comment -}}
                     </td>
                 </tr>

@@ -4,17 +4,27 @@ category: Report Info
 types: Body,Header
 icon: align-center.svg
 sources:
+    school: School
+    report: Report
 params:
     height: 30
 config:
-    headerTextLeft:
-        label: Header Text Left
+    headingLeft:
+        label: Left Heading
+        type: words
+        default:
+    textLeft:
+        label: Left Text
         type: text
-        default: 
-    headerTextRight:
-        label: Header Text Right
+        default:
+    headingRight:
+        label: Right Heading
+        type: words
+        default:
+    textRight:
+        label: Right Text
         type: text
-        default: 
+        default:
     logo:
         label: Logo
         type: image
@@ -31,21 +41,31 @@ config:
 {{- stylesheet ? include(stylesheet) -}}
 <table>
     <tr>
-        <td style="width:40%;text-align:left;font-size:{{ fontSizeSmall }}; font-weight: bold; color: #606060;">
-            {{- config.headerTextLeft|nl2br -}}
+        <td style="width:40%;text-align:left;font-size:8pt;">
+            {%- if config.headingLeft is not empty or config.headingLeft is not defined %}
+                <b>{{- config.headingLeft|default(school.organisationName) -}}</b><br/>
+            {% endif %}
+
+            {%- if config.textLeft is not empty or config.textLeft is not defined %}
+                {{- config.textLeft|default(school.address)|nl2br -}}<br/>
+            {% endif %}
         </td>
-        <td style="width:20%;text-align:center;font-size:{{ fontSizeSmall }}; font-weight: bold; color: #606060;">
+        <td style="width:20%;text-align:center;font-size:8pt;">
             <img src="{{ basePath }}/{{ config.logo|default('themes/'~gibbonThemeName~'/img/anonymous_125.jpg') }}" style="display: inline-block; height: {{ config.logoHeight|default(18) }}mm;" >
         </td>
-        <td style="width:40%;text-align:right;font-size:{{ fontSizeSmall }}; font-weight: bold; color: #606060;">
-            {{- config.headerTextRight|nl2br -}}
-            <br/>
-            Report Date: {{ report.endDate|date("F jS, Y") }} 
+        <td style="width:40%;text-align:right;font-size:8pt;">
+            {%- if config.headingRight is not empty or config.headingRight is not defined %}
+                <b>{{- config.headingRight|default(report.name) -}}</b><br/>
+            {% endif %}
+
+            {%- if config.textRight is not empty or config.textRight is not defined %}
+                {{- config.textRight|default(report.date)|nl2br -}}<br/>
+            {% endif %}
         </td>
     </tr>
     {% if config.dividerLine|default('Y') == 'Y' %}
     <tr>
-        <td colspan="3" class="" style="border-bottom: 1.5pt solid {{ accentColor }}; font-size: 5px;">&nbsp;</td>
+        <td colspan="3" class="divider-line" style="font-size: 5px;">&nbsp;</td>
     </tr>
     {% endif %}
 </table>

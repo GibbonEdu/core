@@ -90,7 +90,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
         });
     $table->addColumn('type', __('Type'));
     $table->addColumn('category', __('Category'));
-    // $table->addColumn('templateFile', __('File'));
     $table->addColumn('status', __('Status'))
         ->width('20%')
         ->format(function ($template) {
@@ -142,7 +141,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
         ->format(function ($font) {
             return Format::tooltip($font['fontName'], $font['fontPath']);
         });
-    // $table->addColumn('fontPath', __('File'));
+        
     $table->addColumn('tcpdf', __('Status'))
         ->width('20%')
         ->format(function ($font) use ($absolutePath) {

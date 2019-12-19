@@ -1,6 +1,6 @@
 {#<!--
-name: Activity Summary
-category: Student Profile
+name: Activities
+category: Student Data
 types: Body
 sources:
     student: Student
@@ -12,7 +12,7 @@ config:
 -->#}
 {{- stylesheet ? include(stylesheet) -}}
 
-<table cellspacing="0" cellpadding="10">
+<table cellspacing="0" cellpadding="10" nobr="true">
     <tr>
         <td class="header bg-primary border-top border-bottom border-left" style="width:66.6%;">Activities</td>
         <td class="header bg-primary border-top border-bottom border-right" style="width:33.3%;text-align: center;">Dates</td>

@@ -23,17 +23,21 @@ config:
         label: Signature Height
         type: number
         default: 80
+    pageNumber:
+        label: Page Number
+        type: yesno
+        default: N
 -->#}
 {{- stylesheet ? include(stylesheet) -}}
 <style>
 .footer {
-    font-size: 9.5px;
+    font-size: 9.5pt;
     line-height:4.2;
 }
 </style><table cellpadding="2" style="background-color:#ffffff; height: 12mm;">
     <tr>
         <td class="footer border-left border-top border-bottom" style="width:15%;">
-            <b>{{ __('Signature') }}:</b>
+            &nbsp; <b>{{ __('Signature') }}:</b>
         </td> 
         <td class="border-right border-top border-bottom" style="width:30%; height: 12mm; line-height: 1;">
             {% if isDraft %}
@@ -43,15 +47,17 @@ config:
             {% endif %}
         </td> 
         <td class="footer border" style="width:30%;">
-            {{ config.signatureTitle|default("Principal") }}
+            &nbsp; {{ config.signatureTitle|default("Principal") }}
         </td>
         <td class="footer border" style="width:25%;">
-            {{ reportingCycle.dateEnd|date("j F Y") }} 
+            &nbsp; {{ reportingCycle.dateEnd|date("j F Y") }} 
         </td>
     </tr>
 </table>
+{%- if config.pageNumber == 'Y' -%}
 <table>
     <tr>
-        <td style="color: #000; text-align:right;line-height:1.8;">Page {{ pageNum -}}</td> 
+        <td style="color: #000; text-align:right;line-height:1.8;">{{ __('Page') }} {{ pageNum -}}</td> 
     </tr>
 </table>
+{%- endif -%}
