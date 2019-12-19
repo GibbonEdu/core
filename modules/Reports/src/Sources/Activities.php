@@ -47,7 +47,6 @@ class Activities extends DataSource
                 AND gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID 
                 AND gibbonActivity.active='Y'
                 AND gibbonActivityStudent.status='Accepted' 
-                AND FIND_IN_SET(gibbonActivity.type, 'ECA,After School,Sports,Service') 
                 ORDER BY gibbonActivity.name";
 
         $result = $this->db()->executeQuery($data, $sql);

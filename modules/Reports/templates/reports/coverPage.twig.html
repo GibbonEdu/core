@@ -1,0 +1,83 @@
+{#<!--
+name: Cover Page
+category: Report Info
+types: Body
+icon: file-alt.svg
+sources:
+    report: Report
+    student: Student
+    school: School
+config:
+    logo:
+        label: Logo
+        type: image
+    logoHeight:
+        label: Logo Height
+        type: number
+        default: 24
+-->#}
+
+{{- stylesheet ? include(stylesheet) -}}
+
+<table>
+    <tr>
+        <td colspan=3 style="font-size: 30px;">&nbsp;</td>
+    </tr>
+    <tr>
+        <td colspan=3 style="text-align:center;">
+            <img src="{{ basePath }}/{{ config.logo|default('themes/'~gibbonThemeName~'/img/anonymous_125.jpg') }}" style="display: inline-block; height: {{ config.logoHeight|default(24) }}mm;">
+        </td>
+    </tr>
+    <tr>
+        <td colspan=3 style="font-size: 15px;">&nbsp;</td>
+    </tr>
+    <tr>
+        <td colspan=3 class="border-top" style="font-size: 24px;">&nbsp;</td>
+    </tr>
+    <tr>
+        <td colspan=3 style="text-align:center; line-height: 1.4; font-size: 48px; font-weight: bold; color: #444444;">
+            {{- report.name -}} 
+        </td>
+    </tr>
+    <tr>
+        <td colspan=3 style="text-align:center; line-height: 1.8; font-size: 24px; font-weight: normal; color: #444444;">
+            {{- school.organisationName -}} 
+        </td>
+    </tr>
+    <tr>
+        <td colspan=3 style="text-align:center; line-height: 1.1; font-size: 14px; font-weight: normal; color: #888888;">
+            {{- report.endDate|date("F jS, Y") -}} 
+        </td>
+    </tr>
+    <tr>
+        <td colspan=3 class="border-bottom" style="font-size: 24px;">&nbsp;</td>
+    </tr>
+    <tr>
+        <td colspan=3 style="font-size: 30px;">&nbsp;</td>
+    </tr>
+    <tr>
+        <td colspan=3 style="text-align:center;">
+        
+            <img src="{{ absoluteURL }}/{{ student.image_240|default('themes/'~gibbonThemeName~'/img/anonymous_240.jpg') }}" style="height: 64mm" >
+              
+        </td>
+    </tr>
+    <tr>
+        <td colspan=3 style="font-size: 15px;">&nbsp;</td>
+    </tr>
+
+    <tr>
+        <td colspan=3 style="text-align:center; line-height: 1.6; font-size: 32px; font-weight: normal; color: #444444;">
+            {{- student.officialName -}}
+        </td>
+    </tr>
+    <tr>
+        <td colspan=3 style="text-align:center; line-height: 1.6; font-size: 32px; font-weight: normal; color: #444444;">
+            {{- student.yearGroupName -}}
+        </td>
+    </tr>
+    <tr>
+        <td colspan=3 style="font-size: 30px;">&nbsp;</td>
+    </tr>
+</table>
+    
