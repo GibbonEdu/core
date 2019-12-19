@@ -27,20 +27,39 @@ class CourseCriteria extends DataSource
     {
         return [
             0 => [
-                'name'      => 'Grade 1 Science',
-                'nameShort' => 'GR1SCIENCE',
+                'courseName' => 'Example Course',
+                'courseNameShort' => 'EXAMPLE',
+                'className' => 'Class 1',
+                'classNameShort' => '1',
+                'teachers'  => $this->getFactory()->get('ClassTeachers')->getSchema(),
                 'perGroup' => [
                     0 => [
-                        
+                        'scopeName'           => 'Course',
+                        'criteriaName'        => 'Course Comment',
+                        'criteriaDescription' => ['sentence'],
+                        'value'               => ['randomDigit'],
+                        'comment'             => ['paragraph', 6],
+                        'valueType'           => 'Comment',
                     ],
                 ],
                 'perStudent' => [
                     0 => [
-                        'descriptor' => 'Understands and applies scientific concepts being studied',
-                        'grade'      => [ 'Approaching', 'Meeting' ],
+                        'scopeName'           => 'Course',
+                        'criteriaName'        => 'Student Comment',
+                        'criteriaDescription' => ['sentence'],
+                        'value'               => ['randomDigit'],
+                        'comment'             => ['paragraph', 6],
+                        'valueType'           => 'Comment',
+                    ],
+                    1 => [
+                        'scopeName'           => 'Course',
+                        'criteriaName'        => 'Student Grade',
+                        'criteriaDescription' => ['sentence'],
+                        'value'               => ['randomElement', ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D']],
+                        'comment'             => '',
+                        'valueType'           => 'Grade Scale',
                     ],
                 ],
-
             ],
         ];
     }
@@ -48,19 +67,61 @@ class CourseCriteria extends DataSource
     public function getData($ids = [])
     {
         $data = ['gibbonStudentEnrolmentID' => $ids['gibbonStudentEnrolmentID'], 'gibbonReportingCycleID' => $ids['gibbonReportingCycleID']];
-        $sql = "SELECT gibbonReportingCriteria.name as criteriaName, gibbonReportingCriteria.description as criteriaDescription, gibbonReportingValue.value, gibbonReportingValue.comment, gibbonReportingCriteriaType.valueType
+        $sql = "SELECT gibbonCourse.gibbonCourseID, gibbonCourseClass.gibbonCourseClassID,
+                    (CASE WHEN gibbonReportingCriteria.target = 'Per Group' THEN 'perGroup' ELSE 'perStudent' END) AS groupBy, 
+                    gibbonReportingScope.name as scopeName,
+                    gibbonReportingCriteria.name as criteriaName,
+                    gibbonReportingCriteria.description as criteriaDescription, 
+                    gibbonReportingValue.value, 
+                    gibbonReportingValue.comment, 
+                    gibbonScaleGrade.descriptor,
+                    gibbonReportingCriteriaType.valueType, 
+                    gibbonCourse.name as courseName, 
+                    gibbonCourse.nameShort as courseNameShort,
+                    gibbonCourseClass.name as className, 
+                    gibbonCourseClass.nameShort as classNameShort
                 FROM gibbonStudentEnrolment 
-                JOIN gibbonReportingProgress ON (gibbonReportingProgress.gibbonPersonIDStudent=gibbonStudentEnrolment.gibbonPersonID)
-                JOIN gibbonReportingValue ON (gibbonReportingValue.gibbonPersonIDStudent=gibbonReportingProgress.gibbonPersonIDStudent)
-                JOIN gibbonReportingCriteria ON (gibbonReportingCriteria.gibbonReportingCriteriaID=gibbonReportingValue.gibbonReportingCriteriaID)
+                JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
+                JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+                JOIN gibbonReportingCriteria ON (gibbonReportingCriteria.gibbonCourseID=gibbonCourse.gibbonCourseID)
                 JOIN gibbonReportingCriteriaType ON (gibbonReportingCriteriaType.gibbonReportingCriteriaTypeID=gibbonReportingCriteria.gibbonReportingCriteriaTypeID)
                 JOIN gibbonReportingScope ON (gibbonReportingScope.gibbonReportingScopeID=gibbonReportingCriteria.gibbonReportingScopeID)
+                LEFT JOIN gibbonReportingValue ON (gibbonReportingCriteria.gibbonReportingCriteriaID=gibbonReportingValue.gibbonReportingCriteriaID AND gibbonReportingValue.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND (gibbonReportingValue.gibbonPersonIDStudent=gibbonStudentEnrolment.gibbonPersonID OR gibbonReportingValue.gibbonPersonIDStudent=0))
+                LEFT JOIN gibbonReportingProgress ON (gibbonReportingProgress.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND (gibbonReportingProgress.gibbonPersonIDStudent=gibbonStudentEnrolment.gibbonPersonID OR gibbonReportingProgress.gibbonPersonIDStudent=0))
+                LEFT JOIN gibbonScaleGrade ON (gibbonScaleGrade.gibbonScaleID=gibbonReportingCriteriaType.gibbonScaleID AND gibbonScaleGrade.gibbonScaleGradeID=gibbonReportingValue.gibbonScaleGradeID)
                 WHERE gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID
-                AND gibbonReportingValue.gibbonReportingCycleID=:gibbonReportingCycleID
-                AND gibbonReportingProgress.status='Complete'
-                AND gibbonReportingScope.scopeType='Roll Group'
-                ORDER BY gibbonReportingScope.sequenceNumber, gibbonReportingCriteria.sequenceNumber";
+                AND gibbonReportingCriteria.gibbonReportingCycleID=:gibbonReportingCycleID
+                AND gibbonCourse.gibbonSchoolYearID=gibbonStudentEnrolment.gibbonSchoolYearID
+                AND gibbonCourseClassPerson.role='Student'
+                AND gibbonReportingScope.scopeType='Course'
+                AND ((gibbonReportingProgress.status='Complete' AND gibbonReportingCriteria.target = 'Per Student') 
+                    OR gibbonReportingCriteria.target = 'Per Group') 
+                ORDER BY gibbonReportingScope.sequenceNumber, gibbonReportingCriteria.sequenceNumber, gibbonCourse.orderBy";
 
-        return $this->db()->select($sql, $data)->fetch();
+        $courses = $this->db()->select($sql, $data)->fetchAll();
+
+        $courses = array_reduce($courses, function ($group, $item) {
+            $courseID = $item['gibbonCourseID'];
+            $group[$courseID][$item['groupBy']][] = $item;
+            $group[$courseID]['gibbonCourseID'] = $item['gibbonCourseID'];
+            $group[$courseID]['gibbonCourseClassID'] = $item['gibbonCourseClassID'];
+            $group[$courseID]['courseName'] = $item['courseName'];
+            $group[$courseID]['courseNameShort'] = $item['courseNameShort'];
+            $group[$courseID]['className'] = $item['className'];
+            $group[$courseID]['classNameShort'] = $item['classNameShort'];
+            return $group;
+        }, []);
+
+        $courses = array_map(function ($course) use (&$ids) {
+            $ids['gibbonCourseID'] = $course['gibbonCourseID'];
+            $ids['gibbonCourseClassID'] = $course['gibbonCourseClassID'];
+
+            $course['teachers'] = $this->getFactory()->get('ClassTeachers')->getData($ids);
+
+            return $course;
+        }, $courses);
+
+        return $courses;
     }
 }

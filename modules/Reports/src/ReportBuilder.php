@@ -45,14 +45,6 @@ class ReportBuilder
     public function createTemplate() : ReportTemplate
     {
         $template = new ReportTemplate();
-        
-        $template->addData([
-            'fontSizeSmall'     => '8pt',
-            'fontSizeMedium'    => '9pt',
-            'fontSizeLarge'     => '12pt',
-            'borderWidth'       => '1pt',
-            'accentColor'    => '#97befd',
-        ]);
 
         $template->addData([
             'absolutePath'    => $this->absolutePath,
@@ -74,7 +66,7 @@ class ReportBuilder
             'pageSize'    => $templateData['pageSize'],
             'marginX'     => $templateData['marginX'],
             'marginY'     => $templateData['marginY'],
-            'stylesheet'  => $templateData['stylesheet'],
+            'stylesheet'  => $templateData['stylesheet'] ?? '',
         ]);
 
         $criteria = $this->templateSectionGateway->newQueryCriteria()

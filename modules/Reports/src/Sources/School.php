@@ -26,7 +26,7 @@ class School extends DataSource
     public function getSchema()
     {
         return [
-            'organisationName'      => "Report Testing",
+            'organisationName'      => "Example School Name",
             'organisationNameShort' => "TEST",
             'organisationLogo'      => ['imageUrl', 400, 100],
             'organisationEmail'     => ['safeEmail'],
