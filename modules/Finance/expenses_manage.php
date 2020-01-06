@@ -283,7 +283,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
 
                         if ($budgetsActionAccess) {
                             $bulkActions = array('export' => __('Export'));
-                            $row = $form->addBulkActionRow($bulkActions);
+                            $row = $form->addBulkActionRow($bulkActions)->addClass('flex justify-end');
                                 $row->addSubmit(__('Go'));
                         }
 
@@ -353,7 +353,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                                     }
                                 }
                             
-                                $row->addCheckbox('gibbonFinanceExpenseIDs[]')->setValue($expense['gibbonFinanceExpenseID'])->setClass('textCenter');
+                                $row->addCheckbox('gibbonFinanceExpenseIDs[]')->setValue($expense['gibbonFinanceExpenseID'])->alignCenter();
                             }
                         }
 

@@ -286,7 +286,7 @@ class FormFactory implements FormFactoryInterface
 
     public function createCheckAll($name = 'checkall')
     {
-        return $this->createCheckbox($name)->setClass('floatNone textCenter checkall');
+        return $this->createCheckbox($name)->setClass('floatNone checkall')->alignCenter();
     }
 
     public function createSelectTitle($name)
