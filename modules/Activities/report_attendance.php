@@ -130,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     $activityTimespan = getActivityTimespan($connection2, $gibbonActivityID, $activity['gibbonSchoolYearTermIDList']);
 
     // Use the start and end date of the activity, along with time slots, to get the activity sessions
-    $activitySessions = getActivitySessions(($allColumns) ? $activityWeekDays : array(), $activityTimespan, $sessionAttendanceData);
+    $activitySessions = getActivitySessions($guid, $connection2, ($allColumns) ? $activityWeekDays : array(), $activityTimespan, $sessionAttendanceData);
 
     echo '<h2>';
     echo __('Activity');
