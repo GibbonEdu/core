@@ -41,7 +41,6 @@ tr:target td {
 	-ms-transform: rotate(-90deg);
 	-o-transform: rotate(-90deg);
 	transform: rotate(-90deg);
-	transform-origin: 14px 0;
 	white-space: nowrap;
 	padding-left: 15px;
 }
@@ -60,6 +59,7 @@ table.markbook thead tr.head {
 }
 
 th.dataColumn {
+    height: 100px;
 	width: 40px;
 	min-width: 40px;
 	max-width: 40px;
