@@ -116,7 +116,6 @@ class ReportArchiveEntryGateway extends QueryableGateway
             ->leftJoin('gibbonReportArchiveEntry as singleReports', "singleReports.gibbonReportID=gibbonReport.gibbonReportID AND singleReports.type='Single'")
             ->where('gibbonReportArchiveEntry.gibbonSchoolYearID=:gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
-            ->where("gibbonReportArchiveEntry.type='Batch'")
             ->groupBy(['gibbonReportArchiveEntry.reportIdentifier']);
 
         $query = $this->applyArchiveAccessLogic($query, $roleCategory, $viewDraft, $viewPast);
