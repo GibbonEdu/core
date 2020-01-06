@@ -46,7 +46,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {{ term.name }}
         </h4>
 
-        {% set daysOfWeek = term.weeks|first %}
+        {% set daysOfWeek = term.daysOfWeek %}
         {% set blockWidth = "w-1/" ~ daysOfWeek|length %}
         {% set dayClass = "flex flex-col justify-center border-t border-b border-r py-2 px-1 -mt-px " %}
 
@@ -54,15 +54,15 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
             {#<!-- Days of the Week Header: only shows one week on mobile -->#}
             <div class="w-full flex items-stretch text-xs text-center text-gray-700 font-bold bg-gray-200 border-b border-r border-gray-500">
-                {% for day in daysOfWeek %}
-                    <div class="{{ blockWidth }} py-1" title="{{ __(day.name) }}">
-                        {{ __(day.nameShort) }}
+                {% for dayNameShort, dayName in daysOfWeek %}
+                    <div class="{{ blockWidth }} py-1" title="{{ __(dayName) }}">
+                        {{ __(dayNameShort) }}
                     </div>
                 {% endfor %}
 
-                {% for day in daysOfWeek %}
-                    <div class="hidden md:block {{ blockWidth }} py-1" title="{{ __(day.name) }}">
-                        {{ __(day.nameShort) }}
+                {% for dayNameShort, dayName in daysOfWeek %}
+                    <div class="hidden md:block {{ blockWidth }} py-1" title="{{ __(dayName) }}">
+                        {{ __(dayNameShort) }}
                     </div>
                 {% endfor %}
             </div>

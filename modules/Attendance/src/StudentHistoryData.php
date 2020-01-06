@@ -153,8 +153,6 @@ class StudentHistoryData
                 $dayData = [
                     'date'            => $dateYmd,
                     'dateDisplay'     => Format::date($date),
-                    'name'            => $daysOfWeek[$weekday],
-                    'nameShort'       => $weekday,
                     'logs'            => $logs[$dateYmd] ?? [],
                     'classLogs'       => $classLogs[$dateYmd] ?? [],
                     'endOfDay'        => $endOfDay,
@@ -168,6 +166,7 @@ class StudentHistoryData
                     'gibbonPersonID'  => $gibbonPersonID,
                 ];
 
+                $terms[$index]['daysOfWeek'] = $daysOfWeek;
                 $terms[$index]['weeks'][$week][$weekday] = $dayData;
                 $dayCount++;
             }
