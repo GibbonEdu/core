@@ -78,7 +78,7 @@ class RollGroupGateway extends QueryableGateway
                 LEFT JOIN gibbonSpace ON (gibbonRollGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID) 
                 WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID 
                 GROUP BY gibbonRollGroup.gibbonRollGroupID
-                ORDER BY gibbonRollGroup.name";
+                ORDER BY LENGTH(gibbonRollGroup.name), gibbonRollGroup.name";
 
         return $this->db()->select($sql, $data);
     }
