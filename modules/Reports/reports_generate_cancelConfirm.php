@@ -42,13 +42,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_b
     $form->addHiddenValue('gibbonReportID', $gibbonReportID);
     $form->addHiddenValue('processID', $processID);
 
-    $options = ['Draft' => __('Draft'), 'Final' => __('Final')];
     $row = $form->addRow();
-        $row->addLabel('status', __('Status'));
-        $row->addSelect('status')->fromArray($options)->required();
-
-    $row = $form->addRow();
-        $row->addSubmit(__('Run'));
+        $row->addSubmit(__('Cancel'));
 
     echo $form->getOutput();
 }
