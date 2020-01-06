@@ -764,7 +764,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
             $count = 0;
 
-            $output .= '<div class="overflow-x-scroll sm:overflow-x-auto overflow-y-hidden mb-6 p-1">';
+            $output .= '<div id="ttWrapper" class="overflow-x-scroll sm:overflow-x-auto overflow-y-hidden mb-6 p-1">';
             $output .= "<table cellspacing='0' class='mini mb-1' cellspacing='0' style='width: 100%; min-width: ";
             if ($narrow == 'trim') {
                 $output .= '700px';
@@ -1806,7 +1806,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
 
         $count = 0;
 
-        $output .= '<div id="tt">';
+        $output .= '<div id="ttWrapper">';
         $output .= "<table cellspacing='0' class='mini' cellspacing='0' style='width: 100%; min-width: 750px; margin: 0px 0px 30px 0px;'>";
             //Spit out controls for displaying calendars
             if ($_SESSION[$guid]['viewCalendarSpaceBooking'] != '') {
