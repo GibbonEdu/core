@@ -101,13 +101,21 @@ class ClassGroupTable extends DataTable
 
         $this->addColumn('image_240')
             ->setClass('relative')
-            ->format(function ($person) {
-                $url =  $person['role'] == 'Student'
-                    ? './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID']
-                    : './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
-
-                return Format::link($url, Format::userPhoto($person['image_240'], 'md', '')).
-                       Format::userBirthdayIcon($person['dob'], $person['preferredName']);
+            ->format(function ($person) use ($canViewStaff, $canViewStudents) {
+                $photo = Format::userPhoto($person['image_240'], 'md', '');
+                $icon = Format::userBirthdayIcon($person['dob'], $person['preferredName']);
+                
+                if ($person['role'] == 'Student') {
+                    $url = './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
+                    return $canViewStudents
+                        ? Format::link($url, $photo).$icon
+                        : $photo.$icon;
+                } else {
+                    $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
+                    return $canViewStaff
+                        ? Format::link($url, $photo).$icon
+                        : $photo.$icon;
+                }
             });
             
         $this->addColumn('name')
