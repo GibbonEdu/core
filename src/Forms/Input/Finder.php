@@ -138,7 +138,7 @@ class Finder extends TextField
 
         return array_map(function ($key, $value) {
             $key = stripslashes($key);
-            $value = stripslashes($value);
+            $value = is_array($value) ? array_map('stripslashes', $value) : stripslashes($value);
 
             $token = ['id' => $key];
             $value = is_array($value)? $value : ['name' => $value];
