@@ -53,12 +53,13 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     
         <table class="{{ class }} w-full" cellspacing=0 {% if draggable %}data-drag-url="{{ draggable.url }}" data-drag-data="{{ draggable.data }}"{% endif %}>
             <thead>
-            {% for headerRow in headers %}
+            {% for rowIndex, headerRow in headers %}
+
                 <tr class="head text-xs">
                 {% for columnIndex, column in columns %}
                     {% set th = headerRow[columnIndex] %}
                     {% if th %}
-                    <th {{ th.getAttributeString|raw }} style="width: {{ column.getWidth }}">
+                    <th {{ th.getAttributeString|raw }} style="width: {{ column.getWidth }}; {{ rowIndex > 0 ? 'top: '~(2.83 * rowIndex)~'rem' }}">
                         {{ th.getOutput|raw }}
 
                         {% if th.getData('description') %}
