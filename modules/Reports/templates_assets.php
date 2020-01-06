@@ -99,7 +99,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
     $table->addActionColumn()
         ->addParam('gibbonReportPrototypeSectionID')
         ->format(function ($template, $actions) {
-            if ($template['status'] != __('Installed')) return;
+            if ($template['status'] != __('Installed')) {
+                $actions->addAction('delete', __('Delete'))
+                        ->setURL('/modules/Reports/templates_assets_components_delete.php');
+                    return;
+            }
 
             $actions->addAction('view', __('Preview'))
                     ->setURL('/modules/Reports/templates_assets_components_preview.php')
