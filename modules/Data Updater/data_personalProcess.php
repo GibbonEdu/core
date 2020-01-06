@@ -194,7 +194,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     if (empty($data['dob'])) $data['dob'] = null;
                     if (empty($data['visaExpiryDate'])) $data['visaExpiryDate'] = null;
                     if (empty($data['citizenship1PassportExpiry']) || $data['citizenship1PassportExpiry'] == '0000-00-00') $data['citizenship1PassportExpiry'] = null;
-                    if (empty($data['citizenship2PassportExpiry']) || $data['citizenship1PassportExpiry'] == '0000-00-00') $data['citizenship2PassportExpiry'] = null;
+                    if (empty($data['citizenship2PassportExpiry']) || $data['citizenship2PassportExpiry'] == '0000-00-00') $data['citizenship2PassportExpiry'] = null;
 
                     // Phone number filtering
                     for ($i = 1; $i <= 4; $i++) {
