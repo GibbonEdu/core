@@ -728,7 +728,8 @@ tr.hiddenReveal td {
 }
 
 /* Timetable styles */
-#tt * {
+#tt *,
+#ttWrapper * {
     box-sizing: content-box;
 }
 
