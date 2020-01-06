@@ -42,7 +42,7 @@ function getActivityWeekDays($connection2, $gibbonActivityID)
     return $result->fetchAll(PDO::FETCH_COLUMN);
 }
 
-function getActivitySessions($weekDays, $timespan, $sessionAttendanceData)
+function getActivitySessions($guid, $connection2, $weekDays, $timespan, $sessionAttendanceData)
 {
     $activitySlots = array();
 
@@ -50,6 +50,8 @@ function getActivitySessions($weekDays, $timespan, $sessionAttendanceData)
         // Iterate one day at a time from start to end, adding the weekdays that match a time slot
         for ($time = $timespan['start']; $time <= $timespan['end']; $time += 86400) {
             $day = date('Y-m-d', $time);
+            if (!isSchoolOpen($guid, $day, $connection2)) continue;
+
             if (isset($sessionAttendanceData[ $day ])) {
                 $activitySlots[$day] = $time;
             } elseif (in_array(date('D', $time), $weekDays)) {
