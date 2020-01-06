@@ -113,9 +113,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
     $table->addColumn('total', __('Total'));
 
     $rollGroupsData = $rollGroups->toArray();
+    $filteredAges = array_filter(array_column($rollGroupsData, 'meanAge'));
+
     $rollGroupsData[] = [
         'rollGroup'   => __('All Roll Groups'),
-        'meanAge'     => number_format(array_sum(array_column($rollGroupsData, 'meanAge')) / count($rollGroupsData), 1),
+        'meanAge'     => number_format(array_sum($filteredAges) / count($filteredAges ?? 1), 1),
         'totalMale'   => array_sum(array_column($rollGroupsData, 'totalMale')),
         'totalFemale' => array_sum(array_column($rollGroupsData, 'totalFemale')),
         'total'       => array_sum(array_column($rollGroupsData, 'total')),
