@@ -455,7 +455,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
                 ->fromArray($classes)
                 ->selected($gibbonCourseClassID)
                 ->placeholder()
-                ->setClass('float-none w-48');
+                ->setClass('float-none w-full');
             $row->addSubmit(__('Go'));
 
         $output .= $form->getOutput();
