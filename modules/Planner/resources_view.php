@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
 
     //Get current filter values
     $tags = (isset($_REQUEST['tag']))? trim($_REQUEST['tag']) : null;
-    $tags = preg_replace('/[^a-zA-Z0-9-_, ]/', '', $tags);
+    $tags = preg_replace('/[^a-zA-Z0-9-_, \']/', '', $tags);
     $tagsArray = (!empty($tags))? explode(',', $tags) : array();
 
     $category = (isset($_REQUEST['category']))? trim($_REQUEST['category']) : null;
