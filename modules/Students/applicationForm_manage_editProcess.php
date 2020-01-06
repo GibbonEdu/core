@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $countryOfBirth = $_POST['countryOfBirth'];
             $citizenship1 = $_POST['citizenship1'];
             $citizenship1Passport = $_POST['citizenship1Passport'];
-            $citizenship1PassportExpiry = isset($_POST['citizenship1PassportExpiry']) ? Format::dateConvert($_POST['citizenship1PassportExpiry']) : null;
+            $citizenship1PassportExpiry = !empty($_POST['citizenship1PassportExpiry']) ? Format::dateConvert($_POST['citizenship1PassportExpiry']) : null;
             $nationalIDCardNumber = $_POST['nationalIDCardNumber'];
             $residencyStatus = $_POST['residencyStatus'];
             $visaExpiryDate = $_POST['visaExpiryDate'];
