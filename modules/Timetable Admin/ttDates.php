@@ -179,7 +179,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
 
                     // $column = $row->addColumn();
                     // $column->addContent()->addClass('textCenter');
-                    $row->addCheckbox('checkall'.$dowShort.$values['nameShort'])->prepend(__($dowLong).'<br/>')->append($script)->addClass('textCenter');
+                    $row->addCheckbox('checkall'.$dowShort.$values['nameShort'])->prepend(__($dowLong).'<br/>')->append($script)->alignCenter();
                 }
 
                 for ($i = $startDayStamp; $i <= $endDayStamp;$i = strtotime('+1 day', $i)) {
@@ -208,7 +208,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
                                 $column->addContent(__('School Day'));
                             }
 
-                            $column->addCheckbox('dates[]')->setValue($i)->setClass($dayOfWeek.$values['nameShort']);
+                            $column->addCheckbox('dates[]')->setValue($i)->setClass($dayOfWeek.$values['nameShort'])->alignCenter();
 
                             $column->addContent("<br/><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/ttDates_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=".$i."'><img style='margin-top: 3px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a><br/>");
 
