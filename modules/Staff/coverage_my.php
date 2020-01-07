@@ -40,6 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
     }
     
     $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
+    $displayCount = 0;
     
     $schoolYearGateway = $container->get(SchoolYearGateway::class);
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
@@ -82,6 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
                 ->setCoverage($coverage['gibbonStaffCoverageID'], $coverage['gibbonPersonID'])
                 ->compose($page);
         }
+        $displayCount++;
     }
 
 
@@ -155,6 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
             });
 
         echo $table->render($coverage);
+        $displayCount++;
     }
 
     // SUBSTITUTE COVERAGE
@@ -245,5 +248,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
             });
 
         echo $table->render($coverage);
+        $displayCount++;
+    }
+
+    if ($displayCount == 0) {
+        $page->addError(__('There are no records to display.'));
     }
 }
