@@ -28,6 +28,7 @@ $urlParams = [
     'gibbonYearGroupID' => $_POST['gibbonYearGroupID'] ?? null,
     'gibbonRollGroupID' => $_POST['gibbonRollGroupID'] ?? null,
     'gibbonCourseID' => $_POST['gibbonCourseID'] ?? null,
+    'scopeType' => $_POST['scopeType'] ?? null,
 ];
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_criteria_manage_add.php&'.http_build_query($urlParams);
 
@@ -51,6 +52,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
         'description'                   => $_POST['description'] ?? '',
         'category'                      => $_POST['category'] ?? '',
     ];
+
+    switch ($urlParams['scopeType']) {
+        case 'Year Group': $scopeTypeID = $data['gibbonYearGroupID']; break;
+        case 'Roll Group': $scopeTypeID = $data['gibbonRollGroupID']; break;
+        case 'Course':     $scopeTypeID = $data['gibbonCourseID']; break;
+    }
+    $data['sequenceNumber'] = $reportingCriteriaGateway->getHighestSequenceNumberByScope($urlParams['gibbonReportingScopeID'], $urlParams['scopeType'], $scopeTypeID) + 1;
 
     // Validate the required values are present
     if (empty($data['name']) || empty($data['gibbonReportingCycleID']) || empty($data['gibbonReportingScopeID'])) {

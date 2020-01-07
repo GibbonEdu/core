@@ -71,6 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
     $group = $_POST[$identifier] ?? [];
     foreach ($group as $scopeTypeID) {
         $data[$identifier] = $scopeTypeID;
+        $data['sequenceNumber'] = $reportingCriteriaGateway->getHighestSequenceNumberByScope($data['gibbonReportingScopeID'], $scopeType, $scopeTypeID) + 1;
         $inserted = $reportingCriteriaGateway->insert($data);
         $partialFail &= !$inserted;
     }
