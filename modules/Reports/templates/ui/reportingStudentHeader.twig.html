@@ -7,20 +7,30 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
 
 <div class="flex my-4 items-stretch">
-    <a class="block w-32 p-2 items-center rounded-l border bg-gray-100 text-gray-600 hover:bg-blue-200 hover:border-blue-700 hover:text-blue-800" href="{{ absoluteURL }}/index.php?q=/modules/Reports/reporting_write_byStudent.php&gibbonPersonIDStudent={{ prevStudent.gibbonPersonID }}&{{ params|url_encode }}">
+    <a class=" w-32 p-2 flex items-center rounded-l border bg-gray-100 text-gray-600 hover:bg-blue-200 hover:border-blue-700 hover:text-blue-800" href="{{ absoluteURL }}/index.php?q=/modules/Reports/reporting_write_byStudent.php&gibbonPersonIDStudent={{ prevStudent.gibbonPersonID }}&{{ params|url_encode }}">
         <img class="inline-block  mr-2 w-4 h-4 align-top" title="{{ __('Prev') }}" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/page_left.png" >
         <span class="inline-block px-1  text-sm leading-tight">
             {{ __('Prev') }}
         </span>
     </a>
 
-    <a class="flex-1 flex items-center justify-center border-t border-b bg-gray-100 text-gray-700 hover:bg-blue-200 hover:border-blue-700 hover:text-blue-800"  href="{{ absoluteURL }}/index.php?q=/modules/Reports/reporting_write.php&{{ params|url_encode }}">
-        <div class="text-sm text-center leading-tight">
+    <div class="flex-1 flex flex-col items-center justify-center py-4 border-t border-b bg-gray-100 text-gray-700" >
+        <a class="text-sm text-center leading-tight text-gray-700 hover:text-blue-700 hover:underline" href="{{ absoluteURL }}/index.php?q=/modules/Reports/reporting_write.php&gibbonPersonIDStudent={{ prevStudent.gibbonPersonID }}&{{ params|url_encode }}">
                 <strong>{{ scopeDetails.scopeName }}</strong> - {{ scopeDetails.nameShort }}
-        </div>
-    </a>
+        </a>
 
-    <a class="block w-32 p-2 items-center rounded-r border bg-gray-100 text-gray-600 text-right hover:bg-blue-200 hover:border-blue-700 hover:text-blue-800" href="{{ absoluteURL }}/index.php?q=/modules/Reports/reporting_write_byStudent.php&gibbonPersonIDStudent={{ nextStudent.gibbonPersonID }}&{{ params|url_encode }}">
+        {% if relatedReports and relatedReports|length > 1 %}
+            <div class="pt-4 text-center text-xs">
+                {% for report in relatedReports %}
+                <a {{ report.gibbonReportingCycleID == params.gibbonReportingCycleID ? 'class="active"' }} href="{{ absoluteURL }}/index.php?q=/modules/Reports/reporting_write_byStudent.php&gibbonPersonIDStudent={{ student.gibbonPersonID }}&gibbonPersonID={{ params.gibbonPersonID }}&gibbonReportingCycleID={{ report.gibbonReportingCycleID }}&gibbonReportingScopeID={{ report.gibbonReportingScopeID }}&scopeTypeID={{ params.scopeTypeID }}">{{ report.nameShort }}</a>
+                {% if not loop.last %}&nbsp; |  &nbsp;{% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+    </div>
+
+    <a class=" w-32 p-2 flex items-center justify-end rounded-r border bg-gray-100 text-gray-600 text-right hover:bg-blue-200 hover:border-blue-700 hover:text-blue-800" href="{{ absoluteURL }}/index.php?q=/modules/Reports/reporting_write_byStudent.php&gibbonPersonIDStudent={{ nextStudent.gibbonPersonID }}&{{ params|url_encode }}">
         <span class="inline-block px-1  text-sm leading-tight">
             {{ __('Next') }} 
         </span>

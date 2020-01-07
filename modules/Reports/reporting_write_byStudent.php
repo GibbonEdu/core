@@ -125,6 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
     }
     
     $scopeDetails = $reportingAccessGateway->selectReportingDetailsByScope($urlParams['gibbonReportingScopeID'], $reportingScope['scopeType'], $urlParams['scopeTypeID'])->fetch();
+    $relatedReports = $container->get(ReportingScopeGateway::class)->selectRelatedReportingScopesByID($urlParams['gibbonReportingScopeID'], $reportingScope['scopeType'], $urlParams['scopeTypeID'])->fetchAll();
     $reportingProgress = $container->get(ReportingProgressGateway::class)->selectBy(['gibbonReportingScopeID' => $urlParams['gibbonReportingScopeID'], $scopeIdentifier => $urlParams['scopeTypeID'], 'gibbonPersonIDStudent' => $gibbonPersonIDStudent])->fetch();
 
     $progress = $reportingAccessGateway->selectReportingProgressByScope($urlParams['gibbonReportingScopeID'], $reportingScope['scopeType'], $urlParams['scopeTypeID'], $urlParams['allStudents'] == 'Y')->fetchGroupedUnique();
@@ -143,6 +144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
         'reportingOpen' => $reportingOpen,
         'student' => $student,
         'scopeDetails' => $scopeDetails,
+        'relatedReports' => $relatedReports,
         'prevStudent' => $prevStudent,
         'nextStudent' => $nextStudent,
         'params' => $urlParams,

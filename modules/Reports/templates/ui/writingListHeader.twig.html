@@ -24,11 +24,12 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% endif %}
 
     {% if relatedReports and relatedReports|length > 1 %}
-        <div class="p-4 {{ totalCount ? 'pt-0' }} text-center">
-            <span class="text-xs text-gray-600 mr-1">{{ __n('Report', 'Reports', relatedReports|length) }}</span>
+        <div class="p-4 {{ totalCount ? 'pt-0' }} text-center text-xs">
+            
             
             {% for report in relatedReports %}
-            <a class="text-gray-700 text-sm mx-1 px-3 py-1 leading-normal border rounded hover:bg-blue-200 hover:border-blue-700 hover:text-blue-800 hover:shadow {{ report.gibbonReportingCycleID == params.gibbonReportingCycleID ? 'border' : 'border-transparent'}}" href="{{ absoluteURL }}/index.php?q=/modules/Reports/reporting_write.php&gibbonPersonID={{ params.gibbonPersonID }}&gibbonReportingCycleID={{ report.gibbonReportingCycleID }}&gibbonReportingScopeID={{ report.gibbonReportingScopeID }}&scopeTypeID={{ params.scopeTypeID }}">{{ report.nameShort }}</a>
+                <a {{ report.gibbonReportingCycleID == params.gibbonReportingCycleID ? 'class="active"' }} href="{{ absoluteURL }}/index.php?q=/modules/Reports/reporting_write.php&gibbonPersonID={{ params.gibbonPersonID }}&gibbonReportingCycleID={{ report.gibbonReportingCycleID }}&gibbonReportingScopeID={{ report.gibbonReportingScopeID }}&scopeTypeID={{ params.scopeTypeID }}">{{ report.nameShort }}</a>
+                {% if not loop.last %}&nbsp; |  &nbsp;{% endif %}
             {% endfor %}
         </div>
     {% endif %}
