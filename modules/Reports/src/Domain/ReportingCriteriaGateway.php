@@ -148,4 +148,29 @@ class ReportingCriteriaGateway extends QueryableGateway
 
         return $this->db()->selectOne($sql, $data);
     }
+
+    public function getHighestSequenceNumberByScope($gibbonReportingScopeID, $scopeType, $scopeTypeID)
+    {
+        $query = $this
+            ->newSelect()
+            ->from('gibbonReportingScope')
+            ->cols(['MAX(gibbonReportingCriteria.sequenceNumber) as sequenceNumber', 'COUNT(gibbonReportingCriteria.gibbonReportingCriteriaID) as count'])
+            ->innerJoin('gibbonReportingCriteria', 'gibbonReportingCriteria.gibbonReportingScopeID=gibbonReportingScope.gibbonReportingScopeID')
+            ->where('gibbonReportingScope.gibbonReportingScopeID=:gibbonReportingScopeID')
+            ->bindValue('gibbonReportingScopeID', $gibbonReportingScopeID)
+            ->groupBy(['gibbonReportingScope.gibbonReportingScopeID']);
+
+        if ($scopeType == 'Year Group') {
+            $query->where('gibbonReportingCriteria.gibbonYearGroupID=:scopeTypeID')
+                  ->bindValue('scopeTypeID', $scopeTypeID);
+        } elseif ($scopeType == 'Roll Group') {
+            $query->where('gibbonReportingCriteria.gibbonRollGroupID=:scopeTypeID')
+                  ->bindValue('scopeTypeID', $scopeTypeID);
+        } elseif ($scopeType == 'Course') {
+            $query->where('gibbonReportingCriteria.gibbonCourseID=:scopeTypeID')
+                  ->bindValue('scopeTypeID', $scopeTypeID);
+        }
+
+        return $this->runSelect($query)->fetchColumn(0) ?? 0;
+    }
 }

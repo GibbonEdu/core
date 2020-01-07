@@ -65,6 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
     $form->addHiddenValue('gibbonYearGroupID', $_GET['gibbonYearGroupID'] ?? '');
     $form->addHiddenValue('gibbonRollGroupID', $_GET['gibbonRollGroupID'] ?? '');
     $form->addHiddenValue('gibbonCourseID', $_GET['gibbonCourseID'] ?? '');
+    $form->addHiddenValue('scopeType', $reportingScope['scopeType']);
 
     $row = $form->addRow();
         $row->addLabel('reportingCycle', __('Reporting Cycle'));
