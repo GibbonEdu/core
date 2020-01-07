@@ -112,9 +112,9 @@ class StaffGateway extends QueryableGateway
     {
         $data = array('gibbonPersonID' => $gibbonPersonID);
         $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.title, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.image_240, gibbonStaff.type, gibbonStaff.jobTitle
-                FROM gibbonStaff
-                JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
-                WHERE gibbonStaff.gibbonPersonID=:gibbonPersonID
+                FROM gibbonPerson
+                LEFT JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
+                WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID
                 AND gibbonPerson.status='Full'";
 
         if (!empty($type)) $sql .= " AND gibbonStaff.type='Teaching'";
