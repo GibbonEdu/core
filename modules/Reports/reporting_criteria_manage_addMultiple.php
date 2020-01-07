@@ -28,8 +28,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
-    $gibbonReportingCycleID = $_GET['gibbonReportingCycleID'] ?? '';
-    $gibbonReportingScopeID = $_GET['gibbonReportingScopeID'] ?? '';
+    $gibbonReportingCycleID = $_REQUEST['gibbonReportingCycleID'] ?? '';
+    $gibbonReportingScopeID = $_REQUEST['gibbonReportingScopeID'] ?? '';
+    $scopeTypeIDs = is_array($_REQUEST['scopeTypeID'] ?? null) ? $_REQUEST['scopeTypeID'] : [];
 
     $page->breadcrumbs
         ->add(__('Manage Criteria'), 'reporting_criteria_manage.php', ['gibbonReportingCycleID' => $gibbonReportingCycleID, 'gibbonReportingScopeID' => $gibbonReportingScopeID])
@@ -70,16 +71,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
     if ($reportingScope['scopeType'] == 'Year Group') {
         $row = $form->addRow();
             $row->addLabel('gibbonYearGroupID', __('Year Groups'));
-            $row->addSelectYearGroup('gibbonYearGroupID')->selectMultiple();
+            $row->addSelectYearGroup('gibbonYearGroupID')->selectMultiple()->selected($scopeTypeIDs);
     } elseif ($reportingScope['scopeType'] == 'Roll Group') {
         $row = $form->addRow();
             $row->addLabel('gibbonRollGroupID', __('Roll Groups'));
-            $row->addSelectRollGroup('gibbonRollGroupID', $reportingCycle['gibbonSchoolYearID'])->selectMultiple();
+            $row->addSelectRollGroup('gibbonRollGroupID', $reportingCycle['gibbonSchoolYearID'])->selectMultiple()->selected($scopeTypeIDs);
     } elseif ($reportingScope['scopeType'] == 'Course') {
         $row = $form->addRow();
             $row->addLabel('gibbonCourseID', __('Course'));
             $row->addSelectCourseByYearGroup('gibbonCourseID', $reportingCycle['gibbonSchoolYearID'], $reportingCycle['gibbonYearGroupIDList'])
-            ->selectMultiple();
+            ->selectMultiple()->selected($scopeTypeIDs);
     }
 
     $row = $form->addRow();
