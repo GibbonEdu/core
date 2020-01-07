@@ -24,6 +24,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Module\Reports\Domain\ReportingCriteriaGateway;
+use Gibbon\Forms\Prefab\BulkActionForm;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_scopes_manage_edit.php') == false) {
     // Access denied
@@ -98,9 +99,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_scopes_m
 
     $reportingCriteria = $reportingCriteriaGateway->queryReportingCriteriaGroupsByScope($criteria, $urlParams['gibbonReportingScopeID'], $reportingScope['scopeType']);
 
+    // BULK ACTIONS
+    $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Reports/reporting_criteria_manage_addMultiple.php');
+    $form->setTitle(__('Criteria'));
+    $form->addHiddenValue('gibbonReportingScopeID', $urlParams['gibbonReportingScopeID']);
+    $form->addHiddenValue('gibbonReportingCycleID', $reportingScope['gibbonReportingCycleID']);
+
+    $bulkActions = array(
+        'Add Multiple' => __('Add Multiple'),
+    );
+
+    $col = $form->createBulkActionColumn($bulkActions);
+    $col->addSubmit(__('Go'));
+
     // DATA TABLE
-    $table = DataTable::createPaginated('reportCriteriaManage', $criteria);
-    $table->setTitle(__('Criteria'));
+    $table = $form->addRow()->addDataTable('reportCriteriaManage', $criteria)->withData($reportingCriteria);
+    $table->addMetaData('bulkActions', $col);
 
     $table->addColumn('nameShort', __('Short Name'));
     $table->addColumn('name', __('Name'));
@@ -125,5 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_scopes_m
                     ->setURL('/modules/Reports/reporting_criteria_manage.php');
         });
 
-    echo $table->render($reportingCriteria);
+    $table->addCheckboxColumn('scopeTypeID');
+
+    echo $form->getOutput();
 }

@@ -47,15 +47,15 @@ class ReportingCriteriaGateway extends QueryableGateway
             ->bindValue('gibbonReportingScopeID', $gibbonReportingScopeID);
 
         if ($scopeType == 'Year Group') {
-            $query->cols(['gibbonYearGroup.nameShort as nameShort', 'gibbonYearGroup.name as name', 'COUNT(gibbonReportingCriteria.gibbonReportingCriteriaID) AS count'])
+            $query->cols(['gibbonYearGroup.gibbonYearGroupID AS scopeTypeID', 'gibbonYearGroup.nameShort as nameShort', 'gibbonYearGroup.name as name', 'COUNT(gibbonReportingCriteria.gibbonReportingCriteriaID) AS count'])
                   ->leftJoin('gibbonYearGroup', 'gibbonYearGroup.gibbonYearGroupID=gibbonReportingCriteria.gibbonYearGroupID')
                   ->groupBy(['gibbonYearGroup.gibbonYearGroupID']);
         } elseif ($scopeType == 'Roll Group') {
-            $query->cols(['gibbonRollGroup.nameShort as nameShort', 'gibbonRollGroup.name as name', 'COUNT(gibbonReportingCriteria.gibbonReportingCriteriaID) AS count'])
+            $query->cols(['gibbonRollGroup.gibbonRollGroupID AS scopeTypeID', 'gibbonRollGroup.nameShort as nameShort', 'gibbonRollGroup.name as name', 'COUNT(gibbonReportingCriteria.gibbonReportingCriteriaID) AS count'])
                   ->leftJoin('gibbonRollGroup', 'gibbonRollGroup.gibbonRollGroupID=gibbonReportingCriteria.gibbonRollGroupID')
                   ->groupBy(['gibbonRollGroup.gibbonRollGroupID']);
         } elseif ($scopeType == 'Course') {
-            $query->cols(['gibbonCourse.nameShort as nameShort', 'gibbonCourse.name as name', 'COUNT(gibbonReportingCriteria.gibbonReportingCriteriaID) AS count'])
+            $query->cols(['gibbonCourse.gibbonCourseID AS scopeTypeID', 'gibbonCourse.nameShort as nameShort', 'gibbonCourse.name as name', 'COUNT(gibbonReportingCriteria.gibbonReportingCriteriaID) AS count'])
                   ->leftJoin('gibbonCourse', 'gibbonCourse.gibbonCourseID=gibbonReportingCriteria.gibbonCourseID')
                   ->groupBy(['gibbonCourse.gibbonCourseID']);
         }
