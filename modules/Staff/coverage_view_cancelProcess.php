@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_cancel
     }
 
     // Prevent two people cancelling at the same time (?)
-    if ($coverage['status'] != 'Requested' && $coverage['status'] != 'Accepted') {
+    if ($coverage['status'] == 'Cancelled') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_cancel
     }
 
     // Send messages (Mail, SMS) to relevant users
-    if ($coverage['requestType'] == 'Individual') {
+    if ($coverage['requestType'] == 'Individual' || $coverage['status'] == 'Accepted') {
         $process = $container->get(CoverageNotificationProcess::class);
         $process->startCoverageCancelled($gibbonStaffCoverageID);
     }

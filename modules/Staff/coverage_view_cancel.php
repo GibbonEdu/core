@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_cancel
         return;
     }
 
-    if ($coverage['status'] == 'Accepted' && $coverage['dateEnd'] <= date('Y-m-d')) {
+    if ($coverage['status'] == 'Accepted' && $coverage['dateEnd'] < date('Y-m-d')) {
         $page->addError(__('Your request failed because the selected date is not in the future.'));
         return;
     }
