@@ -613,4 +613,6 @@ UPDATE `gibbonPerson` SET citizenship1PassportExpiry=NULL WHERE citizenship1Pass
 UPDATE `gibbonPerson` SET citizenship2PassportExpiry=NULL WHERE citizenship2PassportExpiry=0000-00-00;end
 UPDATE `gibbonPersonUpdate` SET citizenship1PassportExpiry=NULL WHERE citizenship1PassportExpiry=0000-00-00;end
 UPDATE `gibbonPersonUpdate` SET citizenship2PassportExpiry=NULL WHERE citizenship2PassportExpiry=0000-00-00;end
+UPDATE `gibbonAction` SET precedence=2 WHERE name='Write Reports_editAll' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Reports');end
+UPDATE `gibbonAction` SET precedence=1 WHERE name='Write Reports_mine' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Reports');end
 ";
