@@ -142,15 +142,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
         ->notSortable()
         ->format(Format::using('userPhoto', 'image_240'));
 
+    $canManageCoverage = isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php');
     $table->addColumn('fullName', __('Name'))
         ->context('primary')
         ->description(__('Priority'))
         ->sortable(['surname', 'preferredName'])
-        ->format(function ($person) use ($guid) {
+        ->format(function ($person) use ($canManageCoverage) {
             $name = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', true, true);
-            $url = !empty($person['gibbonStaffID'])
-                ? $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID']
-                : '';
+            if ($canManageCoverage) {
+                $url = './index.php?q=/modules/Staff/coverage_manage.php&search='.$person['username'].'+date:upcoming';
+            } elseif (!empty($person['gibbonStaffID'])) {
+                $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
+            } else {
+                $url = '';
+            }
 
             return Format::link($url, $name).'<br/>'.Format::small($person['type']);
         });
