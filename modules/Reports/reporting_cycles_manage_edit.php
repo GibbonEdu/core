@@ -128,6 +128,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
 ?>
 
 <script>
+$(document).ready(function () {
+    $('input[id^="milestoneDate"]').removeClass('hasDatepicker').datepicker({onSelect: function(){$(this).blur();}, onClose: function(){$(this).change();} });
+});
 $(document).on('click', '.addBlock', function () {
     $('input[id^="milestoneDate"]').removeClass('hasDatepicker').datepicker({onSelect: function(){$(this).blur();}, onClose: function(){$(this).change();} });
 });
