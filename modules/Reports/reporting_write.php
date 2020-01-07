@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.ph
         $canWriteReport = $reportingOpen && ($writeCheck['canWrite'] ?? 'N') == 'Y';
     }
 
-    if (!$canAccessReport) {
+    if (empty($canAccessReport)) {
         $page->addError(__('You do not have access to this action.'));
         return;
     }
