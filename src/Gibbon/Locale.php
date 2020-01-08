@@ -302,7 +302,7 @@ class Locale implements LocaleInterface
         }
 
         // apply named replacement parameters, if presents.
-        $text = static::formatString($text, $params);
+        $text = static::formatString($text ?? '', $params);
 
         // apply custom string replacement logics and return.
         return $this->doStringReplacement($text);
