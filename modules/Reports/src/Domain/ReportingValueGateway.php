@@ -39,4 +39,12 @@ class ReportingValueGateway extends QueryableGateway
 
         return $this->db()->selectOne($sql, $data);
     }
+
+    public function getGradeScaleIDByValue($gibbonScaleID, $value)
+    {
+        $data = ['gibbonScaleID' => $gibbonScaleID, 'value' => $value];
+        $sql = "SELECT gibbonScaleGradeID FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID AND value=:value";
+
+        return $this->db()->selectOne($sql, $data);
+    }
 }
