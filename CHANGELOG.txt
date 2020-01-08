@@ -47,6 +47,7 @@ v19.0.00
         System: added a sticky header to refactored data tables
         System: refactored the Sound Alarm system
         System: added a setting to toggle background processing
+        System: added a general-purpose DiscussionGateway class
         Activities: added a Year Group filter in Manage Activities
         Attendance: added an option to record the first class attendance in a day as school-wide attendance
         Attendance: added an option to disable prefilling by attendance code, applied to Present - Late by default
