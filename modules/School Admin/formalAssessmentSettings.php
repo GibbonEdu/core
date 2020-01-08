@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
     if ($results && $results->rowCount() > 0) {
         while ($assessment = $results->fetch()) {
             $key = $assessment['gibbonExternalAssessmentID'].'-'.$assessment['category'];
-            $externalAssessmentsFieldSetNames[$key] = substr($assessment['category'], strpos($assessment['category'], '_') + 1);
+            $externalAssessmentsFieldSetNames[$key] = mb_substr($assessment['category'], mb_strpos($assessment['category'], '_'));
             $externalAssessmentsFieldSetIDs[$key] = $assessment['gibbonExternalAssessmentID'];
         }
     }
@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
     $primaryExternalAssessmentByYearGroup = unserialize(getSettingByScope($connection2, 'School Admin', 'primaryExternalAssessmentByYearGroup'));
 
     // Split the ID portion off of the ID-category pair, for the first dropdown
-    $primaryExternalAssessmentIDsByYearGroup = array_map(function($v) { return (stripos($v, '-') !== false? substr($v, 0, strpos($v, '-')) : $v); }, $primaryExternalAssessmentByYearGroup);
+    $primaryExternalAssessmentIDsByYearGroup = array_map(function($v) { return (mb_strpos($v, '-') !== false? mb_substr($v, 0, mb_strpos($v, '-')) : $v); }, $primaryExternalAssessmentByYearGroup);
 
     $sql = 'SELECT gibbonYearGroupID, name FROM gibbonYearGroup ORDER BY sequenceNumber';
     $result = $pdo->executeQuery(array(), $sql);
