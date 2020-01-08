@@ -108,8 +108,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
         if ($criteriaType['valueType'] == 'Comment' || $criteriaType['valueType'] == 'Remark') {
             $data['comment'] = $value;
         } elseif ($criteriaType['valueType'] == 'Grade Scale') {
-            $data['value'] = $reportingValueGateway->getGradeScaleValueByID($value);
-            $data['gibbonScaleGradeID'] = $value;
+            $data['gibbonScaleGradeID'] = $reportingValueGateway->getGradeScaleIDByValue($criteriaType['gibbonScaleID'], $value);
+            $data['value'] = $value;
         } else {
             $data['value'] = $value;
         }
