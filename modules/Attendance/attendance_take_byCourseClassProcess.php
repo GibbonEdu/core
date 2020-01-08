@@ -129,6 +129,7 @@ else {
                         die();
                     }
 
+                    $recordFirstClassAsSchool = getSettingByScope($connection2, 'Attendance', 'recordFirstClassAsSchool');
                     $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
 
                     $recordSchoolAttendance = $_POST['recordSchoolAttendance'] ?? 'N';
@@ -196,7 +197,7 @@ else {
                             $partialFail &= !$updated;
                         }
                         
-                        if ($recordSchoolAttendance == 'Y' && empty($prefilled)) {
+                        if ($recordFirstClassAsSchool == 'Y' && empty($prefilled)) {
                             $data['context'] = 'Person';
                             $inserted = $attendanceLogGateway->insert($data);
                             $partialFail &= !$inserted;
