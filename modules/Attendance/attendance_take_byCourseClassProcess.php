@@ -141,6 +141,7 @@ else {
                         $type=$_POST[$i . "-type"] ;
                         $reason=$_POST[$i . "-reason"] ;
                         $comment=$_POST[$i . "-comment"] ;
+                        $prefilled=$_POST[$i . "-prefilled"] ;
 
                         $attendanceCode = $attendance->getAttendanceCodeByType($type);
                         $direction = $attendanceCode['direction'];
@@ -195,7 +196,7 @@ else {
                             $partialFail &= !$updated;
                         }
                         
-                        if ($recordSchoolAttendance == 'Y') {
+                        if ($recordSchoolAttendance == 'Y' && empty($prefilled)) {
                             $data['context'] = 'Person';
                             $inserted = $attendanceLogGateway->insert($data);
                             $partialFail &= !$inserted;

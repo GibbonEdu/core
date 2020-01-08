@@ -227,6 +227,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                             $result = $pdo->executeQuery($data, $sql);
 
                             $log = ($result->rowCount() > 0) ? $result->fetch() : $defaults;
+                            $log['prefilled'] = $result->rowCount() > 0 ? $log['context'] : '';
                             $countLogs += $result->rowCount();
 
                             //Check for school prefill if attendance not taken in this class
@@ -245,6 +246,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                                 $result = $pdo->executeQuery($data, $sql);
 
                                 $log = ($result->rowCount() > 0) ? $result->fetch() : $log;
+                                $log['prefilled'] = $result->rowCount() > 0 ? $log['context'] : '';
                                 if ($log['context'] == 'Roll Group' || $log['context'] == 'Person') {
                                     $countLogs += 1;
                                 }
@@ -289,6 +291,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
 
                         foreach ($students as $student) {
                             $form->addHiddenValue($count . '-gibbonPersonID', $student['gibbonPersonID']);
+                            $form->addHiddenValue($count . '-prefilled', $student['log']['prefilled'] ?? '');
 
                             $cell = $grid->addCell()
                                 ->setClass('text-center py-2 px-1 -mr-px -mb-px flex flex-col justify-between')
