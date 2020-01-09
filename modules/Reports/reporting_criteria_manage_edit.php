@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
     }
 
     if (!empty($values['groupID'])) {
-        $groupCount = $reportingCriteriaGateway->selectBy(['groupID' => $values['groupID']])->rowCount();
+        $groupCount = $reportingCriteriaGateway->selectBy(['gibbonReportingCycleID' => $gibbonReportingCycleID, 'groupID' => $values['groupID']])->rowCount();
         echo Format::alert(__('This is a grouped record created using Add Multiple.').' '.__('Editing this record will update all {count} records in the same group. Check the detach option to remove this record from the group and not update other records.', ['count' => '<b>'.$groupCount.'</b>']), 'warning');
     }
 

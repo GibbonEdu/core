@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
 
     // Update the record (or grouped records)
     if (!empty($groupID)) {
-        $updated = $reportingCriteriaGateway->updateWhere(['groupID' => $groupID], $data);
+        $updated = $reportingCriteriaGateway->updateWhere(['gibbonReportingCycleID' => $urlParams['gibbonReportingCycleID'], 'groupID' => $groupID], $data);
     } else {
         $updated = $reportingCriteriaGateway->update($gibbonReportingCriteriaID, $data);
     }

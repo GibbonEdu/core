@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
 
     // Delete the record (or grouped records). Optionally detach and delete only one record.
     if (!empty($values['groupID']) && $detach != 'Y') {
-        $deleted = $reportingCriteriaGateway->deleteWhere(['groupID' => $values['groupID']]);
+        $deleted = $reportingCriteriaGateway->deleteWhere(['gibbonReportingCycleID' => $urlParams['gibbonReportingCycleID'], 'groupID' => $values['groupID']]);
     } else {
         $deleted = $reportingCriteriaGateway->delete($gibbonReportingCriteriaID);
     }
