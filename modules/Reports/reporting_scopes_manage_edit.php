@@ -127,6 +127,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_scopes_m
         ->addParam('gibbonReportingScopeID', $urlParams['gibbonReportingScopeID'])
         ->displayLabel();
 
+    $table->addHeaderAction('criteria', __('Manage Criteria Types'))
+        ->setIcon('markbook')
+        ->setURL('/modules/Reports/criteriaTypes_manage.php')
+        ->displayLabel()
+        ->prepend(' | ');
+
     $table->addActionColumn()
         ->addParam('gibbonReportingCycleID', $urlParams['gibbonReportingCycleID'])
         ->addParam('gibbonReportingScopeID', $urlParams['gibbonReportingScopeID'])
