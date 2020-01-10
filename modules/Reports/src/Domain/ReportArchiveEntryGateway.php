@@ -72,7 +72,7 @@ class ReportArchiveEntryGateway extends QueryableGateway
             ->from($this->getTableName())
             ->cols(['gibbonReportArchiveEntry.gibbonReportArchiveEntryID', 'gibbonReportArchiveEntry.gibbonReportID', 'gibbonReportArchiveEntry.reportIdentifier', 'gibbonReportArchiveEntry.gibbonYearGroupID', 'gibbonReportArchiveEntry.gibbonRollGroupID', 'gibbonReportArchiveEntry.filePath', 'gibbonYearGroup.sequenceNumber'])
             ->innerJoin('gibbonReportArchive', 'gibbonReportArchive.gibbonReportArchiveID=gibbonReportArchiveEntry.gibbonReportArchiveID')
-            ->leftJoin('gibbonRollGroup', 'gibbonRollGroup.gibbonRollGroupID=gibbonReportArchiveEntry.gibbonRollGroupID')
+            ->innerJoin('gibbonRollGroup', 'gibbonRollGroup.gibbonRollGroupID=gibbonReportArchiveEntry.gibbonRollGroupID')
             ->leftJoin('gibbonYearGroup', 'gibbonYearGroup.gibbonYearGroupID=gibbonReportArchiveEntry.gibbonYearGroupID')
             ->where('gibbonReportArchiveEntry.reportIdentifier=:reportIdentifier')
             ->bindValue('reportIdentifier', $reportIdentifier)
@@ -95,9 +95,8 @@ class ReportArchiveEntryGateway extends QueryableGateway
                   ->bindValue('gibbonYearGroupID', $gibbonYearGroupID)
                   ->groupBy(['gibbonReportArchiveEntry.gibbonRollGroupID']);
         } else {
-            $query->cols(['gibbonYearGroup.name AS name'])
-                  ->where("gibbonReportArchiveEntry.type='Batch'")
-                  ->groupBy(['gibbonReportArchiveEntry.gibbonYearGroupID']);
+            $query->cols(['gibbonRollGroup.name AS name', 'COUNT(DISTINCT gibbonReportArchiveEntry.gibbonReportArchiveEntryID) AS count'])
+                  ->groupBy(['gibbonReportArchiveEntry.gibbonYearGroupID', 'gibbonReportArchiveEntry.gibbonRollGroupID']);
         }
 
         return $this->runQuery($query, $criteria);
@@ -109,11 +108,10 @@ class ReportArchiveEntryGateway extends QueryableGateway
             ->newQuery()
             ->distinct()
             ->from($this->getTableName())
-            ->cols(['gibbonReportArchiveEntry.gibbonReportArchiveEntryID', 'gibbonReportArchiveEntry.reportIdentifier', 'MAX(gibbonReportArchiveEntry.timestampModified) as timestampModified', 'gibbonReport.gibbonReportID', 'gibbonReport.name', 'gibbonReportingCycle.sequenceNumber as sequenceNumber', "COUNT(DISTINCT singleReports.gibbonReportArchiveEntryID) AS totalCount", "COUNT(DISTINCT CASE WHEN singleReports.gibbonPersonIDAccessed IS NOT NULL THEN singleReports.gibbonReportArchiveEntryID END) as readCount"])
+            ->cols(['gibbonReportArchiveEntry.gibbonReportArchiveEntryID', 'gibbonReportArchiveEntry.reportIdentifier', 'MAX(gibbonReportArchiveEntry.timestampModified) as timestampModified', 'gibbonReport.gibbonReportID', 'gibbonReport.name', 'gibbonReportingCycle.sequenceNumber as sequenceNumber', "COUNT(DISTINCT gibbonReportArchiveEntry.gibbonReportArchiveEntryID) AS totalCount", "COUNT(DISTINCT CASE WHEN gibbonReportArchiveEntry.gibbonPersonIDAccessed IS NOT NULL THEN gibbonReportArchiveEntry.gibbonReportArchiveEntryID END) as readCount"])
             ->innerJoin('gibbonReportArchive', 'gibbonReportArchive.gibbonReportArchiveID=gibbonReportArchiveEntry.gibbonReportArchiveID')
             ->leftJoin('gibbonReport', 'gibbonReport.gibbonReportID=gibbonReportArchiveEntry.gibbonReportID')
             ->leftJoin('gibbonReportingCycle', 'gibbonReportingCycle.gibbonReportingCycleID=gibbonReport.gibbonReportingCycleID')
-            ->leftJoin('gibbonReportArchiveEntry as singleReports', "singleReports.gibbonReportID=gibbonReport.gibbonReportID AND singleReports.type='Single'")
             ->where('gibbonReportArchiveEntry.gibbonSchoolYearID=:gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->groupBy(['gibbonReportArchiveEntry.reportIdentifier']);
