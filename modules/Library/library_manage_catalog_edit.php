@@ -181,7 +181,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 			$form->toggleVisibilityByClass('statusNotBorrowable')->onSelect('borrowable')->when('N');
 
 			$statuses = array(
-				'Available' => __('Available'),
 				'In Use' => __('In Use'),
 				'Reserved' => __('Reserved'),
 				'Decommissioned' => __('Decommissioned'),
@@ -194,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
 			$row = $form->addRow()->addClass('statusNotBorrowable');
 				$row->addLabel('statusNotBorrowable', __('Status?'));
-				$row->addSelect('statusNotBorrowable')->fromArray($statuses)->required();
+				$row->addSelect('statusNotBorrowable')->fromArray($statuses)->selected($values['status'])->required();
 
 			$row = $form->addRow();
 				$row->addLabel('replacement', __('Plan Replacement?'));
