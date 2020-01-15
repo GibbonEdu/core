@@ -27,7 +27,7 @@ $urlParams = [
     'gibbonReportingScopeID' => $_POST['gibbonReportingScopeID'] ?? '',
     'gibbonReportingCycleID' => $_POST['gibbonReportingCycleID'] ?? '',
 ];
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_scopes_manage_edit.php&'.http_build_query($urlParams);
+$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_criteria_manage_addMultiple.php&'.http_build_query($urlParams);
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria_manage_add.php') == false) {
     $URL .= '&return=error0';
@@ -80,5 +80,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
         ? "&return=warning1"
         : "&return=success0";
 
-    header("Location: {$URL}");
+    header("Location: {$URL}&scopeTypeID=".implode(',', $group));
 }
