@@ -118,7 +118,7 @@ class Format
      * @param DateTime|string $dateString
      * @return string
      */
-    public static function dateReadable($dateString, $format = '%b %e, %G')
+    public static function dateReadable($dateString, $format = '%b %e, %Y')
     {
         $date = static::createDateTime($dateString);
         return mb_convert_case(strftime($format, $date->format('U')), MB_CASE_TITLE);
@@ -130,7 +130,7 @@ class Format
      * @param DateTime|string $dateString
      * @return string
      */
-    public static function dateTimeReadable($dateString, $format = '%b %e, %G %H:%M')
+    public static function dateTimeReadable($dateString, $format = '%b %e, %Y %H:%M')
     {
         $date = static::createDateTime($dateString);
         return mb_convert_case(strftime($format, $date->format('U')), MB_CASE_TITLE);
@@ -167,13 +167,13 @@ class Format
         $endTime = $endDate->getTimestamp();
 
         if ($startDate->format('Y-m-d') == $endDate->format('Y-m-d')) {
-            $output = strftime('%b %e, %G', $startTime);
+            $output = strftime('%b %e, %Y', $startTime);
         } elseif ($startDate->format('Y-m') == $endDate->format('Y-m')) {
-            $output = strftime('%b %e', $startTime).' - '.strftime('%e, %G', $endTime);
+            $output = strftime('%b %e', $startTime).' - '.strftime('%e, %Y', $endTime);
         } elseif ($startDate->format('Y') == $endDate->format('Y')) {
-            $output = strftime('%b %e', $startTime).' - '.strftime('%b %e, %G', $endTime);
+            $output = strftime('%b %e', $startTime).' - '.strftime('%b %e, %Y', $endTime);
         } else {
-            $output = strftime('%b %e, %G', $startTime).' - '.strftime('%b %e, %G', $endTime);
+            $output = strftime('%b %e, %Y', $startTime).' - '.strftime('%b %e, %Y', $endTime);
         }
 
         return mb_convert_case($output, MB_CASE_TITLE);
