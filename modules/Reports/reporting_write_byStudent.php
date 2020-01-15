@@ -194,7 +194,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
             $row->addLabel($fieldName, $criteria['name'])->description($criteria['description'])->setClass('font-normal');
 
             if ($criteria['valueType'] == 'Grade Scale') {
-                $gradeSelect = $row->addSelectGradeScaleGrade($fieldName, $criteria['gibbonScaleID'], ['valueMode' => 'value', 'labelMode' => 'descriptor', 'honourDefault' => true])
+                $row->addSelectGradeScaleGrade($fieldName, $criteria['gibbonScaleID'], ['valueMode' => 'value', 'labelMode' => 'both', 'honourDefault' => true])
                     ->addClass('reportCriteria')
                     ->setID($fieldID)
                     ->readonly(!$canWriteReport)
