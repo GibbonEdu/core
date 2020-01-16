@@ -36,6 +36,7 @@ v19.0.00
         User Admin: added a View Role page in Manage Roles to display all actions and users per role
 
     Security
+        N/A
 
     Tweaks & Additions
         System: added Maldivian Rufiyaa and Malagasy Ariary as a currency options
@@ -104,13 +105,14 @@ v19.0.00
         Finance: fixed Manage Invoices bulk actions not refreshing after changing filters
         Finance: fixed inactive fees showing up in dropdown lists
         Library: set Bookable to No by default on Add record screen
+        Library: fixed Status field not being set when not borrowable
         Markbook: implemented unit ordering and date ordering for unit and lesson fields
         Messenger: fixed bug when sending parent and student SMS for Attendance status
         Messenger: fixed bug where users could create a message with no available delivery options
         Planner: fixed non-functional Smart Block Template setting
         Planner: fixed Unit Planner bug causing actions to appear in Classes table for newly created units
         Planner: implemented unit ordering field in Lesson Planner
-        Rubrics: fixed bug where non-english locales displayed rubric visualization as gray 
+        Rubrics: fixed bug where non-english locales displayed rubric visualization as gray
         School Admin: fixed Browse Library BG Image field length bug
         School Admin: fixed typo to use instead instead of isntead
         Staff: fixed Cancel Coverage button not available for future coverage

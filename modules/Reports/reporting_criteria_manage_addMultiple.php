@@ -30,7 +30,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
     // Proceed!
     $gibbonReportingCycleID = $_REQUEST['gibbonReportingCycleID'] ?? '';
     $gibbonReportingScopeID = $_REQUEST['gibbonReportingScopeID'] ?? '';
-    $scopeTypeIDs = is_array($_REQUEST['scopeTypeID'] ?? null) ? $_REQUEST['scopeTypeID'] : [];
+    $scopeTypeIDs = $_REQUEST['scopeTypeID'] ?? [];
+    if (!is_array($scopeTypeIDs)) $scopeTypeIDs = explode(',', $scopeTypeIDs);
 
     $page->breadcrumbs
         ->add(__('Manage Criteria'), 'reporting_criteria_manage.php', ['gibbonReportingCycleID' => $gibbonReportingCycleID, 'gibbonReportingScopeID' => $gibbonReportingScopeID])
