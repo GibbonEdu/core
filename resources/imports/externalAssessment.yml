@@ -28,7 +28,7 @@ fields:
         relationship: { table: gibbonExternalAssessmentStudent, key: gibbonExternalAssessmentStudentID, field: [ gibbonPersonID, date, gibbonExternalAssessmentID ]  }
     category:
         name: "Field Name Category"
-        desc: "Must match value of gibbonExternalAssessmentField.category in database, less [numeric_] prefix."
+        desc: "Must match value of gibbonExternalAssessmentField.category in database"
         args: { filter: string, custom: true, required: true, readonly: true }
     gibbonExternalAssessmentFieldID:
         name: "Field Name"
