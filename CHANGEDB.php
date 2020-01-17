@@ -618,3 +618,8 @@ UPDATE `gibbonAction` SET precedence=1 WHERE name='Write Reports_mine' AND gibbo
 CREATE TABLE `gibbonDiscussion` (`gibbonDiscussionID` INT(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, `foreignTable` VARCHAR(60) NOT NULL, `foreignTableID` INT(14) UNSIGNED ZEROFILL NOT NULL, `gibbonModuleID` INT(4) UNSIGNED ZEROFILL NOT NULL, `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NOT NULL, `type` VARCHAR(60) NULL, `comment` TEXT NULL, `attachmentType` enum('File','Link') NULL, `attachmentLocation` text NULL, `gibbonDiscussionIDReplyTo` INT(12) UNSIGNED ZEROFILL NULL, `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (`gibbonDiscussionID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
 UPDATE gibbonScaleGrade SET descriptor='1%' WHERE value='1%' AND descriptor='2%' AND gibbonScaleID=00004;end
 ";
+
+//v20.0.00
+++$count;
+$sql[$count][0] = '20.0.00';
+$sql[$count][1] = "";
