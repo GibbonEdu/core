@@ -16,6 +16,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v20.0.00
+--------
+    Headlines
+
+    Changes With Important Notices
+
+    Significant Changes
+
+    Security
+
+    Tweaks & Additions
+
+    Bug Fixes
+
 v19.0.00
 --------
     Headlines
