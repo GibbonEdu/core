@@ -19,7 +19,7 @@ CHANGELOG
 v19.0.00
 --------
     Headlines
-        Reports module enables users to write reports, proofread comments, generate PDFs, and view report archives
+        Reports module enables users to write reports, proof read comments, generate PDFs, and view report archives
         Individual Needs Investigations functionality allows data gathering around students with individual needs
         Messages can now be pinned to the top of the message wall, and optionally displayed above the dashboard
         Expanded Staff Directory replaces View Staff Profiles
@@ -34,9 +34,6 @@ v19.0.00
         System: added Year Switcher to staff homepage sidebar
         Planner: added "View Only" sub-action to Lesson Planner
         User Admin: added a View Role page in Manage Roles to display all actions and users per role
-
-    Security
-        N/A
 
     Tweaks & Additions
         System: added Maldivian Rufiyaa and Malagasy Ariary as a currency options
@@ -55,7 +52,7 @@ v19.0.00
         Attendance: added Consecutive Absence report to list all students who have been absent for the last N school days
         Attendance: updated Student History to still display class attendance when countClassAsSchool in N
         Attendance: added a Students Not In Class report
-        Behaviour: new Copy To Notes feature
+        Behaviour: added a Copy To Notes feature
         Behaviour: added settings to toggle notifications for Tutors and Education Assistants
         Form Groups: added staff-only summary of Year Groups after Form Group listing
         Messenger: added a Copy to Next Year bulk-option for Manage Groups
@@ -79,13 +76,13 @@ v19.0.00
         Students: added template setting for Description field in First Aid Record
         Students: turned First Aid Record Followup into a non-editable log
         Timetable Admin: included student reportable flag in student enrolment
-        Timetable Admin: enable users who can search All Users to also see Left students
+        Timetable Admin: enabled users who can search All Users to also see Left students
         User Admin: increased Student ID field max length to 15
         User Admin: added Citizenship 1 and Citizenship 2 Passport Expiry date fields
         User Admin: added a Login Troubleshooting section to Reset Password page
 
     Bug Fixes
-        System: fix installer bug where passwords are unnecessarily encoded
+        System: fixed installer bug where passwords are unnecessarily encoded
         System: fixed date picker validation error for Polish language
         System: fixed Notification Events to only send to users who have status Full
         System: adjusted date formats for German language
