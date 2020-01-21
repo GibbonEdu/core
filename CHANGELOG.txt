@@ -29,6 +29,7 @@ v20.0.00
     Tweaks & Additions
 
     Bug Fixes
+        System: fixed module uninstall to also remove notification events
 
 v19.0.00
 --------
