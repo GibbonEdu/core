@@ -27,6 +27,7 @@ v20.0.00
     Security
 
     Tweaks & Additions
+        Reports: added a Proof Read by Homeroom option
 
     Bug Fixes
 
