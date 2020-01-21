@@ -27,6 +27,7 @@ v20.0.00
     Security
 
     Tweaks & Additions
+        Students: added an Exclude Left Students checkbox to Student Enrolment Trends, off by default
 
     Bug Fixes
         System: fixed module uninstall to also remove notification events
