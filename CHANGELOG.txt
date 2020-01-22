@@ -23,6 +23,7 @@ v20.0.00
     Changes With Important Notices
 
     Significant Changes
+        Added Español - Mexico as an available locale
 
     Security
 
