@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 
     // QUERY
     $criteria = $departmentGateway->newQueryCriteria(true)
-        ->sortBy('name')
+        ->sortBy(['sequenceNumber', 'name'])
         ->fromPOST();
 
     $departments = $departmentGateway->queryDepartments($criteria);
@@ -75,6 +75,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/School Admin/department_manage_add.php')
         ->displayLabel();
+
+    $table->addDraggableColumn('gibbonDepartmentID', $gibbon->session->get('absoluteURL').'/modules/School Admin/department_manage_editOrderAjax.php');
 
     $table->addColumn('name', __('Name'));
     $table->addColumn('type', __('Type'))->translatable();
