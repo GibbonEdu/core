@@ -624,4 +624,6 @@ UPDATE gibbonScaleGrade SET descriptor='1%' WHERE value='1%' AND descriptor='2%'
 $sql[$count][0] = '20.0.00';
 $sql[$count][1] = "
 ALTER TABLE `gibbonDepartment` ADD `sequenceNumber` INT(4) UNSIGNED NULL AFTER `logo`;end
+UPDATE `gibboni18n` SET `name` = 'Español - España' WHERE `code` = 'es_ES';end
+INSERT INTO `gibboni18n` (`code`, `name`, `active`, `installed`, `systemDefault`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`, `rtl`) VALUES ('es_MX', 'Español - Mexico', 'Y', 'N', 'N', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N');end
 ";
