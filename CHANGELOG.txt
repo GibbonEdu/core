@@ -27,6 +27,7 @@ v20.0.00
     Security
 
     Tweaks & Additions
+        Departments: added drag-drop ordering to Departments in School Admin
         Students: added an Exclude Left Students checkbox to Student Enrolment Trends, off by default
 
     Bug Fixes
