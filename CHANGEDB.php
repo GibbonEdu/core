@@ -622,4 +622,6 @@ UPDATE gibbonScaleGrade SET descriptor='1%' WHERE value='1%' AND descriptor='2%'
 //v20.0.00
 ++$count;
 $sql[$count][0] = '20.0.00';
-$sql[$count][1] = "";
+$sql[$count][1] = "
+ALTER TABLE `gibbonDepartment` ADD `sequenceNumber` INT(4) UNSIGNED NULL AFTER `logo`;end
+";
