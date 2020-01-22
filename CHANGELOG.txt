@@ -27,6 +27,7 @@ v20.0.00
     Security
 
     Tweaks & Additions
+        Reports: added a Proof Read by Form Group option
         Students: added an Exclude Left Students checkbox to Student Enrolment Trends, off by default
 
     Bug Fixes

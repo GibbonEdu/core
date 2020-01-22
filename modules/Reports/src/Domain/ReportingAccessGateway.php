@@ -172,6 +172,24 @@ class ReportingAccessGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
     
+
+    public function selectAccessibleRollGroupsByReportingScope($gibbonReportingScopeID)
+    {
+        $query = $this
+            ->newSelect()
+            ->from('gibbonReportingScope')
+            ->cols(['gibbonRollGroup.gibbonRollGroupID', 'gibbonRollGroup.name'])
+            ->innerJoin('gibbonReportingCycle', 'gibbonReportingCycle.gibbonReportingCycleID=gibbonReportingScope.gibbonReportingCycleID')
+            ->innerJoin('gibbonStudentEnrolment', 'FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, gibbonReportingCycle.gibbonYearGroupIDList) AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonReportingCycle.gibbonSchoolYearID')
+            ->innerJoin('gibbonRollGroup', 'gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID')
+            ->where('gibbonReportingScope.gibbonReportingScopeID=:gibbonReportingScopeID')
+            ->bindValue('gibbonReportingScopeID', $gibbonReportingScopeID)
+            ->groupBy(['gibbonRollGroup.gibbonRollGroupID'])
+            ->orderBy(['LENGTH(gibbonRollGroup.name)', 'gibbonRollGroup.name']);
+    
+        return $this->runSelect($query);
+    }
+
     public function selectAccessibleStaffByReportingScope($gibbonReportingScopeID)
     {
         // COURSE

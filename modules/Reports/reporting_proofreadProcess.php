@@ -22,9 +22,11 @@ use Gibbon\Module\Reports\Domain\ReportingValueGateway;
 
 require_once '../../gibbon.php';
 
+$mode = $_POST['mode'] ?? '';
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
+$gibbonRollGroupID = $_POST['gibbonRollGroupID'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_proofread.php&gibbonPersonID='.$gibbonPersonID;
+$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_proofread.php&mode='.$mode.'&gibbonPersonID='.$gibbonPersonID.'&gibbonRollGroupID='.$gibbonRollGroupID;
 
 if (!empty($_POST['override'])) {
     $URL .= '&override='.$_POST['override'];
