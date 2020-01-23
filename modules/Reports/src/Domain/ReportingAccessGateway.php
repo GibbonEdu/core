@@ -472,7 +472,6 @@ class ReportingAccessGateway extends QueryableGateway
             ->from('gibbonReportingCriteria')
             ->cols(['gibbonReportingCriteria.gibbonReportingCriteriaID', 'gibbonReportingCriteria.name', 'gibbonReportingCriteria.description', 'gibbonReportingCriteria.category', 'gibbonReportingCriteriaType.name as criteriaName', 'gibbonReportingCriteriaType.valueType', 'gibbonReportingCriteriaType.characterLimit', 'gibbonReportingCriteriaType.gibbonScaleID', 'gibbonReportingValue.gibbonScaleGradeID', 'gibbonReportingValue.value', 'gibbonReportingValue.comment'])
             ->innerJoin('gibbonReportingCriteriaType', 'gibbonReportingCriteriaType.gibbonReportingCriteriaTypeID=gibbonReportingCriteria.gibbonReportingCriteriaTypeID')
-            ->leftJoin('gibbonReportingValue', 'gibbonReportingValue.gibbonReportingCriteriaID=gibbonReportingCriteria.gibbonReportingCriteriaID')
             ->where('gibbonReportingCriteria.gibbonReportingScopeID=:gibbonReportingScopeID')
             ->where("gibbonReportingCriteria.target='Per Group'")
             ->bindValue('gibbonReportingScopeID', $gibbonReportingScopeID)
@@ -480,12 +479,14 @@ class ReportingAccessGateway extends QueryableGateway
             ->orderBy(['gibbonReportingCriteria.sequenceNumber', 'gibbonReportingCriteria.gibbonReportingCriteriaID']);
 
         if ($scopeType == 'Year Group') {
-            $query->where('gibbonReportingCriteria.gibbonYearGroupID=:scopeTypeID');
+            $query->leftJoin('gibbonReportingValue', 'gibbonReportingValue.gibbonReportingCriteriaID=gibbonReportingCriteria.gibbonReportingCriteriaID')
+                ->where('gibbonReportingCriteria.gibbonYearGroupID=:scopeTypeID');
         } elseif ($scopeType == 'Roll Group') {
-            $query->where('gibbonReportingCriteria.gibbonRollGroupID=:scopeTypeID');
+            $query->leftJoin('gibbonReportingValue', 'gibbonReportingValue.gibbonReportingCriteriaID=gibbonReportingCriteria.gibbonReportingCriteriaID')
+                ->where('gibbonReportingCriteria.gibbonRollGroupID=:scopeTypeID');
         } elseif ($scopeType == 'Course') {
-            $query->leftJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseID=gibbonReportingCriteria.gibbonCourseID')
-                ->where('gibbonCourseClass.gibbonCourseClassID=:scopeTypeID');
+            $query->leftJoin('gibbonReportingValue', 'gibbonReportingValue.gibbonReportingCriteriaID=gibbonReportingCriteria.gibbonReportingCriteriaID AND gibbonReportingValue.gibbonCourseClassID=:scopeTypeID')
+                ->leftJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseID=gibbonReportingCriteria.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonReportingValue.gibbonCourseClassID');
         }
 
         return $this->runSelect($query);
