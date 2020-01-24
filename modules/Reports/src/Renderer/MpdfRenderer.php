@@ -312,7 +312,11 @@ class MpdfRenderer implements ReportRendererInterface
         $defaultHeader = isset($this->headers[0])? 'html_header0' : false;
         $headerName = isset($this->headers[$pageNum])? 'html_header'.$pageNum : $defaultHeader;
 
-        $this->pdf->SetHTMLHeaderByName($headerName, $pageNum % 2 == 0 || $this->firstPage ? 'O' : 'E', $this->lastPage);
+        if ($this->hasMode(self::OUTPUT_TWO_SIDED)) {
+            $this->pdf->SetHTMLHeaderByName($headerName, $pageNum % 2 == 0 || $this->firstPage ? 'O' : 'E', $this->lastPage);
+        } else {
+            $this->pdf->SetHTMLHeaderByName($headerName, 'O', $this->lastPage);
+        }
     }
 
     protected function setFooter()
@@ -321,7 +325,11 @@ class MpdfRenderer implements ReportRendererInterface
         $defaultFooter = isset($this->footers[0])? 'html_footer0' : false;
         $footerName = isset($this->footers[$pageNum])? 'html_footer'.$pageNum : $defaultFooter;
 
-        $this->pdf->SetHTMLFooterByName($footerName, $pageNum % 2 == 0 ? 'E' : 'O');
+        if ($this->hasMode(self::OUTPUT_TWO_SIDED)) {
+            $this->pdf->SetHTMLFooterByName($footerName, $pageNum % 2 == 0 ? 'E' : 'O');
+        } else {
+            $this->pdf->SetHTMLFooterByName($footerName);
+        }
     }
 
     protected function runPreProcess(ReportData &$reportData)
