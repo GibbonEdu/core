@@ -43,8 +43,21 @@ class YearGroupCriteria extends DataSource
                     'officialName'        => ['sameAs', 'firstName surname'],
                 ],
             ],
-            'perStudent' => [
 
+            'perStudent' => [
+                0 => [
+                    'scopeName'           => 'Year Group',
+                    'criteriaName'        => 'Student Comment',
+                    'criteriaDescription' => ['sentence'],
+                    'value'               => ['randomDigit'],
+                    'comment'             => ['paragraph', 6],
+                    'valueType'           => 'Comment',
+                    'title'               => ['title', $gender],
+                    'surname'             => ['lastName'],
+                    'firstName'           => ['firstName', $gender],
+                    'preferredName'       => ['sameAs', 'firstName'],
+                    'officialName'        => ['sameAs', 'firstName surname'],
+                ],
             ],
         ];
     }
