@@ -29,7 +29,7 @@ config:
         default: Y
 -->#}
 {{- stylesheet ? include(stylesheet) -}}
-<table>
+<table class="w-full table" cellspacing="0">
     <tr>
         <td style="width:50%;text-align:left;font-size:8pt;">
             {%- if config.heading is not empty or config.heading is not defined %}
