@@ -17,14 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Module\Reports\DataFactory;
-use Gibbon\Module\Reports\ReportRenderer;
-use Gibbon\Module\Reports\ReportTemplate;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Module\Reports\ReportBuilder;
 use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
 use Gibbon\Module\Reports\Domain\ReportTemplateSectionGateway;
-use Faker\Factory;
-use Gibbon\Module\Reports\ReportBuilder;
-use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Module\Reports\Renderer\HtmlRenderer;
+use Gibbon\Module\Reports\Renderer\MpdfRenderer;
+use Gibbon\Module\Reports\Renderer\TcpdfRenderer;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_preview.php') == false) {
     // Access denied
@@ -59,22 +58,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_preview.
     $reports = $reportBuilder->buildReportMock($template);
 
     // Render
-    $renderer = new ReportRenderer($template, $twig);
-
     if (isset($page)) {
+        $renderer = $container->get(HtmlRenderer::class);
+
         echo $twig->render('preview.twig.html', $values + [
-            'pages' => $renderer->renderToHTML($reports),
+            'pages' => $renderer->render($template, $reports),
             'debugData' => $debugMode ? print_r($reports[0], true) : null,
         ]);
     } else {
+        ini_set('display_errors', $debugMode ? 1 : 0);
+
         $filename = preg_replace('/[^a-zA-Z0-9-_]/', '', $values['name']).__('Preview').'.pdf';
         $file = tmpfile();
         $path = stream_get_meta_data($file)['uri'];
         
-        ini_set('display_errors', 0);
-
-        // $path = __DIR__.'/test.pdf';
-        $renderer->renderToPDF($reports, $path);
+        $renderer = $container->get($template->getData('flags') == 1 ? MpdfRenderer::class : TcpdfRenderer::class);
+        $renderer->render($template, $reports, $path);
 
         header('Content-Description: File Transfer');
         header('Content-Type: application/pdf');

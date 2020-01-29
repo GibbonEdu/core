@@ -1,18 +1,33 @@
 <?php
+/*
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
 
-namespace Gibbon\Module\Reports;
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+namespace Gibbon\Module\Reports\Renderer;
+
+use Gibbon\Module\Reports\Renderer\ReportRendererInterface;
 use Gibbon\Module\Reports\ReportData;
 use Gibbon\Module\Reports\ReportTemplate;
 use Gibbon\Module\Reports\ReportSection;
 use Gibbon\Module\Reports\ReportTCPDF;
 use Twig_Environment;
 
-class ReportRenderer
+class TcpdfRenderer implements ReportRendererInterface
 {
-    const OUTPUT_TWO_SIDED = 0b0001;
-    const OUTPUT_CONTINUOUS = 0b0010;
-
     protected $template;
     protected $pdf;
     protected $twig;
@@ -28,13 +43,38 @@ class ReportRenderer
     protected $profile;
     protected $microtime;
 
-    public function __construct(ReportTemplate $template, Twig_Environment $templateEngine)
+    public function __construct(Twig_Environment $templateEngine)
+    {
+        $this->twig = $templateEngine;
+    }
+
+    public function setMode(int $bitmask)
+    {
+        $this->mode |= $bitmask;
+    }
+
+    public function hasMode(int $bitmask)
+    {
+        return ($this->mode & $bitmask) == $bitmask;
+    }
+
+    public function addPreProcess(string $name, callable $callable)
+    {
+        if (is_callable($callable)) {
+            $this->preProcess[$name] = $callable;
+        }
+    }
+
+    public function addPostProcess(string $name, callable $callable)
+    {
+        if (is_callable($callable)) {
+            $this->postProcess[$name] = $callable;
+        }
+    }
+
+    public function render(ReportTemplate $template, array $input, string $output = '')
     {
         $this->template = $template;
-        $this->microtime = microtime(true);
-
-        $this->twig = $templateEngine;
-
         $this->absolutePath = $template->getData('absolutePath');
         $this->absoluteURL = $template->getData('absoluteURL');
         $this->customAssetPath = $template->getData('customAssetPath');
@@ -43,82 +83,9 @@ class ReportRenderer
         if (is_dir($customTemplatePath)) {
             $this->twig->getLoader()->prependPath($customTemplatePath);
         }
-    }
 
-    public function setMode($bitmask)
-    {
-        $this->mode |= $bitmask;
-    }
-
-    public function hasMode($bitmask)
-    {
-        return ($this->mode & $bitmask) == $bitmask;
-    }
-
-    public function renderToHTML($input) 
-    {
         $reports = (is_array($input))? $input : array($input);
-        $html = '';
-        $pages = [];
-        $pageNum = 1;
-        $this->template->addData([
-            'pageNum' => $pageNum,
-            'basePath' => $this->absoluteURL,
-            'assetPath' => $this->absoluteURL.$this->customAssetPath,
-            'isDraft' => $this->template->getIsDraft(),
-        ]);
-
-        foreach ($reports as $reportData) {
-            
-            if ($header = $this->template->getHeader($pageNum)) {
-                $html .= '<header style="height: '.$header->height.'mm">'.$this->renderSectionToHTML($header, $reportData).'</header>';
-            }
-
-            $pageBreak = function ($html) use (&$pages, &$pageNum, &$reportData) {
-                if ($footer = $this->template->getFooter($pageNum)) {
-                    $html .= '<footer style="height: '.$footer->height.'mm">'.$this->renderSectionToHTML($footer, $reportData).'</footer>';
-                }
-
-                $pages[$pageNum] = $html;
-                $html = '';
-                $pageNum++;
-                $this->template->addData(['pageNum' => $pageNum]);
-                
-                if ($header = $this->template->getHeader($pageNum)) {
-                    $html .= '<header style="height: '.$header->height.'mm">'.$this->renderSectionToHTML($header, $reportData).'</header>';
-                }
-
-                return $html;
-            };
-
-            $sections = $this->template->getSections();
-            foreach ($sections as $section) {
-
-                if ($section->hasFlag(ReportSection::PAGE_BREAK_BEFORE)) {
-                    $html = $pageBreak($html);
-                }
-
-                $html .= '<section>'.$this->renderSectionToHTML($section, $reportData).'</section>';
-
-                if ($section->hasFlag(ReportSection::PAGE_BREAK_AFTER)) {
-                    $html = $pageBreak($html);
-                }
-            }
-
-            if ($footer = $this->template->getFooter($pageNum, true)) {
-                $html .= '<footer style="height: '.$footer->height.'mm">'.$this->renderSectionToHTML($footer, $reportData).'</footer>';
-            }
-            
-            $pages[$pageNum] = $html;
-        }
-
-        return $pages;
-    }
-
-    public function renderToPDF($input, $filename) 
-    {
-        $reports = (is_array($input))? $input : array($input);
-        $this->filename = $filename;
+        $this->filename = $output;
 
         $this->setupDocument();
         
@@ -134,20 +101,6 @@ class ReportRenderer
             $finalReport = end($reports);
             $outputPath = $this->getFilePath($finalReport);
             $this->finishDocument($outputPath);
-        }
-    }
-
-    public function addPreProcess($name, $callable)
-    {
-        if (is_callable($callable)) {
-            $this->preProcess[$name] = $callable;
-        }
-    }
-
-    public function addPostProcess($name, $callable)
-    {
-        if (is_callable($callable)) {
-            $this->postProcess[$name] = $callable;
         }
     }
 
@@ -171,8 +124,6 @@ class ReportRenderer
                 return;
             }
         }
-
-        $this->profileStart();
 
         $this->pdf->setLastPage($section->lastPage);
 
@@ -211,8 +162,6 @@ class ReportRenderer
         }
 
         $this->pdf->trimOverflow();
-
-        $this->profileEnd($section->template);
     }
 
     protected function renderSectionToHTML(ReportSection &$section, ReportData &$reportData)
@@ -366,7 +315,7 @@ class ReportRenderer
         foreach ($this->preProcess as $name => $callable) {
             try {
                 call_user_func($callable, $reportData);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 echo 'Error calling pre-process '.$name;
                 return;
             }
@@ -381,7 +330,7 @@ class ReportRenderer
             try {
                 $outputPath = $this->getFilePath($reportData);
                 call_user_func($callable, $reportData, $outputPath);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 echo 'Error calling post-process '.$name;
                 return;
             }
@@ -401,22 +350,5 @@ class ReportRenderer
         }
 
         return $filename;
-    }
-
-    public function getProfile()
-    {
-        return $this->profile;
-    }
-
-    private function profileStart()
-    {
-        $this->microtime = microtime(true);
-    }
-
-    private function profileEnd($name)
-    {
-        if (!isset($this->profile[$name])) $this->profile[$name] = 0;
-
-        $this->profile[$name] += (microtime(true) - $this->microtime);
     }
 }

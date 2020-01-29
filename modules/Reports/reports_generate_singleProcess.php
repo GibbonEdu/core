@@ -17,13 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Module\Reports\Domain\ReportGateway;
-use Gibbon\Module\Reports\ReportBuilder;
-use Gibbon\Module\Reports\ReportRenderer;
-use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 use Gibbon\Domain\Students\StudentGateway;
-use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
 use Gibbon\Module\Reports\ArchiveFile;
+use Gibbon\Module\Reports\ReportBuilder;
+use Gibbon\Module\Reports\Domain\ReportGateway;
+use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
+use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
+use Gibbon\Module\Reports\Renderer\MpdfRenderer;
+use Gibbon\Module\Reports\Renderer\TcpdfRenderer;
 
 require_once '../../gibbon.php';
 
@@ -60,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_b
     $archiveFile = $container->get(ArchiveFile::class);
     
     $template = $reportBuilder->buildTemplate($report['gibbonReportTemplateID'], $status == 'Draft');
-    $renderer = new ReportRenderer($template, $container->get('twig'));
+    $renderer = $container->get($template->getData('flags') == 1 ? MpdfRenderer::class : TcpdfRenderer::class);
 
     foreach ($identifiers as $identifier) {
 
@@ -70,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_b
         // Archive
         if ($student = $studentGateway->getByID($identifier)) {
             $path = $archiveFile->getSingleFilePath($gibbonReportID, $student['gibbonYearGroupID'], $identifier);
-            $renderer->renderToPDF($reports, $gibbon->session->get('absolutePath').$archive['path'].'/'.$path);
+            $renderer->render($template, $reports, $gibbon->session->get('absolutePath').$archive['path'].'/'.$path);
 
             $reportArchiveEntryGateway->insertAndUpdate([
                 'reportIdentifier'      => $report['name'],
