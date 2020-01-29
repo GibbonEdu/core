@@ -10,6 +10,7 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
+        '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         'abede361264e2ae69ec1eee813a101af' => __DIR__ . '/..' . '/markbaker/complex/classes/src/functions/abs.php',
         '21a5860fbef5be28db5ddfbc3cca67c4' => __DIR__ . '/..' . '/markbaker/complex/classes/src/functions/acos.php',
         '1546e3f9d127f2a9bb2d1b6c31c26ef1' => __DIR__ . '/..' . '/markbaker/complex/classes/src/functions/acosh.php',
@@ -75,6 +76,10 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
     );
 
     public static $prefixLengthsPsr4 = array (
+        's' => 
+        array (
+            'setasign\\Fpdi\\' => 14,
+        ),
         'p' => 
         array (
             'phpseclib\\' => 10,
@@ -101,6 +106,7 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         ),
         'M' => 
         array (
+            'Mpdf\\' => 5,
             'Monolog\\' => 8,
             'Matthewbdaly\\SMS\\' => 17,
             'Matrix\\' => 7,
@@ -127,6 +133,10 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
             'FastRoute\\' => 10,
             'Faker\\' => 6,
         ),
+        'D' => 
+        array (
+            'DeepCopy\\' => 9,
+        ),
         'C' => 
         array (
             'Complex\\' => 8,
@@ -138,6 +148,10 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
     );
 
     public static $prefixDirsPsr4 = array (
+        'setasign\\Fpdi\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/setasign/fpdi/src',
+        ),
         'phpseclib\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib',
@@ -185,6 +199,10 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         'PhpOffice\\PhpSpreadsheet\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet',
+        ),
+        'Mpdf\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mpdf/mpdf/src',
         ),
         'Monolog\\' => 
         array (
@@ -238,6 +256,10 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         'Faker\\' => 
         array (
             0 => __DIR__ . '/..' . '/fzaninotto/faker/src/Faker',
+        ),
+        'DeepCopy\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
         ),
         'Complex\\' => 
         array (
