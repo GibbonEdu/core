@@ -21,26 +21,33 @@ namespace Gibbon\Module\Reports\Sources;
 
 use Gibbon\Module\Reports\DataSource;
 
-class Report extends DataSource
+class CustomFields extends DataSource
 {
     public function getSchema()
     {
         return [
-            'name'       => "Sample Report",
-            'status'     => "Final",
-            'date'       => ['date', 'Y-m-d'],
-            'schoolYear' => '2019-2020',
+            'Field Name'   => ['sentence'],
         ];
     }
 
     public function getData($ids = [])
     {
-        $data = ['gibbonReportID' => $ids['gibbonReportID']];
-        $sql = "SELECT gibbonReport.name, gibbonReport.status, gibbonReport.accessDate as date, gibbonSchoolYear.name as schoolYear
-                FROM gibbonReport 
-                JOIN gibbonSchoolYear ON (gibbonSchoolYear.gibbonSchoolYearID=gibbonReport.gibbonSchoolYearID)
-                WHERE gibbonReport.gibbonReportID=:gibbonReportID";
+        $data = ['gibbonStudentEnrolmentID' => $ids['gibbonStudentEnrolmentID']];
+        $sql = "SELECT gibbonPerson.fields
+                FROM gibbonStudentEnrolment 
+                JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                WHERE gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID";
 
-        return $this->db()->selectOne($sql, $data);
+        $fieldData = $this->db()->selectOne($sql, $data);
+        $personFields = unserialize($fieldData ?? '');
+
+        $sql = "SELECT name, gibbonPersonFieldID FROM gibbonPersonField WHERE active='Y' AND activePersonStudent=1";
+        $fields = $this->db()->select($sql)->fetchKeyPair();
+        
+        $personFields = array_map(function ($id) use ($personFields) {
+            return $personFields[$id] ?? '';
+        }, $fields);
+
+        return $personFields;
     }
 }
