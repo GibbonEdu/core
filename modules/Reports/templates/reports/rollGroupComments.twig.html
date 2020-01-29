@@ -10,7 +10,7 @@ sources:
 {{- stylesheet ? include(stylesheet) -}}
 
 {%- for criteria in []|merge(rollGroupCriteria.perGroup|default([]))|merge(rollGroupCriteria.perStudent|default([])) -%}
-<table style="width: 100%; padding: 0;" class="w-full" cellspacing="0" cellpadding="0" nobr="true">
+<table class="w-full table" cellspacing="0" cellpadding="0" nobr="true" style="padding: 0;">
     {% if criteria.valueType == 'Comment' %}
     <tr>
         <td class="w-full header" style="line-height:1.8;font-size: 12pt; font-weight: bold;" colspan="2">
