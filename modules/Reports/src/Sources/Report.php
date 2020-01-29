@@ -29,7 +29,7 @@ class Report extends DataSource
             'name'       => "Sample Report",
             'status'     => "Final",
             'date'       => ['date', 'Y-m-d'],
-            'schoolYear' => ['date', 'Y-m-d'],
+            'schoolYear' => '2019-2020',
         ];
     }
 
