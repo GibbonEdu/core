@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
         if ($gibbonCourseClassID == '') {
             $page->breadcrumbs->add(__('Write Internal Assessments'));
             echo "<div class='warning'>";
-            echo 'Use the class listing on the right to choose a Internal Assessment to write.';
+            echo __('Use the class listing on the right to choose a Internal Assessment to write.');
             echo '</div>';
         }
         //Check existence of and access to this class.
@@ -96,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 $page->breadcrumbs->add(__('Write {courseClass} Internal Assessments', ['courseClass' => $row['course'].'.'.$row['class']]));
 
                 if (isset($_GET['return'])) {
-                    returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));
+                    returnProcess($guid, $_GET['return'], null, array('success0' => __('Your request was completed successfully.')));
                 }
 
                 //Get teacher list

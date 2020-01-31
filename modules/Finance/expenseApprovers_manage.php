@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
     $page->breadcrumbs->add(__('Manage Expense Approvers'));
 
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));
+        returnProcess($guid, $_GET['return'], null, array('success0' => __('Your request was completed successfully.')));
     }
 
     //Set pagination variable
@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
             echo __("Expense approval has been set as 'Chain Of All', which means that all of the people listed below need to approve an expense, in order from lowest to highest, before it can go ahead.");
         }
     } else {
-        echo __('Expense Approval policies have not been set up: this should be done under Admin > School Admin > Manage Finance Settings.');
+        echo __('Expense Approval policies have not been set up: this should be done under Admin > School Admin > Finance Settings.');
     }
     echo '</p>';
 

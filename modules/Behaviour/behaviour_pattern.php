@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     $page->breadcrumbs->add(__('Find Behaviour Patterns'));
 
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));
+        returnProcess($guid, $_GET['return'], null, array('success0' => __('Your request was completed successfully.')));
     }
 
     $descriptor = isset($_GET['descriptor'])? $_GET['descriptor'] : '';

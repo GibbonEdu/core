@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
     $page->breadcrumbs->add(__('Manage Fee Categories'));
 
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));
+        returnProcess($guid, $_GET['return'], null, array('success0' => __('Your request was completed successfully.')));
     }
 
     //Set pagination variable

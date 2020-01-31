@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archiv
     $page->breadcrumbs->add(__('Archive Records'));
 
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));
+        returnProcess($guid, $_GET['return'], null, array('success0' => __('Your request was completed successfully.')));
     }
     
     $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);

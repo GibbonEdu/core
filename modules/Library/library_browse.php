@@ -371,7 +371,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
             echo '</td>';
             echo "<td style='width: 130px'>";
             echo '<b>'.$row['id'].'</b><br/>';
-            echo "<span style='font-size: 85%; font-style: italic'>".$row['status'].'</span>';
+            echo "<span style='font-size: 85%; font-style: italic'>".__($row['status']).'</span>';
             echo '</td>';
             echo "<td style='width: 130px'>";
             if ($row['gibbonSpaceID'] != '') {
@@ -418,7 +418,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
                         if (isset($fields[$typeField['name']]) && $fields[$typeField['name']] != '') {
                             echo '<tr>';
                             echo "<td style='vertical-align: top; width: 200px'>";
-                            echo '<b>'.($typeField['name']).'</b>';
+                            echo '<b>'.(__($typeField['name'])).'</b>';
                             echo '</td>';
                             echo "<td style='vertical-align: top'>";
                             if ($typeField['type'] == 'URL') {

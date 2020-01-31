@@ -105,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         ->add(__('Enter Internal Assessment Results'));
 
                     if (isset($_GET['return'])) {
-                        returnProcess($guid, $_GET['return'], null, array('error3' => 'Your request failed due to an attachment error.', 'success0' => 'Your request was completed successfully.'));
+                        returnProcess($guid, $_GET['return'], null, array('error3' => __('Your request failed due to an attachment error.'), 'success0' => __('Your request was completed successfully.')));
                     }
 
                     $hasAttainment = $values['attainment'] == 'Y';
