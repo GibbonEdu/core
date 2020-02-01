@@ -42,6 +42,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_b
 } else {
     // Proceed!
     $partialFail = false;
+
+    ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
     
     $reportGateway = $container->get(ReportGateway::class);
     $reportArchiveEntryGateway = $container->get(ReportArchiveEntryGateway::class);

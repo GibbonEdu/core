@@ -52,6 +52,8 @@ class GenerateReportProcess extends BackgroundProcess implements ContainerAwareI
 
     public function runReportBatch($gibbonReportID, $contexts = [], $status = 'Draft', $gibbonPersonID = null)
     {
+        ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
+        
         $timeStart = time();
         $report = $this->container->get(ReportGateway::class)->getByID($gibbonReportID);
 
