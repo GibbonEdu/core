@@ -35,6 +35,8 @@ v20.0.00
 
     Bug Fixes
         System: fixed module uninstall to also remove notification events
+        Students: fixed emergency data report not showing parents column
+        Reports: fixed Course scope Per Group criteria not saving per-class
 
 v19.0.00
 --------
