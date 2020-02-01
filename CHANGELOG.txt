@@ -37,6 +37,7 @@ v20.0.00
         System: fixed module uninstall to also remove notification events
         Students: fixed emergency data report not showing parents column
         Reports: fixed Course scope Per Group criteria not saving per-class
+        Reports: suppressed TCPDF deprecation messages when generating PDFs
 
 v19.0.00
 --------
