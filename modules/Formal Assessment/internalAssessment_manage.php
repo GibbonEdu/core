@@ -23,7 +23,7 @@ use Gibbon\Services\Format;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_manage.php') == false) {
-    //Acess denied
+    //Access denied
     echo "<div class='error'>";
     echo __('Your request failed because you do not have access to this action.');
     echo '</div>';
@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
         echo 'Manage Internal Assessment';
         echo '</h1>';
         echo "<div class='warning'>";
-        echo __('Use the class listing on the right to choose a Internal Assessment to edit.');
+        echo __('Use the class listing on the right to choose an Internal Assessment to edit.');
         echo '</div>';
     }
     //Check existence of and access to this class.
