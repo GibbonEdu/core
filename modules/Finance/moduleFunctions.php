@@ -1002,10 +1002,13 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         $return .= "<td style='width: 33%; padding-top: 15px; padding-left: 10px; vertical-align: top; $style $style4'>";
         $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Fees For').'</span><br/>';
         if ($invoiceeNameStyle =='Official Name') {
-            $return .= htmlPrep($row['officialName'])."<br/><span style='font-style: italic; font-size: 85%'>".__('Roll Group').' '.$row['rollgroup'].'</span><br/>';
+            $return .= htmlPrep($row['officialName'])."<br/><span style='font-style: italic; font-size: 85%'>".__('Roll Group').': '.$row['rollgroup'].'</span><br/>';
         }
         else {
-            $return .= Format::name('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true)."<br/><span style='font-style: italic; font-size: 85%'>".__('Roll Group').' '.$row['rollgroup'].'</span><br/>';
+            $return .= Format::name('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true)."<br/><span style='font-style: italic; font-size: 85%'>".__('Roll Group').': '.$row['rollgroup'].'</span><br/>';
+        }
+        if ($row['studentID'] != '') {
+            $return .= "<span style='font-style: italic; font-size: 85%'>".__('Student ID').': '.$row['studentID']."</span>";
         }
         $return .= '</td>';
         $return .= "<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style4'>";
@@ -1338,10 +1341,13 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         $return .= "<td style='width: 33%; padding-top: 15px; padding-left: 10px; vertical-align: top; $style $style4'>";
         $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Fees For').'</span><br/>';
         if ($invoiceeNameStyle =='Official Name') {
-            $return .= htmlPrep($row['officialName'])."<br/><span style='font-style: italic; font-size: 85%'>".__('Roll Group').' '.$row['rollgroup'].'</span><br/>';
+            $return .= htmlPrep($row['officialName'])."<br/><span style='font-style: italic; font-size: 85%'>".__('Roll Group').': '.$row['rollgroup'].'</span><br/>';
         }
         else {
-            $return .= Format::name('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true)."<br/><span style='font-style: italic; font-size: 85%'>".__('Roll Group').' '.$row['rollgroup'].'</span><br/>';
+            $return .= Format::name('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true)."<br/><span style='font-style: italic; font-size: 85%'>".__('Roll Group').': '.$row['rollgroup'].'</span><br/>';
+        }
+        if ($row['studentID'] != '') {
+            $return .= "<span style='font-style: italic; font-size: 85%'>".__('Student ID').': '.$row['studentID']."</span>";
         }
         $return .= '</td>';
         $return .= "<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style4'>";
