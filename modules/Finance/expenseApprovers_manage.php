@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
     $page->breadcrumbs->add(__('Manage Expense Approvers'));
 
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('success0' => __('Your request was completed successfully.')));
+        returnProcess($guid, $_GET['return']);
     }
 
     //Set pagination variable

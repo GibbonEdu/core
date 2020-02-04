@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         ->add(__('Edit Activity'));
     
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('error3' => 'Your request failed due to an attachment error.'));
+        returnProcess($guid, $_GET['return'], null, array('error3' => __('Your request failed due to an attachment error.')));
     }
 
     //Check if school year specified

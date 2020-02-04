@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
     $page->breadcrumbs->add(__('Manage Budget Cycles'));
 
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('success0' => __('Your request was completed successfully.')));
+        returnProcess($guid, $_GET['return']);
     }
 
     try {

@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
         ->add(__('Edit Assessment'));
 
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('success0' => __('Your request was completed successfully.')));
+        returnProcess($guid, $_GET['return']);
     }
 
     //Check if school year specified

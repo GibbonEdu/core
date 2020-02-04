@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 } else {
     //Proceed!
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('success0' => __('Your request was completed successfully.')));
+        returnProcess($guid, $_GET['return']);
     }
 
     echo '<h3>';

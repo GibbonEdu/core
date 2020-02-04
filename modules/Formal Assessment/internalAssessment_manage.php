@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             $page->breadcrumbs->add(__('Manage').' '.$row['course'].'.'.$row['class'].' '.__('Internal Assessments'));
 
             if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, array('success0' => __('Your request was completed successfully.')));
+                returnProcess($guid, $_GET['return']);
             }
 
             //Add multiple columns

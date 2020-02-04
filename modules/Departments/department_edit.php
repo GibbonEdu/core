@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
                 ->add(__('Edit Department'));            
 
             if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, array('error3' => 'Your request failed due to an attachment error.'));
+                returnProcess($guid, $_GET['return'], null, array('error3' => __('Your request failed due to an attachment error.')));
             }
 
             //Get role within learning area
