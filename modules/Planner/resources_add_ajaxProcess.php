@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
 } else {
     if (empty($_POST)) {
         echo "<span style='font-weight: bold; color: #ff0000'>";
-        echo 'Your request failed due to an attachment error.';
+        echo __('Your request failed due to an attachment error.');
         echo '</span>';
         exit();
     } else {

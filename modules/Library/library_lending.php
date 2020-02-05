@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
 } else {
     //Proceed!
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));
+        returnProcess($guid, $_GET['return']);
     }
 
     echo '<h3>';

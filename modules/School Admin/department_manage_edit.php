@@ -89,24 +89,24 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
             );
 
             $row = $form->addRow();
-                $row->addLabel('type', 'Type');
+                $row->addLabel('type', __('Type'));
                 $row->addTextField('type')->readOnly();
 
             $row = $form->addRow();
-                $row->addLabel('name', 'Name');
+                $row->addLabel('name', __('Name'));
                 $row->addTextField('name')->maxLength(40)->required();
 
             $row = $form->addRow();
-                $row->addLabel('nameShort', 'Short Name');
+                $row->addLabel('nameShort', __('Short Name'));
                 $row->addTextField('nameShort')->maxLength(4)->required();
 
             $row = $form->addRow();
-                $row->addLabel('subjectListing', 'Subject Listing');
+                $row->addLabel('subjectListing', __('Subject Listing'));
                 $row->addTextField('subjectListing')->maxLength(255);
 
             $row = $form->addRow();
                $column = $row->addColumn()->setClass('');
-               $column->addLabel('blurb', 'Blurb');
+               $column->addLabel('blurb', __('Blurb'));
                $column->addEditor('blurb', $guid);
 
             $row = $form->addRow();
@@ -137,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
                 while ($staff = $results->fetch()) {
                     $row = $table->addRow();
                     $row->addContent(Format::name('', $staff['preferredName'], $staff['surname'], 'Staff', true, true));
-                    $row->addContent($staff['role']);
+                    $row->addContent(__($staff['role']));
                     $row->addContent("<a onclick='return confirm(\"".__('Are you sure you wish to delete this record?')."\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/department_manage_edit_staff_deleteProcess.php?address='.$_GET['q'].'&gibbonDepartmentStaffID='.$staff['gibbonDepartmentStaffID']."&gibbonDepartmentID=$gibbonDepartmentID'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>");
                 }
             }
@@ -145,16 +145,16 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
             $form->addRow()->addHeading(__('New Staff'));
 
             $row = $form->addRow();
-                $row->addLabel('staff', 'Staff');
+                $row->addLabel('staff', __('Staff'));
                 $row->addSelectStaff('staff')->selectMultiple();
 
             if ($values['type'] == 'Learning Area') {
                 $row = $form->addRow()->setClass('roleLARow');
-                    $row->addLabel('role', 'Role');
+                    $row->addLabel('role', __('Role'));
                     $row->addSelect('role')->fromArray($typesLA);
             } else {
                 $row = $form->addRow()->setClass('roleAdmin');
-                    $row->addLabel('role', 'Role');
+                    $row->addLabel('role', __('Role'));
                     $row->addSelect('role')->fromArray($typesAdmin);
             }
 

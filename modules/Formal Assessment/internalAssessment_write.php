@@ -96,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 $page->breadcrumbs->add(__('Write {courseClass} Internal Assessments', ['courseClass' => $row['course'].'.'.$row['class']]));
 
                 if (isset($_GET['return'])) {
-                    returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));
+                    returnProcess($guid, $_GET['return']);
                 }
 
                 //Get teacher list

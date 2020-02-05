@@ -414,12 +414,12 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
         $ignoreErrors = $_POST['ignoreErrors'] ?? false;
 
         if (empty($csvData) || empty($columnOrder)) {
-            echo Format::alert('Your request failed because your inputs were invalid.');
+            echo Format::alert(__('Your request failed because your inputs were invalid.'));
             return;
         } elseif ($mode != "sync" and $mode != "insert" and $mode != "update") {
             echo Format::alert(__('Import cannot proceed, as the "Mode" field has been left blank.'));
         } elseif (($mode == 'sync' || $mode == 'update') && (!empty($syncField) && $syncColumn < 0)) {
-            echo Format::alert(__("Your request failed because your inputs were invalid."));
+            echo Format::alert(__('Your request failed because your inputs were invalid.'));
             return;
         } elseif (empty($fieldDelimiter) or empty($stringEnclosure)) {
             echo Format::alert(__('Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.'));
