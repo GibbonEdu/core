@@ -118,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edi
                 $row->addYesNo('futureYearsLogin')->required()->selected($role['futureYearsLogin']);
 
             $row = $form->addRow();
-                $row->addLabel('restriction', __('Restriction'))->description('Determines who can grant or remove this role in Manage Users.');
+                $row->addLabel('restriction', __('Restriction'))->description(__('Determines who can grant or remove this role in Manage Users.'));
             if ($role['name'] == 'Administrator') {
                 $row->addTextField('restriction')->required()->readonly()->setValue('Admin Only');
             } else {

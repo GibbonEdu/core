@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
             $values = $result->fetch();
 
             if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));
+                returnProcess($guid, $_GET['return']);
             }
 
             if ($_GET['name'] != '' or $_GET['gibbonLibraryTypeID'] != '' or $_GET['gibbonSpaceID'] != '' or $_GET['status'] != '') {

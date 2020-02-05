@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage.php
     $page->breadcrumbs->add(__('Manage Budgets'));
 
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));
+        returnProcess($guid, $_GET['return']);
     }
 
     //Set pagination variable

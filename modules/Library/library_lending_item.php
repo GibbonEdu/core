@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 } else {
     //Proceed!
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));
+        returnProcess($guid, $_GET['return']);
     }
 
     //Check if school year specified

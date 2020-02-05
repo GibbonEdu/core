@@ -96,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
             $table->addColumn('name', __('Name'));
             $table->addColumn('nameShort', __('Short Name'));
             $table->addColumn('time', __('Time'))->format(Format::using('timeRange', ['timeStart', 'timeEnd']));
-            $table->addColumn('type', __('Type'));
+            $table->addColumn('type', __('Type'))->translatable();
 
             // ACTIONS
             $table->addActionColumn()
