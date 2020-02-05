@@ -99,7 +99,7 @@ class GenerateReportProcess extends BackgroundProcess implements ContainerAwareI
                 if ($student = $studentGateway->getByID($identifier)) {
                     // Render the Report: Single
                     $path = $archiveFile->getSingleFilePath($gibbonReportID, $student['gibbonYearGroupID'], $identifier);
-                    $renderer->renderToPDF([$studentReport], $this->absolutePath.$archive['path'].'/'.$path);
+                    $renderer->render($template, [$studentReport], $this->absolutePath.$archive['path'].'/'.$path);
 
                     // Update the Archive: Single
                     $reportArchiveEntryGateway->insertAndUpdate([
