@@ -71,7 +71,7 @@ if (empty($_POST) or empty($_FILES)) {
                     exit();
                 } else {
                     $extension = strrchr($attachment, '.');
-                    $name = mb_substr(basename($file['name']), 0, mb_strpos(basename($file['name']), '.'));
+                    $name = mb_substr(basename($file['name']), 0, mb_strrpos(basename($file['name']), '.'));
 
                     if ((strcasecmp($extension, '.gif') == 0 or strcasecmp($extension, '.jpg') == 0 or strcasecmp($extension, '.jpeg') == 0 or strcasecmp($extension, '.png') == 0) and $imagesAsLinks == false) {
                         $html = "<a target='_blank' style='font-weight: bold' href='".$_SESSION[$guid]['absoluteURL'].'/'.$attachment."'><img class='resource' style='max-width: 500px' src='".$_SESSION[$guid]['absoluteURL'].'/'.$attachment."'></a>";
