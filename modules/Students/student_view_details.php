@@ -631,9 +631,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
                                     WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
                                         AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID3
+                                        AND gibbonPerson.status='Full'
                                 )
                                 UNION
-                                (SELECT surname, preferredName, email FROM gibbonRollGroup JOIN gibbonPerson ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID) WHERE gibbonRollGroupID=:gibbonRollGroupID)
+                                (SELECT surname, preferredName, email FROM gibbonRollGroup JOIN gibbonPerson ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID) WHERE gibbonRollGroupID=:gibbonRollGroupID AND gibbonPerson.status='Full')
                                 ORDER BY preferredName, surname, email";
                             $resultDetail = $connection2->prepare($sqlDetail);
                             $resultDetail->execute($dataDetail);
