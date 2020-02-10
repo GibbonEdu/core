@@ -38,6 +38,7 @@ v20.0.00
         System: fixed module uninstall to also remove notification events
         System: fixed Quick File Upload trimming filename by first period
         Students: fixed emergency data report not showing parents column
+        Students: fixed Tutors and EAs set to Left showing on Student Profile
         Reports: fixed Course scope Per Group criteria not saving per-class
         Reports: suppressed TCPDF deprecation messages when generating PDFs
 
