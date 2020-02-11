@@ -36,9 +36,13 @@ v20.0.00
 
     Bug Fixes
         System: fixed module uninstall to also remove notification events
+        System: fixed Quick File Upload trimming filename by first period
+        Planner: changed spelling of Publically to Publicly
         Students: fixed emergency data report not showing parents column
+        Students: fixed Tutors and EAs set to Left showing on Student Profile
         Reports: fixed Course scope Per Group criteria not saving per-class
         Reports: suppressed TCPDF deprecation messages when generating PDFs
+        Reports: fixed pronoun switching not applied globally in some browsers
 
 v19.0.00
 --------

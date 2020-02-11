@@ -82,11 +82,12 @@ function updatePlaceholders(element)
     var gender = $(element).data('gender') ? $(element).data('gender') : '';
     if (gender.length > 0) {
         if (gender == 'F') {
-            commentText = commentText.replace(/\bhe\b/, 'she').replace(/\bHe\b/, 'She');
-            commentText = commentText.replace(/\bhis\b/, 'her').replace(/\bHis\b/, 'Her');
+            commentText = commentText.replace(/\bhe\b/g, 'she').replace(/\bHe\b/g, 'She');
+            commentText = commentText.replace(/\bhis\b/g, 'her').replace(/\bHis\b/g, 'Her');
+            commentText = commentText.replace(/\bhim\b/g, 'her').replace(/\bHim\b/g, 'Her');
         } else if (gender == 'M') {
-            commentText = commentText.replace(/\bshe\b/, 'he').replace(/\bShe\b/, 'He');
-            commentText = commentText.replace(/\bher\b/, 'his').replace(/\bHer\b/, 'His');
+            commentText = commentText.replace(/\bshe\b/g, 'he').replace(/\bShe\b/g, 'He');
+            commentText = commentText.replace(/\bher\b/g, 'his').replace(/\bHer\b/g, 'His');
         }
     }
 
