@@ -363,7 +363,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                         $makeUnitsPublic = getSettingByScope($connection2, 'Planner', 'makeUnitsPublic');
                         if ($makeUnitsPublic == 'Y') {
                             $row = $form->addRow();
-                                $row->addLabel('sharedPublic', __('Shared Publically'))->description(__('Share this unit via the public listing of units? Useful for building MOOCS.'));
+                                $row->addLabel('sharedPublic', __('Shared Publicly'))->description(__('Share this unit via the public listing of units? Useful for building MOOCS.'));
                                 $row->addYesNo('sharedPublic')->required();
                         }
 
