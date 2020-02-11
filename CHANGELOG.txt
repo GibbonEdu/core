@@ -41,6 +41,7 @@ v20.0.00
         Students: fixed Tutors and EAs set to Left showing on Student Profile
         Reports: fixed Course scope Per Group criteria not saving per-class
         Reports: suppressed TCPDF deprecation messages when generating PDFs
+        Reports: fixed pronoun switching not applied globally in some browsers
 
 v19.0.00
 --------
