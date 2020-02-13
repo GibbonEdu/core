@@ -87,6 +87,8 @@ if (empty($gibbonSchoolYearID)) {
                     $gibbon->session->set('gibbonSchoolYearID', $rowYear['gibbonSchoolYearID']);
                     $gibbon->session->set('gibbonSchoolYearName', $rowYear['name']);
                     $gibbon->session->set('gibbonSchoolYearSequenceNumber', $rowYear['sequenceNumber']);
+                    $gibbon->session->set('gibbonSchoolYearFirstDay', $rowYear['firstDay']);
+                    $gibbon->session->set('gibbonSchoolYearLastDay', $rowYear['lastDay']);
 
                     // Reload cached FF actions
                     $gibbon->session->cacheFastFinderActions($gibbon->session->get('gibbonRoleIDCurrent'));

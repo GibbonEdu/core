@@ -43,6 +43,7 @@ v20.0.00
         Reports: fixed Course scope Per Group criteria not saving per-class
         Reports: suppressed TCPDF deprecation messages when generating PDFs
         Reports: fixed pronoun switching not applied globally in some browsers
+        System: fixed the first and last day of the selected school year
 
 v19.0.00
 --------
