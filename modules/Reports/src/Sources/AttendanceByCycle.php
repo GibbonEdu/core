@@ -52,7 +52,7 @@ class AttendanceByCycle extends DataSource
         ];
         $sql = "SELECT gibbonReportingCycle.cycleNumber , gibbonReport.gibbonReportID, gibbonAttendanceLogPerson.gibbonCourseClassID, gibbonAttendanceLogPerson.date, gibbonAttendanceLogPerson.timestampTaken, gibbonAttendanceLogPerson.type, gibbonAttendanceLogPerson.context
                 FROM gibbonReport
-                JOIN gibbonReportingCycle ON (gibbonReportingCycle.gibbonReportingCycleID=gibbonReport.gibbonReportingCycleID)
+                JOIN gibbonReportingCycle ON (gibbonReportingCycle.gibbonSchoolYearID=gibbonReport.gibbonSchoolYearID)
                 JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonReport.gibbonSchoolYearID)
                 JOIN gibbonSchoolYear ON (gibbonSchoolYear.gibbonSchoolYearID=gibbonStudentEnrolment.gibbonSchoolYearID)
                 JOIN gibbonAttendanceLogPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonAttendanceLogPerson.date BETWEEN gibbonReportingCycle.dateStart AND gibbonReportingCycle.dateEnd)
@@ -77,8 +77,11 @@ class AttendanceByCycle extends DataSource
                 return $carry;
             }, array());
 
-            $attendance = array_map(function($logs) {
-                $endOfDay = end($logs);
+            $attendance = array_map(function ($logs) {
+                $nonClassLogs = array_filter($logs, function ($log) {
+                    return $log['context'] != 'Class';
+                });
+                $endOfDay = end($nonClassLogs);
 
                 // Group by class
                 $endOfClasses = array_reduce($logs, function($carry, $log) {
