@@ -1599,7 +1599,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 $_SESSION[$guid]['sidebarExtra'] .= "<div style='padding-top: 5px'><b>".Format::name($rowClassGroup['title'], $rowClassGroup['preferredName'], $rowClassGroup['surname'], 'Staff').'</b><br/>';
                             }
 
-                            $_SESSION[$guid]['sidebarExtra'] .= '<i>'.$rowClassGroup['role'].'</i><br/><br/></div>';
+                            $_SESSION[$guid]['sidebarExtra'] .= '<i>'.__($rowClassGroup['role']).'</i><br/><br/></div>';
                             $_SESSION[$guid]['sidebarExtra'] .= '</td>';
 
                             if ($count % $columns == ($columns - 1)) {
