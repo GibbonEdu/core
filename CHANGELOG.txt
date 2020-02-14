@@ -30,6 +30,7 @@ v20.0.00
     Tweaks & Additions
         Departments: added drag-drop ordering to Departments in School Admin
         Finance: added Student ID, where set, to invoices and receipts
+        Planner: enhanced Smart Block display in Lesson Planner
         Reports: added a Proof Read by Form Group option
         Reports: added an option to select the PDF rendering library in Template Builder
         Students: added an Exclude Left Students checkbox to Student Enrolment Trends, off by default
@@ -43,6 +44,7 @@ v20.0.00
         Reports: fixed Course scope Per Group criteria not saving per-class
         Reports: suppressed TCPDF deprecation messages when generating PDFs
         Reports: fixed pronoun switching not applied globally in some browsers
+        System: fixed the first and last day of the selected school year
 
 v19.0.00
 --------
