@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Contracts\Comms\SMS;
 use Gibbon\Services\Format;
+use Gibbon\Domain\User\RoleGateway;
 
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -285,11 +286,20 @@ else {
 
 			$form->toggleVisibilityByClass('role')->onRadio('role')->when('Y');
 
-			$data = array();
-			$sql = 'SELECT gibbonRoleID AS value, CONCAT(name," (",category,")") AS name FROM gibbonRole ORDER BY name';
-			$row = $form->addRow()->addClass('role hiddenReveal');
+
+                        $arrRoles = array();
+                        $roleGateway = $container->get(RoleGateway::class);
+                        $criteria =  $roleGateway->newQueryCriteria(true)
+                            ->sortBy(['name']);
+                        $roles = $roleGateway->queryRoles($criteria);
+
+                        foreach ($roles AS $role) {
+                            $arrRoles[$role['gibbonRoleID']] = __($role['name'])." (".__($role['category']).")";
+                        }
+                        
+                        $row = $form->addRow()->addClass('role hiddenReveal');
 		        $row->addLabel('roles[]', __('Select Roles'));
-		        $row->addSelect('roles[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->placeholder();
+		        $row->addSelect('roles[]')->fromArray($arrRoles)->selectMultiple()->setSize(6)->required()->placeholder();
 
 			//Role Category
 			$row = $form->addRow();

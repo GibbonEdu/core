@@ -213,7 +213,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                             $ext .= "'.".$rowExt['extension']."',";
                         }
                         $row = $form->addRow();
-                            $row->addLabel('file', __('Downloadable Unit Outline'))->description("Available to most users.");
+                            $row->addLabel('file', __('Downloadable Unit Outline'))->description(__("Available to most users."));
                             $row->addFileUpload('file')
                                 ->accepts(substr($ext, 0, -2));
 
@@ -222,7 +222,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 
                         $form->toggleVisibilityByClass('advanced')->onCheckbox('advanced')->when('Y');
                         $row = $form->addRow();
-                            $row->addCheckbox('advanced')->setValue('Y')->description('Show Advanced Options');
+                            $row->addCheckbox('advanced')->setValue('Y')->description(__('Show Advanced Options'));
 
                         //OUTCOMES
                         $form->addRow()->addHeading(__('Outcomes'))->append(__('Link this unit to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which units, classes and courses.'))->addClass('advanced');
@@ -258,7 +258,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                             "Public Domain" => __("Public Domain")
                         );
                         $row = $form->addRow()->addClass('advanced');
-                            $row->addLabel('license', 'License')->description(__('Under what conditions can this work be reused?'));
+                            $row->addLabel('license', __('License'))->description(__('Under what conditions can this work be reused?'));
                             $row->addSelect('license')->fromArray($licences)->placeholder();
 
                         $makeUnitsPublic = getSettingByScope($connection2, 'Planner', 'makeUnitsPublic');
