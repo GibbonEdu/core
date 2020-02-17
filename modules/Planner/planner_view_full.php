@@ -474,7 +474,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             }
                         if ($row['description'] != '') {
                             echo '<tr>';
-                            echo "<td style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top' colspan=3>";
+                            echo "<td class='unit-block text-base' style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top' colspan=3>";
                             echo $row['description'];
                             echo '</td>';
                             echo '</tr>';
