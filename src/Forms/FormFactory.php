@@ -397,6 +397,7 @@ class FormFactory implements FormFactoryInterface
         // I hate doing this ... was there a YAML file at one point?
         $currencies = array(
             'PAYPAL SUPPORTED' => array(
+                'ARS $' => 'Argentine Peso (ARS$)',
                 'AUD $' => 'Australian Dollar (A$)',
                 'BRL R$' => 'Brazilian Real (R$)',
                 'GBP £' => 'British Pound (£)',
