@@ -28,6 +28,7 @@ v20.0.00
     Security
 
     Tweaks & Additions
+        System: added Argentine Peso as a currency option
         Departments: added drag-drop ordering to Departments in School Admin
         Finance: added Student ID, where set, to invoices and receipts
         Planner: enhanced Smart Block display in Lesson Planner
