@@ -35,6 +35,7 @@ v20.0.00
         Reports: added a Proof Read by Form Group option
         Reports: added an option to select the PDF rendering library in Template Builder
         Students: added an Exclude Left Students checkbox to Student Enrolment Trends, off by default
+        Timetable Admin: added ability to include custom fields in class
 
     Bug Fixes
         System: fixed module uninstall to also remove notification events

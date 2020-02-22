@@ -74,11 +74,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
                         $partialFail = true;
                     }
 
-                    while ($rowClass = $resultClass->fetch()) {
+                    while ($rowClass = $resultClass->fetch()) {                        
                         //Write to database
                         try {
-                            $dataInsert = array('gibbonCourseID' => $AI, 'name' => $rowClass['name'], 'nameShort' => $rowClass['nameShort'], 'reportable' => $rowClass['reportable']);
-                            $sqlInsert = 'INSERT INTO gibbonCourseClass SET gibbonCourseID=:gibbonCourseID, name=:name, nameShort=:nameShort, reportable=:reportable';
+                            $dataInsert = array('gibbonCourseID' => $AI, 'name' => $rowClass['name'], 'nameShort' => $rowClass['nameShort'], 'reportable' => $rowClass['reportable'], 'fields' => $rowClass['fields']);
+                            $sqlInsert = 'INSERT INTO gibbonCourseClass SET gibbonCourseID=:gibbonCourseID, name=:name, nameShort=:nameShort, reportable=:reportable, fields=:fields';
                             $resultInsert = $connection2->prepare($sqlInsert);
                             $resultInsert->execute($dataInsert);
                         } catch (PDOException $e) {

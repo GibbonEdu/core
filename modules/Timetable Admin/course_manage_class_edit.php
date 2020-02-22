@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Domain\Timetable\ClassFieldGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_manage_class_edit.php') == false) {
     //Acess denied
@@ -46,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
     } else {
         try {
             $data = array('gibbonCourseID' => $gibbonCourseID, 'gibbonCourseClassID' => $gibbonCourseClassID);
-            $sql = 'SELECT gibbonCourseClassID, gibbonCourseClass.name, gibbonCourseClass.nameShort, gibbonCourse.gibbonCourseID, gibbonCourse.name AS courseName, gibbonCourse.nameShort as courseNameShort, gibbonCourse.description AS courseDescription, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName, reportable, attendance FROM gibbonCourseClass, gibbonCourse, gibbonSchoolYear WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=:gibbonCourseID AND gibbonCourseClassID=:gibbonCourseClassID';
+            $sql = 'SELECT gibbonCourseClassID, gibbonCourseClass.name, gibbonCourseClass.nameShort, gibbonCourse.gibbonCourseID, gibbonCourse.name AS courseName, gibbonCourse.nameShort as courseNameShort, gibbonCourse.description AS courseDescription, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName, reportable, attendance, fields FROM gibbonCourseClass, gibbonCourse, gibbonSchoolYear WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=:gibbonCourseID AND gibbonCourseClassID=:gibbonCourseClassID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -59,48 +60,71 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             echo '</div>';
         } else {
             //Let's go!
-			$values = $result->fetch(); 
-			
-			$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/course_manage_class_editProcess.php');
-			
-			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
-			$form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
-			$form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
-			$form->addHiddenValue('gibbonCourseID', $gibbonCourseID);
-			
-			$row = $form->addRow();
-				$row->addLabel('schoolYearName', __('School Year'));
-				$row->addTextField('schoolYearName')->required()->readonly()->setValue($values['yearName']);
-			
-			$row = $form->addRow();
-				$row->addLabel('courseName', __('Course'));
-				$row->addTextField('courseName')->required()->readonly()->setValue($values['courseName']);
+            $values = $result->fetch(); 
 
-			$row = $form->addRow();
-				$row->addLabel('name', __('Name'))->description(__('Must be unique for this course.'));
-				$row->addTextField('name')->required()->maxLength(30);
-			
-			$row = $form->addRow();
-				$row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique for this course.'));
-				$row->addTextField('nameShort')->required()->maxLength(8);
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/course_manage_class_editProcess.php');
 
-			$row = $form->addRow();
-				$row->addLabel('reportable', __('Reportable?'))->description(__('Should this class show in reports?'));
-				$row->addYesNo('reportable');
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+            $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
+            $form->addHiddenValue('gibbonCourseID', $gibbonCourseID);
 
-			if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
-				$row = $form->addRow();
-				$row->addLabel('attendance', __('Track Attendance?'))->description(__('Should this class allow attendance to be taken?'));
-				$row->addYesNo('attendance');
-			}
+            $row = $form->addRow();
+                    $row->addLabel('schoolYearName', __('School Year'));
+                    $row->addTextField('schoolYearName')->required()->readonly()->setValue($values['yearName']);
 
-			$row = $form->addRow();
-				$row->addFooter();
-				$row->addSubmit();
+            $row = $form->addRow();
+                    $row->addLabel('courseName', __('Course'));
+                    $row->addTextField('courseName')->required()->readonly()->setValue($values['courseName']);
 
-			$form->loadAllValuesFrom($values);
-		
-			echo $form->getOutput();
+            $row = $form->addRow();
+                    $row->addLabel('name', __('Name'))->description(__('Must be unique for this course.'));
+                    $row->addTextField('name')->required()->maxLength(30);
+
+            $row = $form->addRow();
+                    $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique for this course.'));
+                    $row->addTextField('nameShort')->required()->maxLength(8);
+
+            $row = $form->addRow();
+                    $row->addLabel('reportable', __('Reportable?'))->description(__('Should this class show in reports?'));
+                    $row->addYesNo('reportable');
+
+            if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
+                $row = $form->addRow();
+                    $row->addLabel('attendance', __('Track Attendance?'))->description(__('Should this class allow attendance to be taken?'));
+                    $row->addYesNo('attendance');
+            }
+
+            // CUSTOM FIELDS
+            $classFieldGateway = $container->get(ClassFieldGateway::class);
+
+            // QUERY
+            $criteria = $classFieldGateway->newQueryCriteria(true)
+                ->filterBy('active','Y');
+
+            $classFields = $classFieldGateway->queryClassFields($criteria);                                
+            $existingFields = (isset($values['fields']))? unserialize($values['fields']) : null;
+            
+            if ($classFields->count() > 0) {
+                $heading = $form->addRow()->addHeading(__('Custom Fields'));
+                foreach ($classFields as $rowFields) {
+                    
+                    $name = 'custom'.$rowFields['gibbonClassFieldID'];
+                    $value = (isset($existingFields[$rowFields['gibbonClassFieldID']]))? $existingFields[$rowFields['gibbonClassFieldID']] : '';
+
+                    $row = $form->addRow();
+                            $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
+                            $row->addCustomField($name, $rowFields)->setValue($value);
+                }
+            }                           
+
+            $row = $form->addRow();
+                    $row->addFooter();
+                    $row->addSubmit();
+
+            $form->loadAllValuesFrom($values);
+
+            echo $form->getOutput();
         }
     }
 }

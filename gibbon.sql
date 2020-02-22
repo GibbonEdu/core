@@ -376,7 +376,8 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000957, 0144, 'Progress by Person', 0, 'Progress', 'View report writing progress by person.', 'progress_byPerson.php', 'progress_byPerson.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000958, 0144, 'Proof Reading Progress', 0, 'Progress', 'View proof-reading completion by reporting cycle.', 'progress_byProofReading.php', 'progress_byProofReading.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000959, 0144, 'Write Reports_editAll', 2, 'Contribute', 'View and edit all reports, even after they are closed.', 'reporting_write.php,reporting_write_byStudent.php', 'reporting_write.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000960, 0144, 'Write Reports_mine', 1, 'Contribute', 'View and edit only the reports this user has access to.', 'reporting_write.php,reporting_write_byStudent.php', 'reporting_write.php', 'Y', 'Y', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');
+(0000960, 0144, 'Write Reports_mine', 1, 'Contribute', 'View and edit only the reports this user has access to.', 'reporting_write.php,reporting_write_byStudent.php', 'reporting_write.php', 'Y', 'Y', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000961, 0013, 'Manage Class Custom Fields', 0, 'Courses & Classes', 'Allows a user to create, edit and delete custom fields for classes.', 'classFields.php, classFields_add.php, classFields_edit.php, classFields_delete.php', 'classFields.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');
 
 -- --------------------------------------------------------
 
@@ -828,6 +829,22 @@ CREATE TABLE `gibbonBehaviourLetter` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Table structure for table `gibbonClassField`
+--
+
+CREATE TABLE `gibbonClassField` (
+  `gibbonClassFieldID` int(3) UNSIGNED ZEROFILL NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `active` enum('Y','N') NOT NULL DEFAULT 'Y',
+  `description` varchar(255) NOT NULL,
+  `type` enum('varchar','text','date','url','select','checkboxes') NOT NULL,
+  `options` text NOT NULL COMMENT 'Field length for varchar, rows for text, comma-separate list for select/checkbox.',
+  `required` enum('N','Y') NOT NULL DEFAULT 'N'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
 -- --------------------------------------------------------
 
 --
@@ -1115,7 +1132,8 @@ CREATE TABLE `gibbonCourseClass` (
   `nameShort` varchar(8) NOT NULL,
   `reportable` enum('Y','N') NOT NULL DEFAULT 'Y',
   `attendance` enum('Y','N') NOT NULL DEFAULT 'Y',
-  `gibbonScaleIDTarget` int(5) UNSIGNED ZEROFILL DEFAULT NULL
+  `gibbonScaleIDTarget` int(5) UNSIGNED ZEROFILL DEFAULT NULL,
+  `fields` text NOT NULL COMMENT 'Serialised array of custom field values'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -3273,7 +3291,8 @@ INSERT INTO `gibbonPermission` (`permissionID`, `gibbonRoleID`, `gibbonActionID`
 (0000054022, 001, 0000957),
 (0000054023, 001, 0000958),
 (0000054024, 001, 0000959),
-(0000054025, 002, 0000960);
+(0000054025, 002, 0000960),
+(0000054026, 001, 0000961);
 
 -- --------------------------------------------------------
 
@@ -5756,6 +5775,12 @@ ALTER TABLE `gibbonBehaviourLetter`
   ADD PRIMARY KEY (`gibbonBehaviourLetterID`);
 
 --
+-- Indexes for table `gibbonPersonField`
+--
+ALTER TABLE `gibbonClassField`
+  ADD PRIMARY KEY (`gibbonClassFieldID`);
+  
+--
 -- Indexes for table `gibbonCountry`
 --
 ALTER TABLE `gibbonCountry`
@@ -6785,7 +6810,7 @@ ALTER TABLE `gibbonYearGroup`
 -- AUTO_INCREMENT for table `gibbonAction`
 --
 ALTER TABLE `gibbonAction`
-  MODIFY `gibbonActionID` int(7) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=961;
+  MODIFY `gibbonActionID` int(7) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=962;
 
 --
 -- AUTO_INCREMENT for table `gibbonActivity`
@@ -6894,6 +6919,12 @@ ALTER TABLE `gibbonBehaviour`
 --
 ALTER TABLE `gibbonBehaviourLetter`
   MODIFY `gibbonBehaviourLetterID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `gibbonClassField`
+--
+ALTER TABLE `gibbonClassField`
+  MODIFY `gibbonClassFieldID` int(3) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `gibbonCourse`
@@ -7325,7 +7356,7 @@ ALTER TABLE `gibbonPayment`
 -- AUTO_INCREMENT for table `gibbonPermission`
 --
 ALTER TABLE `gibbonPermission`
-  MODIFY `permissionID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54026;
+  MODIFY `permissionID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54027;
 
 --
 -- AUTO_INCREMENT for table `gibbonPerson`

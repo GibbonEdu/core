@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Timetable\ClassFieldGateway;
+use Gibbon\Services\Format;
+
 include '../../gibbon.php';
 
 $gibbonCourseClassID = $_POST['gibbonCourseClassID'];
@@ -78,17 +81,52 @@ if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error load
                         $URL .= '&return=error3';
                         header("Location: {$URL}");
                     } else {
-                        //Write to database
-                        try {
-                            $data = array('name' => $name, 'nameShort' => $nameShort, 'reportable' => $reportable, 'attendance' => $attendance, 'gibbonCourseClassID' => $gibbonCourseClassID);
-                            $sql = 'UPDATE gibbonCourseClass SET name=:name, nameShort=:nameShort, reportable=:reportable, attendance=:attendance WHERE gibbonCourseClassID=:gibbonCourseClassID';
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
-                        } catch (PDOException $e) {
-                            $URL .= '&return=error2';
-                            header("Location: {$URL}");
-                            exit();
+                        $customRequireFail = false;
+                        $classFieldGateway = $container->get(ClassFieldGateway::class);
+
+                        // QUERY
+                        $criteria = $classFieldGateway->newQueryCriteria(true)
+                            ->filterBy('active','Y');
+
+                        $classFields = $classFieldGateway->queryClassFields($criteria);  
+                        $fields = array();
+                        if ($classFields->count() > 0) {
+                            foreach ( $classFields as $rowFields) {
+                                if (isset($_POST['custom'.$rowFields['gibbonClassFieldID']])) {
+                                    if ($rowFields['type'] == 'date') {
+                                        $fields[$rowFields['gibbonClassFieldID']] = Format::dateConvert($_POST['custom'.$rowFields['gibbonClassFieldID']]);
+                                    } else {
+                                        $fields[$rowFields['gibbonClassFieldID']] = $_POST['custom'.$rowFields['gibbonClassFieldID']];
+                                    }
+                                }
+                                if ($rowFields['required'] == 'Y') {
+                                    if (isset($_POST['custom'.$rowFields['gibbonClassFieldID']]) == false) {
+                                        $customRequireFail = true;
+                                    } elseif ($_POST['custom'.$rowFields['gibbonClassFieldID']] == '') {
+                                        $customRequireFail = true;
+                                    }
+                                }
+                            }
                         }
+                        if ($customRequireFail) {
+                            $URL .= '&return=error3';
+                            header("Location: {$URL}");
+                        } else {
+                            $fields = serialize($fields);                        
+                            //Write to database
+                            try {
+                                $data = array('name' => $name, 'nameShort' => $nameShort, 'reportable' => $reportable, 'attendance' => $attendance, 'fields' => $fields, 'gibbonCourseClassID' => $gibbonCourseClassID);
+                                $sql = 'UPDATE gibbonCourseClass SET name=:name, nameShort=:nameShort, reportable=:reportable, attendance=:attendance, fields=:fields WHERE gibbonCourseClassID=:gibbonCourseClassID';
+                                $result = $connection2->prepare($sql);
+                                $result->execute($data);
+                            } catch (PDOException $e) {
+                                $URL .= '&return=error2';
+                                header("Location: {$URL}");
+                                exit();
+                            }
+                        
+                        }
+                        
 
                         $URL .= '&return=success0';
                         header("Location: {$URL}");
