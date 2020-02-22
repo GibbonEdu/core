@@ -39,6 +39,7 @@ v20.0.00
     Bug Fixes
         System: fixed module uninstall to also remove notification events
         System: fixed Quick File Upload trimming filename by first period
+        Finance: fixed fee name bug in issued Invoices where fee name changed
         Planner: changed spelling of Publically to Publicly
         Students: fixed emergency data report not showing parents column
         Students: fixed Tutors and EAs set to Left showing on Student Profile
