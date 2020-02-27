@@ -32,6 +32,7 @@ v20.0.00
         Departments: added drag-drop ordering to Departments in School Admin
         Finance: added Student ID, where set, to invoices and receipts
         Planner: enhanced Smart Block display in Lesson Planner
+        Planner: removed bold from Chat comment in lesson plan view
         Reports: added a Proof Read by Form Group option
         Reports: added an option to select the PDF rendering library in Template Builder
         Students: added an Exclude Left Students checkbox to Student Enrolment Trends, off by default
