@@ -1008,7 +1008,8 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
             $return .= Format::name('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true)."<br/><span style='font-style: italic; font-size: 85%'>".__('Roll Group').': '.$row['rollgroup'].'</span><br/>';
         }
         if ($row['studentID'] != '') {
-            $return .= "<span style='font-style: italic; font-size: 85%'>".__('Student ID').': '.$row['studentID']."</span>";
+            $return .= "<div style='font-size: 115%; font-weight: bold; margin-top: 10px'>".__('Student ID')."</div>";
+            $return .= "<span style='font-style: italic; font-size: 85%'>".$row['studentID']."</span>";
         }
         $return .= '</td>';
         $return .= "<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style4'>";
@@ -1347,7 +1348,8 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
             $return .= Format::name('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true)."<br/><span style='font-style: italic; font-size: 85%'>".__('Roll Group').': '.$row['rollgroup'].'</span><br/>';
         }
         if ($row['studentID'] != '') {
-            $return .= "<span style='font-style: italic; font-size: 85%'>".__('Student ID').': '.$row['studentID']."</span>";
+            $return .= "<div style='font-size: 115%; font-weight: bold; margin-top: 10px'>".__('Student ID')."</div>";
+            $return .= "<span style='font-style: italic; font-size: 85%'>".$row['studentID']."</span>";
         }
         $return .= '</td>';
         $return .= "<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style4'>";
@@ -1422,7 +1424,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         }
         if ($receiptNumber !== null) {
             $return .= '<br/>';
-            $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Receipt Number (on this invoice)').'</span><br/>';
+            $return .= "<div style='font-size: 115%; font-weight: bold; margin-top: 10px'>".__('Receipt Number (on this invoice)')."</div>";
             $return .= ($receiptNumber + 1);
         }
         $return .= '</td>';
