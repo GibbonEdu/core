@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
         $row->addLabel('stylesheet', __('Stylesheet'));
         $row->addSelect('stylesheet')->fromResults($stylesheets)->placeholder();
 
-    $fontFamilies = $templateFontGateway->selectFontsByFamily();
+    $fontFamilies = $templateFontGateway->selectFontFamilies();
     $row = $form->addRow();
         $row->addLabel('fonts', __('Fonts'));
         $row->addSelect('fonts')

@@ -64,7 +64,7 @@ class ReportTemplateFontGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
-    public function selectFontsByFamily()
+    public function selectFontFamilies()
     {
         $sql = "SELECT fontFamily as value, CONCAT(fontFamily, ' (', COUNT(*), ')') as name FROM gibbonReportTemplateFont GROUP BY fontFamily ORDER BY fontFamily";
 
