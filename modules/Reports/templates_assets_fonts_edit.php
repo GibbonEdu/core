@@ -60,6 +60,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_f
         $row->addTextField('fontName')->maxLength(90)->required();
 
     $row = $form->addRow();
+        $row->addLabel('fontFamily', __('Font Family'));
+        $row->addTextField('fontFamily')->maxLength(60)->required();
+
+    $types = [
+        'R' => __('Regular'),
+        'B' => __('Bold'),
+        'I' => __('Italic'),
+        'BI' => __('Bold & Italic'),
+    ];
+    $row = $form->addRow();
+        $row->addLabel('fontType', __('Type'));
+        $row->addSelect('fontType')->fromArray($types);
+
+    $row = $form->addRow();
         $row->addLabel('fontTCPDF', __('File Name'));
         $row->addTextField('fontTCPDF')->readonly();
 
