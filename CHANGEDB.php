@@ -628,4 +628,5 @@ UPDATE `gibboni18n` SET `name` = 'Español - España' WHERE `code` = 'es_ES';end
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `installed`, `systemDefault`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`, `rtl`) VALUES ('es_MX', 'Español - Mexico', 'Y', 'N', 'N', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N');end
 ALTER TABLE `gibbonReportingValue` DROP INDEX `gibbonReportingCriteriaID`, ADD UNIQUE `gibbonReportingCriteriaID` (`gibbonReportingCriteriaID`, `gibbonPersonIDStudent`, `gibbonCourseClassID`) USING BTREE;end
 ALTER TABLE `gibbonHook` CHANGE `type` `type` ENUM('Public Home Page','Student Profile','Parental Dashboard','Staff Dashboard','Student Dashboard','Report Writing') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
+ALTER TABLE `gibbonReportingCriteriaType` ADD UNIQUE(`name`);end
 ";
