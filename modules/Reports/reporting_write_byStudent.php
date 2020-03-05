@@ -198,6 +198,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
         if ($criteria['valueType'] == 'Hook' && isset($hooks[$criteria['criteriaName']])) {
             // Attempt to load a hook, otherwise display an alert.
             if (!$hookInclude($hooks[$criteria['criteriaName']], $criteria)) {
+                $form->addHiddenValue($fieldName, $criteria['value']);
                 $form->addRow()->addAlert(__('Failed to load {name}', [
                     'name' => $criteria['criteriaName'],
                 ]), 'error');
