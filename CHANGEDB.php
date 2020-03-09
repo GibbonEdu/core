@@ -631,4 +631,6 @@ ALTER TABLE `gibbonReportTemplateFont` ADD `fontType` ENUM('R','B','I','BI') NOT
 ALTER TABLE `gibbonReportTemplateFont` ADD `fontFamily` VARCHAR(60) NULL AFTER `fontType`;end
 UPDATE `gibbonReportTemplateFont` SET fontFamily=fontName WHERE fontFamily IS NULL;end
 ALTER TABLE `gibbonReportTemplate` ADD `config` TEXT NULL AFTER `flags`;end
+ALTER TABLE `gibbonHook` CHANGE `type` `type` ENUM('Public Home Page','Student Profile','Parental Dashboard','Staff Dashboard','Student Dashboard','Report Writing') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
+ALTER TABLE `gibbonReportingCriteriaType` ADD UNIQUE(`name`);end
 ";

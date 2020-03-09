@@ -19,23 +19,36 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 require_once "../../../gibbon.php";
 
-$fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
-$uploadsFolder = $fileUploader->getUploadsFolderByDate();
+$img = $_POST['img'] ?? null;
+$imgPath = $_POST['path'] ?? null;
+$gibbonPersonID = !empty($_POST['gibbonPersonID']) ? str_pad($_POST['gibbonPersonID'], 10, '0', STR_PAD_LEFT) : null;
+$absolutePath = $gibbon->session->get('absolutePath');
 
-$img = (!empty($_POST['img'])) ? $_POST['img'] : null;
-$gibbonPersonID = (!empty($_POST['gibbonPersonID'])) ? str_pad($_POST['gibbonPersonID'], 10, '0', STR_PAD_LEFT) : null;
-$uploadsFolder = (!empty($_POST['path'])) ? $_POST['path'] : $uploadsFolder;
+if (empty($img) || empty($gibbonPersonID) || empty($absolutePath)) {
+    return;
+}
 
+// Decode raw image data
 list($type, $img) = explode(';', $img);
 list(, $img)      = explode(',', $img);
 $img = base64_decode($img);
 
-$destinationFolder = $gibbon->session->get('absolutePath').'/'.$uploadsFolder;
+// Create an uploads path if one isn't supplied
+if (empty($imgPath)) {
+    $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+    $imgPath = $fileUploader->getUploadsFolderByDate().'/rubric_visualisation_'.$gibbonPersonID.'.png';
+}
 
+// Ensure destination folder exists
+$destinationFolder = $absolutePath.'/'.dirname($imgPath);
 if (is_dir($destinationFolder) == false) {
     mkdir($destinationFolder, 0755, true);
 }
 
-$fp = fopen($destinationFolder.'/rubric_visualisation_'.$gibbonPersonID.'.png', 'w');
+// Write image data
+$fp = fopen($absolutePath.'/'.$imgPath, 'w');
 fwrite($fp, $img);
 fclose($fp);
+
+// Return image path to AJAX
+echo $imgPath;
