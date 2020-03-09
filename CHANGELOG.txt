@@ -36,6 +36,7 @@ v20.0.00
         Reports: added a Proof Read by Form Group option
         Reports: added an option to select the PDF rendering library in Template Builder
         Reports: added hooks for custom criteria types in the report writing screen
+        Reports: added the ability to select fonts in Template Builder
         Students: added an Exclude Left Students checkbox to Student Enrolment Trends, off by default
 
     Bug Fixes
@@ -49,6 +50,7 @@ v20.0.00
         Reports: fixed Course scope Per Group criteria not saving per-class
         Reports: suppressed TCPDF deprecation messages when generating PDFs
         Reports: fixed pronoun switching not applied globally in some browsers
+        Reports: fixed Student Info template to omit empty student photos
         System: fixed the first and last day of the selected school year
 
 v19.0.00

@@ -225,7 +225,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
                     ->setID($fieldID)
                     ->readonly(!$canWriteReport);
 
-                if (!empty($criteria['value'])) {
+                if (!is_null($criteria['gibbonReportingValueID'])) {
                     $gradeSelect->selected($criteria['value']);
                 }
             } elseif ($criteria['valueType'] == 'Yes/No') {

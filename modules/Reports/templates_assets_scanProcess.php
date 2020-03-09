@@ -85,14 +85,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
 
         foreach ($directoryFiles as $filePath) {
             $fontTCPDF = \TCPDF_FONTS::addTTFfont($filePath, 'TrueTypeUnicode', '', 32);
-            
-            if (empty($fontTCPDF)) continue;
+            $fontName = str_replace(['.ttf'], [''], basename($filePath));
+
+            if (empty($fontTCPDF) || empty($fontName)) continue;
 
             // Update the font details in the database
             $data = [
-                'fontName' => str_replace(['.ttf'], [''], basename($filePath)),
+                'fontName' => $fontName,
+                'fontFamily' => $fontName,
                 'fontPath' => str_replace($absolutePath.'/', '', $filePath),
                 'fontTCPDF' => $fontTCPDF,
+                'fontType' => 'R',
             ];
 
             $inserted = $fontGateway->insertAndUpdate($data, [
