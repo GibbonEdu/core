@@ -52,4 +52,22 @@ class ReportTemplateFontGateway extends QueryableGateway
 
         return $this->db()->select($sql);
     }
+
+    public function selectFontListByFamily($fontFamilies)
+    {
+        $data = ['fontFamilies' => is_array($fontFamilies)? implode(',', $fontFamilies) : $fontFamilies];
+        $sql = "SELECT fontFamily, fontType, fontPath 
+                FROM gibbonReportTemplateFont 
+                WHERE FIND_IN_SET(fontFamily, :fontFamilies)
+                ORDER BY fontFamily, fontType";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectFontFamilies()
+    {
+        $sql = "SELECT fontFamily as value, CONCAT(fontFamily, ' (', COUNT(*), ')') as name FROM gibbonReportTemplateFont GROUP BY fontFamily ORDER BY fontFamily";
+
+        return $this->db()->select($sql);
+    }
 }

@@ -63,6 +63,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_preview.
 
         echo $twig->render('preview.twig.html', $values + [
             'pages' => $renderer->render($template, $reports),
+            'fontList' => $template->getData('fonts', []),
+            'fontURL' => $template->getData('absoluteURL').$template->getData('customAssetPath').'/fonts',
             'debugData' => $debugMode ? print_r($reports[0], true) : null,
         ]);
     } else {
