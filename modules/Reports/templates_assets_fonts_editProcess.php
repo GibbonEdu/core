@@ -35,6 +35,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_f
 
     $data = [
         'fontName' => $_POST['fontName'] ?? '',
+        'fontFamily' => $_POST['fontFamily'] ?? '',
+        'fontType' => $_POST['fontType'] ?? 'R',
     ];
 
     // Validate the required values are present

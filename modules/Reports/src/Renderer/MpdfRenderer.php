@@ -196,11 +196,12 @@ class MpdfRenderer implements ReportRendererInterface
             'shrink_tables_to_fit' => 0,
             'defaultPagebreakType' => 'cloneall',
             
+            'tempDir' =>  $this->absolutePath.'/uploads/reports/temp',
             'fontDir' => array_merge($fontDirs, [
-                $this->absolutePath.'/resources/reports/fonts',
+                $this->absolutePath.$this->customAssetPath.'/fonts',
             ]),
 
-            'tempDir' =>  $this->absolutePath.'/uploads/reports/temp',
+            'fontdata' => $fontData + $this->template->getData('fonts', []),
             'default_font' => 'sans-serif',
         ];
 

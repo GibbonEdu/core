@@ -44,6 +44,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
         'flags'       => $_POST['flags'] ?? '',
     ];
 
+    $config = [
+        'fonts' => $_POST['fonts'] ?? [],
+    ];
+
+    $data['config'] = json_encode($config);
+
     // Validate the required values are present
     if (empty($data['name'])) {
         $URL .= '&return=error1';

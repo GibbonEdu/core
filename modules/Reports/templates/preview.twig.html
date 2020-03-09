@@ -13,6 +13,17 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
   src: url('./resources/assets/fonts/DroidSansFallback.ttf')  format('truetype'); /* Safari, Android, iOS */
 }
 
+{% for fontFamily, fonts in fontList %}
+    {% for fontType, fontPath in fonts %}
+        @font-face {
+            font-family: '{{ fontFamily }}';
+            src: url('{{ fontURL }}/{{ fontPath }}')  format('truetype');
+            font-style: {{ 'I' in fontType ? 'italic' : 'normal' }};
+            font-weight: {{ 'B' in fontType ? '700' : 'normal' }};
+        }
+    {% endfor %}
+{% endfor %}
+
 body {
     margin: 0;
     padding: 0;
