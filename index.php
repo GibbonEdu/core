@@ -499,7 +499,7 @@ if ($isLoggedIn && !$upgrade) {
     $messageWallRefreshed = $gibbon->session->get('messageWallRefreshed', 0);
 
     $timeDifference = $messageWallRefreshed - $messageWallLatestPost;
-    if (!$gibbon->session->exists('messageWallArray') || ($messageWallLatestPost >= $messageWallRefreshed) || ($messageWallRefreshed - time() > 3600)) {
+    if (!$gibbon->session->exists('messageWallArray') || ($messageWallLatestPost >= $messageWallRefreshed) || (time() - $messageWallRefreshed > 3600)) {
         $gibbon->session->set('messageWallArray', getMessages($guid, $connection2, 'array'));
         $gibbon->session->set('messageWallRefreshed', time());
     }

@@ -43,6 +43,7 @@ v20.0.00
         System: fixed module uninstall to also remove notification events
         System: fixed Quick File Upload trimming filename by first period
         System: fixed paragraph spacing in copy-pasted Messenger emails
+        System: fixed hourly cache refresh for pinned messages
         Finance: fixed fee name bug in issued Invoices where fee name changed
         Planner: changed spelling of Publically to Publicly
         Students: fixed emergency data report not showing parents column
