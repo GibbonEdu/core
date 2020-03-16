@@ -389,6 +389,7 @@ class ReportingAccessGateway extends QueryableGateway
                 AND gibbonReportingProgress.gibbonPersonIDStudent=gibbonReportingValue.gibbonPersonIDStudent')
             ->leftJoin('gibbonPerson as created', 'gibbonReportingValue.gibbonPersonIDCreated=created.gibbonPersonID')
             ->where('gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
+            ->where("gibbonCourseClassPerson.role='Student'")
             ->where('gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonIDStudent')
             ->bindValue('gibbonPersonIDStudent', $gibbonPersonIDStudent)
             ->where('gibbonReportingCriteria.gibbonReportingCycleID=:gibbonReportingCycleID')
