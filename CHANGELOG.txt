@@ -53,6 +53,7 @@ v20.0.00
         Reports: fixed pronoun switching not applied globally in some browsers
         Reports: fixed Student Info template to omit empty student photos
         System: fixed the first and last day of the selected school year
+        Timetable: escaped calendar event names in timetable tooltips
 
 v19.0.00
 --------
