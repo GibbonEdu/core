@@ -29,6 +29,7 @@ v20.0.00
 
     Tweaks & Additions
         System: added Argentine Peso as a currency option
+        System: updated Tailwind 1.2.0 dependencies via npm
         Departments: added drag-drop ordering to Departments in School Admin
         Finance: added Student ID, where set, to invoices and receipts
         Planner: enhanced Smart Block display in Lesson Planner
