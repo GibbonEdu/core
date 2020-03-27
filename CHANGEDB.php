@@ -633,4 +633,6 @@ UPDATE `gibbonReportTemplateFont` SET fontFamily=fontName WHERE fontFamily IS NU
 ALTER TABLE `gibbonReportTemplate` ADD `config` TEXT NULL AFTER `flags`;end
 ALTER TABLE `gibbonHook` CHANGE `type` `type` ENUM('Public Home Page','Student Profile','Parental Dashboard','Staff Dashboard','Student Dashboard','Report Writing') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 ALTER TABLE `gibbonReportingCriteriaType` ADD UNIQUE(`name`);end
+ALTER TABLE `gibbonStaffCoverageDate` CHANGE `value` `value` DECIMAL(3,2) NOT NULL DEFAULT '1.00';end
+ALTER TABLE `gibbonStaffAbsenceDate` CHANGE `value` `value` DECIMAL(3,2) NOT NULL DEFAULT '1.00';end
 ";
