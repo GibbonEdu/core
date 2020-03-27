@@ -542,6 +542,13 @@ class DatabaseFormFactory extends FormFactory
         return $this->createSelect($name)->fromQuery($this->pdo, $sql, $data, 'groupBy')->placeholder();
     }
 
+    public function createSelectReportingCycle($name)
+    {
+        $sql = "SELECT gibbonSchoolYear.name as schoolYear, gibbonReportingCycleID as value, gibbonReportingCycle.name FROM gibbonReportingCycle JOIN gibbonSchoolYear ON (gibbonSchoolYear.gibbonSchoolYearID=gibbonReportingCycle.gibbonSchoolYearID) ORDER BY gibbonSchoolYear.sequenceNumber DESC, gibbonReportingCycle.sequenceNumber";
+
+        return $this->createSelect($name)->fromQuery($this->pdo, $sql, [], 'schoolYear')->placeholder();
+    }
+
     public function createPhoneNumber($name)
     {
         $countryCodes = $this->getCachedQuery('phoneNumber');
