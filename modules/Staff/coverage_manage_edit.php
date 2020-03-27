@@ -25,6 +25,7 @@ use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Domain\Staff\StaffCoverageDateGateway;
 use Gibbon\Module\Staff\View\StaffCard;
+use Gibbon\Module\Staff\Tables\CoverageDates;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_edit.php') == false) {
     // Access denied
@@ -134,35 +135,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_edit
     }
 
     // DATA TABLE
-    $coverageDates = $container->get(StaffCoverageDateGateway::class)->selectDatesByCoverage($gibbonStaffCoverageID);
-    
-    $table = DataTable::create('staffCoverageDates');
-    $table->setTitle(__('Dates'));
+    $table = $container->get(CoverageDates::class)->create($gibbonStaffCoverageID);
 
-    $table->addColumn('date', __('Date'))
-        ->format(Format::using('dateReadable', 'date'));
-
-    $table->addColumn('timeStart', __('Time'))
-        ->format(function ($coverage) {
-            if ($coverage['allDay'] == 'N') {
-                return Format::small(Format::timeRange($coverage['timeStart'], $coverage['timeEnd']));
-            } else {
-                return Format::small(__('All Day'));
-            }
-        });
-
-    $table->addColumn('coverage', __('Coverage'))
-        ->format(function ($coverage) {
-            if (empty($coverage['coverage'])) {
-                return Format::small(__('N/A'));
-            }
-
-            return $coverage['coverage'] == 'Accepted'
-                    ? Format::name($coverage['titleCoverage'], $coverage['preferredNameCoverage'], $coverage['surnameCoverage'], 'Staff', false, true)
-                    : '<span class="tag message">'.__('Pending').'</span>';
-        });
-
-    $row = $form->addRow()->addContent($table->render($coverageDates->toDataSet()));
+    $row = $form->addRow()->addContent($table->getOutput());
 
     $row = $form->addRow();
         $row->addFooter();

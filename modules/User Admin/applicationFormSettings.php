@@ -41,19 +41,19 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
     $row = $form->addRow()->addHeading(__('General Options'));
 
     $setting = getSettingByScope($connection2, 'Application Form', 'introduction', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextArea($setting['name'])->setValue($setting['value']);
+    $col = $form->addRow()->addColumn();
+        $col->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $col->addEditor($setting['name'], $guid)->setValue($setting['value'])->setRows(8);
+
+    $setting = getSettingByScope($connection2, 'Application Form', 'postscript', true);
+    $col = $form->addRow()->addColumn();
+        $col->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $col->addEditor($setting['name'], $guid)->setValue($setting['value'])->setRows(8);
 
     $setting = getSettingByScope($connection2, 'Students', 'applicationFormRefereeLink', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addURL($setting['name'])->setValue($setting['value']);
-
-    $setting = getSettingByScope($connection2, 'Application Form', 'postscript', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $setting = getSettingByScope($connection2, 'Application Form', 'agreement', true);
     $row = $form->addRow();
@@ -225,4 +225,3 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
 
     echo $form->getOutput();
 }
-?>

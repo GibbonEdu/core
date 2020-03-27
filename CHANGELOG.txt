@@ -38,7 +38,9 @@ v20.0.00
         Reports: added an option to select the PDF rendering library in Template Builder
         Reports: added hooks for custom criteria types in the report writing screen
         Reports: added the ability to select fonts in Template Builder
+        Staff: added an option to edit or delete staff coverage dates
         Students: added an Exclude Left Students checkbox to Student Enrolment Trends, off by default
+        User Admin: added rich text editors to the Application Form Settings
 
     Bug Fixes
         System: fixed module uninstall to also remove notification events

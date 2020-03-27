@@ -21,6 +21,7 @@ namespace Gibbon\Forms\Input;
 
 use Gibbon\Forms\OutputableInterface;
 use Gibbon\Forms\FormFactoryInterface;
+use Gibbon\Forms\Traits\BasicAttributesTrait;
 
 /**
  * Custom Blocks
@@ -30,6 +31,8 @@ use Gibbon\Forms\FormFactoryInterface;
  */
 class CustomBlocks implements OutputableInterface
 {
+    use BasicAttributesTrait;
+    
     protected $factory;
     protected $session;
 
