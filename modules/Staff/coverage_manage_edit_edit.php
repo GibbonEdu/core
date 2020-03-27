@@ -20,44 +20,44 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
-use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
+use Gibbon\Domain\Staff\StaffCoverageDateGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_edit.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    $gibbonStaffAbsenceID = $_GET['gibbonStaffAbsenceID'] ?? '';
-    $gibbonStaffAbsenceDateID = $_GET['gibbonStaffAbsenceDateID'] ?? '';
+    $gibbonStaffCoverageID = $_GET['gibbonStaffCoverageID'] ?? '';
+    $gibbonStaffCoverageDateID = $_GET['gibbonStaffCoverageDateID'] ?? '';
 
     // Proceed!
     $page->breadcrumbs
-        ->add(__('Manage Staff Absences'), 'absences_manage.php')
-        ->add(__('Edit Absence'), 'absences_manage_edit.php', ['gibbonStaffAbsenceID' => $gibbonStaffAbsenceID])
+        ->add(__('Manage Staff Coverage'), 'coverage_manage.php')
+        ->add(__('Edit Coverage'), 'coverage_manage_edit.php', ['gibbonStaffCoverageID' => $gibbonStaffCoverageID])
         ->add(__('Edit'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    if (empty($gibbonStaffAbsenceID) || empty($gibbonStaffAbsenceDateID)) {
+    if (empty($gibbonStaffCoverageID) || empty($gibbonStaffCoverageDateID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
     }
 
-    $staffAbsenceDateGateway = $container->get(StaffAbsenceDateGateway::class);
-    $values = $staffAbsenceDateGateway->getByID($gibbonStaffAbsenceDateID);
+    $staffCoverageDateGateway = $container->get(StaffCoverageDateGateway::class);
+    $values = $staffCoverageDateGateway->getByID($gibbonStaffCoverageDateID);
 
     if (empty($values)) {
         $page->addError(__('The specified record cannot be found.'));
         return;
     }
 
-    $form = Form::create('staffAbsenceEdit', $_SESSION[$guid]['absoluteURL'].'/modules/Staff/absences_manage_edit_editProcess.php');
+    $form = Form::create('staffCoverageEdit', $_SESSION[$guid]['absoluteURL'].'/modules/Staff/coverage_manage_edit_editProcess.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-    $form->addHiddenValue('gibbonStaffAbsenceID', $gibbonStaffAbsenceID);
-    $form->addHiddenValue('gibbonStaffAbsenceDateID', $gibbonStaffAbsenceDateID);
+    $form->addHiddenValue('gibbonStaffCoverageID', $gibbonStaffCoverageID);
+    $form->addHiddenValue('gibbonStaffCoverageDateID', $gibbonStaffCoverageDateID);
    
     $row = $form->addRow();
         $row->addLabel('dateLabel', __('Date'));
