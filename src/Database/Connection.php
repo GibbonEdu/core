@@ -33,7 +33,7 @@ class Connection implements ConnectionInterface
 {
     /**
      * The active PDO connection.
-     * 
+     *
      * @var \PDO
      */
     protected $pdo;
@@ -52,6 +52,11 @@ class Connection implements ConnectionInterface
      * @var LoggerInterface|null
      */
     private $logger;
+
+    /**
+     * @var bool
+     */
+    protected $errorMessage = null;
 
     /**
      * Create the connection wrapper around a \PDO instance.
@@ -189,7 +194,7 @@ class Connection implements ConnectionInterface
 
     /**
      * Currently downgrades fatal exceptions to user errors and returns a null statement.
-     * 
+     *
      * @param \PDOException $e
      * @return \PDOStatement
      */
@@ -197,13 +202,15 @@ class Connection implements ConnectionInterface
     {
         trigger_error($e->getMessage(), E_USER_WARNING);
 
+        $this->errorMessage = $e->getMessage();
+
         return new \PDOStatement();
     }
 
     /**
      * @deprecated v16
-     * Backwards compatability for the old Gibbon\sqlConnection class. 
-     * Replaced with more expressive method names. Also because the 
+     * Backwards compatability for the old Gibbon\sqlConnection class.
+     * Replaced with more expressive method names. Also because the
      * parameters are backwards. Hoping to phase this one out in v17.
      *
      * @param	array	Data Information
@@ -256,5 +263,15 @@ class Connection implements ConnectionInterface
     private function hasLogger(): bool
     {
         return $this->logger instanceof LoggerInterface;
+    }
+
+    /**
+     * Get the current PDO connection.
+     *
+     * @return string
+     */
+    public function getErrorMessage()
+    {
+        return $this->errorMessage;
     }
 }
