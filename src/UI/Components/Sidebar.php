@@ -571,7 +571,7 @@ class Sidebar implements OutputableInterface
         }
 
         //Show tag cloud
-        if ($this->session->get('address') == '' and isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php')) {
+        if ($this->session->get('address') == '' and isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php') && !function_exists('makeBlock')) {
             include_once './modules/Planner/moduleFunctions.php';
             echo '<div class="column-no-break">';
             echo "<h2 class='sidebar'>";
