@@ -48,7 +48,7 @@ class Page extends View
     protected $stylesheets;
     protected $scripts;
     protected $breadcrumbs;
-    protected $alerts = ['error' => [], 'warning' => [], 'message' => []];
+    protected $alerts = ['error' => [], 'warning' => [], 'success' => [], 'message' => []];
     protected $extra = ['head' => [], 'foot' => [], 'sidebar' => []];
 
     /**
@@ -223,6 +223,16 @@ class Page extends View
     public function addMessage(string $text)
     {
         $this->alerts['message'][] = $text;
+    }
+
+    /**
+     * Add user feedback as a success message displayed on this page.
+     *
+     * @param string $text Success message text.
+     */
+    public function addSuccess(string $text)
+    {
+        $this->alerts['success'][] = $text;
     }
 
     /**
