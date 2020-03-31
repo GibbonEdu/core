@@ -13,19 +13,19 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
     <ul class='moduleMenu'>
         <li>
-            <a class="{{ subpage == 'Overview' ? 'font-bold' }}" href="{{ absoluteURL }}/index.php?q={{ q }}&gibbonPersonID={{ gibbonPersonID }}&search={{ search }}&allStaff={{ allStaff }}&subpage=Overview">{{ __('Overview') }}</a>
+            <a class="{{ subpage == 'Overview' ? 'font-bold' }} underline" href="{{ absoluteURL }}/index.php?q={{ q }}&gibbonPersonID={{ gibbonPersonID }}&search={{ search }}&allStaff={{ allStaff }}&subpage=Overview">{{ __('Overview') }}</a>
         </li>
 
         <li>
-            <a class="{{ subpage == 'Personal' ? 'font-bold' }}" href="{{ absoluteURL }}/index.php?q={{ q }}&gibbonPersonID={{ gibbonPersonID }}&search={{ search }}&allStaff={{ allStaff }}&subpage=Personal">{{ __('Personal') }}</a>
+            <a class="{{ subpage == 'Personal' ? 'font-bold' }} underline" href="{{ absoluteURL }}/index.php?q={{ q }}&gibbonPersonID={{ gibbonPersonID }}&search={{ search }}&allStaff={{ allStaff }}&subpage=Personal">{{ __('Personal') }}</a>
         </li>
 
         <li>
-            <a class="{{ subpage == 'Family' ? 'font-bold' }}" href="{{ absoluteURL }}/index.php?q={{ q }}&gibbonPersonID={{ gibbonPersonID }}&search={{ search }}&allStaff={{ allStaff }}&subpage=Family">{{ __('Family') }}</a>
+            <a class="{{ subpage == 'Family' ? 'font-bold' }} underline" href="{{ absoluteURL }}/index.php?q={{ q }}&gibbonPersonID={{ gibbonPersonID }}&search={{ search }}&allStaff={{ allStaff }}&subpage=Family">{{ __('Family') }}</a>
         </li>
 
         <li>
-            <a class="{{ subpage == 'Emergency Contacts' ? 'font-bold' }}" href="{{ absoluteURL }}/index.php?q={{ q }}&gibbonPersonID={{ gibbonPersonID }}&search={{ search }}&allStaff={{ allStaff }}&subpage=Emergency Contacts">{{ __('Emergency Contacts') }}</a>
+            <a class="{{ subpage == 'Emergency Contacts' ? 'font-bold' }} underline" href="{{ absoluteURL }}/index.php?q={{ q }}&gibbonPersonID={{ gibbonPersonID }}&search={{ search }}&allStaff={{ allStaff }}&subpage=Emergency Contacts">{{ __('Emergency Contacts') }}</a>
         </li>
     </ul>
 
@@ -33,16 +33,16 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
     <ul class='moduleMenu'>
         <li>
-            <a class="{{ subpage == 'Activities' ? 'font-bold' }}" href="{{ absoluteURL }}/index.php?q={{ q }}&gibbonPersonID={{ gibbonPersonID }}&search={{ search }}&allStaff={{ allStaff }}&subpage=Activities">{{ __('Activities') }}</a>
+            <a class="{{ subpage == 'Activities' ? 'font-bold' }} underline" href="{{ absoluteURL }}/index.php?q={{ q }}&gibbonPersonID={{ gibbonPersonID }}&search={{ search }}&allStaff={{ allStaff }}&subpage=Activities">{{ __('Activities') }}</a>
         </li>
 
         <li>
-            <a class="{{ subpage == 'Facilities' ? 'font-bold' }}" href="{{ absoluteURL }}/index.php?q={{ q }}&gibbonPersonID={{ gibbonPersonID }}&search={{ search }}&allStaff={{ allStaff }}&subpage=Facilities">{{ __('Facilities') }}</a>
+            <a class="{{ subpage == 'Facilities' ? 'font-bold' }} underline" href="{{ absoluteURL }}/index.php?q={{ q }}&gibbonPersonID={{ gibbonPersonID }}&search={{ search }}&allStaff={{ allStaff }}&subpage=Facilities">{{ __('Facilities') }}</a>
         </li>
 
         {% if canViewTimetable %}
             <li>
-                <a class="{{ subpage == 'Timetable' ? 'font-bold' }}" href="{{ absoluteURL }}/index.php?q={{ q }}&gibbonPersonID={{ gibbonPersonID }}&search={{ search }}&allStaff={{ allStaff }}&subpage=Timetable">{{ __('Timetable') }}</a>
+                <a class="{{ subpage == 'Timetable' ? 'font-bold' }} underline" href="{{ absoluteURL }}/index.php?q={{ q }}&gibbonPersonID={{ gibbonPersonID }}&search={{ search }}&allStaff={{ allStaff }}&subpage=Timetable">{{ __('Timetable') }}</a>
             </li>
         {% endif %}
     </ul>

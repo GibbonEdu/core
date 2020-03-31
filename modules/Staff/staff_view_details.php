@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
+use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Tables\DataTable;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -668,6 +670,59 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         echo '</tr>';
                         echo '</table>';
                     } elseif ($subpage == 'Activities') {
+                        
+                        $highestActionActivities = getHighestGroupedAction($guid, '/modules/Activities/activities_attendance.php', $connection2);
+                        $canAccessEnrolment = isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_enrolment.php');
+    
+                        // CRITERIA
+                        $activityGateway = $container->get(ActivityGateway::class);
+                        $criteria = $activityGateway->newQueryCriteria()
+                            ->sortBy('name')
+                            ->fromArray($_POST);
+
+                        $activities = $activityGateway->queryActivitiesByParticipant($criteria, $_SESSION[$guid]['gibbonSchoolYearID'], $gibbonPersonID);
+
+                        // DATA TABLE
+                        $table = DataTable::createPaginated('myActivities', $criteria);
+
+                        $table->addColumn('name', __('Activity'))
+                            ->format(function ($activity) {
+                                return $activity['name'].'<br/><span class="small emphasis">'.$activity['type'].'</span>';
+                            });
+                        $table->addColumn('role', __('Role'))
+                            ->format(function ($activity) {
+                                return !empty($activity['role']) ? $activity['role'] : __('Student');
+                            });
+
+                        $table->addColumn('status', __('Status'))
+                            ->format(function ($activity) {
+                                return !empty($activity['status']) ? $activity['status'] : '<i>'.__('N/A').'</i>';
+                            });
+
+                        $table->addActionColumn()
+                            ->addParam('gibbonActivityID')
+                            ->format(function ($activity, $actions) use ($highestActionActivities, $canAccessEnrolment) {
+                                if ($activity['role'] == 'Organiser' &&  $canAccessEnrolment) {
+                                    $actions->addAction('enrolment', __('Enrolment'))
+                                        ->addParam('gibbonSchoolYearTermID', '')
+                                        ->addParam('search', '')
+                                        ->setIcon('config')
+                                        ->setURL('/modules/Activities/activities_manage_enrolment.php');
+                                }
+
+                                $actions->addAction('view', __('View Details'))
+                                    ->isModal(1000, 550)
+                                    ->setURL('/modules/Activities/activities_my_full.php');
+
+                                if ($highestActionActivities == "Enter Activity Attendance" || 
+                                ($highestActionActivities == "Enter Activity Attendance_leader" && ($activity['role'] == 'Organiser' || $activity['role'] == 'Assistant' || $activity['role'] == 'Coach'))) {
+                                    $actions->addAction('attendance', __('Attendance'))
+                                        ->setIcon('attendance')
+                                        ->setURL('/modules/Activities/activities_attendance.php');
+                                }
+                            });
+
+                        echo $table->render($activities);   
 
                     } elseif ($subpage == 'Timetable') {
                         if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') == false) {
