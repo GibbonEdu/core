@@ -61,10 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                 }
 
                 if ($result->rowCount() != 1) {
-                    echo "<div class='error'>";
-                    echo __('The selected record does not exist, or you do not have access to it.');
-                    echo '</div>';
-                    echo '</div>';
+                    $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                 } else {
                     $row = $result->fetch();
 
@@ -78,61 +75,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         echo '</div>';
                     }
 
-                    echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                    echo '<tr>';
-                    echo "<td style='width: 33%; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
-                    echo '<i>'.Format::name($row['title'], $row['preferredName'], $row['surname'], 'Parent').'</i>';
-                    echo '</td>';
-                    echo "<td style='width: 33%; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Staff Type').'</span><br/>';
-                    echo '<i>'.__($row['type']).'</i>';
-                    echo '</td>';
-                    echo "<td style='width: 33%; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Job Title').'</span><br/>';
-                    echo '<i>'.$row['jobTitle'].'</i>';
-                    echo '</td>';
-                    echo '</tr>';
-                    echo '<tr>';
-                    echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Email').'</span><br/>';
-                    if ($row['email'] != '') {
-                        echo "<i><a href='mailto:".$row['email']."'>".$row['email'].'</a></i>';
-                    }
-                    echo '</td>';
-                    echo "<td style='width: 67%; padding-top: 15px; vertical-align: top' colspan=2>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Website').'</span><br/>';
-                    if ($row['website'] != '') {
-                        echo "<i><a href='".$row['website']."'>".$row['website'].'</a></i>';
-                    }
-                    echo '</td>';
-                    echo '</tr>';
-                    echo '</table>';
+                    echo $page->fetchFromTemplate('profile/overview.twig.html', [
+                        'type' => 'Brief',
+                        'person' => $row,
+                        'staff' => $row,
+                    ]);
 
-                    echo '<h4>';
-                    echo __('Biography');
-                    echo '</h4>';
-                    echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                    echo '<tr>';
-                    echo "<td style='width: 33%; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Country Of Origin').'</span><br/>';
-                    echo '<i>'.$row['countryOfOrigin'].'</i>';
-                    echo '</td>';
-                    echo "<td style='width: 67%; vertical-align: top' colspan=2>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Qualifications').'</span><br/>';
-                    echo '<i>'.$row['qualifications'].'</i>';
-                    echo '</td>';
-                    echo '</tr>';
-                    echo '<tr>';
-                    echo "<td style='width: 100%; vertical-align: top' colspan=3>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Biography').'</span><br/>';
-                    echo '<i>'.$row['biography'].'</i>';
-                    echo '</td>';
-                    echo '</tr>';
-                    echo '</table>';
-
-                    //Set sidebar
-                    $_SESSION[$guid]['sidebarExtra'] = getUserPhoto($guid, $row['image_240'], 240);
+                    $page->addSidebarExtra(Format::userPhoto($row['image_240'], 240));
                 }
             } else {
                 try {
@@ -215,68 +164,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             echo Format::alert($absenceMessage, 'warning');
                         }
 
-                        //General Information
-                        echo '<h4>';
-                        echo __('General Information');
-                        echo '</h4>';
-                        echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                        echo '<tr>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
-                        echo '<i>'.Format::name($row['title'], $row['preferredName'], $row['surname'], 'Parent').'</i>';
-                        echo '</td>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Staff Type').'</span><br/>';
-                        echo '<i>'.__($row['type']).'</i>';
-                        echo '</td>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Job Title').'</span><br/>';
-                        echo '<i>'.$row['jobTitle'].'</i>';
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '<tr>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Username').'</span><br/>';
-                        echo '<i>'.$row['username'].'</i>';
-                        echo '</td>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Website').'</span><br/>';
-                        if ($row['website'] != '') {
-                            echo "<i><a href='".$row['website']."'>".$row['website'].'</a></i>';
-                        }
-                        echo '</td>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Email').'</span><br/>';
-                        if ($row['email'] != '') {
-                            echo "<i><a href='mailto:".$row['email']."'>".$row['email'].'</a></i>';
-                        }
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '</table>';
+                        // General Information
+                        echo $page->fetchFromTemplate('profile/overview.twig.html', [
+                            'type' => 'Full',
+                            'person' => $row,
+                            'staff' => $row,
+                        ]);
 
-                        echo '<h4>';
-                        echo __('Biography');
-                        echo '</h4>';
-                        echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                        echo '<tr>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Country Of Origin').'</span><br/>';
-                        echo '<i>'.$row['countryOfOrigin'].'</i>';
-                        echo '</td>';
-                        echo "<td style='width: 67%; vertical-align: top' colspan=2>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Qualifications').'</span><br/>';
-                        echo '<i>'.$row['qualifications'].'</i>';
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '<tr>';
-                        echo "<td style='width: 100%; vertical-align: top' colspan=3>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Biography').'</span><br/>';
-                        echo '<i>'.$row['biography'].'</i>';
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '</table>';
-
-                        //Show timetable
+                        // Show timetable
                         echo "<a name='timetable'></a>";
                         echo '<h4>';
                         echo __('Timetable');
