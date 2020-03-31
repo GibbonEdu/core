@@ -480,6 +480,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                             echo '</table>';
                         }
+                    } elseif ($subpage == 'Family') {
+
+                    
                     } elseif ($subpage == 'Facilities') {
                         try {
                             $data = array('gibbonPersonID1' => $gibbonPersonID, 'gibbonPersonID2' => $gibbonPersonID, 'gibbonPersonID3' => $gibbonPersonID, 'gibbonPersonID4' => $gibbonPersonID, 'gibbonPersonID5' => $gibbonPersonID, 'gibbonPersonID6' => $gibbonPersonID, 'gibbonSchoolYearID1' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID']);
@@ -664,6 +667,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         echo '</td>';
                         echo '</tr>';
                         echo '</table>';
+                    } elseif ($subpage == 'Activities') {
+
                     } elseif ($subpage == 'Timetable') {
                         if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') == false) {
                             echo "<div class='error'>";
@@ -696,45 +701,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         }
                     }
 
-                    //Set sidebar
-                    $_SESSION[$guid]['sidebarExtra'] = '';
-
-                    //Show pic
-                    $_SESSION[$guid]['sidebarExtra'] .= getUserPhoto($guid, $row['image_240'], 240);
-
-                    //PERSONAL DATA MENU ITEMS
-                    $_SESSION[$guid]['sidebarExtra'] .= '<div class="column-no-break">';
-                    $_SESSION[$guid]['sidebarExtra'] .= '<h4>Personal</h4>';
-                    $_SESSION[$guid]['sidebarExtra'] .= "<ul class='moduleMenu'>";
-                    $style = '';
-                    if ($subpage == 'Overview') {
-                        $style = "style='font-weight: bold'";
-                    }
-                    $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&allStaff=$allStaff&subpage=Overview'>".__('Overview').'</a></li>';
-                    $style = '';
-                    if ($subpage == 'Personal') {
-                        $style = "style='font-weight: bold'";
-                    }
-                    $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&allStaff=$allStaff&subpage=Personal'>".__('Personal').'</a></li>';
-                    $style = '';
-                    if ($subpage == 'Facilities') {
-                        $style = "style='font-weight: bold'";
-                    }
-                    $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&allStaff=$allStaff&subpage=Facilities'>".__('Facilities').'</a></li>';
-                    $style = '';
-                    if ($subpage == 'Emergency Contacts') {
-                        $style = "style='font-weight: bold'";
-                    }
-                    $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&allStaff=$allStaff&subpage=Emergency Contacts'>".__('Emergency Contacts').'</a></li>';
-                    if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php')) {
-                        $style = '';
-                        if ($subpage == 'Timetable') {
-                            $style = "style='font-weight: bold'";
-                        }
-                        $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&allStaff=$allStaff&subpage=Timetable'>".__('Timetable').'</a></li>';
-                    }
-                    $_SESSION[$guid]['sidebarExtra'] .= '</ul>';
-                    $_SESSION[$guid]['sidebarExtra'] .= '</div>';
+                    $page->addSidebarExtra($page->fetchFromTemplate('profileSidebar.twig.html', [
+                        'userPhoto' => getUserPhoto($guid, $row['image_240'], 240),
+                        'canViewTimetable' => isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php'),
+                        'gibbonPersonID' => $gibbonPersonID,
+                        'subpage' => $subpage,
+                        'search' => $search,
+                        'allStaff' => $allStaff,
+                        'q' => $_GET['q'] ?? '',
+                    ]));
                 }
             }
         }
