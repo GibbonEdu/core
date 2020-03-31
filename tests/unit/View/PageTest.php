@@ -66,10 +66,14 @@ class PageTest extends TestCase
     {
         $page = new Page();
         $page->addError('This is an error!');
+        $page->addError('This is an error!!');
+        $page->addError('This is an error!!!');
+        
+        $this->assertCount(3, $page->getAlerts('error'));
+
         $page->addWarning('This is a warning?');
-        $page->addMessage('This is (maybe) a message.');
      
-        $this->assertCount(3, $page->getAlerts());
+        $this->assertCount(1, $page->getAlerts('warning'));
     }
 
     public function testAddsHeadExtra()
