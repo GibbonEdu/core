@@ -73,23 +73,12 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 <span style='font-weight: normal; font-style: italic'> ({{ person.status }})</span>
                 {% endif %}
 
-                {# ---------------------------------------------------------------------------
                 <div style='font-size: 85%; font-style: italic'>
-                try {
-                    $dataRelationship = array('gibbonPersonID1' => {{ person.gibbonPersonID }}, 'gibbonPersonID2' => $gibbonPersonID, 'gibbonFamilyID' => {{ family.gibbonFamilyID') }}
-                    $sqlRelationship = 'SELECT * FROM gibbonFamilyRelationship WHERE gibbonPersonID1=:gibbonPersonID1 AND gibbonPersonID2=:gibbonPersonID2 AND gibbonFamilyID=:gibbonFamilyID
-                    $resultRelationship = $connection2->prepare($sqlRelationship);
-                    $resultRelationship->execute($dataRelationship);
-                } catch (PDOException $e) {
-                    <div class='error'>{{ $e->getMessage() }}</div>
-                }
-                if ($resultRelationship->rowCount() == 1) {
-                    $rowRelationship = $resultRelationship->fetch();
-                    $rowRelationship['relationship }}
-                } else {
-                    <i>'.__('Relationship Unknown') }}</i>
-                }
-                --------------------------------------------------------------------------- #}
+                {% if person.relationship %}
+                    {{ person.relationship }}
+                {% elseif gibbonPersonIDStudent %}
+                    <i>{{ __('Relationship Unknown') }}</i>
+                {% endif %}
                 </div>
             </td>
             <td class="{{ class }}" style='width: 34%; vertical-align: top' colspan=2>
