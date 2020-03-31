@@ -1,0 +1,222 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% for family in families %}
+    <table class='smallIntBorder' cellspacing='0' style='width: 100%'>
+        <tr>
+            <td style='width: 33%; vertical-align: top'>
+                <span style='font-size: 115%; font-weight: bold'>{{ __('Family Name') }}</span><br />
+                {{ family.name }}
+            </td>
+            <td style='width: 33%; vertical-align: top'>
+                <span style='font-size: 115%; font-weight: bold'>{{ __('Family Status') }}</span><br />
+                {{ family.status }}
+            </td>
+            <td style='width: 34%; vertical-align: top' colspan=2>
+                <span style='font-size: 115%; font-weight: bold'>{{ __('Home Languages') }}</span><br />
+                {{ family.languageHomePrimary }} <br />
+                {{ family.languageHomeSecondary }}<br />
+            </td>
+        </tr>
+        <tr>
+            <td style='width: 33%; padding-top: 15px; vertical-align: top'>
+                <span style='font-size: 115%; font-weight: bold'>{{ __('Address Name') }}</span><br />
+                {{ family.nameAddress }}
+            </td>
+            <td style='width: 33%; padding-top: 15px; vertical-align: top'>
+            </td>
+            <td style='width: 33%; padding-top: 15px; vertical-align: top'>
+            </td>
+        </tr>
+
+        <tr>
+            <td style='width: 33%; padding-top: 15px; vertical-align: top'>
+                <span style='font-size: 115%; font-weight: bold'>{{ __('Home Address') }}</span><br />
+                {{ family.homeAddress }}
+            </td>
+            <td style='width: 33%; padding-top: 15px; vertical-align: top'>
+                <span style='font-size: 115%; font-weight: bold'>{{ __('Home Address (District)') }}</span><br />
+                {{ family.homeAddressDistrict }}
+            </td>
+            <td style='width: 33%; padding-top: 15px; vertical-align: top'>
+                <span style='font-size: 115%; font-weight: bold'>{{ __('Home Address (Country)') }}</span><br />
+                {{ family.homeAddressCountry }}
+            </td>
+        </tr>
+    </table>
+
+    {% for person in family.adults %}
+
+    <h4>
+        {{ __('Adult') }} {{ loop.index }}
+    </h4>
+
+    {% set class = person.status != 'Full' ? 'error' %}
+
+    <table class='smallIntBorder' cellspacing='0' style='width: 100%'>
+        <tr>
+            <td class="{{ class }}" style='width: 33%; vertical-align: top' rowspan=2>
+                {{ formatUsing('userPhoto', person.image_240, 75) }}
+            </td>
+            <td class="{{ class }}" style='width: 33%; vertical-align: top'>
+                <span style='font-size: 115%; font-weight: bold'>
+                    {{ __('Name') }}
+                </span><br />
+                {{ formatUsing('name', person.title, person.preferredName, person.surname, 'Parent') }}
+
+                {% if person.status != 'Full' %}
+                <span style='font-weight: normal; font-style: italic'> ({{ person.status }})</span>
+                {% endif %}
+
+                {# ---------------------------------------------------------------------------
+                <div style='font-size: 85%; font-style: italic'>
+                try {
+                    $dataRelationship = array('gibbonPersonID1' => {{ person.gibbonPersonID }}, 'gibbonPersonID2' => $gibbonPersonID, 'gibbonFamilyID' => {{ family.gibbonFamilyID') }}
+                    $sqlRelationship = 'SELECT * FROM gibbonFamilyRelationship WHERE gibbonPersonID1=:gibbonPersonID1 AND gibbonPersonID2=:gibbonPersonID2 AND gibbonFamilyID=:gibbonFamilyID
+                    $resultRelationship = $connection2->prepare($sqlRelationship);
+                    $resultRelationship->execute($dataRelationship);
+                } catch (PDOException $e) {
+                    <div class='error'>{{ $e->getMessage() }}</div>
+                }
+                if ($resultRelationship->rowCount() == 1) {
+                    $rowRelationship = $resultRelationship->fetch();
+                    $rowRelationship['relationship }}
+                } else {
+                    <i>'.__('Relationship Unknown') }}</i>
+                }
+                --------------------------------------------------------------------------- #}
+                </div>
+            </td>
+            <td class="{{ class }}" style='width: 34%; vertical-align: top' colspan=2>
+                <span style='font-size: 115%; font-weight: bold'>{{ __('Contact Priority') }}</span><br />
+                {{ person.contactPriority }}
+            </td>
+        </tr>
+        <tr>
+            <td class="{{ class }}" style='width: 33%; padding-top: 15px; vertical-align: top'>
+                <span style='font-size: 115%; font-weight: bold'>{{ __('First Language') }}</span><br />
+                {{ person.languageFirst }}
+            </td>
+            <td class="{{ class }}" style='width: 33%; padding-top: 15px; vertical-align: top'>
+                <span style='font-size: 115%; font-weight: bold'>{{ __('Second Language') }}</span><br />
+                {{ person.languageSecond }}
+            </td>
+        </tr>
+        <tr>
+            <td class="{{ class }}" style='width: 33%; padding-top: 15px; width: 33%; vertical-align: top'>
+                <span style='font-size: 115%; font-weight: bold'>{{ __('Contact By Phone') }}</span><br />
+
+                {% if person.contactCall == 'N' %}
+                    {{ __('Do not contact by phone') }}
+
+                {% elseif person.contactCall == 'Y' and (person.phone1 or person.phone2 or person.phone3 or person.phone4) %}
+                    {% for i in range(1,4) %}
+                        {% if person['phone' ~ i]  %}
+                        {{ formatUsing('phone', person['phone' ~ i], person['phone' ~ i ~ 'CountryCode'], person['phone' ~ i ~ 'Type'])}}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </td>
+            <td class="{{ class }}" style='width: 33%; padding-top: 15px; width: 33%; vertical-align: top'>
+                <span style='font-size: 115%; font-weight: bold'>{{ __('Contact By SMS') }}</span><br />
+                {% if person.contactSMS == 'N' %}
+                    {{ __('Do not contact by SMS') }}
+                {% elseif person.contactSMS == 'Y' and (person.phone1 or person.phone2 or person.phone3 or person.phone4) %}
+                    {% for i in range(1,4) %}
+                        {% if person['phone' ~ i] and person['phone' ~ i ~ 'Type'] == 'Mobile' %}
+                        {{ formatUsing('phone', person['phone' ~ i], person['phone' ~ i ~ 'CountryCode'], person['phone' ~ i ~ 'Type'])}}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </td>
+            <td class="{{ class }}" style='width: 33%; padding-top: 15px; width: 34%; vertical-align: top' colspan=2>
+                <span style='font-size: 115%; font-weight: bold'>{{ __('Contact By Email') }}</span><br />
+                {% if person.contactEmail == 'N' %}
+                    {{ __('Do not contact by email') }}
+                {% elseif person.contactEmail == 'Y' and (person.email or person.emailAlternate) %}
+                    {% if person.email %}
+                    {{ __('Email') }}: <a href="mailto:{{ person.email }}">{{ person.email }}</a><br />
+                    {% endif %}
+
+                    {% if person.emailAlternate %}
+                        {{ __('Email') }} 2: <a href="mailto:{{ person.emailAlternate }}">{{ person.emailAlternate }}</a><br />
+                    {% endif %}
+                    <br />
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td class="{{ class }}" style='width: 33%; padding-top: 15px; vertical-align: top'>
+                <span style='font-size: 115%; font-weight: bold'>{{ __('Profession') }}</span><br />
+                {{ person.profession }}
+            </td>
+            <td class="{{ class }}" style='width: 33%; padding-top: 15px; vertical-align: top'>
+                <span style='font-size: 115%; font-weight: bold'>{{ __('Employer') }}</span><br />
+                {{ person.employer }}
+            </td>
+            <td class="{{ class }}" style='width: 33%; padding-top: 15px; vertical-align: top'>
+                <span style='font-size: 115%; font-weight: bold'>{{ __('Job Title') }}</span><br />
+                {{ person.jobTitle }}
+            </td>
+        </tr>
+
+        <tr>
+            <td class="{{ class }}" style='width: 33%; padding-top: 15px; vertical-align: top'>
+                <span style='font-size: 115%; font-weight: bold'>{{ __('Vehicle Registration') }}</span><br />
+                {{ person.vehicleRegistration }}
+            </td>
+            <td class="{{ class }}" style='width: 33%; padding-top: 15px; vertical-align: top'>
+
+            </td>
+            <td class="{{ class }}" style='width: 33%; padding-top: 15px; vertical-align: top'>
+
+            </td>
+        </tr>
+
+        {% if person.comment %}
+        <tr>
+            <td class="{{ class }}" style="width: 33%; vertical-align: top" colspan=3>
+                <span style="font-size: 115%; font-weight: bold">{{ __('Comment') }}</span><br />
+                {{ person.comment }}
+            </td>
+        </tr>
+        {% endif %}
+    </table>
+    {% endfor %}
+
+
+    {% if family.children %}
+    <h4>
+        {{ __('Children') }}
+    </h4>
+
+    <div class="flex flex-wrap border bg-gray-100 rounded-sm p-2">
+        {% for person in family.children %}
+
+        <div class="text-center mr-8">
+            {{ formatUsing('userPhoto', person.image_240, 75) }}
+
+            <div class="pt-1 text-xs">
+                <b>
+                    {% if person.status == 'Full' %}
+                    <a
+                        href="index.php?q=/modules/Students/student_view_details.php&gibbonPersonID={{ person.gibbonPersonID }}&allStudents=on">
+                        {{ formatUsing('name', '', person.preferredName, person.surname, 'Student') }}
+                    </a><br />
+                    {% else %}
+                    {{ formatUsing('name', '', person.preferredName, person.surname, 'Student') }}<br />
+                    {% endif %}
+                </b>
+                <span class="small emphasis text-gray-700">{{ __('Status') }}: {{ person.status }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+{% endfor %}

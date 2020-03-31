@@ -22,6 +22,7 @@ use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Tables\DataTable;
+use Gibbon\Domain\User\FamilyGateway;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -483,8 +484,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             echo '</table>';
                         }
                     } elseif ($subpage == 'Family') {
+                        $familyGateway = $container->get(FamilyGateway::class);
 
-                    
+                        // CRITERIA
+                        $criteria = $familyGateway->newQueryCriteria()
+                            ->sortBy(['gibbonFamily.name'])
+                            ->fromPOST();
+
+                        $families = $familyGateway->queryFamiliesByAdult($criteria, $gibbonPersonID);
+                        $familyIDs = $families->getColumn('gibbonFamilyID');
+
+                        // Join a set of data per family
+                        $childrenData = $familyGateway->selectChildrenByFamily($familyIDs, true)->fetchGrouped();
+                        $families->joinColumn('gibbonFamilyID', 'children', $childrenData);
+                        $adultData = $familyGateway->selectAdultsByFamily($familyIDs, true)->fetchGrouped();
+                        $families->joinColumn('gibbonFamilyID', 'adults', $adultData);
+
+                        echo $page->fetchFromTemplate('profile/family.twig.html', [
+                            'families' => $families,
+                        ]);
                     } elseif ($subpage == 'Facilities') {
                         try {
                             $data = array('gibbonPersonID1' => $gibbonPersonID, 'gibbonPersonID2' => $gibbonPersonID, 'gibbonPersonID3' => $gibbonPersonID, 'gibbonPersonID4' => $gibbonPersonID, 'gibbonPersonID5' => $gibbonPersonID, 'gibbonPersonID6' => $gibbonPersonID, 'gibbonSchoolYearID1' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID']);
@@ -756,8 +774,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         }
                     }
 
-                    $page->addSidebarExtra($page->fetchFromTemplate('profileSidebar.twig.html', [
-                        'userPhoto' => getUserPhoto($guid, $row['image_240'], 240),
+                    $page->addSidebarExtra($page->fetchFromTemplate('profile/sidebar.twig.html', [
+                        'userPhoto' => Format::userPhoto($row['image_240'], 240),
                         'canViewTimetable' => isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php'),
                         'gibbonPersonID' => $gibbonPersonID,
                         'subpage' => $subpage,
