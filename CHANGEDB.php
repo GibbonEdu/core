@@ -635,4 +635,6 @@ ALTER TABLE `gibbonHook` CHANGE `type` `type` ENUM('Public Home Page','Student P
 ALTER TABLE `gibbonReportingCriteriaType` ADD UNIQUE(`name`);end
 ALTER TABLE `gibbonStaffCoverageDate` CHANGE `value` `value` DECIMAL(3,2) NOT NULL DEFAULT '1.00';end
 ALTER TABLE `gibbonStaffAbsenceDate` CHANGE `value` `value` DECIMAL(3,2) NOT NULL DEFAULT '1.00';end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Students', 'applicationFormRefereeRequired', 'Application Form Referee Required', 'Should the referee email address field be required?', 'Y');end
+
 ";
