@@ -70,30 +70,58 @@ class FamilyGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function selectAdultsByFamily($gibbonFamilyIDList)
+    public function queryFamiliesByAdult(QueryCriteria $criteria, $gibbonPersonID)
     {
-        $gibbonFamilyIDList = is_array($gibbonFamilyIDList) ? implode(',', $gibbonFamilyIDList) : $gibbonFamilyIDList;
-        $data = array('gibbonFamilyIDList' => $gibbonFamilyIDList);
-        $sql = "SELECT gibbonFamilyAdult.gibbonFamilyID, gibbonPerson.gibbonPersonID, gibbonPerson.title, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.status, gibbonPerson.email
-            FROM gibbonFamilyAdult
-            JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID)
-            WHERE FIND_IN_SET(gibbonFamilyAdult.gibbonFamilyID, :gibbonFamilyIDList) 
-            ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
+        $gibbonPersonIDList = is_array($gibbonPersonID) ? implode(',', $gibbonPersonID) : $gibbonPersonID;
 
-        return $this->db()->select($sql, $data);
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonFamily.gibbonFamilyID', 'gibbonFamily.*', "GROUP_CONCAT(DISTINCT gibbonFamilyAdult.gibbonPersonID SEPARATOR ',') as gibbonPersonIDList"
+            ])
+            ->innerJoin('gibbonFamilyAdult', 'gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID')
+            ->where('FIND_IN_SET(gibbonFamilyAdult.gibbonPersonID, :gibbonPersonIDList)')
+            ->bindValue('gibbonPersonIDList', $gibbonPersonIDList)
+            ->groupBy(['gibbonFamily.gibbonFamilyID']);
+
+        return $this->runQuery($query, $criteria);
     }
 
-    public function selectChildrenByFamily($gibbonFamilyIDList)
+    public function selectAdultsByFamily($gibbonFamilyIDList, $allFields = false)
     {
         $gibbonFamilyIDList = is_array($gibbonFamilyIDList) ? implode(',', $gibbonFamilyIDList) : $gibbonFamilyIDList;
-        $data = array('gibbonFamilyIDList' => $gibbonFamilyIDList);
-        $sql = "SELECT gibbonFamilyChild.gibbonFamilyID, gibbonPerson.gibbonPersonID, '' as title, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.status, gibbonPerson.email
-            FROM gibbonFamilyChild
-            JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID)
-            WHERE FIND_IN_SET(gibbonFamilyChild.gibbonFamilyID, :gibbonFamilyIDList) 
-            ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
 
-        return $this->db()->select($sql, $data);
+        $query = $this
+            ->newSelect()
+            ->cols($allFields
+                ? ['gibbonFamilyAdult.gibbonFamilyID', 'gibbonFamilyAdult.*', 'gibbonPerson.*']
+                : ['gibbonFamilyAdult.gibbonFamilyID', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.status', 'gibbonPerson.email'])
+            ->from('gibbonFamilyAdult')
+            ->innerJoin('gibbonPerson', 'gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->where('FIND_IN_SET(gibbonFamilyAdult.gibbonFamilyID, :gibbonFamilyIDList)')
+            ->bindValue('gibbonFamilyIDList', $gibbonFamilyIDList)
+            ->orderBy(['gibbonPerson.surname', 'gibbonPerson.preferredName']);
+
+        return $this->runSelect($query);
+    }
+
+    public function selectChildrenByFamily($gibbonFamilyIDList, $allFields = false)
+    {
+        $gibbonFamilyIDList = is_array($gibbonFamilyIDList) ? implode(',', $gibbonFamilyIDList) : $gibbonFamilyIDList;
+
+        $query = $this
+            ->newSelect()
+            ->cols($allFields
+                ? ['gibbonFamilyChild.gibbonFamilyID', 'gibbonFamilyChild.*', 'gibbonPerson.*']
+                : ['gibbonFamilyChild.gibbonFamilyID', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.status', 'gibbonPerson.email'])
+            ->from('gibbonFamilyChild')
+            ->innerJoin('gibbonPerson', 'gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->where('FIND_IN_SET(gibbonFamilyChild.gibbonFamilyID, :gibbonFamilyIDList)')
+            ->bindValue('gibbonFamilyIDList', $gibbonFamilyIDList)
+            ->orderBy(['gibbonPerson.surname', 'gibbonPerson.preferredName']);
+
+        return $this->runSelect($query);
     }
 
     public function selectFamilyAdultsByStudent($gibbonPersonID, $allUsers = false)

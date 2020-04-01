@@ -1,0 +1,49 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{{ userPhoto|raw }}
+
+<div class="column-no-break">
+    <h4>{{ __('Personal') }}</h4>
+
+    <ul class='moduleMenu'>
+        <li>
+            <a class="{{ subpage == 'Overview' ? 'font-bold' }} underline" href="{{ absoluteURL }}/index.php?q={{ q }}&gibbonPersonID={{ gibbonPersonID }}&search={{ search }}&allStaff={{ allStaff }}&subpage=Overview">{{ __('Overview') }}</a>
+        </li>
+
+        <li>
+            <a class="{{ subpage == 'Personal' ? 'font-bold' }} underline" href="{{ absoluteURL }}/index.php?q={{ q }}&gibbonPersonID={{ gibbonPersonID }}&search={{ search }}&allStaff={{ allStaff }}&subpage=Personal">{{ __('Personal') }}</a>
+        </li>
+
+        <li>
+            <a class="{{ subpage == 'Family' ? 'font-bold' }} underline" href="{{ absoluteURL }}/index.php?q={{ q }}&gibbonPersonID={{ gibbonPersonID }}&search={{ search }}&allStaff={{ allStaff }}&subpage=Family">{{ __('Family') }}</a>
+        </li>
+
+        <li>
+            <a class="{{ subpage == 'Emergency Contacts' ? 'font-bold' }} underline" href="{{ absoluteURL }}/index.php?q={{ q }}&gibbonPersonID={{ gibbonPersonID }}&search={{ search }}&allStaff={{ allStaff }}&subpage=Emergency Contacts">{{ __('Emergency Contacts') }}</a>
+        </li>
+    </ul>
+
+    <h4>{{ __('School') }}</h4>
+
+    <ul class='moduleMenu'>
+        <li>
+            <a class="{{ subpage == 'Activities' ? 'font-bold' }} underline" href="{{ absoluteURL }}/index.php?q={{ q }}&gibbonPersonID={{ gibbonPersonID }}&search={{ search }}&allStaff={{ allStaff }}&subpage=Activities">{{ __('Activities') }}</a>
+        </li>
+
+        <li>
+            <a class="{{ subpage == 'Facilities' ? 'font-bold' }} underline" href="{{ absoluteURL }}/index.php?q={{ q }}&gibbonPersonID={{ gibbonPersonID }}&search={{ search }}&allStaff={{ allStaff }}&subpage=Facilities">{{ __('Facilities') }}</a>
+        </li>
+
+        {% if canViewTimetable %}
+            <li>
+                <a class="{{ subpage == 'Timetable' ? 'font-bold' }} underline" href="{{ absoluteURL }}/index.php?q={{ q }}&gibbonPersonID={{ gibbonPersonID }}&search={{ search }}&allStaff={{ allStaff }}&subpage=Timetable">{{ __('Timetable') }}</a>
+            </li>
+        {% endif %}
+    </ul>
+</div>
