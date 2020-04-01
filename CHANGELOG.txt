@@ -44,6 +44,7 @@ v20.0.00
         Students: added an Exclude Left Students checkbox to Student Enrolment Trends, off by default
         Students: added option allowing the referee email field in the Application Form to be set to option
         User Admin: added rich text editors to the Application Form Settings
+        User Admin: added an option to enter a departure reason for final year students in Rollover
 
     Bug Fixes
         System: fixed module uninstall to also remove notification events
