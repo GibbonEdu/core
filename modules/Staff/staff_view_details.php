@@ -20,6 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
+use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\User\FamilyGateway;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -58,10 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                 }
 
                 if ($result->rowCount() != 1) {
-                    echo "<div class='error'>";
-                    echo __('The selected record does not exist, or you do not have access to it.');
-                    echo '</div>';
-                    echo '</div>';
+                    $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                 } else {
                     $row = $result->fetch();
 
@@ -75,61 +75,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         echo '</div>';
                     }
 
-                    echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                    echo '<tr>';
-                    echo "<td style='width: 33%; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
-                    echo '<i>'.Format::name($row['title'], $row['preferredName'], $row['surname'], 'Parent').'</i>';
-                    echo '</td>';
-                    echo "<td style='width: 33%; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Staff Type').'</span><br/>';
-                    echo '<i>'.__($row['type']).'</i>';
-                    echo '</td>';
-                    echo "<td style='width: 33%; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Job Title').'</span><br/>';
-                    echo '<i>'.$row['jobTitle'].'</i>';
-                    echo '</td>';
-                    echo '</tr>';
-                    echo '<tr>';
-                    echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Email').'</span><br/>';
-                    if ($row['email'] != '') {
-                        echo "<i><a href='mailto:".$row['email']."'>".$row['email'].'</a></i>';
-                    }
-                    echo '</td>';
-                    echo "<td style='width: 67%; padding-top: 15px; vertical-align: top' colspan=2>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Website').'</span><br/>';
-                    if ($row['website'] != '') {
-                        echo "<i><a href='".$row['website']."'>".$row['website'].'</a></i>';
-                    }
-                    echo '</td>';
-                    echo '</tr>';
-                    echo '</table>';
+                    echo $page->fetchFromTemplate('profile/overview.twig.html', [
+                        'type' => 'Brief',
+                        'person' => $row,
+                        'staff' => $row,
+                    ]);
 
-                    echo '<h4>';
-                    echo __('Biography');
-                    echo '</h4>';
-                    echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                    echo '<tr>';
-                    echo "<td style='width: 33%; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Country Of Origin').'</span><br/>';
-                    echo '<i>'.$row['countryOfOrigin'].'</i>';
-                    echo '</td>';
-                    echo "<td style='width: 67%; vertical-align: top' colspan=2>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Qualifications').'</span><br/>';
-                    echo '<i>'.$row['qualifications'].'</i>';
-                    echo '</td>';
-                    echo '</tr>';
-                    echo '<tr>';
-                    echo "<td style='width: 100%; vertical-align: top' colspan=3>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Biography').'</span><br/>';
-                    echo '<i>'.$row['biography'].'</i>';
-                    echo '</td>';
-                    echo '</tr>';
-                    echo '</table>';
-
-                    //Set sidebar
-                    $_SESSION[$guid]['sidebarExtra'] = getUserPhoto($guid, $row['image_240'], 240);
+                    $page->addSidebarExtra(Format::userPhoto($row['image_240'], 240));
                 }
             } else {
                 try {
@@ -212,68 +164,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             echo Format::alert($absenceMessage, 'warning');
                         }
 
-                        //General Information
-                        echo '<h4>';
-                        echo __('General Information');
-                        echo '</h4>';
-                        echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                        echo '<tr>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
-                        echo '<i>'.Format::name($row['title'], $row['preferredName'], $row['surname'], 'Parent').'</i>';
-                        echo '</td>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Staff Type').'</span><br/>';
-                        echo '<i>'.__($row['type']).'</i>';
-                        echo '</td>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Job Title').'</span><br/>';
-                        echo '<i>'.$row['jobTitle'].'</i>';
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '<tr>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Username').'</span><br/>';
-                        echo '<i>'.$row['username'].'</i>';
-                        echo '</td>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Website').'</span><br/>';
-                        if ($row['website'] != '') {
-                            echo "<i><a href='".$row['website']."'>".$row['website'].'</a></i>';
-                        }
-                        echo '</td>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Email').'</span><br/>';
-                        if ($row['email'] != '') {
-                            echo "<i><a href='mailto:".$row['email']."'>".$row['email'].'</a></i>';
-                        }
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '</table>';
+                        // General Information
+                        echo $page->fetchFromTemplate('profile/overview.twig.html', [
+                            'type' => 'Full',
+                            'person' => $row,
+                            'staff' => $row,
+                        ]);
 
-                        echo '<h4>';
-                        echo __('Biography');
-                        echo '</h4>';
-                        echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                        echo '<tr>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Country Of Origin').'</span><br/>';
-                        echo '<i>'.$row['countryOfOrigin'].'</i>';
-                        echo '</td>';
-                        echo "<td style='width: 67%; vertical-align: top' colspan=2>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Qualifications').'</span><br/>';
-                        echo '<i>'.$row['qualifications'].'</i>';
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '<tr>';
-                        echo "<td style='width: 100%; vertical-align: top' colspan=3>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Biography').'</span><br/>';
-                        echo '<i>'.$row['biography'].'</i>';
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '</table>';
-
-                        //Show timetable
+                        // Show timetable
                         echo "<a name='timetable'></a>";
                         echo '<h4>';
                         echo __('Timetable');
@@ -480,6 +378,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                             echo '</table>';
                         }
+                    } elseif ($subpage == 'Family') {
+                        $familyGateway = $container->get(FamilyGateway::class);
+
+                        // CRITERIA
+                        $criteria = $familyGateway->newQueryCriteria()
+                            ->sortBy(['gibbonFamily.name'])
+                            ->fromPOST();
+
+                        $families = $familyGateway->queryFamiliesByAdult($criteria, $gibbonPersonID);
+                        $familyIDs = $families->getColumn('gibbonFamilyID');
+
+                        // Join a set of data per family
+                        $childrenData = $familyGateway->selectChildrenByFamily($familyIDs, true)->fetchGrouped();
+                        $families->joinColumn('gibbonFamilyID', 'children', $childrenData);
+                        $adultData = $familyGateway->selectAdultsByFamily($familyIDs, true)->fetchGrouped();
+                        $families->joinColumn('gibbonFamilyID', 'adults', $adultData);
+
+                        echo $page->fetchFromTemplate('profile/family.twig.html', [
+                            'families' => $families,
+                        ]);
                     } elseif ($subpage == 'Facilities') {
                         try {
                             $data = array('gibbonPersonID1' => $gibbonPersonID, 'gibbonPersonID2' => $gibbonPersonID, 'gibbonPersonID3' => $gibbonPersonID, 'gibbonPersonID4' => $gibbonPersonID, 'gibbonPersonID5' => $gibbonPersonID, 'gibbonPersonID6' => $gibbonPersonID, 'gibbonSchoolYearID1' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID']);
@@ -664,6 +582,61 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         echo '</td>';
                         echo '</tr>';
                         echo '</table>';
+                    } elseif ($subpage == 'Activities') {
+                        
+                        $highestActionActivities = getHighestGroupedAction($guid, '/modules/Activities/activities_attendance.php', $connection2);
+                        $canAccessEnrolment = isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_enrolment.php');
+    
+                        // CRITERIA
+                        $activityGateway = $container->get(ActivityGateway::class);
+                        $criteria = $activityGateway->newQueryCriteria()
+                            ->sortBy('name')
+                            ->fromArray($_POST);
+
+                        $activities = $activityGateway->queryActivitiesByParticipant($criteria, $_SESSION[$guid]['gibbonSchoolYearID'], $gibbonPersonID);
+
+                        // DATA TABLE
+                        $table = DataTable::createPaginated('myActivities', $criteria);
+
+                        $table->addColumn('name', __('Activity'))
+                            ->format(function ($activity) {
+                                return $activity['name'].'<br/><span class="small emphasis">'.$activity['type'].'</span>';
+                            });
+                        $table->addColumn('role', __('Role'))
+                            ->format(function ($activity) {
+                                return !empty($activity['role']) ? $activity['role'] : __('Student');
+                            });
+
+                        $table->addColumn('status', __('Status'))
+                            ->format(function ($activity) {
+                                return !empty($activity['status']) ? $activity['status'] : '<i>'.__('N/A').'</i>';
+                            });
+
+                        $table->addActionColumn()
+                            ->addParam('gibbonActivityID')
+                            ->format(function ($activity, $actions) use ($highestActionActivities, $canAccessEnrolment) {
+                                if ($activity['role'] == 'Organiser' &&  $canAccessEnrolment) {
+                                    $actions->addAction('enrolment', __('Enrolment'))
+                                        ->addParam('gibbonSchoolYearTermID', '')
+                                        ->addParam('search', '')
+                                        ->setIcon('config')
+                                        ->setURL('/modules/Activities/activities_manage_enrolment.php');
+                                }
+
+                                $actions->addAction('view', __('View Details'))
+                                    ->isModal(1000, 550)
+                                    ->setURL('/modules/Activities/activities_my_full.php');
+
+                                if ($highestActionActivities == "Enter Activity Attendance" || 
+                                ($highestActionActivities == "Enter Activity Attendance_leader" && ($activity['role'] == 'Organiser' || $activity['role'] == 'Assistant' || $activity['role'] == 'Coach'))) {
+                                    $actions->addAction('attendance', __('Attendance'))
+                                        ->setIcon('attendance')
+                                        ->setURL('/modules/Activities/activities_attendance.php');
+                                }
+                            });
+
+                        echo $table->render($activities);   
+
                     } elseif ($subpage == 'Timetable') {
                         if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') == false) {
                             echo "<div class='error'>";
@@ -696,45 +669,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         }
                     }
 
-                    //Set sidebar
-                    $_SESSION[$guid]['sidebarExtra'] = '';
-
-                    //Show pic
-                    $_SESSION[$guid]['sidebarExtra'] .= getUserPhoto($guid, $row['image_240'], 240);
-
-                    //PERSONAL DATA MENU ITEMS
-                    $_SESSION[$guid]['sidebarExtra'] .= '<div class="column-no-break">';
-                    $_SESSION[$guid]['sidebarExtra'] .= '<h4>Personal</h4>';
-                    $_SESSION[$guid]['sidebarExtra'] .= "<ul class='moduleMenu'>";
-                    $style = '';
-                    if ($subpage == 'Overview') {
-                        $style = "style='font-weight: bold'";
-                    }
-                    $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&allStaff=$allStaff&subpage=Overview'>".__('Overview').'</a></li>';
-                    $style = '';
-                    if ($subpage == 'Personal') {
-                        $style = "style='font-weight: bold'";
-                    }
-                    $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&allStaff=$allStaff&subpage=Personal'>".__('Personal').'</a></li>';
-                    $style = '';
-                    if ($subpage == 'Facilities') {
-                        $style = "style='font-weight: bold'";
-                    }
-                    $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&allStaff=$allStaff&subpage=Facilities'>".__('Facilities').'</a></li>';
-                    $style = '';
-                    if ($subpage == 'Emergency Contacts') {
-                        $style = "style='font-weight: bold'";
-                    }
-                    $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&allStaff=$allStaff&subpage=Emergency Contacts'>".__('Emergency Contacts').'</a></li>';
-                    if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php')) {
-                        $style = '';
-                        if ($subpage == 'Timetable') {
-                            $style = "style='font-weight: bold'";
-                        }
-                        $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&allStaff=$allStaff&subpage=Timetable'>".__('Timetable').'</a></li>';
-                    }
-                    $_SESSION[$guid]['sidebarExtra'] .= '</ul>';
-                    $_SESSION[$guid]['sidebarExtra'] .= '</div>';
+                    $page->addSidebarExtra($page->fetchFromTemplate('profile/sidebar.twig.html', [
+                        'userPhoto' => Format::userPhoto($row['image_240'], 240),
+                        'canViewTimetable' => isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php'),
+                        'gibbonPersonID' => $gibbonPersonID,
+                        'subpage' => $subpage,
+                        'search' => $search,
+                        'allStaff' => $allStaff,
+                        'q' => $_GET['q'] ?? '',
+                    ]));
                 }
             }
         }

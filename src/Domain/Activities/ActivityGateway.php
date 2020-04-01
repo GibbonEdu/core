@@ -98,6 +98,34 @@ class ActivityGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    public function queryActivitiesByParticipant(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonPersonID)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonActivity.gibbonActivityID', 'gibbonActivity.name', 'gibbonActivity.active', 'gibbonActivity.type', 'gibbonActivityStudent.status', 'NULL AS role'
+            ])
+            ->innerJoin('gibbonActivityStudent', 'gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID')
+            ->where('gibbonActivity.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where('gibbonActivityStudent.gibbonPersonID = :gibbonPersonID')
+            ->bindValue('gibbonPersonID', $gibbonPersonID);
+
+        $query->unionAll()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonActivity.gibbonActivityID', 'gibbonActivity.name', 'gibbonActivity.active', 'gibbonActivity.type', 'NULL AS status', 'gibbonActivityStaff.role AS role'
+            ])
+            ->innerJoin('gibbonActivityStaff', 'gibbonActivityStaff.gibbonActivityID=gibbonActivity.gibbonActivityID')
+            ->where('gibbonActivity.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where('gibbonActivityStaff.gibbonPersonID = :gibbonPersonID')
+            ->bindValue('gibbonPersonID', $gibbonPersonID);
+
+        return $this->runQuery($query, $criteria);
+    }
+
     public function selectWeekdayNamesByActivity($gibbonActivityID)
     {
         $data = array('gibbonActivityID' => $gibbonActivityID);

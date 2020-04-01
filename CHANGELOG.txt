@@ -40,6 +40,7 @@ v20.0.00
         Reports: added the ability to select fonts in Template Builder
         Reports: added the option to generate single reports for Left students
         Staff: added an option to edit or delete staff coverage dates
+        Staff: added Family and Activities subpages to Staff Profile
         Students: added an Exclude Left Students checkbox to Student Enrolment Trends, off by default
         User Admin: added rich text editors to the Application Form Settings
 
