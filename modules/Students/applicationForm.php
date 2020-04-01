@@ -370,9 +370,15 @@ if ($proceed == false) {
     // REFEREE EMAIL
     $applicationFormRefereeLink = getSettingByScope($connection2, 'Students', 'applicationFormRefereeLink');
     if (!empty($applicationFormRefereeLink)) {
+        $applicationFormRefereeRequired = getSettingByScope($connection2, 'Students', 'applicationFormRefereeRequired', true);
         $row = $form->addRow();
             $row->addLabel('referenceEmail', __('Current School Reference Email'))->description(__('An email address for a referee at the applicant\'s current school.'));
-            $row->addEmail('referenceEmail')->required();
+            if ($applicationFormRefereeRequired["value"] == "Y") {
+                $row->addEmail('referenceEmail')->required();
+            }
+            else {
+                $row->addEmail('referenceEmail');
+            }
     }
 
     $row = $form->addRow();
