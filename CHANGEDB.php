@@ -636,5 +636,7 @@ ALTER TABLE `gibbonReportingCriteriaType` ADD UNIQUE(`name`);end
 ALTER TABLE `gibbonStaffCoverageDate` CHANGE `value` `value` DECIMAL(3,2) NOT NULL DEFAULT '1.00';end
 ALTER TABLE `gibbonStaffAbsenceDate` CHANGE `value` `value` DECIMAL(3,2) NOT NULL DEFAULT '1.00';end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Students', 'applicationFormRefereeRequired', 'Application Form Referee Required', 'Should the referee email address field be required?', 'Y');end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('New Staff', 'Staff', 'Staff Directory_full', 'Core', 'All', 'Y');end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Staff Left', 'Staff', 'Staff Directory_full', 'Core', 'All', 'Y');end
 
 ";
