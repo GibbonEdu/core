@@ -149,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_withdraw.
             }
 
             // Add event listeners to the notification sender
-            $event->sendNotificationsAsBcc($pdo, $gibbon->session);
+            $event->sendNotifications($pdo, $gibbon->session);
         }
     }
 
