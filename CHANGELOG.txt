@@ -42,10 +42,12 @@ v20.0.00
         Reports: added the option to generate single reports for Left students
         Staff: added an option to edit or delete staff coverage dates
         Staff: added Family and Activities subpages to Staff Profile
+        Staff: added notificaton events for New and Left staff
         Students: added an Exclude Left Students checkbox to Student Enrolment Trends, off by default
         Students: added option allowing the referee email field in the Application Form to be set to option
         Students: added a grid view of student's teachers to Student Profile
         User Admin: added rich text editors to the Application Form Settings
+        User Admin: added an option to create a linked staff record for new users
 
     Bug Fixes
         System: fixed module uninstall to also remove notification events

@@ -113,12 +113,16 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     $result = $pdo->executeQuery($data, $sql);
 
     // Get all roles and filter roles based on role restrictions
+    $staffRoles = [];
     $availableRoles = ($result && $result->rowCount() > 0)? $result->fetchAll() : array();
-    $availableRoles = array_reduce($availableRoles, function ($carry, $item) use (&$currentUserRoles) {
+    $availableRoles = array_reduce($availableRoles, function ($carry, $item) use (&$currentUserRoles, &$staffRoles) {
         if ($item['restriction'] == 'Admin Only') {
             if (!in_array('001', $currentUserRoles)) return $carry;
         } else if ($item['restriction'] == 'Same Role') {
             if (!in_array($item['gibbonRoleID'], $currentUserRoles) && !in_array('001', $currentUserRoles)) return $carry;
+        }
+        if ($item['category'] == 'Staff') {
+            $staffRoles[] = $item['gibbonRoleID'];
         }
         $carry[$item['gibbonRoleID']] = $item['name'];
         return $carry;
@@ -475,6 +479,29 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         $row->addCheckbox('studentAgreements[]')->fromArray($options);
     }
 
+    // STAFF
+    $form->toggleVisibilityByClass('staffDetails')->onSelect('gibbonRoleIDPrimary')->when($staffRoles);
+    $form->toggleVisibilityByClass('staffRecord')->onCheckbox('staffRecord')->when('Y');
+    $form->addRow()->addHeading(__('Staff'))->addClass('staffDetails');
+
+    $row = $form->addRow()->addClass('staffDetails');
+        $row->addLabel('staffRecord', __('Add Staff'));
+        $row->addCheckbox('staffRecord')->setValue('Y')->description(__('Create a linked staff record?'));
+
+    $types = array(__('Basic') => array ('Teaching' => __('Teaching'), 'Support' => __('Support')));
+    $sql = "SELECT name as value, name FROM gibbonRole WHERE category='Staff' ORDER BY name";
+    $types[__('System Roles')] = $pdo->select($sql)->fetchKeyPair();
+
+    $row = $form->addRow()->addClass('staffRecord');
+        $row->addLabel('staffType', __('Type'));
+        $row->addSelect('staffType')->fromArray($types)->placeholder()->required();
+
+    $row = $form->addRow()->addClass('staffRecord');
+        $row->addLabel('jobTitle', __('Job Title'));
+        $row->addTextField('jobTitle')->maxlength(100);
+
+
+    // SUBMIT    
     $row = $form->addRow();
         $row->addFooter()->append('<small>'.getMaxUpload($guid, true).'</small>');
         $row->addSubmit();
