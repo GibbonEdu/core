@@ -165,4 +165,23 @@ class CourseEnrolmentGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    public function selectClassTeachersByStudent($gibbonSchoolYearID, $gibbonPersonIDStudent)
+    {
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent);
+        $sql = "SELECT DISTINCT teacher.gibbonPersonID, teacher.surname, teacher.preferredName, teacher.email 
+                FROM gibbonCourseClassPerson AS studentClass
+                JOIN gibbonCourseClassPerson AS teacherClass ON (studentClass.gibbonCourseClassID=teacherClass.gibbonCourseClassID)
+                JOIN gibbonPerson AS teacher ON (teacherClass.gibbonPersonID=teacher.gibbonPersonID)
+                JOIN gibbonCourseClass ON (studentClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+                WHERE teacher.status='Full' 
+                AND teacherClass.role='Teacher' 
+                AND studentClass.role='Student' 
+                AND studentClass.gibbonPersonID=:gibbonPersonIDStudent 
+                AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID 
+                ORDER BY teacher.preferredName, teacher.surname, teacher.email";
+
+        return $this->db()->select($sql, $data);
+    }
 }

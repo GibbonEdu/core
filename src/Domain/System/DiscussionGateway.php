@@ -36,8 +36,10 @@ class DiscussionGateway extends QueryableGateway
     private static $tableName = 'gibbonDiscussion';
     private static $primaryKey = 'gibbonDiscussionID';
 
-    public function selectDiscussionByContext($foreignTable, $foreignTableID, $type = null)
+    public function selectDiscussionByContext($foreignTable, $foreignTableID, $type = null, $order = "ASC")
     {
+        $order = ($order == 'ASC' || $order == 'DESC') ? $order : 'ASC';
+
         $query = $this
             ->newSelect()
             ->cols(['gibbonDiscussion.*', 'gibbonPerson.title', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.image_240', 'gibbonPerson.username', 'gibbonPerson.email'])
@@ -47,7 +49,7 @@ class DiscussionGateway extends QueryableGateway
             ->bindValue('foreignTable', $foreignTable)
             ->where('gibbonDiscussion.foreignTableID = :foreignTableID')
             ->bindValue('foreignTableID', $foreignTableID)
-            ->orderBy(['gibbonDiscussion.timestamp']);
+            ->orderBy(['gibbonDiscussion.timestamp '.$order]);
 
         if (!empty($type)) {
             $query->where('gibbonDiscussion.type = :type')
