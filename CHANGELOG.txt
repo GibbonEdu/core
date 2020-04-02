@@ -44,6 +44,7 @@ v20.0.00
         Staff: added Family and Activities subpages to Staff Profile
         Students: added an Exclude Left Students checkbox to Student Enrolment Trends, off by default
         Students: added option allowing the referee email field in the Application Form to be set to option
+        Students: added a grid view of student's teachers to Student Profile
         User Admin: added rich text editors to the Application Form Settings
 
     Bug Fixes

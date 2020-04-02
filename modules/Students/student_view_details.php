@@ -17,10 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\Students\StudentNoteGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Domain\DataSet;
 use Gibbon\Tables\DataTable;
+use Gibbon\Tables\View\GridView;
+use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\Students\StudentNoteGateway;
 use Gibbon\Module\Attendance\StudentHistoryData;
 use Gibbon\Module\Attendance\StudentHistoryView;
 
@@ -611,51 +614,67 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '<p>';
                         echo __('Includes Teachers, Tutors, Educational Assistants and Head of Year.');
                         echo '</p>';
-                        try {
-                            $dataDetail = array('gibbonPersonID1' => $gibbonPersonID, 'gibbonYearGroupID' => $row['gibbonYearGroupID'], 'gibbonPersonID2' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID3' => $gibbonPersonID, 'gibbonRollGroupID' => $row['gibbonRollGroupID'] ?? '');
-                            $sqlDetail = "
-                                (SELECT DISTINCT teacher.surname, teacher.preferredName, teacher.email FROM gibbonPerson AS teacher JOIN gibbonCourseClassPerson AS teacherClass ON (teacherClass.gibbonPersonID=teacher.gibbonPersonID)  JOIN gibbonCourseClassPerson AS studentClass ON (studentClass.gibbonCourseClassID=teacherClass.gibbonCourseClassID) JOIN gibbonPerson AS student ON (studentClass.gibbonPersonID=student.gibbonPersonID) JOIN gibbonCourseClass ON (studentClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE teacher.status='Full' AND teacherClass.role='Teacher' AND studentClass.role='Student' AND student.gibbonPersonID=:gibbonPersonID1 AND gibbonCourse.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY teacher.preferredName, teacher.surname, teacher.email)
-                                UNION
-                                (SELECT DISTINCT surname, preferredName, email FROM gibbonPerson JOIN gibbonYearGroup ON (gibbonYearGroup.gibbonPersonIDHOY=gibbonPersonID) WHERE status='Full' AND gibbonYearGroupID=:gibbonYearGroupID)
-                                UNION
-                                (SELECT DISTINCT surname, preferredName, email
-                                    FROM gibbonPerson
-                                        JOIN gibbonINAssistant ON (gibbonINAssistant.gibbonPersonIDAssistant=gibbonPerson.gibbonPersonID)
-                                    WHERE status='Full'
-                                        AND gibbonPersonIDStudent=:gibbonPersonID2)
-                                UNION
-                                (SELECT DISTINCT surname, preferredName, email
-                                    FROM gibbonPerson
-                                        JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonPersonIDEA=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDEA2=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDEA3=gibbonPerson.gibbonPersonID)
-                                        JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
-                                        JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-                                    WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                                        AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID3
-                                        AND gibbonPerson.status='Full'
-                                )
-                                UNION
-                                (SELECT surname, preferredName, email FROM gibbonRollGroup JOIN gibbonPerson ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID) WHERE gibbonRollGroupID=:gibbonRollGroupID AND gibbonPerson.status='Full')
-                                ORDER BY preferredName, surname, email";
-                            $resultDetail = $connection2->prepare($sqlDetail);
-                            $resultDetail->execute($dataDetail);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
-                        if ($resultDetail->rowCount() < 1) {
-                            echo "<div class='warning'>";
-                            echo __('There are no records to display.');
-                            echo '</div>';
+
+                        $studentGateway = $container->get(StudentGateway::class);
+                        $staff = $studentGateway->selectAllRelatedUsersByStudent($gibbon->session->get('gibbonSchoolYearID'), $row['gibbonYearGroupID'], $row['gibbonRollGroupID'], $gibbonPersonID)->fetchAll();
+                        $criteria = $studentGateway->newQueryCriteria();
+
+                        $table = DataTable::createPaginated('staffView', $criteria);
+                        $table->addMetaData('listOptions', [
+                            'list' => __('List'),
+                            'grid' => __('Grid'),
+                        ]);
+
+                        $view = $_GET['view'] ?? 'grid';
+                        if ($view == 'grid') {
+                            $table->setRenderer(new GridView($container->get('twig')));
+                            $table->getRenderer()->setCriteria($criteria);
+
+                            $table->addMetaData('gridClass', 'rounded-sm bg-gray-100 border');
+                            $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/4 md:w-1/5 my-4 text-center text-xs');
+
+                            $table->addColumn('image_240', __('Photo'))
+                                ->context('primary')
+                                ->format(function ($person) {
+                                    $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
+                                    return Format::link($url, Format::userPhoto($person['image_240'], 'sm'));
+                                });
+
+                            $table->addColumn('fullName', __('Name'))
+                                ->context('primary')
+                                ->sortable(['surname', 'preferredName'])
+                                ->width('20%')
+                                ->format(function ($person) {
+                                    $text = Format::name('', $person['preferredName'], $person['surname'], 'Staff', false, true);
+                                    $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
+                                    return Format::link($url, $text, ['class' => 'font-bold underline leading-normal']);
+                                });
                         } else {
-                            echo '<ul>';
-                            while ($rowDetail = $resultDetail->fetch()) {
-                                echo '<li>'.htmlPrep(Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false));
-                                if ($rowDetail['email'] != '') {
-                                    echo htmlPrep(' <'.$rowDetail['email'].'>');
-                                }
-                                echo '</li>';
-                            }
-                            echo '</ul>';
+                            $table->addColumn('fullName', __('Name'))
+                                ->notSortable()
+                                ->format(function ($person) {
+                                    return Format::name('', $person['preferredName'], $person['surname'], 'Staff', false, true);
+                                });
+                            $table->addColumn('email', __('Email'))
+                                ->notSortable()
+                                ->format(function ($person) {
+                                    return htmlPrep('<'.$person['email'].'>');
+                                });
                         }
+
+                        $table->addColumn('context', __('Context'))
+                            ->notSortable()
+                            ->format(function ($person) use ($view) {
+                                $class = $view == 'grid'? 'unselectable text-xxs italic text-gray-800' : 'unselectable';
+                                if (!empty($person['classID'])) {
+                                    return Format::link('./index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID='.$person['classID'], $person['type'], ['class' => $class.' underline']);
+                                } else {
+                                    return '<span class="'.$class.'">'.$person['type'].'</span>';
+                                }
+                            });
+  
+                        echo $table->render(new DataSet($staff));
+
 
                         //Show timetable
                         echo "<a name='timetable'></a>";
