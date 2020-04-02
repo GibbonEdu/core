@@ -17,6 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\Staff\StaffGateway;
+use Gibbon\Comms\NotificationEvent;
+
 include '../../gibbon.php';
 
 $action = isset($_POST['action']) ? $_POST['action'] : '';
@@ -37,6 +42,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
+        $staffGateway = $container->get(StaffGateway::class);
+        $userGateway = $container->get(UserGateway::class);
         $gibbonStaffIDList = is_array($gibbonStaffID)? implode(',', $gibbonStaffID) : $gibbonStaffID;
 
         if ($action == 'Left') {
@@ -53,6 +60,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
                 header("Location: {$URL}");
                 exit();
             }
+
+            // Raise a new notification event
+            $event = new NotificationEvent('Staff', 'Staff Left');
+
+            $notificationText = __('The following staff members have been marked as Left on {date}:', [
+                'date' => Format::date($dateEnd),
+            ]).'<br/><ul>';
+
+            foreach (explode(',', $gibbonStaffIDList) as $gibbonStaffID) {
+                $staff =  $staffGateway->getByID($gibbonStaffID);
+                $person = $userGateway->getByID($staff['gibbonPersonID']);
+                $notificationText .= '<li>'.Format::name('', $person['preferredName'], $person['surname'], 'Staff', false, true).' ('.$person['username'].') '.$staff['jobTitle'].'</li>';
+            }
+            $notificationText .= '</ul>';
+
+            $event->setNotificationText($notificationText);
+            $event->setActionLink('/index.php?q=/modules/Staff/staff_view.php&allStaff=on');
+
+            // Send notifications
+            $event->sendNotifications($pdo, $gibbon->session);
         }
 
         $URL .= '&return=success0';

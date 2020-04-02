@@ -1,4 +1,8 @@
 <?php
+
+use Gibbon\Comms\NotificationEvent;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Services\Format;
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -92,6 +96,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
 
             //Last insert ID
             $AI = str_pad($connection2->lastInsertID(), 10, '0', STR_PAD_LEFT);
+
+            // Raise a new notification event
+            $event = new NotificationEvent('Staff', 'New Staff');
+
+            $person = $container->get(UserGateway::class)->getByID($gibbonPersonID);
+            $event->setNotificationText(__('A new staff member has been added: {name} ({username}) {jobTitle}', [
+                'name' => Format::name('', $person['preferredName'], $person['surname'], 'Staff', false, true),
+                'username' => $person['username'],
+                'jobTitle' => $jobTitle,
+            ]));
+            $event->setActionLink('/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$gibbonPersonID.'&allStaff=&search=');
+
+            // Send notifications
+            $event->sendNotifications($pdo, $gibbon->session);
 
             $URL .= "&return=success0&editID=$AI";
             header("Location: {$URL}");
