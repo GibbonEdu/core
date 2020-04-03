@@ -608,72 +608,74 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '</table>';
 
                         //Get and display a list of student's teachers
-                        echo '<h4>';
-                        echo __('Teachers Of {student}', ['student' => $row['preferredName']]);
-                        echo '</h4>';
-                        echo '<p>';
-                        echo __('Includes Teachers, Tutors, Educational Assistants and Head of Year.');
-                        echo '</p>';
-
                         $studentGateway = $container->get(StudentGateway::class);
                         $staff = $studentGateway->selectAllRelatedUsersByStudent($gibbon->session->get('gibbonSchoolYearID'), $row['gibbonYearGroupID'], $row['gibbonRollGroupID'], $gibbonPersonID)->fetchAll();
                         $criteria = $studentGateway->newQueryCriteria();
 
-                        $table = DataTable::createPaginated('staffView', $criteria);
-                        $table->addMetaData('listOptions', [
-                            'list' => __('List'),
-                            'grid' => __('Grid'),
-                        ]);
+                        if ($staff) {
+                            echo '<h4>';
+                            echo __('Teachers Of {student}', ['student' => $row['preferredName']]);
+                            echo '</h4>';
+                            echo '<p>';
+                            echo __('Includes Teachers, Tutors, Educational Assistants and Head of Year.');
+                            echo '</p>';
 
-                        $view = $_GET['view'] ?? 'grid';
-                        if ($view == 'grid') {
-                            $table->setRenderer(new GridView($container->get('twig')));
-                            $table->getRenderer()->setCriteria($criteria);
+                            $table = DataTable::createPaginated('staffView', $criteria);
+                            $table->addMetaData('listOptions', [
+                                'list' => __('List'),
+                                'grid' => __('Grid'),
+                            ]);
 
-                            $table->addMetaData('gridClass', 'rounded-sm bg-gray-100 border');
-                            $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/4 md:w-1/5 my-4 text-center text-xs');
+                            $view = $_GET['view'] ?? 'grid';
+                            if ($view == 'grid') {
+                                $table->setRenderer(new GridView($container->get('twig')));
+                                $table->getRenderer()->setCriteria($criteria);
 
-                            $table->addColumn('image_240', __('Photo'))
-                                ->context('primary')
-                                ->format(function ($person) {
-                                    $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
-                                    return Format::link($url, Format::userPhoto($person['image_240'], 'sm'));
-                                });
+                                $table->addMetaData('gridClass', 'rounded-sm bg-gray-100 border');
+                                $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/4 md:w-1/5 my-4 text-center text-xs');
 
-                            $table->addColumn('fullName', __('Name'))
-                                ->context('primary')
-                                ->sortable(['surname', 'preferredName'])
-                                ->width('20%')
-                                ->format(function ($person) {
-                                    $text = Format::name('', $person['preferredName'], $person['surname'], 'Staff', false, true);
-                                    $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
-                                    return Format::link($url, $text, ['class' => 'font-bold underline leading-normal']);
-                                });
-                        } else {
-                            $table->addColumn('fullName', __('Name'))
+                                $table->addColumn('image_240', __('Photo'))
+                                    ->context('primary')
+                                    ->format(function ($person) {
+                                        $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
+                                        return Format::link($url, Format::userPhoto($person['image_240'], 'sm'));
+                                    });
+
+                                $table->addColumn('fullName', __('Name'))
+                                    ->context('primary')
+                                    ->sortable(['surname', 'preferredName'])
+                                    ->width('20%')
+                                    ->format(function ($person) {
+                                        $text = Format::name('', $person['preferredName'], $person['surname'], 'Staff', false, true);
+                                        $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
+                                        return Format::link($url, $text, ['class' => 'font-bold underline leading-normal']);
+                                    });
+                            } else {
+                                $table->addColumn('fullName', __('Name'))
+                                    ->notSortable()
+                                    ->format(function ($person) {
+                                        return Format::name('', $person['preferredName'], $person['surname'], 'Staff', false, true);
+                                    });
+                                $table->addColumn('email', __('Email'))
+                                    ->notSortable()
+                                    ->format(function ($person) {
+                                        return htmlPrep('<'.$person['email'].'>');
+                                    });
+                            }
+
+                            $table->addColumn('context', __('Context'))
                                 ->notSortable()
-                                ->format(function ($person) {
-                                    return Format::name('', $person['preferredName'], $person['surname'], 'Staff', false, true);
+                                ->format(function ($person) use ($view) {
+                                    $class = $view == 'grid'? 'unselectable text-xxs italic text-gray-800' : 'unselectable';
+                                    if (!empty($person['classID'])) {
+                                        return Format::link('./index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID='.$person['classID'], $person['type'], ['class' => $class.' underline']);
+                                    } else {
+                                        return '<span class="'.$class.'">'.$person['type'].'</span>';
+                                    }
                                 });
-                            $table->addColumn('email', __('Email'))
-                                ->notSortable()
-                                ->format(function ($person) {
-                                    return htmlPrep('<'.$person['email'].'>');
-                                });
+    
+                            echo $table->render(new DataSet($staff));
                         }
-
-                        $table->addColumn('context', __('Context'))
-                            ->notSortable()
-                            ->format(function ($person) use ($view) {
-                                $class = $view == 'grid'? 'unselectable text-xxs italic text-gray-800' : 'unselectable';
-                                if (!empty($person['classID'])) {
-                                    return Format::link('./index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID='.$person['classID'], $person['type'], ['class' => $class.' underline']);
-                                } else {
-                                    return '<span class="'.$class.'">'.$person['type'].'</span>';
-                                }
-                            });
-  
-                        echo $table->render(new DataSet($staff));
 
 
                         //Show timetable
