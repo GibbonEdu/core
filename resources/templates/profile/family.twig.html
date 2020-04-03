@@ -209,5 +209,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% endif %}
 
 {% else %}
-    {{ include('components/blankSlate.twig.html') }}
+    <div class="h-48 rounded-sm border bg-gray-100 shadow-inner overflow-hidden">
+        {{ include('components/blankSlate.twig.html') }}
+    </div>
 {% endfor %}
