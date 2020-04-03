@@ -702,6 +702,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             }
                             $tt = renderTT($guid, $connection2, $gibbonPersonID, $_GET['gibbonTTID'] ?? '', false, $ttDate, '/modules/Students/student_view_details.php', "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents#timetable");
                             if ($tt != false) {
+                                $page->addData('preventOverflow', false);
                                 echo $tt;
                             } else {
                                 echo "<div class='error'>";
