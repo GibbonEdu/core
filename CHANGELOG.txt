@@ -65,6 +65,7 @@ v20.0.00
         Reports: fixed Student Info template to omit empty student photos
         System: fixed the first and last day of the selected school year
         Timetable: escaped calendar event names in timetable tooltips
+        Timetable: incremented gibbonTTImport course and class name field lengths 
 
 v19.0.00
 --------
