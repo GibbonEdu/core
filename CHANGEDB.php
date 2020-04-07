@@ -641,5 +641,6 @@ INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001',
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Student Withdrawn', 'Students', 'View Student Profile_full', 'Core', 'All,gibbonYearGroupID', 'Y');end
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('New Staff', 'Staff', 'Staff Directory_full', 'Core', 'All', 'Y');end
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Staff Left', 'Staff', 'Staff Directory_full', 'Core', 'All', 'Y');end
-
+ALTER TABLE `gibbonTTImport` CHANGE `courseNameShort` `courseNameShort` VARCHAR(12) NOT NULL DEFAULT '';end
+ALTER TABLE `gibbonTTImport` CHANGE `classNameShort` `classNameShort` VARCHAR(8) NOT NULL DEFAULT '';end
 ";
