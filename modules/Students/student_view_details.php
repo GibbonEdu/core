@@ -1508,11 +1508,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         //User photo
                                         echo getUserPhoto($guid, $rowMember['image_240'], 75);
                                         echo "<div style='padding-top: 5px'><b>";
-                                        $allStudents = '';
+
                                         if ($rowMember['gibbonStudentEnrolmentID'] == null)
-                                            $allStudents = '&allStudents=on';
+                                            $allStudents = 'on';
                                         if ($rowMember['status'] == 'Full') {
-                                            echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowMember['gibbonPersonID'].$allStudents."'>".Format::name('', $rowMember['preferredName'], $rowMember['surname'], 'Student').'</a><br/>';
+                                            echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowMember['gibbonPersonID']."&allStudents=".$allStudents."'>".Format::name('', $rowMember['preferredName'], $rowMember['surname'], 'Student').'</a><br/>';
                                         } else {
                                             echo Format::name('', $rowMember['preferredName'], $rowMember['surname'], 'Student').'<br/>';
                                         }
