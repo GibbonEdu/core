@@ -160,6 +160,7 @@ class StaffAbsenceGateway extends QueryableGateway
             ->leftJoin('gibbonPerson AS coverage', 'gibbonStaffCoverage.gibbonPersonIDCoverage=coverage.gibbonPersonID')
             ->where('gibbonStaffAbsenceDate.date BETWEEN :dateStart AND :dateEnd')
             ->where("gibbonStaffAbsence.status = 'Approved'")
+            ->where("gibbonPerson.status = 'Full'")
             ->bindValue('dateStart', $dateStart)
             ->bindValue('dateEnd', $dateEnd);
 
