@@ -57,6 +57,7 @@ v20.0.00
         System: fixed hourly cache refresh for pinned messages
         Finance: fixed fee name bug in issued Invoices where fee name changed
         Planner: changed spelling of Publically to Publicly
+        Staff: fixed Left staff appearing in Weekly Absences report
         Students: fixed emergency data report not showing parents column
         Students: fixed Tutors and EAs set to Left showing on Student Profile
         Reports: fixed Course scope Per Group criteria not saving per-class
