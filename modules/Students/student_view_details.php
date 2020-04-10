@@ -1499,23 +1499,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     echo "<table class='smallIntBorder' cellspacing='0' style='width:100%'>";
                                     $count = 0;
                                     $columns = 3;
+                                    $highlightClass = '';
 
                                     while ($rowMember = $resultMember->fetch()) {
                                         if ($count % $columns == 0) {
                                             echo '<tr>';
                                         }
-                                        echo "<td style='width:30%; text-align: left; vertical-align: top'>";
+                                        $highlightClass = $rowMember['status'] != 'Full'? 'error' : '';
+                                        echo "<td style='width:30%; text-align: left; vertical-align: top' class='".$highlightClass."'>";
                                         //User photo
                                         echo getUserPhoto($guid, $rowMember['image_240'], 75);
                                         echo "<div style='padding-top: 5px'><b>";
-                                        $allStudents = '';
-                                        if ($rowMember['gibbonStudentEnrolmentID'] == null)
-                                            $allStudents = '&allStudents=on';
-                                        if ($rowMember['status'] == 'Full') {
-                                            echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowMember['gibbonPersonID'].$allStudents."'>".Format::name('', $rowMember['preferredName'], $rowMember['surname'], 'Student').'</a><br/>';
-                                        } else {
-                                            echo Format::name('', $rowMember['preferredName'], $rowMember['surname'], 'Student').'<br/>';
+
+                                        if ($rowMember['gibbonStudentEnrolmentID'] == null) {
+                                            $allStudents = 'on';
                                         }
+                                        
+                                        echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowMember['gibbonPersonID']."&allStudents=".$allStudents."'>".Format::name('', $rowMember['preferredName'], $rowMember['surname'], 'Student').'</a><br/>';
+
                                         echo "<span style='font-weight: normal; font-style: italic'>".__('Status').': '.$rowMember['status'].'</span>';
                                         echo '</div>';
                                         echo '</td>';
@@ -1527,7 +1528,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     }
 
                                     for ($i = 0;$i < $columns - ($count % $columns);++$i) {
-                                        echo '<td></td>';
+                                        echo '<td class="'.$highlightClass.'"></td>';
                                     }
 
                                     if ($count % $columns != 0) {
