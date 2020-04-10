@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
             }
 
             $search = $_GET['search'] ?? '';
-            if (!empty($search)) {
+            if ($search != '') {
                 echo "<div class='linkTop'>";
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage.php&search='.$search."'>".__('Back to Search Results').'</a>';
                 echo '</div>';
