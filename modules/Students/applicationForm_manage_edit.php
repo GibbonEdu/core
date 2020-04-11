@@ -310,7 +310,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     $row = $form->addRow();
         $row->addLabel('officialName', __('Official Name'))->description(__('Full name as shown in ID documents.'));
-        $row->addTextField('officialName')->required()->maxLength(150)->setTitle('Please enter full name as shown in ID documents');
+        $row->addTextField('officialName')->required()->maxLength(150)->setTitle(__('Please enter full name as shown in ID documents'));
 
     $row = $form->addRow();
         $row->addLabel('nameInCharacters', __('Name In Characters'))->description(__('Chinese or other character-based name.'));
@@ -360,7 +360,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $row->addSelectCountry('citizenship1')->required();
         }
 
-    $countryName = (isset($_SESSION[$guid]['country']))? $_SESSION[$guid]['country'].' ' : '';
+    $countryName = (isset($_SESSION[$guid]['country']))? __($_SESSION[$guid]['country']).' ' : '';
     $row = $form->addRow();
         $row->addLabel('citizenship1Passport', __('Citizenship Passport Number'))->description('');
         $row->addTextField('citizenship1Passport')->maxLength(30);
