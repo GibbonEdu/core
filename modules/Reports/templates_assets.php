@@ -86,10 +86,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
         
     $table->addColumn('name', __('Name'))
         ->format(function ($template) {
-            return Format::tooltip($template['name'], $template['templateFile']);
+            return Format::tooltip(__($template['name']), $template['templateFile']);
         });
-    $table->addColumn('type', __('Type'));
-    $table->addColumn('category', __('Category'));
+    $table->addColumn('type', __('Type'))->translatable();
+    $table->addColumn('category', __('Category'))->translatable();
     $table->addColumn('status', __('Status'))
         ->width('20%')
         ->format(function ($template) {
