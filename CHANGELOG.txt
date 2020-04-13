@@ -41,6 +41,7 @@ v20.0.00
         Reports: added the ability to select fonts in Template Builder
         Reports: added the option to generate single reports for Left students
         Reports: added alerts to student details in Write Reports
+        Reports: added auto resize to comment text boxes in Write Reports
         Reports: change criteria status to Locked/Unlocked for better clarity
         Staff: added an option to edit or delete staff coverage dates
         Staff: added Family and Activities subpages to Staff Profile

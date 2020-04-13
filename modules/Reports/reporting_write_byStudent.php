@@ -333,6 +333,10 @@ var readonly = <?php echo !empty($canWriteReport) && $canWriteReport ? 'false' :
 
 updateStatus();
 
+$(document).ready(function(){
+    autosize($('textarea'));
+});
+
 function save() {
     $('[name="gibbonPersonIDNext"]').val('');
     document.getElementById('reportingWrite').submit()

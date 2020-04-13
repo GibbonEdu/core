@@ -195,3 +195,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.ph
         'params' => $urlParams,
     ]);
 }
+?>
+<script>
+    $(document).ready(function(){
+        autosize($('textarea'));
+    });
+</script>
