@@ -65,6 +65,7 @@ v20.0.00
         Reports: suppressed TCPDF deprecation messages when generating PDFs
         Reports: fixed pronoun switching not applied globally in some browsers
         Reports: fixed Student Info template to omit empty student photos
+        Reports: fixed AttendanceByCycle data source and updated it to apply countClassAsSchool setting
         System: fixed the first and last day of the selected school year
         Timetable: escaped calendar event names in timetable tooltips
         Timetable: incremented gibbonTTImport course and class name field lengths 
