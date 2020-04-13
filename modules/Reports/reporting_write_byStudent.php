@@ -124,10 +124,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
         $page->addError(__('The specified record cannot be found.'));
         return;
     }
-    
+
     $scopeDetails = $reportingAccessGateway->selectReportingDetailsByScope($urlParams['gibbonReportingScopeID'], $reportingScope['scopeType'], $urlParams['scopeTypeID'])->fetch();
     $relatedReports = $container->get(ReportingScopeGateway::class)->selectRelatedReportingScopesByID($urlParams['gibbonReportingScopeID'], $reportingScope['scopeType'], $urlParams['scopeTypeID'])->fetchAll();
     $reportingProgress = $container->get(ReportingProgressGateway::class)->selectBy(['gibbonReportingScopeID' => $urlParams['gibbonReportingScopeID'], $scopeIdentifier => $urlParams['scopeTypeID'], 'gibbonPersonIDStudent' => $gibbonPersonIDStudent])->fetch();
+    $student['alerts'] = getAlertBar($guid, $connection2, $gibbonPersonIDStudent, $student['privacy'], '', false, false);
 
     $progress = $reportingAccessGateway->selectReportingProgressByScope($urlParams['gibbonReportingScopeID'], $reportingScope['scopeType'], $urlParams['scopeTypeID'], $urlParams['allStudents'] == 'Y')->fetchGroupedUnique();
     $progressComplete = array_reduce($progress, function ($group, $item) {
@@ -331,6 +332,10 @@ var complete = false;
 var readonly = <?php echo !empty($canWriteReport) && $canWriteReport ? 'false' : 'true'; ?>;
 
 updateStatus();
+
+$(document).ready(function(){
+    autosize($('textarea'));
+});
 
 function save() {
     $('[name="gibbonPersonIDNext"]').val('');
