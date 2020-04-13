@@ -188,7 +188,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.p
             echo '<b>'.Format::name('', $row['preferredName'], $row['surname'], 'Student', true).'</b><br/>';
             echo '</td>';
             echo '<td>';
-            echo $row['status'];
+            echo __($row['status']);
             echo '</td>';
             echo '<td>';
             if ($row['invoiceTo'] == 'Family') {
