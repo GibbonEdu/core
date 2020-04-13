@@ -40,6 +40,7 @@ v20.0.00
         Reports: added hooks for custom criteria types in the report writing screen
         Reports: added the ability to select fonts in Template Builder
         Reports: added the option to generate single reports for Left students
+        Reports: change criteria status to Locked/Unlocked for better clarity
         Staff: added an option to edit or delete staff coverage dates
         Staff: added Family and Activities subpages to Staff Profile
         Staff: added notificaton events for New and Left staff
