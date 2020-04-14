@@ -31,6 +31,7 @@ v20.0.00
     Tweaks & Additions
         System: added Argentine Peso as a currency option
         System: updated Tailwind 1.2.0 dependencies via npm
+        System: added target option to Alert Bar
         Departments: added drag-drop ordering to Departments in School Admin
         Finance: added Student ID, where set, to invoices and receipts
         Planner: enhanced Smart Block display in Lesson Planner
@@ -71,7 +72,7 @@ v20.0.00
         Reports: fixed AttendanceByCycle data source and updated it to apply countClassAsSchool setting
         System: fixed the first and last day of the selected school year
         Timetable: escaped calendar event names in timetable tooltips
-        Timetable: incremented gibbonTTImport course and class name field lengths 
+        Timetable: incremented gibbonTTImport course and class name field lengths
 
 v19.0.00
 --------

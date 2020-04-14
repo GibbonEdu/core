@@ -897,10 +897,12 @@ function getUserPhoto($guid, $path, $size)
     return Format::userPhoto($path, $size);
 }
 
-function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divExtras = '', $div = true, $large = false)
+function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divExtras = '', $div = true, $large = false, $target = "_self")
 {
     $output = '';
     $alerts = [];
+
+    $target = ($target == "_blank") ? "_blank" : "_self";
 
     $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
     if ($highestAction == 'View Student Profile_full' or $highestAction == 'View Student Profile_fullNoNotes' or $highestAction == 'View Student Profile_fullEditAllNotes') {
@@ -1054,6 +1056,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
                 'title' => $alert['title'],
                 'class' => $class,
                 'style' => $style,
+                'target' => $target,
             ]);
         }
 

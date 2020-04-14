@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
     $_SESSION[$guid]['sidebarExtra'] = $sidebarForm->getOutput();
 
     $page->scripts->add('chart');
-    
+
     $page->breadcrumbs
         ->add(__('My Reporting'), 'reporting_my.php', ['gibbonPersonID' => $gibbonPersonID])
         ->add(__('Write Reports'), 'reporting_write.php', $urlParams)
@@ -113,13 +113,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
     } elseif ($reportingScope['scopeType'] == 'Course') {
         $scopeIdentifier = 'gibbonCourseClassID';
     }
-    
+
     // Check for student enrolment info, fallback to user info
     $student = $container->get(StudentGateway::class)->selectActiveStudentByPerson($reportingCycle['gibbonSchoolYearID'], $gibbonPersonIDStudent)->fetch();
     if (empty($student)) {
         $student = $container->get(UserGateway::class)->getByID($gibbonPersonIDStudent);
     }
-    
+
     if (empty($student)) {
         $page->addError(__('The specified record cannot be found.'));
         return;
@@ -128,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
     $scopeDetails = $reportingAccessGateway->selectReportingDetailsByScope($urlParams['gibbonReportingScopeID'], $reportingScope['scopeType'], $urlParams['scopeTypeID'])->fetch();
     $relatedReports = $container->get(ReportingScopeGateway::class)->selectRelatedReportingScopesByID($urlParams['gibbonReportingScopeID'], $reportingScope['scopeType'], $urlParams['scopeTypeID'])->fetchAll();
     $reportingProgress = $container->get(ReportingProgressGateway::class)->selectBy(['gibbonReportingScopeID' => $urlParams['gibbonReportingScopeID'], $scopeIdentifier => $urlParams['scopeTypeID'], 'gibbonPersonIDStudent' => $gibbonPersonIDStudent])->fetch();
-    $student['alerts'] = getAlertBar($guid, $connection2, $gibbonPersonIDStudent, $student['privacy'], '', false, false);
+    $student['alerts'] = getAlertBar($guid, $connection2, $gibbonPersonIDStudent, $student['privacy'], '', false, false, "_blank");
 
     $progress = $reportingAccessGateway->selectReportingProgressByScope($urlParams['gibbonReportingScopeID'], $reportingScope['scopeType'], $urlParams['scopeTypeID'], $urlParams['allStudents'] == 'Y')->fetchGroupedUnique();
     $progressComplete = array_reduce($progress, function ($group, $item) {
@@ -269,7 +269,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
                     'tag'     => '',
                     'comment'    => !empty($remark['comment']) ? $remark['comment'] : __('N/A'),
                 ]);
-                
+
                 $col->addContent($remarkText);
             }
         }
