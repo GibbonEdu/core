@@ -10,7 +10,11 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 <div class="mt-4 rounded border bg-gray-100 border-gray-400">
 
     <div class="p-2 border-b border-gray-400 bg-gray-300 text-gray-700 text-xs font-bold">
-        {{ __('Students') }} <span class="text-xxs font-normal">({{ totalCount }})</span>
+        {{ __('Students') }} 
+
+        <div class="flex-1 mt-1">
+            {{ include('ui/writingProgress.twig.html') }}
+        </div>
     </div>
 
     {% for student in students %}
