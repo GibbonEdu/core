@@ -20,7 +20,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         <div class="flex flex-wrap rounded border bg-gray-100">
 
         {% for columnIndex, column in columns %}
-            <div class="w-full sm:w-1/2 lg:w-1/3 p-2 border-b -mb-px">
+            <div class="w-full p-2 border-b -mb-px {{ column.getWidth == 'auto' ? 'sm:w-1/2 lg:w-1/3' }}" 
+                 style="{{ column.getWidth != 'auto' ? 'width: ' ~ column.getWidth }}">
                 <span class="block text-sm text-gray-700 font-bold mb-1">{{ column.getLabel }}</span>
                 <span class="block text-xs text-gray-700 ">{{ column.getOutput(rowData) }}</span>
             </div>
