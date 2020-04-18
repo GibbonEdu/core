@@ -60,13 +60,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
     }
 
     $reportGateway = $container->get(LibraryReportGateway::class);
-    $criteria = $reportGateway->newQueryCriteria($ignoreStatus);
+    $criteria = $reportGateway->newQueryCriteria()->fromPOST();
 
-    $items = $reportGateway->selectOverdueItems()->fetchAll();
+    $items = $reportGateway->selectOverdueItems($ignoreStatus)->fetchAll();
 
     // DATA TABLE
     $table = ReportTable::createPaginated('overdueItems', $criteria)->setViewMode($viewMode, $gibbon->session);
-    $table->setTitle(__m('View Overdue Items'));
+    $table->setTitle(__('View Overdue Items'));
 
     $table->addColumn('preferredName', __('Borrowing User'))
         ->sortable(['surname', 'preferredName'])

@@ -32,6 +32,45 @@ use Gibbon\Domain\QueryableGateway;
 class LibraryReportGateway extends QueryableGateway
 {
     use TableAware;
+
+    private static $tableName = 'gibbonLibraryItem';
+    private static $primaryKey = 'gibbonLibraryItemID';
+    
+    public function queryCatalogSummary(QueryCriteria $criteria)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('gibbonLibraryItem')
+            ->cols(['gibbonLibraryItem.*', 'gibbonLibraryType.name as type', 'gibbonSpace.name as space', 'gibbonPerson.title', 'gibbonPerson.surname', 'gibbonPerson.preferredName'])
+            ->leftJoin('gibbonLibraryType', 'gibbonLibraryType.gibbonLibraryTypeID=gibbonLibraryItem.gibbonLibraryTypeID')
+            ->leftJoin('gibbonSpace', 'gibbonSpace.gibbonSpaceID=gibbonLibraryItem.gibbonSpaceID')
+            ->leftJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonLibraryItem.gibbonPersonIDOwnership');
+
+        $criteria->addFilterRules([
+            'id' => function ($query, $gibbonLibraryTypeID) {
+                return $query
+                    ->where('gibbonLibraryItem.gibbonLibraryTypeID = :gibbonLibraryTypeID')
+                    ->bindValue('gibbonLibraryTypeID', $gibbonLibraryTypeID);
+            },
+            'ownershipType' => function ($query, $ownershipType) {
+                return $query
+                    ->where('gibbonLibraryItem.ownershipType = :ownershipType')
+                    ->bindValue('ownershipType', $ownershipType);
+            },
+            'space' => function ($query, $gibbonSpaceID) {
+                return $query
+                    ->where('gibbonLibraryItem.gibbonSpaceID = :gibbonSpaceID')
+                    ->bindValue('gibbonSpaceID', $gibbonSpaceID);
+            },
+            'status' => function ($query, $status) {
+                return $query
+                    ->where('gibbonLibraryItem.status = :status')
+                    ->bindValue('status', $status);
+            },
+        ]);
+
+        return $this->runQuery($query, $criteria);
+    }
     
     public function selectOverdueItems($ignoreStatus = null)
     {
