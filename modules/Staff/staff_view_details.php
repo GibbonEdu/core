@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
+use Gibbon\Domain\Staff\StaffFacilityGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\User\FamilyGateway;
@@ -399,64 +400,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             'families' => $families,
                         ]);
                     } elseif ($subpage == 'Facilities') {
-                        try {
-                            $data = array('gibbonPersonID1' => $gibbonPersonID, 'gibbonPersonID2' => $gibbonPersonID, 'gibbonPersonID3' => $gibbonPersonID, 'gibbonPersonID4' => $gibbonPersonID, 'gibbonPersonID5' => $gibbonPersonID, 'gibbonPersonID6' => $gibbonPersonID, 'gibbonSchoolYearID1' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                            $sql = '(SELECT gibbonSpace.*, gibbonSpacePersonID, usageType, NULL AS \'exception\', gibbonSpace.phoneInternal FROM gibbonSpacePerson JOIN gibbonSpace ON (gibbonSpacePerson.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonPersonID=:gibbonPersonID1)
-                            UNION
-                            (SELECT DISTINCT gibbonSpace.*, NULL AS gibbonSpacePersonID, \'Roll Group\' AS usageType, NULL AS \'exception\', gibbonSpace.phoneInternal FROM gibbonRollGroup JOIN gibbonSpace ON (gibbonRollGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE (gibbonPersonIDTutor=:gibbonPersonID2 OR gibbonPersonIDTutor2=:gibbonPersonID3 OR gibbonPersonIDTutor3=:gibbonPersonID4) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID1)
-                            UNION
-                            (SELECT DISTINCT gibbonSpace.*, NULL AS gibbonSpacePersonID, \'Timetable\' AS usageType, gibbonTTDayRowClassException.gibbonPersonID AS \'exception\', gibbonSpace.phoneInternal FROM gibbonSpace JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND (gibbonTTDayRowClassException.gibbonPersonID=:gibbonPersonID6 OR gibbonTTDayRowClassException.gibbonPersonID IS NULL)) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID5)
-                            ORDER BY name';
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
+                        $staffFacilityGateway = $container->get(StaffFacilityGateway::class);
+                        $criteria = $staffFacilityGateway->newQueryCriteria();
+                        $facilities = $staffFacilityGateway->queryFacilitiesByPerson($criteria, $gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID);
 
-                        if ($result->rowCount() < 1) {
-                            echo "<div class='error'>";
-                            echo __('There are no records to display.');
-                            echo '</div>';
-                        } else {
-                            echo "<table cellspacing='0' style='width: 100%'>";
-                            echo "<tr class='head'>";
-                            echo '<th>';
-                            echo __('Name');
-                            echo '</th>';
-                            echo '<th>';
-                            echo __('Extension');
-                            echo '</th>';
-                            echo '<th>';
-                            echo __('Usage').'<br/>';
-                            echo '</th>';
-                            echo '</tr>';
+                        $table = DataTable::create('facilities');
 
-                            $count = 0;
-                            $rowNum = 'odd';
-                            while ($rowFacility = $result->fetch()) {
-                                if ($rowFacility['exception'] == null) {
-                                    if ($count % 2 == 0) {
-                                        $rowNum = 'even';
-                                    } else {
-                                        $rowNum = 'odd';
-                                    }
-                                    ++$count;
+                        $table->addColumn('name', __('Name'));
+                        $table->addColumn('phoneInternal', __('Extension'));
+                        $table->addColumn('usageType', __("Usage"))
+                            ->format(function($row) {
+                                return __($row['usageType']);
+                            });
 
-                                    echo "<tr class=$rowNum>";
-                                    echo '<td>';
-                                    echo $rowFacility['name'];
-                                    echo '</td>';
-                                    echo '<td>';
-                                    echo $rowFacility['phoneInternal'];
-                                    echo '</td>';
-                                    echo '<td>';
-                                    echo __($rowFacility['usageType']);
-                                    echo '</td>';
-                                    echo '</tr>';
-                                }
-                            }
-                            echo '</table>';
-                        }
+                        echo $table->render($facilities);
                     } elseif ($subpage == 'Emergency Contacts') {
                         if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php') == true) {
                             echo "<div class='linkTop'>";
