@@ -18,6 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\Library\LibraryGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -203,16 +206,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
 
     echo $form->getOutput();
 
-
-	//Set pagination variable
-	$page = 1;
-    if (isset($_GET['page'])) {
-        $page = $_GET['page'];
-    }
-    if ((!is_numeric($page)) or $page < 1) {
-        $page = 1;
-    }
-
     //Cache TypeFields
     try {
         $dataTypeFields = array() ;
@@ -229,221 +222,43 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         $typeFields[$typeField['gibbonLibraryTypeID']] = $typeField;
     }
 
-    //Search with filters applied
-    try {
-        $data = array();
-        $sqlWhere = 'AND ';
-        if ($name != '') {
-            $data['name'] = '%'.$name.'%';
-            $sqlWhere .= 'gibbonLibraryItem.name LIKE :name AND ';
-        }
-        if ($producer != '') {
-            $data['producer'] = '%'.$producer.'%';
-            $sqlWhere .= 'producer LIKE :producer AND ';
-        }
-        if ($category != '') {
-            $data['category'] = $category;
-            $sqlWhere .= 'gibbonLibraryItem.gibbonLibraryTypeID=:category AND ';
-            if ($collection != '') {
-                $data['collection'] = '%s:10:"Collection";s:'.strlen($collection).':"'.$collection.'";%';
-                $sqlWhere .= 'gibbonLibraryItem.fields LIKE :collection AND ';
-            }
-        }
-        if ($gibbonLibraryItemID != '') {
-            $data['gibbonLibraryItemID'] = $gibbonLibraryItemID;
-            $sqlWhere .= 'gibbonLibraryItem.gibbonLibraryItemID=:gibbonLibraryItemID AND ';
-        }
-        if ($sqlWhere == 'AND ') {
-            $sqlWhere = '';
-        } else {
-            $sqlWhere = substr($sqlWhere, 0, -5);
-        }
+    $gateway = $container->get(LibraryGateway::class);
+    $criteria = $gateway->newQueryCriteria(true)
+      ->filterBy('name',$name)
+      ->filterBy('producer',$producer)
+      ->filterBy('category',$category)
+      ->filterBy('collection',$collection)
+      ->filterBy('everything',$everything)                          
+      ->fromPOST();
+    $books = $gateway->queryBrowseItems($criteria);
+    $table = DataTable::createPaginated('books',$criteria); 
+      $table->addExpandableColumn('details')->format(function($item) {
+      $typeFields = unserialize($item['fields']);
+      $details = "<table style='width:100%;'>";
+      foreach($typeFields as $fieldName => $fieldValue)
+      {
+        $details .= sprintf('<tr><td><b>%1$s</b></td><td>%2$s</td></tr>',$fieldName,$fieldValue);
+      }
+      $details .= "</table>";
+      return $details;
+     });
+     
 
-        //SEARCH ALL FIELDS (a.k.a everything)
-        try {
-            $dataEverything = array();
-            $sqlEverything = 'SHOW COLUMNS FROM gibbonLibraryItem';
-            $resultEverything = $connection2->prepare($sqlEverything);
-            $resultEverything->execute($dataEverything);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
+    $table->addColumn('imageLocation',__('Cover Art'))->notSortable()->format(function($item)
+    {
+      return Format::photo($item['imageLocation']);
+    });
 
-        $everythingCount = 0;
-        $everythingTokens = explode(' ', $everything);
-        $everythingSQL = '';
-        while ($rowEverything = $resultEverything->fetch()) {
-            $tokenCount = 0;
-            foreach ($everythingTokens as $everythingToken) {
-                if (count($everythingTokens) == 1) { //Deal with single search token
-                    $data['data'.$everythingCount] = '%'.trim($everythingToken).'%';
-                    $everythingSQL .= 'gibbonLibraryItem.'.$rowEverything['Field'].' LIKE :data'.$everythingCount.' OR ';
-                    ++$everythingCount;
-                } else { //Deal with multiple search token, ANDing them within ORs
-                    if ($tokenCount == 0) { //First in a set of AND within ORs
-                        $data['data'.$everythingCount] = '%'.trim($everythingToken).'%';
-                        $everythingSQL .= '(gibbonLibraryItem.'.$rowEverything['Field'].' LIKE :data'.$everythingCount.' AND ';
-                        ++$everythingCount;
-                    } elseif (($tokenCount + 1) == count($everythingTokens)) { //Last in a set of AND within ORs
-                        $data['data'.$everythingCount] = '%'.trim($everythingToken).'%';
-                        $everythingSQL .= 'gibbonLibraryItem.'.$rowEverything['Field'].' LIKE :data'.$everythingCount.') OR ';
-                        ++$everythingCount;
-                    } else { //All others in a set of AND within ORs
-                        $data['data'.$everythingCount] = '%'.trim($everythingToken).'%';
-                        $everythingSQL .= 'gibbonLibraryItem.'.$rowEverything['Field'].' LIKE :data'.$everythingCount.' AND ';
-                        ++$everythingCount;
-                    }
-                    ++$tokenCount;
-                }
-            }
-        }
-        //Find prep for search all fields
-        if (strlen($everythingSQL) > 0) {
-            if (count($everythingTokens) == 1) {
-                $everythingSQL = ' AND ('.substr($everythingSQL, 0, -5).')';
-            } else {
-                $everythingSQL = ' AND ('.substr($everythingSQL, 0, -4).')';
-            }
-            $sqlWhere .= $everythingSQL;
-        }
+    $table->addColumn('name',__('Name (Author/Producer)'))->format(function($item) {
+      return sprintf('<b>%1$s</b><br/><span style="font-size: 85%%; font-style:italic;">%2$s</span>',$item['name'],$item['producer']);
+    });
 
-        $sql = "SELECT gibbonLibraryItem.* FROM gibbonLibraryItem JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) WHERE (status='Available' OR status='On Loan' OR status='Repair' OR status='Reserved') AND NOT ownershipType='Individual' AND borrowable='Y' $sqlWhere ORDER BY id";
-        $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
+    $table->addColumn('id',__('ID (Status)'))->format(function($item) {
+      return sprintf('<b>%1$s</b><br/><span style="font-size: 85%%; font-style:italic;">%2$s</span>',$item['id'],$item['status']);
+    });
 
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
-    } else {
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "name=$name&producer=$producer&category=$category&collection=$collection&everything=$everything");
-        }
-
-        echo "<table class='smallIntBorder borderGrey' cellspacing='0' style='width: 100%;'>";
-        echo "<tr class='head' style='opacity: 0.7'>";
-        echo "<th style='text-align: center'>";
-
-        echo '</th>';
-        echo '<th>';
-        echo __('Name').'<br/>';
-        echo "<span style='font-size: 85%; font-style: italic'>".__('Author/Producer').'</span>';
-        echo '</th>';
-        echo '<th>';
-        echo __('ID').'<br/>';
-        echo "<span style='font-size: 85%; font-style: italic'>".__('Status').'</span>';
-        echo '</th>';
-        echo '<th>';
-        echo __('Location');
-        echo '</th>';
-        echo '<th>';
-        echo __('Actions');
-        echo '</th>';
-        echo '</tr>';
-
-        $count = 0;
-        $rowNum = 'odd';
-        try {
-            $resultPage = $connection2->prepare($sqlPage);
-            $resultPage->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
-        while ($row = $resultPage->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
-            }
-
-			//COLOR ROW BY STATUS!
-			echo "<tr class=$rowNum style='opacity: 1.0'>";
-            echo "<td style='width: 260px'>";
-            echo getImage($guid, $row['imageType'], $row['imageLocation'], false);
-            echo '</td>';
-            echo "<td style='width: 130px'>";
-            echo '<b>'.$row['name'].'</b><br/>';
-            echo "<span style='font-size: 85%; font-style: italic'>".$row['producer'].'</span>';
-            echo '</td>';
-            echo "<td style='width: 130px'>";
-            echo '<b>'.$row['id'].'</b><br/>';
-            echo "<span style='font-size: 85%; font-style: italic'>".__($row['status']).'</span>';
-            echo '</td>';
-            echo "<td style='width: 130px'>";
-            if ($row['gibbonSpaceID'] != '') {
-                try {
-                    $dataSpace = array('gibbonSpaceID' => $row['gibbonSpaceID']);
-                    $sqlSpace = 'SELECT * FROM gibbonSpace WHERE gibbonSpaceID=:gibbonSpaceID';
-                    $resultSpace = $connection2->prepare($sqlSpace);
-                    $resultSpace->execute($dataSpace);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                if ($resultSpace->rowCount() == 1) {
-                    $rowSpace = $resultSpace->fetch();
-                    echo '<b>'.$rowSpace['name'].'</b><br/>';
-                }
-            }
-            if ($row['locationDetail'] != '') {
-                echo "<span style='font-size: 85%; font-style: italic'>".$row['locationDetail'].'</span>';
-            }
-            echo '</td>';
-            echo '<td>';
-            echo "<script type='text/javascript'>";
-            echo '$(document).ready(function(){';
-            echo "\$(\".description-$count\").hide();";
-            echo "\$(\".show_hide-$count\").fadeIn(1000);";
-            echo "\$(\".show_hide-$count\").click(function(){";
-            echo "\$(\".description-$count\").fadeToggle(1000);";
-            echo '});';
-            echo '});';
-            echo '</script>';
-            if ($row['fields'] != '') {
-                echo "<a title='".__('View Description')."' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='Show Details' onclick='return false;' /></a>";
-            }
-            echo '</td>';
-            echo '</tr>';
-            if ($row['fields'] != '') {
-                echo "<tr class='description-$count' id='fields-$count' style='background-color: #fff; display: none'>";
-                echo '<td colspan=5>';
-                echo "<table cellspacing='0' style='width: 100%'>";
-                $typeFieldsInner = unserialize($typeFields[$row['gibbonLibraryTypeID']]['fields']);
-                $fields = unserialize($row['fields']);
-                if (is_array($typeFieldsInner) && count($typeFieldsInner) > 0) {
-                    foreach ($typeFieldsInner as $typeField) {
-                        if (isset($fields[$typeField['name']]) && $fields[$typeField['name']] != '') {
-                            echo '<tr>';
-                            echo "<td style='vertical-align: top; width: 200px'>";
-                            echo '<b>'.(__($typeField['name'])).'</b>';
-                            echo '</td>';
-                            echo "<td style='vertical-align: top'>";
-                            if ($typeField['type'] == 'URL') {
-                                echo "<a target='_blank' href='".$fields[$typeField['name']]."'>".$fields[$typeField['name']].'</a><br/>';
-                            } else {
-                                echo $fields[$typeField['name']].'<br/>';
-                            }
-                            echo '</td>';
-                            echo '</tr>';
-                        }
-                    }
-                }
-                echo '</table>';
-                echo '</td>';
-                echo '</tr>';
-            }
-
-            ++$count;
-        }
-        echo '</table>';
-
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "name=$name&producer=$producer&category=$category&collection=$collection&everything=$everything");
-        }
-    }
-    echo '</div>';
-    echo '</div>';
+    $table->addColumn('location',__('Location'))->format(function($item) {
+      return sprintf('<b>%1$s</b><br/><span style="font-size: 85%%; font-style:italic;">%2$s</span>',$item['spaceName'],$item['locationDetail']);
+    });
+    echo $table->render($books);
 }
