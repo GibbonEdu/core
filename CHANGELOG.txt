@@ -34,6 +34,7 @@ v20.0.00
         System: added target option to Alert Bar
         Departments: added drag-drop ordering to Departments in School Admin
         Finance: added Student ID, where set, to invoices and receipts
+        Finance: apply email template to invoices, receipts, and reminders
         Planner: enhanced Smart Block display in Lesson Planner
         Planner: removed bold from Chat comment in lesson plan view
         Reports: added a Proof Read by Form Group option

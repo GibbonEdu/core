@@ -23,6 +23,7 @@ use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\User\FamilyGateway;
+use Gibbon\Domain\DataSet;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -208,35 +209,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             echo '</div>';
                         }
 
-                        echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                        echo '<tr>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
-                        echo '<i>'.Format::name($row['title'], $row['preferredName'], $row['surname'], 'Parent').'</i>';
-                        echo '</td>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Staff Type').'</span><br/>';
-                        echo '<i>'.__($row['type']).'</i>';
-                        echo '</td>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Job Title').'</span><br/>';
-                        echo '<i>'.$row['jobTitle'].'</i>';
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '<tr>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Initials').'</span><br/>';
-                        echo $row['initials'];
-                        echo '</td>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Gender').'</span><br/>';
-                        echo $row['gender'];
-                        echo '</td>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                        $table = DataTable::createDetails('personal');
 
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '</table>';
+                        $table->addColumn('preferredName', __('Name'))
+                            ->format(Format::using('name', ['title', 'preferredName', 'surname', 'Parent']));
+                        $table->addColumn('type', __('Staff Type'));
+                        $table->addColumn('jobTitle', __('Job Title'));
+                        $table->addColumn('initials', __('Initials'));
+                        $table->addColumn('gender', __('Gender'));
+                        $table->addColumn('initials', __('Initials'));
+
+                        echo $table->render([$row]);
 
                         echo '<h4>';
                         echo 'Contacts';
