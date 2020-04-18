@@ -28,6 +28,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Tables\View\DataTableView;
 use Gibbon\Tables\View\PaginatedView;
 use League\Container\ServiceProvider\AbstractServiceProvider;
+use Gibbon\Tables\View\DetailsView;
 use Twig_Environment;
 
 /**
@@ -54,6 +55,7 @@ class ViewServiceProvider extends AbstractServiceProvider
         DataTableView::class,
         PaginatedView::class,
         Twig_Environment::class,
+        DetailsView::class,
     ];
 
     /**
@@ -93,6 +95,10 @@ class ViewServiceProvider extends AbstractServiceProvider
 
         $container->add(PaginatedView::class, function () use ($container) {
             return new PaginatedView($container->get('twig'));
+        });
+
+        $container->add(DetailsView::class, function () use ($container) {
+            return new DetailsView($container->get('twig'));
         });
 
         $container->share(\Twig_Environment::class, function () {

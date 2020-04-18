@@ -32,6 +32,7 @@ use Gibbon\Tables\Renderer\RendererInterface;
 use Gibbon\Tables\View\DataTableView;
 use Gibbon\Tables\View\PaginatedView;
 use Gibbon\View\View;
+use Gibbon\Tables\View\DetailsView;
 
 /**
  * DataTable
@@ -104,6 +105,20 @@ class DataTable implements OutputableInterface
         if ($renderer instanceof View) $renderer->addData('preventOverflow', true);
 
         return (new static($renderer))->setID($id)->setRenderer($renderer);
+    }
+
+    /**
+     * Helper method to create a details table.
+     *
+     * @param string $id
+     * @return self
+     */
+    public static function createDetails($id)
+    {
+        global $container;
+
+        $renderer = $container->get(DetailsView::class);
+        return (new static($renderer))->setID($id);
     }
 
     /**
@@ -438,12 +453,13 @@ class DataTable implements OutputableInterface
     /**
      * Render the data table, either with the supplied renderer or default to the built-in one.
      *
-     * @param DataSet $dataSet
+     * @param DataSet|array $dataSet
      * @param RendererInterface $renderer
      * @return string
      */
-    public function render(DataSet $dataSet, RendererInterface $renderer = null)
+    public function render($dataSet, RendererInterface $renderer = null)
     {
+        $dataSet = is_array($dataSet) ? new DataSet($dataSet) : $dataSet;
         $renderer = isset($renderer)? $renderer : $this->renderer;
 
         return $renderer->renderTable($this, $dataSet);
