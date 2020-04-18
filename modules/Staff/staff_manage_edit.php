@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.php') == false) {
     //Acess denied
@@ -172,57 +173,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
 
-                echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/staff_manage_edit_facility_add.php&gibbonPersonID=$gibbonPersonID&gibbonStaffID=$gibbonStaffID&search=$search'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-                echo '</div>';
+                $table = DataTable::create('facilities');
 
-                if ($result->rowCount() < 1) {
-                    echo "<div class='error'>";
-                    echo __('There are no records to display.');
-                    echo '</div>';
-                } else {
-                    echo "<table cellspacing='0' style='width: 100%'>";
-                    echo "<tr class='head'>";
-                    echo '<th>';
-                    echo __('Name');
-                    echo '</th>';
-                    echo '<th>';
-                    echo __('Usage').'<br/>';
-                    echo '</th>';
-                    echo '<th>';
-                    echo __('Actions');
-                    echo '</th>';
-                    echo '</tr>';
+                $table->addHeaderAction('add', __('Add'))
+                    ->setURL('/modules/Staff/staff_manage_edit_facility_add.php')
+                    ->addParam('gibbonPersonID', $gibbonPersonID)
+                    ->addParam('gibbonStaffID', $gibbonStaffID)
+                    ->addParam('search', $search);
 
-                    $count = 0;
-                    $rowNum = 'odd';
-                    while ($row = $result->fetch()) {
-                        if ($row['exception'] == null) {
-                            if ($count % 2 == 0) {
-                                $rowNum = 'even';
-                            } else {
-                                $rowNum = 'odd';
-                            }
-                            ++$count;
+                $table->addColumn('name', __('Name'));
+                $table->addColumn('usageType', __('Usage'));    
 
-                            echo "<tr class=$rowNum>";
-                            echo '<td>';
-                            echo $row['name'];
-                            echo '</td>';
-                            echo '<td>';
-                            echo $row['usageType'];
-                            echo '</td>';
-                            echo '<td>';
-                            if ($row['usageType'] != 'Roll Group' and $row['usageType'] != 'Timetable') {
-                                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/staff_manage_edit_facility_delete.php&gibbonSpacePersonID='.$row['gibbonSpacePersonID']."&gibbonStaffID=$gibbonStaffID&search=$search&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-                            }
-                            echo '</td>';
-                            echo '</tr>';
+                $table->addActionColumn()
+                    ->addParam('gibbonSpacePersonID')
+                    ->addParam('gibbonStaffID', $gibbonStaffID)
+                    ->addParam('search', $search)
+                    ->format(function ($room, $actions) use ($guid) {
+                        if ($room['usageType'] != 'Roll Group' and $room['usageType'] != 'Timetable') {
+                            $actions->addAction('delete', __('Delete'))
+                                    ->setURL('/modules/Staff/staff_manage_edit_facility_delete.php');
                         }
-                    }
-                    echo '</table>';
-                }
+                    });
 
+                echo $table->render($result->toDataSet());
 
                 if ($highestAction == 'Manage Staff_confidential') {
                     echo '<h3>'.__('Contracts').'</h3>';
@@ -234,6 +207,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     } catch (PDOException $e) {
                         echo "<div class='error'>".$e->getMessage().'</div>';
                     }
+
+                    $table = DataTable::create('contracts');
+
+                    $table->addHeaderAction('add', __('Add'))
+                        ->setURL('/modules/Staff/staff_manage_edit_contract_add.php')
+                        ->addParam('gibbonStaffID', $gibbonStaffID)
+                        ->addParam('search', $search);
+
+                    $table->addColumn('title', __('Title'));
+                    $table->addColumn('status', __('Status'));
+                    $table->addColumn('dates', __('Dates'))
+                        ->format(function ($row) {
+                            if ($row["dateEnd"] == '') {
+                                return dateConvertBack($guid, $row['dateStart']);
+                            } else {
+                                return dateConvertBack($guid, $row['dateStart']).' - '.dateConvertBack($guid, $row['dateEnd']);
+                            }
+                        });;
+
+                    $table->addActionColumn()
+                    ->addParam('gibbonStaffContractID')
+                    ->addParam('gibbonStaffID', $gibbonStaffID)
+                    ->addParam('search', $search)
+                    ->format(function ($staff, $actions) use ($guid) {
+                        $actions->addAction('edit', __('Edit'))
+                            ->setURL('/modules/Staff/staff_manage_edit_contract_edit.php');
+                    });
+
+                    echo $table->render($result->toDataSet());
 
                     echo "<div class='linkTop'>";
                     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/staff_manage_edit_contract_add.php&gibbonStaffID=$gibbonStaffID&search=$search'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
