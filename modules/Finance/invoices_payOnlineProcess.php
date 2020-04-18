@@ -284,19 +284,22 @@ if ($paid != 'Y') { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
 
                 //Prep message
                 $body = receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], true, $receiptCount)."<p style='font-style: italic;'>Email sent via ".$_SESSION[$guid]['systemName'].' at '.$_SESSION[$guid]['organisationName'].'.</p>';
-                $bodyPlain = 'This email is not viewable in plain text: enable rich text/HTML in your email client to view the receipt. Please reply to this email if you have any questions.';
 
                 $mail = $container->get(Mailer::class);
                 $mail->SetFrom(getSettingByScope($connection2, 'Finance', 'email'), sprintf(__('%1$s Finance'), $_SESSION[$guid]['organisationName']));
                 foreach ($emails as $address) {
                     $mail->AddBCC($address);
                 }
-                $mail->CharSet = 'UTF-8';
-                $mail->Encoding = 'base64';
-                $mail->IsHTML(true);
-                $mail->Subject = 'Receipt From '.$_SESSION[$guid]['organisationNameShort'].' via '.$_SESSION[$guid]['systemName'];
-                $mail->Body = $body;
-                $mail->AltBody = $bodyPlain;
+
+                $mail->Subject = __('Receipt from {organisation} via {system}', [
+                    'organisation' => $_SESSION[$guid]['organisationNameShort'],
+                    'system' => $_SESSION[$guid]['systemName'],
+                ]);
+
+                $mail->renderBody('mail/email.twig.html', [
+                    'title'  => $mail->Subject,
+                    'body'   => $body,
+                ]);
 
                 $mail->Send();
             }

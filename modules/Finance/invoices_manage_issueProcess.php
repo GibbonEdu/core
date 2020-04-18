@@ -199,19 +199,22 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                         if (count($emails) > 0) {
                             //Prep message
                             $body = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], true)."<p style='font-style: italic;'>Email sent via ".$_SESSION[$guid]['systemName'].' at '.$_SESSION[$guid]['organisationName'].'.</p>';
-                            $bodyPlain = 'This email is not viewable in plain text: enable rich text/HTML in your email client to view the invoice. Please reply to this email if you have any questions.';
 
                             $mail = $container->get(Mailer::class);
                             $mail->SetFrom($from, sprintf(__('%1$s Finance'), $_SESSION[$guid]['organisationName']));
                             foreach ($emails as $address) {
                                 $mail->AddBCC($address);
                             }
-                            $mail->CharSet = 'UTF-8';
-                            $mail->Encoding = 'base64';
-                            $mail->IsHTML(true);
-                            $mail->Subject = 'Invoice From '.$_SESSION[$guid]['organisationNameShort'].' via '.$_SESSION[$guid]['systemName'];
-                            $mail->Body = $body;
-                            $mail->AltBody = $bodyPlain;
+
+                            $mail->Subject = __('Invoice from {organisation} via {system}', [
+                                'organisation' => $_SESSION[$guid]['organisationNameShort'],
+                                'system' => $_SESSION[$guid]['systemName'],
+                            ]);
+
+                            $mail->renderBody('mail/email.twig.html', [
+                                'title'  => $mail->Subject,
+                                'body'   => $body,
+                            ]);
 
                             if (!$mail->Send()) {
                                 $emailFail = true;
