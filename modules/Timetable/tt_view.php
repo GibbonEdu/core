@@ -18,6 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\DataSet;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -105,24 +107,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
                 echo '</div>';
             }
 
-            echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-            echo '<tr>';
-            echo "<td style='width: 34%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
-            echo Format::name($row['title'], $row['preferredName'], $row['surname'], $row['type'], false);
-            echo '</td>';
-            echo "<td style='width: 33%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__('Year Group').'</span><br/>';
-            if ($row['yearGroup'] != '') {
-                echo '<i>'.__($row['yearGroup']).'</i>';
-            }
-            echo '</td>';
-            echo "<td style='width: 34%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__('Roll Group').'</span><br/>';
-            echo '<i>'.$row['rollGroup'].'</i>';
-            echo '</td>';
-            echo '</tr>';
-            echo '</table>';
+            // DISPLAY PERSON DATA
+            $table = DataTable::createDetails('personal');
+            $table->addColumn('name', __('Name'))->format(Format::using('name', ['title', 'preferredName', 'surname', 'type', 'false']));
+                        $table->addColumn('yearGroup', __('Year Group'));
+                        $table->addColumn('rollGroup', __('Roll Group'));
+
+            echo $table->render([$row]);
+
 
             $ttDate = null;
             if (isset($_POST['ttDate'])) {

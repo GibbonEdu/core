@@ -32,6 +32,7 @@ v20.0.00
         System: added Argentine Peso as a currency option
         System: updated Tailwind 1.2.0 dependencies via npm
         System: added target option to Alert Bar
+        System: added a DetailsView table for displaying data
         Departments: added drag-drop ordering to Departments in School Admin
         Finance: added Student ID, where set, to invoices and receipts
         Finance: apply email template to invoices, receipts, and reminders
@@ -71,6 +72,7 @@ v20.0.00
         Reports: fixed pronoun switching not applied globally in some browsers
         Reports: fixed Student Info template to omit empty student photos
         Reports: fixed AttendanceByCycle data source and updated it to apply countClassAsSchool setting
+        Reports: fixed grade scale drown-downs for Per Group reporting criteria
         System: fixed the first and last day of the selected school year
         Timetable: escaped calendar event names in timetable tooltips
         Timetable: incremented gibbonTTImport course and class name field lengths
