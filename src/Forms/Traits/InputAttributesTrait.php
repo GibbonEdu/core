@@ -246,7 +246,7 @@ trait InputAttributesTrait
 
         return $this;
     }
-
+    
     /**
      * Gets the input's tabindex attribute.
      * @return  int
@@ -254,5 +254,26 @@ trait InputAttributesTrait
     public function getTabIndex()
     {
         return $this->getAttribute('tabindex');
+    }
+    
+    /**
+     * Set the input's aria-label attribute.
+     * @param  string|int  $value
+     * @return self
+     */
+    public function setAriaLabel($value)
+    {
+        $this->setAttribute('aria-label', $value);
+
+        return $this;
+    }
+
+    /**
+     * Gets the input's aria-label attribute.
+     * @return  string|int
+     */
+    public function getAriaLabel()
+    {
+        return $this->getAttribute('aria-label');
     }
 }

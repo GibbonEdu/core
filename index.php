@@ -257,6 +257,7 @@ if (!empty($_GET['i18n']) && $gibbon->locale->getLocale() != $_GET['i18n']) {
         setLanguageSession($guid, $result, false);
         $gibbon->locale->setLocale($_GET['i18n']);
         $gibbon->locale->setTextDomain($pdo);
+        $localeCode = str_replace('_', '-', $gibbon->locale->getLocale());
         $cacheLoad = true;
     }
 }
@@ -519,12 +520,14 @@ $page->addData([
     'gibbonThemeName'   => $session->get('gibbonThemeName'),
     'gibbonHouseIDLogo' => $session->get('gibbonHouseIDLogo'),
     'organisationLogo'  => $session->get('organisationLogo'),
+    'organisationName'  => $session->get('organisationName'),
     'minorLinks'        => $header->getMinorLinks($cacheLoad),
     'notificationTray'  => $header->getNotificationTray($cacheLoad),
     'sidebar'           => $showSidebar,
     'version'           => $gibbon->getVersion(),
     'versionName'       => 'v'.$gibbon->getVersion().($session->get('cuttingEdgeCode') == 'Y'? 'dev' : ''),
     'rightToLeft'       => $session->get('i18n')['rtl'] == 'Y',
+    'lang'              => $localeCode,
 ]);
 
 if ($isLoggedIn) {
