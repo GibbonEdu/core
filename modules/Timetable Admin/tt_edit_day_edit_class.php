@@ -61,22 +61,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 returnProcess($guid, $_GET['return'], null, null);
             }
 
-            echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-            echo '<tr>';
-            echo "<td style='width: 34%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__('Timetable').'</span><br/>';
-            echo $values['ttName'];
-            echo '</td>';
-            echo "<td style='width: 33%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__('Day').'</span><br/>';
-            echo $values['dayName'];
-            echo '</td>';
-            echo "<td style='width: 34%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__('Period').'</span><br/>';
-            echo $values['rowName'];
-            echo '</td>';
-            echo '</tr>';
-            echo '</table>';
+
+            // DISPLAY TIMETABLE DATA
+            $table = DataTable::createDetails('ttDay');
+                        $table->addColumn('ttName', __('Timetable'));
+                        $table->addColumn('dayName', __('Day'));
+                        $table->addColumn('rowName', __('Period'));
+
+            echo $table->render([$values]);
 
             $ttDayRowClasses = $timetableDayGateway->selectTTDayRowClassesByID($gibbonTTDayID, $gibbonTTColumnRowID);
 
