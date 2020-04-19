@@ -21,6 +21,8 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
 use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\DataSet;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -138,22 +140,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
             }
             
             // DISPLAY STUDENT DATA
-            echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-            echo '<tr>';
-            echo "<td style='width: 34%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
-            echo Format::name('', $student['preferredName'], $student['surname'], 'Student');
-            echo '</td>';
-            echo "<td style='width: 33%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__('Year Group').'</span><br/>';
-            echo '<i>'.__($student['yearGroup']).'</i>';
-            echo '</td>';
-            echo "<td style='width: 34%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__('Roll Group').'</span><br/>';
-            echo '<i>'.$student['rollGroup'].'</i>';
-            echo '</td>';
-            echo '</tr>';
-            echo '</table>';
+            $table = DataTable::createDetails('personal');
+            $table->addColumn('name', __('Name'))->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', 'true']));
+                        $table->addColumn('yearGroup', __('Year Group'));
+                        $table->addColumn('rollGroup', __('Roll Group'));
+
+            echo $table->render([$student]);
 
             $form = Form::create('individualNeeds', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/in_editProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID");
 
