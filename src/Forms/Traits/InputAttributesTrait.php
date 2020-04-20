@@ -255,25 +255,26 @@ trait InputAttributesTrait
     {
         return $this->getAttribute('tabindex');
     }
-    
+
     /**
-     * Set the input's aria-label attribute.
+     * Set the input's aria property and value.
+     * @param  string      $property
      * @param  string|int  $value
      * @return self
      */
-    public function setAriaLabel($value)
+    public function setAria($property, $value)
     {
-        $this->setAttribute('aria-label', $value);
+        $this->setAttribute('aria-'.$property, $value);
 
         return $this;
     }
 
     /**
-     * Gets the input's aria-label attribute.
+     * Gets the input's aria property.
      * @return  string|int
      */
-    public function getAriaLabel()
+    public function getAria($property)
     {
-        return $this->getAttribute('aria-label');
+        return $this->getAttribute('aria-'.$property);
     }
 }
