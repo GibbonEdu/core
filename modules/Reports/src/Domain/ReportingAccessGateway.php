@@ -523,7 +523,7 @@ class ReportingAccessGateway extends QueryableGateway
         $query = $this
             ->newSelect()
             ->from('gibbonPerson')
-            ->cols(['gibbonReportingScope.gibbonReportingScopeID', 'gibbonReportingScope.name', 'MIN(gibbonReportingAccess.dateStart) as dateStart', 'MAX(gibbonReportingAccess.dateEnd) as dateEnd', "(CASE WHEN :today BETWEEN gibbonReportingCycle.dateStart AND gibbonReportingCycle.dateEnd AND :today BETWEEN MIN(gibbonReportingAccess.dateStart) AND MAX(gibbonReportingAccess.dateEnd) THEN 'Y' ELSE 'N' END) as reportingOpen", "(CASE WHEN gibbonReportingAccess.gibbonReportingAccessID IS NOT NULL THEN 'Y' ELSE 'N' END) AS canAccess", 'gibbonReportingAccess.canWrite', 'gibbonReportingAccess.canProofRead'])
+            ->cols(['gibbonReportingScope.gibbonReportingScopeID', 'gibbonReportingScope.name', 'MIN(gibbonReportingAccess.dateStart) as dateStart', 'MAX(gibbonReportingAccess.dateEnd) as dateEnd', "(CASE WHEN :today BETWEEN gibbonReportingCycle.dateStart AND gibbonReportingCycle.dateEnd AND :today BETWEEN MIN(gibbonReportingAccess.dateStart) AND MAX(gibbonReportingAccess.dateEnd) THEN 'Y' ELSE 'N' END) as reportingOpen", "(CASE WHEN MAX(gibbonReportingAccess.gibbonReportingAccessID) IS NOT NULL THEN 'Y' ELSE 'N' END) AS canAccess", 'MAX(gibbonReportingAccess.canWrite) as canWrite', 'MAX(gibbonReportingAccess.canProofRead) as canProofRead'])
             ->innerJoin('gibbonReportingAccess', "(
                 (gibbonReportingAccess.accessType='Person' AND FIND_IN_SET(gibbonPerson.gibbonPersonID, gibbonReportingAccess.gibbonPersonIDList)) OR (gibbonReportingAccess.accessType='Role' AND FIND_IN_SET(gibbonPerson.gibbonRoleIDPrimary, gibbonReportingAccess.gibbonRoleIDList))
             )")
@@ -558,7 +558,7 @@ class ReportingAccessGateway extends QueryableGateway
                 ->where('gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID')
                 ->where("(gibbonCourseClassPerson.role='Teacher' OR gibbonCourseClassPerson.role='Assistant')");
         }
-
+        
         return $this->runSelect($query)->fetch();
     }
 }
