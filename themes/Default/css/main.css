@@ -79,13 +79,11 @@ a img {
 /* TYPOGRAPHY */
 p {
     margin: 0px 0px 15px 0px;
-    text-align: justify;
     font-size: 13px;
 }
 ul,
 ol {
     margin: 0 0 1px;
-    text-align: justify;
     font-size: 13px;
 }
 h1,
@@ -871,7 +869,7 @@ span.emphasis {
     font-style: italic;
 }
 span.small {
-    font-size: 93%;
+    font-size: 100%;
 }
 
 input.standardWidth,

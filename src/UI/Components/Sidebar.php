@@ -131,6 +131,7 @@ class Sidebar implements OutputableInterface
                         ->required()
                         ->maxLength(50)
                         ->setClass('fullWidth')
+                        ->setAria('label', __('Username or email'))
                         ->placeholder(__('Username or email'))
                         ->addValidationOption('onlyOnSubmit: true');
 
@@ -140,6 +141,7 @@ class Sidebar implements OutputableInterface
                         ->required()
                         ->maxLength(30)
                         ->setClass('fullWidth')
+                        ->setAria('label', __('Password'))
                         ->placeholder(__('Password'))
                         ->addValidationOption('onlyOnSubmit: true');
 
@@ -147,6 +149,7 @@ class Sidebar implements OutputableInterface
                     $row->addContent(sprintf($loginIcon, 'planner', __('School Year')));
                     $row->addSelectSchoolYear('gibbonSchoolYearID')
                         ->setClass('fullWidth')
+                        ->setAria('label', __('School Year'))
                         ->placeholder(null)
                         ->selected($this->session->get('gibbonSchoolYearID'));
 
@@ -154,6 +157,7 @@ class Sidebar implements OutputableInterface
                     $row->addContent(sprintf($loginIcon, 'language', __('Language')));
                     $row->addSelectI18n('gibboni18nID')
                         ->setClass('fullWidth')
+                        ->setAria('label', __('Language'))
                         ->placeholder(null)
                         ->selected($this->session->get('i18n')['gibboni18nID']);
 
