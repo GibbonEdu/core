@@ -43,6 +43,7 @@ class CommentEditor extends TextArea
         $this->setRows(5);
         $this->addClass('characterCount w-full p-1 text-sm font-sans leading-tight');
         $this->addData('maxlength', $maxlength);
+        $this->setAttribute('style', 'min-height: 100px;');
 
         $output .= "<div class='characterInfo inline-block text-xxs text-gray-600 -mt-6 float-right h-6'>";
         $output .= "<span class='commentStatusName -mt-1 mr-2 tag warning text-xxs align-middle hidden'>".__('Name not found')."</span>";
