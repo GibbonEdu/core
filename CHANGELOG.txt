@@ -33,6 +33,7 @@ v20.0.00
         System: updated Tailwind 1.2.0 dependencies via npm
         System: added target option to Alert Bar
         System: added a DetailsView table for displaying data
+        System: update the pre-login homepage to use a card layout
         Departments: added drag-drop ordering to Departments in School Admin
         Finance: added Student ID, where set, to invoices and receipts
         Finance: apply email template to invoices, receipts, and reminders

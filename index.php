@@ -569,7 +569,10 @@ if (!$session->has('address')) {
             $options = unserialize(str_replace("'", "\'", $hook['options']));
             $check = getSettingByScope($connection2, $options['toggleSettingScope'], $options['toggleSettingName']);
             if ($check == $options['toggleSettingValue']) { // If its turned on, display it
-                $options['text'] = stripslashes($options['text']);
+                $matches = [];
+                preg_match("/href=\\\'.([^\\\]*)\\\'/", $options['text'], $matches);
+                $options['url'] = $matches[1] ?? '';
+                $options['text'] = stripslashes(strip_tags($options['text']));
                 $templateData['indexHooks'][] = $options;
             }
         }

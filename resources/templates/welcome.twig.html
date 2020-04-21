@@ -5,46 +5,77 @@ Copyright (C) 2010, Ross Parker
 This is a Gibbon template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
-<h2>{{ __('Welcome') }}</h2>
-<p>
-    {{ indexText | raw }}
-</p>
+{% import _self as homepage  %}
 
-{% if publicStudentApplications %}
-    <h2 style='margin-top: 30px'>{{ __('Student Applications') }}</h2>
-    <p>
-        {% set url = absoluteURL ~ "/?q=/modules/Students/applicationForm.php" %}
-        {{ __('Parents of students interested in study at %1$s may use our %2$s online form%3$s to initiate the application process.')|format(organisationName, '<a href="' ~ url ~ '">', '</a>')|raw }}
-    </p>
-{% endif %}
+<div class="flex flex-wrap mb-4 -mx-2 items-stretch ">
+    <div class="mx-2 my-2">
+        <h2>{{ __('Welcome') }}</h2>
+        <p>
+        {{ indexText | raw }}
+        </p>
+    </div>
 
-{% if publicStaffApplications %}
-    <h2 style='margin-top: 30px'>{{ __('Staff Applications') }}</h2>
-    <p>
-        {% set url = absoluteURL ~ "/?q=/modules/Staff/applicationForm_jobOpenings_view.php" %}
-        {{ __('Individuals interested in working at %1$s may use our %2$s online form%3$s to view job openings and begin the recruitment process.')|format(organisationName, '<a href="' ~ url ~ '">', '</a>')|raw }}
-    </p>
-{% endif %}
+    {% if publicStudentApplications %}
+        {{ homepage.card(
+            __('Student Applications'), 
+            __('Parents of students interested in study at %1$s may use our %2$s online form%3$s to initiate the application process.'), 
+            "/?q=/modules/Students/applicationForm.php",
+            'first'
+        ) }}
 
-{% if makeDepartmentsPublic %}
-    <h2 style='margin-top: 30px'>{{ __('Departments') }}</h2>
-    <p>
-        {% set url = absoluteURL ~ "/?q=/modules/Departments/departments.php" %}
-        {{ __('Please feel free to %1$sbrowse our departmental information%2$s, to learn more about %3$s.')|format('<a href="' ~ url ~ '">', '</a>', organisationName)|raw }}
-    </p>
-{% endif %}
+    {% endif %}
 
-{% if makeUnitsPublic %}
-    <h2 style='margin-top: 30px'>{{ __('Learn With Us') }}</h2>
-    <p>
-        {% set url = absoluteURL ~ "/?q=/modules/Planner/units_public.php&sidebar=false" %}
-        {{ __('We are sharing some of our units of study with members of the public, so you can learn with us. Feel free to %1$sbrowse our public units%2$s.')|format('<a href="' ~ url ~ '">', '</a>', organisationName)|raw }}
-    </p>
-{% endif %}
+    {% if publicStaffApplications %}
+        {{ homepage.card(
+            __('Staff Applications'), 
+            __('Individuals interested in working at %1$s may use our %2$s online form%3$s to view job openings and begin the recruitment process.'),
+            "/?q=/modules/Staff/applicationForm_jobOpenings_view.php",
+            'first'
+        ) }}
+    {% endif %}
 
-{% for hook in indexHooks %}
-    <h2 style='margin-top: 30px'>{{ hook.title }}</h2>
-    <p>
-        {{ hook.text|raw }}
-    </p>
-{% endfor %}
+    {% if makeDepartmentsPublic %}
+        {{ homepage.card(
+            __('Departments'), 
+            __('Please feel free to %1$sbrowse our departmental information%2$s, to learn more about %3$s.'),
+            "/?q=/modules/Departments/departments.php",
+            'second'
+        ) }}
+    {% endif %}
+
+    {% if makeUnitsPublic %}
+        {{ homepage.card(
+            __('Learn With Us'), 
+            __('We are sharing some of our units of study with members of the public, so you can learn with us. Feel free to %1$sbrowse our public units%2$s.'),
+            "/?q=/modules/Planner/units_public.php&sidebar=false",
+            'second'
+        ) }}
+    {% endif %}
+
+    {% for hook in indexHooks %}
+        {{ homepage.card(hook.title, hook.text, hook.url) }}
+    {% endfor %}
+</div>
+
+{% macro card(name, content, url = '', orgname = 'first') %}
+
+    <div class="w-full sm:w-1/2 px-2 pb-4">
+        <a href="{{ absoluteURL ~ url }}" class="block border shadow-sm rounded bg-white h-full text-gray-800 hover:shadow-md hover:text-purple-600">
+            <div class="block m-0 pt-4 px-4 text-base uppercase font-bold font-sans tracking-tight">
+                {{ name }}
+
+                <svg class="w-5 h-5 float-right -mt-px fill-current" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="angle-double-right" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-angle-double-right fa-w-14 fa-7x"><path fill="currentColor" d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34zm192-34l-136-136c-9.4-9.4-24.6-9.4-33.9 0l-22.6 22.6c-9.4 9.4-9.4 24.6 0 33.9l96.4 96.4-96.4 96.4c-9.4 9.4-9.4 24.6 0 33.9l22.6 22.6c9.4 9.4 24.6 9.4 33.9 0l136-136c9.4-9.2 9.4-24.4 0-33.8z" class=""></path></svg>
+            </div>
+            <p class="mb-1 p-4 text-gray-700 leading-tight">
+                {% if orgname == 'first' %}
+                    {{ content|format(organisationName, '', '')|raw }}
+                {% elseif orgname == 'second' %}
+                    {{ content|format('', '', organisationName)|raw }}
+                {% else %}
+                    {{ content|raw }}
+                {% endif %}
+            </p>
+        </a>
+    </div>
+
+{% endmacro card %}
