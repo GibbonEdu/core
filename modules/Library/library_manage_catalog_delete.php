@@ -34,7 +34,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     }
 
     //Check if school year specified
-    $gibbonLibraryItemID = $_GET['gibbonLibraryItemID'];
+    $gibbonLibraryItemID = $_GET['gibbonLibraryItemID'] ?? '';
+    $name = $_GET['name'] ?? '';
+    $gibbonLibraryTypeID = $_GET['gibbonLibraryTypeID'] ?? '';
+    $gibbonSpaceID = $_GET['gibbonSpaceID'] ?? '';
+    $status = $_GET['status'] ?? '';
+    $gibbonPersonIDOwnership = $_GET['gibbonPersonIDOwnership'] ?? '';
+    $typeSpecificFields = $_GET['typeSpecificFields'] ?? '';
     if ($gibbonLibraryItemID == '') {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');
@@ -54,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
-            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/library_manage_catalog_deleteProcess.php?gibbonLibraryItemID=$gibbonLibraryItemID&name=".$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'].'&gibbonPersonIDOwnership='.$_GET['gibbonPersonIDOwnership'].'&typeSpecificFields='.$_GET['typeSpecificFields']);
+            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/library_manage_catalog_deleteProcess.php?gibbonLibraryItemID=$gibbonLibraryItemID&name=".$name.'&gibbonLibraryTypeID='.$gibbonLibraryTypeID.'&gibbonSpaceID='.$gibbonSpaceID.'&status='.$status.'&gibbonPersonIDOwnership='.$gibbonPersonIDOwnership.'&typeSpecificFields='.$typeSpecificFields);
 	        echo $form->getOutput();
         }
     }
