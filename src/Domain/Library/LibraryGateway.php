@@ -116,9 +116,9 @@ class LibraryGateway extends QueryableGateway
                 'gp.surname',
                 'glt.name as itemType'
               ])
-              ->innerJoin('gibbonLibraryType as glt','gli.gibbonLibraryTypeID = glt.gibbonLibraryTypeID')
+              ->innerJoin('gibbonLibraryType as glt', 'gli.gibbonLibraryTypeID = glt.gibbonLibraryTypeID')
             ->join('left', 'gibbonSpace as gs', 'gli.gibbonSpaceID = gs.gibbonSpaceID')
-            ->join('left', 'gibbonPerson as gp', 'gli.gibbonPersonIDOwnership = gp.gibbonPersonID'); 
+            ->join('left', 'gibbonPerson as gp', 'gli.gibbonPersonIDOwnership = gp.gibbonPersonID');
 
         $criteria->addFilterRules([
             'name' => function ($query, $name) {
@@ -127,29 +127,29 @@ class LibraryGateway extends QueryableGateway
                     ->bindValue('name', '%' . $name . '%');
             },
             'type' => function ($query, $type) {
-              return $query
-                ->where('gli.gibbonLibraryTypeID = :type')
-                ->bindValue('type',$type);
+                return $query
+                    ->where('gli.gibbonLibraryTypeID = :type')
+                    ->bindValue('type', $type);
             },
-            'location' => function ($query,$location) {
-              return $query
-                ->where('gli.gibbonSpaceID = :location')
-                ->bindValue('location',$location);
+            'location' => function ($query, $location) {
+                return $query
+                    ->where('gli.gibbonSpaceID = :location')
+                    ->bindValue('location', $location);
             },
-            'status' => function($query,$status) {
-              return $query
-                ->where('gli.status = :status')
-                ->bindValue('status',$status);
+            'status' => function ($query, $status) {
+                return $query
+                    ->where('gli.status = :status')
+                    ->bindValue('status', $status);
             },
-            'owner' => function ($query,$owner) {
-              return $query
-                ->where('gli.gibbonPersonIDOwnership = :owner')
-                ->bindValue('owner',$owner);
+            'owner' => function ($query, $owner) {
+                return $query
+                    ->where('gli.gibbonPersonIDOwnership = :owner')
+                    ->bindValue('owner', $owner);
             },
-            'typeSpecificFields' => function ($query,$typeSpecificFields) {
-              return $query
-                ->where('gli.fields LIKE :typeSpecificFields')
-                ->bindValue('typeSpecificFields','%'.$typeSpecificFields.'%');
+            'typeSpecificFields' => function ($query, $typeSpecificFields) {
+                return $query
+                    ->where('gli.fields LIKE :typeSpecificFields')
+                    ->bindValue('typeSpecificFields', '%'.$typeSpecificFields.'%');
             }
         ]);
         return $this->runQuery($query, $criteria);

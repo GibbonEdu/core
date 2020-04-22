@@ -109,7 +109,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $sql = "SELECT gibbonLibraryTypeID AS value, name FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
     $row = $form->addRow();
         $row->addLabel('gibbonLibraryTypeID', __('Type'));
-        $row->addSelect('gibbonLibraryTypeID')->fromQuery($pdo, $sql, array())->selected($gibbonLibraryTypeID)->placeholder();
+    $row
+        ->addSelect('gibbonLibraryTypeID')
+        ->fromQuery($pdo, $sql, array())
+        ->selected($gibbonLibraryTypeID)
+        ->placeholder();
 
     $row = $form->addRow();
         $row->addLabel('gibbonSpaceID', __('Location'));
@@ -133,11 +137,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         $row->addSelectUsers('gibbonPersonIDOwnership')->selected($gibbonPersonIDOwnership)->placeholder();
 
     $row = $form->addRow();
-        $row->addLabel('typeSpecificFields', __('Type-Specific Fields'))->description(__('For example, a computer\'s MAC address or a book\'s ISBN.'));
-        $row->addTextField('typeSpecificFields')->setValue($typeSpecificFields);
+    $row
+        ->addLabel('typeSpecificFields', __('Type-Specific Fields'))
+        ->description(__('For example, a computer\'s MAC address or a book\'s ISBN.'));
+    $row
+        ->addTextField('typeSpecificFields')
+        ->setValue($typeSpecificFields);
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Search'));
+    $row
+        ->addSearchSubmit($gibbon->session, __('Clear Search'));
 
     echo $form->getOutput();
 
@@ -187,7 +196,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         }
 
         $sql = "SELECT * FROM gibbonLibraryItem $sqlWhere ORDER BY id";
-        $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
+        $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'];
+        $sqlPage .= ' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -209,7 +219,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     } else {
         echo '<h3>';
         echo __('View');
-        echo "<span style='font-weight: normal; font-style: italic; font-size: 55%'> ".sprintf(__('%1$s record(s) in current view'), $result->rowCount()).'</span>';
+        echo "<span style='font-weight: normal; font-style: italic; font-size: 55%'> ";
+        echo sprintf(__('%1$s record(s) in current view'), $result->rowCount());
+        echo '</span>';
         echo '</h3>';
 
         if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
@@ -218,35 +230,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         
         $gateway = $container->get(LibraryGateway::class);
         $criteria = $gateway->newQueryCriteria(true)
-                            ->filterBy('name',$name)
-                            ->filterBy('type',$gibbonLibraryTypeID)
-                            ->filterBy('location',$gibbonSpaceID)
-                            ->filterBy('status',$status)
-                            ->filterBy('owner',$gibbonPersonIDOwnership)
-                            ->filterBy('typeSpecificFields',$typeSpecificFields)
+                            ->filterBy('name', $name)
+                            ->filterBy('type', $gibbonLibraryTypeID)
+                            ->filterBy('location', $gibbonSpaceID)
+                            ->filterBy('status', $status)
+                            ->filterBy('owner', $gibbonPersonIDOwnership)
+                            ->filterBy('typeSpecificFields', $typeSpecificFields)
                             ->fromPOST();
         $items = $gateway->queryCatalog($criteria);
-        $table = DataTable::createPaginated('items',$criteria);
-        $table->addColumn('id',__('School ID (Type)'))->format(function ($item) {
-          return sprintf('<b>%1$s</b><br/>%2$s', $item['id'], Format::small($item['itemType']));
+        $table = DataTable::createPaginated('items', $criteria);
+        $table->addColumn('id', __('School ID (Type)'))->format(function ($item) {
+            return sprintf('<b>%1$s</b><br/>%2$s', $item['id'], Format::small($item['itemType']));
         });
-        $table->addColumn('name',__('Name (Producer)'))->format(function ($item) {
-          return sprintf('<b>%1$s</b><br/>%2$s', $item['name'], Format::small($item['producer']));
+        $table->addColumn('name', __('Name (Producer)'))->format(function ($item) {
+            return sprintf('<b>%1$s</b><br/>%2$s', $item['name'], Format::small($item['producer']));
         });
-        $table->addColumn('location', __('Location'))->format(function ($item) {    
-            return sprintf('<b>%1$s</b><br/>%2$s', $item['spaceName'],Format::small($item['locationDetail']));
+        $table->addColumn('location', __('Location'))->format(function ($item) {
+            return sprintf('<b>%1$s</b><br/>%2$s', $item['spaceName'], Format::small($item['locationDetail']));
         });
-        $table->addColumn('ownership',__('Ownership (User/Owner)'))->format(function ($item) {
+        $table->addColumn('ownership', __('Ownership (User/Owner)'))->format(function ($item) {
             if ($item['ownershipType'] == 'School') {
-                echo sprintf('<b>%1$s</b>',$_SESSION[$guid]['organisationNameShort']);
+                echo sprintf('<b>%1$s</b>', $_SESSION[$guid]['organisationNameShort']);
             } elseif ($item['ownershipType'] == 'Individual') {
                 echo '<b>Individual</b>';
-	    }
-            echo sprintf('<br/>%1$s',Format::small(Format::name($item['title'],$item['preferredName'],$item['surname'])));
+            }
+            echo sprintf('<br/>%1$s', Format::small(Format::name($item['title'], $item['preferredName'], $item['surname'])));
         });
-        $table->addColumn('borrowable',__('Borrowable'))->format(function ($item) {
-          echo '<b>' . $item['status'] . '</b><br/>';
-          echo Format::small($item['borrowable'] == 'Y' ? 'Yes' : 'No');
+        $table->addColumn('borrowable', __('Borrowable'))->format(function ($item) {
+            echo '<b>' . $item['status'] . '</b><br/>';
+            echo Format::small($item['borrowable'] == 'Y' ? 'Yes' : 'No');
         });
         $actions = $table->addActionColumn()
               ->addParam('gibbonLibraryItemID')
@@ -255,19 +267,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
               ->addParam('status')
               ->addParam('gibbonPersonIDOwnership')
               ->addParam('typeSpecificFields')
-              ->format(function ($item,$actions) {
-                  $actions->addAction('edit',__('Edit'))
+              ->format(function ($item, $actions) {
+                  $actions->addAction('edit', __('Edit'))
                           ->setURL('/modules/Library/library_manage_catalog_edit.php');
-                  $actions->addAction('lending',__('Lending'))
+                  $actions->addAction('lending', __('Lending'))
                           ->setURL('/modules/Library/library_lending_item.php')
                           ->setIcon('search');
-                  $actions->addAction('delete',__('Delete'))
+                  $actions->addAction('delete', __('Delete'))
                           ->setURL('/modules/Library/library_manage_catalog_delete.php');
-                  $actions->addAction('duplicate',__('Duplicate'))
+                  $actions->addAction('duplicate', __('Duplicate'))
                           ->setURL('/modules/Library/library_manage_catalog_duplicate.php')
                           ->setIcon('copy');
               });
         echo $table->render($items);
     }
 }
-?>
