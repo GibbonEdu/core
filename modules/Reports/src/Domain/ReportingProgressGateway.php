@@ -46,7 +46,7 @@ class ReportingProgressGateway extends QueryableGateway
             ->innerJoin('gibbonReportingAccess', 'FIND_IN_SET(gibbonReportingScope.gibbonReportingScopeID, gibbonReportingAccess.gibbonReportingScopeIDList)')
             ->innerJoin('gibbonReportingCriteria', 'gibbonReportingCriteria.gibbonReportingScopeID=gibbonReportingScope.gibbonReportingScopeID')
             ->innerJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseID=gibbonReportingCriteria.gibbonCourseID')
-            ->innerJoin('gibbonCourseClassPerson', "gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonCourseClassPerson.role='Student'")
+            ->innerJoin('gibbonCourseClassPerson', "gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID")
             ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID')
             ->leftJoin('gibbonReportingProgress', 'gibbonReportingProgress.gibbonReportingScopeID=gibbonReportingScope.gibbonReportingScopeID AND gibbonReportingProgress.gibbonPersonIDStudent=gibbonCourseClassPerson.gibbonPersonID AND gibbonReportingProgress.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID')
             ->where('gibbonReportingCycle.gibbonReportingCycleID=:gibbonReportingCycleID')
@@ -54,6 +54,8 @@ class ReportingProgressGateway extends QueryableGateway
             ->where("gibbonReportingScope.scopeType='Course'")
             ->where("gibbonReportingCriteria.target='Per Student'")
             ->where("gibbonCourseClass.reportable='Y'")
+            ->where("gibbonCourseClassPerson.reportable='Y'")
+            ->where("gibbonCourseClassPerson.role='Student'")
             ->where("gibbonPerson.status='Full'")
             ->groupBy(['gibbonReportingScopeID']);
 
@@ -118,6 +120,8 @@ class ReportingProgressGateway extends QueryableGateway
             ->where("gibbonReportingScope.scopeType='Course'")
             ->where("gibbonReportingCriteria.target='Per Student'")
             ->where("gibbonCourseClass.reportable='Y'")
+            ->where("studentClass.reportable='Y'")
+            ->where("teacherClass.reportable='Y'")
             ->where("student.status='Full'")
             // ->where('FIND_IN_SET(teacher.gibbonRoleIDPrimary, gibbonReportingAccess.gibbonRoleIDList)')
             ->groupBy(['gibbonPersonID']);
