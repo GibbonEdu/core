@@ -61,8 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             echo '</div>';
         } else {
             $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/library_manage_catalog_deleteProcess.php?gibbonLibraryItemID=$gibbonLibraryItemID&name=".$name.'&gibbonLibraryTypeID='.$gibbonLibraryTypeID.'&gibbonSpaceID='.$gibbonSpaceID.'&status='.$status.'&gibbonPersonIDOwnership='.$gibbonPersonIDOwnership.'&typeSpecificFields='.$typeSpecificFields);
-	        echo $form->getOutput();
+            echo $form->getOutput();
         }
     }
 }
-?>
