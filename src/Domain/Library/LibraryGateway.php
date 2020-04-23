@@ -54,7 +54,7 @@ class LibraryGateway extends QueryableGateway
             ])
             ->innerJoin('gibbonLibraryType as glt', 'gli.gibbonLibraryTypeID = glt.gibbonLibraryTypeID')
             ->join('left', 'gibbonSpace as gs', 'gli.gibbonSpaceID = gs.gibbonSpaceID')
-            ->where("gli.status IN ('Available','On Loan','Repair','Renewal')")
+            ->where("gli.status IN ('Available','On Loan','Repair')")
             ->where("gli.ownershipType <> 'Individual'")
             ->where("gli.borrowable = 'Y'");
 
