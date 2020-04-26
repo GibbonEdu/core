@@ -107,7 +107,7 @@ function getPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $gib
                 $return .= dateConvertBack($guid, substr($row['timestamp'], 0, 10));
                 $return .= '</td>';
                 $return .= '<td>';
-                $return .= $row['status'];
+                $return .= __($row['status']);
                 $return .= '</td>';
                 $return .= '<td>';
                 $paymentTotal += $row['amount'];
@@ -1014,7 +1014,7 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         $return .= '</td>';
         $return .= "<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style4'>";
         $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Status').'</span><br/>';
-        $return .= $row['status'];
+        $return .= __($row['status']);
         $return .= '</td>';
         $return .= "<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style4'>";
         $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Schedule').'</span><br/>';
@@ -1355,7 +1355,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         $return .= "<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style4'>";
         $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Status').'</span><br/>';
         if ($receiptNumber === null) { //Old style receipt, before multiple payments
-            $return .= $row['status'];
+            $return .= __($row['status']);
         } else {
             $paymentFail = false;
             if (is_numeric($receiptNumber) == false) {
@@ -1377,7 +1377,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
                     $rowPayment = $resultPayment->fetch();
                     $return .= $row['status'];
                     if ($row['status'] == 'Paid') {
-                        $return .= ' ('.$rowPayment['status'].')';
+                        $return .= ' ('.__($rowPayment['status']).')';
                     }
                 }
             }
