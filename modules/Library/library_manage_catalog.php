@@ -160,7 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                       ->setURL('/modules/Library/library_manage_catalog_edit.php');
               $actions->addAction('lending', __('Lending'))
                       ->setURL('/modules/Library/library_lending_item.php')
-                      ->setIcon('search');
+                      ->setIcon('attendance');
               $actions->addAction('delete', __('Delete'))
                       ->setURL('/modules/Library/library_manage_catalog_delete.php');
               $actions->addAction('duplicate', __('Duplicate'))
