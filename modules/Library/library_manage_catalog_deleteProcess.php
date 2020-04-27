@@ -21,18 +21,26 @@ include '../../gibbon.php';
 
 include './moduleFunctions.php';
 
-$gibbonLibraryItemID = $_POST['gibbonLibraryItemID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/library_manage_catalog_delete.php&gibbonLibraryItemID=$gibbonLibraryItemID&name=".$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'].'&gibbonPersonIDOwnership='.$_GET['gibbonPersonIDOwnership'].'&typeSpecificFields='.$_GET['typeSpecificFields'];
-$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/library_manage_catalog.php&name='.$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'].'&gibbonPersonIDOwnership='.$_GET['gibbonPersonIDOwnership'].'&typeSpecificFields='.$_GET['typeSpecificFields'];
+$queryArr = [
+  "q" => "/modules/".getModuleName($_POST['address'])."/library_manage_catalog_delete.php",
+  "gibbonLibraryItemID" => $_POST['gibbonLibraryItemID'] ?? '',
+  "name" => $_GET['name'] ?? '',
+  "gibbonLibraryTypeID" => $_GET['gibbonLibraryTypeID'] ?? '',
+  "gibbonSpaceID" => $_GET['gibbonSpaceID'] ?? '',
+  "status" => $_GET['space'] ?? '',
+  "gibbonPersonIDOwnership" => $_GET['gibbonPersonIDOwnership'] ?? '',
+  "typeSpecificfields" => $_GET['typeSpecificFields'] ?? ''
+];
+$baseURL = $_SESSION[$guid]['absoluteURL'].'/index.php?';
 
-if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_catalog_delete.php') == false) {
-    $URL .= '&return=error0';
-    header("Location: {$URL}");
+if (isActionAccessible($guid, $connection2, $queryArr['q']) == false) {
+    $queryArr['return'] = "error0";
+    header("Location: " . $baseURL . http_build_query($queryArr));
 } else {
     //Proceed!
-    if ($gibbonLibraryItemID == '') {
-        $URL .= '&return=error1';
-        header("Location: {$URL}");
+    if ($queryArr['gibbonLibraryItemID'] == '') {
+        $queryArr['return'] = "error1";
+        header("Location: " . $baseURL . http_build_query($queryArr));
     } else {
         //Write to database
         try {
@@ -41,13 +49,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
+            $queryArr['return'] = "error0";
+            header("Location: " . $baseURL . http_build_query($queryArr));
             exit();
         }
 
         //Success 0
-        $URLDelete = $URLDelete.'&return=success0';
-        header("Location: {$URLDelete}");
+        $queryArr['q'] = "/modules/".getModuleName($_POST['address'])."/library_manage_catalog.php";
+        $queryArr['result'] = 0;
+        header("Location: " . $baseURL . http_build_query($queryArr));
+        exit;
     }
 }
