@@ -36,69 +36,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         returnProcess($guid, $_GET['return']);
     }
 
-    echo '<h3>';
-    echo __('Search & Filter');
-    echo '</h3>';
-
     //Get current filter values
-    $name = null;
-    if (isset($_POST['name'])) {
-        $name = trim($_POST['name']);
-    }
-    if ($name == '') {
-        if (isset($_GET['name'])) {
-            $name = trim($_GET['name']);
-        }
-    }
-    $gibbonLibraryTypeID = null;
-    if (isset($_POST['gibbonLibraryTypeID'])) {
-        $gibbonLibraryTypeID = trim($_POST['gibbonLibraryTypeID']);
-    }
-    if ($gibbonLibraryTypeID == '') {
-        if (isset($_GET['gibbonLibraryTypeID'])) {
-            $gibbonLibraryTypeID = trim($_GET['gibbonLibraryTypeID']);
-        }
-    }
-    $gibbonSpaceID = null;
-    if (isset($_POST['gibbonSpaceID'])) {
-        $gibbonSpaceID = trim($_POST['gibbonSpaceID']);
-    }
-    if ($gibbonSpaceID == '') {
-        if (isset($_GET['gibbonSpaceID'])) {
-            $gibbonSpaceID = trim($_GET['gibbonSpaceID']);
-        }
-    }
-    $status = null;
-    if (isset($_POST['status'])) {
-        $status = trim($_POST['status']);
-    }
-    if ($status == '') {
-        if (isset($_GET['status'])) {
-            $status = trim($_GET['status']);
-        }
-    }
-    $gibbonPersonIDOwnership = null;
-    if (isset($_POST['gibbonPersonIDOwnership'])) {
-        $gibbonPersonIDOwnership = trim($_POST['gibbonPersonIDOwnership']);
-    }
-    if ($gibbonPersonIDOwnership == '') {
-        if (isset($_GET['gibbonPersonIDOwnership'])) {
-            $gibbonPersonIDOwnership = trim($_GET['gibbonPersonIDOwnership']);
-        }
-    }
-    $typeSpecificFields = null;
-    if (isset($_POST['typeSpecificFields'])) {
-        $typeSpecificFields = trim($_POST['typeSpecificFields']);
-    }
-    if ($typeSpecificFields == '') {
-        if (isset($_GET['typeSpecificFields'])) {
-            $typeSpecificFields = trim($_GET['typeSpecificFields']);
-        }
-    }
+    $name = $_REQUEST['name'] ?? '';
+    $gibbonLibraryTypeID = $_REQUEST['gibbonLibraryTypeID'] ?? '';
+    $gibbonSpaceID = $_REQUEST['gibbonSpaceID'] ?? '';
+    $status = $_REQUEST['status'] ?? '';
+    $gibbonPersonIDOwnership = $_REQUEST['gibbonPersonIDOwnership'] ?? '';
+    $typeSpecificFields = $_REQUEST['typeSpecificFields'] ?? '';
 
     $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
+    $form->setTitle(__('Search & Filter'));
 
     $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/library_manage_catalog.php");
 
@@ -108,9 +57,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
     $sql = "SELECT gibbonLibraryTypeID AS value, name FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
     $row = $form->addRow();
-        $row->addLabel('gibbonLibraryTypeID', __('Type'));
-    $row
-        ->addSelect('gibbonLibraryTypeID')
+    $row->addLabel('gibbonLibraryTypeID', __('Type'));
+    $row->addSelect('gibbonLibraryTypeID')
         ->fromQuery($pdo, $sql, array())
         ->selected($gibbonLibraryTypeID)
         ->placeholder();
@@ -137,16 +85,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         $row->addSelectUsers('gibbonPersonIDOwnership')->selected($gibbonPersonIDOwnership)->placeholder();
 
     $row = $form->addRow();
-    $row
-        ->addLabel('typeSpecificFields', __('Type-Specific Fields'))
+    $row->addLabel('typeSpecificFields', __('Type-Specific Fields'))
         ->description(__('For example, a computer\'s MAC address or a book\'s ISBN.'));
-    $row
-        ->addTextField('typeSpecificFields')
+    $row->addTextField('typeSpecificFields')
         ->setValue($typeSpecificFields);
 
     $row = $form->addRow();
-    $row
-        ->addSearchSubmit($gibbon->session, __('Clear Search'));
+    $row->addSearchSubmit($gibbon->session, __('Clear Search'));
 
     echo $form->getOutput();
       
@@ -160,29 +105,49 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                         ->filterBy('typeSpecificFields', $typeSpecificFields)
                         ->fromPOST();
     $items = $gateway->queryCatalog($criteria);
+
     $table = DataTable::createPaginated('items', $criteria);
-    $table->addHeaderAction('add', __('Add'));
-    $table->addColumn('id', __('School ID (Type)'))->format(function ($item) {
-        return sprintf('<b>%1$s</b><br/>%2$s', $item['id'], Format::small($item['itemType']));
-    });
-    $table->addColumn('name', __('Name (Producer)'))->format(function ($item) {
-        return sprintf('<b>%1$s</b><br/>%2$s', $item['name'], Format::small($item['producer']));
-    });
-    $table->addColumn('location', __('Location'))->format(function ($item) {
-        return sprintf('<b>%1$s</b><br/>%2$s', $item['spaceName'], Format::small($item['locationDetail']));
-    });
-    $table->addColumn('ownership', __('Ownership (User/Owner)'))->format(function ($item) {
-        if ($item['ownershipType'] == 'School') {
-            echo sprintf('<b>%1$s</b>', $_SESSION[$guid]['organisationNameShort']);
-        } elseif ($item['ownershipType'] == 'Individual') {
-            echo '<b>Individual</b>';
-        }
-        echo sprintf('<br/>%1$s', Format::small(Format::name($item['title'], $item['preferredName'], $item['surname'])));
-    });
-    $table->addColumn('borrowable', __('Borrowable'))->format(function ($item) {
-        echo '<b>' . $item['status'] . '</b><br/>';
-        echo Format::small($item['borrowable'] == 'Y' ? 'Yes' : 'No');
-    });
+
+    $table->addHeaderAction('add', __('Add'))
+        ->setURL('/modules/Library/library_manage_catalog_add.php')
+        ->addParam('gibbonLibraryItemID', $gibbonLibraryTypeID)
+        ->addParam('name', $name)
+        ->addParam('gibbonSpaceID', $gibbonSpaceID)
+        ->addParam('status', $status)
+        ->addParam('gibbonPersonIDOwnership', $gibbonPersonIDOwnership)
+        ->addParam('typeSpecificFields', $typeSpecificFields)
+        ->displayLabel();
+
+    $table->addColumn('id', __('School ID'))
+        ->description(__('Type'))
+        ->format(function ($item) {
+            return sprintf('<b>%1$s</b><br/>%2$s', $item['id'], Format::small($item['itemType']));
+        });
+    $table->addColumn('name', __('Name'))
+        ->description(__('Producer'))
+        ->format(function ($item) {
+            return sprintf('<b>%1$s</b><br/>%2$s', $item['name'], Format::small($item['producer']));
+        });
+    $table->addColumn('spaceName', __('Location'))
+        ->format(function ($item) {
+            return sprintf('<b>%1$s</b><br/>%2$s', $item['spaceName'], Format::small($item['locationDetail']));
+        });
+    $table->addColumn('ownershipType', __('Ownership'))
+        ->description(__('User/Owner'))
+        ->format(function ($item) {
+            if ($item['ownershipType'] == 'School') {
+                echo sprintf('<b>%1$s</b>', $_SESSION[$guid]['organisationNameShort']);
+            } elseif ($item['ownershipType'] == 'Individual') {
+                echo '<b>Individual</b>';
+            }
+            echo sprintf('<br/>%1$s', Format::small(Format::name($item['title'], $item['preferredName'], $item['surname'])));
+        });
+    $table->addColumn('status', __('Status'))
+        ->description(__('Borrowable'))
+        ->format(function ($item) {
+            echo '<b>' . $item['status'] . '</b><br/>';
+            echo Format::small($item['borrowable'] == 'Y' ? 'Yes' : 'No');
+        });
     $actions = $table->addActionColumn()
           ->addParam('gibbonLibraryItemID')
           ->addParam('name')
@@ -202,5 +167,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                       ->setURL('/modules/Library/library_manage_catalog_duplicate.php')
                       ->setIcon('copy');
           });
+
     echo $table->render($items);
 }
