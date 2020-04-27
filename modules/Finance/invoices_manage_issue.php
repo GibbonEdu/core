@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
 				$row->addTextField('schoolYear')->required()->readonly();
 				
 			$row = $form->addRow();
-                $row->addLabel('personName', __('Student'));
+                $row->addLabel('personName', __('Invoicee'));
                 $row->addTextField('personName')->required()->readonly()->setValue(Format::name('', $values['preferredName'], $values['surname'], 'Student', true));
 
             $form->addHiddenValue('billingScheduleType', $values['billingScheduleType']);
