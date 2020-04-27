@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_add
         "Read" => __("Read")
     );
     $row = $form->addRow();
-        $row->addLabel('access', 'Access');
+        $row->addLabel('access', __('Access'));
         $row->addSelect('access')->fromArray($access);
 
     $row = $form->addRow();

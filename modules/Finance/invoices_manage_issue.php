@@ -103,12 +103,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
 				$row->addTextField('schoolYear')->required()->readonly();
 				
 			$row = $form->addRow();
-                $row->addLabel('personName', __('Invoicee'));
+                $row->addLabel('personName', __('Student'));
                 $row->addTextField('personName')->required()->readonly()->setValue(Format::name('', $values['preferredName'], $values['surname'], 'Student', true));
 
+            $form->addHiddenValue('billingScheduleType', $values['billingScheduleType']);
+
             $row = $form->addRow();
-                $row->addLabel('billingScheduleType', __('Scheduling'));
-				$row->addTextField('billingScheduleType')->required()->readonly();
+                $row->addLabel('billingScheduleTypeText', __('Scheduling'));
+				$row->addTextField('billingScheduleTypeText')->required()->readonly()->setValue(__($values['billingScheduleType']));
 				
 			if ($values['billingScheduleType'] == 'Scheduled') {
 				$row = $form->addRow();
@@ -121,9 +123,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
 					$row->addDate('invoiceDueDate')->required()->readonly();
 			}
 
+            $form->addHiddenValue('status', $values['status']);
+
 			$row = $form->addRow();
-				$row->addLabel('status', __('Status'));
-				$row->addTextField('status')->required()->readonly();
+				$row->addLabel('statusText', __('Status'));
+				$row->addTextField('statusText')->required()->readonly()->setValue(__($values['status']));
 
 			$row = $form->addRow();
                 $row->addLabel('notes', __('Notes'))->description(__('Notes will be displayed on the final invoice and receipt.'));
@@ -136,9 +140,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
 				$row->addLabel('totalFee', __('Total'))->description('<small><i>('.$_SESSION[$guid]['currency'].')</i></small>');
 				$row->addTextField('totalFee')->required()->readonly()->setValue(number_format($totalFee, 2));
 
+                        $form->addHiddenValue('invoiceTo', $values['invoiceTo']);
+                        
 			$row = $form->addRow();
-				$row->addLabel('invoiceTo', __('Invoice To'));
-				$row->addTextField('invoiceTo')->required()->readonly();
+				$row->addLabel('invoiceToText', __('Invoice To'));
+				$row->addTextField('invoiceToText')->required()->readonly()->setValue(__($values['invoiceTo']));
 
 			$form->addRow()->addHeading(__('Email Invoice'));
 
