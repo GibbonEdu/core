@@ -29,7 +29,7 @@ v20.0.00
     Security
 
     Tweaks & Additions
-        System: added Argentine Peso as a currency option
+        System: added Argentine Peso and Ukrainian Hryvna as currency options
         System: updated Tailwind 1.2.0 dependencies via npm
         System: added target option to Alert Bar
         System: added a DetailsView table for displaying data
