@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
 
             if ($type == 'invoice') {
                 echo '<h2>';
-                echo 'Invoice';
+                echo __('Invoice');
                 echo '</h2>';
                 if ($preview) {
                     echo "<p style='font-weight: bold; color: #c00; font-size: 100%; letter-spacing: -0.5px'>";
@@ -102,17 +102,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
                 //Reminder Text
                 if ($type == 'reminder1') {
                     echo '<h2>';
-                    echo 'Reminder 1';
+                    echo __('Reminder 1');
                     echo '</h2>';
                     $reminderText = getSettingByScope($connection2, 'Finance', 'reminder1Text');
                 } elseif ($type == 'reminder2') {
                     echo '<h2>';
-                    echo 'Reminder 2';
+                    echo __('Reminder 2');
                     echo '</h2>';
                     $reminderText = getSettingByScope($connection2, 'Finance', 'reminder2Text');
                 } elseif ($type == 'reminder3') {
                     echo '<h2>';
-                    echo 'Reminder 3';
+                    echo __('Reminder 3');
                     echo '</h2>';
                     $reminderText = getSettingByScope($connection2, 'Finance', 'reminder3Text');
                 }
