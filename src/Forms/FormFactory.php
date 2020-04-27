@@ -382,7 +382,6 @@ class FormFactory implements FormFactoryInterface
             'sq_AL' => 'Shqip - Shqipëri',
             'vi_VN' => 'Tiếng Việt - Việt Nam',
             'tr_TR' => 'Türkçe - Türkiye',
-            'uk_UA' => 'Українська мова соловʼїна',
             'ar_SA' => 'العربية - المملكة العربية السعودية',
             'th_TH' => 'ภาษาไทย - ราชอาณาจักรไทย',
             'ur_PK' => 'پاکستان - اُردُو',
