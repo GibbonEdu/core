@@ -142,7 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             } elseif ($item['ownershipType'] == 'Individual') {
                 $ownership .= sprintf('<b>%1$s</b><br/>', __('Individual'));
             }
-            echo $ownership . Format::small(Format::name($item['title'], $item['preferredName'], $item['surname']));
+            echo $ownership . Format::small(Format::name($item['title'], $item['preferredName'], $item['surname'], "Student"));
         });
     $table->addColumn('status', __('Status'))
         ->description(__('Borrowable'))
