@@ -97,6 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
       
     $gateway = $container->get(LibraryGateway::class);
     $criteria = $gateway->newQueryCriteria(true)
+                        ->sortBy('gibbonLibraryItemID')
                         ->filterBy('name', $name)
                         ->filterBy('type', $gibbonLibraryTypeID)
                         ->filterBy('location', $gibbonSpaceID)
@@ -134,19 +135,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         });
     $table->addColumn('ownershipType', __('Ownership'))
         ->description(__('User/Owner'))
-        ->format(function ($item) {
+        ->format(function ($item) use ($gibbon) {
+            $ownership = '';
             if ($item['ownershipType'] == 'School') {
-                echo sprintf('<b>%1$s</b>', $_SESSION[$guid]['organisationNameShort']);
+                $ownership .= sprintf('<b>%1$s</b><br/>', $gibbon->session->get('organisationNameShort'));
             } elseif ($item['ownershipType'] == 'Individual') {
-                echo '<b>Individual</b>';
+                $ownership .= sprintf('<b>%1$s</b><br/>', __('Individual'));
             }
-            echo sprintf('<br/>%1$s', Format::small(Format::name($item['title'], $item['preferredName'], $item['surname'])));
+            echo $ownership . Format::small(Format::name($item['title'], $item['preferredName'], $item['surname']));
         });
     $table->addColumn('status', __('Status'))
         ->description(__('Borrowable'))
         ->format(function ($item) {
-            echo '<b>' . $item['status'] . '</b><br/>';
-            echo Format::small($item['borrowable'] == 'Y' ? 'Yes' : 'No');
+            return '<b>' . $item['status'] . '</b><br/>'
+                . Format::small($item['borrowable'] == 'Y' ? 'Yes' : 'No');
         });
     $actions = $table->addActionColumn()
           ->addParam('gibbonLibraryItemID')
