@@ -48,6 +48,7 @@ v20.0.00
         Reports: added auto resize to comment text boxes in Write Reports
         Reports: change criteria status to Locked/Unlocked for better clarity
         Reports: added a progress bar to the sidebar in Write Reports
+        Reports: added an option to bulk upload existing report PDFs
         Staff: added an option to edit or delete staff coverage dates
         Staff: added Family and Activities subpages to Staff Profile
         Staff: added notificaton events for New and Left staff
