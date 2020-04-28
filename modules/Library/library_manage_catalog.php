@@ -94,10 +94,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $row->addSearchSubmit($gibbon->session, __('Clear Search'));
 
     echo $form->getOutput();
-      
+
     $gateway = $container->get(LibraryGateway::class);
     $criteria = $gateway->newQueryCriteria(true)
-                        ->sortBy('gibbonLibraryItemID')
+                        ->sortBy('id')
                         ->filterBy('name', $name)
                         ->filterBy('type', $gibbonLibraryTypeID)
                         ->filterBy('location', $gibbonSpaceID)
