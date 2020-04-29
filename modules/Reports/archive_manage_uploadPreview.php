@@ -34,7 +34,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
 } else {
     // Proceed!
     $page->breadcrumbs
-        ->add(__('Manage Archives'), 'archive_manage.php')
         ->add(__('Upload Reports'), 'archive_manage_upload.php')
         ->add(__('Step {number}', ['number' => 2]));
 
