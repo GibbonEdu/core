@@ -21,14 +21,14 @@ use Gibbon\Domain\System\ModuleGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_import.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_migrate.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
     $page->breadcrumbs
         ->add(__('Manage Archives'), 'archive_manage.php')
-        ->add(__('Import Reports'));
+        ->add(__('Migrate Reports'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -38,21 +38,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_imp
     $reportingArchiveTable = $pdo->selectOne("SHOW TABLES LIKE 'arrArchive'");
 
     if (empty($reportingModule)) {
-        $page->addError(__('This tool enables you to import archived reports from the Reporting module by Andy Statham.').' '.__('You do not have the {moduleName} module installed.', ['moduleName' => 'Reporting']));
+        $page->addError(__('This tool enables you to migrate archived reports from the Reporting module by Andy Statham.').' '.__('You do not have the {moduleName} module installed.', ['moduleName' => 'Reporting']));
         return;
     } elseif (empty($reportingArchiveTable)) {
-        $page->addError(__('This tool enables you to import archived reports from the Reporting module by Andy Statham.').' '.__('The {tableName} table does not exist in the database.', ['tableName' => 'arrArchive']));
+        $page->addError(__('This tool enables you to migrate archived reports from the Reporting module by Andy Statham.').' '.__('The {tableName} table does not exist in the database.', ['tableName' => 'arrArchive']));
         return;
     }
 
     $reportingArchiveCount = $pdo->selectOne("SELECT COUNT(*) FROM arrArchive");
-    $page->addAlert($reportingArchiveCount > 0 ? 'message' : 'error', __('This tool enables you to import archived reports from the Reporting module by Andy Statham.').' '.__('There are {count} records in the {tableName} table.', ['count' => '<b>'.$reportingArchiveCount.'</b>', 'tableName' => 'arrArchive']));
+    $page->addAlert($reportingArchiveCount > 0 ? 'message' : 'error', __('This tool enables you to migrate archived reports from the Reporting module by Andy Statham.').' '.__('There are {count} records in the {tableName} table.', ['count' => '<b>'.$reportingArchiveCount.'</b>', 'tableName' => 'arrArchive']));
 
     if (empty($reportingArchiveCount)) {
         return;
     }
 
-    $form = Form::create('archiveImport', $gibbon->session->get('absoluteURL').'/modules/Reports/archive_manage_importProcess.php');
+    $form = Form::create('archiveImport', $gibbon->session->get('absoluteURL').'/modules/Reports/archive_manage_migrateProcess.php');
     $form->addHiddenValue('address', $gibbon->session->get('address'));
 
     $archives = $container->get(ReportArchiveGateway::class)->selectWriteableArchives()->fetchKeyPair();

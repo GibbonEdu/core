@@ -24,13 +24,12 @@ require_once '../../gibbon.php';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_manage.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_import.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_migrate.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
 } else {
     // Proceed!
-    // $partialFail = false;
     $gibbonReportArchiveID = $_POST['gibbonReportArchiveID'] ?? '';
 
     if (empty($gibbonReportArchiveID)) {
