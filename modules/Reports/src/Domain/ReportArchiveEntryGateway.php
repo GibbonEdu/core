@@ -259,6 +259,21 @@ class ReportArchiveEntryGateway extends QueryableGateway
         return $this->runSelect($query)->fetch();
     }
 
+    public function selectArchiveEntriesByReportIdentifier($gibbonSchoolYearID, $reportIdentifier)
+    {
+        $query = $this
+            ->newSelect()
+            ->from($this->getTableName())
+            ->cols(['gibbonReportArchiveEntry.gibbonPersonID as groupBy', 'gibbonReportArchiveEntry.*'])
+            ->where('gibbonReportArchiveEntry.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where('gibbonReportArchiveEntry.reportIdentifier=:reportIdentifier')
+            ->bindValue('reportIdentifier', $reportIdentifier)
+            ->where("gibbonReportArchiveEntry.type='Single'");
+
+        return $this->runSelect($query);
+    }
+
     protected function applyArchiveAccessLogic(&$query, $roleCategory = 'Other', $viewDraft = false, $viewPast = false)
     {
         if (!$viewDraft) {

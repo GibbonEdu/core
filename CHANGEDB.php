@@ -643,4 +643,7 @@ INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `typ
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Staff Left', 'Staff', 'Staff Directory_full', 'Core', 'All', 'Y');end
 ALTER TABLE `gibbonTTImport` CHANGE `courseNameShort` `courseNameShort` VARCHAR(12) NOT NULL DEFAULT '';end
 ALTER TABLE `gibbonTTImport` CHANGE `classNameShort` `classNameShort` VARCHAR(8) NOT NULL DEFAULT '';end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES((SELECT gibbonModuleID FROM gibbonModule WHERE name='Reports'), 'Upload Reports', 0, 'Archive', 'Enables users to upload reports from a ZIP archive.', 'archive_manage_upload.php,archive_manage_uploadPreview.php', 'archive_manage_upload.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
+INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Reports' AND gibbonAction.name='Upload Reports'));end
+
 ";

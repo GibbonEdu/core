@@ -25,6 +25,7 @@ v20.0.00
     Significant Changes
         Added Español - Mexico as an available locale
         Students: added a Withdraw Student page with the option to notify staff
+        Reports: added an option to bulk upload existing report PDFs
 
     Security
 

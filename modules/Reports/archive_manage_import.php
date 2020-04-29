@@ -21,14 +21,14 @@ use Gibbon\Domain\System\ModuleGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_import.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
     $page->breadcrumbs
         ->add(__('Manage Archives'), 'archive_manage.php')
-        ->add(__('Import'));
+        ->add(__('Import Reports'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
