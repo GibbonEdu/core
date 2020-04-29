@@ -187,11 +187,12 @@ class FileUploader
     }
 
     /**
-     * Convenience function for handling file uploads from
+     * Convenience function for handling file uploads from ZIP archives.
      *
      * @param string $file
      * @param string $destinationFolder
-     * @return array
+     * @param array $allowedExtensions
+     * @return array  Returns an array of info about uploaded files
      */
     public function uploadFromZIP($path, $destinationFolder = '', $allowedExtensions = [])
     {

@@ -17,34 +17,53 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\ModuleGateway;
 use Gibbon\Forms\Form;
-use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
+use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upload.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
     $page->breadcrumbs
         ->add(__('Manage Archives'), 'archive_manage.php')
-        ->add(__('Upload'));
+        ->add(__('Upload Reports'), 'archive_manage_upload.php')
+        ->add(__('Step {number}', ['number' => 1]));
 
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
+        returnProcess($guid, $_GET['return'], null, ['success1' => __('Import successful. {count} records were imported.', ['count' => '<b>'.($_GET['imported'] ?? '0').'</b>'])]);
     }
 
-    $form = Form::create('archiveImport', $gibbon->session->get('absoluteURL').'/modules/Reports/archive_manage_uploadProcess.php');
+    $form = Form::create('archiveImport', $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_manage_uploadPreview.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setTitle(__('Select ZIP File'));
+    $form->setTitle(__('Step 1 - Select ZIP File'));
     $form->setDescription(__('This page allows you to bulk import reports, in the form of a ZIP file containing PDFs named with individual usernames.'));
     
     $form->addHiddenValue('address', $gibbon->session->get('address'));
 
+    $form->addRow()->addHeading(__('File Import'));
+
     $row = $form->addRow();
         $row->addLabel('file', __('ZIP File'))->description(__('See Notes below for specification.'));
-        $row->addFileUpload('file')->required();
+        $row->addFileUpload('file')->required()->accepts(['.zip']);
+
+    $row = $form->addRow();
+        $row->addLabel('useSeparator', __('Filename Separator?'))->description(__('Do the filenames inside the ZIP file use a separator character?'));
+        $row->addYesNo('useSeparator')->required()->selected('N');
+
+    $form->toggleVisibilityByClass('useSeparator')->onSelect('useSeparator')->when('Y');
+
+    $row = $form->addRow()->addClass('useSeparator');
+        $row->addLabel('fileSeparator', __('Separator Character'));
+        $row->addTextField('fileSeparator')->required()->maxLength(1);
+
+    $row = $form->addRow()->addClass('useSeparator');
+        $row->addLabel('fileSection', __('Section Number'))->description(__('Once split, which section contains the username? Counting from 1.'));
+        $row->addNumber('fileSection')->required()->maxLength(1);
+
+    $form->addRow()->addHeading(__('Report Info'));
 
     $archives = $container->get(ReportArchiveGateway::class)->selectWriteableArchives()->fetchKeyPair();
     $row = $form->addRow();
@@ -59,6 +78,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_add
         $row->addLabel('reportIdentifier', __('Report Name'));
         $row->addTextField('reportIdentifier')->required()->maxLength(255);
 
+    $row = $form->addRow();
+        $row->addLabel('reportDate', __('Report Date'));
+        $row->addDate('reportDate')->required();
+
+    
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();

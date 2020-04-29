@@ -17,15 +17,16 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\FileUploader;
+use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
-use Gibbon\FileUploader;
 
 require_once '../../gibbon.php';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_manage.php';
+$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_manage_upload.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_import.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upload.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -34,16 +35,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_imp
     $gibbonReportArchiveID = $_POST['gibbonReportArchiveID'] ?? '';
     $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
     $reportIdentifier = $_POST['reportIdentifier'] ?? '';
+    $reportDate = $_POST['reportDate'] ?? '';
+    $overwrite = $_POST['overwrite'] ?? 'N';
+    $file = $_POST['file'] ?? '';
+    $fileSeparator = $_POST['fileSeparator'] ?? '';
+    $fileSection = $_POST['fileSection'] ?? '';
 
-    if (empty($_FILES['file']) || empty($gibbonReportArchiveID) || empty($gibbonSchoolYearID) || empty($reportIdentifier) ) {
+    if (empty($file) || empty($gibbonReportArchiveID) || empty($gibbonSchoolYearID) || empty($reportIdentifier) || empty($reportDate)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
     }
 
     $absolutePath = $gibbon->session->get('absolutePath');
+    if (!is_file($absolutePath.'/'.$file)) {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+        exit;
+    }
+    
     $reportArchiveGateway = $container->get(ReportArchiveGateway::class);
     $reportArchiveEntryGateway = $container->get(ReportArchiveEntryGateway::class);
+    $studentGateway = $container->get(StudentGateway::class);
 
     $archive = $reportArchiveGateway->getByID($gibbonReportArchiveID);
     if (empty($archive)) {
@@ -52,73 +65,74 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_imp
         exit;
     }
 
-    $partialFail = false;
-    $path = str_replace('\\', '/', $_FILES['file']['tmp_name']);
-    $zip = new ZipArchive();
-
-    if ($zip->open($path) === true) { // Success
-        $fileUploader = new FileUploader($pdo, $gibbon->session);
-        $count = 0;
-        $total = $zip->numFiles;
-
-        for ($i = 0; $i < $zip->numFiles; ++$i) {
-            if (substr($zip->getNameIndex($i), 0, 8) == '__MACOSX') continue;
-            
-            $filename = $zip->getNameIndex($i);
-            $username = strstr($filename, '.', true);
-            $extension = mb_substr(mb_strrchr(strtolower($filename), '.'), 1);
-
-            if ($extension != 'pdf') {
-                $partialFail = true;
-            }
-
-            // Ensure the file info matches a user and student enrolment
-            $data = ['username' => $username, 'gibbonSchoolYearID' => $gibbonSchoolYearID];
-            $sql = "SELECT * FROM gibbonStudentEnrolment JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonPerson.username=:username AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID";
-            $studentEnrolment = $pdo->selectOne($sql, $data);
-
-            if (!empty($username) && !empty($studentEnrolment)) {
-                // Get or make a folder to upload into
-                $reportFolder = preg_replace('/[^a-zA-Z0-9]/', '', $reportIdentifier);
-                $destinationFolder = $absolutePath.$archive['path'].'/'.$reportFolder;
-
-                if (!is_dir($destinationFolder)) {
-                    mkdir($destinationFolder, 0755, true);
-                }
-
-                // Upload the file, grab the /uploads relative path
-                $destinationName = $fileUploader->getRandomizedFilename($filename, $destinationFolder);
-                $filePathRelative = $reportFolder.'/'.$destinationName;
-
-                if (!(@copy('zip://'.$path.'#'.$filename, $destinationFolder.'/'.$destinationName))) {
-                    $partialFail = true;
-                }
-
-                // Create an archive entry for this file
-                $archiveEntry = [
-                    'gibbonReportID' => 0,
-                    'gibbonReportArchiveID' => $gibbonReportArchiveID,
-                    'gibbonSchoolYearID' => $gibbonSchoolYearID,
-                    'gibbonYearGroupID' => $studentEnrolment['gibbonYearGroupID'],
-                    'gibbonRollGroupID' => $studentEnrolment['gibbonRollGroupID'],
-                    'gibbonPersonID' => $studentEnrolment['gibbonPersonID'],
-                    'type' => 'Single',
-                    'status' => 'Final',
-                    'reportIdentifier' => $reportIdentifier,
-                    'filePath' => $filePathRelative,
-                    'timestampCreated' => date('Y-m-d H:i:s'),
-                    'timestampModified' => date('Y-m-d H:i:s'),
-                ];
-
-                $inserted = $reportArchiveEntryGateway->insertAndUpdate($archiveEntry, $archiveEntry);
-                if ($inserted) $count++;
-            }
-        }
-    } else {
-        $URL .= '&return=error1';
-        header("Location: {$URL}");
-        exit;
+    $reportFolder = $gibbonSchoolYearID.'-'.preg_replace('/[^a-zA-Z0-9]/', '', $reportIdentifier);
+    $destinationFolder = $archive['path'].'/'.$reportFolder;
+    if (!is_dir($absolutePath.$destinationFolder)) {
+        mkdir($absolutePath.$destinationFolder, 0755, true);
     }
+
+    $fileUploader = new FileUploader($pdo, $gibbon->session);
+    $reports = $fileUploader->uploadFromZIP($absolutePath.'/'.$file, $destinationFolder, ['pdf']);
+
+    $partialFail = false;
+    $count = 0;
+
+    foreach ($reports as $report) {
+        // Optionally split the filenames by a separator character
+        if (!empty($fileSeparator) && !empty($fileSection)) {
+            $fileParts = explode($fileSeparator, mb_strstr($report['originalName'], '.', true));
+            $username = $fileParts[$fileSection-1] ?? '';
+        } else {
+            $username = mb_strstr($report['originalName'], '.', true);
+        }
+
+        // Get the student data by username
+        $studentEnrolment = $studentGateway->getStudentByUsername($gibbonSchoolYearID, $username);
+        if (empty($username) || empty($studentEnrolment)) {
+            $partialFail = true;
+            continue;
+        }
+
+        $existingReport = $reportArchiveEntryGateway->selectBy([
+            'gibbonReportArchiveID' => $gibbonReportArchiveID,
+            'gibbonSchoolYearID' => $gibbonSchoolYearID,
+            'reportIdentifier' => $reportIdentifier,
+            'type' => 'Single',
+            'gibbonYearGroupID' => $studentEnrolment['gibbonYearGroupID'],
+            'gibbonPersonID' => $studentEnrolment['gibbonPersonID'],
+        ])->fetch();
+
+        // Optionally overwrite exiting files or skip them
+        if (!empty($existingReport) && $overwrite == 'Y') {
+            unlink($absolutePath.'/'.$archive['path'].'/'.$existingReport['filePath']);
+        } elseif (!empty($existingReport) && $overwrite == 'N') {
+            unlink($report['absolutePath']);
+            continue;
+        }
+
+        // Create an archive entry for this file
+        $archiveEntry = [
+            'gibbonReportID' => 0,
+            'gibbonReportArchiveID' => $gibbonReportArchiveID,
+            'gibbonSchoolYearID' => $gibbonSchoolYearID,
+            'gibbonYearGroupID' => $studentEnrolment['gibbonYearGroupID'],
+            'gibbonRollGroupID' => $studentEnrolment['gibbonRollGroupID'],
+            'gibbonPersonID' => $studentEnrolment['gibbonPersonID'],
+            'type' => 'Single',
+            'status' => 'Final',
+            'reportIdentifier' => $reportIdentifier,
+            'filePath' => $reportFolder.'/'.$report['filename'],
+            'timestampCreated' => $reportDate.' 00:00:00',
+            'timestampModified' => $reportDate.' 00:00:00',
+        ];
+
+        $inserted = $reportArchiveEntryGateway->insertAndUpdate($archiveEntry, $archiveEntry);
+        if ($inserted) {
+            $count++;
+        }
+    }
+
+    unlink($absolutePath.'/'.$file);
 
     $URL .= $partialFail
         ? "&return=warning1"

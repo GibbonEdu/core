@@ -53,12 +53,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage.php
     $table->addHeaderAction('import', __('Import Reports'))
         ->setIcon('upload')
         ->setURL('/modules/Reports/archive_manage_import.php')
-        ->displayLabel()
-        ->append(' | ');
-
-    $table->addHeaderAction('upload', __('Upload Reports'))
-        ->setIcon('upload')
-        ->setURL('/modules/Reports/archive_manage_upload.php')
         ->displayLabel();
 
     $table->addColumn('name', __('Name'));
