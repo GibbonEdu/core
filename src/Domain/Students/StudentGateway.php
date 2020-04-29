@@ -122,6 +122,8 @@ class StudentGateway extends QueryableGateway
             $query
                 ->where('gibbonStudentEnrolment.gibbonRollGroupID = :gibbonRollGroupID')
                 ->bindValue('gibbonRollGroupID', $gibbonRollGroupID);
+        } else {
+            $query->where("gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current' LIMIT 1)");
         }
             
         $criteria->addFilterRules($this->getSharedUserFilterRules());

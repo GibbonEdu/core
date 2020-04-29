@@ -70,6 +70,7 @@ v20.0.00
         Staff: fixed Left staff appearing in Weekly Absences report
         Students: fixed emergency data report not showing parents column
         Students: fixed Tutors and EAs set to Left showing on Student Profile
+        Students: fixed past enrolments showing up in Students by Form Group
         Reports: fixed Course scope Per Group criteria not saving per-class
         Reports: suppressed TCPDF deprecation messages when generating PDFs
         Reports: fixed pronoun switching not applied globally in some browsers
