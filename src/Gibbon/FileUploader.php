@@ -21,6 +21,7 @@ namespace Gibbon;
 
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Session;
+use ZipArchive;
 
 /**
  * File Upload Class
@@ -183,6 +184,72 @@ class FileUploader
         }
 
         return $this->upload($filename, $sourcePath);
+    }
+
+    /**
+     * Convenience function for handling file uploads from
+     *
+     * @param string $file
+     * @param string $destinationFolder
+     * @return array
+     */
+    public function uploadFromZIP($path, $destinationFolder = '', $allowedExtensions = [])
+    {
+        // Check for empty data
+        if (empty($path) || !is_file($path)) {
+            return false;
+        }
+
+        // Generate a default folder based on date if one isn't provided
+        if (empty($destinationFolder)) {
+            $destinationFolder = $this->getUploadsFolderByDate();
+        }
+
+        $destinationFolder = trim($destinationFolder, '/');
+        $absolutePath = $this->session->get('absolutePath');
+
+        // Create the destination folder if it doesn't exit
+        if (is_dir($absolutePath.'/'.$destinationFolder) == false) {
+            $folderCreated = mkdir($absolutePath.'/'.$destinationFolder, 0755, true);
+            if (!$folderCreated) {
+                $this->errorCode = UPLOAD_ERR_CANT_WRITE;
+                return false;
+            }
+        }
+
+        $zip = new ZipArchive();
+        $files = [];
+
+        if ($zip->open($path) === true) {
+
+            for ($i = 0; $i < $zip->numFiles; ++$i) {
+                if (substr($zip->getNameIndex($i), 0, 8) == '__MACOSX') {
+                    continue;
+                }
+                
+                $filename = $zip->getNameIndex($i);
+                $extension = mb_substr(mb_strrchr(strtolower($filename), '.'), 1);
+
+                // Filter allowed files by extension
+                if (!empty($allowedExtensions) && !in_array($extension, $allowedExtensions)) {
+                    continue;
+                }
+
+                $destinationName = $this->getRandomizedFilename($filename, $absolutePath.'/'.$destinationFolder);
+
+                if (@copy('zip://'.$path.'#'.$filename, $absolutePath.'/'.$destinationFolder.'/'.$destinationName)) {
+                    $files[] = [
+                        'filename' => $destinationName,
+                        'extension' => $extension,
+                        'originalName' => $filename,
+                        'relativePath' => $destinationFolder.'/'.$destinationName,
+                        'absolutePath' => $absolutePath.'/'.$destinationFolder.'/'.$destinationName,
+                    ];
+                }
+            }
+        }
+
+        return $files;
     }
 
     /**
