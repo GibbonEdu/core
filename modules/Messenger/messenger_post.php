@@ -60,13 +60,7 @@ else {
 				$addReturnMessage=__("Your request failed due to an attachment error.") ;
 			}
 			else if ($addReturn=="success0") {
-				$addReturnMessage=__("Your request was completed successfully: not all messages may arrive at their destination, but an attempt has been made to get them all out.") ;
-				if (is_numeric($_GET["emailCount"])) {
-					$addReturnMessage.=" " . sprintf(__('%1$s email(s) were dispatched.'), $_GET["emailCount"]) ;
-				}
-				if (is_numeric($_GET["smsCount"]) AND is_numeric($_GET["smsBatchCount"])) {
-					$addReturnMessage.=" " . sprintf(__('%1$s SMS(es) were dispatched in %2$s batch(es).'), $_GET["smsCount"], $_GET["smsBatchCount"]) ;
-				}
+                $addReturnMessage = __("Your message has been dispatched to a highly trained team of gibbons for delivery: not all messages may arrive at their destination, but an attempt has been made to get them all out. You'll receive a notification once all messages have been sent.");
 
 				$class="success" ;
 			}
@@ -75,7 +69,7 @@ else {
 			print "</div>" ;
 		}
 
-		$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/messenger_postProcess.php');
+		$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/messenger_postPreProcess.php');
 		$form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
 		//DELIVERY MODE
