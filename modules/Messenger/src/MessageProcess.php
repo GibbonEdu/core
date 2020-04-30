@@ -65,29 +65,25 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
         // Run the original message process script
         $sendResult = include __DIR__ . '/../messenger_postProcess.php';
 
-        // Parse the result
-        $output = ['addReturn' => 'unknown'];
-        parse_str($sendResult, $output);
-
         // Send a notification to the user and return the result
         if ((!empty($messageData['email']) && $messageData['email'] == 'Y') || (!empty($messageData['sms']) && $messageData['sms'] == 'Y')) {
-            $this->sendResultNotification($gibbonPersonID, $gibbonMessengerID, $messageData['subject'], $output);
+            $this->sendResultNotification($gibbonPersonID, $gibbonMessengerID, $messageData['subject'], $sendResult);
         }
 
-        return $output;
+        return $sendResult;
     }
 
-    protected function sendResultNotification($gibbonPersonID, $gibbonMessengerID, $subject, $output)
+    protected function sendResultNotification($gibbonPersonID, $gibbonMessengerID, $subject, $sendResult)
     {
-        switch ($output['addReturn']) {
+        switch ($sendResult['return']) {
             case 'success0':
                 $actionText = __('Your message "{subject}" was sent successfully.', ['subject' => $subject]);
 
-                if (is_numeric($output['emailCount'])) {
-                    $actionText .= '<br/>'. sprintf(__('%1$s email(s) were dispatched.'), $output['emailCount']);
+                if (is_numeric($sendResult['emailCount'])) {
+                    $actionText .= '<br/>'. sprintf(__('%1$s email(s) were dispatched.'), $sendResult['emailCount']);
                 }
-                if (is_numeric($output['smsCount']) && is_numeric($output['smsBatchCount'])) {
-                    $actionText .= '<br/>' . sprintf(__('%1$s SMS(es) were dispatched in %2$s batch(es).'), $output['smsCount'], $output['smsBatchCount']);
+                if (is_numeric($sendResult['smsCount']) && is_numeric($sendResult['smsBatchCount'])) {
+                    $actionText .= '<br/>' . sprintf(__('%1$s SMS(es) were dispatched in %2$s batch(es).'), $sendResult['smsCount'], $sendResult['smsBatchCount']);
                 }
                 break;
             case 'fail0':

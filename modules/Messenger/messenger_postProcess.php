@@ -23,29 +23,19 @@ use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 
-// include '../../gibbon.php';
-
-//Increase max execution time, as this stuff gets big
-// ini_set('max_execution_time', 7200);
-// ini_set('memory_limit','1024M');
-// set_time_limit(1200);
-
 //Module includes
 include "./moduleFunctions.php" ;
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/messenger_post.php" ;
 $time=time() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php")==FALSE) {
 	//Fail 0
-	$URL.="&addReturn=fail0" ;
-    return $URL;
+    return ['return' => 'fail0'];
 }
 else {
 	if (empty($_POST)) {
-		//Fail 5
-		$URL.="&addReturn=fail5" ;
-		return $URL;
+        //Fail 5
+        return ['return' => 'fail5'];
 	}
 	else {
 		//Proceed!
@@ -110,9 +100,8 @@ else {
 		$individualNaming = $_POST["individualNaming"] ;
 
 		if ($subject == "" OR $body == "" OR ($email == "Y" AND $from == "") OR $emailReceipt == '' OR ($emailReceipt == "Y" AND $emailReceiptText == "") OR $individualNaming == "") {
-			//Fail 3
-			$URL.="&addReturn=fail3" ;
-			return $URL;
+            //Fail 3
+            return ['return' => 'fail3'];
 		}
 		else {
 			//SMS Credit notification
@@ -2110,12 +2099,15 @@ else {
 
 			if ($partialFail == TRUE) {
 				//Fail 4
-				$URL.="&addReturn=fail4" ;
-				return $URL;
+                return ['return' => 'fail4'];
 			}
 			else {
-				$URL.="&addReturn=success0&emailCount=" . $emailCount . "&smsCount=" . $smsCount . "&smsBatchCount=" . $smsBatchCount ;
-				return $URL;
+                return [
+                    'return' => 'success0',
+                    'emailCount' => $emailCount,
+                    'smsCount' => $smsCount,
+                    'smsBatchCount' => $smsBatchCount,
+                ];
 			}
 		}
 	}
