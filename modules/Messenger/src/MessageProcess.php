@@ -71,23 +71,23 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
 
         // Send a notification to the user and return the result
         if ((!empty($messageData['email']) && $messageData['email'] == 'Y') || (!empty($messageData['sms']) && $messageData['sms'] == 'Y')) {
-            $this->sendResultNotification($gibbonPersonID, $gibbonMessengerID, $output);
+            $this->sendResultNotification($gibbonPersonID, $gibbonMessengerID, $messageData['subject'], $output);
         }
 
         return $output;
     }
 
-    protected function sendResultNotification($gibbonPersonID, $gibbonMessengerID, $output)
+    protected function sendResultNotification($gibbonPersonID, $gibbonMessengerID, $subject, $output)
     {
         switch ($output['addReturn']) {
             case 'success0':
-                $actionText = __('Your message was sent successfully.');
+                $actionText = __('Your message "{subject}" was sent successfully.', ['subject' => $subject]);
 
                 if (is_numeric($output['emailCount'])) {
-                    $actionText .= '  '. sprintf(__('%1$s email(s) were dispatched.'), $output['emailCount']);
+                    $actionText .= '<br/>'. sprintf(__('%1$s email(s) were dispatched.'), $output['emailCount']);
                 }
                 if (is_numeric($output['smsCount']) && is_numeric($output['smsBatchCount'])) {
-                    $actionText .= ' ' . sprintf(__('%1$s SMS(es) were dispatched in %2$s batch(es).'), $output['smsCount'], $output['smsBatchCount']);
+                    $actionText .= '<br/>' . sprintf(__('%1$s SMS(es) were dispatched in %2$s batch(es).'), $output['smsCount'], $output['smsBatchCount']);
                 }
                 break;
             case 'fail0':
