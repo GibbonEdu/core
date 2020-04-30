@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
         return $group;
     }, array());    
        
-    // INSTALLED MODULES
+    // INSTALLED THEMES
     $form = Form::create('theme_manage', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/theme_manageProcess.php');
     
     $form->setClass('fullWidth');
