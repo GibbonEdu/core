@@ -17,9 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include './modules/System Admin/moduleFunctions.php';
-
+use Gibbon\Services\Format;
 use Gibbon\Forms\Form;
+use Gibbon\Domain\DataSet;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\System\ThemeGateway;
+
+include './modules/System Admin/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.php') == false) {
     //Acess denied
@@ -42,139 +46,171 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
         returnProcess($guid, $_GET['return'], null, $returns);
     }
 
-    // Get themes from database, and store in an array
-    $sql = "SELECT name as groupBy, gibbonTheme.*, 'Orphaned' AS status FROM gibbonTheme ORDER BY name";
-    $result = $pdo->executeQuery(array(), $sql);
-    $themesSQL = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE) : array();
-
-    // Get list of themes in /themes directory
-    $themesFS = glob($_SESSION[$guid]['absolutePath'].'/themes/*', GLOB_ONLYDIR);
-
-    // Build a theme data set from SQL and FileSystem info
-    $themes = array_map(function($themeFilename) use (&$themesSQL, &$pdo, $guid, $version) {
-        $themeName = substr($themeFilename, strlen($_SESSION[$guid]['absolutePath'].'/themes/'));
-        $manifestData = getThemeManifest($themeName, $guid);
-
-        if (isset($themesSQL[$themeName])) {
-            $theme = &$themesSQL[$themeName];
-            $theme['status'] = __('Installed');
-            $theme['installed'] = true;
-
-            if ($theme['name'] == 'Default') {
-                $theme['version'] = $version;
-            } else if (version_compare($manifestData['version'], $theme['version'], '>')) {
-                // Update the database to match the manifest version
-                $data = array('version' => $manifestData['version'], 'gibbonThemeID' => $theme['gibbonThemeID']);
-                $sql = "UPDATE gibbonTheme SET version=:version WHERE gibbonThemeID=:gibbonThemeID";
-                $result = $pdo->executeQuery($data, $sql);
-                $theme['version'] = $manifestData['version'];
-            }
-        } else {
-            $theme = &$manifestData;
-            $theme['status'] = $theme['manifestOK']? __('Not Installed') : __('Theme Error');
-            $theme['installed'] = false;
-        }
-
-        return $theme;
-    }, $themesFS);
-
     echo "<div class='message'>";
     echo sprintf(__('To install a theme, upload the theme folder to %1$s on your server and then refresh this page. After refresh, the theme should appear in the list below: use the install button in the Actions column to set it up.'), '<b><u>'.$_SESSION[$guid]['absolutePath'].'/themes/</u></b>');
-    echo '</div>';
+    echo '</div>';    
+    
+    echo '<h2>';
+    echo __('Installed');
+    echo '</h2>';        
+    
+    // Get list of themes in /themes directory
+    $themeFolders = glob($_SESSION[$guid]['absolutePath'].'/themes/*', GLOB_ONLYDIR);
+    $themeGateway = $container->get(ThemeGateway::class);
 
-    if (count($themes) == 0) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
-    } else {
-        $form = Form::create('themeManage', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/theme_manageProcess.php');
+    // CRITERIA
+    $criteria = $themeGateway->newQueryCriteria()
+        ->sortBy('name')
+        ->fromPOST();
 
-        $form->setClass('fullWidth colorOddEven');
-        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $themes = $themeGateway->queryThemes($criteria);
+    $themeNames = $themeGateway->getAllThemeNames();
+    $orphans = array();
 
-        $row = $form->addRow()->setClass('heading head');
-            $row->addContent(__('Name'));
-            $row->addContent(__('Status'));
-            $row->addContent(__('Version'));
-            $row->addContent(__('Description'));
-            $row->addContent(__('Author'));
-            $row->addContent(__('Active'));
-            $row->addContent(__('Action'));
-
-        foreach ($themes as $theme) {
-            $rowClass = !$theme['installed']? (!$theme['manifestOK']? 'error' : 'warning') : '';
-
-            $row = $form->addRow()->addClass($rowClass);
-                $row->addContent($theme['name']);
-                $row->addContent($theme['status']);
-                $row->addContent('v'.$theme['version']);
-                $row->addContent($theme['description']);
-                $row->addWebLink($theme['author'])->setURL($theme['url']);
-
-            if ($theme['installed']) {
-                $row->addRadio('gibbonThemeID')
-                    ->fromArray(array($theme['gibbonThemeID'] => ''))
-                    ->checked($theme['active'] == 'Y'? $theme['gibbonThemeID'] : '')
-                    ->setClass('');
-
-                if ($theme['name'] != 'Default') {
-                    $row->addWebLink('<img title="'.__('Remove Record').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/garbage.png"/>')
-                        ->setURL($_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/theme_manage_uninstall.php&width=650&height=135')
-                        ->setClass('thickbox')
-                        ->addParam('gibbonThemeID', $theme['gibbonThemeID']);
-                } else {
-                    $row->addContent('');
-                }
-            } else {
-                $row->addContent('');
-                if ($theme['manifestOK']) {
-                    $row->addWebLink('<img title="'.__('Install').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/page_new.png"/>')
-                        ->setURL($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/theme_manage_installProcess.php')
-                        ->addParam('name', $theme['themeName']);
-                } else {
-                    $row->addContent('');
-                }
-            }
+    // Build a set of theme data, flagging orphaned themes that do not appear to be in the themes folder.
+    // Also checks for available updates by comparing version numbers
+    $themes->transform(function (&$theme) use ($guid, &$orphans, &$themeFolders, &$themeGateway) {
+        if (array_search($_SESSION[$guid]['absolutePath'].'/themes/'.$theme['name'], $themeFolders) === false) {
+            $theme['orphaned'] = true;
+            $orphans[] = $theme;
+            return;
         }
-
-        $form->addRow()->addSubmit();
-
-        echo $form->getOutput();
-    }
-
-    // Find and display orphaned themes
-    $themesOrphaned = array_filter($themesSQL, function($item) {
-        return $item['status'] == 'Orphaned';
+        
+        $manifest = getThemeManifest($theme['name'], $guid);
+        if ($manifest && $manifest['manifestOK']) {
+            if (version_compare($manifest['version'], $theme['version'], '>')) {
+                $data = array('version' => $manifest['version'], 'author' => $manifest['author'], 'description' => $manifest['description'], 'url' => $manifest['url']);
+                $themeGateway->update($theme['gibbonThemeID'], $data);
+                $theme['version'] = $manifest['version'];
+            }
+        }            
     });
 
-    if (count($themesOrphaned) > 0) {
-        echo "<h2 style='margin-top: 40px'>";
+    // Build a set of uninstalled themes by checking the $themes DataSet.
+    // Validates the manifest file and grabs the theme details from there.
+    $uninstalledThemes = array_reduce($themeFolders, function($group, $themePath) use ($guid, &$themeNames) {
+        $themeName = substr($themePath, strlen($_SESSION[$guid]['absolutePath'].'/themes/'));
+        if (!in_array($themeName, $themeNames)) {
+            $theme = getThemeManifest($themeName, $guid);
+            
+            if (!$theme || !$theme['manifestOK']) {
+                $theme['name'] = $themeName;
+                $theme['description'] = __('Theme error due to incorrect manifest file or folder name.');
+            }
+            $group[] = $theme;
+        }
+
+        return $group;
+    }, array());    
+       
+    // INSTALLED MODULES
+    $form = Form::create('theme_manage', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/theme_manageProcess.php');
+    
+    $form->setClass('fullWidth');
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->setClass('w-full blank');
+
+    // DATA TABLE
+    $table = $form->addRow()->addDataTable('themeManage', $criteria)->withData($themes);
+    
+    $table->modifyRows(function ($theme, $row) {
+        if (!empty($theme['orphaned'])) {
+            return '';
+        }
+        return $row;
+    });
+
+    $table->addColumn('name', __('Name'))->width('20%');
+    $table->addColumn('version', __('Version'))->width('10%');
+    $table->addColumn('description', __('Description'))->width('40%');
+    $table->addColumn('author', __('Author'))
+        ->format(Format::using('link', ['url', 'author']));
+            
+    $table->addColumn('active', __('Active'))
+        ->width('10%')
+        ->notSortable()
+        ->format(function($themes) use ($form) {
+            $checked = ($themes['active'] == 'Y')? $themes['gibbonThemeID'] : '';
+                
+            return $form->getFactory()
+                ->createRadio('gibbonThemeID')
+                ->addClass('inline right')
+                ->fromArray(array($themes['gibbonThemeID'] => ''))
+                ->checked($checked)
+                ->getOutput();
+        });
+
+    $table->addActionColumn()
+        ->addParam('gibbonThemeID')
+        ->format(function ($themes, $actions) use ($guid) {
+            
+            if (($themes['active'] != 'Y') and ($themes['name'] != 'Default')) {
+                $actions->addAction('delete', __('Delete'))
+                    ->setURL('/modules/System Admin/theme_manage_uninstall.php');
+            }
+        });     
+            
+    $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth standardForm');
+    $table->addRow()->addSubmit();
+    
+    echo $form->getOutput();
+    
+    // UNINSTALLED THEMES
+    if (!empty($uninstalledThemes)) {
+        echo '<h2>';
+        echo __('Not Installed');
+        echo '</h2>';
+
+        $tableInstallThemes = DataTable::create('themeInstall');
+        
+        $tableInstallThemes->modifyRows(function ($theme, $row) {
+            $row->addClass($theme['manifestOK'] == false ? 'error' : 'warning');
+            return $row;
+        });
+
+        $tableInstallThemes->addColumn('name', __('Name'))->width('20%');
+        $tableInstallThemes->addColumn('version', __('Version'))->width('10%');
+        $tableInstallThemes->addColumn('description', __('Description'))->width('40%');
+        $tableInstallThemes->addColumn('author', __('Author'))
+            ->format(Format::using('link', ['url', 'author']));
+        
+        $tableInstallThemes->addActionColumn()
+            ->addParam('name')
+            ->format(function ($row, $actions) {
+                if ($row['manifestOK']) {
+                    $actions->addAction('install', __('Install'))
+                        ->setIcon('page_new')
+                        ->directLink()
+                        ->setURL('/modules/System Admin/theme_manage_installProcess.php');
+                }
+            });
+
+        echo $tableInstallThemes->render(new DataSet($uninstalledThemes));
+    }
+
+    // ORPHANED THEMES
+    if ($orphans) {
+        echo '<h2>';
         echo __('Orphaned Themes');
         echo '</h2>';
         echo '<p>';
         echo __('These themes are installed in the database, but are missing from within the file system.');
         echo '</p>';
 
-        echo "<table cellspacing='0' class='colorOddEven fullWidth'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __('Name');
-        echo '</th>';
-        echo "<th style='width: 50px'>";
-        echo __('Action');
-        echo '</th>';
-        echo '</tr>';
+        $tableOrphans = DataTable::create('themeOrphans');
 
-        foreach ($themesOrphaned as $themeName => $theme) {
-            echo '<tr>';
-            echo '<td>';
-            echo $theme['name'];
-            echo '</td>';
-            echo '<td>';
-            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/theme_manage_uninstall.php&gibbonThemeID='.$theme['gibbonThemeID']."&orphaned=true&width=650&height=135'><img title='".__('Remove Record')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-            echo '</td>';
-            echo '</tr>';
-        }
-        echo '</table>';
-    }
+        $tableOrphans->addColumn('name', __('Name'));
+
+        $tableOrphans->addActionColumn()
+            ->addParam('gibbonThemeID')
+            ->format(function ($row, $actions) {
+                
+                $actions->addAction('uninstall', __('Remove Record'))
+                    ->setIcon('garbage')
+                    ->addParam('orphaned', 'true')
+                    ->setURL('/modules/System Admin/theme_manage_uninstall.php');
+            });
+
+        echo $tableOrphans->render(new DataSet($orphans));
+    }     
 }
