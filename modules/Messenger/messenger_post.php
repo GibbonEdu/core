@@ -60,7 +60,11 @@ else {
 				$addReturnMessage=__("Your request failed due to an attachment error.") ;
 			}
 			else if ($addReturn=="success0") {
-                $addReturnMessage = __("Your message has been dispatched to a highly trained team of gibbons for delivery: not all messages may arrive at their destination, but an attempt has been made to get them all out. You'll receive a notification once all messages have been sent.");
+                if (!empty($_GET['notification']) && $_GET['notification'] == 'Y') {
+                    $addReturnMessage = __("Your message has been dispatched to a highly trained team of gibbons for delivery: not all messages may arrive at their destination, but an attempt has been made to get them all out. You'll receive a notification once all messages have been sent.");
+                } else {
+                    $addReturnMessage = __('Your message has been posted successfully.');
+                }
 
 				$class="success" ;
 			}

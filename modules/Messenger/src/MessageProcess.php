@@ -40,7 +40,7 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
     {
     }
 
-    public function runSendMessage($gibbonSchoolYearID, $gibbonPersonID, $messageData)
+    public function runSendMessage($gibbonMessengerID, $gibbonSchoolYearID, $gibbonPersonID, $messageData)
     {
         // Extract the message data back into POST
         $_POST = $messageData;
@@ -59,18 +59,26 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
         $gibbon->session->set('gibbonSchoolYearID', $gibbonSchoolYearID);
         $gibbon->session->set('gibbonSchoolYearIDCurrent', $gibbonSchoolYearID);
 
+        // Setup messenger variables
+        $AI = str_pad($gibbonMessengerID, 12, '0', STR_PAD_LEFT);
+
         // Run the original message process script
         $sendResult = include __DIR__ . '/../messenger_postProcess.php';
 
-        // Send a notification to the user and return the result
-        return $this->sendResultNotification($gibbonPersonID, $sendResult);
-    }
-
-    protected function sendResultNotification($gibbonPersonID, $sendResult)
-    {
+        // Parse the result
         $output = ['addReturn' => 'unknown'];
         parse_str($sendResult, $output);
 
+        // Send a notification to the user and return the result
+        if ((!empty($messageData['email']) && $messageData['email'] == 'Y') || (!empty($messageData['sms']) && $messageData['sms'] == 'Y')) {
+            $this->sendResultNotification($gibbonPersonID, $gibbonMessengerID, $output);
+        }
+
+        return $output;
+    }
+
+    protected function sendResultNotification($gibbonPersonID, $gibbonMessengerID, $output)
+    {
         switch ($output['addReturn']) {
             case 'success0':
                 $actionText = __('Your message was sent successfully.');
@@ -100,9 +108,7 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
         }
 
         $notificationSender = $this->getContainer()->get(NotificationSender::class);
-        $notificationSender->addNotification($gibbonPersonID, $actionText, 'Messenger', '/index.php?q=/modules/Messenger/messenger_manage.php');
+        $notificationSender->addNotification($gibbonPersonID, $actionText, 'Messenger', '/index.php?q=/modules/Messenger/messenger_manage_report.php&gibbonMessengerID='.$gibbonMessengerID.'&sidebar=true&search=');
         $notificationSender->sendNotifications();
-
-        return $output;
     }
 }

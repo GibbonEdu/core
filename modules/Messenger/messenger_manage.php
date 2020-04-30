@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Domain\Messenger\MessengerGateway;
 
 $page->breadcrumbs->add(__('Manage Messages'));
 
@@ -73,7 +74,10 @@ else {
 
 		print "<h2>" ;
 		print __("Messages") ;
-		print "</h2>" ;
+        print "</h2>" ;
+        
+        $messengerGateway = $container->get(MessengerGateway::class);
+        $sendingMessages = $messengerGateway->getSendingMessages();
 
 		//Set pagination variable
 		$page=1 ; if (isset($_GET["page"])) { $page=$_GET["page"] ; }
@@ -209,7 +213,13 @@ else {
 						print "<td>" ;
 							print Format::name($row["title"], $row["preferredName"], $row["surname"], $row["category"]) ;
 						print "</td>" ;
-						print "<td>" ;
+                        print "<td>" ;
+                        
+                            if (!empty($sendingMessages[$row['gibbonMessengerID']])) {
+                                echo '<div class="mb-2"><img class="align-middle w-56 -mt-px -ml-1" src="./themes/Default/img/loading.gif">'
+                                    .'<span class="tag ml-2 message">'.__('Sending').'</span></div>';
+                            }
+
 							try {
 								$dataTargets=array("gibbonMessengerID"=>$row["gibbonMessengerID"]);
 								$sqlTargets="SELECT type, id FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID ORDER BY type, id" ;

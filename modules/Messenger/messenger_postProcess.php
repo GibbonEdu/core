@@ -115,58 +115,6 @@ else {
 			return $URL;
 		}
 		else {
-			//Lock table
-			try {
-				$sql="LOCK TABLES gibbonMessenger WRITE" ;
-				$result=$connection2->query($sql);
-			}
-			catch(PDOException $e) {
-				//Fail 2
-				$URL.="&addReturn=fail2" ;
-				return $URL;
-				exit() ;
-			}
-
-			//Get next autoincrement
-			try {
-				$sqlAI="SHOW TABLE STATUS LIKE 'gibbonMessenger'";
-				$resultAI=$connection2->query($sqlAI);
-			}
-			catch(PDOException $e) {
-				//Fail 2
-				$URL.="&addReturn=fail2" ;
-				return $URL;
-				exit() ;
-			}
-
-			$rowAI=$resultAI->fetch();
-			$AI=str_pad($rowAI['Auto_increment'], 12, "0", STR_PAD_LEFT) ;
-
-			//Write to database
-			try {
-				$data=array("email"=>$email, "messageWall"=>$messageWall, "messageWallPin" => $messageWallPin, "messageWall_date1"=>$date1, "messageWall_date2"=>$date2, "messageWall_date3"=>$date3, "sms"=>$sms, "subject"=>$subject, "body"=>$body, "emailReceipt" => $emailReceipt, "emailReceiptText" => $emailReceiptText, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "timestamp"=>date("Y-m-d H:i:s"));
-				$sql="INSERT INTO gibbonMessenger SET email=:email, messageWall=:messageWall, messageWallPin=:messageWallPin, messageWall_date1=:messageWall_date1, messageWall_date2=:messageWall_date2, messageWall_date3=:messageWall_date3, sms=:sms, subject=:subject, body=:body, emailReceipt=:emailReceipt, emailReceiptText=:emailReceiptText, gibbonPersonID=:gibbonPersonID, timestamp=:timestamp" ;
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) {
-				//Fail 2
-				$URL.="&addReturn=fail2" ;
-				return $URL;
-				exit() ;
-			}
-
-			try {
-				$sql="UNLOCK TABLES" ;
-				$result=$connection2->query($sql);
-			}
-			catch(PDOException $e) {
-				//Fail 2
-				$URL.="&addReturn=fail2" ;
-				return $URL;
-				exit() ;
-			}
-
 			//SMS Credit notification
 			if ($smsCreditBalance != null && $smsCreditBalance < 1000) {
 				$notificationGateway = new NotificationGateway($pdo);
@@ -2166,7 +2114,6 @@ else {
 				return $URL;
 			}
 			else {
-				$_SESSION[$guid]['pageLoads'] = null;
 				$URL.="&addReturn=success0&emailCount=" . $emailCount . "&smsCount=" . $smsCount . "&smsBatchCount=" . $smsBatchCount ;
 				return $URL;
 			}

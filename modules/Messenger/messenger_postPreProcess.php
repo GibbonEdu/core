@@ -18,6 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Module\Messenger\MessageProcess;
+use Gibbon\Domain\Messenger\MessengerGateway;
+use Gibbon\Services\Format;
 
 include '../../gibbon.php';
 
@@ -28,10 +30,47 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
     header("Location: {$URL}");
     exit;
 } else {
+    $messengerGateway = $container->get(MessengerGateway::class);
+
+    $from = $_POST['from'] ?? '';
+    $data = [
+        'email'             => $_POST['email'] ?? 'N',
+        'messageWall'       => $_POST['messageWall'] ?? 'N',
+        'messageWallPin'    => $_POST['messageWallPin'] ?? 'N',
+        'messageWall_date1' => !empty($_POST['date1']) ? Format::dateConvert($_POST['date1']) : null,
+        'messageWall_date2' => !empty($_POST['date2']) ? Format::dateConvert($_POST['date2']) : null,
+        'messageWall_date3' => !empty($_POST['date3']) ? Format::dateConvert($_POST['date3']) : null,
+        'sms'               => $_POST['sms'] ?? 'N',
+        'subject'           => $_POST['subject'] ?? '',
+        'body'              => $_POST['body'] ?? '',
+        'emailReceipt'      => $_POST['emailReceipt'] ?? 'N',
+        'emailReceiptText'  => $_POST['emailReceiptText'] ?? '',
+        'gibbonPersonID'    => $_SESSION[$guid]['gibbonPersonID'],
+        'timestamp'         => date('Y-m-d H:i:s'),
+    ];
+
+    // Validate that the required values are present
+    if (empty($data['subject']) || empty($data['body']) || ($data['email'] == 'Y' && $from == '') || ($data['emailReceipt'] == 'Y' && $data['emailReceiptText'] == '')) {
+        $URL .= "&addReturn=fail3";
+        header("Location: {$URL}");
+        exit;
+    }
+
+    // Check for empty POST. This can happen if attachments go horribly wrong.
+    if (empty($_POST)) {
+        $URL .= "&addReturn=fail5";
+        header("Location: {$URL}");
+        exit;
+    }
+
+    $gibbonMessengerID = $messengerGateway->insert($data);
 
     $process = $container->get(MessageProcess::class);
-    $process->startSendMessage($_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID'], $_POST);
+    $process->startSendMessage($gibbonMessengerID, $_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID'], $_POST);
 
-    $URL.="&addReturn=success0";
+    $_SESSION[$guid]['pageLoads'] = null;
+    $notification = $data['email'] == 'Y' || $data['sms'] == 'Y' ? 'Y' : 'N';
+
+    $URL.="&addReturn=success0&notification={$notification}";
     header("Location: {$URL}") ;
 }
