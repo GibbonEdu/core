@@ -24,8 +24,8 @@ use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
 
 /**
- * @version v17
- * @since   v17
+ * @version v20
+ * @since   v20
  */
 class ThemeGateway extends QueryableGateway
 {
