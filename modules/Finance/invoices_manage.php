@@ -232,10 +232,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         $table->addExpandableColumn('notes');
 
         $table->addColumn('student', __('Student'))
+            ->description(__('Invoice To'))
             ->sortable(['surname', 'preferredName'])
             ->format(function($invoice) {
                 $output = '<b>'.Format::name('', $invoice['preferredName'], $invoice['surname'], 'Student', true).'</b>';
-                $output .= '<br/><span class="small emphasis">'.$invoice['invoiceTo'].'</span>';
+                $output .= '<br/><span class="small emphasis">'.__($invoice['invoiceTo']).'</span>';
                 return $output;
             });
 
@@ -244,11 +245,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         $table->addColumn('status', __('Status'))
             ->format(function ($invoice) {
                 if ($invoice['status'] == 'Issued' && $invoice['invoiceDueDate'] < date('Y-m-d')) {
-                    return 'Issued - Overdue';
+                    return __('Issued - Overdue');
                 } else if ($invoice['status'] == 'Paid' && $invoice['invoiceDueDate'] < $invoice['paidDate']) {
-                    return 'Paid - Late';
+                    return __('Paid - Late');
                 }
-                return $invoice['status'];
+                return __($invoice['status']);
             });
 
         $table->addColumn('billingSchedule', __('Schedule'));

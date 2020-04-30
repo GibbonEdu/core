@@ -25,11 +25,12 @@ v20.0.00
     Significant Changes
         Added Español - Mexico as an available locale
         Students: added a Withdraw Student page with the option to notify staff
+        Reports: added an option to bulk upload existing report PDFs
 
     Security
 
     Tweaks & Additions
-        System: added Argentine Peso as a currency option
+        System: added Argentine Peso and Ukrainian Hryvna as currency options
         System: updated Tailwind 1.2.0 dependencies via npm
         System: added target option to Alert Bar
         System: added a DetailsView table for displaying data
@@ -70,6 +71,7 @@ v20.0.00
         Staff: fixed Left staff appearing in Weekly Absences report
         Students: fixed emergency data report not showing parents column
         Students: fixed Tutors and EAs set to Left showing on Student Profile
+        Students: fixed past enrolments showing up in Students by Form Group
         Reports: fixed Course scope Per Group criteria not saving per-class
         Reports: suppressed TCPDF deprecation messages when generating PDFs
         Reports: fixed pronoun switching not applied globally in some browsers
