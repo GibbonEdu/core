@@ -17,9 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\I18nGateway;
+
 include '../../gibbon.php';
 
-$gibboni18nID = $_POST['gibboni18nID'];
+$gibboni18nID = $_POST['gibboni18nID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/i18n_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.php') == false) {
@@ -27,53 +29,26 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if theme specified
+    //Check if language specified
     if ($gibboni18nID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
-        try {
-            $data = array('gibboni18nID' => $gibboni18nID);
-            $sql = 'SELECT * FROM gibboni18n WHERE gibboni18nID=:gibboni18nID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
+        $i18nGateway = $container->get(I18nGateway::class);
+        $i18n = $i18nGateway->getByID($gibboni18nID);
 
-        if ($result->rowCount() != 1) {
+        if (empty($i18n)) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
-            //Update session variables
-            $row = $result->fetch();
-            setLanguageSession($guid, $row);
-
             //Deactivate all languages
-            try {
-                $data = array();
-                $sql = "UPDATE gibboni18n SET systemDefault='N'";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error1';
-                header("Location: {$URL}");
-                exit();
-            }
+            $i18nGateway->updateWhere(array('systemDefault' => 'Y'), array('systemDefault' => 'N'));
 
-            //Write to database
-            try {
-                $data = array('gibboni18nID' => $gibboni18nID);
-                $sql = "UPDATE gibboni18n SET systemDefault='Y' WHERE gibboni18nID=:gibboni18nID ";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
+            //Activate selected languages
+            $i18nGateway->update($gibboni18nID, array('systemDefault' => 'Y') );
+
+            //Update session variables            
+            setLanguageSession($guid, $i18n);
 
             $URL .= '&return=success0';
             header("Location: {$URL}");

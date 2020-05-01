@@ -270,16 +270,18 @@ function i18nCheckAndUpdateVersion($container, $version = null)
     $absolutePath = $container->get('session')->get('absolutePath');
 
     $i18nGateway = $container->get(I18nGateway::class);
-    $i18nList = $i18nGateway->selectActiveI18n()->fetchAll();
+    $i18nList = $i18nGateway->selectBy(array('active' => 'Y'))->fetchAll();
 
     foreach ($i18nList as $i18n) {
         $fileExists = i18nFileExists($absolutePath, $i18n['code']);
 
         if ($i18n['installed'] == 'N' && $fileExists) {
             $versionUpdate = version_compare($version, $i18n['version'], '>') ? $version : $i18n['version'];
-            $i18nGateway->updateI18nVersion($i18n['gibboni18nID'], 'Y', $versionUpdate);
+            $data = array('installed' => 'Y', 'version' => $versionUpdate);
+            $i18nGateway->update($i18n['gibboni18nID'], $data);
         } else if ($i18n['installed'] == 'Y' && !$fileExists) {
-            $i18nGateway->updateI18nVersion($i18n['gibboni18nID'], 'N', null);
+            $data = array('installed' => 'N', 'version' => null);
+            $i18nGateway->update($i18n['gibboni18nID'], $data);
         }
     }
 }
