@@ -151,7 +151,7 @@ else {
 					print "<th>" ;
 						print __("Author") ;
 					print "</th>" ;
-					print "<th>" ;
+					print "<th style='width: 320px'>" ;
 						print __("Recipients") ;
 					print "</th>" ;
 					print "<th>" ;
@@ -214,10 +214,11 @@ else {
 							print Format::name($row["title"], $row["preferredName"], $row["surname"], $row["category"]) ;
 						print "</td>" ;
                         print "<td>" ;
-                        
                             if (!empty($sendingMessages[$row['gibbonMessengerID']])) {
+                                echo '<div class="statusBar" data-id="'.$sendingMessages[$row['gibbonMessengerID']].'">';
                                 echo '<div class="mb-2"><img class="align-middle w-56 -mt-px -ml-1" src="./themes/Default/img/loading.gif">'
                                     .'<span class="tag ml-2 message">'.__('Sending').'</span></div>';
+                                echo '</div>';
                             }
 
 							try {
@@ -473,3 +474,16 @@ else {
 	}
 }
 ?>
+<script>
+$('.statusBar').each(function(index, element) {
+    var refresh = setInterval(function () {
+        var path = "<?php echo $_SESSION[$guid]['absoluteURL'] ?>/modules/Messenger/messenger_manage_ajax.php";
+        var postData = { gibbonLogID: $(element).data('id') };
+        $(element).load(path, postData, function(responseText, textStatus, jqXHR) {
+            if (responseText.indexOf('Sent') >= 0) {
+                clearInterval(refresh);
+            }
+        });
+    }, 3000);
+});
+</script>
