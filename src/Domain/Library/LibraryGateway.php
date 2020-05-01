@@ -39,7 +39,8 @@ class LibraryGateway extends QueryableGateway
           "gp.surname",
           "gp.firstName",
           "gs.name as 'spaceName'",
-          "gli.locationDetail"
+          "gli.locationDetail",
+          "IF(gli.status = 'On Loan' AND gli.returnExpected < CURRENT_TIMESTAMP(),'Y','N') as 'pastDue'"
         ])
         ->where("gli.status IN ('Available','Repair','Reserved','On Loan')")
         ->where("ownershipType != 'Individual'")

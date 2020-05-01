@@ -161,5 +161,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
               ->setURL('/modules/Library/library_lending_item.php');
           });
 
+    $table->modifyRows(function($item,$row) {
+      switch($item['status'])
+      {
+      case 'On Loan':
+        if($item['pastDue'] == "Y")
+        {
+          $row->addClass('error');
+        }
+        else
+        {
+          $row->addClass('warning');
+        }
+        break;
+
+      case 'Expired':
+        $row->addClass('error');
+        break;
+      }
+      return $row;
+    });
     echo $table->render($items);
 }
