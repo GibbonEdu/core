@@ -23,29 +23,19 @@ use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 
-include '../../gibbon.php';
-
-//Increase max execution time, as this stuff gets big
-ini_set('max_execution_time', 7200);
-ini_set('memory_limit','1024M');
-set_time_limit(1200);
-
 //Module includes
 include "./moduleFunctions.php" ;
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/messenger_post.php" ;
 $time=time() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php")==FALSE) {
 	//Fail 0
-	$URL.="&addReturn=fail0" ;
-	header("Location: {$URL}");
+    return ['return' => 'fail0'];
 }
 else {
 	if (empty($_POST)) {
-		//Fail 5
-		$URL.="&addReturn=fail5" ;
-		header("Location: {$URL}");
+        //Fail 5
+        return ['return' => 'fail5'];
 	}
 	else {
 		//Proceed!
@@ -110,63 +100,10 @@ else {
 		$individualNaming = $_POST["individualNaming"] ;
 
 		if ($subject == "" OR $body == "" OR ($email == "Y" AND $from == "") OR $emailReceipt == '' OR ($emailReceipt == "Y" AND $emailReceiptText == "") OR $individualNaming == "") {
-			//Fail 3
-			$URL.="&addReturn=fail3" ;
-			header("Location: {$URL}");
+            //Fail 3
+            return ['return' => 'fail3'];
 		}
 		else {
-			//Lock table
-			try {
-				$sql="LOCK TABLES gibbonMessenger WRITE" ;
-				$result=$connection2->query($sql);
-			}
-			catch(PDOException $e) {
-				//Fail 2
-				$URL.="&addReturn=fail2" ;
-				header("Location: {$URL}");
-				exit() ;
-			}
-
-			//Get next autoincrement
-			try {
-				$sqlAI="SHOW TABLE STATUS LIKE 'gibbonMessenger'";
-				$resultAI=$connection2->query($sqlAI);
-			}
-			catch(PDOException $e) {
-				//Fail 2
-				$URL.="&addReturn=fail2" ;
-				header("Location: {$URL}");
-				exit() ;
-			}
-
-			$rowAI=$resultAI->fetch();
-			$AI=str_pad($rowAI['Auto_increment'], 12, "0", STR_PAD_LEFT) ;
-
-			//Write to database
-			try {
-				$data=array("email"=>$email, "messageWall"=>$messageWall, "messageWallPin" => $messageWallPin, "messageWall_date1"=>$date1, "messageWall_date2"=>$date2, "messageWall_date3"=>$date3, "sms"=>$sms, "subject"=>$subject, "body"=>$body, "emailReceipt" => $emailReceipt, "emailReceiptText" => $emailReceiptText, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "timestamp"=>date("Y-m-d H:i:s"));
-				$sql="INSERT INTO gibbonMessenger SET email=:email, messageWall=:messageWall, messageWallPin=:messageWallPin, messageWall_date1=:messageWall_date1, messageWall_date2=:messageWall_date2, messageWall_date3=:messageWall_date3, sms=:sms, subject=:subject, body=:body, emailReceipt=:emailReceipt, emailReceiptText=:emailReceiptText, gibbonPersonID=:gibbonPersonID, timestamp=:timestamp" ;
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) {
-				//Fail 2
-				$URL.="&addReturn=fail2" ;
-				header("Location: {$URL}");
-				exit() ;
-			}
-
-			try {
-				$sql="UNLOCK TABLES" ;
-				$result=$connection2->query($sql);
-			}
-			catch(PDOException $e) {
-				//Fail 2
-				$URL.="&addReturn=fail2" ;
-				header("Location: {$URL}");
-				exit() ;
-			}
-
 			//SMS Credit notification
 			if ($smsCreditBalance != null && $smsCreditBalance < 1000) {
 				$notificationGateway = new NotificationGateway($pdo);
@@ -2162,13 +2099,15 @@ else {
 
 			if ($partialFail == TRUE) {
 				//Fail 4
-				$URL.="&addReturn=fail4" ;
-				header("Location: {$URL}");
+                return ['return' => 'fail4'];
 			}
 			else {
-				$_SESSION[$guid]['pageLoads'] = null;
-				$URL.="&addReturn=success0&emailCount=" . $emailCount . "&smsCount=" . $smsCount . "&smsBatchCount=" . $smsBatchCount ;
-				header("Location: {$URL}") ;
+                return [
+                    'return' => 'success0',
+                    'emailCount' => $emailCount,
+                    'smsCount' => $smsCount,
+                    'smsBatchCount' => $smsBatchCount,
+                ];
 			}
 		}
 	}
