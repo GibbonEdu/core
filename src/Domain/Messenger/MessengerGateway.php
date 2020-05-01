@@ -61,7 +61,7 @@ class MessengerGateway extends QueryableGateway
             $gibbonMessengerID =  str_pad(($item['data']['data'][0] ?? 0), 12, '0', STR_PAD_LEFT);
 
             if (!empty($gibbonMessengerID)) {
-                $group[$gibbonMessengerID] = $item['data']['status'] ?? '';
+                $group[$gibbonMessengerID] = $item['gibbonLogID'];
             }
 
             return $group;
