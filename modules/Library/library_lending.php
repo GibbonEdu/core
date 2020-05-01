@@ -1,5 +1,5 @@
 <?php
-/*
+/**
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
 
@@ -15,7 +15,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+**/
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -117,69 +117,65 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
 
     $gateway = $container->get(LibraryGateway::class);
     $criteria = $gateway->newQueryCriteria(true)
-                        ->filterBy('name',$name)
-                        ->filterBy('gibbonLibraryTypeID',$gibbonLibraryTypeID)
-                        ->filterBy('gibbonSpaceID',$gibbonSpaceID)
-                        ->filterBy('status',$status)
+                        ->filterBy('name', $name)
+                        ->filterBy('gibbonLibraryTypeID', $gibbonLibraryTypeID)
+                        ->filterBy('gibbonSpaceID', $gibbonSpaceID)
+                        ->filterBy('status', $status)
                         ->fromPOST();
     $items = $gateway->queryLending($criteria);
-    $table = DataTable::createPaginated('lending',$criteria);
+    $table = DataTable::createPaginated('lending', $criteria);
 
-    $table->addColumn('id',__('ID'));
-    $table->addColumn('name',__('Name'))->format(function($item) {
-      return sprintf('<b>%1$s</b><br/>%2$s',$item['name'],Format::small($item['producer']));
+    $table->addColumn('id', __('ID'));
+    $table->addColumn('name', __('Name'))->format(function ($item) {
+        return sprintf('<b>%1$s</b><br/>%2$s', $item['name'], Format::small($item['producer']));
     });
-    $table->addColumn('typeName',__('Type'));
-    $table->addColumn('spaceName',__('Location'))
-          ->format(function($item) {
-            return sprintf('<b>%1$s</b><br/>%2$s',$item['spaceName'],Format::small($item['locationDetail']));
+    $table->addColumn('typeName', __('Type'));
+    $table->addColumn('spaceName', __('Location'))
+          ->format(function ($item) {
+            return sprintf('<b>%1$s</b><br/>%2$s', $item['spaceName'], Format::small($item['locationDetail']));
           });
-    $table->addColumn('status',__('Status'))->format(function($item) {
-      $statusDetail = "";
-      if($item['returnExpected'] != null)
-      {
-        $statusDetail .= sprintf(
-          '<br/>%1$s<br/>%2$s',
-          Format::small($item['returnExpected']),
-          Format::small(Format::name($item['title'],$item['preferredName'],$item['surname'],'Student',false,true))
+    $table->addColumn('status', __('Status'))->format(function ($item) {
+        $statusDetail = "";
+        if ($item['returnExpected'] != null) {
+            $statusDetail .= sprintf(
+                '<br/>%1$s<br/>%2$s',
+                Format::small($item['returnExpected']),
+                Format::small(Format::name($item['title'], $item['preferredName'], $item['surname'], 'Student', false, true))
+            );
+        }
+        return sprintf(
+            '<b>%1$s</b>%2$s',
+            $item['status'],
+            $statusDetail
         );
-      }
-      return sprintf(
-        '<b>%1$s</b>%2$s',
-        $item['status'],
-        $statusDetail
-      );
-    });;
+    });
+    ;
     $table->addActionColumn()
           ->addParam('gibbonLibraryItemID')
           ->addParam('name')
           ->addParam('gibbonLibraryTypeID')
           ->addParam('gibbonSpaceID')
           ->addParam('status')
-          ->format(function($item,$actions) {
-            $actions->addAction('edit',__('Edit'))
+          ->format(function ($item, $actions) {
+            $actions->addAction('edit', __('Edit'))
               ->setURL('/modules/Library/library_lending_item.php');
           });
 
-    $table->modifyRows(function($item,$row) {
-      switch($item['status'])
-      {
-      case 'On Loan':
-        if($item['pastDue'] == "Y")
-        {
-          $row->addClass('error');
-        }
-        else
-        {
-          $row->addClass('warning');
-        }
-        break;
+    $table->modifyRows(function ($item, $row) {
+        switch ($item['status']) {
+            case 'On Loan':
+                if ($item['pastDue'] == "Y") {
+                    $row->addClass('error');
+                } else {
+                    $row->addClass('warning');
+                }
+                break;
 
-      case 'Expired':
-        $row->addClass('error');
-        break;
-      }
-      return $row;
+            case 'Expired':
+                $row->addClass('error');
+                break;
+        }
+        return $row;
     });
     echo $table->render($items);
 }
