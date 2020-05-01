@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\Library\LibraryGateway;
+use Gibbon\Services\Format;
 
 $page->breadcrumbs->add(__('Lending & Activity Log'));
 
@@ -103,8 +106,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
         'Reserved' => __('Reserved')
     );
     $row = $form->addRow();
-        $row->addLabel('type', __('Type'));
-        $row->addSelect('type')->fromArray($statuses)->selected($status)->placeholder();
+        $row->addLabel('status', __('Status'));
+        $row->addSelect('status')->fromArray($statuses)->selected($status)->placeholder();
 
     $row = $form->addRow();
         $row->addFooter();
@@ -112,201 +115,51 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
 
     echo $form->getOutput();
 
+    $gateway = $container->get(LibraryGateway::class);
+    $criteria = $gateway->newQueryCriteria(true)
+                        ->filterBy('name',$name)
+                        ->filterBy('gibbonLibraryTypeID',$gibbonLibraryTypeID)
+                        ->filterBy('gibbonSpaceID',$gibbonSpaceID)
+                        ->filterBy('status',$status)
+                        ->fromPOST();
+    $items = $gateway->queryLending($criteria);
+    $table = DataTable::createPaginated('lending',$criteria);
 
-    //Set pagination variable
-    $page = 1;
-    if (isset($_GET['page'])) {
-        $page = $_GET['page'];
-    }
-    if ((!is_numeric($page)) or $page < 1) {
-        $page = 1;
-    }
+    $table->addColumn('id',__('ID'));
+    $table->addColumn('name',__('Name'))->format(function($item) {
+      return sprintf('<b>%1$s</b><br/>%2$s',$item['name'],Format::small($item['producer']));
+    });
+    $table->addColumn('typeName',__('Type'));
+    $table->addColumn('spaceName',__('Location'))
+          ->format(function($item) {
+            return sprintf('<b>%1$s</b><br/>%2$s',$item['spaceName'],Format::small($item['locationDetail']));
+          });
+    $table->addColumn('status',__('Status'))->format(function($item) {
+      $statusDetail = "";
+      if($item['returnExpected'] != null)
+      {
+        $statusDetail .= sprintf(
+          '<br/>%1$s<br/>%2$s',
+          Format::small($item['returnExpected']),
+          Format::small(Format::name($item['title'],$item['preferredName'],$item['surname'],'Student',false,true))
+        );
+      }
+      return sprintf(
+        '<b>%1$s</b>%2$s',
+        $item['status'],
+        $statusDetail
+      );
+    });;
+    $table->addActionColumn()
+          ->addParam('gibbonLibraryItemID')
+          ->addParam('name')
+          ->addParam('gibbonLibraryTypeID')
+          ->addParam('gibbonSpaceID')
+          ->addParam('status')
+          ->format(function($item,$actions) {
+            $actions->addAction('edit',__('Edit'))
+              ->setURL('/modules/Library/library_lending_item.php');
+          });
 
-    echo '<h3>';
-    echo __('View');
-    echo '</h3>';
-
-    //Search with filters applied
-    try {
-        $data = array();
-        $sqlWhere = 'AND ';
-        $sqlWhere2 = 'AND ';
-        if ($name != '') {
-            $data['name'] = '%'.$name.'%';
-            $data['producer'] = '%'.$name.'%';
-            $data['id'] = '%'.$name.'%';
-            $data['name2'] = '%'.$name.'%';
-            $data['producer2'] = '%'.$name.'%';
-            $data['id2'] = '%'.$name.'%';
-            $sqlWhere .= '(name LIKE :name  OR producer LIKE :producer OR id LIKE :id) AND ';
-            $sqlWhere2 .= '(name LIKE :name2  OR producer LIKE :producer2 OR id LIKE :id2) AND ';
-        }
-        if ($gibbonLibraryTypeID != '') {
-            $data['gibbonLibraryTypeID'] = $gibbonLibraryTypeID;
-            $data['gibbonLibraryTypeID2'] = $gibbonLibraryTypeID;
-            $sqlWhere .= 'gibbonLibraryTypeID=:gibbonLibraryTypeID AND ';
-            $sqlWhere2 .= 'gibbonLibraryTypeID=:gibbonLibraryTypeID2 AND ';
-        }
-        if ($gibbonSpaceID != '') {
-            $data['gibbonSpaceID'] = $gibbonSpaceID;
-            $data['gibbonSpaceID2'] = $gibbonSpaceID;
-            $sqlWhere .= 'gibbonSpaceID=:gibbonSpaceID AND ';
-            $sqlWhere2 .= 'gibbonSpaceID=:gibbonSpaceID2 AND ';
-        }
-        if ($status != '') {
-            $data['status'] = $status;
-            $data['status2'] = $status;
-            $sqlWhere .= 'status=:status AND ';
-            $sqlWhere .= 'status=:status2 AND ';
-        }
-        if ($sqlWhere == 'AND ') {
-            $sqlWhere = '';
-        } else {
-            $sqlWhere = substr($sqlWhere, 0, -5);
-        }
-        if ($sqlWhere2 == 'AND ') {
-            $sqlWhere2 = '';
-        } else {
-            $sqlWhere2 = substr($sqlWhere2, 0, -5);
-        }
-
-        $sql = "(SELECT gibbonLibraryItem.*, NULL AS borrower FROM gibbonLibraryItem WHERE (status='Available' OR status='Repair' OR status='Reserved') AND NOT ownershipType='Individual' AND borrowable='Y' $sqlWhere)
-			UNION
-			(SELECT gibbonLibraryItem.*, concat(preferredName, ' ', surname) AS borrower FROM gibbonLibraryItem JOIN gibbonPerson ON (gibbonLibraryItem.gibbonPersonIDStatusResponsible=gibbonPerson.gibbonPersonID) WHERE (gibbonLibraryItem.status='On Loan') AND NOT ownershipType='Individual' AND borrowable='Y' $sqlWhere2) ORDER BY name, producer";
-        $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
-
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
-    } else {
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status");
-        }
-
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __('Number');
-        echo '</th>';
-        echo '<th>';
-        echo __('ID');
-        echo '</th>';
-        echo "<th style='width: 250px'>";
-        echo __('Name').'<br/>';
-        echo "<span style='font-size: 85%; font-style: italic'>".__('Producer').'</span>';
-        echo '</th>';
-        echo '<th>';
-        echo __('Type');
-        echo '</th>';
-        echo '<th>';
-        echo __('Location');
-        echo '</th>';
-        echo '<th>';
-        echo __('Status').'<br/>';
-        echo "<span style='font-size: 85%; font-style: italic'>".__('Return Date').'<br/>'.__('Borrower').'</span>';
-        echo '</th>';
-        echo '<th>';
-        echo __('Actions');
-        echo '</th>';
-        echo '</tr>';
-
-        $count = 0;
-        $rowNum = 'odd';
-        try {
-            $resultPage = $connection2->prepare($sqlPage);
-            $resultPage->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
-        while ($row = $resultPage->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
-            }
-            if ((strtotime(date('Y-m-d')) - strtotime($row['returnExpected'])) / (60 * 60 * 24) > 0 and $row['status'] == 'On Loan') {
-                $rowNum = 'error';
-            }
-
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo $count + 1;
-            echo '</td>';
-            echo '<td>';
-            echo '<b>'.$row['id'].'</b>';
-            echo '</td>';
-            echo '<td>';
-            if (strlen($row['name']) > 30) {
-                echo '<b>'.substr($row['name'], 0, 30).'...</b><br/>';
-            } else {
-                echo '<b>'.$row['name'].'</b><br/>';
-            }
-            echo "<span style='font-size: 85%; font-style: italic'>".$row['producer'].'</span>';
-            echo '</td>';
-            echo '<td>';
-            try {
-                $dataType = array('gibbonLibraryTypeID' => $row['gibbonLibraryTypeID']);
-                $sqlType = 'SELECT name FROM gibbonLibraryType WHERE gibbonLibraryTypeID=:gibbonLibraryTypeID';
-                $resultType = $connection2->prepare($sqlType);
-                $resultType->execute($dataType);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            if ($resultType->rowCount() == 1) {
-                $rowType = $resultType->fetch();
-                echo __($rowType['name']).'<br/>';
-            }
-            echo '</td>';
-            echo '<td>';
-            if ($row['gibbonSpaceID'] != '') {
-                try {
-                    $dataSpace = array('gibbonSpaceID' => $row['gibbonSpaceID']);
-                    $sqlSpace = 'SELECT * FROM gibbonSpace WHERE gibbonSpaceID=:gibbonSpaceID';
-                    $resultSpace = $connection2->prepare($sqlSpace);
-                    $resultSpace->execute($dataSpace);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                if ($resultSpace->rowCount() == 1) {
-                    $rowSpace = $resultSpace->fetch();
-                    echo $rowSpace['name'].'<br/>';
-                }
-            }
-            if ($row['locationDetail'] != '') {
-                echo "<span style='font-size: 85%; font-style: italic'>".$row['locationDetail'].'</span>';
-            }
-            echo '</td>';
-            echo '<td>';
-            echo $row['status'].'<br/>';
-            if ($row['returnExpected'] != '' or $row['borrower'] != '') {
-                echo "<span style='font-size: 85%; font-style: italic'>";
-                if ($row['returnExpected'] != '') {
-                    echo dateConvertBack($guid, $row['returnExpected']).'<br/>';
-                }
-                if ($row['borrower'] != '') {
-                    echo $row['borrower'];
-                }
-                echo '</span>';
-            }
-            echo '</td>';
-            echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_lending_item.php&gibbonLibraryItemID='.$row['gibbonLibraryItemID']."&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            echo '</td>';
-            echo '</tr>';
-
-            ++$count;
-        }
-        echo '</table>';
-
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status");
-        }
-    }
+    echo $table->render($items);
 }
