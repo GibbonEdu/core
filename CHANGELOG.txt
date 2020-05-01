@@ -19,6 +19,7 @@ CHANGELOG
 v20.0.00
 --------
     Headlines
+        Messenger emails now send faster by using a background process
 
     Changes With Important Notices
 
