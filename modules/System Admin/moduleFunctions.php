@@ -157,6 +157,9 @@ function getThemeManifest($themeName, $guid)
     return compact('themeName', 'name', 'description', 'version', 'author', 'url', 'responsive', 'manifestOK');
 }
 
+/**
+ * @deprecated in v20. Use getThemeManifest function.
+ */
 function getThemeVersion($themeName, $guid)
 {
     $return = false;
