@@ -277,7 +277,7 @@ function i18nCheckAndUpdateVersion($container, $version = null)
 
         if ($i18n['installed'] == 'N' && $fileExists) {
             $versionUpdate = version_compare($version, $i18n['version'], '>') ? $version : $i18n['version'];
-            $data = array('installed' => 'Y', 'version' => $versionUpdate);
+            $data = ['installed' => 'Y', 'version' => $versionUpdate];
             $i18nGateway->update($i18n['gibboni18nID'], $data);
         } else if ($i18n['installed'] == 'Y' && !$fileExists) {
             $data = ['installed' => 'N', 'version' => null];
