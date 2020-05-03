@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
     exit;
 } else {
     //Proceed!
-    if ($gibboni18nID == '') {
+    if (empty($gibboni18nID)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
