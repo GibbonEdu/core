@@ -270,7 +270,7 @@ function i18nCheckAndUpdateVersion($container, $version = null)
     $absolutePath = $container->get('session')->get('absolutePath');
 
     $i18nGateway = $container->get(I18nGateway::class);
-    $i18nList = $i18nGateway->selectBy(array('active' => 'Y'))->fetchAll();
+    $i18nList = $i18nGateway->selectBy(['active' => 'Y'])->fetchAll();
 
     foreach ($i18nList as $i18n) {
         $fileExists = i18nFileExists($absolutePath, $i18n['code']);
