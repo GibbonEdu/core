@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
             $i18nGateway->updateWhere(['systemDefault' => 'Y'], ['systemDefault' => 'N']);
 
             //Activate selected languages
-            $i18nGateway->update($gibboni18nID, array('systemDefault' => 'Y') );
+            $i18nGateway->update($gibboni18nID, ['systemDefault' => 'Y']);
 
             //Update session variables            
             setLanguageSession($guid, $i18n);
