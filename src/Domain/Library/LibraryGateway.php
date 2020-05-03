@@ -14,6 +14,67 @@ class LibraryGateway extends QueryableGateway
     private static $primaryKey = 'gibbonLibraryItemID';
     private static $searchableColumns = [];
 
+    public function queryLending(QueryCriteria $criteria)
+    {
+      
+        $query = $this
+        ->newQuery()
+        ->from($this->getTableName() . ' as gli')
+        ->join('left', 'gibbonLibraryType as glt', 'glt.gibbonLibraryTypeID = gli.gibbonLibraryTypeID')
+        ->join('left', 'gibbonSpace as gs', 'gs.gibbonSpaceId = gli.gibbonSpaceID')
+        ->join('left', 'gibbonPerson as gp', 'gli.gibbonPersonIDStatusResponsible = gp.gibbonPersonID')
+        ->cols([
+          "gli.id",
+          "gli.name",
+          "gli.producer",
+          "glt.name as 'typeName'",
+          "gli.gibbonLibraryItemID",
+          "gli.gibbonLibraryTypeID",
+          "gli.gibbonSpaceID",
+          "gli.status",
+          "gli.returnExpected",
+          "gli.gibbonPersonIDStatusResponsible",
+          "gp.title",
+          "gp.preferredName",
+          "gp.surname",
+          "gp.firstName",
+          "gs.name as 'spaceName'",
+          "gli.locationDetail",
+          "IF(gli.status = 'On Loan' AND gli.returnExpected < CURRENT_TIMESTAMP(),'Y','N') as 'pastDue'"
+        ])
+        ->where("gli.status IN ('Available','Repair','Reserved','On Loan')")
+        ->where("ownershipType != 'Individual'")
+        ->where("gli.borrowable = 'Y'")
+        ->orderBy([
+          'name',
+          'producer'
+        ]);
+
+        $criteria->addFilterRules([
+        'name' => function ($query, $name) {
+            return $query
+            ->where('(gli.name like :name OR gli.producer like :name OR gli.id like :name)')
+            ->bindValue('name', '%'.$name.'%');
+        },
+        'gibbonLibraryTypeID' => function ($query, $typeid) {
+            return $query
+            ->where('gli.gibbonLibraryTypeID = :typeid')
+            ->bindValue('typeid', $typeid);
+        },
+        'gibbonSpaceID' => function ($query, $spaceid) {
+            return $query
+            ->where('gli.gibbonSpaceID = :spaceid')
+            ->bindValue('spaceid', $spaceid);
+        },
+        'status' => function ($query, $status) {
+            return $query
+            ->where('gli.status = :status')
+            ->bindValue('status', $status);
+        }
+        ]);
+        return $this->runQuery($query, $criteria);
+    }
+
     public function queryBrowseItems(QueryCriteria $criteria)
     {
         $query = $this
