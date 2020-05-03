@@ -280,7 +280,7 @@ function i18nCheckAndUpdateVersion($container, $version = null)
             $data = array('installed' => 'Y', 'version' => $versionUpdate);
             $i18nGateway->update($i18n['gibboni18nID'], $data);
         } else if ($i18n['installed'] == 'Y' && !$fileExists) {
-            $data = array('installed' => 'N', 'version' => null);
+            $data = ['installed' => 'N', 'version' => null];
             $i18nGateway->update($i18n['gibboni18nID'], $data);
         }
     }
