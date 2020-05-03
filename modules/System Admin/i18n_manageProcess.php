@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
             header("Location: {$URL}");
         } else {
             //Deactivate all languages
-            $i18nGateway->updateWhere(array('systemDefault' => 'Y'), array('systemDefault' => 'N'));
+            $i18nGateway->updateWhere(['systemDefault' => 'Y'], ['systemDefault' => 'N']);
 
             //Activate selected languages
             $i18nGateway->update($gibboni18nID, array('systemDefault' => 'Y') );
