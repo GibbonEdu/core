@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
         $installed = i18nFileInstall($_SESSION[$guid]['absolutePath'], $i18n['code']);
 
         // Tag this i18n with the current version it was installed at
-        $dataUpdate = array('installed' => 'Y', 'version' => $version);
+        $dataUpdate = ['installed' => 'Y', 'version' => $version];
         $updated = $i18nGateway->update($gibboni18nID, $dataUpdate);
 
         if (!$installed) {
