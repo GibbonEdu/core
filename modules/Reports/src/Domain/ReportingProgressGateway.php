@@ -104,7 +104,7 @@ class ReportingProgressGateway extends QueryableGateway
         // COURSES
         $query = $this
             ->newQuery()
-            ->cols(['teacher.gibbonPersonID AS gibbonPersonID', 'teacher.surname', 'teacher.preferredName', "COUNT(DISTINCT studentClass.gibbonCourseClassPersonID) as totalCount", "COUNT(DISTINCT CASE WHEN gibbonReportingProgress.status='Complete' THEN gibbonReportingProgress.gibbonReportingProgressID END) as progressCount"])
+            ->cols(['teacher.gibbonPersonID AS gibbonPersonID', 'teacher.surname', 'teacher.preferredName', "COUNT(DISTINCT CASE WHEN student.status='Full' THEN studentClass.gibbonPersonID END) as totalCount", "COUNT(DISTINCT CASE WHEN gibbonReportingProgress.status='Complete' THEN gibbonReportingProgress.gibbonReportingProgressID END) as progressCount"])
             ->from('gibbonReportingCycle')
             ->innerJoin('gibbonReportingScope', 'gibbonReportingScope.gibbonReportingCycleID=gibbonReportingCycle.gibbonReportingCycleID')
             ->innerJoin('gibbonReportingAccess', 'FIND_IN_SET(gibbonReportingScope.gibbonReportingScopeID, gibbonReportingAccess.gibbonReportingScopeIDList)')
@@ -138,7 +138,7 @@ class ReportingProgressGateway extends QueryableGateway
 
         // ROLL GROUPS
         $query->unionAll()
-            ->cols(['teacher.gibbonPersonID AS gibbonPersonID', 'teacher.surname', 'teacher.preferredName', "COUNT(DISTINCT student.studentID) as totalCount", "COUNT(DISTINCT CASE WHEN gibbonReportingProgress.status='Complete' THEN gibbonReportingProgress.gibbonReportingProgressID END) as progressCount"])
+            ->cols(['teacher.gibbonPersonID AS gibbonPersonID', 'teacher.surname', 'teacher.preferredName', "COUNT(DISTINCT student.gibbonPersonID) as totalCount", "COUNT(DISTINCT CASE WHEN gibbonReportingProgress.status='Complete' THEN gibbonReportingProgress.gibbonReportingProgressID END) as progressCount"])
             ->from('gibbonReportingCycle')
             ->innerJoin('gibbonReportingScope', 'gibbonReportingScope.gibbonReportingCycleID=gibbonReportingCycle.gibbonReportingCycleID')
             ->innerJoin('gibbonReportingAccess', 'FIND_IN_SET(gibbonReportingScope.gibbonReportingScopeID, gibbonReportingAccess.gibbonReportingScopeIDList)')
@@ -168,7 +168,7 @@ class ReportingProgressGateway extends QueryableGateway
 
         // YEAR GROUPS
         $query->unionAll()
-            ->cols(['teacher.gibbonPersonID AS gibbonPersonID', 'teacher.surname', 'teacher.preferredName', "COUNT(DISTINCT student.studentID) as totalCount", "COUNT(DISTINCT CASE WHEN gibbonReportingProgress.status='Complete' THEN gibbonReportingProgress.gibbonReportingProgressID END) as progressCount"])
+            ->cols(['teacher.gibbonPersonID AS gibbonPersonID', 'teacher.surname', 'teacher.preferredName', "COUNT(DISTINCT student.gibbonPersonID) as totalCount", "COUNT(DISTINCT CASE WHEN gibbonReportingProgress.status='Complete' THEN gibbonReportingProgress.gibbonReportingProgressID END) as progressCount"])
             ->from('gibbonReportingCycle')
             ->innerJoin('gibbonReportingScope', 'gibbonReportingScope.gibbonReportingCycleID=gibbonReportingCycle.gibbonReportingCycleID')
             ->innerJoin('gibbonReportingAccess', 'FIND_IN_SET(gibbonReportingScope.gibbonReportingScopeID, gibbonReportingAccess.gibbonReportingScopeIDList)')
