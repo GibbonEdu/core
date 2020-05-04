@@ -41,42 +41,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
     echo '</h3>';
 
     //Get current filter values
-    $name = null;
-    if (isset($_POST['name'])) {
-        $name = trim($_POST['name']);
-    }
-    if ($name == '') {
-        if (isset($_GET['name'])) {
-            $name = trim($_GET['name']);
-        }
-    }
-    $gibbonLibraryTypeID = null;
-    if (isset($_POST['gibbonLibraryTypeID'])) {
-        $gibbonLibraryTypeID = trim($_POST['gibbonLibraryTypeID']);
-    }
-    if ($gibbonLibraryTypeID == '') {
-        if (isset($_GET['gibbonLibraryTypeID'])) {
-            $gibbonLibraryTypeID = trim($_GET['gibbonLibraryTypeID']);
-        }
-    }
-    $gibbonSpaceID = null;
-    if (isset($_POST['gibbonSpaceID'])) {
-        $gibbonSpaceID = trim($_POST['gibbonSpaceID']);
-    }
-    if ($gibbonSpaceID == '') {
-        if (isset($_GET['gibbonSpaceID'])) {
-            $gibbonSpaceID = trim($_GET['gibbonSpaceID']);
-        }
-    }
-    $status = null;
-    if (isset($_POST['status'])) {
-        $status = trim($_POST['status']);
-    }
-    if ($status == '') {
-        if (isset($_GET['status'])) {
-            $status = trim($_GET['status']);
-        }
-    }
+    $name = $_REQUEST['name'] ?? '';
+    $gibbonLibraryTypeID = $_REQUEST['gibbonLibraryTypeID'] ?? '';
+    $gibbonSpaceID = $_REQUEST['gibbonSpaceID'] ?? '';
+    $status = $_REQUEST['status'] ?? '';
 
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_lending.php');
 
@@ -152,10 +120,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
     ;
     $table->addActionColumn()
           ->addParam('gibbonLibraryItemID')
-          ->addParam('name')
-          ->addParam('gibbonLibraryTypeID')
-          ->addParam('gibbonSpaceID')
-          ->addParam('status')
+          ->addParam('name', $name)
+          ->addParam('gibbonLibraryTypeID', $gibbonLibraryTypeID)
+          ->addParam('gibbonSpaceID', $gibbonSpaceID)
+          ->addParam('status', $status)
           ->format(function ($item, $actions) {
             $actions->addAction('edit', __('Edit'))
               ->setURL('/modules/Library/library_lending_item.php');

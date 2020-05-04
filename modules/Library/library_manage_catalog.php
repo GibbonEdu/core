@@ -152,11 +152,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         });
     $actions = $table->addActionColumn()
           ->addParam('gibbonLibraryItemID')
-          ->addParam('name')
-          ->addParam('gibbonSpaceID')
-          ->addParam('status')
-          ->addParam('gibbonPersonIDOwnership')
-          ->addParam('typeSpecificFields')
+          ->addParam('name', $name)
+          ->addParam('gibbonSpaceID', $gibbonSpaceID)
+          ->addParam('status', $status)
+          ->addParam('gibbonPersonIDOwnership', $gibbonPersonIDOwnership)
+          ->addParam('typeSpecificFields', $typeSpecificFields)
           ->format(function ($item, $actions) {
               $actions->addAction('edit', __('Edit'))
                       ->setURL('/modules/Library/library_manage_catalog_edit.php');
