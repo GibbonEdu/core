@@ -40,7 +40,7 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
     {
     }
 
-    public function runSendMessage($gibbonMessengerID, $gibbonSchoolYearID, $gibbonPersonID, $messageData)
+    public function runSendMessage($gibbonMessengerID, $gibbonSchoolYearID, $gibbonPersonID, $gibbonRoleIDCurrent, $messageData)
     {
         // Extract the message data back into POST
         $_POST = $messageData;
@@ -56,6 +56,7 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
         $gibbon->session->loadSystemSettings($pdo);
         $gibbon->session->loadLanguageSettings($pdo);
         $gibbon->session->createUserSession($gibbonPersonID, $container->get(UserGateway::class)->getByID($gibbonPersonID));
+        $gibbon->session->set('gibbonRoleIDCurrent', $gibbonRoleIDCurrent);
         $gibbon->session->set('gibbonSchoolYearID', $gibbonSchoolYearID);
         $gibbon->session->set('gibbonSchoolYearIDCurrent', $gibbonSchoolYearID);
 

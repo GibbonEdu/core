@@ -66,7 +66,13 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
     $gibbonMessengerID = $messengerGateway->insert($data);
 
     $process = $container->get(MessageProcess::class);
-    $process->startSendMessage($gibbonMessengerID, $_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID'], $_POST);
+    $process->startSendMessage(
+        $gibbonMessengerID,
+        $gibbon->session->get('gibbonSchoolYearID'),
+        $gibbon->session->get('gibbonPersonID'),
+        $gibbon->session->get('gibbonRoleIDCurrent'),
+        $_POST
+    );
 
     $_SESSION[$guid]['pageLoads'] = null;
     $notification = $data['email'] == 'Y' || $data['sms'] == 'Y' ? 'Y' : 'N';
