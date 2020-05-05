@@ -20,11 +20,15 @@
         ],
         "test:phpunit": [
             "cd tests && ../vendor/bin/phpunit --verbose --configuration phpunit.xml"
+        ],
+        "test:codesniffer": [
+          "vendor/bin/phpcs --standard=PSR2 modules/Library/" 
         ]
     },
     "scripts-descriptions": {
         "test:codeception": "Initialize CI environment and run acceptance tests with Codeception.",
-        "test:phpunit": "Run unit tests with PHPUnit."
+        "test:phpunit": "Run unit tests with PHPUnit.",
+        "test:codesniffer": "Check code complies with PSR-2 standards"
     },
     "require": {
         "php" : "^7.0",
