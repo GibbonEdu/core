@@ -131,24 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
             echo '<h3>';
             echo __('Lending & Activity Log');
             echo '</h3>';
-            //Set pagination variable
-            $page = 1;
-            if (isset($_GET['page'])) {
-                $page = $_GET['page'];
-            }
-            if ((!is_numeric($page)) or $page < 1) {
-                $page = 1;
-            }
-            try {
-                $dataEvent = array('gibbonLibraryItemID' => $gibbonLibraryItemID);
-                $sqlEvent = 'SELECT * FROM gibbonLibraryItemEvent WHERE gibbonLibraryItemID=:gibbonLibraryItemID ORDER BY timestampOut DESC';
-                $sqlEventPage = $sqlEvent.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
-                $resultEvent = $connection2->prepare($sqlEvent);
-                $resultEvent->execute($dataEvent);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-
+            
             $gateway = $container->get(LibraryGateway::class);
             $criteria = $gateway->newQueryCriteria(true)
                ->filterBy('gibbonLibraryItemID',$gibbonLibraryItemID)
@@ -159,6 +142,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                                 ->fromPOST();
             $item = $gateway->queryLendingDetail($criteria); 
             $table = DataTable::createPaginated('lendingLog',$criteria);
+
+            if($status == 'Available') {
+              $table
+                ->addHeaderAction('signout',__('Sign Out'))
+                ->setURL('/modules/Library/library_lending_item_signout.php')
+                ->setIcon('page_right')
+                ->addParam('gibbonLibraryItemID',$gibbonLibraryItemID)
+                ->addParam('name',$name)
+                ->addParam('gibbonLibraryTypeID',$gibbonLibraryTypeID)
+                ->addParam('gibbonSpaceID',$gibbonSpaceID)
+                ->addParam('status',$status);
+            } else {
+              echo "<div class='error'><i>" . __('This item has already been signed out.') . "</i></div>";
+            }
+
             $table
               ->addColumn('user',__('User'))
               ->format(function($item) {
@@ -219,6 +217,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
               ->format(function($event,$actions) {
                 if($event['rowNum'] == 1 && $event['status'] != 'Returned')
                 {
+                  var_dump($event);
                   //Edit function cannot be used unless the responsible person ID is set
                   if($event['responsiblePersonID'] != null)
                   {
