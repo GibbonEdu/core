@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_studentBorr
         $gibbonPersonID = $_GET['gibbonPersonID'];
     }
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
@@ -70,57 +70,54 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_studentBorr
 
         $gateway = $container->get(LibraryReportGateway::class);
         $criteria = $gateway->newQueryCriteria(true)
-                            ->filterBy('gibbonPersonID',$gibbonPersonID);
+                            ->filterBy('gibbonPersonID', $gibbonPersonID);
         $items = $gateway->queryStudentReportData($criteria);
-        $table = DataTable::createPaginated('reportdata',$criteria);
+        $table = DataTable::createPaginated('reportdata', $criteria);
         $table
-          ->modifyRows(function($item,$row){
-            if($item['status'] == 'On Loan')
-            {
-              return $item['pastDue'] == 'Y' ? $row : $row->addClass('error');
+          ->modifyRows(function ($item, $row) {
+            if ($item['status'] == 'On Loan') {
+                return $item['pastDue'] == 'Y' ? $row : $row->addClass('error');
             }
             return $row;
           });
         $table
           ->addExpandableColumn('details')
-          ->format(function($item) {
+          ->format(function ($item) {
             $detailTable = "<table>";
             $fields = unserialize($item['fields']);
-            foreach(unserialize($item['typeFields']) as $typeField)
-            {
-              $detailTable .= sprintf('<tr><td><b>%1$s</b></td><td>%2$s</td></tr>',$typeField['name'],$fields[$typeField['name']]);
+            foreach (unserialize($item['typeFields']) as $typeField) {
+                $detailTable .= sprintf('<tr><td><b>%1$s</b></td><td>%2$s</td></tr>', $typeField['name'], $fields[$typeField['name']]);
             }
             $detailTable .= '</table>';
             return $detailTable;
           });
         $table
           ->addColumn('image')
-          ->format(function($item){
-            return Format::photo($item['imageLocation'],240);
+          ->format(function ($item) {
+            return Format::photo($item['imageLocation'], 240);
           });
         $table
-          ->addColumn('name',__('Name (Author/Producer)'))
-          ->format(function($item){
-            return sprintf('<b>%1$s</b><br/>%2$s',$item['name'],Format::small($item['producer']));
+          ->addColumn('name', __('Name (Author/Producer)'))
+          ->format(function ($item) {
+            return sprintf('<b>%1$s</b><br/>%2$s', $item['name'], Format::small($item['producer']));
           });
         $table
-          ->addColumn('id',__('ID'))
-          ->format(function($item) {
-            return sprintf('<b>%1$s</b>',$item['id']);
+          ->addColumn('id', __('ID'))
+          ->format(function ($item) {
+            return sprintf('<b>%1$s</b>', $item['id']);
           });
         $table
-          ->addColumn('location',__('Location'))
-          ->format(function($item){
-            return sprintf('<b>%1$s</b><br/>%2$s',$item['spaceName'],Format::small($item['locationDetail']));
+          ->addColumn('location', __('Location'))
+          ->format(function ($item) {
+            return sprintf('<b>%1$s</b><br/>%2$s', $item['spaceName'], Format::small($item['locationDetail']));
           });
         $table
-          ->addColumn('borrowDate',__('Return Date (Borrow Date)'))
-          ->format(function($item) {
-            return sprintf('<b>%1$s</b><br/>%2$s',$item['status'] == 'On Loan' ? Format::date($item['returnExpected']) : 'N/A' ,Format::small(Format::date($item['timestampOut'])));
+          ->addColumn('borrowDate', __('Return Date (Borrow Date)'))
+          ->format(function ($item) {
+            return sprintf('<b>%1$s</b><br/>%2$s', $item['status'] == 'On Loan' ? Format::date($item['returnExpected']) : 'N/A', Format::small(Format::date($item['timestampOut'])));
           });
         $table
-          ->addColumn('status',__('Status'));
+          ->addColumn('status', __('Status'));
         echo $table->render($items);
     }
 }
-?>
