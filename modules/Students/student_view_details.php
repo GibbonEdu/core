@@ -26,6 +26,7 @@ use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
 use Gibbon\Module\Attendance\StudentHistoryData;
 use Gibbon\Module\Attendance\StudentHistoryView;
+use Gibbon\Domain\Library\LibraryReportGateway;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -2608,17 +2609,60 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo __('Your request failed because you do not have access to this action.');
                             echo '</div>';
                         } else {
-                            include './modules/Library/moduleFunctions.php';
-
                             //Print borrowing record
-                            $output = getBorrowingRecord($guid, $connection2, $gibbonPersonID);
-                            if ($output == false) {
-                                echo "<div class='error'>";
-                                echo __('Your request failed due to a database error.');
-                                echo '</div>';
-                            } else {
-                                echo $output;
-                            }
+                            $libraryGateway = $container->get(LibraryReportGateway::class);
+                            $criteria = $libraryGateway->newQueryCriteria(true)
+                                                ->filterBy('gibbonPersonID',$gibbonPersonID);
+                            $items = $libraryGateway->queryStudentReportData($criteria);
+                            $lendingTable = DataTable::createPaginated('reportdata',$criteria);
+                            $lendingTable
+                              ->modifyRows(function($item,$row){
+                                if($item['status'] == 'On Loan')
+                                {
+                                  return $item['pastDue'] == 'Y' ? $row : $row->addClass('error');
+                                }
+                                return $row;
+                              });
+                            $lendingTable
+                              ->addExpandableColumn('details')
+                              ->format(function($item) {
+                                $detailTable = "<table>";
+                                $fields = unserialize($item['fields']);
+                                foreach(unserialize($item['typeFields']) as $typeField)
+                                {
+                                  $detailTable .= sprintf('<tr><td><b>%1$s</b></td><td>%2$s</td></tr>',$typeField['name'],$fields[$typeField['name']]);
+                                }
+                                $detailTable .= '</table>';
+                                return $detailTable;
+                              });
+                            $lendingTable
+                              ->addColumn('image')
+                              ->format(function($item){
+                                return Format::photo($item['imageLocation'],240);
+                              });
+                            $lendingTable
+                              ->addColumn('name',__('Name (Author/Producer)'))
+                              ->format(function($item){
+                                return sprintf('<b>%1$s</b><br/>%2$s',$item['name'],Format::small($item['producer']));
+                              });
+                            $lendingTable
+                              ->addColumn('id',__('ID'))
+                              ->format(function($item) {
+                                return sprintf('<b>%1$s</b>',$item['id']);
+                              });
+                            $lendingTable
+                              ->addColumn('location',__('Location'))
+                              ->format(function($item){
+                                return sprintf('<b>%1$s</b><br/>%2$s',$item['spaceName'],Format::small($item['locationDetail']));
+                              });
+                            $lendingTable
+                              ->addColumn('borrowDate',__('Return Date (Borrow Date)'))
+                              ->format(function($item) {
+                                return sprintf('<b>%1$s</b><br/>%2$s',$item['status'] == 'On Loan' ? Format::date($item['returnExpected']) : 'N/A' ,Format::small(Format::date($item['timestampOut'])));
+                              });
+                            $lendingTable
+                              ->addColumn('status',__('Status'));
+                            echo $lendingTable->render($items);
                         }
                     } elseif ($subpage == 'Timetable') {
                         if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') == false) {
