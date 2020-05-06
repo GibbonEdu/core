@@ -123,6 +123,9 @@ class ReportingProgressGateway extends QueryableGateway
             ->where("studentClass.reportable='Y'")
             ->where("teacherClass.reportable='Y'")
             ->where("student.status='Full'")
+            ->where("(student.dateStart IS NULL OR student.dateStart<=:today)")
+            ->where("(student.dateEnd IS NULL OR student.dateEnd>=:today)")
+            ->bindValue('today', date('Y-m-d'))
             // ->where('FIND_IN_SET(teacher.gibbonRoleIDPrimary, gibbonReportingAccess.gibbonRoleIDList)')
             ->groupBy(['gibbonPersonID']);
 
@@ -138,7 +141,7 @@ class ReportingProgressGateway extends QueryableGateway
 
         // ROLL GROUPS
         $query->unionAll()
-            ->cols(['teacher.gibbonPersonID AS gibbonPersonID', 'teacher.surname', 'teacher.preferredName', "COUNT(DISTINCT student.studentID) as totalCount", "COUNT(DISTINCT CASE WHEN gibbonReportingProgress.status='Complete' THEN gibbonReportingProgress.gibbonReportingProgressID END) as progressCount"])
+            ->cols(['teacher.gibbonPersonID AS gibbonPersonID', 'teacher.surname', 'teacher.preferredName', "COUNT(DISTINCT student.gibbonPersonID) as totalCount", "COUNT(DISTINCT CASE WHEN gibbonReportingProgress.status='Complete' THEN gibbonReportingProgress.gibbonReportingProgressID END) as progressCount"])
             ->from('gibbonReportingCycle')
             ->innerJoin('gibbonReportingScope', 'gibbonReportingScope.gibbonReportingCycleID=gibbonReportingCycle.gibbonReportingCycleID')
             ->innerJoin('gibbonReportingAccess', 'FIND_IN_SET(gibbonReportingScope.gibbonReportingScopeID, gibbonReportingAccess.gibbonReportingScopeIDList)')
@@ -153,6 +156,9 @@ class ReportingProgressGateway extends QueryableGateway
             ->where("gibbonReportingScope.scopeType='Roll Group'")
             ->where("gibbonReportingCriteria.target='Per Student'")
             ->where("student.status='Full'")
+            ->where("(student.dateStart IS NULL OR student.dateStart<=:today)")
+            ->where("(student.dateEnd IS NULL OR student.dateEnd>=:today)")
+            ->bindValue('today', date('Y-m-d'))
             // ->where('FIND_IN_SET(teacher.gibbonRoleIDPrimary, gibbonReportingAccess.gibbonRoleIDList)')
             ->groupBy(['gibbonPersonID']);
 
@@ -168,7 +174,7 @@ class ReportingProgressGateway extends QueryableGateway
 
         // YEAR GROUPS
         $query->unionAll()
-            ->cols(['teacher.gibbonPersonID AS gibbonPersonID', 'teacher.surname', 'teacher.preferredName', "COUNT(DISTINCT student.studentID) as totalCount", "COUNT(DISTINCT CASE WHEN gibbonReportingProgress.status='Complete' THEN gibbonReportingProgress.gibbonReportingProgressID END) as progressCount"])
+            ->cols(['teacher.gibbonPersonID AS gibbonPersonID', 'teacher.surname', 'teacher.preferredName', "COUNT(DISTINCT student.gibbonPersonID) as totalCount", "COUNT(DISTINCT CASE WHEN gibbonReportingProgress.status='Complete' THEN gibbonReportingProgress.gibbonReportingProgressID END) as progressCount"])
             ->from('gibbonReportingCycle')
             ->innerJoin('gibbonReportingScope', 'gibbonReportingScope.gibbonReportingCycleID=gibbonReportingCycle.gibbonReportingCycleID')
             ->innerJoin('gibbonReportingAccess', 'FIND_IN_SET(gibbonReportingScope.gibbonReportingScopeID, gibbonReportingAccess.gibbonReportingScopeIDList)')
@@ -183,6 +189,9 @@ class ReportingProgressGateway extends QueryableGateway
             ->where("gibbonReportingScope.scopeType='Year Group'")
             ->where("gibbonReportingCriteria.target='Per Student'")
             ->where("student.status='Full'")
+            ->where("(student.dateStart IS NULL OR student.dateStart<=:today)")
+            ->where("(student.dateEnd IS NULL OR student.dateEnd>=:today)")
+            ->bindValue('today', date('Y-m-d'))
             // ->where('FIND_IN_SET(teacher.gibbonRoleIDPrimary, gibbonReportingAccess.gibbonRoleIDList)')
             ->groupBy(['gibbonPersonID']);
 

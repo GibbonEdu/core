@@ -1924,7 +1924,9 @@ else {
 				//Set up email
 				$emailCount=0 ;
 				$mail= $container->get(Mailer::class);
-				$mail->SMTPKeepAlive = true;
+                $mail->SMTPKeepAlive = true;
+                $mail->SMTPDebug = 3;
+
 				if ($emailReplyTo!="")
 					$mail->AddReplyTo($emailReplyTo, '');
 				if ($from!=$_SESSION[$guid]["email"])	//If sender is using school-wide address, send from school
@@ -2022,7 +2024,7 @@ else {
 							'body'   => $bodyOut
 						]);
 						if(!$mail->Send()) {
-							$partialFail = TRUE ;
+                            $partialFail = TRUE ;
 							setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], getModuleID($connection2, $_POST["address"]), $_SESSION[$guid]['gibbonPersonID'], 'Email Send Status', array('Status' => 'Not OK', 'Result' => $mail->ErrorInfo, 'Recipients' => $reportEntry[4]));
 						}
 					}

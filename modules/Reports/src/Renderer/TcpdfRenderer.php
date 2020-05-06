@@ -24,7 +24,7 @@ use Gibbon\Module\Reports\ReportData;
 use Gibbon\Module\Reports\ReportTemplate;
 use Gibbon\Module\Reports\ReportSection;
 use Gibbon\Module\Reports\ReportTCPDF;
-use Twig_Environment;
+use Twig\Environment;
 
 class TcpdfRenderer implements ReportRendererInterface
 {
@@ -43,7 +43,7 @@ class TcpdfRenderer implements ReportRendererInterface
     protected $profile;
     protected $microtime;
 
-    public function __construct(Twig_Environment $templateEngine)
+    public function __construct(Environment $templateEngine)
     {
         $this->twig = $templateEngine;
     }
