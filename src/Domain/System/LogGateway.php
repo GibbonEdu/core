@@ -37,14 +37,49 @@ class LogGateway extends QueryableGateway
     private static $primaryKey = 'gibbonLogID';
 
     private static $searchableColumns = ['title'];
-    
+
+    /**
+     * Queries the list for the Manage Modules page.
+     *
+     * @param QueryCriteria $criteria
+     * @return DataSet
+     */
+    public function queryLogs(QueryCriteria $criteria)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonLogID', 'gibbonModule.name AS module', 'surname', 'preferredName', 'username', 'gibbonSchoolYear.name AS schoolYear', 'timestamp', 'gibbonLog.title', 'serialisedArray', 'ip'
+            ])
+            ->leftJoin('gibbonModule', 'gibbonLog.gibbonModuleID=gibbonModule.gibbonModuleID')
+            ->leftJoin('gibbonPerson', 'gibbonLog.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->leftJoin('gibbonSchoolYear', 'gibbonLog.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID');
+
+        // $criteria->addFilterRules([
+        //     'type' => function ($query, $type) {
+        //         return $query
+        //             ->where('gibbonModule.type = :type')
+        //             ->bindValue('type', ucfirst($type));
+        //     },
+        //
+        //     'active' => function ($query, $active) {
+        //         return $query
+        //             ->where('gibbonModule.active = :active')
+        //             ->bindValue('active', ucfirst($active));
+        //     },
+        // ]);
+
+        return $this->runQuery($query, $criteria);
+    }
+
     public function selectLogsByModuleAndTitle($moduleName, $title)
     {
         $data = array('moduleName' => $moduleName, 'title' => $title);
         $sql = "SELECT gibbonLog.title as groupBy, gibbonLog.*, gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.title
-                FROM gibbonLog 
+                FROM gibbonLog
                 LEFT JOIN gibbonModule ON (gibbonModule.gibbonModuleID=gibbonLog.gibbonModuleID)
-                LEFT JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonLog.gibbonPersonID) 
+                LEFT JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonLog.gibbonPersonID)
                 WHERE (gibbonModule.name=:moduleName OR (:moduleName IS NULL AND gibbonLog.gibbonModuleID IS NULL))
                 AND gibbonLog.title LIKE :title
                 ORDER BY gibbonLog.timestamp DESC";
@@ -55,9 +90,9 @@ class LogGateway extends QueryableGateway
     public function getLogByID($gibbonLogID)
     {
         $data = array('gibbonLogID' => $gibbonLogID);
-        $sql = "SELECT gibbonLog.*, gibbonPerson.username, gibbonPerson.surname, gibbonPerson.preferredName 
+        $sql = "SELECT gibbonLog.*, gibbonPerson.username, gibbonPerson.surname, gibbonPerson.preferredName
                 FROM gibbonLog
-                LEFT JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonLog.gibbonPersonID) 
+                LEFT JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonLog.gibbonPersonID)
                 WHERE gibbonLog.gibbonLogID=:gibbonLogID";
 
         return $this->db()->selectOne($sql, $data);
