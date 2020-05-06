@@ -43,9 +43,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
     $title = isset($_GET['title'])? $_GET['title'] : '';
     $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
 
-    echo '<h2>';
-    echo __('Filters');
-    echo '</h2>';
 
     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
 
