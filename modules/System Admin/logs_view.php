@@ -85,12 +85,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
 
     $table = DataTable::createPaginated('logView', $criteria);
 
-    // $table->addMetaData('filterOptions', [
-    //     'type:core'       => __('Type').': '.__('Core'),
-    //     'type:additional' => __('Type').': '.__('Additional'),
-    //     'active:Y' => __('Active').': '.__('Yes'),
-    //     'active:N' => __('Active').': '.__('No'),
-    // ]);
 
     $table->addExpandableColumn('comment')
         ->format(function($log) {
