@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
     $logs = $logGateway->queryLogs($criteria);
 
     $table = DataTable::createPaginated('logView', $criteria);
-
+    $table->setTitle(__('Data'));
 
     $table->addExpandableColumn('comment')
         ->format(function($log) {
