@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
             if (count($array) > 0) {
                 $details = "<table class='smallIntBorder' style='width:100%;'>";
                 foreach ($array as $fieldName => $fieldValue) {
-                    $details .= sprintf('<tr><td><b>%1$s</b></td><td>%2$s</td></tr>', $fieldName, $fieldValue);
+                    $details .= sprintf('<tr><td><b>%1$s</b></td><td>%2$s</td></tr>', $fieldName, (substr($fieldValue, 0, 2) == 'a:') ? __("Contains serialised data.") : $fieldValue);
                 }
                 $details .= "</table>";
             }
