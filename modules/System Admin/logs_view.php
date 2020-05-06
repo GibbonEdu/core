@@ -47,6 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->setTitle(__('Filters'));
     $form->setClass('noIntBorder fullWidth');
     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/logs_view.php');
 
