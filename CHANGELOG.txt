@@ -20,6 +20,7 @@ v20.0.00
 --------
     Headlines
         Messenger emails now send faster by using a background process
+        View Logs feature to browse Gibbon event logs
 
     Changes With Important Notices
 
