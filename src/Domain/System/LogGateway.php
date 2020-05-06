@@ -56,19 +56,23 @@ class LogGateway extends QueryableGateway
             ->leftJoin('gibbonPerson', 'gibbonLog.gibbonPersonID=gibbonPerson.gibbonPersonID')
             ->leftJoin('gibbonSchoolYear', 'gibbonLog.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID');
 
-        // $criteria->addFilterRules([
-        //     'type' => function ($query, $type) {
-        //         return $query
-        //             ->where('gibbonModule.type = :type')
-        //             ->bindValue('type', ucfirst($type));
-        //     },
-        //
-        //     'active' => function ($query, $active) {
-        //         return $query
-        //             ->where('gibbonModule.active = :active')
-        //             ->bindValue('active', ucfirst($active));
-        //     },
-        // ]);
+        $criteria->addFilterRules([
+            'ip' => function ($query, $ip) {
+                return $query
+                    ->where('gibbonLog.ip = :ip')
+                    ->bindValue('ip', $ip);
+            },
+            'title' => function ($query, $title) {
+                return $query
+                    ->where('gibbonLog.title = :title')
+                    ->bindValue('title', $title);
+            },
+            'gibbonPersonID' => function ($query, $gibbonPersonID) {
+                return $query
+                    ->where('gibbonLog.gibbonPersonID = :gibbonPersonID')
+                    ->bindValue('gibbonPersonID', $gibbonPersonID);
+            },
+        ]);
 
         return $this->runQuery($query, $criteria);
     }
