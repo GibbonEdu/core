@@ -71,9 +71,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
 
     echo $form->getOutput();
 
-    echo '<h2>';
-    echo __('Data');
-    echo '</h2>';
 
     // QUERY
     $logGateway = $container->get(LogGateway::class);
