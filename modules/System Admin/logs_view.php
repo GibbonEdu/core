@@ -51,7 +51,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
     $form->setClass('noIntBorder fullWidth');
     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/logs_view.php');
 
-    $data = array();
     $sql = "SELECT DISTINCT title AS value, title AS name FROM gibbonLog ORDER BY title";
     $row = $form->addRow();
         $row->addLabel('title', __('Title'));
