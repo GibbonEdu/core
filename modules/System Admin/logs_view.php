@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
     $sql = "SELECT DISTINCT title AS value, title AS name FROM gibbonLog ORDER BY title";
     $row = $form->addRow();
         $row->addLabel('title', __('Title'));
-        $row->addSelect('title')->fromQuery($pdo, $sql, $data)->selected($title)->placeholder();
+        $row->addSelect('title')->fromQuery($pdo, $sql)->selected($title)->placeholder();
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('User'));
