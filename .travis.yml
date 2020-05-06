@@ -9,8 +9,8 @@ os:
 # list any PHP version you want to test against
 php:
   - 7.0
-  - 7.2
   - 7.3
+  - 7.4
 
 # optionally specify a list of environments, for example to test different RDBMS
 env:
