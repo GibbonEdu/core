@@ -70,6 +70,11 @@ $gibbon->session->set('nonce', $sessionNonce);
 // Deal with non-existent stringReplacement session
 $gibbon->session->set('stringReplacement', []);
 
+// Fix missing locale causing failed page load
+if (empty($gibbon->locale->getLocale())) {
+    $gibbon->locale->setLocale('en_GB');
+}
+
 $page = new Page($container->get('twig'), [
     'title'   => __('Gibbon Installer'),
     'address' => '/installer/install.php',
