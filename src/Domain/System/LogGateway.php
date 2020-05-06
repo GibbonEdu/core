@@ -39,7 +39,7 @@ class LogGateway extends QueryableGateway
     private static $searchableColumns = ['title'];
 
     /**
-     * Queries the list for the Manage Modules page.
+     * Queries the list of System logs.
      *
      * @param QueryCriteria $criteria
      * @return DataSet
