@@ -23,7 +23,7 @@ use Gibbon\Module\Reports\Renderer\ReportRendererInterface;
 use Gibbon\Module\Reports\ReportData;
 use Gibbon\Module\Reports\ReportTemplate;
 use Gibbon\Module\Reports\ReportSection;
-use Twig_Environment;
+use Twig\Environment;
 
 class HtmlRenderer implements ReportRendererInterface
 {
@@ -38,7 +38,7 @@ class HtmlRenderer implements ReportRendererInterface
     protected $preProcess = [];
     protected $postProcess = [];
 
-    public function __construct(Twig_Environment $templateEngine)
+    public function __construct(Environment $templateEngine)
     {
         $this->microtime = microtime(true);
 
