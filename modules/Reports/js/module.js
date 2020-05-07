@@ -85,9 +85,11 @@ function updatePlaceholders(element)
             commentText = commentText.replace(/\bhe\b/g, 'she').replace(/\bHe\b/g, 'She');
             commentText = commentText.replace(/\bhis\b/g, 'her').replace(/\bHis\b/g, 'Her');
             commentText = commentText.replace(/\bhim\b/g, 'her').replace(/\bHim\b/g, 'Her');
+            commentText = commentText.replace(/\bhimself\b/g, 'herself').replace(/\bHimself\b/g, 'Herself');
         } else if (gender == 'M') {
             commentText = commentText.replace(/\bshe\b/g, 'he').replace(/\bShe\b/g, 'He');
             commentText = commentText.replace(/\bher\b/g, 'his').replace(/\bHer\b/g, 'His');
+            commentText = commentText.replace(/\bherself\b/g, 'himself').replace(/\bHerself\b/g, 'Himself');
         }
     }
 
