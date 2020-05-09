@@ -83,6 +83,7 @@ v20.0.00
         Reports: fixed Student Info template to omit empty student photos
         Reports: fixed AttendanceByCycle data source and updated it to apply countClassAsSchool setting
         Reports: fixed grade scale drown-downs for Per Group reporting criteria
+        Reports: fixed bug in Internal Assessment data source
         Reports: adjusted student lists to honour Reportable flag
         Reports: applied gibbonCourseClassPerson reportable flag to queries
         System Admin: fixed File Permission display issue in System Check
