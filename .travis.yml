@@ -2,9 +2,12 @@
 language: php
 
 # The platforms you wants to test on
-dist: trusty
+dist: xenial
 os:
   - linux
+
+services:
+  - mysql
 
 # list any PHP version you want to test against
 php:
