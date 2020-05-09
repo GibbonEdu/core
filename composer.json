@@ -18,6 +18,10 @@
             "cd tests && codecept run install --env $CI_PLATFORM",
             "cd tests && codecept run acceptance --env $CI_PLATFORM"
         ],
+        "test:codeceptiondebug": [
+            "cd tests && codecept run install --debug --env $CI_PLATFORM",
+            "cd tests && codecept run acceptance --debug --env $CI_PLATFORM"
+        ],
         "test:phpunit": [
             "cd tests && ../vendor/bin/phpunit --verbose --configuration phpunit.xml"
         ]
