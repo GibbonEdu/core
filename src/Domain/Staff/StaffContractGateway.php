@@ -26,8 +26,8 @@ use Gibbon\Domain\QueryableGateway;
 /**
  * Staff Gateway
  *
- * @version v16
- * @since   v16
+ * @version v20
+ * @since   v20
  */
 class StaffContractGateway extends QueryableGateway
 {
