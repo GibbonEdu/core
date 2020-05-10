@@ -57,6 +57,9 @@ class ReportingProgressGateway extends QueryableGateway
             ->where("gibbonCourseClassPerson.reportable='Y'")
             ->where("gibbonCourseClassPerson.role='Student'")
             ->where("gibbonPerson.status='Full'")
+            ->where("(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today)")
+            ->where("(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:today)")
+            ->bindValue('today', date('Y-m-d'))
             ->groupBy(['gibbonReportingScopeID']);
 
         // ROLL GROUPS
@@ -75,6 +78,9 @@ class ReportingProgressGateway extends QueryableGateway
             ->where("gibbonReportingScope.scopeType='Roll Group'")
             ->where("gibbonReportingCriteria.target='Per Student'")
             ->where("gibbonPerson.status='Full'")
+            ->where("(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today)")
+            ->where("(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:today)")
+            ->bindValue('today', date('Y-m-d'))
             ->groupBy(['gibbonReportingScopeID']);
 
 
@@ -94,6 +100,9 @@ class ReportingProgressGateway extends QueryableGateway
             ->where("gibbonReportingScope.scopeType='Year Group'")
             ->where("gibbonReportingCriteria.target='Per Student'")
             ->where("gibbonPerson.status='Full'")
+            ->where("(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today)")
+            ->where("(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:today)")
+            ->bindValue('today', date('Y-m-d'))
             ->groupBy(['gibbonReportingScopeID']);
 
         return $this->runQuery($query, $criteria);
