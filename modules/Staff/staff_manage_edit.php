@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                 echo '</div>';
             } else {
                 //Let's go!
-                $values = $staff->toDataSet()->toArray()[0];
+                $values = $staff->fetch();
                 $gibbonPersonID = $values['gibbonPersonID'];
 
                 if ($search != '' or $allStaff != '') {
@@ -203,11 +203,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     $table->addColumn('title', __('Title'));
                     $table->addColumn('status', __('Status'));
                     $table->addColumn('dates', __('Dates'))
-                        ->format(function ($row) use ($guid) {
+                        ->format(function ($row) {
                             if ($row["dateEnd"] == '') {
-                                return dateConvertBack($guid, $row['dateStart']);
+                                return Format::date($row['dateStart']);
                             } else {
-                                return dateConvertBack($guid, $row['dateStart']).' - '.dateConvertBack($guid, $row['dateEnd']);
+                                return Format::dateRange($row['dateStart'], $row['dateEnd']);
                             }
                         });;
 
