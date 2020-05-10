@@ -226,97 +226,66 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         echo 'Contacts';
                         echo '</h4>';
 
-                        echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
+                        
+                        $table = DataTable::createDetails('contacts');
+
                         $numberCount = 0;
-                        if ($row['phone1'] != '' or $row['phone2'] != '' or $row['phone3'] != '' or $row['phone4'] != '') {
-                            echo '<tr>';
+                        $phones = 0;
+                        for ($i = 1; $i < 5; $i++) {
+                            if ($row['phone' . $i] != '') {
+                                $phones++;
+                            }
+                        }
+                        if ($phones > 0) {
+                            $width = (100 / $phones) . '%';
                             for ($i = 1; $i < 5; ++$i) {
-                                if ($row['phone'.$i] != '') {
+                                if ($row['phone' . $i] != '') {
                                     ++$numberCount;
-                                    echo "<td width: 33%; style='vertical-align: top'>";
-                                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Phone')." $numberCount</span><br/>";
-                                    if ($row['phone'.$i.'Type'] != '') {
-                                        echo '<i>'.$row['phone'.$i.'Type'].':</i> ';
-                                    }
-                                    if ($row['phone'.$i.'CountryCode'] != '') {
-                                        echo '+'.$row['phone'.$i.'CountryCode'].' ';
-                                    }
-                                    echo formatPhone($row['phone'.$i]).'<br/>';
-                                    echo '</td>';
+                                    $table->addColumn('phone' . $i, __('Phone') . " $numberCount")
+                                        ->width($width)
+                                        ->format(Format::using('phone', ['phone' . $i, 'phone'.$i.'CountryCode', 'phone'.$i.'Type']));
                                 }
                             }
-                            for ($i = ($numberCount + 1); $i < 5; ++$i) {
-                                echo "<td width: 33%; style='vertical-align: top'></td>";
-                            }
-                            echo '</tr>';
                         }
-                        echo '<tr>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Email').'</span><br/>';
-                        if ($row['email'] != '') {
-                            echo "<i><a href='mailto:".$row['email']."'>".$row['email'].'</a></i>';
-                        }
-                        echo '</td>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Alternate Email').'</span><br/>';
-                        if ($row['emailAlternate'] != '') {
-                            echo "<i><a href='mailto:".$row['emailAlternate']."'>".$row['emailAlternate'].'</a></i>';
-                        }
-                        echo '</td>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Website').'</span><br/>';
-                        if ($row['website'] != '') {
-                            echo "<i><a href='".$row['website']."'>".$row['website'].'</a></i>';
-                        }
-                        echo '</td>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
 
-                        echo '</td>';
-                        echo '</tr>';
+                        $table->addColumn('email', __('Email'))
+                            ->format(Format::using('link', ['mailto:' . $row['email'], 'email']));
+
+                        $table->addColumn('emailAlternate', __('Alternate Email'))
+                            ->format(function($row) {
+                                if ($row['emailAlternate'] != '') {
+                                    return Format::using('link', ['mailto:' . $row['emailAlternate'], 'emailAlternate']);
+                                }
+                                return '';
+                            });
+
+                        $table->addColumn('website', __('Website'))
+                            ->format(Format::using('link', ['website', 'website']));
+
                         if ($row['address1'] != '') {
-                            echo '<tr>';
-                            echo "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>".__('Address 1').'</span><br/>';
-                            $address1 = addressFormat($row['address1'], $row['address1District'], $row['address1Country']);
-                            if ($address1 != false) {
-                                echo $address1;
-                            }
-                            echo '</td>';
-                            echo '</tr>';
+                            $table->addColumn('address1', __('Address 1'))
+                                ->width('100%')
+                                ->format(Format::using('address', ['address1', 'address1District', 'address1Country']));
                         }
                         if ($row['address2'] != '') {
-                            echo '<tr>';
-                            echo "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>".__('Address 2').'</span><br/>';
-                            $address2 = addressFormat($row['address2'], $row['address2District'], $row['address2Country']);
-                            if ($address2 != false) {
-                                echo $address2;
-                            }
-                            echo '</td>';
-                            echo '</tr>';
+                            $table->addColumn('address2', __('Address 2'))
+                                ->width('100%')
+                                ->format(Format::using('address', ['address2', 'address2District', 'address2Country']));
                         }
-                        echo '</table>';
+
+                        echo $table->render([$row]);
 
                         echo '<h4>';
                         echo __('Miscellaneous');
                         echo '</h4>';
 
-                        echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                        echo '<tr>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Transport').'</span><br/>';
-                        echo $row['transport'];
-                        echo '</td>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Vehicle Registration').'</span><br/>';
-                        echo $row['vehicleRegistration'];
-                        echo '</td>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Locker Number').'</span><br/>';
-                        echo $row['lockerNumber'];
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '</table>';
+                        $table = DataTable::createDetails("misc");
+
+                        $table->addColumn('transport', __('Transport'));
+                        $table->addColumn('vehicleRegistration', __('Vehicle Registration'));
+                        $table->addColumn('lockerNumber', __('Locker Number'));
+
+                        echo $table->render([$row]);
 
                         //Custom Fields
                         $fields = unserialize($row['fields']);
@@ -326,41 +295,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             echo __('Custom Fields');
                             echo '</h4>';
 
-                            echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                            $count = 0;
-                            $columns = 3;
+                            $table = DataTable::createDetails('custom');
 
                             while ($rowFields = $resultFields->fetch()) {
-                                if ($count % $columns == 0) {
-                                    echo '<tr>';
-                                }
-                                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                                echo "<span style='font-size: 115%; font-weight: bold'>".__($rowFields['name']).'</span><br/>';
-                                if (isset($fields[$rowFields['gibbonPersonFieldID']])) {
-                                    if ($rowFields['type'] == 'date') {
-                                        echo dateConvertBack($guid, $fields[$rowFields['gibbonPersonFieldID']]);
-                                    } elseif ($rowFields['type'] == 'url') {
-                                        echo "<a target='_blank' href='".$fields[$rowFields['gibbonPersonFieldID']]."'>".$fields[$rowFields['gibbonPersonFieldID']].'</a>';
-                                    } else {
-                                        echo $fields[$rowFields['gibbonPersonFieldID']];
-                                    }
-                                }
-                                echo '</td>';
-
-                                if ($count % $columns == ($columns - 1)) {
-                                    echo '</tr>';
-                                }
-                                ++$count;
+                                $table->addColumn($rowFields['name'], __($rowFields['name']))
+                                    ->format(function($row) use ($fields, $rowFields) {
+                                        if (isset($fields[$rowFields['gibbonPersonFieldID']])) {
+                                            if ($rowFields['type'] == 'date') {
+                                                return dateConvertBack($guid, $fields[$rowFields['gibbonPersonFieldID']]);
+                                            } elseif ($rowFields['type'] == 'url') {
+                                                return "<a target='_blank' href='".$fields[$rowFields['gibbonPersonFieldID']]."'>".$fields[$rowFields['gibbonPersonFieldID']].'</a>';
+                                            } else {
+                                                return $fields[$rowFields['gibbonPersonFieldID']];
+                                            }
+                                        }
+                                        return '';
+                                    });
                             }
 
-                            if ($count % $columns != 0) {
-                                for ($i = 0;$i < $columns - ($count % $columns);++$i) {
-                                    echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'></td>";
-                                }
-                                echo '</tr>';
-                            }
-
-                            echo '</table>';
+                            echo $table->render([$row]);
                         }
                     } elseif ($subpage == 'Family') {
                         $familyGateway = $container->get(FamilyGateway::class);
@@ -439,42 +392,41 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             }
 
                             while ($rowMember = $resultMember->fetch()) {
-                                echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                                echo '<tr>';
-                                echo "<td style='width: 33%; vertical-align: top'>";
-                                echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
-                                echo Format::name($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], 'Parent');
-                                echo '</td>';
-                                echo "<td style='width: 33%; vertical-align: top'>";
-                                echo "<span style='font-size: 115%; font-weight: bold'>".__('Relationship').'</span><br/>';
-                                if ($rowMember['role'] == 'Parent') {
-                                    if ($rowMember['gender'] == 'M') {
-                                        echo __('Father');
-                                    } elseif ($rowMember['gender'] == 'F') {
-                                        echo __('Mother');
-                                    } else {
-                                        echo $rowMember['role'];
-                                    }
-                                } else {
-                                    echo $rowMember['role'];
-                                }
-                                echo '</td>';
-                                echo "<td style='width: 34%; vertical-align: top'>";
-                                echo "<span style='font-size: 115%; font-weight: bold'>".__('Contact By Phone').'</span><br/>';
-                                for ($i = 1; $i < 5; ++$i) {
-                                    if ($rowMember['phone'.$i] != '') {
-                                        if ($rowMember['phone'.$i.'Type'] != '') {
-                                            echo '<i>'.$rowMember['phone'.$i.'Type'].':</i> ';
+                                $table = DataTable::createDetails('family' . $count);
+
+                                $table->addColumn('preferredName', __('Name'))
+                                    ->format(Format::using('name', ['title', 'preferredName', 'surname', 'Parent']));
+
+                                $table->addColumn('relationship', __('Relationship'))
+                                    ->format(function($rowMember) {
+                                        if ($rowMember['role'] == 'Parent') {
+                                            if ($rowMember['gender'] == 'M') {
+                                                echo __('Father');
+                                            } elseif ($rowMember['gender'] == 'F') {
+                                                echo __('Mother');
+                                            } else {
+                                                echo $rowMember['role'];
+                                            }
+                                        } else {
+                                            echo $rowMember['role'];
                                         }
-                                        if ($rowMember['phone'.$i.'CountryCode'] != '') {
-                                            echo '+'.$rowMember['phone'.$i.'CountryCode'].' ';
+                                    });
+
+                                $table->addColumn('phone', __('Contact By Phone'))
+                                    ->format(function($rowMember) {
+                                        $phones = '';
+
+                                        for ($i = 1; $i < 5; ++$i) {
+                                            if ($rowMember['phone'.$i] != '') {
+                                                $phones = $phones . Format::using('phone', ['phone' . $i, 'phone'.$i.'CountryCode', 'phone'.$i.'Type']) . '<br/>';
+                                            }
                                         }
-                                        echo formatPhone($rowMember['phone'.$i]).'<br/>';
-                                    }
-                                }
-                                echo '</td>';
-                                echo '</tr>';
-                                echo '</table>';
+
+                                        return $phones;
+                                    });
+
+                                echo $table->render([$rowMember]);
+
                                 ++$count;
                             }
                         }
@@ -482,46 +434,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         echo '<h4>';
                         echo __('Emergency Contacts');
                         echo '</h4>';
-                        echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                        echo '<tr>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Contact 1').'</span><br/>';
-                        echo '<i>'.$row['emergency1Name'].'</i>';
-                        if ($row['emergency1Relationship'] != '') {
-                            echo ' ('.$row['emergency1Relationship'].')';
+
+                        $table = DataTable::createDetails('emergency');
+
+                        for ($i = 1; $i <= 2; $i++) {
+                            $emergency = 'emergency' . $i;
+                            $table->addColumn($emergency . 'Name', __('Contact ' . $i))
+                                ->format(function($row) use ($emergency) {
+                                    if ($row[$emergency . 'Relationship'] != '') {
+                                        return $row[$emergency . 'Name'] . ' (' . $row[$emergency . 'Relationship'] . ')';
+                                    }
+                                    return $row[$emergency . 'Name'];
+                                });
+
+                            $table->addColumn($emergency . 'Number1', __('Number 1'));
+                            $table->addColumn($emergency . 'Number2', __('Number 2'));
                         }
-                        echo '</td>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Number 1').'</span><br/>';
-                        echo $row['emergency1Number1'];
-                        echo '</td>';
-                        echo "<td style=width: 34%; 'vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Number 2').'</span><br/>';
-                        if ($row['emergency1Number2'] != '') {
-                            echo $row['emergency1Number2'];
-                        }
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '<tr>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Contact 2').'</span><br/>';
-                        echo '<i>'.$row['emergency2Name'].'</i>';
-                        if ($row['emergency2Relationship'] != '') {
-                            echo ' ('.$row['emergency2Relationship'].')';
-                        }
-                        echo '</td>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Number 1').'</span><br/>';
-                        echo $row['emergency2Number1'];
-                        echo '</td>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Number 2').'</span><br/>';
-                        if ($row['emergency2Number2'] != '') {
-                            echo $row['emergency2Number2'];
-                        }
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '</table>';
+
+                        echo $table->render([$row]);
+
                     } elseif ($subpage == 'Activities') {
                         
                         $highestActionActivities = getHighestGroupedAction($guid, '/modules/Activities/activities_attendance.php', $connection2);
