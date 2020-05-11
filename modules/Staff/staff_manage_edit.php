@@ -165,7 +165,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     ->setURL('/modules/Staff/staff_manage_edit_facility_add.php')
                     ->addParam('gibbonPersonID', $gibbonPersonID)
                     ->addParam('gibbonStaffID', $gibbonStaffID)
-                    ->addParam('search', $search);
+                    ->addParam('search', $search)
+                    ->displayLabel();
 
                 $table->addColumn('name', __('Name'));
                 $table->addColumn('usageType', __('Usage'));    
@@ -198,7 +199,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     $table->addHeaderAction('add', __('Add'))
                         ->setURL('/modules/Staff/staff_manage_edit_contract_add.php')
                         ->addParam('gibbonStaffID', $gibbonStaffID)
-                        ->addParam('search', $search);
+                        ->addParam('search', $search)
+                        ->displayLabel();
 
                     $table->addColumn('title', __('Title'));
                     $table->addColumn('status', __('Status'));
