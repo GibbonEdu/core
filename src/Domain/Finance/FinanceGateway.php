@@ -22,7 +22,7 @@ class FinanceGateway extends QueryableGateway
             ->from('gibbonFinanceBudgetCycle')
             ->orderBy(
                 [
-                'sequenceNumber DESC'
+                'sequenceNumber'
                 ]
             )
             ->cols(
