@@ -17,7 +17,7 @@ class FinanceGateway extends QueryableGateway
     public function queryFinanceCycles(QueryCriteria $criteria)
     {
 
-       $query = $this
+        $query = $this
             ->newQuery()
             ->from('gibbonFinanceBudgetCycle')
             ->orderBy(
@@ -26,7 +26,7 @@ class FinanceGateway extends QueryableGateway
                 ]
             )
             ->cols(
-              [
+                [
                 'gibbonFinanceBudgetCycleID',
                 'name',
                 'status',
@@ -35,32 +35,29 @@ class FinanceGateway extends QueryableGateway
                 'sequenceNumber',
                 "IF(dateStart > CURRENT_TIMESTAMP(),'Y','N') as inFuture",
                 "IF(dateEnd < CURRENT_TIMESTAMP(),'Y','N') as inPast"
-              ]
+                ]
             );
 
         $criteria->addFilterRules(
-          [
-            'status' => function($query,$status){
-              return $query
+            [
+            'status' => function ($query, $status) {
+                return $query
                 ->where('gibbonFinanceBudgetCycle.status = :status')
-                ->bindValue('status',$status);
+                ->bindValue('status', $status);
             },
-            'inPast' => function($query,$inPast) {
-              return $query
+            'inPast' => function ($query, $inPast) {
+                return $query
                 ->where('inPast = :inPast')
-                ->bindValue('inPast',$inPast);
+                ->bindValue('inPast', $inPast);
             },
-            'inFuture' => function($query,$inFuture) {
-              return $query
+            'inFuture' => function ($query, $inFuture) {
+                return $query
                 ->where('inFuture = :inFuture')
-                ->bindValue('inFuture',$inFuture);
+                ->bindValue('inFuture', $inFuture);
             }
-          ]
+            ]
         );
 
         return $this->runQuery($query, $criteria);
     }
-
 }
-
-?>

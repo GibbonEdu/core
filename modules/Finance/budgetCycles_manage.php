@@ -38,22 +38,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
     $criteria = $gateway->newQueryCriteria(true)
                         ->fromPOST();
     $budgetCycles = $gateway->queryFinanceCycles($criteria);
-    $table = DataTable::createPaginated('cycles',$criteria);
-    $table->addHeaderAction('add',__('Add'))
+    $table = DataTable::createPaginated('cycles', $criteria);
+    $table->addHeaderAction('add', __('Add'))
       ->setURL('/modules/Finance/budgetCycles_manage_add.php');
-    $table->addColumn('sequenceNumber',__('Sequence'));
-    $table->addColumn('name',__('Name'));
-    $table->addColumn('dates',__('Dates'))
-          ->format(function($cycle) {
-            return Format::dateRange($cycle['dateStart'],$cycle['dateEnd']);
+    $table->addColumn('sequenceNumber', __('Sequence'));
+    $table->addColumn('name', __('Name'));
+    $table->addColumn('dates', __('Dates'))
+          ->format(function ($cycle) {
+            return Format::dateRange($cycle['dateStart'], $cycle['dateEnd']);
           });
-    $table->addColumn('status',__('Status'));
+    $table->addColumn('status', __('Status'));
     $actions = $table->addActionColumn()
         ->addParam('gibbonFinanceBudgetCycleID')
-                     ->format(function($cycle,$actions) {
-                       $actions->addAction('edit',__('Edit'))
+                     ->format(function ($cycle, $actions) {
+                        $actions->addAction('edit', __('Edit'))
                                ->setURL('/modules/Finance/budgetCycles_manage_edit.php');
-                       $actions->addAction('delete',__('Delete'))
+                        $actions->addAction('delete', __('Delete'))
                           ->setURL('/modules/Finance/budgetCycles_manage_delete.php');
                      });
     echo $table->render($budgetCycles);
