@@ -97,7 +97,7 @@ class CourseCriteria extends DataSource
                 AND gibbonReportingScope.scopeType='Course'
                 AND ((gibbonReportingProgress.status='Complete' AND gibbonReportingCriteria.target = 'Per Student') 
                     OR gibbonReportingCriteria.target = 'Per Group') 
-                ORDER BY gibbonReportingScope.sequenceNumber, gibbonReportingCriteria.sequenceNumber, gibbonCourse.orderBy";
+                ORDER BY gibbonReportingScope.sequenceNumber, gibbonReportingCriteria.sequenceNumber, gibbonCourse.orderBy, gibbonCourse.name";
 
         $courses = $this->db()->select($sql, $data)->fetchAll();
 
