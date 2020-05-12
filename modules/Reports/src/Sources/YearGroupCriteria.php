@@ -65,7 +65,7 @@ class YearGroupCriteria extends DataSource
     public function getData($ids = [])
     {
         $data = ['gibbonStudentEnrolmentID' => $ids['gibbonStudentEnrolmentID'], 'gibbonReportingCycleID' => $ids['gibbonReportingCycleID']];
-        $sql = "SELECT (CASE WHEN gibbonReportingCriteria.target = 'Per Group' THEN 'perGroup' ELSE 'perStudent' END) AS groupBy, 
+        $sql = "SELECT DISTINCT (CASE WHEN gibbonReportingCriteria.target = 'Per Group' THEN 'perGroup' ELSE 'perStudent' END) AS groupBy, 
                     gibbonReportingScope.name as scopeName,
                     gibbonReportingCriteria.name as criteriaName,
                     gibbonReportingCriteria.description as criteriaDescription, 
@@ -87,7 +87,7 @@ class YearGroupCriteria extends DataSource
                 JOIN gibbonReportingCriteriaType ON (gibbonReportingCriteriaType.gibbonReportingCriteriaTypeID=gibbonReportingCriteria.gibbonReportingCriteriaTypeID)
                 JOIN gibbonReportingScope ON (gibbonReportingScope.gibbonReportingScopeID=gibbonReportingCriteria.gibbonReportingScopeID)
                 JOIN gibbonYearGroup ON (gibbonYearGroup.gibbonYearGroupID=gibbonReportingCriteria.gibbonYearGroupID)
-                LEFT JOIN gibbonReportingProgress ON (gibbonReportingProgress.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID AND (gibbonReportingProgress.gibbonPersonIDStudent=gibbonStudentEnrolment.gibbonPersonID OR gibbonReportingProgress.gibbonPersonIDStudent=0))
+                LEFT JOIN gibbonReportingProgress ON (gibbonReportingProgress.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID AND gibbonReportingProgress.gibbonPersonIDStudent=gibbonStudentEnrolment.gibbonPersonID)
                 LEFT JOIN gibbonScaleGrade ON (gibbonScaleGrade.gibbonScaleID=gibbonReportingCriteriaType.gibbonScaleID AND gibbonScaleGrade.gibbonScaleGradeID=gibbonReportingValue.gibbonScaleGradeID)
                 LEFT JOIN gibbonPerson as createdBy ON (createdBy.gibbonPersonID=gibbonReportingValue.gibbonPersonIDCreated)
                 LEFT JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=createdBy.gibbonPersonID)
