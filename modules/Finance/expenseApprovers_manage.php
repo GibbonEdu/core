@@ -18,6 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
+use Gibbon\Domain\Finance\FinanceGateway;
+use Gibbon\Tables\DataTable;
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_manage.php') == false) {
     //Acess denied
@@ -32,30 +34,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
         returnProcess($guid, $_GET['return']);
     }
 
-    //Set pagination variable
-    $page = 1;
-    if (isset($_GET['page'])) {
-        $page = $_GET['page'];
-    }
-    if ((!is_numeric($page)) or $page < 1) {
-        $page = 1;
-    }
-
     $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
     $budgetLevelExpenseApproval = getSettingByScope($connection2, 'Finance', 'budgetLevelExpenseApproval');
-    try {
-        $data = array();
-        if ($expenseApprovalType == 'Chain Of All') {
-            $sql = "SELECT gibbonFinanceExpenseApprover.*, surname, preferredName FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' ORDER BY sequenceNumber, surname, preferredName";
-        } else {
-            $sql = "SELECT gibbonFinanceExpenseApprover.*, surname, preferredName FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' ORDER BY surname, preferredName";
-        }
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
-
     echo '<p>';
     if ($expenseApprovalType == 'One Of') {
         if ($budgetLevelExpenseApproval == 'Y') {
@@ -80,59 +60,58 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
     }
     echo '</p>';
 
-    echo "<div class='linkTop'>";
-    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/expenseApprovers_manage_add.php'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-    echo '</div>';
+    $gateway = $container->get(FinanceGateway::class);
+    $criteria = $gateway->newQueryCriteria(true)
+        ->fromPOST();
 
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
-    } else {
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __('Name');
-        echo '</th>';
-        if ($expenseApprovalType == 'Chain Of All') {
-            echo '<th>';
-            echo __('Sequence Number');
-            echo '</th>';
-        }
-        echo '<th>';
-        echo __('Actions');
-        echo '</th>';
-        echo '</tr>';
 
-        $count = 0;
-        $rowNum = 'odd';
-        while ($row = $result->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
-            }
+    switch ($expenseApprovalType) {
+        case "Chain Of All":
+            $criteria->sortBy(
+                [
+                'sequenceNumber',
+                'surname',
+                'preferredName'
+                ]
+            );
+            break;
 
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo Format::name('', $row['preferredName'], $row['surname'], 'Staff', true, true);
-            echo '</td>';
-            if ($expenseApprovalType == 'Chain Of All') {
-                echo '<td>';
-                if ($row['sequenceNumber'] != '') {
-                    echo __($row['sequenceNumber']);
-                }
-                echo '</td>';
-            }
-            echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenseApprovers_manage_edit.php&gibbonFinanceExpenseApproverID='.$row['gibbonFinanceExpenseApproverID']."'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenseApprovers_manage_delete.php&gibbonFinanceExpenseApproverID='.$row['gibbonFinanceExpenseApproverID']."&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-            echo '</td>';
-            echo '</tr>';
-
-            ++$count;
-        }
-        echo '</table>';
+        default:
+            $criteria->sortBy(
+                [
+                'surname',
+                'preferredName'
+                ]
+            );
+            break;
     }
+    $feeApprovers = $gateway->queryExpenseApprovers($criteria);
+    $table = DataTable::createPaginated('expenseApprovers', $criteria);
+    $table->addHeaderAction('add', __('Add'))
+        ->setURL('/modules/Finance/expenseApprovers_manage_add.php');
+
+    $table
+        ->addColumn('name', __('Name'))
+        ->format(
+            function ($expenseApprover) {
+                return Format::name($expenseApprover['title'], $expenseApprover['preferredName'], $expenseApprover['surname']);
+            }
+        );
+
+    if ($expenseApprovalType == 'Chain Of All') {
+        $table->addColumn('sequenceNumber', __('Sequence Number'));
+    }
+
+    $table
+        ->addActionColumn()
+        ->addParam('gibbonFinanceExpenseApproverID')
+        ->format(
+            function ($expenseApprover, $actions) {
+                $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/Finance/expenseApprovers_manage_edit.php');
+                $actions->addAction('delete', __('Delete'))
+                    ->setURL('/modules/Finance/expenseApprovers_manage_delete.php');
+            }
+        );
+    echo $table->render($feeApprovers);
 }
