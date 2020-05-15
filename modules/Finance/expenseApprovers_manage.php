@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
         ->addColumn('name', __('Name'))
         ->format(
             function ($expenseApprover) {
-                return Format::name($expenseApprover['title'], $expenseApprover['preferredName'], $expenseApprover['surname']);
+                return Format::name($expenseApprover['title'], $expenseApprover['preferredName'], $expenseApprover['surname'],'Staff',true,true);
             }
         );
 
