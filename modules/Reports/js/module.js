@@ -61,8 +61,8 @@ function updateComments(element)
     // Check to ensure the pronouns match the gender of the student
     var gender = $(element).data('gender') ? $(element).data('gender') : '';
     if (gender.length > 0) {
-        var heFound = commentText.search(/\bhe\b/i) !== -1 || commentText.search(/\bhis\b/i) !== -1;
-        var sheFound = commentText.search(/\bshe\b/i) !== -1 || commentText.search(/\bher\b/i) !== -1;
+        var heFound = commentText.search(/\bhe\b/i) !== -1 || commentText.search(/\bhis\b/i) !== -1 || commentText.search(/\bhim\b/i) !== -1 || commentText.search(/\bhimself\b/i) !== -1;
+        var sheFound = commentText.search(/\bshe\b/i) !== -1 || commentText.search(/\bher\b/i) !== -1 || commentText.search(/\bherself\b/i) !== -1;
         var pronounMismatch = (heFound && gender == 'F') || (sheFound && gender == 'M');
         $('.characterInfo .commentStatusPronoun', $(element).parent()).toggleClass('hidden', !pronounMismatch);
     }
