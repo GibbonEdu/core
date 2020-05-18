@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
 
         $row = $form->addRow();
             $row->addLabel('gibbonPersonID', __('Student'));
-            $row->addSelectStudent('gibbonPersonID', $gibbonSchoolYearID, array('allStudents' => true))->required()->placeholder();
+            $row->addSelectStudent('gibbonPersonID', $gibbonSchoolYearID, ['activeStudents' => true, 'showRoll' => false])->required()->placeholder();
 
         $row = $form->addRow();
             $row->addLabel('gibbonYearGroupID', __('Year Group'));

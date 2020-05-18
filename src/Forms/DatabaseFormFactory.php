@@ -388,14 +388,14 @@ class DatabaseFormFactory extends FormFactory
         byRoll - false by default. Adds students organised by roll group. Can be used in conjunction with byName to have multiple sections
         showRoll - true by default. Displays roll group beside student's name, when organised byName. Incompatible with allStudents
     */
-    public function createSelectStudent($name, $gibbonSchoolYearID, $params = array())
+    public function createSelectStudent($name, $gibbonSchoolYearID, $params = [])
     {
         //Create arrays for use later on
-        $values = array();
-        $data = array();
+        $values = [];
+        $data = [];
 
         // Check params and set defaults if not defined
-        $params = array_replace(array('allStudents' => false, 'byName' => true, 'byRoll' => false, 'showRoll' => true), $params);
+        $params = array_replace(['allStudents' => false, 'activeStudents' => false, 'byName' => true, 'byRoll' => false, 'showRoll' => true], $params);
 
         //Check for multiple by methods, so we know when to apply optgroups
         $multipleBys = false;
@@ -407,16 +407,24 @@ class DatabaseFormFactory extends FormFactory
         if ($params["byRoll"]) {
             if ($params["allStudents"]) {
                 $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-                $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name
+                $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username, gibbonRollGroup.name AS name
                     FROM gibbonPerson
                         JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
                         JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
                     WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID
                     ORDER BY name, surname, preferredName";
-
+            } elseif ($params["activeStudents"]) {
+                $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+                $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username, gibbonRollGroup.name AS name
+                    FROM gibbonPerson
+                        JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                        JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                    WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID
+                    AND (gibbonPerson.status='Full' || gibbonPerson.status='Expected')
+                    ORDER BY name, surname, preferredName";
             } else {
                 $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'date' => date('Y-m-d'));
-                $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name
+                $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username, gibbonRollGroup.name AS name
                     FROM gibbonPerson
                         JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
                         JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
@@ -443,14 +451,21 @@ class DatabaseFormFactory extends FormFactory
         //Add students by name
         if ($params["byName"]) {
             if ($params["allStudents"]) {
-                $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, null AS name
+                $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, username, null AS name
                     FROM gibbonPerson
                         JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)
                     WHERE gibbonRole.category='Student'
                     ORDER BY surname, preferredName";
+            } elseif ($params["activeStudents"]) {
+                $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, username, null AS name
+                    FROM gibbonPerson
+                        JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)
+                    WHERE gibbonRole.category='Student'
+                    AND (gibbonPerson.status='Full' || gibbonPerson.status='Expected')
+                    ORDER BY surname, preferredName";
             } else {
                 $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'date' => date('Y-m-d'));
-                $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, gibbonRollGroup.name AS name
+                $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, username, gibbonRollGroup.name AS name
                     FROM gibbonPerson
                         JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                         JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
@@ -467,17 +482,17 @@ class DatabaseFormFactory extends FormFactory
                 while ($row = $results->fetch()) {
                     if ($multipleBys) {
                         if (!$params['allStudents'] && $params['byName'] && $params['showRoll']) {
-                            $values[__('Students by Name')][$row['gibbonPersonID']] = Format::name(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Student', true, true)." (".$row['name'].")";
+                            $values[__('Students by Name')][$row['gibbonPersonID']] = Format::name(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Student', true, true).' ('.$row['name'].', '.$row['username'].')';
                         }
                         else {
-                            $values[__('Students by Name')][$row['gibbonPersonID']] = Format::name(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Student', true, true);
+                            $values[__('Students by Name')][$row['gibbonPersonID']] = Format::name(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Student', true, true).' ('.$row['username'].')';
                         }
                     } else {
                         if (!$params['allStudents'] && $params['byName'] && $params['showRoll']) {
-                            $values[$row['gibbonPersonID']] = Format::name(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Student', true, true)." (".$row['name'].")";
+                            $values[$row['gibbonPersonID']] = Format::name(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Student', true, true).' ('.$row['name'].', '.$row['username'].')';
                         }
                         else {
-                            $values[$row['gibbonPersonID']] = Format::name(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Student', true, true);
+                            $values[$row['gibbonPersonID']] = Format::name(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Student', true, true).' ('.$row['username'].')';
                         }
                     }
                 }
