@@ -85,6 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
 
     $gateway = $container->get(LibraryGateway::class);
     $criteria = $gateway->newQueryCriteria(true)
+                        ->sortBy(['name', 'producer'])
                         ->filterBy('name', $name)
                         ->filterBy('gibbonLibraryTypeID', $gibbonLibraryTypeID)
                         ->filterBy('gibbonSpaceID', $gibbonSpaceID)
