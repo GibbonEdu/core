@@ -1,0 +1,68 @@
+.sessionTimeout {
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.7);
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 0.85rem;
+}
+
+.sessionTimeout-modal {
+  background-color: #FFFFFF;
+  margin: 10% auto;
+  padding: 0.2rem;
+  width: 40%;
+  border-radius: 2px;
+  font-size: 0.95rem;
+}
+
+.sessionTimeout-title {
+    background-color: #8157A3;
+    font-weight: bold;
+    color: #FFFFFF;
+    padding: .4em 1em;
+    position: relative;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sessionTimeout-content {
+  text-align: left;
+  margin: 1rem 0 2rem 0;
+  padding: 0 1rem;
+}
+
+.sessionTimeout-buttons {
+  text-align: right;
+}
+
+.sessionTimeout-btn {
+  font-size: 0.65rem;
+  border: 1px solid #D8DCDF;
+  padding: 0.5rem 0.75rem;
+  margin: 0 0.5rem 0.5rem 0;
+  background-color: #EEEEEE;
+  color: #333333;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.sessionTimeout-btn:hover, .sessionTimeout-btn:focus {
+  background-color: #FFFFFF;
+}
+
+.sessionTimeout-btn--primary {
+}
+
+.sessionTimeout-btn--primary:hover {
+}
+
+.sessionTimeout--hidden {
+  display: none;
+}

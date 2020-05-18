@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Custom URLs | Session Timeout</title>
+  </head>
+  <body>
+    <h1>Custom URLs | Session Timeout</h1>
+
+    <p>The warning dialog will appear after 3 seconds.</p>
+
+    <script src="../dist/session-timeout.js"></script>
+    <script>
+      sessionTimeout({
+        warnAfter: 3000,
+        logOutUrl: '/logged-out.html',
+        keepAliveUrl: '/ping.php',
+      });
+    </script>
+  </body>
+</html>

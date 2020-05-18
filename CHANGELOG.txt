@@ -35,6 +35,7 @@ v20.0.00
     Tweaks & Additions
         System: added Argentine Peso and Ukrainian Hryvna as currency options
         System: updated Tailwind 1.2.0 dependencies via npm
+        System: updated SessionTimeout with translation support and jQuery/jQuery UI dependency removed
         System: added target option to Alert Bar
         System: added a DetailsView table for displaying data
         System: update the pre-login homepage to use a card layout
