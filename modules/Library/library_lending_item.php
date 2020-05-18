@@ -214,7 +214,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
               ->format(function($event,$actions) {
                 if($event['rowNum'] == 1 && $event['status'] != 'Returned')
                 {
-                  var_dump($event);
                   //Edit function cannot be used unless the responsible person ID is set
                   if($event['responsiblePersonID'] != null)
                   {
