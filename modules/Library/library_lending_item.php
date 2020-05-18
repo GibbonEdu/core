@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                                 ->fromPOST();
             $item = $gateway->queryLendingDetail($criteria); 
             $table = DataTable::createPaginated('lendingLog',$criteria);
-
+            $table->setTitle(__('Lending & Activity Log'));
             if($status == 'Available') {
               $table
                 ->addHeaderAction('signout',__('Sign Out'))
