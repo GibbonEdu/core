@@ -22,6 +22,7 @@ namespace Gibbon\Domain\Library;
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
+use Gibbon\Tables\DataTable;
 
 /**
  * LibraryReportGateway
@@ -35,7 +36,46 @@ class LibraryReportGateway extends QueryableGateway
 
     private static $tableName = 'gibbonLibraryItem';
     private static $primaryKey = 'gibbonLibraryItemID';
-    
+
+    public function queryStudentReportData(QueryCriteria $criteria)
+    {
+      $query = $this
+        ->newQuery()
+        ->from('gibbonLibraryItem')
+        ->innerJoin('gibbonLibraryType','gibbonLibraryType.gibbonLibraryTypeID = gibbonLibraryItem.gibbonLibraryTypeID')
+        ->innerJoin('gibbonLibraryItemEvent','gibbonLibraryItemEvent.gibbonLibraryItemID = gibbonLibraryItem.gibbonLibraryItemID')
+        ->join('left','gibbonSpace','gibbonSpace.gibbonSpaceID = gibbonLibraryItem.gibbonSpaceID')
+        ->orderBy([
+          'gibbonLibraryItemEvent.timestampOut DESC'
+        ])
+        ->cols([
+          'gibbonLibraryItem.name',
+          'gibbonLibraryItem.producer',
+          'gibbonLibraryItem.id',
+          'gibbonLibraryItem.imageType',
+          'gibbonLibraryItem.imageLocation',
+          'gibbonLibraryItem.fields',
+          'gibbonLibraryType.fields as typeFields',
+          'gibbonLibraryItem.locationDetail',
+          'gibbonSpace.name as spaceName',
+          'gibbonLibraryItemEvent.timestampOut',
+          'gibbonLibraryItemEvent.returnExpected',
+          'gibbonLibraryItemEvent.status',
+          "IF(gibbonLibraryItemEvent.returnExpected > CURRENT_TIMESTAMP,'Y','N') as pastDue"
+        ]);
+
+      $criteria->addFilterRules([
+        'gibbonPersonID' => function($query,$personid)
+        {
+          return $query
+            ->where('gibbonLibraryItemEvent.gibbonPersonIDStatusResponsible = :personid')
+            ->bindValue('personid',$personid);
+        }
+      ]);
+
+      return $this->runQuery($query,$criteria);
+    }
+
     public function queryCatalogSummary(QueryCriteria $criteria)
     {
         $query = $this
