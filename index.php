@@ -229,6 +229,7 @@ $sessionDuration = -1;
 if ($isLoggedIn) {
     $sessionDuration = $session->get('sessionDuration');
     $sessionDuration = max(intval($sessionDuration), 1200);
+    $sessionDuration *= 1000; // Seconds to miliseconds
 }
 
 /**
