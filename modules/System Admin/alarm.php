@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
     
     $settingGateway = $container->get(SettingGateway::class);
     
-    $settingAlarmSound = $settingGateway->getSettingByScope('System Admin', 'customAlarmSound']);
+    $settingAlarmSound = $settingGateway->getSettingByScope('System Admin', 'customAlarmSound', true);
 
     $form->addHiddenValue('address', $gibbon->session->get('address'));
     
@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
                     ->accepts($fileUploader->getFileExtensionsCSV())
                     ->setAttachment('attachmentCurrent', $gibbon->session->get('absoluteURL'), $settingAlarmSound['value']);
 
-    $settingAlarm = $settingGateway->selectBy(['scope' => 'System', 'name' => 'alarm'])->fetch();
+    $settingAlarm = $settingGateway->getSettingByScope('System', 'alarm', true);
     $form->addHiddenValue('alarmCurrent', $settingAlarm['value']);
 
     $row = $form->addRow();
