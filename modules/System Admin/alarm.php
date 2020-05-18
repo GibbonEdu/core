@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\FileUploader;
+use Gibbon\Domain\System\SettingGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -40,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
     $fileUploader = new FileUploader($pdo, $gibbon->session);
     $fileUploader->getFileExtensions('Audio');
 
-    // Alram Types
+    // Alarm Types
     $alarmTypes = array(
         'None'     => __('None'),
         'General'  => __('General'),
@@ -48,26 +49,28 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
         'Custom'   => __('Custom'),
     );
 
-    $form = Form::create('alarmSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/alarmProcess.php');
+    $form = Form::create('alarmSettings', $gibbon->session->get('absoluteURL').'/modules/'.$gibbon->session->get('module').'/alarmProcess.php');
+    
+    $settingGateway = $container->get(SettingGateway::class);
+    
+    $settingAlarmSound = $settingGateway->getSettingByScope('System Admin', 'customAlarmSound', true);
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-
-    $setting = getSettingByScope($connection2, 'System Admin', 'customAlarmSound', true);
-
+    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    
     $row = $form->addRow();
-        $label = $row->addLabel('file', __($setting['nameDisplay']))->description(__($setting['description']));
-        if (!empty($setting['value'])) $label->append(__('Will overwrite existing attachment.'));
+        $label = $row->addLabel('file', __($settingAlarmSound['nameDisplay']))->description(__($settingAlarmSound['description']));
+        if (!empty($settingAlarmSound['value'])) $label->append(__('Will overwrite existing attachment.'));
 
         $file = $row->addFileUpload('file')
                     ->accepts($fileUploader->getFileExtensionsCSV())
-                    ->setAttachment('attachmentCurrent', $_SESSION[$guid]['absoluteURL'], $setting['value']);
+                    ->setAttachment('attachmentCurrent', $gibbon->session->get('absoluteURL'), $settingAlarmSound['value']);
 
-    $setting = getSettingByScope($connection2, 'System', 'alarm', true);
-    $form->addHiddenValue('alarmCurrent', $setting['value']);
+    $settingAlarm = $settingGateway->getSettingByScope('System', 'alarm', true);
+    $form->addHiddenValue('alarmCurrent', $settingAlarm['value']);
 
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelect($setting['name'])->fromArray($alarmTypes)->selected($setting['value'])->required();
+        $row->addLabel($settingAlarm['name'], __($settingAlarm['nameDisplay']))->description(__($settingAlarm['description']));
+        $row->addSelect($settingAlarm['name'])->fromArray($alarmTypes)->selected($settingAlarm['value'])->required();
 
     $row = $form->addRow();
         $row->addFooter();
