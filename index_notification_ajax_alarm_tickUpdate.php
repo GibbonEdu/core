@@ -17,22 +17,23 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\AlarmGateway;
+
 // Gibbon system-wide includes
 require_once './gibbon.php';
 
 $gibbonAlarmID = $_POST['gibbonAlarmID'] ?? '';
 
 // Proceed!
-if (empty($_SESSION[$guid]['gibbonPersonID']) || $_SESSION[$guid]['gibbonRoleIDCurrentCategory'] != 'Staff') {
+if (empty($gibbon->session->get('gibbonPersonID')) || $gibbon->session->get('gibbonRoleIDCurrentCategory') != 'Staff') {
     die();
 } elseif (empty($gibbonAlarmID)) {
     die();
 } else {
     // Check confirmation of current alarm
-    $data = ['gibbonAlarmID' => $gibbonAlarmID, 'today' => date('Y-m-d')];
-    $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonAlarmConfirmID FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonAlarmConfirm ON (gibbonAlarmConfirm.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAlarmID=:gibbonAlarmID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) ORDER BY surname, preferredName";
+    $alarmGateway = $container->get(AlarmGateway::class);
 
-    $result = $pdo->select($sql, $data)->fetchKeyPair();
+    $result = $alarmGateway->selectAlarmConfirmation($gibbonAlarmID)->fetchAll();
 
     echo json_encode($result);
 }

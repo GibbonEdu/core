@@ -30,7 +30,7 @@ if (!$gibbon->session->has('gibbonPersonID') || $gibbon->session->get('gibbonRol
 } elseif ($type == 'general' or $type == 'lockdown' or $type == 'custom') {
     $alarmGateway = $container->get(AlarmGateway::class);
 
-    $alarm = $alarmGateway->getCurrentAlarm();
+    $alarm = $alarmGateway->selectBy(['status' => 'Current'])->fetch();
     if (empty($alarm)) return;
 
     $confirmed =  $alarmGateway->getAlarmConfirmationByPerson($alarm['gibbonAlarmID'], $gibbon->session->get('gibbonPersonID'));

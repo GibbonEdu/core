@@ -17,9 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\AlarmGateway;
+use Gibbon\Domain\System\SettingGateway;
+
 include '../../gibbon.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/alarm.php';
+$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/alarm.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') == false) {
     $URL .= '&return=error0';
@@ -35,8 +38,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
         $URL .= '&return=error3';
         header("Location: {$URL}");
     } else {
-        $fail = false;
-
         //DEAL WITH CUSTOM SOUND SETTING
         $time = time();
         //Move attached file, if there is one
@@ -57,88 +58,35 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
             $attachment = $attachmentCurrent;
         }
 
+        $alarmGateway = $container->get(AlarmGateway::class);
+        $settingGateway = $container->get(SettingGateway::class);
         //Write setting to database
-        try {
-            $data = array('value' => $attachment);
-            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System Admin' AND name='customAlarmSound'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
+        $dataWhere = ['scope' => 'System Admin', 'name' => 'customAlarmSound'];
+        $settingGateway->updateWhere($dataWhere, ['value' => $attachment]);
 
         //DEAL WITH ALARM SETTING
         //Write setting to database
-        try {
-            $data = array('alarm' => $alarm);
-            $sql = "UPDATE gibbonSetting SET value=:alarm WHERE scope='System' AND name='alarm'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
+        $dataWhereAdmin = ['scope' => 'System', 'name' => 'alarm'];
+        $settingGateway->updateWhere($dataWhereAdmin, ['value' => $alarm]);
 
         //Check for existing alarm
-        $checkFail = false;
-        try {
-            $data = array();
-            $sql = "SELECT * FROM gibbonAlarm WHERE status='Current'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $checkFail = true;
-        }
-
+        $alarmTest = $alarmGateway->selectBy(['status' => 'Current'])->fetch();
+        
         //Alarm is being turned on, so insert new record
         if ($alarm == 'General' or $alarm == 'Lockdown' or $alarm == 'Custom') {
-            if ($checkFail == true) {
-                $fail = true;
+            if (empty($alarmTest)) {
+                //Write alarm to database
+                $data = ['type' => $alarm, 'status' => 'Current', 'gibbonPersonID' => $gibbon->session->get('gibbonPersonID'), 'timestampStart' => date('Y-m-d H:i:s')];
+                $alarmGateway->insert($data);    
             } else {
-                if ($result->rowCount() == 0) {
-                    //Write alarm to database
-                    try {
-                        $data = array('type' => $alarm, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'timestampStart' => date('Y-m-d H:i:s'));
-                        $sql = "INSERT INTO gibbonAlarm SET type=:type, status='Current', gibbonPersonID=:gibbonPersonID, timestampStart=:timestampStart";
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $fail = true;
-                    }
-                } else {
-                    $row = $result->fetch();
-                    try {
-                        $data = array('type' => $alarm, 'gibbonAlarmID' => $row['gibbonAlarmID']);
-                        $sql = 'UPDATE gibbonAlarm SET type=:type WHERE gibbonAlarmID=:gibbonAlarmID';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $fail = true;
-                    }
-                }
+                $alarmGateway->updateWhere(['gibbonAlarmID' => $alarmTest['gibbonAlarmID']], ['type' => $alarm]);
             }
         } elseif ($alarmCurrent != $alarm) {
-            if ($result->rowCount() == 1) {
-                $row = $result->fetch();
-                try {
-                    $data = array('timestampEnd' => date('Y-m-d H:i:s'), 'gibbonAlarmID' => $row['gibbonAlarmID']);
-                    $sql = "UPDATE gibbonAlarm SET status='Past', timestampEnd=:timestampEnd WHERE gibbonAlarmID=:gibbonAlarmID";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    $fail = true;
-                }
-            } else {
-                $fail = true;
-            }
+            $alarmGateway->update($alarmTest['gibbonAlarmID'], ['status' => 'Past', 'timestampEnd' => date('Y-m-d H:i:s')]);
         }
 
-        if ($fail == true) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-        } else {
-            getSystemSettings($guid, $connection2);
-            $URL .= '&return=success0';
-            header("Location: {$URL}");
-        }
+        getSystemSettings($guid, $connection2);
+        $URL .= '&return=success0';
+        header("Location: {$URL}");
     }
 }

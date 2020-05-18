@@ -89,9 +89,9 @@ html, body {
                             dataType: "json",
                             success: function(data) {
                                 for (var index in data) {
-                                    if (data[index] != null) {
-                                        $("#staff"+index+" .alarm-confirm").removeClass("hidden");
-                                        $("#staff"+index+" .alarm-action").remove();
+                                    if (data[index].gibbonAlarmConfirmID != null) {
+                                        $("#staff"+data[index].gibbonPersonID+" .alarm-confirm").removeClass("hidden");
+                                        $("#staff"+data[index].gibbonPersonID+" .alarm-action").remove();
                                     }
                                 }
                             }

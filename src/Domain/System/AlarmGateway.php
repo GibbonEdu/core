@@ -53,13 +53,6 @@ class AlarmGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
-    public function getCurrentAlarm()
-    {
-        $sql = "SELECT * FROM gibbonAlarm WHERE status='Current'";
-
-        return $this->db()->selectOne($sql);
-    }
-
     public function getAlarmConfirmationByPerson($gibbonAlarmID, $gibbonPersonID)
     {
         $data = ['gibbonAlarmID' => $gibbonAlarmID, 'gibbonPersonID' => $gibbonPersonID];
@@ -67,4 +60,15 @@ class AlarmGateway extends QueryableGateway
 
         return $this->db()->selectOne($sql, $data);
     }
+    
+    public function insertAlarmConfirm(array $data) {
+
+        $query = $this
+            ->newInsert()
+            ->into('gibbonAlarmConfirm')
+            ->cols($data);
+
+        return $this->runInsert($query);
+    }
+    
 }
