@@ -222,12 +222,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                         echo $table->render([$row]);
 
-                        echo '<h4>';
-                        echo 'Contacts';
-                        echo '</h4>';
-
-                        
                         $table = DataTable::createDetails('contacts');
+                        $table->setTitle(__('Contacts'));
 
                         $numberCount = 0;
                         $phones = 0;
@@ -275,11 +271,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                         echo $table->render([$row]);
 
-                        echo '<h4>';
-                        echo __('Miscellaneous');
-                        echo '</h4>';
-
                         $table = DataTable::createDetails("misc");
+                        $table->setTitle(__('Miscellaneous'));
 
                         $table->addColumn('transport', __('Transport'));
                         $table->addColumn('vehicleRegistration', __('Vehicle Registration'));
@@ -431,11 +424,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             }
                         }
 
-                        echo '<h4>';
-                        echo __('Emergency Contacts');
-                        echo '</h4>';
-
                         $table = DataTable::createDetails('emergency');
+                        $table->setTitle(__('Emergency Contacts'));
 
                         for ($i = 1; $i <= 2; $i++) {
                             $emergency = 'emergency' . $i;
