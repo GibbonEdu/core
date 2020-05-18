@@ -128,9 +128,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
             echo '</tr>';
             echo '</table>';
 
-            echo '<h3>';
-            echo __('Lending & Activity Log');
-            echo '</h3>';
             
             $gateway = $container->get(LibraryGateway::class);
             $criteria = $gateway->newQueryCriteria(true)
