@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
 
     $gateway = $container->get(LibraryGateway::class);
     $criteria = $gateway->newQueryCriteria(true)
-                        ->sortBy(['name', 'producer'])
+                        ->sortBy(['timestampStatus'], 'DESC')
                         ->filterBy('name', $name)
                         ->filterBy('gibbonLibraryTypeID', $gibbonLibraryTypeID)
                         ->filterBy('gibbonSpaceID', $gibbonSpaceID)
@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
           ->format(function ($item) {
             return sprintf('<b>%1$s</b><br/>%2$s', $item['spaceName'], Format::small($item['locationDetail']));
           });
-    $table->addColumn('status', __('Status'))->format(function ($item) {
+    $table->addColumn('timestampStatus', __('Status'))->format(function ($item) {
         $statusDetail = "";
         if ($item['returnExpected'] != null) {
             $statusDetail .= sprintf(
