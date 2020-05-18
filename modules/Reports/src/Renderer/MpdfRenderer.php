@@ -26,7 +26,7 @@ use Gibbon\Module\Reports\Renderer\ReportRendererInterface;
 use Mpdf\Mpdf as Mpdf;
 use Mpdf\Config\ConfigVariables;
 use Mpdf\Config\FontVariables;
-use Twig_Environment;
+use Twig\Environment;
 
 class MpdfRenderer implements ReportRendererInterface
 {
@@ -44,7 +44,7 @@ class MpdfRenderer implements ReportRendererInterface
     protected $preProcess = array();
     protected $postProcess = array();
 
-    public function __construct(Twig_Environment $templateEngine)
+    public function __construct(Environment $templateEngine)
     {
         $this->twig = $templateEngine;
     }

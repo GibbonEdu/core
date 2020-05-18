@@ -24,6 +24,7 @@ use Gibbon\Module\Reports\Domain\ReportingScopeGateway;
 use Gibbon\Module\Reports\Forms\ReportingSidebarForm;
 use Gibbon\Forms\Form;
 use Gibbon\Module\Reports\Forms\CommentEditor;
+use Gibbon\Forms\DatabaseFormFactory;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.php') == false) {
     // Access denied
@@ -128,6 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.ph
     // FORM
     if (!empty($reportingCriteria)) {
         $form = Form::create('reportingWriteGlobal', $gibbon->session->get('absoluteURL').'/modules/Reports/reporting_writeProcess.php');
+        $form->setFactory(DatabaseFormFactory::create($pdo));
 
         $form->addHiddenValue('address', $gibbon->session->get('address'));
         $form->addHiddenValue('gibbonSchoolYearID', $urlParams['gibbonSchoolYearID']);

@@ -64,12 +64,14 @@ class Action extends WebLink
                             break;
             case 'view':    $this->setIcon('zoom');
                             break;
+            case 'accept':   $this->setIcon('iconTick');
+                            break;
         }
     }
 
     /**
      * Sets the internal url for this action.
-     * 
+     *
      * @param string $url
      * @return self
      */
@@ -82,7 +84,7 @@ class Action extends WebLink
 
     /**
      * Sets the external url for this action.
-     * 
+     *
      * @param string $url
      * @return self
      */
@@ -157,7 +159,7 @@ class Action extends WebLink
     /**
      * @deprecated Remove setters that start with isXXX for code consistency.
      */
-    public function isModal($width = 650, $height = 650) 
+    public function isModal($width = 650, $height = 650)
     {
         return $this->modalWindow($width, $height);
     }
@@ -168,7 +170,7 @@ class Action extends WebLink
      * @param bool $value
      * @return self
      */
-    public function modalWindow($width = 650, $height = 650) 
+    public function modalWindow($width = 650, $height = 650)
     {
         $this->modal = true;
 
@@ -182,7 +184,7 @@ class Action extends WebLink
     /**
      * @deprecated Remove setters that start with isXXX for code consistency.
      */
-    public function isDirect($value = true) 
+    public function isDirect($value = true)
     {
         return $this->directLink($value);
     }
@@ -192,7 +194,7 @@ class Action extends WebLink
      *
      * @return self
      */
-    public function directLink($value = true) 
+    public function directLink($value = true)
     {
         $this->direct = $value;
 
@@ -211,9 +213,9 @@ class Action extends WebLink
         global $guid; // :(
 
         if ($icon = $this->getIcon()) {
-            $this->setContent(sprintf('%1$s<img title="%2$s" src="'.$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/%3$s.png" width="25" height="25" class="ml-1">', 
+            $this->setContent(sprintf('%1$s<img alt="%2$s" title="%2$s" src="'.$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/%3$s.png" width="25" height="25" class="ml-1">',
                 ($this->displayLabel? $this->getLabel() : ''),
-                $this->getLabel(), 
+                $this->getLabel(),
                 $this->getIcon()
             ));
         } else {

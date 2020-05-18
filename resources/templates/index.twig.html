@@ -9,7 +9,7 @@ TODO: add template variable details.
 -->#}
 
 <!DOCTYPE html>
-<html {{ rightToLeft ? 'dir="rtl"' : '' }}>
+<html lang="{{ lang }}" dir="{{ rightToLeft ? 'rtl' : 'ltr' }}">
     <head>
         {% block head %}
         {{ include('head.twig.html') }}
@@ -26,7 +26,7 @@ TODO: add template variable details.
                 <div id="header" class="relative bg-white flex justify-between items-center rounded-t h-24 sm:h-32">
 
                     <a id="header-logo" class="block max-w-xs sm:max-w-full leading-none" href="{{ absoluteURL }}">
-                        <img class="block max-w-full" alt="Logo" src="{{ absoluteURL }}/{{ organisationLogo|default("/themes/Default/img/logo.png") }}" width="400"/>
+                        <img class="block max-w-full" alt="{{ organisationName }} Logo" src="{{ absoluteURL }}/{{ organisationLogo|default("/themes/Default/img/logo.png") }}" width="400"/>
                     </a>
 
                     <div class="flex-grow flex justify-end">

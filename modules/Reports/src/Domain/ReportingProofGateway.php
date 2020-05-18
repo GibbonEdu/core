@@ -153,6 +153,7 @@ class ReportingProofGateway extends QueryableGateway
             ->where("gibbonReportingCriteriaType.valueType='Comment'")
             ->where("(gibbonReportingValue.comment <> '' AND gibbonReportingValue.comment IS NOT NULL)")
             ->where("gibbonCourseClassPerson.role='Teacher'")
+            ->where("gibbonCourseClassPerson.reportable='Y'")
             ->where("gibbonCourseClass.reportable='Y'")
             ->where('gibbonPerson.gibbonPersonID=:gibbonPersonID')
             ->bindValue('gibbonPersonID', $gibbonPersonID)
@@ -239,7 +240,8 @@ class ReportingProofGateway extends QueryableGateway
             ->bindValue('gibbonReportingCycleIDList', implode(',', $gibbonReportingCycleIDList))
             ->where("gibbonReportingProof.status='Edited'")
             ->where("gibbonReportingScope.scopeType='Course'")
-            ->where("gibbonCourseClassPerson.role='Teacher'");
+            ->where("gibbonCourseClassPerson.role='Teacher'")
+            ->where("gibbonCourseClassPerson.reportable='Y'");
 
         // ROLL GROUPS
         $query->unionAll()

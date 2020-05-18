@@ -19,21 +19,28 @@ CHANGELOG
 v20.0.00
 --------
     Headlines
+        Messenger emails now send faster by using a background process
+        View Logs feature to browse Gibbon event logs
+        Compatible with PHP 7.4
 
     Changes With Important Notices
 
     Significant Changes
         Added Español - Mexico as an available locale
         Students: added a Withdraw Student page with the option to notify staff
+        Reports: added an option to bulk upload existing report PDFs
 
     Security
 
     Tweaks & Additions
-        System: added Argentine Peso as a currency option
+        System: added Argentine Peso and Ukrainian Hryvna as currency options
         System: updated Tailwind 1.2.0 dependencies via npm
         System: added target option to Alert Bar
+        System: added a DetailsView table for displaying data
+        System: update the pre-login homepage to use a card layout
         Departments: added drag-drop ordering to Departments in School Admin
         Finance: added Student ID, where set, to invoices and receipts
+        Finance: apply email template to invoices, receipts, and reminders
         Planner: enhanced Smart Block display in Lesson Planner
         Planner: removed bold from Chat comment in lesson plan view
         Reports: added a Proof Read by Form Group option
@@ -45,6 +52,7 @@ v20.0.00
         Reports: added auto resize to comment text boxes in Write Reports
         Reports: change criteria status to Locked/Unlocked for better clarity
         Reports: added a progress bar to the sidebar in Write Reports
+        Reports: add himself/herself to the pronoun checker
         Staff: added an option to edit or delete staff coverage dates
         Staff: added Family and Activities subpages to Staff Profile
         Staff: added notificaton events for New and Left staff
@@ -60,17 +68,26 @@ v20.0.00
         System: fixed Quick File Upload trimming filename by first period
         System: fixed paragraph spacing in copy-pasted Messenger emails
         System: fixed hourly cache refresh for pinned messages
+        System: fixed the first and last day of the selected school year
         Finance: fixed fee name bug in issued Invoices where fee name changed
+        Finance: fixed invoices not viewable by student
         Planner: changed spelling of Publically to Publicly
+        Planner: removed debug code from homework submission
         Staff: fixed Left staff appearing in Weekly Absences report
         Students: fixed emergency data report not showing parents column
         Students: fixed Tutors and EAs set to Left showing on Student Profile
+        Students: fixed past enrolments showing up in Students by Form Group
+        Students: adjusted Add Student Enrolment to allow Full and Expected students to be selected and enroled
         Reports: fixed Course scope Per Group criteria not saving per-class
         Reports: suppressed TCPDF deprecation messages when generating PDFs
         Reports: fixed pronoun switching not applied globally in some browsers
         Reports: fixed Student Info template to omit empty student photos
         Reports: fixed AttendanceByCycle data source and updated it to apply countClassAsSchool setting
-        System: fixed the first and last day of the selected school year
+        Reports: fixed grade scale drown-downs for Per Group reporting criteria
+        Reports: fixed bug in Internal Assessment data source
+        Reports: adjusted student lists to honour Reportable flag
+        Reports: applied gibbonCourseClassPerson reportable flag to queries
+        System Admin: fixed File Permission display issue in System Check
         Timetable: escaped calendar event names in timetable tooltips
         Timetable: incremented gibbonTTImport course and class name field lengths
 
