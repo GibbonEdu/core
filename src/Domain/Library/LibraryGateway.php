@@ -16,52 +16,50 @@ class LibraryGateway extends QueryableGateway
 
     public function queryLendingDetail(QueryCriteria $criteria)
     {
-      $query = $this
-        ->newQuery()
-        ->from('gibbonLibraryItemEvent')
-        ->join('left','gibbonPerson as gibbonPersonResponsible','gibbonLibraryItemEvent.gibbonPersonIDStatusResponsible = gibbonPersonResponsible.gibbonPersonID')
-        ->join('left','gibbonPerson as gibbonPersonOut','gibbonLibraryItemEvent.gibbonPersonIDOut = gibbonPersonOut.gibbonPersonID')
-        ->join('left','gibbonPerson as gibbonPersonIn','gibbonLibraryItemEvent.gibbonPersonIDIn = gibbonPersonIn.gibbonPersonID')
-        ->cols([
-          'ROW_NUMBER() OVER (ORDER BY gibbonLibraryItemEvent.timestampOut DESC) AS rowNum',
-          'gibbonPersonResponsible.title as responsiblePersonTitle',
-          'gibbonPersonResponsible.preferredName as responsiblePersonPreferredName',
-          'gibbonPersonResponsible.surname as responsiblePersonSurname',
-          'gibbonPersonResponsible.image_240 as responsiblePersonImage',
-          'gibbonPersonOut.gibbonPersonId as outPersonID',
-          'gibbonPersonOut.title as outPersonTitle',
-          'gibbonPersonOut.preferredName as outPersonPreferredName',
-          'gibbonPersonOut.surname as outPersonSurname',
-          'gibbonPersonOut.image_240 as outPersonImage',
-          'gibbonPersonIn.gibbonPersonID as inPersonID',
-          'gibbonPersonIn.title as inPersonTitle',
-          'gibbonPersonIn.preferredName as inPersonPreferredName',
-          'gibbonPersonIn.surname as inPersonSurname',
-          'gibbonPersonIn.image_240 as inPersonImage',
-          'gibbonLibraryItemEvent.gibbonPersonIDStatusResponsible',
-          'gibbonLibraryItemEvent.gibbonLibraryItemID',
-          'gibbonLibraryItemEvent.gibbonLibraryItemEventID',
-          'CONVERT(gibbonLibraryItemEvent.timestampOut,DATE) AS timestampOut',
-          'CONVERT(gibbonLibraryItemEvent.timestampReturn,DATE) AS timestampReturn',
-          'gibbonLibraryItemEvent.status',
-          'gibbonLibraryItemEvent.returnExpected',
-          'gibbonLibraryItemEvent.returnAction',
-          'gibbonLibraryItemEvent.gibbonPersonIDOut'
-        ])
-        ->orderBy([
-          'gibbonLibraryItemEvent.timestampOut DESC'
+        $query = $this
+            ->newQuery()
+            ->from('gibbonLibraryItemEvent')
+            ->cols([
+                'gibbonPersonResponsible.gibbonPersonID as responsiblePersonID',
+                'gibbonPersonResponsible.title as responsiblePersonTitle',
+                'gibbonPersonResponsible.preferredName as responsiblePersonPreferredName',
+                'gibbonPersonResponsible.surname as responsiblePersonSurname',
+                'gibbonPersonResponsible.image_240 as responsiblePersonImage',
+                'gibbonPersonOut.gibbonPersonId as outPersonID',
+                'gibbonPersonOut.title as outPersonTitle',
+                'gibbonPersonOut.preferredName as outPersonPreferredName',
+                'gibbonPersonOut.surname as outPersonSurname',
+                'gibbonPersonOut.image_240 as outPersonImage',
+                'gibbonPersonIn.gibbonPersonID as inPersonID',
+                'gibbonPersonIn.title as inPersonTitle',
+                'gibbonPersonIn.preferredName as inPersonPreferredName',
+                'gibbonPersonIn.surname as inPersonSurname',
+                'gibbonPersonIn.image_240 as inPersonImage',
+                'gibbonLibraryItemEvent.gibbonPersonIDStatusResponsible',
+                'gibbonLibraryItemEvent.gibbonLibraryItemID',
+                'gibbonLibraryItemEvent.gibbonLibraryItemEventID',
+                'CONVERT(gibbonLibraryItemEvent.timestampOut,DATE) AS timestampOut',
+                'CONVERT(gibbonLibraryItemEvent.timestampReturn,DATE) AS timestampReturn',
+                'gibbonLibraryItemEvent.status',
+                'gibbonLibraryItemEvent.returnExpected',
+                'gibbonLibraryItemEvent.returnAction',
+                'gibbonLibraryItemEvent.gibbonPersonIDOut',
+                "IF(gibbonLibraryItemEvent.returnExpected <= CURRENT_TIMESTAMP,'Y','N') as pastDue"
+            ])
+            ->leftJoin('gibbonPerson as gibbonPersonResponsible', 'gibbonLibraryItemEvent.gibbonPersonIDStatusResponsible = gibbonPersonResponsible.gibbonPersonID')
+            ->leftJoin('gibbonPerson as gibbonPersonOut', 'gibbonLibraryItemEvent.gibbonPersonIDOut = gibbonPersonOut.gibbonPersonID')
+            ->leftJoin('gibbonPerson as gibbonPersonIn', 'gibbonLibraryItemEvent.gibbonPersonIDIn = gibbonPersonIn.gibbonPersonID');
+
+
+        $criteria->addFilterRules([
+            'gibbonLibraryItemID' => function ($query, $itemid) {
+                return $query
+                    ->where('gibbonLibraryItemEvent.gibbonLibraryItemID = :itemid')
+                    ->bindValue('itemid', $itemid);
+            }
         ]);
 
-
-      $criteria->addFilterRules([
-        'gibbonLibraryItemID' => function($query,$itemid) {
-          return $query
-            ->where('gibbonLibraryItemEvent.gibbonLibraryItemID = :itemid')
-            ->bindValue('itemid',$itemid);
-        }
-      ]);
-
-      return $this->runQuery($query,$criteria);
+        return $this->runQuery($query, $criteria);
     }
 
     public function queryLending(QueryCriteria $criteria)
@@ -94,11 +92,7 @@ class LibraryGateway extends QueryableGateway
         ])
         ->where("gli.status IN ('Available','Repair','Reserved','On Loan')")
         ->where("ownershipType != 'Individual'")
-        ->where("gli.borrowable = 'Y'")
-        ->orderBy([
-          'name',
-          'producer'
-        ]);
+        ->where("gli.borrowable = 'Y'");
 
         $criteria->addFilterRules([
         'name' => function ($query, $name) {

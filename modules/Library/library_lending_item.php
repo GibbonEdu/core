@@ -131,107 +131,112 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
             
             $gateway = $container->get(LibraryGateway::class);
             $criteria = $gateway->newQueryCriteria(true)
-               ->filterBy('gibbonLibraryItemID',$gibbonLibraryItemID)
-               ->filterBy('name',$name)
-               ->filterBy('gibbonLibraryTypeID',$gibbonLibraryTypeID)
-               ->filterBy('gibbonSpaceID',$gibbonSpaceID)
-               ->filterBy('status',$status)
-                                ->fromPOST();
+                ->sortBy('gibbonLibraryItemEvent.timestampOut', 'DESC')
+                ->filterBy('gibbonLibraryItemID', $gibbonLibraryItemID)
+                ->filterBy('name', $name)
+                ->filterBy('gibbonLibraryTypeID', $gibbonLibraryTypeID)
+                ->filterBy('gibbonSpaceID', $gibbonSpaceID)
+                ->filterBy('status', $status)
+                ->fromPOST();
+
             $item = $gateway->queryLendingDetail($criteria); 
-            $table = DataTable::createPaginated('lendingLog',$criteria);
+            $table = DataTable::createPaginated('lendingLog', $criteria);
             $table->setTitle(__('Lending & Activity Log'));
-            if($status == 'Available') {
+
+            $table->modifyRows(function ($item, $row) {
+                if ($item['status'] == 'On Loan') {
+                    return $item['pastDue'] == 'Y' ? $row->addClass('error') : $row->addClass('warning');
+                }
+                return $row;
+            });
+
+            if ($row['status'] == 'Available') {
               $table
-                ->addHeaderAction('signout',__('Sign Out'))
+                ->addHeaderAction('signout', __('Sign Out'))
                 ->setURL('/modules/Library/library_lending_item_signout.php')
                 ->setIcon('page_right')
-                ->addParam('gibbonLibraryItemID',$gibbonLibraryItemID)
-                ->addParam('name',$name)
-                ->addParam('gibbonLibraryTypeID',$gibbonLibraryTypeID)
-                ->addParam('gibbonSpaceID',$gibbonSpaceID)
-                ->addParam('status',$status);
+                ->addParam('gibbonLibraryItemID', $gibbonLibraryItemID)
+                ->addParam('name', $name)
+                ->addParam('gibbonLibraryTypeID', $gibbonLibraryTypeID)
+                ->addParam('gibbonSpaceID', $gibbonSpaceID)
+                ->addParam('status', $status);
             } else {
-              echo "<div class='error'><i>" . __('This item has already been signed out.') . "</i></div>";
+              echo Format::alert(__('This item has already been signed out.'), 'error');
             }
 
             $table
-              ->addColumn('user',__('User'))
-              ->format(function($item) {
-                if($item['gibbonPersonIDStatusResponsible'] != '')
-                {
-                  return sprintf('%1$s<div style="margin-top: 3px; font-weight: bold">%2$s</div>', Format::userPhoto($item['responsiblePersonImage']),Format::name($item['responsiblePersonTitle'], $item['responsiblePersonPreferredName'], $item['responsiblePersonSurname'], 'Staff', false, true));
+              ->addColumn('user', __('User'))
+              ->sortable(['responsiblePersonSurname', 'responsiblePersonPreferredName'])
+              ->format(function ($item) {
+                if ($item['gibbonPersonIDStatusResponsible'] != '') {
+                  return sprintf('%1$s<div style="margin-top: 3px; font-weight: bold">%2$s</div>', Format::userPhoto($item['responsiblePersonImage']), Format::name($item['responsiblePersonTitle'], $item['responsiblePersonPreferredName'], $item['responsiblePersonSurname'], 'Staff', false, true));
                 } else {
                   return null;
                 }
               });
-            $table->addColumn('status',__('Status (Date In/Out)'))
-                  ->format(function($event) {
+            $table->addColumn('status', __('Status'))
+                  ->description(__('Date In/Out'))
+                  ->format(function ($event) {
                     $timeInOut = Format::date($event['timestampOut']);
-                    if($event['timestampReturn'] != '')
-                    {
+                    if ($event['timestampReturn'] != '') {
                       $timeInOut .= ' - ' . Format::date($event['timestampReturn']);
                     }
-                    return sprintf('%1$s<br/>%2$s',$event['status'],Format::small($timeInOut));
-                  });;
+                    return sprintf('%1$s<br/>%2$s', $event['status'], Format::small($timeInOut));
+                  });
             $table
-              ->addColumn('dueDate',__('Due Date'))
-              ->format(function($event) {
-                if($event['status'] != 'Returned' && $event['returnExpected'] != '')
-                {
+              ->addColumn('returnExpected', __('Due Date'))
+              ->format(function ($event) {
+                if ($event['status'] != 'Returned' && $event['returnExpected'] != '') {
                   return Format::date($event['returnExpected']);
                 }
               });
             $table
-              ->addColumn('returnAction',__('Return Action'))
-              ->format(function($event) {
-                if($event['status'] != 'Returned' && $event['returnAction'] != ''){
+              ->addColumn('returnAction', __('Return Action'))
+              ->format(function ($event) {
+                if ($event['status'] != 'Returned' && $event['returnAction'] != ''){
                   return Format::date($event['returnAction']);
                 }
               });
             $table
-              ->addColumn('recordedBy',__('Recorded By'))
-              ->format(function($event) {
+              ->addColumn('outPersonID', __('Recorded By'))
+              ->format(function ($event) {
                 $outPerson = "";
                 $inPerson = "";
-                if($event['outPersonID'])
-                {
-                  $outPerson .= 'Out: ' . Format::name($event['outPersonTitle'],$event['outPersonPreferredName'],$event['outPersonSurname'],'Staff',false,true);
+                if ($event['outPersonID']) {
+                    $outPerson .= 'Out: ' . Format::name($event['outPersonTitle'], $event['outPersonPreferredName'], $event['outPersonSurname'], 'Staff', false, true);
                 }
-                if($event['inPersonID'])
-                {
-                  $inPerson .= 'In: ' . Format::name($event['inPersonTitle'],$event['inPersonPreferredName'],$event['inPersonSurname'],'Staff',false,true);
+                if ($event['inPersonID']) {
+                    $inPerson .= 'In: ' . Format::name($event['inPersonTitle'], $event['inPersonPreferredName'], $event['inPersonSurname'], 'Staff', false, true);
                 }
-                return sprintf('%1$s<br/>%2$s',$outPerson,$inPerson);
+                return sprintf('%1$s<br/>%2$s', $outPerson, $inPerson);
               });
+
             $table
               ->addActionColumn()
               ->addParam('gibbonLibraryItemID')
-              ->addParam('name',$name)
-              ->addParam('gibbonLibraryTypeID',$gibbonLibraryTypeID)
-              ->addParam('gibbonSpaceID',$gibbonSpaceID)
               ->addParam('gibbonLibraryItemEventID')
-              ->addParam('status',$status)
-              ->format(function($event,$actions) {
-                if($event['rowNum'] == 1 && $event['status'] != 'Returned')
-                {
+              ->addParam('name', $name)
+              ->addParam('gibbonLibraryTypeID', $gibbonLibraryTypeID)
+              ->addParam('gibbonSpaceID', $gibbonSpaceID)
+              ->addParam('status', $status)
+              ->format(function ($event, $actions) {
+                if ($event['status'] != 'Returned') {
                   //Edit function cannot be used unless the responsible person ID is set
-                  if($event['responsiblePersonID'] != null)
-                  {
+                  if ($event['responsiblePersonID'] != null) {
                     $actions
-                      ->addAction('edit',__('Edit'))
+                      ->addAction('edit', __('Edit'))
                       ->setURL('/modules/Library/library_lending_item_edit.php');
                   }
 
                   $actions
-                    ->addAction('return',__('Return'))
+                    ->addAction('return', __('Return'))
                     ->setIcon('page_left')
                     ->setURL('/modules/Library/library_lending_item_return.php');
 
                   //Renew feature is only usable when the responsible person ID is set
-                  if($event['responsiblePersonID'] != null)
-                  {
+                  if ($event['responsiblePersonID'] != null) {
                     $actions
-                      ->addAction('renew',__('Renew'))
+                      ->addAction('renew', __('Renew'))
                       ->setIcon('page_right')
                       ->setURL('/modules/Library/library_lending_item_renew.php');
                   }

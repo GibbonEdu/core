@@ -2616,13 +2616,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             //Print borrowing record
                             $libraryGateway = $container->get(LibraryReportGateway::class);
                             $criteria = $libraryGateway->newQueryCriteria(true)
-                                                ->filterBy('gibbonPersonID', $gibbonPersonID);
+                                ->sortBy('gibbonLibraryItemEvent.timestampOut', 'DESC')
+                                ->filterBy('gibbonPersonID', $gibbonPersonID)
+                                ->fromPOST('lendingLog');
+
                             $items = $libraryGateway->queryStudentReportData($criteria);
-                            $lendingTable = DataTable::createPaginated('reportdata', $criteria);
+                            $lendingTable = DataTable::createPaginated('lendingLog', $criteria);
                             $lendingTable
                               ->modifyRows(function ($item, $row) {
                                 if ($item['status'] == 'On Loan') {
-                                    return $item['pastDue'] == 'Y' ? $row : $row->addClass('error');
+                                    return $item['pastDue'] == 'Y' ? $row->addClass('error') : $row;
                                 }
                                 return $row;
                               });
@@ -2638,12 +2641,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 return $detailTable;
                               });
                             $lendingTable
-                              ->addColumn('image')
+                              ->addColumn('imageLocation')
+                              ->width('120px')
                               ->format(function ($item) {
-                                return Format::photo($item['imageLocation'], 240);
+                                return Format::photo($item['imageLocation'], 75);
                               });
                             $lendingTable
-                              ->addColumn('name', __('Name (Author/Producer)'))
+                              ->addColumn('name', __('Name'))
+                              ->description(__('Author/Producer'))
                               ->format(function ($item) {
                                 return sprintf('<b>%1$s</b><br/>%2$s', $item['name'], Format::small($item['producer']));
                               });
@@ -2653,12 +2658,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 return sprintf('<b>%1$s</b>', $item['id']);
                               });
                             $lendingTable
-                              ->addColumn('location', __('Location'))
+                              ->addColumn('spaceName', __('Location'))
                               ->format(function ($item) {
                                 return sprintf('<b>%1$s</b><br/>%2$s', $item['spaceName'], Format::small($item['locationDetail']));
                               });
                             $lendingTable
-                              ->addColumn('borrowDate', __('Return Date (Borrow Date)'))
+                              ->addColumn('timestampOut', __('Return Date'))
+                              ->description(__('Borrow Date'))
                               ->format(function ($item) {
                                 return sprintf('<b>%1$s</b><br/>%2$s', $item['status'] == 'On Loan' ? Format::date($item['returnExpected']) : 'N/A', Format::small(Format::date($item['timestampOut'])));
                               });
