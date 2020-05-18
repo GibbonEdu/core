@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
         $dataWhere = ['scope' => 'System', 'name' => 'alarm'];
         $settingGateway->updateWhere($dataWhere, ['value' => 'None']);
         //Write alarm to database
-        $alarmGateway->updateWhere(['gibbonAlarmID' => $gibbonAlarmID], ['status' => 'Past', 'timestampEnd' => date('Y-m-d H:i:s')]);
+        $alarmGateway->update($gibbonAlarmID, ['status' => 'Past', 'timestampEnd' => date('Y-m-d H:i:s')]);
 
         getSystemSettings($guid, $connection2);
         $URL .= '&return=success0';

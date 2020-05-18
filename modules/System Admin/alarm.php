@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
     
     $settingGateway = $container->get(SettingGateway::class);
     
-    $settingAlarmSound = $settingGateway->selectBy(['scope' => 'System Admin', 'name' => 'customAlarmSound'])->fetch();
+    $settingAlarmSound = $settingGateway->getSettingByScope('System Admin', 'customAlarmSound']);
 
     $form->addHiddenValue('address', $gibbon->session->get('address'));
     

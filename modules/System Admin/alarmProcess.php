@@ -76,13 +76,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
         if ($alarm == 'General' or $alarm == 'Lockdown' or $alarm == 'Custom') {
             if (empty($alarmTest)) {
                 //Write alarm to database
-                $data = array('type' => $alarm, 'status' => 'Current', 'gibbonPersonID' => $gibbon->session->get('gibbonPersonID'), 'timestampStart' => date('Y-m-d H:i:s'));
+                $data = ['type' => $alarm, 'status' => 'Current', 'gibbonPersonID' => $gibbon->session->get('gibbonPersonID'), 'timestampStart' => date('Y-m-d H:i:s')];
                 $alarmGateway->insert($data);    
             } else {
                 $alarmGateway->updateWhere(['gibbonAlarmID' => $alarmTest['gibbonAlarmID']], ['type' => $alarm]);
             }
         } elseif ($alarmCurrent != $alarm) {
-            $alarmGateway->updateWhere(['gibbonAlarmID' => $alarmTest['gibbonAlarmID']], ['status' => 'Past', 'timestampEnd' => date('Y-m-d H:i:s')]);
+            $alarmGateway->update($alarmTest['gibbonAlarmID'], ['status' => 'Past', 'timestampEnd' => date('Y-m-d H:i:s')]);
         }
 
         getSystemSettings($guid, $connection2);

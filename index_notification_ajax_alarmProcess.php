@@ -40,7 +40,7 @@ if (empty($gibbonAlarmID)) {
 
         if (empty($alarmConfirm)) {
             //Insert confirmation
-            $dataConfirm = array('gibbonAlarmID' => $alarm['gibbonAlarmID'], 'gibbonPersonID' => $gibbon->session->get('gibbonPersonID'), 'timestamp' => date('Y-m-d H:i:s'));
+            $dataConfirm =['gibbonAlarmID' => $alarm['gibbonAlarmID'], 'gibbonPersonID' => $gibbon->session->get('gibbonPersonID'), 'timestamp' => date('Y-m-d H:i:s')];
             $alarmGateway->insertAlarmConfirm($dataConfirm);
         }
     }
