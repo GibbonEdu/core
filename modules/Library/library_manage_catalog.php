@@ -153,6 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $actions = $table->addActionColumn()
           ->addParam('gibbonLibraryItemID')
           ->addParam('name', $name)
+          ->addParam('gibbonLibraryTypeID', $gibbonLibraryTypeID)
           ->addParam('gibbonSpaceID', $gibbonSpaceID)
           ->addParam('status', $status)
           ->addParam('gibbonPersonIDOwnership', $gibbonPersonIDOwnership)
