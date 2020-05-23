@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_studentBorr
                 $detailTable = "<table>";
                 $fields = unserialize($item['fields']);
                 foreach (unserialize($item['typeFields']) as $typeField) {
-                    $detailTable .= sprintf('<tr><td><b>%1$s</b></td><td>%2$s</td></tr>', $typeField['name'], $fields[$typeField['name']]);
+                    $detailTable .= sprintf('<tr><td><b>%1$s</b></td><td>%2$s</td></tr>', __($typeField['name']), $fields[$typeField['name']]);
                 }
                 $detailTable .= '</table>';
                 return $detailTable;
@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_studentBorr
                 return sprintf('<b>%1$s</b><br/>%2$s', $item['status'] == 'On Loan' ? Format::date($item['returnExpected']) : 'N/A', Format::small(Format::date($item['timestampOut'])));
             });
         $table
-            ->addColumn('status', __('Status'));
+            ->addColumn('status', __('Status'))->translatable();
         echo $table->render($items);
     }
 }

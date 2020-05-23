@@ -249,7 +249,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
             $row->addSelect('reason')->fromArray($attendance->getAttendanceReasons());
 
         $row = $form->addRow();
-            $row->addLabel('comment', __('Comment'))->description('255 character limit');
+            $row->addLabel('comment', __('Comment'))->description(__('255 character limit'));
             $row->addTextArea('comment')->setRows(3)->maxLength(255);
 
         $form->addRow()->addSubmit();

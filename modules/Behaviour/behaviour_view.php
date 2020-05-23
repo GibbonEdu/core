@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
             $form->addHiddenValue('q', '/modules/Behaviour/behaviour_view.php');
 
             $row = $form->addRow();
-                $row->addLabel('search',__('Search For'))->description('Preferred, surname, username.');
+                $row->addLabel('search',__('Search For'))->description(__('Preferred, surname, username.'));
                 $row->addTextField('search')->setValue($search)->maxLength(30);
 
             $row = $form->addRow();

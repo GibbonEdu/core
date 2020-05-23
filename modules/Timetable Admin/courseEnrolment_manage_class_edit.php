@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             if (!empty($allUsers)) {
                 $people['--'.__('All Users').'--'] = Format::keyValue($allUsers, 'gibbonPersonID', function ($item) {
                     $expected = ($item['status'] == 'Expected')? '('.__('Expected').')' : '';
-                    return Format::name('', $item['preferredName'], $item['surname'], 'Student', true).' ('.$item['username'].', '.$item['roleCategory'].')'.$expected;
+                    return Format::name('', $item['preferredName'], $item['surname'], 'Student', true).' ('.$item['username'].', '.__($item['roleCategory']).')'.$expected;
                 });
             }
 
@@ -168,7 +168,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                   ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
                   ->format($linkedName);
             $table->addColumn('email', __('Email'));
-            $table->addColumn('role', __('Class Role'));
+            $table->addColumn('role', __('Class Role'))->translatable();
             $table->addColumn('reportable', __('Reportable'))
                   ->format(Format::using('yesNo', 'reportable'));
 
