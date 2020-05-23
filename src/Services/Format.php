@@ -506,7 +506,7 @@ class Format
                     list($token, $length) = array_pad(explode(':', $matches[1], 2), 2, false);
                     if ($$token) {
                         return (!empty($length)? mb_substr($$token, 0, intval($length)) : 
-                            ($token == 'title') ? __($$token) : $$token);
+                            (($token == 'title') ? __($$token) : $$token));
                     }
                     else{
                         return '';
