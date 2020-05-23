@@ -233,17 +233,17 @@ else {
 
 					$form->toggleVisibilityByClass('role')->onRadio('role')->when('Y');
 
-                                        $roleGateway = $container->get(RoleGateway::class);
-                                        // CRITERIA
-                                        $criteria = $roleGateway->newQueryCriteria()
-                                            ->sortBy(['gibbonRole.name']);
+					$roleGateway = $container->get(RoleGateway::class);
+					// CRITERIA
+					$criteria = $roleGateway->newQueryCriteria()
+						->sortBy(['gibbonRole.name']);
 
                                         $arrRoles = array();
-                                        $roles = $roleGateway->queryRoles($criteria);
+					$roles = $roleGateway->queryRoles($criteria);
 
-                                        foreach ($roles AS $role) {
-                                            $arrRoles[$role['gibbonRoleID']] = __($role['name'])." (".__($role['category']).")";
-                                        }                                       
+					foreach ($roles AS $role) {
+						$arrRoles[$role['gibbonRoleID']] = __($role['name'])." (".__($role['category']).")";
+					}                                       
 					$row = $form->addRow()->addClass('role hiddenReveal');
 						$row->addLabel('roles[]', __('Select Roles'));
 						$row->addSelect('roles[]')->fromArray($arrRoles)->selectMultiple()->setSize(6)->required()->placeholder()->selected($selected);
