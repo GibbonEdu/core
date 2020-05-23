@@ -238,7 +238,7 @@ else {
 					$criteria = $roleGateway->newQueryCriteria()
 						->sortBy(['gibbonRole.name']);
 
-                                        $arrRoles = array();
+					$arrRoles = array();
 					$roles = $roleGateway->queryRoles($criteria);
 
 					foreach ($roles AS $role) {
