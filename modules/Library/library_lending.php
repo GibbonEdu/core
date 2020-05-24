@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
         if ($item['returnExpected'] != null) {
             $statusDetail .= sprintf(
                 '<br/>%1$s<br/>%2$s',
-                Format::small($item['returnExpected']),
+                Format::small(Format::date($item['returnExpected'])),
                 Format::small(Format::name($item['title'], $item['preferredName'], $item['surname'], 'Student', false, true))
             );
         }
