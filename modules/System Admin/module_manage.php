@@ -138,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                 return __m($module['name']);
             }
             else {
-                return $module['name'];
+                return __($module['name']);
             }
     });
 
