@@ -40,32 +40,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
     $gateway = $container->get(InvoiceGateway::class);
     $criteria = $gateway->newQueryCriteria(true);
     $feeCategories = $gateway->queryFeeCategories($criteria);
-    $table = DataTable::createPaginated('feeCategories',$criteria);
-    $table->addHeaderAction('add',__('Add'))
+    $table = DataTable::createPaginated('feeCategories', $criteria);
+    $table->addHeaderAction('add', __('Add'))
           ->setURL('/modules/Finance/feeCategories_manage_add.php');
 
-    $table->addColumn('name',__('Name'));
-    $table->addColumn('nameShort',__('Short Name'));
-    $table->addColumn('description',__('Description'));
-    $table->addColumn('active',__('Active'));
+    $table->addColumn('name', __('Name'));
+    $table->addColumn('nameShort', __('Short Name'));
+    $table->addColumn('description', __('Description'));
+    $table->addColumn('active', __('Active'));
     $table->addActionColumn()
           ->addParam('gibbonFinanceFeeCategoryID')
-          ->format(function($item, $actions) {
-              if($item['gibbonFinanceFeeCategoryID'] == 1)
-              {
-                  echo Format::small(__('This category cannot be edited or deleted.'));
-              }
-              else
-              {
-                $actions->addAction('edit',__('Edit'))
-                        ->setURL('/modules/Finance/feeCategories_manage_edit.php');
-                $actions->addAction('delete',__('Delete'))
-                        ->setURL('/modules/Finance/feeCategories_manage_delete.php');
-              }
+          ->format(function ($item, $actions) {
+            if ($item['gibbonFinanceFeeCategoryID'] == 1) {
+                echo Format::small(__('This category cannot be edited or deleted.'));
+            } else {
+                $actions->addAction('edit', __('Edit'))
+                      ->setURL('/modules/Finance/feeCategories_manage_edit.php');
+                $actions->addAction('delete', __('Delete'))
+                      ->setURL('/modules/Finance/feeCategories_manage_delete.php');
+            }
           });
 
     $table->modifyRows(function ($item, $row) {
-      return $item['active'] == 'N' ? $row->addClass('warning') : $row;
+        return $item['active'] == 'N' ? $row->addClass('warning') : $row;
     });
     echo $table->render($feeCategories);
 }
