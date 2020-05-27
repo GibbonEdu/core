@@ -74,6 +74,7 @@ v20.0.00
         Finance: fixed invoices not viewable by student
         Planner: changed spelling of Publically to Publicly
         Planner: removed debug code from homework submission
+        Planner: removed ability for students and parents to be granted Lesson Planner_viewAllEditMyClasses
         Staff: fixed Left staff appearing in Weekly Absences report
         Students: fixed emergency data report not showing parents column
         Students: fixed Tutors and EAs set to Left showing on Student Profile
