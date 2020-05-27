@@ -92,6 +92,7 @@ v20.0.00
         System Admin: fixed issue causing string replacement preventing update highlighting in Manage Modules
         Timetable: escaped calendar event names in timetable tooltips
         Timetable: incremented gibbonTTImport course and class name field lengths
+        Timetable Admin: implemented bulk Tie Days to Dates duplicate checking
 
 v19.0.00
 --------
