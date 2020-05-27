@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Timetable\TimetableDayGateway;
+
 include '../../gibbon.php';
 
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
@@ -52,32 +54,49 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
-            $partialFail = false;
-            foreach ($dates as $date) {
-                if (isSchoolOpen($guid, date('Y-m-d', $date), $connection2, true) == false) {
-                    $partialFail = true;
-                } else {
-                    //Check if a day from the TT is already set. Not enough time to add this now, but should do this one day
+            //Get gibbonTTID for current day
+            $timetableDayGateway = $container->get(TimetableDayGateway::class);
+            $gibbonTTDay = $timetableDayGateway->getTTDayByID($gibbonTTDayID);
+            if (!is_array($gibbonTTDay) && !empty($gibbonTTDay['gibbonTTID'])) {
+                $URL .= '&return=error2';
+                header("Location: {$URL}");
+            }
+            else {
+                $gibbonTTID = $gibbonTTDay['gibbonTTID'];
 
-                    //Write to database
-                    try {
-                        $data = array('gibbonTTDayID' => $gibbonTTDayID, 'date' => date('Y-m-d', $date));
-                        $sql = 'INSERT INTO gibbonTTDayDate SET gibbonTTDayID=:gibbonTTDayID, date=:date';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
+                $partialFail = false;
+                foreach ($dates as $date) {
+                    if (isSchoolOpen($guid, date('Y-m-d', $date), $connection2, true) == false) {
                         $partialFail = true;
+                    } else {
+                        //Check if a day from the TT is already set
+                        $days = $timetableDayGateway->selectDaysByDate(date('Y-m-d', $date), $gibbonTTID);
+
+                        if ($days->rowCount() > 0) {
+                            $partialFail = true;
+                        }
+                        else {
+                            //Write to database
+                            try {
+                                $data = array('gibbonTTDayID' => $gibbonTTDayID, 'date' => date('Y-m-d', $date));
+                                $sql = 'INSERT INTO gibbonTTDayDate SET gibbonTTDayID=:gibbonTTDayID, date=:date';
+                                $result = $connection2->prepare($sql);
+                                $result->execute($data);
+                            } catch (PDOException $e) {
+                                $partialFail = true;
+                            }
+                        }
                     }
                 }
-            }
 
-            //Report result
-            if ($partialFail == true) {
-                $URL .= '&return=warning1';
-                header("Location: {$URL}");
-            } else {
-                $URL .= '&return=success0';
-                header("Location: {$URL}");
+                //Report result
+                if ($partialFail == true) {
+                    $URL .= '&return=warning1';
+                    header("Location: {$URL}");
+                } else {
+                    $URL .= '&return=success0';
+                    header("Location: {$URL}");
+                }
             }
         }
     }
