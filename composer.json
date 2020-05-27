@@ -38,7 +38,7 @@
         "tecnickcom/tcpdf": "6.0.038",
         "twig/twig": "^2.0",
         "slim/slim": "^3.0",
-        "phpmailer/phpmailer": "5.2.*",
+        "phpmailer/phpmailer": "6.1.*",
         "matthewbdaly/sms-client": "^1.0",
         "symfony/yaml": "^3.2",
         "monolog/monolog": "^1.24",
