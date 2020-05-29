@@ -92,18 +92,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
                         ->filterBy('status', $status)
                         ->fromPOST();
     $items = $gateway->queryLending($criteria);
+    
     $table = DataTable::createPaginated('lending', $criteria);
+
+    $table->setTitle(__('Lending & Activity Log'));
 
     $table->addColumn('id', __('ID'));
     $table->addColumn('name', __('Name'))->format(function ($item) {
         return sprintf('<b>%1$s</b><br/>%2$s', $item['name'], Format::small($item['producer']));
     });
-    $table->addColumn('typeName', __('Type'));
+    $table->addColumn('typeName', __('Type'))->translatable();
     $table->addColumn('spaceName', __('Location'))
           ->format(function ($item) {
             return sprintf('<b>%1$s</b><br/>%2$s', $item['spaceName'], Format::small($item['locationDetail']));
           });
-    $table->addColumn('timestampStatus', __('Status'))->format(function ($item) {
+    $table->addColumn('timestampStatus', __('Status'))
+            ->description(__('Return'))
+            ->format(function ($item) {
         $statusDetail = "";
         if ($item['returnExpected'] != null) {
             $statusDetail .= sprintf(
@@ -114,11 +119,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
         }
         return sprintf(
             '<b>%1$s</b>%2$s',
-            $item['status'],
+            __($item['status']),
             $statusDetail
         );
     });
-    ;
+            
     $table->addActionColumn()
           ->addParam('gibbonLibraryItemID')
           ->addParam('name', $name)
