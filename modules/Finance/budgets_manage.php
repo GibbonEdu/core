@@ -34,42 +34,41 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage.php
         returnProcess($guid, $_GET['return']);
     }
     
-    echo '<p>';
-    echo __('Budgets are used within purchase requisitions and expense records in order to segregate records into different areas.');
-    echo '</p>';
-
     $gateway = $container->get(FinanceGateway::class);
     $criteria = $gateway
       ->newQueryCriteria(true)
       ->fromPOST();
     
     $budgets = $gateway->queryFinanceBudget($criteria);
-    $table = DataTable::createPaginated('budgets',$criteria);
-    $table->addHeaderAction('add',__('Add'))
+    $table = DataTable::createPaginated('budgets', $criteria);
+    $table->setDescription(__('Budgets are used within purchase requisitions and expense records in order to segregate records into different areas.'));
+
+    $table->addHeaderAction('add', __('Add'))
       ->setURL('/modules/Finance/budgets_manage_add.php')
       ->displayLabel();
     
-    $table->addColumn('name',__('Name'));
-    $table->addColumn('nameShort',__('Short Name'));
-    $table->addColumn('category',__('Category'));
+    $table->addColumn('name', __('Name'));
+    $table->addColumn('nameShort', __('Short Name'));
+    $table->addColumn('category', __('Category'));
     $table
-      ->addColumn('active',__('Active'))
-      ->format(function($budget) {
+      ->addColumn('active', __('Active'))
+      ->format(function ($budget) {
         return $budget['active'] == 'Y' ? 'Yes' : 'No';
       });
     
     $table
       ->addActionColumn()
       ->addParam('gibbonFinanceBudgetID')
-      ->format(function($budget,$actions) {
+      ->format(function ($budget, $actions) {
         $actions
-          ->addAction('edit',__('Edit'))
+          ->addAction('edit', __('Edit'))
           ->setURL('/modules/Finance/budgets_manage_edit.php&');
         $actions
-          ->addAction('delete',__('Delete'));
+          ->addAction('delete', __('Delete'))
+          ->setURL('/modules/Finance/budgets_manage_delete.php');
       });
 
-    $table->modifyRows(function($budget,$row) {
+    $table->modifyRows(function ($budget, $row) {
       if($budget['active'] == 'N') {
         $row->addClass('error');
       }

@@ -36,65 +36,54 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
 
     $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
     $budgetLevelExpenseApproval = getSettingByScope($connection2, 'Finance', 'budgetLevelExpenseApproval');
-    echo '<p>';
+    $description = '';
+
     if ($expenseApprovalType == 'One Of') {
         if ($budgetLevelExpenseApproval == 'Y') {
-            echo __("Expense approval has been set as 'One Of', which means that only one of the people listed below (as well as someone with Full budget access) needs to approve an expense before it can go ahead.");
+            $description = __("Expense approval has been set as 'One Of', which means that only one of the people listed below (as well as someone with Full budget access) needs to approve an expense before it can go ahead.");
         } else {
-            echo __("Expense approval has been set as 'One Of', which means that only one of the people listed below needs to approve an expense before it can go ahead.");
+            $description = __("Expense approval has been set as 'One Of', which means that only one of the people listed below needs to approve an expense before it can go ahead.");
         }
     } elseif ($expenseApprovalType == 'Two Of') {
         if ($budgetLevelExpenseApproval == 'Y') {
-            echo __("Expense approval has been set as 'Two Of', which means that only two of the people listed below (as well as someone with Full budget access) need to approve an expense before it can go ahead.");
+            $description = __("Expense approval has been set as 'Two Of', which means that only two of the people listed below (as well as someone with Full budget access) need to approve an expense before it can go ahead.");
         } else {
-            echo __("Expense approval has been set as 'Two Of', which means that only two of the people listed below need to approve an expense before it can go ahead.");
+            $description = __("Expense approval has been set as 'Two Of', which means that only two of the people listed below need to approve an expense before it can go ahead.");
         }
     } elseif ($expenseApprovalType == 'Chain Of All') {
         if ($budgetLevelExpenseApproval == 'Y') {
-            echo __("Expense approval has been set as 'Chain Of All', which means that all of the people listed below (as well as someone with Full budget access) need to approve an expense, in order from lowest to highest, before it can go ahead.");
+            $description = __("Expense approval has been set as 'Chain Of All', which means that all of the people listed below (as well as someone with Full budget access) need to approve an expense, in order from lowest to highest, before it can go ahead.");
         } else {
-            echo __("Expense approval has been set as 'Chain Of All', which means that all of the people listed below need to approve an expense, in order from lowest to highest, before it can go ahead.");
+            $description = __("Expense approval has been set as 'Chain Of All', which means that all of the people listed below need to approve an expense, in order from lowest to highest, before it can go ahead.");
         }
     } else {
-        echo __('Expense Approval policies have not been set up: this should be done under Admin > School Admin > Finance Settings.');
+        $description = __('Expense Approval policies have not been set up: this should be done under Admin > School Admin > Finance Settings.');
     }
-    echo '</p>';
 
     $gateway = $container->get(FinanceGateway::class);
     $criteria = $gateway->newQueryCriteria(true)
         ->fromPOST();
 
-
-    switch ($expenseApprovalType) {
-        case "Chain Of All":
-            $criteria->sortBy(
-                [
-                'sequenceNumber',
-                'surname',
-                'preferredName'
-                ]
-            );
-            break;
-
-        default:
-            $criteria->sortBy(
-                [
-                'surname',
-                'preferredName'
-                ]
-            );
-            break;
+    if ($expenseApprovalType) {
+        $criteria->sortBy(['sequenceNumber', 'surname','preferredName']);
+    } else {
+        $criteria->sortBy(['surname','preferredName']);
     }
+
+    $criteria->fromPOST();
+
     $feeApprovers = $gateway->queryExpenseApprovers($criteria);
     $table = DataTable::createPaginated('expenseApprovers', $criteria);
+    $table->setDescription($description);
     $table->addHeaderAction('add', __('Add'))
-        ->setURL('/modules/Finance/expenseApprovers_manage_add.php');
+        ->setURL('/modules/Finance/expenseApprovers_manage_add.php')
+        ->displayLabel();
 
     $table
         ->addColumn('name', __('Name'))
         ->format(
             function ($expenseApprover) {
-                return Format::name($expenseApprover['title'], $expenseApprover['preferredName'], $expenseApprover['surname'],'Staff',true,true);
+                return Format::name($expenseApprover['title'], $expenseApprover['preferredName'], $expenseApprover['surname'], 'Staff', true, true);
             }
         );
 
