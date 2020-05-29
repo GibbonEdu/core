@@ -14,17 +14,13 @@ class FinanceGateway extends QueryableGateway
     private static $tableName = 'gibbonFinanceBudget';
     private static $searchableColumns = [];
 
+
     public function queryFinanceCycles(QueryCriteria $criteria)
     {
 
         $query = $this
             ->newQuery()
             ->from('gibbonFinanceBudgetCycle')
-            ->orderBy(
-                [
-                'sequenceNumber'
-                ]
-            )
             ->cols(
                 [
                 'gibbonFinanceBudgetCycleID',
@@ -57,7 +53,25 @@ class FinanceGateway extends QueryableGateway
             }
             ]
         );
+      return $this->runQuery($query, $criteria);
+    }
 
+
+    public function queryExpenseApprovers(QueryCriteria $criteria)
+    {
+        $query = $this
+        ->newQuery()
+        ->cols([
+          'gibbonPerson.title',
+          'gibbonPerson.preferredName',
+          'gibbonPerson.surname',
+          'gibbonFinanceExpenseApprover.sequenceNumber',
+          'gibbonFinanceExpenseApprover.gibbonFinanceExpenseApproverID'
+        ])
+        ->from('gibbonFinanceExpenseApprover')
+        ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID = gibbonFinanceExpenseApprover.gibbonPersonID')
+        ->where("gibbonPerson.status = 'Full'");
+        
         return $this->runQuery($query, $criteria);
     }
 }

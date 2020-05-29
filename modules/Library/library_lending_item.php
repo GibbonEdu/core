@@ -17,7 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
+use Gibbon\Domain\Library\LibraryGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -117,181 +119,130 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
             echo '</td>';
             echo "<td style='padding-top: 15px; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__('Status').'</span><br/>';
-            echo '<i>'.$row['status'].'</i>';
+            echo '<i>'.__($row['status']).'</i>';
             echo '</td>';
             echo "<td style='padding-top: 15px; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__('Borrowable').'</span><br/>';
-            echo '<i>'.$row['borrowable'].'</i>';
+            echo '<i>'.Format::yesNo($row['borrowable']).'</i>';
             echo '</td>';
             echo '</tr>';
             echo '</table>';
 
-            echo '<h3>';
-            echo __('Lending & Activity Log');
-            echo '</h3>';
-            //Set pagination variable
-            $page = 1;
-            if (isset($_GET['page'])) {
-                $page = $_GET['page'];
-            }
-            if ((!is_numeric($page)) or $page < 1) {
-                $page = 1;
-            }
-            try {
-                $dataEvent = array('gibbonLibraryItemID' => $gibbonLibraryItemID);
-                $sqlEvent = 'SELECT * FROM gibbonLibraryItemEvent WHERE gibbonLibraryItemID=:gibbonLibraryItemID ORDER BY timestampOut DESC';
-                $sqlEventPage = $sqlEvent.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
-                $resultEvent = $connection2->prepare($sqlEvent);
-                $resultEvent->execute($dataEvent);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
+            
+            $gateway = $container->get(LibraryGateway::class);
+            $criteria = $gateway->newQueryCriteria(true)
+                ->sortBy('gibbonLibraryItemEvent.timestampOut', 'DESC')
+                ->filterBy('gibbonLibraryItemID', $gibbonLibraryItemID)
+                ->filterBy('name', $name)
+                ->filterBy('gibbonLibraryTypeID', $gibbonLibraryTypeID)
+                ->filterBy('gibbonSpaceID', $gibbonSpaceID)
+                ->filterBy('status', $status)
+                ->fromPOST();
 
-            echo "<div class='linkTop'>";
+            $item = $gateway->queryLendingDetail($criteria); 
+            $table = DataTable::createPaginated('lendingLog', $criteria);
+            $table->setTitle(__('Lending & Activity Log'));
+
+            $table->modifyRows(function ($item, $row) {
+                if ($item['status'] == 'On Loan') {
+                    return $item['pastDue'] == 'Y' ? $row->addClass('error') : $row->addClass('warning');
+                }
+                return $row;
+            });
+
             if ($row['status'] == 'Available') {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/library_lending_item_signout.php&gibbonLibraryItemID=$gibbonLibraryItemID&name=".$name.'&gibbonLibraryTypeID='.$gibbonLibraryTypeID.'&gibbonSpaceID='.$gibbonSpaceID.'&status='.$status."'>".__('Sign Out')." <img  style='margin: 0 0 -4px 3px' title='".__('Sign Out')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_right.png'/></a>";
+              $table
+                ->addHeaderAction('signout', __('Sign Out'))
+                ->setURL('/modules/Library/library_lending_item_signout.php')
+                ->setIcon('page_right')
+                ->addParam('gibbonLibraryItemID', $gibbonLibraryItemID)
+                ->addParam('name', $name)
+                ->addParam('gibbonLibraryTypeID', $gibbonLibraryTypeID)
+                ->addParam('gibbonSpaceID', $gibbonSpaceID)
+                ->addParam('status', $status);
             } else {
-                echo '<i>'.__('This item has already been signed out.').'</i>';
+                $table->addHeaderAction('signout', __('This item has already been signed out.'));
             }
-            echo '</div>';
 
-            if ($resultEvent->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __('There are no records to display.');
-                echo '</div>';
-            } else {
-                if ($resultEvent->rowCount() > $_SESSION[$guid]['pagination']) {
-                    printPagination($guid, $resultEvent->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', '');
+            $table
+              ->addColumn('user', __('User'))
+              ->sortable(['responsiblePersonSurname', 'responsiblePersonPreferredName'])
+              ->format(function ($item) {
+                if ($item['gibbonPersonIDStatusResponsible'] != '') {
+                  return sprintf('%1$s<div style="margin-top: 3px; font-weight: bold">%2$s</div>', Format::userPhoto($item['responsiblePersonImage']), Format::name($item['responsiblePersonTitle'], $item['responsiblePersonPreferredName'], $item['responsiblePersonSurname'], 'Staff', false, true));
+                } else {
+                  return null;
                 }
-
-                echo "<table cellspacing='0' style='width: 100%'>";
-                echo "<tr class='head'>";
-                echo "<th style='text-align: center; min-width: 90px'>";
-                echo __('User');
-                echo '</th>';
-                echo '<th>';
-                echo __('Status').'<br/>';
-                echo "<span style='font-size: 85%; font-style: italic'>".__('Date Out & In').'</span><br/>';
-                echo '</th>';
-                echo '<th>';
-                echo __('Due Date');
-                echo '</th>';
-                echo '<th>';
-                echo __('Return Action');
-                echo '</th>';
-                echo '<th>';
-                echo __('Recorded By');
-                echo '</th>';
-                echo "<th style='width: 110px'>";
-                echo __('Actions');
-                echo '</th>';
-                echo '</tr>';
-
-                $count = 0;
-                $rowNum = 'odd';
-                try {
-                    $resultEventPage = $connection2->prepare($sqlEventPage);
-                    $resultEventPage->execute($dataEvent);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
+              });
+            $table->addColumn('status', __('Status'))
+                  ->description(__('Date Out & In'))
+                  ->format(function ($event) {
+                    $timeInOut = Format::date($event['timestampOut']);
+                    if ($event['timestampReturn'] != '') {
+                      $timeInOut .= ' - ' . Format::date($event['timestampReturn']);
+                    }
+                    return sprintf('%1$s<br/>%2$s', __($event['status']), Format::small($timeInOut));
+                  });
+            $table
+              ->addColumn('returnExpected', __('Due Date'))
+              ->format(function ($event) {
+                if ($event['status'] != 'Returned' && $event['returnExpected'] != '') {
+                  return Format::date($event['returnExpected']);
                 }
-                while ($rowEvent = $resultEventPage->fetch()) {
-                    if ($count % 2 == 0) {
-                        $rowNum = 'even';
-                    } else {
-                        $rowNum = 'odd';
-                    }
-                    ++$count;
-
-					//COLOR ROW BY STATUS!
-					echo "<tr class=$rowNum>";
-                    if ($rowEvent['gibbonPersonIDStatusResponsible'] != '') {
-                        try {
-                            $dataPerson = array('gibbonPersonID' => $rowEvent['gibbonPersonIDStatusResponsible']);
-                            $sqlPerson = 'SELECT title, preferredName, surname, image_240 FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-                            $resultPerson = $connection2->prepare($sqlPerson);
-                            $resultPerson->execute($dataPerson);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
-                        if ($resultPerson->rowCount() == 1) {
-                            $rowPerson = $resultPerson->fetch();
-                        }
-                    }
-                    echo '<td style=\'text-align: center\'>';
-                    if (is_array($rowPerson)) {
-                        echo getUserPhoto($guid, $rowPerson['image_240'], 75);
-                    }
-                    if (is_array($rowPerson)) {
-                        echo "<div style='margin-top: 3px; font-weight: bold'>".Format::name($rowPerson['title'], $rowPerson['preferredName'], $rowPerson['surname'], 'Staff', false, true).'</div>';
-                    }
-                    echo '</td>';
-                    echo '<td>';
-                    echo $rowEvent['status'].'<br/>';
-                    if ($rowEvent['timestampOut'] != '') {
-                        echo "<span style='font-size: 85%; font-style: italic'>".dateConvertBack($guid, substr($rowEvent['timestampOut'], 0, 10));
-
-                        if ($rowEvent['timestampReturn'] != '') {
-                            echo ' - '.dateConvertBack($guid, substr($rowEvent['timestampReturn'], 0, 10));
-                        }
-                        echo '</span>';
-                    }
-                    echo '</td>';
-                    echo '<td>';
-                    if ($rowEvent['status'] != 'Returned' and $rowEvent['returnExpected'] != '') {
-                        echo dateConvertBack($guid, substr($rowEvent['returnExpected'], 0, 10)).'<br/>';
-                    }
-                    echo '</td>';
-                    echo '<td>';
-                    if ($rowEvent['status'] != 'Returned' and  $rowEvent['returnAction'] != '') {
-                        echo $rowEvent['returnAction'];
-                    }
-                    echo '</td>';
-                    echo '<td>';
-                    if ($rowEvent['gibbonPersonIDOut'] != '') {
-                        try {
-                            $dataPerson = array('gibbonPersonID' => $rowEvent['gibbonPersonIDOut']);
-                            $sqlPerson = 'SELECT title, preferredName, surname, image_240 FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-                            $resultPerson = $connection2->prepare($sqlPerson);
-                            $resultPerson->execute($dataPerson);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
-                        if ($resultPerson->rowCount() == 1) {
-                            $rowPerson = $resultPerson->fetch();
-                        }
-                        echo __('Out:').' '.Format::name($rowPerson['title'], $rowPerson['preferredName'], $rowPerson['surname'], 'Staff', false, true).'<br/>';
-                    }
-                    if ($rowEvent['gibbonPersonIDIn'] != '') {
-                        try {
-                            $dataPerson = array('gibbonPersonID' => $rowEvent['gibbonPersonIDIn']);
-                            $sqlPerson = 'SELECT title, preferredName, surname, image_240 FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-                            $resultPerson = $connection2->prepare($sqlPerson);
-                            $resultPerson->execute($dataPerson);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
-                        if ($resultPerson->rowCount() == 1) {
-                            $rowPerson = $resultPerson->fetch();
-                        }
-                        echo __('In:').' '.Format::name($rowPerson['title'], $rowPerson['preferredName'], $rowPerson['surname'], 'Staff', false, true);
-                    }
-                    echo '</td>';
-                    echo '<td>';
-                    if ($count == 1 and $rowEvent['status'] != 'Returned') {
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/library_lending_item_edit.php&gibbonLibraryItemID=$gibbonLibraryItemID&gibbonLibraryItemEventID=".$rowEvent['gibbonLibraryItemEventID'].'&name='.$name.'&gibbonLibraryTypeID='.$gibbonLibraryTypeID.'&gibbonSpaceID='.$gibbonSpaceID.'&status='.$status."'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/library_lending_item_return.php&gibbonLibraryItemID=$gibbonLibraryItemID&gibbonLibraryItemEventID=".$rowEvent['gibbonLibraryItemEventID'].'&name='.$name.'&gibbonLibraryTypeID='.$gibbonLibraryTypeID.'&gibbonSpaceID='.$gibbonSpaceID.'&status='.$status."'><img title='Return' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_left.png'/></a>";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/library_lending_item_renew.php&gibbonLibraryItemID=$gibbonLibraryItemID&gibbonLibraryItemEventID=".$rowEvent['gibbonLibraryItemEventID'].'&name='.$name.'&gibbonLibraryTypeID='.$gibbonLibraryTypeID.'&gibbonSpaceID='.$gibbonSpaceID.'&status='.$status."'><img style='margin-left: 3px' title='Renew' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_right.png'/></a>";
-                    }
-                    echo '</td>';
-                    echo '</tr>';
+              });
+            $table
+              ->addColumn('returnAction', __('Return Action'))
+              ->format(function ($event) {
+                if ($event['status'] != 'Returned' && $event['returnAction'] != ''){
+                  return __($event['returnAction']);
                 }
-                echo '</table>';
-
-                if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-                    printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', '');
+              });
+            $table
+              ->addColumn('outPersonID', __('Recorded By'))
+              ->format(function ($event) {
+                $outPerson = "";
+                $inPerson = "";
+                if ($event['outPersonID']) {
+                    $outPerson .= __('Out:'). ' ' . Format::name($event['outPersonTitle'], $event['outPersonPreferredName'], $event['outPersonSurname'], 'Staff', false, true);
                 }
-            }
+                if ($event['inPersonID']) {
+                    $inPerson .= __('In:'). ' ' . Format::name($event['inPersonTitle'], $event['inPersonPreferredName'], $event['inPersonSurname'], 'Staff', false, true);
+                }
+                return sprintf('%1$s<br/>%2$s', $outPerson, $inPerson);
+              });
+
+            $table
+              ->addActionColumn()
+              ->addParam('gibbonLibraryItemID')
+              ->addParam('gibbonLibraryItemEventID')
+              ->addParam('name', $name)
+              ->addParam('gibbonLibraryTypeID', $gibbonLibraryTypeID)
+              ->addParam('gibbonSpaceID', $gibbonSpaceID)
+              ->addParam('status', $status)
+              ->format(function ($event, $actions) {
+                if ($event['status'] != 'Returned') {
+                  //Edit function cannot be used unless the responsible person ID is set
+                  if ($event['responsiblePersonID'] != null) {
+                    $actions
+                      ->addAction('edit', __('Edit'))
+                      ->setURL('/modules/Library/library_lending_item_edit.php');
+                  }
+
+                  $actions
+                    ->addAction('return', __('Return'))
+                    ->setIcon('page_left')
+                    ->setURL('/modules/Library/library_lending_item_return.php');
+
+                  //Renew feature is only usable when the responsible person ID is set
+                  if ($event['responsiblePersonID'] != null) {
+                    $actions
+                      ->addAction('renew', __('Renew'))
+                      ->setIcon('page_right')
+                      ->setURL('/modules/Library/library_lending_item_renew.php');
+                  }
+                }
+              });
+            echo $table->render($item);
 
             $_SESSION[$guid]['sidebarExtra'] = '';
             $_SESSION[$guid]['sidebarExtra'] .= getImage($guid, $row['imageType'], $row['imageLocation']);

@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\Library\LibraryReportGateway;
+use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
 
 $_SESSION[$guid]['report_student_emergencySummary.php_choices'] = '';
 
@@ -43,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_studentBorr
         $gibbonPersonID = $_GET['gibbonPersonID'];
     }
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
@@ -61,18 +64,62 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_studentBorr
     echo $form->getOutput();
 
     if ($gibbonPersonID != '') {
-        echo '<h2>';
-        echo __('Report Data');
-        echo '</h2>';
+        $libraryGateway = $container->get(LibraryReportGateway::class);
+        $criteria = $libraryGateway->newQueryCriteria(true)
+            ->sortBy('gibbonLibraryItemEvent.timestampOut', 'DESC')
+            ->filterBy('gibbonPersonID', $gibbonPersonID)
+            ->fromPOST('lendingLog');
 
-        $output = getBorrowingRecord($guid, $connection2, $gibbonPersonID);
-        if ($output == false) {
-            echo "<div class='error'>";
-            echo __('There are no records to display.');
-            echo '</div>';
-        } else {
-            echo $output;
-        }
+        $items = $libraryGateway->queryStudentReportData($criteria);
+        $table = DataTable::createPaginated('lendingLog', $criteria);
+        $table->setTitle(__('Report Data'));
+        $table->modifyRows(function ($item, $row) {
+            if ($item['status'] == 'On Loan') {
+                return $item['pastDue'] == 'Y' ? $row->addClass('error') : $row;
+            }
+            return $row;
+        });
+        $table
+            ->addExpandableColumn('details')
+            ->format(function ($item) {
+                $detailTable = "<table>";
+                $fields = unserialize($item['fields']);
+                foreach (unserialize($item['typeFields']) as $typeField) {
+                    $detailTable .= sprintf('<tr><td><b>%1$s</b></td><td>%2$s</td></tr>', __($typeField['name']), $fields[$typeField['name']]);
+                }
+                $detailTable .= '</table>';
+                return $detailTable;
+            });
+        $table
+            ->addColumn('imageLocation')
+            ->width('120px')
+            ->format(function ($item) {
+                return Format::photo($item['imageLocation'], 75);
+            });
+        $table
+            ->addColumn('name', __('Name'))
+            ->description(__('Author/Producer'))
+            ->format(function ($item) {
+                return sprintf('<b>%1$s</b><br/>%2$s', $item['name'], Format::small($item['producer']));
+            });
+        $table
+            ->addColumn('id', __('ID'))
+            ->format(function ($item) {
+                return sprintf('<b>%1$s</b>', $item['id']);
+            });
+        $table
+            ->addColumn('spaceName', __('Location'))
+            ->format(function ($item) {
+                return sprintf('<b>%1$s</b><br/>%2$s', $item['spaceName'], Format::small($item['locationDetail']));
+            });
+        $table
+            ->addColumn('timestampOut', __('Return Date'))
+            ->description(__('Borrow Date'))
+            ->format(function ($item) {
+                return sprintf('<b>%1$s</b><br/>%2$s', $item['status'] == 'On Loan' ? Format::date($item['returnExpected']) : 'N/A', Format::small(Format::date($item['timestampOut'])));
+            });
+        $table
+            ->addColumn('status', __('Status'))->translatable();
+        echo $table->render($items);
     }
 }
-?>

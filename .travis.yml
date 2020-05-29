@@ -13,7 +13,7 @@ services:
 php:
   - 7.0
   - 7.3
-  - 7.4
+  # - 7.4
 
 # optionally specify a list of environments, for example to test different RDBMS
 env:
