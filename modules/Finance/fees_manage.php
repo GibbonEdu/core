@@ -111,16 +111,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage.php') 
             $gateway = $container->get(FinanceGateway::class);
             $criteria = $gateway->newQueryCriteria(true)
                                 ->filterBy('gibbonSchoolYearID', $gibbonSchoolYearID)
-                              ->filterBy('search', $search)
-                              ->fromPOST();
+                                ->filterBy('search', $search)
+                                ->fromPOST();
 
             $fees = $gateway->queryFees($criteria);
             $table = DataTable::createPaginated('fees', $criteria);
             $table->setTitle(__('View'));
             $table->addHeaderAction('add', __('Add'))
-                  ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+                ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
                 ->addParam('search', $search)
-              ->setURL('/modules/Finance/fees_manage_add.php');
+                ->setURL('/modules/Finance/fees_manage_add.php')
+                ->displayLabel();
 
             $table->modifyRows(function ($fee, $row) {
                 return $fee['active'] == 'N' ? $row->addClass('error') : $row;
@@ -128,7 +129,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage.php') 
 
             $table->addExpandableColumn('description', __('Description'));
             $table
-              ->addColumn('name', __('Name (Short Name)'))
+              ->addColumn('name', __('Name'))
+              ->description(__('Short Name'))
               ->format(function ($fee) {
                 return sprintf('<b>%1$s</b><br/>%2$s', $fee['name'], Format::small($fee['nameShort']));
               });
