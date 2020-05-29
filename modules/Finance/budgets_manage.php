@@ -42,11 +42,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage.php
     $criteria = $gateway
       ->newQueryCriteria(true)
       ->fromPOST();
+    
     $budgets = $gateway->queryFinanceBudget($criteria);
     $table = DataTable::createPaginated('budgets',$criteria);
-    $table
-      ->addHeaderAction('add',__('Add'))
-      ->setURL('/modules/Finance/budgets_manage_add.php');
+    $table->addHeaderAction('add',__('Add'))
+      ->setURL('/modules/Finance/budgets_manage_add.php')
+      ->displayLabel();
+    
     $table->addColumn('name',__('Name'));
     $table->addColumn('nameShort',__('Short Name'));
     $table->addColumn('category',__('Category'));
@@ -55,6 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage.php
       ->format(function($budget) {
         return $budget['active'] == 'Y' ? 'Yes' : 'No';
       });
+    
     $table
       ->addActionColumn()
       ->addParam('gibbonFinanceBudgetID')
@@ -67,8 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage.php
       });
 
     $table->modifyRows(function($budget,$row) {
-      if($budget['active'] == 'N')
-      {
+      if($budget['active'] == 'N') {
         $row->addClass('error');
       }
       return $row;
