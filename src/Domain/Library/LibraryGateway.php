@@ -14,61 +14,106 @@ class LibraryGateway extends QueryableGateway
     private static $primaryKey = 'gibbonLibraryItemID';
     private static $searchableColumns = [];
 
+    public function queryLendingDetail(QueryCriteria $criteria)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('gibbonLibraryItemEvent')
+            ->cols([
+                'gibbonPersonResponsible.gibbonPersonID as responsiblePersonID',
+                'gibbonPersonResponsible.title as responsiblePersonTitle',
+                'gibbonPersonResponsible.preferredName as responsiblePersonPreferredName',
+                'gibbonPersonResponsible.surname as responsiblePersonSurname',
+                'gibbonPersonResponsible.image_240 as responsiblePersonImage',
+                'gibbonPersonOut.gibbonPersonId as outPersonID',
+                'gibbonPersonOut.title as outPersonTitle',
+                'gibbonPersonOut.preferredName as outPersonPreferredName',
+                'gibbonPersonOut.surname as outPersonSurname',
+                'gibbonPersonOut.image_240 as outPersonImage',
+                'gibbonPersonIn.gibbonPersonID as inPersonID',
+                'gibbonPersonIn.title as inPersonTitle',
+                'gibbonPersonIn.preferredName as inPersonPreferredName',
+                'gibbonPersonIn.surname as inPersonSurname',
+                'gibbonPersonIn.image_240 as inPersonImage',
+                'gibbonLibraryItemEvent.gibbonPersonIDStatusResponsible',
+                'gibbonLibraryItemEvent.gibbonLibraryItemID',
+                'gibbonLibraryItemEvent.gibbonLibraryItemEventID',
+                'CONVERT(gibbonLibraryItemEvent.timestampOut,DATE) AS timestampOut',
+                'CONVERT(gibbonLibraryItemEvent.timestampReturn,DATE) AS timestampReturn',
+                'gibbonLibraryItemEvent.status',
+                'gibbonLibraryItemEvent.returnExpected',
+                'gibbonLibraryItemEvent.returnAction',
+                'gibbonLibraryItemEvent.gibbonPersonIDOut',
+                "IF(gibbonLibraryItemEvent.returnExpected <= CURRENT_TIMESTAMP,'Y','N') as pastDue"
+            ])
+            ->leftJoin('gibbonPerson as gibbonPersonResponsible', 'gibbonLibraryItemEvent.gibbonPersonIDStatusResponsible = gibbonPersonResponsible.gibbonPersonID')
+            ->leftJoin('gibbonPerson as gibbonPersonOut', 'gibbonLibraryItemEvent.gibbonPersonIDOut = gibbonPersonOut.gibbonPersonID')
+            ->leftJoin('gibbonPerson as gibbonPersonIn', 'gibbonLibraryItemEvent.gibbonPersonIDIn = gibbonPersonIn.gibbonPersonID');
+
+
+        $criteria->addFilterRules([
+            'gibbonLibraryItemID' => function ($query, $itemid) {
+                return $query
+                    ->where('gibbonLibraryItemEvent.gibbonLibraryItemID = :itemid')
+                    ->bindValue('itemid', $itemid);
+            }
+        ]);
+
+        return $this->runQuery($query, $criteria);
+    }
+
     public function queryLending(QueryCriteria $criteria)
     {
       
         $query = $this
         ->newQuery()
-        ->from($this->getTableName() . ' as gli')
-        ->join('left', 'gibbonLibraryType as glt', 'glt.gibbonLibraryTypeID = gli.gibbonLibraryTypeID')
-        ->join('left', 'gibbonSpace as gs', 'gs.gibbonSpaceId = gli.gibbonSpaceID')
-        ->join('left', 'gibbonPerson as gp', 'gli.gibbonPersonIDStatusResponsible = gp.gibbonPersonID')
+        ->from($this->getTableName())
+        ->join('left', 'gibbonLibraryType', 'gibbonLibraryType.gibbonLibraryTypeID = gibbonLibraryItem.gibbonLibraryTypeID')
+        ->join('left', 'gibbonSpace', 'gibbonSpace.gibbonSpaceId = gibbonLibraryItem.gibbonSpaceID')
+        ->join('left', 'gibbonPerson', 'gibbonLibraryItem.gibbonPersonIDStatusResponsible = gibbonPerson.gibbonPersonID')
         ->cols([
-          "gli.id",
-          "gli.name",
-          "gli.producer",
-          "glt.name as 'typeName'",
-          "gli.gibbonLibraryItemID",
-          "gli.gibbonLibraryTypeID",
-          "gli.gibbonSpaceID",
-          "gli.status",
-          "gli.returnExpected",
-          "gli.gibbonPersonIDStatusResponsible",
-          "gp.title",
-          "gp.preferredName",
-          "gp.surname",
-          "gp.firstName",
-          "gs.name as 'spaceName'",
-          "gli.locationDetail",
-          "IF(gli.status = 'On Loan' AND gli.returnExpected < CURRENT_TIMESTAMP(),'Y','N') as 'pastDue'"
+          "gibbonLibraryItem.id",
+          "gibbonLibraryItem.name",
+          "gibbonLibraryItem.producer",
+          "gibbonLibraryType.name as 'typeName'",
+          "gibbonLibraryItem.gibbonLibraryItemID",
+          "gibbonLibraryItem.gibbonLibraryTypeID",
+          "gibbonLibraryItem.gibbonSpaceID",
+          "gibbonLibraryItem.status",
+          "gibbonLibraryItem.returnExpected",
+          "gibbonLibraryItem.gibbonPersonIDStatusResponsible",
+          "gibbonLibraryItem.timestampStatus",
+          "gibbonPerson.title",
+          "gibbonPerson.preferredName",
+          "gibbonPerson.surname",
+          "gibbonPerson.firstName",
+          "gibbonSpace.name as 'spaceName'",
+          "gibbonLibraryItem.locationDetail",
+          "IF(gibbonLibraryItem.status = 'On Loan' AND gibbonLibraryItem.returnExpected < CURRENT_TIMESTAMP(),'Y','N') as 'pastDue'"
         ])
-        ->where("gli.status IN ('Available','Repair','Reserved','On Loan')")
+        ->where("gibbonLibraryItem.status IN ('Available','Repair','Reserved','On Loan')")
         ->where("ownershipType != 'Individual'")
-        ->where("gli.borrowable = 'Y'")
-        ->orderBy([
-          'name',
-          'producer'
-        ]);
+        ->where("gibbonLibraryItem.borrowable = 'Y'");
 
         $criteria->addFilterRules([
         'name' => function ($query, $name) {
             return $query
-            ->where('(gli.name like :name OR gli.producer like :name OR gli.id like :name)')
+            ->where('(gibbonLibraryItem.name like :name OR gibbonLibraryItem.producer like :name OR gibbonLibraryItem.id like :name)')
             ->bindValue('name', '%'.$name.'%');
         },
         'gibbonLibraryTypeID' => function ($query, $typeid) {
             return $query
-            ->where('gli.gibbonLibraryTypeID = :typeid')
+            ->where('gibbonLibraryItem.gibbonLibraryTypeID = :typeid')
             ->bindValue('typeid', $typeid);
         },
         'gibbonSpaceID' => function ($query, $spaceid) {
             return $query
-            ->where('gli.gibbonSpaceID = :spaceid')
+            ->where('gibbonLibraryItem.gibbonSpaceID = :spaceid')
             ->bindValue('spaceid', $spaceid);
         },
         'status' => function ($query, $status) {
             return $query
-            ->where('gli.status = :status')
+            ->where('gibbonLibraryItem.status = :status')
             ->bindValue('status', $status);
         }
         ]);
@@ -79,65 +124,65 @@ class LibraryGateway extends QueryableGateway
     {
         $query = $this
             ->newQuery()
-            ->from($this->getTableName() . ' as gli')
+            ->from($this->getTableName())
             ->cols([
-                'gli.gibbonLibraryItemID',
-                'gli.gibbonLibraryTypeID',
-                'gli.id',
-                'gli.name',
-                'gli.producer',
-                'gli.fields',
-                'gli.vendor',
-                'gli.purchaseDate',
-                'gli.invoiceNumber',
-                'gli.imageType',
-                'gli.imageLocation',
-                'gli.comment',
-                'gli.gibbonSpaceID',
-                'gs.name as spaceName',
-                'gli.locationDetail',
-                'gli.ownershipType',
-                'gli.gibbonPersonIDOwnership',
-                'gli.physicalCondition',
-                'gli.bookable',
-                'gli.borrowable',
-                'gli.status',
-                'gli.gibbonPersonIDStatusResponsible',
-                'gli.gibbonPersonIDStatusRecorder',
-                'gli.timestampStatus',
-                'gli.returnExpected',
-                'gli.returnAction',
-                'gli.gibbonPersonIDReturnAction',
-                'gli.gibbonPersonIDCreator',
-                'gli.timestampCreator',
-                'gli.gibbonPersonIDUpdate',
-                'gli.timestampUpdate'
+                'gibbonLibraryItem.gibbonLibraryItemID',
+                'gibbonLibraryItem.gibbonLibraryTypeID',
+                'gibbonLibraryItem.id',
+                'gibbonLibraryItem.name',
+                'gibbonLibraryItem.producer',
+                'gibbonLibraryItem.fields',
+                'gibbonLibraryItem.vendor',
+                'gibbonLibraryItem.purchaseDate',
+                'gibbonLibraryItem.invoiceNumber',
+                'gibbonLibraryItem.imageType',
+                'gibbonLibraryItem.imageLocation',
+                'gibbonLibraryItem.comment',
+                'gibbonLibraryItem.gibbonSpaceID',
+                'gibbonSpace.name as spaceName',
+                'gibbonLibraryItem.locationDetail',
+                'gibbonLibraryItem.ownershipType',
+                'gibbonLibraryItem.gibbonPersonIDOwnership',
+                'gibbonLibraryItem.physicalCondition',
+                'gibbonLibraryItem.bookable',
+                'gibbonLibraryItem.borrowable',
+                'gibbonLibraryItem.status',
+                'gibbonLibraryItem.gibbonPersonIDStatusResponsible',
+                'gibbonLibraryItem.gibbonPersonIDStatusRecorder',
+                'gibbonLibraryItem.timestampStatus',
+                'gibbonLibraryItem.returnExpected',
+                'gibbonLibraryItem.returnAction',
+                'gibbonLibraryItem.gibbonPersonIDReturnAction',
+                'gibbonLibraryItem.gibbonPersonIDCreator',
+                'gibbonLibraryItem.timestampCreator',
+                'gibbonLibraryItem.gibbonPersonIDUpdate',
+                'gibbonLibraryItem.timestampUpdate'
             ])
-            ->innerJoin('gibbonLibraryType as glt', 'gli.gibbonLibraryTypeID = glt.gibbonLibraryTypeID')
-            ->join('left', 'gibbonSpace as gs', 'gli.gibbonSpaceID = gs.gibbonSpaceID')
-            ->where("gli.status IN ('Available','On Loan','Repair')")
-            ->where("gli.ownershipType <> 'Individual'")
-            ->where("gli.borrowable = 'Y'");
+            ->innerJoin('gibbonLibraryType', 'gibbonLibraryItem.gibbonLibraryTypeID = gibbonLibraryType.gibbonLibraryTypeID')
+            ->join('left', 'gibbonSpace', 'gibbonLibraryItem.gibbonSpaceID = gibbonSpace.gibbonSpaceID')
+            ->where("gibbonLibraryItem.status IN ('Available','On Loan','Repair')")
+            ->where("gibbonLibraryItem.ownershipType <> 'Individual'")
+            ->where("gibbonLibraryItem.borrowable = 'Y'");
 
         $criteria->addFilterRules([
             'name' => function ($query, $name) {
                 return $query
-                    ->where('gli.name LIKE :name')
+                    ->where('gibbonLibraryItem.name LIKE :name')
                     ->bindValue('name', '%' . $name . '%');
             },
             'producer' => function ($query, $producer) {
                 return $query
-                    ->where('gli.producer LIKE :producer')
+                    ->where('gibbonLibraryItem.producer LIKE :producer')
                     ->bindValue('producer', '%' . $producer . '%');
             },
             'category' => function ($query, $category) {
                 return $query
-                    ->where('gli.gibbonLibraryTypeID = :category')
+                    ->where('gibbonLibraryItem.gibbonLibraryTypeID = :category')
                     ->bindValue('category', $category);
             },
             'collection' => function ($query, $collection) {
                 return $query
-                    ->where("gli.fields LIKE '%s:10:\"Collection\";s::collectionlen:\":collection\";%")
+                    ->where("gibbonLibraryItem.fields LIKE '%s:10:\"Collection\";s::collectionlen:\":collection\";%")
                     ->bindValue('collection', $collection)
                     ->bindvalue('collectionlen', strlen($collection));
             },
@@ -159,57 +204,57 @@ class LibraryGateway extends QueryableGateway
     {
         $query = $this
             ->newQuery()
-            ->from($this->getTableName() . ' as gli')
+            ->from($this->getTableName())
             ->cols([
-                'gli.gibbonLibraryItemID',
-                'gli.id',
-                'gli.name',
-                'gli.producer',
-                'gli.vendor',
-                'gs.name as spaceName',
-                'gli.locationDetail',
-                'gli.ownershipType',
-                'gli.gibbonPersonIDOwnership',
-                'gli.borrowable',
-                'gli.status',
-                'gp.title as title',
-                'gp.preferredName',
-                'gp.surname',
-                'glt.name as itemType'
+                'gibbonLibraryItem.gibbonLibraryItemID',
+                'gibbonLibraryItem.id',
+                'gibbonLibraryItem.name',
+                'gibbonLibraryItem.producer',
+                'gibbonLibraryItem.vendor',
+                'gibbonSpace.name as spaceName',
+                'gibbonLibraryItem.locationDetail',
+                'gibbonLibraryItem.ownershipType',
+                'gibbonLibraryItem.gibbonPersonIDOwnership',
+                'gibbonLibraryItem.borrowable',
+                'gibbonLibraryItem.status',
+                'gibbonPerson.title as title',
+                'gibbonPerson.preferredName',
+                'gibbonPerson.surname',
+                'gibbonLibraryType.name as itemType'
               ])
-              ->innerJoin('gibbonLibraryType as glt', 'gli.gibbonLibraryTypeID = glt.gibbonLibraryTypeID')
-            ->join('left', 'gibbonSpace as gs', 'gli.gibbonSpaceID = gs.gibbonSpaceID')
-            ->join('left', 'gibbonPerson as gp', 'gli.gibbonPersonIDOwnership = gp.gibbonPersonID');
+              ->innerJoin('gibbonLibraryType', 'gibbonLibraryItem.gibbonLibraryTypeID = gibbonLibraryType.gibbonLibraryTypeID')
+            ->join('left', 'gibbonSpace', 'gibbonLibraryItem.gibbonSpaceID = gibbonSpace.gibbonSpaceID')
+            ->join('left', 'gibbonPerson', 'gibbonLibraryItem.gibbonPersonIDOwnership = gibbonPerson.gibbonPersonID');
 
         $criteria->addFilterRules([
             'name' => function ($query, $name) {
                 return $query
-                    ->where('(gli.name LIKE :name OR gli.producer LIKE :name OR gli.id LIKE :name)')
+                    ->where('(gibbonLibraryItem.name LIKE :name OR gibbonLibraryItem.producer LIKE :name OR gibbonLibraryItem.id LIKE :name)')
                     ->bindValue('name', '%' . $name . '%');
             },
             'type' => function ($query, $type) {
                 return $query
-                    ->where('gli.gibbonLibraryTypeID = :type')
+                    ->where('gibbonLibraryItem.gibbonLibraryTypeID = :type')
                     ->bindValue('type', $type);
             },
             'location' => function ($query, $location) {
                 return $query
-                    ->where('gli.gibbonSpaceID = :location')
+                    ->where('gibbonLibraryItem.gibbonSpaceID = :location')
                     ->bindValue('location', $location);
             },
             'status' => function ($query, $status) {
                 return $query
-                    ->where('gli.status = :status')
+                    ->where('gibbonLibraryItem.status = :status')
                     ->bindValue('status', $status);
             },
             'owner' => function ($query, $owner) {
                 return $query
-                    ->where('gli.gibbonPersonIDOwnership = :owner')
+                    ->where('gibbonLibraryItem.gibbonPersonIDOwnership = :owner')
                     ->bindValue('owner', $owner);
             },
             'typeSpecificFields' => function ($query, $typeSpecificFields) {
                 return $query
-                    ->where('gli.fields LIKE :typeSpecificFields')
+                    ->where('gibbonLibraryItem.fields LIKE :typeSpecificFields')
                     ->bindValue('typeSpecificFields', '%'.$typeSpecificFields.'%');
             }
         ]);

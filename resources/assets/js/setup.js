@@ -71,13 +71,16 @@ $(document).ready(function(){
     // Initialize sessionTimeout
     var sessionDuration = Gibbon.config.sessionTimeout.sessionDuration;
     if (sessionDuration > 0) {
-        $.sessionTimeout({
+        sessionTimeout({
             message: Gibbon.config.sessionTimeout.message,
             keepAliveUrl: 'keepAlive.php' ,
-            redirUrl: 'logout.php?timeout=true',
-            logoutUrl: 'logout.php' ,
-            warnAfter: sessionDuration * 1000,
-            redirAfter: (sessionDuration * 1000) + 600000
+            timeOutUrl: 'logout.php?timeout=true',
+            logOutUrl: 'logout.php',
+            logOutBtnText: Gibbon.config.sessionTimeout.logOutBtnText,
+            stayConnectedBtnText: Gibbon.config.sessionTimeout.stayConnectedBtnText,
+            warnAfter: sessionDuration,
+            timeOutAfter: (sessionDuration) + 600000,
+            titleText: Gibbon.config.sessionTimeout.titleText
         });
     }
 });

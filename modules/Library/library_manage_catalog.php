@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/Library/library_manage_catalog_add.php')
-        ->addParam('gibbonLibraryItemID', $gibbonLibraryTypeID)
+        ->addParam('gibbonLibraryTypeID', $gibbonLibraryTypeID)
         ->addParam('name', $name)
         ->addParam('gibbonSpaceID', $gibbonSpaceID)
         ->addParam('status', $status)
@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $table->addColumn('id', __('School ID'))
         ->description(__('Type'))
         ->format(function ($item) {
-            return sprintf('<b>%1$s</b><br/>%2$s', $item['id'], Format::small($item['itemType']));
+            return sprintf('<b>%1$s</b><br/>%2$s', $item['id'], Format::small(__($item['itemType'])));
         });
     $table->addColumn('name', __('Name'))
         ->description(__('Producer'))
@@ -147,12 +147,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $table->addColumn('status', __('Status'))
         ->description(__('Borrowable'))
         ->format(function ($item) {
-            return '<b>' . $item['status'] . '</b><br/>'
-                . Format::small($item['borrowable'] == 'Y' ? 'Yes' : 'No');
+            return '<b>' . __($item['status']) . '</b><br/>'
+                . Format::small(Format::yesNo($item['borrowable']));
         });
     $actions = $table->addActionColumn()
           ->addParam('gibbonLibraryItemID')
           ->addParam('name', $name)
+          ->addParam('gibbonLibraryTypeID', $gibbonLibraryTypeID)
           ->addParam('gibbonSpaceID', $gibbonSpaceID)
           ->addParam('status', $status)
           ->addParam('gibbonPersonIDOwnership', $gibbonPersonIDOwnership)

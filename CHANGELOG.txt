@@ -35,6 +35,7 @@ v20.0.00
     Tweaks & Additions
         System: added Argentine Peso and Ukrainian Hryvna as currency options
         System: updated Tailwind 1.2.0 dependencies via npm
+        System: updated SessionTimeout with translation support and jQuery/jQuery UI dependency removed
         System: added target option to Alert Bar
         System: added a DetailsView table for displaying data
         System: update the pre-login homepage to use a card layout
@@ -73,10 +74,12 @@ v20.0.00
         Finance: fixed invoices not viewable by student
         Planner: changed spelling of Publically to Publicly
         Planner: removed debug code from homework submission
+        Planner: removed ability for students and parents to be granted Lesson Planner_viewAllEditMyClasses
         Staff: fixed Left staff appearing in Weekly Absences report
         Students: fixed emergency data report not showing parents column
         Students: fixed Tutors and EAs set to Left showing on Student Profile
         Students: fixed past enrolments showing up in Students by Form Group
+        Students: adjusted Add Student Enrolment to allow Full and Expected students to be selected and enroled
         Reports: fixed Course scope Per Group criteria not saving per-class
         Reports: suppressed TCPDF deprecation messages when generating PDFs
         Reports: fixed pronoun switching not applied globally in some browsers
@@ -87,8 +90,10 @@ v20.0.00
         Reports: adjusted student lists to honour Reportable flag
         Reports: applied gibbonCourseClassPerson reportable flag to queries
         System Admin: fixed File Permission display issue in System Check
+        System Admin: fixed issue causing string replacement preventing update highlighting in Manage Modules
         Timetable: escaped calendar event names in timetable tooltips
         Timetable: incremented gibbonTTImport course and class name field lengths
+        Timetable Admin: implemented bulk Tie Days to Dates duplicate checking
 
 v19.0.00
 --------

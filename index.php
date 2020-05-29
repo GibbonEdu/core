@@ -229,6 +229,7 @@ $sessionDuration = -1;
 if ($isLoggedIn) {
     $sessionDuration = $session->get('sessionDuration');
     $sessionDuration = max(intval($sessionDuration), 1200);
+    $sessionDuration *= 1000; // Seconds to miliseconds
 }
 
 /**
@@ -281,8 +282,11 @@ $javascriptConfig = [
             'valid_elements' => getSettingByScope($connection2, 'System', 'allowableHTML'),
         ],
         'sessionTimeout' => [
-            'sessionDuration' => $sessionDuration,
             'message' => __('Your session is about to expire: you will be logged out shortly.'),
+            'logOutBtnText' => __('Log Out Now'),
+            'sessionDuration' => $sessionDuration,
+            'stayConnectedBtnText' => __('Stay Connected'),
+            'titleText' => __('Session Timetout'),
         ]
     ],
 ];
@@ -310,7 +314,7 @@ $page->scripts->addMultiple([
     'jquery-latex'    => 'lib/jquery-jslatex/jquery.jslatex.js',
     'jquery-form'     => 'lib/jquery-form/jquery.form.js',
     'jquery-autosize' => 'lib/jquery-autosize/jquery.autosize.min.js',
-    'jquery-timeout'  => 'lib/jquery-sessionTimeout/jquery.sessionTimeout.min.js',
+    'session-timeout' => 'lib/session-timeout/dist/session-timeout.js',
     'jquery-token'    => 'lib/jquery-tokeninput/src/jquery.tokeninput.js',
 ], ['context' => 'foot']);
 
