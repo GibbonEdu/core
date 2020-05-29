@@ -123,7 +123,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         // $pdo->setLogger($container->get('mysql_logger'));
 
         $container->share('twig', function () use ($absolutePath, $session) {
-            $loader = new \Twig_Loader_Filesystem($absolutePath.'/resources/templates');
+            $loader = new \Twig\Loader\FilesystemLoader($absolutePath.'/resources/templates');
 
             // Add the theme templates folder so it can override core templates
             $themeName = $session->get('gibbonThemeName');
@@ -153,15 +153,15 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
             $twig->addGlobal('gibbonThemeName', $themeName);
 
 
-            $twig->addFunction(new \Twig_Function('__', function ($string, $domain = null) {
+            $twig->addFunction(new \Twig\TwigFunction('__', function ($string, $domain = null) {
                 return __($string, $domain);
             }));
 
-            $twig->addFunction(new \Twig_Function('__n', function ($singular, $plural, $n, $params = [], $options = []) {
+            $twig->addFunction(new \Twig\TwigFunction('__n', function ($singular, $plural, $n, $params = [], $options = []) {
                 return __n($singular, $plural, $n, $params, $options);
             }));
 
-            $twig->addFunction(new \Twig_SimpleFunction('formatUsing', function ($method, ...$args) {
+            $twig->addFunction(new \Twig\TwigFunction('formatUsing', function ($method, ...$args) {
                 return Format::$method(...$args);
             }, ['is_safe' => ['html']]));
 

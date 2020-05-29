@@ -79,15 +79,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
 			$form->addHiddenValue('gibbonLibraryTypeID', $values['gibbonLibraryTypeID']);
 			$form->addHiddenValue('gibbonLibraryItemID', $gibbonLibraryItemID);
+			$form->addHiddenValue('type', $values['type']);
+			$form->addHiddenValue('statusBorrowable', 'Available');
 
 			$form->addRow()->addHeading(__('Catalog Type'));
 
-			$sql = "SELECT gibbonLibraryTypeID AS value, name FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
 			$row = $form->addRow();
-				$row->addLabel('type', __('Type'));
-				$row->addTextField('type')->required()->readOnly();
-
-			$form->toggleVisibilityByClass('general')->onSelect('gibbonLibraryTypeID')->whenNot('Please select...');
+				$row->addLabel('typeText', __('Type'));
+				$row->addTextField('typeText')->required()->readOnly()->setValue(__($values['type']));
 
 			$form->addRow()->addHeading(__('General Details'));
 
@@ -189,8 +188,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 				'Repair' => __('Repair')
 			);
 			$row = $form->addRow()->addClass('statusBorrowable');
-				$row->addLabel('statusBorrowable', __('Status?'));
-				$row->addTextField('statusBorrowable')->required()->readOnly()->setValue(__('Available'));
+				$row->addLabel('statusBorrowableText', __('Status?'));
+				$row->addTextField('statusBorrowableText')->required()->readOnly()->setValue(__('Available'));
 
             $row = $form->addRow()->addClass('statusNotBorrowable');
 				$row->addLabel('statusNotBorrowable', __('Status?'));

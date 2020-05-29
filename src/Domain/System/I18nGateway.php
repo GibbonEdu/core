@@ -54,26 +54,4 @@ class I18nGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function selectActiveI18n()
-    {
-        $sql = "SELECT * FROM gibboni18n WHERE active='Y'";
-
-        return $this->db()->select($sql);
-    }
-
-    public function getI18nByID($gibboni18nID)
-    {
-        $data = array('gibboni18nID' => $gibboni18nID);
-        $sql = "SELECT * FROM gibboni18n WHERE gibboni18nID=:gibboni18nID";
-
-        return $this->db()->selectOne($sql, $data);
-    }
-
-    public function updateI18nVersion($gibboni18nID, $installed, $version)
-    {
-        $data = array('gibboni18nID' => $gibboni18nID, 'installed' => $installed, 'version' => $version);
-        $sql = "UPDATE gibboni18n SET installed=:installed, version=:version WHERE gibboni18nID=:gibboni18nID";
-
-        return $this->db()->update($sql, $data);
-    }
 }

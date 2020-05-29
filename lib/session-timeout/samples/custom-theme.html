@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Custom Theme | Session Timeout</title>
+
+    <script src="../dist/session-timeout.js"></script>
+
+    <style>
+      .sessionTimeout { background-color: rgba(0, 0, 0, 0.9); }
+      .sessionTimeout-modal { border-radius: 20px; }
+      .sessionTimeout-title { border-top-right-radius: 20px; border-top-left-radius: 20px; }
+      .sessionTimeout-buttons { text-align: center; }
+      .sessionTimeout-btn { border-radius: 10px; }
+      .sessionTimeout-btn--primary { background-color: magenta; }
+      .sessionTimeout-btn--primary:hover { background-color: mediumvioletred; }
+    </style>
+  </head>
+  <body>
+    <h1>Custom Theme | Session Timeout</h1>
+
+    <p>The warning dialog will appear after 3 seconds.</p>
+
+    <p>The styles have been changed with custom CSS. Make sure your CSS comes after you include session-timeout.js.</p>
+
+    <script>
+      sessionTimeout({
+        warnAfter: 3000,
+      });
+    </script>
+  </body>
+</html>
