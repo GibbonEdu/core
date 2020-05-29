@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
             $row->addLabel('gibbonSpaceID', __('Location'));
             $row->addSelect('gibbonSpaceID')->fromQuery($pdo, $sql, array())->selected($gibbonSpaceID)->placeholder();
 
-        $options = array("Available" => "Available", "Decommissioned" => "Decommissioned", "In Use" => "In Use", "Lost" => "Lost", "On Loan" => "On Loan", "Repair" => "Repair", "Reserved" => "Reserved");
+        $options = array("Available" => __("Available"), "Decommissioned" => __("Decommissioned"), "In Use" => __("In Use"), "Lost" => __("Lost"), "On Loan" => __("On Loan"), "Repair" => __("Repair"), "Reserved" => __("Reserved"));
         $row = $form->addRow();
             $row->addLabel('status', __('Status'));
             $row->addSelect('status')->fromArray($options)->selected($status)->placeholder();
@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
 
     $table->addColumn('schoolID', __('School ID'))->description(__('Type'))
         ->format(function ($item) {
-            return '<b>'.$item['id'].'</b><br/>'.Format::small($item['type']);
+            return '<b>'.$item['id'].'</b><br/>'.Format::small(__($item['type']));
         });
 
     $table->addColumn('name', __('Name'))->description(__('Producer'))
@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
 
     $table->addColumn('status', __('Status'))->description(__('Borrowable'))
         ->format(function ($item) {
-            return $item['status'].'<br/>'.Format::small($item['borrowable']);
+            return __($item['status']).'<br/>'.Format::small(Format::yesNo($item['borrowable']));
         });
 
     $table->addColumn('date', __('Purchase Date'))->description(__('Vendor'))

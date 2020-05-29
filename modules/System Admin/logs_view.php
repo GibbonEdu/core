@@ -101,11 +101,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
             return $details;
         });
     $table->addColumn('gibbonLogID', __('Log ID'));
-    $table->addColumn('timestamp', __('Timestamp'));
+    $table->addColumn('timestamp', __('Timestamp'))
+        ->format(function ($log) {
+          return Format::dateTime($log['timestamp']);
+        });
     $table->addColumn('title', __('Title'));
     $table->addColumn('type', __('Type'))
         ->format(function ($log) {
-          return (empty($log['module'])) ? 'System' : $log['module'] ;
+          return (empty($log['module'])) ? __('System') : __($log['module']) ;
         });
     $table->addColumn('user', __('User'))
         ->format(function ($log) {

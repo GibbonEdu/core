@@ -119,11 +119,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
             echo '</td>';
             echo "<td style='padding-top: 15px; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__('Status').'</span><br/>';
-            echo '<i>'.$row['status'].'</i>';
+            echo '<i>'.__($row['status']).'</i>';
             echo '</td>';
             echo "<td style='padding-top: 15px; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__('Borrowable').'</span><br/>';
-            echo '<i>'.$row['borrowable'].'</i>';
+            echo '<i>'.Format::yesNo($row['borrowable']).'</i>';
             echo '</td>';
             echo '</tr>';
             echo '</table>';
@@ -175,13 +175,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                 }
               });
             $table->addColumn('status', __('Status'))
-                  ->description(__('Date In/Out'))
+                  ->description(__('Date Out & In'))
                   ->format(function ($event) {
                     $timeInOut = Format::date($event['timestampOut']);
                     if ($event['timestampReturn'] != '') {
                       $timeInOut .= ' - ' . Format::date($event['timestampReturn']);
                     }
-                    return sprintf('%1$s<br/>%2$s', $event['status'], Format::small($timeInOut));
+                    return sprintf('%1$s<br/>%2$s', __($event['status']), Format::small($timeInOut));
                   });
             $table
               ->addColumn('returnExpected', __('Due Date'))
@@ -203,10 +203,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                 $outPerson = "";
                 $inPerson = "";
                 if ($event['outPersonID']) {
-                    $outPerson .= 'Out: ' . Format::name($event['outPersonTitle'], $event['outPersonPreferredName'], $event['outPersonSurname'], 'Staff', false, true);
+                    $outPerson .= __('Out:'). ' ' . Format::name($event['outPersonTitle'], $event['outPersonPreferredName'], $event['outPersonSurname'], 'Staff', false, true);
                 }
                 if ($event['inPersonID']) {
-                    $inPerson .= 'In: ' . Format::name($event['inPersonTitle'], $event['inPersonPreferredName'], $event['inPersonSurname'], 'Staff', false, true);
+                    $inPerson .= __('In:'). ' ' . Format::name($event['inPersonTitle'], $event['inPersonPreferredName'], $event['inPersonSurname'], 'Staff', false, true);
                 }
                 return sprintf('%1$s<br/>%2$s', $outPerson, $inPerson);
               });

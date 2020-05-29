@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 
             $row = $form->addRow();
                 $row->addLabel('statusCurrent', __('Current Status'));
-                $row->addTextField('statusCurrent')->setValue($values['status'])->readonly()->required();
+                $row->addTextField('statusCurrent')->setValue(__($values['status']))->readonly()->required();
 
             $form->addRow()->addHeading(__('This Event'));
 

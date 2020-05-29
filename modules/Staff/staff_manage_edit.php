@@ -24,6 +24,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Staff\StaffContractGateway;
 use Gibbon\Domain\Staff\StaffFacilityGateway;
 use Gibbon\Domain\Staff\StaffGateway;
+use Gibbon\Domain\User\RoleGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.php') == false) {
     //Acess denied
@@ -74,9 +75,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/staff_manage.php&search=$search&allStaff=$allStaff'>".__('Back to Search Results').'</a>';
                     echo '</div>';
                 }
-                echo '<h3>'.__('General Information').'</h3>';
 
                 $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/staff_manage_editProcess.php?gibbonStaffID='.$values['gibbonStaffID']."&search=$search&allStaff=$allStaff");
+                $form->setTitle(__('General Information'));
 
                 $form->setFactory(DatabaseFormFactory::create($pdo));
 
@@ -94,9 +95,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     $row->addTextField('initials')->maxlength(4);
 
                 $types = array(__('Basic') => array ('Teaching' => __('Teaching'), 'Support' => __('Support')));
-                $sql = "SELECT name as value, name FROM gibbonRole WHERE category='Staff' ORDER BY name";
-                $result = $pdo->executeQuery(array(), $sql);
-                $types[__('System Roles')] = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
+                $roleGateway = $container->get(RoleGateway::class);
+                // CRITERIA
+                $criteriaCategory = $roleGateway->newQueryCriteria()
+                    ->sortBy(['gibbonRole.name'])
+                    ->filterBy('category:Staff')
+                    ->fromPOST();
+                
+                $rolesCategoriesStaff = $roleGateway->queryRoles($criteriaCategory);
+                
+                $typesCategories = array();
+                foreach($rolesCategoriesStaff as $roleCategoriesStaff) {
+                   $typesCategories[$roleCategoriesStaff['name']] = __($roleCategoriesStaff['name']);
+                }
+                $types[__('System Roles')] = $typesCategories;
+
                 $row = $form->addRow();
                     $row->addLabel('type', __('Type'));
                     $row->addSelect('type')->fromArray($types)->placeholder()->required();
@@ -169,7 +182,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     ->displayLabel();
 
                 $table->addColumn('name', __('Name'));
-                $table->addColumn('usageType', __('Usage'));    
+                $table->addColumn('usageType', __('Usage'))->translatable();    
 
                 $table->addActionColumn()
                     ->addParam('gibbonSpacePersonID')

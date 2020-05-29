@@ -105,6 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('gibbonLibraryItemID', $gibbonLibraryItemID);
+            $form->addHiddenValue('statusCurrent', $values['status']);
 
             $form->addRow()->addHeading(__('Item Details'));
 
@@ -117,8 +118,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                 $row->addTextField('name')->setValue($values['name'])->readonly()->required();
 
             $row = $form->addRow();
-                $row->addLabel('statusCurrent', __('Current Status'));
-                $row->addTextField('statusCurrent')->setValue($values['status'])->readonly()->required();
+                $row->addLabel('statusCurrentText', __('Current Status'));
+                $row->addTextField('statusCurrentText')->setValue(__($values['status']))->readonly()->required();
 
             $form->addRow()->addHeading(__('This Event'));
 

@@ -151,12 +151,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     $categoryList = ($result->rowCount() > 0) ? $result->fetchAll() : array();
     $collections = $collectionsChained = array();
     $categories = array_reduce($categoryList, function ($group, $item) use (&$collections, &$collectionsChained) {
-        $group[$item['value']] = $item['name'];
+        $group[$item['value']] = __($item['name']);
         foreach (unserialize($item['fields']) as $field) {
             if ($field['name'] == 'Collection' and $field['type'] == 'Select') {
                 foreach (explode(',', $field['options']) as $collectionItem) {
                     $collectionItem = trim($collectionItem);
-                    $collections[$collectionItem] = $collectionItem;
+                    $collections[$collectionItem] = __($collectionItem);
                     $collectionsChained[$collectionItem] = $item['value'];
                 }
             }
@@ -226,7 +226,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         $typeFields = unserialize($item['fields']);
         $details = "<table class='smallIntBorder' style='width:100%;'>";
         foreach ($typeFields as $fieldName => $fieldValue) {
-            $details .= sprintf('<tr><td><b>%1$s</b></td><td>%2$s</td></tr>', $fieldName, $fieldValue);
+            $details .= sprintf('<tr><td><b>%1$s</b></td><td>%2$s</td></tr>', __($fieldName), $fieldValue);
         }
         $details .= "</table>";
         return $details;
@@ -236,12 +236,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         return Format::photo($item['imageLocation']);
     });
 
-    $table->addColumn('name', __('Name (Author/Producer)'))->format(function ($item) {
-        return sprintf('<b>%1$s</b><br/><span style="font-size: 85%%; font-style:italic;">%2$s</span>', $item['name'], $item['producer']);
+    $table->addColumn('name', __('Name'))
+            ->description(__('Author/Producer'))
+            ->format(function ($item) {
+        return sprintf('<b>%1$s</b><br/><span style="font-size: 85%%; font-style:italic;">%2$s</span>', $item['name'], __($item['producer']));
     });
 
-    $table->addColumn('id', __('ID (Status)'))->format(function ($item) {
-        return sprintf('<b>%1$s</b><br/><span style="font-size: 85%%; font-style:italic;">%2$s</span>', $item['id'], $item['status']);
+    $table->addColumn('id', __('ID'))
+            ->description(__('Status'))
+            ->format(function ($item) {
+        return sprintf('<b>%1$s</b><br/><span style="font-size: 85%%; font-style:italic;">%2$s</span>', $item['id'], __($item['status']));
     });
 
     $table->addColumn('location', __('Location'))->format(function ($item) {
