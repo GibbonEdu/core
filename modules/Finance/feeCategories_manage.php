@@ -17,6 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Finance\InvoiceGateway;
+use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+
 if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -29,111 +34,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return']);
     }
-
-    //Set pagination variable
-    $page = 1;
-    if (isset($_GET['page'])) {
-        $page = $_GET['page'];
-    }
-    if ((!is_numeric($page)) or $page < 1) {
-        $page = 1;
-    }
-
-    try {
-        $data = array();
-        $sql = 'SELECT * FROM gibbonFinanceFeeCategory ORDER BY name';
-        $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
-
     echo '<p>';
     echo __('Categories are used to group fees together into related sets. Some examples might be Tuition Fees, Learning Support Fees or Transport Fees. Categories enable you to control who receives invoices for different kinds of fees.');
     echo '</p>';
+    $gateway = $container->get(InvoiceGateway::class);
+    $criteria = $gateway->newQueryCriteria(true);
+    $feeCategories = $gateway->queryFeeCategories($criteria);
+    $table = DataTable::createPaginated('feeCategories', $criteria);
+    $table->addHeaderAction('add', __('Add'))
+          ->setURL('/modules/Finance/feeCategories_manage_add.php');
 
-    echo "<div class='linkTop'>";
-    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/feeCategories_manage_add.php'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-    echo '</div>';
-
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
-    } else {
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top');
-        }
-
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __('Name');
-        echo '</th>';
-        echo '<th>';
-        echo __('Short Name');
-        echo '</th>';
-        echo '<th>';
-        echo __('Description');
-        echo '</th>';
-        echo '<th>';
-        echo __('Active');
-        echo '</th>';
-        echo '<th>';
-        echo __('Actions');
-        echo '</th>';
-        echo '</tr>';
-
-        $count = 0;
-        $rowNum = 'odd';
-        try {
-            $resultPage = $connection2->prepare($sqlPage);
-            $resultPage->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
-        while ($row = $resultPage->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
+    $table->addColumn('name', __('Name'));
+    $table->addColumn('nameShort', __('Short Name'));
+    $table->addColumn('description', __('Description'));
+    $table->addColumn('active', __('Active'));
+    $table->addActionColumn()
+          ->addParam('gibbonFinanceFeeCategoryID')
+          ->format(function ($item, $actions) {
+            if ($item['gibbonFinanceFeeCategoryID'] == 1) {
+                echo Format::small(__('This category cannot be edited or deleted.'));
             } else {
-                $rowNum = 'odd';
+                $actions->addAction('edit', __('Edit'))
+                      ->setURL('/modules/Finance/feeCategories_manage_edit.php');
+                $actions->addAction('delete', __('Delete'))
+                      ->setURL('/modules/Finance/feeCategories_manage_delete.php');
             }
+          });
 
-            if ($row['active'] != 'Y') {
-                $rowNum = 'error';
-            }
-
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo '<b>'.$row['name'].'</b><br/>';
-            echo '</td>';
-            echo '<td>';
-            echo $row['nameShort'];
-            echo '</td>';
-            echo '<td>';
-            echo $row['description'];
-            echo '</td>';
-            echo '<td>';
-            echo ynExpander($guid, $row['active']);
-            echo '</td>';
-            echo '<td>';
-            if ($row['gibbonFinanceFeeCategoryID'] == 1) {
-                echo '<i>'.sprintf(__('This category cannot%1$sbe edited or deleted.'), '<br/>').'</i>';
-            } else {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/feeCategories_manage_edit.php&gibbonFinanceFeeCategoryID='.$row['gibbonFinanceFeeCategoryID']."'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/feeCategories_manage_delete.php&gibbonFinanceFeeCategoryID='.$row['gibbonFinanceFeeCategoryID']."&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-            }
-            echo '</td>';
-            echo '</tr>';
-
-            ++$count;
-        }
-        echo '</table>';
-
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom');
-        }
-    }
+    $table->modifyRows(function ($item, $row) {
+        return $item['active'] == 'N' ? $row->addClass('warning') : $row;
+    });
+    echo $table->render($feeCategories);
 }
