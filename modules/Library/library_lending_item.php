@@ -194,7 +194,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
               ->addColumn('returnAction', __('Return Action'))
               ->format(function ($event) {
                 if ($event['status'] != 'Returned' && $event['returnAction'] != ''){
-                  return Format::date($event['returnAction']);
+                  return __($event['returnAction']);
                 }
               });
             $table
