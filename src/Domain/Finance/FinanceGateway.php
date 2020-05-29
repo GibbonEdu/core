@@ -14,6 +14,37 @@ class FinanceGateway extends QueryableGateway
     private static $tableName = 'gibbonFinanceBudget';
     private static $searchableColumns = [];
 
+   public function queryFinanceBudget(QueryCriteria $criteria)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->orderBy(
+                [
+                'active DESC'
+                ]
+            )
+            ->cols(
+                [
+                'name',
+                'nameShort',
+                'category',
+                'active'
+                  ]
+            );
+
+        $criteria->addFilterRules(
+            [
+                'active' => function ($query,$active) {
+                return $query
+                    ->where('gibbonFinanceBudget.active = :active')
+                    ->bindValue('active', $active);
+                }
+            ]
+        );
+
+        return $this->runQuery($query, $criteria);
+    }  
 
     public function queryFinanceCycles(QueryCriteria $criteria)
     {
@@ -35,7 +66,7 @@ class FinanceGateway extends QueryableGateway
             );
 
         $criteria->addFilterRules(
-            [
+          [
             'status' => function ($query, $status) {
                 return $query
                 ->where('gibbonFinanceBudgetCycle.status = :status')
@@ -53,9 +84,9 @@ class FinanceGateway extends QueryableGateway
             }
             ]
         );
-      return $this->runQuery($query, $criteria);
+      
+        return $this->runQuery($query, $criteria);
     }
-
 
     public function queryExpenseApprovers(QueryCriteria $criteria)
     {
