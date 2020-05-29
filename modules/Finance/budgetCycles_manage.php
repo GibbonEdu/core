@@ -57,12 +57,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
                           ->setURL('/modules/Finance/budgetCycles_manage_delete.php');
                      });
     echo $table->render($budgetCycles);
-    try {
-        $data = array();
-        $sql = 'SELECT * FROM gibbonFinanceBudgetCycle ORDER BY sequenceNumber';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
 }
