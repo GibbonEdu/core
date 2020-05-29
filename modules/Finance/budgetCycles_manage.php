@@ -37,10 +37,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
     $gateway = $container->get(FinanceGateway::class);
     $criteria = $gateway->newQueryCriteria(true)
                         ->fromPOST();
+                        
     $budgetCycles = $gateway->queryFinanceCycles($criteria);
     $table = DataTable::createPaginated('cycles', $criteria);
     $table->addHeaderAction('add', __('Add'))
-      ->setURL('/modules/Finance/budgetCycles_manage_add.php');
+      ->setURL('/modules/Finance/budgetCycles_manage_add.php')
+      ->displayLabel();
+
     $table->addColumn('sequenceNumber', __('Sequence'));
     $table->addColumn('name', __('Name'));
     $table->addColumn('dates', __('Dates'))
@@ -48,6 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
             return Format::dateRange($cycle['dateStart'], $cycle['dateEnd']);
           });
     $table->addColumn('status', __('Status'));
+
     $actions = $table->addActionColumn()
         ->addParam('gibbonFinanceBudgetCycleID')
                      ->format(function ($cycle, $actions) {

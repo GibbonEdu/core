@@ -34,15 +34,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return']);
     }
-    echo '<p>';
-    echo __('Categories are used to group fees together into related sets. Some examples might be Tuition Fees, Learning Support Fees or Transport Fees. Categories enable you to control who receives invoices for different kinds of fees.');
-    echo '</p>';
+
     $gateway = $container->get(InvoiceGateway::class);
     $criteria = $gateway->newQueryCriteria(true);
     $feeCategories = $gateway->queryFeeCategories($criteria);
+
     $table = DataTable::createPaginated('feeCategories', $criteria);
+    $table->setDescription(__('Categories are used to group fees together into related sets. Some examples might be Tuition Fees, Learning Support Fees or Transport Fees. Categories enable you to control who receives invoices for different kinds of fees.'));
+
     $table->addHeaderAction('add', __('Add'))
-          ->setURL('/modules/Finance/feeCategories_manage_add.php');
+          ->setURL('/modules/Finance/feeCategories_manage_add.php')
+          ->displayLabel();
 
     $table->addColumn('name', __('Name'));
     $table->addColumn('nameShort', __('Short Name'));
@@ -64,5 +66,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
     $table->modifyRows(function ($item, $row) {
         return $item['active'] == 'N' ? $row->addClass('warning') : $row;
     });
+    
     echo $table->render($feeCategories);
 }
