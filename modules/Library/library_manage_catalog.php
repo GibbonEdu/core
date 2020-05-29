@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/Library/library_manage_catalog_add.php')
-        ->addParam('gibbonLibraryItemID', $gibbonLibraryTypeID)
+        ->addParam('gibbonLibraryTypeID', $gibbonLibraryTypeID)
         ->addParam('name', $name)
         ->addParam('gibbonSpaceID', $gibbonSpaceID)
         ->addParam('status', $status)
@@ -153,6 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $actions = $table->addActionColumn()
           ->addParam('gibbonLibraryItemID')
           ->addParam('name', $name)
+          ->addParam('gibbonLibraryTypeID', $gibbonLibraryTypeID)
           ->addParam('gibbonSpaceID', $gibbonSpaceID)
           ->addParam('status', $status)
           ->addParam('gibbonPersonIDOwnership', $gibbonPersonIDOwnership)
