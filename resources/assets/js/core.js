@@ -153,7 +153,6 @@ jQuery(function($){
     * Data Table: Simple Drag-Drop
     */
     $('.dataTable table[data-drag-url]').each(DraggableDataTable);
-
 });
 
 var DraggableDataTable = function () {
@@ -186,6 +185,85 @@ var DraggableDataTable = function () {
 };
 
 // Form API Functions
+
+/**
+ * Comment Editor
+ */
+$.prototype.gibbonCommentEditor = function (settings) {
+    var editor = this;
+
+    updateComments(editor);
+
+    $(editor).on('input', function () {
+        updateComments(this);
+    });
+
+    $(editor).on('paste', function () {
+        var element = this;
+        setTimeout(function() { 
+            updatePlaceholders(element);
+            updateComments(element);
+        }, 0);
+    });
+
+    $(editor).ready(function(){
+        autosize(editor);
+    });
+};
+
+function updateComments(element)
+{
+    var commentText = $(element).val();
+
+    // Update character counter for comment length
+    var currentLength = commentText.length;
+    $('.characterInfo .currentLength', $(element).parent()).html(currentLength);
+
+    // Look for the student's first name somewhere in the comment
+    var preferredName = $(element).data('name') ? $(element).data('name') : '';
+    if (preferredName.length > 0) {
+        var nameNotFound = commentText.indexOf(preferredName) === -1;
+        $('.characterInfo .commentStatusName', $(element).parent()).toggleClass('hidden', !nameNotFound);
+    }
+
+    // Check to ensure the pronouns match the gender of the student
+    var gender = $(element).data('gender') ? $(element).data('gender') : '';
+    if (gender.length > 0) {
+        var heFound = commentText.search(/\bhe\b/i) !== -1 || commentText.search(/\bhis\b/i) !== -1 || commentText.search(/\bhim\b/i) !== -1 || commentText.search(/\bhimself\b/i) !== -1;
+        var sheFound = commentText.search(/\bshe\b/i) !== -1 || commentText.search(/\bher\b/i) !== -1 || commentText.search(/\bherself\b/i) !== -1;
+        var pronounMismatch = (heFound && gender == 'F') || (sheFound && gender == 'M');
+        $('.characterInfo .commentStatusPronoun', $(element).parent()).toggleClass('hidden', !pronounMismatch);
+    }
+}
+
+function updatePlaceholders(element)
+{
+    var commentText = $(element).val();
+
+    // Replace {name} with the student's preferred name
+    var preferredName = $(element).data('name') ? $(element).data('name') : '';
+    if (preferredName.length > 0) {
+        commentText = commentText.replace(/{name}/ig, preferredName);
+    }
+
+    // Replace pronouns to match the student's gender
+    var gender = $(element).data('gender') ? $(element).data('gender') : '';
+    if (gender.length > 0) {
+        if (gender == 'F') {
+            commentText = commentText.replace(/\bhe\b/g, 'she').replace(/\bHe\b/g, 'She');
+            commentText = commentText.replace(/\bhis\b/g, 'her').replace(/\bHis\b/g, 'Her');
+            commentText = commentText.replace(/\bhim\b/g, 'her').replace(/\bHim\b/g, 'Her');
+            commentText = commentText.replace(/\bhimself\b/g, 'herself').replace(/\bHimself\b/g, 'Herself');
+        } else if (gender == 'M') {
+            commentText = commentText.replace(/\bshe\b/g, 'he').replace(/\bShe\b/g, 'He');
+            commentText = commentText.replace(/\bher\b/g, 'his').replace(/\bHer\b/g, 'His');
+            commentText = commentText.replace(/\bherself\b/g, 'himself').replace(/\bHerself\b/g, 'Himself');
+        }
+    }
+
+    $(element).val(commentText);
+}
+
 
 /**
  * TextField Uniqueness Check

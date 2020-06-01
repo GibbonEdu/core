@@ -21,7 +21,6 @@ use Gibbon\Forms\Form;
 use Gibbon\Module\Reports\Domain\ReportingProofGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Module\Reports\TextDiff;
-use Gibbon\Module\Reports\Forms\CommentEditor;
 use Gibbon\Services\Format;
 use Gibbon\Module\Reports\Domain\ReportingAccessGateway;
 
@@ -259,11 +258,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
             $form->toggleVisibilityByClass('comment'.$gibbonReportingValueID)->onRadio("status[{$gibbonReportingValueID}]")->when('Revised');
 
             $col = $section->addColumn();
-            $col->addElement(new CommentEditor("comment[{$gibbonReportingValueID}]"))
+            $col->addCommentEditor("comment[{$gibbonReportingValueID}]")
+                ->checkName($criteria['preferredName'])
+                ->checkPronouns($criteria['gender'])
                 ->addClass('flex reportCriteria text-base font-sans')
-                ->addClass('comment'.$gibbonReportingValueID)
-                ->addData('name', $criteria['preferredName'])
-                ->addData('gender', $criteria['gender'])
                 ->setID("comment{$gibbonReportingValueID}")
                 ->maxLength($criteria['characterLimit'])
                 ->setValue($proof['status'] == 'Edited' ? $proof['comment'] : $criteria['comment']);
@@ -294,11 +292,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
             $form->toggleVisibilityByClass('comment'.$gibbonReportingValueID)->onRadio("status[{$gibbonReportingValueID}]")->when('Edited');
 
             $col = $section->addColumn();
-            $col->addElement(new CommentEditor("comment[{$gibbonReportingValueID}]"))
+            $col->addCommentEditor("comment[{$gibbonReportingValueID}]")
+                ->checkName($criteria['preferredName'])
+                ->checkPronouns($criteria['gender'])
                 ->addClass('flex reportCriteria text-base font-sans')
                 ->addClass('comment'.$gibbonReportingValueID)
-                ->addData('name', $criteria['preferredName'])
-                ->addData('gender', $criteria['gender'])
                 ->setID("comment{$gibbonReportingValueID}")
                 ->maxLength($criteria['characterLimit'])
                 ->readonly($proof['status'] != 'Edited')
