@@ -137,6 +137,16 @@ class FormFactory implements FormFactoryInterface
         return new Input\Editor($name, $guid);
     }
 
+    public function createCodeEditor($name)
+    {
+        return new Input\CodeEditor($name);
+    }
+
+    public function createCommentEditor($name)
+    {
+        return new Input\CommentEditor($name);
+    }
+
     public function createEmail($name)
     {
         return (new Input\TextField($name))->addValidation('Validate.Email')->maxLength(75);

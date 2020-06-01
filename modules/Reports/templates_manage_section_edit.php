@@ -18,7 +18,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Module\Reports\Forms\CodeEditor;
 use Gibbon\Module\Reports\Domain\ReportTemplateSectionGateway;
 use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 
@@ -146,13 +145,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_s
         $col->addNumber('templateParams[x]')->decimalPlaces(2)->setValue($params['x'] ?? '');
         $col->addContent('<div class="flex-1 pr-1 pl-2">Y</div>');
         $col->addNumber('templateParams[y]')->decimalPlaces(2)->setValue($params['y'] ?? '');
-
-    // Template Code - only when locked?
-    // $queryEditor = new CodeEditor('templateContent');
-
-    // $col = $form->addRow()->addColumn();
-    //     $col->addLabel('templateContent', __('Template Code'));
-    //     $col->addElement($queryEditor)->setValue($values['templateContent']);
 
     $row = $form->addRow();
         $row->addFooter();

@@ -24,7 +24,6 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\System\HookGateway;
 use Gibbon\Module\Reports\Forms\ReportingSidebarForm;
-use Gibbon\Module\Reports\Forms\CommentEditor;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Module\Reports\Domain\ReportingAccessGateway;
 use Gibbon\Module\Reports\Domain\ReportingScopeGateway;
@@ -208,10 +207,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
         } elseif ($criteria['valueType'] == 'Comment' || $criteria['valueType'] == 'Remark') {
             $col = $form->addRow()->addColumn();
             $col->addLabel($fieldName, $criteria['name'])->description($criteria['description']);
-            $col->addElement(new CommentEditor($fieldName))
+            $col->addCommentEditor($fieldName)
+                ->checkName($student['preferredName'])
+                ->checkPronouns($student['gender'])
                 ->addClass('reportCriteria')
-                ->addData('name', $student['preferredName'])
-                ->addData('gender', $student['gender'])
                 ->setID($fieldID)
                 ->maxLength($criteria['characterLimit'])
                 ->setValue($criteria['comment'])

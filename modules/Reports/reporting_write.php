@@ -23,7 +23,6 @@ use Gibbon\Module\Reports\Domain\ReportingAccessGateway;
 use Gibbon\Module\Reports\Domain\ReportingScopeGateway;
 use Gibbon\Module\Reports\Forms\ReportingSidebarForm;
 use Gibbon\Forms\Form;
-use Gibbon\Module\Reports\Forms\CommentEditor;
 use Gibbon\Forms\DatabaseFormFactory;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.php') == false) {
@@ -145,7 +144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.ph
             if ($criteria['valueType'] == 'Comment' || $criteria['valueType'] == 'Remark') {
                 $col = $form->addRow()->addColumn();
                 $col->addLabel($fieldName, $criteria['name'])->description($criteria['description']);
-                $col->addElement(new CommentEditor($fieldName))
+                $col->addCommentEditor($fieldName)
                     ->setID($fieldID)
                     ->maxLength($criteria['characterLimit'])
                     ->setValue($criteria['comment'])
