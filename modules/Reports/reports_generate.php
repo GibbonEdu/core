@@ -53,8 +53,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
     $table->addColumn('timestamp', __('Last Created'))
         ->format(function ($report) {
             if (is_array($report['logs']) && count($report['logs']) > 0) {
-                return '<img class="align-middle -mt-px" src="./themes/Default/img/loading.gif">'
-                      .'<span class="tag ml-2 message">'.__('Running').'</span>';
+                $firstLog = current($report['logs']);
+                return '<div class="statusBar" data-id="'.($firstLog['processID'] ?? '').'">'
+                      .'<img class="align-middle w-56 -mt-px" src="./themes/Default/img/loading.gif">'
+                      .'<span class="tag ml-2 message">'.__('Running').'</span></div>';
             }
             
             return !empty($report['timestampGenerated'])? Format::dateTimeReadable($report['timestampGenerated']) : '';
@@ -70,3 +72,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
 
     echo $table->render($reports);
 }
+?>
+<script>
+$('.statusBar').each(function(index, element) {
+    var refresh = setInterval(function () {
+        var path = "<?php echo $_SESSION[$guid]['absoluteURL'] ?>/modules/Reports/reports_generate_ajax.php";
+        var postData = { gibbonLogID: $(element).data('id') };
+        $(element).load(path, postData, function(responseText, textStatus, jqXHR) {
+            if (responseText.indexOf('Complete') >= 0) {
+                clearInterval(refresh);
+            }
+        });
+    }, 3000);
+});
+</script>
