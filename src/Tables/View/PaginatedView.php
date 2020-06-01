@@ -176,8 +176,11 @@ class PaginatedView extends DataTableView implements RendererInterface
             25 => 25,
             50 => 50,
             100 => 100,
-            $dataSet->getResultCount() => __('All'),
         ]];
+
+        if ($dataSet->getResultCount() < 5000) {
+            $options[__('Per Page')][$dataSet->getResultCount()] = __('All');
+        }
 
         return $this->factory->createSelect('limit')
             ->fromArray($options)
