@@ -120,6 +120,7 @@ class Format
      */
     public static function dateReadable($dateString, $format = '%b %e, %Y')
     {
+        if (empty($dateString)) return '';
         $date = static::createDateTime($dateString);
         return mb_convert_case(strftime($format, $date->format('U')), MB_CASE_TITLE);
     }
@@ -132,6 +133,7 @@ class Format
      */
     public static function dateTimeReadable($dateString, $format = '%b %e, %Y %H:%M')
     {
+        if (empty($dateString)) return '';
         $date = static::createDateTime($dateString);
         return mb_convert_case(strftime($format, $date->format('U')), MB_CASE_TITLE);
     }
