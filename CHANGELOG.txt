@@ -89,6 +89,7 @@ v20.0.00
         Reports: fixed bug in Internal Assessment data source
         Reports: adjusted student lists to honour Reportable flag
         Reports: applied gibbonCourseClassPerson reportable flag to queries
+        Reports: added a live-reload to report generating progress bar
         System Admin: fixed File Permission display issue in System Check
         System Admin: fixed issue causing string replacement preventing update highlighting in Manage Modules
         Timetable: escaped calendar event names in timetable tooltips

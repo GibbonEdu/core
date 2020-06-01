@@ -105,8 +105,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
         ->format(function ($report) use ($gibbonReportID, &$reportArchiveEntryGateway, &$logs) {
             $reportLogs = $logs[$report['gibbonYearGroupID']] ?? [];
             if (count($reportLogs) > 0) {
-                return '<img class="align-middle -mt-px" src="./themes/Default/img/loading.gif">'
-                      .'<span class="tag ml-2 message">'.__('Running').'</span>';
+                return '<div class="statusBar" data-id="'.($reportLogs['processID'] ?? '').'">'
+                      .'<img class="align-middle w-56 -mt-px" src="./themes/Default/img/loading.gif">'
+                      .'<span class="tag ml-2 message">'.__('Running').'</span></div>';
             }
 
             $archive = $reportArchiveEntryGateway->getRecentArchiveEntryByReport($gibbonReportID, 'Batch', $report['gibbonYearGroupID'], 'Staff', true, true);
@@ -151,3 +152,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
 
     echo $form->getOutput();
 }
+?>
+<script>
+$('.statusBar').each(function(index, element) {
+    var refresh = setInterval(function () {
+        var path = "<?php echo $_SESSION[$guid]['absoluteURL'] ?>/modules/Reports/reports_generate_ajax.php";
+        var postData = { gibbonLogID: $(element).data('id') };
+        $(element).load(path, postData, function(responseText, textStatus, jqXHR) {
+            if (responseText.indexOf('Complete') >= 0) {
+                clearInterval(refresh);
+                $("[title='Cancel']").remove();
+            }
+        });
+    }, 3000);
+});
+</script>
