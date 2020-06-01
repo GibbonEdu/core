@@ -142,7 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 
                         $row = $form->addRow();
                             $row->addLabel('status', __('Status'));
-                            $row->addTextField('status')->maxLength(60)->required()->readonly()->setValue($values['status']);
+                            $row->addTextField('status')->maxLength(60)->required()->readonly()->setValue(__($values['status']));
 
                         $row = $form->addRow();
                             $column = $row->addColumn();
@@ -159,7 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 
                         $row = $form->addRow();
                             $row->addLabel('purchaseBy', __('Purchase By'));
-                            $row->addTextField('purchaseBy')->required()->readonly()->setValue($values['purchaseBy']);
+                            $row->addTextField('purchaseBy')->required()->readonly()->setValue(__($values['purchaseBy']));
 
                         $row = $form->addRow();
                             $column = $row->addColumn();

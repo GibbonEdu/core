@@ -52,9 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage.php
     $table->addColumn('category', __('Category'));
     $table
       ->addColumn('active', __('Active'))
-      ->format(function ($budget) {
-        return $budget['active'] == 'Y' ? 'Yes' : 'No';
-      });
+      ->format(Format::using('yesNo', 'active'));
     
     $table
       ->addActionColumn()
@@ -62,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage.php
       ->format(function ($budget, $actions) {
         $actions
           ->addAction('edit', __('Edit'))
-          ->setURL('/modules/Finance/budgets_manage_edit.php&');
+          ->setURL('/modules/Finance/budgets_manage_edit.php');
         $actions
           ->addAction('delete', __('Delete'))
           ->setURL('/modules/Finance/budgets_manage_delete.php');

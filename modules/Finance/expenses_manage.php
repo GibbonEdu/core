@@ -319,8 +319,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                                     ->wrap('<b>', '</b>')
                                     ->append('<br/><span class="small emphasis">'.$expense['budget'].'</span>');
                                 $row->addContent(Format::name('', $expense['preferredName'], $expense['surname'], 'Staff', false, true));
-                                $row->addContent($expense['status'])
-                                    ->append('<br/><span class="small emphasis">'.$expense['paymentReimbursementStatus'].'</span>');
+                                $row->addContent(__($expense['status']))
+                                    ->append('<br/><span class="small emphasis">'.__($expense['paymentReimbursementStatus']).'</span>');
                                 $row->addContent(number_format($expense['cost'], 2, '.', ','));
                                 $row->addContent(dateConvertBack($guid, substr($expense['timestampCreator'], 0, 10)));
 
