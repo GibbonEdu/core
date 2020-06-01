@@ -181,9 +181,11 @@ class MpdfRenderer implements ReportRendererInterface
             'mode' => 'utf-8',
             'format' => $this->template->getData('pageSize', 'A4') == 'letter' ? [215.9, 279.4] : [210, 297],
             'orientation' => $this->template->getData('orientation', 'P'),
-            'useOddEven' => $this->hasMode(self::OUTPUT_TWO_SIDED) ? '1' : '0',
-            'mirrorMargins' => $this->hasMode(self::OUTPUT_TWO_SIDED) ? '1' : '0',
-
+            // 'useOddEven' => $this->hasMode(self::OUTPUT_TWO_SIDED) ? '1' : '0',
+            // 'mirrorMargins' => $this->hasMode(self::OUTPUT_TWO_SIDED) ? '1' : '0',
+            'useOddEven' => '0',
+            'mirrorMargins' => '0',
+            
             'margin_top' => $this->template->getData('marginY', '10'),
             'margin_bottom' => $this->template->getData('marginY', '10'),
             'margin_left' => $this->template->getData('marginX', '10'),
@@ -285,22 +287,29 @@ class MpdfRenderer implements ReportRendererInterface
         $this->runPostProcess($reportData);
 
         // Add a page with odd-numbered reports for two-sided printing
-        if ($this->hasMode(self::OUTPUT_TWO_SIDED)) {
-            $this->pdf->AddPageByArray([
-                'type' => 'ODD',
-                'resetpagenum' => 1,
-                'suppress' => 'on',
-                'odd-header-name' => '',
-                'even-header-name' => '',
-                'odd-footer-name' => '',
-                'even-footer-name' => '',
-            ]);
+        if ($this->hasMode(self::OUTPUT_TWO_SIDED & self::OUTPUT_CONTINUOUS)) {
+            // $this->pdf->AddPageByArray([
+            //     'type' => 'ODD',
+            //     'resetpagenum' => 1,
+            //     'suppress' => 'on',
+            //     'odd-header-name' => '',
+            //     'even-header-name' => '',
+            //     'odd-footer-name' => '',
+            //     'even-footer-name' => '',
+            // ]);
         }
         
         // Continue the current document after a report for continuous output
         if ($this->hasMode(self::OUTPUT_CONTINUOUS)) {
             $this->firstPage = true;
             $this->lastPage = false;
+
+            $this->pdf->PageNumSubstitutions[] = [
+                'from' => 1,
+                'reset' => 1,
+                'type' => '1',
+                'suppress' => 'off'
+            ];
         } else {
             $outputPath = $this->getFilePath($reportData);
             $this->finishDocument($outputPath);
@@ -313,11 +322,11 @@ class MpdfRenderer implements ReportRendererInterface
         $defaultHeader = isset($this->headers[0])? 'html_header0' : false;
         $headerName = isset($this->headers[$pageNum])? 'html_header'.$pageNum : $defaultHeader;
 
-        if ($this->hasMode(self::OUTPUT_TWO_SIDED)) {
-            $this->pdf->SetHTMLHeaderByName($headerName, $pageNum % 2 == 0 || $this->firstPage ? 'O' : 'E', $this->lastPage);
-        } else {
+        // if ($this->hasMode(self::OUTPUT_TWO_SIDED)) {
+        //     $this->pdf->SetHTMLHeaderByName($headerName, $pageNum % 2 == 0 || $this->firstPage ? 'O' : 'E', $this->lastPage);
+        // } else {
             $this->pdf->SetHTMLHeaderByName($headerName, 'O', $this->lastPage);
-        }
+        // }
     }
 
     protected function setFooter()
@@ -326,11 +335,11 @@ class MpdfRenderer implements ReportRendererInterface
         $defaultFooter = isset($this->footers[0])? 'html_footer0' : false;
         $footerName = isset($this->footers[$pageNum])? 'html_footer'.$pageNum : $defaultFooter;
 
-        if ($this->hasMode(self::OUTPUT_TWO_SIDED)) {
-            $this->pdf->SetHTMLFooterByName($footerName, $pageNum % 2 == 0 ? 'E' : 'O');
-        } else {
+        // if ($this->hasMode(self::OUTPUT_TWO_SIDED)) {
+        //     $this->pdf->SetHTMLFooterByName($footerName, $pageNum % 2 == 0 ? 'E' : 'O');
+        // } else {
             $this->pdf->SetHTMLFooterByName($footerName);
-        }
+        // }
     }
 
     protected function runPreProcess(ReportData &$reportData)
