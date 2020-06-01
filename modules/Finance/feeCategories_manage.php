@@ -36,11 +36,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
     }
 
     $gateway = $container->get(InvoiceGateway::class);
-    $criteria = $gateway->newQueryCriteria(true);
+    $criteria = $gateway->newQueryCriteria(true)->fromPOST();
     $feeCategories = $gateway->queryFeeCategories($criteria);
 
     $table = DataTable::createPaginated('feeCategories', $criteria);
     $table->setDescription(__('Categories are used to group fees together into related sets. Some examples might be Tuition Fees, Learning Support Fees or Transport Fees. Categories enable you to control who receives invoices for different kinds of fees.'));
+
+    $table->modifyRows(function ($item, $row) {
+        return $item['active'] == 'N' ? $row->addClass('warning') : $row;
+    });
 
     $table->addHeaderAction('add', __('Add'))
           ->setURL('/modules/Finance/feeCategories_manage_add.php')
@@ -49,7 +53,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
     $table->addColumn('name', __('Name'));
     $table->addColumn('nameShort', __('Short Name'));
     $table->addColumn('description', __('Description'));
-    $table->addColumn('active', __('Active'));
+    $table->addColumn('active', __('Active'))->format(Format::using('yesNo', 'active'));
+
     $table->addActionColumn()
           ->addParam('gibbonFinanceFeeCategoryID')
           ->format(function ($item, $actions) {
@@ -63,9 +68,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
             }
           });
 
-    $table->modifyRows(function ($item, $row) {
-        return $item['active'] == 'N' ? $row->addClass('warning') : $row;
-    });
-    
     echo $table->render($feeCategories);
 }
