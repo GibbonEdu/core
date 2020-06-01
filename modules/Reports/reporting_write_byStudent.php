@@ -175,7 +175,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
     // Custom hooks can replace form fields by criteria type using a custom include.
     // Includes are loaded inside a function to limit their variable scope.
     $hooks = $container->get(HookGateway::class)->selectHooksByType('Report Writing')->fetchKeyPair();
-    $hookInclude = function ($options, $criteria) use (&$gibbon, &$container, &$form, $student, $canWriteReport) {
+    $hookInclude = function ($options, $criteria) use (&$gibbon, &$container, &$form, $student, $scopeDetails, $reportingScope, $reportingCriteria, $urlParams, $canWriteReport) {
         $options = json_decode($options, true);
         $includePath = $gibbon->session->get('absolutePath').'/modules/'.$options['sourceModuleName'].'/'.$options['sourceModuleInclude'];
 
@@ -196,7 +196,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
             $row = $form->addRow()->addContent($criteria['category'])->wrap('<h5 class="my-2 p-0 text-sm normal-case border-0">', '</h5>');
         }
 
-        if ($criteria['valueType'] == 'Hook' && isset($hooks[$criteria['criteriaName']])) {
+        if (isset($hooks[$criteria['criteriaName']])) {
             // Attempt to load a hook, otherwise display an alert.
             if (!$hookInclude($hooks[$criteria['criteriaName']], $criteria)) {
                 $form->addHiddenValue($fieldName, $criteria['value']);
