@@ -79,8 +79,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
         ->setURL('/modules/Finance/expenseApprovers_manage_add.php')
         ->displayLabel();
 
-    $table
-        ->addColumn('name', __('Name'))
+    $table->addColumn('name', __('Name'))
+        ->sortable(['surname','preferredName'])
         ->format(
             function ($expenseApprover) {
                 return Format::name($expenseApprover['title'], $expenseApprover['preferredName'], $expenseApprover['surname'], 'Staff', true, true);
@@ -102,5 +102,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
                     ->setURL('/modules/Finance/expenseApprovers_manage_delete.php');
             }
         );
+        
     echo $table->render($feeApprovers);
 }

@@ -41,12 +41,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
     $budgetCycles = $gateway->queryFinanceCycles($criteria);
     $table = DataTable::createPaginated('cycles', $criteria);
     $table->addHeaderAction('add', __('Add'))
-      ->setURL('/modules/Finance/budgetCycles_manage_add.php')
-      ->displayLabel();
+        ->setURL('/modules/Finance/budgetCycles_manage_add.php')
+        ->displayLabel();
 
     $table->addColumn('sequenceNumber', __('Sequence'));
     $table->addColumn('name', __('Name'));
-    $table->addColumn('dates', __('Dates'))
+    $table->addColumn('dateStart', __('Dates'))
           ->format(function ($cycle) {
             return Format::dateRange($cycle['dateStart'], $cycle['dateEnd']);
           });
@@ -54,11 +54,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
 
     $actions = $table->addActionColumn()
         ->addParam('gibbonFinanceBudgetCycleID')
-                     ->format(function ($cycle, $actions) {
-                        $actions->addAction('edit', __('Edit'))
-                               ->setURL('/modules/Finance/budgetCycles_manage_edit.php');
-                        $actions->addAction('delete', __('Delete'))
-                          ->setURL('/modules/Finance/budgetCycles_manage_delete.php');
-                     });
+        ->format(function ($cycle, $actions) {
+            $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/Finance/budgetCycles_manage_edit.php');
+            $actions->addAction('delete', __('Delete'))
+                    ->setURL('/modules/Finance/budgetCycles_manage_delete.php');
+        });
     echo $table->render($budgetCycles);
 }
