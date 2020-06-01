@@ -34,6 +34,8 @@ class CodeEditor extends Input
     public function setMode($mode)
     {
         $this->mode = $mode;
+        
+        return $this;
     }
 
     /**
