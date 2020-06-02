@@ -62,6 +62,7 @@ v20.0.00
         Students: added an Exclude Left Students checkbox to Student Enrolment Trends, off by default
         Students: added option allowing the referee email field in the Application Form to be set to option
         Students: added a grid view of student's teachers to Student Profile
+        Timetable: added Bookings into View Available Facilities report
         User Admin: added rich text editors to the Application Form Settings
         User Admin: added an option to enter a departure reason for final year students in Rollover
         User Admin: added an option to create a linked staff record for new users
@@ -96,7 +97,7 @@ v20.0.00
         Timetable: escaped calendar event names in timetable tooltips
         Timetable: incremented gibbonTTImport course and class name field lengths
         Timetable Admin: implemented bulk Tie Days to Dates duplicate checking
-        Timetable Admin: fixed Course Enrolment by Class unable to delete duplicate entries 
+        Timetable Admin: fixed Course Enrolment by Class unable to delete duplicate entries
 
 v19.0.00
 --------
