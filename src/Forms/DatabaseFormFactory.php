@@ -337,7 +337,7 @@ class DatabaseFormFactory extends FormFactory
             $result = $this->pdo->executeQuery($data, $sql);
             if ($result->rowCount() > 0) {
                 $users[__('Staff')] = array_reduce($result->fetchAll(), function ($group, $item) {
-                    $group[$item['gibbonPersonID']] = Format::name('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Staff', true, true)." (".$person['username'].")";
+                    $group[$item['gibbonPersonID']] = Format::name('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Staff', true, true)." (".$item['username'].")";
                     return $group;
                 }, array());
             }
@@ -358,7 +358,7 @@ class DatabaseFormFactory extends FormFactory
 
             if ($result->rowCount() > 0) {
                 $users[__('Enrolable Students')] = array_reduce($result->fetchAll(), function($group, $item) {
-                    $group[$item['gibbonPersonID']] = $item['rollGroupName'].' - '.Format::name('', $item['preferredName'], $item['surname'], 'Student', true). " (".$person['username'].")";
+                    $group[$item['gibbonPersonID']] = $item['rollGroupName'].' - '.Format::name('', $item['preferredName'], $item['surname'], 'Student', true). " (".$item['username'].")";
                     return $group;
                 }, array());
             }
