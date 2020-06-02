@@ -109,10 +109,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             echo $form->getOutput();
 
-            echo '<h2>';
-            echo __('Current Participants');
-            echo '</h2>';
-
             $linkedName = function ($person) use ($guid) {
                 $isStudent = stripos($person['role'], 'Student') !== false;
                 $name = Format::name('', $person['preferredName'], $person['surname'], $isStudent ? 'Student' : 'Staff', true, true);
@@ -157,6 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             // DATA TABLE
             $table = $form->addRow()->addDataTable('enrolment', $criteria)->withData($enrolment);
+            $table->setTitle(__('Current Participants'));
 
             $table->modifyRows(function ($person, $row) {
                 if (!(empty($person['dateStart']) || $person['dateStart'] <= date('Y-m-d'))) $row->addClass('error');
@@ -174,6 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             // ACTIONS
             $table->addActionColumn()
+                ->addParam('gibbonCourseClassPersonID')
                 ->addParam('gibbonPersonID')
                 ->addParams($linkParams)
                 ->format(function ($person, $actions) {
@@ -183,18 +181,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                         ->setURL('/modules/Timetable Admin/courseEnrolment_manage_class_edit_delete.php');
                 });
 
-            $table->addCheckboxColumn('gibbonPersonID');
+            $table->addCheckboxColumn('gibbonCourseClassPersonID');
 
             echo $form->getOutput();
-
-
-            echo '<h2>';
-            echo __('Former Participants');
-            echo '</h2>';
 
             $enrolmentLeft = $courseEnrolmentGateway->queryCourseEnrolmentByClass($criteria, $gibbonSchoolYearID, $gibbonCourseClassID, true, true);
 
             $table = DataTable::createPaginated('enrolmentLeft', $criteria);
+            $table->setTitle(__('Former Participants'));
 
             $table->modifyRows(function ($person, $row) {
                 if (!(empty($person['dateStart']) || $person['dateStart'] <= date('Y-m-d'))) $row->addClass('error');
@@ -209,6 +203,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             // ACTIONS
             $table->addActionColumn()
+                ->addParam('gibbonCourseClassPersonID')
                 ->addParam('gibbonPersonID')
                 ->addParams($linkParams)
                 ->format(function ($person, $actions) {
