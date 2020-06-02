@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     $URL .= '&return=error1';
     header("Location: {$URL}"); 
 } else {
-    $people = isset($_POST['gibbonPersonID']) ? $_POST['gibbonPersonID'] : array();
+    $people = isset($_POST['gibbonCourseClassPersonID']) ? $_POST['gibbonCourseClassPersonID'] : array();
 
     //Proceed!
     //Check if person specified
@@ -43,10 +43,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     } else {
         $partialFail = false;
         if ($action == 'Delete') {
-            foreach ($people as $gibbonPersonID) {
+            foreach ($people as $gibbonCourseClassPersonID) {
                 try {
-                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $gibbonPersonID);
-                    $sql = 'DELETE FROM gibbonCourseClassPerson WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID';
+                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonCourseClassPersonID' => $gibbonCourseClassPersonID);
+                    $sql = 'DELETE FROM gibbonCourseClassPerson WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPersonID=:gibbonCourseClassPersonID';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
@@ -58,11 +58,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             $gibbonCourseClassIDCopyTo = (isset($_POST['gibbonCourseClassIDCopyTo']))? $_POST['gibbonCourseClassIDCopyTo'] : NULL;
             if (!empty($gibbonCourseClassIDCopyTo)) {
 
-                foreach ($people as $gibbonPersonID) {
+                foreach ($people as $gibbonCourseClassPersonID) {
                     // Check for duplicates
                     try {
-                        $dataCheck = array('gibbonCourseClassIDCopyTo' => $gibbonCourseClassIDCopyTo, 'gibbonPersonID' => $gibbonPersonID);
-                        $sqlCheck = 'SELECT gibbonPersonID FROM gibbonCourseClassPerson WHERE gibbonCourseClassID=:gibbonCourseClassIDCopyTo AND gibbonPersonID=:gibbonPersonID';
+                        $dataCheck = array('gibbonCourseClassIDCopyTo' => $gibbonCourseClassIDCopyTo, 'gibbonCourseClassPersonID' => $gibbonCourseClassPersonID);
+                        $sqlCheck = 'SELECT gibbonPersonID FROM gibbonCourseClassPerson WHERE gibbonCourseClassID=:gibbonCourseClassIDCopyTo AND gibbonCourseClassPersonID=:gibbonCourseClassPersonID';
                         $resultCheck = $connection2->prepare($sqlCheck);
                         $resultCheck->execute($dataCheck);
                     } catch (PDOException $e) {
@@ -72,8 +72,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                     // Insert new course participants
                     if ($resultCheck->rowCount() == 0) {
                         try {
-                            $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $gibbonPersonID, 'gibbonCourseClassIDCopyTo' => $gibbonCourseClassIDCopyTo);
-                            $sql = 'INSERT INTO gibbonCourseClassPerson (gibbonCourseClassID, gibbonPersonID, role, reportable) SELECT :gibbonCourseClassIDCopyTo, gibbonPersonID, role, reportable FROM gibbonCourseClassPerson WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID';
+                            $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonCourseClassPersonID' => $gibbonCourseClassPersonID, 'gibbonCourseClassIDCopyTo' => $gibbonCourseClassIDCopyTo);
+                            $sql = 'INSERT INTO gibbonCourseClassPerson (gibbonCourseClassID, gibbonPersonID, role, reportable) SELECT :gibbonCourseClassIDCopyTo, gibbonPersonID, role, reportable FROM gibbonCourseClassPerson WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPersonID=:gibbonCourseClassPersonID';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
@@ -88,10 +88,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 header("Location: {$URL}");
             }
         } else if ($action == 'Mark as left') {
-            foreach ($people as $gibbonPersonID) {
+            foreach ($people as $gibbonCourseClassPersonID) {
                 try {
-                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $gibbonPersonID);
-                    $sql = "UPDATE gibbonCourseClassPerson SET role=CONCAT(role, ' - Left ') WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID AND (role = 'Student' OR role = 'Teacher')";
+                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonCourseClassPersonID' => $gibbonCourseClassPersonID);
+                    $sql = "UPDATE gibbonCourseClassPerson SET role=CONCAT(role, ' - Left ') WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPersonID=:gibbonCourseClassPersonID AND (role = 'Student' OR role = 'Teacher')";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
