@@ -21,8 +21,6 @@ use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
-use Gibbon\Module\Reports\Forms\CodeEditor;
-
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_components_duplicate.php') == false) {
     // Access denied
@@ -68,8 +66,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
         $row->addLabel('templateFile', __('File'));
         $row->addTextField('templateFile')->readonly();
 
-    $codeEditor = (new CodeEditor('templateContent'));
-
     $templateContent = file_get_contents($absolutePath.$customAssetPath.'/templates/'.$values['templateFile']);
 
     $col = $form->addRow()->addColumn();
@@ -79,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
                 ->addParam('gibbonReportPrototypeSectionID', $gibbonReportPrototypeSectionID)
                 ->addParam('TB_iframe', 'true')
                 ->addClass('thickbox float-right -mt-3');
-        $col->addElement($codeEditor)->setValue($templateContent);
+        $col->addCodeEditor('templateContent')->setMode('twig')->setValue($templateContent);
 
     $row = $form->addRow();
         $row->addFooter();

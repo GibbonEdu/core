@@ -39,6 +39,7 @@ v20.0.00
         System: added target option to Alert Bar
         System: added a DetailsView table for displaying data
         System: update the pre-login homepage to use a card layout
+        System: added a comment editor and code editor to the Form library
         Departments: added drag-drop ordering to Departments in School Admin
         Finance: added Student ID, where set, to invoices and receipts
         Finance: apply email template to invoices, receipts, and reminders
@@ -54,12 +55,14 @@ v20.0.00
         Reports: change criteria status to Locked/Unlocked for better clarity
         Reports: added a progress bar to the sidebar in Write Reports
         Reports: add himself/herself to the pronoun checker
+        Reports: added a live-reload to report generating progress bar
         Staff: added an option to edit or delete staff coverage dates
         Staff: added Family and Activities subpages to Staff Profile
         Staff: added notificaton events for New and Left staff
         Students: added an Exclude Left Students checkbox to Student Enrolment Trends, off by default
         Students: added option allowing the referee email field in the Application Form to be set to option
         Students: added a grid view of student's teachers to Student Profile
+        Timetable: added Bookings into View Available Facilities report
         User Admin: added rich text editors to the Application Form Settings
         User Admin: added an option to enter a departure reason for final year students in Rollover
         User Admin: added an option to create a linked staff record for new users
@@ -89,12 +92,12 @@ v20.0.00
         Reports: fixed bug in Internal Assessment data source
         Reports: adjusted student lists to honour Reportable flag
         Reports: applied gibbonCourseClassPerson reportable flag to queries
-        Reports: added a live-reload to report generating progress bar
         System Admin: fixed File Permission display issue in System Check
         System Admin: fixed issue causing string replacement preventing update highlighting in Manage Modules
         Timetable: escaped calendar event names in timetable tooltips
         Timetable: incremented gibbonTTImport course and class name field lengths
         Timetable Admin: implemented bulk Tie Days to Dates duplicate checking
+        Timetable Admin: fixed Course Enrolment by Class unable to delete duplicate entries
 
 v19.0.00
 --------

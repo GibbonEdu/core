@@ -17,18 +17,27 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Module\Reports\Forms;
+namespace Gibbon\Forms\Input;
 
 use Gibbon\Forms\Input\Input;
 
 /**
  * CodeEditor
  *
- * @version v19
- * @since   v19
+ * @version v20
+ * @since   v20
  */
 class CodeEditor extends Input
 {
+    protected $mode = 'mysql';
+
+    public function setMode($mode)
+    {
+        $this->mode = $mode;
+        
+        return $this;
+    }
+
     /**
      * Gets the HTML output for this form element.
      * @return  string
@@ -46,15 +55,21 @@ class CodeEditor extends Input
         $output .= htmlentities($text, ENT_QUOTES, 'UTF-8');
         $output .= '</div>';
 
-        $output .= '<script src="./modules/Reports/js/ace/ace.js" type="text/javascript" charset="utf-8"></script>';
+        $output .= '<script src="./lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>';
         $output .= '<script>
             var editor = ace.edit("editor");
-            editor.getSession().setMode("ace/mode/twig");
             editor.getSession().setUseWrapMode(true);
             editor.getSession().on("change", function(e) {
                 $("#'.$this->getID().'").val(editor.getSession().getValue());
-            });
-        </script>';
+            });';
+
+        if ($this->mode == 'twig') {
+            $output .= 'editor.getSession().setMode("ace/mode/twig");';
+        } elseif ($this->mode == 'mysql') {
+            $output .= 'editor.getSession().setMode("ace/mode/mysql");';
+        }
+
+        $output .= '</script>';
 
         return $output;
     }
