@@ -203,8 +203,8 @@ class FinanceFormFactory extends DatabaseFormFactory
     public function createSelectMonth($name)
     {
         $months = array_reduce(range(1,12), function($group, $item){
-            $month = date('m', mktime(0, 0, 0, $item, 1, 0));
-            $group[$month] = $month.' - '.date('F', mktime(0, 0, 0, $item, 1, 0));
+            $month = strftime('%m', mktime(0, 0, 0, $item, 1, 0));
+            $group[$month] = $month.' - '.strftime('%B', mktime(0, 0, 0, $item, 1, 0));
             return $group;
         }, array());
 

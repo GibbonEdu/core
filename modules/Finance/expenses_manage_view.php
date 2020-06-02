@@ -195,7 +195,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 											<b><?php echo __('Status') ?></b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="name" id="name" maxlength=60 value="<?php echo $row['status']; ?>" type="text" class="standardWidth">
+											<input readonly name="name" id="name" maxlength=60 value="<?php echo __($row['status']); ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
@@ -240,7 +240,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 											<b><?php echo __('Purchase By') ?></b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php echo $row['purchaseBy']; ?>" type="text" class="standardWidth">
+											<input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php echo __($row['purchaseBy']); ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
