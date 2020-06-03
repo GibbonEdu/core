@@ -71,15 +71,16 @@ class FinanceGateway extends QueryableGateway
             ->from($this->getTableName())
             ->orderBy(
                 [
-                'active DESC'
+                'gibbonFinanceBudget.active DESC'
                 ]
             )
             ->cols(
                 [
-                'name',
-                'nameShort',
-                'category',
-                'active'
+                'gibbonFinanceBudget.gibbonFinanceBudgetID',
+                'gibbonFinanceBudget.name',
+                'gibbonFinanceBudget.nameShort',
+                'gibbonFinanceBudget.category',
+                'gibbonFinanceBudget.active'
                   ]
             );
 
@@ -104,14 +105,14 @@ class FinanceGateway extends QueryableGateway
             ->from('gibbonFinanceBudgetCycle')
             ->cols(
                 [
-                'gibbonFinanceBudgetCycleID',
-                'name',
-                'status',
-                'dateStart',
-                'dateEnd',
-                'sequenceNumber',
-                "IF(dateStart > CURRENT_TIMESTAMP(),'Y','N') as inFuture",
-                "IF(dateEnd < CURRENT_TIMESTAMP(),'Y','N') as inPast"
+                'gibbonFinanceBudgetCycle.gibbonFinanceBudgetCycleID',
+                'gibbonFinanceBudgetCycle.name',
+                'gibbonFinanceBudgetCycle.status',
+                'gibbonFinanceBudgetCycle.dateStart',
+                'gibbonFinanceBudgetCycle.dateEnd',
+                'gibbonFinanceBudgetCycle.sequenceNumber',
+                "IF(gibbonFinanceBudgetCycle.dateStart > CURRENT_TIMESTAMP(),'Y','N') as inFuture",
+                "IF(gibbonFinanceBudgetCycle.dateEnd < CURRENT_TIMESTAMP(),'Y','N') as inPast"
                 ]
             );
 

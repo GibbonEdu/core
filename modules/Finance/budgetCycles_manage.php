@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
           ->format(function ($cycle) {
             return Format::dateRange($cycle['dateStart'], $cycle['dateEnd']);
           });
-    $table->addColumn('status', __('Status'));
+    $table->addColumn('status', __('Status'))->translatable();
 
     $actions = $table->addActionColumn()
         ->addParam('gibbonFinanceBudgetCycleID')

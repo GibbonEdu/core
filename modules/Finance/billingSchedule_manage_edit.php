@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
 
             $row = $form->addRow();
                 $row->addLabel("name", __("Name"));
-                $row->addTextField("name")->setValue(htmlprep($resultRow['name']))->maxLength(100)->required();
+                $row->addTextField("name")->setValue($resultRow['name'])->maxLength(100)->required();
 
             $row = $form->addRow();
                 $row->addLabel("active", __("Active"));
@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
 
             $row = $form->addRow();
                 $row->addLabel("description", __("Description"));
-                $row->addTextArea("description")->setValue(htmlPrep($resultRow['description']))->setRows(5);
+                $row->addTextArea("description")->setValue($resultRow['description'])->setRows(5);
 
             $row = $form->addRow();
                 $row->addLabel("invoiceIssueDate", __('Invoice Issue Date'))->description(__('Intended issue date.').'<br/>')->append(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);

@@ -90,6 +90,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('gibbonFinanceInvoiceID', $gibbonFinanceInvoiceID);
+            $form->addHiddenValue('billingScheduleType', $values['billingScheduleType']);
+            $form->addHiddenValue('status', $values['status']);
 
             $form->addRow()->addHeading(__('Basic Information'));
 
@@ -102,8 +104,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                 $row->addTextField('personName')->required()->readonly()->setValue(Format::name('', $values['preferredName'], $values['surname'], 'Student', true));
 
             $row = $form->addRow();
-                $row->addLabel('billingScheduleType', __('Scheduling'));
-                $row->addTextField('billingScheduleType')->required()->readonly();
+                $row->addLabel('billingScheduleTypeText', __('Scheduling'));
+                $row->addTextField('billingScheduleTypeText')->required()->readonly()->setValue(__($values['billingScheduleType']));
 
             if ($values['billingScheduleType'] == 'Scheduled') {
                 $row = $form->addRow();
@@ -122,10 +124,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
             }
 
             $row = $form->addRow();
-                $row->addLabel('status', __('Status'))->description($values['status'] == 'Pending'
+                $row->addLabel('statusText', __('Status'))->description($values['status'] == 'Pending'
                     ? __('This value cannot be changed. Use the Issue function to change the status from "Pending" to "Issued".') 
                     : __('Available options are limited according to current status.'));
-                $row->addSelectInvoiceStatus('status', $values['status'])->required();
+                $row->addTextField('statusText')->required()->readonly()->setValue(__($values['status']));
 
             // PAYMENT INFO
             if ($values['status'] == 'Issued' or $values['status'] == 'Paid - Partial') {
