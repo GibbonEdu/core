@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
 
     $table->addExpandableColumn('comment')
         ->format(function($log) {
-            $array = unserialize($log['serialisedArray']);
+            $array = $log['serialisedArray'] ? unserialize($log['serialisedArray']) : null;
 
             $details = '';
             if (count($array) > 0) {
