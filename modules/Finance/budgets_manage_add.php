@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_add
 
     $row = $form->addRow();
         $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
-        $row->addTextField('nameShort')->maxLength(14)->required();
+        $row->addTextField('nameShort')->maxLength(8)->required();
 
     $row = $form->addRow();
         $row->addLabel('active', __('Active'));

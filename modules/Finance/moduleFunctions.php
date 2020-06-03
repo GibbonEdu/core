@@ -597,7 +597,7 @@ function getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2, $commentsOp
             $output .= dateConvertBack($guid, substr($row['timestamp'], 0, 10));
             $output .= '</td>';
             $output .= '<td>';
-            $output .= $row['action'];
+            $output .= __($row['action']);
             $output .= '</td>';
             if ($commentsOpen == false) {
                 $output .= '<td>';
