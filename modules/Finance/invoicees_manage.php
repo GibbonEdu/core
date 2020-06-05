@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\Finance\InvoiceeGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.php') == false) {
     //Acess denied
@@ -28,10 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.p
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Manage Invoicees'));
-
-    echo '<p>';
-    echo __('The table below shows all student invoicees within the school. A red row in the table below indicates that an invoicee\'s status is not "Full" or that their start or end dates are greater or less than than the current date.');
-    echo '</p>';
 
     //Check for missing students from studentEnrolment and add a gibbonFinanceInvoicee record for them.
     $addFail = false;
@@ -72,10 +70,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.p
         }
     }
 
-    echo '<h2>';
-    echo __('Filters');
-    echo '</h2>';
-
     $search = null;
     if (isset($_GET['search'])) {
         $search = $_GET['search'];
@@ -87,6 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.p
 
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
 
+    $form->setTitle(__('Filters'));
     $form->setClass('noIntBorder fullWidth');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
@@ -106,113 +101,63 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.p
 
     echo $form->getOutput();
 
-    echo '<h2>';
-    echo __('View');
-    echo '</h2>';
 
-    //Set pagination variable
-    $page = 1;
-    if (isset($_GET['page'])) {
-        $page = $_GET['page'];
-    }
-    if ((!is_numeric($page)) or $page < 1) {
-        $page = 1;
-    }
+        $gateway = $container->get(InvoiceeGateway::class);
+        $criteria = $gateway->newQueryCriteria(true)
+                            ->filterBy('search')
+                            ->filterBy('allUsers')
+                            ->fromPOST();
+        $invoicees = $gateway->queryInvoicees($criteria);
 
-    try {
-        $where = '';
-        if ($allUsers != 'on') {
-            $where = " AND status='Full'";
-        }
-        $data = array();
-        $sql = "SELECT surname, preferredName, dateStart, dateEnd, status, gibbonFinanceInvoicee.* FROM gibbonFinanceInvoicee JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE NOT surname='' $where ORDER BY surname, preferredName";
-        if ($search != '') {
-            $data = array('search1' => "%$search%", 'search2' => "%$search%", 'search3' => "%$search%");
-            $sql = "SELECT surname, preferredName, dateStart, dateEnd, status, gibbonFinanceInvoicee.* FROM gibbonFinanceInvoicee JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE NOT surname='' AND ((preferredName LIKE :search1) OR (surname LIKE :search2) OR (username LIKE :search3)) $where ORDER BY surname, preferredName";
-        }
-        $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
-
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
-    } else {
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "&search=$search&allUsers=$allUsers");
-        }
-
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __('Name');
-        echo '</th>';
-        echo '<th>';
-        echo __('Status');
-        echo '</th>';
-        echo '<th>';
-        echo __('Invoice To');
-        echo '</th>';
-        echo '<th>';
-        echo __('Actions');
-        echo '</th>';
-        echo '</tr>';
-
-        $count = 0;
-        $rowNum = 'odd';
-        try {
-            $resultPage = $connection2->prepare($sqlPage);
-            $resultPage->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
-        while ($row = $resultPage->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
+        $table = DataTable::createPaginated('invoicees', $criteria);
+        $table->setTitle('View');
+        $table->setDescription(__("The table below shows all student invoicees within the school. A red row in the table below indicates that an invoicee's status is not \"Full\" or that their start or end dates are greater or less than than the current date."));
+        $table->modifyRows(function ($invoicee, $row) {
+          //Highlight if the person is not "Full" status or is no longer at the organisation
+            if ($invoicee['started'] == 'N'||
+            $invoicee['ended'] == 'Y' ||
+            $invoicee['status'] != 'Full') {
+                $row->addClass('error');
             }
-
-			//Color rows based on start and end date
-			if ($row['status'] != 'Full' or (!($row['dateStart'] == '' or $row['dateStart'] <= date('Y-m-d')) and ($row['dateEnd'] == '' or $row['dateEnd'] >= date('Y-m-d')))) {
-				$rowNum = 'error';
-			}
-
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo '<b>'.Format::name('', $row['preferredName'], $row['surname'], 'Student', true).'</b><br/>';
-            echo '</td>';
-            echo '<td>';
-            echo __($row['status']);
-            echo '</td>';
-            echo '<td>';
-            if ($row['invoiceTo'] == 'Family') {
-                echo __('Family');
-            } elseif ($row['invoiceTo'] == 'Company' and $row['companyAll'] == 'Y') {
-                echo __('Company');
-            } elseif ($row['invoiceTo'] == 'Company' and $row['companyAll'] == 'N') {
-                echo __('Family + Company');
-            } else {
-                echo '<i>'.__('Unknown').'</i>';
-            }
-            echo '</td>';
-            echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoicees_manage_edit.php&gibbonFinanceInvoiceeID='.$row['gibbonFinanceInvoiceeID']."&search=$search&allUsers=$allUsers'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            echo '</td>';
-            echo '</tr>';
-
-            ++$count;
-        }
-        echo '</table>';
-
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom');
-        }
-    }
+            return $row;
+        });
+        $table->addColumn('name', __('Name'))
+              ->format(function ($invoicee) {
+                return Format::name(
+                    '',
+                    $invoicee['preferredName'],
+                    $invoicee['surname'],
+                    'Student',
+                    true
+                );
+              });
+        $table->addColumn('status', __('Status'));
+        $table->addColumn('invoiceTo', __('Invoice To'))
+              ->format(function ($invoicee) {
+                switch ($invoicee['invoiceTo']) {
+                    case "Family":
+                        return "Family";
+                    case "Company":
+                        switch ($invoicee['companyAll']) {
+                            case "Y":
+                                return "Company";
+                            case "N":
+                                return "Family + Company";
+                            default:
+                                return "Unknown";
+                        }
+                        break;
+                    default:
+                        return "Unknown";
+                }
+              });
+        $table->addActionColumn()
+              ->addParam('gibbonFinanceInvoiceeID')
+              ->addParam('search')
+              ->addParam('allUsers')
+              ->format(function ($item, $actions) {
+                $actions->addAction('edit', __('Edit'))
+                  ->setURL('/modules/Finance/invoicees_manage_edit.php');
+              });
+        echo $table->render($invoicees);
 }
-?>
