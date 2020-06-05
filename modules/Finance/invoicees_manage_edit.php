@@ -30,6 +30,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
+
+    $search = $_GET['search'] ?? '';
+    $allUsers = $_GET['allUsers'] ?? '';
+    $gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'] ?? null;
+
     //Proceed!
     $page->breadcrumbs
         ->add(__('Manage Invoicees'), 'invoicees_manage.php')
@@ -39,14 +44,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    if ($_GET['search'] != '' or $_GET['allUsers'] == 'on') {
+    if ($search != '' or $allUsers == 'on') {
         echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/invoicees_manage.php&search='.$_GET['search'].'&allUsers='.$_GET['allUsers']."'>".__('Back to Search Results').'</a>';
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/invoicees_manage.php&search='.$search.'&allUsers='.$allUsers."'>".__('Back to Search Results').'</a>';
         echo '</div>';
     }
 
     //Check if school year specified
-    $gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'];
+    $gibbonFinanceInvoiceeID = $gibbonFinanceInvoiceeID;
     if ($gibbonFinanceInvoiceeID == '') {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');
@@ -76,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
             echo $table->render([$values]);
 ;
 
-            $form = Form::create('updateFinance', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/invoicees_manage_editProcess.php?gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&search=".$_GET['search'].'&allUsers='.$_GET['allUsers']);
+            $form = Form::create('updateFinance', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/invoicees_manage_editProcess.php?gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&search=".$search.'&allUsers='.$allUsers);
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('existing', isset($values['gibbonFinanceInvoiceeUpdateID'])? $values['gibbonFinanceInvoiceeUpdateID'] : 'N');
