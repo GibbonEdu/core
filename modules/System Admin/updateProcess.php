@@ -221,7 +221,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         //Update DB line count
         try {
             $data = array();
-            $sql = 'SHOW TABLE STATUS';
+            $sql = "SELECT * FROM information_schema.tables WHERE table_schema = DATABASE() AND TABLE_TYPE = 'BASE TABLE';";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -230,10 +230,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
             exit();
         }
         while ($row = $result->fetch()) {
-            if ($row['Engine'] != 'InnoDB') {
+            if ($row['ENGINE'] != 'InnoDB') {
                 try {
                     $dataUpdate = array();
-                    $sqlUpdate = "ALTER TABLE ".$row['Name']." ENGINE=InnoDB;";
+                    $sqlUpdate = "ALTER TABLE ".$row['TABLE_NAME']." ENGINE=InnoDB;";
                     $resultUpdate = $connection2->prepare($sqlUpdate);
                     $resultUpdate->execute($dataUpdate);
                 } catch (PDOException $e) {

@@ -223,7 +223,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
             $tablesInnoDB = 0;
             try {
                 $data = array();
-                $sql = 'SHOW TABLE STATUS';
+                $sql = "SELECT * FROM information_schema.tables WHERE table_schema = DATABASE() AND TABLE_TYPE = 'BASE TABLE';";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
@@ -235,7 +235,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
                 echo '</div>';
             } else {
                 while ($row = $result->fetch()) {
-                    if ($row['Engine'] == 'InnoDB') {
+                    if ($row['ENGINE'] == 'InnoDB') {
                         $tablesInnoDB++;
                     }
                     $tablesTotal++;
@@ -263,8 +263,4 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
             }
         }
     }
-
-    //echo "ALTER TABLE ".$row['Tables_in_'.$databaseName]." ENGINE=InnoDB;<br/>";
-
-
 }
