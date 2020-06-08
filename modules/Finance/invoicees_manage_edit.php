@@ -30,7 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-
     $search = $_GET['search'] ?? '';
     $allUsers = $_GET['allUsers'] ?? '';
     $gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'] ?? '';
@@ -38,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
     //Proceed!
     $page->breadcrumbs
         ->add(__('Manage Invoicees'), 'invoicees_manage.php')
-        ->add(__('Edit Invoicee'));        
+        ->add(__('Edit Invoicee'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -152,8 +151,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
 
 
             echo $form->getOutput();
-
         }
     }
 }
-?>
