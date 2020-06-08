@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
 
     $search = $_GET['search'] ?? '';
     $allUsers = $_GET['allUsers'] ?? '';
-    $gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'] ?? null;
+    $gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'] ?? '';
 
     //Proceed!
     $page->breadcrumbs
@@ -50,8 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
         echo '</div>';
     }
 
-    //Check if school year specified
-    $gibbonFinanceInvoiceeID = $gibbonFinanceInvoiceeID;
+    //Check if invoicee is specified
     if ($gibbonFinanceInvoiceeID == '') {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');
@@ -79,7 +78,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
                 $table->addColumn('name', __('Name'))->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', 'true']));
                 $table->addColumn('status', __('Status'))->translatable();
             echo $table->render([$values]);
-;
 
             $form = Form::create('updateFinance', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/invoicees_manage_editProcess.php?gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&search=".$search.'&allUsers='.$allUsers);
 
