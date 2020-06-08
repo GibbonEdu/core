@@ -294,7 +294,7 @@ else {
                         foreach ($roles AS $role) {
                             $arrRoles[$role['gibbonRoleID']] = __($role['name'])." (".__($role['category']).")";
                         }
-                        
+
                         $row = $form->addRow()->addClass('role hiddenReveal');
 		        $row->addLabel('roles[]', __('Select Roles'));
 		        $row->addSelect('roles[]')->fromArray($arrRoles)->selectMultiple()->setSize(6)->required()->placeholder();
@@ -504,6 +504,14 @@ else {
 			$row = $form->addRow()->addClass('applicants hiddenReveal');
 				$row->addLabel('applicantList[]', __('Select Years'));
 				$row->addSelect('applicantList[]')->fromQuery($pdo, $sql)->selectMultiple()->setSize(6)->required();
+
+			$row = $form->addRow()->addClass('applicants hiddenReveal');
+		        $row->addLabel('applicantsStudents', __('Include Students?'));
+				$row->addYesNo('applicantsStudents')->selected($defaultSendStudents);
+
+			$row = $form->addRow()->addClass('applicants hiddenReveal');
+		        $row->addLabel('applicantsParents', __('Include Parents?'));
+				$row->addYesNo('applicantsParents')->selected($defaultSendParents);
         }
 
         // Houses
