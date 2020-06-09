@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_vie
             });
     }
 
-    $page->writeFromTemplate('roleActions.twig.html', ['actions' => $actions, 'role' => $role]);
+    $page->writeFromTemplate('roleActions.twig.html', ['actions' => $actions, 'actionCount' => count($actions), 'role' => $role]);
 
     echo $table->render($users);
 }

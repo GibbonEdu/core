@@ -67,6 +67,7 @@ v20.0.00
         User Admin: added rich text editors to the Application Form Settings
         User Admin: added an option to enter a departure reason for final year students in Rollover
         User Admin: added an option to create a linked staff record for new users
+        User Admin: added no record warning to View Role
 
     Bug Fixes
         System: fixed module uninstall to also remove notification events
