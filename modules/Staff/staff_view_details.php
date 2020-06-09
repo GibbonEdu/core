@@ -295,7 +295,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                                     ->format(function($row) use ($fields, $rowFields) {
                                         if (isset($fields[$rowFields['gibbonPersonFieldID']])) {
                                             if ($rowFields['type'] == 'date') {
-                                                return dateConvertBack($guid, $fields[$rowFields['gibbonPersonFieldID']]);
+                                                return Format::date($fields[$rowFields['gibbonPersonFieldID']]);
                                             } elseif ($rowFields['type'] == 'url') {
                                                 return "<a target='_blank' href='".$fields[$rowFields['gibbonPersonFieldID']]."'>".$fields[$rowFields['gibbonPersonFieldID']].'</a>';
                                             } else {
