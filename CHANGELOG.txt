@@ -68,6 +68,7 @@ v20.0.00
         User Admin: added an option to enter a departure reason for final year students in Rollover
         User Admin: added an option to create a linked staff record for new users
         User Admin: added no record warning to View Role
+        User Admin: switched from warning to message in Edit User
 
     Bug Fixes
         System: fixed module uninstall to also remove notification events

@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                 echo '</div>';
 			}
 
-			echo '<div class="warning">';
+			echo '<div class="message">';
 			echo __('Note that certain fields are hidden or revealed depending on the role categories (Staff, Student, Parent) that a user is assigned to. For example, parents do not get Emergency Contact fields, and students/staff do not get Employment fields.');
 			echo '</div>';
 
@@ -438,7 +438,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 			$row = $form->addRow();
 				$row->addLabel('citizenship1Passport', __('Citizenship 1 Passport Number'));
                 $row->addTextField('citizenship1Passport')->maxLength(30);
-                
+
             $row = $form->addRow();
                 $row->addLabel('citizenship1PassportExpiry', __('Citizenship 1 Passport Expiry Date'));
                 $row->addDate('citizenship1PassportExpiry');
@@ -461,7 +461,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 			$row = $form->addRow();
 				$row->addLabel('citizenship2Passport', __('Citizenship 2 Passport Number'));
                 $row->addTextField('citizenship2Passport')->maxLength(30);
-                
+
             $row = $form->addRow();
                 $row->addLabel('citizenship2PassportExpiry', __('Citizenship 2 Passport Expiry Date'));
                 $row->addDate('citizenship2PassportExpiry');
