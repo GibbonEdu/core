@@ -67,6 +67,8 @@ v20.0.00
         User Admin: added rich text editors to the Application Form Settings
         User Admin: added an option to enter a departure reason for final year students in Rollover
         User Admin: added an option to create a linked staff record for new users
+        User Admin: added no record warning to View Role
+        User Admin: switched from warning to message in Edit User
 
     Bug Fixes
         System: fixed module uninstall to also remove notification events
@@ -80,6 +82,7 @@ v20.0.00
         Planner: removed debug code from homework submission
         Planner: removed ability for students and parents to be granted Lesson Planner_viewAllEditMyClasses
         Staff: fixed Left staff appearing in Weekly Absences report
+        Staff: fixed Staff Directory only exporting first 50 staff members
         Students: fixed emergency data report not showing parents column
         Students: fixed Tutors and EAs set to Left showing on Student Profile
         Students: fixed past enrolments showing up in Students by Form Group
