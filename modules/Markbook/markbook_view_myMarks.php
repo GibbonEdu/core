@@ -446,6 +446,6 @@ if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $_SESSION[$guid]['gibbonPerson
 
     if ($entryCount < 1) {
         echo "<div class='error'>";
-        echo 'There are currently no grades to display in this view.';
+        echo 'There are no records to display.';
         echo '</div>';
     }
