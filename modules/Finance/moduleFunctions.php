@@ -1089,7 +1089,7 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         }
         if ($resultFees->rowCount() < 1) {
             $return .= "<div class='error'>";
-            $return .= __('There are no records to display');
+            $return .= __('There are no records to display.');
             $return .= '</div>';
         } else {
             $feeTotal = 0;
@@ -1452,7 +1452,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         }
         if ($resultFees->rowCount() < 1) {
             $return .= "<div class='error'>";
-            $return .= __('There are no records to display');
+            $return .= __('There are no records to display.');
             $return .= '</div>';
         } else {
             $feeTotal = 0;
