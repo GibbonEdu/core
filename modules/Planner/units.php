@@ -236,9 +236,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                                             $resultSelect=$connection2->prepare($sqlSelect);
                                             $resultSelect->execute($dataSelect);
                                         }
-                                        catch(PDOException $e) {
-                                            print "<div class='error'>here" . $e->getMessage() . "</div>" ;
-                                        }
+                                        catch(PDOException $e) {}
                                         $yearCurrent = '';
                                         $yearLast = '';
                                         while ($rowSelect=$resultSelect->fetch()) {
