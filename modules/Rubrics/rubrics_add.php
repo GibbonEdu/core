@@ -84,7 +84,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
                 $row->addSelect('scope')->fromArray($scopes)->required()->placeholder();
                 $form->toggleVisibilityByClass('learningAreaRow')->onSelect('scope')->when('Learning Area');
             } else if ($highestAction == 'Manage Rubrics_viewAllEditLearningArea') {
-                $row->addTextField('scope')->readOnly()->setValue('Learning Area');
+                $form->addHiddenValue('scope', 'Learning Area');
+                $row->addTextField('scopeText')->readOnly()->setValue(__('Learning Area'));
             }
 
             if ($highestAction == 'Manage Rubrics_viewEditAll') {

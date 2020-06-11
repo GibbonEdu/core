@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
         ->sortable(['updater.surname', 'updater.preferredName'])
         ->format(Format::using('name', ['updaterTitle', 'updaterPreferredName', 'updaterSurname', 'Parent']));
     $table->addColumn('timestamp', __('Date & Time'))->format(Format::using('dateTime', 'timestamp'));
-    $table->addColumn('status', __('Status'))->width('12%');
+    $table->addColumn('status', __('Status'))->translatable()->width('12%');
 
     // ACTIONS
     $table->addActionColumn()
