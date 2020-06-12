@@ -91,7 +91,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('gibbonFinanceInvoiceID', $gibbonFinanceInvoiceID);
             $form->addHiddenValue('billingScheduleType', $values['billingScheduleType']);
-            $form->addHiddenValue('status', $values['status']);
 
             $form->addRow()->addHeading(__('Basic Information'));
 
@@ -123,11 +122,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                 }
             }
 
-            $row = $form->addRow();
-                $row->addLabel('statusText', __('Status'))->description($values['status'] == 'Pending'
-                    ? __('This value cannot be changed. Use the Issue function to change the status from "Pending" to "Issued".') 
-                    : __('Available options are limited according to current status.'));
-                $row->addTextField('statusText')->required()->readonly()->setValue(__($values['status']));
+            if ($values['status'] == 'Pending') {
+                $form->addHiddenValue('status', $values['status']);
+
+                $row = $form->addRow();
+                    $row->addLabel('statusText', __('Status'))
+                        ->description(__('This value cannot be changed. Use the Issue function to change the status from "Pending" to "Issued".'));
+                    $row->addTextField('statusText')->required()->readonly()->setValue(__($values['status']));
+            } else {
+                $row = $form->addRow();
+                    $row->addLabel('status', __('Status'))
+                        ->description(__('Available options are limited according to current status.'));
+                    $row->addSelectInvoiceStatus('status', $values['status'])->required();
+            }
 
             // PAYMENT INFO
             if ($values['status'] == 'Issued' or $values['status'] == 'Paid - Partial') {
