@@ -180,10 +180,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                 $rowRollAttendance = null;
 
                 if ($resultAttendance->rowCount() < 1) {
-                    echo '<i>Not registered</i>';
+                    echo Format::small(__('Not registered'));
                 } else {
                     $rowRollAttendance = $resultAttendance->fetch();
-                    echo $rowRollAttendance['type'];
+                    echo __($rowRollAttendance['type']);
                 }
                 echo '</td>';
                 echo '<td>';
