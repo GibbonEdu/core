@@ -159,7 +159,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                 ->addParam('name', $name)
                 ->addParam('gibbonLibraryTypeID', $gibbonLibraryTypeID)
                 ->addParam('gibbonSpaceID', $gibbonSpaceID)
-                ->addParam('status', $status);
+                ->addParam('status', $status)
+                ->displayLabel();
             } else {
                 $table->addHeaderAction('signout', __('This item has already been signed out.'));
             }
