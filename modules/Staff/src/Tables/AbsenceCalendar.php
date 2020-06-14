@@ -62,7 +62,7 @@ class AbsenceCalendar
             }
 
             $calendar[] = [
-                'name'  => $month->format('M'),
+                'name'  => Format::dateReadable($month ,'%b'),
                 'days'  => $days,
             ];
         }
@@ -86,7 +86,7 @@ class AbsenceCalendar
                     if (empty($day) || $day['count'] <= 0) return '';
 
                     $url = 'fullscreen.php?q=/modules/Staff/absences_view_details.php&gibbonStaffAbsenceID='.$day['absence']['gibbonStaffAbsenceID'].'&width=800&height=550';
-                    $title = $day['date']->format('l').'<br/>'.$day['date']->format('M j, Y');
+                    $title = Format::dateReadable($day['date'], '%A').'<br/>'.Format::dateReadable($day['date'], '%b %e, %Y');
                     $title .= '<br/>'.$day['absence']['type'];
                     $classes = ['thickbox'];
                     if ($day['absence']['allDay'] == 'N') {
