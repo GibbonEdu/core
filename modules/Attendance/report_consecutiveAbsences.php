@@ -50,8 +50,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
     $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_consecutiveAbsences.php");
 
     $row = $form->addRow();
-        $row->addLabel('numberOfSchoolDays', __('Number of School Day'));
-        $row->addNumber('numberOfSchoolDays')->setValue($numberOfSchoolDays)->required()->minimum(1)->maximum(99);
+        $row->addLabel('numberOfSchoolDays', __('Number of School Day'))
+        ->description(__("The number of school days previous to today you wish to check for absences"));
+    $row->addNumber('numberOfSchoolDays')->setValue($numberOfSchoolDays)->required()->minimum(1)->maximum(99);
 
     $row = $form->addRow();
         $row->addFooter();
@@ -62,13 +63,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
     if (!empty($_GET['numberOfSchoolDays']) && is_numeric($_GET['numberOfSchoolDays'])) {
         //Get an array of days school is in session
         $dates = getLastNSchoolDays(
-          $gibbon->session->get('guid'), 
-          $connection2, 
-          date("Y-m-d"), 
-          $numberOfSchoolDays, 
-          true
+            $gibbon->session->get('guid'),
+            $connection2,
+            date("Y-m-d"),
+            $numberOfSchoolDays,
+            true
         );
-        var_dump($dates);
         if (!is_array($dates) || count($dates) != $numberOfSchoolDays) {
             echo "<div class='error'>";
             echo __('There are no records to display.');
@@ -76,46 +76,75 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
         } else {
             try {
                 $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'));
-                $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.name as rollGroupName, gibbonRollGroup.nameShort AS rollGroup
-                    FROM gibbonPerson
-                        JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                        LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
-                    WHERE status='Full'
-                        AND (dateStart IS NULL OR dateStart <= CURRENT_TIMESTAMP)
-                        AND (dateEnd IS NULL  OR dateEnd >= CURRENT_TIMESTAMP)
-                        AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                    ORDER BY surname, preferredName, LENGTH(rollGroup), rollGroup";
+                $sql = "
+                SELECT 
+                  gibbonPerson.gibbonPersonID, 
+                  gibbonPerson.title, 
+                  gibbonPerson.surname, 
+                  gibbonPerson.preferredName, 
+                  gibbonRollGroup.gibbonRollGroupID, 
+                  gibbonRollGroup.name as rollGroupName, 
+                  gibbonRollGroup.nameShort AS rollGroup
+                FROM gibbonPerson
+                JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                WHERE status='Full'
+                  AND (dateStart IS NULL OR dateStart <= CURRENT_TIMESTAMP)
+                  AND (dateEnd IS NULL  OR dateEnd >= CURRENT_TIMESTAMP)
+                  AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                ORDER BY surname, preferredName, LENGTH(rollGroup), rollGroup";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
                 echo "<div class='error'>".$e->getMessage().'</div>';
             }
 
-            $results = array_filter(
-                $result->fetchAll(),
-                function ($row) use (
-                    $gibbon,
+
+            $results = array_map(function ($row) use (
+                $gibbon,
+                $connection2,
+                $dates
+            ) {
+              //Get number of absences within date range
+                $row['count'] = getAbsenceCount(
+                    $gibbon->session->get('guid'),
+                    $row['gibbonPersonID'],
                     $connection2,
-                    $numberOfSchoolDays,
-                    $dates
-                ) {
-                    return (getAbsenceCount($gibbon->session->get('guid'), $row['gibbonPersonID'], $connection2, end($dates), date('Y-m-d')) >= $numberOfSchoolDays);
+                    end($dates),
+                    date('Y-m-d')
+                );
+                return $row;
+            }, $result->fetchAll());
+
+            $results = array_filter(
+                $results,
+                function ($row) use ($numberOfSchoolDays) {
+                    return $row['count'] > 0;
+
+                  //If there are more absences found between the provided number of school days previous and now, keep the entry, otherwise delete it from the results
+                  //return ($row['count'] >= $numberOfSchoolDays);
                 }
             );
 
             $table = DataTable::create('report');
             $table->setTitle(__('Report Data'));
-            $table->addColumn('count', __('Count'));
+            $table->setDescription(__("A list of students who were absent during the provided period."));
+            $table->addColumn('count', __('Number Of Absences'));
             $table->addColumn('rollGroupName', __('Roll Group'))
                   ->format(function ($absence) {
-                    return sprintf(
-                        '%$1<br/>%$2',
-                        Format::bold($abscence['nameShort']),
-                        Format::small($abscence['rollGroupName'])
+                    return Format::bold($absence['rollGroupName']);
+                  });
+            $table->addColumn('name', __('Name'))
+                  ->format(function ($absence) {
+                    return Format::name(
+                        $absence['title'],
+                        $absence['preferredName'],
+                        $absence['surname'],
+                        'Student',
+                        true
                     );
                   });
-            $table->addColumn('name', __('Name'));
-            $absences = new DataSet($result->fetchAll());
+            $absences = new DataSet($results);
             echo $table->render($absences);
         }
     }
