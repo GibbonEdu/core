@@ -115,6 +115,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 
     echo $form->getOutput();
 
+    // Stop outputting if the form hasn't been submitted yet
+    if (empty($group) || empty($sort)) {
+        return;
+    }
+
     // Get attendance codes
     try {
         if (!empty($gibbonAttendanceCodeID)) {
