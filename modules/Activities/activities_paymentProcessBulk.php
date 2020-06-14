@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
     //Proceed!
     //Check if person specified
     if (empty($action) || count($students) <= 0) {
-        $URL .= '&return=erorr1';
+        $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
     } else {

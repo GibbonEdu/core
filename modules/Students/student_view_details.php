@@ -3151,14 +3151,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     $_SESSION[$guid]['sidebarExtra'] = '';
 
                     //Show alerts
-                    $alert = getAlertBar($guid, $connection2, $gibbonPersonID, $row['privacy'], '', false, true);
-                    $_SESSION[$guid]['sidebarExtra'] .= '<div class="w-48 sm:w-64 h-10 mb-2">';
-                    if ($alert == '') {
-                        $_SESSION[$guid]['sidebarExtra'] .= '<span class="text-gray-500 text-xs">'.__('No Current Alerts').'</span>';
-                    } else {
-                        $_SESSION[$guid]['sidebarExtra'] .= $alert;
+                    if ($highestAction == 'View Student Profile_fullEditAllNotes' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
+                        $alert = getAlertBar($guid, $connection2, $gibbonPersonID, $row['privacy'], '', false, true);
+                        
+                        $_SESSION[$guid]['sidebarExtra'] .= '<div class="w-48 sm:w-64 h-10 mb-2">';
+                        if ($alert == '') {
+                            $_SESSION[$guid]['sidebarExtra'] .= '<span class="text-gray-500 text-xs">'.__('No Current Alerts').'</span>';
+                        } else {
+                            $_SESSION[$guid]['sidebarExtra'] .= $alert;
+                        }
+                        $_SESSION[$guid]['sidebarExtra'] .= '</div>';
                     }
-                    $_SESSION[$guid]['sidebarExtra'] .= '</div>';
 
                     $_SESSION[$guid]['sidebarExtra'] .= getUserPhoto($guid, $studentImage, 240);
 

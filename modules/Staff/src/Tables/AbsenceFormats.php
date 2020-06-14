@@ -109,7 +109,7 @@ class AbsenceFormats
     public static function coverageStatus($coverage, $urgencyThreshold)
     {
         if ($coverage['status'] != 'Requested') {
-            return $coverage['status'];
+            return __($coverage['status']);
         }
 
         $urgencyThreshold = intval($urgencyThreshold);

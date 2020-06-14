@@ -33,9 +33,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     echo '</div>';
 } else {
     //Check if school year specified
-    $gibbonCourseClassID = isset($_GET['gibbonCourseClassID'])? $_GET['gibbonCourseClassID'] : '';
-    $gibbonCourseID = isset($_GET['gibbonCourseID'])? $_GET['gibbonCourseID'] : '';
-    $gibbonSchoolYearID = isset($_GET['gibbonSchoolYearID'])? $_GET['gibbonSchoolYearID'] : '';
+    $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+    $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+    $search = $_GET['search'] ?? '';
 
     if (empty($gibbonCourseID) or empty($gibbonSchoolYearID) or empty($gibbonCourseClassID)) {
         echo "<div class='error'>";
@@ -62,11 +63,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 returnProcess($guid, $_GET['return'], null, null);
             }
 
+            echo "<div class='linkTop'>";
+            if ($search != '') {
+                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage.php&search=$search&gibbonSchoolYearID=$gibbonSchoolYearID'>".__('Back to Search Results').'</a>';
+            }
+            echo '</div>';
+            
             echo '<h2>';
             echo __('Add Participants');
             echo '</h2>';
 
-            $form = Form::create('manageEnrolment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_class_edit_addProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID");
+            $form = Form::create('manageEnrolment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_class_edit_addProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search");
                 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
@@ -130,11 +137,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             $form->addHiddenValue('gibbonCourseID', $gibbonCourseID);
             $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
             $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+            $form->addHiddenValue('search', $search);
 
             $linkParams = array(
                 'gibbonCourseID'      => $gibbonCourseID,
                 'gibbonCourseClassID' => $gibbonCourseClassID,
                 'gibbonSchoolYearID'  => $gibbonSchoolYearID,
+                'search'  => $search,
             );
 
             $bulkActions = array(

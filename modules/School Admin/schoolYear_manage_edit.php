@@ -77,8 +77,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
             if ($values['status'] == 'Current') {
                 $form->addHiddenValue('status', $values['status']);
                 $row = $form->addRow();
-                    $row->addLabel('status', __('Status'));
-                    $row->addTextField('status')->readOnly()->setValue($values['status']);
+                    $row->addLabel('statusText', __('Status'));
+                    $row->addTextField('statusText')->readOnly()->setValue(__($values['status']));
             } else {
                 $row = $form->addRow();
                     $row->addLabel('status', __('Status'));
