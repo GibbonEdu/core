@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Module\Attendance\AttendanceView;
 use Gibbon\Services\Format;
+use Gibbon\Domain\DataSet;
+use Gibbon\Tables\DataTable;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -58,27 +60,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
     echo $form->getOutput();
 
     if (!empty($_GET['numberOfSchoolDays']) && is_numeric($_GET['numberOfSchoolDays'])) {
-        echo '<h2>';
-        echo __('Report Data');
-        echo '</h2>';
-
-        $today = date('Y-m-d');
-        $dates = getLastNSchoolDays($guid, $connection2, $today, $numberOfSchoolDays, true);
+        //Get an array of days school is in session
+      $dates = getLastNSchoolDays(
+        $gibbon->session->get('guid'), 
+        $connection2, 
+        date("Y-m-d"), 
+        $numberOfSchoolDays, 
+        true
+      );
         if (!is_array($dates) || count($dates) != $numberOfSchoolDays) {
             echo "<div class='error'>";
             echo __('There are no records to display.');
             echo '</div>';
-        }
-        else {
+        } else {
             try {
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'));
                 $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.name as rollGroupName, gibbonRollGroup.nameShort AS rollGroup
                     FROM gibbonPerson
                         JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                         LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
                     WHERE status='Full'
-                        AND (dateStart IS NULL OR dateStart<='".$today."')
-                        AND (dateEnd IS NULL  OR dateEnd>='".$today."')
+                        AND (dateStart IS NULL OR dateStart <= CURRENT_TIMESTAMP)
+                        AND (dateEnd IS NULL  OR dateEnd >= CURRENT_TIMESTAMP)
                         AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
                     ORDER BY surname, preferredName, LENGTH(rollGroup), rollGroup";
                 $result = $connection2->prepare($sql);
@@ -87,51 +90,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
                 echo "<div class='error'>".$e->getMessage().'</div>';
             }
 
-            if ($result->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __('There are no records to display.');
-                echo '</div>';
-            } else {
-                echo '<table cellspacing="0" class="fullWidth colorOddEven" >';
-                echo "<tr class='head'>";
-                echo '<th>';
-                echo __('Count');
-                echo '</th>';
-                echo '<th style="width:80px">';
-                echo __('Roll Group');
-                echo '</th>';
-                echo '<th>';
-                echo __('Name');
-                echo '</th>';
-                echo '</tr>';
+            $results = array_filter(
+                $result->fetchAll(),
+                function ($row) use (
+                    $gibbon,
+                    $connection2,
+                    $numberOfSchoolDays,
+                    $dates
+                ) {
+                    return (getAbsenceCount($gibbon->session->get('guid'), $row['gibbonPersonID'], $connection2, end($dates), date('Y-m-d')) >= $numberOfSchoolDays);
+                }
+            );
 
-                $count = 0;
-                while ($row = $result->fetch()) {
-                    $absenceCount = getAbsenceCount($guid, $row['gibbonPersonID'], $connection2, end($dates), $today);
-                    if ($absenceCount >= $numberOfSchoolDays) {
-                        $count ++;
-                        echo "<tr>";
-                            echo '<td>';
-                                echo $count;
-                            echo '</td>';
-                            echo '<td>';
-                                echo $row['rollGroupName'];
-                            echo '</td>';
-                            echo '<td>';
-                                echo Format::name('', $row['preferredName'], $row['surname'], 'Student', true);
-                            echo '</td>';
-                        echo '</tr>';
-                    }
-                }
-                if ($count == 0) {
-                    echo "<tr>";
-                    echo '<td colspan=5>';
-                    echo __('All students are present.');
-                    echo '</td>';
-                    echo '</tr>';
-                }
-                echo '</table>';
-            }
+            $table = DataTable::create('report');
+            $table->setTitle(__('Report Data'));
+            $table->addColumn('count', __('Count'));
+            $table->addColumn('rollGroupName', __('Roll Group'))
+                  ->format(function ($absence) {
+                    return sprintf(
+                        '%$1<br/>%$2',
+                        Format::bold($abscence['nameShort']),
+                        Format::small($abscence['rollGroupName'])
+                    );
+                  });
+            $table->addColumn('name', __('Name'));
+            $absences = new DataSet($result->fetchAll());
+            echo $table->render($absences);
         }
     }
 }
