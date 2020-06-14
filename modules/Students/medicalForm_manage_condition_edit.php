@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 
             $row = $form->addRow();
                 $row->addLabel('personName', __('Student'));
-                $row->addTextField('personName')->setValue(Format::name('', htmlPrep($values['preferredName']), htmlPrep($values['surname']), 'Student'))->required()->readonly();
+                $row->addTextField('personName')->setValue(Format::name('', $values['preferredName'], $values['surname']), 'Student')->required()->readonly();
 
             $sql = "SELECT name AS value, name FROM gibbonMedicalCondition ORDER BY name";
             $row = $form->addRow();

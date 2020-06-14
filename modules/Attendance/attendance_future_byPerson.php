@@ -166,10 +166,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                     while ($rowLog = $resultLog->fetch()) {
                         $attendanceLog .= '<tr class="'.( $rowLog['direction'] == 'Out'? 'error' : 'current').'">';
 
-                        $attendanceLog .= '<td>'.date("M j", strtotime($rowLog['date']) ).'</td>';
+                        $attendanceLog .= '<td>'.Format::dateReadable($rowLog['date'], '%b %d').'</td>';
 
                         $attendanceLog .= '<td>';
-                        $attendanceLog .= '<b>'.$rowLog['direction'].'</b> ('.$rowLog['type']. ( !empty($rowLog['reason'])? ', '.$rowLog['reason'] : '') .')';
+                        $attendanceLog .= '<b>'.__($rowLog['direction']).'</b> ('.__($rowLog['type']). ( !empty($rowLog['reason'])? ', '.$rowLog['reason'] : '') .')';
                         if ( !empty($rowLog['comment']) ) {
                             $attendanceLog .= '&nbsp;<img title="'.$rowLog['comment'].'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/messageWall.png" width=16 height=16/>';
                         }
@@ -185,7 +185,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                             $attendanceLog .= Format::name('', $rowLog['preferredName'], $rowLog['surname'], 'Staff', false, true);
                         $attendanceLog .= '</td>';
 
-                        $attendanceLog .= '<td>'.date("g:i a, M j", strtotime($rowLog['timestampTaken']) ).'</td>';
+                        $attendanceLog .= '<td>'.Format::dateReadable($rowLog['timestampTaken'], '%R, %b %d').'</td>';
 
                         $attendanceLog .= '<td>';
                             $attendanceLog .= "<a href='".$_SESSION[$guid]['absoluteURL']."/modules/Attendance/attendance_future_byPersonDeleteProcess.php?gibbonPersonID=$gibbonPersonID[0]&gibbonAttendanceLogPersonID=".$rowLog['gibbonAttendanceLogPersonID']."' onclick='confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
@@ -222,7 +222,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                 $row->addLabel('periodSelectContainer', __('Periods Absent'));
 
                 $table = $row->addTable('periodSelectContainer')->setClass('standardWidth');
-                $table->addHeaderRow()->addHeading(date('F j, Y', strtotime(dateConvert($guid, $date))));
+                $table->addHeaderRow()->addHeading(Format::dateReadable(Format::dateConvert($date),'%B %e, %Y'));
 
                 while ($class = $resultClasses->fetch()) {
                     $row = $table->addRow();
