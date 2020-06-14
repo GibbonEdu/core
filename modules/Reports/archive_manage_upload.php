@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
     $form->addRow()->addHeading(__('File Import'));
 
     $row = $form->addRow();
-        $row->addLabel('file', __('ZIP File'))->description(__('See Notes below for specification.'));
+        $row->addLabel('file', __('ZIP File'));
         $row->addFileUpload('file')->required()->accepts(['.zip']);
 
     $row = $form->addRow();
