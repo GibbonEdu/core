@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
             echo '</th>';
             echo '</tr>';
             echo "<tr style='height: 75px' class='odd'>";
-            echo "<td style='vertical-align:top; width: 120px'>Date</td>";
+            echo "<td style='vertical-align:top; width: 120px'>".__('Date')."</td>";
             for ($i = 1; $i <= $numberOfColumns; ++$i) {
                 echo "<td style='color: #bbb; vertical-align:top; width: 15px'>$i</td>";
             }
