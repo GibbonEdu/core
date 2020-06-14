@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage.p
     ]);
 
     // COLUMNS
-    $table->addColumn('type', __('Type'));
+    $table->addColumn('type', __('Type'))->translatable();
     $table->addColumn('jobTitle', __('Job Title'));
     $table->addColumn('dateOpen', __('Opening Date'))
         ->format(Format::using('date', 'dateOpen'));

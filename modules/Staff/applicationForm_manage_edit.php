@@ -133,10 +133,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 $column->addTextArea('notes')->setRows(5)->setClass('fullWidth');
 
             $form->addRow()->addHeading(__('Job Related Information'));
+            
+            $form->addHiddenValue('type', $values['type']);
 
             $row = $form->addRow();
-                $row->addLabel('type', __('Job Type'));
-                $row->addTextField('type')->readOnly()->required();
+                $row->addLabel('typeRole', __('Job Type'));
+                $row->addTextField('typeRole')->readOnly()->required()->setValue(__($values['type']));
 
             $form->addHiddenValue('gibbonStaffJobOpeningID', $values['gibbonStaffJobOpeningID']);
             $row = $form->addRow();

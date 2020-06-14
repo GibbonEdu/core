@@ -126,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                     echo '<h2>';
                     if ($subpage != '') {
-                        echo $subpage;
+                        echo __($subpage);
                     }
                     echo '</h2>';
 
