@@ -21,8 +21,8 @@ use Gibbon\Domain\Attendance\AttendanceCodeGateway;
 
 include '../../gibbon.php';
 
-$gibbonAttendanceCodeID = $_GET['gibbonAttendanceCodeID'] ?? null;
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/attendanceSettings.php";
+$gibbonAttendanceCodeID = $_GET['gibbonAttendanceCodeID'] ?? '';
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/attendanceSettings_manage_edit.php&gibbonAttendanceCodeID=".$gibbonAttendanceCodeID;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSettings_manage_edit.php') == false) {
     $URL .= '&return=error0';
@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     $data['gibbonRoleIDAll'] = (is_array($gibbonRoleIDArray))? implode(',', $gibbonRoleIDArray) : $gibbonRoleIDArray;
 
     // Validate the required values are present
-    if (empty($gibbonAttendanceCodeID) || empty($data['gibbonRoleIDAll']) || empty($data['name']) || empty($data['nameShort']) || empty($data['direction']) || empty($data['scope']) || empty($data['sequenceNumber'])) {
+    if (empty($gibbonAttendanceCodeID) || empty($data['name']) || empty($data['nameShort']) || empty($data['direction']) || empty($data['scope']) || empty($data['sequenceNumber'])) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
