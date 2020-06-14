@@ -169,7 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                     $row = $form->addRow();
                         $row->addLabel('nextname', __('School Year Name'))->description(__('Must be unique.'));
-                        $row->addTextField('nextname')->required()->maxLength(9);
+                        $row->addTextField('nextname')->required()->maxLength(9)->addClass('w-64');
 
                     $row = $form->addRow();
                         $row->addLabel('nextstatus', __('Status'));
@@ -181,11 +181,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                     $row = $form->addRow();
                         $row->addLabel('nextfirstDay', __('First Day'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-                        $row->addDate('nextfirstDay')->required();
+                        $row->addDate('nextfirstDay')->required()->addClass('w-64');
 
                     $row = $form->addRow();
                         $row->addLabel('nextlastDay', __('Last Day'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-                        $row->addDate('nextlastDay')->required();
+                        $row->addDate('nextlastDay')->required()->addClass('w-64');
                 }
 
                 //SET EXPECTED USERS TO FULL
