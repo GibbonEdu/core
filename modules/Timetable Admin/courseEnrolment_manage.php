@@ -134,6 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             // ACTIONS
             $table->addActionColumn()
+                ->addParam('search', $criteria->getSearchText(true))
                 ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
                 ->addParam('gibbonCourseID')
                 ->addParam('gibbonCourseClassID')
