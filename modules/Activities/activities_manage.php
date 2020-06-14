@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/activities_manage.php");
 
     $row = $form->addRow();
-        $row->addLabel('search', __('Search'))->description('Activity name.');
+        $row->addLabel('search', __('Search'))->description(__('Activity name.'));
         $row->addTextField('search')->setValue($criteria->getSearchText());
 
     if ($dateType != 'Date') {
