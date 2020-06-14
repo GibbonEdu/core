@@ -82,9 +82,10 @@ class RollGroupTable extends DataTable
         if ($canPrint) {
             $this->addHeaderAction('print', __('Print'))
                 ->setURL('/report.php')
-                ->addParam('q', '/modules/Students/report_students_byRollGroup_print.php')
+                ->addParam('q', '/modules/Students/report_students_byRollGroup.php')
                 ->addParam('gibbonRollGroupID', $gibbonRollGroupID)
                 ->addParam('view', 'Basic')
+                ->addParam('format', 'print')
                 ->setIcon('print')
                 ->setTarget('_blank')
                 ->directLink()
