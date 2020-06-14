@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
         }
 
         echo '<h2>';
-        echo 'Choose User';
+        echo __('Choose User');
         echo '</h2>';
 
         $gibbonPersonID = null;
