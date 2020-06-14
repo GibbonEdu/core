@@ -61,13 +61,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
 
     if (!empty($_GET['numberOfSchoolDays']) && is_numeric($_GET['numberOfSchoolDays'])) {
         //Get an array of days school is in session
-      $dates = getLastNSchoolDays(
-        $gibbon->session->get('guid'), 
-        $connection2, 
-        date("Y-m-d"), 
-        $numberOfSchoolDays, 
-        true
-      );
+        $dates = getLastNSchoolDays(
+          $gibbon->session->get('guid'), 
+          $connection2, 
+          date("Y-m-d"), 
+          $numberOfSchoolDays, 
+          true
+        );
+        var_dump($dates);
         if (!is_array($dates) || count($dates) != $numberOfSchoolDays) {
             echo "<div class='error'>";
             echo __('There are no records to display.');
