@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage_edi
     }
 
     // Validate that this record is unique
-    if (!$reportGateway->unique($data, ['name'], $gibbonReportID)) {
+    if (!$reportGateway->unique($data, ['gibbonSchoolYearID', 'name'], $gibbonReportID)) {
         $URL .= '&return=error7';
         header("Location: {$URL}");
         exit;
