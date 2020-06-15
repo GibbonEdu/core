@@ -162,7 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                             $contents = $_POST["contents$i"];
                             $teachersNotes = $_POST["teachersNotes$i"];
 
-                            if ($title != '' or $contents != '') {
+                            if ($title != '') {
                                 try {
                                     $dataBlock = array('gibbonUnitID' => $AI, 'title' => $title, 'type' => $type2, 'length' => $length, 'contents' => $contents, 'teachersNotes' => $teachersNotes, 'sequenceNumber' => $sequenceNumber);
                                     $sqlBlock = 'INSERT INTO gibbonUnitBlock SET gibbonUnitID=:gibbonUnitID, title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, sequenceNumber=:sequenceNumber';
