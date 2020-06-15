@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
 
     $table->addColumn('status', __('Status'))
         ->format(function ($investigations) {
-            return $investigations['status'];
+            return __($investigations['status']);
         });
 
     $table->addColumn('student', __('Student'))
@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         ->sortable(['student.surname', 'student.preferredName'])
         ->width('25%')
         ->format(function ($person) use ($guid) {
-            $url = './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'].'&subpage=Individual Needs&search=&allStudents=&sort=surname,preferredName';
+            $url = './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonIDStudent'].'&subpage=Individual Needs&search=&allStudents=&sort=surname,preferredName';
             return '<b>'.Format::link($url, Format::name('', $person['preferredName'], $person['surname'], 'Student', true)).'</b>'
                   .'<br/><small><i>'.$person['rollGroup'].'</i></small>';
         });
@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             return Format::date($investigations['date']);
         });
 
-    $table->addColumn('type', __('Type'));
+    $table->addColumn('type', __('Type'))->translatable();
 
     $table->addColumn('class', __('Class'))
         ->format(function ($investigations) {

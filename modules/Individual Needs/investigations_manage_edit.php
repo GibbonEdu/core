@@ -95,8 +95,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
 
                     //Status
                     $row = $form->addRow();
-                    	$row->addLabel('status', __('Status'));
-                    	$row->addTextField('status')->setValue(__('Referral'))->required()->readonly();
+                    	$row->addLabel('statusText', __('Status'));
+                    	$row->addTextField('statusText')->setValue(__($investigation['status']))->required()->readonly();
 
                     //Date
                     $row = $form->addRow();
@@ -207,8 +207,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                             ->format(function ($investigations) {
                                 $output = '';
                                 if (!empty($investigations['cognition'])) {
-                                    $output .= '<strong>'.__('Cognition').'</strong><br/>';
-                                    $output .= nl2brr($investigations['cognition']).'<br/>';
+                                    $output .= '<br/><strong>'.__('Cognition').'</strong><br/>';
+                                    $output .= '<ul>';
+                                        $output .= '<li>'.nl2brr(__($investigations['cognition'])).'</li>';
+                                    $output .= '</ul>';
                                 }
                                 $fields = getInvestigationCriteriaStrands();
                                 foreach ($fields as $field) {
@@ -216,29 +218,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                                         $output .= '<br/><strong>'.__($field['nameHuman']).'</strong><br/>';
                                         $output .= '<ul>';
                                         foreach (unserialize($investigations[$field['name']]) as $entry) {
-                                            $output .= '<li>'.$entry.'</li>';
+                                            $output .= '<li>'.__($entry).'</li>';
                                         }
                                         $output .= '</ul>';
                                     }
                                 }
                                 if (!empty($investigations['comment'])) {
-                                    $output .= '<strong>'.__('Comment').'</strong><br/>';
-                                    $output .= nl2brr($investigations['comment']).'<br/>';
+                                    $output .= '<br/><strong>'.__('Comment').'</strong><br/>';
+                                    $output .= '<ul>';
+                                        $output .= '<li>'.nl2brr(__($investigations['comment'])).'</li>';
+                                    $output .= '</ul>';
                                 }
                                 return $output;
                             });
-                        $table->addColumn('name', __('name'))
+                        $table->addColumn('name', __('Name'))
                             ->format(function ($person) use ($guid) {
                                 return Format::name('', $person['preferredName'], $person['surname'], 'Student', true);
                             });
-                        $table->addColumn('type', __('Type'));
+                        $table->addColumn('type', __('Type'))->translatable();
                         $table->addColumn('class', __('Class'))
                             ->format(function ($investigations) {
                                 if ($investigations['type'] == 'Teacher') {
                                     return ($investigations['course'].'.'.$investigations['class']);
                                 }
                             });
-                        $table->addColumn('status', __('Status'));
+                        $table->addColumn('status', __('Status'))->translatable();
 
                         //Response overview row
                         $row = $form->addRow();
@@ -257,9 +261,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                             //Chart
 
                             $options = getInvestigationCriteriaArray($stats[$i]['nameHuman']) ;
+                            $optionsLabels = [];
+                            foreach ($options as $option) {
+                                array_push($optionsLabels, __($option));
+                            }
                             $chart = Chart::create($stats[$i]['name'].'Chart', 'doughnut')
                                 ->setOptions(['height' => 150])
-                                ->setLabels($options);
+                                ->setLabels($optionsLabels);
 
                             $data = array();
                             foreach ($stats[$i]['data'] as $stat) {
