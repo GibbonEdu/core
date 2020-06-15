@@ -36,6 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage_edi
     $reportGateway = $container->get(ReportGateway::class);
 
     $data = [
+        'gibbonSchoolYearID'     => $_POST['gibbonSchoolYearID'] ?? '',
         'name'                   => $_POST['name'] ?? '',
         'active'                 => $_POST['active'] ?? 'Y',
         'gibbonReportArchiveID'  => $_POST['gibbonReportArchiveID'] ?? null,
@@ -49,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage_edi
     }
 
     // Validate the required values are present
-    if (empty($data['name'])) {
+    if (empty($gibbonSchoolYearID) || empty($data['name'])) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
