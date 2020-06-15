@@ -2825,7 +2825,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                             echo '</td>';
                                             echo '<td>';
                                             if ($row['status'] != '') {
-                                                echo $row['status'];
+                                                echo __($row['status']);
                                             } else {
                                                 echo '<i>'.__('NA').'</i>';
                                             }
@@ -3017,9 +3017,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         echo '</td>';
                                         echo '<td>';
                                         if ($rowHistory['type'] == 'teacherRecorded') {
-                                            echo 'Teacher Recorded';
+                                            echo __('Teacher Recorded');
                                         } else {
-                                            echo 'Student Recorded';
+                                            echo __('Student Recorded');
                                         }
                                         echo  '<br/>';
                                         echo "<span style='font-size: 85%; font-style: italic'>";
