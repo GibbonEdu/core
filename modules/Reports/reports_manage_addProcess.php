@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage_add
     }
 
     // Validate that this record is unique
-    if (!$reportGateway->unique($data, ['name'])) {
+    if (!$reportGateway->unique($data, ['gibbonSchoolYearID', 'name'])) {
         $URL .= '&return=error7';
         header("Location: {$URL}");
         exit;
