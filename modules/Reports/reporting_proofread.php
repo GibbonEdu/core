@@ -107,6 +107,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
         }
 
         $staff = [];
+        $rollGroups = [];
+
         foreach ($reportingScopes as $scope) {
             if ($scope['canProofRead'] != 'Y') continue;
 
@@ -121,6 +123,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
                     return $group;
                 }, []);
             }
+
+            $rollGroupsByScope = $reportingAccessGateway->selectAccessibleRollGroupsByReportingScope($scope['gibbonReportingScopeID'])->fetchKeyPair();
+            $rollGroups = array_merge($rollGroups, $rollGroupsByScope);
         }
 
         // Prevent access if the staff list is empty
@@ -134,7 +139,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
             $staff[$gibbon->session->get('gibbonPersonID')] = Format::name('', $gibbon->session->get('preferredName'), $gibbon->session->get('surname'), 'Staff', true, true);
         }
 
-        $rollGroups = $reportingAccessGateway->selectAccessibleRollGroupsByReportingScope($scope['gibbonReportingScopeID'])->fetchKeyPair();
+        asort($rollGroups, SORT_NATURAL);
+        
         $row = $form->addRow()->addClass('rollGroupMode');
             $row->addLabel('gibbonRollGroupID', __('Roll Group'));
             $row->addSelect('gibbonRollGroupID')->fromArray($rollGroups)->required()->placeholder()->selected($gibbonRollGroupID);
