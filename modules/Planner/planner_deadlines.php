@@ -386,9 +386,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
                                 echo '</td>';
                                 echo '<td>';
                                 if ($row['type'] == 'teacherRecorded') {
-                                    echo 'Teacher Recorded';
+                                    echo __('Teacher Recorded');
                                 } else {
-                                    echo 'Student Recorded';
+                                    echo __('Student Recorded');
                                 }
                                 echo  '<br/>';
                                 echo "<span style='font-size: 85%; font-style: italic'>";
@@ -433,12 +433,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
                                         } else {
                                             $rowVersion = $resultVersion->fetch();
                                             if ($rowVersion['status'] == 'On Time' or $rowVersion['status'] == 'Exemption') {
-                                                echo $rowVersion['status'];
+                                                echo __($rowVersion['status']);
                                             } else {
                                                 if ($row['homeworkSubmissionRequired'] == 'Compulsory') {
-                                                    echo "<div style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px; margin: 2px 0px'>".$rowVersion['status'].'</div>';
+                                                    echo "<div style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px; margin: 2px 0px'>".__($rowVersion['status']).'</div>';
                                                 } else {
-                                                    echo $rowVersion['status'];
+                                                    echo __($rowVersion['status']);
                                                 }
                                             }
                                         }

@@ -148,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes.php') == 
                 //COLOR ROW BY STATUS!
                 echo "<tr class=$rowNum>";
                 echo '<td>';
-                echo '<b>'.$row['scope'].'</b><br/>';
+                echo '<b>'.__($row['scope']).'</b><br/>';
                 if ($row['scope'] == 'Learning Area' and $row['department'] != '') {
                     echo "<span style='font-size: 75%; font-style: italic'>".$row['department'].'</span>';
                 }
