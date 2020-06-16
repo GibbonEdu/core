@@ -567,7 +567,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                         $checked = 'checked';
                                     }
                                     echo $templateView->fetchFromTemplate('ui/unitBlock.twig.html', $block + [
-                                        'roleCategory' => $roleCategory, 'gibbonPersonID' => $_SESSION[$guid]['username'] ?? '', 'blockCount' => $blockCount, 'checked' => $checked, 'role' => $row['role'], 'teacher' => $teacher
+                                        'roleCategory' => $roleCategory, 'gibbonPersonID' => $_SESSION[$guid]['username'] ?? '', 'blockCount' => $blockCount, 'checked' => $checked, 'role' => $row['role'], 'teacher' => $teacher ?? ''
                                     ]);
                                     $blockCount++;
                                 }
