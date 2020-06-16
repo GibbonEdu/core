@@ -108,28 +108,22 @@ class LibraryReportGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
     
-    public function selectOverdueItems($ignoreStatus = null)
+    public function queryOverdueItems($criteria, $ignoreStatus = null)
     {
-        $data = ['today' => date('Y-m-d')];
+        $query = $this
+            ->newQuery()
+            ->cols(['gibbonLibraryItem.*', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.email'])
+            ->from('gibbonLibraryItem')
+            ->innerJoin('gibbonPerson', 'gibbonLibraryItem.gibbonPersonIDStatusResponsible=gibbonPerson.gibbonPersonID')
+            ->where("gibbonLibraryItem.status='On Loan'")
+            ->where("borrowable='Y'")
+            ->where('returnExpected<:today')
+            ->bindValue('today', date('Y-m-d'));
 
-        if ($ignoreStatus == 'on') {
-            $sql = "SELECT gibbonLibraryItem.*, surname, preferredName, email 
-            FROM gibbonLibraryItem 
-            JOIN gibbonPerson ON (gibbonLibraryItem.gibbonPersonIDStatusResponsible=gibbonPerson.gibbonPersonID) 
-            WHERE gibbonLibraryItem.status='On Loan' 
-            AND borrowable='Y' 
-            AND returnExpected<:today 
-            ORDER BY surname, preferredName";
-        } else {
-            $sql = "SELECT gibbonLibraryItem.*, surname, preferredName, email 
-            FROM gibbonLibraryItem 
-            JOIN gibbonPerson ON (gibbonLibraryItem.gibbonPersonIDStatusResponsible=gibbonPerson.gibbonPersonID) 
-            WHERE gibbonLibraryItem.status='On Loan' 
-            AND borrowable='Y' 
-            AND returnExpected<:today AND gibbonPerson.status='Full' 
-            ORDER BY surname, preferredName";
+        if ($ignoreStatus != 'on') {
+            $query->where("gibbonPerson.status='Full'");
         }
 
-        return $this->db()->select($sql, $data);
+        return $this->runQuery($query, $criteria);
     }
 }
