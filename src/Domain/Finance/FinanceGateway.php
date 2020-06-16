@@ -21,12 +21,6 @@ class FinanceGateway extends QueryableGateway
             ->newQuery()
             ->from('gibbonFinanceFee')
             ->join('left', 'gibbonFinanceFeeCategory', 'gibbonFinanceFee.gibbonFinanceFeeCategoryID = gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID')
-            ->orderBy(
-                [
-                'gibbonFinanceFee.active',
-                'gibbonFinanceFee.name'
-                  ]
-            )
             ->cols(
                 [
                 'gibbonFinanceFee.name',
@@ -69,11 +63,6 @@ class FinanceGateway extends QueryableGateway
         $query = $this
             ->newQuery()
             ->from($this->getTableName())
-            ->orderBy(
-                [
-                'gibbonFinanceBudget.active DESC'
-                ]
-            )
             ->cols(
                 [
                 'gibbonFinanceBudget.gibbonFinanceBudgetID',

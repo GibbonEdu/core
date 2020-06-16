@@ -110,9 +110,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage.php') 
 
             $gateway = $container->get(FinanceGateway::class);
             $criteria = $gateway->newQueryCriteria(true)
-                                ->filterBy('gibbonSchoolYearID', $gibbonSchoolYearID)
-                                ->filterBy('search', $search)
-                                ->fromPOST();
+                ->filterBy('gibbonSchoolYearID', $gibbonSchoolYearID)
+                ->filterBy('search', $search)
+                ->sortBy('gibbonFinanceFee.active')
+                ->sortBy('gibbonFinanceFee.name')
+                ->fromPOST();
 
             $fees = $gateway->queryFees($criteria);
             $table = DataTable::createPaginated('fees', $criteria);
@@ -128,19 +130,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage.php') 
             });
 
             $table->addExpandableColumn('description', __('Description'));
-            $table
-              ->addColumn('name', __('Name'))
+            $table->addColumn('name', __('Name'))
               ->description(__('Short Name'))
               ->format(function ($fee) {
                 return sprintf('<b>%1$s</b><br/>%2$s', $fee['name'], Format::small($fee['nameShort']));
               });
-            $table
-              ->addColumn('category', __('Category'));
-            $table
-              ->addColumn('fee', __('Fee'))
+
+            $table->addColumn('category', __('Category'));
+
+            $table->addColumn('fee', __('Fee'))
               ->format(function ($fee) {
                 return Format::currency($fee['fee']);
               });
+
+            $table->addColumn('active', __('Active'))
+              ->format(Format::using('yesNo', 'active'));
+
             $table->addActionColumn()
                   ->addParam('gibbonSchoolYearID')
                   ->addParam('gibbonFinanceFeeID')
