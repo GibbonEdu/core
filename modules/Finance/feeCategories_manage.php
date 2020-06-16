@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
     $table->setDescription(__('Categories are used to group fees together into related sets. Some examples might be Tuition Fees, Learning Support Fees or Transport Fees. Categories enable you to control who receives invoices for different kinds of fees.'));
 
     $table->modifyRows(function ($item, $row) {
-        return $item['active'] == 'N' ? $row->addClass('warning') : $row;
+        return $item['active'] == 'N' ? $row->addClass('error') : $row;
     });
 
     $table->addHeaderAction('add', __('Add'))
