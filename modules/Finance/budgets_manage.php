@@ -43,6 +43,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage.php
     $table = DataTable::createPaginated('budgets', $criteria);
     $table->setDescription(__('Budgets are used within purchase requisitions and expense records in order to segregate records into different areas.'));
 
+    $table->modifyRows(function ($item, $row) {
+        return $item['active'] == 'N' ? $row->addClass('error') : $row;
+    });
+    
     $table->addHeaderAction('add', __('Add'))
       ->setURL('/modules/Finance/budgets_manage_add.php')
       ->displayLabel();
