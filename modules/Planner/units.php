@@ -214,7 +214,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                         echo "<div class='linkTop' style='height: 27px'>"; ?>
         						<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __('Go') ?>'>
 
-                                <div id="courseClassRow" style="display: none;">
+                                <div class="inline-block relative">
+                                    <select name="action" id="action" class="w-48 float-right mr-px">
+                                        <option value="Select action"><?php echo __('Select action') ?></option>
+                                        <option value="Duplicate"><?php echo __('Duplicate') ?></option>
+                                    </select>
+                                </div>
+
+                                <div id="courseClassRow" class="hidden relative">
                                     <select style="width: 182px" name="gibbonCourseIDCopyTo" id="gibbonCourseIDCopyTo">
                                         <?php
                                         print "<option value='Please select...'>" . __('Please select...') . "</option>" ;
@@ -254,11 +261,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                                         gibbonCourseIDCopyTo.add(Validate.Exclusion, { within: ['<?php echo __('Please select...') ?>'], failureMessage: "<?php echo __('Select something!') ?>"});
                                     </script>
                                 </div>
-
-        						<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
-        							<option value="Select action"><?php echo __('Select action') ?></option>
-                                    <option value="Duplicate"><?php echo __('Duplicate') ?></option>
-        						</select>
+                                
         						<script type="text/javascript">
         							var action=new LiveValidation('action');
         							action.add(Validate.Exclusion, { within: ['<?php echo __('Select action') ?>'], failureMessage: "<?php echo __('Select something!') ?>"});
@@ -266,7 +269,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                                     $(document).ready(function(){
                                         $('#action').change(function () {
                                             if ($(this).val() == 'Duplicate') {
-                                                $("#courseClassRow").slideDown("fast", $("#courseClassRow").css("display","block"));
+                                                $("#courseClassRow").slideDown("fast", $("#courseClassRow").css("display","inline-block"));
                                             } else {
                                                 $("#courseClassRow").css("display","none");
                                             }
