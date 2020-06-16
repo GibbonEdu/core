@@ -60,9 +60,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
     }
 
     $reportGateway = $container->get(LibraryReportGateway::class);
-    $criteria = $reportGateway->newQueryCriteria()->fromPOST();
+    $criteria = $reportGateway->newQueryCriteria(true)->fromPOST();
 
-    $items = $reportGateway->selectOverdueItems($ignoreStatus)->fetchAll();
+    $items = $reportGateway->queryOverdueItems($criteria, $ignoreStatus);
 
     // DATA TABLE
     $table = ReportTable::createPaginated('overdueItems', $criteria)->setViewMode($viewMode, $gibbon->session);
@@ -80,7 +80,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
             return '<b>'.$item['name'].'</b><br/>'.Format::small($item['producer']);
         });
     $table->addColumn('returnExpected', __('Due Date'))->format(Format::using('date', 'returnExpected'));
-    $table->addColumn('committee', __('Days Overdue'))
+    $table->addColumn('dueDate', __('Days Overdue'))
+        ->sortable('returnExpected')
         ->format(function ($item) use ($today) {
             return (strtotime($today) - strtotime($item['returnExpected'])) / (60 * 60 * 24);
         });
@@ -94,5 +95,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
                     ->setURL('/modules/Library/library_lending_item.php');
         });
 
-    echo $table->render(new DataSet($items));
+    echo $table->render($items);
 }
