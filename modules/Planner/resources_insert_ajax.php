@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
         $col->addFinder('tags'.$id)
             ->fromQuery($pdo, $sql)
             ->setParameter('hintText', __('Type a tag...'))
-            ->addClass('floatNone')
+            ->addClass('floatNone w-4/5')
             ->selected($tags);
     
     $col->addSubmit(__('Go'));
