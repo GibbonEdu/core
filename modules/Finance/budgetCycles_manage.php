@@ -40,6 +40,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
                         
     $budgetCycles = $gateway->queryFinanceCycles($criteria);
     $table = DataTable::createPaginated('cycles', $criteria);
+
+    $table->modifyRows(function ($item, $row) {
+        return $item['status'] == 'Current' ? $row->addClass('success') : $row;
+    });
+
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/Finance/budgetCycles_manage_add.php')
         ->displayLabel();
