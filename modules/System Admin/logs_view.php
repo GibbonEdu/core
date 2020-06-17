@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
         ->format(function ($log) {
           return (empty($log['module'])) ? __('System') : __($log['module']) ;
         });
-    $table->addColumn('user', __('User'))
+    $table->addColumn('username', __('User'))
         ->format(function ($log) {
           return Format::name('', $log['preferredName'], $log['surname'], 'Student', false, true)."</br>". Format::small($log['username']) ;
         });
