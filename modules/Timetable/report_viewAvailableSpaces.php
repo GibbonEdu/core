@@ -451,7 +451,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 												}
 
                                                 //Add any bookings to removers
-                                                if (is_array($bookings[$date][$rowSelect['gibbonSpaceID']])) {
+                                                if (!empty($bookings[$date][$rowSelect['gibbonSpaceID']]) && is_array($bookings[$date][$rowSelect['gibbonSpaceID']])) {
                                                     foreach ($bookings[$date][$rowSelect['gibbonSpaceID']] AS $bookingInner) {
                                                         if (($bookingInner['timeStart'] <= $effectiveEnd) && ($bookingInner['timeEnd'] >= $effectiveStart)) {
                                                             $removers[$rowSelect['name']] = $rowSelect['name'];
