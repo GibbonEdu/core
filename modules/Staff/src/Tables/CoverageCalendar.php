@@ -133,7 +133,7 @@ class CoverageCalendar
     
                     $cell->addClass($day['date']->format('Y-m-d') == date('Y-m-d') ? 'border-2 border-gray-700' : 'border');
                     
-                    switch ($day['coverage']['status']) {
+                    switch ($day['coverage']['status'] ?? '') {
                         case 'Requested': $cellColor = 'bg-chart2'; break;
                         case 'Accepted':  $cellColor = 'bg-chart0'; break;
                         default:          $cellColor = 'bg-gray-500';

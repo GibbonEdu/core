@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view.php') 
         ->filterBy('date:upcoming')
         ->fromPOST('allCoverage');
 
-    $allCoverage = $staffCoverageGateway->queryCoverageWithNoPersonAssigned($criteria, $substitute['type']);
+    $allCoverage = $staffCoverageGateway->queryCoverageWithNoPersonAssigned($criteria, $substitute['type'] ?? '');
 
     if ($myCoverage->getResultCount() == 0 && $allCoverage->getResultCount() == 0) {
         echo Format::alert(__('All coverage requests have been filled!'), 'success');
