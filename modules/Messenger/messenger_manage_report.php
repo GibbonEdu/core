@@ -110,7 +110,7 @@ else {
 			// Create a reusable confirmation closure
 			$icon = '<img src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/%1$s"/>';
 			$confirmationIndicator = function($recipient) use ($icon) {
-				if (is_null($recipient['key'])) return __('N/A');
+				if (empty($recipient['key'])) return __('N/A');
 				return sprintf($icon, $recipient['confirmed'] == 'Y'? 'iconTick.png' : 'iconCross.png');
 			};
 
@@ -257,7 +257,7 @@ else {
 										$col->addContent($confirmationIndicator($studentReceipt));
 										$col->onlyIf($sender == true && !empty($studentReceipt) && $studentReceipt['confirmed'] == 'N')
 											->addCheckbox('gibbonMessengerReceiptIDs[]')
-											->setValue($studentReceipt['gibbonMessengerReceiptID'])
+											->setValue($studentReceipt['gibbonMessengerReceiptID'] ?? '')
                                             ->setClass('')
                                             ->alignLeft();
 
