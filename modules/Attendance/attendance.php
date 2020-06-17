@@ -280,7 +280,7 @@ if (isset($_SESSION[$guid]["username"])) {
                 // Attendance not taken
                 $row['today'] = ($resultLog->rowCount() < 1) ? 'not taken' : 'taken';
                 $row['in'] = ($resultLog->rowCount() < 1) ? "" : ($log["total"] - $log["absent"]);
-                $row['out'] = $log["absent"];
+                $row['out'] = $log["absent"] ?? '';
 
                 $attendanceByRollGroup[] = $row;
             }
@@ -422,7 +422,7 @@ if (isset($_SESSION[$guid]["username"])) {
                     $row['today'] = 'not timetabled';
                 }
                 $row['in'] = ($resultLog->rowCount() < 1) ? "" : ($log["total"] - $log["absent"]);
-                $row['out'] = $log["absent"];
+                $row['out'] = $log["absent"] ?? '';
 
                 $attendanceByCourseClass[] = $row;
             }
