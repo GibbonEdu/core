@@ -280,7 +280,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
             ->description(__('Complete'))
             ->addClass('align-middle reportCriteria')
             ->setLabelClass('inline-block pt-2 pb-1 px-2 text-base align-middle')
-            ->checked($reportingProgress['status'] == 'Complete')
+            ->checked($reportingProgress && $reportingProgress['status'] == 'Complete')
             ->readonly(!$canWriteReport)
             ->setDisabled(!$canWriteReport);
 
