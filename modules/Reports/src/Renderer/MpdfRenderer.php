@@ -153,7 +153,7 @@ class MpdfRenderer implements ReportRendererInterface
     protected function renderSectionToHTML(ReportSection &$section, ReportData &$reportData)
     {
         $data = $reportData->getData(array_keys($section->sources));
-        $data = array_merge($data, $this->template->getData(), $section->getData());
+        $data = array_merge($data, $this->template->getData(), $section->getData(), ['stylesheet' => '']);
         
         // Render .twig templates using Twig
         if (stripos($section->template, '.twig') !== false) {
@@ -223,7 +223,6 @@ class MpdfRenderer implements ReportRendererInterface
             'basePath' => $this->absolutePath,
             'assetPath' => $this->absolutePath.$this->customAssetPath,
             'isDraft' => $this->template->getIsDraft(),
-            'stylesheet' => ''
         ]);
     }
 
@@ -240,7 +239,7 @@ class MpdfRenderer implements ReportRendererInterface
         
         foreach ($this->headers as $index => $header) {
             $data = $reportData->getData(array_keys($header->sources));
-            $data = array_merge($data, $this->template->getData(), $header->getData());
+            $data = array_merge($data, $this->template->getData(), $header->getData(), ['stylesheet' => '']);
 
             $this->pdf->DefHTMLHeaderByName('html_header'.$index, $this->twig->render($header->template, $data));
         }
@@ -250,7 +249,7 @@ class MpdfRenderer implements ReportRendererInterface
 
         foreach ($this->footers as $index => $footer) {
             $data = $reportData->getData(array_keys($footer->sources));
-            $data = array_merge($data, $this->template->getData(), $footer->getData());
+            $data = array_merge($data, $this->template->getData(), $footer->getData(), ['stylesheet' => '']);
 
             $this->pdf->DefHTMLFooterByName('html_footer'.$index, $this->twig->render($footer->template, $data));
         }
