@@ -134,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         $table->addColumn('status', __('Status'))
             ->description(__('Progress'))
             ->format(function ($investigations) use ($contributionsGateway, &$page) {
-                $output = $investigations['status'];
+                $output = __($investigations['status']);
                 if ($investigations['status'] == 'Investigation') {
                     $completion = $contributionsGateway->getInvestigationCompletion($investigations['gibbonINInvestigationID']);
                     $output .= $page->fetchFromTemplate('ui/progress.twig.html', [

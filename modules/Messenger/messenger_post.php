@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Contracts\Comms\SMS;
 use Gibbon\Services\Format;
+use Gibbon\Domain\User\RoleGateway;
 
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -59,13 +60,11 @@ else {
 				$addReturnMessage=__("Your request failed due to an attachment error.") ;
 			}
 			else if ($addReturn=="success0") {
-				$addReturnMessage=__("Your request was completed successfully: not all messages may arrive at their destination, but an attempt has been made to get them all out.") ;
-				if (is_numeric($_GET["emailCount"])) {
-					$addReturnMessage.=" " . sprintf(__('%1$s email(s) were dispatched.'), $_GET["emailCount"]) ;
-				}
-				if (is_numeric($_GET["smsCount"]) AND is_numeric($_GET["smsBatchCount"])) {
-					$addReturnMessage.=" " . sprintf(__('%1$s SMS(es) were dispatched in %2$s batch(es).'), $_GET["smsCount"], $_GET["smsBatchCount"]) ;
-				}
+                if (!empty($_GET['notification']) && $_GET['notification'] == 'Y') {
+                    $addReturnMessage = __("Your message has been dispatched to a team of highly trained gibbons for delivery: not all messages may arrive at their destination, but an attempt has been made to get them all out. You'll receive a notification once all messages have been sent.");
+                } else {
+                    $addReturnMessage = __('Your message has been posted successfully.');
+                }
 
 				$class="success" ;
 			}
@@ -74,7 +73,7 @@ else {
 			print "</div>" ;
 		}
 
-		$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/messenger_postProcess.php');
+		$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/messenger_postPreProcess.php');
 		$form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
 		//DELIVERY MODE
@@ -285,11 +284,20 @@ else {
 
 			$form->toggleVisibilityByClass('role')->onRadio('role')->when('Y');
 
-			$data = array();
-			$sql = 'SELECT gibbonRoleID AS value, CONCAT(name," (",category,")") AS name FROM gibbonRole ORDER BY name';
-			$row = $form->addRow()->addClass('role hiddenReveal');
+
+                        $arrRoles = array();
+                        $roleGateway = $container->get(RoleGateway::class);
+                        $criteria =  $roleGateway->newQueryCriteria(true)
+                            ->sortBy(['name']);
+                        $roles = $roleGateway->queryRoles($criteria);
+
+                        foreach ($roles AS $role) {
+                            $arrRoles[$role['gibbonRoleID']] = __($role['name'])." (".__($role['category']).")";
+                        }
+
+                        $row = $form->addRow()->addClass('role hiddenReveal');
 		        $row->addLabel('roles[]', __('Select Roles'));
-		        $row->addSelect('roles[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->placeholder();
+		        $row->addSelect('roles[]')->fromArray($arrRoles)->selectMultiple()->setSize(6)->required()->placeholder();
 
 			//Role Category
 			$row = $form->addRow();
@@ -496,6 +504,14 @@ else {
 			$row = $form->addRow()->addClass('applicants hiddenReveal');
 				$row->addLabel('applicantList[]', __('Select Years'));
 				$row->addSelect('applicantList[]')->fromQuery($pdo, $sql)->selectMultiple()->setSize(6)->required();
+
+			$row = $form->addRow()->addClass('applicants hiddenReveal');
+		        $row->addLabel('applicantsStudents', __('Include Students?'));
+				$row->addYesNo('applicantsStudents')->selected($defaultSendStudents);
+
+			$row = $form->addRow()->addClass('applicants hiddenReveal');
+		        $row->addLabel('applicantsParents', __('Include Parents?'));
+				$row->addYesNo('applicantsParents')->selected($defaultSendParents);
         }
 
         // Houses

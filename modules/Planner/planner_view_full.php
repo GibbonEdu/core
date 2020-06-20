@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\View\View;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
@@ -197,6 +198,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                     }
                     $params['subView'] = $subView;
                     $paramsVar = '&' . http_build_query($params); // for backward compatibile uses below (should be get rid of)
+
+                    $roleCategory = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
 
                     $page->breadcrumbs
                         ->add(__('Planner for {classDesc}', [
@@ -471,7 +474,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             }
                         if ($row['description'] != '') {
                             echo '<tr>';
-                            echo "<td style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top' colspan=3>";
+                            echo "<td class='unit-block text-base' style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top' colspan=3>";
                             echo $row['description'];
                             echo '</td>';
                             echo '</tr>';
@@ -480,7 +483,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             echo '<tr>';
                             echo "<td style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top' colspan=3>";
                             if ($row['role'] == 'Teacher' and $teacher == true) {
-                                echo "<div class='odd' style='padding: 5px; margin-top: 0px; text-align: right; border-bottom: 1px solid #666; border-top: 1px solid #666'>";
+                                echo "<div style='padding: 12px 5px; margin-top: 0px; text-align: right; border-bottom: 1px solid #666; border-top: 1px solid #666'>";
                                 echo '<i>'.__('Smart Blocks').'</i>: ';
                                 if ($resultBlocks->rowCount() > 0) {
                                     echo "<a class='active' href='#' id='viewBlocks'>".__('View')."</a> | <a href='#' id='editBlocks'>".__('Edit Blocks').'</a> | ';
@@ -555,56 +558,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 								}
                                 echo "<div id='smartView' class='hiddenReveal'>";
                                 echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/planner_view_full_smartProcess.php'>";
+                                $templateView = $container->get(View::class);
                                 $blockCount = 0;
-                                while ($rowBlocksView = $resultBlocksView->fetch()) {
-                                    if ($rowBlocksView['title'] != '' or $rowBlocksView['type'] != '' or $rowBlocksView['length'] != '') {
-                                        echo "<div class='blockView' style='min-height: 35px'>";
-                                        if ($rowBlocksView['type'] != '' or $rowBlocksView['length'] != '') {
-                                            $width = '69%';
-                                        } else {
-                                            $width = '100%';
-                                        }
-                                        echo "<div style='padding-left: 3px; width: $width; float: left;'>";
-                                        if ($rowBlocksView['title'] != '') {
-                                            echo "<h5 style='padding-bottom: 2px'>".$rowBlocksView['title'].'</h5>';
-                                        }
-                                        echo '</div>';
-                                        if ($rowBlocksView['type'] != '' or $rowBlocksView['length'] != '') {
-                                            echo "<div style='float: right; width: 29%; padding-right: 3px; height: 35px'>";
-                                            echo "<div style='text-align: right; font-size: 85%; font-style: italic; margin-top: 2px; border-bottom: 1px solid #ddd; height: 21px; padding-top: 4px'>";
-                                            if ($rowBlocksView['type'] != '') {
-                                                echo $rowBlocksView['type'];
-                                                if ($rowBlocksView['length'] != '') {
-                                                    echo ' | ';
-                                                }
-                                            }
-                                            if ($rowBlocksView['length'] != '') {
-                                                echo $rowBlocksView['length'].' min';
-                                            }
-                                            echo '</div>';
-                                            echo '</div>';
-                                        }
-                                        echo '</div>';
-                                    }
-                                    if ($rowBlocksView['contents'] != '') {
-                                        echo "<div style='padding: 15px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'>".$rowBlocksView['contents'].'</div>';
-                                    }
-                                    if ($rowBlocksView['teachersNotes'] != '' and ($highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses') and ($row['role'] == 'Teacher' or $row['role'] == 'Assistant' or $row['role'] == 'Technician')) {
-                                        echo "<div class='teachersNotes' style='background-color: #F6CECB; display: none; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><i>".__("Teacher's Notes").':</i> '.$rowBlocksView['teachersNotes'].'</div>';
-                                    }
+                                $blocks = $resultBlocksView->fetchAll();
+                                foreach ($blocks as $block) {
                                     $checked = '';
-                                    if ($rowBlocksView['complete'] == 'Y') {
+                                    if ($block['complete'] == 'Y') {
                                         $checked = 'checked';
                                     }
-                                    if ($row['role'] == 'Teacher' and $teacher == true) {
-                                        echo "<div style='text-align: right; font-weight: bold; margin-top: 20px'>".__('Complete?')." <input name='complete$blockCount' style='margin-right: 2px' type='checkbox' $checked></div>";
-                                    } else {
-                                        echo "<div style='text-align: right; font-weight: bold; margin-top: 20px'>".__('Complete?')." <input disabled name='complete$blockCount' style='margin-right: 2px' type='checkbox' $checked></div>";
-                                    }
-                                    echo "<input type='hidden' name='gibbonUnitClassBlockID[]' value='".$rowBlocksView['gibbonUnitClassBlockID']."'>";
-
-                                    echo "<div style='padding: 3px 3px 3px 0px ; width: 100%; text-align: justify; border-bottom: 1px solid #666' ></div>";
-                                    ++$blockCount;
+                                    echo $templateView->fetchFromTemplate('ui/unitBlock.twig.html', $block + [
+                                        'roleCategory' => $roleCategory, 'gibbonPersonID' => $_SESSION[$guid]['username'] ?? '', 'blockCount' => $blockCount, 'checked' => $checked, 'role' => $row['role'], 'teacher' => $teacher ?? ''
+                                    ]);
+                                    $blockCount++;
                                 }
                                 if ($row['role'] == 'Teacher' and $teacher == true) {
                                     echo "<div style='text-align: right; margin-top: 3px'>";
@@ -612,7 +577,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     echo "<input type='hidden' name='params' value='$paramsVar'>";
                                     echo "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>";
                                     echo "<input type='hidden' name='address' value='".$_SESSION[$guid]['address']."'>";
-                                    echo "<input type='submit' value='Submit'>";
+                                    echo "<input type='submit' style='margin: 0 10px 10px 0' value='Submit'>";
                                     echo '</div>';
                                 }
                                 echo '</form>';
@@ -1146,7 +1111,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         echo '</tr>';
 
                         if ($row['role'] == 'Student') { //MY HOMEWORK
-                            $roleCategory = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
                             $myHomeworkFail = false;
                             try {
                                 if ($roleCategory != 'Student') { //Parent
@@ -1411,12 +1375,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                           echo '<tr>';
                           echo "<td style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top; max-width: 752px!important;' colspan=3>";
 
-                          echo "<div style='margin: 0px' class='linkTop'>";
-                          echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner_view_full.php$paramsVar#chat'>".__('Refresh')."<img style='margin-left: 5px' title='".__('Refresh')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/refresh.png'/></a> <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full_post.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&search=".$gibbonPersonID."'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a> ";
-                          echo '</div>';
+                              echo "<div style='margin: 0px' class='linkTop'>";
+                              echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner_view_full.php$paramsVar#chat'>".__('Refresh')."<img style='margin-left: 5px' title='".__('Refresh')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/refresh.png'/></a> <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full_post.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&search=".$gibbonPersonID."'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a> ";
+                              echo '</div>';
 
-  						            //Get discussion
-  						            echo getThread($guid, $connection2, $gibbonPlannerEntryID, null, 0, null, $viewBy, $subView, $date, @$class, $gibbonCourseClassID, $gibbonPersonID, $row['role']);
+                              //Get discussion
+                              echo getThread($guid, $connection2, $gibbonPlannerEntryID, null, 0, null, $viewBy, $subView, $date, @$class, $gibbonCourseClassID, $gibbonPersonID, $row['role']);
 
                           echo '</td>';
                           echo '</tr>';
@@ -1599,7 +1563,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 $_SESSION[$guid]['sidebarExtra'] .= "<div style='padding-top: 5px'><b>".Format::name($rowClassGroup['title'], $rowClassGroup['preferredName'], $rowClassGroup['surname'], 'Staff').'</b><br/>';
                             }
 
-                            $_SESSION[$guid]['sidebarExtra'] .= '<i>'.$rowClassGroup['role'].'</i><br/><br/></div>';
+                            $_SESSION[$guid]['sidebarExtra'] .= '<i>'.__($rowClassGroup['role']).'</i><br/><br/></div>';
                             $_SESSION[$guid]['sidebarExtra'] .= '</td>';
 
                             if ($count % $columns == ($columns - 1)) {

@@ -18,6 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
+use Gibbon\Domain\Staff\StaffGateway;
+use Gibbon\Comms\NotificationEvent;
 
 include '../../gibbon.php';
 
@@ -364,6 +366,27 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                         $sql = 'UNLOCK TABLES';
                         $result = $connection2->query($sql);
                     } catch (PDOException $e) {
+                    }
+
+                    // Create a staff record for this new user
+                    $staffRecord = $_POST['staffRecord'] ?? 'N';
+                    if ($staffRecord == 'Y' && !empty($AI)) {
+                        $inserted = $container->get(StaffGateway::class)->insert([
+                            'gibbonPersonID' => $AI,
+                            'jobTitle'       => $_POST['jobTitle'] ?? '',
+                            'type'           => $_POST['staffType'] ?? '',
+                        ]);
+                        if ($inserted) {
+                            // Raise a new notification event
+                            $event = new NotificationEvent('Staff', 'New Staff');
+                            $event->setNotificationText(__('A new staff member has been added: {name} ({username}) {jobTitle}', [
+                                'name' => Format::name('', $preferredName, $surname, 'Staff', false, true),
+                                'username' => $username,
+                                'jobTitle' => $_POST['jobTitle'] ?? '',
+                            ]));
+                            $event->setActionLink('/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$AI.'&allStaff=&search=');
+                            $event->sendNotifications($pdo, $gibbon->session);
+                        }
                     }
 
                     if ($imageFail) {

@@ -26,7 +26,7 @@ use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Module\Reports\Domain\ReportingCriteriaGateway;
 
 /**
- * CodeEditor
+ * ReportingSidebarForm
  *
  * @version v19
  * @since   v19

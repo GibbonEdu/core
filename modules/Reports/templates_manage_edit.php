@@ -21,6 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
+use Gibbon\Module\Reports\Domain\ReportTemplateFontGateway;
 use Gibbon\Module\Reports\Domain\ReportTemplateSectionGateway;
 use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 use Gibbon\Tables\View\GridView;
@@ -49,6 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
 
     $gibbonReportTemplateID = $_GET['gibbonReportTemplateID'] ?? '';
     $templateGateway = $container->get(ReportTemplateGateway::class);
+    $templateFontGateway = $container->get(ReportTemplateFontGateway::class);
     $templateSectionGateway = $container->get(ReportTemplateSectionGateway::class);
     $prototypeSectionGateway = $container->get(ReportPrototypeSectionGateway::class);
 
@@ -58,6 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
     }
 
     $values = $templateGateway->getByID($gibbonReportTemplateID);
+    $config = json_decode($values['config'] ?? '', true);
 
     if (empty($values)) {
         $page->addError(__('The specified record cannot be found.'));
@@ -83,6 +86,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
     $row = $form->addRow();
         $row->addLabel('stylesheet', __('Stylesheet'));
         $row->addSelect('stylesheet')->fromResults($stylesheets)->placeholder();
+
+    $fontFamilies = $templateFontGateway->selectFontFamilies();
+    $row = $form->addRow();
+        $row->addLabel('fonts', __('Fonts'));
+        $row->addSelect('fonts')
+            ->fromResults($fontFamilies)
+            ->selectMultiple()
+            ->setSize(4)
+            ->selected($config['fonts'] ?? []);
+
+    $flags = ['000' => __('TCPDF Renderer - Faster, Limited HTML'), '001' => __('mPDF Renderer - Slower, Better HTML Support')];
+    $row = $form->addRow();
+        $row->addLabel('flags', __('Renderer'));
+        $row->addSelect('flags')->fromArray($flags)->required();
 
     $form->addRow()->addHeading(__('Document Setup'));
 

@@ -115,6 +115,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 
     echo $form->getOutput();
 
+    // Stop outputting if the form hasn't been submitted yet
+    if (empty($group) || empty($sort)) {
+        return;
+    }
+
     // Get attendance codes
     try {
         if (!empty($gibbonAttendanceCodeID)) {
@@ -275,7 +280,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                 $href= $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_summary_byDate.php&dateStart='.dateConvertBack($guid, $dateStart).'&dateEnd='.dateConvertBack($guid, $dateEnd).'&gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonRollGroupID='.$gibbonRollGroupID.'&group=' . $group . '&sort=' . $sort;
 
                 for( $i = 0; $i < count($attendanceCodes['In']); $i++ ) {
-                    echo '<th class="'.( $i == 0? 'verticalHeader columnDivider' : 'verticalHeader').'" title="'.$attendanceCodes['In'][$i]['scope'].'">';
+                    echo '<th class="'.( $i == 0? 'verticalHeader columnDivider' : 'verticalHeader').'" title="'.__($attendanceCodes['In'][$i]['scope']).'">';
                         echo '<a class="verticalText" href="'.$href.'&gibbonAttendanceCodeID='.$attendanceCodes['In'][$i]['gibbonAttendanceCodeID'].'">';
                         echo __($attendanceCodes['In'][$i]['name']);
                         echo '</a>';
@@ -283,7 +288,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                 }
 
                 for( $i = 0; $i < count($attendanceCodes['Out']); $i++ ) {
-                    echo '<th class="'.( $i == 0? 'verticalHeader columnDivider' : 'verticalHeader').'" title="'.$attendanceCodes['Out'][$i]['scope'].'">';
+                    echo '<th class="'.( $i == 0? 'verticalHeader columnDivider' : 'verticalHeader').'" title="'.__($attendanceCodes['Out'][$i]['scope']).'">';
                         echo '<a class="verticalText" href="'.$href.'&gibbonAttendanceCodeID='.$attendanceCodes['Out'][$i]['gibbonAttendanceCodeID'].'">';
                         echo __($attendanceCodes['Out'][$i]['name']);
                         echo '</a>';

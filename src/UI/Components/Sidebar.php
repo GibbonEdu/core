@@ -131,6 +131,7 @@ class Sidebar implements OutputableInterface
                         ->required()
                         ->maxLength(50)
                         ->setClass('fullWidth')
+                        ->setAria('label', __('Username or email'))
                         ->placeholder(__('Username or email'))
                         ->addValidationOption('onlyOnSubmit: true');
 
@@ -140,6 +141,7 @@ class Sidebar implements OutputableInterface
                         ->required()
                         ->maxLength(30)
                         ->setClass('fullWidth')
+                        ->setAria('label', __('Password'))
                         ->placeholder(__('Password'))
                         ->addValidationOption('onlyOnSubmit: true');
 
@@ -147,6 +149,7 @@ class Sidebar implements OutputableInterface
                     $row->addContent(sprintf($loginIcon, 'planner', __('School Year')));
                     $row->addSelectSchoolYear('gibbonSchoolYearID')
                         ->setClass('fullWidth')
+                        ->setAria('label', __('School Year'))
                         ->placeholder(null)
                         ->selected($this->session->get('gibbonSchoolYearID'));
 
@@ -154,6 +157,7 @@ class Sidebar implements OutputableInterface
                     $row->addContent(sprintf($loginIcon, 'language', __('Language')));
                     $row->addSelectI18n('gibboni18nID')
                         ->setClass('fullWidth')
+                        ->setAria('label', __('Language'))
                         ->placeholder(null)
                         ->selected($this->session->get('i18n')['gibboni18nID']);
 
@@ -263,7 +267,7 @@ class Sidebar implements OutputableInterface
                                 echo "<td style='font-size: 95%; letter-spacing: 85%;'>";
                                 //Image
                                 $style = "style='width: 45px; height: 60px; float: right; margin-left: 6px; border: 1px solid black'";
-                                if ($message['image_240'] == '' or file_exists($this->session->get('absolutePath').'/'.$message['photo']) == false) {
+                                if (empty($message['image_240']) or (!empty($message['photo']) and !file_exists($this->session->get('absolutePath').'/'.$message['photo']))) {
                                     echo "<img $style  src='".$this->session->get('absoluteURL').'/themes/'.$this->session->get('gibbonThemeName')."/img/anonymous_75.jpg'/>";
                                 } else {
                                     echo "<img $style src='".$this->session->get('absoluteURL').'/'.$message['image_240']."'/>";
@@ -571,7 +575,7 @@ class Sidebar implements OutputableInterface
         }
 
         //Show tag cloud
-        if ($this->session->get('address') == '' and isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php')) {
+        if ($this->session->get('address') == '' and isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php') && !function_exists('makeBlock')) {
             include_once './modules/Planner/moduleFunctions.php';
             echo '<div class="column-no-break">';
             echo "<h2 class='sidebar'>";

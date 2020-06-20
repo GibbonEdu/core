@@ -29,14 +29,9 @@ config:
         default: N
 -->#}
 {{- stylesheet ? include(stylesheet) -}}
-<style>
-.footer {
-    font-size: 9.5pt;
-    line-height:4.2;
-}
-</style><table cellpadding="2" style="background-color:#ffffff; height: 12mm;">
+<table class="w-full table" cellpadding="2" cellspacing="0" style="background-color:#ffffff; height: 12mm;">
     <tr>
-        <td class="footer border-left border-top border-bottom" style="width:15%;">
+        <td class="footer border-left border-top border-bottom" style="width:15%;font-size: 9.5pt;line-height:4.2;">
             &nbsp; <b>{{ __('Signature') }}:</b>
         </td> 
         <td class="border-right border-top border-bottom" style="width:30%; height: 12mm; line-height: 1;">
@@ -46,10 +41,10 @@ config:
                 <img src="{{ basePath }}/{{ config.signatureImage }}" style="max-height: 12mm; width: auto" width="{{ config.signatureWidth|default('240') }}" height="{{ config.signatureHeight|default('80') }}"/>
             {% endif %}
         </td> 
-        <td class="footer border" style="width:30%;">
+        <td class="footer border" style="width:30%;font-size: 9.5pt;line-height:4.2;">
             &nbsp; {{ config.signatureTitle|default("Principal") }}
         </td>
-        <td class="footer border" style="width:25%;">
+        <td class="footer border" style="width:25%;font-size: 9.5pt;line-height:4.2;">
             &nbsp; {{ reportingCycle.dateEnd|date("j F Y") }} 
         </td>
     </tr>

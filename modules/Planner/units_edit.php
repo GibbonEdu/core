@@ -294,7 +294,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                             $ext .= "'.".$rowExt['extension']."',";
                         }
                         $row = $form->addRow();
-                            $row->addLabel('file', __('Downloadable Unit Outline'))->description("Available to most users.");
+                            $row->addLabel('file', __('Downloadable Unit Outline'))->description(__("Available to most users."));
                             $row->addFileUpload('file')
                                 ->accepts(substr($ext, 0, -2))
                                 ->setAttachment('attachment', $_SESSION[$guid]['absoluteURL'], $values['attachment']);
@@ -357,13 +357,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                             "Public Domain" => __("Public Domain")
                         );
                         $row = $form->addRow();
-                            $row->addLabel('license', 'License')->description(__('Under what conditions can this work be reused?'));
+                            $row->addLabel('license', __('License'))->description(__('Under what conditions can this work be reused?'));
                             $row->addSelect('license')->fromArray($licences)->placeholder();
 
                         $makeUnitsPublic = getSettingByScope($connection2, 'Planner', 'makeUnitsPublic');
                         if ($makeUnitsPublic == 'Y') {
                             $row = $form->addRow();
-                                $row->addLabel('sharedPublic', __('Shared Publically'))->description(__('Share this unit via the public listing of units? Useful for building MOOCS.'));
+                                $row->addLabel('sharedPublic', __('Shared Publicly'))->description(__('Share this unit via the public listing of units? Useful for building MOOCS.'));
                                 $row->addYesNo('sharedPublic')->required();
                         }
 

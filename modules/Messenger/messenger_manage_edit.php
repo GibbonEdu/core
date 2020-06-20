@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Domain\User\RoleGateway;
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage_edit.php")==FALSE) {
 	//Acess denied
@@ -232,11 +233,20 @@ else {
 
 					$form->toggleVisibilityByClass('role')->onRadio('role')->when('Y');
 
-					$data = array();
-					$sql = 'SELECT gibbonRoleID AS value, CONCAT(name," (",category,")") AS name FROM gibbonRole ORDER BY name';
+					$roleGateway = $container->get(RoleGateway::class);
+					// CRITERIA
+					$criteria = $roleGateway->newQueryCriteria()
+						->sortBy(['gibbonRole.name']);
+
+					$arrRoles = array();
+					$roles = $roleGateway->queryRoles($criteria);
+
+					foreach ($roles AS $role) {
+						$arrRoles[$role['gibbonRoleID']] = __($role['name'])." (".__($role['category']).")";
+					}                                       
 					$row = $form->addRow()->addClass('role hiddenReveal');
 						$row->addLabel('roles[]', __('Select Roles'));
-						$row->addSelect('roles[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->placeholder()->selected($selected);
+						$row->addSelect('roles[]')->fromArray($arrRoles)->selectMultiple()->setSize(6)->required()->placeholder()->selected($selected);
 
 					//Role Category
 					$selected = array_reduce($targets, function($group, $item) {

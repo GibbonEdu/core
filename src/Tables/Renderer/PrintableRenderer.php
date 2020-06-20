@@ -43,6 +43,7 @@ class PrintableRenderer extends SimpleRenderer implements RendererInterface
     {
         $table->setHeader([]);
         $table->addHeaderAction('print', __('Print'))
+            ->setURL('#')
             ->onClick('javascript:window.print(); return false;')
             ->displayLabel();
 

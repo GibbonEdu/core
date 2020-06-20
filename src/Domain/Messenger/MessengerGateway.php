@@ -43,4 +43,28 @@ class MessengerGateway extends QueryableGateway
 
         return $this->db()->selectOne($sql);
     }
+
+    public function getSendingMessages()
+    {
+        $query = $this
+            ->newSelect()
+            ->from('gibbonLog')
+            ->cols(['gibbonLog.gibbonLogID', 'gibbonLog.serialisedArray'])
+            ->where("gibbonLog.title='Background Process - MessageProcess'")
+            ->where("(gibbonLog.serialisedArray LIKE '%s:7:\"Running\";%' OR gibbonLog.serialisedArray LIKE '%s:7:\"Ready\";%')")
+            ->orderBy(['gibbonLog.timestamp DESC']);
+
+        $logs = $this->runSelect($query)->fetchAll();
+
+        return array_filter(array_reduce($logs, function ($group, $item) {
+            $item['data'] = unserialize($item['serialisedArray']) ?? [];
+            $gibbonMessengerID =  str_pad(($item['data']['data'][0] ?? 0), 12, '0', STR_PAD_LEFT);
+
+            if (!empty($gibbonMessengerID)) {
+                $group[$gibbonMessengerID] = $item['gibbonLogID'];
+            }
+
+            return $group;
+        }, []));
+    }
 }

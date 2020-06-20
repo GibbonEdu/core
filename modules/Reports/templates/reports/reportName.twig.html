@@ -13,7 +13,7 @@ config:
 
 {{- stylesheet ? include(stylesheet) -}}
 
-<table>
+<table class="w-full table" cellspacing="0" cellpadding="0">
     <tr>
         <td colspan=3 style="text-align:center; line-height: 1.4; font-size: {{ config.textSize|default(18) }}pt; font-weight: bold; color: #444444;">
             {{- report.name -}} 

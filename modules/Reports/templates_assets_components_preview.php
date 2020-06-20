@@ -25,6 +25,7 @@ use Gibbon\Module\Reports\ReportTemplate;
 use Gibbon\Module\Reports\ReportBuilder;
 use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
+use Gibbon\Module\Reports\Renderer\HtmlRenderer;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_components_preview.php') == false) {
     // Access denied
@@ -71,11 +72,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
     $reports = $reportBuilder->buildReportMock($template);
 
     // Render
-    $renderer = new ReportRenderer($template, $twig);
+    $renderer = $container->get(HtmlRenderer::class);
 
     if (isset($page)) {
         echo $twig->render('preview.twig.html', $prototypeSection + [
-            'pages' => $renderer->renderToHTML($reports),
+            'pages' => $renderer->render($template, $reports),
             'prototype' => true,
             'marginX' => '10',
             'marginY' => '5',

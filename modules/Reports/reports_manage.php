@@ -93,6 +93,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage.php
             return $report['yearGroups'];
         });
 
+    $table->addColumn('accessDate', __('Go Live'))
+        ->format(Format::using('dateTimeReadable', 'accessDate'));
+
     $table->addActionColumn()
         ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
         ->addParam('gibbonReportID')

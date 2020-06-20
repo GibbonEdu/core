@@ -229,6 +229,7 @@ $sessionDuration = -1;
 if ($isLoggedIn) {
     $sessionDuration = $session->get('sessionDuration');
     $sessionDuration = max(intval($sessionDuration), 1200);
+    $sessionDuration *= 1000; // Seconds to miliseconds
 }
 
 /**
@@ -257,6 +258,7 @@ if (!empty($_GET['i18n']) && $gibbon->locale->getLocale() != $_GET['i18n']) {
         setLanguageSession($guid, $result, false);
         $gibbon->locale->setLocale($_GET['i18n']);
         $gibbon->locale->setTextDomain($pdo);
+        $localeCode = str_replace('_', '-', $gibbon->locale->getLocale());
         $cacheLoad = true;
     }
 }
@@ -280,8 +282,11 @@ $javascriptConfig = [
             'valid_elements' => getSettingByScope($connection2, 'System', 'allowableHTML'),
         ],
         'sessionTimeout' => [
-            'sessionDuration' => $sessionDuration,
             'message' => __('Your session is about to expire: you will be logged out shortly.'),
+            'logOutBtnText' => __('Log Out Now'),
+            'sessionDuration' => $sessionDuration,
+            'stayConnectedBtnText' => __('Stay Connected'),
+            'titleText' => __('Session Timetout'),
         ]
     ],
 ];
@@ -309,7 +314,7 @@ $page->scripts->addMultiple([
     'jquery-latex'    => 'lib/jquery-jslatex/jquery.jslatex.js',
     'jquery-form'     => 'lib/jquery-form/jquery.form.js',
     'jquery-autosize' => 'lib/jquery-autosize/jquery.autosize.min.js',
-    'jquery-timeout'  => 'lib/jquery-sessionTimeout/jquery.sessionTimeout.min.js',
+    'session-timeout' => 'lib/session-timeout/dist/session-timeout.js',
     'jquery-token'    => 'lib/jquery-tokeninput/src/jquery.tokeninput.js',
 ], ['context' => 'foot']);
 
@@ -499,7 +504,7 @@ if ($isLoggedIn && !$upgrade) {
     $messageWallRefreshed = $gibbon->session->get('messageWallRefreshed', 0);
 
     $timeDifference = $messageWallRefreshed - $messageWallLatestPost;
-    if (!$gibbon->session->exists('messageWallArray') || ($messageWallLatestPost >= $messageWallRefreshed) || ($messageWallRefreshed - time() > 3600)) {
+    if (!$gibbon->session->exists('messageWallArray') || ($messageWallLatestPost >= $messageWallRefreshed) || (time() - $messageWallRefreshed > 3600)) {
         $gibbon->session->set('messageWallArray', getMessages($guid, $connection2, 'array'));
         $gibbon->session->set('messageWallRefreshed', time());
     }
@@ -519,12 +524,14 @@ $page->addData([
     'gibbonThemeName'   => $session->get('gibbonThemeName'),
     'gibbonHouseIDLogo' => $session->get('gibbonHouseIDLogo'),
     'organisationLogo'  => $session->get('organisationLogo'),
+    'organisationName'  => $session->get('organisationName'),
     'minorLinks'        => $header->getMinorLinks($cacheLoad),
     'notificationTray'  => $header->getNotificationTray($cacheLoad),
     'sidebar'           => $showSidebar,
     'version'           => $gibbon->getVersion(),
     'versionName'       => 'v'.$gibbon->getVersion().($session->get('cuttingEdgeCode') == 'Y'? 'dev' : ''),
     'rightToLeft'       => $session->get('i18n')['rtl'] == 'Y',
+    'lang'              => $localeCode,
 ]);
 
 if ($isLoggedIn) {
@@ -566,7 +573,10 @@ if (!$session->has('address')) {
             $options = unserialize(str_replace("'", "\'", $hook['options']));
             $check = getSettingByScope($connection2, $options['toggleSettingScope'], $options['toggleSettingName']);
             if ($check == $options['toggleSettingValue']) { // If its turned on, display it
-                $options['text'] = stripslashes($options['text']);
+                $matches = [];
+                preg_match("/href=\\\'.([^\\\]*)\\\'/", $options['text'], $matches);
+                $options['url'] = $matches[1] ?? '';
+                $options['text'] = stripslashes(strip_tags($options['text']));
                 $templateData['indexHooks'][] = $options;
             }
         }

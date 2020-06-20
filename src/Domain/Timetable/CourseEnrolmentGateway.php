@@ -46,7 +46,7 @@ class CourseEnrolmentGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonCourseClass.gibbonCourseClassID', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.title', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.status', 'gibbonPerson.dateStart', 'gibbonPerson.dateEnd', 'gibbonPerson.email', 'gibbonPerson.privacy', 'gibbonPerson.image_240', 'gibbonPerson.dob', 'gibbonCourseClassPerson.reportable', 'gibbonCourseClassPerson.role', "(CASE WHEN gibbonCourseClassPerson.role NOT LIKE 'Student%' THEN 0 ELSE 1 END) as roleSortOrder", "'Student' as roleCategory", 'gibbonCourse.gibbonYearGroupIDList as yearGroup'
+                'gibbonCourseClassPerson.gibbonCourseClassPersonID', 'gibbonCourseClass.gibbonCourseClassID', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.title', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.status', 'gibbonPerson.dateStart', 'gibbonPerson.dateEnd', 'gibbonPerson.email', 'gibbonPerson.privacy', 'gibbonPerson.image_240', 'gibbonPerson.dob', 'gibbonCourseClassPerson.reportable', 'gibbonCourseClassPerson.role', "(CASE WHEN gibbonCourseClassPerson.role NOT LIKE 'Student%' THEN 0 ELSE 1 END) as roleSortOrder", "'Student' as roleCategory", 'gibbonCourse.gibbonYearGroupIDList as yearGroup'
             ])
             ->innerJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID')
             ->innerJoin('gibbonCourse', 'gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID')
@@ -162,6 +162,25 @@ class CourseEnrolmentGateway extends QueryableGateway
                 WHERE gibbonRollGroup.gibbonRollGroupID=:gibbonRollGroupID 
                 AND gibbonPerson.status='Full' 
                 ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectClassTeachersByStudent($gibbonSchoolYearID, $gibbonPersonIDStudent)
+    {
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent);
+        $sql = "SELECT DISTINCT teacher.gibbonPersonID, teacher.surname, teacher.preferredName, teacher.email 
+                FROM gibbonCourseClassPerson AS studentClass
+                JOIN gibbonCourseClassPerson AS teacherClass ON (studentClass.gibbonCourseClassID=teacherClass.gibbonCourseClassID)
+                JOIN gibbonPerson AS teacher ON (teacherClass.gibbonPersonID=teacher.gibbonPersonID)
+                JOIN gibbonCourseClass ON (studentClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+                WHERE teacher.status='Full' 
+                AND teacherClass.role='Teacher' 
+                AND studentClass.role='Student' 
+                AND studentClass.gibbonPersonID=:gibbonPersonIDStudent 
+                AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID 
+                ORDER BY teacher.preferredName, teacher.surname, teacher.email";
 
         return $this->db()->select($sql, $data);
     }

@@ -175,7 +175,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
                 $form->addHiddenValue('gibbonNotificationEventID', $gibbonNotificationEventID);
 
                 while ($rowSelect = $resultSelect->fetch()) {
-                    $staffMembers[$rowSelect['roleName']][$rowSelect['gibbonPersonID']] = Format::name("", $rowSelect["preferredName"], $rowSelect["surname"], "Staff", true, true);
+                    $staffMembers[__($rowSelect['roleName'])][$rowSelect['gibbonPersonID']] = Format::name("", $rowSelect["preferredName"], $rowSelect["surname"], "Staff", true, true);
                 }
 
                 $row = $form->addRow();

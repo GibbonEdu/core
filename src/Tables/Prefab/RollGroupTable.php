@@ -61,7 +61,7 @@ class RollGroupTable extends DataTable
             $canViewConfidential = false;
         }
 
-        if ($canPrint && isActionAccessible($guid, $connection2, '/modules/Students/report_students_byRollGroup_print.php') == false) {
+        if ($canPrint && isActionAccessible($guid, $connection2, '/modules/Students/report_students_byRollGroup.php') == false) {
             $canPrint = false;
         }
 
@@ -82,9 +82,11 @@ class RollGroupTable extends DataTable
         if ($canPrint) {
             $this->addHeaderAction('print', __('Print'))
                 ->setURL('/report.php')
-                ->addParam('q', '/modules/Students/report_students_byRollGroup_print.php')
+                ->addParam('q', '/modules/Students/report_students_byRollGroup.php')
                 ->addParam('gibbonRollGroupID', $gibbonRollGroupID)
+                ->addParam('format', 'print')
                 ->addParam('view', 'Basic')
+                ->addParam('format', 'print')
                 ->setIcon('print')
                 ->setTarget('_blank')
                 ->directLink()

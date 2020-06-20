@@ -76,11 +76,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
 			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
 			$row = $form->addRow();
-                $row->addLabel('scope', 'Scope');
+                $row->addLabel('scope', __('Scope'));
             if ($highestAction == 'Manage Outcomes_viewEditAll') {
                 $row->addSelect('scope')->fromArray($scopes)->required()->placeholder();
             } elseif ($highestAction == 'Manage Outcomes_viewAllEditLearningArea') {
-                $row->addTextField('scope')->readOnly()->setValue('Learning Area');
+                $row->addSelect('scope')->fromArray($scopes)->required()->readonly()->selected('Learning Area');
 			}
 
 			if ($highestAction == 'Manage Outcomes_viewEditAll') {

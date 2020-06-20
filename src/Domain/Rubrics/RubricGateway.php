@@ -73,4 +73,39 @@ class RubricGateway extends QueryableGateway
         
         return $this->runQuery($query, $criteria);
     }
+
+    public function selectRowsByRubric($gibbonRubricID)
+    {
+        $data = ['gibbonRubricID' => $gibbonRubricID];
+        $sql = "SELECT *, (CASE WHEN gibbonOutcome.name IS NOT NULL THEN gibbonOutcome.name ELSE title END) as title FROM gibbonRubricRow LEFT JOIN gibbonOutcome ON (gibbonRubricRow.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectColumnsByRubric($gibbonRubricID)
+    {
+        $data = ['gibbonRubricID' => $gibbonRubricID];
+        $sql = "SELECT * FROM gibbonRubricColumn WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectCellsByRubric($gibbonRubricID)
+    {
+        $data = ['gibbonRubricID' => $gibbonRubricID];
+        $sql = "SELECT * FROM gibbonRubricCell WHERE gibbonRubricID=:gibbonRubricID";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectGradeScalesByRubric($gibbonRubricID)
+    {
+        $data = ['gibbonRubricID' => $gibbonRubricID];
+        $sql = "SELECT gibbonScaleGrade.gibbonScaleGradeID, gibbonScaleGrade.*, gibbonScale.name FROM gibbonRubricColumn
+        JOIN gibbonScaleGrade ON (gibbonRubricColumn.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID)
+        JOIN gibbonScale ON (gibbonScale.gibbonScaleID=gibbonScaleGrade.gibbonScaleID)
+        WHERE gibbonRubricColumn.gibbonRubricID=:gibbonRubricID";
+
+        return $this->db()->select($sql, $data);
+    }
 }

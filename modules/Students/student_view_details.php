@@ -17,12 +17,16 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\Students\StudentNoteGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Domain\DataSet;
 use Gibbon\Tables\DataTable;
+use Gibbon\Tables\View\GridView;
+use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\Students\StudentNoteGateway;
 use Gibbon\Module\Attendance\StudentHistoryData;
 use Gibbon\Module\Attendance\StudentHistoryView;
+use Gibbon\Domain\Library\LibraryReportGateway;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -79,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
             if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_my')) {
                 if ($gibbonPersonID == $_SESSION[$guid]['gibbonPersonID']) {
                     $skipBrief = true;
-                } else if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief')) {
+                } elseif (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief')) {
                     $highestAction = 'View Student Profile_brief';
                 } else {
                     //Acess denied
@@ -290,8 +294,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID1
                             AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2
                             AND childDataAccess='Y'";
-                    }
-                    else if ($highestAction == 'View Student Profile_my') {
+                    } elseif ($highestAction == 'View Student Profile_my') {
                         $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
                         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d'));
                         $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.* FROM gibbonPerson
@@ -299,8 +302,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID
                             AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full'
                             AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)";
-                    }
-                    else if ($highestAction == 'View Student Profile_fullEditAllNotes' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
+                    } elseif ($highestAction == 'View Student Profile_fullEditAllNotes' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
                         if ($allStudents != 'on') {
                             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d'));
                             $sql = "SELECT * FROM gibbonPerson
@@ -347,7 +349,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     $action = $_GET['action'] ?? '';
 
                     // When viewing left students, they won't have a year group ID
-                    if (empty($row['gibbonYearGroupID'])) $row['gibbonYearGroupID'] = '';
+                    if (empty($row['gibbonYearGroupID'])) {
+                        $row['gibbonYearGroupID'] = '';
+                    }
 
                     if ($subpage == '' and ($hook == '' or $module == '' or $action == '')) {
                         $subpage = 'Overview';
@@ -379,7 +383,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '</h4>';
 
                         //Medical alert!
-                        $alert = getHighestMedicalRisk($guid,  $gibbonPersonID, $connection2);
+                        $alert = getHighestMedicalRisk($guid, $gibbonPersonID, $connection2);
                         if ($alert != false) {
                             $highestLevel = $alert[1];
                             $highestColour = $alert[3];
@@ -605,56 +609,75 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '</table>';
 
                         //Get and display a list of student's teachers
-                        echo '<h4>';
-                        echo __('Teachers Of {student}', ['student' => $row['preferredName']]);
-                        echo '</h4>';
-                        echo '<p>';
-                        echo __('Includes Teachers, Tutors, Educational Assistants and Head of Year.');
-                        echo '</p>';
-                        try {
-                            $dataDetail = array('gibbonPersonID1' => $gibbonPersonID, 'gibbonYearGroupID' => $row['gibbonYearGroupID'], 'gibbonPersonID2' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID3' => $gibbonPersonID, 'gibbonRollGroupID' => $row['gibbonRollGroupID'] ?? '');
-                            $sqlDetail = "
-                                (SELECT DISTINCT teacher.surname, teacher.preferredName, teacher.email FROM gibbonPerson AS teacher JOIN gibbonCourseClassPerson AS teacherClass ON (teacherClass.gibbonPersonID=teacher.gibbonPersonID)  JOIN gibbonCourseClassPerson AS studentClass ON (studentClass.gibbonCourseClassID=teacherClass.gibbonCourseClassID) JOIN gibbonPerson AS student ON (studentClass.gibbonPersonID=student.gibbonPersonID) JOIN gibbonCourseClass ON (studentClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE teacher.status='Full' AND teacherClass.role='Teacher' AND studentClass.role='Student' AND student.gibbonPersonID=:gibbonPersonID1 AND gibbonCourse.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY teacher.preferredName, teacher.surname, teacher.email)
-                                UNION
-                                (SELECT DISTINCT surname, preferredName, email FROM gibbonPerson JOIN gibbonYearGroup ON (gibbonYearGroup.gibbonPersonIDHOY=gibbonPersonID) WHERE status='Full' AND gibbonYearGroupID=:gibbonYearGroupID)
-                                UNION
-                                (SELECT DISTINCT surname, preferredName, email
-                                    FROM gibbonPerson
-                                        JOIN gibbonINAssistant ON (gibbonINAssistant.gibbonPersonIDAssistant=gibbonPerson.gibbonPersonID)
-                                    WHERE status='Full'
-                                        AND gibbonPersonIDStudent=:gibbonPersonID2)
-                                UNION
-                                (SELECT DISTINCT surname, preferredName, email
-                                    FROM gibbonPerson
-                                        JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonPersonIDEA=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDEA2=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDEA3=gibbonPerson.gibbonPersonID)
-                                        JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
-                                        JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-                                    WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                                        AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID3
-                                )
-                                UNION
-                                (SELECT surname, preferredName, email FROM gibbonRollGroup JOIN gibbonPerson ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID) WHERE gibbonRollGroupID=:gibbonRollGroupID)
-                                ORDER BY preferredName, surname, email";
-                            $resultDetail = $connection2->prepare($sqlDetail);
-                            $resultDetail->execute($dataDetail);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
-                        if ($resultDetail->rowCount() < 1) {
-                            echo "<div class='warning'>";
-                            echo __('There are no records to display.');
-                            echo '</div>';
-                        } else {
-                            echo '<ul>';
-                            while ($rowDetail = $resultDetail->fetch()) {
-                                echo '<li>'.htmlPrep(Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false));
-                                if ($rowDetail['email'] != '') {
-                                    echo htmlPrep(' <'.$rowDetail['email'].'>');
-                                }
-                                echo '</li>';
+                        $studentGateway = $container->get(StudentGateway::class);
+                        $staff = $studentGateway->selectAllRelatedUsersByStudent($gibbon->session->get('gibbonSchoolYearID'), $row['gibbonYearGroupID'], $row['gibbonRollGroupID'], $gibbonPersonID)->fetchAll();
+                        $criteria = $studentGateway->newQueryCriteria();
+
+                        if ($staff) {
+                            echo '<h4>';
+                            echo __('Teachers Of {student}', ['student' => $row['preferredName']]);
+                            echo '</h4>';
+                            echo '<p>';
+                            echo __('Includes Teachers, Tutors, Educational Assistants and Head of Year.');
+                            echo '</p>';
+
+                            $table = DataTable::createPaginated('staffView', $criteria);
+                            $table->addMetaData('listOptions', [
+                                'list' => __('List'),
+                                'grid' => __('Grid'),
+                            ]);
+
+                            $view = $_GET['view'] ?? 'grid';
+                            if ($view == 'grid') {
+                                $table->setRenderer(new GridView($container->get('twig')));
+                                $table->getRenderer()->setCriteria($criteria);
+
+                                $table->addMetaData('gridClass', 'rounded-sm bg-gray-100 border');
+                                $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/4 md:w-1/5 my-4 text-center text-xs');
+
+                                $table->addColumn('image_240', __('Photo'))
+                                    ->context('primary')
+                                    ->format(function ($person) {
+                                        $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
+                                        return Format::link($url, Format::userPhoto($person['image_240'], 'sm'));
+                                    });
+
+                                $table->addColumn('fullName', __('Name'))
+                                    ->context('primary')
+                                    ->sortable(['surname', 'preferredName'])
+                                    ->width('20%')
+                                    ->format(function ($person) {
+                                        $text = Format::name('', $person['preferredName'], $person['surname'], 'Staff', false, true);
+                                        $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
+                                        return Format::link($url, $text, ['class' => 'font-bold underline leading-normal']);
+                                    });
+                            } else {
+                                $table->addColumn('fullName', __('Name'))
+                                    ->notSortable()
+                                    ->format(function ($person) {
+                                        return Format::name('', $person['preferredName'], $person['surname'], 'Staff', false, true);
+                                    });
+                                $table->addColumn('email', __('Email'))
+                                    ->notSortable()
+                                    ->format(function ($person) {
+                                        return htmlPrep('<'.$person['email'].'>');
+                                    });
                             }
-                            echo '</ul>';
+
+                            $table->addColumn('context', __('Context'))
+                                ->notSortable()
+                                ->format(function ($person) use ($view) {
+                                    $class = $view == 'grid'? 'unselectable text-xxs italic text-gray-800' : 'unselectable';
+                                    if (!empty($person['classID'])) {
+                                        return Format::link('./index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID='.$person['classID'], __($person['type']), ['class' => $class.' underline']);
+                                    } else {
+                                        return '<span class="'.$class.'">'.__($person['type']).'</span>';
+                                    }
+                                });
+    
+                            echo $table->render(new DataSet($staff));
                         }
+
 
                         //Show timetable
                         echo "<a name='timetable'></a>";
@@ -680,14 +703,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             }
                             $tt = renderTT($guid, $connection2, $gibbonPersonID, $_GET['gibbonTTID'] ?? '', false, $ttDate, '/modules/Students/student_view_details.php', "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents#timetable");
                             if ($tt != false) {
+                                $page->addData('preventOverflow', false);
                                 echo $tt;
                             } else {
                                 echo "<div class='error'>";
                                 echo __('There are no records to display.');
                                 echo '</div>';
                             }
-                        }
-                        else {
+                        } else {
                             echo '<h4>';
                             echo __('Class List');
                             echo '</h4>';
@@ -703,12 +726,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             } catch (PDOException $e) {
                                 echo "<div class='error'>".$e->getMessage().'</div>';
                             }
-                            if ($resultDetail->rowCount() < 1 ) {
+                            if ($resultDetail->rowCount() < 1) {
                                 echo "<div class='error'>";
                                 echo __('There are no records to display.');
                                 echo '</div>';
-                            }
-                            else {
+                            } else {
                                 echo '<ul>';
                                 while ($rowDetail = $resultDetail->fetch()) {
                                     echo '<li>';
@@ -920,10 +942,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '<tr>';
                         echo "<td width: 33%; style='vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Country of Birth').'</span><br/>';
-                        if ($row['countryOfBirth'] != '')
+                        if ($row['countryOfBirth'] != '') {
                             echo $row['countryOfBirth']."<br/>";
-                        if ($row['birthCertificateScan'] != '')
+                        }
+                        if ($row['birthCertificateScan'] != '') {
                             echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['birthCertificateScan']."'>View Birth Certificate</a>";
+                        }
                         echo '</td>';
                         echo "<td style='width: 33%; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Ethnicity').'</span><br/>';
@@ -937,12 +961,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '<tr>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Citizenship 1').'</span><br/>';
-                        if ($row['citizenship1'] != '')
+                        if ($row['citizenship1'] != '') {
                             echo $row['citizenship1']."<br/>";
-                        if ($row['citizenship1Passport'] != '')
+                        }
+                        if ($row['citizenship1Passport'] != '') {
                             echo $row['citizenship1Passport']."<br/>";
-                        if ($row['citizenship1PassportScan'] != '')
+                        }
+                        if ($row['citizenship1PassportScan'] != '') {
                             echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['citizenship1PassportScan']."'>View Passport</a>";
+                        }
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Citizenship 2').'</span><br/>';
@@ -958,10 +985,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         } else {
                             echo "<span style='font-size: 115%; font-weight: bold'>".$_SESSION[$guid]['country'].' '.__('ID Card').'</span><br/>';
                         }
-                        if ($row['nationalIDCardNumber'] != '')
+                        if ($row['nationalIDCardNumber'] != '') {
                             echo $row['nationalIDCardNumber']."<br/>";
-                        if ($row['nationalIDCardScan'] != '')
+                        }
+                        if ($row['nationalIDCardScan'] != '') {
                             echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['nationalIDCardScan']."'>View ID Card</a>";
+                        }
                         echo '</td>';
                         echo '</tr>';
                         echo '<tr>';
@@ -1225,7 +1254,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             }
 
                             if ($count % $columns != 0) {
-                                for ($i = 0;$i < $columns - ($count % $columns);++$i) {
+                                for ($i = 0; $i < $columns - ($count % $columns); ++$i) {
                                     echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'></td>";
                                 }
                                 echo '</tr>';
@@ -1476,23 +1505,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     echo "<table class='smallIntBorder' cellspacing='0' style='width:100%'>";
                                     $count = 0;
                                     $columns = 3;
+                                    $highlightClass = '';
 
                                     while ($rowMember = $resultMember->fetch()) {
                                         if ($count % $columns == 0) {
                                             echo '<tr>';
                                         }
-                                        echo "<td style='width:30%; text-align: left; vertical-align: top'>";
+                                        $highlightClass = $rowMember['status'] != 'Full'? 'error' : '';
+                                        echo "<td style='width:30%; text-align: left; vertical-align: top' class='".$highlightClass."'>";
                                         //User photo
                                         echo getUserPhoto($guid, $rowMember['image_240'], 75);
                                         echo "<div style='padding-top: 5px'><b>";
-                                        $allStudents = '';
-                                        if ($rowMember['gibbonStudentEnrolmentID'] == null)
-                                            $allStudents = '&allStudents=on';
-                                        if ($rowMember['status'] == 'Full') {
-                                            echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowMember['gibbonPersonID'].$allStudents."'>".Format::name('', $rowMember['preferredName'], $rowMember['surname'], 'Student').'</a><br/>';
-                                        } else {
-                                            echo Format::name('', $rowMember['preferredName'], $rowMember['surname'], 'Student').'<br/>';
+
+                                        if ($rowMember['gibbonStudentEnrolmentID'] == null) {
+                                            $allStudents = 'on';
                                         }
+                                        
+                                        echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowMember['gibbonPersonID']."&allStudents=".$allStudents."'>".Format::name('', $rowMember['preferredName'], $rowMember['surname'], 'Student').'</a><br/>';
+
                                         echo "<span style='font-weight: normal; font-style: italic'>".__('Status').': '.$rowMember['status'].'</span>';
                                         echo '</div>';
                                         echo '</td>';
@@ -1503,8 +1533,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         ++$count;
                                     }
 
-                                    for ($i = 0;$i < $columns - ($count % $columns);++$i) {
-                                        echo '<td></td>';
+                                    for ($i = 0; $i < $columns - ($count % $columns); ++$i) {
+                                        echo '<td class="'.$highlightClass.'"></td>';
                                     }
 
                                     if ($count % $columns != 0) {
@@ -1674,7 +1704,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             }
 
                             //Medical alert!
-                            $alert = getHighestMedicalRisk($guid,  $gibbonPersonID, $connection2);
+                            $alert = getHighestMedicalRisk($guid, $gibbonPersonID, $connection2);
                             if ($alert != false) {
                                 $highestLevel = $alert[1];
                                 $highestColour = $alert[3];
@@ -1830,7 +1860,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     echo __('Filter');
                                     echo '</h3>';
 
-                                    $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+                                    $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
                                     $form->setClass('noIntBorder fullWidth');
 
                                     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/student_view_details.php');
@@ -2011,7 +2041,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 echo __('This page displays academic results for a student throughout their school career. Only subjects with published results are shown.');
                                 echo '</p>';
 
-                                $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+                                $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
                                 $form->setClass('noIntBorder fullWidth');
 
                                 $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/student_view_details.php');
@@ -2236,8 +2266,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                         echo "<td>";
                                                         echo ynExpander($guid, $rowEntry['modifiedAssessment']);
                                                         echo '</td>';
-                                                    }
-                                                    else {
+                                                    } else {
                                                         echo "<td class='dull' style='color: #bbb; text-align: center'>";
                                                         echo __('N/A');
                                                         echo '</td>';
@@ -2269,7 +2298,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                         $styleAttainment = "style='color: #390; font-weight: bold; border: 2px solid #390; padding: 2px 4px; background-color: #D4F6DC'";
                                                     }
                                                     echo "<div $styleAttainment>".$rowEntry['attainmentValue'];
-                                                    if ($rowEntry['gibbonRubricIDAttainment'] != '' AND $enableRubrics =='Y') {
+                                                    if ($rowEntry['gibbonRubricIDAttainment'] != '' and $enableRubrics =='Y') {
                                                         echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Markbook/markbook_view_rubric.php&gibbonRubricID='.$rowEntry['gibbonRubricIDAttainment'].'&gibbonCourseClassID='.$rowList['gibbonCourseClassID'].'&gibbonMarkbookColumnID='.$rowEntry['gibbonMarkbookColumnID']."&gibbonPersonID=$gibbonPersonID&mark=FALSE&type=attainment&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='View Rubric' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
                                                     }
                                                     echo '</div>';
@@ -2304,7 +2333,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                             $styleEffort = "style='color: #".$alert['color'].'; font-weight: bold; border: 2px solid #'.$alert['color'].'; padding: 2px 4px; background-color: #'.$alert['colorBG']."'";
                                                         }
                                                         echo "<div $styleEffort>".$rowEntry['effortValue'];
-                                                        if ($rowEntry['gibbonRubricIDEffort'] != '' AND $enableRubrics =='Y') {
+                                                        if ($rowEntry['gibbonRubricIDEffort'] != '' and $enableRubrics =='Y') {
                                                             echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Markbook/markbook_view_rubric.php&gibbonRubricID='.$rowEntry['gibbonRubricIDEffort'].'&gibbonCourseClassID='.$rowList['gibbonCourseClassID'].'&gibbonMarkbookColumnID='.$rowEntry['gibbonMarkbookColumnID']."&gibbonPersonID=$gibbonPersonID&mark=FALSE&type=effort&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='View Rubric' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
                                                         }
                                                         echo '</div>';
@@ -2584,17 +2613,64 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo __('Your request failed because you do not have access to this action.');
                             echo '</div>';
                         } else {
-                            include './modules/Library/moduleFunctions.php';
-
                             //Print borrowing record
-                            $output = getBorrowingRecord($guid, $connection2, $gibbonPersonID);
-                            if ($output == false) {
-                                echo "<div class='error'>";
-                                echo __('Your request failed due to a database error.');
-                                echo '</div>';
-                            } else {
-                                echo $output;
-                            }
+                            $libraryGateway = $container->get(LibraryReportGateway::class);
+                            $criteria = $libraryGateway->newQueryCriteria(true)
+                                ->sortBy('gibbonLibraryItemEvent.timestampOut', 'DESC')
+                                ->filterBy('gibbonPersonID', $gibbonPersonID)
+                                ->fromPOST('lendingLog');
+
+                            $items = $libraryGateway->queryStudentReportData($criteria);
+                            $lendingTable = DataTable::createPaginated('lendingLog', $criteria);
+                            $lendingTable
+                              ->modifyRows(function ($item, $row) {
+                                if ($item['status'] == 'On Loan') {
+                                    return $item['pastDue'] == 'Y' ? $row->addClass('error') : $row;
+                                }
+                                return $row;
+                              });
+                            $lendingTable
+                              ->addExpandableColumn('details')
+                              ->format(function ($item) {
+                                $detailTable = "<table>";
+                                $fields = unserialize($item['fields']);
+                                foreach (unserialize($item['typeFields']) as $typeField) {
+                                    $detailTable .= sprintf('<tr><td><b>%1$s</b></td><td>%2$s</td></tr>', $typeField['name'], $fields[$typeField['name']]);
+                                }
+                                $detailTable .= '</table>';
+                                return $detailTable;
+                              });
+                            $lendingTable
+                              ->addColumn('imageLocation')
+                              ->width('120px')
+                              ->format(function ($item) {
+                                return Format::photo($item['imageLocation'], 75);
+                              });
+                            $lendingTable
+                              ->addColumn('name', __('Name'))
+                              ->description(__('Author/Producer'))
+                              ->format(function ($item) {
+                                return sprintf('<b>%1$s</b><br/>%2$s', $item['name'], Format::small($item['producer']));
+                              });
+                            $lendingTable
+                              ->addColumn('id', __('ID'))
+                              ->format(function ($item) {
+                                return sprintf('<b>%1$s</b>', $item['id']);
+                              });
+                            $lendingTable
+                              ->addColumn('spaceName', __('Location'))
+                              ->format(function ($item) {
+                                return sprintf('<b>%1$s</b><br/>%2$s', $item['spaceName'], Format::small($item['locationDetail']));
+                              });
+                            $lendingTable
+                              ->addColumn('timestampOut', __('Return Date'))
+                              ->description(__('Borrow Date'))
+                              ->format(function ($item) {
+                                return sprintf('<b>%1$s</b><br/>%2$s', $item['status'] == 'On Loan' ? Format::date($item['returnExpected']) : 'N/A', Format::small(Format::date($item['timestampOut'])));
+                              });
+                            $lendingTable
+                              ->addColumn('status', __('Status'));
+                            echo $lendingTable->render($items);
                         }
                     } elseif ($subpage == 'Timetable') {
                         if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') == false) {
@@ -2749,7 +2825,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                             echo '</td>';
                                             echo '<td>';
                                             if ($row['status'] != '') {
-                                                echo $row['status'];
+                                                echo __($row['status']);
                                             } else {
                                                 echo '<i>'.__('NA').'</i>';
                                             }
@@ -2849,7 +2925,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 echo '</div>';
                             } else {
                                 echo "<div class='linkTop'>";
-                                $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+                                $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
                                 $form->setClass('blank fullWidth');
 
                                 $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/student_view_details.php');
@@ -2910,9 +2986,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         ++$count;
 
                                             //Highlight class in progress
-                                            if ((date('Y-m-d') == $rowHistory['date']) and (date('H:i:s') > $rowHistory['timeStart']) and (date('H:i:s') < $rowHistory['timeEnd'])) {
-                                                $rowNum = 'current';
-                                            }
+                                        if ((date('Y-m-d') == $rowHistory['date']) and (date('H:i:s') > $rowHistory['timeStart']) and (date('H:i:s') < $rowHistory['timeEnd'])) {
+                                            $rowNum = 'current';
+                                        }
 
                                             //COLOR ROW BY STATUS!
                                             echo "<tr class=$rowNum>";
@@ -2941,9 +3017,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         echo '</td>';
                                         echo '<td>';
                                         if ($rowHistory['type'] == 'teacherRecorded') {
-                                            echo 'Teacher Recorded';
+                                            echo __('Teacher Recorded');
                                         } else {
-                                            echo 'Student Recorded';
+                                            echo __('Student Recorded');
                                         }
                                         echo  '<br/>';
                                         echo "<span style='font-size: 85%; font-style: italic'>";
@@ -2973,21 +3049,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                 }
                                                 if ($resultVersion->rowCount() < 1) {
                                                     //Before deadline
-                                                                if (date('Y-m-d H:i:s') < $rowHistory['homeworkDueDateTime']) {
-                                                                    echo "<span title='".__('Pending')."'>".__('Pending').'</span>';
-                                                                }
+                                                    if (date('Y-m-d H:i:s') < $rowHistory['homeworkDueDateTime']) {
+                                                        echo "<span title='".__('Pending')."'>".__('Pending').'</span>';
+                                                    }
                                                                 //After
-                                                                else {
-                                                                    if (@$rowHistory['dateStart'] > @$rowSub['date']) {
-                                                                        echo "<span title='".__('Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>".__('NA').'</span>';
-                                                                    } else {
-                                                                        if ($rowHistory['homeworkSubmissionRequired'] == 'Compulsory') {
-                                                                            echo "<div style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px; margin: 2px 0px'>".__('Incomplete').'</div>';
-                                                                        } else {
-                                                                            echo __('Not submitted online');
-                                                                        }
-                                                                    }
-                                                                }
+                                                    else {
+                                                        if (@$rowHistory['dateStart'] > @$rowSub['date']) {
+                                                            echo "<span title='".__('Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>".__('NA').'</span>';
+                                                        } else {
+                                                            if ($rowHistory['homeworkSubmissionRequired'] == 'Compulsory') {
+                                                                echo "<div style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px; margin: 2px 0px'>".__('Incomplete').'</div>';
+                                                            } else {
+                                                                echo __('Not submitted online');
+                                                            }
+                                                        }
+                                                    }
                                                 } else {
                                                     $rowVersion = $resultVersion->fetch();
                                                     if ($rowVersion['status'] == 'On Time' or $rowVersion['status'] == 'Exemption') {
@@ -3075,14 +3151,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     $_SESSION[$guid]['sidebarExtra'] = '';
 
                     //Show alerts
-                    $alert = getAlertBar($guid, $connection2, $gibbonPersonID, $row['privacy'], '', false, true);
-                    $_SESSION[$guid]['sidebarExtra'] .= '<div class="w-48 sm:w-64 h-10 mb-2">';
-                    if ($alert == '') {
-                        $_SESSION[$guid]['sidebarExtra'] .= '<span class="text-gray-500 text-xs">'.__('No Current Alerts').'</span>';
-                    } else {
-                        $_SESSION[$guid]['sidebarExtra'] .= $alert;
+                    if ($highestAction == 'View Student Profile_fullEditAllNotes' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
+                        $alert = getAlertBar($guid, $connection2, $gibbonPersonID, $row['privacy'], '', false, true);
+                        
+                        $_SESSION[$guid]['sidebarExtra'] .= '<div class="w-48 sm:w-64 h-10 mb-2">';
+                        if ($alert == '') {
+                            $_SESSION[$guid]['sidebarExtra'] .= '<span class="text-gray-500 text-xs">'.__('No Current Alerts').'</span>';
+                        } else {
+                            $_SESSION[$guid]['sidebarExtra'] .= $alert;
+                        }
+                        $_SESSION[$guid]['sidebarExtra'] .= '</div>';
                     }
-                    $_SESSION[$guid]['sidebarExtra'] .= '</div>';
 
                     $_SESSION[$guid]['sidebarExtra'] .= getUserPhoto($guid, $studentImage, 240);
 
@@ -3295,20 +3374,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                     //Spit out array whilt sorting by $mainMenuCategoryOrder
                     if (count($studentMenuCategory) > 0) {
-                        foreach ($orders AS $order) {
+                        foreach ($orders as $order) {
                             //Check for entries
                             $countEntries = 0;
                             for ($i = 0; $i < count($studentMenuCategory); ++$i) {
-                                if ($studentMenuCategory[$i] == $order)
+                                if ($studentMenuCategory[$i] == $order) {
                                     $countEntries ++;
+                                }
                             }
 
                             if ($countEntries > 0) {
                                 $_SESSION[$guid]['sidebarExtra'] .= '<h4>'.__($order).'</h4>';
                                 $_SESSION[$guid]['sidebarExtra'] .= "<ul class='moduleMenu'>";
                                 for ($i = 0; $i < count($studentMenuCategory); ++$i) {
-                                    if ($studentMenuCategory[$i] == $order)
-                                    $_SESSION[$guid]['sidebarExtra'] .= $studentMenuLink[$i];
+                                    if ($studentMenuCategory[$i] == $order) {
+                                        $_SESSION[$guid]['sidebarExtra'] .= $studentMenuLink[$i];
+                                    }
                                 }
 
                                 $_SESSION[$guid]['sidebarExtra'] .= '</ul>';

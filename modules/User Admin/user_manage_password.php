@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
     }
 
     //Check if school year specified
-    $gibbonPersonID = $_GET['gibbonPersonID'];
+    $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
     if ($gibbonPersonID == '') {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');
@@ -69,8 +69,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
                 return;
             }
 
-            $search = (isset($_GET['search']))? $_GET['search'] : '';
-            if (!empty($search)) {
+            $search = $_GET['search'] ?? '';
+            if ($search != '') {
                 echo "<div class='linkTop'>";
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage.php&search='.$search."'>".__('Back to Search Results').'</a>';
                 echo '</div>';
@@ -132,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
 
             $row = $form->addRow();
                 $row->addLabel('statusLabel', __('User').': '.__('Status'));
-                $row->addTextField('status')->setValue($values['status'])->readonly();
+                $row->addTextField('status')->setValue(__($values['status']))->readonly();
                 $row->addContent($statusFull? $trueIcon : $falseIcon);
 
             $row = $form->addRow();
@@ -147,7 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
 
             $row = $form->addRow();
                 $row->addLabel('canLoginRoleLabel', __('Role').': '.__('Can Login'));
-                $row->addTextField('canLoginRole')->setValue(($canLoginRole ? __('Yes') : __('No')).' - '.$role['name'])->readonly();
+                $row->addTextField('canLoginRole')->setValue(($canLoginRole ? __('Yes') : __('No')).' - '.__($role['name']))->readonly();
                 $row->addContent($canLoginRole? $trueIcon : $falseIcon);
 
             $row = $form->addRow();

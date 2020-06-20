@@ -184,8 +184,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
     $table->addColumn('values', __('Status'))
         ->format(function ($reportingCriteria) {
             return ($reportingCriteria['values'] > 0)
-                ? '<span class="tag success" title="'.__('This criteria is already in use in {count} locations. It cannot be deleted or changed to a different criteria type.', ['count' => $reportingCriteria['values']]).'">'.__('Active').'</span>'
-                : '<span class="tag dull">'.__('Inactive').'</span>';
+                ? '<span class="tag warning" title="'.__('This criteria is already in use in {count} locations. It cannot be deleted or changed to a different criteria type.', ['count' => $reportingCriteria['values']]).'">'.__('Locked').'</span>'
+                : '<span class="tag dull" title="'.__('This criteria has not been used yet. It can safely be edited or deleted.').'">'.__('Unlocked').'</span>';
         });
 
     $table->addActionColumn()

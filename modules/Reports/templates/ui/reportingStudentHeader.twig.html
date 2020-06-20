@@ -53,12 +53,19 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% endif %}
 
     <div class="p-4 flex flex-wrap items-center">
-        <div class="flex h-32 justify-center sm:justify-start items-center text-xs text-center mt-4 sm:mt-0">
+        <div class="flex flex-col justify-center sm:justify-start items-center text-xs text-center mt-4 sm:mt-0">
+
+            {% if student.alerts %}
+                <div class="w-20 lg:w-24 text-left pb-1 px-0 mx-auto">
+                {{ student.alerts ? student.alerts | raw }}
+                </div>
+            {% endif %}
+
             {{ formatUsing('userPhoto', student.image_240, 75)|raw }}
         </div>
 
         <div class="flex-1 text-center sm:text-left sm:pl-6">
-            <a class="text-lg text-gray-800 leading-none mb-2 p-0" href="{{ absoluteURL }}/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID={{ student.gibbonPersonID }}&allStudents=on" target="_blank">
+            <a class="block text-lg underline leading-none mb-1 p-0" href="{{ absoluteURL }}/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID={{ student.gibbonPersonID }}&allStudents=on" target="_blank">
                 {{ formatUsing('name', student.title, student.preferredName, student.surname, 'Student', false, true) }}
             </a>
             <div class="text-sm text-gray-600 mb-0">

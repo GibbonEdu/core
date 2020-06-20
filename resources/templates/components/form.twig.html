@@ -11,6 +11,10 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% if form.getTitle %}
         <h2>{{ form.getTitle }}</h2>
     {% endif %}
+    
+    {% if form.getDescription %}
+        <p>{{ form.getDescription }}</p>
+    {% endif %}
 
     {% for values in form.getHiddenValues %}
         <input type="hidden" name="{{ values.name }}" value="{{ values.value }}">

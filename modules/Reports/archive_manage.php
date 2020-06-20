@@ -50,9 +50,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage.php
         ->displayLabel()
         ->append(' | ');
 
-    $table->addHeaderAction('import', __('Import Reports'))
-        ->setIcon('upload')
-        ->setURL('/modules/Reports/archive_manage_import.php')
+    $table->addHeaderAction('migrate', __('Migrate Reports'))
+        ->setIcon('delivery2')
+        ->setURL('/modules/Reports/archive_manage_migrate.php')
         ->displayLabel();
 
     $table->addColumn('name', __('Name'));

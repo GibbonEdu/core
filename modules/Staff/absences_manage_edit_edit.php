@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_edit
 
     $row = $form->addRow();
         $row->addLabel('value', __('Value'));
-        $row->addNumber('value')->decimalPlaces(1)->maxLength(3)->minimum(0)->maximum(1);
+        $row->addNumber('value')->decimalPlaces(2)->maxLength(4)->minimum(0)->maximum(1);
 
     $row = $form->addRow();
         $row->addFooter();

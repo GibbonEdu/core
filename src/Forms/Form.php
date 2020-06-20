@@ -34,6 +34,7 @@ class Form implements OutputableInterface
     use BasicAttributesTrait;
 
     protected $title;
+    protected $description;
     protected $factory;
     protected $renderer;
 
@@ -95,6 +96,26 @@ class Form implements OutputableInterface
     public function setTitle($title)
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * Get the form description.
+     * @return  string 
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set the form description.
+     * @param  string  $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
 
         return $this;
     }

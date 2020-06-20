@@ -27,6 +27,9 @@ use Gibbon\Module\Reports\ArchiveFile;
 use Gibbon\Module\Reports\Domain\ReportGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
+use Gibbon\Module\Reports\Renderer\ReportRendererInterface;
+use Gibbon\Module\Reports\Renderer\MpdfRenderer;
+use Gibbon\Module\Reports\Renderer\TcpdfRenderer;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 
@@ -49,6 +52,8 @@ class GenerateReportProcess extends BackgroundProcess implements ContainerAwareI
 
     public function runReportBatch($gibbonReportID, $contexts = [], $status = 'Draft', $gibbonPersonID = null)
     {
+        ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
+        
         $timeStart = time();
         $report = $this->container->get(ReportGateway::class)->getByID($gibbonReportID);
 
@@ -68,12 +73,12 @@ class GenerateReportProcess extends BackgroundProcess implements ContainerAwareI
         foreach ($contexts as $contextData) {
             $reports = $reportBuilder->buildReportBatch($template, $report, $contextData);
 
-            $renderer = new ReportRenderer($template, $this->container->get('twig'));
-            $renderer->setMode(ReportRenderer::OUTPUT_CONTINUOUS | ReportRenderer::OUTPUT_TWO_SIDED);
+            $renderer = $this->container->get($template->getData('flags') == 1 ? MpdfRenderer::class : TcpdfRenderer::class);
+            $renderer->setMode(ReportRendererInterface::OUTPUT_CONTINUOUS | ReportRendererInterface::OUTPUT_TWO_SIDED);
 
             // Render the Report: Batch
             $path = $archiveFile->getBatchFilePath($gibbonReportID, $contextData);
-            $renderer->renderToPDF($reports, $this->absolutePath.$archive['path'].'/'.$path);
+            $renderer->render($template, $reports, $this->absolutePath.$archive['path'].'/'.$path);
 
             // Update the Archive: Batch
             $reportArchiveEntryGateway->insertAndUpdate([
@@ -94,7 +99,7 @@ class GenerateReportProcess extends BackgroundProcess implements ContainerAwareI
                 if ($student = $studentGateway->getByID($identifier)) {
                     // Render the Report: Single
                     $path = $archiveFile->getSingleFilePath($gibbonReportID, $student['gibbonYearGroupID'], $identifier);
-                    $renderer->renderToPDF([$studentReport], $this->absolutePath.$archive['path'].'/'.$path);
+                    $renderer->render($template, [$studentReport], $this->absolutePath.$archive['path'].'/'.$path);
 
                     // Update the Archive: Single
                     $reportArchiveEntryGateway->insertAndUpdate([

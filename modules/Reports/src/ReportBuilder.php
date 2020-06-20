@@ -13,6 +13,7 @@ use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
 use Gibbon\Module\Reports\Domain\ReportTemplateSectionGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Reports\ReportSection;
+use Gibbon\Module\Reports\Domain\ReportTemplateFontGateway;
 
 class ReportBuilder
 {
@@ -21,18 +22,20 @@ class ReportBuilder
     protected $reportGateway;
     protected $reportTemplateGateway;
     protected $templateSectionGateway;
+    protected $templateFontGateway;
     protected $settingGateway;
 
     protected $absolutePath;
     protected $customAssetPath;
 
-    public function __construct(Connection $db, DataFactory $dataFactory, ReportGateway $reportGateway, ReportTemplateGateway $templateGateway, ReportTemplateSectionGateway $templateSectionGateway, SettingGateway $settingGateway)
+    public function __construct(Connection $db, DataFactory $dataFactory, ReportGateway $reportGateway, ReportTemplateGateway $templateGateway, ReportTemplateSectionGateway $templateSectionGateway, ReportTemplateFontGateway $templateFontGateway, SettingGateway $settingGateway)
     {
         $this->db = $db;
         $this->dataFactory = $dataFactory;
         $this->reportGateway = $reportGateway;
         $this->templateGateway = $templateGateway;
         $this->templateSectionGateway = $templateSectionGateway;
+        $this->templateFontGateway = $templateFontGateway;
         $this->settingGateway = $settingGateway;
 
         $this->absolutePath = $this->settingGateway->getSettingByScope('System', 'absolutePath');
@@ -67,7 +70,22 @@ class ReportBuilder
             'marginX'     => $templateData['marginX'],
             'marginY'     => $templateData['marginY'],
             'stylesheet'  => $templateData['stylesheet'] ?? '',
+            'flags'       => $templateData['flags'] ?? '',
         ]);
+
+        $config = json_decode($templateData['config'] ?? '', true);
+        if (!empty($config['fonts'])) {
+            $fonts = $this->templateFontGateway->selectFontListByFamily($config['fonts'])->fetchAll();
+            $fonts = array_reduce($fonts, function ($group, $font) {
+                $fontPath = $this->absolutePath.$this->customAssetPath.'/fonts/'.basename($font['fontPath']);
+                if (!is_file($fontPath)) return $group;
+
+                $group[$font['fontFamily']][$font['fontType']] = basename($font['fontPath']);
+                return $group;
+            }, []);
+
+            $template->addData(['fonts' => $fonts]);
+        }
 
         $criteria = $this->templateSectionGateway->newQueryCriteria()
             ->sortBy('sequenceNumber', 'ASC')
