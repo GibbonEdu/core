@@ -207,12 +207,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 
                 $nextTimeStart = (isset($nextTimeStart)) ? substr($nextTimeStart, 0, 5) : null;
                 $row = $form->addRow();
-                    $row->addLabel('timeStart', __('Start Time'))->description("Format: hh:mm (24hr)");
+                    $row->addLabel('timeStart', __('Start Time'))->description(__("Format: hh:mm (24hr)"));
                     $row->addTime('timeStart')->required();
 
                 $nextTimeEnd = (isset($nextTimeEnd)) ? substr($nextTimeEnd, 0, 5) : null;
                 $row = $form->addRow();
-                    $row->addLabel('timeEnd', __('End Time'))->description("Format: hh:mm (24hr)");
+                    $row->addLabel('timeEnd', __('End Time'))->description(__("Format: hh:mm (24hr)"));
                     $row->addTime('timeEnd')->required();
 
 
@@ -271,7 +271,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 
                 $values['homeworkDueDateTime'] = substr($values['homeworkDueDateTime'], 11, 5);
                 $row = $form->addRow()->addClass('homework');
-                    $row->addLabel('homeworkDueDateTime', __('Homework Due Date Time'))->description("Format: hh:mm (24hr)");
+                    $row->addLabel('homeworkDueDateTime', __('Homework Due Date Time'))->description(__("Format: hh:mm (24hr)"));
                     $row->addTime('homeworkDueDateTime');
 
                 $row = $form->addRow()->addClass('homework');
@@ -407,7 +407,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 
                 $row = $form->addRow();
                     $row->addFooter();
-                    $row->addCheckbox('notify')->description('Notify all class participants');
+                    $row->addCheckbox('notify')->description(__('Notify all class participants'));
                     $row->addSubmit();
 
                 $form->loadAllValuesFrom($values);

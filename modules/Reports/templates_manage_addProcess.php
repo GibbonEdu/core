@@ -42,6 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_a
         'marginX'     => $_POST['marginX'] ?? '',
         'marginY'     => $_POST['marginY'] ?? '',
         'stylesheet'  => $_POST['stylesheet'] ?? '',
+        'flags'       => $_POST['flags'] ?? '',
     ];
 
     // Validate the required values are present

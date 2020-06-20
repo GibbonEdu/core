@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Domain\User\RoleGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_add.php') == false) {
     //Acess denied
@@ -43,9 +44,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_a
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
     $types = array(__('Basic') => array ('Teaching' => __('Teaching'), 'Support' => __('Support')));
-    $sql = "SELECT gibbonRoleID as value, name FROM gibbonRole WHERE category='Staff' ORDER BY name";
-    $result = $pdo->executeQuery(array(), $sql);
-    $types[__('System Roles')] = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
+
+    $roleGateway = $container->get(RoleGateway::class);
+    // CRITERIA
+    $criteriaCategory = $roleGateway->newQueryCriteria()
+        ->sortBy(['gibbonRole.name'])
+        ->filterBy('category:Staff');
+
+    $rolesCategoriesStaff = $roleGateway->queryRoles($criteriaCategory);
+
+    $typesCategories = array();
+    foreach($rolesCategoriesStaff as $roleCategoriesStaff) {
+       $typesCategories[$roleCategoriesStaff['name']] = __($roleCategoriesStaff['name']);
+    }
+    $types[__('System Roles')] = $typesCategories;    
+    
     $row = $form->addRow();
         $row->addLabel('type', __('Type'));
         $row->addSelect('type')->fromArray($types)->placeholder()->required();

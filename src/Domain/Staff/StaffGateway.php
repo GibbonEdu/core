@@ -121,4 +121,11 @@ class StaffGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    public function selectStaffByStaffID($gibbonStaffID) {
+        $data = array('gibbonStaffID' => $gibbonStaffID);
+        $sql = 'SELECT gibbonStaff.*, title, surname, preferredName, initials, dateStart, dateEnd FROM gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStaffID=:gibbonStaffID';
+
+        return $this->db()->select($sql, $data);
+    }
 }

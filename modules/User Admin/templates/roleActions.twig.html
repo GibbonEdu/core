@@ -10,6 +10,11 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {{ __('Actions') }}: {{ __(role.name) }}
 </h2>
 
+{% if actionCount < 1 %}
+<div class="warning">
+    {{ __('There are no records to display.') }}
+</div>
+{% else %}
 <div class="column-2 mb-8">
 {% for moduleName, moduleActions in actions %}
     <div class="column-no-break">
@@ -27,3 +32,4 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     </div>
 {% endfor %}
 </div>
+{% endif %}

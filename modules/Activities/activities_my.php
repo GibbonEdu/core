@@ -88,14 +88,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my.p
             }
             echo '<td>';
             if ($row['role'] == '') {
-                echo 'Student';
+                echo __('Student');
             } else {
                 echo __($row['role']);
             }
             echo '</td>';
             echo '<td>';
             if ($row['status'] != '') {
-                echo $row['status'];
+                echo __($row['status']);
             } else {
                 echo '<i>'.__('NA').'</i>';
             }

@@ -21,6 +21,7 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Tables\View\GridView;
 use Gibbon\Domain\DataSet;
+use Gibbon\Domain\Departments\DepartmentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -34,6 +35,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.ph
 } else {
     $page->breadcrumbs->add(__('View All'));
 
+    $departmentGateway = $container->get(DepartmentGateway::class);
+    
     // Data Table
     $gridRenderer = new GridView($container->get('twig'));
     $table = $container->get(DataTable::class)->setRenderer($gridRenderer);
@@ -51,9 +54,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.ph
             return Format::link($url, $department['name']);
         });
 
+    // QUERY
+    $criteria = $departmentGateway->newQueryCriteria(true)
+        ->sortBy(['sequenceNumber', 'name']);
+
     // Learning Areas
-    $sql = "SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
-    $learningAreas = $pdo->select($sql)->toDataSet();
+    $learningAreas = $departmentGateway->queryDepartments($criteria, 'Learning Area');
 
     if (count($learningAreas) > 0) {
         $tableLA = clone $table;
@@ -63,8 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.ph
     }
     
     // Administration
-    $sql = "SELECT * FROM gibbonDepartment WHERE type='Administration' ORDER BY name";
-    $administration = $pdo->select($sql)->toDataSet();
+    $administration = $departmentGateway->queryDepartments($criteria, 'Administration');
 
     if (count($administration) > 0) {
         $tableAdmin = clone $table;

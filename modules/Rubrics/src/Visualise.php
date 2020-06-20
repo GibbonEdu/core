@@ -77,9 +77,10 @@ class Visualise
      * @param   $legend should the legend be included?
      * @param   $image should the chart be saved as an image
      * @param   $path if image is saved, where should it be saved (defaults to standard upload location)
+     * @param   $id optionally outputs the image path to the value of the given id
      * @return   void
      */
-    public function renderVisualise($legend = true, $image = false, $path = '')
+    public function renderVisualise($legend = true, $image = false, $path = '', $id = '')
     {
         //Filter out columns to ignore from visualisation
         $this->columns = array_filter($this->columns, function ($item) {
@@ -143,13 +144,15 @@ class Visualise
                 ]
             ];
             if ($image) {
-                $path = ($path != '') ? ", path: '$path'" : '';
                 $options['animation'] = [
                     'duration' => 0,
                     'onComplete' => $chart->addFunction('function(e) {
                         var img = visualisation'.$this->gibbonPersonID.'.toDataURL("image/png");
-                        $.ajax({ url: "'.$this->absoluteURL.'/modules/Rubrics/src/visualise_saveAjax.php", type: "POST", data: {img: img, gibbonPersonID: \''.$this->gibbonPersonID.$path.'\'}, dataType: "html"})
-                        $.ajax({ url: "./"});
+                        $.ajax({ url: "'.$this->absoluteURL.'/modules/Rubrics/src/visualise_saveAjax.php", type: "POST", data: {img: img, gibbonPersonID: \''.$this->gibbonPersonID.'\', path: \''.$path.'\'}, dataType: "html", success: function (data) {
+                            '.( $id ? '$("#'.$id.'").val(data);' : '' ).'
+                        } });
+
+                        this.options.animation.onComplete = null;
                     }'),
                 ];
             }

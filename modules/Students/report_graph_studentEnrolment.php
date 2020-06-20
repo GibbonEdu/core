@@ -68,6 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_graph_stud
     $dateStart = (isset($_POST['dateStart']))? dateConvert($guid, $_POST['dateStart']) : $_SESSION[$guid]['gibbonSchoolYearFirstDay'];
     $dateEnd = (isset($_POST['dateEnd']))? dateConvert($guid, $_POST['dateEnd']) : $_SESSION[$guid]['gibbonSchoolYearLastDay'];
     $interval =  (isset($_POST['interval']))? $_POST['interval'] : '+1 week';
+    $excludeLeft = $_POST['excludeLeft'] ?? '';
 
     // Correct inverse date ranges rather than generating an error
     if ($dateStart > $dateEnd) {
@@ -111,6 +112,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_graph_stud
         $row->addLabel('gibbonYearGroupID', __('Year Group'));
         $row->addSelect('gibbonYearGroupID')->fromArray(array('all' => __('All')))->fromQuery($pdo, $sql)->selectMultiple()->selected($yearGroups);
 
+    $row = $form->addRow();
+        $row->addLabel('excludeLeft', __('Exclude Left Students'));
+        $row->addCheckbox('excludeLeft')->setValue('Y')->checked($excludeLeft);
+                
     $form->addRow()->addSubmit();
     echo $form->getOutput();
 
@@ -140,10 +145,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_graph_stud
                     LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
                     LEFT JOIN gibbonYearGroup ON (gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID)
                     LEFT JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                    WHERE (gibbonPerson.status='Full' OR gibbonPerson.status='Expected')
-                    AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :date)
-                    AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :date)
-                    AND (:date BETWEEN gibbonSchoolYear.firstDay AND gibbonSchoolYear.lastDay)";
+                    WHERE (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :date)
+                    AND (:date BETWEEN gibbonSchoolYear.firstDay AND gibbonSchoolYear.lastDay)
+                ";
+
+            if ($excludeLeft == 'Y') {
+                $sql .= " AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :date)
+                          AND(gibbonPerson.status='Full' OR gibbonPerson.status='Expected') ";
+            }
 
             if ($yearGroups != array('all')) {
                 $data['yearGroups'] = implode(',', $yearGroups);

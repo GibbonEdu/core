@@ -82,13 +82,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
         }
 
         $module['status'] = __('Installed');
-        $module['name'] = $module['type'] == 'Core' ? __($module['name']) : __($module['name'], $module['name']);
+        $module['name'] = $module['type'] == 'Core' ? __($module['name']) : $module['name'];
         $module['versionDisplay'] = $module['type'] == 'Core' ? 'v'.$version : 'v'.$module['version'];
 
         if ($module['type'] == 'Additional') {
             $versionFromFile = getModuleVersion($module['name'], $guid);
             if (version_compare($versionFromFile, $module['version'], '>')) {
-                $module['status'] = '<b>'.__('Update').' '.__('Available').'</b><br/>';
+                $module['status'] = '<b>'.__('Update Available').'</b><br/>';
                 $module['update'] = true;
             }
         }
@@ -132,7 +132,16 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
         'active:N' => __('Active').': '.__('No'),
     ]);
 
-    $table->addColumn('name', __('Name'));
+    $table->addColumn('name', __('Name'))
+        ->format(function ($module) {
+            if ($module['type'] == "Additional") {
+                return __m($module['name']);
+            }
+            else {
+                return __($module['name']);
+            }
+    });
+
     $table->addColumn('status', __('Status'))->notSortable();
     $table->addColumn('description', __('Description'))->translatable();
     $table->addColumn('type', __('Type'))->translatable();

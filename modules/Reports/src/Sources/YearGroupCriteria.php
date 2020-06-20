@@ -43,8 +43,21 @@ class YearGroupCriteria extends DataSource
                     'officialName'        => ['sameAs', 'firstName surname'],
                 ],
             ],
-            'perStudent' => [
 
+            'perStudent' => [
+                0 => [
+                    'scopeName'           => 'Year Group',
+                    'criteriaName'        => 'Student Comment',
+                    'criteriaDescription' => ['sentence'],
+                    'value'               => ['randomDigit'],
+                    'comment'             => ['paragraph', 6],
+                    'valueType'           => 'Comment',
+                    'title'               => ['title', $gender],
+                    'surname'             => ['lastName'],
+                    'firstName'           => ['firstName', $gender],
+                    'preferredName'       => ['sameAs', 'firstName'],
+                    'officialName'        => ['sameAs', 'firstName surname'],
+                ],
             ],
         ];
     }
@@ -52,7 +65,7 @@ class YearGroupCriteria extends DataSource
     public function getData($ids = [])
     {
         $data = ['gibbonStudentEnrolmentID' => $ids['gibbonStudentEnrolmentID'], 'gibbonReportingCycleID' => $ids['gibbonReportingCycleID']];
-        $sql = "SELECT (CASE WHEN gibbonReportingCriteria.target = 'Per Group' THEN 'perGroup' ELSE 'perStudent' END) AS groupBy, 
+        $sql = "SELECT DISTINCT (CASE WHEN gibbonReportingCriteria.target = 'Per Group' THEN 'perGroup' ELSE 'perStudent' END) AS groupBy, 
                     gibbonReportingScope.name as scopeName,
                     gibbonReportingCriteria.name as criteriaName,
                     gibbonReportingCriteria.description as criteriaDescription, 
@@ -66,16 +79,18 @@ class YearGroupCriteria extends DataSource
                     createdBy.surname,
                     createdBy.firstName,
                     createdBy.preferredName,
-                    createdBy.officialName
+                    createdBy.officialName,
+                    gibbonStaff.jobTitle
                 FROM gibbonStudentEnrolment 
                 JOIN gibbonReportingCriteria ON (gibbonReportingCriteria.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID)
                 JOIN gibbonReportingValue ON (gibbonReportingCriteria.gibbonReportingCriteriaID=gibbonReportingValue.gibbonReportingCriteriaID AND (gibbonReportingValue.gibbonPersonIDStudent=gibbonStudentEnrolment.gibbonPersonID OR gibbonReportingValue.gibbonPersonIDStudent=0))
                 JOIN gibbonReportingCriteriaType ON (gibbonReportingCriteriaType.gibbonReportingCriteriaTypeID=gibbonReportingCriteria.gibbonReportingCriteriaTypeID)
                 JOIN gibbonReportingScope ON (gibbonReportingScope.gibbonReportingScopeID=gibbonReportingCriteria.gibbonReportingScopeID)
                 JOIN gibbonYearGroup ON (gibbonYearGroup.gibbonYearGroupID=gibbonReportingCriteria.gibbonYearGroupID)
-                LEFT JOIN gibbonReportingProgress ON (gibbonReportingProgress.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID AND (gibbonReportingProgress.gibbonPersonIDStudent=gibbonStudentEnrolment.gibbonPersonID OR gibbonReportingProgress.gibbonPersonIDStudent=0))
+                LEFT JOIN gibbonReportingProgress ON (gibbonReportingProgress.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID AND gibbonReportingProgress.gibbonPersonIDStudent=gibbonStudentEnrolment.gibbonPersonID)
                 LEFT JOIN gibbonScaleGrade ON (gibbonScaleGrade.gibbonScaleID=gibbonReportingCriteriaType.gibbonScaleID AND gibbonScaleGrade.gibbonScaleGradeID=gibbonReportingValue.gibbonScaleGradeID)
                 LEFT JOIN gibbonPerson as createdBy ON (createdBy.gibbonPersonID=gibbonReportingValue.gibbonPersonIDCreated)
+                LEFT JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=createdBy.gibbonPersonID)
                 WHERE gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID
                 AND gibbonReportingCriteria.gibbonReportingCycleID=:gibbonReportingCycleID
                 AND gibbonReportingScope.scopeType='Year Group'

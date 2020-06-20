@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_s
 
     $context = ContextFactory::create($templateData['context']);
 
-    $ids = $context->getIdentifiers($pdo, $report['gibbonReportID'], $contextData);
+    $ids = $context->getIdentifiers($pdo, $report['gibbonReportID'], $contextData, true);
     $ids = array_map(function ($report) use ($gibbonReportID, &$reportArchiveEntryGateway) {
         $report['archive'] = $reportArchiveEntryGateway->getRecentArchiveEntryByReport($gibbonReportID, 'Single', $report['gibbonPersonID'], 'Staff', true, true);
         return $report;

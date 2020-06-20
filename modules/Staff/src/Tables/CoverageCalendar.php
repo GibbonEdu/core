@@ -75,7 +75,7 @@ class CoverageCalendar
             }
     
             $calendar[] = [
-                'name'  => $month->format('M'),
+                'name'  => Format::dateReadable($month ,'%b'),
                 'days'  => $days,
             ];
         }
@@ -103,7 +103,7 @@ class CoverageCalendar
     
                     $url = 'fullscreen.php?q=/modules/Staff/coverage_view_details.php&gibbonStaffCoverageID='.$coverage['gibbonStaffCoverageID'].'&width=800&height=550';
 
-                    $params['title'] = $day['date']->format('l').'<br/>'.$day['date']->format('M j, Y');
+                    $params['title'] = Format::dateReadable($day['date'], '%A').'<br/>'.Format::dateReadable($day['date'], '%b %e, %Y');
                     $params['class'] = '';
                     if ($coverage['allDay'] == 'N') {
                         $params['class'] = $coverage['timeStart'] < '12:00:00' ? 'half-day-am' : 'half-day-pm';
@@ -115,7 +115,7 @@ class CoverageCalendar
                             $name = Format::name($coverage['titleStatus'], $coverage['preferredNameStatus'], $coverage['surnameStatus'], 'Staff', false, true);
                         }
                         $params['class'] .= ' thickbox';
-                        $params['title'] .= '<br/>'.$name.'<br/>'.$coverage['status'];
+                        $params['title'] .= '<br/>'.$name.'<br/>'.__($coverage['status']);
                     } elseif ($day['exception']) {
                         if ($day['exception']['allDay'] == 'N') {
                             $params['class'] = $day['exception']['timeStart'] < '12:00:00' ? 'half-day-am' : 'half-day-pm';
@@ -133,7 +133,7 @@ class CoverageCalendar
     
                     $cell->addClass($day['date']->format('Y-m-d') == date('Y-m-d') ? 'border-2 border-gray-700' : 'border');
                     
-                    switch ($day['coverage']['status']) {
+                    switch ($day['coverage']['status'] ?? '') {
                         case 'Requested': $cellColor = 'bg-chart2'; break;
                         case 'Accepted':  $cellColor = 'bg-chart0'; break;
                         default:          $cellColor = 'bg-gray-500';

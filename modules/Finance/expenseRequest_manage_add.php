@@ -121,9 +121,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                         $row->addLabel('title', __('Title'));
                         $row->addTextField('title')->maxLength(60)->required();
 
+                    $form->addHiddenValue('status', 'Requested');
                     $row = $form->addRow();
-                        $row->addLabel('status', __('Status'));
-                        $row->addTextField('status')->setValue('Requested')->required()->readonly();
+                        $row->addLabel('statusText', __('Status'));
+                        $row->addTextField('statusText')->setValue(__('Requested'))->required()->readonly();
 
                     $expenseRequestTemplate = getSettingByScope($connection2, 'Finance', 'expenseRequestTemplate');
                     $row = $form->addRow();

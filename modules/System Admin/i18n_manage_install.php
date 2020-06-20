@@ -40,17 +40,16 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
         echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
-        
         $i18nGateway = $container->get(I18nGateway::class);
 
-        $i18n = $i18nGateway->getI18nByID($gibboni18nID);
+        $i18n = $i18nGateway->getByID($gibboni18nID);
 
+        //Check for a valid language
         if (empty($i18n)) {
             echo "<div class='error'>";
             echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
-
             $form = Form::create('install', $_SESSION[$guid]['absoluteURL'].'/modules/System Admin/i18n_manage_installProcess.php');
             $form->addHiddenValue('address', $_GET['q']);
             $form->addHiddenValue('gibboni18nID', $gibboni18nID);

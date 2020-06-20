@@ -131,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 					$gibbonPersonID = key($options);
 				} else {
 					echo '<h2>';
-					echo 'Choose Student';
+					echo __('Choose Student');
 					echo '</h2>';
 
 					$form = Form::create("filter", $_SESSION[$guid]['absoluteURL']."/index.php", "get");

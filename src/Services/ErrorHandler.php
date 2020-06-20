@@ -75,7 +75,7 @@ class ErrorHandler
     public function handleFatalErrorShutdown()
     {
         $lastError = error_get_last();
-        if ($lastError['type'] === E_ERROR) {
+        if ($lastError && $lastError['type'] === E_ERROR) {
             $this->outputError($lastError['type'], nl2br($lastError['message']));
             $this->handleGracefulShutdown();
         }

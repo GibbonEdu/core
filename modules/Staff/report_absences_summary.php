@@ -163,8 +163,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
                     if (empty($day)) return '';
                     $dateText = $day['date']->format($dateFormat);
                     $url = $baseURL.'&dateStart='.$dateText.'&dateEnd='.$dateText.'&gibbonStaffAbsenceTypeID='.$gibbonStaffAbsenceTypeID;
-                    $title = $day['date']->format('l');
-                    $title .= '<br/>'.$day['date']->format('M j, Y');
+                    $title =  Format::dateReadable($day['date'], '%A');
+                    $title .= '<br/>'.Format::dateReadable($day['date'], '%b %e, %Y');
                     if ($day['count'] > 0) {
                         $title .= '<br/>'.__n('{count} Absence', '{count} Absences', $day['count']);
                     }

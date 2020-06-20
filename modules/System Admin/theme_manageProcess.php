@@ -17,9 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\ThemeGateway;
+
 include '../../gibbon.php';
 
-$gibbonThemeID = $_POST['gibbonThemeID'];
+$gibbonThemeID = $_POST['gibbonThemeID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/theme_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.php') == false) {
@@ -32,46 +34,18 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
-        try {
-            $data = array('gibbonThemeID' => $gibbonThemeID);
-            $sql = 'SELECT * FROM gibbonTheme WHERE gibbonThemeID=:gibbonThemeID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
+        $themeGateway = $container->get(ThemeGateway::class);
+        //Check for existence of theme
+        if (!$themeGateway->exists($gibbonThemeID)) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
-            exit();
-        }
-
-        if ($result->rowCount() != 1) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-        } else {
-            //Deactivate all themes
-            try {
-                $data = array();
-                $sql = "UPDATE gibbonTheme SET active='N'";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error3';
-                header("Location: {$URL}");
-                exit();
-            }
-
-            //Write to database
-            try {
-                $data = array('gibbonThemeID' => $gibbonThemeID);
-                $sql = "UPDATE gibbonTheme SET active='Y' WHERE gibbonThemeID=:gibbonThemeID ";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
-
-            $_SESSION[$guid]['pageLoads'] = null;
+        } else {    
+            //Deactivate theme current
+            $themeGateway->updateWhere(array('active' => 'Y'), array('active' => 'N'));
+            
+            //Activate selected theme
+            $themeGateway->update($gibbonThemeID, array('active' => 'Y'));
+           
             $URL .= '&return=success0';
             header("Location: {$URL}");
         }

@@ -564,10 +564,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         $row->addDate('citizenship2PassportExpiry');
 
                     if (!empty($_SESSION[$guid]['country'])) {
-                        $nationalIDCardNumberLabel = $_SESSION[$guid]['country'].' '.__('ID Card Number');
-                        $nationalIDCardScanLabel = $_SESSION[$guid]['country'].' '.__('ID Card Scan');
-                        $residencyStatusLabel = $_SESSION[$guid]['country'].' '.__('Residency/Visa Type');
-                        $visaExpiryDateLabel = $_SESSION[$guid]['country'].' '.__('Visa Expiry Date');
+                        $nationalIDCardNumberLabel = __($_SESSION[$guid]['country']).' '.__('ID Card Number');
+                        $nationalIDCardScanLabel = __($_SESSION[$guid]['country']).' '.__('ID Card Scan');
+                        $residencyStatusLabel = __($_SESSION[$guid]['country']).' '.__('Residency/Visa Type');
+                        $visaExpiryDateLabel = __($_SESSION[$guid]['country']).' '.__('Visa Expiry Date');
                     } else {
                         $nationalIDCardNumberLabel = __('National ID Card Number');
                         $nationalIDCardScanLabel = __('National ID Card Scan');

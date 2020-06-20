@@ -40,7 +40,7 @@ class CoverageMiniCalendar
     {
         $title = '';
         foreach ($availabilityByDate as $availability) {
-            $title .= $availability['status'].': ';
+            $title .= __($availability['status']).': ';
             $title .= $availability['allDay'] == 'N'
                 ? Format::timeRange($availability['timeStart'], $availability['timeEnd'])
                 : __('All Day');

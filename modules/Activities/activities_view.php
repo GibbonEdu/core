@@ -141,7 +141,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             }
 
             $row = $form->addRow();
-                $row->addLabel('search', __('Search'))->description('Activity name.');
+                $row->addLabel('search', __('Search'))->description(__('Activity name.'));
                 $row->addTextField('search')->setValue($search)->maxLength(20);
 
             $row = $form->addRow();
@@ -435,7 +435,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             } elseif ($row['registration'] == 'N') {
                                 echo __('Closed').'<br/>';
                             } else {
-                                echo $rowEnrol['status'];
+                                echo $rowEnrol['status'] ?? '';
                             }
                             echo '</td>';
                         }

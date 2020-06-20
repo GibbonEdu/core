@@ -66,14 +66,15 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('name', $values['name']);
 
             $row = $form->addRow();
-                $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
-                $row->addTextField('name')->required()->maxLength(30);
+                $row->addLabel('nameText', __('Name'))->description(__('Must be unique.'));
+                $row->addTextField('nameText')->readonly()->required()->setValue(__($values['name']));
 
             $row = $form->addRow();
                 $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
-                $row->addTextField('nameShort')->required()->maxLength(4);
+                $row->addTextField('nameShort')->readonly()->required()->maxLength(4);
 
             $directions = array(
                 'In'     => __('In Class'),

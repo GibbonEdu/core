@@ -78,6 +78,7 @@ class INInvestigationContributionGateway extends QueryableGateway
             ->from($this->getTableName())
             ->cols([
                 'gibbonINInvestigationContribution.*',
+                'gibbonINInvestigation.gibbonPersonIDStudent',
                 'student.surname',
                 'student.preferredName',
                 'gibbonRollGroup.nameShort AS rollGroup',

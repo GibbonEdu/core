@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/fileExtension
         $ext = $row->addTextField('extension')->required()->maxLength(7);
 
         $within = implode(',', array_map(function ($str) { return sprintf("'%s'", $str); }, $illegalTypes));
-        $ext->addValidation('Validate.Exclusion', 'within: ['.$within.'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false');
+        $ext->addValidation('Validate.Exclusion', 'within: ['.$within.'], failureMessage: "'.__('Illegal file type!').'", partialMatch: true, caseSensitive: false');
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'));

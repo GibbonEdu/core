@@ -24,7 +24,7 @@ include '../../gibbon.php';
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$gibboni18nID = $_POST['gibboni18nID'];
+$gibboni18nID = $_POST['gibboni18nID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/System Admin/i18n_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.php') == false) {
@@ -39,8 +39,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
         exit;
     } else {
         $i18nGateway = $container->get(I18nGateway::class);
-        $i18n = $i18nGateway->getI18nByID($gibboni18nID);
+        $i18n = $i18nGateway->getByID($gibboni18nID);
 
+        // Check for a valid language
         if (empty($i18n)) {
             $URL .= '&return=error1';
             header("Location: {$URL}");
@@ -51,7 +52,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
         $installed = i18nFileInstall($_SESSION[$guid]['absolutePath'], $i18n['code']);
 
         // Tag this i18n with the current version it was installed at
-        $updated = $i18nGateway->updateI18nVersion($gibboni18nID, 'Y', $version);
+        $dataUpdate = ['installed' => 'Y', 'version' => $version];
+        $updated = $i18nGateway->update($gibboni18nID, $dataUpdate);
 
         if (!$installed) {
             $URL .= '&return=error3';

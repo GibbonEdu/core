@@ -228,7 +228,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $table->addColumn('status', __('Status'))
             ->description(__('Milestones'))
             ->format(function($application) {
-                $statusText = '<strong>'.$application['status'].'</strong>';
+                $statusText = '<strong>'.__($application['status']).'</strong>';
                 if ($application['status'] == 'Pending') {
                     $statusText .= '<br/><span style="font-style: italic; font-size: 85%">'.str_replace(',', '<br/>', $application['milestones']).'</span>';
                 }

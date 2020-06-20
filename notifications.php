@@ -49,7 +49,7 @@ if (!$gibbon->session->exists('username')) {
 
     $table->setTitle(__('New Notifications'));
 
-    $table->addColumn('source', __('Source'));
+    $table->addColumn('source', __('Source'))->translatable();
     $table->addColumn('timestamp', __('Date'))->format(Format::using('date', 'timestamp'));
     $table->addColumn('text', __('Message'));
     $table->addColumn('count', __('Count'));
@@ -81,7 +81,7 @@ if (!$gibbon->session->exists('username')) {
 
     $table->setTitle(__('Archived Notifications'));
 
-    $table->addColumn('source', __('Source'));
+    $table->addColumn('source', __('Source'))->translatable();
     $table->addColumn('timestamp', __('Date'))->format(Format::using('date', 'timestamp'));
     $table->addColumn('text', __('Message'));
     $table->addColumn('count', __('Count'));

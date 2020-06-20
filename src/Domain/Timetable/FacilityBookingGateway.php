@@ -35,7 +35,7 @@ class FacilityBookingGateway extends QueryableGateway
     private static $primaryKey = 'gibbonTTSpaceBookingID';
 
     private static $searchableColumns = [''];
-    
+
     /**
      * @param QueryCriteria $criteria
      * @return DataSet
@@ -76,5 +76,20 @@ class FacilityBookingGateway extends QueryableGateway
         }
 
         return $this->runQuery($query, $criteria);
+    }
+
+    public function queryFacilityBookingsByDate($startDate, $endDate)
+    {
+        $data = array('startDate' => $startDate, 'endDate' => $endDate);
+        $sql = "SELECT gibbonTTSpaceBookingID, date, timeStart, timeEnd, gibbonSpace.name, gibbonSpace.gibbonSpaceID
+            FROM gibbonTTSpaceBooking
+                INNER JOIN gibbonSpace ON gibbonTTSpaceBooking.foreignKeyID=gibbonSpace.gibbonSpaceID
+            WHERE
+                foreignKey='gibbonSpaceID'
+                AND date>=:startDate
+                AND date<=:endDate";
+
+        return $this->db()->select($sql, $data);
+
     }
 }

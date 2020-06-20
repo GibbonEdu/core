@@ -51,12 +51,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
         'sidebar' => 'false',
     ];
 
+    if ($viewMode == 'export') {
+        $urlParams['view'] = 'list';
+    }
+
     // QUERY
     $staffGateway = $container->get(StaffGateway::class);
     $criteria = $staffGateway->newQueryCriteria(!$directoryView)
         ->searchBy($staffGateway->getSearchableColumns(), $urlParams['search'])
         ->filterBy('biographicalGrouping', $urlParams['grouping'])
         ->filterBy('all', $urlParams['allStaff'])
+        ->pageSize(!empty($viewMode) ? 0 : 50)
         ->fromPOST();
 
     // FILTERS

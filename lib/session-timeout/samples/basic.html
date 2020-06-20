@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Basic Sample | Session Timeout</title>
+  </head>
+  <body>
+    <h1>Basic Sample | Session Timeout</h1>
+
+    <p>The warning dialog will appear after 3 seconds.</p>
+    <p>The page will redirect to "/time-out" after 1 minute.</p>
+    <p>Clicking "Stay connected" will fetch the keep-alive URL in the background and delay the redirect for 1 minute each click.</p>
+
+    <script src="../dist/session-timeout.js"></script>
+    <script>
+      sessionTimeout({
+        warnAfter: 3000,
+        timeOutAfter: 60000,
+      });
+    </script>
+  </body>
+</html>

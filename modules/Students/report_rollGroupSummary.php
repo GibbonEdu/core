@@ -117,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
 
     $rollGroupsData[] = [
         'rollGroup'   => __('All Roll Groups'),
-        'meanAge'     => number_format(array_sum($filteredAges) / count($filteredAges ?? 1), 1),
+        'meanAge'     => !empty($filteredAges) ? number_format(array_sum($filteredAges) / count($filteredAges), 1) : 0,
         'totalMale'   => array_sum(array_column($rollGroupsData, 'totalMale')),
         'totalFemale' => array_sum(array_column($rollGroupsData, 'totalFemale')),
         'total'       => array_sum(array_column($rollGroupsData, 'total')),

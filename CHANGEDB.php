@@ -618,3 +618,36 @@ UPDATE `gibbonAction` SET precedence=1 WHERE name='Write Reports_mine' AND gibbo
 CREATE TABLE `gibbonDiscussion` (`gibbonDiscussionID` INT(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, `foreignTable` VARCHAR(60) NOT NULL, `foreignTableID` INT(14) UNSIGNED ZEROFILL NOT NULL, `gibbonModuleID` INT(4) UNSIGNED ZEROFILL NOT NULL, `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NOT NULL, `type` VARCHAR(60) NULL, `comment` TEXT NULL, `attachmentType` enum('File','Link') NULL, `attachmentLocation` text NULL, `gibbonDiscussionIDReplyTo` INT(12) UNSIGNED ZEROFILL NULL, `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (`gibbonDiscussionID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
 UPDATE gibbonScaleGrade SET descriptor='1%' WHERE value='1%' AND descriptor='2%' AND gibbonScaleID=00004;end
 ";
+
+//v20.0.00
+++$count;
+$sql[$count][0] = '20.0.00';
+$sql[$count][1] = "
+ALTER TABLE `gibbonDepartment` ADD `sequenceNumber` INT(4) UNSIGNED NULL AFTER `logo`;end
+UPDATE `gibboni18n` SET `name` = 'Español - España' WHERE `code` = 'es_ES';end
+INSERT INTO `gibboni18n` (`code`, `name`, `active`, `installed`, `systemDefault`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`, `rtl`) VALUES ('es_MX', 'Español - Mexico', 'Y', 'N', 'N', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N');end
+ALTER TABLE `gibbonReportingValue` DROP INDEX `gibbonReportingCriteriaID`, ADD UNIQUE `gibbonReportingCriteriaID` (`gibbonReportingCriteriaID`, `gibbonPersonIDStudent`, `gibbonCourseClassID`) USING BTREE;end
+ALTER TABLE `gibbonReportTemplateFont` ADD `fontType` ENUM('R','B','I','BI') NOT NULL DEFAULT 'R' AFTER `fontPath`;end
+ALTER TABLE `gibbonReportTemplateFont` ADD `fontFamily` VARCHAR(60) NULL AFTER `fontType`;end
+UPDATE `gibbonReportTemplateFont` SET fontFamily=fontName WHERE fontFamily IS NULL;end
+ALTER TABLE `gibbonReportTemplate` ADD `config` TEXT NULL AFTER `flags`;end
+ALTER TABLE `gibbonHook` CHANGE `type` `type` ENUM('Public Home Page','Student Profile','Parental Dashboard','Staff Dashboard','Student Dashboard','Report Writing') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
+ALTER TABLE `gibbonReportingCriteriaType` ADD UNIQUE(`name`);end
+ALTER TABLE `gibbonStaffCoverageDate` CHANGE `value` `value` DECIMAL(3,2) NOT NULL DEFAULT '1.00';end
+ALTER TABLE `gibbonStaffAbsenceDate` CHANGE `value` `value` DECIMAL(3,2) NOT NULL DEFAULT '1.00';end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Students', 'applicationFormRefereeRequired', 'Application Form Referee Required', 'Should the referee email address field be required?', 'Y');end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES((SELECT gibbonModuleID FROM gibbonModule WHERE name='Students'), 'Withdraw Student', 0, 'Admissions', 'Enables admin to set a student to left and notify other users.', 'student_withdraw.php', 'student_withdraw.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
+INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Students' AND gibbonAction.name='Withdraw Student'));end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Student Withdrawn', 'Students', 'View Student Profile_full', 'Core', 'All,gibbonYearGroupID', 'Y');end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('New Staff', 'Staff', 'Staff Directory_full', 'Core', 'All', 'Y');end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Staff Left', 'Staff', 'Staff Directory_full', 'Core', 'All', 'Y');end
+ALTER TABLE `gibbonTTImport` CHANGE `courseNameShort` `courseNameShort` VARCHAR(12) NOT NULL DEFAULT '';end
+ALTER TABLE `gibbonTTImport` CHANGE `classNameShort` `classNameShort` VARCHAR(8) NOT NULL DEFAULT '';end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES((SELECT gibbonModuleID FROM gibbonModule WHERE name='Reports'), 'Upload Reports', 0, 'Archive', 'Enables users to upload reports from a ZIP archive.', 'archive_manage_upload.php,archive_manage_uploadPreview.php', 'archive_manage_upload.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
+INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Reports' AND gibbonAction.name='Upload Reports'));end
+UPDATE `gibbonAction` SET URLList = 'archive_manage.php,archive_manage_add.php,archive_manage_edit.php,archive_manage_delete.php,archive_manage_migrate.php' WHERE name='Manage Archives' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Reports');end
+UPDATE `gibbonAction` SET category = 'Data' WHERE name='Import From File ' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin');end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES((SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin'), 'View Logs', 0, 'Data', 'Enables users to browse Gibbon\'s event log.', 'logs_view.php', 'logs_view.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
+INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='System Admin' AND gibbonAction.name='View Logs'));end
+UPDATE gibbonAction SET categoryPermissionStudent='N', categoryPermissionParent='N' WHERE name='Lesson Planner_viewAllEditMyClasses' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Planner');end
+";

@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -68,21 +69,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
             //Let's go!
             $values = $result->fetch();
 
-            echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-            echo '<tr>';
-            echo "<td style='width: 34%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
-            echo Format::name('', $values['preferredName'], $values['surname'], 'Student');
-            echo '</td>';
-            echo "<td style='width: 33%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__('Status').'</span><br/>';
-            echo '<i>'.$values['status'].'</i>';
-            echo '</td>';
-            echo "<td style='width: 34%; vertical-align: top'>";
-
-            echo '</td>';
-            echo '</tr>';
-            echo '</table>';
+            // DISPLAY INVOICEE DATA
+            $table = DataTable::createDetails('personal');
+                $table->addColumn('name', __('Name'))->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', 'true']));
+                $table->addColumn('status', __('Status'))->translatable();
+            echo $table->render([$values]);
+;
 
             $form = Form::create('updateFinance', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/invoicees_manage_editProcess.php?gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&search=".$_GET['search'].'&allUsers='.$_GET['allUsers']);
 

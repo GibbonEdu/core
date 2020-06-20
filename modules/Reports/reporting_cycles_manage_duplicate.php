@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
 
     $row = $form->addRow();
         $row->addLabel('cycleTotal', __('Total Cycles'));
-        $row->addNumber('cycleTotal')->onlyInteger(true)->required()->setValue(1);
+        $row->addNumber('cycleTotal')->onlyInteger(true)->required()->setValue($values['cycleTotal']);
 
     $row = $form->addRow();
         $row->addFooter();

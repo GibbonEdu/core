@@ -17,47 +17,32 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\AlarmGateway;
+
 //Gibbon system-wide includes
 include './gibbon.php';
 
-$gibbonAlarmID = $_GET['gibbonAlarmID'];
-$gibbonPersonID = $_GET['gibbonPersonID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php';
+$gibbonAlarmID = $_GET['gibbonAlarmID'] ?? '';
+$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+$URL = $gibbon->session->get('absoluteURL').'/index.php';
 
 //Proceed!
-if ($gibbonAlarmID == '' or $gibbonPersonID == '') {
+if (empty($gibbonAlarmID) or empty($gibbonPersonID)) {
     header("Location: {$URL}");
 } else {
     //Check alarm
-    try {
-        $data = array('gibbonAlarmID' => $gibbonAlarmID);
-        $sql = 'SELECT * FROM gibbonAlarm WHERE gibbonAlarmID=:gibbonAlarmID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-    }
+    $alarmGateway = $container->get(AlarmGateway::class);
+    
+    $alarm = $alarmGateway->getByID($gibbonAlarmID);
 
-    if ($result->rowCount() == 1) {
-        $row = $result->fetch();
-
+    if (!empty($alarm)) {
         //Check confirmation of alarm
-        try {
-            $dataConfirm = array('gibbonAlarmID' => $gibbonAlarmID, 'gibbonPersonID' => $gibbonPersonID);
-            $sqlConfirm = 'SELECT * FROM gibbonAlarmConfirm WHERE gibbonAlarmID=:gibbonAlarmID AND gibbonPersonID=:gibbonPersonID';
-            $resultConfirm = $connection2->prepare($sqlConfirm);
-            $resultConfirm->execute($dataConfirm);
-        } catch (PDOException $e) {
-        }
+        $alarmConfirm = $alarmGateway->getAlarmConfirmationByPerson($alarm['gibbonAlarmID'], $gibbonPersonID);
 
-        if ($resultConfirm->rowCount() == 0) {
+        if (empty($alarmConfirm)) {
             //Insert confirmation
-            try {
-                $dataConfirm = array('gibbonAlarmID' => $gibbonAlarmID, 'gibbonPersonID' => $gibbonPersonID, 'timestamp' => date('Y-m-d H:i:s'));
-                $sqlConfirm = 'INSERT INTO gibbonAlarmConfirm SET gibbonAlarmID=:gibbonAlarmID, gibbonPersonID=:gibbonPersonID, timestamp=:timestamp';
-                $resultConfirm = $connection2->prepare($sqlConfirm);
-                $resultConfirm->execute($dataConfirm);
-            } catch (PDOException $e) {
-            }
+            $dataConfirm = ['gibbonAlarmID' => $alarm['gibbonAlarmID'], 'gibbonPersonID' => $gibbonPersonID, 'timestamp' => date('Y-m-d H:i:s')];
+            $alarmGateway->insertAlarmConfirm($dataConfirm);
         }
     }
 

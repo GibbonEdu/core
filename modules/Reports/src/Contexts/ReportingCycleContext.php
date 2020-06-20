@@ -28,18 +28,25 @@ class ReportingCycleContext implements DataContext
     public function getFormatter()
     {
         return function ($values) {
-            return Format::name('', $values['preferredName'], $values['surname'], 'Student', true, false);
+            return Format::name('', $values['preferredName'], $values['surname'], 'Student', true, false).
+                '<br/><small><i>'.Format::userStatusInfo($values).'</i></small>';
+
         };
     }
 
-    public function getIdentifiers(Connection $db, string $gibbonReportID, string $gibbonYearGroupID)
+    public function getIdentifiers(Connection $db, string $gibbonReportID, string $gibbonYearGroupID, $showLeft = false)
     {
         $data = ['gibbonReportID' => $gibbonReportID, 'gibbonYearGroupID' => $gibbonYearGroupID];
         $sql = "SELECT gibbonReportingCycle.gibbonReportingCycleID, 
                     gibbonStudentEnrolment.gibbonStudentEnrolmentID, 
                     gibbonPerson.gibbonPersonID, 
                     gibbonPerson.preferredName, 
-                    gibbonPerson.surname
+                    gibbonPerson.surname,
+                    gibbonPerson.status,
+                    gibbonPerson.dateStart,
+                    gibbonPerson.dateEnd,
+                    'Student' as roleCategory,
+                    gibbonYearGroup.nameShort as yearGroup
                 FROM gibbonReport
                 JOIN gibbonReportingCycle ON (gibbonReportingCycle.gibbonReportingCycleID=gibbonReport.gibbonReportingCycleID)
                 JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonReportingCycle.gibbonSchoolYearID)
@@ -47,9 +54,12 @@ class ReportingCycleContext implements DataContext
                 JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID)
                 JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                 WHERE gibbonReport.gibbonReportID=:gibbonReportID
-                AND FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupID)
-                AND gibbonPerson.status='Full'
-                ORDER BY gibbonYearGroup.sequenceNumber, gibbonRollGroup.nameShort, gibbonStudentEnrolment.rollOrder, gibbonPerson.surname, gibbonPerson.preferredName";
+                AND FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupID) ";
+        $sql .= $showLeft
+            ? "AND (gibbonPerson.status='Full' OR gibbonPerson.status='Left') "
+            : "AND gibbonPerson.status='Full'";
+
+        $sql .= "ORDER BY gibbonYearGroup.sequenceNumber, gibbonRollGroup.nameShort, gibbonStudentEnrolment.rollOrder, gibbonPerson.surname, gibbonPerson.preferredName";
 
         return $db->select($sql, $data)->fetchAll();
     }

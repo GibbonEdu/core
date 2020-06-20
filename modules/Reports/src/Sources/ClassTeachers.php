@@ -50,6 +50,7 @@ class ClassTeachers extends DataSource
                 JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
                 WHERE gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID
                 AND gibbonCourseClassPerson.role='Teacher'
+                AND gibbonCourseClassPerson.reportable = 'Y'
                 AND gibbonPerson.status='Full'";
 
         $result = $this->db()->select($sql, $data);

@@ -40,16 +40,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
-        try {
-            $data = array('gibbonModuleID' => $gibbonModuleID);
-            $sql = 'SELECT * FROM gibbonModule WHERE gibbonModuleID=:gibbonModuleID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
+        $data = array('gibbonModuleID' => $gibbonModuleID);
+        $sql = 'SELECT * FROM gibbonModule WHERE gibbonModuleID=:gibbonModuleID';
+        $result = $pdo->select($sql, $data);
 
         if ($result->rowCount() != 1) {
             $URL .= '&return=error2';
@@ -77,83 +70,49 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                             $name = substr($table, 5);
                         }
                         if ($type != null and $name != null) {
-                            try {
-                                $dataDelete = array();
-                                $sqlDelete = "DROP $type $name";
-                                $resultDelete = $connection2->prepare($sqlDelete);
-                                $resultDelete->execute($dataDelete);
-                            } catch (PDOException $e) {
-                                echo $e->getMessage().'<br/><br/>';
-                                $partialFail = true;
-                            }
+                            $sqlDelete = "DROP $type $name";
+                            $partialFail &= !$pdo->statement($sqlDelete);
                         }
                     }
                 }
             }
 
             //Get actions to remove permissions
-            try {
-                $data = array('gibbonModuleID' => $gibbonModuleID);
-                $sql = 'SELECT * FROM gibbonAction WHERE gibbonModuleID=:gibbonModuleID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
+            $data = array('gibbonModuleID' => $gibbonModuleID);
+            $sql = 'SELECT * FROM gibbonAction WHERE gibbonModuleID=:gibbonModuleID';
+            $result = $pdo->select($sql, $data);
 
             while ($row = $result->fetch()) {
                 //Remove permissions
-                try {
-                    $dataDelete = array('gibbonActionID' => $row['gibbonActionID']);
-                    $sqlDelete = 'DELETE FROM gibbonPermission WHERE gibbonActionID=:gibbonActionID';
-                    $resultDelete = $connection2->prepare($sqlDelete);
-                    $resultDelete->execute($dataDelete);
-                } catch (PDOException $e) {
-                    $partialFail = true;
-                }
+                $dataDelete = array('gibbonActionID' => $row['gibbonActionID']);
+                $sqlDelete = 'DELETE FROM gibbonPermission WHERE gibbonActionID=:gibbonActionID';
+                $partialFail &= !$pdo->delete($sqlDelete, $dataDelete);
             }
 
             //Remove actions
-            try {
-                $dataDelete = array('gibbonModuleID' => $gibbonModuleID);
-                $sqlDelete = 'DELETE FROM gibbonAction WHERE gibbonModuleID=:gibbonModuleID';
-                $resultDelete = $connection2->prepare($sqlDelete);
-                $resultDelete->execute($dataDelete);
-            } catch (PDOException $e) {
-                $partialFail = true;
-            }
+            $dataDelete = array('gibbonModuleID' => $gibbonModuleID);
+            $sqlDelete = 'DELETE FROM gibbonAction WHERE gibbonModuleID=:gibbonModuleID';
+            $partialFail &= !$pdo->delete($sqlDelete, $dataDelete);
 
             //Remove module
-            try {
-                $dataDelete = array('gibbonModuleID' => $gibbonModuleID);
-                $sqlDelete = 'DELETE FROM gibbonModule WHERE gibbonModuleID=:gibbonModuleID';
-                $resultDelete = $connection2->prepare($sqlDelete);
-                $resultDelete->execute($dataDelete);
-            } catch (PDOException $e) {
-                $partialFail = true;
-            }
+            $dataDelete = array('gibbonModuleID' => $gibbonModuleID);
+            $sqlDelete = 'DELETE FROM gibbonModule WHERE gibbonModuleID=:gibbonModuleID';
+            $partialFail &= !$pdo->delete($sqlDelete, $dataDelete);
 
             //Remove hooks
-            try {
-                $dataDelete = array('gibbonModuleID' => $gibbonModuleID);
-                $sqlDelete = 'DELETE FROM gibbonHook WHERE gibbonModuleID=:gibbonModuleID';
-                $resultDelete = $connection2->prepare($sqlDelete);
-                $resultDelete->execute($dataDelete);
-            } catch (PDOException $e) {
-                $partialFail = true;
-            }
+            $dataDelete = array('gibbonModuleID' => $gibbonModuleID);
+            $sqlDelete = 'DELETE FROM gibbonHook WHERE gibbonModuleID=:gibbonModuleID';
+            $partialFail &= !$pdo->delete($sqlDelete, $dataDelete);
 
             //Remove settings
-            try {
-                $dataDelete = array('scope' => $module);
-                $sqlDelete = 'DELETE FROM gibbonSetting WHERE scope=:scope';
-                $resultDelete = $connection2->prepare($sqlDelete);
-                $resultDelete->execute($dataDelete);
-            } catch (PDOException $e) {
-                $partialFail = true;
-            }
+            $dataDelete = array('scope' => $module);
+            $sqlDelete = 'DELETE FROM gibbonSetting WHERE scope=:scope';
+            $partialFail &= !$pdo->delete($sqlDelete, $dataDelete);
+
+            //Remove notification events
+            $dataDelete = array('module' => $module);
+            $sqlDelete = 'DELETE gibbonNotificationEvent, gibbonNotificationListener FROM gibbonNotificationEvent LEFT JOIN gibbonNotificationListener ON (gibbonNotificationEvent.gibbonNotificationEventID=gibbonNotificationListener.gibbonNotificationEventID) WHERE gibbonNotificationEvent.moduleName=:module';
+            $partialFail &= !$pdo->delete($sqlDelete, $dataDelete);
 
             if ($partialFail == true) {
                 $URL .= '&return=warning2';
@@ -162,11 +121,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                 // Clear the main menu from session cache
                 $gibbon->session->forget('menuMainItems');
 
-                if ($orphaned != 'true') {
-                    $URLDelete = $URLDelete.'&return=warning0';
-                } else {
-                    $URLDelete = $URLDelete.'&return=success0';
-                }
+                $URLDelete .= $orphaned != 'true'
+                    ? '&return=warning0'
+                    : '&return=success0';
                 header("Location: {$URLDelete}");
             }
         }

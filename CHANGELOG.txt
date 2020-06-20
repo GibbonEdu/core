@@ -16,6 +16,99 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v20.0.00
+--------
+    Headlines
+        Messenger emails now send faster by using a background process
+        View Logs feature to browse Gibbon event logs
+        Added Español - Mexico as an available locale
+        Compatible with PHP 7.4
+
+    Significant Changes
+        Students: added a Withdraw Student page with the option to notify staff
+        Reports: added an option to bulk upload existing report PDFs
+
+    Tweaks & Additions
+        System: added Argentine Peso and Ukrainian Hryvna as currency options
+        System: updated Tailwind 1.2.0 dependencies via npm
+        System: updated SessionTimeout with translation support and jQuery/jQuery UI dependency removed
+        System: added target option to Alert Bar
+        System: added a DetailsView table for displaying data
+        System: updated the pre-login homepage to use a card layout
+        System: added a comment editor and code editor to the Form library
+        System: improved translation support in forms and tables throughout the system
+        Departments: added drag-drop ordering to Departments in School Admin
+        Finance: added Student ID, where set, to invoices and receipts
+        Finance: applied email template to invoices, receipts, and reminders
+        Messenger: added Parent and Student options to Applicants target in New Message
+        Planner: enhanced Smart Block display in Lesson Planner
+        Planner: removed bold from Chat comment in lesson plan view
+        Reports: added a Proof Read by Form Group option
+        Reports: added an option to select the PDF rendering library in Template Builder
+        Reports: added hooks for custom criteria types in the report writing screen
+        Reports: added the ability to select fonts in Template Builder
+        Reports: added the option to generate single reports for Left students
+        Reports: added alerts to student details in Write Reports
+        Reports: added auto resize to comment text boxes in Write Reports
+        Reports: changed criteria status to Locked/Unlocked for better clarity
+        Reports: added a progress bar to the sidebar in Write Reports
+        Reports: added himself/herself to the pronoun checker
+        Reports: added a live-reload to report generating progress bar
+        School Admin: changed names in Edit Attendance Code to readonly
+        Staff: added an option to edit or delete staff coverage dates
+        Staff: added Family and Activities subpages to Staff Profile
+        Staff: added notificaton events for New and Left staff
+        Students: added an Exclude Left Students checkbox to Student Enrolment Trends, off by default
+        Students: added option allowing the referee email field in the Application Form to be set to option
+        Students: added a grid view of student's teachers to Student Profile
+        Timetable: added Bookings into View Available Facilities report
+        User Admin: added rich text editors to the Application Form Settings
+        User Admin: added an option to enter a departure reason for final year students in Rollover
+        User Admin: added an option to create a linked staff record for new users
+        User Admin: added no record warning to View Role
+        User Admin: switched from warning to message in Edit User
+
+    Bug Fixes
+        System: fixed module uninstall to also remove notification events
+        System: fixed Quick File Upload trimming filename by first period
+        System: fixed paragraph spacing in copy-pasted Messenger emails
+        System: fixed hourly cache refresh for pinned messages
+        System: fixed the first and last day of the selected school year
+        Activities: fixed Attendance History by Activity table scroll
+        Attendance: fixed Attendance Summary by Date displaying "no results" before form submitted
+        Finance: fixed fee name bug in issued Invoices where fee name changed
+        Finance: fixed invoices not viewable by student
+        Planner: changed spelling of Publically to Publicly
+        Planner: removed debug code from homework submission
+        Planner: removed ability for students and parents to be granted Lesson Planner_viewAllEditMyClasses
+        Staff: fixed Left staff appearing in Weekly Absences report
+        Staff: fixed Staff Directory only exporting first 50 staff members
+        Staff: fixed staff directory export when viewing grid or card view
+        Students: fixed emergency data report not showing parents column
+        Students: fixed Tutors and EAs set to Left showing on Student Profile
+        Students: fixed past enrolments showing up in Students by Form Group
+        Students: adjusted Add Student Enrolment to allow Full and Expected students to be selected and enroled
+        Students: ensure alert bar in Student Profile does not display for Parents or Students
+        Reports: fixed Course scope Per Group criteria not saving per-class
+        Reports: suppressed TCPDF deprecation messages when generating PDFs
+        Reports: fixed pronoun switching not applied globally in some browsers
+        Reports: fixed Student Info template to omit empty student photos
+        Reports: fixed AttendanceByCycle data source and updated it to apply countClassAsSchool setting
+        Reports: fixed grade scale drown-downs for Per Group reporting criteria
+        Reports: fixed bug in Internal Assessment data source
+        Reports: adjusted student lists to honour Reportable flag
+        Reports: applied gibbonCourseClassPerson reportable flag to queries
+        Reports: fixed uniqueness check in Manage Reports to include school year
+        Reports: fixed stylesheet missing when generating batch PDFs
+        Roll Groups: fixed link to print action from Roll Group details page
+        System Admin: fixed File Permission display issue in System Check
+        System Admin: fixed issue causing string replacement preventing update highlighting in Manage Modules
+        Timetable: escaped calendar event names in timetable tooltips
+        Timetable: incremented gibbonTTImport course and class name field lengths
+        Timetable Admin: implemented bulk Tie Days to Dates duplicate checking
+        Timetable Admin: fixed Course Enrolment by Class unable to delete duplicate entries
+        Timetable Admin: fixed missing Back to Search links in course enrolment pages
+
 v19.0.00
 --------
     Headlines

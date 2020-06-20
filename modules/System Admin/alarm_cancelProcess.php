@@ -17,55 +17,36 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\AlarmGateway;
+use Gibbon\Domain\System\SettingGateway;
+
 include '../../gibbon.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/System Admin/alarm.php';
+$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/System Admin/alarm.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $gibbonAlarmID = '';
-    if (isset($_GET['gibbonAlarmID'])) {
-        $gibbonAlarmID = $_GET['gibbonAlarmID'];
-    }
+    $gibbonAlarmID = $_GET['gibbonAlarmID'] ?? '';
 
     //Validate Inputs
-    if ($gibbonAlarmID == '') {
+    if (empty($gibbonAlarmID)) {
         $URL .= '&return=error3';
         header("Location: {$URL}");
     } else {
-        $fail = false;
-
+        $alarmGateway = $container->get(AlarmGateway::class);
+        $settingGateway = $container->get(SettingGateway::class);
         //DEAL WITH ALARM SETTING
         //Write setting to database
-        try {
-            $data = array();
-            $sql = "UPDATE gibbonSetting SET value='None' WHERE scope='System' AND name='alarm'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
+        $dataWhere = ['scope' => 'System', 'name' => 'alarm'];
+        $settingGateway->updateWhere($dataWhere, ['value' => 'None']);
+        //Write alarm to database
+        $alarmGateway->update($gibbonAlarmID, ['status' => 'Past', 'timestampEnd' => date('Y-m-d H:i:s')]);
 
-        //Deal with alarm record
-        try {
-            $data = array('timestampEnd' => date('Y-m-d H:i:s'), 'gibbonAlarmID' => $gibbonAlarmID);
-            $sql = "UPDATE gibbonAlarm SET status='Past', timestampEnd=:timestampEnd WHERE gibbonAlarmID=:gibbonAlarmID";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        if ($fail == true) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-        } else {
-            getSystemSettings($guid, $connection2);
-            $URL .= '&return=success0';
-            header("Location: {$URL}");
-        }
+        getSystemSettings($guid, $connection2);
+        $URL .= '&return=success0';
+        header("Location: {$URL}");
     }
 }

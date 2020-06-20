@@ -41,7 +41,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
         'marginX'     => $_POST['marginX'] ?? '',
         'marginY'     => $_POST['marginY'] ?? '',
         'stylesheet'  => $_POST['stylesheet'] ?? '',
+        'flags'       => $_POST['flags'] ?? '',
     ];
+
+    $config = [
+        'fonts' => $_POST['fonts'] ?? [],
+    ];
+
+    $data['config'] = json_encode($config);
 
     // Validate the required values are present
     if (empty($data['name'])) {

@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Application Form Settings'));
-    
+
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
@@ -41,19 +41,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
     $row = $form->addRow()->addHeading(__('General Options'));
 
     $setting = getSettingByScope($connection2, 'Application Form', 'introduction', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextArea($setting['name'])->setValue($setting['value']);
-
-    $setting = getSettingByScope($connection2, 'Students', 'applicationFormRefereeLink', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addURL($setting['name'])->setValue($setting['value']);
+    $col = $form->addRow()->addColumn();
+        $col->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $col->addEditor($setting['name'], $guid)->setValue($setting['value'])->setRows(8);
 
     $setting = getSettingByScope($connection2, 'Application Form', 'postscript', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextArea($setting['name'])->setValue($setting['value']);
+    $col = $form->addRow()->addColumn();
+        $col->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $col->addEditor($setting['name'], $guid)->setValue($setting['value'])->setRows(8);
 
     $setting = getSettingByScope($connection2, 'Application Form', 'agreement', true);
     $row = $form->addRow();
@@ -104,6 +99,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
         if (empty($setting['value'])) {
             $years->selectAll();
         }
+
+    $row = $form->addRow()->addHeading(__('References'));
+
+    $setting = getSettingByScope($connection2, 'Students', 'applicationFormRefereeLink', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addURL($setting['name'])->setValue($setting['value']);
+
+    $setting = getSettingByScope($connection2, 'Students', 'applicationFormRefereeRequired', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $row = $form->addRow()->addHeading(__('Required Documents Options'));
 
@@ -225,4 +232,3 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
 
     echo $form->getOutput();
 }
-?>

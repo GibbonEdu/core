@@ -49,6 +49,14 @@ class RoleGateway extends QueryableGateway
                 'gibbonRoleID', 'name', 'nameShort', 'category', 'description', 'type', 'canLoginRole', 'futureYearsLogin', 'pastYearsLogin'
             ]);
 
+        $criteria->addFilterRules([
+            'category' => function ($query, $category) {
+                return $query
+                    ->where('gibbonRole.category = :category')
+                    ->bindValue('category', $category);
+            },
+        ]);
+        
         return $this->runQuery($query, $criteria);
     }
 

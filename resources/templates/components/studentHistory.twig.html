@@ -102,7 +102,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                             {{ attendance.badge(day) }}
 
                             <span>{{ day.dateDisplay }}</span>
-                            <span class="mt-1 font-bold">{{ day.endOfDay.type }}</span>
+                            <span class="mt-1 font-bold">{{ __(day.endOfDay.type) }}</span>
 
                             {% if printView %}
                                 <span class="mt-1">

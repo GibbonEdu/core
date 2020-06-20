@@ -70,6 +70,11 @@ class ReportTemplate
         }, array()));
     }
 
+    public function getHeaders()
+    {
+        return $this->headers;
+    }
+
     public function addHeader($section, $pageNum = self::ALL_PAGES)
     {
         if ($section = $this->getOrCreateSection($section)) {
@@ -95,6 +100,11 @@ class ReportTemplate
         }
 
         return false;
+    }
+
+    public function getFooters()
+    {
+        return $this->footers;
     }
 
     public function addFooter($section, $pageNum = self::ALL_PAGES)

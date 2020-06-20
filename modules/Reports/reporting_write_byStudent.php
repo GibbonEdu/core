@@ -22,8 +22,8 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\System\HookGateway;
 use Gibbon\Module\Reports\Forms\ReportingSidebarForm;
-use Gibbon\Module\Reports\Forms\CommentEditor;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Module\Reports\Domain\ReportingAccessGateway;
 use Gibbon\Module\Reports\Domain\ReportingScopeGateway;
@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
     $_SESSION[$guid]['sidebarExtra'] = $sidebarForm->getOutput();
 
     $page->scripts->add('chart');
-    
+
     $page->breadcrumbs
         ->add(__('My Reporting'), 'reporting_my.php', ['gibbonPersonID' => $gibbonPersonID])
         ->add(__('Write Reports'), 'reporting_write.php', $urlParams)
@@ -112,21 +112,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
     } elseif ($reportingScope['scopeType'] == 'Course') {
         $scopeIdentifier = 'gibbonCourseClassID';
     }
-    
+
     // Check for student enrolment info, fallback to user info
     $student = $container->get(StudentGateway::class)->selectActiveStudentByPerson($reportingCycle['gibbonSchoolYearID'], $gibbonPersonIDStudent)->fetch();
     if (empty($student)) {
         $student = $container->get(UserGateway::class)->getByID($gibbonPersonIDStudent);
     }
-    
+
     if (empty($student)) {
         $page->addError(__('The specified record cannot be found.'));
         return;
     }
-    
+
     $scopeDetails = $reportingAccessGateway->selectReportingDetailsByScope($urlParams['gibbonReportingScopeID'], $reportingScope['scopeType'], $urlParams['scopeTypeID'])->fetch();
     $relatedReports = $container->get(ReportingScopeGateway::class)->selectRelatedReportingScopesByID($urlParams['gibbonReportingScopeID'], $reportingScope['scopeType'], $urlParams['scopeTypeID'])->fetchAll();
     $reportingProgress = $container->get(ReportingProgressGateway::class)->selectBy(['gibbonReportingScopeID' => $urlParams['gibbonReportingScopeID'], $scopeIdentifier => $urlParams['scopeTypeID'], 'gibbonPersonIDStudent' => $gibbonPersonIDStudent])->fetch();
+    $student['alerts'] = getAlertBar($guid, $connection2, $gibbonPersonIDStudent, $student['privacy'], '', false, false, "_blank");
 
     $progress = $reportingAccessGateway->selectReportingProgressByScope($urlParams['gibbonReportingScopeID'], $reportingScope['scopeType'], $urlParams['scopeTypeID'], $urlParams['allStudents'] == 'Y')->fetchGroupedUnique();
     $progressComplete = array_reduce($progress, function ($group, $item) {
@@ -169,6 +170,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
 
     $form->addRow()->addClass('reportStatus')->addContent($scopeDetails['name'])->wrap('<h4 class="mt-3 p-0">', '</h4>');
 
+    // HOOKS
+    // Custom hooks can replace form fields by criteria type using a custom include.
+    // Includes are loaded inside a function to limit their variable scope.
+    $hooks = $container->get(HookGateway::class)->selectHooksByType('Report Writing')->fetchKeyPair();
+    $hookInclude = function ($options, $criteria) use (&$gibbon, &$container, &$form, $student, $scopeDetails, $reportingScope, $reportingCriteria, $urlParams, $canWriteReport) {
+        $options = json_decode($options, true);
+        $includePath = $gibbon->session->get('absolutePath').'/modules/'.$options['sourceModuleName'].'/'.$options['sourceModuleInclude'];
+
+        if (!empty($options) && is_file($includePath)) {
+            include $includePath;
+            return true;
+        }
+
+        return false;
+    };
+
     $lastCategory = '';
     foreach ($reportingCriteria as $criteria) {
         $fieldName = "value[{$criteria['gibbonReportingCriteriaID']}]";
@@ -178,13 +195,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
             $row = $form->addRow()->addContent($criteria['category'])->wrap('<h5 class="my-2 p-0 text-sm normal-case border-0">', '</h5>');
         }
 
-        if ($criteria['valueType'] == 'Comment' || $criteria['valueType'] == 'Remark') {
+        if (isset($hooks[$criteria['criteriaName']])) {
+            // Attempt to load a hook, otherwise display an alert.
+            if (!$hookInclude($hooks[$criteria['criteriaName']], $criteria)) {
+                $form->addHiddenValue($fieldName, $criteria['value']);
+                $form->addRow()->addAlert(__('Failed to load {name}', [
+                    'name' => $criteria['criteriaName'],
+                ]), 'error');
+            }
+
+        } elseif ($criteria['valueType'] == 'Comment' || $criteria['valueType'] == 'Remark') {
             $col = $form->addRow()->addColumn();
             $col->addLabel($fieldName, $criteria['name'])->description($criteria['description']);
-            $col->addElement(new CommentEditor($fieldName))
+            $col->addCommentEditor($fieldName)
+                ->checkName($student['preferredName'])
+                ->checkPronouns($student['gender'])
                 ->addClass('reportCriteria')
-                ->addData('name', $student['preferredName'])
-                ->addData('gender', $student['gender'])
                 ->setID($fieldID)
                 ->maxLength($criteria['characterLimit'])
                 ->setValue($criteria['comment'])
@@ -194,11 +220,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
             $row->addLabel($fieldName, $criteria['name'])->description($criteria['description'])->setClass('font-normal');
 
             if ($criteria['valueType'] == 'Grade Scale') {
-                $row->addSelectGradeScaleGrade($fieldName, $criteria['gibbonScaleID'], ['valueMode' => 'value', 'labelMode' => 'both', 'honourDefault' => true])
+                $gradeSelect = $row->addSelectGradeScaleGrade($fieldName, $criteria['gibbonScaleID'], ['valueMode' => 'value', 'labelMode' => 'both', 'honourDefault' => true])
                     ->addClass('reportCriteria')
                     ->setID($fieldID)
-                    ->readonly(!$canWriteReport)
-                    ->selected($criteria['value']);
+                    ->readonly(!$canWriteReport);
+
+                if (!is_null($criteria['gibbonReportingValueID'])) {
+                    $gradeSelect->selected($criteria['value']);
+                }
             } elseif ($criteria['valueType'] == 'Yes/No') {
                 $row->addYesNo($fieldName)
                     ->addClass('reportCriteria')
@@ -239,7 +268,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
                     'tag'     => '',
                     'comment'    => !empty($remark['comment']) ? $remark['comment'] : __('N/A'),
                 ]);
-                
+
                 $col->addContent($remarkText);
             }
         }
@@ -251,7 +280,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
             ->description(__('Complete'))
             ->addClass('align-middle reportCriteria')
             ->setLabelClass('inline-block pt-2 pb-1 px-2 text-base align-middle')
-            ->checked($reportingProgress['status'] == 'Complete')
+            ->checked($reportingProgress && $reportingProgress['status'] == 'Complete')
             ->readonly(!$canWriteReport)
             ->setDisabled(!$canWriteReport);
 
@@ -302,6 +331,10 @@ var complete = false;
 var readonly = <?php echo !empty($canWriteReport) && $canWriteReport ? 'false' : 'true'; ?>;
 
 updateStatus();
+
+$(document).ready(function(){
+    autosize($('textarea'));
+});
 
 function save() {
     $('[name="gibbonPersonIDNext"]').val('');

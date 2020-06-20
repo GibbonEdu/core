@@ -1007,11 +1007,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                     echo '</th>';
                                     echo '<th>';
                                     echo __('TT Period').'<br/>';
-                                    echo "<span style='font-size: 85%; font-style: italic'>Time</span>";
+                                    echo "<span style='font-size: 85%; font-style: italic'>".__('Time')."</span>";
                                     echo '</th>';
                                     echo '<th>';
                                     echo __('Planned Lesson').'<br/>';
-                                    echo "<span style='font-size: 85%; font-style: italic'>Unit</span>";
+                                    echo "<span style='font-size: 85%; font-style: italic'>".__('Unit')."</span>";
                                     echo '</th>';
                                     echo '<th>';
                                     echo __('Actions');
@@ -1044,7 +1044,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                         ++$count;
 
                                         //Spit out row for start of term
-                                        while ($lesson['1'] >= $terms[$termCount][0] and $termCount < (count($terms) - 1)) {
+                                        while ($termCount < (count($terms) - 1) && $lesson['1'] >= $terms[$termCount][0]) {
                                             if (substr($terms[$termCount][1], 0, 3) == 'End' and $lesson['1'] == $terms[$termCount][0]) {
                                                 break;
                                             } else {
@@ -1077,8 +1077,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                         if ($lesson[8] != 'School Closure') {
                                             echo "<tr class=$rowNum>";
                                             echo "<td $style>";
-                                            echo '<b>Lesson '.($classCount + 1).'</b>';
-                                            echo '</td>';
+                                            echo "<b>".__('Lesson')." ".($classCount + 1)."</b>";
+                                            echo "</td>";
                                             echo "<td $style>";
                                             echo '<b>'.dateConvertBack($guid, $lesson['1']).'</b><br/>';
                                             echo Format::dateReadable($lesson['1'], '%A').'<br/>';

@@ -41,7 +41,7 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
         } else {
             try {
                 $data = array('gibbonPersonID' => $gibbonPersonID);
-                $sql = "SELECT gibbonPersonID FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonPerson.status='Full'";
+                $sql = "SELECT gibbonPersonID FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID AND (gibbonPerson.status='Full' OR gibbonPerson.status='Expected')";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {

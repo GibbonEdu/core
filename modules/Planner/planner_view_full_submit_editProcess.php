@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
         //Proceed!
         //Check if planner specified
         if ($gibbonPlannerEntryID == '') {
-            $URL .= '&return=error1a';
+            $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
             try {
@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                 header("Location: {$URL}");
             } else {
                 if ($_POST['submission'] != 'true' and $_POST['submission'] != 'false') {
-                    $URL .= '&return=error1b';
+                    $URL .= '&return=error1';
                     header("Location: {$URL}");
                 } else {
                     if ($_POST['submission'] == 'true') {

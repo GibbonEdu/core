@@ -169,7 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                     $row = $form->addRow();
                         $row->addLabel('nextname', __('School Year Name'))->description(__('Must be unique.'));
-                        $row->addTextField('nextname')->required()->maxLength(9);
+                        $row->addTextField('nextname')->required()->maxLength(9)->addClass('w-64');
 
                     $row = $form->addRow();
                         $row->addLabel('nextstatus', __('Status'));
@@ -181,11 +181,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                     $row = $form->addRow();
                         $row->addLabel('nextfirstDay', __('First Day'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-                        $row->addDate('nextfirstDay')->required();
+                        $row->addDate('nextfirstDay')->required()->addClass('w-64');
 
                     $row = $form->addRow();
                         $row->addLabel('nextlastDay', __('Last Day'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-                        $row->addDate('nextlastDay')->required();
+                        $row->addDate('nextlastDay')->required()->addClass('w-64');
                 }
 
                 //SET EXPECTED USERS TO FULL
@@ -453,17 +453,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                         $row->addColumn()->addContent(__('Primary Role'));
                         $row->addColumn()->addContent(__('Current Status'));
                         $row->addColumn()->addContent(__('New Status'));
+                        $row->addColumn()->addContent(__('Departure Reason'));
 
                     $count = 0;
                     while ($rowFinal = $resultFinal->fetch()) {
                         $count++;
                         $form->addHiddenValue($count."-final-gibbonPersonID", $rowFinal['gibbonPersonID']);
                         $row = $form->addRow();
-                            $row->addColumn()->addContent(Format::name('', $rowFinal['preferredName'], $rowFinal['surname'], 'Student', true));
-                            $row->addColumn()->addContent(__($rowFinal['name']));
-                            $row->addColumn()->addContent(__('Full'));
-                            $column = $row->addColumn();
-                                $column->addSelect($count."-final-status")->fromArray($statuses)->required()->setClass('shortWidth floatNone')->selected('Left');
+                            $row->addContent(Format::name('', $rowFinal['preferredName'], $rowFinal['surname'], 'Student', true));
+                            $row->addContent(__($rowFinal['name']));
+                            $row->addContent(__('Full'));
+                            $row->addSelect($count."-final-status")->fromArray($statuses)->required()->setClass('shortWidth floatNone')->selected('Left');
+                            $row->addTextField($count.'-departureReason')->setValue(__('Graduated'))->setSize(12);
                     }
                     $form->addHiddenValue("final-count", $count);
                 }
@@ -1030,12 +1031,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                             for ($i = 1; $i <= $count; ++$i) {
                                 $gibbonPersonID = $_POST["$i-final-gibbonPersonID"];
                                 $status = $_POST["$i-final-status"];
+                                $departureReason = $_POST["$i-departureReason"];
 
                                 //Write to database
                                 $left = true;
                                 try {
-                                    $data = array('gibbonPersonID' => $gibbonPersonID, 'dateEnd' => $dateEnd, 'status' => $status);
-                                    $sql = 'UPDATE gibbonPerson SET status=:status, dateEnd=:dateEnd WHERE gibbonPersonID=:gibbonPersonID';
+                                    $data = array('gibbonPersonID' => $gibbonPersonID, 'dateEnd' => $dateEnd, 'status' => $status, 'departureReason' => $departureReason);
+                                    $sql = 'UPDATE gibbonPerson SET status=:status, dateEnd=:dateEnd, departureReason=:departureReason WHERE gibbonPersonID=:gibbonPersonID';
                                     $result = $connection2->prepare($sql);
                                     $result->execute($data);
                                 } catch (PDOException $e) {

@@ -311,7 +311,7 @@ class BackgroundProcessor implements ContainerAwareInterface
     protected function handleShutdown($processID, $processData)
     {
         $lastError = error_get_last();
-        if ($lastError['type'] === E_ERROR) {
+        if ($lastError && $lastError['type'] === E_ERROR) {
             $this->endProcess($processID, [
                 'status' => 'Error',
                 'output' => $lastError['message'],

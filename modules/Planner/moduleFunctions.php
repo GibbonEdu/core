@@ -216,7 +216,7 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
             $output .= "<td style='text-align: right'><i>".$datetimePosted."</i></td>";
             $output .= "</tr>";
             $output .= "<tr>";
-            $output .= "<td style='max-width: ".(700 - ($level * 15))."px;' colspan=2><b>".$rowDiscuss['comment'].'</b></td>';
+            $output .= "<td style='max-width: ".(700 - ($level * 15))."px;' colspan=2>".$rowDiscuss['comment'].'</td>';
             $output .= "</tr>";
             $output .= "<tr>";
             if ($links == true) {

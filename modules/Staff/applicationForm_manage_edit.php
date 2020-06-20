@@ -133,10 +133,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 $column->addTextArea('notes')->setRows(5)->setClass('fullWidth');
 
             $form->addRow()->addHeading(__('Job Related Information'));
+            
+            $form->addHiddenValue('type', $values['type']);
 
             $row = $form->addRow();
-                $row->addLabel('type', __('Job Type'));
-                $row->addTextField('type')->readOnly()->required();
+                $row->addLabel('typeRole', __('Job Type'));
+                $row->addTextField('typeRole')->readOnly()->required()->setValue(__($values['type']));
 
             $form->addHiddenValue('gibbonStaffJobOpeningID', $values['gibbonStaffJobOpeningID']);
             $row = $form->addRow();
@@ -178,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
                 $row = $form->addRow();
                     $row->addLabel('officialName', __('Official Name'))->description(__('Full name as shown in ID documents.'));
-                    $row->addTextField('officialName')->required()->maxLength(150)->setTitle('Please enter full name as shown in ID documents');
+                    $row->addTextField('officialName')->required()->maxLength(150)->setTitle(__('Please enter full name as shown in ID documents'));
 
                 $row = $form->addRow();
                     $row->addLabel('nameInCharacters', __('Name In Characters'))->description(__('Chinese or other character-based name.'));
@@ -219,7 +221,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                         $row->addSelectCountry('citizenship1')->required();
                     }
 
-                $countryName = (isset($_SESSION[$guid]['country']))? $_SESSION[$guid]['country'].' ' : '';
+                $countryName = (isset($_SESSION[$guid]['country']))? __($_SESSION[$guid]['country']).' ' : '';
                 $row = $form->addRow();
                     $row->addLabel('citizenship1Passport', __('Citizenship Passport Number'))->description('');
                     $row->addTextField('citizenship1Passport')->maxLength(30);

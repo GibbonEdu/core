@@ -1095,7 +1095,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         $title = '';
                         if (strlen($label) > 20) {
                             $label = substr($label, 0, 20).'...';
-                            $title = "title='".$event[0]."'";
+                            $title = "title='".htmlPrep($event[0])."'";
                         }
                         $height = '30px';
                         $top = (($maxAllDays * -31) - 8 + ($allDay * 30)).'px';
@@ -1115,7 +1115,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         }
                         if (strlen($label) > $charCut) {
                             $label = substr($label, 0, $charCut).'...';
-                            $title = "title='".$event[0].' ('.date('H:i', $event[2]).' to '.date('H:i', $event[3]).")'";
+                            $title = "title='".htmlPrep($event[0]).' ('.date('H:i', $event[2]).' to '.date('H:i', $event[3]).")'";
                         }
                         $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$gridTimeStart)) / 60 )).'px';
                         $output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
@@ -1439,7 +1439,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                             $title = '';
                             if (strlen($label) > 20) {
                                 $label = substr($label, 0, 20).'...';
-                                $title = "title='".$event[0]."'";
+                                $title = "title='".htmlPrep($event[0])."'";
                             }
                             $height = '30px';
                             $top = (($maxAllDays * -31) - 8 + ($allDay * 30)).'px';
@@ -1457,7 +1457,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                             }
                             if (strlen($label) > $charCut) {
                                 $label = substr($label, 0, $charCut).'...';
-                                $title = "title='".$event[0].' ('.date('H:i', $event[2]).' to '.date('H:i', $event[3]).")'";
+                                $title = "title='".htmlPrep($event[0]).' ('.date('H:i', $event[2]).' to '.date('H:i', $event[3]).")'";
                             }
                             $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$gridTimeStart)) / 60 )).'px';
                             $output .= "<div class='ttSchoolCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
@@ -1481,7 +1481,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                             $title = '';
                             if (strlen($label) > 20) {
                                 $label = substr($label, 0, 20).'...';
-                                $title = "title='".$event[0]."'";
+                                $title = "title='".htmlPrep($event[0])."'";
                             }
                             $height = '30px';
                             $top = (($maxAllDays * -31) - 8 + ($allDay * 30)).'px';
@@ -1501,7 +1501,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                             }
                             if (strlen($label) > $charCut) {
                                 $label = substr($label, 0, $charCut).'...';
-                                $title = "title='".$event[0].' ('.date('H:i', $event[2]).' to '.date('H:i', $event[3]).")'";
+                                $title = "title='".htmlPrep($event[0]).' ('.date('H:i', $event[2]).' to '.date('H:i', $event[3]).")'";
                             }
                             $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$gridTimeStart)) / 60 )).'px';
                             $output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";

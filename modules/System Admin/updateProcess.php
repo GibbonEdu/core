@@ -87,6 +87,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
                 // Clear the var/log folder
                 removeDirectoryContents($_SESSION[$guid]['absolutePath'].'/var/log');
 
+                //Reset cache to force top-menu reload
+                $gibbon->session->forget('pageLoads');
+
                 $URL .= '&return=success0';
                 header("Location: {$URL}");
             }
@@ -208,7 +211,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
                 removeDirectoryContents($_SESSION[$guid]['absolutePath'].'/var', true);
 
                 //Reset cache to force top-menu reload
-                $_SESSION[$guid]['pageLoads'] = null;
+                $gibbon->session->forget('pageLoads');
 
                 $URL .= '&return=success0';
                 header("Location: {$URL}");

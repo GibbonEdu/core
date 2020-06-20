@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Unique Keep-Alive URL | Session Timeout</title>
+  </head>
+  <body>
+    <h1>Unique Keep-Alive URL | Session Timeout</h1>
+
+    <p>The warning dialog will appear after 3 seconds.</p>
+
+    <p>A timestamp will be appended to each background keep-alive fetch to guarantee a unique URL.</p>
+
+    <script src="../dist/session-timeout.js"></script>
+    <script>
+      sessionTimeout({
+        warnAfter: 3000,
+        appendTimestamp: true,
+      });
+    </script>
+  </body>
+</html>

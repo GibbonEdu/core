@@ -16,3 +16,29 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
+
+.unit-block p,
+.unit-block ul,
+.unit-block ol {
+    font-size: inherit;
+}
+
+.unit-block ul {
+    margin-left: 0.8rem;
+}
+
+.unit-block ul ul,
+.unit-block ul ol,
+.unit-block ol ol,
+.unit-block ol ul  {
+    margin-left: 2rem;
+}
+
+.unit-block li {
+    margin-bottom: 0.5rem;
+}
+
+.unit-block iframe {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}

@@ -83,15 +83,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_access_m
             ->setSize(4)
             ->fromArray($scopesOptions)
             ->selectMultiple()
+            ->required()
             ->selected(explode(',', $values['gibbonReportingScopeIDList']));
 
     $row = $form->addRow();
         $row->addLabel('dateStart', __('Start Date'));
-        $row->addDate('dateStart')->chainedTo('dateEnd')->isRequired();
+        $row->addDate('dateStart')->chainedTo('dateEnd')->required();
 
     $row = $form->addRow();
         $row->addLabel('dateEnd', __('End Date'));
-        $row->addDate('dateEnd')->chainedFrom('dateStart')->isRequired();
+        $row->addDate('dateEnd')->chainedFrom('dateStart')->required();
 
     $row = $form->addRow();
         $row->addLabel('canWrite', __('Can Write'));

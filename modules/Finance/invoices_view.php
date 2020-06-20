@@ -105,8 +105,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                 }
             }
         } else if ($highestAction=="View Invoices_mine") {
-            $count = 1;
             $gibbonPersonID = $_SESSION[$guid]["gibbonPersonID"];
+            $options = [$gibbonPersonID];
         }
 
         if (!empty($gibbonPersonID) and count($options) > 0) {

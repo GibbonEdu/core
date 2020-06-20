@@ -48,25 +48,25 @@ class InvoiceGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonFinanceInvoice.gibbonFinanceInvoiceID', 
-                'gibbonFinanceInvoice.invoiceTo',  
-                'gibbonFinanceInvoice.status', 
-                'gibbonFinanceInvoice.invoiceIssueDate', 
-                'gibbonFinanceInvoice.paidDate', 
-                'gibbonFinanceInvoice.paidAmount', 
-                'gibbonFinanceInvoice.notes', 
-                'gibbonPerson.surname', 
-                'gibbonPerson.preferredName', 
+                'gibbonFinanceInvoice.gibbonFinanceInvoiceID',
+                'gibbonFinanceInvoice.invoiceTo',
+                'gibbonFinanceInvoice.status',
+                'gibbonFinanceInvoice.invoiceIssueDate',
+                'gibbonFinanceInvoice.paidDate',
+                'gibbonFinanceInvoice.paidAmount',
+                'gibbonFinanceInvoice.notes',
+                'gibbonPerson.surname',
+                'gibbonPerson.preferredName',
                 'gibbonRollGroup.name AS rollGroup',
                 "(CASE 
                     WHEN gibbonFinanceInvoice.status = 'Pending' AND billingScheduleType='Scheduled' THEN gibbonFinanceBillingSchedule.invoiceDueDate 
                     ELSE gibbonFinanceInvoice.invoiceDueDate END
-                ) AS invoiceDueDate", 
+                ) AS invoiceDueDate",
                 "(CASE 
                     WHEN gibbonFinanceInvoice.status = 'Pending' AND billingScheduleType='Scheduled' THEN gibbonFinanceBillingSchedule.name
                     WHEN billingScheduleType='Ad Hoc' THEN 'Ad Hoc'
                     ELSE gibbonFinanceBillingSchedule.name END
-                ) AS billingSchedule", 
+                ) AS billingSchedule",
                 "FIND_IN_SET(gibbonFinanceInvoice.status, 'Pending,Issued,Paid,Refunded,Cancelled') as defaultSortOrder"
             ])
             ->innerJoin('gibbonFinanceInvoicee', 'gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID')
@@ -81,21 +81,25 @@ class InvoiceGateway extends QueryableGateway
         $criteria->addFilterRules([
             'status' => function ($query, $status) {
                 switch ($status) {
-                    case 'Issued':     
+                    case 'Issued':
                         $query->where('gibbonFinanceInvoice.invoiceDueDate >= :today')
-                              ->bindValue('today', date('Y-m-d')); break;
+                              ->bindValue('today', date('Y-m-d'));
+                        break;
 
-                    case 'Issued - Overdue': 
+                    case 'Issued - Overdue':
                         $status = 'Issued';
                         $query->where('gibbonFinanceInvoice.invoiceDueDate < :today')
-                              ->bindValue('today', date('Y-m-d')); break;
+                              ->bindValue('today', date('Y-m-d'));
+                        break;
 
-                    case 'Paid': 
-                        $query->where('gibbonFinanceInvoice.invoiceDueDate >= gibbonFinanceInvoice.paidDate'); break;
+                    case 'Paid':
+                        $query->where('gibbonFinanceInvoice.invoiceDueDate >= gibbonFinanceInvoice.paidDate');
+                        break;
 
-                    case 'Paid - Late': 
+                    case 'Paid - Late':
                         $status = 'Paid';
-                        $query->where('gibbonFinanceInvoice.invoiceDueDate < gibbonFinanceInvoice.paidDate'); break;
+                        $query->where('gibbonFinanceInvoice.invoiceDueDate < gibbonFinanceInvoice.paidDate');
+                        break;
                 }
 
                 return $query
@@ -129,7 +133,7 @@ class InvoiceGateway extends QueryableGateway
                 return $query
                     ->leftJoin('gibbonFinanceInvoiceFee', 'gibbonFinanceInvoiceFee.gibbonFinanceInvoiceID=gibbonFinanceInvoice.gibbonFinanceInvoiceID')
                     ->leftJoin('gibbonFinanceFee', 'gibbonFinanceInvoiceFee.gibbonFinanceFeeID=gibbonFinanceFee.gibbonFinanceFeeID')
-                    ->where(function($query) {
+                    ->where(function ($query) {
                         $query->where('gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID=:gibbonFinanceFeeCategoryID')
                               ->orWhere("(gibbonFinanceInvoiceFee.separated='N' AND gibbonFinanceFee.gibbonFinanceFeeCategoryID=:gibbonFinanceFeeCategoryID)");
                     })
@@ -137,6 +141,28 @@ class InvoiceGateway extends QueryableGateway
             },
         ]);
 
+        return $this->runQuery($query, $criteria);
+    }
+
+    public function queryFeeCategories(QueryCriteria $criteria)
+    {
+        $query = $this
+        ->newQuery()
+        ->from('gibbonFinanceFeeCategory')
+        ->cols([
+          'gibbonFinanceFeeCategoryID',
+          'name',
+          'nameShort',
+          'active',
+          'description'
+        ]);
+        $criteria->addFilterRules([
+        'active' => function ($query, $active) {
+            return $query
+            ->where('gibbonFinanceFeeCategory.active = :active')
+            ->bindValue('active', $active);
+        }
+        ]);
         return $this->runQuery($query, $criteria);
     }
 }
