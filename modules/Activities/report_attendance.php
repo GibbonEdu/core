@@ -201,11 +201,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
             echo '</div>';
         }
 
+        echo "<div id='attendance' class='block max-w-full'>";
         echo "<div class='doublescroll-wrapper'>";
 
         echo "<table class='mini' cellspacing='0' style='width:100%; border: 0; margin:0;'>";
         echo "<tr class='head' style='height:60px; '>";
-        echo "<th style='width:175px;'>";
+        echo "<th style='width:190px;'>";
         echo __('Student');
         echo '</th>';
         echo '<th>';
@@ -220,11 +221,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 
         $columnCount = ($allColumns) ? count($activitySessions) : count($sessionAttendanceData);
 
-        echo "<div class='doublescroll-container'>";
-        echo "<table class='mini colorOddEven' cellspacing='0' style='width: ".($columnCount * 56)."px'>";
+        echo "<div class='doublescroll-container overflow-x-scroll'>";
+        echo "<table class='mini colorOddEven border-0' cellspacing='0' style='width: ".($columnCount * 56)."px'>";
 
         echo "<tr style='height: 55px'>";
-        echo "<td style='vertical-align:top;height:55px;'>".__('Date').'</td>';
+        echo "<td style='vertical-align:top;height:55px;width:175px'>".__('Date').'</td>';
 
         foreach ($activitySessions as $sessionDate => $sessionTimestamp) {
             if (isset($sessionAttendanceData[$sessionDate]['data'])) {
@@ -299,6 +300,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
         }
 
         echo '</table>';
+        echo '</div>';
         echo '</div>';
         echo '</div><br/>';
     }

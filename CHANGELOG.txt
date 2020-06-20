@@ -78,6 +78,7 @@ v20.0.00
         System: fixed paragraph spacing in copy-pasted Messenger emails
         System: fixed hourly cache refresh for pinned messages
         System: fixed the first and last day of the selected school year
+        Activities: fixed Attendance History by Activity table scroll
         Attendance: fixed Attendance Summary by Date displaying "no results" before form submitted
         Finance: fixed fee name bug in issued Invoices where fee name changed
         Finance: fixed invoices not viewable by student
