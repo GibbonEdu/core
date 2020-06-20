@@ -21,16 +21,12 @@ v20.0.00
     Headlines
         Messenger emails now send faster by using a background process
         View Logs feature to browse Gibbon event logs
+        Added Español - Mexico as an available locale
         Compatible with PHP 7.4
 
-    Changes With Important Notices
-
     Significant Changes
-        Added Español - Mexico as an available locale
         Students: added a Withdraw Student page with the option to notify staff
         Reports: added an option to bulk upload existing report PDFs
-
-    Security
 
     Tweaks & Additions
         System: added Argentine Peso and Ukrainian Hryvna as currency options
@@ -38,12 +34,12 @@ v20.0.00
         System: updated SessionTimeout with translation support and jQuery/jQuery UI dependency removed
         System: added target option to Alert Bar
         System: added a DetailsView table for displaying data
-        System: update the pre-login homepage to use a card layout
+        System: updated the pre-login homepage to use a card layout
         System: added a comment editor and code editor to the Form library
         System: improved translation support in forms and tables throughout the system
         Departments: added drag-drop ordering to Departments in School Admin
         Finance: added Student ID, where set, to invoices and receipts
-        Finance: apply email template to invoices, receipts, and reminders
+        Finance: applied email template to invoices, receipts, and reminders
         Messenger: added Parent and Student options to Applicants target in New Message
         Planner: enhanced Smart Block display in Lesson Planner
         Planner: removed bold from Chat comment in lesson plan view
@@ -54,9 +50,9 @@ v20.0.00
         Reports: added the option to generate single reports for Left students
         Reports: added alerts to student details in Write Reports
         Reports: added auto resize to comment text boxes in Write Reports
-        Reports: change criteria status to Locked/Unlocked for better clarity
+        Reports: changed criteria status to Locked/Unlocked for better clarity
         Reports: added a progress bar to the sidebar in Write Reports
-        Reports: add himself/herself to the pronoun checker
+        Reports: added himself/herself to the pronoun checker
         Reports: added a live-reload to report generating progress bar
         School Admin: changed names in Edit Attendance Code to readonly
         Staff: added an option to edit or delete staff coverage dates
