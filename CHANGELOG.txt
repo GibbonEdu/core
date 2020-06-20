@@ -86,6 +86,7 @@ v20.0.00
         Planner: removed ability for students and parents to be granted Lesson Planner_viewAllEditMyClasses
         Staff: fixed Left staff appearing in Weekly Absences report
         Staff: fixed Staff Directory only exporting first 50 staff members
+        Staff: fixed staff directory export when viewing grid or card view
         Students: fixed emergency data report not showing parents column
         Students: fixed Tutors and EAs set to Left showing on Student Profile
         Students: fixed past enrolments showing up in Students by Form Group

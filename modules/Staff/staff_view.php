@@ -51,6 +51,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
         'sidebar' => 'false',
     ];
 
+    if ($viewMode == 'export') {
+        $urlParams['view'] = 'list';
+    }
+
     // QUERY
     $staffGateway = $container->get(StaffGateway::class);
     $criteria = $staffGateway->newQueryCriteria(!$directoryView)
