@@ -103,6 +103,7 @@ v20.0.00
         Reports: adjusted student lists to honour Reportable flag
         Reports: applied gibbonCourseClassPerson reportable flag to queries
         Reports: fixed uniqueness check in Manage Reports to include school year
+        Reports: fixed stylesheet missing when generating batch PDFs
         Roll Groups: fixed link to print action from Roll Group details page
         System Admin: fixed File Permission display issue in System Check
         System Admin: fixed issue causing string replacement preventing update highlighting in Manage Modules
