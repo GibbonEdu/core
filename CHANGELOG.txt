@@ -16,6 +16,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v21.0.00
+--------
+    Headlines
+
+    Changes With Important Notices
+
+    Significant Changes
+
+    Tweaks & Additions
+        Library: added ID column to View Overdue Items report
+
+    Bug Fixes
+
 v20.0.00
 --------
     Headlines

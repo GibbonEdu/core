@@ -651,3 +651,9 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='System Admin' AND gibbonAction.name='View Logs'));end
 UPDATE gibbonAction SET categoryPermissionStudent='N', categoryPermissionParent='N' WHERE name='Lesson Planner_viewAllEditMyClasses' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Planner');end
 ";
+
+//v21.0.00
+++$count;
+$sql[$count][0] = '21.0.00';
+$sql[$count][1] = "
+";
