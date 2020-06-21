@@ -40,10 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
     echo 'Choose Students';
     echo '</h2>';
 
-    $choices = null;
-    if (isset($_POST['gibbonPersonID'])) {
-        $choices = $_POST['gibbonPersonID'];
-    }
+    $choices = $_POST['gibbonPersonID'] ?? [];
 
     $form = Form::create('action',  $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/report_students_IDCards.php");
 

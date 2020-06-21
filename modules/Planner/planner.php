@@ -1044,7 +1044,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                         ++$count;
 
                                         //Spit out row for start of term
-                                        while ($lesson['1'] >= $terms[$termCount][0] and $termCount < (count($terms) - 1)) {
+                                        while ($termCount < (count($terms) - 1) && $lesson['1'] >= $terms[$termCount][0]) {
                                             if (substr($terms[$termCount][1], 0, 3) == 'End' and $lesson['1'] == $terms[$termCount][0]) {
                                                 break;
                                             } else {

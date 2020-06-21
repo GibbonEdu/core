@@ -9503,26 +9503,29 @@ LOCK TABLES `gibbonSchoolYearSpecialDay` WRITE;
 
 INSERT INTO `gibbonSchoolYearSpecialDay` (`gibbonSchoolYearSpecialDayID`, `gibbonSchoolYearTermID`, `type`, `name`, `description`, `date`, `schoolOpen`, `schoolStart`, `schoolEnd`, `schoolClose`)
 VALUES
-	(0000000261,00034,'School Closure','National Day','','2019-10-01',NULL,NULL,NULL,NULL),
-	(0000000263,00034,'School Closure','Half Term','','2019-10-07',NULL,NULL,NULL,NULL),
-	(0000000264,00034,'School Closure','Half Term','','2019-10-08',NULL,NULL,NULL,NULL),
-	(0000000265,00034,'School Closure','Half Term','','2019-10-09',NULL,NULL,NULL,NULL),
-	(0000000266,00034,'School Closure','Half Term','','2019-10-10',NULL,NULL,NULL,NULL),
-	(0000000267,00034,'School Closure','Half Term','','2019-10-11',NULL,NULL,NULL,NULL),
-	(0000000268,00035,'School Closure','Chinese New Year','','2020-02-03',NULL,NULL,NULL,NULL),
-	(0000000269,00035,'School Closure','Chinese New Year','','2020-01-24',NULL,NULL,NULL,NULL),
-	(0000000270,00035,'School Closure','Chinese New Year','','2020-01-28',NULL,NULL,NULL,NULL),
-	(0000000271,00035,'School Closure','Chinese New Year','','2020-01-29',NULL,NULL,NULL,NULL),
-	(0000000272,00035,'School Closure','Chinese New Year','','2020-01-30',NULL,NULL,NULL,NULL),
-	(0000000273,00035,'School Closure','Chinese New Year','','2020-01-31',NULL,NULL,NULL,NULL),
-	(0000000274,00035,'School Closure','Chinese New Year','','2020-01-27',NULL,NULL,NULL,NULL),
-	(0000000275,00034,'School Closure','CAS Week','','2019-11-04',NULL,NULL,NULL,NULL),
-	(0000000276,00034,'School Closure','CAS Week','','2019-11-05',NULL,NULL,NULL,NULL),
-	(0000000277,00034,'School Closure','CAS Week','','2019-11-06',NULL,NULL,NULL,NULL),
-	(0000000278,00034,'School Closure','CAS Week','','2019-11-07',NULL,NULL,NULL,NULL),
-	(0000000279,00034,'School Closure','CAS Week','','2019-11-08',NULL,NULL,NULL,NULL),
-	(0000000280,00036,'School Closure','Buddha\'s Birthday','','2020-04-30',NULL,NULL,NULL,NULL),
-	(0000000281,00036,'School Closure','Labour Day','','2020-05-01',NULL,NULL,NULL,NULL);
+	(0000000306, 00031, 'School Closure', 'National Day', '', '2020-10-01', NULL, NULL, NULL, NULL),
+	(0000000307, 00031, 'School Closure', 'Mid-Autumn Festival', '', '2020-10-02', NULL, NULL, NULL, NULL),
+	(0000000293, 00031, 'School Closure', 'Half Term', '', '2020-10-19', NULL, NULL, NULL, NULL),
+	(0000000294, 00031, 'School Closure', 'Half Term', '', '2020-10-20', NULL, NULL, NULL, NULL),
+	(0000000295, 00031, 'School Closure', 'Half Term', '', '2020-10-21', NULL, NULL, NULL, NULL),
+	(0000000296, 00031, 'School Closure', 'Half Term', '', '2020-10-22', NULL, NULL, NULL, NULL),
+	(0000000297, 00031, 'School Closure', 'Half Term', '', '2020-10-23', NULL, NULL, NULL, NULL),
+	(0000000298, 00031, 'School Closure', 'Half Term', '', '2020-10-26', NULL, NULL, NULL, NULL),
+	(0000000308, 00031, 'School Closure', 'CAS Week', '', '2020-11-09', NULL, NULL, NULL, NULL),
+	(0000000309, 00031, 'School Closure', 'CAS Week', '', '2020-11-10', NULL, NULL, NULL, NULL),
+	(0000000310, 00031, 'School Closure', 'CAS Week', '', '2020-11-11', NULL, NULL, NULL, NULL),
+	(0000000311, 00031, 'School Closure', 'CAS Week', '', '2020-11-12', NULL, NULL, NULL, NULL),
+	(0000000312, 00031, 'School Closure', 'CAS Week', '', '2020-11-13', NULL, NULL, NULL, NULL),
+	(0000000299, 00032, 'School Closure', 'Chinese New Year', '', '2021-02-11', NULL, NULL, NULL, NULL),
+	(0000000300, 00032, 'School Closure', 'Chinese New Year', '', '2021-02-12', NULL, NULL, NULL, NULL),
+	(0000000301, 00032, 'School Closure', 'Chinese New Year', '', '2021-02-15', NULL, NULL, NULL, NULL),
+	(0000000302, 00032, 'School Closure', 'Chinese New Year', '', '2021-02-16', NULL, NULL, NULL, NULL),
+	(0000000303, 00032, 'School Closure', 'Chinese New Year', '', '2021-02-17', NULL, NULL, NULL, NULL),
+	(0000000304, 00032, 'School Closure', 'Chinese New Year', '', '2021-02-18', NULL, NULL, NULL, NULL),
+	(0000000305, 00032, 'School Closure', 'Chinese New Year', '', '2021-02-19', NULL, NULL, NULL, NULL),
+	(0000000313, 00033, 'School Closure', 'Buddha\'s Birthday', '', '2021-05-19', NULL, NULL, NULL, NULL),
+	(0000000314, 00033, 'School Closure', 'Dragon Boat Festival', '', '2021-06-14', NULL, NULL, NULL, NULL);
+
 
 /*!40000 ALTER TABLE `gibbonSchoolYearSpecialDay` ENABLE KEYS */;
 UNLOCK TABLES;

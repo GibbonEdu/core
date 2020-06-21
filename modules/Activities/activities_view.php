@@ -435,7 +435,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             } elseif ($row['registration'] == 'N') {
                                 echo __('Closed').'<br/>';
                             } else {
-                                echo $rowEnrol['status'];
+                                echo $rowEnrol['status'] ?? '';
                             }
                             echo '</td>';
                         }
