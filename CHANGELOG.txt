@@ -27,6 +27,7 @@ v21.0.00
     Tweaks & Additions
         Library: added ID column to View Overdue Items report
         Reports: display the download link after a batch PDF has completed
+        Reports: added full course name to the report writing page
 
     Bug Fixes
 
