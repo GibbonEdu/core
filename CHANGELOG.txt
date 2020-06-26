@@ -30,6 +30,7 @@ v21.0.00
         Reports: added full course name to the report writing page
 
     Bug Fixes
+        Reports: fixed AttendanceByCycle data source counting school attendance as class attendance
 
 v20.0.00
 --------

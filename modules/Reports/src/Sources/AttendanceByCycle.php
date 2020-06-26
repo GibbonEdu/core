@@ -56,7 +56,7 @@ class AttendanceByCycle extends DataSource
             'gibbonStudentEnrolmentID' => $ids['gibbonStudentEnrolmentID'],
             'gibbonReportID'       => $ids['gibbonReportID']
         ];
-        $sql = "SELECT gibbonReportingCycle.cycleNumber , gibbonReport.gibbonReportID, gibbonAttendanceLogPerson.gibbonCourseClassID, gibbonAttendanceLogPerson.date, gibbonAttendanceLogPerson.timestampTaken, gibbonAttendanceLogPerson.type, gibbonAttendanceLogPerson.context, gibbonAttendanceCode.scope, gibbonAttendanceCode.direction
+        $sql = "SELECT DISTINCT gibbonReportingCycle.cycleNumber , gibbonReport.gibbonReportID, gibbonAttendanceLogPerson.gibbonCourseClassID, gibbonAttendanceLogPerson.date, gibbonAttendanceLogPerson.timestampTaken, gibbonAttendanceLogPerson.type, gibbonAttendanceLogPerson.context, gibbonAttendanceCode.scope, gibbonAttendanceCode.direction
                 FROM gibbonReport
                 JOIN gibbonReportingCycle ON (gibbonReportingCycle.gibbonSchoolYearID=gibbonReport.gibbonSchoolYearID)
                 JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonReport.gibbonSchoolYearID)
@@ -109,7 +109,7 @@ class AttendanceByCycle extends DataSource
 
                 // Optionally grab the class absent and late counts too
                 if ($this->countClassAsSchool == 'Y') {
-                    $absent += count(array_filter($nonClassLogs, function ($log) {
+                    $absent += count(array_filter($endOfClasses, function ($log) {
                         return ($log['direction'] == 'Out' && $log['scope'] == 'Offsite');
                     }));
 
