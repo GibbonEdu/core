@@ -16,7 +16,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
     <div class="flex-1 flex flex-col items-center justify-center py-4 border-t border-b bg-gray-100 text-gray-700" >
         <a class="text-sm text-center leading-tight text-gray-700 hover:text-blue-700 hover:underline" href="{{ absoluteURL }}/index.php?q=/modules/Reports/reporting_write.php&gibbonPersonIDStudent={{ prevStudent.gibbonPersonID }}&{{ params|url_encode }}">
-                <strong>{{ scopeDetails.scopeName }}</strong> - {{ scopeDetails.nameShort }}
+                <strong>{{ scopeDetails.scopeName }}</strong> - {{ scopeDetails.nameShort }} {{ scopeDetails.name != scopeDetails.nameShort ? "- "~scopeDetails.name : "" }}
         </a>
 
         {% if relatedReports and relatedReports|length > 1 %}
