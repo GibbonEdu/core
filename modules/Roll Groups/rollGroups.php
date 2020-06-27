@@ -53,7 +53,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php
 
         $table = DataTable::create('rollGroups');
         $table->setTitle(__('Roll Groups'));
-        $table->setDescription(__('This page shows all roll groups in the current school year.'));
 
         $table->addColumn('name', __('Name'));
         $table->addColumn('tutors', __('Form Tutors'))->format($formatTutorsList);
