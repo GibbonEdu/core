@@ -656,4 +656,6 @@ UPDATE gibbonAction SET categoryPermissionStudent='N', categoryPermissionParent=
 ++$count;
 $sql[$count][0] = '21.0.00';
 $sql[$count][1] = "
+UPDATE gibbonAction SET name='View Roll Groups_all', precedence='1' WHERE name='View Roll Groups' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Roll Groups');end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Roll Groups'), 'View Roll Groups_myChildren', 0, 'Roll Groups', 'View the roll groups in which a user\'s children study.', 'rollGroups.php,rollGroups_details.php', 'rollGroups.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'Y', 'N');end
 ";
