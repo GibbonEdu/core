@@ -31,6 +31,7 @@ v21.0.00
         Reports: added full course name to the report writing page
 
     Bug Fixes
+        System: fixed missing organization name on welcome page
         Reports: fixed AttendanceByCycle data source counting school attendance as class attendance
 
 v20.0.00
