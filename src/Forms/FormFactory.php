@@ -458,6 +458,7 @@ class FormFactory implements FormFactoryInterface
                 'NGN ₦' => 'Nigerian Naira (₦)',
                 'OMR ر.ع.' => 'Omani Rial (ر.ع.)',
                 'PKR ₨' => 'Pakistani Rupee (₨)',
+                'RON L' => 'Romanian Leu (L)',
                 'RUB ₽' => 'Russian Ruble (₽)',
                 'SAR ﷼‎' => 'Saudi Riyal (﷼‎)',
                 'ZAR R‎' => 'South African Rand (R‎)',
