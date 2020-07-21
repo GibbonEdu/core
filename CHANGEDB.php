@@ -661,4 +661,6 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 UPDATE `gibbonSetting` SET nameDisplay='Application Submission Fee', description='The cost of applying to the school. Paid when submitting the application form.' WHERE scope='Application Form' AND name='applicationFee';end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Application Form', 'applicationProcessFee', 'Application Processing Fee', 'An optional fee that is paid before processing the application form. Sent by staff via the Manage Applications page.', '0');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Application Form', 'applicationProcessFeeText', 'Application Processing Fee Text', 'A custom message sent to applicants by email when a processing fee needs to be paid.', '');end
+ALTER TABLE `gibbonApplicationForm` ADD `paymentMade2` ENUM('N','Y','Exemption') NOT NULL DEFAULT 'N' AFTER `paymentMade`;end
+ALTER TABLE `gibbonApplicationForm` ADD `gibbonPaymentID2` INT(14) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `gibbonPaymentID`;end
 ";

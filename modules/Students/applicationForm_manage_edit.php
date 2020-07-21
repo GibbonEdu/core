@@ -78,6 +78,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     if ($search != '') {
         echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Back to Search Results').'</a> | ';
     }
+
+    $applicationProcessFee = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee');
+    if (!empty($applicationProcessFee) && is_numeric($applicationProcessFee)) {
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_edit_fee.php&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Send Fee Request')."<img style='margin-left: 5px' title='".__('Send Fee Request')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_right.png'/></a> &nbsp;|&nbsp; ";
+    }
+
     echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_edit_print.php&gibbonApplicationFormID=$gibbonApplicationFormID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
     echo '</div>';
 
