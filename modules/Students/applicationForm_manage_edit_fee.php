@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $page->breadcrumbs
         ->add(__('Manage Applications'), 'applicationForm_manage.php', $urlParams)
         ->add(__('Edit Form'), 'applicationForm_manage_edit.php', $urlParams)
-        ->add(__('Send Fee Request'));
+        ->add(__('Send Payment Request'));
 
     if ($gibbonApplicationFormID == '' or $gibbonSchoolYearID == '') {
         echo Format::alert(__('You have not specified one or more required parameters.'));
