@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     }
 
     $applicationProcessFee = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee');
-    if ($application['paymentMade2'] != 'Y' && !empty($applicationProcessFee) && is_numeric($applicationProcessFee)) {
+    if ($application['paymentMade2'] == 'N' && !empty($applicationProcessFee) && is_numeric($applicationProcessFee)) {
         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_edit_fee.php&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Send Payment Request')."<img style='margin-left: 5px' title='".__('Send Payment Request')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_right.png'/></a> &nbsp;|&nbsp; ";
     }
 

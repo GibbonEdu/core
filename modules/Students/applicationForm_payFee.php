@@ -47,7 +47,7 @@ if (empty($application)) {
     return;
 }
 
-if (!empty($application['gibbonPaymentID2']) || $application['paymentMade2'] == 'Y') {
+if (!empty($application['gibbonPaymentID2']) || $application['paymentMade2'] != 'N') {
     echo Format::alert(__('A payment has already been made for this application form.'), 'success');
     return;
 }
