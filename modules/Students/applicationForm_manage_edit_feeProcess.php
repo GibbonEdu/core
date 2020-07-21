@@ -43,6 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         header("Location: {$URL}");
     }
 
+    $currency = getSettingByScope($connection2, 'System', 'currency');
     $applicationProcessFee = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee');
     $applicationProcessFeeText = $_POST['applicationProcessFeeText'] ?? '';
     if (empty($applicationProcessFee) || empty($applicationProcessFeeText)) {
@@ -56,12 +57,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $mail = $container->get(Mailer::class);
     $mail->AddAddress($application['parent1email']);
     $mail->setDefaultSender($subject);
-    $mail->renderBody('mail/email.twig.html', [
+    $mail->renderBody('mail/message.twig.html', [
         'title'  => $subject,
         'body'   => $body,
+        'details' => [
+            __('Application ID')             => $gibbonApplicationFormID,
+            __('Application Processing Fee') => $currency.$applicationProcessFee,
+        ],
         'button' => [
             'url'  => 'index.php?q=/modules/Students/applicationForm_payFee.php&key='.$application['gibbonApplicationFormHash'],
-            'text' => __('Pay Online Now'),
+            'text' => __('Pay Online'),
         ],
     ]);
 
