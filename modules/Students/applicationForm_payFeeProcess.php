@@ -114,6 +114,7 @@ if (empty($key) || empty($gibbonApplicationFormID)) {
 
             $mail = $container->get(Mailer::class);
             $mail->AddAddress($application['parent1email']);
+            $mail->AddBCC($_SESSION[$guid]['organisationAdmissionsEmail']);
             $mail->setDefaultSender($subject);
             $mail->renderBody('mail/message.twig.html', [
                 'title'  => __('Application Fee'),
