@@ -55,16 +55,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'applicationFee', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))
-            ->description(__($setting['description']))
-            ->append(sprintf(__('In %1$s.'), $_SESSION[$guid]['currency']));
-        $row->addNumber($setting['name'])
-            ->setValue($setting['value'])
-            ->decimalPlaces(2)
-            ->required();
-
     $setting = getSettingByScope($connection2, 'Application Form', 'publicApplications', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
@@ -99,6 +89,29 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
         if (empty($setting['value'])) {
             $years->selectAll();
         }
+
+    $row = $form->addRow()->addHeading(__('Application Fee'));
+
+    $setting = getSettingByScope($connection2, 'Application Form', 'applicationFee', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))
+            ->description(__($setting['description']));
+        $row->addCurrency($setting['name'])
+            ->setValue($setting['value'])
+            ->required();
+
+    $setting = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))
+            ->description(__($setting['description']));
+        $row->addCurrency($setting['name'])
+            ->setValue($setting['value'])
+            ->required();
+
+    $setting = getSettingByScope($connection2, 'Application Form', 'applicationProcessFeeText', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $row = $form->addRow()->addHeading(__('References'));
 
