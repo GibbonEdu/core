@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Domain\Finance\PaymentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -78,6 +79,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     if ($search != '') {
         echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Back to Search Results').'</a> | ';
     }
+
+    $applicationProcessFee = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee');
+    if ($application['paymentMade2'] == 'N' && !empty($applicationProcessFee) && is_numeric($applicationProcessFee)) {
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_edit_fee.php&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Send Payment Request')."<img style='margin-left: 5px' title='".__('Send Payment Request')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_right.png'/></a> &nbsp;|&nbsp; ";
+    }
+
     echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_edit_print.php&gibbonApplicationFormID=$gibbonApplicationFormID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
     echo '</div>';
 
@@ -175,6 +182,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     // PAYMENT
     $currency = getSettingByScope($connection2, 'System', 'currency');
     $applicationFee = getSettingByScope($connection2, 'Application Form', 'applicationFee');
+    $applicationProcessFee = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee');
     $enablePayments = getSettingByScope($connection2, 'System', 'enablePayments');
     $paypalAPIUsername = getSettingByScope($connection2, 'System', 'paypalAPIUsername');
     $paypalAPIPassword = getSettingByScope($connection2, 'System', 'paypalAPIPassword');
@@ -182,16 +190,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
     $ccPayment = false;
 
-    if ($applicationFee > 0 and is_numeric($applicationFee)) {
-        $paymentMadeOptions = array(
-            'N'         => __('N'),
-            'Y'         => __('Y'),
-            'Exemption' => __('Exemption'),
-        );
+    $paymentMadeOptions = array(
+        'N'         => __('N'),
+        'Y'         => __('Y'),
+        'Exemption' => __('Exemption'),
+    );
 
+    if ($applicationFee > 0 and is_numeric($applicationFee)) {
         // PAYMENT MADE
         $row = $form->addRow();
-            $row->addLabel('paymentMade', __('Payment'))->description(sprintf(__('Has payment (%1$s %2$s) been made for this application.'), $currency, $applicationFee));
+            $row->addLabel('paymentMade', __('Payment on Submission'))->description(sprintf(__('Has payment (%1$s %2$s) been made for this application.'), $currency, $applicationFee));
             $row->addSelect('paymentMade')->fromArray($paymentMadeOptions)->required();
 
         // PAYMENT DETAILS
@@ -203,6 +211,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $column->addContent(__('Payment Payer ID:').' '.$application['paymentPayerID']);
                 $column->addContent(__('Payment Transaction ID:').' '.$application['paymentTransactionID']);
                 $column->addContent(__('Payment Receipt ID:').' '.$application['paymentReceiptID']);
+        }
+    }
+
+    if ($applicationProcessFee > 0 and is_numeric($applicationProcessFee)) {
+        // PAYMENT MADE
+        $row = $form->addRow();
+            $row->addLabel('paymentMade2', __('Payment for Processing'))->description(sprintf(__('Has payment (%1$s %2$s) been made for this application.'), $currency, $applicationProcessFee));
+            $row->addSelect('paymentMade2')->fromArray($paymentMadeOptions)->required();
+
+        // PAYMENT DETAILS
+        $payment2 = $container->get(PaymentGateway::class)->getByID($application['gibbonPaymentID2']);
+        if (!empty($payment2)) {
+            $row = $form->addRow();
+                $column = $row->addColumn()->addClass('right');
+                $column->addContent(__('Payment Token:').' '.$payment2['paymentToken']);
+                $column->addContent(__('Payment Payer ID:').' '.$payment2['paymentPayerID']);
+                $column->addContent(__('Payment Transaction ID:').' '.$payment2['paymentTransactionID']);
+                $column->addContent(__('Payment Receipt ID:').' '.$payment2['paymentReceiptID']);
         }
     }
 
