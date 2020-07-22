@@ -130,16 +130,22 @@ if ($proceed == false) {
 
     $currency = getSettingByScope($connection2, 'System', 'currency');
     $applicationFee = getSettingByScope($connection2, 'Application Form', 'applicationFee');
+    $applicationProcessFee = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee');
     $enablePayments = getSettingByScope($connection2, 'System', 'enablePayments');
     $paypalAPIUsername = getSettingByScope($connection2, 'System', 'paypalAPIUsername');
     $paypalAPIPassword = getSettingByScope($connection2, 'System', 'paypalAPIPassword');
     $paypalAPISignature = getSettingByScope($connection2, 'System', 'paypalAPISignature');
     $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
 
-    if ($applicationFee > 0 and is_numeric($applicationFee)) {
+    if (!empty($applicationFee) || !empty($applicationProcessFee)) {
         echo "<div class='warning'>";
-        echo __('Please note that there is an application fee of:').' <b><u>'.$currency.$applicationFee.'</u></b>.';
-        if ($enablePayments == 'Y' and $paypalAPIUsername != '' and $paypalAPIPassword != '' and $paypalAPISignature != '') {
+        if ($applicationFee > 0 and is_numeric($applicationFee)) {
+            echo __('Please note that there is an application fee of:').' <b><u>'.$currency.$applicationFee.'</u></b>. ';
+        }
+        if ($applicationProcessFee > 0 and is_numeric($applicationProcessFee)) {
+            echo __('A processing fee of {fee} may be sent by email after your application has been submitted.', ['fee' => '<b><u>'.$currency.$applicationProcessFee.'</u></b>']);
+        }
+        if ($enablePayments == 'Y' and $paypalAPIUsername != '' and $paypalAPIPassword != '' and $paypalAPISignature != '' && !empty($applicationFee)) {
             echo ' '.__('Payment must be made by credit card, using our secure PayPal payment gateway. When you press Submit at the end of this form, you will be directed to PayPal in order to make payment. During this process we do not see or store your credit card details.');
         }
         echo '</div>';
