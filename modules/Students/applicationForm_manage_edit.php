@@ -183,7 +183,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $currency = getSettingByScope($connection2, 'System', 'currency');
     $applicationFee = getSettingByScope($connection2, 'Application Form', 'applicationFee');
     $applicationProcessFee = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee');
-    $applicationFee = getSettingByScope($connection2, 'Application Form', 'applicationFee');
     $enablePayments = getSettingByScope($connection2, 'System', 'enablePayments');
     $paypalAPIUsername = getSettingByScope($connection2, 'System', 'paypalAPIUsername');
     $paypalAPIPassword = getSettingByScope($connection2, 'System', 'paypalAPIPassword');

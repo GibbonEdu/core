@@ -51,6 +51,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         return;
     }
 
+    if (!empty($application['gibbonPaymentID2']) || $application['paymentMade2'] != 'N') {
+        echo Format::alert(__('A payment has already been made for this application form.'), 'success');
+        return;
+    }
+
     $enablePayments = getSettingByScope($connection2, 'System', 'enablePayments');
     $paypalAPIUsername = getSettingByScope($connection2, 'System', 'paypalAPIUsername');
     $paypalAPIPassword = getSettingByScope($connection2, 'System', 'paypalAPIPassword');
