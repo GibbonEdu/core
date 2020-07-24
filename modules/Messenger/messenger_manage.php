@@ -75,7 +75,7 @@ else {
 		print "<h2>" ;
 		print __("Messages") ;
         print "</h2>" ;
-        
+
         $messengerGateway = $container->get(MessengerGateway::class);
         $sendingMessages = $messengerGateway->getSendingMessages();
 
@@ -88,22 +88,22 @@ else {
 		try {
 			if ($highestAction=="Manage Messages_all") {
 				if ($search=="") {
-					$data=array();
-					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) ORDER BY timestamp DESC" ;
+					$data=array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'));
+					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY timestamp DESC" ;
 				}
 				else {
-					$data=array("search1"=>"%$search%", "search2"=>"%$search%");
-					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE (subject LIKE :search1 OR body LIKE :search2) ORDER BY timestamp DESC" ;
+					$data=array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), "search1"=>"%$search%", "search2"=>"%$search%");
+					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND (subject LIKE :search1 OR body LIKE :search2) ORDER BY timestamp DESC" ;
 				}
 			}
 			else {
 				if ($search=="") {
-					$data=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]);
-					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonMessenger.gibbonPersonID=:gibbonPersonID ORDER BY timestamp DESC" ;
+					$data=array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]);
+					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonMessenger.gibbonPersonID=:gibbonPersonID ORDER BY timestamp DESC" ;
 				}
 				else {
-					$data=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "search1"=>"%$search%", "search2"=>"%$search%");
-					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonMessenger.gibbonPersonID=:gibbonPersonID AND (subject LIKE :search1 OR body LIKE :search2) ORDER BY timestamp DESC" ;
+					$data=array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "search1"=>"%$search%", "search2"=>"%$search%");
+					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonMessenger.gibbonPersonID=:gibbonPersonID AND (subject LIKE :search1 OR body LIKE :search2) ORDER BY timestamp DESC" ;
 				}
 			}
 			$result=$connection2->prepare($sql);

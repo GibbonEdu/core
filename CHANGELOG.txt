@@ -29,6 +29,7 @@ v21.0.00
     Tweaks & Additions
         System: added Romanian Leu as currency option
         Library: added ID column to View Overdue Items report
+        Messenger: tied messages to school year
         Reports: display the download link after a batch PDF has completed
         Reports: added full course name to the report writing page
 
