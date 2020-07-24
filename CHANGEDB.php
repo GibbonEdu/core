@@ -663,4 +663,7 @@ INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `val
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Application Form', 'applicationProcessFeeText', 'Application Processing Fee Text', 'A custom message sent to applicants by email when a processing fee needs to be paid.', 'Thank you for your application submission. Please pay the following processing fee before your application is complete. Payment can be made by credit card, using our secure PayPal payment gateway. Click the button below to pay now.');end
 ALTER TABLE `gibbonApplicationForm` ADD `paymentMade2` ENUM('N','Y','Exemption') NOT NULL DEFAULT 'N' AFTER `paymentMade`;end
 ALTER TABLE `gibbonApplicationForm` ADD `gibbonPaymentID2` INT(14) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `gibbonPaymentID`;end
+ALTER TABLE `gibbonMessenger` ADD `gibbonSchoolYearID` INT(3) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `gibbonMessengerID`;end
+UPDATE `gibbonMessenger` SET `gibbonSchoolYearID` = (SELECT y1.gibbonSchoolYearID FROM gibbonSchoolYear AS y1 WHERE gibbonMessenger.timestamp < y1.lastDay AND (gibbonMessenger.timestamp  > (SELECT MAX(y2.lastDay) FROM gibbonSchoolYear as y2 WHERE y2.sequenceNumber<y1.sequenceNumber) OR y1.sequenceNumber=(SELECT MIN(sequenceNumber) FROM gibbonSchoolYear)) LIMIT 1);end
+UPDATE `gibbonMessenger` SET `gibbonSchoolYearID` = (SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current' LIMIT 1) WHERE gibbonSchoolYearID IS NULL;end
 ";
