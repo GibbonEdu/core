@@ -90,8 +90,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
 
             //Write to database
             try {
-                $data = array('email' => '', 'messageWall' => $messageWall, "messageWallPin" => $messageWallPin, 'messageWall_date1' => $date1, 'messageWall_date2' => $date2, 'messageWall_date3' => $date3, 'sms' => '', 'subject' => $subject, 'body' => $body, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'timestamp' => date('Y-m-d H:i:s'));
-                $sql = 'INSERT INTO gibbonMessenger SET email=:email, messageWall=:messageWall, messageWallPin=:messageWallPin, messageWall_date1=:messageWall_date1, messageWall_date2=:messageWall_date2, messageWall_date3=:messageWall_date3, sms=:sms, subject=:subject, body=:body, gibbonPersonID=:gibbonPersonID, timestamp=:timestamp';
+                $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), 'email' => '', 'messageWall' => $messageWall, "messageWallPin" => $messageWallPin, 'messageWall_date1' => $date1, 'messageWall_date2' => $date2, 'messageWall_date3' => $date3, 'sms' => '', 'subject' => $subject, 'body' => $body, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'timestamp' => date('Y-m-d H:i:s'));
+                $sql = 'INSERT INTO gibbonMessenger SET gibbonSchoolYearID=:gibbonSchoolYearID, email=:email, messageWall=:messageWall, messageWallPin=:messageWallPin, messageWall_date1=:messageWall_date1, messageWall_date2=:messageWall_date2, messageWall_date3=:messageWall_date3, sms=:sms, subject=:subject, body=:body, gibbonPersonID=:gibbonPersonID, timestamp=:timestamp';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
