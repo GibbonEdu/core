@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/services_mana
 
     if (!empty($settingName['value']) && !empty($settingKey['value'])) {
         echo '<h3>';
-        echo __('Your Services');
+        echo __('Extended Services');
         echo '</h3>';
 
         echo '<div id="servicesCheck">';
