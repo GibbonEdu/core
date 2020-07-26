@@ -50,7 +50,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     }
 
     $phpVersion = phpversion();
+    $phpVersion = stripos($phpVersion, '-') !== false ? strstr($phpVersion, '-', true) : $phpVersion;
+
     $mysqlVersion = $pdo->selectOne("SELECT VERSION()");
+    $mysqlVersion = stripos($mysqlVersion, '-') !== false ? strstr($mysqlVersion, '-', true) : $mysqlVersion;
 
     $phpRequirement = $gibbon->getSystemRequirement('php');
     $mysqlRequirement = $gibbon->getSystemRequirement('mysql');
