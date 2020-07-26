@@ -62,8 +62,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $passwordPolicyNonAlphaNumeric = $_POST['passwordPolicyNonAlphaNumeric'];
     $sessionDuration = $_POST['sessionDuration'];
     $currency = $_POST['currency'];
-    $gibboneduComOrganisationName = $_POST['gibboneduComOrganisationName'];
-    $gibboneduComOrganisationKey = $_POST['gibboneduComOrganisationKey'];
     $backgroundProcessing = $_POST['backgroundProcessing'] ?? 'Y';
 
     //Validate Inputs
@@ -294,24 +292,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         try {
             $data = array('currency' => $currency);
             $sql = "UPDATE gibbonSetting SET value=:currency WHERE scope='System' AND name='currency'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        try {
-            $data = array('gibboneduComOrganisationName' => $gibboneduComOrganisationName);
-            $sql = "UPDATE gibbonSetting SET value=:gibboneduComOrganisationName WHERE scope='System' AND name='gibboneduComOrganisationName'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        try {
-            $data = array('gibboneduComOrganisationKey' => $gibboneduComOrganisationKey);
-            $sql = "UPDATE gibbonSetting SET value=:gibboneduComOrganisationKey WHERE scope='System' AND name='gibboneduComOrganisationKey'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {

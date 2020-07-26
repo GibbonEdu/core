@@ -129,6 +129,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
             list($setting, $operator, $compare) = $settingDetails;
             $value = @ini_get($setting);
 
+            if ($setting == 'session.gc_maxlifetime') $compare = $gibbon->session->get('sessionDuration');
+
             $isValid = ($operator == '==' && $value == $compare)
                 || ($operator == '>=' && $value >= $compare)
                 || ($operator == '<=' && $value <= $compare)
