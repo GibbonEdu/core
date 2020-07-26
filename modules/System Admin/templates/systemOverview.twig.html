@@ -61,7 +61,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             {{ __('Getting Started with Gibbon') }}
         </div>
 
-        <p class="mt-2 mb-0 text-gray-600">{{ __('Our community offers documentation and support forums to help get you up and running with Gibbon. If you need additional assistance, members of the Gibbon team can provide expert support though email and video calls.') }}</p>
+        <p class="mt-2 mb-0 text-gray-600">{{ __('Our community offers documentation and support forums to help get you up and running with Gibbon. If you need additional assistance, members of the Gibbon team can provide expert support. Visit {link} to learn more.', {link: '<a href="http://gibbonedu.com" target="_blank" class="text-red-700 underline">gibbonedu.com</a>'})|raw }}</p>
     </div>
 
     <div class="py-4 px-3 flex flex-wrap items-stretch">
@@ -92,7 +92,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% if gibboneduComOrganisationKey is empty %}
     <div class="px-6 pt-3 pb-3 text-gray-600 border-t border-gray-300">
         <p class="m-0">
-        {{ __('Do you have a Service Key? View and configure your licenses on the {link} page. Otherwise, visit {link2} to learn more about Extended Services.', {link: '<a href="'~absoluteURL~'/index.php?q=/modules/System Admin/services_manage.php" class="text-red-700 underline">'~__('Manage Services')~'</a>', link2: '<a href="http://gibbonedu.com" target="_blank" class="text-red-700 underline">gibbonedu.com</a>'})|raw }}
+        {{ __('Do you have a Service Key? View and configure your licenses on the {link} page.', {link: '<a href="'~absoluteURL~'/index.php?q=/modules/System Admin/services_manage.php" class="text-red-700 underline">'~__('Manage Services')~'</a>'})|raw }}
         </p>
     </div>
     {% endif %}
