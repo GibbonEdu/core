@@ -23,6 +23,7 @@ v21.0.00
     Changes With Important Notices
 
     Significant Changes
+        System Admin: added a landing page to showcase the available support options
         Roll Groups: added new grouped action to restrict parent viewing to their own children's roll groups
         Students: added an optional application processing fee that can be sent manually by staff
 
