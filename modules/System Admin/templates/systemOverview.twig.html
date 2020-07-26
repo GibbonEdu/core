@@ -65,9 +65,9 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     </div>
 
     <div class="py-4 px-3 flex flex-wrap items-stretch">
-        
+
         {{ homepage.card(__('Documentation'), __('Our docs provide technical information as well as user guides for Administrators, Developers, Teachers, and Parents.'), 'docs', 'https://docs.gibbonedu.org' ) }}
-        
+
         {{ homepage.card(__('Support Forums'), __('If you need help try asking members of the Gibbon community. Similarly, issues and bugs can be reported to the forum as well.'), 'forums', 'https://ask.gibbonedu.org' ) }}
 
         <div class="w-full text-base text-gray-600 font-light mt-6 mb-2 ml-3">
@@ -78,7 +78,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
             {{ homepage.card(__('Expert Support'), __('Members of the Gibbon team are available to help with your Gibbon needs through Ad Hoc support or a Support Contract.'), 'support', 'http://gibbonedu.com' ) }}
 
-            {{ homepage.card(__('Value Added License'), __('Gibbon Value Added License, which, via the Query Builder module, gives access to 95 useful queries.'), 'license', 'http://gibbonedu.com') }}
+            {{ homepage.card(__('Value Added License'), __('Gibbon Value Added License, which, via the Query Builder module, gives access to over 90 useful queries.'), 'license', 'http://gibbonedu.com') }}
 
         {% else %}
 
@@ -92,7 +92,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% if gibboneduComOrganisationKey is empty %}
     <div class="px-6 pt-3 pb-3 text-gray-600 border-t border-gray-300">
         <p class="m-0">
-        {{ __('Do you have a Service Key? View and configure your licenses on the {link} page.', {link: '<a href="'~absoluteURL~'/index.php?q=/modules/System Admin/services_manage.php" class="text-red-700 underline">'~__('Manage Services')~'</a>'})|raw }}
+        {{ __('Do you have a Service Key? View and configure your licenses on the {link} page. Otherwise, visit {link2} to learn more about Extended Services.', {link: '<a href="'~absoluteURL~'/index.php?q=/modules/System Admin/services_manage.php" class="text-red-700 underline">'~__('Manage Services')~'</a>', link2: '<a href="http://gibbonedu.com" target="_blank" class="text-red-700 underline">gibbonedu.com</a>'})|raw }}
         </p>
     </div>
     {% endif %}
