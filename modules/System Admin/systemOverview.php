@@ -70,29 +70,3 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     ]);
 
 }
-?>
-
-<script type='text/javascript'>
-    // $(document).ready(function(){
-    //     $.ajax({
-    //         crossDomain: true,
-    //         type:'GET',
-    //         contentType: 'application/json; charset=utf-8',
-    //         async: false,
-    //         url: 'https://gibbonedu.org/services/version/version.php',
-    //         dataType: 'jsonp',
-    //         success: function(data) {
-    //             console.log(data.version);
-
-    //             if (versionCompare(data['version'], '<?php echo $version; ?>') <= 0) {
-    //                 $('#gibbonCheck').html('<span class="tag rounded-full success"><?php echo __('OK'); ?></span>');
-    //             }
-
-    //         },
-    //         error: function (data, textStatus, errorThrown) {
-    //             console.log('error');
-    //             console.log(data);
-    //         }
-    //     });
-    // });
-</script>
