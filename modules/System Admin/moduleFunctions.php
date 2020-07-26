@@ -194,16 +194,19 @@ function getCurrentVersion($guid, $connection2, $version)
     $output .= '}';
     $output .= 'else {';
     $output .= "if (versionCompare(data['version'], '".$version."') <= 0) {";
+    $output .= "$('#gibbonCheck').html('<span class=\"tag rounded-full success\">".__('OK')."</span>');";
     $output .= '$("#status").attr("class","success");';
     $output .= "$(\"#status\").html('".sprintf(__('Version check successful. Your Gibbon installation is up to date at %1$s.'), $version).' '.sprintf(__('If you have recently updated your system files, please check that your database is up to date in %1$sUpdates%2$s.'), "<a href=\'".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/System Admin/update.php\'>", '</a>')."') ;";
     $output .= '}';
     $output .= 'else {';
     $output .= '$("#status").attr("class","warning");';
+    $output .= "$('#gibbonCheck').html('<span class=\"tag rounded-full warning\">".__('Update')."</span>');";
     $output .= "$(\"#status\").html('".sprintf(__('Version check successful. Your Gibbon installation is out of date. Please visit %1$s to download the latest version.'), "<a target=\"blank\" href=\'https://gibbonedu.org/download\'>the Gibbon download page</a>")."') ;";
     $output .= '}';
     $output .= '}';
     $output .= '},';
     $output .= 'error: function (data, textStatus, errorThrown) {';
+    $output .= "$('#gibbonCheck').html('<span class=\"tag rounded-full warning\">".__('Error')."</span>');";
     $output .= '$("#status").attr("class","error");';
     $output .= "$(\"#status\").html('".__('Version check failed').".') ;";
     $output .= '}';
@@ -211,15 +214,15 @@ function getCurrentVersion($guid, $connection2, $version)
     $output .= '});';
     $output .= '</script>';
 
-    $cuttingEdgeCode = getSettingByScope($connection2, 'System', 'cuttingEdgeCode');
-    if ($cuttingEdgeCode != 'Y') {
-        $output .= "<div id='status' class='warning'>";
+    //$cuttingEdgeCode = getSettingByScope($connection2, 'System', 'cuttingEdgeCode');
+    //if ($cuttingEdgeCode != 'Y') {
+        $output .= "<div id='status' class='dull' style='max-height: 49px;'>";
         $output .= "<div style='width: 100%; text-align: center'>";
-        $output .= "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/loading.gif' alt='Loading'/><br/>";
+        $output .= "<img style='margin: 0px 0 0px 0' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/loading.gif' alt='Loading'/><br/>";
         $output .= __('Checking for Gibbon updates.');
         $output .= '</div>';
         $output .= '</div>';
-    }
+    //}
 
     return $output;
 }
