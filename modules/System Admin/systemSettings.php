@@ -29,41 +29,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    //Prepare and submit stats if that is what the system calls for
-    if ($_SESSION[$guid]['statsCollection'] == 'Y') {
-        $absolutePathProtocol = '';
-        $absolutePath = '';
-        if (substr($_SESSION[$guid]['absoluteURL'], 0, 7) == 'http://') {
-            $absolutePathProtocol = 'http';
-            $absolutePath = substr($_SESSION[$guid]['absoluteURL'], 7);
-        } elseif (substr($_SESSION[$guid]['absoluteURL'], 0, 8) == 'https://') {
-            $absolutePathProtocol = 'https';
-            $absolutePath = substr($_SESSION[$guid]['absoluteURL'], 8);
-        }
-        try {
-            $data = array();
-            $sql = 'SELECT * FROM gibbonPerson';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-        }
-        $usersTotal = $result->rowCount();
-        try {
-            $data = array();
-            $sql = "SELECT * FROM gibbonPerson WHERE status='Full'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-        }
-        $usersFull = $result->rowCount();
-        echo "<iframe style='display: none; height: 10px; width: 10px' src='https://gibbonedu.org/services/tracker/tracker.php?absolutePathProtocol=".urlencode($absolutePathProtocol).'&absolutePath='.urlencode($absolutePath).'&organisationName='.urlencode($_SESSION[$guid]['organisationName']).'&type='.urlencode($_SESSION[$guid]['installType']).'&version='.urlencode($version).'&country='.$_SESSION[$guid]['country']."&usersTotal=$usersTotal&usersFull=$usersFull'></iframe>";
-    }
-
     //Proceed!
     $page->breadcrumbs->add(__('System Settings'));
-
-    //Check for new version of Gibbon
-    echo getCurrentVersion($guid, $connection2, $version);
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -200,19 +167,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addNumber($setting['name'])->setValue($setting['value'])->minimum(1200)->maxLength(50)->required();
-
-    // VALUE ADDED
-    $form->addRow()->addHeading(__('gibbonedu.com Value Added Services'));
-
-    $setting = getSettingByScope($connection2, 'System', 'gibboneduComOrganisationName', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextField($setting['name'])->setValue($setting['value']);
-
-    $setting = getSettingByScope($connection2, 'System', 'gibboneduComOrganisationKey', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextField($setting['name'])->setValue($setting['value']);
 
     // LOCALISATION
     $form->addRow()->addHeading(__('Localisation'));
