@@ -60,42 +60,31 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         <div class="text-lg text-gray-800 font-semibold leading-normal">
             {{ __('Getting Started with Gibbon') }}
         </div>
-        <p class="mt-2 mb-0 text-gray-600">{{ __('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.') }}</p>
+
+        <p class="mt-2 mb-0 text-gray-600">{{ __('Our community offers documentation and support forums to help get you up and running with Gibbon. If you need additional assistance, members of the Gibbon team can provide expert support though email and video calls.') }}</p>
     </div>
 
     <div class="py-4 px-3 flex flex-wrap items-stretch">
         
-        <!--<div class="w-full text-base text-gray-600 font-light mb-2">
-            {{ __('Community Support') }}
-        </div>-->
-        <!--<p class="text-gray-600">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-        </p>-->
-
         {{ homepage.card(__('Documentation'), __('Our docs provide technical information as well as user guides for Administrators, Developers, Teachers, and Parents.'), 'docs', 'https://docs.gibbonedu.org' ) }}
         
         {{ homepage.card(__('Support Forums'), __('If you need help try asking members of the Gibbon community. Similarly, issues and bugs can be reported to the forum as well.'), 'forums', 'https://ask.gibbonedu.org' ) }}
-
-
 
         <div class="w-full text-base text-gray-600 font-light mt-6 mb-2 ml-3">
             {{ __('Extended Services') }}
         </div>
 
-        <!--<p class="text-gray-600">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-        </p>-->
-
         {% if gibboneduComOrganisationKey is empty %}
-        {{ homepage.card(__('Expert Support'), __('Members of the Gibbon team are available to help with your Gibbon needs through Ad Hoc support or a Support Contract.'), 'support', 'http://gibbonedu.com' ) }}
 
-        {{ homepage.card(__('Value Added License'), __('Gibbon Value Added License, which, via the Query Builder module, gives access to 95 useful queries.'), 'license', 'http://gibbonedu.com') }}
+            {{ homepage.card(__('Expert Support'), __('Members of the Gibbon team are available to help with your Gibbon needs through Ad Hoc support or a Support Contract.'), 'support', 'http://gibbonedu.com' ) }}
+
+            {{ homepage.card(__('Value Added License'), __('Gibbon Value Added License, which, via the Query Builder module, gives access to 95 useful queries.'), 'license', 'http://gibbonedu.com') }}
 
         {% else %}
 
-        {{ homepage.card(__('Expert Support'), __('Members of the Gibbon team are available to help with your Gibbon needs through Ad Hoc support or a Support Contract.'), 'support', absoluteURL~'/index.php?q=/modules/System Admin/services_manage.php', '') }}
+            {{ homepage.card(__('Expert Support'), __('Members of the Gibbon team are available to help with your Gibbon needs through Ad Hoc support or a Support Contract.'), 'support', absoluteURL~'/index.php?q=/modules/System Admin/services_manage.php', '') }}
 
-        {{ homepage.card(__('Value Added License'), __('Gibbon Value Added License, which, via the Query Builder module, gives access to 95 useful queries.'), 'license', absoluteURL~'/index.php?q=/modules/System Admin/services_manage.php', '') }}
+            {{ homepage.card(__('Value Added License'), __('Gibbon Value Added License, which, via the Query Builder module, gives access to 95 useful queries.'), 'license', absoluteURL~'/index.php?q=/modules/System Admin/services_manage.php', '') }}
 
         {% endif %}
     </div>
