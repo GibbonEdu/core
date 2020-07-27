@@ -120,7 +120,7 @@ div.message a, div.success a, div.warning a, div.error a, div.exception a, div.d
 */
 
 .LV_validation_message {
-    @apply absolute right-0 pt-px px-1 mt-1 mr-1 text-xs font-bold leading-relaxed bg-white z-10 pointer-events-none whitespace-no-wrap;
+    @apply absolute right-0 px-1 mt-2 mr-1 text-xs font-bold leading-relaxed bg-gray-100 z-10 pointer-events-none whitespace-no-wrap;
 }
 
 select + .LV_validation_message {
@@ -163,12 +163,21 @@ input[type="checkbox"] + .LV_validation_message {
 */
 
 input, select, textarea {
-    @apply border-gray-500;
+    @apply border-gray-400 bg-white rounded-sm outline-none py-2 px-2;
 }
 
 input:focus, select:focus, textarea:focus {
     @apply shadow-outline border-blue-500;
 
+}
+
+input[type="text"] {
+    @apply leading-relaxed;
+}
+
+input[type="button"],
+input[type="submit"] {
+    @apply px-8;
 }
 
 input[readonly]:focus, select[readonly]:focus, textarea[readonly]:focus {
