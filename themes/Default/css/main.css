@@ -285,7 +285,7 @@ table.noIntBorder td:last-child {
 }
 table.smallIntBorder {
     background-color: #fafafa;
-    margin: 5px 0px;
+    /* margin: 5px 0px; */
     position: relative;
 }
 table.smallIntBorder td {
@@ -1028,12 +1028,6 @@ tr.head td {
 
 td.standardWidth {
     position: relative;
-}
-
-input[type="button"],
-input[type="submit"],
-input[type="reset"] {
-    padding: 0px 6px;
 }
 
 .displayInlineBlock {

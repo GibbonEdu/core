@@ -22,35 +22,40 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
     {% set renderStyle = "standardForm" in form.getClass or "noIntBorder" in form.getClass ? 'flex' : 'table' %}
 
-    <div class="{{ form.getClass }} font-sans text-xs text-gray-700 relative overflow-hidden {{ "blank" not in form.getClass ? 'bg-gray-100 rounded border' }}" style="{{ "noIntBorder" in form.getClass ? 'background:#edf7ff' }}" cellspacing="0">
+    <div class="{{ form.getClass }} font-sans text-sm text-gray-700 relative overflow-hidden {{ "blank" not in form.getClass ? 'bg-gray-100 rounded border' }}" style="{{ "noIntBorder" in form.getClass ? 'background:#edf7ff' }}" cellspacing="0">
     {% for row in form.getRows %}
         {% set rowLoop = loop %}
-        {% if renderStyle == 'flex' %}
+        {% if true or renderStyle == 'flex' %}
             {% set rowClass = 'flex flex-col sm:flex-row justify-between content-center p-0' %}
         {% endif %}
 
-        <div id="{{ row.getID }}" class="{{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }} {{ "noIntBorder" not in form.getClass ? 'border-b' }} ">
+        <div id="{{ row.getID }}" class="{{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }} {{ "noIntBorder" not in form.getClass and not loop.last? 'border-b' }} ">
 
         {% for element in row.getElements %}
             {% set colspan = loop.last and loop.length < totalColumns ? (totalColumns + 1 - loop.length) : 0  %}
             
-            {% if renderStyle == 'flex' %}
-                {% if element.isInstanceOf('Gibbon\\Forms\\Layout\\Heading') %}
-                    {% set class = 'flex-grow justify-center bg-gray-200' %}
-                {% elseif element.isInstanceOf('Gibbon\\Forms\\Layout\\Label') %}
-                    {% set class = 'flex flex-col flex-grow justify-center -mb-1 sm:mb-0' %}
-                {% elseif element.isInstanceOf('Gibbon\\Forms\\Layout\\Column') %}
-                    {% set class = loop.last and loop.length == 2 ? 'w-full max-w-full sm:max-w-sm flex justify-end' : 'w-full ' %}
-                {% elseif loop.last and loop.length == 2 %}
-                    {% set class = 'w-full max-w-full sm:max-w-sm flex justify-end items-center' %}
-                {% else %}
-                    {% set class = 'flex-grow justify-center' %}
-                {% endif %}
+            {% if element.isInstanceOf('Gibbon\\Forms\\Layout\\Heading') %}
+                {% set class = 'flex-grow justify-center bg-gray-200' %}
+            {% elseif element.isInstanceOf('Gibbon\\Forms\\Layout\\Label') %}
+                {% set class = 'flex flex-col flex-grow justify-center -mb-1 sm:mb-0' %}
+            {% elseif element.isInstanceOf('Gibbon\\Forms\\Layout\\Column') %}
+                {% set class = loop.last and loop.length == 2 ? 'w-full max-w-full sm:max-w-sm flex justify-end' : 'w-full ' %}
+            {% elseif loop.last and loop.length == 2 %}
+                {% set class = 'w-full max-w-full sm:max-w-sm flex justify-end items-center' %}
             {% else %}
-                {% set class = '' %}  
+                {% set class = loop.last and loop.length > 2 ? 'justify-end' : 'flex-grow justify-center' %}
             {% endif %}
 
-            <div class="{{ class }} px-4 py-4 {{ element.getClass|replace({'standardWidth': ''}) }}" {{ colspan ? 'colspan="%s"'|format(colspan)|raw }}>
+            {% if renderStyle == 'table' and element.isInstanceOf('Gibbon\\Forms\\Layout\\Label') %}
+                {% set class = class ~ " lg:w-2/5" %}
+            {% endif %}
+
+            {% if "blank" not in form.getClass %}
+                {% set class = class ~ " px-4 py-4" %}
+            {% endif %}
+
+
+            <div class="{{ class }} {{ element.getClass|replace({'standardWidth': ''}) }}" {{ colspan ? 'colspan="%s"'|format(colspan)|raw }}>
                 {{ element.getOutput|replace({'standardWidth': renderStyle == 'flex' ? 'w-full' : '' })|raw }}
 
                 {% if element.instanceOf('Gibbon\\Forms\\ValidatableInterface') %}

@@ -176,7 +176,8 @@ input[type="text"] {
 }
 
 input[type="button"],
-input[type="submit"] {
+input[type="submit"],
+input[type="reset"] {
     @apply px-8;
 }
 
