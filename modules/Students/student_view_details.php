@@ -1856,11 +1856,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 if ($resultCategories->rowCount() > 0) {
                                     $categories = true;
 
-                                    echo '<h3>';
-                                    echo __('Filter');
-                                    echo '</h3>';
-
                                     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+                                    $form->setTitle(__('Filter'));
                                     $form->setClass('noIntBorder fullWidth');
 
                                     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/student_view_details.php');
