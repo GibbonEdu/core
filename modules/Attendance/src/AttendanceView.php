@@ -218,7 +218,7 @@ class AttendanceView
         $dateFormat = $_SESSION[$this->guid]['i18n']['dateFormatPHP'];
 
         $output = '';
-        $output .= '<table cellspacing="0" class="historyCalendarMini ' . $cssClass . '">';
+        $output .= '<table cellspacing="0" class="historyCalendarMini smallIntBorder ' . $cssClass . '">';
         $output .= '<tr>';
         for ($i = 4; $i >= 0; --$i) {
             if (!isset($this->last5SchoolDays[$i])) {

@@ -43,7 +43,7 @@ class Label extends Element implements RowDependancyInterface
     {
         $this->label = $label;
         $this->setAttribute('for', $for);
-        $this->addClass('font-bold');
+        $this->addClass('font-medium');
     }
 
     /**
@@ -166,10 +166,12 @@ class Label extends Element implements RowDependancyInterface
     {
         $output = '';
 
-        $this->addClass('inline-block mt-4 sm:my-1 sm:max-w-xs text-sm sm:text-xs');
+        $this->addClass('inline-block mt-4 sm:my-1 sm:max-w-xs text-sm text-gray-700');
 
         
-        $output .= '<label '.$this->getAttributeString().'>'.$this->label.' '.( ($this->getRequired())? '*' : '');
+        $output .= '<label '.$this->getAttributeString().'>';
+        $output .= $this->label;
+        $output .= $this->getRequired()? ' <span class="text-sm text-gray-500 font-light">*</span>' : '';
         
 
         if ($this->getReadonly()) {
@@ -185,7 +187,7 @@ class Label extends Element implements RowDependancyInterface
         }
 
         if (!empty($this->description)) {
-            $output .= '<br/><span class="text-xxs text-gray-600 italic font-normal mt-1 sm:mt-0">';
+            $output .= '<br/><span class="text-xxs text-gray-600 font-normal mt-1 sm:mt-0">';
             $output .= $this->getDescription();
             $output .= '</span>';
         }

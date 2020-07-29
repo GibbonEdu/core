@@ -49,7 +49,7 @@ class Heading extends Element implements OutputableInterface, RowDependancyInter
     {
         $this->row = $row;
 
-        $this->row->setClass('break');
+        $this->row->setClass('break sticky top-0 z-10');
     }
 
     /**
@@ -58,6 +58,6 @@ class Heading extends Element implements OutputableInterface, RowDependancyInter
      */
     protected function getElement()
     {
-        return '<h3>'.$this->content.'</h3>';
+        return '<h3 class="m-0 py-0">'.$this->content.'</h3>';
     }
 }

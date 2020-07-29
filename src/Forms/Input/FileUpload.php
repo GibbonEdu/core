@@ -193,7 +193,7 @@ class FileUpload extends Input
             foreach ($this->attachments as $attachmentName => $attachmentPath) {
 
                 if (!empty($attachmentPath)) {
-                    $output .= '<div class="input-box standardWidth">';
+                    $output .= '<div class="input-box rounded-sm standardWidth">';
 
                     $output .= '<div class="inline-label">';
                     $output .= __('Current attachment:').'<br/>';
