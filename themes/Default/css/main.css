@@ -437,7 +437,8 @@ input[type="button"].buttonLink {
     font-weight: normal;
     font-size: 14px;
     text-decoration: underline;
-    height: 36px;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
 }
 
 input[type="submit"].buttonLink:hover,
@@ -447,7 +448,7 @@ input[type="button"].buttonLink:hover {
     color: #069;
     border: none;
     font-weight: normal;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 input[type="checkbox"][disabled] {
@@ -724,8 +725,8 @@ tr.hiddenReveal td {
 }
 
 /* Timetable styles */
-#tt *,
-#ttWrapper * {
+#tt *:not(input),
+#ttWrapper *:not(input) {
     box-sizing: content-box;
 }
 

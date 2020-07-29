@@ -376,13 +376,14 @@ function getFastFinder($connection2, $guid)
     $row = $form->addRow();
         $row->addFinder('fastFinderSearch')
             ->fromAjax($_SESSION[$guid]['absoluteURL'].'/index_fastFinder_ajax.php')
-            ->setClass('w-full text-white')
+            ->setClass('w-full text-white flex items-center')
             ->setParameter('hintText', __('Start typing a name...'))
             ->setParameter('noResultsText', __('No results'))
             ->setParameter('searchingText', __('Searching...'))
             ->setParameter('tokenLimit', 1)
-            ->addValidation('Validate.Presence', 'failureMessage: " "');
-        $row->addSubmit(__('Go'));
+            ->addValidation('Validate.Presence', 'failureMessage: " "')
+            ->append('<input type="submit" style="height:34px;padding:0 1rem;" value="'.__('Go').'">');
+        // $row->addSubmit(__('Go'));
 
     $highestActionClass = getHighestGroupedAction($guid, '/modules/Planner/planner.php', $connection2);
 
