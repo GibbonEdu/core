@@ -2736,34 +2736,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     
                                     ++$yearCount;
                                     try {
-                                      $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $rowYears['gibbonSchoolYearID']);
-                                      $sql = "SELECT gibbonActivity.gibbonActivityID, gibbonActivity.name, gibbonActivity.type, gibbonActivity.programStart, gibbonActivity.programEnd, GROUP_CONCAT(gibbonYearGroup.name ORDER BY gibbonYearGroup.sequenceNumber SEPARATOR ', ') as terms, gibbonActivityStudent.status, NULL AS role FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) LEFT JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonActivity.gibbonYearGroupIDList)) WHERE gibbonActivityStudent.gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' GROUP BY gibbonActivity.gibbonActivityID, gibbonActivityStudent.status ORDER BY gibbonActivity.name";
+                                        $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $rowYears['gibbonSchoolYearID']);
+                                        $sql = "SELECT gibbonActivity.gibbonActivityID, gibbonActivity.name, gibbonActivity.type, gibbonActivity.programStart, gibbonActivity.programEnd, GROUP_CONCAT(gibbonYearGroup.name ORDER BY gibbonYearGroup.sequenceNumber SEPARATOR ', ') as terms, gibbonActivityStudent.status, NULL AS role FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) LEFT JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonActivity.gibbonYearGroupIDList)) WHERE gibbonActivityStudent.gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' GROUP BY gibbonActivity.gibbonActivityID, gibbonActivityStudent.status ORDER BY gibbonActivity.name";
                                         $result = $connection2->prepare($sql);
                                         $result->execute($data);
                                         $resultData = $result->fetchAll();
                                     } catch (PDOException $e) {
-                                      echo "<div class='error'>".$e->getMessage().'</div>';
-                                      exit;
+                                        echo "<div class='error'>".$e->getMessage().'</div>';
+                                        exit;
                                     }
 
                                     $table = DataTable::create('activities');
                                     $table->setTitle($rowYears['name']);
-                                    $table->addColumn('name',__('Activity NEW'));
-                                    $table->addColumn('type',__('Type'));
-                                    $table->addColumn('date',$dateType == "Date" ? __('Date') : __('Terms'))
-                                          ->format(function($row) use ($dateType) {
+                                    $table->addColumn('name', __('Activity NEW'));
+                                    $table->addColumn('type', __('Type'));
+                                    $table->addColumn('date', $dateType == "Date" ? __('Date') : __('Terms'))
+                                          ->format(function ($row) use ($dateType) {
                                             if ($dateType != 'Date') {
-                                              return $row['terms'];
+                                                return $row['terms'];
                                             } else {
-                                              return Format::dateRangeReadable($row['programStart'],$row['programEnd']);
+                                                return Format::dateRangeReadable($row['programStart'], $row['programEnd']);
                                             }
                                           });
-                                    $table->addColumn('status',__('Status'));
+                                    $table->addColumn('status', __('Status'));
                                     $table->addActionColumn()
-                                          ->format(function ($activity,$actions) {
-                                            $actions->addAction('view',__('View Details'))
+                                          ->format(function ($activity, $actions) {
+                                            $actions->addAction('view', __('View Details'))
                                               ->setURL('/modules/Activities/activities_view_full.php')
-                                              ->addParam('gibbonActivityID',$activity['gibbonActivityID'])
+                                              ->addParam('gibbonActivityID', $activity['gibbonActivityID'])
                                               ->isModal();
                                           });
                                     echo $table->render($resultData);
