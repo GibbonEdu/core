@@ -939,7 +939,7 @@ table.columnHighlight .hover:not(:first-child) {
 
 .input-box .inline-label {
     display: table-cell;
-    padding: 5px;
+    padding: 0.5rem;
     text-align: left;
     vertical-align: middle;
     word-break: break-all;
