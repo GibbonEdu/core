@@ -383,7 +383,6 @@ function getFastFinder($connection2, $guid)
             ->setParameter('tokenLimit', 1)
             ->addValidation('Validate.Presence', 'failureMessage: " "')
             ->append('<input type="submit" style="height:34px;padding:0 1rem;" value="'.__('Go').'">');
-        // $row->addSubmit(__('Go'));
 
     $highestActionClass = getHighestGroupedAction($guid, '/modules/Planner/planner.php', $connection2);
 

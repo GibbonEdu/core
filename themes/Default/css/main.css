@@ -99,7 +99,6 @@ h6 {
     text-align: left;
     text-transform: uppercase;
     padding-bottom: 5px;
-    /* border-bottom: 1px solid rgba(0, 0, 0, 0.5); */
 }
 h1 {
     font-size: 17pt;
@@ -285,7 +284,6 @@ table.noIntBorder td:last-child {
 }
 table.smallIntBorder {
     background-color: #fafafa;
-    /* margin: 5px 0px; */
     position: relative;
 }
 table.smallIntBorder td {
@@ -344,11 +342,6 @@ input[type="file"] {
     box-sizing: border-box;
 }
 
-input[type="text"],
-input[type="password"] {
-    /* padding-left: 4px; */
-}
-
 input[readonly],
 textarea[readonly],
 select[readonly] {
@@ -363,16 +356,13 @@ textarea[readonly] {
 
 textarea {
     border-width: 1px;
-
     float: right;
     font-size: 14px;
     box-sizing: border-box;
-    /* padding: 4px; */
 }
 
 select {
     border-width: 1px;
-
     height: 36px;
     float: right;
     font-size: 14px;
