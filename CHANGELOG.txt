@@ -23,6 +23,7 @@ v21.0.00
     Changes With Important Notices
 
     Significant Changes
+        System: fixed MySQL 8 issue with auto-increment pre-fetch
         System Admin: added a landing page to showcase the available support options
         Roll Groups: added new grouped action to restrict parent viewing to their own children's roll groups
         Students: added an optional application processing fee that can be sent manually by staff
@@ -41,8 +42,6 @@ v21.0.00
         Messenger: fixed SMTP debug settings in New Message process page
         Reports: fixed AttendanceByCycle data source counting school attendance as class attendance
         Planner: fixed Outcomes by Course for courses with multiple year groups
-        Planner: fixed bug in copying Outcome and Smart Blocks with unit
-        Planner: fixed bug in deploying unit Smart Blocks
 
 v20.0.00
 --------
