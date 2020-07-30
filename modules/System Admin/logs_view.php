@@ -43,7 +43,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
     $title = isset($_GET['title'])? $_GET['title'] : '';
     $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
 
-
     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -80,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
         ->filterBy('gibbonPersonID', $gibbonPersonID)
         ->fromPOST();
 
-    $logs = $logGateway->queryLogs($criteria);
+    $logs = $logGateway->queryLogs($criteria, $gibbon->session->get('gibbonSchoolYearID'));
 
     $table = DataTable::createPaginated('logView', $criteria);
     $table->setTitle(__('Data'));
