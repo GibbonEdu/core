@@ -143,29 +143,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                     $URL .= "&return=error3$params";
                     header("Location: {$URL}");
                 } else {
-                    //Lock markbook column table
-                    try {
-                        $sql = 'LOCK TABLES gibbonPlannerEntry WRITE, gibbonPlannerEntryGuest WRITE, gibbonCourseClassPerson WRITE';
-                        $result = $connection2->query($sql);
-                    } catch (PDOException $e) {
-                        $URL .= "&return=error2$params";
-                        header("Location: {$URL}");
-                        exit();
-                    }
-
-                    //Get next autoincrement
-                    try {
-                        $sqlAI = "SHOW TABLE STATUS LIKE 'gibbonPlannerEntry'";
-                        $resultAI = $connection2->query($sqlAI);
-                    } catch (PDOException $e) {
-                        $URL .= "&return=error2$params";
-                        header("Location: {$URL}");
-                        exit();
-                    }
-
-                    $rowAI = $resultAI->fetch();
-                    $AI = str_pad($rowAI['Auto_increment'], 14, '0', STR_PAD_LEFT);
-
                     //Write to database
                     try {
                         $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $date, 'timeStart' => $timeStart, 'timeEnd' => $timeEnd, 'gibbonUnitID' => $gibbonUnitID, 'name' => $name, 'summary' => $summary, 'description' => $description, 'teachersNotes' => $teachersNotes, 'homework' => $homework, 'homeworkDueDateTime' => $homeworkDueDateTime, 'homeworkDetails' => $homeworkDetails, 'homeworkSubmission' => $homeworkSubmission, 'homeworkSubmissionDateOpen' => $homeworkSubmissionDateOpen, 'homeworkSubmissionDrafts' => $homeworkSubmissionDrafts, 'homeworkSubmissionType' => $homeworkSubmissionType, 'homeworkSubmissionRequired' => $homeworkSubmissionRequired, 'homeworkCrowdAssess' => $homeworkCrowdAssess, 'homeworkCrowdAssessOtherTeachersRead' => $homeworkCrowdAssessOtherTeachersRead, 'homeworkCrowdAssessClassmatesRead' => $homeworkCrowdAssessClassmatesRead, 'homeworkCrowdAssessOtherStudentsRead' => $homeworkCrowdAssessOtherStudentsRead, 'homeworkCrowdAssessSubmitterParentsRead' => $homeworkCrowdAssessSubmitterParentsRead, 'homeworkCrowdAssessClassmatesParentsRead' => $homeworkCrowdAssessClassmatesParentsRead, 'homeworkCrowdAssessOtherParentsRead' => $homeworkCrowdAssessOtherParentsRead, 'viewableParents' => $viewableParents, 'viewableStudents' => $viewableStudents, 'gibbonPersonIDCreator' => $gibbonPersonIDCreator, 'gibbonPersonIDLastEdit' => $gibbonPersonIDLastEdit);
@@ -178,15 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                         exit();
                     }
 
-                    //Unlock module table
-                    try {
-                        $sql = 'UNLOCK TABLES';
-                        $result = $connection2->query($sql);
-                    } catch (PDOException $e) {
-                        $URL .= "&return=error2$params";
-                        header("Location: {$URL}");
-                        exit();
-                    }
+                   $AI = $connection2->lastInsertID();
 
                     $partialFail = false;
 

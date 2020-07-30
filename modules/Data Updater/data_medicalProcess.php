@@ -93,29 +93,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                 $existing = $_POST['existing'];
                 if ($existing != 'N') {
                     $AI = $existing;
-                } else {
-                    //Lock table
-                    try {
-                        $sqlLock = 'LOCK TABLES gibbonPersonMedicalUpdate WRITE, gibbonPersonMedicalConditionUpdate WRITE, gibbonNotification WRITE, gibbonModule WRITE, gibbonPerson WRITE';
-                        $resultLock = $connection2->query($sqlLock);
-                    } catch (PDOException $e) {
-                        $URL .= '&return=error2';
-                        header("Location: {$URL}");
-                        exit();
-                    }
-
-                    //Get next autoincrement
-                    try {
-                        $sqlAI = "SHOW TABLE STATUS LIKE 'gibbonPersonMedicalUpdate'";
-                        $resultAI = $connection2->query($sqlAI);
-                    } catch (PDOException $e) {
-                        $URL .= '&return=error2';
-                        header("Location: {$URL}");
-                        exit();
-                    }
-
-                    $rowAI = $resultAI->fetch();
-                    $AI = str_pad($rowAI['Auto_increment'], 12, '0', STR_PAD_LEFT);
                 }
 
                 //Get medical form fields
@@ -125,12 +102,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                 } else {
                     $gibbonPersonMedicalID = null;
                 }
-
                 $bloodType = $_POST['bloodType'];
                 $longTermMedication = $_POST['longTermMedication'];
                 $longTermMedicationDetails = isset($_POST['longTermMedicationDetails'])? $_POST['longTermMedicationDetails'] : '';
                 $tetanusWithin10Years = $_POST['tetanusWithin10Years'];
                 $comment = $_POST['comment'];
+
+                //Write to database
+                try {
+                    if ($existing != 'N') {
+                        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonMedicalID' => $gibbonPersonMedicalID, 'gibbonPersonID' => $gibbonPersonID, 'bloodType' => $bloodType, 'longTermMedication' => $longTermMedication, 'longTermMedicationDetails' => $longTermMedicationDetails, 'tetanusWithin10Years' => $tetanusWithin10Years, 'comment' => $comment, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonMedicalUpdateID' => $existing);
+                        $sql = 'UPDATE gibbonPersonMedicalUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonMedicalID=:gibbonPersonMedicalID, gibbonPersonID=:gibbonPersonID, bloodType=:bloodType, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, tetanusWithin10Years=:tetanusWithin10Years, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=NOW() WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID';
+                    } else {
+                        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonMedicalID' => $gibbonPersonMedicalID, 'gibbonPersonID' => $gibbonPersonID, 'bloodType' => $bloodType, 'longTermMedication' => $longTermMedication, 'longTermMedicationDetails' => $longTermMedicationDetails, 'tetanusWithin10Years' => $tetanusWithin10Years, 'comment' => $comment, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID']);
+                        $sql = 'INSERT INTO gibbonPersonMedicalUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonMedicalID=:gibbonPersonMedicalID, gibbonPersonID=:gibbonPersonID, bloodType=:bloodType, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, tetanusWithin10Years=:tetanusWithin10Years, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater';
+                    }
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    $URL .= '&return=error2';
+                    header("Location: {$URL}");
+                    exit();
+                }
+                
+                if ($existing == 'N') {
+                   $AI = $connection2->lastInsertID();
+                }
 
                 //Update existing medical conditions
                 $partialFail = false;
@@ -239,31 +236,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                                 $partialFail = true;
                             }
                         }
-                    }
-                }
-
-                //Write to database
-                try {
-                    if ($existing != 'N') {
-                        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonMedicalID' => $gibbonPersonMedicalID, 'gibbonPersonID' => $gibbonPersonID, 'bloodType' => $bloodType, 'longTermMedication' => $longTermMedication, 'longTermMedicationDetails' => $longTermMedicationDetails, 'tetanusWithin10Years' => $tetanusWithin10Years, 'comment' => $comment, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonMedicalUpdateID' => $existing);
-                        $sql = 'UPDATE gibbonPersonMedicalUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonMedicalID=:gibbonPersonMedicalID, gibbonPersonID=:gibbonPersonID, bloodType=:bloodType, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, tetanusWithin10Years=:tetanusWithin10Years, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=NOW() WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID';
-                    } else {
-                        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonMedicalID' => $gibbonPersonMedicalID, 'gibbonPersonID' => $gibbonPersonID, 'bloodType' => $bloodType, 'longTermMedication' => $longTermMedication, 'longTermMedicationDetails' => $longTermMedicationDetails, 'tetanusWithin10Years' => $tetanusWithin10Years, 'comment' => $comment, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID']);
-                        $sql = 'INSERT INTO gibbonPersonMedicalUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonMedicalID=:gibbonPersonMedicalID, gibbonPersonID=:gibbonPersonID, bloodType=:bloodType, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, tetanusWithin10Years=:tetanusWithin10Years, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater';
-                    }
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    $URL .= '&return=error2';
-                    header("Location: {$URL}");
-                    exit();
-                }
-
-                if ($existing == 'N') {
-                    try {
-                        $sqlLock = 'UNLOCK TABLES';
-                        $result = $connection2->query($sqlLock);
-                    } catch (PDOException $e) {
                     }
                 }
 
