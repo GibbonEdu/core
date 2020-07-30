@@ -41,6 +41,7 @@ v21.0.00
         Messenger: fixed SMTP debug settings in New Message process page
         Reports: fixed AttendanceByCycle data source counting school attendance as class attendance
         Planner: fixed Outcomes by Course for courses with multiple year groups
+        Planner: fixed bug in copying Outcome and Smart Blocks with unit
 
 v20.0.00
 --------
