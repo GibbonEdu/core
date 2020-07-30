@@ -42,6 +42,7 @@ v21.0.00
         Reports: fixed AttendanceByCycle data source counting school attendance as class attendance
         Planner: fixed Outcomes by Course for courses with multiple year groups
         Planner: fixed bug in copying Outcome and Smart Blocks with unit
+        Planner: fixed bug in deploying unit Smart Blocks
 
 v20.0.00
 --------
