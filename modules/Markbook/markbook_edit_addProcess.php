@@ -162,29 +162,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
             $sequenceNumber = $resultSequence->fetchColumn() + 1;
         }
 
-        //Lock markbook column table
-        try {
-            $sqlLock = 'LOCK TABLES gibbonMarkbookColumn WRITE, gibbonFileExtension READ';
-            $resultLock = $connection2->query($sqlLock);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
-
-        //Get next autoincrement
-        try {
-            $sqlAI = "SHOW TABLE STATUS LIKE 'gibbonMarkbookColumn'";
-            $resultAI = $connection2->query($sqlAI);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
-
-        $rowAI = $resultAI->fetch();
-        $AI = str_pad($rowAI['Auto_increment'], 10, '0', STR_PAD_LEFT);
-
         $partialFail = false;
 
         //Move attached image  file, if there is one
