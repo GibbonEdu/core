@@ -51,32 +51,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             $row = $result->fetch();
             $gibbonPersonMedicalID = $row['gibbonPersonMedicalID'];
 
-            //Lock table
-            try {
-                $sql = 'LOCK TABLES gibbonPersonMedical WRITE, gibbonPersonMedicalCondition WRITE, gibbonPersonMedicalConditionUpdate WRITE';
-                $result = $connection2->query($sql);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
-
-            //Get next autoincrement
-            try {
-                $sqlAI = "SHOW TABLE STATUS LIKE 'gibbonPersonMedical'";
-                $resultAI = $connection2->query($sqlAI);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
-
-            $rowAI = $resultAI->fetch();
-            $AI = str_pad($rowAI['Auto_increment'], 10, '0', STR_PAD_LEFT);
-            if ($gibbonPersonMedicalID == '') {
-                $gibbonPersonMedicalID = $AI;
-            }
-
             //Set values
             $data = array();
             $sqlSet = '';
@@ -299,16 +273,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                     exit();
                 }
 
-                //Unlock module table
-                try {
-                    $sql = 'UNLOCK TABLES';
-                    $result = $connection2->query($sql);
-                } catch (PDOException $e) {
-                    $URL .= '&return=error2';
-                    header("Location: {$URL}");
-                    exit();
-                }
-
                 if ($partialFail == true) {
                     $URL .= '&return=warning1';
                     header("Location: {$URL}");
@@ -332,6 +296,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
 
             //If form does not already exist
             else {
+                try {
+                    if ($sqlSet != '') {
+                        $data['gibbonPersonID'] = $gibbonPersonID;
+                        $sql = 'INSERT INTO gibbonPersonMedical SET gibbonPersonID=:gibbonPersonID, '.substr($sqlSet, 0, (strlen($sqlSet) - 2));
+                    } else {
+                        $data['gibbonPersonID'] = $gibbonPersonID;
+                        $sql = 'INSERT INTO gibbonPersonMedical SET gibbonPersonID=:gibbonPersonID';
+                    }
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    $URL .= '&return=error2';
+                    header("Location: {$URL}");
+                    exit();
+                }
+            
+                $gibbonPersonMedicalID = $connection2->lastInsertID();
+            
                 //Scan through new conditions
                 if (isset($_POST['count2'])) {
                     $count2 = $_POST['count2'];
@@ -422,31 +404,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                     }
                 }
 
-                try {
-                    if ($sqlSet != '') {
-                        $data['gibbonPersonID'] = $gibbonPersonID;
-                        $sql = 'INSERT INTO gibbonPersonMedical SET gibbonPersonID=:gibbonPersonID, '.substr($sqlSet, 0, (strlen($sqlSet) - 2));
-                    } else {
-                        $data['gibbonPersonID'] = $gibbonPersonID;
-                        $sql = 'INSERT INTO gibbonPersonMedical SET gibbonPersonID=:gibbonPersonID';
-                    }
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    $URL .= '&return=error2';
-                    header("Location: {$URL}");
-                    exit();
-                }
-
-                //Unlock module table
-                try {
-                    $sql = 'UNLOCK TABLES';
-                    $result = $connection2->query($sql);
-                } catch (PDOException $e) {
-                    $URL .= '&return=error2';
-                    header("Location: {$URL}");
-                    exit();
-                }
 
                 if ($partialFail == true) {
                     $URL .= '&return=warning1';
