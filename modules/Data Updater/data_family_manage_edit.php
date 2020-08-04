@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
 				'languageHomeSecondary' => __('Home Language - Secondary'),
 			);
 
-			$form = Form::create('updateFamily', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_family_manage_editProcess.php?gibbonFamilyUpdateID='.$gibbonFamilyUpdateID);
+			$form = Form::createTable('updateFamily', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_family_manage_editProcess.php?gibbonFamilyUpdateID='.$gibbonFamilyUpdateID);
 			
 			$form->setClass('fullWidth colorOddEven');
 			$form->addHiddenValue('address', $_SESSION[$guid]['address']);

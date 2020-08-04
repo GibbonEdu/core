@@ -21,6 +21,7 @@ namespace Gibbon\Forms;
 
 use Gibbon\Forms\Traits\BasicAttributesTrait;
 use Gibbon\Forms\View\FormRendererInterface;
+use Gibbon\Forms\View\FormTableView;
 use Gibbon\Forms\FormFactoryInterface;
 
 /**
@@ -76,6 +77,16 @@ class Form implements OutputableInterface
             ->setClass($class)
             ->setAction($action)
             ->setMethod($method);
+
+        return $form;
+    }
+
+    public static function createTable($id, $action, $method = 'post', $class = 'smallIntBorder fullWidth')
+    {
+        global $container;
+
+        $form = static::create($id, $action, $method, $class);
+        $form->setRenderer($container->get(FormTableView::class));
 
         return $form;
     }
