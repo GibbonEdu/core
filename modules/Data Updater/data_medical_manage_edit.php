@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             $result = $pdo->executeQuery(array(), $sql);
             $alerts = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
 
-            $form = Form::create('updateMedical', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_medical_manage_editProcess.php?gibbonPersonMedicalUpdateID='.$gibbonPersonMedicalUpdateID);
+            $form = Form::createTable('updateMedical', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_medical_manage_editProcess.php?gibbonPersonMedicalUpdateID='.$gibbonPersonMedicalUpdateID);
 
             $form->setClass('fullWidth colorOddEven');
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);

@@ -170,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 $compare['jobTitle']   = __('Job Title');
             }
 
-            $form = Form::create('updatePerson', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_personal_manage_editProcess.php?gibbonPersonUpdateID='.$gibbonPersonUpdateID);
+            $form = Form::createTable('updatePerson', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_personal_manage_editProcess.php?gibbonPersonUpdateID='.$gibbonPersonUpdateID);
             
             $form->setClass('fullWidth colorOddEven');
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
