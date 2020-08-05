@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\Finance\ExpenseGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -233,7 +235,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
 
                             $form->addRow()->addHeading(__('Log'));
                             
-                            $form->addRow()->addContent(getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2));
+                            $gateway = $container->get(ExpenseGateway::class);
+                            $criteria = $gateway->newQueryCriteria()
+                                ->sortBy('timestamp')
+                                ->fromPOST();
+                            $expenses = $gateway->queryExpenseLogByID($criteria, $gibbonFinanceExpenseID);
+
+                            $logTable = DataTable::create('expenseLog');
+                            $logTable->addColumn('name', __('Person'))
+                                ->format(Format::using('name', ['title', 'preferredName', 'surname', 'Staff', false, true]));
+                            $logTable->addColumn('date', __('Date'))
+                                ->format(Format::using('date', 'timestamp'));
+                            $logTable->addColumn('action', __('Event'));
+
+                            $form->addRow()->addContent($logTable->render($expenses));
 
 							$isPaid = $values['status'] == 'Paid';
 							if (!$isPaid) {
