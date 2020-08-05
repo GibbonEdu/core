@@ -16,57 +16,51 @@ class InvoiceeGateway extends QueryableGateway
 
     public function queryInvoicees(QueryCriteria $criteria)
     {
-      $query = $this
-        ->newQuery()
-        ->from('gibbonFinanceInvoicee')
-        ->innerJoin('gibbonPerson','gibbonPerson.gibbonPersonID = gibbonFinanceInvoicee.gibbonPErsonID')
-        ->where("NOT surname = ''")
-        ->orderBy([
-          'surname',
-          'preferredName'
-        ])
-        ->cols([
-          'gibbonPerson.surname',
-          'gibbonPerson.preferredName',
-          'gibbonPerson.title',
-          'gibbonPerson.dateStart',
-          'gibbonPerson.dateEnd',
-          'gibbonPerson.status',
-          'gibbonFinanceInvoicee.invoiceTo',
-          'gibbonFinanceInvoicee.gibbonFinanceInvoiceeID',
-          'gibbonFinanceInvoicee.companyAll',
-          "IF(
+        $query = $this
+            ->newQuery()
+            ->from('gibbonFinanceInvoicee')
+            ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID = gibbonFinanceInvoicee.gibbonPErsonID')
+            ->where("NOT surname = ''")
+            ->cols([
+                'gibbonPerson.surname',
+                'gibbonPerson.preferredName',
+                'gibbonPerson.title',
+                'gibbonPerson.dateStart',
+                'gibbonPerson.dateEnd',
+                'gibbonPerson.status',
+                'gibbonFinanceInvoicee.invoiceTo',
+                'gibbonFinanceInvoicee.gibbonFinanceInvoiceeID',
+                'gibbonFinanceInvoicee.companyAll',
+                "IF(
             gibbonPerson.dateStart <= CURRENT_TIMESTAMP OR
             gibbonPerson.dateStart IS NULL,'Y','N'
           ) AS started",
-          "IF(
+                "IF(
             gibbonPerson.dateEnd >= CURRENT_TIMESTAMP OR
             gibbonPerson.dateEnd IS NULL,'N','Y'
           ) AS ended"
+            ]);
+
+        $criteria->addFilterRules([
+            'allUsers' => function ($query, $allUsers) {
+                if ($allUsers == true) {
+                    $query->where("status = 'Full'");
+                }
+                return $query;
+            }
         ]);
 
-      $criteria->addFilterRules([
-        'search' => function($query,$search)
-        {
-          return $query
-            ->where(
-              '(gibbonPerson.preferredName LIKE :search OR
-              gibbonPerson.surname LIKE :search OR
-              gibbonPerson.username LIKE :search')
-            ->bindValue('search','%'.$search.'%');
-        },
-        'allUsers' => function($query,$allUsers)
-        {
-          if($allUsers == true)
-          {
-            return $query
-              ->where("status = 'Full'");
-          }
-          return $query;
-        }
-      ]);
-
-      return $this->runQuery($query,$criteria);
+        return $this->runQuery($query, $criteria);
     }
 
+    public function selectStudentsWithNoInvoicee()
+    {
+        $sql = "SELECT DISTINCT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonFinanceInvoiceeID 
+                FROM gibbonPerson 
+                JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+                LEFT JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                WHERE gibbonFinanceInvoiceeID IS NULL";
+
+        return$this->db()->select($sql);
+    }
 }

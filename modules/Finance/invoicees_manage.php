@@ -28,56 +28,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.p
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    //Proceed!
+    // Proceed!
     $page->breadcrumbs->add(__('Manage Invoicees'));
+    $invoiceeGateway = $container->get(InvoiceeGateway::class);
 
-    //Check for missing students from studentEnrolment and add a gibbonFinanceInvoicee record for them.
+    // Check for missing students from studentEnrolment and add a gibbonFinanceInvoicee record for them.
+    $missingInvoicees = $invoiceeGateway->selectStudentsWithNoInvoicee()->fetchAll();
     $addFail = false;
     $addCount = 0;
-    try {
-        $dataCur = array();
-        $sqlCur = 'SELECT DISTINCT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonFinanceInvoiceeID FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID)';
-        $resultCur = $connection2->prepare($sqlCur);
-        $resultCur->execute($dataCur);
-    } catch (PDOException $e) {
-        $addFail = true;
-    }
-    if ($resultCur->rowCount() > 0) {
-        while ($rowCur = $resultCur->fetch()) {
-            if (is_null($rowCur['gibbonFinanceInvoiceeID'])) {
-                try {
-                    $dataAdd = array('gibbonPersonID' => $rowCur['gibbonPersonID']);
-                    $sqlAdd = "INSERT INTO gibbonFinanceInvoicee SET gibbonPersonID=:gibbonPersonID, invoiceTo='Family'";
-                    $resultAdd = $connection2->prepare($sqlAdd);
-                    $resultAdd->execute($dataAdd);
-                } catch (PDOException $e) {
-                    $addFail = true;
-                }
-                ++$addCount;
+
+    if (!empty($missingInvoicees)) {
+        foreach ($missingInvoicees as $values) {
+            $inserted = $invoiceeGateway->insert([
+                'gibbonPersonID' => $values['gibbonPersonID'],
+                'invoiceTo' => 'Family'
+            ]);
+            
+            if (!$inserted || !$pdo->getQuerySuccess()) {
+                $addFail = true;
             }
+
+            $addCount++;
         }
 
-        if ($addCount > 0) {
-            if ($addFail == true) {
-                echo "<div class='error'>";
-                echo __('It was detected that some students did not have invoicee records. The system tried to create these, but some of more creations failed.');
-                echo '</div>';
-            } else {
-                echo "<div class='success'>";
-                echo sprintf(__('It was detected that some students did not have invoicee records. The system has successfully created %1$s record(s) for you.'), $addCount);
-                echo '</div>';
-            }
+        if ($addCount > 0 && $addFail == true) {
+            echo Format::alert(__('It was detected that some students did not have invoicee records. The system tried to create these, but some of more creations failed.'));
+        } elseif ($addCount > 0) {
+            echo Format::alert(sprintf(__('It was detected that some students did not have invoicee records. The system has successfully created %1$s record(s) for you.'), $addCount), 'success');
         }
     }
 
-    $search = null;
-    if (isset($_GET['search'])) {
-        $search = $_GET['search'];
-    }
-    $allUsers = null;
-    if (isset($_GET['allUsers'])) {
-        $allUsers = $_GET['allUsers'];
-    }
+    $search = $_GET['search'] ?? '';
+    $allUsers = $_GET['allUsers'] ?? '';
 
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
 
@@ -101,63 +83,63 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.p
 
     echo $form->getOutput();
 
+    $criteria = $invoiceeGateway->newQueryCriteria(true)
+        ->searchBy($invoiceeGateway->getSearchableColumns(), $search)
+        ->filterBy('allUsers', $allUsers)
+        ->sortBy(['surname', 'preferredName'])
+        ->fromPOST();
+    $invoicees = $invoiceeGateway->queryInvoicees($criteria);
 
-        $gateway = $container->get(InvoiceeGateway::class);
-        $criteria = $gateway->newQueryCriteria(true)
-                            ->filterBy('search')
-                            ->filterBy('allUsers')
-                            ->fromPOST();
-        $invoicees = $gateway->queryInvoicees($criteria);
+    $table = DataTable::createPaginated('invoicees', $criteria);
+    $table->setTitle(__('View'));
+    $table->setDescription(__("The table below shows all student invoicees within the school. A red row in the table below indicates that an invoicee's status is not \"Full\" or that their start or end dates are greater or less than than the current date."));
 
-        $table = DataTable::createPaginated('invoicees', $criteria);
-        $table->setTitle('View');
-        $table->setDescription(__("The table below shows all student invoicees within the school. A red row in the table below indicates that an invoicee's status is not \"Full\" or that their start or end dates are greater or less than than the current date."));
-        $table->modifyRows(function ($invoicee, $row) {
-          //Highlight if the person is not "Full" status or is no longer at the organisation
-            if ($invoicee['started'] == 'N'||
-            $invoicee['ended'] == 'Y' ||
-            $invoicee['status'] != 'Full') {
-                $row->addClass('error');
-            }
-            return $row;
+    $table->modifyRows(function ($invoicee, $row) {
+        // Highlight if the person is not "Full" status or is no longer at the organisation
+        if ($invoicee['started'] == 'N'|| $invoicee['ended'] == 'Y' || $invoicee['status'] != 'Full') {
+            $row->addClass('error');
+        }
+        return $row;
+    });
+    $table->addColumn('name', __('Name'))
+        ->sortable(['surname', 'preferredName'])
+        ->format(function ($invoicee) {
+            return Format::name(
+                '',
+                $invoicee['preferredName'],
+                $invoicee['surname'],
+                'Student',
+                true
+            );
         });
-        $table->addColumn('name', __('Name'))
-              ->format(function ($invoicee) {
-                return Format::name(
-                    '',
-                    $invoicee['preferredName'],
-                    $invoicee['surname'],
-                    'Student',
-                    true
-                );
-              });
-        $table->addColumn('status', __('Status'));
-        $table->addColumn('invoiceTo', __('Invoice To'))
-              ->format(function ($invoicee) {
+    $table->addColumn('status', __('Status'));
+    $table->addColumn('invoiceTo', __('Invoice To'))
+            ->format(function ($invoicee) {
                 switch ($invoicee['invoiceTo']) {
                     case "Family":
-                        return "Family";
+                        return __("Family");
                     case "Company":
                         switch ($invoicee['companyAll']) {
                             case "Y":
-                                return "Company";
+                                return __("Company");
                             case "N":
-                                return "Family + Company";
+                                return __("Family + Company");
                             default:
-                                return "Unknown";
+                                return __("Unknown");
                         }
                         break;
                     default:
-                        return "Unknown";
+                        return __("Unknown");
                 }
-              });
-        $table->addActionColumn()
-              ->addParam('gibbonFinanceInvoiceeID')
-              ->addParam('search')
-              ->addParam('allUsers')
-              ->format(function ($item, $actions) {
+            });
+    $table->addActionColumn()
+            ->addParam('gibbonFinanceInvoiceeID')
+            ->addParam('search', $search)
+            ->addParam('allUsers', $allUsers)
+            ->format(function ($item, $actions) {
                 $actions->addAction('edit', __('Edit'))
-                  ->setURL('/modules/Finance/invoicees_manage_edit.php');
-              });
-        echo $table->render($invoicees);
+                    ->setURL('/modules/Finance/invoicees_manage_edit.php');
+            });
+
+    echo $table->render($invoicees);
 }
