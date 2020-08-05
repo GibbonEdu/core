@@ -265,22 +265,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                         <td colspan=2>
                             <?php
                             $gateway = $container->get(ExpenseGateway::class);
-                            $criteria = $gateway->newQueryCriteria(true)
-                                  ->filterBy('gibbonFinanceExpenseID', $gibbonFinanceExpenseID)
-                                  ->filterBy('gibbonFinanceBudgetCycleID', $gibbonFinanceBudgetCycleID)
-                                  ->fromPOST();
-                            $expenses = $gateway->queryExpenses($criteria);
+                            $criteria = $gateway->newQueryCriteria()
+                                ->sortBy('timestamp')
+                                ->fromPOST();
+                            $expenses = $gateway->queryExpenseLogByID($criteria, $gibbonFinanceExpenseID);
 
                             $table = DataTable::create('expenseLog');
                             $table->addColumn('name', __('Person'))
-                                ->format(function ($expense) {
-                                    return Format::name($expense['title'], $expense['preferredName'], $expense['surname'], 'Staff', false, true);
-                                });
+                                ->format(Format::using('name', ['title', 'preferredName', 'surname', 'Staff', false, true]));
                             $table->addColumn('date', __('Date'))
-                                ->format(function ($expense) {
-                                    return Format::date($expense['timestamp']);
-                                });
+                                ->format(Format::using('date', 'timestamp'));
                             $table->addColumn('action', __('Event'));
+                            
                             echo $table->render($expenses);
                             ?>
                                         </td>

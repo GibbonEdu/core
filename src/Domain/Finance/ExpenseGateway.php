@@ -14,28 +14,22 @@ class ExpenseGateway extends QueryableGateway
     private static $tableName = 'gibbonFinanceExpense';
     private static $searchableColumns = [];
 
-    public function queryExpenses(QueryCriteria $criteria)
+    public function queryExpenseLogByID(QueryCriteria $criteria, $gibbonFinanceExpenseID)
     {
         $query = $this
         ->newQuery()
+        ->cols([
+            'gibbonPerson.preferredName',
+            'gibbonPerson.title',
+            'gibbonPerson.surname',
+            'gibbonFinanceExpenseLog.timestamp',
+            'gibbonFinanceExpenseLog.comment',
+            'gibbonFinanceExpenseLog.action'
+          ])
         ->from('gibbonFinanceExpenseLog')
         ->innerJoin('gibbonPerson', 'gibbonFinanceExpenseLog.gibbonPersonID = gibbonPerson.gibbonPersonID')
-        ->cols([
-          'gibbonPerson.preferredName',
-          'gibbonPerson.title',
-          'gibbonPerson.surname',
-          'gibbonFinanceExpenseLog.timestamp',
-          'gibbonFinanceExpenseLog.comment',
-          'gibbonFinanceExpenseLog.action'
-        ]);
-
-        $criteria->addFilterRules([
-        'gibbonFinanceExpenseID' => function ($query, $gibbonFinanceExpenseID) {
-            return $query
-            ->where('gibbonFinanceExpenseLog.gibbonFinanceExpenseID = :gibbonFinanceExpenseID')
-            ->bindValue('gibbonFinanceExpenseID', $gibbonFinanceExpenseID);
-        }
-        ]);
+        ->where('gibbonFinanceExpenseLog.gibbonFinanceExpenseID = :gibbonFinanceExpenseID')
+        ->bindValue('gibbonFinanceExpenseID', $gibbonFinanceExpenseID);
 
         return $this->runQuery($query, $criteria);
     }
