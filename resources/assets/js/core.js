@@ -153,6 +153,15 @@ jQuery(function($){
     * Data Table: Simple Drag-Drop
     */
     $('.dataTable table[data-drag-url]').each(DraggableDataTable);
+
+    /**
+    * Data Table: Expandable Rows
+    */
+    // Expandable Rows
+    $('.dataTable').on('click', '.expander', function() {
+        $(this).toggleClass('expanded');
+        $(this).parents('tr').next('tr').toggle();
+    });
 });
 
 var DraggableDataTable = function () {
@@ -655,12 +664,6 @@ DataTable.prototype.init = function() {
         _.filters.pageMax = Math.ceil(resultCount / _.filters.pageSize);
         _.filters.page = Math.min(_.filters.page, _.filters.pageMax);
         _.refresh();
-    });
-
-    // Expandable Rows
-    $(_.table).on('click', '.expander', function() {
-        $(this).toggleClass('expanded');
-        $(this).parents('tr').next('tr').toggle();
     });
 };
 
