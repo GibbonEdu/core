@@ -22,6 +22,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Finance\ExpenseGateway;
+use Gibbon\Module\Finance\Tables\ExpenseLog;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -235,20 +236,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
 
                             $form->addRow()->addHeading(__('Log'));
                             
-                            $gateway = $container->get(ExpenseGateway::class);
-                            $criteria = $gateway->newQueryCriteria()
-                                ->sortBy('timestamp')
-                                ->fromPOST();
-                            $expenses = $gateway->queryExpenseLogByID($criteria, $gibbonFinanceExpenseID);
-
-                            $logTable = DataTable::create('expenseLog');
-                            $logTable->addColumn('name', __('Person'))
-                                ->format(Format::using('name', ['title', 'preferredName', 'surname', 'Staff', false, true]));
-                            $logTable->addColumn('date', __('Date'))
-                                ->format(Format::using('date', 'timestamp'));
-                            $logTable->addColumn('action', __('Event'));
-
-                            $form->addRow()->addContent($logTable->render($expenses));
+                            $expenseLog = $container->get(ExpenseLog::class)->create($gibbonFinanceExpenseID);
+                            $form->addRow()->addContent($expenseLog->getOutput());
 
 							$isPaid = $values['status'] == 'Paid';
 							if (!$isPaid) {
