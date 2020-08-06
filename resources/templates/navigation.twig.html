@@ -39,8 +39,8 @@ collapsed drop-down list in 'mini' view-mode.
     <nav id="navigation" class="w-full font-sans hidden absolute top-0 z-40 mt-24 sm:mt-12 -ml-6 px-6  
         {{ sidebar ? 'lg:block lg:static lg:p-0 lg:my-6 lg:mx-0' }}">
 
-        <ul class="w-full bg-white border list-none column-1 sm:column-2 md:column-3 m-0 pt-6 shadow-lg 
-            {{ sidebar ? 'lg:bg-transparent lg:border-0 lg:column-1 lg:shadow-none lg:p-0' }}">
+        <ul class="w-full bg-white border list-none column-1 sm:column-2 md:column-3 m-0 pt-4 px-6 shadow-lg 
+            {{ sidebar ? 'lg:bg-transparent lg:border-0 lg:column-1 lg:shadow-none lg:p-0' : 'lg:px-8' }}">
 
             {% for categoryName, items in menuModule %}
                 <li class="w-full column-no-break p-0">
