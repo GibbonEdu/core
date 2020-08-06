@@ -1,4 +1,6 @@
 <?php
+
+use Gibbon\Module\Finance\Tables\ExpenseLog;
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -384,7 +386,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 							<tr>
 								<td colspan=2>
 									<?php
-									echo getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2, true);
+									$expenseLog = $container->get(ExpenseLog::class)->create($gibbonFinanceExpenseID, true);
+                                    echo $expenseLog->getOutput();
                             		?>
 									</td>
 								</tr>

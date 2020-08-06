@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Module\Finance\Tables\ExpenseLog;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -233,7 +234,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
 
                             $form->addRow()->addHeading(__('Log'));
                             
-                            $form->addRow()->addContent(getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2));
+                            $expenseLog = $container->get(ExpenseLog::class)->create($gibbonFinanceExpenseID);
+                            $form->addRow()->addContent($expenseLog->getOutput());
 
                             $form->addRow()->addHeading(__('Action'));
 
