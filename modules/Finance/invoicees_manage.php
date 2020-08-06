@@ -104,13 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.p
     $table->addColumn('name', __('Name'))
         ->sortable(['surname', 'preferredName'])
         ->format(function ($invoicee) {
-            return Format::name(
-                '',
-                $invoicee['preferredName'],
-                $invoicee['surname'],
-                'Student',
-                true
-            );
+            return Format::name('', $invoicee['preferredName'], $invoicee['surname'], 'Student', true);
         });
     $table->addColumn('status', __('Status'));
     $table->addColumn('invoiceTo', __('Invoice To'))
