@@ -12,14 +12,14 @@ class InvoiceeGateway extends QueryableGateway
     use TableAware;
     private static $primaryKey = 'gibbonFinanceInvoiceeID';
     private static $tableName = 'gibbonFinanceInvoicee';
-    private static $searchableColumns = [];
+    private static $searchableColumns = ['preferredName', 'surname', 'username'];
 
     public function queryInvoicees(QueryCriteria $criteria)
     {
         $query = $this
             ->newQuery()
             ->from('gibbonFinanceInvoicee')
-            ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID = gibbonFinanceInvoicee.gibbonPErsonID')
+            ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID = gibbonFinanceInvoicee.gibbonPersonID')
             ->where("NOT surname = ''")
             ->cols([
                 'gibbonPerson.surname',
@@ -41,14 +41,13 @@ class InvoiceeGateway extends QueryableGateway
           ) AS ended"
             ]);
 
-        $criteria->addFilterRules([
-            'allUsers' => function ($query, $allUsers) {
-                if ($allUsers == true) {
-                    $query->where("status = 'Full'");
-                }
-                return $query;
-            }
-        ]);
+        if (!$criteria->hasFilter('allUsers')) {
+            $query->where("gibbonPerson.status = 'Full'")
+                    ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :today)')
+                    ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :today)')
+                    ->bindValue('today', date('Y-m-d'));
+        }
+
 
         return $this->runQuery($query, $criteria);
     }
