@@ -42,7 +42,7 @@ class Username extends TextField
         $alertText .= __('Primary Role').', '.__('Preferred Name').', '.__('First Name').', '.__('Surname')."\n";
 
         $button = $form->getFactory()->createButton(__('Generate'));
-        $button->addClass('generateUsername -ml-px')
+        $button->addClass('generateUsername -ml-px rounded-r-sm')
             ->addData('alert', $alertText)
             ->setTabIndex(-1);
 
