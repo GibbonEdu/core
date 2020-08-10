@@ -186,7 +186,11 @@ input[readonly]:focus, select[readonly]:focus, textarea[readonly]:focus {
 }
 
 input.button, a.button, button.button {
-    @apply py-1 px-2 border border-gray-500 text-gray-700 text-xs font-bold leading-normal ;
+    @apply py-2 px-2 border text-gray-700 text-xs font-bold leading-normal ;
+}
+
+input.button:hover, a.button:hover, button.button:hover {
+    @apply bg-gray-400;
 }
 
 .column.inline {
