@@ -38,6 +38,7 @@ v21.0.00
 
     Bug Fixes
         System: fixed missing organization name on welcome page
+        Individual Needs: fixed description of Reason field in Manage Investigations
         Library: fixed broken delete function in Manage Catalog
         Messenger: fixed SMTP debug settings in New Message process page
         Reports: fixed AttendanceByCycle data source counting school attendance as class attendance
