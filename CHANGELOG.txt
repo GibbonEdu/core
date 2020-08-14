@@ -34,6 +34,7 @@ v21.0.00
         Messenger: tied messages to school year
         Reports: display the download link after a batch PDF has completed
         Reports: added full course name to the report writing page
+        Students: updated application acceptance message to reflect automatically created medical record
         System Admin: adjusted View Log to show only current year's log entries
 
     Bug Fixes
