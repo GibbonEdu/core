@@ -45,6 +45,7 @@ v21.0.00
         Reports: fixed AttendanceByCycle data source counting school attendance as class attendance
         Planner: fixed Outcomes by Course for courses with multiple year groups
         Students: fixed parent support link in application acceptance email
+        Students: fixed students able to see other students in class lists
 
 
 v20.0.00
