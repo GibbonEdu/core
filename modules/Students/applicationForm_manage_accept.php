@@ -144,7 +144,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                          ->append('<li>'.__('Link student and parents to the family.').'</li>');
                 }
 
-                $list->append('<li>'.__('Save the student\'s payment preferences.').'</li>')
+                $list->append('<li>'.__('Create a medical record for the student.').'</li>')
+                     ->append('<li>'.__('Save the student\'s payment preferences.').'</li>')
                      ->append('<li>'.__('Set the status of the application to "Accepted".').'</li>');
 
                 $list->wrap('<ol>', '</ol>');
@@ -178,8 +179,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     $list->append('<li>'.__('Enrol the student in the selected school year (as the student has been assigned to a roll group).').'</li>');
                 }
 
-                $list->append('<li>'.__('Create a medical record for the student.').'</li>')
-                     ->append('<li>'.__('Create an individual needs record for the student.').'</li>')
+                $list->append('<li>'.__('Create an individual needs record for the student.').'</li>')
                      ->append('<li>'.__('Create a note of the student\'s scholarship information outside of Gibbon.').'</li>')
                      ->append('<li>'.__('Create a timetable for the student.').'</li>');
 
