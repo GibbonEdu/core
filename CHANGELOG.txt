@@ -42,6 +42,8 @@ v21.0.00
         Messenger: fixed SMTP debug settings in New Message process page
         Reports: fixed AttendanceByCycle data source counting school attendance as class attendance
         Planner: fixed Outcomes by Course for courses with multiple year groups
+        Students: fixed parent support link in application acceptance email
+
 
 v20.0.00
 --------
