@@ -672,4 +672,7 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='System Admin' AND gibbonAction.name='Manage Services'));end
 UPDATE `gibbonAction` SET `category`='System' WHERE name='System Check' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin');end
 UPDATE `gibbonModule` SET `entryURL`='systemOverview.php' WHERE name='System Admin';end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Planner', 'parentDailyEmailSummaryIntroduction', 'Parent Daily Email Summary Introduction', 'Information to display at the beginning of the email', '');end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Planner', 'parentDailyEmailSummaryPostScript', 'Parent Daily Email Summary PostScript', 'Information to display at the end of the email', '');end
+
 ";
