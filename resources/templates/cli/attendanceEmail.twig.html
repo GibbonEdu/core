@@ -1,0 +1,46 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+
+
+{{ formatUsing('name', student.title, student.preferredName, student.surname, 'Student', false, true) }}
+<br/><br/>
+
+
+<table style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background: #ffffff; border-radius: 6px; border: 1px solid #ececec; font-size: 12px;">
+    <tr>
+
+        <td style="padding: 8px">
+            {{ __('School Attendance') }}
+        </td>
+        <td style="padding: 8px">
+            <b>{{ __(schoolLog.direction) }}</b> ({{ __(schoolLog.type) }})
+        </td>
+        <td style="padding: 8px">
+            {{ formatUsing('name', '', schoolLog.preferredName, schoolLog.surname, 'Staff', false, true) }}
+        </td>
+
+    </tr>
+
+    {% for classLog in classLogs %}
+    
+        <tr>
+            <td style="padding: 8px">
+                {{ classLog.period }} - {{ formatUsing('courseClassName', classLog.courseName, classLog.className) }}
+            </td>
+            <td style="padding: 8px">
+                <b>{{ __(classLog.direction) }}</b> ({{ __(classLog.type) }})
+            </td>
+            <td style="padding: 8px">
+                {{ formatUsing('name', '', schoolLog.preferredName, schoolLog.surname, 'Staff', false, true) }}
+            </td>    
+        </tr>
+            
+    {% endfor %}
+
+</table>
