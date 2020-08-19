@@ -26,8 +26,8 @@ getSystemSettings($guid, $connection2);
 
 setCurrentSchoolYear($guid, $connection2);
 
-$parentWeeklyEmailSummaryIncludeBehaviour = getSettingByScope($connection2, 'Planner', 'parentWeeklyEmailSummaryIncludeBehaviour');
-$parentWeeklyEmailSummaryIncludeMarkbook = getSettingByScope($connection2, 'Planner', 'parentWeeklyEmailSummaryIncludeMarkbook');
+$parentWeeklyEmailSummaryIncludeBehaviour = getSettingByScope($connection2, 'School Admin', 'parentWeeklyEmailSummaryIncludeBehaviour');
+$parentWeeklyEmailSummaryIncludeMarkbook = getSettingByScope($connection2, 'School Admin', 'parentWeeklyEmailSummaryIncludeMarkbook');
 
 //Set up for i18n via gettext
 if (isset($_SESSION[$guid]['i18n']['code'])) {

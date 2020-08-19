@@ -48,8 +48,8 @@ if ($_SESSION[$guid]['organisationEmail'] == '') {
     return;
 }
 
-$parentDailyEmailSummaryIntroduction = getSettingByScope($connection2, 'Planner', 'parentDailyEmailSummaryIntroduction');
-$parentDailyEmailSummaryPostScript = getSettingByScope($connection2, 'Planner', 'parentDailyEmailSummaryPostScript');
+$parentDailyEmailSummaryIntroduction = getSettingByScope($connection2, 'School Admin', 'parentDailyEmailSummaryIntroduction');
+$parentDailyEmailSummaryPostScript = getSettingByScope($connection2, 'School Admin', 'parentDailyEmailSummaryPostScript');
 
 // Override the ini to keep this process alive
 ini_set('memory_limit', '2048M');
