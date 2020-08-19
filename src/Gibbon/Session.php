@@ -59,9 +59,9 @@ class Session implements SessionInterface
                 'cookie_secure'    => isset($_SERVER['HTTPS']),
             ];
 
-            if (version_compare(phpversion(), '7.3.0', '>=')) {
-                $options['cookie_samesite'] = 'Strict';
-            }
+            // if (version_compare(phpversion(), '7.3.0', '>=')) {
+            //     $options['cookie_samesite'] = 'Strict';
+            // }
 
             session_start($options);
 
