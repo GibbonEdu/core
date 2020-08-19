@@ -78,7 +78,6 @@ $classLogCriteria = $attendanceLogGateway->newQueryCriteria()
 
 // Get all student data grouped by family
 $families = $familyGateway->selectFamiliesWithActiveStudents($gibbonSchoolYearID)->fetchGrouped();
-$families = array_slice($families, 0, 2);
 
 foreach ($families as $gibbonFamilyID => $students) {
     // Get the adults in this family and filter by email settings

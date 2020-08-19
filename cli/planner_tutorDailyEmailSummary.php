@@ -88,7 +88,6 @@ $yearGroups = array_reduce($allStudents, function ($group, $item) {
     $group[$item['gibbonYearGroupID']][$item['gibbonRollGroupID']][] = $item;
     return $group;
 }, []);
-$yearGroups = array_slice($yearGroups, 0, 2);
 
 // Loop over each year group and roll group to send summary emails
 foreach ($yearGroups as $gibbonYearGroupID => $rollGroups) {
