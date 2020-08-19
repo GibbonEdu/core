@@ -21,9 +21,9 @@ use Gibbon\Domain\System\SettingGateway;
 
 include '../../gibbon.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/plannerSettings.php';
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/emailSummarySettings.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettings.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/emailSummarySettings.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
@@ -32,16 +32,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
 
     $settingGateway = $container->get(SettingGateway::class);
     $settingsToUpdate = [
-        'Planner' => [
-            'lessonDetailsTemplate',
-            'teachersNotesTemplate',
-            'unitOutlineTemplate',
-            'smartBlockTemplate',
-            'makeUnitsPublic',
-            'shareUnitOutline',
-            'allowOutcomeEditing',
-            'sharingDefaultParents',
-            'sharingDefaultStudents',
+        'School Admin' => [
+            'parentWeeklyEmailSummaryIncludeBehaviour',
+            'parentWeeklyEmailSummaryIncludeMarkbook',
+            'parentDailyEmailSummaryIntroduction',
+            'parentDailyEmailSummaryPostScript',
         ]
     ];
 

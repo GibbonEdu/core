@@ -24,7 +24,7 @@ use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\User\FamilyGateway;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 
-$_POST['address'] = '/modules/Planner/index.php';
+$_POST['address'] = '/modules/School Admin/emailSummarySettings.php';
 
 require __DIR__.'/../gibbon.php';
 
@@ -48,8 +48,8 @@ if ($_SESSION[$guid]['organisationEmail'] == '') {
     return;
 }
 
-$parentDailyEmailSummaryIntroduction = getSettingByScope($connection2, 'Planner', 'parentDailyEmailSummaryIntroduction');
-$parentDailyEmailSummaryPostScript = getSettingByScope($connection2, 'Planner', 'parentDailyEmailSummaryPostScript');
+$parentDailyEmailSummaryIntroduction = getSettingByScope($connection2, 'School Admin', 'parentDailyEmailSummaryIntroduction');
+$parentDailyEmailSummaryPostScript = getSettingByScope($connection2, 'School Admin', 'parentDailyEmailSummaryPostScript');
 
 // Override the ini to keep this process alive
 ini_set('memory_limit', '2048M');
@@ -143,15 +143,15 @@ $mail->smtpClose();
 
 
 // Raise a new notification event
-$event = new NotificationEvent('Planner', 'Parent Daily Email Summary');
+$event = new NotificationEvent('School Admin', 'Parent Daily Email Summary');
 
 $body = __('Date').': '.Format::date(date('Y-m-d')).'<br/>';
 $body .= __('Total Count').': '.($sendReport['emailSent'] + $sendReport['emailFailed']).'<br/>';
 $body .= __('Send Succeed Count').': '.$sendReport['emailSent'].'<br/>';
 $body .= __('Send Fail Count').': '.$sendReport['emailFailed'].'<br/><br/>';
 
-$event->setNotificationText(__('A Planner CLI script has run.').'<br/><br/>'.$body);
-$event->setActionLink('/index.php?q=/modules/School Admin/plannerSettings.php');
+$event->setNotificationText(__('A School Admin CLI script has run.').'<br/><br/>'.$body);
+$event->setActionLink('/index.php?q=/modules/School Admin/emailSummarySettings.php');
 
 // Notify admin
 $event->addRecipient($_SESSION[$guid]['organisationAdministrator']);
