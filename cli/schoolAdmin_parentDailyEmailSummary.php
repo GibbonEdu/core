@@ -111,11 +111,11 @@ foreach ($families as $gibbonFamilyID => $students) {
     // Format the email subject and content
     $subject = __('Daily Attendance Summary for {context}', ['context' => Format::date(date('Y-m-d'))]);
 
-    $body = $parentDailyEmailSummaryIntroduction;
+    $body = nl2br($parentDailyEmailSummaryIntroduction);
     $body .= '<br/><br/>';
     $body .= $content;
     $body .= '<br/>';
-    $body .= $parentDailyEmailSummaryPostScript;
+    $body .= nl2br($parentDailyEmailSummaryPostScript);
 
     // Add recipients and sender
     foreach ($familyAdults as $adult) {
