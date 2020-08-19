@@ -27,6 +27,7 @@ v21.0.00
         System Admin: added a landing page to showcase the available support options
         Roll Groups: added new grouped action to restrict parent viewing to their own children's roll groups
         Students: added an optional application processing fee that can be sent manually by staff
+        Planner: added Daily Attendance Summary CLI scripts for parents, tutors and heads of year
 
     Tweaks & Additions
         System: added Romanian Leu as currency option

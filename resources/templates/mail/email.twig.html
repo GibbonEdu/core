@@ -154,9 +154,9 @@ SOFTWARE.
                                 <h2 style="margin-top: 0px;">{{ title }}</h2>
                             {% endblock %}
                         </div>
-                        <p style="font-family: {{ fontFamily }}; font-size: 16px; line-height: 22px; font-weight: normal; margin: 0; Margin-bottom: 15px; color: #555549;">
+                        <div style="font-family: {{ fontFamily }}; font-size: 16px; line-height: 22px; font-weight: normal; margin: 0; Margin-bottom: 15px; color: #555549;">
                             {% block body %}{{ body|raw }}{% endblock %}
-                        </p>
+                        </div>
                         {% if button  %}
                         <table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; box-sizing: border-box;">
                           <tbody>
