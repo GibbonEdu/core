@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\View\View;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\User\FamilyGateway;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 
@@ -55,12 +56,10 @@ ini_set('memory_limit', '2048M');
 ini_set('max_execution_time', 1800);
 set_time_limit(1800);
 
-ini_set('error_reporting', E_ALL);
-ini_set('display_errors', '1');
-
 // Prep for email sending later
 $mail = $container->get(Mailer::class);
 $mail->SMTPKeepAlive = true;
+                
 $sendReport = ['emailSent' => 0, 'emailFailed' => 0];
 
 $currentDate = date('Y-m-d');
@@ -77,8 +76,9 @@ $schoolLogCriteria = $attendanceLogGateway->newQueryCriteria()
 $classLogCriteria = $attendanceLogGateway->newQueryCriteria()
     ->sortBy(['timeStart', 'timeEnd', 'timestampTaken']);
 
+// Get all student data grouped by family
 $families = $familyGateway->selectFamiliesWithActiveStudents($gibbonSchoolYearID)->fetchGrouped();
-$families = array_slice($families, 0, 1);
+$families = array_slice($families, 0, 2);
 
 foreach ($families as $gibbonFamilyID => $students) {
     // Get the adults in this family and filter by email settings
@@ -102,35 +102,20 @@ foreach ($families as $gibbonFamilyID => $students) {
         });
 
         // Format the student attendance log for emailing
-        if (!empty($schoolLog) && !empty($schoolLog)) {
-            $content .= $view->fetchFromTemplate('cli/attendanceEmail.twig.html', [
-                'student' => $student,
-                'schoolLog' => $schoolLog,
-                'classLogs' => $classLogs,
-
-            ]);
-        }
-    }
-    // echo '<pre>';
-    // print_r($familyAdults);
-    // echo '<pre>';
-
-    // How do we handle no attendance record for this day?
-    if (empty($content)) {
-        $content = __('There is currently no attendance data today for the selected student.');
+        $content .= $view->fetchFromTemplate('cli/attendanceEmailParent.twig.html', [
+            'student' => $student,
+            'schoolLog' => $schoolLog,
+            'classLogs' => $classLogs,
+        ]);
     }
 
     // Format the email subject and content
-    $subject = __('Daily Attendance Summary via {system}', [
-        'system' => $_SESSION[$guid]['systemName'],
-        'organisation' => $_SESSION[$guid]['organisationNameShort'],
-    ]);
+    $subject = __('Daily Attendance Summary for {context}', ['context' => Format::date(date('Y-m-d'))]);
 
     $body = $parentDailyEmailSummaryIntroduction;
     $body .= '<br/><br/>';
     $body .= $content;
-    // $body .= '<hr style="border:none;border-bottom:1px solid #ececec;margin:1.5rem 0;width:100%;">';
-    $body .= '<br/><br/>';
+    $body .= '<br/>';
     $body .= $parentDailyEmailSummaryPostScript;
 
     // Add recipients and sender
@@ -139,7 +124,7 @@ foreach ($families as $gibbonFamilyID => $students) {
     }
     $mail->setDefaultSender($subject);
     $mail->renderBody('mail/message.twig.html', [
-        'title'  => __('Daily Attendance Summary'),
+        'title'  => $subject,
         'body'   => $body,
     ]);
 
@@ -154,14 +139,26 @@ foreach ($families as $gibbonFamilyID => $students) {
     $mail->ClearAllRecipients();
 }
 
-// echo '<pre>';
-// print_r($families);
-// echo '<pre>';
-
-
 // Close SMTP connection
 $mail->smtpClose();
 
 
+// Raise a new notification event
+$event = new NotificationEvent('Planner', 'Parent Daily Email Summary');
+
+$body = __('Date').': '.Format::date(date('Y-m-d')).'<br/>';
+$body .= __('Total Count').': '.($sendReport['emailSent'] + $sendReport['emailFailed']).'<br/>';
+$body .= __('Send Succeed Count').': '.$sendReport['emailSent'].'<br/>';
+$body .= __('Send Fail Count').': '.$sendReport['emailFailed'].'<br/><br/>';
+
+$event->setNotificationText(__('A Planner CLI script has run.').'<br/><br/>'.$body);
+$event->setActionLink('/index.php?q=/modules/School Admin/plannerSettings.php');
+
+// Notify admin
+$event->addRecipient($_SESSION[$guid]['organisationAdministrator']);
+
+// Send all notifications
+$event->sendNotifications($pdo, $gibbon->session);
+
 // Output the result to terminal
-echo sprintf('Sent %1$s notifications: %2$s inserts, %3$s updates, %4$s emails sent, %5$s emails failed.', $sendReport['emailSent'] + $sendReport['emailFailed'], $sendReport['inserts'] ?? 0, $sendReport['updates'] ?? 0, $sendReport['emailSent'], $sendReport['emailFailed'])."\n";
+echo sprintf('Sent %1$s emails: %2$s emails sent, %3$s emails failed.', $sendReport['emailSent'] + $sendReport['emailFailed'], $sendReport['emailSent'], $sendReport['emailFailed'])."\n";

@@ -674,5 +674,7 @@ UPDATE `gibbonAction` SET `category`='System' WHERE name='System Check' AND gibb
 UPDATE `gibbonModule` SET `entryURL`='systemOverview.php' WHERE name='System Admin';end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Planner', 'parentDailyEmailSummaryIntroduction', 'Parent Daily Email Summary Introduction', 'Information to display at the beginning of the email', '');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Planner', 'parentDailyEmailSummaryPostScript', 'Parent Daily Email Summary PostScript', 'Information to display at the end of the email', '');end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Parent Daily Email Summary', 'Planner', 'Parent Daily Email Summary', 'CLI', 'All', 'Y');end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Tutor Daily Email Summary', 'Planner', 'Tutor Daily Email Summary', 'CLI', 'All', 'Y');end
 
 ";
