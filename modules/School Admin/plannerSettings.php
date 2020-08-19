@@ -85,28 +85,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->required()->selected($setting['value']);
 
-    $form->addRow()->addHeading(__('Summary Emails'));
-
-    $setting = getSettingByScope($connection2, 'Planner', 'parentWeeklyEmailSummaryIncludeBehaviour', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->required()->selected($setting['value']);
-
-    $setting = getSettingByScope($connection2, 'Planner', 'parentWeeklyEmailSummaryIncludeMarkbook', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->required()->selected($setting['value']);
-
-    $setting = getSettingByScope($connection2, 'Planner', 'parentDailyEmailSummaryIntroduction', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextArea($setting['name'])->setRows(10)->setValue($setting['value']);
-
-    $setting = getSettingByScope($connection2, 'Planner', 'parentDailyEmailSummaryPostScript', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextArea($setting['name'])->setRows(10)->setValue($setting['value']);
-
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();
