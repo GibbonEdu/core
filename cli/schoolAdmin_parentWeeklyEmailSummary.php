@@ -332,9 +332,9 @@ else {
             $body .= __('Send Fail Count').': '.$sendFailCount.'<br/><br/>';
 
             // Raise a new notification event
-            $event = new NotificationEvent('Planner', 'Parent Weekly Email Summary');
+            $event = new NotificationEvent('School Admin', 'Parent Weekly Email Summary');
 
-            $event->setNotificationText(__('A Planner CLI script has run.').'<br/>'.$body);
+            $event->setNotificationText(__('A School Admin CLI script has run.').'<br/>'.$body);
             $event->setActionLink('/index.php?q=/modules/Planner/report_parentWeeklyEmailSummaryConfirmation.php');
 
             //Notify admin
