@@ -19,13 +19,13 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% if schoolLog %}
     <tr style="{{ schoolLog.scope == 'Onsite - Late' ? warningStyle : schoolLog.direction == 'Out' ? errorStyle : successStyle }}">
 
-        <td style="padding: 8px">
+        <td style="padding: 8px;font-size: 12px !important;">
             {{ __('School Attendance') }}
         </td>
-        <td style="padding: 8px">
+        <td style="padding: 8px;font-size: 12px !important;">
             <b>{{ __(schoolLog.direction) }}</b> ({{ __(schoolLog.type) }})
         </td>
-        <td style="padding: 8px">
+        <td style="padding: 8px;font-size: 12px !important;">
             {{ __('By') }} {{ formatUsing('name', '', schoolLog.preferredName, schoolLog.surname, 'Staff', false, true) }}
         </td>
 
@@ -35,13 +35,13 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% for classLog in classLogs %}
     
         <tr style="{{ classLog.scope == 'Onsite - Late' ? warningStyle : classLog.direction == 'Out' ? errorStyle : successStyle }};">
-            <td style="padding: 8px">
+            <td style="padding: 8px;font-size: 12px !important;">
                 {{ classLog.period }} - {{ formatUsing('courseClassName', classLog.courseName, classLog.className) }}
             </td>
-            <td style="padding: 8px">
+            <td style="padding: 8px;font-size: 12px !important;">
                 <b>{{ __(classLog.direction) }}</b> ({{ __(classLog.type) }})
             </td>
-            <td style="padding: 8px">
+            <td style="padding: 8px;font-size: 12px !important;">
                 {{ __('By') }} {{ formatUsing('name', '', schoolLog.preferredName, schoolLog.surname, 'Staff', false, true) }}
             </td>    
         </tr>

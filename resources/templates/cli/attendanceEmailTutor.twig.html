@@ -21,7 +21,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     <tr>
 
 
-    <td style="{{ schoolLog.scope == 'Onsite - Late' ? warningStyle : schoolLog.direction == 'Out' ? errorStyle : schoolLog.direction == 'In' ? successStyle : blankStyle }};padding: 4px;width:84px;text-align:center;">
+    <td style="{{ schoolLog.scope == 'Onsite - Late' ? warningStyle : schoolLog.direction == 'Out' ? errorStyle : schoolLog.direction == 'In' ? successStyle : blankStyle }};padding: 4px;width:84px;text-align:center;font-size: 10px !important;">
         {{ __('Form Group') }}<br/>
         {{ student.rollGroup }}<br/>
         <b>{{ schoolLog.type ? __(schoolLog.type) : __('N/A') }}</b>
@@ -30,7 +30,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
     {% for classLog in classLogs %}
     
-        <td style="{{ classLog.scope == 'Onsite - Late' ? warningStyle : classLog.direction == 'Out' ? errorStyle : classLog.direction == 'In' ? successStyle : blankStyle }};padding: 4px;width:84px;text-align:center;">
+        <td style="{{ classLog.scope == 'Onsite - Late' ? warningStyle : classLog.direction == 'Out' ? errorStyle : classLog.direction == 'In' ? successStyle : blankStyle }};padding: 4px;width:84px;text-align:center;font-size: 10px !important;">
             {{ classLog.period }}<br/>
             {{ formatUsing('courseClassName', classLog.courseName, classLog.className) }}<br/>
             <b>{{ classLog.gibbonAttendanceLogPersonID ? __(classLog.type) : __('N/A') }}</b>
