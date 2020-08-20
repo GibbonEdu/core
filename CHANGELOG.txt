@@ -46,6 +46,7 @@ v21.0.00
         Messenger: fixed SMTP debug settings in New Message process page
         Reports: fixed AttendanceByCycle data source counting school attendance as class attendance
         Planner: fixed Outcomes by Course for courses with multiple year groups
+        Staff: fixed alternate email address causing an error on Personal subpage
         Students: fixed parent support link in application acceptance email
         Students: fixed students able to see other students in class lists
 

@@ -250,7 +250,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         $table->addColumn('emailAlternate', __('Alternate Email'))
                             ->format(function($row) {
                                 if ($row['emailAlternate'] != '') {
-                                    return Format::using('link', ['mailto:' . $row['emailAlternate'], 'emailAlternate']);
+                                    return Format::link('mailto:' . $row['emailAlternate'], $row['emailAlternate']);
                                 }
                                 return '';
                             });
