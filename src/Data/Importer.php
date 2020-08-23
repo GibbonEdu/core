@@ -572,44 +572,51 @@ class Importer
             }
 
             $sqlFieldString = implode(", ", $sqlFields);
+            $updateNonUnique = $importType->getDetail('updateNonUnique');
 
             // Handle Existing Records
-            if ($result->rowCount() == 1) {
-                $primaryKeyValue = $keyRow[$primaryKey];
+            if ($result->rowCount() == 1 || ($result->rowCount() > 0 && $updateNonUnique == true)) {
 
-                // Dont update records on INSERT ONLY mode
-                if ($this->mode == 'insert') {
-                    $this->log($rowNum, Importer::WARNING_DUPLICATE_KEY, $primaryKey, $primaryKeyValue);
-                    $this->debugLog($rowNum, $sqlKeyQueryString, $data, 'insert fail');
-                    $this->databaseResults['updates_skipped'] += 1;
-                    continue;
+                $primaryKeyValues = [$keyRow[$primaryKey]];
+                if ($updateNonUnique == true && $result->rowCount() > 1) {
+                    $primaryKeyValues += $result->fetchAll(\PDO::FETCH_COLUMN | \PDO::FETCH_UNIQUE, 0);
                 }
 
-                // If these IDs don't match, then one of the unique keys matched (eg: non-unique value with different database ID)
-                if ($this->syncField == true && $primaryKeyValue != $row[$primaryKey]) {
-                    $this->log($rowNum, Importer::ERROR_NON_UNIQUE_KEY, $primaryKey, $row[$primaryKey], array('key' => $primaryKey, 'value' => intval($primaryKeyValue) ));
-                    $this->debugLog($rowNum, $sqlKeyQueryString, $data, 'update fail');
-                    $this->databaseResults['updates_skipped'] += 1;
-                    continue;
-                }
+                foreach ($primaryKeyValues as $primaryKeyValue) {
+                    // Dont update records on INSERT ONLY mode
+                    if ($this->mode == 'insert') {
+                        $this->log($rowNum, Importer::WARNING_DUPLICATE_KEY, $primaryKey, $primaryKeyValue);
+                        $this->debugLog($rowNum, $sqlKeyQueryString, $data, 'insert fail');
+                        $this->databaseResults['updates_skipped'] += 1;
+                        continue;
+                    }
 
-                $this->databaseResults['updates'] += 1;
-  
-                $sqlData[$primaryKey] = $primaryKeyValue;
-                $sql="UPDATE {$tableName} SET " . $sqlFieldString . " WHERE ".$this->escapeIdentifier($primaryKey)."=:{$primaryKey}" ;
+                    // If these IDs don't match, then one of the unique keys matched (eg: non-unique value with different database ID)
+                    if ($this->syncField == true && $primaryKeyValue != $row[$primaryKey]) {
+                        $this->log($rowNum, Importer::ERROR_NON_UNIQUE_KEY, $primaryKey, $row[$primaryKey], array('key' => $primaryKey, 'value' => intval($primaryKeyValue) ));
+                        $this->debugLog($rowNum, $sqlKeyQueryString, $data, 'update fail');
+                        $this->databaseResults['updates_skipped'] += 1;
+                        continue;
+                    }
 
-                // Skip now so we dont change the database
-                if (!$liveRun) {
-                    continue;
-                }
+                    $this->databaseResults['updates'] += 1;
+    
+                    $sqlData[$primaryKey] = $primaryKeyValue;
+                    $sql="UPDATE {$tableName} SET " . $sqlFieldString . " WHERE ".$this->escapeIdentifier($primaryKey)."=:{$primaryKey}" ;
 
-                $this->pdo->update($sql, $sqlData);
+                    // Skip now so we dont change the database
+                    if (!$liveRun) {
+                        continue;
+                    }
 
-                if (!$this->pdo->getQuerySuccess()) {
-                    $this->log($rowNum, Importer::ERROR_DATABASE_FAILED_UPDATE);
-                    $this->debugLog($rowNum, $sql, $sqlData, 'update fail');
-                    $partialFail = true;
-                    continue;
+                    $this->pdo->update($sql, $sqlData);
+
+                    if (!$this->pdo->getQuerySuccess()) {
+                        $this->log($rowNum, Importer::ERROR_DATABASE_FAILED_UPDATE);
+                        $this->debugLog($rowNum, $sql, $sqlData, 'update fail');
+                        $partialFail = true;
+                        continue;
+                    }
                 }
             }
 
