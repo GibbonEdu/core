@@ -42,6 +42,7 @@ v21.0.00
     Bug Fixes
         System: fixed missing organization name on welcome page
         System: fixed date picker not using the First Day of the Week setting
+        System Admin: fixed PHP deprecation errors in CSV importer
         Individual Needs: fixed description of Reason field in Manage Investigations
         Library: fixed broken delete function in Manage Catalog
         Messenger: fixed SMTP debug settings in New Message process page
