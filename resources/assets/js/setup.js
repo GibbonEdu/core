@@ -21,6 +21,7 @@ $(document).ready(function(){
     // Initialize datepicker
     var dateDefaults = $.datepicker.regional[Gibbon.config.datepicker.locale];
     dateDefaults.dateFormat = Gibbon.config.datepicker.dateFormat;
+    dateDefaults.firstDay = Gibbon.config.datepicker.firstDay;
     
     $.datepicker.setDefaults(dateDefaults);
     

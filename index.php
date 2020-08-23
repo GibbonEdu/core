@@ -274,6 +274,7 @@ $javascriptConfig = [
         'datepicker' => [
             'locale' => $datepickerLocale,
             'dateFormat' => str_replace('yyyy', 'yy', $session->get('i18n')['dateFormat']),
+            'firstDay' => $gibbon->session->get('firstDayOfTheWeek') == 'Monday'? 1 : 0,
         ],
         'thickbox' => [
             'pathToImage' => $session->get('absoluteURL').'/lib/thickbox/loadingAnimation.gif',
