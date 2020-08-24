@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                 $row = $result->fetch();
                 //Check that date is not in the future
                 if ($currentDate > $today) {
-                    $URL .= '&return=error3';
+                    $URL .= '&return=error7';
                     header("Location: {$URL}");
                 } else {
                     //Check that date is a school day
