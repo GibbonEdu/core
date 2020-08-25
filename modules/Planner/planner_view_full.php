@@ -1540,7 +1540,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                                     $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='$countStudents-gibbonPersonID' value='".$rowClassGroup['gibbonPersonID']."' data-id='$countStudents'>";
 
-                                    $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceTypeSelect( $rowLog['type'], "$countStudents-type", '96px');
+                                    $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceTypeSelect( $rowLog['type'], "$countStudents-type", '96px; font-size: 12px; padding: 0.25rem; height: 28px;');
 
                                     // Only hide the reason and comment fields if Present is the default attendance type
                                     if ($defaultAttendanceType == 'Present' || $attendance->isTypePresent($rowLog['type'])) {
@@ -1549,8 +1549,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                         $_SESSION[$guid]['sidebarExtra'] .= "<div>";
                                     }
 
-                                    $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceReasonSelect( $rowLog['reason'], "$countStudents-reason", '96px');
-                                    $_SESSION[$guid]['sidebarExtra'] .= "<input type='text' maxlength=255 name='$countStudents-comment' id='$countStudents-comment' style='float: none; width:96px; margin-bottom: 3px' value='".htmlPrep($rowLog['comment'])."'>";
+                                    $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceReasonSelect( $rowLog['reason'], "$countStudents-reason", '96px; font-size: 12px; padding: 0.25rem; height: 28px;');
+                                    $_SESSION[$guid]['sidebarExtra'] .= "<input type='text' maxlength=255 name='$countStudents-comment' id='$countStudents-comment' style='float: none; width:96px; ; font-size: 12px; padding: 0.25rem; height: 28px; margin-bottom: 3px' value='".htmlPrep($rowLog['comment'])."'>";
                                     $_SESSION[$guid]['sidebarExtra'] .= "</div>";
 
                                 }
