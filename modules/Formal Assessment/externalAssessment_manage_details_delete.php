@@ -57,12 +57,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
             //Let's go!
             $row = $result->fetch();
 
-            if ($search != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Formal Assessment/externalAssessment_details.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>".__('Back').'</a>';
-                echo '</div>';
-            }
-
             $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/externalAssessment_manage_details_deleteProcess.php?gibbonExternalAssessmentStudentID=$gibbonExternalAssessmentStudentID&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents");
             echo $form->getOutput();
         }
