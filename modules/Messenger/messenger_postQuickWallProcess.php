@@ -61,6 +61,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
         $subject = $_POST['subject'];
         $body = stripslashes($_POST['body']);
 
+        // Turn copy-pasted div breaks into paragraph breaks
+        $body = str_replace(['<div ', '<div>', '</div>'], ['<p ', '<p>', '</p>'], $body);
+
         if ($subject == '' or $body == '') {
             $URL .= '&return=error1';
             header("Location: {$URL}");
