@@ -26,7 +26,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% for row in form.getRows %}
         {% set rowLoop = loop %}
         {% if true or renderStyle == 'flex' %}
-            {% set rowClass = 'flex flex-col sm:flex-row justify-between content-center p-0' %}
+            {% set rowClass = 'flex flex-col sm:flex-row justify-between items-center content-center p-0' %}
         {% endif %}
 
         <div id="{{ row.getID }}" class="{{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }} {{ "noIntBorder" not in form.getClass and not loop.last? 'border-b' }} ">
