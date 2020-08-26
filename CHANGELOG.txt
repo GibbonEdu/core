@@ -35,6 +35,7 @@ v21.0.00
         Formal Assessment: added a bulk action for External Assessment Data
         Library: added ID column to View Overdue Items report
         Messenger: tied messages to school year
+        Messenger: convert copy-pasted divs to paragraphs in New Quick Wall Message
         Planner: update the attendance list to exclude students with a timetable exception
         Reports: display the download link after a batch PDF has completed
         Reports: added full course name to the report writing page
