@@ -139,7 +139,7 @@ class AttendanceView
             return false;
         }
 
-        return ($this->attendanceTypes[$type]['scope'] == 'Onsite - Late');
+        return ($this->attendanceTypes[$type]['scope'] == 'Onsite - Late' || $this->attendanceTypes[$type]['scope'] == 'Offsite - Late');
     }
 
     public function isTypeLeft($type)

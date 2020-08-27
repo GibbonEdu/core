@@ -68,6 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         'Onsite - Late'  => __('Onsite - Late'),
         'Offsite'        => __('Offsite'),
         'Offsite - Left' => __('Offsite - Left'),
+        'Offsite - Late' => __('Offsite - Late'),
     );
     $row = $form->addRow();
         $row->addLabel('scope', __('Scope'));

@@ -17,7 +17,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 <table style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background: #ffffff; border-radius: 6px; border: 1px solid #ececec; font-size: 12px;" cellspacing="0">
     
     {% if schoolLog %}
-    <tr style="{{ schoolLog.scope == 'Onsite - Late' ? warningStyle : schoolLog.direction == 'Out' ? errorStyle : successStyle }}">
+    <tr style="{{ schoolLog.scope == 'Onsite - Late' or schoolLog.scope == 'Offsite - Late' ? warningStyle : schoolLog.direction == 'Out' ? errorStyle : successStyle }}">
 
         <td style="padding: 8px;font-size: 12px !important;">
             {{ __('School Attendance') }}
@@ -34,7 +34,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
     {% for classLog in classLogs %}
     
-        <tr style="{{ classLog.scope == 'Onsite - Late' ? warningStyle : classLog.direction == 'Out' ? errorStyle : successStyle }};">
+        <tr style="{{ classLog.scope == 'Onsite - Late' or classLog.scope == 'Offsite - Late' ? warningStyle : classLog.direction == 'Out' ? errorStyle : successStyle }};">
             <td style="padding: 8px;font-size: 12px !important;">
                 {{ classLog.period }} - {{ formatUsing('courseClassName', classLog.courseName, classLog.className) }}
             </td>
