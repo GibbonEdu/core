@@ -105,7 +105,7 @@ class AttendanceByCycle extends DataSource
 
                 // Grab the the absent and late count (school-wide)
                 $absent = ($endOfDay['direction'] == 'Out' && $endOfDay['scope'] == 'Offsite')? 1 : 0;
-                $late = ($endOfDay['scope'] == 'Onsite - Late')? 1 : 0;
+                $late = ($endOfDay['scope'] == 'Onsite - Late' || $endOfDay['scope'] == 'Offsite - Late')? 1 : 0;
 
                 // Optionally grab the class absent and late counts too
                 if ($this->countClassAsSchool == 'Y') {

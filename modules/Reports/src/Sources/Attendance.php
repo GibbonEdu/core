@@ -113,7 +113,7 @@ class Attendance extends DataSource
 
                 if ($endOfDay['direction'] == 'Out' && $endOfDay['scope'] == 'Offsite') {
                     $attendance['absent']++;
-                } elseif ($endOfDay['scope'] == 'Onsite - Late' || $endOfDay['scope'] == 'Offsite - Left') {
+                } elseif ($endOfDay['scope'] == 'Onsite - Late' || $endOfDay['scope'] == 'Offsite - Late' || $endOfDay['scope'] == 'Offsite - Left') {
                     $attendance['partial']++;
                 } elseif ($endOfDay['direction'] == 'In' || $endOfDay['scope'] == 'Onsite') {
                     $attendance['present']++;
