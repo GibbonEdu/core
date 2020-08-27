@@ -175,7 +175,7 @@ class AttendanceView
             return false;
         }
 
-        return (stristr($this->attendanceTypes[$type]['scope'], 'Offsite') !== false);
+        return ($this->attendanceTypes[$type]['scope'] == 'Offsite' || $this->attendanceTypes[$type]['scope'] == 'Offsite - Left');
     }
 
     public function renderMiniHistory($gibbonPersonID, $context, $gibbonCourseClassID = null, $cssClass = '')
