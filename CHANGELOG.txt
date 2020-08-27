@@ -32,6 +32,7 @@ v21.0.00
 
     Tweaks & Additions
         System: added Romanian Leu as currency option
+        Attendance: added an Offsite - Late option for attendance codes
         Formal Assessment: added a bulk action for External Assessment Data
         Library: added ID column to View Overdue Items report
         Messenger: tied messages to school year
