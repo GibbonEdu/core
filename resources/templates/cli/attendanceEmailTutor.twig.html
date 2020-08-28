@@ -22,7 +22,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 
     <td style="{{ schoolLog.scope == 'Onsite - Late' or schoolLog.scope == 'Offsite - Late' ? warningStyle : schoolLog.direction == 'Out' ? errorStyle : schoolLog.direction == 'In' ? successStyle : blankStyle }};padding: 4px;width:84px;text-align:center;font-size: 10px !important;">
-        {{ __('Form Group') }}<br/>
+        {{ __('School Attendance') }}<br/>
         {{ student.rollGroup }}<br/>
         <b>{{ schoolLog.type ? __(schoolLog.type) : __('N/A') }}</b>
     </td>
