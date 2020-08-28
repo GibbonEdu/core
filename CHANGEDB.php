@@ -684,5 +684,6 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='School Admin' AND gibbonAction.name='Manage Medical Conditions'));end
 UPDATE `gibbonAction` SET category='People' WHERE `name`='Manage Medical Conditions' AND `gibbonModuleID`=(SELECT gibbonModuleID FROM gibbonModule WHERE name='School Admin');end
 ALTER TABLE `gibbonAttendanceCode` CHANGE `scope` `scope` ENUM('Onsite','Onsite - Late','Offsite','Offsite - Left','Offsite - Late') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
+ALTER TABLE `gibbonDiscussion` ADD `tag` VARCHAR(60) NULL DEFAULT NULL AFTER `type`;end
 
 ";
