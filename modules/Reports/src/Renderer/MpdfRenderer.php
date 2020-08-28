@@ -78,6 +78,8 @@ class MpdfRenderer implements ReportRendererInterface
         $this->template = $template;
         $this->absolutePath = $template->getData('absolutePath');
         $this->customAssetPath = $template->getData('customAssetPath');
+        $this->firstPage = true;
+        $this->lastPage = false;
 
         $customTemplatePath = $this->absolutePath.$this->customAssetPath.'/templates';
         if (is_dir($customTemplatePath)) {
@@ -298,17 +300,17 @@ class MpdfRenderer implements ReportRendererInterface
             // ]);
         }
         
+        $this->pdf->PageNumSubstitutions[] = [
+            'from' => 1,
+            'reset' => 1,
+            'type' => '1',
+            'suppress' => 'off'
+        ];
+
         // Continue the current document after a report for continuous output
         if ($this->hasMode(self::OUTPUT_CONTINUOUS)) {
             $this->firstPage = true;
             $this->lastPage = false;
-
-            $this->pdf->PageNumSubstitutions[] = [
-                'from' => 1,
-                'reset' => 1,
-                'type' => '1',
-                'suppress' => 'off'
-            ];
         } else {
             $outputPath = $this->getFilePath($reportData);
             $this->finishDocument($outputPath);
