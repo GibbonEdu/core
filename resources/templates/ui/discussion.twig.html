@@ -1,0 +1,55 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+
+{% if title %}
+<h4>{{ title }}</h4>
+{% endif %}
+
+{% for item in discussion %}
+
+<div class="flex justify-between my-4 {{ item.comment is empty and html is empty and message is empty ? 'sm:items-center'}}">
+    
+    {% if item.image_240 %}
+    <div class="w-12 sm:w-16 mr-4 flex flex-col items-center">
+        <div class="{{ item.image_240 ? 'flex-none' : 'flex items-center justify-center' }} overflow-hidden w-12 sm:w-16 h-12 sm:h-16 rounded-full bg-gray-200 border border-solid">
+            <img class="w-full" src="{{ absoluteURL }}/{{ item.image_240 }}" />
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="flex-1">
+        
+        <div class="relative bg-gray-100 rounded text-gray-800 text-sm leading-snug border ">
+            {% if item.image_240 %}
+                <div class="absolute top-0 left-0 border-transparent" style="margin: 15px 0 0 -18px; border-width: 9px; border-right-color: #d2d0d0;"></div>
+                <div class="absolute top-0 left-0 border-8 border-transparent" style="margin: 16px 0 0 -16px; border-width: 8px; border-right-color: #fafafa;"></div>
+            {% endif %}
+
+            <div class="px-4 py-3 text-gray-700 text-sm font-sans leading-relaxed">
+                <span class="inline-block font-semibold">{{ formatUsing('name', item.title, item.preferredName, item.surname, 'Student', false, true) }}</span> 
+
+                {% if item.type %}
+                    <span class="mx-2 tag {{ item.tag ?? 'dull' }}">{{ __(item.type) }}</span>
+                {% endif %}
+
+                {% if item.attachmentLocation %}
+                    <a class="tag block px-0 break-all float-right" target="_blank" href="{{ item.attachmentType == 'Link' ? item.attachmentLocation : absoluteURL ~ "/" ~ item.attachmentLocation }}">{{ __('View Attachment') }}</a>
+                {% endif %}
+            </div>
+
+            {% if item.comment %}
+            <div class="p-4 bg-white border-t rounded-b">
+                {{ item.comment|raw }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endfor %}
