@@ -270,6 +270,8 @@ else {
                                                 error_log(sprintf(__('Planner Weekly Summary Email: an error (%1$s) occured sending an email to %2$s.'), '4', $rowMember['preferredName'].' '.$rowMember['surname']));
                                             } else {
                                                 //Prep email
+                                                $buttonURL = "/index.php?q=/modules/Planner/planner_parentWeeklyEmailSummaryConfirm.php&key=$key&gibbonPersonIDStudent=".$row['gibbonPersonID'].'&gibbonPersonIDParent='.$rowMember['gibbonPersonID'].'&gibbonSchoolYearID='.$_SESSION[$guid]['gibbonSchoolYearID'];
+
                                                 $body = sprintf(__('Dear %1$s'), $rowMember['preferredName'].' '.$rowMember['surname']).',<br/><br/>';
                                                 if ($parentWeeklyEmailSummaryIncludeBehaviour == 'Y') {
                                                     $body .= sprintf(__('Please find below a summary of homework and behaviour for %1$s.'), $row['preferredName'].' '.$row['surname']).'<br/><br/>';
@@ -280,21 +282,24 @@ else {
                                                 $body .= $homework;
                                                 $body .= $behaviour;
                                                 $body .= $markbook;
-                                                $body .= sprintf(__('Please %1$sclick here%2$s to confirm that you have received and read this summary email.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_parentWeeklyEmailSummaryConfirm.php&key=$key&gibbonPersonIDStudent=".$row['gibbonPersonID'].'&gibbonPersonIDParent='.$rowMember['gibbonPersonID'].'&gibbonSchoolYearID='.$_SESSION[$guid]['gibbonSchoolYearID']."'>", '</a>');
-                                                $body .= "<p class='emphasis'>".sprintf(__('Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
-                                                $bodyPlain = emailBodyConvert($body);
+                                                $body .= __('Please click below to confirm that you have received and read this summary email.');
+
+                                                $subject = sprintf(__('Weekly Planner Summary for %1$s via %2$s at %3$s'), $row['surname'].', '.$row['preferredName'].' ('.$row['name'].')', $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']);
 
                                                 if ($replyTo != '') {
                                                     $mail->AddReplyTo($replyTo, $replyToName);
                                                 }
                                                 $mail->AddAddress($rowMember['email'], $rowMember['surname'].', '.$rowMember['preferredName']);
-                                                $mail->SetFrom($_SESSION[$guid]['organisationEmail'], $_SESSION[$guid]['organisationName']);
-                                                $mail->CharSet = 'UTF-8';
-                                                $mail->Encoding = 'base64';
-                                                $mail->IsHTML(true);
-                                                $mail->Subject = sprintf(__('Weekly Planner Summary for %1$s via %2$s at %3$s'), $row['surname'].', '.$row['preferredName'].' ('.$row['name'].')', $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']);
-                                                $mail->Body = $body;
-                                                $mail->AltBody = $bodyPlain;
+
+                                                $mail->setDefaultSender($subject);
+                                                $mail->renderBody('mail/message.twig.html', [
+                                                    'title'  => __('Weekly Planner Summary'),
+                                                    'body'   => $body,
+                                                    'button' => [
+                                                        'url'  => $buttonURL,
+                                                        'text' => __('Click Here to Confirm'),
+                                                    ],
+                                                ]);
 
                                                 //Send email
                                                 if ($mail->Send()) {
