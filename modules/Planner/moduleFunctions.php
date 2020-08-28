@@ -262,9 +262,6 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
     } else {
         //Show date picker in sidebar
         $output = '<div class="column-no-break">';
-        $output .= "<h2 class='sidebar'>";
-        $output .= __('Choose A Date');
-        $output .= '</h2>';
 
         //Count back to first Monday before first day
         $startDayStamp = $todayStamp;
@@ -313,111 +310,106 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 
         $count = 1;
 
-        $output .= "<table class='mini' cellspacing='0' style='width: 250px; margin-bottom: 0px'>";
-        $output .= "<tr class='head'>";
-        $output .= "<th style='width: 35px; text-align: center'>";
-        $output .= __('Mon');
-        $output .= '</th>';
-        $output .= "<th style='width: 35px; text-align: center'>";
-        $output .= __('Tue');
-        $output .= '</th>';
-        $output .= "<th style='width: 35px; text-align: center'>";
-        $output .= __('Wed');
-        $output .= '</th>';
-        $output .= "<th style='width: 35px; text-align: center'>";
-        $output .= __('Thu');
-        $output .= '</th>';
-        $output .= "<th style='width: 35px; text-align: center'>";
-        $output .= __('Fri');
-        $output .= '</th>';
-        $output .= "<th style='width: 35px; text-align: center'>";
-        $output .= __('Sat');
-        $output .= '</th>';
-        $output .= "<th style='width: 35px; text-align: center'>";
-        $output .= __('Sun');
-        $output .= '</th>';
-        $output .= '</tr>';
+        $calendar = "<table class='mini' cellspacing='0' style='width: 250px; margin-bottom: 0px'>";
+        $calendar .= "<tr class='head'>";
+        $calendar .= "<th style='width: 35px; text-align: center'>";
+        $calendar .= __('Mon');
+        $calendar .= '</th>';
+        $calendar .= "<th style='width: 35px; text-align: center'>";
+        $calendar .= __('Tue');
+        $calendar .= '</th>';
+        $calendar .= "<th style='width: 35px; text-align: center'>";
+        $calendar .= __('Wed');
+        $calendar .= '</th>';
+        $calendar .= "<th style='width: 35px; text-align: center'>";
+        $calendar .= __('Thu');
+        $calendar .= '</th>';
+        $calendar .= "<th style='width: 35px; text-align: center'>";
+        $calendar .= __('Fri');
+        $calendar .= '</th>';
+        $calendar .= "<th style='width: 35px; text-align: center'>";
+        $calendar .= __('Sat');
+        $calendar .= '</th>';
+        $calendar .= "<th style='width: 35px; text-align: center'>";
+        $calendar .= __('Sun');
+        $calendar .= '</th>';
+        $calendar .= '</tr>';
 
         for ($i = $startDayStamp;$i <= $endDayStamp;$i = $i + 86400) {
             if (date('D', $i) == 'Mon') {
-                $output .= "<tr style='height: 25px'>";
+                $calendar .= "<tr style='height: 25px'>";
             }
 
             if ($days[date('D', $i)] == 'N' or isSchoolOpen($guid, date('Y-m-d', $i), $connection2) == false) {
-                $output .= "<td style='text-align: center; background-color: #bbbbbb; font-size: 10px; color: #858586'>";
+                $calendar .= "<td style='text-align: center; background-color: #bbbbbb; font-size: 10px; color: #858586'>";
                 if ($i == $dateStamp) {
-                    $output .= "<span style='border: 1px solid #ffffff; padding: 0px 2px 0px 1px'>".date('d', $i).'</span><br/>';
-                    $output .= "<span style='font-size: 65%'>".date('M', $i).'</span>';
+                    $calendar .= "<span style='border: 1px solid #ffffff; padding: 0px 2px 0px 1px'>".date('d', $i).'</span><br/>';
+                    $calendar .= "<span style='font-size: 65%'>".date('M', $i).'</span>';
                 } else {
-                    $output .= date('d', $i).'<br/>';
-                    $output .= "<span style='font-size: 65%'>".date('M', $i).'</span>';
+                    $calendar .= date('d', $i).'<br/>';
+                    $calendar .= "<span style='font-size: 65%'>".date('M', $i).'</span>';
                 }
-                $output .= '</td>';
+                $calendar .= '</td>';
             } else {
-                $output .= "<td style='text-align: center; background-color: #eeeeee; font-size: 10px'>";
+                $calendar .= "<td style='text-align: center; background-color: #eeeeee; font-size: 10px'>";
                 if ($i == $dateStamp) {
                     if ($i == $todayStamp) {
-                        $output .= "<a style='color: #6B99CE; font-weight: bold; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php&search=$gibbonPersonID&date=".date('Y-m-d', $i)."'>";
-                        $output .= "<span style='border: 1px solid #cc0000; padding: 0px 2px 0px 1px'>".date('d', $i).'</span><br/>';
-                        $output .= "<span style='font-size: 65%'>".date('M', $i).'</span>';
-                        $output .= '</a>';
+                        $calendar .= "<a style='color: #6B99CE; font-weight: bold; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php&search=$gibbonPersonID&date=".date('Y-m-d', $i)."'>";
+                        $calendar .= "<span style='border: 1px solid #cc0000; padding: 0px 2px 0px 1px'>".date('d', $i).'</span><br/>';
+                        $calendar .= "<span style='font-size: 65%'>".date('M', $i).'</span>';
+                        $calendar .= '</a>';
                     } else {
-                        $output .= "<a style='text-decoration: none' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php&search=$gibbonPersonID&date=".date('Y-m-d', $i)."'>";
-                        $output .= "<span style='border: 1px solid #cc0000; padding: 0px 2px 0px 1px'>".date('d', $i).'</span><br/>';
-                        $output .= "<span style='font-size: 65%'>".date('M', $i).'</span>';
-                        $output .= '</a>';
+                        $calendar .= "<a style='text-decoration: none' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php&search=$gibbonPersonID&date=".date('Y-m-d', $i)."'>";
+                        $calendar .= "<span style='border: 1px solid #cc0000; padding: 0px 2px 0px 1px'>".date('d', $i).'</span><br/>';
+                        $calendar .= "<span style='font-size: 65%'>".date('M', $i).'</span>';
+                        $calendar .= '</a>';
                     }
                 } else {
                     if ($i == $todayStamp) {
-                        $output .= "<a style='color: #6B99CE; font-weight: bold; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php&search=$gibbonPersonID&date=".date('Y-m-d', $i)."'>";
-                        $output .= date('d', $i).'<br/>';
-                        $output .= "<span style='font-size: 65%'>".date('M', $i).'</span>';
-                        $output .= '</a>';
+                        $calendar .= "<a style='color: #6B99CE; font-weight: bold; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php&search=$gibbonPersonID&date=".date('Y-m-d', $i)."'>";
+                        $calendar .= date('d', $i).'<br/>';
+                        $calendar .= "<span style='font-size: 65%'>".date('M', $i).'</span>';
+                        $calendar .= '</a>';
                     } else {
-                        $output .= "<a style='text-decoration: none' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php&search=$gibbonPersonID&date=".date('Y-m-d', $i)."'>";
-                        $output .= date('d', $i).'<br/>';
-                        $output .= "<span style='font-size: 65%'>".date('M', $i).'</span>';
-                        $output .= '</a>';
+                        $calendar .= "<a style='text-decoration: none' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php&search=$gibbonPersonID&date=".date('Y-m-d', $i)."'>";
+                        $calendar .= date('d', $i).'<br/>';
+                        $calendar .= "<span style='font-size: 65%'>".date('M', $i).'</span>';
+                        $calendar .= '</a>';
                     }
                 }
-                $output .= '</td>';
+                $calendar .= '</td>';
             }
 
             if (date('D', $i) == 'Sun') {
-                $output .= '</tr>';
+                $calendar .= '</tr>';
             }
             ++$count;
         }
-        $output .= '</table>';
-
-        $output .= "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/index.php'>";
-        $output .= "<table class='smallIntBorder' cellspacing='0' style='width: 200px; margin: 0px 0px'>";
-        $output .= '<tr>';
-        $output .= "<td style='width: 200px'>";
-        $output .= "<input name='q' id='q' type='hidden' value='/modules/Planner/planner.php'>";
-        $output .= "<input name='search' id='search' type='hidden' value='$gibbonPersonID'>";
-        if ($dateStamp == '') {
-            $dateHuman = '';
-        } else {
-            $dateHuman = date($_SESSION[$guid]['i18n']['dateFormatPHP'], $dateStamp);
-        }
-        $output .= "<input name='dateHuman' id='dateHuman' maxlength=20 type='text' value='$dateHuman' style='width:161px'>";
-        $output .= "<script type='text/javascript'>";
-        $output .= '$(function() {';
-        $output .= "$('#dateHuman').datepicker();";
-        $output .= '});';
-        $output .= '</script>';
-        $output .= '</td>';
-        $output .= "<td class='right'>";
-        $output .= "<input type='submit' value='".__('Go')."'>";
-        $output .= '</td>';
-        $output .= '</tr>';
-        $output .= '</table>';
-        $output .= '</form>';
-        $output .= '</div>';
+        $calendar .= '</table>';
+        
 
         global $pdo;
 
+        // Date Chooser
+        $form = Form::create('dateChooser', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form->setTitle(__('Choose A Date'));
+        $form->setClass('smallIntBorder w-full');
+
+        $form->addHiddenValue('q', '/modules/Planner/planner.php');
+        $form->addHiddenValue('search', $gibbonPersonID);
+
+        $row = $form->addRow()->addContent($calendar);
+
+        $row = $form->addRow();
+            $row->addDate('dateHuman', $_SESSION[$guid]['gibbonSchoolYearID'], $gibbonPersonID)
+                ->setValue(Format::date($dateStamp ? date('Y-m-d', $dateStamp) : ''))
+                ->setID('dateHuman')
+                ->setClass('float-none w-full');
+            $row->addSubmit(__('Go'));
+
+        $output .= $form->getOutput();
+
+        // Class Chooser
         $form = Form::create('classChooser', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setTitle(__('Choose A Class'));
@@ -459,6 +451,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
             $row->addSubmit(__('Go'));
 
         $output .= $form->getOutput();
+        $output .= '</div>';
 
 
         if ($_GET['q'] != '/modules/Planner/planner_deadlines.php') {
