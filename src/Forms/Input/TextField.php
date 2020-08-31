@@ -110,7 +110,9 @@ class TextField extends Input
     public function getLabelContext($label)
     {
         if (!empty($this->unique)) {
-            return __('Must be unique.');
+            return $this->getRequired()
+                ? __('Must be unique.')
+                : __('Must be unique if set.');
         }
 
         return false;
