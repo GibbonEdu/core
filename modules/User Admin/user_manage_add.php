@@ -433,7 +433,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         $row->addSelect('gibbonHouseID')->fromQuery($pdo, $sql)->placeholder();
 
     $row = $form->addRow();
-        $row->addLabel('studentID', __('Student ID'))->description(__('Must be unique if set.'));
+        $row->addLabel('studentID', __('Student ID'));
         $row->addTextField('studentID')
             ->maxLength(15)
             ->uniqueField('./modules/User Admin/user_manage_studentIDAjax.php', ['gibbonPersonID' => $gibbonPersonID]);
