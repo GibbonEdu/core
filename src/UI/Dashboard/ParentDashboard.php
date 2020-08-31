@@ -551,7 +551,7 @@ class ParentDashboard implements OutputableInterface
             while ($row = $result->fetch()) {
                 $diff = (strtotime(substr($row['homeworkDueDateTime'], 0, 10)) - strtotime(date('Y-m-d'))) / 86400;
                 $style = "padding-right: 3px;";
-                $class = '';
+                $class = $tag = '';
                 if ($diff < 2) {
                     $style = "border-right: 10px solid #cc0000";
                 } elseif ($diff < 4) {
@@ -559,10 +559,12 @@ class ParentDashboard implements OutputableInterface
                 }
                 if ($row['homeworkComplete'] == 'Y' || $row['onlineSubmission'] == 'Y') {
                     $class = 'success';
+                    $tag = '<span class="tag success border border-green-300 ml-2">'.__('Complete').'</span>';
                 }
                 $deadlinesOutput .= "<li class='$class' style='$style; padding: 5px;'>";
                 $deadlinesOutput .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&search='.$gibbonPersonID.'&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=date&date=$date&width=1000&height=550'>".$row['course'].'.'.$row['class'].'</a> ';
                 $deadlinesOutput .= "<span style='font-style: italic'>".sprintf(__('Due at %1$s on %2$s'), substr($row['homeworkDueDateTime'], 11, 5), dateConvertBack($guid, substr($row['homeworkDueDateTime'], 0, 10)));
+                $deadlinesOutput .= $tag;
                 $deadlinesOutput .= '</li>';
             }
             $deadlinesOutput .= '</ol>';
