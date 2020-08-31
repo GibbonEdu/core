@@ -569,8 +569,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
             if ($student) {
                 $row = $form->addRow();
-                	$row->addLabel('studentID', __('Student ID'))->description(__('Must be unique if set.'));
-                	$row->addTextField('studentID')->maxLength(15);
+                	$row->addLabel('studentID', __('Student ID'));
+                    $row->addTextField('studentID')
+                        ->maxLength(15)
+                        ->uniqueField('./modules/User Admin/user_manage_studentIDAjax.php', ['gibbonPersonID' => $gibbonPersonID]);
             }
 
 			if ($student || $staff) {

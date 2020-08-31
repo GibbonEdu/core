@@ -240,9 +240,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             ->addGenerateUsernameButton($form);
 
     $row = $form->addRow();
-        $row->addLabel('studentID', __('Student ID'))->description(__('Must be unique if set.'));
+        $row->addLabel('studentID', __('Student ID'));
         $row->addTextField('studentID')
             ->maxLength(10)
+            ->uniqueField('./modules/Students/applicationForm_manage_studentIDAjax.php', ['gibbonApplicationFormID' => $gibbonApplicationFormID])
             ->readonly($application['applicationStatus'] == 'Accepted');
 
     // NOTES
