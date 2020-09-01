@@ -15,13 +15,17 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 <div class="flex justify-between my-4 {{ item.comment is empty and html is empty and message is empty ? 'sm:items-center'}}">
     
-    {% if item.image_240 %}
+    
     <div class="w-12 sm:w-16 mr-4 flex flex-col items-center">
         <div class="{{ item.image_240 ? 'flex-none' : 'flex items-center justify-center' }} overflow-hidden w-12 sm:w-16 h-12 sm:h-16 rounded-full bg-gray-200 border border-solid">
-            <img class="w-full" src="{{ absoluteURL }}/{{ item.image_240 }}" />
+            {% if item.image_240 %}
+                <img class="w-full" src="{{ absoluteURL }}/{{ item.image_240 }}" />
+            {% else %}
+                <img class="w-full" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/anonymous_125.jpg" />
+            {% endif %}
         </div>
     </div>
-    {% endif %}
+    
 
     <div class="flex-1">
         
