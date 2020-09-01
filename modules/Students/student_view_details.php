@@ -674,7 +674,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         return '<span class="'.$class.'">'.__($person['type']).'</span>';
                                     }
                                 });
-    
+
                             echo $table->render(new DataSet($staff));
                         }
 
@@ -691,7 +691,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $role = getRoleCategory($row['gibbonRoleIDPrimary'], $connection2);
                                 if ($role == 'Student' or $role == 'Staff') {
                                     echo "<div class='linkTop'>";
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=".$_SESSION[$guid]['gibbonSchoolYearID']."&type=$role'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=".$_SESSION[$guid]['gibbonSchoolYearID']."&type=$role&allUsers=$allStudents'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                                     echo '</div>';
                                 }
                             }
@@ -1520,7 +1520,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         if ($rowMember['gibbonStudentEnrolmentID'] == null) {
                                             $allStudents = 'on';
                                         }
-                                        
+
                                         echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowMember['gibbonPersonID']."&allStudents=".$allStudents."'>".Format::name('', $rowMember['preferredName'], $rowMember['surname'], 'Student').'</a><br/>';
 
                                         echo "<span style='font-weight: normal; font-style: italic'>".__('Status').': '.$rowMember['status'].'</span>';
@@ -1931,7 +1931,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                                 $table->addColumn('noteTaker', __('Note Taker'))
                                       ->format(Format::using('name', ['', 'preferredName', 'surname', 'Staff', false, true]));
-                                    
+
                                 // ACTIONS
                                 $table->addActionColumn()
                                     ->addParam('gibbonStudentNoteID')
@@ -3153,7 +3153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     //Show alerts
                     if ($highestAction == 'View Student Profile_fullEditAllNotes' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
                         $alert = getAlertBar($guid, $connection2, $gibbonPersonID, $row['privacy'], '', false, true);
-                        
+
                         $_SESSION[$guid]['sidebarExtra'] .= '<div class="w-48 sm:w-64 h-10 mb-2">';
                         if ($alert == '') {
                             $_SESSION[$guid]['sidebarExtra'] .= '<span class="text-gray-500 text-xs">'.__('No Current Alerts').'</span>';
