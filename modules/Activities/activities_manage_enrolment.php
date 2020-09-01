@@ -19,15 +19,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Tables\DataTable;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_enrolment.php') == false) {
     //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    $page->addError('You do not have access to this action.');
 } else {
     //Proceed!
     $gibbonActivityID = (isset($_GET['gibbonActivityID']))? $_GET['gibbonActivityID'] : null;
@@ -119,93 +119,40 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
 
             $enrolment = getSettingByScope($connection2, 'Activities', 'enrolmentType');
-            try {
-                $data = array('gibbonActivityID' => $gibbonActivityID, 'today' => date('Y-m-d'), 'statusCheck' => ($enrolment == 'Competitive'? 'Pending' : 'Waiting List'));
-                $sql = "SELECT gibbonActivityStudent.*, surname, preferredName, gibbonRollGroup.nameShort as rollGroupNameShort
-                        FROM gibbonActivityStudent
-                        JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                        LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current'))
-                        LEFT JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID)
-                        WHERE gibbonActivityID=:gibbonActivityID
-                        AND NOT gibbonActivityStudent.status=:statusCheck
-                        AND gibbonPerson.status='Full'
-                        AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)
-                        ORDER BY gibbonActivityStudent.status, timestamp";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-
-            echo "<div class='linkTop'>";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/activities_manage_enrolment_add.php&gibbonActivityID=$gibbonActivityID&search=".$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID']."'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-            echo '</div>';
-
-            if ($result->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __('There are no records to display.');
-                echo '</div>';
-            } else {
-                echo "<table cellspacing='0' style='width: 100%'>";
-                echo "<tr class='head'>";
-                echo '<th>';
-                echo __('Student');
-                echo '</th>';
-                echo '<th>';
-                echo __('Roll Group');
-                echo '</th>';
-                echo '<th>';
-                echo __('Status');
-                echo '</th>';
-                echo '<th>';
-                echo __('Timestamp');
-                echo '</th>';
-                echo '<th>';
-                echo __('Actions');
-                echo '</th>';
-                echo '</tr>';
-
-                $canViewStudentDetails = isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php');
-
-                $count = 0;
-                $rowNum = 'odd';
-                while ($values = $result->fetch()) {
-                    if ($count % 2 == 0) {
-                        $rowNum = 'even';
-                    } else {
-                        $rowNum = 'odd';
-                    }
-                    ++$count;
-
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
-                    echo '<td>';
-                    $studentName = Format::name('', $values['preferredName'], $values['surname'], 'Student', true);
-                    if ($canViewStudentDetails) {
-                        echo sprintf('<a href="%2$s">%1$s</a>', $studentName, $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$values['gibbonPersonID'].'&subpage=Activities');
-                    } else {
-                        echo $studentName;
-                    }
-                    echo '</td>';
-                    echo '<td>';
-                    echo $values['rollGroupNameShort'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo __($values['status']);
-                    echo '</td>';
-                    echo '<td>';
-                    echo __('{date} at {time}', 
-                            ['date' => dateConvertBack($guid, substr($values['timestamp'], 0, 10)),
-                            'time' => substr($values['timestamp'], 11, 5)]);
-                    echo '</td>';
-                    echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_enrolment_edit.php&gibbonActivityID='.$values['gibbonActivityID'].'&gibbonPersonID='.$values['gibbonPersonID'].'&search='.$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID']."'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_enrolment_delete.php&gibbonActivityID='.$values['gibbonActivityID'].'&gibbonPersonID='.$values['gibbonPersonID'].'&search='.$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID']."&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-                    echo '</td>';
-                    echo '</tr>';
-                }
-                echo '</table>';
-            }
+            $ActivityGateway = $container->get(ActivityGateway::class);
+            
+            $table = DataTable::create('issues');
+            $table->setTitle("Issues");
+            $table->addHeaderAction('add', __("Add"))
+            ->setURL("/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_enrolment_add.php")
+            ->addParam('gibbonActivityID', $gibbonActivityID)
+            ->addParam('subpage', 'Activities')
+            ->displayLabel();
+            
+            $table->addColumn('student', __('Student'))
+            ->format(function ($student) use ($guid) {
+                $name = Format::name('', $student['preferredName'], $student['surname'], 'Student', true);
+                return Format::link($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'].'&subpage=Activities', $name);
+            });  
+            
+            $table->addColumn('rollGroupNameShort', __("Roll Group")); 
+            $table->addColumn('status', __('Status'));
+            $table->addColumn('timestamp', __('Timestamp'));
+            $table->addActionColumn()
+            ->addParam('gibbonActivityID', $gibbonActivityID)
+            ->addParam('gibbonPersonID')
+            ->addParam('search', $_GET['search'])
+            ->addParam('gibbonSchoolYearTermID', $_GET['gibbonSchoolYearTermID'])
+            ->format(function ($issues, $actions) use ($guid, $result) {
+                $actions->addAction('edit', __("Edit"))
+                        ->setURL("/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_enrolment_edit.php");
+                $actions->addAction('delete', __("Delete"))
+                        ->setURL("/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_enrolment_delete.php");
+                        
+            });
+            
+            echo $table->render($ActivityGateway->selectStudentsByActivity($gibbonActivityID)->toDataSet());   
+            
         }
     }
 }
