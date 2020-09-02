@@ -52,12 +52,11 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {{ item.comment|raw }}
             </div>
             {% endif %}
-            <div class="px-4 py-2 text-gray-700 text-sm font-sans leading-relaxed">
             {% if item.timestamp %}
+            <div class="px-4 py-2 text-gray-700 text-sm font-sans leading-relaxed">
                 <span class="tag block px-0 py-0 break-all right">{{ formatUsing('dateTimeReadable', item.timestamp) }}</span>
-                {% endif %}
             </div>
-            
+            {% endif %}
         </div>
     </div>
 </div>
