@@ -41,7 +41,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {% if item.type %}
                     <span class="mx-2 tag {{ item.tag ?? 'dull' }}">{{ __(item.type) }}</span>
                 {% endif %}
-
+                
                 {% if item.attachmentLocation %}
                     <a class="tag block px-0 break-all float-right" target="_blank" href="{{ item.attachmentType == 'Link' ? item.attachmentLocation : absoluteURL ~ "/" ~ item.attachmentLocation }}">{{ __('View Attachment') }}</a>
                 {% endif %}
@@ -52,6 +52,12 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {{ item.comment|raw }}
             </div>
             {% endif %}
+            <div class="px-4 py-2 text-gray-700 text-sm font-sans leading-relaxed">
+            {% if item.timestamp %}
+                <span class="tag block px-0 py-0 break-all right">{{ formatUsing('dateTimeReadable', item.timestamp) }}</span>
+                {% endif %}
+            </div>
+            
         </div>
     </div>
 </div>
