@@ -26,6 +26,7 @@ v21.0.00
         Roll Groups: added new grouped action to restrict parent viewing to their own children's roll groups
         Students: added an optional application processing fee that can be sent manually by staff
         School Admin: added Email Summary Settings to manage daily and weekly email CLI scripts
+        System Admin: added an Email Templates section to customize emails sent by Gibbon
 
     Changes With Important Notices
         System: renamed planner_parentWeeklyEmailSummary.php to schoolAdmin_parentWeeklyEmailSummary.php
