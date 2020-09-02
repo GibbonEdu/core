@@ -134,27 +134,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
                     echo __('View');
                     echo '</h3>';
 
-                    $row = $result->fetch(); ?>	
-					<table class='smallIntBorder fullWidth' cellspacing='0'>	
+                    $row = $result->fetch(); ?>
+					<table class='smallIntBorder fullWidth' cellspacing='0'>
 						<tr>
-							<td colspan=2 style='padding-top: 25px'> 
+							<td colspan=2 style='padding-top: 25px'>
 								<span style='font-weight: bold; font-size: 135%'><?php echo __('Targets') ?></span><br/>
 								<?php
                                 echo '<p>'.$row['targets'].'</p>'; ?>
 							</td>
 						</tr>
 						<tr>
-							<td colspan=2> 
+							<td colspan=2>
 								<span style='font-weight: bold; font-size: 135%'><?php echo __('Teaching Strategies') ?></span><br/>
 								<?php
                                 echo '<p>'.$row['strategies'].'</p>'; ?>
-							</td>
-						</tr>
-						<tr>
-							<td colspan=2 style='padding-top: 25px'> 
-								<span style='font-weight: bold; font-size: 135%'><?php echo __('Notes & Review') ?></span><br/>
-								<?php
-                                echo '<p>'.$row['notes'].'</p>'; ?>
 							</td>
 						</tr>
 					</table>

@@ -35,6 +35,7 @@ v21.0.00
         System: update complete homework to display in green on the Parent Dashboard
         Attendance: added an Offsite - Late option for attendance codes
         Formal Assessment: added a bulk action for External Assessment Data
+        Individual Needs: removed Notes & Review from parent view of individual needs information
         Library: added ID column to View Overdue Items report
         Messenger: tied messages to school year
         Messenger: convert copy-pasted divs to paragraphs in New Quick Wall Message
@@ -62,6 +63,7 @@ v21.0.00
         Staff: fixed alternate email address causing an error on Personal subpage
         Students: fixed parent support link in application acceptance email
         Students: fixed students able to see other students in class lists
+        Students: fixed issue preventing timetable edit link from working with left students and allStudent flag
 
 
 v20.0.00
