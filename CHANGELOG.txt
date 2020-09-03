@@ -54,6 +54,7 @@ v21.0.00
         System: fixed missing organization name on welcome page
         System: fixed date picker not using the First Day of the Week setting
         System: fixed validation not working for paginated bulk action forms
+        System: added a fallback to translateN for systems that don't have gettext
         System Admin: fixed PHP deprecation errors in CSV importer
         Formal Assessment: removed Back link from delete modal
         Individual Needs: fixed description of Reason field in Manage Investigations
