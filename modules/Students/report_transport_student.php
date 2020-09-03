@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
         ->format(function ($student) use ($view) {
             return $view->fetchFromTemplate(
                 'formats/familyContacts.twig.html',
-                ['familyAdults' => $student['familyAdults']]
+                ['familyAdults' => $student['familyAdults'], 'includePhoneNumbers' => true]
             );
         });
 

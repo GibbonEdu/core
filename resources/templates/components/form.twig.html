@@ -13,7 +13,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% endif %}
     
     {% if form.getDescription %}
-        <p>{{ form.getDescription }}</p>
+        <p>{{ form.getDescription|raw }}</p>
     {% endif %}
 
     {% for values in form.getHiddenValues %}

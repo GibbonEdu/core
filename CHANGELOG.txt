@@ -27,7 +27,8 @@ v21.0.00
         Students: added an optional application processing fee that can be sent manually by staff
         School Admin: added Email Summary Settings to manage daily and weekly email CLI scripts
         System Admin: added an Email Templates section to customize emails sent by Gibbon
-
+        Reports: added a Send Reports tool to bulk-send templated emails with download links
+        
     Changes With Important Notices
         System: renamed planner_parentWeeklyEmailSummary.php to schoolAdmin_parentWeeklyEmailSummary.php
 
