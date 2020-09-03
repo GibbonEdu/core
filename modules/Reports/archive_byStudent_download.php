@@ -87,15 +87,15 @@ if (empty($accessToken) && isActionAccessible($guid, $connection2, '/modules/Rep
             exit;
         }
 
-        // Archive person must match the incoming gibbonPersonID
-        if ($archiveEntry['gibbonPersonID'] != $gibbonPersonID) {
+        // Check for a valid archive record
+        $archiveEntry = $reportArchiveEntryGateway->getByID($gibbonReportArchiveEntryID);
+        if (empty($archiveEntry)) {
             header("location:$returnPath&return=error0");
             exit;
         }
 
-        // Check for a valid archive record
-        $archiveEntry = $reportArchiveEntryGateway->getByID($gibbonReportArchiveEntryID);
-        if (empty($archiveEntry)) {
+        // Archive person must match the incoming gibbonPersonID
+        if ($archiveEntry['gibbonPersonID'] != $gibbonPersonID) {
             header("location:$returnPath&return=error0");
             exit;
         }
