@@ -23,6 +23,7 @@ use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 
 require_once '../../gibbon.php';
 
+$action = $_POST['action'] ?? [];
 $gibbonReportID = $_POST['gibbonReportID'] ?? '';
 $contextData = $_POST['contextData'] ?? '';
 $identifiers = $_POST['identifier'] ?? [];
@@ -57,8 +58,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send_batch
         $reportArchiveEntryGateway->update($gibbonReportArchiveEntryID, ['timestampSent' => '0000-00-00 00:00:00']);
     }
     
-    $process = $container->get(SendReportsProcess::class);
-    $success = $process->startSendReportsToParents($gibbonReportID, $identifiers);
+    if ($action == 'parents') {
+        $process = $container->get(SendReportsProcess::class);
+        $success = $process->startSendReportsToParents($gibbonReportID, $identifiers);
+    } elseif ($action == 'students') {
+        $process = $container->get(SendReportsProcess::class);
+        $success = $process->startSendReportsToStudents($gibbonReportID, $identifiers);
+    } else {
+        $success = false;
+    }
 
     $URL .= !$success
         ? "&return=error2"

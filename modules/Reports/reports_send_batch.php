@@ -81,7 +81,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send_batch
     $form->addHiddenValue('search', $search);
 
     $bulkActions = array(
-        'Send' => __('Send Reports to Parents'),
+        'parents' => __('Send Reports to Parents'),
+        'students' => __('Send Reports to Students'),
     );
 
     $col = $form->createBulkActionColumn($bulkActions);
@@ -144,7 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send_batch
     $table->addCheckboxColumn('identifier', 'gibbonReportArchiveEntryID')
         ->format(function ($report) {
             $emails = array_filter(array_column($report['familyAdults'], 'email'));
-            if (empty($emails)) return Format::small(__('N/A'));
+            if (empty($report['email']) && empty($emails)) return Format::small(__('N/A'));
         });
 
     echo $form->getOutput();

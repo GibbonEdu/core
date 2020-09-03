@@ -155,7 +155,7 @@ if (empty($accessToken) && isActionAccessible($guid, $connection2, '/modules/Rep
 
     // Stream the file
     if (file_exists($filepath)) {
-        if ($roleCategory == 'Parent') {
+        if ($roleCategory == 'Parent' && !empty($gibbonPersonIDAccessed)) {
             // Update the archive with the most recent parent access info
             $reportArchiveEntryGateway->update($archiveEntry['gibbonReportArchiveEntryID'], [
                 'gibbonPersonIDAccessed' => $gibbonPersonIDAccessed,

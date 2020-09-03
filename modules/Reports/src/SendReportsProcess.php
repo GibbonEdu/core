@@ -133,4 +133,81 @@ class SendReportsProcess extends BackgroundProcess implements ContainerAwareInte
 
         return $sendReport;
     }
+
+    public function runSendReportsToStudents($gibbonReportID, $identifiers)
+    {
+        $reportGateway = $this->container->get(ReportGateway::class);
+        $userGateway = $this->container->get(UserGateway::class);
+        $reportArchiveEntryGateway = $this->container->get(ReportArchiveEntryGateway::class);
+    
+        $report = $reportGateway->getByID($gibbonReportID);
+        $template = $this->container->get(EmailTemplate::class)->setTemplate('Send Reports to Students');
+        $mail = $this->container->get(Mailer::class);
+        $mail->SMTPKeepAlive = true;
+
+        $sendReport = ['emailSent' => 0, 'emailFailed' => 0];
+
+        foreach ($identifiers as $gibbonReportArchiveEntryID) {
+            $archive = $reportArchiveEntryGateway->getByID($gibbonReportArchiveEntryID);
+            $student = $userGateway->getByID($archive['gibbonPersonID'] ?? '');
+
+            if (empty($archive) || empty($student)) {
+                $sendReport['emailFailed']++;
+                continue;
+            }
+
+            // Generate and save an access token so this report can be accessed securely
+            $accessToken = bin2hex(random_bytes(20));
+            $data = [
+                'timestampSent' => date('Y-m-d H:i:s'),
+                'accessToken' => $accessToken,
+                'timestampAccessExpiry' => date('Y-m-d H:i:s', strtotime('+1 week')),
+            ];
+            $reportArchiveEntryGateway->update($gibbonReportArchiveEntryID, $data);
+    
+            // Setup the data for this template
+            $data = [
+                'reportName'           => $report['name'],
+                'studentPreferredName' => $student['preferredName'],
+                'studentSurname'       => $student['surname'],
+                'date'                 => $archive['timestampModified'],
+            ];
+    
+            // Render the templates for this email
+            $subject = $template->renderSubject($data);
+            $body = $template->renderBody($data);
+
+            $mail->AddAddress($student['email'], Format::name('', $student['preferredName'], $student['surname'], 'Student', false, true));
+            
+            $mail->setDefaultSender($subject);
+            $mail->renderBody('mail/email.twig.html', [
+                'title'  => $subject,
+                'body'   => $body,
+                'button' => [
+                    'url'  => '/modules/Reports/archive_byStudent_download.php?action=view&gibbonReportArchiveEntryID='.$gibbonReportArchiveEntryID.'&token='.$accessToken,
+                    'text' => __('Download'),
+                ],
+
+                'button2' => $student['status'] == 'Full' && $student['canLogin'] == 'Y' ? [
+                    'url'  => '/index.php?q=/modules/Reports/archive_byStudent_view.php&gibbonSchoolYearID='.$report['gibbonSchoolYearID'].'&gibbonPersonID='.$student['gibbonPersonID'],
+                    'text' => __('View Online'),
+                ] : [],
+            ]);
+
+            if ($mail->Send()) {
+                $sendReport['emailSent']++;
+            } else {
+                $sendReport['emailFailed']++;
+            }
+
+            // Clear addresses
+            $mail->ClearAllRecipients();
+            
+        }
+
+        // Close SMTP connection
+        $mail->smtpClose();
+
+        return $sendReport;
+    }
 }
