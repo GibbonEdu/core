@@ -116,7 +116,7 @@ class Sidebar implements OutputableInterface
 
                 if (!$this->session->has('gibbonSchoolYearID')) setCurrentSchoolYear($guid, $connection2);
 
-                $form = Form::create('loginForm', $this->session->get('absoluteURL').'/login.php?'.(isset($_GET['q'])? 'q='.$_GET['q'] : '') );
+                $form = Form::create('loginForm', $this->session->get('absoluteURL').'/login.php?'.http_build_query($_GET) );
 
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->setAutocomplete(false);
