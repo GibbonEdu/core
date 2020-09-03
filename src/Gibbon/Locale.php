@@ -299,6 +299,8 @@ class Locale implements LocaleInterface
             $text = empty($domain) ?
                 ngettext($singular, $plural, $n) :
                 dngettext($domain, $singular, $plural, $n);
+        } else {
+            $text = $n > 1 ? $plural : $singular;
         }
 
         // apply named replacement parameters, if presents.
