@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send_batch
 
     $URL .= !$success
         ? "&return=error2"
-        : "&return=success0";
+        : "&return=success5";
 
     header("Location: {$URL}");
 }
