@@ -30,14 +30,21 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     <div class="flex-1">
         
         <div class="relative bg-gray-100 rounded text-gray-800 text-sm leading-snug border ">
-            {% if item.image_240 %}
-                <div class="absolute top-0 left-0 border-transparent" style="margin: 15px 0 0 -18px; border-width: 9px; border-right-color: #d2d0d0;"></div>
-                <div class="absolute top-0 left-0 border-8 border-transparent" style="margin: 16px 0 0 -16px; border-width: 8px; border-right-color: #fafafa;"></div>
-            {% endif %}
+            
+            <div class="absolute top-0 left-0 border-transparent" style="margin: 15px 0 0 -18px; border-width: 9px; border-right-color: #d2d0d0;"></div>
+            <div class="absolute top-0 left-0 border-8 border-transparent" style="margin: 16px 0 0 -16px; border-width: 8px; border-right-color: #fafafa;"></div>
 
             <div class="px-4 py-3 text-gray-700 text-sm font-sans leading-relaxed">
                 <span class="inline-block font-semibold">{{ formatUsing('name', item.title, item.preferredName, item.surname, 'Student', false, true) }}</span> 
-
+                
+                {% if item.timestamp %}
+                    {% if item.action %}
+                        {{ __(item.action) }}
+                    {% endif %}
+                    <span class="whitespace-no-wrap">
+                        {{ formatUsing('relativeTime', item.timestamp) }}
+                    </span>
+                {% endif %}
                 {% if item.type %}
                     <span class="mx-2 tag {{ item.tag ?? 'dull' }}">{{ __(item.type) }}</span>
                 {% endif %}
@@ -52,11 +59,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {{ item.comment|raw }}
             </div>
             {% endif %}
-            {% if item.timestamp %}
-            <div class="px-4 py-2 text-gray-700 text-sm font-sans leading-relaxed">
-                <span class="tag block px-0 py-0 break-all right">{{ formatUsing('dateTimeReadable', item.timestamp) }}</span>
-            </div>
-            {% endif %}
+            
         </div>
     </div>
 </div>
