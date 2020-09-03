@@ -80,7 +80,7 @@ class SendReportsProcess extends BackgroundProcess implements ContainerAwareInte
             $reportArchiveEntryGateway->update($gibbonReportArchiveEntryID, $data);
     
             // Get the adults in this family and filter by email settings
-            $familyAdults = $familyGateway->selectFamilyAdultsByStudent($archive['gibbonPersonID'])->fetchAll();
+            $familyAdults = $familyGateway->selectFamilyAdultsByStudent($archive['gibbonPersonID'], true)->fetchAll();
             $familyAdults = array_filter($familyAdults, function ($adult) {
                 return $adult['contactEmail'] == 'Y' && !empty($adult['email']);
             });
@@ -110,6 +110,11 @@ class SendReportsProcess extends BackgroundProcess implements ContainerAwareInte
                         'url'  => '/modules/Reports/archive_byStudent_download.php?action=view&gibbonReportArchiveEntryID='.$gibbonReportArchiveEntryID.'&token='.$accessToken.'&gibbonPersonIDAccessed='.$parent['gibbonPersonID'],
                         'text' => __('Download'),
                     ],
+
+                    'button2' => $parent['status'] == 'Full' ? [
+                        'url'  => '/index.php?q=/modules/Reports/archive_byStudent_view.php&gibbonSchoolYearID='.$report['gibbonSchoolYearID'].'&gibbonPersonID='.$student['gibbonPersonID'],
+                        'text' => __('View Online'),
+                    ] : [],
                 ]);
 
                 if ($mail->Send()) {
