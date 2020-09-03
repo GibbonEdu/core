@@ -41,7 +41,7 @@ class ReportArchiveEntryGateway extends QueryableGateway
             ->newQuery()
             ->distinct()
             ->from($this->getTableName())
-            ->cols(['gibbonReportArchiveEntry.gibbonReportArchiveEntryID', 'gibbonReportArchiveEntry.gibbonReportID', 'gibbonReportArchiveEntry.gibbonYearGroupID', 'gibbonReportArchiveEntry.gibbonRollGroupID', 'gibbonReportArchiveEntry.filePath', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.title', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonReportArchiveEntry.timestampAccessed', 'parent.title as parentTitle', 'parent.preferredName as parentPreferredName', 'parent.surname as parentSurname'])
+            ->cols(['gibbonReportArchiveEntry.gibbonReportArchiveEntryID', 'gibbonReportArchiveEntry.gibbonReportID', 'gibbonReportArchiveEntry.gibbonYearGroupID', 'gibbonReportArchiveEntry.gibbonRollGroupID', 'gibbonReportArchiveEntry.filePath', 'gibbonReportArchiveEntry.status', 'gibbonReportArchiveEntry.timestampModified', 'gibbonReportArchiveEntry.timestampSent', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.title', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonReportArchiveEntry.timestampAccessed', 'parent.title as parentTitle', 'parent.preferredName as parentPreferredName', 'parent.surname as parentSurname'])
             ->innerJoin('gibbonReportArchive', 'gibbonReportArchive.gibbonReportArchiveID=gibbonReportArchiveEntry.gibbonReportArchiveID')
             ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonReportArchiveEntry.gibbonPersonID')
             ->leftJoin('gibbonPerson as parent', 'gibbonReportArchiveEntry.gibbonPersonIDAccessed=parent.gibbonPersonID')
@@ -56,7 +56,7 @@ class ReportArchiveEntryGateway extends QueryableGateway
             $query->where('gibbonReportArchiveEntry.gibbonYearGroupID=:gibbonYearGroupID')
                   ->bindValue('gibbonYearGroupID', $gibbonYearGroupID);
         }
-        if (!empty($gibbonRollGroupID)) {
+        if (!empty($gibbonRollGroupID) && $gibbonRollGroupID != 'All') {
             $query->where('gibbonReportArchiveEntry.gibbonRollGroupID=:gibbonRollGroupID')
                   ->bindValue('gibbonRollGroupID', $gibbonRollGroupID);
         }
@@ -85,9 +85,12 @@ class ReportArchiveEntryGateway extends QueryableGateway
             $query->cols(['gibbonPerson.gibbonPersonID', 'gibbonPerson.title', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonReportArchiveEntry.timestampAccessed', 'parent.title as parentTitle', 'parent.preferredName as parentPreferredName', 'parent.surname as parentSurname'])
                   ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonReportArchiveEntry.gibbonPersonID')
                   ->leftJoin('gibbonPerson as parent', 'gibbonReportArchiveEntry.gibbonPersonIDAccessed=parent.gibbonPersonID')
-                  ->where("gibbonReportArchiveEntry.type='Single'")
-                  ->where('gibbonReportArchiveEntry.gibbonRollGroupID=:gibbonRollGroupID')
+                  ->where("gibbonReportArchiveEntry.type='Single'");
+
+            if ($gibbonRollGroupID != 'All') {
+                $query->where('gibbonReportArchiveEntry.gibbonRollGroupID=:gibbonRollGroupID')
                   ->bindValue('gibbonRollGroupID', $gibbonRollGroupID);
+            }
         } elseif (!empty($gibbonYearGroupID)) {
             $query->cols(['gibbonRollGroup.name AS name', 'COUNT(DISTINCT gibbonReportArchiveEntry.gibbonPersonID) as count', "COUNT(DISTINCT CASE WHEN gibbonReportArchiveEntry.gibbonPersonIDAccessed IS NOT NULL THEN gibbonReportArchiveEntry.gibbonReportArchiveEntryID END) as readCount"])
                   ->where("gibbonReportArchiveEntry.type='Single'")
@@ -123,6 +126,10 @@ class ReportArchiveEntryGateway extends QueryableGateway
                 return $query
                     ->where('gibbonReport.active = :active')
                     ->bindValue('active', $active);
+            },
+            'reportID' => function ($query, $reportID) {
+                return $query
+                    ->where('gibbonReport.gibbonReportID > 0');
             },
         ]);
 
@@ -270,6 +277,23 @@ class ReportArchiveEntryGateway extends QueryableGateway
             ->where('gibbonReportArchiveEntry.reportIdentifier=:reportIdentifier')
             ->bindValue('reportIdentifier', $reportIdentifier)
             ->where("gibbonReportArchiveEntry.type='Single'");
+
+        return $this->runSelect($query);
+    }
+
+    public function selectArchiveEntryByAccessToken($gibbonReportArchiveEntryID, $accessToken)
+    {
+        $query = $this
+            ->newSelect()
+            ->from($this->getTableName())
+            ->cols(['gibbonReportArchiveEntry.*'])
+            ->where('CURRENT_TIMESTAMP <= gibbonReportArchiveEntry.timestampAccessExpiry')
+            ->where('gibbonReportArchiveEntry.gibbonReportArchiveEntryID=:gibbonReportArchiveEntryID')
+            ->bindValue('gibbonReportArchiveEntryID', $gibbonReportArchiveEntryID)
+            ->where('gibbonReportArchiveEntry.accessToken=:accessToken')
+            ->bindValue('accessToken', $accessToken)
+            ->where("gibbonReportArchiveEntry.type='Single'")
+            ->where("gibbonReportArchiveEntry.status='Final'");
 
         return $this->runSelect($query);
     }
