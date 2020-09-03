@@ -74,6 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send_batch
     // FORM
     $form = BulkActionForm::create('bulkAction', $gibbon->session->get('absoluteURL').'/modules/Reports/reports_send_batchProcess.php');
     $form->setTitle($report['name']);
+    $form->setDescription(__('This process will send a templated email to each recipient. To customize this email, you can edit the template called {templateName} on the {pageLink} page.', ['templateName' => '<b>'.__('Send Reports to Parents').'</b>', 'pageLink' => Format::link('./index.php?q=/modules/System Admin/emailTemplates_manage.php', __('Email Templates'))]));
 
     $form->addHiddenValue('gibbonReportID', $gibbonReportID);
     $form->addHiddenValue('contextData', $contextData);
