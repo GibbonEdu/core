@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_particip
         ->format(function ($student) use ($view) {
             return $view->fetchFromTemplate(
                 'formats/familyContacts.twig.html',
-                ['familyAdults' => $student['familyAdults']]
+                ['familyAdults' => $student['familyAdults'], 'includePhoneNumbers' => true]
             );
         });
 

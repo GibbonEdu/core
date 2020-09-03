@@ -26,7 +26,9 @@ v21.0.00
         Roll Groups: added new grouped action to restrict parent viewing to their own children's roll groups
         Students: added an optional application processing fee that can be sent manually by staff
         School Admin: added Email Summary Settings to manage daily and weekly email CLI scripts
-
+        System Admin: added an Email Templates section to customize emails sent by Gibbon
+        Reports: added a Send Reports tool to bulk-send templated emails with download links
+        
     Changes With Important Notices
         System: renamed planner_parentWeeklyEmailSummary.php to schoolAdmin_parentWeeklyEmailSummary.php
 
@@ -52,6 +54,7 @@ v21.0.00
         System: fixed missing organization name on welcome page
         System: fixed date picker not using the First Day of the Week setting
         System: fixed validation not working for paginated bulk action forms
+        System: added a fallback to translateN for systems that don't have gettext
         System Admin: fixed PHP deprecation errors in CSV importer
         Formal Assessment: removed Back link from delete modal
         Individual Needs: fixed description of Reason field in Manage Investigations
