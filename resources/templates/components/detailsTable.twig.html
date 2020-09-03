@@ -14,6 +14,20 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 {% block table %}
 
+    <header class="relative">
+        {% block header %}
+    
+            {% if table.getHeader %}
+            <div class="linkTop">
+                {% for action in table.getHeader %}
+                    {{ action.getOutput|raw }}
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+        {% endblock header %}
+    </header>
+
 {{ title }}
     
     {% for rowIndex, rowData in rows %}
