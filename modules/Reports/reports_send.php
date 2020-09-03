@@ -47,6 +47,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send.php')
         // QUERY
         $criteria = $reportArchiveEntryGateway->newQueryCriteria(true)
             ->sortBy(['sequenceNumber', 'reportIdentifier', 'name'])
+            ->filterBy('reportID', true)
+            ->filterBy('active', 'Y') 
             ->fromPOST();
 
         $archives = $reportArchiveEntryGateway->queryArchiveReportsBySchoolYear($criteria, $gibbonSchoolYearID, $roleCategory, false, true);

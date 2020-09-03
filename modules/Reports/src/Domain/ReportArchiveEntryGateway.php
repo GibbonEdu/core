@@ -127,6 +127,10 @@ class ReportArchiveEntryGateway extends QueryableGateway
                     ->where('gibbonReport.active = :active')
                     ->bindValue('active', $active);
             },
+            'reportID' => function ($query, $reportID) {
+                return $query
+                    ->where('gibbonReport.gibbonReportID > 0');
+            },
         ]);
 
         return $this->runQuery($query, $criteria);

@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send_batch
     $reports = $reportArchiveEntryGateway->queryArchiveByReport($criteria, $gibbonReportID, $gibbonYearGroupID, 'All', $roleCategory, false, true);
 
     $studentIDs = $reports->getColumn('gibbonPersonID');
-    $familyAdults = $familyGateway->selectFamilyAdultsByStudent($studentIDs)->fetchGrouped();
+    $familyAdults = $familyGateway->selectFamilyAdultsByStudent($studentIDs, true)->fetchGrouped();
     $reports->joinColumn('gibbonPersonID', 'familyAdults', $familyAdults);
 
     // FORM
@@ -112,10 +112,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send_batch
     $table->addColumn('contacts', __('Parental Contacts'))
         ->width('35%')
         ->notSortable()
-        ->format(function ($student) use ($view) {
+        ->format(function ($report) use ($view) {
+            $familyAdults = array_filter($report['familyAdults'], function ($item) {
+                return !empty($item['email']);
+            });
+            if (empty($familyAdults)) return Format::small(__('No email address found.'));
+
             return $view->fetchFromTemplate(
                 'formats/familyContacts.twig.html',
-                ['familyAdults' => $student['familyAdults']]
+                ['familyAdults' => $report['familyAdults']]
             );
         });
 
@@ -136,7 +141,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send_batch
             return '';
         });
     
-    $table->addCheckboxColumn('identifier', 'gibbonReportArchiveEntryID');
+    $table->addCheckboxColumn('identifier', 'gibbonReportArchiveEntryID')
+        ->format(function ($report) {
+            $emails = array_filter(array_column($report['familyAdults'], 'email'));
+            if (empty($emails)) return Format::small(__('N/A'));
+        });
 
     echo $form->getOutput();
 }
