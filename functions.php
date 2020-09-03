@@ -1870,6 +1870,7 @@ function returnProcessGetAlert($return, $editLink = null, $customReturns = null)
         $returns['error5'] = __('Your request failed because there are no records to show.');
         $returns['error6'] = __('Your request was completed successfully, but there was a problem saving some uploaded files.');
         $returns['error7'] = __('Your request failed because some required values were not unique.');
+        $returns['error8'] = _('Your request failed because the link is invalid or has expired.');
         $returns['warning0'] = __('Your optional extra data failed to save.');
         $returns['warning1'] = __('Your request was successful, but some data was not properly saved.');
         $returns['warning2'] = __('Your request was successful, but some data was not properly deleted.');

@@ -52,14 +52,14 @@ if (empty($accessToken) && isActionAccessible($guid, $connection2, '/modules/Rep
 
         // Archive ID must exist
         if (empty($gibbonReportArchiveEntryID)) {
-            header("location:$returnPath&return=error1");
+            header("location:$returnPath&return=error8");
             exit;
         }
 
         // Check for a valid archive record
         $archiveEntry = $reportArchiveEntryGateway->selectArchiveEntryByAccessToken($gibbonReportArchiveEntryID, $accessToken)->fetch();
         if (empty($archiveEntry)) {
-            header("location:$returnPath&return=error0&reason=token");
+            header("location:$returnPath&return=error8");
             exit;
         }
 

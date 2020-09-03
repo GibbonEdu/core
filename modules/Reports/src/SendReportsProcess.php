@@ -111,7 +111,7 @@ class SendReportsProcess extends BackgroundProcess implements ContainerAwareInte
                         'text' => __('Download'),
                     ],
 
-                    'button2' => $parent['status'] == 'Full' ? [
+                    'button2' => $parent['status'] == 'Full' && $parent['canLogin'] == 'Y' ? [
                         'url'  => '/index.php?q=/modules/Reports/archive_byStudent_view.php&gibbonSchoolYearID='.$report['gibbonSchoolYearID'].'&gibbonPersonID='.$student['gibbonPersonID'],
                         'text' => __('View Online'),
                     ] : [],
