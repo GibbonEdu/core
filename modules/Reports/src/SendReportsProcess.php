@@ -93,7 +93,7 @@ class SendReportsProcess extends BackgroundProcess implements ContainerAwareInte
                     'studentSurname'       => $student['surname'],
                     'parentPreferredName'  => $parent['preferredName'],
                     'parentSurname'        => $parent['surname'],
-                    'date'                 => $archive['timestampModified'],
+                    'date'                 => Format::date($archive['timestampModified']),
                 ];
         
                 // Render the templates for this email
@@ -170,7 +170,7 @@ class SendReportsProcess extends BackgroundProcess implements ContainerAwareInte
                 'reportName'           => $report['name'],
                 'studentPreferredName' => $student['preferredName'],
                 'studentSurname'       => $student['surname'],
-                'date'                 => $archive['timestampModified'],
+                'date'                 => Format::date($archive['timestampModified']),
             ];
     
             // Render the templates for this email
