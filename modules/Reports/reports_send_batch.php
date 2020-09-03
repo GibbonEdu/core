@@ -30,8 +30,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send_batch
 } else {
     // Proceed!
     $gibbonReportID = $_GET['gibbonReportID'] ?? '';
-    $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
-    $contextData = $_GET['contextData'] ?? '';
+    $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? $_GET['contextData'] ?? '';
+    $contextData = $_GET['gibbonYearGroupID'] ?? $_GET['contextData'] ?? '';
     $search = $_GET['search'] ?? '';
 
     $page->breadcrumbs
