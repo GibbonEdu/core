@@ -17,8 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Comms\NotificationEvent;
 use Gibbon\Services\Format;
+use Gibbon\Comms\NotificationEvent;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\School\YearGroupGateway;
 
 include '../../gibbon.php';
 
@@ -120,6 +122,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             } catch (PDOException $e) { print $e->getMessage(); }
                             while ($row = $result->fetch()) {
                                 $event->addRecipient($row['gibbonPersonID']);
+                            }
+
+                            // Add the HOY if there is one
+                            $yearGroup = $container->get(YearGroupGateway::class)->getByID($row['gibbonYearGroupID']);
+                            $yearGroupHOY = $container->get(UserGateway::class)->getByID($yearGroup['gibbonPersonIDHOY'] ?? '');
+                            if (!empty($yearGroupHOY)) {
+                                $event->addRecipient($yearGroupHOY['gibbonPersonID']);
                             }
 
                         }
