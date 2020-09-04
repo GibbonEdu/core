@@ -38,13 +38,13 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 <span class="inline-block font-semibold">{{ formatUsing('name', item.title, item.preferredName, item.surname, 'Student', false, true) }}</span> 
                 
                 {% if item.timestamp %}
-                    {% if item.action %}
-                        {{ __(item.action) }}
-                    {% endif %}
+                    {{ item.action ? item.action|lower : "&nbsp" }}
+
                     <span class="whitespace-no-wrap">
                         {{ formatUsing('relativeTime', item.timestamp) }}
                     </span>
                 {% endif %}
+
                 {% if item.type %}
                     <span class="mx-2 tag {{ item.tag ?? 'dull' }}">{{ __(item.type) }}</span>
                 {% endif %}
