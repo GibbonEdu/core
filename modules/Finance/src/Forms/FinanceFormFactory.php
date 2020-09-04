@@ -188,14 +188,14 @@ class FinanceFormFactory extends DatabaseFormFactory
 
     public function createSelectPaymentMethod($name)
     {
-        $methods = array(
-            'Online'        => __('Online'),
-            'Bank Transfer' => __('Bank Transfer'),
-            'Cash'          => __('Cash'),
-            'Cheque'        => __('Cheque'),
-            'Credit Card'   => __('Credit Card'),
-            'Other'         => __('Other')
-        );
+        $sql = "SELECT value FROM gibbonSetting WHERE scope='Finance' AND name='paymentTypeOptions'";
+        $result = $this->pdo->selectOne($sql);
+        
+        $methods = array_map('trim', explode(',', $result));
+        $methods = array_reduce($methods, function ($group, $item) {
+            $group[$item] = __($item);
+            return $group;
+        }, []);
 
         return $this->createSelect($name)->fromArray($methods)->placeholder();
     }

@@ -36,6 +36,7 @@ v21.0.00
         System: added Romanian Leu as currency option
         System: update complete homework to display in green on the Parent Dashboard
         Attendance: added an Offsite - Late option for attendance codes
+        Finance: added a setting to customize Payment Type options
         Formal Assessment: added a bulk action for External Assessment Data
         Individual Needs: removed Notes & Review from parent view of individual needs information
         Library: added ID column to View Overdue Items report
