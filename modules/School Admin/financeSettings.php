@@ -92,6 +92,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])->fromArray($invoiceNumber)->selected($setting['value'])->required();
 
+    $setting = getSettingByScope($connection2, 'Finance', 'paymentTypeOptions', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value']);
+
     $row = $form->addRow()->addHeading(__('Receipts'));
 
     $setting = getSettingByScope($connection2, 'Finance', 'receiptText', true);
