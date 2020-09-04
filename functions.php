@@ -770,6 +770,8 @@ function getAge($guid, $stamp, $short = false, $yearsOnly = false)
 //Looks at the grouped actions accessible to the user in the current module and returns the highest
 function getHighestGroupedAction($guid, $address, $connection2)
 {
+    if (empty($_SESSION[$guid]['gibbonRoleIDCurrent'])) return false;
+    
     $output = false;
     $moduleID = checkModuleReady($address, $connection2);
 
