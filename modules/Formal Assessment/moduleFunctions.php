@@ -332,7 +332,7 @@ function externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbon
                         if ($count != 0) {
                             echo '</table>';
                         }
-                        echo "<p style='font-weight: bold; margin-bottom: 0px'>";
+                        echo "<p style='font-weight: bold; margin: 15px 0 5px;'>";
                         if (strpos($rowResults['category'], '_') === false) {
                             echo $rowResults['category'];
                         } else {
