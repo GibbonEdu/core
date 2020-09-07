@@ -175,6 +175,21 @@ class StudentGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    public function selectAnyStudentsByFamilyAdult($gibbonSchoolYearID, $gibbonPersonID)
+    {
+        $data = array('gibbonPersonID' => $gibbonPersonID);
+        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, image_240, 'Student' as roleCategory
+                FROM gibbonFamilyAdult
+                JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID)
+                JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID
+                AND gibbonFamilyAdult.childDataAccess='Y'
+                GROUP BY gibbonPerson.gibbonPersonID
+                ORDER BY surname, preferredName";
+
+        return $this->db()->select($sql, $data);
+    }
+
     public function selectActiveStudentsByFamilyAdult($gibbonSchoolYearID, $gibbonPersonID)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d'));
