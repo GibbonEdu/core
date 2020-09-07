@@ -56,11 +56,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_
         $studentGateway = $container->get(StudentGateway::class);
 
         $children = $studentGateway
-            ->selectActiveStudentsByFamilyAdult($gibbonSchoolYearID, $gibbon->session->get('gibbonPersonID'))
+            ->selectAnyStudentsByFamilyAdult($gibbonSchoolYearID, $gibbon->session->get('gibbonPersonID'))
             ->fetchGroupedUnique();
 
         if (!empty($children[$gibbonPersonID])) {
-            $student =  $container->get(StudentGateway::class)->selectActiveStudentByPerson($gibbonSchoolYearID, $gibbonPersonID)->fetch();
+            $student = $container->get(UserGateway::class)->getByID($gibbonPersonID);
 
             $page->breadcrumbs
                 ->add(__('View Reports'), 'archive_byFamily.php')
