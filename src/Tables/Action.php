@@ -217,13 +217,17 @@ class Action extends WebLink
         }
 
         if ($icon = $this->getIcon()) {
-            $this->setContent(sprintf('%1$s<img alt="%2$s" title="%2$s" src="'.$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/%3$s.png" width="25" height="25" class="ml-1">',
+            $this->setContent(sprintf('%1$s<img alt="%2$s" src="'.$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/%3$s.png" width="25" height="25" class="ml-1">',
                 ($this->displayLabel? $this->getLabel() : ''),
                 $this->getLabel(),
                 $this->getIcon()
             ));
         } else {
             $this->setContent($this->getLabel());
+        }
+
+        if (!$this->displayLabel) {
+            $this->setAttribute('title', $this->getLabel());
         }
 
         $queryParams = !$this->direct ? array('q' => $this->url) : array();

@@ -672,7 +672,7 @@ class Format
             $path = '/themes/'.static::$settings['gibbonThemeName'].'/img/anonymous_'.$imageSize.'.jpg';
         }
 
-        return sprintf('<img class="%1$s" src="%2$s">', $class, static::$settings['absoluteURL'].'/'.$path);
+        return sprintf('<img class="%1$s" alt="%2$s" src="%3$s">', $class,  __('User Photo'), static::$settings['absoluteURL'].'/'.$path);
     }
 
     /**

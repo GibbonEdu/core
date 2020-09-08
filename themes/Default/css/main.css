@@ -784,13 +784,13 @@ div.ttCurrent {
 }
 div.ttLesson {
     background-color: rgb(238, 238, 238);
-    color: rgb(136, 136, 136);
+    color: rgb(102, 102, 102);
     border: 1px solid rgb(136, 136, 136);
 }
 div.ttPeriod {
     color: rgb(0, 0, 0);
     border: 1px solid rgb(136, 136, 136);
-    background-color: rgb(150, 190, 234);
+    background-color: rgb(204, 230, 255);
 }
 div.ttPeriodCurrent {
     color: rgb(0, 0, 0);

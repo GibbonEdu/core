@@ -22,6 +22,7 @@ v21.0.00
         MySQL 8 compatibility
 
     Significant Changes
+        System: accessibility - full review
         System Admin: added a landing page to showcase the available support options
         Roll Groups: added new grouped action to restrict parent viewing to their own children's roll groups
         Students: added an optional application processing fee that can be sent manually by staff

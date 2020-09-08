@@ -66,21 +66,21 @@ hr {
 }
 
 .message {
-    @apply bg-blue-200 border-blue-700 text-blue-700;
+    @apply bg-blue-100 border-blue-500 text-blue-700;
 }
 
 .current,
 .success {
-    @apply bg-green-200 border-green-700 text-green-700;
+    @apply bg-green-200 border-green-600 text-green-800;
 }
 
 .warning {
-    @apply bg-orange-300 border-orange-700 text-orange-700;
+    @apply bg-orange-200 border-orange-500 text-orange-900;
 }
 
 .past,
 .error {
-    @apply bg-red-200 border-red-700 text-red-700;
+    @apply bg-red-200 border-red-600 text-red-800;
 }
 
 .exception {

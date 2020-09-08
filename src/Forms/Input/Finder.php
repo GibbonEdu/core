@@ -54,6 +54,7 @@ class Finder extends TextField
             'minChars'          => 1,
             'resultsLimit'      => null,
             'enableHTML'        => true,
+            'arialabel'         => null,
         );
 
         parent::__construct($name);
