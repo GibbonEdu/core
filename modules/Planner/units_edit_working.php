@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -132,6 +134,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                         echo '</h3>';
                         echo '<p>';
                         echo __('You can now add your unit blocks using the dropdown menu in each lesson. Blocks can be dragged from one lesson to another.');
+
+                        echo Format::alert(__('Deploying lessons only works for units with smart blocks. If you have duplicated a unit from a past year that does not have smart blocks, be sure to edit the lessons manually and assign a new date to them.'), 'message');
                         echo '</p>';
 
                         //Store UNIT BLOCKS in array
