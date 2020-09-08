@@ -43,6 +43,7 @@ v21.0.00
         Messenger: tied messages to school year
         Messenger: convert copy-pasted divs to paragraphs in New Quick Wall Message
         Planner: update the attendance list to exclude students with a timetable exception
+        Planner: added smart block clarification to the Edit Working Copy page
         Reports: display the download link after a batch PDF has completed
         Reports: added full course name to the report writing page
         School Admin: added Manage Medical Conditions action
