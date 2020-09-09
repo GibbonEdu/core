@@ -54,6 +54,7 @@ try {
         'username'              => 'admin',
         'passwordNew'           => 'travisci',
         'passwordConfirm'       => 'travisci',
+        'passwordNew'           => '7SSbB9FZN24Q',
         'systemName'            => 'Gibbon',
         'installType'           => 'Testing',
         'cuttingEdgeCode'       => 'Y',

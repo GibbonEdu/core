@@ -52,6 +52,7 @@ v21.0.00
         Students: send notifications for student notes to the Head of Year, if available
         System Admin: adjusted View Log to show only current year's log entries
         System Admin: added a flag to import types to enable updating non-unique rows
+	Testing: Changed install suite admin username and password to be compliant with the default password requirements
 
     Bug Fixes
         System: fixed missing organization name on welcome page
