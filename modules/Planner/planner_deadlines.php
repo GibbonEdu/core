@@ -217,7 +217,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
                         echo '</div>';
                     } else {
                         $plannerGateway = $container->get(PlannerEntryGateway::class);
-                        $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetchAll();
+                        $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, 'viewableParents')->fetchAll();
 
                         echo $page->fetchFromTemplate('ui/upcomingDeadlines.twig.html', [
                             'gibbonPersonID' => $gibbonPersonID,

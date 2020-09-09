@@ -2847,9 +2847,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo __('Your request failed because you do not have access to this action.');
                             echo '</div>';
                         } else {
-                            
+                            $role = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
                             $plannerGateway = $container->get(PlannerEntryGateway::class);
-                            $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetchAll();
+                            $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, $role == 'Student' ? 'viewableStudents' : 'viewableParents')->fetchAll();
 
                             echo $page->fetchFromTemplate('ui/upcomingDeadlines.twig.html', [
                                 'gibbonPersonID' => $gibbonPersonID,

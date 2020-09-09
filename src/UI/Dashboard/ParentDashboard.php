@@ -532,7 +532,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
         $deadlines = false;
 
         $plannerGateway = $this->getContainer()->get(PlannerEntryGateway::class);
-        $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($_SESSION[$guid]['gibbonSchoolYearID'], $gibbonPersonID)->fetchAll();
+        $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($_SESSION[$guid]['gibbonSchoolYearID'], $gibbonPersonID, 'viewableParents')->fetchAll();
 
         $deadlinesOutput .= $this->getContainer()->get('page')->fetchFromTemplate('ui/upcomingDeadlines.twig.html', [
             'gibbonPersonID' => $gibbonPersonID,
