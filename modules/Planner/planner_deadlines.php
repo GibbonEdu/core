@@ -190,9 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
                 } else {
                     $rowChild = $resultChild->fetch();
 
-                    echo '<h3>';
-                    echo __('Upcoming Deadlines');
-                    echo '</h3>';
+                    
 
                     $proceed = true;
                     if ($viewBy == 'class') {
@@ -221,41 +219,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
                         $plannerGateway = $container->get(PlannerEntryGateway::class);
                         $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetchAll();
 
-                        $page->fetchFromTemplate('ui/upcomingDeadlines.twig.html', [
+                        echo $page->fetchFromTemplate('ui/upcomingDeadlines.twig.html', [
+                            'gibbonPersonID' => $gibbonPersonID,
                             'deadlines' => $deadlines,
+                            'heading' => 'h3',
+                            'viewBy' => $viewBy,
                         ]);
-
-                        if (empty($deadlines)) {
-                            echo "<div class='success'>";
-                            echo __('No upcoming deadlines!');
-                            echo '</div>';
-                        } else {
-                            echo '<ol>';
-                            foreach ($deadlines as $row) {
-                                $diff = (strtotime(substr($row['homeworkDueDateTime'], 0, 10)) - strtotime(date('Y-m-d'))) / 86400;
-                                $style = "style='padding-right: 3px;'";
-                                $class = $tag = '';
-                                if ($diff < 2) {
-                                    $style = "border-right: 10px solid #cc0000";
-                                } elseif ($diff < 4) {
-                                    $style = "border-right: 10px solid #D87718";
-                                }
-                                if ($row['homeworkComplete'] == 'Y' || $row['onlineSubmission'] == 'Y') {
-                                    $class = 'success';
-                                    $tag = '<span class="tag success border border-green-300 ml-2">'.__('Complete').'</span>';
-                                }
-                                echo "<li class='$class' style='$style; padding: 5px;'>";
-                                if ($viewBy == 'class') {
-                                    echo "<b><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/planner_view_full.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID&search=".$gibbonPersonID."'>".$row['course'].'.'.$row['class'].'</a> - '.$row['name'].'</b><br/>';
-                                } else {
-                                    echo "<b><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/planner_view_full.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=date&date=$date&search=".$gibbonPersonID."'>".$row['course'].'.'.$row['class'].'</a> - '.$row['name'].'</b><br/>';
-                                }
-                                echo "<span style='margin-left: 15px; font-style: italic'>Due at ".substr($row['homeworkDueDateTime'], 11, 5).' on '.dateConvertBack($guid, substr($row['homeworkDueDateTime'], 0, 10));
-                                echo $tag;
-                                echo '</li>';
-                            }
-                            echo '</ol>';
-                        }
                     }
 
                     $style = '';
@@ -470,10 +439,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
             returnProcess($guid, $_GET['return'], null, null);
         }
 
-        echo '<h3>';
-        echo __('Upcoming Deadlines');
-        echo '</h3>';
-
         $proceed = true;
         if ($viewBy == 'class') {
             if ($gibbonCourseClassID == '') {
@@ -503,93 +468,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
             echo __('Your request failed because you do not have access to this action.');
             echo '</div>';
         } else {
-            try {
-                if ($highestAction == 'Lesson Planner_viewEditAllClasses' and $show == 'all') {
-                    $data = array('homeworkDueDateTime' => date('Y-m-d H:i:s'), 'date1' => date('Y-m-d'), 'date2' => date('Y-m-d'), 'timeEnd' => date('H:i:s'));
-                    $sql = "SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE homework='Y' AND homeworkDueDateTime>:homeworkDueDateTime AND ((date<:date1) OR (date=:date2 AND timeEnd<=:timeEnd)) ORDER BY homeworkDueDateTime";
-                } else {
-                    $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                    $sql = "
-					(SELECT 'teacherRecorded' AS type, gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkDueDateTime, role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND homework='Y' AND (role='Teacher' OR (role='Student' AND viewableStudents='Y')) AND homeworkDueDateTime>'".date('Y-m-d H:i:s')."' AND ((date<'".date('Y-m-d')."') OR (date='".date('Y-m-d')."' AND timeEnd<='".date('H:i:s')."')))
-					UNION
-					(SELECT 'studentRecorded' AS type, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, 'Y' AS viewableStudents, 'Y' AS viewableParents, 'Y' AS homework, gibbonPlannerEntryStudentHomework.homeworkDueDateTime, role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND (role='Teacher' OR (role='Student' AND viewableStudents='Y')) AND gibbonPlannerEntryStudentHomework.homeworkDueDateTime>'".date('Y-m-d H:i:s')."' AND ((date<'".date('Y-m-d')."') OR (date='".date('Y-m-d')."' AND timeEnd<='".date('H:i:s')."')))
-					 ORDER BY homeworkDueDateTime, type";
-                }
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
+            $plannerGateway = $container->get(PlannerEntryGateway::class);
 
-            if ($result->rowCount() < 1) {
-                echo "<div class='success'>";
-                echo __('No upcoming deadlines!');
-                echo '</div>';
+            if ($highestAction == 'Lesson Planner_viewEditAllClasses' and $show == 'all') {
+                $deadlines = $plannerGateway->selectAllUpcomingHomework($gibbon->session->get('gibbonSchoolYearID'))->fetchAll();
             } else {
-                echo '<ol>';
-                while ($row = $result->fetch()) {
-                    $diff = (strtotime(substr($row['homeworkDueDateTime'], 0, 10)) - strtotime(date('Y-m-d'))) / 86400;
-                    $style = 'padding-right: 3px;';
-                    if ($category == 'Student') {
-                        if ($row['type'] == 'teacherRecorded') {
-                            //Calculate style for student-specified completion
-                            try {
-                                $dataCompletion = array('gibbonPlannerEntryID' => $row['gibbonPlannerEntryID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                                $sqlCompletion = "SELECT gibbonPlannerEntryID FROM gibbonPlannerEntryStudentTracker WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID AND homeworkComplete='Y'";
-                                $resultCompletion = $connection2->prepare($sqlCompletion);
-                                $resultCompletion->execute($dataCompletion);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
-                            if ($resultCompletion->rowCount() == 1) {
-                                $style .= '; background-color: #B3EFC2';
-                            }
-                            //Calculate style for online submission completion
-                            try {
-                                $dataCompletion = array('gibbonPlannerEntryID' => $row['gibbonPlannerEntryID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                                $sqlCompletion = "SELECT gibbonPlannerEntryID FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID AND version='Final'";
-                                $resultCompletion = $connection2->prepare($sqlCompletion);
-                                $resultCompletion->execute($dataCompletion);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
-                            if ($resultCompletion->rowCount() == 1) {
-                                $style .= '; background-color: #B3EFC2';
-                            }
-                        } else {
-                            //Calculate style for student-recorded homework
-                            try {
-                                $dataCompletion = array('gibbonPlannerEntryID' => $row['gibbonPlannerEntryID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                                $sqlCompletion = "SELECT gibbonPlannerEntryID FROM gibbonPlannerEntryStudentHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID AND homeworkComplete='Y'";
-                                $resultCompletion = $connection2->prepare($sqlCompletion);
-                                $resultCompletion->execute($dataCompletion);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
-                            if ($resultCompletion->rowCount() == 1) {
-                                $style .= '; background-color: #B3EFC2';
-                            }
-                        }
-                    }
-
-                    //Calculate style for deadline
-                    if ($diff < 2) {
-                        $style .= '; border-right: 10px solid #cc0000';
-                    } elseif ($diff < 4) {
-                        $style .= '; border-right: 10px solid #D87718';
-                    }
-
-                    echo "<li style='$style'>";
-                    if ($viewBy == 'class') {
-                        echo "<b><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/planner_view_full.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID'>".$row['course'].'.'.$row['class'].'</a> - '.$row['name'].'</b><br/>';
-                    } else {
-                        echo "<b><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/planner_view_full.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=date&date=$date'>".$row['course'].'.'.$row['class'].'</a> - '.$row['name'].'</b><br/>';
-                    }
-                    echo "<span style='margin-left: 15px; font-style: italic'>Due at ".substr($row['homeworkDueDateTime'], 11, 5).' on '.dateConvertBack($guid, substr($row['homeworkDueDateTime'], 0, 10));
-                    echo '</li>';
-                }
-                echo '</ol>';
+                $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($gibbon->session->get('gibbonSchoolYearID'), $_SESSION[$guid]['gibbonPersonID'])->fetchAll();
             }
+
+            echo $page->fetchFromTemplate('ui/upcomingDeadlines.twig.html', [
+                'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'],
+                'deadlines' => $deadlines,
+                'heading' => 'h3',
+                'viewBy' => $viewBy,
+            ]);
         }
 
         echo '<h3>';
