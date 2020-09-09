@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
                 'gibbonFinanceFeeCategoryIDList' => __('Company Fee Categories'),
             );
 
-            $form = Form::create('updateFinance', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_finance_manage_editProcess.php?gibbonFinanceInvoiceeUpdateID='.$gibbonFinanceInvoiceeUpdateID);
+            $form = Form::createTable('updateFinance', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_finance_manage_editProcess.php?gibbonFinanceInvoiceeUpdateID='.$gibbonFinanceInvoiceeUpdateID);
             
             $form->setClass('fullWidth colorOddEven');
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);

@@ -215,9 +215,6 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID, $mode = 'manage
     $output = '';
 
     $output .= '<div class="column-no-break">';
-    $output .= '<h2>';
-    $output .= __('Select Class');
-    $output .= '</h2>';
 
     $classes = array();
     
@@ -249,13 +246,15 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID, $mode = 'manage
 
     $form = Form::create('classSelect', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->addHiddenValue('q', '/modules/Formal Assessment/internalAssessment_'.$mode.'.php');
+    $form->setTitle(__('Select Class'));
+    $form->setClass('smallIntBorder w-full');
 
     $row = $form->addRow();
         $row->addSelect('gibbonCourseClassID')
             ->fromArray($classes)
             ->selected($gibbonCourseClassID)
             ->placeholder()
-            ->setClass('float-none w-48');
+            ->setClass('float-none w-full');
         $row->addSubmit(__('Go'));
 
     $output .= $form->getOutput();
@@ -333,7 +332,7 @@ function externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbon
                         if ($count != 0) {
                             echo '</table>';
                         }
-                        echo "<p style='font-weight: bold; margin-bottom: 0px'>";
+                        echo "<p style='font-weight: bold; margin: 15px 0 5px;'>";
                         if (strpos($rowResults['category'], '_') === false) {
                             echo $rowResults['category'];
                         } else {

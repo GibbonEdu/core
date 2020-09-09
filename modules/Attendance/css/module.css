@@ -110,6 +110,17 @@ td.center {
 	border: 1px solid #390 !important;
 }
 
+.highlightPartial,
+.dayPartial
+ {
+	color: #d45602;
+	background: #ffd2a8 !important;
+}
+
+.dayPartial {
+	border: 1px solid #d45602 !important;
+}
+
 .highlightAbsent,
 .dayAbsent {
 	color: #c00;

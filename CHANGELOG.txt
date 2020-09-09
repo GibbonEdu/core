@@ -16,6 +16,62 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v21.0.00
+--------
+    Headlines
+        MySQL 8 compatibility
+
+    Significant Changes
+        System Admin: added a landing page to showcase the available support options
+        Roll Groups: added new grouped action to restrict parent viewing to their own children's roll groups
+        Students: added an optional application processing fee that can be sent manually by staff
+        School Admin: added Email Summary Settings to manage daily and weekly email CLI scripts
+        System Admin: added an Email Templates section to customize emails sent by Gibbon
+        Reports: added a Send Reports tool to bulk-send templated emails with download links
+        
+    Changes With Important Notices
+        System: renamed planner_parentWeeklyEmailSummary.php to schoolAdmin_parentWeeklyEmailSummary.php
+
+    Tweaks & Additions
+        System: added Romanian Leu as currency option
+        System: update complete homework to display in green on the Parent Dashboard
+        Attendance: added an Offsite - Late option for attendance codes
+        Finance: added a setting to customize Payment Type options
+        Formal Assessment: added a bulk action for External Assessment Data
+        Individual Needs: removed Notes & Review from parent view of individual needs information
+        Library: added ID column to View Overdue Items report
+        Messenger: tied messages to school year
+        Messenger: convert copy-pasted divs to paragraphs in New Quick Wall Message
+        Planner: update the attendance list to exclude students with a timetable exception
+        Planner: added smart block clarification to the Edit Working Copy page
+        Reports: display the download link after a batch PDF has completed
+        Reports: added full course name to the report writing page
+        School Admin: added Manage Medical Conditions action
+        Students: updated application acceptance message to reflect automatically created medical record
+        Students: added uniqueness checks for Student ID field
+        Students: send notifications for student notes to the Head of Year, if available
+        System Admin: adjusted View Log to show only current year's log entries
+        System Admin: added a flag to import types to enable updating non-unique rows
+
+    Bug Fixes
+        System: fixed missing organization name on welcome page
+        System: fixed date picker not using the First Day of the Week setting
+        System: fixed validation not working for paginated bulk action forms
+        System: added a fallback to translateN for systems that don't have gettext
+        System Admin: fixed PHP deprecation errors in CSV importer
+        Formal Assessment: removed Back link from delete modal
+        Individual Needs: fixed description of Reason field in Manage Investigations
+        Library: fixed broken delete function in Manage Catalog
+        Messenger: fixed SMTP debug settings in New Message process page
+        Reports: fixed AttendanceByCycle data source counting school attendance as class attendance
+        Reports: fixed MpdfRenderer not resetting headers when generating batch single files
+        Planner: fixed Outcomes by Course for courses with multiple year groups
+        Staff: fixed alternate email address causing an error on Personal subpage
+        Students: fixed parent support link in application acceptance email
+        Students: fixed students able to see other students in class lists
+        Students: fixed issue preventing timetable edit link from working with left students and allStudent flag
+
+
 v20.0.00
 --------
     Headlines

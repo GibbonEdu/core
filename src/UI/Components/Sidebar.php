@@ -115,8 +115,9 @@ class Sidebar implements OutputableInterface
                 echo '</h2>';
 
                 if (!$this->session->has('gibbonSchoolYearID')) setCurrentSchoolYear($guid, $connection2);
-
-                $form = Form::create('loginForm', $this->session->get('absoluteURL').'/login.php?'.(isset($_GET['q'])? 'q='.$_GET['q'] : '') );
+                unset($_GET['return']);
+                
+                $form = Form::create('loginForm', $this->session->get('absoluteURL').'/login.php?'.http_build_query($_GET) );
 
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->setAutocomplete(false);
@@ -440,7 +441,7 @@ class Sidebar implements OutputableInterface
                                 $style .= '; border-right: 10px solid #D87718';
                             }
 
-                            echo "<li style='$style'>";
+                            echo "<li style='$style; padding: 5px;'>";
                             echo  "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID'].'&date='.$row['date']."'>".$row['course'].'.'.$row['class'].'</a><br/>';
                             echo "<span style='font-style: italic'>Due at ".substr($row['homeworkDueDateTime'], 11, 5).' on '.dateConvertBack($guid, substr($row['homeworkDueDateTime'], 0, 10));
                             echo '</li>';

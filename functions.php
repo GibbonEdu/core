@@ -376,13 +376,13 @@ function getFastFinder($connection2, $guid)
     $row = $form->addRow();
         $row->addFinder('fastFinderSearch')
             ->fromAjax($_SESSION[$guid]['absoluteURL'].'/index_fastFinder_ajax.php')
-            ->setClass('w-full text-white')
+            ->setClass('w-full text-white flex items-center')
             ->setParameter('hintText', __('Start typing a name...'))
             ->setParameter('noResultsText', __('No results'))
             ->setParameter('searchingText', __('Searching...'))
             ->setParameter('tokenLimit', 1)
-            ->addValidation('Validate.Presence', 'failureMessage: " "');
-        $row->addSubmit(__('Go'));
+            ->addValidation('Validate.Presence', 'failureMessage: " "')
+            ->append('<input type="submit" style="height:34px;padding:0 1rem;" value="'.__('Go').'">');
 
     $highestActionClass = getHighestGroupedAction($guid, '/modules/Planner/planner.php', $connection2);
 
@@ -770,6 +770,8 @@ function getAge($guid, $stamp, $short = false, $yearsOnly = false)
 //Looks at the grouped actions accessible to the user in the current module and returns the highest
 function getHighestGroupedAction($guid, $address, $connection2)
 {
+    if (empty($_SESSION[$guid]['gibbonRoleIDCurrent'])) return false;
+    
     $output = false;
     $moduleID = checkModuleReady($address, $connection2);
 
@@ -1861,6 +1863,7 @@ function returnProcessGetAlert($return, $editLink = null, $customReturns = null)
         $returnMessage = 'Unknown Return';
         $returns = array();
         $returns['success0'] = __('Your request was completed successfully.');
+        $returns['success5'] = __('Your request has been successfully started as a background process. It will continue to run on the server until complete and you will be notified of any errors.');
         $returns['error0'] = __('Your request failed because you do not have access to this action.');
         $returns['error1'] = __('Your request failed because your inputs were invalid.');
         $returns['error2'] = __('Your request failed due to a database error.');
@@ -1869,6 +1872,7 @@ function returnProcessGetAlert($return, $editLink = null, $customReturns = null)
         $returns['error5'] = __('Your request failed because there are no records to show.');
         $returns['error6'] = __('Your request was completed successfully, but there was a problem saving some uploaded files.');
         $returns['error7'] = __('Your request failed because some required values were not unique.');
+        $returns['error8'] = _('Your request failed because the link is invalid or has expired.');
         $returns['warning0'] = __('Your optional extra data failed to save.');
         $returns['warning1'] = __('Your request was successful, but some data was not properly saved.');
         $returns['warning2'] = __('Your request was successful, but some data was not properly deleted.');

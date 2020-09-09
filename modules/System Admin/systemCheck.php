@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
         $fileCount++;
     }
 
-    $form = Form::create('systemCheck', "")->setClass('smallIntBorder w-full');
+    $form = Form::createTable('systemCheck', "")->setClass('smallIntBorder w-full');
 
     $form->addRow()->addHeading(__('System Requirements'));
 
@@ -128,6 +128,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
             if (!is_array($settingDetails) || count($settingDetails) != 3) continue;
             list($setting, $operator, $compare) = $settingDetails;
             $value = @ini_get($setting);
+
+            if ($setting == 'session.gc_maxlifetime') $compare = $gibbon->session->get('sessionDuration');
 
             $isValid = ($operator == '==' && $value == $compare)
                 || ($operator == '>=' && $value >= $compare)

@@ -70,7 +70,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
         $output .= "<a onclick='return confirm(\"".__('Are you sure you want to edit rows and columns? Any unsaved changes will be lost.')."\")' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/rubrics_edit_editRowsColumns.php&gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2'>".__('Edit Rows & Columns')."<img title='Edit' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/ style='margin: 0px 1px -4px 3px'></a>";
         $output .= '</div>';
 
-        $form = Form::create('editRubric', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/rubrics_edit_editCellProcess.php?gibbonRubricID='.$gibbonRubricID.'&search='.$search.'&filter2='.$filter2);
+        $form = Form::createTable('editRubric', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/rubrics_edit_editCellProcess.php?gibbonRubricID='.$gibbonRubricID.'&search='.$search.'&filter2='.$filter2);
 
         $form->setClass('rubricTable fullWidth');
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
@@ -276,7 +276,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                     $output .= '</p>';
                 }
 
-                $form = Form::create('viewRubric', $_SESSION[$guid]['absoluteURL'].'/index.php');
+                $form = Form::createTable('viewRubric', $_SESSION[$guid]['absoluteURL'].'/index.php');
                 $form->setClass('rubricTable fullWidth');
 
                 $row = $form->addRow()->addClass();

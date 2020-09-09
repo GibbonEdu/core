@@ -115,7 +115,7 @@ class StudentHistoryData
                         $log['status'] = 'absent';
                         $log['statusClass'] = 'error';
                         $absentCount++;
-                    } elseif ($log['scope'] == 'Onsite - Late' || $log['scope'] == 'Offsite - Left') {
+                    } elseif ($log['scope'] == 'Onsite - Late' || $log['scope'] == 'Offsite - Late' || $log['scope'] == 'Offsite - Left') {
                         $log['status'] = 'partial';
                         $log['statusClass'] = 'warning';
                         $partialCount++;

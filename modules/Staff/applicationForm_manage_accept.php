@@ -165,131 +165,103 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
                     //CREATE APPLICANT
                     $failapplicant = true;
-                    $lock = true;
-                    try {
-                        $sql = 'LOCK TABLES gibbonPerson WRITE, gibbonStaffApplicationForm WRITE, gibbonSetting WRITE, gibbonStaff WRITE, gibbonStaffJobOpening WRITE, gibbonUsernameFormat WRITE, gibbonRole WRITE';
-                        $result = $connection2->query($sql);
-                    } catch (PDOException $e) {
-                        $lock = false;
-                        echo "<div class='error'>".$e->getMessage().'</div>';
+                    // Generate a unique username for the staff member
+                    $generator = new UsernameGenerator($pdo);
+                    $generator->addToken('preferredName', $values['preferredName']);
+                    $generator->addToken('firstName', $values['firstName']);
+                    $generator->addToken('surname', $values['surname']);
+
+                    $username = $generator->generateByRole($gibbonRoleID);
+
+                    $password = randomPassword(8);
+                    $salt = getSalt();
+                    $passwordStrong = hash('sha256', $salt.$password);
+
+                    $continueLoop = !(!empty($username) && $username != 'usernamefailed' && !empty($password));
+
+                    //Set default email address for applicant
+                    $email = $values['email'];
+                    $emailAlternate = '';
+                    $applicantDefaultEmail = getSettingByScope($connection2, 'Staff', 'staffApplicationFormDefaultEmail');
+                    if ($applicantDefaultEmail != '') {
+                        $emailAlternate = $email;
+                        $email = str_replace('[username]', $username, $applicantDefaultEmail);
                     }
-                    if ($lock == true) {
-                        $gotAI = true;
+
+                    //Set default website address for applicant
+                    $website = '';
+                    $applicantDefaultWebsite = getSettingByScope($connection2, 'Staff', 'staffApplicationFormDefaultWebsite');
+                    if ($applicantDefaultWebsite != '') {
+                        $website = str_replace('[username]', $username, $applicantDefaultWebsite);
+                    }
+
+                    //Email website and email address to admin for creation
+                    if ($applicantDefaultEmail != '' or $applicantDefaultWebsite != '') {
+                        echo '<h4>';
+                        echo __('New Staff Member Email & Website');
+                        echo '</h4>';
+                        $to = $_SESSION[$guid]['organisationAdministratorEmail'];
+                        $subject = sprintf(__('Create applicant Email/Websites for %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
+                        $body = sprintf(__('Please create the following for new staff member %1$s.'), Format::name('', $values['preferredName'], $values['surname'], 'Student'))."<br/><br/>";
+                        if ($applicantDefaultEmail != '') {
+                            $body .= __('Email').': '.$email."<br/>";
+                        }
+                        if ($applicantDefaultWebsite != '') {
+                            $body .= __('Website').': '.$website."<br/>";
+                        }
+                        if ($values['dateStart'] != '') {
+                            $body .= __('Start Date').': '.dateConvertBack($guid, $values['dateStart'])."<br/>";
+                        }
+                        $body .= __('Job Type').': '.dateConvertBack($guid, $values['type'])."<br/>";
+                        $body .= __('Job Title').': '.dateConvertBack($guid, $values['jobTitle'])."<br/>";
+                        $bodyPlain = emailBodyConvert($body);
+
+                        $mail = $container->get(Mailer::class);
+                        $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
+                        $mail->AddAddress($to);
+                        $mail->CharSet = 'UTF-8';
+                        $mail->Encoding = 'base64';
+                        $mail->IsHTML(true);
+                        $mail->Subject = $subject;
+                        $mail->Body = $body;
+                        $mail->AltBody = $bodyPlain;
+
+                        if ($mail->Send()) {
+                            echo "<div class='success'>";
+                            echo sprintf(__('A request to create a applicant email address and/or website address was successfully sent to %1$s.'), $_SESSION[$guid]['organisationAdministratorName']);
+                            echo '</div>';
+                        } else {
+                            echo "<div class='error'>";
+                            echo sprintf(__('A request to create a applicant email address and/or website address failed. Please contact %1$s to request these manually.'), $_SESSION[$guid]['organisationAdministratorName']);
+                            echo '</div>';
+                        }
+                    }
+
+                    if ($continueLoop == false) {
+                        $insertOK = true;
                         try {
-                            $sqlAI = "SHOW TABLE STATUS LIKE 'gibbonPerson'";
-                            $resultAI = $connection2->query($sqlAI);
+                            $data = array('username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'surname' => $values['surname'], 'firstName' => $values['firstName'], 'preferredName' => $values['preferredName'], 'officialName' => $values['officialName'], 'nameInCharacters' => $values['nameInCharacters'], 'gender' => $values['gender'], 'dob' => $values['dob'], 'languageFirst' => $values['languageFirst'], 'languageSecond' => $values['languageSecond'], 'languageThird' => $values['languageThird'], 'countryOfBirth' => $values['countryOfBirth'], 'citizenship1' => $values['citizenship1'], 'citizenship1Passport' => $values['citizenship1Passport'], 'nationalIDCardNumber' => $values['nationalIDCardNumber'], 'residencyStatus' => $values['residencyStatus'], 'visaExpiryDate' => $values['visaExpiryDate'], 'email' => $email, 'emailAlternate' => $emailAlternate, 'website' => $website, 'phone1Type' => $values['phone1Type'], 'phone1CountryCode' => $values['phone1CountryCode'], 'phone1' => $values['phone1'], 'dateStart' => $values['dateStart'], 'fields' => $values['fields']);
+                            $sql = "INSERT INTO gibbonPerson SET username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, gibbonRoleIDPrimary='$gibbonRoleID', gibbonRoleIDAll='$gibbonRoleID', status='Full', surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, email=:email, emailAlternate=:emailAlternate, website=:website, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, dateStart=:dateStart, fields=:fields";
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
                         } catch (PDOException $e) {
-                            $gotAI = false;
+                            $insertOK = false;
                             echo "<div class='error'>".$e->getMessage().'</div>';
                         }
+                        if ($insertOK == true) {
+                            $gibbonPersonID = $connection2->lastInsertID();
+                            
+                            $failapplicant = false;
 
-                        if ($gotAI == true) {
-                            $rowAI = $resultAI->fetch();
-                            $gibbonPersonID = str_pad($rowAI['Auto_increment'], 10, '0', STR_PAD_LEFT);
-
-                            // Generate a unique username for the staff member
-                            $generator = new UsernameGenerator($pdo);
-                            $generator->addToken('preferredName', $values['preferredName']);
-                            $generator->addToken('firstName', $values['firstName']);
-                            $generator->addToken('surname', $values['surname']);
-
-                            $username = $generator->generateByRole($gibbonRoleID);
-
-                            $password = randomPassword(8);
-                            $salt = getSalt();
-                            $passwordStrong = hash('sha256', $salt.$password);
-
-                            $continueLoop = !(!empty($username) && $username != 'usernamefailed' && !empty($password));
-
-                            //Set default email address for applicant
-                            $email = $values['email'];
-                            $emailAlternate = '';
-                            $applicantDefaultEmail = getSettingByScope($connection2, 'Staff', 'staffApplicationFormDefaultEmail');
-                            if ($applicantDefaultEmail != '') {
-                                $emailAlternate = $email;
-                                $email = str_replace('[username]', $username, $applicantDefaultEmail);
-                            }
-
-                            //Set default website address for applicant
-                            $website = '';
-                            $applicantDefaultWebsite = getSettingByScope($connection2, 'Staff', 'staffApplicationFormDefaultWebsite');
-                            if ($applicantDefaultWebsite != '') {
-                                $website = str_replace('[username]', $username, $applicantDefaultWebsite);
-                            }
-
-                            //Email website and email address to admin for creation
-                            if ($applicantDefaultEmail != '' or $applicantDefaultWebsite != '') {
-                                echo '<h4>';
-                                echo __('New Staff Member Email & Website');
-                                echo '</h4>';
-                                $to = $_SESSION[$guid]['organisationAdministratorEmail'];
-                                $subject = sprintf(__('Create applicant Email/Websites for %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
-                                $body = sprintf(__('Please create the following for new staff member %1$s.'), Format::name('', $values['preferredName'], $values['surname'], 'Student'))."<br/><br/>";
-                                if ($applicantDefaultEmail != '') {
-                                    $body .= __('Email').': '.$email."<br/>";
-                                }
-                                if ($applicantDefaultWebsite != '') {
-                                    $body .= __('Website').': '.$website."<br/>";
-                                }
-                                if ($values['dateStart'] != '') {
-                                    $body .= __('Start Date').': '.dateConvertBack($guid, $values['dateStart'])."<br/>";
-                                }
-                                $body .= __('Job Type').': '.dateConvertBack($guid, $values['type'])."<br/>";
-                                $body .= __('Job Title').': '.dateConvertBack($guid, $values['jobTitle'])."<br/>";
-                                $bodyPlain = emailBodyConvert($body);
-
-                                $mail = $container->get(Mailer::class);
-                                $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
-                                $mail->AddAddress($to);
-                                $mail->CharSet = 'UTF-8';
-                                $mail->Encoding = 'base64';
-                                $mail->IsHTML(true);
-                                $mail->Subject = $subject;
-                                $mail->Body = $body;
-                                $mail->AltBody = $bodyPlain;
-
-                                if ($mail->Send()) {
-                                    echo "<div class='success'>";
-                                    echo sprintf(__('A request to create a applicant email address and/or website address was successfully sent to %1$s.'), $_SESSION[$guid]['organisationAdministratorName']);
-                                    echo '</div>';
-                                } else {
-                                    echo "<div class='error'>";
-                                    echo sprintf(__('A request to create a applicant email address and/or website address failed. Please contact %1$s to request these manually.'), $_SESSION[$guid]['organisationAdministratorName']);
-                                    echo '</div>';
-                                }
-                            }
-
-                            if ($continueLoop == false) {
-                                $insertOK = true;
-                                try {
-                                    $data = array('username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'surname' => $values['surname'], 'firstName' => $values['firstName'], 'preferredName' => $values['preferredName'], 'officialName' => $values['officialName'], 'nameInCharacters' => $values['nameInCharacters'], 'gender' => $values['gender'], 'dob' => $values['dob'], 'languageFirst' => $values['languageFirst'], 'languageSecond' => $values['languageSecond'], 'languageThird' => $values['languageThird'], 'countryOfBirth' => $values['countryOfBirth'], 'citizenship1' => $values['citizenship1'], 'citizenship1Passport' => $values['citizenship1Passport'], 'nationalIDCardNumber' => $values['nationalIDCardNumber'], 'residencyStatus' => $values['residencyStatus'], 'visaExpiryDate' => $values['visaExpiryDate'], 'email' => $email, 'emailAlternate' => $emailAlternate, 'website' => $website, 'phone1Type' => $values['phone1Type'], 'phone1CountryCode' => $values['phone1CountryCode'], 'phone1' => $values['phone1'], 'dateStart' => $values['dateStart'], 'fields' => $values['fields']);
-                                    $sql = "INSERT INTO gibbonPerson SET username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, gibbonRoleIDPrimary='$gibbonRoleID', gibbonRoleIDAll='$gibbonRoleID', status='Full', surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, email=:email, emailAlternate=:emailAlternate, website=:website, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, dateStart=:dateStart, fields=:fields";
-                                    $result = $connection2->prepare($sql);
-                                    $result->execute($data);
-                                } catch (PDOException $e) {
-                                    $insertOK = false;
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
-                                if ($insertOK == true) {
-                                    $failapplicant = false;
-
-                                    //Populate informApplicant array
-                                    if ($informApplicant == 'Y') {
-                                        $informApplicantArray[0]['email'] = $values['email'];
-                                        $informApplicantArray[0]['surname'] = $values['surname'];
-                                        $informApplicantArray[0]['preferredName'] = $values['preferredName'];
-                                        $informApplicantArray[0]['username'] = $username;
-                                        $informApplicantArray[0]['password'] = $password;
-                                    }
-                                }
+                            //Populate informApplicant array
+                            if ($informApplicant == 'Y') {
+                                $informApplicantArray[0]['email'] = $values['email'];
+                                $informApplicantArray[0]['surname'] = $values['surname'];
+                                $informApplicantArray[0]['preferredName'] = $values['preferredName'];
+                                $informApplicantArray[0]['username'] = $username;
+                                $informApplicantArray[0]['password'] = $password;
                             }
                         }
-                    }
-                    try {
-                        $sql = 'UNLOCK TABLES';
-                        $result = $connection2->query($sql);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
                     }
 
                     if ($failapplicant == true) {

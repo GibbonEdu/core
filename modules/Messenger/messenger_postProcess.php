@@ -1936,8 +1936,9 @@ else {
 				$emailCount=0 ;
 				$mail= $container->get(Mailer::class);
                 $mail->SMTPKeepAlive = true;
-                $mail->SMTPDebug = 3;
-
+                $mail->SMTPDebug = 1;
+                $mail->Debugoutput = 'error_log';
+                
 				if ($emailReplyTo!="")
 					$mail->AddReplyTo($emailReplyTo, '');
 				if ($from!=$_SESSION[$guid]["email"])	//If sender is using school-wide address, send from school

@@ -36,29 +36,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
     $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
     $fileUploader->getFileExtensions();
 
-    //Lock table
-    try {
-        $sql = 'LOCK TABLES gibbonDepartment WRITE, gibbonDepartmentStaff WRITE';
-        $result = $connection2->query($sql);
-    } catch (PDOException $e) {
-        $URL .= '&return=error2';
-        header("Location: {$URL}");
-        exit();
-    }
-
-    //Get next autoincrement
-    try {
-        $sqlAI = "SHOW TABLE STATUS LIKE 'gibbonDepartment'";
-        $resultAI = $connection2->query($sqlAI);
-    } catch (PDOException $e) {
-        $URL .= '&return=error2';
-        header("Location: {$URL}");
-        exit();
-    }
-
-    $rowAI = $resultAI->fetch();
-    $AI = str_pad($rowAI['Auto_increment'], 4, '0', STR_PAD_LEFT);
-
     if ($type == '' or $name == '' or $nameShort == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
@@ -79,6 +56,20 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
         } else {
             $attachment = '';
         }
+        
+        //Write to database
+        try {
+            $data = array('gibbonDepartmentID' => $AI, 'type' => $type, 'name' => $name, 'nameShort' => $nameShort, 'subjectListing' => $subjectListing, 'blurb' => $blurb, 'logo' => $attachment);
+            $sql = 'INSERT INTO gibbonDepartment SET gibbonDepartmentID=:gibbonDepartmentID, type=:type, name=:name, nameShort=:nameShort, subjectListing=:subjectListing, blurb=:blurb, logo=:logo';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
+        
+        $AI = $connection2->lastInsertID();
 
         //Scan through staff
         $staff = array();
@@ -116,24 +107,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
                     }
                 }
             }
-        }
-
-        //Write to database
-        try {
-            $data = array('gibbonDepartmentID' => $AI, 'type' => $type, 'name' => $name, 'nameShort' => $nameShort, 'subjectListing' => $subjectListing, 'blurb' => $blurb, 'logo' => $attachment);
-            $sql = 'INSERT INTO gibbonDepartment SET gibbonDepartmentID=:gibbonDepartmentID, type=:type, name=:name, nameShort=:nameShort, subjectListing=:subjectListing, blurb=:blurb, logo=:logo';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
-
-        try {
-            $sql = 'UNLOCK TABLES';
-            $result = $connection2->query($sql);
-        } catch (PDOException $e) {
         }
 
         if ($partialFail == true) {

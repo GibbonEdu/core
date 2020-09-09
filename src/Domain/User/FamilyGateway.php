@@ -88,6 +88,30 @@ class FamilyGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    public function selectFamiliesWithActiveStudents($gibbonSchoolYearID)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonFamily.gibbonFamilyID', 'gibbonFamily.name', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonRollGroup.nameShort as rollGroup'
+            ])
+            ->innerJoin('gibbonFamilyChild', 'gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID')
+            ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonFamilyChild.gibbonPersonID')
+            ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
+            ->innerJoin('gibbonRollGroup', 'gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID')
+            ->innerJoin('gibbonYearGroup', 'gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID')
+            ->where('gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where("gibbonPerson.status = 'Full'")
+            ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :today)')
+            ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :today)')
+            ->bindValue('today', date('Y-m-d'))
+            ->orderBy(['gibbonYearGroup.sequenceNumber', 'gibbonRollGroup.nameShort', 'gibbonPerson.surname', 'gibbonPerson.preferredName']);
+
+        return $this->runSelect($query);
+    }
+
     public function selectAdultsByFamily($gibbonFamilyIDList, $allFields = false)
     {
         $gibbonFamilyIDList = is_array($gibbonFamilyIDList) ? implode(',', $gibbonFamilyIDList) : $gibbonFamilyIDList;
