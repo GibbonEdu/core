@@ -48,13 +48,12 @@ try {
 
     $formValues = array(
         'title'                 => 'Mr.',
-        'surname'               => 'CI',
-        'firstName'             => 'Travis',
+        'surname'               => 'Admin',
+        'firstName'             => 'Testing',
         'email'                 => 'testing@gibbon.test',
         'username'              => 'admin',
-        'passwordNew'           => 'travisci',
-        'passwordConfirm'       => 'travisci',
         'passwordNew'           => '7SSbB9FZN24Q',
+        'passwordConfirm'       => '7SSbB9FZN24Q',
         'systemName'            => 'Gibbon',
         'installType'           => 'Testing',
         'cuttingEdgeCode'       => 'Y',
