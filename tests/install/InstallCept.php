@@ -26,7 +26,7 @@ try {
     if (getenv('DB_HOST')){
         $I->fillField('databaseName', getenv('DB_NAME'));
     } else {
-        $I->fillField('databaseName', 'gibbon');
+        $I->fillField('databaseName', 'gibbontest');
     }
     if (getenv('DB_USERNAME')){
         $I->fillField('databaseUsername', getenv('DB_USERNAME'));
