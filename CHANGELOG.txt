@@ -45,6 +45,7 @@ v21.0.00
         Planner: update the attendance list to exclude students with a timetable exception
         Planner: added smart block clarification to the Edit Working Copy page
         Planner: added a common template for all Upcoming Deadlines sections
+        Planner: refactored the All Homework tables and added row colouring
         Reports: display the download link after a batch PDF has completed
         Reports: added full course name to the report writing page
         School Admin: added Manage Medical Conditions action
