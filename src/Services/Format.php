@@ -363,7 +363,7 @@ class Format
      */
     public static function small($value)
     {
-        return '<span class="small emphasis">'.$value.'</span>';
+        return '<span class="text-xxs italic">'.$value.'</span>';
     }
 
     /**
@@ -375,6 +375,17 @@ class Format
     public static function bold($value)
     {
         return '<b>'.$value.'</b>';
+    }
+
+    /**
+     * Formats a string as a tag
+     *
+     * @param string $value
+     * @return string
+     */
+    public static function tag($value, $class)
+    {
+        return '<span class="tag '.$class.'">'.$value.'</span>';
     }
 
     /**
