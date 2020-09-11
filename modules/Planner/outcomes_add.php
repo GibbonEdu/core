@@ -76,11 +76,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
 			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
 			$row = $form->addRow();
-                $row->addLabel('scope', 'Scope');
+                $row->addLabel('scope', __('Scope'));
             if ($highestAction == 'Manage Outcomes_viewEditAll') {
-                $row->addSelect('scope')->fromArray($scopes)->isRequired()->placeholder();
+                $row->addSelect('scope')->fromArray($scopes)->required()->placeholder();
             } elseif ($highestAction == 'Manage Outcomes_viewAllEditLearningArea') {
-                $row->addTextField('scope')->readOnly()->setValue('Learning Area');
+                $row->addSelect('scope')->fromArray($scopes)->required()->readonly()->selected('Learning Area');
 			}
 
 			if ($highestAction == 'Manage Outcomes_viewEditAll') {
@@ -97,19 +97,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
             }
             $row = $form->addRow()->addClass('learningAreaRow');
                 $row->addLabel('gibbonDepartmentID', __('Learning Area'));
-                $row->addSelect('gibbonDepartmentID')->fromQuery($pdo, $sql, $data)->isRequired()->placeholder();
+                $row->addSelect('gibbonDepartmentID')->fromQuery($pdo, $sql, $data)->required()->placeholder();
 
 			$row = $form->addRow();
 				$row->addLabel('name', __('Name'));
-				$row->addTextField('name')->isRequired()->maxLength(100);
+				$row->addTextField('name')->required()->maxLength(100);
 
 			$row = $form->addRow();
 				$row->addLabel('nameShort', __('Short Name'));
-				$row->addTextField('nameShort')->isRequired()->maxLength(14);
+				$row->addTextField('nameShort')->required()->maxLength(14);
 
 			$row = $form->addRow();
                 $row->addLabel('active', __('Active'));
-				$row->addYesNo('active')->isRequired();
+				$row->addYesNo('active')->required();
 
 			$sql = "SELECT DISTINCT category FROM gibbonOutcome ORDER BY category";
             $result = $pdo->executeQuery(array(), $sql);

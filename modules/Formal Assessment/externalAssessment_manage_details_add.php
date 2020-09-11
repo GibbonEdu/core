@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\DataSet;
 
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/externalAssessment_manage_details_add.php') == false) {
     //Acess denied
@@ -75,24 +77,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
             }
             $row = $result->fetch();
 
-            echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-            echo '<tr>';
-            echo "<td style='width: 34%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
-            echo Format::name('', $row['preferredName'], $row['surname'], 'Student');
-            echo '</td>';
-            echo "<td style='width: 33%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__('Year Group').'</span><br/>';
-            if ($row['yearGroup'] != '') {
-                echo __($row['yearGroup']);
-            }
-            echo '</td>';
-            echo "<td style='width: 34%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__('Roll Group').'</span><br/>';
-            echo $row['rollGroup'];
-            echo '</td>';
-            echo '</tr>';
-            echo '</table>';
+            // DISPLAY STUDENT DATA
+            $table = DataTable::createDetails('personal');
+            $table->addColumn('name', __('Name'))->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', 'true']));
+                        $table->addColumn('yearGroup', __('Year Group'));
+                        $table->addColumn('rollGroup', __('Roll Group'));
+
+            echo $table->render([$row]);
 
             $step = isset($_GET['step'])? $_GET['step'] : null;
             if ($step != 1 and $step != 2) {
@@ -114,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                 $sql = "SELECT gibbonExternalAssessmentID as value, name FROM gibbonExternalAssessment WHERE active='Y' ORDER BY name";
                 $row = $form->addRow();
                     $row->addLabel('gibbonExternalAssessmentID', __('Choose Assessment'));
-                    $row->addSelect('gibbonExternalAssessmentID')->fromQuery($pdo, $sql)->isRequired()->placeholder();
+                    $row->addSelect('gibbonExternalAssessmentID')->fromQuery($pdo, $sql)->required()->placeholder();
 
                 $form->toggleVisibilityByClass('copyToGCSE')->onSelect('gibbonExternalAssessmentID')->when('0002');
                 $row = $form->addRow()->addClass('copyToGCSE');
@@ -350,7 +341,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                     }
 
                     $form = Form::create('addAssessment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/externalAssessment_manage_details_addProcess.php?search='.$search.'&allStudents='.$allStudents);
-                    $form->removeClass('standardForm');
 
                     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
                     $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
@@ -358,11 +348,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 
                     $row = $form->addRow();
                     $row->addLabel('name', __('Assessment Type'));
-                    $row->addTextField('name')->isRequired()->readOnly()->setValue(__($rowSelect['name']));
+                    $row->addTextField('name')->required()->readOnly()->setValue(__($rowSelect['name']));
 
                     $row = $form->addRow();
                     $row->addLabel('date', __('Date'));
-                    $row->addDate('date')->isRequired();
+                    $row->addDate('date')->required();
 
                     if ($rowSelect['allowFileUpload'] == 'Y') {
                         $row = $form->addRow();

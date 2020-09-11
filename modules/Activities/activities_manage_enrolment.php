@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -157,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 echo __('Status');
                 echo '</th>';
                 echo '<th>';
-                echo 'Timestamp';
+                echo __('Timestamp');
                 echo '</th>';
                 echo '<th>';
                 echo __('Actions');
@@ -179,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     //COLOR ROW BY STATUS!
                     echo "<tr class=$rowNum>";
                     echo '<td>';
-                    $studentName = formatName('', $values['preferredName'], $values['surname'], 'Student', true);
+                    $studentName = Format::name('', $values['preferredName'], $values['surname'], 'Student', true);
                     if ($canViewStudentDetails) {
                         echo sprintf('<a href="%2$s">%1$s</a>', $studentName, $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$values['gibbonPersonID'].'&subpage=Activities');
                     } else {
@@ -190,10 +191,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     echo $values['rollGroupNameShort'];
                     echo '</td>';
                     echo '<td>';
-                    echo $values['status'];
+                    echo __($values['status']);
                     echo '</td>';
                     echo '<td>';
-                    echo dateConvertBack($guid, substr($values['timestamp'], 0, 10)).' at '.substr($values['timestamp'], 11, 5);
+                    echo __('{date} at {time}', 
+                            ['date' => dateConvertBack($guid, substr($values['timestamp'], 0, 10)),
+                            'time' => substr($values['timestamp'], 11, 5)]);
                     echo '</td>';
                     echo '<td>';
                     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_enrolment_edit.php&gibbonActivityID='.$values['gibbonActivityID'].'&gibbonPersonID='.$values['gibbonPersonID'].'&search='.$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID']."'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";

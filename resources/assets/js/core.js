@@ -17,35 +17,75 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 jQuery(function($){
+
+    /**
+     * Generic toggle switch
+     */
+    $(document).on('click', "[data-toggle]", function () {
+        var toggle = $(this).data('toggle');
+        if ($(toggle).hasClass('hidden')) {
+            $(toggle).removeClass('hidden');
+            $(this).addClass('active');
+        } else {
+            $(toggle).addClass('hidden');
+            $(this).removeClass('active');
+        }
+    });
+
+    /**
+     * Sidebar toggle switch
+     */
+    $('#sidebarToggle').click(function() {
+        if ($('#sidebar').hasClass('lg:w-sidebar')) {
+            $('#sidebar').removeClass('lg:w-sidebar')
+            $('#sidebar').addClass('lg:hidden');
+            $(this).html('«');
+        } else {
+            $('#sidebar').removeClass('lg:hidden')
+            $('#sidebar').addClass('lg:w-sidebar');
+            $(this).html('»');
+        }
+    });
+
     /**
      * Form Class: generic check All/None checkboxes
      */
     $(document).on('click', '.checkall', function () {
-        $(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', $(this).prop('checked')).trigger('change');
+        $(this).closest('table').find(':checkbox').attr('checked', $(this).prop('checked')).trigger('change');
     });
 
     /**
-     * Bluk Actions: show/hide the bulk action panel, highlight selected
+     * Bulk Actions: show/hide the bulk action panel, highlight selected
      */
     $(document).on('click, change', '.bulkActionForm .bulkCheckbox :checkbox', function () {
         var checkboxes = $(this).parents('.bulkActionForm').find('.bulkCheckbox :checkbox');
         var checkedCount = checkboxes.filter(':checked').length;
 
         if (checkedCount > 0) {
+            $('.bulkActionPanel').removeClass('hidden');
+
+            var header = $(this).parents('.bulkActionForm').find('.dataTable header');
+            var panelHeight = $('.bulkActionPanel').innerHeight();
+
             $('.bulkActionCount span').html(checkedCount);
-            $('.bulkActionPanel').fadeIn(150);
+            $('.bulkActionPanel').css('top', header.outerHeight(false) - panelHeight + 6);
+
 
             // Trigger a showhide event on any nested inputs to update their visibility & validation state
             $('.bulkActionPanel :input').trigger('showhide');
         } else {
-            $('.bulkActionPanel').fadeOut(75);
+            $('.bulkActionPanel').addClass('hidden');
         }
-        
+
         $('.checkall').prop('checked', checkedCount > 0 );
         $('.checkall').prop('indeterminate', checkedCount > 0 && checkedCount < checkboxes.length);
 
-        $(this).parents('tr').toggleClass('selected', $(this).prop('checked'));
-        
+        $(this).closest('tr').toggleClass('selected', $(this).prop('checked'));
+    });
+
+    // Highlight any pre-checked rows
+    $('.bulkActionForm').find('.bulkCheckbox :checkbox').each(function () {
+        $(this).closest('tr').toggleClass('selected', $(this).prop('checked'));
     });
 
     /**
@@ -108,9 +148,122 @@ jQuery(function($){
             }
         });
     });
+
+    /**
+    * Data Table: Simple Drag-Drop
+    */
+    $('.dataTable table[data-drag-url]').each(DraggableDataTable);
 });
 
+var DraggableDataTable = function () {
+    var table = this;
+    $('tbody', table).sortable({
+        placeholder: "drag-placeholder bg-gray-400 shadow-inner",
+        handle: ".drag-handle",
+        start: function(event, ui) {
+            $(ui.placeholder).children('td').each(function() {
+                $(this).outerHeight($(ui.item).outerHeight())
+            });
+        },
+        update: function() {
+            var elementOrder = new Array();
+            $('.draggable', this).each(function() {
+                elementOrder.push($(this).data('drag-id'));
+            });
+            $.ajax({
+                url: $(table).data('drag-url'),
+                data: {
+                    data: $(table).data('drag-data'),
+                    order: JSON.stringify(elementOrder)
+                },
+                type: 'POST',
+                success: function(data) {
+                }
+            });
+        }
+    }).disableSelection();
+};
+
 // Form API Functions
+
+/**
+ * Comment Editor
+ */
+$.prototype.gibbonCommentEditor = function (settings) {
+    var editor = this;
+
+    updateComments(editor);
+
+    $(editor).on('input', function () {
+        updateComments(this);
+    });
+
+    $(editor).on('paste', function () {
+        var element = this;
+        setTimeout(function() { 
+            updatePlaceholders(element);
+            updateComments(element);
+        }, 0);
+    });
+
+    $(editor).ready(function(){
+        autosize(editor);
+    });
+};
+
+function updateComments(element)
+{
+    var commentText = $(element).val();
+
+    // Update character counter for comment length
+    var currentLength = commentText.length;
+    $('.characterInfo .currentLength', $(element).parent()).html(currentLength);
+
+    // Look for the student's first name somewhere in the comment
+    var preferredName = $(element).data('name') ? $(element).data('name') : '';
+    if (preferredName.length > 0) {
+        var nameNotFound = commentText.indexOf(preferredName) === -1;
+        $('.characterInfo .commentStatusName', $(element).parent()).toggleClass('hidden', !nameNotFound);
+    }
+
+    // Check to ensure the pronouns match the gender of the student
+    var gender = $(element).data('gender') ? $(element).data('gender') : '';
+    if (gender.length > 0) {
+        var heFound = commentText.search(/\bhe\b/i) !== -1 || commentText.search(/\bhis\b/i) !== -1 || commentText.search(/\bhim\b/i) !== -1 || commentText.search(/\bhimself\b/i) !== -1;
+        var sheFound = commentText.search(/\bshe\b/i) !== -1 || commentText.search(/\bher\b/i) !== -1 || commentText.search(/\bherself\b/i) !== -1;
+        var pronounMismatch = (heFound && gender == 'F') || (sheFound && gender == 'M');
+        $('.characterInfo .commentStatusPronoun', $(element).parent()).toggleClass('hidden', !pronounMismatch);
+    }
+}
+
+function updatePlaceholders(element)
+{
+    var commentText = $(element).val();
+
+    // Replace {name} with the student's preferred name
+    var preferredName = $(element).data('name') ? $(element).data('name') : '';
+    if (preferredName.length > 0) {
+        commentText = commentText.replace(/{name}/ig, preferredName);
+    }
+
+    // Replace pronouns to match the student's gender
+    var gender = $(element).data('gender') ? $(element).data('gender') : '';
+    if (gender.length > 0) {
+        if (gender == 'F') {
+            commentText = commentText.replace(/\bhe\b/g, 'she').replace(/\bHe\b/g, 'She');
+            commentText = commentText.replace(/\bhis\b/g, 'her').replace(/\bHis\b/g, 'Her');
+            commentText = commentText.replace(/\bhim\b/g, 'her').replace(/\bHim\b/g, 'Her');
+            commentText = commentText.replace(/\bhimself\b/g, 'herself').replace(/\bHimself\b/g, 'Herself');
+        } else if (gender == 'M') {
+            commentText = commentText.replace(/\bshe\b/g, 'he').replace(/\bShe\b/g, 'He');
+            commentText = commentText.replace(/\bher\b/g, 'his').replace(/\bHer\b/g, 'His');
+            commentText = commentText.replace(/\bherself\b/g, 'himself').replace(/\bHerself\b/g, 'Himself');
+        }
+    }
+
+    $(element).val(commentText);
+}
+
 
 /**
  * TextField Uniqueness Check
@@ -121,7 +274,7 @@ $.prototype.gibbonUniquenessCheck = function (settings) {
 
     $(uniqueField).ready(function(){
         // Get the existing LiveValidation object, otherwise create one
-        validation = window[$(uniqueField).attr('id') + "Validate"];
+        validation = window["lv" + $(uniqueField).attr('id') + "Validate"];
         if (validation == null || typeof validation != "object") {
             validation = new LiveValidation($(uniqueField).attr('id'));
         }
@@ -168,16 +321,20 @@ CustomBlocks = (function(element, settings) {
     _.container = $(element);
     _.blockTemplate = $('.blockTemplate', element);
     _.blockCount = 0;
+    _.identifiers = [];
     _.validation = [];
     _.defaults = {
         inputNameStrategy: "object",    // array | object | string
         addSelector: ".addBlock",       // The selector to trigger an add block action on
         addOnEvent: "click",            // The event type to trigger an add block action on
         deleteMessage: "Delete?",       // The confirmation message when deleting a block
+        duplicateMessage: "Duplicate",  // The message to display when a duplicate is added
         animationSpeed: 600,            // The speed for block animations
         currentBlocks: [],              // Blocks that should be initialized when creating is object
         predefinedBlocks: [],           // Data to add for new blocks if the identifier matches a key.
+        preventDuplicates: false,       // Can the same block be added more than once?
         sortable: false,                // Enable jQuery-ui drag-drop sorting
+        orderName: 'order',             // Name of the variable used to hold sortable block order
     }
     _.settings = $.extend({}, _.defaults, settings);
 
@@ -193,8 +350,16 @@ CustomBlocks.prototype.init = function() {
             var identifier = $(this).val();
             if (!identifier) return;
 
+            if (_.settings.preventDuplicates && _.identifiers.includes(identifier)) {
+                alert(_.settings.duplicateMessage);
+                return;
+            }
+
             var data = _.settings.predefinedBlocks[identifier] || {};
+            data.identifier = identifier;
+
             _.addBlock(data);
+            _.identifiers.push(identifier);
         });
     });
 
@@ -205,15 +370,25 @@ CustomBlocks.prototype.init = function() {
             handle: ".sortHandle",
         }).bind('sortstart', function(event, ui) {
             $(_.container).trigger('hideAll');
+
+            // Suspend the TinyMCE editors before sorting
+            $('textarea.tinymce', _.container).each(function(index, element) {
+                tinymce.EditorManager.execCommand('mceRemoveEditor', false, $(this).prop("id"));
+            });
         });
+
         $(_.blockTemplate).prepend('<div class="sortHandle floatLeft"></div>');
     }
 
     $('.showHide', _.blockTemplate).hide();
 
+    // Disable all block template inputs
+    $(':input', _.blockTemplate).prop('disabled', true);
+
     // Initialize existing blocks from JSON data
     for (var index in _.settings.currentBlocks) {
         _.addBlock(_.settings.currentBlocks[index]);
+        _.identifiers.push(index);
     }
 
     // Built-in Button Events
@@ -232,6 +407,11 @@ CustomBlocks.prototype.init = function() {
                 $(button).addClass('showHidden');
                 $('img', button).prop('src', $(button).data('on'));
                 block.find('.showHide').show();
+
+                // Restart any TinyMCE editors that are not active
+                $('textarea.tinymce', _.container).each(function(index, element) {
+                    tinymce.EditorManager.execCommand('mceAddEditor', false, $(this).prop("id"));
+                });
             }
         })
         .on('hideAll', function(event, block, button) {
@@ -251,10 +431,12 @@ CustomBlocks.prototype.addBlock = function(data) {
     _.blockCount++;
 
     var block = $(_.blockTemplate).clone().css("display", "block").appendTo($(".blocks", _.container));
-    $(block).append('<input type="hidden" name="order[]" value="'+_.blockCount+'" />');
+    $(block).append('<input type="hidden" name="'+_.settings.orderName+'[]" value="'+_.blockCount+'" />');
 
     _.initBlock(block, data);
     _.refresh();
+
+    $(_.container).trigger('addedBlock', [block]);
 };
 
 CustomBlocks.prototype.removeBlock = function(block) {
@@ -262,18 +444,24 @@ CustomBlocks.prototype.removeBlock = function(block) {
 
     _.blockCount--;
 
+    var index = _.identifiers.indexOf(block.identifier);
+    if (index !== -1) _.identifiers.splice(index, 1);
+
     _.removeBlockValidation(block);
 
     $(block).fadeOut(_.settings.animationSpeed, function(){
         $(block).detach().remove();
         _.refresh();
     });
+
+    $(_.container).trigger('removedBlock', [block]);
 };
 
 CustomBlocks.prototype.initBlock = function(block, data) {
     var _ = this;
 
     block.blockNumber = _.blockCount;
+    block.identifier = data.identifier;
 
     _.loadBlockInputData(block, data);
     _.renameBlockFields(block);
@@ -284,8 +472,11 @@ CustomBlocks.prototype.initBlock = function(block, data) {
 CustomBlocks.prototype.loadBlockInputData = function(block, data) {
     var _ = this;
 
+    $(':input', block).prop('disabled', false);
+
     for (key in data) {
-        $("[name='"+key+"']", block).val(data[key]);
+        $("[name='"+key+"']:not([type='file'])", block).val(data[key]);
+        $("label[for='"+key+"']", block).html(data[key]);
     }
 
     var readonly = data.readonly || [];
@@ -299,7 +490,7 @@ CustomBlocks.prototype.renameBlockFields = function(block) {
     var _ = this;
 
     $("input, textarea, select", block).each(function(index, element) {
-        if ($(this).prop("name") == 'order[]') return;
+        if ($(this).prop("name") == _.settings.orderName+'[]') return;
 
         var name;
         switch(_.settings.inputNameStrategy) {
@@ -309,17 +500,27 @@ CustomBlocks.prototype.renameBlockFields = function(block) {
         }
 
         $(this).prop("name", name);
-        $(this).prop("id", $(this).prop("id")+block.blockNumber);
+        if ($(this).prop("id") != '') {
+            $(this).prop("id", $(this).prop("id")+block.blockNumber);
+        }
     });
 
     $("label", block).each(function(index, element) {
         $(this).prop("for", $(this).prop("for")+block.blockNumber);
     });
+
+    // Initialize any textareas tagged as tinymce using an AJAX load to grab a full editor
+    $("textarea[data-tinymce]", block).each(function (index, element) {
+        var data = { id: $(this).prop("id"), value: $(this).val(), showMedia: $(this).data('media'), rows: $(this).prop("rows") };
+        $(this).parent().load('./modules/Planner/planner_editorAjax.php', data, function(responseText, textStatus, jqXHR) {
+            tinymce.EditorManager.execCommand('mceAddEditor', false, data.id);
+        });
+    });
 };
 
 CustomBlocks.prototype.addBlockValidation = function(block) {
     var _ = this;
-    
+
     $("input, textarea, select", block).each(function(index, element) {
         if ($(this).data('validation') && !$(this).prop('readonly')) {
             var id = $(this).prop("id");
@@ -333,12 +534,16 @@ CustomBlocks.prototype.addBlockValidation = function(block) {
 
 CustomBlocks.prototype.removeBlockValidation = function(block) {
     var _ = this;
-    
+
     $("input, textarea, select", block).each(function(index, element) {
         if ($(this).data('validation') && !$(this).prop('readonly')) {
             var id = $(this).prop("id");
             eval("block."+id+"Validate.destroy();");
         }
+    });
+
+    $('textarea.tinymce', block).each(function(index, element) {
+        tinymce.EditorManager.execCommand('mceRemoveEditor', false, $(this).prop("id"));
     });
 };
 
@@ -365,11 +570,11 @@ CustomBlocks.prototype.refresh = function() {
 $.prototype.gibbonCustomBlocks = function(settings) {
     this.gibbonCustomBlocks = new CustomBlocks(this, settings);
 };
-    
+
 /**
  * Gibbon Data Table: a very basic implementation of jQuery + AJAX powered data tables in Gibbon
- * @param string basePath 
- * @param Object settings 
+ * @param string basePath
+ * @param Object settings
  */
 var DataTable = window.DataTable || {};
 
@@ -377,7 +582,7 @@ DataTable = (function(element, basePath, filters, identifier) {
     var _ = this;
 
     _.table = $(element);
-    _.path = basePath + " #" + $(element).attr('id') + " .dataTable";
+    _.path = basePath + " #" + $(element).attr('id') + " > .dataTable";
     _.filters = filters;
     _.identifier = identifier;
     if (_.filters.sortBy.length == 0) _.filters.sortBy = {};
@@ -402,7 +607,7 @@ DataTable.prototype.init = function() {
         var columns = $(this).data('sort').split(',');
 
         // Hold shift to add columns to the sort (or toggle them), otherwise clear it each time.
-        var activeColumns = columns.filter(function(item){ return item in _.filters.sortBy; }); 
+        var activeColumns = columns.filter(function(item){ return item in _.filters.sortBy; });
         if (activeColumns.length == 0 && !event.shiftKey) _.filters.sortBy = {};
 
         columns.forEach(function(column) {
@@ -415,7 +620,7 @@ DataTable.prototype.init = function() {
     // Remove Filter
     $(_.table).on('click', '.filter', function() {
         var filter = $(this).data('filter');
-        
+
         if ($(this).hasClass('clear')) {
             _.filters.filterBy = {'':''};
             _.filters.searchBy.columns = [''];
@@ -465,7 +670,7 @@ DataTable.prototype.refresh = function() {
     var submitted = setTimeout(function() {
         $('.pagination', _.table).prepend('<span class="submitted"></span>');
     }, 500);
-    
+
     var postData = {};
 
     if (_.identifier != '') {
@@ -474,9 +679,9 @@ DataTable.prototype.refresh = function() {
         postData = _.filters;
     }
 
-    $(_.table).load(_.path, postData, function(responseText, textStatus, jqXHR) { 
-        $('.bulkActionPanel').hide();
-        tb_init('a.thickbox'); 
+    $(_.table).load(_.path, postData, function(responseText, textStatus, jqXHR) {
+        $('.bulkActionPanel').addClass('hidden');
+        tb_init('a.thickbox');
         clearTimeout(submitted);
     });
 };
@@ -486,7 +691,7 @@ $.prototype.gibbonDataTable = function(basePath, filters, identifier) {
 };
 
 /**
- * Disable the submit button once a form has started submitting. 
+ * Disable the submit button once a form has started submitting.
  * Add a spinning indicator for forms that take longer than 0.5s to submit.
  */
 function gibbonFormSubmitted(form) {

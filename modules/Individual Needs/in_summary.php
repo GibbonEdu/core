@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
     $page->breadcrumbs->add(__('Individual Needs Summary'));
 
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));
+        returnProcess($guid, $_GET['return']);
     }
 
     $gibbonINDescriptorID = null;
@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
 
     $individualNeedsGateway = $container->get(INGateway::class);
 
-    $criteria = $individualNeedsGateway->newQueryCriteria()
+    $criteria = $individualNeedsGateway->newQueryCriteria(true)
         ->sortBy(['surname', 'preferredName'])
         ->filterBy('descriptor', $gibbonINDescriptorID)
         ->filterBy('alert', $gibbonAlertLevelID)

@@ -32,6 +32,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view.php')
     //Proceed!
     $page->breadcrumbs->add(__('View Rubrics'));
 
+    // Register scripts available to the core, but not included by default
+    $page->scripts->add('chart');
+
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
@@ -43,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view.php')
     $rubricGateway = $container->get(RubricGateway::class);
 
     // QUERY
-    $criteria = $rubricGateway->newQueryCriteria()
+    $criteria = $rubricGateway->newQueryCriteria(true)
         ->searchBy($rubricGateway->getSearchableColumns(), $search)
         ->sortBy(['scope', 'category', 'name'])
         ->filterBy('department', $department)
@@ -92,6 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view.php')
     // COLUMNS
     $table->addExpandableColumn('description');
     $table->addColumn('scope', __('Scope'))
+        ->context('primary')
         ->width('15%')
         ->format(function($rubric) {
             if ($rubric['scope'] == 'School') {
@@ -101,7 +105,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view.php')
             }
         });
     $table->addColumn('category', __('Category'))->width('15%');
-    $table->addColumn('name', __('Name'))->width('35%');
+    $table->addColumn('name', __('Name'))
+        ->context('primary')
+        ->width('35%');
     $table->addColumn('yearGroups', __('Year Groups'))
         ->format(function($activity) use ($yearGroups) {
             return ($activity['yearGroupCount'] >= count($yearGroups)/2)? '<i>'.__('All').'</i>' : $activity['yearGroups'];
@@ -113,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view.php')
         ->format(function ($rubric, $actions) {
             $actions->addAction('view', __('View'))
                 ->setURL('/modules/Rubrics/rubrics_view_full.php')
-                ->isModal(1100, 550);
+                ->modalWindow(1100, 550);
         });
 
     echo $table->render($rubrics);

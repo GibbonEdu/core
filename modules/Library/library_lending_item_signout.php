@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 $gibbonLibraryItemID = trim($_GET['gibbonLibraryItemID']) ?? '';
 
@@ -72,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 
                     if ($resultPerson->rowCount() == 1) {
                         $rowPerson = $resultPerson->fetch();
-                        $person = formatName('', htmlPrep($rowPerson['preferredName']), htmlPrep($rowPerson['surname']), 'Student');
+                        $person = Format::name('', htmlPrep($rowPerson['preferredName']), htmlPrep($rowPerson['surname']), 'Student');
                     }
                 }
 
@@ -100,26 +101,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
             }
 
             $form = Form::create('libraryLendingSignout', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/library_lending_item_signoutProcess.php?name=".$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status']);
-
             $form->setFactory(DatabaseFormFactory::create($pdo));
-            $form->setClass('smallIntBorder fullWidth');
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('gibbonLibraryItemID', $gibbonLibraryItemID);
+            $form->addHiddenValue('statusCurrent', $values['status']);
 
             $form->addRow()->addHeading(__('Item Details'));
 
             $row = $form->addRow();
                 $row->addLabel('idLabel', __('ID'));
-                $row->addTextField('idLabel')->setValue($values['id'])->readonly()->isRequired();
+                $row->addTextField('idLabel')->setValue($values['id'])->readonly()->required();
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));
-                $row->addTextField('name')->setValue($values['name'])->readonly()->isRequired();
+                $row->addTextField('name')->setValue($values['name'])->readonly()->required();
 
             $row = $form->addRow();
-                $row->addLabel('statusCurrent', __('Current Status'));
-                $row->addTextField('statusCurrent')->setValue($values['status'])->readonly()->isRequired();
+                $row->addLabel('statusCurrentText', __('Current Status'));
+                $row->addTextField('statusCurrentText')->setValue(__($values['status']))->readonly()->required();
 
             $form->addRow()->addHeading(__('This Event'));
 
@@ -132,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
             );
             $row = $form->addRow();
                 $row->addLabel('status', __('New Status'));
-                $row->addSelect('status')->fromArray($statuses)->isRequired()->selected('On Loan')->placeholder();
+                $row->addSelect('status')->fromArray($statuses)->required()->selected('On Loan')->placeholder();
 
             $people = array();
 
@@ -150,7 +150,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 
             if ($result->rowCount() > 0) {
                 $people['--'.__('Students By Roll Group').'--'] = array_reduce($result->fetchAll(), function ($group, $item) {
-                    $group[$item['gibbonPersonID']] = $item['rollGroupName'].' - '.formatName('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Student', true).' ('.$item['username'].')';
+                    $group[$item['gibbonPersonID']] = $item['rollGroupName'].' - '.Format::name('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Student', true).' ('.$item['username'].')';
                     return $group;
                 }, array());
             }
@@ -161,20 +161,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
             if ($result->rowCount() > 0) {
                 $people['--'.__('All Users').'--'] = array_reduce($result->fetchAll(), function($group, $item) {
                     $expected = ($item['status'] == 'Expected')? '('.__('Expected').')' : '';
-                    $group[$item['gibbonPersonID']] = formatName('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Student', true).' ('.$item['username'].')'.$expected;
+                    $group[$item['gibbonPersonID']] = Format::name('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Student', true).' ('.$item['username'].')'.$expected;
                     return $group;
                 }, array());
             }
 
             $row = $form->addRow();
                 $row->addLabel('gibbonPersonIDStatusResponsible', __('Responsible User'))->description(__('Who is responsible for this new status?'));
-                $row->addSelect('gibbonPersonIDStatusResponsible')->fromArray($people)->placeholder()->isRequired();
+                $row->addSelect('gibbonPersonIDStatusResponsible')->fromArray($people)->placeholder()->required();
 
             $loanLength = getSettingByScope($connection2, 'Library', 'defaultLoanLength');
             $loanLength = (is_numeric($loanLength) == false or $loanLength < 0) ? 7 : $loanLength ;
             $row = $form->addRow();
                 $row->addLabel('returnExpected', __('Expected Return Date'))->description(sprintf(__('Default renew length is today plus %1$s day(s)'), $loanLength));
-                $row->addDate('returnExpected')->setValue(date($_SESSION[$guid]['i18n']['dateFormatPHP'], time() + ($loanLength * 60 * 60 * 24)))->isRequired();
+                $row->addDate('returnExpected')->setValue(date($_SESSION[$guid]['i18n']['dateFormatPHP'], time() + ($loanLength * 60 * 60 * 24)))->required();
 
             $row = $form->addRow()->addHeading(__('On Return'));
 

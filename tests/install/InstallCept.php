@@ -29,6 +29,8 @@ try {
     // STEP 3 --------------------------------------
     $I->see('Installation - Step 3', 'h2');
 
+    $I->dontSee('A database connection could not be established.');
+
     $formValues = array(
         'title'                 => 'Mr.',
         'surname'               => 'CI',
@@ -46,7 +48,7 @@ try {
         'organisationNameShort' => 'GiT',
         'currency'              => 'HKD $',
         'country'               => 'Hong Kong',
-        'timezone'              => 'Asia/Hong_Kong',
+        'timezone'              => 'UTC',
     );
 
     $I->uncheckOption('#support');

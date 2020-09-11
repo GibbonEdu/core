@@ -32,9 +32,10 @@ class FirstAidGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonFirstAid';
+    private static $primaryKey = 'gibbonFirstAidID';
 
     private static $searchableColumns = [''];
-    
+
     /**
      * @param QueryCriteria $criteria
      * @return DataSet
@@ -45,7 +46,7 @@ class FirstAidGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonFirstAidID', 'gibbonFirstAid.date', 'gibbonFirstAid.timeIn', 'gibbonFirstAid.timeOut', 'gibbonFirstAid.description', 'gibbonFirstAid.actionTaken', 'gibbonFirstAid.followUp', 'gibbonFirstAid.date', 'patient.surname AS surnamePatient', 'patient.preferredName AS preferredNamePatient', 'gibbonFirstAid.gibbonPersonIDPatient', 'gibbonRollGroup.name as rollGroup', 'firstAider.title', 'firstAider.surname AS surnameFirstAider', 'firstAider.preferredName AS preferredNameFirstAider'
+                'gibbonFirstAidID', 'gibbonFirstAid.date', 'gibbonFirstAid.timeIn', 'gibbonFirstAid.timeOut', 'gibbonFirstAid.description', 'gibbonFirstAid.actionTaken', 'gibbonFirstAid.followUp', 'gibbonFirstAid.date', 'patient.surname AS surnamePatient', 'patient.preferredName AS preferredNamePatient', 'gibbonFirstAid.gibbonPersonIDPatient', 'gibbonRollGroup.name as rollGroup', 'firstAider.title', 'firstAider.surname AS surnameFirstAider', 'firstAider.preferredName AS preferredNameFirstAider', 'timestamp'
             ])
             ->innerJoin('gibbonPerson AS patient', 'gibbonFirstAid.gibbonPersonIDPatient=patient.gibbonPersonID')
             ->innerJoin('gibbonStudentEnrolment', 'patient.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
@@ -76,5 +77,26 @@ class FirstAidGateway extends QueryableGateway
         ]);
 
         return $this->runQuery($query, $criteria);
+    }
+
+    public function queryFollowUpByFirstAidID($gibbonFirstAidID)
+    {
+        $dataLog = array('gibbonFirstAidID' => $gibbonFirstAidID);
+        $sqlLog = "SELECT gibbonFirstAidFollowUp.*, surname, preferredName FROM gibbonFirstAidFollowUp JOIN gibbonPerson ON (gibbonFirstAidFollowUp.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFirstAidID=:gibbonFirstAidID";
+
+        $query = $this
+            ->newSelect()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonFirstAidFollowUp.*',
+                'surname',
+                'preferredName'
+            ])
+            ->innerJoin('gibbonFirstAidFollowUp', 'gibbonFirstAidFollowUp.gibbonFirstAidID=gibbonFirstAid.gibbonFirstAidID')
+            ->innerJoin('gibbonPerson', 'gibbonFirstAidFollowUp.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->where('gibbonFirstAidFollowUp.gibbonFirstAidID=:gibbonFirstAidID')
+            ->bindValue('gibbonFirstAidID', $gibbonFirstAidID);
+
+        return $this->runSelect($query);
     }
 }

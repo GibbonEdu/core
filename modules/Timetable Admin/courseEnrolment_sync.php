@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     $setting = getSettingByScope($connection2, 'Timetable Admin', 'autoEnrolCourses', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $row = $form->addRow();
         $row->addSubmit();
@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     $syncGateway = $container->get(CourseSyncGateway::class);
 
     // QUERY
-    $criteria = $syncGateway->newQueryCriteria()
+    $criteria = $syncGateway->newQueryCriteria(true)
         ->sortBy(['gibbonYearGroup.sequenceNumber'])
         ->fromArray($_POST);
 

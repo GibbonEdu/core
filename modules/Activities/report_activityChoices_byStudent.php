@@ -31,15 +31,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Activity Choices By Student'));
-    
+
     echo '<h2>';
     echo __('Choose Student');
     echo '</h2>';
 
-    $gibbonPersonID = null;
-    if (isset($_GET['gibbonPersonID'])) {
-        $gibbonPersonID = $_GET['gibbonPersonID'];
-    }
+    $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
     $form = Form::create('action',  $_SESSION[$guid]['absoluteURL']."/index.php", "get");
 
@@ -50,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Student'));
-        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array("allStudents" => false, "byName" => true, "byRoll" => true))->isRequired()->placeholder()->selected($gibbonPersonID);
+        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array("allStudents" => false, "byName" => true, "byRoll" => true))->required()->placeholder()->selected($gibbonPersonID);
 
     $row = $form->addRow();
         $row->addFooter();
@@ -194,7 +191,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
                             echo '</td>';
                             echo '<td>';
                             if ($row['status'] != '') {
-                                echo $row['status'];
+                                echo __($row['status']);
                             } else {
                                 echo '<i>'.__('NA').'</i>';
                             }

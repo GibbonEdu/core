@@ -28,7 +28,7 @@ if (isset($_SESSION[$guid]['gibbonThemeName'])) {
 }
 
 if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']) == false) {
-    $output .= "<a class='inactive' title='".__('Notifications')."' href='#'>0 x <img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='./themes/Default/img/notifications.png'></a>";
+    $output .= "<a class='inactive' title='".__('Notifications')."' href='#'><img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='./themes/Default/img/notifications.png'></a>";
 } else {
     //CHECK FOR SYSTEM ALARM
     if (isset($_SESSION[$guid]['gibbonRoleIDCurrentCategory'])) {
@@ -42,19 +42,19 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
                     $type = 'custom';
                 }
                 $output .= "<script>
-					if ($('div#TB_window').is(':visible')==true && $('div#TB_window').attr('class')!='alarm') {
+					if ($('#TB_window').is(':visible')==true && $('#TB_window').hasClass('alarm') == false) {
 						$(\"#TB_window\").remove();
-						$(\"body\").append(\"<div id='TB_window'></div>\");
+                        $(\"body\").append(\"<div id='TB_window'></div>\");
 					}
-					if ($('div#TB_window').is(':visible')===false) {
+					if ($('#TB_window').is(':visible')==false) {
 						var url = '".$_SESSION[$guid]['absoluteURL'].'/index_notification_ajax_alarm.php?type='.$type."&KeepThis=true&TB_iframe=true&width=1000&height=500';
 						tb_show('', url);
-						$('div#TB_window').addClass('alarm') ;
+						$('#TB_window').addClass('alarm') ;
 					}
 				</script>";
             } else {
                 $output .= "<script>
-					if ($('div#TB_window').is(':visible')==true && $('div#TB_window').attr('class')=='alarm') {
+					if ($('#TB_window').is(':visible')==true && $('#TB_window').hasClass('alarm') ) {
 						tb_remove();
 					}
 				</script>";
@@ -76,9 +76,9 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
     }
 
     if ($resultNotifications->rowCount() > 0) {
-        $output .= "<a title='".__('Notifications')."' href='./index.php?q=notifications.php'>".$resultNotifications->rowCount().' x '."<img style='margin-left: 2px; vertical-align: -75%' src='./themes/".$themeName."/img/notifications.png'></a>";
+        $output .= "<a class='inline-block relative mr-4' title='".__('Notifications')."' href='./index.php?q=notifications.php'><span class='badge -mr-2 right-0'>".$resultNotifications->rowCount()."</span><img style='margin-left: 2px; vertical-align: -75%' src='./themes/".$themeName."/img/notifications.png'></a>";
     } else {
-        $output .= "<a class='inactive' title='".__('Notifications')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=notifications.php'>0 x <img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications.png'></a>";
+        $output .= "<a class='inactive inline-block relative mr-4' title='".__('Notifications')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=notifications.php'><img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications.png'></a>";
     }
 }
 

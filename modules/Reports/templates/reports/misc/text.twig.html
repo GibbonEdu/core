@@ -1,0 +1,43 @@
+{#<!--
+name: Plain Text
+category: Miscellaneous
+types: Body,Header,Footer
+icon: align-justify.svg
+config:
+    heading:
+        label: Heading
+        type: words
+        default:
+    headingSize:
+        label: Heading Size
+        type: number
+        default: 14
+    text:
+        label: Text
+        type: text
+        default:
+    textSize:
+        label: Text Size
+        type: number
+        default: 10
+-->#}
+
+{{- stylesheet ? include(stylesheet) -}}
+
+<table class="w-full table" cellpadding="0" cellspacing="0">
+    {% if config.heading is not empty or config.heading is not defined %}
+    <tr>
+        <td class="w-full" style="font-size: {{ config.headingSize|default(14)}}pt; line-height: 1.4;">
+            {{- config.heading|default('Example Text') -}}
+        </td>
+    </tr>
+    {% endif %}
+
+    {% if config.text is not empty or config.text is not defined %}
+    <tr>
+        <td class="w-full" style="font-size: {{ config.textSize|default(10)}}pt;">
+            {{- config.text|default('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.') -}}
+        </td>
+    </tr>
+    {% endif %}
+</table>

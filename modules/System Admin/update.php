@@ -263,8 +263,4 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
             }
         }
     }
-
-    //echo "ALTER TABLE ".$row['Tables_in_'.$databaseName]." ENGINE=InnoDB;<br/>";
-
-
 }

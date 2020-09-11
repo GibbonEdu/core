@@ -32,6 +32,7 @@ class AttendanceCodeGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonAttendanceCode';
+    private static $primaryKey = 'gibbonAttendanceCodeID';
 
     private static $searchableColumns = ['name', 'nameShort'];
     
@@ -50,5 +51,12 @@ class AttendanceCodeGateway extends QueryableGateway
 
 
         return $this->runQuery($query, $criteria);
+    }
+
+    public function selectAttendanceCodes()
+    {
+        $sql = "SELECT gibbonAttendanceCodeID as value, name FROM gibbonAttendanceCode WHERE active='Y' ORDER BY sequenceNumber";
+
+        return $this->db()->select($sql);
     }
 }

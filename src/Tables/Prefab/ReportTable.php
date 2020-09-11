@@ -21,6 +21,7 @@ namespace Gibbon\Tables\Prefab;
 
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\QueryCriteria;
+use Gibbon\Services\Format;
 use Gibbon\Tables\Renderer\PaginatedRenderer;
 use Gibbon\Tables\Renderer\PrintableRenderer;
 use Gibbon\Tables\Renderer\SpreadsheetRenderer;
@@ -52,7 +53,7 @@ class ReportTable extends DataTable
             ->addParam('format', 'print')
             ->addParam('search', $criteria->getSearchText(true))
             ->setTarget('_blank')
-            ->isDirect()
+            ->directLink()
             ->append('&nbsp;');
 
         $table->addHeaderAction('export', __('Export'))
@@ -60,7 +61,7 @@ class ReportTable extends DataTable
             ->addParams($_GET)
             ->addParam('format', 'export')
             ->addParam('search', $criteria->getSearchText(true))
-            ->isDirect();
+            ->directLink();
 
         return $table;
     }
@@ -68,13 +69,19 @@ class ReportTable extends DataTable
     public function setViewMode($viewMode, $session)
     {
         switch ($viewMode) {
-            case 'print':   $this->setRenderer(new PrintableRenderer()); break;
+            case 'print':   $this->setRenderer(new PrintableRenderer());
+                $this->setHeader([]);
+                $this->addHeaderAction('print', __('Print'))
+                    ->onClick('javascript:window.print(); return false;')
+                    ->displayLabel();
+                $this->addMetaData('hidePagination', true);
+                break;
             
             case 'export':  $this->setRenderer(new SpreadsheetRenderer($session->get('absolutePath'))); break;
         }
 
         $this->addMetaData('filename', 'gibbonExport_'.$this->getID());
-        $this->addMetaData('creator', formatName('', $session->get('preferredName'), $session->get('surname'), 'Staff'));
+        $this->addMetaData('creator', Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff'));
 
         return $this;
     }

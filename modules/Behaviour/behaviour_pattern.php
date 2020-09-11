@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     $page->breadcrumbs->add(__('Find Behaviour Patterns'));
 
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));
+        returnProcess($guid, $_GET['return']);
     }
 
     $descriptor = isset($_GET['descriptor'])? $_GET['descriptor'] : '';
@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     $studentGateway = $container->get(StudentGateway::class);
 
     // CRITERIA
-    $criteria = $behaviourGateway->newQueryCriteria()
+    $criteria = $behaviourGateway->newQueryCriteria(true)
         ->sortBy('count', 'DESC')
         ->sortBy('rollGroup')
         ->sortBy(['surname', 'preferredName'])

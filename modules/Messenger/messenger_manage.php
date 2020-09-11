@@ -18,6 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
+use Gibbon\Domain\Messenger\MessengerGateway;
 
 $page->breadcrumbs->add(__('Manage Messages'));
 
@@ -72,7 +74,10 @@ else {
 
 		print "<h2>" ;
 		print __("Messages") ;
-		print "</h2>" ;
+        print "</h2>" ;
+        
+        $messengerGateway = $container->get(MessengerGateway::class);
+        $sendingMessages = $messengerGateway->getSendingMessages();
 
 		//Set pagination variable
 		$page=1 ; if (isset($_GET["page"])) { $page=$_GET["page"] ; }
@@ -146,7 +151,7 @@ else {
 					print "<th>" ;
 						print __("Author") ;
 					print "</th>" ;
-					print "<th>" ;
+					print "<th style='width: 320px'>" ;
 						print __("Recipients") ;
 					print "</th>" ;
 					print "<th>" ;
@@ -173,7 +178,10 @@ else {
 					print "<div class='error'>" . $e->getMessage() . "</div>" ;
 				}
 				while ($row=$resultPage->fetch()) {
-					if ($count%2==0) {
+					if ($row['messageWallPin'] == 'Y') {
+						$rowNum="selected" ;
+					}
+					else if ($count%2==0) {
 						$rowNum="even" ;
 					}
 					else {
@@ -203,9 +211,16 @@ else {
 							}
 						print "</td>" ;
 						print "<td>" ;
-							print formatName($row["title"], $row["preferredName"], $row["surname"], $row["category"]) ;
+							print Format::name($row["title"], $row["preferredName"], $row["surname"], $row["category"]) ;
 						print "</td>" ;
-						print "<td>" ;
+                        print "<td>" ;
+                            if (!empty($sendingMessages[$row['gibbonMessengerID']])) {
+                                echo '<div class="statusBar" data-id="'.$sendingMessages[$row['gibbonMessengerID']].'">';
+                                echo '<div class="mb-2"><img class="align-middle w-56 -mt-px -ml-1" src="./themes/Default/img/loading.gif">'
+                                    .'<span class="tag ml-2 message">'.__('Sending').'</span></div>';
+                                echo '</div>';
+                            }
+
 							try {
 								$dataTargets=array("gibbonMessengerID"=>$row["gibbonMessengerID"]);
 								$sqlTargets="SELECT type, id FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID ORDER BY type, id" ;
@@ -358,7 +373,7 @@ else {
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . __($rowTargets["type"]) . "</b> - " . formatName("", $rowTarget["preferredName"], $rowTarget["surname"], "Student", true) . "<br/>" ;
+										$targets.="<b>" . __($rowTargets["type"]) . "</b> - " . Format::name("", $rowTarget["preferredName"], $rowTarget["surname"], "Student", true) . "<br/>" ;
 									}
 								}
 								else if ($rowTargets["type"]=="Group") {
@@ -459,3 +474,16 @@ else {
 	}
 }
 ?>
+<script>
+$('.statusBar').each(function(index, element) {
+    var refresh = setInterval(function () {
+        var path = "<?php echo $_SESSION[$guid]['absoluteURL'] ?>/modules/Messenger/messenger_manage_ajax.php";
+        var postData = { gibbonLogID: $(element).data('id') };
+        $(element).load(path, postData, function(responseText, textStatus, jqXHR) {
+            if (responseText.indexOf('Sent') >= 0) {
+                clearInterval(refresh);
+            }
+        });
+    }, 3000);
+});
+</script>

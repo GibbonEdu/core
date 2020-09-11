@@ -1,0 +1,41 @@
+{#<!--
+name: Page Number
+category: Headers & Footers
+types: Body,Footer
+icon: file.svg
+sources:
+params:
+    height: 12
+config:
+    footerText:
+        label: Footer Text
+        type: words
+        default: " "
+    dividerLine:
+        label: Divider Line
+        type: yesno
+        default: Y
+-->#}
+
+{{- stylesheet ? include(stylesheet) -}}
+
+<table class="w-full table">
+    {% if config.dividerLine|default('Y') == 'Y' %}
+    <tr>
+        <td colspan="2" class="border-top" style="font-size: 5px;">&nbsp;</td>
+    </tr>
+    {% endif %}
+    <tr>
+        <td style="width:80%;text-align:left;font-size:8pt;">
+            {{- config.footerText|default('Custom Text') -}}
+        </td>
+        <td style="width:20%;text-align:right;font-size:8pt;">
+            {% if pageNum is not empty %}
+                {{ __('Page') }} {{ pageNum -}}
+            {% else %}
+                {{ __('Page {number} of {total}', {number: '{PAGENO}', total: '{nbpg}'}) }}
+            {% endif %}
+        </td>
+    </tr>
+</table>
+    

@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_histor
         ->addParam('gibbonLogID')
         ->format(function ($importType, $actions) {
             $actions->addAction('view', __('View'))
-                ->isModal('600', '550')
+                ->modalWindow('600', '550')
                 ->setURL('/modules/System Admin/import_history_view.php');
         });
 

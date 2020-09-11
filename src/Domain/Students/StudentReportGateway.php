@@ -36,10 +36,31 @@ class StudentReportGateway extends QueryableGateway
     private static $tableName = 'gibbonStudentEnrolment';
     private static $searchableColumns = [];
 
+    
     /**
      * @param QueryCriteria $criteria
      * @return DataSet
      */
+    public function queryStudentDetails(QueryCriteria $criteria, $gibbonPersonID)
+    {
+        $gibbonPersonIDList = is_array($gibbonPersonID) ? implode(',', $gibbonPersonID) : $gibbonPersonID;
+
+        $query = $this
+            ->newQuery()
+            ->from('gibbonPerson')
+            ->cols([
+                'gibbonPerson.*', 'gibbonPersonMedical.*',
+                "(SELECT timestamp FROM gibbonPersonUpdate WHERE gibbonPersonID=gibbonPerson.gibbonPersonID AND status='Complete' ORDER BY timestamp DESC LIMIT 1) as lastPersonalUpdate",
+                "(SELECT timestamp FROM gibbonPersonMedicalUpdate WHERE gibbonPersonID=gibbonPerson.gibbonPersonID AND status='Complete' ORDER BY timestamp DESC LIMIT 1) as lastMedicalUpdate",
+                'gibbonPerson.gibbonPersonID'
+            ])
+            ->leftJoin('gibbonPersonMedical', 'gibbonPersonMedical.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->where('FIND_IN_SET(gibbonPerson.gibbonPersonID, :gibbonPersonIDList)')
+            ->bindValue('gibbonPersonIDList', $gibbonPersonIDList);
+
+        return $this->runQuery($query, $criteria);
+    }
+    
     public function queryStudentTransport(QueryCriteria $criteria, $gibbonSchoolYearID)
     {
         $query = $this

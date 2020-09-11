@@ -33,9 +33,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     echo '</div>';
 } else {
     //Check if school year specified
-    $gibbonCourseClassID = isset($_GET['gibbonCourseClassID'])? $_GET['gibbonCourseClassID'] : '';
-    $gibbonCourseID = isset($_GET['gibbonCourseID'])? $_GET['gibbonCourseID'] : '';
-    $gibbonSchoolYearID = isset($_GET['gibbonSchoolYearID'])? $_GET['gibbonSchoolYearID'] : '';
+    $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+    $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+    $search = $_GET['search'] ?? '';
 
     if (empty($gibbonCourseID) or empty($gibbonSchoolYearID) or empty($gibbonCourseClassID)) {
         echo "<div class='error'>";
@@ -62,11 +63,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 returnProcess($guid, $_GET['return'], null, null);
             }
 
+            echo "<div class='linkTop'>";
+            if ($search != '') {
+                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage.php&search=$search&gibbonSchoolYearID=$gibbonSchoolYearID'>".__('Back to Search Results').'</a>';
+            }
+            echo '</div>';
+            
             echo '<h2>';
             echo __('Add Participants');
             echo '</h2>';
 
-            $form = Form::create('manageEnrolment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_class_edit_addProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID");
+            $form = Form::create('manageEnrolment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_class_edit_addProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search");
                 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
@@ -83,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             if (!empty($allUsers)) {
                 $people['--'.__('All Users').'--'] = Format::keyValue($allUsers, 'gibbonPersonID', function ($item) {
                     $expected = ($item['status'] == 'Expected')? '('.__('Expected').')' : '';
-                    return Format::name('', $item['preferredName'], $item['surname'], 'Student', true).' ('.$item['username'].', '.$item['roleCategory'].')'.$expected;
+                    return Format::name('', $item['preferredName'], $item['surname'], 'Student', true).' ('.$item['username'].', '.__($item['roleCategory']).')'.$expected;
                 });
             }
 
@@ -101,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             $row = $form->addRow();
                 $row->addLabel('role', __('Role'));
-                $row->addSelect('role')->fromArray($roles)->isRequired();
+                $row->addSelect('role')->fromArray($roles)->required();
 
             $row = $form->addRow();
                 $row->addFooter();
@@ -109,36 +116,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             echo $form->getOutput();
 
-            echo '<h2>';
-            echo __('Current Participants');
-            echo '</h2>';
-
             $linkedName = function ($person) use ($guid) {
                 $isStudent = stripos($person['role'], 'Student') !== false;
                 $name = Format::name('', $person['preferredName'], $person['surname'], $isStudent ? 'Student' : 'Staff', true, true);
                 return $isStudent
-                    ? Format::link($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'].'&subpage=Timetable', $name)
+                    ? Format::link('./index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'].'&subpage=Timetable', $name).'<br/>'.Format::userStatusInfo($person)
                     : $name;
             };
 
             // QUERY
-            $criteria = $courseEnrolmentGateway->newQueryCriteria()
+            $criteria = $courseEnrolmentGateway->newQueryCriteria(true)
                 ->sortBy('roleSortOrder')
                 ->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
                 ->fromPOST();
 
-            $enrolment = $courseEnrolmentGateway->queryCourseEnrolmentByClass($criteria, $gibbonSchoolYearID, $gibbonCourseClassID);
+            $enrolment = $courseEnrolmentGateway->queryCourseEnrolmentByClass($criteria, $gibbonSchoolYearID, $gibbonCourseClassID, false, true);
 
             // FORM
             $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/courseEnrolment_manage_class_editProcessBulk.php');
             $form->addHiddenValue('gibbonCourseID', $gibbonCourseID);
             $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
             $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+            $form->addHiddenValue('search', $search);
 
             $linkParams = array(
                 'gibbonCourseID'      => $gibbonCourseID,
                 'gibbonCourseClassID' => $gibbonCourseClassID,
                 'gibbonSchoolYearID'  => $gibbonSchoolYearID,
+                'search'  => $search,
             );
 
             $bulkActions = array(
@@ -157,19 +162,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             // DATA TABLE
             $table = $form->addRow()->addDataTable('enrolment', $criteria)->withData($enrolment);
+            $table->setTitle(__('Current Participants'));
 
+            $table->modifyRows(function ($person, $row) {
+                if (!(empty($person['dateStart']) || $person['dateStart'] <= date('Y-m-d'))) $row->addClass('error');
+                return $row;
+            });
             $table->addMetaData('bulkActions', $col);
 
             $table->addColumn('name', __('Name'))
                   ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
                   ->format($linkedName);
             $table->addColumn('email', __('Email'));
-            $table->addColumn('role', __('Class Role'));
+            $table->addColumn('role', __('Class Role'))->translatable();
             $table->addColumn('reportable', __('Reportable'))
                   ->format(Format::using('yesNo', 'reportable'));
 
             // ACTIONS
             $table->addActionColumn()
+                ->addParam('gibbonCourseClassPersonID')
                 ->addParam('gibbonPersonID')
                 ->addParams($linkParams)
                 ->format(function ($person, $actions) {
@@ -179,19 +190,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                         ->setURL('/modules/Timetable Admin/courseEnrolment_manage_class_edit_delete.php');
                 });
 
-            $table->addCheckboxColumn('gibbonPersonID');
+            $table->addCheckboxColumn('gibbonCourseClassPersonID');
 
             echo $form->getOutput();
 
-
-            echo '<h2>';
-            echo __('Former Participants');
-            echo '</h2>';
-
-            $enrolmentLeft = $courseEnrolmentGateway->queryCourseEnrolmentByClass($criteria, $gibbonSchoolYearID, $gibbonCourseClassID, true);
+            $enrolmentLeft = $courseEnrolmentGateway->queryCourseEnrolmentByClass($criteria, $gibbonSchoolYearID, $gibbonCourseClassID, true, true);
 
             $table = DataTable::createPaginated('enrolmentLeft', $criteria);
+            $table->setTitle(__('Former Participants'));
 
+            $table->modifyRows(function ($person, $row) {
+                if (!(empty($person['dateStart']) || $person['dateStart'] <= date('Y-m-d'))) $row->addClass('error');
+                return $row;
+            });
+            
             $table->addColumn('name', __('Name'))
                 ->sortable(['surname', 'preferredName'])
                 ->format($linkedName);
@@ -200,6 +212,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             // ACTIONS
             $table->addActionColumn()
+                ->addParam('gibbonCourseClassPersonID')
                 ->addParam('gibbonPersonID')
                 ->addParams($linkParams)
                 ->format(function ($person, $actions) {

@@ -21,6 +21,7 @@ namespace Gibbon\Services;
 
 use DateTime;
 use Gibbon\Session;
+use DateTimeImmutable;
 
 /**
  * Format values based on locale and system settings.
@@ -74,57 +75,82 @@ class Format
     /**
      * Formats a YYYY-MM-DD date with the language-specific format. Optionally provide a format string to use instead.
      *
-     * @param string $dateString
+     * @param DateTime|string $dateString
      * @param string $format
      * @return string
      */
     public static function date($dateString, $format = false)
     {
-        $date = DateTime::createFromFormat('Y-m-d', substr($dateString, 0, 10));
+        if (empty($dateString)) {
+            return '';
+        }
+        $date = static::createDateTime($dateString);
         return $date ? $date->format($format ? $format : static::$settings['dateFormatPHP']) : $dateString;
     }
 
     /**
      * Converts a date in the language-specific format to YYYY-MM-DD.
      *
-     * @param string $dateString
+     * @param DateTime|string $dateString
      * @return string
      */
     public static function dateConvert($dateString)
     {
-        $date = DateTime::createFromFormat(static::$settings['dateFormatPHP'], $dateString);
+        if (empty($dateString)) {
+            return '';
+        }
+        $date = static::createDateTime($dateString, static::$settings['dateFormatPHP']);
         return $date ? $date->format('Y-m-d') : $dateString;
     }
 
     /**
-     * Formats a YYYY-MM-DD H:I:S MySQL timestamp as a readable string. Optionally provide a format string to use.
+     * Formats a YYYY-MM-DD H:I:S MySQL timestamp as a language-specific string. Optionally provide a format string to use.
      *
-     * @param string $dateString
+     * @param DateTime|string $dateString
      * @param string $format
      * @return string
      */
     public static function dateTime($dateString, $format = false)
     {
-        $date = DateTime::createFromFormat('Y-m-d H:i:s', $dateString);
+        $date = static::createDateTime($dateString, 'Y-m-d H:i:s');
         return $date ? $date->format($format ? $format : static::$settings['dateTimeFormatPHP']) : $dateString;
     }
     
     /**
      * Formats a YYYY-MM-DD date as a readable string with month names.
      *
-     * @param string $dateString
+     * @param DateTime|string $dateString
      * @return string
      */
-    public static function dateReadable($dateString)
+    public static function dateReadable($dateString, $format = '%b %e, %Y')
     {
-        return static::date($dateString, 'F j, Y');
+        if (empty($dateString)) {
+            return '';
+        }
+        $date = static::createDateTime($dateString);
+        return mb_convert_case(strftime($format, $date->format('U')), MB_CASE_TITLE);
+    }
+
+    /**
+     * Formats a YYYY-MM-DD date as a readable string with month names and times.
+     *
+     * @param DateTime|string $dateString
+     * @return string
+     */
+    public static function dateTimeReadable($dateString, $format = '%b %e, %Y %H:%M')
+    {
+        if (empty($dateString)) {
+            return '';
+        }
+        $date = static::createDateTime($dateString);
+        return mb_convert_case(strftime($format, $date->format('U')), MB_CASE_TITLE);
     }
 
     /**
      * Formats two YYYY-MM-DD dates with the language-specific format. Optionally provide a format string to use instead.
      *
-     * @param string $dateFrom
-     * @param string $dateTo
+     * @param DateTime|string $dateFrom
+     * @param DateTime|string $dateTo
      * @return string
      */
     public static function dateRange($dateFrom, $dateTo, $format = false)
@@ -135,73 +161,139 @@ class Format
     /**
      * Formats two YYYY-MM-DD dates as a readable string, collapsing same months and same years.
      *
-     * @param string $dateFrom
-     * @param string $dateTo
+     * @param DateTime|string $dateFrom
+     * @param DateTime|string $dateTo
      * @return string
      */
     public static function dateRangeReadable($dateFrom, $dateTo)
     {
         $output = '';
-        if (empty($dateFrom) || empty($dateTo)) return $output;
-
-        $startDate = ($dateFrom instanceof DateTime)? $dateFrom : new DateTime($dateFrom);
-        $endDate = ($dateTo instanceof DateTime)? $dateTo : new DateTime($dateTo);
-
-        if ($startDate->format('Y-m') == $endDate->format('Y-m')) {
-            $output = $startDate->format('M Y');
-        } else if ($startDate->format('Y') == $endDate->format('Y')) {
-            $output = $startDate->format('M').' - '.$endDate->format('M Y');
-        } else {
-            $output = $startDate->format('M Y').' - '.$endDate->format('M Y');
+        if (empty($dateFrom) || empty($dateTo)) {
+            return $output;
         }
 
-        return $output;
-    }  
+        $startDate = static::createDateTime($dateFrom);
+        $endDate = static::createDateTime($dateTo);
+
+        $startTime = $startDate->getTimestamp();
+        $endTime = $endDate->getTimestamp();
+
+        if ($startDate->format('Y-m-d') == $endDate->format('Y-m-d')) {
+            $output = strftime('%b %e, %Y', $startTime);
+        } elseif ($startDate->format('Y-m') == $endDate->format('Y-m')) {
+            $output = strftime('%b %e', $startTime).' - '.strftime('%e, %Y', $endTime);
+        } elseif ($startDate->format('Y') == $endDate->format('Y')) {
+            $output = strftime('%b %e', $startTime).' - '.strftime('%b %e, %Y', $endTime);
+        } else {
+            $output = strftime('%b %e, %Y', $startTime).' - '.strftime('%b %e, %Y', $endTime);
+        }
+
+        return mb_convert_case($output, MB_CASE_TITLE);
+    }
 
     /**
      * Formats a Unix timestamp as the language-specific format. Optionally provide a format string to use instead.
      *
-     * @param string|int $timestamp
+     * @param DateTime|string|int $timestamp
      * @param string $format
      * @return string
      */
     public static function dateFromTimestamp($timestamp, $format = false)
     {
-        $date = DateTime::createFromFormat('U', $timestamp);
+        $date = static::createDateTime($timestamp, 'U');
         return $date ? $date->format($format ? $format : static::$settings['dateFormatPHP']) : $timestamp;
+    }
+
+    /**
+     * Formats a Date or DateTime string relative to the current time. Eg: 1 hr ago, 3 mins from now.
+     *
+     * @param DateTime|string $dateString
+     * @return string
+     */
+    public static function relativeTime($dateString, $tooltip = true)
+    {
+        if (empty($dateString)) {
+            return '';
+        }
+        if (strlen($dateString) == 10) {
+            $dateString .= ' 00:00:00';
+        }
+        $date = static::createDateTime($dateString, 'Y-m-d H:i:s');
+
+        $timeDifference = time() - $date->format('U');
+        $seconds = abs($timeDifference);
+
+        switch ($seconds) {
+            case ($seconds < 60 || empty($seconds)):
+                $time = __('Less than 1 min');
+                break;
+            case ($seconds >= 60 && $seconds < 3600):
+                $minutes = floor($seconds / 60);
+                $time = __n('{count} min', '{count} mins', $minutes);
+                break;
+            case ($seconds >= 3600 && $seconds < 86400):
+                $hours = floor($seconds / 3600);
+                $time = __n('{count} hr', '{count} hrs', $hours);
+                break;
+            case ($seconds >= 86400 && $seconds < 1209600):
+                $days = floor($seconds / 86400);
+                $time = __n('{count} day', '{count} days', $days);
+                break;
+            case ($seconds >= 1209600 && $seconds < 4838400):
+                $days = floor($seconds / 604800);
+                $time = __n('{count} week', '{count} weeks', $days);
+                break;
+            default:
+                $timeDifference = 0;
+                $time = static::dateReadable($dateString);
+        }
+
+        if ($timeDifference > 0) {
+            $time = __('{time} ago', ['time' => $time]);
+        } elseif ($timeDifference < 0) {
+            $time = __('{time} from now', ['time' => $time]);
+        }
+        
+        return $tooltip
+            ? self::tooltip($time, static::dateTime($dateString))
+            : $time;
     }
 
     /**
      * Converts a YYYY-MM-DD date to a Unix timestamp.
      *
-     * @return string
+     * @param DateTime|string $dateString
+     * @param string $timezone
+     * @return int
      */
-    public static function timestamp($dateString)
+    public static function timestamp($dateString, $timezone = null)
     {
-        if (strlen($dateString) == 10) $dateString .= ' 00:00:00';
-        $date = DateTime::createFromFormat('Y-m-d H:i:s', $dateString);
+        if (strlen($dateString) == 10) {
+            $dateString .= ' 00:00:00';
+        }
+        $date = static::createDateTime($dateString, 'Y-m-d H:i:s', $timezone);
         return $date ? $date->getTimestamp() : 0;
     }
 
     /**
      * Formats a time from a given MySQL time or timestamp value.
-     * 
-     * @param string $timeString
+     *
+     * @param DateTime|string $timeString
      * @param string|bool $format
      * @return string
      */
     public static function time($timeString, $format = false)
     {
         $convertFormat = strlen($timeString) == 8? 'H:i:s' : 'Y-m-d H:i:s';
-        $date = DateTime::createFromFormat($convertFormat, $timeString);
+        $date = static::createDateTime($timeString, $convertFormat);
         return $date ? $date->format($format ? $format : static::$settings['timeFormatPHP']) : $timeString;
     }
 
     /**
      * Formats a range of times from two given MySQL time or timestamp values.
-     * 
-     * @param string $timeFrom
-     * @param string $timeTo
+     *
+     * @param DateTime|string $timeFrom
+     * @param DateTime|string $timeTo
      * @param string|bool $format
      * @return string
      */
@@ -249,7 +341,7 @@ class Format
     }
 
     /**
-     * Formats a long string by truncating after $length characters 
+     * Formats a long string by truncating after $length characters
      * and displaying the full string on hover.
      *
      * @param string $value
@@ -275,8 +367,31 @@ class Format
     }
 
     /**
+     * Formats a string in a larger font
+     *
+     * @param string $value
+     * @return string
+     */
+    public static function bold($value)
+    {
+        return '<b>'.$value.'</b>';
+    }
+
+    /**
+     * Formats a string of additional details for a hover-over tooltip.
+     *
+     * @param string $value
+     * @return string
+     */
+    public static function tooltip($value, $tooltip = '')
+    {
+        return '<span title="'.$tooltip.'">'.$value.'</span>';
+    }
+
+    /**
      * Formats a link from a url. Automatically adds target _blank to external links.
-     * 
+     * Automatically resolves relative URLs starting with ./ into absolute URLs.
+     *
      * @param string $url
      * @param string $text
      * @param string $title
@@ -284,9 +399,19 @@ class Format
      */
     public static function link($url, $text = '', $attr = [])
     {
-        if (empty($url)) return $text;
-        if (!$text) $text = $url;
-        if (!is_array($attr)) $attr = ['title' => $attr];
+        if (empty($url)) {
+            return $text;
+        }
+        if (!$text) {
+            $text = $url;
+        }
+        if (!is_array($attr)) {
+            $attr = ['title' => $attr];
+        }
+
+        if (substr($url, 0, 2) == './') {
+            $url = static::$settings['absoluteURL'].substr($url, 1);
+        }
 
         if (stripos($url, static::$settings['absoluteURL']) === false) {
             return '<a href="'.$url.'" '.self::attributes($attr).' target="_blank">'.$text.'</a>';
@@ -327,11 +452,13 @@ class Format
     public static function age($dateString, $short = false)
     {
         $date = DateTime::createFromFormat('Y-m-d', $dateString);
-        if (!$date) return __('Unknown');
+        if (!$date) {
+            return __('Unknown');
+        }
 
         $date = $date->diff(new DateTime());
         
-        return $short 
+        return $short
             ? $date->y . __('y') .', '. $date->m . __('m')
             : $date->y .' '. __('years') .', '. $date->m .' '. __('months');
     }
@@ -349,10 +476,18 @@ class Format
     {
         $number = preg_replace('/[^0-9]/', '', $number);
         switch (strlen($number)) {
-            case 7:     $number = preg_replace('/([0-9]{3})([0-9]{4})/', '$1 $2', $number); break;
-            case 8:     $number = preg_replace('/([0-9]{4})([0-9]{4})/', '$1 $2', $number); break;
-            case 9:     $number = preg_replace('/([0-9]{3})([0-9]{2})([0-9]{2})([0-9]{2})/', '$1 - $2 $3 $4', $number); break;
-            case 10:    $number = preg_replace('/([0-9]{3})([0-9]{2})([0-9]{2})([0-9]{3})/', '$1 - $2 $3 $4', $number); break;
+            case 7:
+                $number = preg_replace('/([0-9]{3})([0-9]{4})/', '$1 $2', $number);
+                break;
+            case 8:
+                $number = preg_replace('/([0-9]{4})([0-9]{4})/', '$1 $2', $number);
+                break;
+            case 9:
+                $number = preg_replace('/([0-9]{3})([0-9]{2})([0-9]{2})([0-9]{2})/', '$1 - $2 $3 $4', $number);
+                break;
+            case 10:
+                $number = preg_replace('/([0-9]{3})([0-9]{2})([0-9]{2})([0-9]{3})/', '$1 - $2 $3 $4', $number);
+                break;
         }
 
         return ($type? $type.': ' : '') . ($countryCode? '+'.$countryCode.' ' : '') . $number;
@@ -368,9 +503,28 @@ class Format
      */
     public static function address($address, $addressDistrict, $addressCountry)
     {
-        if (empty($address)) return '';
+        if (stripos($address, PHP_EOL) === false) {
+            // If the address has no line breaks, collapse lines by comma separation,
+            // breaking up long address lines over 30 characters.
+            $collapseAddress = function ($list, $line = '') use (&$collapseAddress) {
+                $line .= array_shift($list);
 
-        return $address . ($addressDistrict? ', '.$addressDistrict : '') . ($addressCountry? ', '.$addressCountry : '');
+                if (empty($list)) {
+                    return $line;
+                }
+
+                return strlen($line.', '.current($list)) > 30
+                    ? $line.'<br/>'.$collapseAddress($list, '')
+                    : $collapseAddress($list, $line.', ');
+            };
+
+            $addressLines = array_filter(array_map('trim', explode(',', $address)));
+            $address = $collapseAddress($addressLines);
+        } else {
+            $address = nl2br($address);
+        }
+
+        return ($address? $address.'<br/>' : '') . ($addressDistrict? $addressDistrict.'<br/>' : '') . ($addressCountry? $addressCountry.'<br/>' : '');
     }
 
     /**
@@ -388,24 +542,30 @@ class Format
     {
         $output = '';
 
-        if (empty($preferredName) && empty($surname)) return '';
+        if (empty($preferredName) && empty($surname)) {
+            return '';
+        }
 
         if ($roleCategory == 'Staff' or $roleCategory == 'Other') {
             $setting = 'nameFormatStaff' . ($informal? 'Informal' : 'Formal') . ($reverse? 'Reversed' : '');
             $format = isset(static::$settings[$setting])? static::$settings[$setting] : '[title] [preferredName:1]. [surname]';
 
-            $output = preg_replace_callback('/\[+([^\]]*)\]+/u',
+            $output = preg_replace_callback(
+                '/\[+([^\]]*)\]+/u',
                 function ($matches) use ($title, $preferredName, $surname) {
                     list($token, $length) = array_pad(explode(':', $matches[1], 2), 2, false);
-                    return isset($$token)
-                        ? (!empty($length)? mb_substr($$token, 0, intval($length)) : $$token)
-                        : '';
+                    if ($$token) {
+                        return (!empty($length)? mb_substr($$token, 0, intval($length)) :
+                            (($token == 'title') ? __($$token) : $$token));
+                    } else {
+                        return '';
+                    }
                 },
-            $format);
-
+                $format
+            );
         } elseif ($roleCategory == 'Parent') {
             $format = (!$informal? '%1$s ' : '') . ($reverse? '%3$s, %2$s' : '%2$s %3$s');
-            $output = sprintf($format, $title, $preferredName, $surname);
+            $output = sprintf($format, __($title), $preferredName, $surname);
         } elseif ($roleCategory == 'Student') {
             $format = $reverse ? '%2$s, %1$s' : '%1$s %2$s';
             $output = sprintf($format, $preferredName, $surname);
@@ -416,7 +576,7 @@ class Format
 
     /**
      * Formats a list of names from an array containing standard title, preferredName & surname fields.
-     * 
+     *
      * @param array $list
      * @param string $roleCategory
      * @param bool $reverse
@@ -433,32 +593,139 @@ class Format
     }
 
     /**
+     * Returns an HTML <img> based on the supplied photo path, using a placeholder image if none exists. Size may be either 75 or 240 at this time. Works using local images or linked images using HTTP(S)
+     *
+     * @param string $path
+     * @param int|string $size
+     * @param string $class
+     * @return string
+     */
+    public static function photo($path, $size = 75, $class = '')
+    {
+        $class .= ' inline-block shadow bg-white border border-gray-600 ';
+        switch ($size) {
+            case 240:
+            case 'lg':
+                $class .= 'w-48 sm:w-64 max-w-full p-1 mx-auto';
+                        $imageSize = 240;
+                break;
+            case 75:
+            case 'md':
+                $class .= 'w-20 lg:w-24 p-1';
+                        $imageSize = 75;
+                break;
+
+            case 'sm':
+                $class .= 'w-12 sm:w-20 p-px sm:p-1';
+                        $imageSize = 75;
+                break;
+
+            default:
+                $imageSize = $size;
+        }
+
+        if (preg_match('/^http[s]*/', $path)) {
+            return sprintf('<img class="%1$s" src="%2$s">', $class, $path);
+        } else {
+            if (empty($path) or file_exists(static::$settings['absolutePath'].'/'.$path) == false) {
+                $path = '/themes/'.static::$settings['gibbonThemeName'].'/img/anonymous_'.$imageSize.'.jpg';
+            }
+
+            return sprintf('<img class="%1$s" src="%2$s">', $class, static::$settings['absoluteURL'].'/'.$path);
+        }
+    }
+
+    /**
      * Returns an HTML <img> based on the supplied photo path, using a placeholder image if none exists. Size may be either 75 or 240 at this time.
      *
      * @param string $path
-     * @param int $size
+     * @param int|string $size
+     * @param string $class
      * @return string
      */
-    public static function userPhoto($path, $size = 75)
-    {   
-        $sizeStyle = $size == 240 ? "width: 240px; height: 320px" : "width: 75px; height: 100px";
+    public static function userPhoto($path, $size = 75, $class = '')
+    {
+        $class .= ' inline-block shadow bg-white border border-gray-600 ';
 
-        if (empty($path) or file_exists(static::$settings['absolutePath'].'/'.$path) == false) {
-            $path = '/themes/'.static::$settings['gibbonThemeName'].'/img/anonymous_'.$size.'.jpg';
+        switch ($size) {
+            case 240:
+            case 'lg':
+                $class .= 'w-48 sm:w-64 max-w-full p-1 mx-auto';
+                        $imageSize = 240;
+                break;
+            case 75:
+            case 'md':
+                $class .= 'w-20 lg:w-24 p-1';
+                        $imageSize = 75;
+                break;
+
+            case 'sm':
+                $class .= 'w-12 sm:w-20 p-px sm:p-1';
+                        $imageSize = 75;
+                break;
+
+            default:
+                $imageSize = $size;
         }
 
-        return sprintf('<img class="user" style="%1$s" src="%2$s"><br/>', $sizeStyle, static::$settings['absoluteURL'].'/'.$path);
+        if (empty($path) or file_exists(static::$settings['absolutePath'].'/'.$path) == false) {
+            $path = '/themes/'.static::$settings['gibbonThemeName'].'/img/anonymous_'.$imageSize.'.jpg';
+        }
+
+        return sprintf('<img class="%1$s" src="%2$s">', $class, static::$settings['absoluteURL'].'/'.$path);
+    }
+
+    /**
+     * Display an icon if this user's birthday is within the next week.
+     *
+     * @param string $dob YYYY-MM-DD
+     * @param string $preferredName
+     * @return string
+     */
+    public static function userBirthdayIcon($dob, $preferredName)
+    {
+        // HEY SHORTY IT'S YOUR BIRTHDAY!
+        $daysUntilNextBirthday = daysUntilNextBirthday($dob);
+        
+        if (empty($dob) || $daysUntilNextBirthday >= 8) {
+            return '';
+        }
+
+        if ($daysUntilNextBirthday == 0) {
+            $title = __("{name}'s birthday today!", ['name' => $preferredName]);
+            $icon = 'gift_pink.png';
+        } else {
+            $title = __n(
+                "{count} day until {name}'s birthday!",
+                "{count} days until {name}'s birthday!",
+                $daysUntilNextBirthday,
+                ['name' => $preferredName]
+            );
+            $icon = 'gift.png';
+        }
+
+        return sprintf('<img class="absolute bottom-0 -ml-4" title="%1$s" src="%2$s">', $title, static::$settings['absoluteURL'].'/themes/'.static::$settings['gibbonThemeName'].'/img/'.$icon);
     }
 
     public static function userStatusInfo($person = [])
     {
-        if (!empty($person['status']) && $person['status'] != 'Full') return __($person['status']);
+        if (!empty($person['status']) && $person['status'] != 'Full') {
+            return __($person['status']);
+        }
         if (!empty($person['roleCategory']) && $person['roleCategory'] == 'Student') {
-            if (!(empty($person['dateStart']) || $person['dateStart'] <= date('Y-m-d'))) return __('Before Start Date');
-            if (!(empty($person['dateEnd']) || $person['dateEnd'] >= date('Y-m-d'))) return __('After End Date');
-            if (empty($person['yearGroup'])) return __('Not Enroled');
+            if (!(empty($person['dateStart']) || $person['dateStart'] <= date('Y-m-d'))) {
+                return __('Before Start Date');
+            }
+            if (!(empty($person['dateEnd']) || $person['dateEnd'] >= date('Y-m-d'))) {
+                return __('After End Date');
+            }
+            if (empty($person['yearGroup'])) {
+                return __('Not Enroled');
+            }
         } else {
-            if (!empty($person['staffType'])) return $person['staffType'];
+            if (!empty($person['staffType'])) {
+                return __($person['staffType']);
+            }
         }
         return '';
     }
@@ -478,5 +745,16 @@ class Format
     public static function alert($message, $level = 'error')
     {
         return '<div class="'.$level.'">'.$message.'</div>';
+    }
+
+    private static function createDateTime($dateOriginal, $expectedFormat = null, $timezone = null)
+    {
+        if ($dateOriginal instanceof DateTime || $dateOriginal instanceof DateTimeImmutable) {
+            return $dateOriginal;
+        }
+
+        return !empty($expectedFormat)
+            ? DateTime::createFromFormat($expectedFormat, $dateOriginal, $timezone)
+            : new DateTime($dateOriginal, $timezone);
     }
 }

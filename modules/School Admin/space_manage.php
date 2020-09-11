@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage.
     $facilityGateway = $container->get(FacilityGateway::class);
 
     // QUERY
-    $criteria = $facilityGateway->newQueryCriteria()
+    $criteria = $facilityGateway->newQueryCriteria(true)
         ->searchBy($facilityGateway->getSearchableColumns(), $search)
         ->sortBy(['name'])
         ->fromPOST();

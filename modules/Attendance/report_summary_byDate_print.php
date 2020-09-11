@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -27,6 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
     echo '</div>';
 } else {
     //Proceed!
+    $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
     $dateEnd = (isset($_GET['dateEnd']))? dateConvert($guid, $_GET['dateEnd']) : date('Y-m-d');
     $dateStart = (isset($_GET['dateStart']))? dateConvert($guid, $_GET['dateStart']) : date('Y-m-d', strtotime( $dateEnd.' -1 month') );
 
@@ -65,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
         echo '</div>';
     } else {
         echo '<h2>';
-        echo __('Report Data').': '. date('M j', strtotime($dateStart) ) .' - '. date('M j, Y', strtotime($dateEnd) );
+        echo __('Report Data').': '. Format::dateRangeReadable($dateStart, $dateEnd);                
         echo '</h2>';
 
         try {
@@ -135,6 +138,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
             if ( !empty($gibbonAttendanceCodeID) ) {
                 $data['gibbonAttendanceCodeID'] = $gibbonAttendanceCodeID;
                 $sql .= ' AND gibbonAttendanceCode.gibbonAttendanceCodeID=:gibbonAttendanceCodeID';
+            }
+
+            if ($countClassAsSchool == 'N' && $group != 'class') {
+                $sql .= " AND NOT context='Class'";
             }
 
             $sql .= ' '. $groupBy . ' '. $orderBy;
@@ -216,7 +223,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                     echo $row['rollGroup'];
                 echo '</td>';
                 echo '<td>';
-                    echo formatName('', $row['preferredName'], $row['surname'], 'Student', ($sort != 'preferredName') );
+                    echo Format::name('', $row['preferredName'], $row['surname'], 'Student', ($sort != 'preferredName') );
                 echo '</td>';
 
                 if ($reportType == 'types') {

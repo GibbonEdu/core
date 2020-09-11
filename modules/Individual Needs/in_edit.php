@@ -20,6 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\DataSet;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -54,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
         }
 
         if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));
+            returnProcess($guid, $_GET['return']);
         }
 
         try {
@@ -91,10 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
             }
 
             // Grab educational assistant data
-            $data = array('gibbonPersonIDStudent' => $gibbonPersonID);
-            $sql = "SELECT gibbonPersonIDAssistant, preferredName, surname, comment FROM gibbonINAssistant JOIN gibbonPerson ON (gibbonINAssistant.gibbonPersonIDAssistant=gibbonPerson.gibbonPersonID) WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
-            $result = $pdo->executeQuery($data, $sql);
-            $educationalAssistants = ($result->rowCount() > 0)? $result->fetchAll() : array();
+            $educationalAssistants = $container->get(INAssistantGateway::class)->selectINAssistantsByStudent($gibbonPersonID)->fetchAll();
 
             // Grab IEP data
             $data = array('gibbonPersonID' => $gibbonPersonID);
@@ -125,8 +125,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 $form->setClass('blank fullWidth');
                 $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-                $col = $form->addRow()->addColumn()->addClass('inline right');
-                    $col->addLabel('gibbonINArchiveID', __('Archived Plans'));
+                $col = $form->addRow()->addColumn()->addClass('flex justify-end items-center');
+                    $col->addLabel('gibbonINArchiveID', __('Archived Plans'))->addClass('mr-1');
                     $col->addSelect('gibbonINArchiveID')
                         ->fromArray(array('' => __('Current Plan')))
                         ->fromArray($archiveOptions)
@@ -140,27 +140,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
             }
             
             // DISPLAY STUDENT DATA
-            echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-            echo '<tr>';
-            echo "<td style='width: 34%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
-            echo Format::name('', $student['preferredName'], $student['surname'], 'Student');
-            echo '</td>';
-            echo "<td style='width: 33%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__('Year Group').'</span><br/>';
-            echo '<i>'.__($student['yearGroup']).'</i>';
-            echo '</td>';
-            echo "<td style='width: 34%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__('Roll Group').'</span><br/>';
-            echo '<i>'.$student['rollGroup'].'</i>';
-            echo '</td>';
-            echo '</tr>';
-            echo '</table>';
+            $table = DataTable::createDetails('personal');
+            $table->addColumn('name', __('Name'))->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', 'true']));
+                        $table->addColumn('yearGroup', __('Year Group'));
+                        $table->addColumn('rollGroup', __('Roll Group'));
+
+            echo $table->render([$student]);
 
             $form = Form::create('individualNeeds', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/in_editProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID");
 
             $form->setFactory(DatabaseFormFactory::create($pdo));
-            $form->getRenderer()->setWrapper('form', 'div')->setWrapper('row', 'div')->setWrapper('cell', 'div');
+            $form->setClass('w-full blank');
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
 
@@ -216,12 +206,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth');
 
                 $row = $table->addRow();
-                    $row->addLabel('staff', __('Staff'));
-                    $row->addSelectStaff('staff')->selectMultiple();
+                    $row->addLabel('staff', __('Staff'))->addClass('w-48');
+                    $row->addSelectStaff('staff')->selectMultiple()->addClass('w-full sm:max-w-xs');
 
                 $row = $table->addRow();
                     $row->addLabel('comment', __('Comment'));
-                    $row->addTextArea('comment')->setRows(4);
+                    $row->addTextArea('comment')->setRows(4)->addClass('w-full sm:max-w-xs');
             }
 
             // DISPLAY AND EDIT IEP

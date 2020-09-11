@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     //Get action with highest precendence
     $page->breadcrumbs
         ->add(__('Manage Behaviour Records'), 'behaviour_manage.php')
-        ->add(__('Add Multiple'));    
+        ->add(__('Add Multiple'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -56,25 +56,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
 
     $form = Form::create('addform', $_SESSION[$guid]['absoluteURL'].'/modules/Behaviour/behaviour_manage_addMultiProcess.php?gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']);
-        $form->setClass('smallIntBorder fullWidth');
-        $form->setFactory(DatabaseFormFactory::create($pdo));
-        $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_addMulti.php");
-        $form->addRow()->addHeading(__('Step 1'));
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_addMulti.php");
+    $form->addRow()->addHeading(__('Step 1'));
 
     //Student
     $row = $form->addRow();
         $row->addLabel('gibbonPersonIDMulti', __('Students'));
-        $row->addSelectStudent('gibbonPersonIDMulti', $_SESSION[$guid]['gibbonSchoolYearID'], array('byName' => true, 'byRoll' => true))->selectMultiple()->isRequired();
+        $row->addSelectStudent('gibbonPersonIDMulti', $_SESSION[$guid]['gibbonSchoolYearID'], array('byName' => true, 'byRoll' => true))->selectMultiple()->required();
 
     //Date
     $row = $form->addRow();
         $row->addLabel('date', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-        $row->addDate('date')->setValue(date($_SESSION[$guid]['i18n']['dateFormatPHP']))->isRequired();
+        $row->addDate('date')->setValue(date($_SESSION[$guid]['i18n']['dateFormatPHP']))->required();
 
     //Type
     $row = $form->addRow();
         $row->addLabel('type', __('Type'));
-        $row->addSelect('type')->fromArray(array('Positive' => __('Positive'), 'Negative' => __('Negative')))->isRequired();
+        $row->addSelect('type')->fromArray(array('Positive' => __('Positive'), 'Negative' => __('Negative')))->required();
 
     //Descriptor
     if ($enableDescriptors == 'Y') {
@@ -93,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 ->fromArray($positiveDescriptors)
                 ->fromArray($negativeDescriptors)
                 ->chainedTo('type', $chainedTo)
-                ->isRequired()
+                ->required()
                 ->placeholder();
     }
 
@@ -119,6 +118,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $column = $row->addColumn();
         $column->addLabel('followup', __('Follow Up'));
         $column->addTextArea('followup')->setRows(5)->setClass('fullWidth');
+
+    //Copy to Notes
+    $row = $form->addRow();
+        $row->addLabel('copyToNotes', __('Copy To Notes'));
+        $row->addCheckbox('copyToNotes');
 
     $row = $form->addRow();
         $row->addFooter();

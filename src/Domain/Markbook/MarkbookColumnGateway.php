@@ -34,6 +34,7 @@ class MarkbookColumnGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonMarkbookColumn';
+    private static $primaryKey = 'gibbonMarkbookColumnID';
     private static $searchableColumns = ['name', 'description', 'type'];
     
     /**
@@ -44,7 +45,7 @@ class MarkbookColumnGateway extends QueryableGateway
         $query = $this
             ->newQuery()
             ->from('gibbonMarkbookColumn')
-            ->cols(['*'])
+            ->cols(['*','gibbonMarkbookColumn.name as name','gibbonMarkbookColumn.sequenceNumber as sequenceNumber'])
             ->where('gibbonMarkbookColumn.gibbonCourseClassID = :gibbonCourseClassID')
             ->bindValue('gibbonCourseClassID', $gibbonCourseClassID)
             ->groupBy(['gibbonMarkbookColumn.gibbonMarkbookColumnID']);

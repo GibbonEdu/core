@@ -214,6 +214,7 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID, $mode = 'manage
 {
     $output = '';
 
+    $output .= '<div class="column-no-break">';
     $output .= '<h2>';
     $output .= __('Select Class');
     $output .= '</h2>';
@@ -254,10 +255,12 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID, $mode = 'manage
             ->fromArray($classes)
             ->selected($gibbonCourseClassID)
             ->placeholder()
-            ->setClass('fullWidth');
+            ->setClass('float-none w-48');
         $row->addSubmit(__('Go'));
 
     $output .= $form->getOutput();
+
+    $output .= '</div>';
 
     return $output;
 }
@@ -283,7 +286,7 @@ function externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbon
             echo __($rowAssessments['name'])." <span style='font-size: 75%; font-style: italic'>(".substr(strftime('%B', mktime(0, 0, 0, substr($rowAssessments['date'], 5, 2))), 0, 3).' '.substr($rowAssessments['date'], 0, 4).')</span>';
             if ($manage == true) {
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/externalAssessment_manage_details_edit.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=".$rowAssessments['gibbonExternalAssessmentStudentID']."&search=$search&allStudents=$allStudents'><img style='margin-left: 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/externalAssessment_manage_details_delete.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=".$rowAssessments['gibbonExternalAssessmentStudentID']."&search=$search&allStudents=$allStudents'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module']."/externalAssessment_manage_details_delete.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=".$rowAssessments['gibbonExternalAssessmentStudentID']."&search=$search&allStudents=$allStudents&width=600&height=135' class='thickbox'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
             }
             echo '</h2>';
             echo '<p>';

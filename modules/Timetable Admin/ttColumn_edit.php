@@ -65,11 +65,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'))->description(__('Must be unique for this school year.'));
-                $row->addTextField('name')->maxLength(30)->isRequired();
+                $row->addTextField('name')->maxLength(30)->required();
 
             $row = $form->addRow();
                 $row->addLabel('nameShort', __('Short Name'));
-                $row->addTextField('nameShort')->maxLength(12)->isRequired();
+                $row->addTextField('nameShort')->maxLength(12)->required();
 
             $row = $form->addRow();
                 $row->addFooter();
@@ -96,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
             $table->addColumn('name', __('Name'));
             $table->addColumn('nameShort', __('Short Name'));
             $table->addColumn('time', __('Time'))->format(Format::using('timeRange', ['timeStart', 'timeEnd']));
-            $table->addColumn('type', __('Type'));
+            $table->addColumn('type', __('Type'))->translatable();
 
             // ACTIONS
             $table->addActionColumn()

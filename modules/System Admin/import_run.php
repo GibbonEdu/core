@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
         $availableModes = array();
         $modes = $importType->getDetail('modes');
         if (!empty($modes['update']) && !empty($modes['insert'])) {
-            $availableModes['sync'] = __('Update').' & '.__('Insert');
+            $availableModes['sync'] = __('Update & Insert');
         }
         if (!empty($modes['update'])) {
             $availableModes['update'] = __('Update');
@@ -108,30 +108,31 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
 
         $row = $form->addRow();
         $row->addLabel('mode', __('Mode'));
-        $row->addSelect('mode')->fromArray($availableModes)->isRequired();
+        $row->addSelect('mode')->fromArray($availableModes)->required();
 
         $columnOrders = array(
             'guess'      => __('Best Guess'),
             'last'       => __('Last Import'),
             'linearplus' => __('From Exported Data'),
             'linear'     => __('From Default Order (see notes)'),
+            'skip'       => __('Skip Non-Required Fields'),
         );
         $selectedOrder = (!empty($importLog))? 'last' : 'guess';
         $row = $form->addRow();
         $row->addLabel('columnOrder', __('Column Order'));
-        $row->addSelect('columnOrder')->fromArray($columnOrders)->isRequired()->selected($selectedOrder);
+        $row->addSelect('columnOrder')->fromArray($columnOrders)->required()->selected($selectedOrder);
 
         $row = $form->addRow();
         $row->addLabel('file', __('File'))->description(__('See Notes below for specification.'));
-        $row->addFileUpload('file')->isRequired()->accepts('.csv,.xls,.xlsx,.xml,.ods');
+        $row->addFileUpload('file')->required()->accepts('.csv,.xls,.xlsx,.xml,.ods');
 
         $row = $form->addRow();
         $row->addLabel('fieldDelimiter', __('Field Delimiter'));
-        $row->addTextField('fieldDelimiter')->isRequired()->maxLength(1)->setValue(',');
+        $row->addTextField('fieldDelimiter')->required()->maxLength(1)->setValue(',');
 
         $row = $form->addRow();
         $row->addLabel('stringEnclosure', __('String Enclosure'));
-        $row->addTextField('stringEnclosure')->isRequired()->maxLength(1)->setValue('"');
+        $row->addTextField('stringEnclosure')->required()->maxLength(1)->setValue('"');
 
         $row = $form->addRow();
         $row->addFooter();
@@ -174,7 +175,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
                 ->addParam('type', $type)
                 ->addParam('sidebar', 'false')
                 ->setIcon('download')
-                ->isDirect()
+                ->directLink()
                 ->displayLabel();
         }
 
@@ -196,7 +197,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
         } elseif (empty($_POST["fieldDelimiter"]) or empty($_POST["stringEnclosure"])) {
             echo Format::alert(__('Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.'));
         } elseif ($mode != "sync" and $mode != "insert" and $mode != "update") {
-            echo Format::alert(__('Import cannot proceed, as the "Mode" field have been left blank.'));
+            echo Format::alert(__('Import cannot proceed, as the "Mode" field has been left blank.'));
         } else {
             $proceed=true ;
             $columnOrder=(isset($_POST['columnOrder']))? $_POST['columnOrder'] : 'guess';
@@ -233,7 +234,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
             echo "</script>";
             
             $form = Form::create('importStep2', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/import_run.php&type='.$type.'&step=3');
-            $form->getRenderer()->setWrapper('form', 'div')->setWrapper('row', 'div')->setWrapper('cell', 'div');
+            $form->setClass('w-full blank');
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('mode', $mode);
@@ -265,7 +266,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
                     ->fromArray($headings)
                     ->selected($lastColumnValue)
                     ->placeholder()
-                    ->isRequired();
+                    ->required();
             }
 
             $form->addRow()->addContent('&nbsp;');
@@ -282,10 +283,10 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
 
                 $count = 0;
 
-                $defaultColumns = function ($fieldName) use (&$importType) {
+                $defaultColumns = function ($fieldName) use (&$importType, $mode) {
                     $columns = [];
                     
-                    if ($importType->isFieldRequired($fieldName) == false) {
+                    if ($importType->isFieldRequired($fieldName) == false || ($mode == 'update' && !$importType->isFieldUniqueKey($fieldName))) {
                         $columns[Importer::COLUMN_DATA_SKIP] = '[ '.__('Skip this Column').' ]';
                     }
                     if ($importType->getField($fieldName, 'custom')) {
@@ -303,9 +304,9 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
                     return $group;
                 }, array());
 
-                $columnIndicators = function ($fieldName) use (&$importType) {
+                $columnIndicators = function ($fieldName) use (&$importType, $mode) {
                     $output = '';
-                    if ($importType->isFieldRequired($fieldName)) {
+                    if ($importType->isFieldRequired($fieldName) && !($mode == 'update' && !$importType->isFieldUniqueKey($fieldName))) {
                         $output .= " <strong class='highlight'>*</strong>";
                     }
                     if ($importType->isFieldUniqueKey($fieldName)) {
@@ -338,13 +339,17 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
                         $selectedColumn = ($columnOrder == 'linearplus')? $count+1 : $count;
                     } elseif ($columnOrder == 'last') {
                         $selectedColumn = isset($columnOrderLast[$count])? $columnOrderLast[$count] : '';
-                    } elseif ($columnOrder == 'guess') {
+                    } elseif ($columnOrder == 'guess' || $columnOrder == 'skip') {
                         foreach ($headings as $index => $columnName) {
                             if (mb_strtolower($columnName) == mb_strtolower($fieldName) || mb_strtolower($columnName) == mb_strtolower($importType->getField($fieldName, 'name'))) {
                                 $selectedColumn = $index;
                                 break;
                             }
                         }
+                    }
+
+                    if ($columnOrder == 'skip' && !($importType->isFieldRequired($fieldName) && !($mode == 'update' && !$importType->isFieldUniqueKey($fieldName)))) {
+                        $selectedColumn = Importer::COLUMN_DATA_SKIP;
                     }
 
                     $row = $table->addRow();
@@ -356,7 +361,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
                             ->setID('columnOrder'.$count)
                             ->fromArray($defaultColumns($fieldName))
                             ->fromArray($columns)
-                            ->isRequired()
+                            ->required()
                             ->setClass('columnOrder mediumWidth')
                             ->selected($selectedColumn)
                             ->placeholder();
@@ -364,7 +369,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
                             ->setID('columnText'.$count)
                             ->setClass('shortWidth columnText')
                             ->readonly()
-                            ->isDisabled();
+                            ->disabled();
 
                     $count++;
                 }
@@ -409,12 +414,12 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
         $ignoreErrors = $_POST['ignoreErrors'] ?? false;
 
         if (empty($csvData) || empty($columnOrder)) {
-            echo Format::alert('Your request failed because your inputs were invalid.');
+            echo Format::alert(__('Your request failed because your inputs were invalid.'));
             return;
         } elseif ($mode != "sync" and $mode != "insert" and $mode != "update") {
-            echo Format::alert(__('Import cannot proceed, as the "Mode" field have been left blank.'));
+            echo Format::alert(__('Import cannot proceed, as the "Mode" field has been left blank.'));
         } elseif (($mode == 'sync' || $mode == 'update') && (!empty($syncField) && $syncColumn < 0)) {
-            echo Format::alert(__("Your request failed because your inputs were invalid."));
+            echo Format::alert(__('Your request failed because your inputs were invalid.'));
             return;
         } elseif (empty($fieldDelimiter) or empty($stringEnclosure)) {
             echo Format::alert(__('Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.'));
@@ -500,7 +505,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
             
             if ($step==3) {
                 $form = Form::create('importStep2', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/import_run.php&type='.$type.'&step=4');
-                $form->getRenderer()->setWrapper('form', 'div')->setWrapper('row', 'div')->setWrapper('cell', 'div');
+                $form->setClass('w-full blank');
 
                 $form->addHiddenValue('address', $_SESSION[$guid]['address']);
                 $form->addHiddenValue('mode', $mode);
@@ -523,7 +528,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
                 $row->onlyIf($overallSuccess)->addContent('');
                 
                 if (!$overallSuccess && !$ignoreErrors) {
-                    $row->addButton(__('Failed'))->setID('submitStep3')->isDisabled()->addClass('right');
+                    $row->addButton(__('Failed'))->setID('submitStep3')->disabled()->addClass('right');
                 } else {
                     $row->addSubmit()->setID('submitStep3');
                 }

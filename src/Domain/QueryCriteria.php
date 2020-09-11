@@ -30,7 +30,7 @@ class QueryCriteria
 
     protected $criteria = array(
         'page' => 1,
-        'pageSize' => 25,
+        'pageSize' => 0,
         'searchBy' => array('columns' => [], 'text' => ''),
         'filterBy' => array(),
         'sortBy' => array(),

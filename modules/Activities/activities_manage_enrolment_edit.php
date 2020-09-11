@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -127,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
             $row = $form->addRow();
             $row->addLabel('student', __('Student'));
-            $row->addTextField('student')->readOnly()->setValue(formatName('', htmlPrep($values['preferredName']), htmlPrep($values['surname']), 'Student'));
+            $row->addTextField('student')->readOnly()->setValue(Format::name('', htmlPrep($values['preferredName']), htmlPrep($values['surname']), 'Student'));
 				
             $statuses = array('Accepted' => __('Accepted'));
             $enrolment = getSettingByScope($connection2, 'Activities', 'enrolmentType');
@@ -140,7 +141,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
             $row = $form->addRow();
             $row->addLabel('status', __('Status'));
-            $row->addSelect('status')->fromArray($statuses)->isRequired();
+            $row->addSelect('status')->fromArray($statuses)->required();
 			
             $row = $form->addRow();
             $row->addFooter();

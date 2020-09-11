@@ -80,17 +80,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
 				$row = $form->addRow();
 					$row->addLabel('title', __('Title'));
-					$row->addTextField('title')->isRequired()->maxLength(100);
+					$row->addTextField('title')->required()->maxLength(100);
 
 				$sql = "SELECT gibbonStudentNoteCategoryID as value, name FROM gibbonStudentNoteCategory WHERE active='Y' ORDER BY name";
 				$row = $form->addRow();
 					$row->addLabel('gibbonStudentNoteCategoryID', __('Category'));
-					$row->addSelect('gibbonStudentNoteCategoryID')->fromQuery($pdo, $sql)->isRequired()->placeholder();
+					$row->addSelect('gibbonStudentNoteCategoryID')->fromQuery($pdo, $sql)->required()->placeholder();
 
 				$row = $form->addRow();
 					$column = $row->addColumn();
 					$column->addLabel('note', __('Note'));
-					$column->addEditor('note', $guid)->isRequired()->setRows(25)->showMedia();
+					$column->addEditor('note', $guid)->required()->setRows(25)->showMedia();
 								
 				$row = $form->addRow();
 					$row->addFooter();

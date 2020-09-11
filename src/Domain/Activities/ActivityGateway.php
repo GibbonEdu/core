@@ -34,6 +34,7 @@ class ActivityGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonActivity';
+    private static $primaryKey = 'gibbonActivityID';
 
     private static $searchableColumns = ['gibbonActivity.name', 'gibbonActivity.type'];
     
@@ -87,7 +88,40 @@ class ActivityGateway extends QueryableGateway
                 if ($status == 'pending') $query->having('pending > 0');
                 return $query;
             },
+            'yearGroup' => function ($query, $gibbonYearGroupID) {
+                return $query
+                    ->where('FIND_IN_SET(:gibbonYearGroupID, gibbonActivity.gibbonYearGroupIDList)')
+                    ->bindValue('gibbonYearGroupID', $gibbonYearGroupID);
+            },
         ]);
+
+        return $this->runQuery($query, $criteria);
+    }
+
+    public function queryActivitiesByParticipant(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonPersonID)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonActivity.gibbonActivityID', 'gibbonActivity.name', 'gibbonActivity.active', 'gibbonActivity.type', 'gibbonActivityStudent.status', 'NULL AS role'
+            ])
+            ->innerJoin('gibbonActivityStudent', 'gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID')
+            ->where('gibbonActivity.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where('gibbonActivityStudent.gibbonPersonID = :gibbonPersonID')
+            ->bindValue('gibbonPersonID', $gibbonPersonID);
+
+        $query->unionAll()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonActivity.gibbonActivityID', 'gibbonActivity.name', 'gibbonActivity.active', 'gibbonActivity.type', 'NULL AS status', 'gibbonActivityStaff.role AS role'
+            ])
+            ->innerJoin('gibbonActivityStaff', 'gibbonActivityStaff.gibbonActivityID=gibbonActivity.gibbonActivityID')
+            ->where('gibbonActivity.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where('gibbonActivityStaff.gibbonPersonID = :gibbonPersonID')
+            ->bindValue('gibbonPersonID', $gibbonPersonID);
 
         return $this->runQuery($query, $criteria);
     }

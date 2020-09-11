@@ -1,0 +1,48 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+<div class="border rounded bg-gray-100 my-4">
+    {% if scopeDetails %}
+    <div class="p-4 flex flex-wrap items-center">
+        <div class="w-full text-center sm:text-left flex items-center justify-center">
+            <div class="text-sm text-gray-700 text-center leading-tight">
+                <strong>{{ scopeDetails.scopeName }}</strong> - {{ scopeDetails.nameShort }}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if totalCount > 0 %}
+        <div class="p-4 {{ scopeDetails ? 'pt-0' }}">
+        {{ include('ui/writingProgress.twig.html') }}
+        </div>
+    {% endif %}
+
+    {% if relatedReports and relatedReports|length > 1 %}
+        <div class="p-4 {{ totalCount ? 'pt-0' }} text-center text-xs">
+            
+            
+            {% for report in relatedReports %}
+                <a {{ report.gibbonReportingCycleID == params.gibbonReportingCycleID ? 'class="active"' }} href="{{ absoluteURL }}/index.php?q=/modules/Reports/reporting_write.php&gibbonPersonID={{ params.gibbonPersonID }}&gibbonReportingCycleID={{ report.gibbonReportingCycleID }}&gibbonReportingScopeID={{ report.gibbonReportingScopeID }}&scopeTypeID={{ params.scopeTypeID }}">{{ report.nameShort }}</a>
+                {% if not loop.last %}&nbsp; |  &nbsp;{% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if canWriteReport == false %}
+    <div class="bg-red-200 text-red-700 border-t mt-2 p-4 text-sm">
+        <img class="w-6 h-6 -my-2 mr-2" src="{{ absoluteURL }}/themes/Default/img/key.png" title="{{ __('Read-only') }}">
+        {{ __('This report is read-only. You do not have access to make changes.') }}
+    </div>
+    {% elseif reportingEnded == true %}
+    <div class="bg-gray-200 text-gray-700 border-t mt-2 p-4 text-sm">
+        <img class="w-6 h-6 -my-2 mr-2" src="{{ absoluteURL }}/themes/Default/img/planner.png" title="{{ __('Ended') }}">
+        {{ __('This reporting cycle has ended. You have access to edit data, however the report is read-only for most users.') }}
+    </div>
+    {% endif %}
+</div>

@@ -18,13 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Prefab\DeleteForm;
+use Gibbon\Domain\System\ThemeGateway;
 
-$orphaned = '';
-if (isset($_GET['orphaned'])) {
-    if ($_GET['orphaned'] == 'true') {
-        $orphaned = 'true';
-    }
-}
+$gibbonThemeID = $_GET['gibbonThemeID'] ?? '';
+$orphaned = $_GET['orphaned'] ?? '';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage_uninstall.php') == false) {
     //Acess denied
@@ -41,25 +38,20 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage_
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    //Check if school year specified
-    $gibbonThemeID = $_GET['gibbonThemeID'];
+    //Check if theme specified
     if ($gibbonThemeID == '') {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
-        try {
-            $data = array('gibbonThemeID' => $gibbonThemeID);
-            $sql = "SELECT * FROM gibbonTheme WHERE gibbonThemeID=:gibbonThemeID AND active='N'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
+        $themeGateway = $container->get(ThemeGateway::class);
+        //Check for existence of theme
+        $dataTheme = array('gibbonThemeID' => $gibbonThemeID, 'active' => 'N');
+        $existsTheme = $themeGateway->selectBy($dataTheme)->rowCount();
 
-        if ($result->rowCount() != 1) {
+        if ($existsTheme == 0) {
             echo "<div class='error'>";
-            echo 'The specified theme cannot be found or is active and so cannot be removed.';
+            echo __('The specified theme cannot be found or is active and so cannot be removed.');
             echo '</div>';
         } else {
             $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/theme_manage_uninstallProcess.php?gibbonThemeID=$gibbonThemeID&orphaned=$orphaned");

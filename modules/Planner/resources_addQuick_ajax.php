@@ -69,7 +69,7 @@ for ($i = 1; $i < 5; ++$i) {
 
 $row = $form->addRow();
     $row->addLabel('imagesAsLinks', __('Insert Images As'));
-    $row->addSelect('imagesAsLinks')->fromArray(array('N' => __('Image'), 'Y' => __('Link')))->isRequired();
+    $row->addSelect('imagesAsLinks')->fromArray(array('N' => __('Image'), 'Y' => __('Link')))->required();
 
 $row = $form->addRow();
     $row->addContent(getMaxUpload($guid, true));

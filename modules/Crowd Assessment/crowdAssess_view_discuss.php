@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -35,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
     $page->breadcrumbs
         ->add(__('View All Assessments'), 'crowdAssess.php')
         ->add(__('View Assessment'), 'crowdAssess_view.php', $urlParams)
-        ->add(__('Discuss'));    
+        ->add(__('Discuss'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -104,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                         echo '<tr>';
                         echo "<td style='width: 33%; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>Student</span><br/>";
-                        echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowList['gibbonPersonID']."'>".formatName('', $rowList['preferredName'], $rowList['surname'], 'Student').'</a>';
+                        echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowList['gibbonPersonID']."'>".Format::name('', $rowList['preferredName'], $rowList['surname'], 'Student').'</a>';
                         echo '</td>';
                         echo "<td style='width: 34%; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>Version</span><br/>";
@@ -119,11 +121,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                         } else {
                             echo "<span title='".$rowWork['version'].'. Submitted at '.substr($rowWork['timestamp'], 11, 5).' on '.dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10))."'><a target='_blank' href='".$rowWork['location']."'>$linkText</a></span>";
                         }
-                        echo '</td>';
-                        echo "<td style='width: 34%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>Like Count</span><br/>";
-                        $likesTotal = countLikesByContext($connection2, 'Crowd Assessment', 'gibbonPlannerEntryHomeworkID', $rowWork['gibbonPlannerEntryHomeworkID']);
-                        echo ' x '.$likesTotal;
                         echo '</td>';
                         echo '</tr>';
                         echo '</table>';

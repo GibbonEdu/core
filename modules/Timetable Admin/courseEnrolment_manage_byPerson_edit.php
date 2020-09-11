@@ -53,7 +53,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         try {
             if ($allUsers == 'on') {
                 $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
-                $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, title, NULL AS gibbonYearGroupID, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, NULL AS type FROM gibbonPerson LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonPerson.status='Full' AND gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName";
+                $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, title, NULL AS gibbonYearGroupID, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, NULL AS type FROM gibbonPerson LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) 
+                WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName";
             } else {
                 if ($type == 'Student') {
                     $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID);
@@ -137,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             $row = $form->addRow();
                 $row->addLabel('role', __('Role'));
-                $row->addSelect('role')->fromArray($roles)->isRequired()->selected($selectedRole);
+                $row->addSelect('role')->fromArray($roles)->required()->selected($selectedRole);
 
             $row = $form->addRow();
                 $row->addFooter();
@@ -152,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             echo '</h2>';
 
             // QUERY
-            $criteria = $courseEnrolmentGateway->newQueryCriteria()
+            $criteria = $courseEnrolmentGateway->newQueryCriteria(true)
                 ->sortBy('roleSortOrder')
                 ->sortBy(['course', 'class'])
                 ->fromPOST();
@@ -190,7 +191,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                   ->sortable(['course', 'class'])
                   ->format(Format::using('courseClassName', ['course', 'class']));
             $table->addColumn('courseName', __('Course'));
-            $table->addColumn('role', __('Class Role'));
+            $table->addColumn('role', __('Class Role'))->translatable();
             $table->addColumn('reportable', __('Reportable'))
                   ->format(Format::using('yesNo', 'reportable'));
 

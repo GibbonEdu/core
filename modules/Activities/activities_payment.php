@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -60,10 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
 
         $form = Form::create('generateInvoices', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_paymentProcessBulk.php');
         $form->addConfirmation(__('Are you sure you wish to process this action? It cannot be undone.'));
-
-        $form->getRenderer()->setWrapper('form', 'div');
-        $form->getRenderer()->setWrapper('row', 'div');
-        $form->getRenderer()->setWrapper('cell', 'fieldset');
+        $form->setClass('w-full blank');
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
         
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
@@ -76,12 +74,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
         }, $billingSchedules);
         $defaultActions = array('Generate Invoice - Simulate' => __('Generate Invoice - Simulate'));
 
-        $row = $form->addRow()->setClass('right');
-            $bulkAction = $row->addColumn()->addClass('inline right');
+        $row = $form->addRow();
+            $bulkAction = $row->addColumn()->addClass('flex justify-end items-center');
             $bulkAction->addSelect('action')
                 ->fromArray($billingSchedules)
                 ->fromArray($defaultActions)
-                ->isRequired()
+                ->required()
                 ->setClass('mediumWidth floatNone')
                 ->placeholder(__('Select action'));
             $bulkAction->addSubmit(__('Go'));
@@ -100,9 +98,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
 
             $row = $table->addRow();
             $row->addContent($student['rollGroup']);
-            $row->addContent(formatName('', $student['preferredName'], $student['surname'], 'Student', true));
+            $row->addContent(Format::name('', $student['preferredName'], $student['surname'], 'Student', true));
             $row->addContent($student['name']);
-            $row->addCurrency("payment[$gibbonActivityStudentID]")->isRequired()->setValue($student['payment']);
+            $row->addCurrency("payment[$gibbonActivityStudentID]")->required()->setValue($student['payment']);
             $row->addCheckbox("gibbonActivityStudentID[$gibbonActivityStudentID]")->setValue($student['gibbonActivityStudentID'])->setClass('');
         }
         
@@ -161,7 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
             echo $row['rollGroup'];
             echo '</td>';
             echo '<td>';
-            echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
+            echo Format::name('', $row['preferredName'], $row['surname'], 'Student', true);
             echo '</td>';
             echo '<td>';
             echo $row['name'];

@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
 
     // QUERY
     $moduleGateway = $container->get(ModuleGateway::class);
-    $criteria = $moduleGateway->newQueryCriteria()
+    $criteria = $moduleGateway->newQueryCriteria(true)
         ->sortBy('name')
         ->fromPOST();
 
@@ -82,13 +82,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
         }
 
         $module['status'] = __('Installed');
-        $module['name'] = $module['type'] == 'Core' ? __($module['name']) : __($module['name'], $module['name']);
+        $module['name'] = $module['type'] == 'Core' ? __($module['name']) : $module['name'];
         $module['versionDisplay'] = $module['type'] == 'Core' ? 'v'.$version : 'v'.$module['version'];
-        
+
         if ($module['type'] == 'Additional') {
             $versionFromFile = getModuleVersion($module['name'], $guid);
             if (version_compare($versionFromFile, $module['version'], '>')) {
-                $module['status'] = '<b>'.__('Update').' '.__('Available').'</b><br/>';
+                $module['status'] = '<b>'.__('Update Available').'</b><br/>';
                 $module['update'] = true;
             }
         }
@@ -132,10 +132,19 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
         'active:N' => __('Active').': '.__('No'),
     ]);
 
-    $table->addColumn('name', __('Name'));
+    $table->addColumn('name', __('Name'))
+        ->format(function ($module) {
+            if ($module['type'] == "Additional") {
+                return __m($module['name']);
+            }
+            else {
+                return __($module['name']);
+            }
+    });
+
     $table->addColumn('status', __('Status'))->notSortable();
-    $table->addColumn('description', __('Description'));
-    $table->addColumn('type', __('Type'));
+    $table->addColumn('description', __('Description'))->translatable();
+    $table->addColumn('type', __('Type'))->translatable();
     $table->addColumn('active', __('Active'))
           ->format(Format::using('yesNo', 'active'));
     $table->addColumn('versionDisplay', __('Version'))->sortable(['version']);
@@ -166,7 +175,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
         echo '<h2>';
         echo __('Not Installed');
         echo '</h2>';
-        
+
         $table = DataTable::create('moduleInstall');
 
         $table->modifyRows(function ($module, $row) {
@@ -187,7 +196,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                 if ($row['manifestOK']) {
                     $actions->addAction('install', __('Install'))
                             ->setIcon('page_new')
-                            ->isDirect()
+                            ->directLink()
                             ->setURL('/modules/System Admin/module_manage_installProcess.php');
                 }
             });

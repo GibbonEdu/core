@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_edit.php') == false) {
     //Acess denied
@@ -76,9 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
             }
 
             $form = Form::create('action1', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_editProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search");
-
             $form->setFactory(DatabaseFormFactory::create($pdo));
-            $form->setClass('smallIntBorder fullWidth');
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
@@ -86,11 +85,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Family Name'));
-                $row->addTextField('name')->maxLength(100)->isRequired();
+                $row->addTextField('name')->maxLength(100)->required();
 
             $row = $form->addRow();
         		$row->addLabel('status', __('Marital Status'));
-        		$row->addSelectMaritalStatus('status')->isRequired();
+        		$row->addSelectMaritalStatus('status')->required();
 
             $row = $form->addRow();
                 $row->addLabel('languageHomePrimary', __('Home Language - Primary'));
@@ -102,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             $row = $form->addRow();
                 $row->addLabel('nameAddress', __('Address Name'))->description(__('Formal name to address parents with.'));
-                $row->addTextField('nameAddress')->maxLength(100)->isRequired();
+                $row->addTextField('nameAddress')->maxLength(100)->required();
 
             $row = $form->addRow();
                 $row->addLabel('homeAddress', __('Home Address'))->description(__('Unit, Building, Street'));
@@ -209,14 +208,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                 $row = $form->addRow()->addClass('head break');
                     $row->addContent(__('Adults'));
                     foreach ($children as $child) {
-                        $row->addContent(formatName('', $child['preferredName'], $child['surname'], 'Student'));
+                        $row->addContent(Format::name('', $child['preferredName'], $child['surname'], 'Student'));
                     }
 
                 $count = 0;
                 foreach ($adults as $adult) {
                     ++$count;
                     $row = $form->addRow();
-                        $row->addContent(formatName($adult['title'], $adult['preferredName'], $adult['surname'], 'Parent'));
+                        $row->addContent(Format::name($adult['title'], $adult['preferredName'], $adult['surname'], 'Parent'));
                         foreach ($children as $child) {
                             $form->addHiddenValue('gibbonPersonID1[]', $adult['gibbonPersonID']);
                             $form->addHiddenValue('gibbonPersonID2[]', $child['gibbonPersonID']);
@@ -280,7 +279,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                     echo getUserPhoto($guid, $child['image_240'], 75);
                     echo '</td>';
                     echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID='.$child['gibbonPersonID']."'>".formatName('', $child['preferredName'], $child['surname'], 'Student').'</a>';
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID='.$child['gibbonPersonID']."'>".Format::name('', $child['preferredName'], $child['surname'], 'Student').'</a>';
                     echo '</td>';
                     echo '<td>';
                     echo $child['status'];
@@ -313,9 +312,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
             }
 
             $form = Form::create('action3', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_addChildProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search");
-
             $form->setFactory(DatabaseFormFactory::create($pdo));
-            $form->setClass('smallIntBorder fullWidth');
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
@@ -323,7 +320,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             $row = $form->addRow();
                 $row->addLabel('gibbonPersonID', __('Child\'s Name'));
-                $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array('allStudents' => true, 'byName' => true, 'byRoll' => true, 'showRoll' => true))->placeholder()->isRequired();
+                $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array('allStudents' => true, 'byName' => true, 'byRoll' => true, 'showRoll' => true))->placeholder()->required();
 
             $row = $form->addRow();
                 $row->addLabel('comment', __('Comment'));
@@ -394,7 +391,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                     //COLOR ROW BY STATUS!
                     echo "<tr class=$rowNum>";
                     echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID='.$adult['gibbonPersonID']."'>".formatName($adult['title'], $adult['preferredName'], $adult['surname'], 'Parent').'</a>';
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID='.$adult['gibbonPersonID']."'>".Format::name($adult['title'], $adult['preferredName'], $adult['surname'], 'Parent').'</a>';
                     echo '</td>';
                     echo '<td>';
                     echo $adult['status'];
@@ -433,7 +430,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
             $form = Form::create('action4', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_addAdultProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search");
 
             $form->setFactory(DatabaseFormFactory::create($pdo));
-            $form->setClass('smallIntBorder fullWidth');
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
@@ -448,11 +444,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
             } catch (PDOException $e) { }
             while ($rowSelect = $resultSelect->fetch()) {
                 $expected = (($rowSelect['status'] == 'Expected') ? ' ('.__('Expected').')' : '');
-                $adults[$rowSelect['gibbonPersonID']] = formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Parent', true, true).' ('.$rowSelect['username'].')'.$expected;
+                $adults[$rowSelect['gibbonPersonID']] = Format::name('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Parent', true, true).' ('.$rowSelect['username'].')'.$expected;
             }
             $row = $form->addRow();
                 $row->addLabel('gibbonPersonID2', __('Adult\'s Name'));
-                $row->addSelect('gibbonPersonID2')->fromArray($adults)->placeHolder()->isRequired();
+                $row->addSelect('gibbonPersonID2')->fromArray($adults)->placeHolder()->required();
 
             $row = $form->addRow();
                 $row->addLabel('comment2', __('Comment'))->description(__('Data displayed in full Student Profile'));
@@ -460,7 +456,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             $row = $form->addRow();
                 $row->addLabel('childDataAccess', __('Data Access?'))->description(__('Access data on family\'s children?'));
-                $row->addYesNo('childDataAccess')->isRequired();
+                $row->addYesNo('childDataAccess')->required();
 
             $priorities = array(
                 '1' => __('1'),
@@ -469,23 +465,23 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
             );
             $row = $form->addRow();
                 $row->addLabel('contactPriority', __('Contact Priority'))->description(__('The order in which school should contact family members.'));
-                $row->addSelect('contactPriority')->fromArray($priorities)->isRequired();
+                $row->addSelect('contactPriority')->fromArray($priorities)->required();
 
             $row = $form->addRow()->addClass('contact');
                 $row->addLabel('contactCall', __('Call?'))->description(__('Receive non-emergency phone calls from school?'));
-                $row->addYesNo('contactCall')->isRequired();
+                $row->addYesNo('contactCall')->required();
 
             $row = $form->addRow()->addClass('contact');
                 $row->addLabel('contactSMS', __('SMS?'))->description(__('Receive non-emergency SMS messages from school?'));
-                $row->addYesNo('contactSMS')->isRequired();
+                $row->addYesNo('contactSMS')->required();
 
             $row = $form->addRow()->addClass('contact');
                 $row->addLabel('contactEmail', __('Email?'))->description(__('Receive non-emergency emails from school?'));
-                $row->addYesNo('contactEmail')->isRequired();
+                $row->addYesNo('contactEmail')->required();
 
             $row = $form->addRow()->addClass('contact');
                 $row->addLabel('contactMail', __('Mail?'))->description(__('Receive postage mail from school?'));
-                $row->addYesNo('contactMail')->isRequired();
+                $row->addYesNo('contactMail')->required();
 
             $row = $form->addRow();
                 $row->addFooter();

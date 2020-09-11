@@ -20,15 +20,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Services;
 
 use Gibbon\Core;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Locale;
 use Gibbon\Session;
+use Gibbon\View\View;
 use Gibbon\View\Page;
 use Gibbon\Comms\Mailer;
 use Gibbon\Comms\SMS;
-use Gibbon\Services\Format;
 use Gibbon\Domain\System\Theme;
 use Gibbon\Domain\System\Module;
-use Gibbon\Services\ErrorHandler;
 use Gibbon\Contracts\Comms\Mailer as MailerInterface;
 use Gibbon\Contracts\Comms\SMS as SMSInterface;
 use League\Container\ServiceProvider\AbstractServiceProvider;
@@ -68,6 +68,8 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         'theme',
         MailerInterface::class,
         SMSInterface::class,
+        'gibbon_logger',
+        'mysql_logger',
     ];
 
     /**
@@ -85,9 +87,11 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
     {
         $container = $this->getContainer();
 
-        $container->add('config', new Core($this->absolutePath));
-        $container->add('session', new Session($container));
-        $container->add('locale', new Locale($this->absolutePath, $container->get('session')));
+        $container->share('config', new Core($this->absolutePath));
+        $container->share('session', new Session($container));
+        $container->share('locale', new Locale($this->absolutePath, $container->get('session')));
+
+        $container->share(\Gibbon\Contracts\Services\Session::class, $container->get('session'));
 
         Format::setupFromSession($container->get('session'));
     }
@@ -103,10 +107,23 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         $container = $this->getContainer();
         $absolutePath = $this->absolutePath;
         $session = $container->get('session');
-        $pdo = $container->get('db');
+
+        // Logging removed until properly setup & tested
+        
+        // $container->share('gibbon_logger', function () use ($container) {
+        //     $factory = new LoggerFactory($container->get(SettingGateway::class));
+        //     return $factory->getLogger('gibbon');
+        // });
+
+        // $container->share('mysql_logger', function () use ($container) {
+        //     $factory = new LoggerFactory($container->get(SettingGateway::class));
+        //     return $factory->getLogger('mysql');
+        // });
+
+        // $pdo->setLogger($container->get('mysql_logger'));
 
         $container->share('twig', function () use ($absolutePath, $session) {
-            $loader = new \Twig_Loader_Filesystem($absolutePath.'/resources/templates');
+            $loader = new \Twig\Loader\FilesystemLoader($absolutePath.'/resources/templates');
 
             // Add the theme templates folder so it can override core templates
             $themeName = $session->get('gibbonThemeName');
@@ -114,26 +131,44 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
                 $loader->prependPath($absolutePath.'/themes/'.$themeName.'/templates');
             }
 
-            $twig = new \Twig_Environment($loader, array(
+            $enableDebug = $session->get('installType') == 'Development';
+            // Override caching on systems during upgrades, when the system version is higher than database version
+            if (version_compare($this->getContainer()->get('config')->getVersion(), $session->get('version'), '>')) {
+                $enableDebug = true;
+            }
+
+            // Add module templates
+            $moduleName = $session->get('module');
+            if (is_dir($absolutePath.'/modules/'.$moduleName.'/templates')) {
+                $loader->prependPath($absolutePath.'/modules/'.$moduleName.'/templates');
+            }
+
+            $twig = new \Twig\Environment($loader, array(
                 'cache' => $absolutePath.'/uploads/cache',
-                'debug' => $session->get('installType') == 'Development',
+                'debug' => $enableDebug,
             ));
 
             $twig->addGlobal('absolutePath', $session->get('absolutePath'));
-            $twig->addGlobal('absoluteURL', $session->get('absoluteURL'));
+            $twig->addGlobal('absoluteURL', $session->has('absoluteURL') ? $session->get('absoluteURL') : '.');
+            $twig->addGlobal('gibbonThemeName', $themeName);
 
-            $twig->addFunction(new \Twig_Function('__', function ($string, $domain = null) {
+
+            $twig->addFunction(new \Twig\TwigFunction('__', function ($string, $domain = null) {
                 return __($string, $domain);
             }));
 
-            $twig->addFunction(new \Twig_Function('formatUsing', function ($method, ...$args) {
-                return Format::$method(...$args);
+            $twig->addFunction(new \Twig\TwigFunction('__n', function ($singular, $plural, $n, $params = [], $options = []) {
+                return __n($singular, $plural, $n, $params, $options);
             }));
+
+            $twig->addFunction(new \Twig\TwigFunction('formatUsing', function ($method, ...$args) {
+                return Format::$method(...$args);
+            }, ['is_safe' => ['html']]));
 
             return $twig;
         });
 
-        $container->share('action', function () use ($session, $pdo) {
+        $container->share('action', function () use ($session) {
             $data = [
                 'actionName'   => '%'.$session->get('action').'%',
                 'moduleName'   => $session->get('module'),
@@ -147,20 +182,20 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
                     WHERE gibbonAction.URLList LIKE :actionName 
                     AND gibbonModule.name=:moduleName";
 
-            $actionData = $pdo->selectOne($sql, $data);
+            $actionData = $this->getContainer()->get('db')->selectOne($sql, $data);
 
             return $actionData ? $actionData : null;
         });
 
-        $container->share('module', function () use ($session, $pdo) {
+        $container->share('module', function () use ($session) {
             $data = ['moduleName' => $session->get('module')];
             $sql = "SELECT * FROM gibbonModule WHERE name=:moduleName AND active='Y'";
-            $moduleData = $pdo->selectOne($sql, $data);
+            $moduleData = $this->getContainer()->get('db')->selectOne($sql, $data);
 
             return $moduleData ? new Module($moduleData) : null;
         });
 
-        $container->share('theme', function () use ($session, $pdo) {
+        $container->share('theme', function () use ($session) {
             if ($session->has('gibbonThemeIDPersonal')) {
                 $data = ['gibbonThemeID' => $session->get('gibbonThemeIDPersonal')];
                 $sql = "SELECT * FROM gibbonTheme WHERE gibbonThemeID=:gibbonThemeID";
@@ -169,7 +204,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
                 $sql = "SELECT * FROM gibbonTheme WHERE active='Y'";
             }
 
-            $themeData = $pdo->selectOne($sql, $data);
+            $themeData = $this->getContainer()->get('db')->selectOne($sql, $data);
 
             $session->set('gibbonThemeID', $themeData['gibbonThemeID'] ?? 001);
             $session->set('gibbonThemeName', $themeData['name'] ?? 'Default');
@@ -197,7 +232,8 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         });
 
         $container->add(MailerInterface::class, function () use ($container) {
-            return new Mailer($container->get('session'));
+            $view = new View($container->get('twig'));
+            return (new Mailer($container->get('session')))->setView($view);
         });
 
         $container->add(SMSInterface::class, function () use ($session, $container) {

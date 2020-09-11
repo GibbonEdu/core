@@ -44,12 +44,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
 
 	$row = $form->addRow();
 		$row->addLabel('subject', __('Subject'))->description(__('Must be unique.'));
-		$row->addTextField('subject')->isRequired()->maxLength(20);
+		$row->addTextField('subject')->required()->maxLength(20);
 
 	$row = $form->addRow();
 		$col = $row->addColumn('body');
 		$col->addLabel('body', __('Body'));
-		$col->addEditor('body', $guid)->isRequired()->setRows(20)->showMedia(true);
+		$col->addEditor('body', $guid)->required()->setRows(20)->showMedia(true);
 
 	$row = $form->addRow();
 		$row->addFooter();

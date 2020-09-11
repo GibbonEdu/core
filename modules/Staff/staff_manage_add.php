@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\User\RoleGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php') == false) {
     //Acess denied
@@ -49,9 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
     }
 
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/staff_manage_addProcess.php?search=$search&allStaff=$allStaff");
-
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('smallIntBorder fullWidth');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
@@ -59,19 +58,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Person'))->description(__('Must be unique.'));
-        $row->addSelectUsers('gibbonPersonID')->placeholder()->isRequired();
+        $row->addSelectUsers('gibbonPersonID')->placeholder()->required();
 
     $row = $form->addRow();
         $row->addLabel('initials', __('Initials'))->description(__('Must be unique if set.'));
         $row->addTextField('initials')->maxlength(4);
 
     $types = array(__('Basic') => array ('Teaching' => __('Teaching'), 'Support' => __('Support')));
-    $sql = "SELECT name as value, name FROM gibbonRole WHERE category='Staff' ORDER BY name";
-    $result = $pdo->executeQuery(array(), $sql);
-    $types[__('System Roles')] = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
+
+    $roleGateway = $container->get(RoleGateway::class);
+    // CRITERIA
+    $criteriaCategory = $roleGateway->newQueryCriteria()
+        ->sortBy(['gibbonRole.name'])
+        ->filterBy('category:Staff');
+
+    $rolesCategoriesStaff = $roleGateway->queryRoles($criteriaCategory);
+
+    $typesCategories = array();
+    foreach($rolesCategoriesStaff as $roleCategoriesStaff) {
+       $typesCategories[$roleCategoriesStaff['name']] = __($roleCategoriesStaff['name']);
+    }
+    $types[__('System Roles')] = $typesCategories;    
+    
     $row = $form->addRow();
         $row->addLabel('type', __('Type'));
-        $row->addSelect('type')->fromArray($types)->placeholder()->isRequired();
+        $row->addSelect('type')->fromArray($types)->placeholder()->required();
 
     $row = $form->addRow();
         $row->addLabel('jobTitle', __('Job Title'));
@@ -100,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
         $row->addTextField('qualifications')->maxlength(80);
 
     $row = $form->addRow();
-        $row->addLabel('biographicalGrouping', __('Grouping'));
+        $row->addLabel('biographicalGrouping', __('Grouping'))->description(__('Used to group staff when creating a staff directory.'));
         $row->addTextField('biographicalGrouping')->maxlength(100);
 
     $row = $form->addRow();

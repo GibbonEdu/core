@@ -30,18 +30,28 @@ use Gibbon\Forms\Input\Checkbox;
 class CheckboxColumn extends Column
 {
     protected $key;
+    protected $checked;
+
     /**
      * Creates a pre-defined column for bulk-action checkboxes.
      */
     public function __construct($id, $key = null)
     {
         parent::__construct($id);
+        
         $this->sortable(false)->width('6%');
+        $this->context('action');
         $this->key = !empty($key)? $key : $id;
 
-        $this->modifyCells(function($data, $cell) {
-            return $cell->addClass('bulkCheckbox');
+        $this->modifyCells(function ($data, $cell) {
+            return $cell->addClass('bulkCheckbox textCenter');
         });
+    }
+
+    public function checked($value = true)
+    {
+        $this->checked = $value;
+        return $this;
     }
 
     /**
@@ -52,7 +62,9 @@ class CheckboxColumn extends Column
     {
         return (new Checkbox('checkall'))
             ->setClass('floatNone checkall')
-            ->wrap('<div class="textCenter">', '</div>')
+            ->checked($this->checked)
+            ->wrap('<div class="text-center">', '</div>')
+            ->alignCenter()
             ->getOutput();
     }
 
@@ -66,9 +78,15 @@ class CheckboxColumn extends Column
     {
         $value = isset($data[$this->key])? $data[$this->key] : '';
 
-        return (new Checkbox($this->getID().'[]'))
+        $contents = $this->hasFormatter() ? call_user_func($this->formatter, $data) : '';
+
+        return !empty($contents)
+            ? $contents 
+            : ((new Checkbox($this->getID().'[]'))->wrap('<label for="'.$this->getID().$value.'" class="-m-4 p-4">', '</label>'))
             ->setID($this->getID().$value)
             ->setValue($value)
+            ->checked($this->checked ? $value : false)
+            ->alignCenter()
             ->getOutput();
     }
 }

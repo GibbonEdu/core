@@ -32,6 +32,7 @@ class DepartmentGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonDepartment';
+    private static $primaryKey = 'gibbonDepartmentID';
 
     private static $searchableColumns = ['name'];
     
@@ -39,14 +40,19 @@ class DepartmentGateway extends QueryableGateway
      * @param QueryCriteria $criteria
      * @return DataSet
      */
-    public function queryDepartments(QueryCriteria $criteria)
+    public function queryDepartments(QueryCriteria $criteria, $type = null)
     {
         $query = $this
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonDepartmentID', 'name', 'nameShort', 'type'
+                'gibbonDepartmentID', 'name', 'nameShort', 'type', 'subjectListing', 'blurb', 'logo'
             ]);
+
+        if (!empty($type)) {
+            $query->where('gibbonDepartment.type = :type')
+                  ->bindValue('type', $type);
+        }
 
         return $this->runQuery($query, $criteria);
     }

@@ -20,13 +20,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_manage.php') == false) {
-    //Acess denied
+    //Access denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Days of the Week'));
+    $page->breadcrumbs->add(__('Days of the Week'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -61,11 +61,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
         while ($day = $result->fetch()) {
             $form->addHiddenValue($day['name'].'sequenceNumber', $day['sequenceNumber']);
 
-            $form->addRow()->addHeading(__($day['name'].' ('.$day['nameShort'].')'));
+            $form->addRow()->addHeading(__($day['name']).' ('.__($day['nameShort']).')');
 
             $row = $form->addRow();
                 $row->addLabel($day['name'].'schoolDay', __('School Day'));
-                $row->addYesNo($day['name'].'schoolDay')->isRequired()->selected($day['schoolDay']);
+                $row->addYesNo($day['name'].'schoolDay')->required()->selected($day['schoolDay']);
 
             $form->toggleVisibilityByClass($day['name'])->onSelect($day['name'].'schoolDay')->when('Y');
 
@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
                 $col = $row->addColumn()->addClass('right inline');
                 $col->addSelect($day['name'].'schoolOpenH')
                     ->fromString($hours)
-                    ->isRequired()
+                    ->required()
                     ->setClass('shortWidth')
                     ->placeholder(__('Hours'))
                     ->selected(substr($day['schoolOpen'], 0, 2));
@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
                 $col = $row->addColumn()->addClass('right inline');
                 $col->addSelect($day['name'].'schoolStartH')
                     ->fromString($hours)
-                    ->isRequired()
+                    ->required()
                     ->setClass('shortWidth')
                     ->placeholder(__('Hours'))
                     ->selected(substr($day['schoolStart'], 0, 2));
@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
                 $col = $row->addColumn()->addClass('right inline');
                 $col->addSelect($day['name'].'schoolEndH')
                     ->fromString($hours)
-                    ->isRequired()
+                    ->required()
                     ->setClass('shortWidth')
                     ->placeholder(__('Hours'))
                     ->selected(substr($day['schoolEnd'], 0, 2));
@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
                 $col = $row->addColumn()->addClass('right inline');
                 $col->addSelect($day['name'].'schoolCloseH')
                     ->fromString($hours)
-                    ->isRequired()
+                    ->required()
                     ->setClass('shortWidth')
                     ->placeholder(__('Hours'))
                     ->selected(substr($day['schoolClose'], 0, 2));

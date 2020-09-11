@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
 
             $row = $form->addRow();
                 $row->addLabel('gibbonCourseClassID', __('Class'));
-                $row->addSelect('gibbonCourseClassID')->fromArray($classes)->isRequired()->placeholder();
+                $row->addSelect('gibbonCourseClassID')->fromArray($classes)->required()->placeholder();
 
             $row = $form->addRow();
                 $row->addSubmit(__('Proceed'));
@@ -161,7 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
 
                 $row = $form->addRow();
                     $row->addLabel('gibbonTTDayRowClassID', __('Upcoming Class Slots'));
-                    $row->addSelect('gibbonTTDayRowClassID')->fromArray($classSlots)->isRequired()->placeholder();
+                    $row->addSelect('gibbonTTDayRowClassID')->fromArray($classSlots)->required()->placeholder();
 
                 $row = $form->addRow();
                     $row->addLabel('gibbonSpaceID', __('Facility'));

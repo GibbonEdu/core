@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -35,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
         ->add(__('Edit Budget'));
 
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('error3' => 'Your request failed because some inputs did not meet a requirement for uniqueness.', 'error4' => 'Your request failed due to an attachment error.'));
+        returnProcess($guid, $_GET['return'], null, array('error4' => __('Your request failed due to an attachment error.')));
     }
 
     //Check if school year specified
@@ -63,9 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
             $values = $result->fetch();
 
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/budgets_manage_editProcess.php?gibbonFinanceBudgetID=$gibbonFinanceBudgetID");
-
             $form->setFactory(DatabaseFormFactory::create($pdo));
-            $form->setClass('smallIntBorder fullWidth');
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
@@ -73,15 +72,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
-                $row->addTextField('name')->maxLength(100)->isRequired();
+                $row->addTextField('name')->maxLength(100)->required();
 
             $row = $form->addRow();
                 $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
-                $row->addTextField('nameShort')->maxLength(14)->isRequired();
+                $row->addTextField('nameShort')->maxLength(8)->required();
 
             $row = $form->addRow();
                 $row->addLabel('active', __('Active'));
-                $row->addYesNo('active')->isRequired();
+                $row->addYesNo('active')->required();
 
             $categories = getSettingByScope($connection2, 'Finance', 'budgetCategories');
             if (empty($categories)) {
@@ -89,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
             }
             $row = $form->addRow();
                 $row->addLabel('category', __('Category'));
-                $row->addSelect('category')->fromString($categories)->placeholder()->isRequired();
+                $row->addSelect('category')->fromString($categories)->placeholder()->required();
 
             $form->addRow()->addHeading(__('Current Staff'));
 
@@ -112,8 +111,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
 
                 while ($staff = $results->fetch()) {
                     $row = $table->addRow();
-                    $row->addContent(formatName('', $staff['preferredName'], $staff['surname'], 'Staff', true, true));
-                    $row->addContent($staff['access']);
+                    $row->addContent(Format::name('', $staff['preferredName'], $staff['surname'], 'Staff', true, true));
+                    $row->addContent(__($staff['access']));
                     $row->addContent("<a onclick='return confirm(\"".__('Are you sure you wish to delete this record?')."\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/budgets_manage_edit_staff_deleteProcess.php?address='.$_GET['q'].'&gibbonFinanceBudgetPersonID='.$staff['gibbonFinanceBudgetPersonID']."&gibbonFinanceBudgetID=$gibbonFinanceBudgetID'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>");
                 }
             }
@@ -130,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
                 "Read" => __("Read")
             );
             $row = $form->addRow();
-                $row->addLabel('access', 'Access');
+                $row->addLabel('access', __('Access'));
                 $row->addSelect('access')->fromArray($access);
 
             $form->loadAllValuesFrom($values);

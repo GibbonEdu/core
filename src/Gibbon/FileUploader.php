@@ -21,6 +21,7 @@ namespace Gibbon;
 
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Session;
+use ZipArchive;
 
 /**
  * File Upload Class
@@ -183,6 +184,128 @@ class FileUploader
         }
 
         return $this->upload($filename, $sourcePath);
+    }
+
+    /**
+     * Convenience function for handling file uploads from ZIP archives.
+     *
+     * @param string $file
+     * @param string $destinationFolder
+     * @param array $allowedExtensions
+     * @return array  Returns an array of info about uploaded files
+     */
+    public function uploadFromZIP($path, $destinationFolder = '', $allowedExtensions = [])
+    {
+        // Check for empty data
+        if (empty($path) || !is_file($path)) {
+            return false;
+        }
+
+        // Generate a default folder based on date if one isn't provided
+        if (empty($destinationFolder)) {
+            $destinationFolder = $this->getUploadsFolderByDate();
+        }
+
+        $destinationFolder = trim($destinationFolder, '/');
+        $absolutePath = $this->session->get('absolutePath');
+
+        // Create the destination folder if it doesn't exit
+        if (is_dir($absolutePath.'/'.$destinationFolder) == false) {
+            $folderCreated = mkdir($absolutePath.'/'.$destinationFolder, 0755, true);
+            if (!$folderCreated) {
+                $this->errorCode = UPLOAD_ERR_CANT_WRITE;
+                return false;
+            }
+        }
+
+        $zip = new ZipArchive();
+        $files = [];
+
+        if ($zip->open($path) === true) {
+
+            for ($i = 0; $i < $zip->numFiles; ++$i) {
+                if (substr($zip->getNameIndex($i), 0, 8) == '__MACOSX') {
+                    continue;
+                }
+                
+                $filename = $zip->getNameIndex($i);
+                $extension = mb_substr(mb_strrchr(strtolower($filename), '.'), 1);
+
+                // Filter allowed files by extension
+                if (!empty($allowedExtensions) && !in_array($extension, $allowedExtensions)) {
+                    continue;
+                }
+
+                $destinationName = $this->getRandomizedFilename($filename, $absolutePath.'/'.$destinationFolder);
+
+                if (@copy('zip://'.$path.'#'.$filename, $absolutePath.'/'.$destinationFolder.'/'.$destinationName)) {
+                    $files[] = [
+                        'filename' => $destinationName,
+                        'extension' => $extension,
+                        'originalName' => $filename,
+                        'relativePath' => $destinationFolder.'/'.$destinationName,
+                        'absolutePath' => $absolutePath.'/'.$destinationFolder.'/'.$destinationName,
+                    ];
+                }
+            }
+        }
+
+        return $files;
+    }
+
+    /**
+     * Resize images on upload.
+     *
+     * @param array $file
+     * @param string $filenameChange
+     * @param int $maxSize
+     * @param int $quality
+     * @return string
+     */
+    public function uploadAndResizeImage($file, $filenameChange = '', $maxSize = 1024, $quality = 80)
+    {
+        // Check for empty data
+        if (empty($file['tmp_name'])) {
+            return false;
+        }
+
+        $this->resizeImage($file['tmp_name'], $file['tmp_name'], $maxSize);
+
+        return $this->uploadFromPost($file, $filenameChange);
+    }
+
+    /**
+     * Resize an image from the sourcePath, placing the new image in the destPath.
+     *
+     * @param string $sourcePath
+     * @param string $destPath
+     * @param int $maxSize
+     * @param int $quality
+     * @return string
+     */
+    public function resizeImage($sourcePath, $destPath, $maxSize = 1024, $quality = 80)
+    {
+        $extension = mb_substr(mb_strrchr(strtolower($sourcePath), '.'), 1);
+        $size = getimagesize($sourcePath);
+        $ratio = $size[0]/$size[1]; // width/height
+        $width = $ratio > 1 ? $maxSize : $maxSize*$ratio;
+        $height = $ratio > 1 ? $maxSize/$ratio : $maxSize;
+
+        if ($src = imagecreatefromstring(file_get_contents($sourcePath))) {
+            $dst = imagecreatetruecolor($width, $height);
+            imagecopyresampled($dst, $src, 0, 0, 0, 0, $width, $height, $size[0], $size[1]);
+
+            if ($extension == 'png') {
+                imagepng($dst, $destPath);
+            } else {
+                imagejpeg($dst, $destPath, $quality);
+            }
+
+            if ($src) imagedestroy($src);
+            if ($dst) imagedestroy($dst);
+        }
+
+        return $destPath;
     }
 
     /**

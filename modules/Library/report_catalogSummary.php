@@ -19,13 +19,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
+use Gibbon\Domain\Library\LibraryReportGateway;
+use Gibbon\Tables\Prefab\ReportTable;
 
 $_SESSION[$guid]['report_student_emergencySummary.php_choices'] = '';
 
-//Module includes
+// Module includes
 require_once __DIR__ . '/moduleFunctions.php';
-
-$page->breadcrumbs->add(__('Catalog Summary'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSummary.php') == false) {
     //Acess denied
@@ -33,242 +34,109 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    //Proceed!
-    echo '<h3>';
-    echo __('Search & Filter');
-    echo '</h3>';
+    // Proceed!
+    $viewMode = $_REQUEST['format'] ?? '';
+    $ownershipType = $_REQUEST['ownershipType'] ?? '';
+    $gibbonLibraryTypeID = $_REQUEST['gibbonLibraryTypeID'] ?? '';
+    $gibbonSpaceID = $_REQUEST['gibbonSpaceID'] ?? '';
+    $status = $_REQUEST['status'] ?? '';
 
-    //Get current filter values
-    $ownershipType = null;
-    if (isset($_POST['ownershipType'])) {
-        $ownershipType = trim($_POST['ownershipType']);
+    if (empty($viewMode)) {
+        $page->breadcrumbs->add(__('Catalog Summary'));
+
+        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form->setTitle(__('Search & Filter'));
+
+        $form->setFactory(DatabaseFormFactory::create($pdo));
+        $form->setClass('noIntBorder fullWidth');
+
+        $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_catalogSummary.php");
+
+        $row = $form->addRow();
+            $row->addLabel('ownershipType', __('Ownership Type'));
+            $row->addSelect('ownershipType')->fromArray(array('School' => __('School'), 'Individual' => __('Individual')))->selected($ownershipType)->placeholder();
+
+        $sql = "SELECT gibbonLibraryTypeID as value, name FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
+        $row = $form->addRow();
+            $row->addLabel('gibbonLibraryTypeID', __('Item Type'));
+            $row->addSelect('gibbonLibraryTypeID')->fromQuery($pdo, $sql, array())->selected($gibbonLibraryTypeID)->placeholder();
+
+        $sql = "SELECT gibbonSpaceID as value, name FROM gibbonSpace ORDER BY name";
+        $row = $form->addRow();
+            $row->addLabel('gibbonSpaceID', __('Location'));
+            $row->addSelect('gibbonSpaceID')->fromQuery($pdo, $sql, array())->selected($gibbonSpaceID)->placeholder();
+
+        $options = array("Available" => __("Available"), "Decommissioned" => __("Decommissioned"), "In Use" => __("In Use"), "Lost" => __("Lost"), "On Loan" => __("On Loan"), "Repair" => __("Repair"), "Reserved" => __("Reserved"));
+        $row = $form->addRow();
+            $row->addLabel('status', __('Status'));
+            $row->addSelect('status')->fromArray($options)->selected($status)->placeholder();
+
+        $row = $form->addRow();
+            $row->addFooter(false);
+            $row->addSearchSubmit($gibbon->session);
+
+        echo $form->getOutput();
     }
-    if ($ownershipType == '') {
-        if (isset($_GET['ownershipType'])) {
-            $ownershipType = trim($_GET['ownershipType']);
-        }
-    }
-    $gibbonLibraryTypeID = null;
-    if (isset($_POST['gibbonLibraryTypeID'])) {
-        $gibbonLibraryTypeID = trim($_POST['gibbonLibraryTypeID']);
-    }
-    if ($gibbonLibraryTypeID == '') {
-        if (isset($_GET['gibbonLibraryTypeID'])) {
-            $gibbonLibraryTypeID = trim($_GET['gibbonLibraryTypeID']);
-        }
-    }
-    $gibbonSpaceID = null;
-    if (isset($_POST['gibbonSpaceID'])) {
-        $gibbonSpaceID = trim($_POST['gibbonSpaceID']);
-    }
-    if ($gibbonSpaceID == '') {
-        if (isset($_GET['gibbonSpaceID'])) {
-            $gibbonSpaceID = trim($_GET['gibbonSpaceID']);
-        }
-    }
-    $status = null;
-    if (isset($_POST['status'])) {
-        $status = trim($_POST['status']);
-    }
-    if ($status == '') {
-        if (isset($_GET['status'])) {
-            $status = trim($_GET['status']);
-        }
-    }
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+    $reportGateway = $container->get(LibraryReportGateway::class);
+    $criteria = $reportGateway->newQueryCriteria()
+        ->filterBy('id', $gibbonLibraryTypeID)
+        ->filterBy('ownershipType', $ownershipType)
+        ->filterBy('space', $gibbonSpaceID)
+        ->filterBy('status', $status)
+        ->fromPOST();
 
-    $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
+    $catalog = $reportGateway->queryCatalogSummary($criteria);
 
-    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_catalogSummary.php");
+    // DATA TABLE
+    $table = ReportTable::createPaginated('catalogSummary', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table->setTitle(__('Catalog Summary'));
 
-    $row = $form->addRow();
-        $row->addLabel('ownershipType', __('Ownership Type'));
-        $row->addSelect('ownershipType')->fromArray(array('School' => __('School'), 'Individual' => __('Individual')))->selected($ownershipType)->placeholder();
+    $table->addColumn('id', __('School ID'))->description(__('Type'))
+        ->format(function ($item) {
+            return '<b>'.$item['id'].'</b><br/>'.Format::small(__($item['type']));
+        });
 
-    $sql = "SELECT gibbonLibraryTypeID as value, name FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
-    $row = $form->addRow();
-        $row->addLabel('gibbonLibraryTypeID', __('Item Type'));
-        $row->addSelect('gibbonLibraryTypeID')->fromQuery($pdo, $sql, array())->selected($gibbonLibraryTypeID)->placeholder();
+    $table->addColumn('name', __('Name'))->description(__('Producer'))
+        ->format(function ($item) {
+            return '<b>'.$item['name'].'</b><br/>'.Format::small($item['producer']);
+        });
 
-    $sql = "SELECT gibbonSpaceID as value, name FROM gibbonSpace ORDER BY name";
-    $row = $form->addRow();
-        $row->addLabel('gibbonSpaceID', __('Location'));
-        $row->addSelect('gibbonSpaceID')->fromQuery($pdo, $sql, array())->selected($gibbonSpaceID)->placeholder();
+    $table->addColumn('space', __('Location'))
+        ->sortable(['space', 'locationDetail'])
+        ->width('15%')
+        ->format(function ($item) {
+            return $item['space'].'<br/>'.Format::small($item['locationDetail']);
+        });
 
-    $options = array("Available" => "Available", "Decommissioned" => "Decommissioned", "In Use" => "In Use", "Lost" => "Lost", "On Loan" => "On Loan", "Repair" => "Repair", "Reserved" => "Reserved");
-    $row = $form->addRow();
-        $row->addLabel('status', __('Status'));
-        $row->addSelect('status')->fromArray($options)->selected($status)->placeholder();
+    $table->addColumn('ownership', __('Ownership'))->description(__('User/Owner'))
+        ->sortable(['ownershipType', 'surname'])
+        ->format(function ($item) use ($gibbon) {
+            $output = '';
+            if ($item['ownershipType'] == 'School') {
+                $output = $gibbon->session->get('organisationNameShort');
+            } elseif ($item['ownershipType'] == 'Individual') {
+                $output = __('Individual');
+            }
 
-    $row = $form->addRow();
-        $row->addFooter(false);
-        $row->addSearchSubmit($gibbon->session);
+            if (!empty($item['gibbonPersonIDOwnership'])) {
+                $output .= '<br/>'.Format::small(Format::name($item['title'], $item['preferredName'], $item['surname'], 'Staff', false, true));
+            }
+            return $output;
+        });
 
-    echo $form->getOutput();
+    $table->addColumn('status', __('Status'))->description(__('Borrowable'))
+        ->format(function ($item) {
+            return __($item['status']).'<br/>'.Format::small(Format::yesNo($item['borrowable']));
+        });
 
-	echo '<h3>';
-	echo __('Report Data');
-	echo '</h3>';
+    $table->addColumn('purchaseDate', __('Purchase Date'))->description(__('Vendor'))
+        ->format(function ($item) {
+            $output = !empty($item['purchaseDate']) 
+                ? Format::date($item['purchaseDate']) 
+                : Format::small(__('Unknown'));
+            return $output.'<br/>'.Format::small($item['vendor']);
+        });
 
-	echo "<div class='linkTop'>";
-	echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/report_catalogSummaryExport.php?address='.$_GET['q']."&ownershipType=$ownershipType&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status'><img title='".__('Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
-	echo '</div>';
-
-	//Search with filters applied
-	try {
-		$data = array();
-		$sqlWhere = 'WHERE ';
-		if ($ownershipType != '') {
-			$data['ownershipType'] = $ownershipType;
-			$sqlWhere .= 'ownershipType=:ownershipType AND ';
-		}
-		if ($gibbonLibraryTypeID != '') {
-			$data['gibbonLibraryTypeID'] = $gibbonLibraryTypeID;
-			$sqlWhere .= 'gibbonLibraryTypeID=:gibbonLibraryTypeID AND ';
-		}
-		if ($gibbonSpaceID != '') {
-			$data['gibbonSpaceID'] = $gibbonSpaceID;
-			$sqlWhere .= 'gibbonSpaceID=:gibbonSpaceID AND ';
-		}
-		if ($status != '') {
-			$data['status'] = $status;
-			$sqlWhere .= 'status=:status AND ';
-		}
-		if ($sqlWhere == 'WHERE ') {
-			$sqlWhere = '';
-		} else {
-			$sqlWhere = substr($sqlWhere, 0, -5);
-		}
-		$sql = "SELECT * FROM gibbonLibraryItem $sqlWhere ORDER BY id";
-		$result = $connection2->prepare($sql);
-		$result->execute($data);
-	} catch (PDOException $e) {
-		echo "<div class='error'>".$e->getMessage().'</div>';
-	}
-
-	if ($result->rowCount() < 1) {
-		echo "<div class='error'>";
-		echo __('There are no records to display.');
-		echo '</div>';
-	} else {
-		echo "<table cellspacing='0' style='width: 100%'>";
-		echo "<tr class='head'>";
-		echo '<th>';
-		echo __('School ID').'<br/>';
-		echo "<span style='font-style: italic; font-size: 85%'>".__('Type').'</span>';
-		echo '</th>';
-		echo '<th>';
-		echo __('Name').'<br/>';
-		echo "<span style='font-size: 85%; font-style: italic'>".__('Producer').'</span>';
-		echo '</th>';
-		echo '<th>';
-		echo __('Location');
-		echo '</th>';
-		echo '<th>';
-		echo __('Ownership').'<br/>';
-		echo "<span style='font-size: 85%; font-style: italic'>".__('User/Owner').'</span>';
-		echo '</th>';
-		echo '<th>';
-		echo __('Status').'<br/>';
-		echo "<span style='font-size: 85%; font-style: italic'>".__('Borrowable').'</span>';
-		echo '</th>';
-		echo '<th>';
-		echo __('Purchase Date').'<br/>';
-		echo "<span style='font-size: 85%; font-style: italic'>".__('Vendor').'</span>';
-		echo '</th>';
-		echo '</tr>';
-
-		$count = 0;
-		$rowNum = 'odd';
-		while ($row = $result->fetch()) {
-			if ($count % 2 == 0) {
-				$rowNum = 'even';
-			} else {
-				$rowNum = 'odd';
-			}
-
-			//COLOR ROW BY STATUS!
-			echo "<tr class=$rowNum>";
-			echo '<td>';
-			echo '<b>'.$row['id'].'</b><br/>';
-			echo "<span style='font-style: italic; font-size: 85%'>";
-			try {
-				$dataType = array('gibbonLibraryTypeID' => $row['gibbonLibraryTypeID']);
-				$sqlType = 'SELECT name FROM gibbonLibraryType WHERE gibbonLibraryTypeID=:gibbonLibraryTypeID';
-				$resultType = $connection2->prepare($sqlType);
-				$resultType->execute($dataType);
-			} catch (PDOException $e) {
-				echo "<div class='error'>".$e->getMessage().'</div>';
-			}
-			if ($resultType->rowCount() == 1) {
-				$rowType = $resultType->fetch();
-				echo __($rowType['name']).'<br/>';
-			}
-			echo '</span>';
-			echo '</td>';
-			echo '<td>';
-			echo '<b>'.$row['name'].'</b><br/>';
-			echo "<span style='font-size: 85%; font-style: italic'>".$row['producer'].'</span>';
-			echo '</td>';
-			echo '<td>';
-			if ($row['gibbonSpaceID'] != '') {
-				try {
-					$dataSpace = array('gibbonSpaceID' => $row['gibbonSpaceID']);
-					$sqlSpace = 'SELECT * FROM gibbonSpace WHERE gibbonSpaceID=:gibbonSpaceID';
-					$resultSpace = $connection2->prepare($sqlSpace);
-					$resultSpace->execute($dataSpace);
-				} catch (PDOException $e) {
-					echo "<div class='error'>".$e->getMessage().'</div>';
-				}
-				if ($resultSpace->rowCount() == 1) {
-					$rowSpace = $resultSpace->fetch();
-					echo $rowSpace['name'].'<br/>';
-				}
-			}
-			if ($row['locationDetail'] != '') {
-				echo "<span style='font-size: 85%; font-style: italic'>".$row['locationDetail'].'</span>';
-			}
-			echo '</td>';
-			echo '<td>';
-			if ($row['ownershipType'] == 'School') {
-				echo $_SESSION[$guid]['organisationNameShort'].'<br/>';
-			} elseif ($row['ownershipType'] == 'Individual') {
-				echo 'Individual<br/>';
-			}
-			if ($row['gibbonPersonIDOwnership'] != '') {
-				try {
-					$dataPerson = array('gibbonPersonID' => $row['gibbonPersonIDOwnership']);
-					$sqlPerson = 'SELECT title, preferredName, surname FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-					$resultPerson = $connection2->prepare($sqlPerson);
-					$resultPerson->execute($dataPerson);
-				} catch (PDOException $e) {
-					echo "<div class='error'>".$e->getMessage().'</div>';
-				}
-				if ($resultPerson->rowCount() == 1) {
-					$rowPerson = $resultPerson->fetch();
-					echo "<span style='font-size: 85%; font-style: italic'>".formatName($rowPerson['title'], $rowPerson['preferredName'], $rowPerson['surname'], 'Staff', false, true).'</span>';
-				}
-			}
-			echo '</td>';
-			echo '<td>';
-			echo $row['status'].'<br/>';
-			echo "<span style='font-size: 85%; font-style: italic'>".$row['borrowable'].'</span>';
-			echo '</td>';
-			echo '<td>';
-			if ($row['purchaseDate'] == '') {
-				echo '<i>'.__('Unknown').'</i><br/>';
-			} else {
-				echo dateConvertBack($guid, $row['purchaseDate']).'<br/>';
-			}
-			echo "<span style='font-size: 85%; font-style: italic'>".$row['vendor'].'</span>';
-			echo '</td>';
-            echo '</tr>';
-
-            ++$count;
-        }
-        echo '</table>';
-    }
+    echo $table->render($catalog);
 }
-?>

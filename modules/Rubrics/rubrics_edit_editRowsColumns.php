@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 
                     $row = $form->addRow();
                         $row->addLabel('scope', 'Scope');
-                        $row->addTextField('scope')->isRequired()->readOnly();
+                        $row->addTextField('scope')->required()->readOnly();
 
                     if ($values['scope'] == 'Learning Area') {
                         $sql = "SELECT name FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID";
@@ -108,12 +108,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                         $form->addHiddenValue('gibbonDepartmentID', $values['gibbonDepartmentID']);
                         $row = $form->addRow();
                             $row->addLabel('departmentName', __('Learning Area'));
-                            $row->addTextField('departmentName')->isRequired()->readOnly()->setValue($learningArea);
+                            $row->addTextField('departmentName')->required()->readOnly()->setValue($learningArea);
 					}
 
 					$row = $form->addRow();
                         $row->addLabel('name', __('Name'));
-						$row->addTextField('name')->maxLength(50)->isRequired()->readOnly();
+						$row->addTextField('name')->maxLength(50)->required()->readOnly();
 						
 					$form->addRow()->addHeading(__('Rows'));
 
@@ -151,19 +151,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 
 							$row = $form->addRow();
 								$row->addLabel('rowName'.$count, sprintf(__('Row %1$s Title'), ($count + 1)) );
-								$column = $row->addColumn()->addClass('right');
+								$column = $row->addColumn()->addClass('flex-col');
 								$column->addRadio('type'.$count)->fromArray($typeOptions)->inline()->checked($type);
 								$column->addTextField('rowTitle['.$count.']')
 									->setID('rowTitle'.$count)
 									->addClass('rowTitle'.$count)
 									->maxLength(40)
-									->isRequired()
+									->required()
 									->setValue($rubricRow['title']);
 								$column->addSelect('gibbonOutcomeID['.$count.']')
 									->setID('gibbonOutcomeID'.$count)
 									->addClass('gibbonOutcomeID'.$count)
 									->fromArray($outcomes)
-									->isRequired()
+									->required()
 									->placeholder()
 									->selected($rubricRow['gibbonOutcomeID']);
 
@@ -178,7 +178,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                     $row = $form->addRow();
                         $row->addHeading(__('Columns'));
                         $row->addContent(__('Visualise?'))->setClass('textCenter')->wrap('<strong>', '</strong>');
-                        $row->addContent();
+                        $row->addContent('')->setClass('w-64');
 
 					$data = array('gibbonRubricID' => $gibbonRubricID);
 					$sql = "SELECT gibbonRubricColumnID, title, gibbonScaleGradeID, visualise FROM gibbonRubricColumn WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber";
@@ -194,6 +194,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                             
                             $row->addCheckbox('columnVisualise['.$count.']')
                                 ->setValue('Y')
+                                ->alignCenter()
                                 ->checked($rubricColumn['visualise'])
                                 ->setClass('textCenter');
 
@@ -201,8 +202,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 							if ($values['gibbonScaleID'] == '') {
 								$row->addTextField('columnTitle['.$count.']')
 									->setID('columnTitle'.$count)
-									->maxLength(20)
-									->isRequired()
+                                    ->maxLength(20)
+									->required()
+                                    ->setClass('w-64')
 									->setValue($rubricColumn['title']);
 							} else {
 								$data = array('gibbonScaleID' => $values['gibbonScaleID']);
@@ -210,7 +212,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 								$row->addSelect('gibbonScaleGradeID['.$count.']')
 									->setID('gibbonScaleGradeID'.$count)
 									->fromQuery($pdo, $sql, $data)
-									->isRequired()
+                                    ->required()
+                                    ->setClass('w-64')
 									->selected($rubricColumn['gibbonScaleGradeID']);
 							}
 							$form->addHiddenValue('gibbonRubricColumnID['.$count.']', $rubricColumn['gibbonRubricColumnID']);

@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
@@ -39,6 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 
     $today = date('Y-m-d');
 
+    $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
     $dateEnd = (isset($_REQUEST['dateEnd']))? dateConvert($guid, $_REQUEST['dateEnd']) : date('Y-m-d');
     $dateStart = (isset($_REQUEST['dateStart']))? dateConvert($guid, $_REQUEST['dateStart']) : date('Y-m-d', strtotime( $dateEnd.' -1 month') );
 
@@ -76,11 +78,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 
     $row = $form->addRow();
         $row->addLabel('dateStart', __('Start Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-        $row->addDate('dateStart')->setValue(dateConvertBack($guid, $dateStart))->isRequired();
+        $row->addDate('dateStart')->setValue(dateConvertBack($guid, $dateStart))->required();
 
     $row = $form->addRow();
         $row->addLabel('dateEnd', __('End Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-        $row->addDate('dateEnd')->setValue(dateConvertBack($guid, $dateEnd))->isRequired();
+        $row->addDate('dateEnd')->setValue(dateConvertBack($guid, $dateEnd))->required();
 
     $options = array("all" => __('All Students'));
     if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
@@ -91,27 +93,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
     }
     $row = $form->addRow();
         $row->addLabel('group', __('Group By'));
-        $row->addSelect('group')->fromArray($options)->selected($group)->isRequired();
+        $row->addSelect('group')->fromArray($options)->selected($group)->required();
 
     $form->toggleVisibilityByClass('class')->onSelect('group')->when('class');
     $row = $form->addRow()->addClass('class');
         $row->addLabel('gibbonCourseClassID', __('Class'));
-        $row->addSelectClass('gibbonCourseClassID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonCourseClassID)->placeholder()->isRequired();
+        $row->addSelectClass('gibbonCourseClassID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonCourseClassID)->placeholder()->required();
 
     $form->toggleVisibilityByClass('rollGroup')->onSelect('group')->when('rollGroup');
     $row = $form->addRow()->addClass('rollGroup');
         $row->addLabel('gibbonRollGroupID', __('Roll Group'));
-        $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->placeholder()->isRequired();
+        $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->placeholder()->required();
 
     $row = $form->addRow();
         $row->addLabel('sort', __('Sort By'));
-        $row->addSelect('sort')->fromArray(array('surname' => __('Surname'), 'preferredName' => __('Preferred Name'), 'rollGroup' => __('Roll Group')))->selected($sort)->isRequired();
+        $row->addSelect('sort')->fromArray(array('surname' => __('Surname'), 'preferredName' => __('Preferred Name'), 'rollGroup' => __('Roll Group')))->selected($sort)->required();
 
     $row = $form->addRow();
         $row->addFooter();
         $row->addSearchSubmit($gibbon->session);
 
     echo $form->getOutput();
+
+    // Stop outputting if the form hasn't been submitted yet
+    if (empty($group) || empty($sort)) {
+        return;
+    }
 
     // Get attendance codes
     try {
@@ -143,7 +150,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
             echo '</div>';
     } else {
         echo '<h2>';
-        echo __('Report Data').': '. date('M j', strtotime($dateStart) ) .' - '. date('M j, Y', strtotime($dateEnd) );
+        echo __('Report Data').': '. Format::dateRangeReadable($dateStart, $dateEnd);        
         echo '</h2>';
 
         try {
@@ -219,6 +226,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                 $sql .= ' AND gibbonAttendanceCode.gibbonAttendanceCodeID=:gibbonAttendanceCodeID';
             }
 
+            if ($countClassAsSchool == 'N' && $group != 'class') {
+                $sql .= " AND NOT context='Class'";
+            }
+
             $sql .= ' '. $groupBy . ' '. $orderBy;
 
             $result = $connection2->prepare($sql);
@@ -269,7 +280,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                 $href= $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_summary_byDate.php&dateStart='.dateConvertBack($guid, $dateStart).'&dateEnd='.dateConvertBack($guid, $dateEnd).'&gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonRollGroupID='.$gibbonRollGroupID.'&group=' . $group . '&sort=' . $sort;
 
                 for( $i = 0; $i < count($attendanceCodes['In']); $i++ ) {
-                    echo '<th class="'.( $i == 0? 'verticalHeader columnDivider' : 'verticalHeader').'" title="'.$attendanceCodes['In'][$i]['scope'].'">';
+                    echo '<th class="'.( $i == 0? 'verticalHeader columnDivider' : 'verticalHeader').'" title="'.__($attendanceCodes['In'][$i]['scope']).'">';
                         echo '<a class="verticalText" href="'.$href.'&gibbonAttendanceCodeID='.$attendanceCodes['In'][$i]['gibbonAttendanceCodeID'].'">';
                         echo __($attendanceCodes['In'][$i]['name']);
                         echo '</a>';
@@ -277,7 +288,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                 }
 
                 for( $i = 0; $i < count($attendanceCodes['Out']); $i++ ) {
-                    echo '<th class="'.( $i == 0? 'verticalHeader columnDivider' : 'verticalHeader').'" title="'.$attendanceCodes['Out'][$i]['scope'].'">';
+                    echo '<th class="'.( $i == 0? 'verticalHeader columnDivider' : 'verticalHeader').'" title="'.__($attendanceCodes['Out'][$i]['scope']).'">';
                         echo '<a class="verticalText" href="'.$href.'&gibbonAttendanceCodeID='.$attendanceCodes['Out'][$i]['gibbonAttendanceCodeID'].'">';
                         echo __($attendanceCodes['Out'][$i]['name']);
                         echo '</a>';
@@ -305,7 +316,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                 echo '</td>';
                 echo '<td>';
                     echo '<a href="index.php?q=/modules/Attendance/report_studentHistory.php&gibbonPersonID='.$row['gibbonPersonID'].'" target="_blank">';
-                    echo formatName('', $row['preferredName'], $row['surname'], 'Student', ($sort != 'preferredName') );
+                    echo Format::name('', $row['preferredName'], $row['surname'], 'Student', ($sort != 'preferredName') );
                     echo '</a>';
                 echo '</td>';
 

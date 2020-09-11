@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Domain\User\RoleGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_edit.php') == false) {
     //Acess denied
@@ -60,34 +61,44 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_e
 
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/jobOpenings_manage_editProcess.php?gibbonStaffJobOpeningID=$gibbonStaffJobOpeningID");
 
-            $form->setClass('smallIntBorder fullWidth');
-
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
             $types = array(__('Basic') => array ('Teaching' => __('Teaching'), 'Support' => __('Support')));
-            $sql = "SELECT gibbonRoleID as value, name FROM gibbonRole WHERE category='Staff' ORDER BY name";
-            $result = $pdo->executeQuery(array(), $sql);
-            $types[__('System Roles')] = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
+            
+            $roleGateway = $container->get(RoleGateway::class);
+            // CRITERIA
+            $criteriaCategory = $roleGateway->newQueryCriteria()
+                ->sortBy(['gibbonRole.name'])
+                ->filterBy('category:Staff')
+                ->fromPOST();
+                
+            $rolesCategoriesStaff = $roleGateway->queryRoles($criteriaCategory);
+                
+            $typesCategories = array();
+            foreach($rolesCategoriesStaff as $roleCategoriesStaff) {
+                $typesCategories[$roleCategoriesStaff['name']] = __($roleCategoriesStaff['name']);
+            }
+            $types[__('System Roles')] = $typesCategories;
             $row = $form->addRow();
                 $row->addLabel('type', __('Type'));
-                $row->addSelect('type')->fromArray($types)->placeholder()->isRequired();
+                $row->addSelect('type')->fromArray($types)->placeholder()->required();
 
             $row = $form->addRow();
                 $row->addLabel('jobTitle', __('Job Title'));
-                $row->addTextField('jobTitle')->maxlength(100)->isRequired();
+                $row->addTextField('jobTitle')->maxlength(100)->required();
 
             $row = $form->addRow();
                 $row->addLabel('dateOpen', __('Opening Date'));
-                $row->addDate('dateOpen')->isRequired();
+                $row->addDate('dateOpen')->required();
 
             $row = $form->addRow();
                 $row->addLabel('active', __('Active'));
-                $row->addYesNo('active')->isRequired();
+                $row->addYesNo('active')->required();
 
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('description', __('Description'));
-                $column->addEditor('description', $guid)->setRows(20)->showMedia()->isRequired();
+                $column->addEditor('description', $guid)->setRows(20)->showMedia()->required();
 
             $form->loadAllValuesFrom($values);
 

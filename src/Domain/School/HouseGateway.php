@@ -32,6 +32,7 @@ class HouseGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonHouse';
+    private static $primaryKey = 'gibbonHouseID';
 
     private static $searchableColumns = ['name', 'nameShort'];
     

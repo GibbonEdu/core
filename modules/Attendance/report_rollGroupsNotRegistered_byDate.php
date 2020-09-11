@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -77,11 +78,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
 
     $row = $form->addRow();
         $row->addLabel('dateStart', __('Start Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-        $row->addDate('dateStart')->setValue(dateConvertBack($guid, $dateStart))->isRequired();
+        $row->addDate('dateStart')->setValue(dateConvertBack($guid, $dateStart))->required();
 
     $row = $form->addRow();
         $row->addLabel('dateEnd', __('End Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-        $row->addDate('dateEnd')->setValue(dateConvertBack($guid, $dateEnd))->isRequired();
+        $row->addDate('dateEnd')->setValue(dateConvertBack($guid, $dateEnd))->required();
 
     $row = $form->addRow();
         $row->addFooter();
@@ -156,9 +157,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
 
             $count = 0;
 
-			$timestampStart = dateConvertToTimestamp($dateStart);
-            $timestampEnd = dateConvertToTimestamp($dateEnd);
-
             foreach ($rollGroups as $row) {
 
                 //Output row only if not registered on specified date
@@ -171,7 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
                     echo $row['name'];
                     echo '</td>';
                     echo '<td>';
-                    echo date('M j', $timestampStart).' - '. date('M j, Y', $timestampEnd);
+                    echo Format::dateRangeReadable($dateStart, $dateEnd);
                     echo '</td>';
                     echo '<td style="padding: 0;">';
 
@@ -186,9 +184,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
                                 echo '<i>'.__('NA').'</i>';
                                 echo '</td>';
                             } else {
-
-                                $currentDayTimestamp = dateConvertToTimestamp($lastNSchoolDays[$i]);
-
                                 if (isset($log[$row['gibbonRollGroupID']][$lastNSchoolDays[$i]]) == false) {
                                     //$class = 'highlightNoData';
                                     $class = 'highlightAbsent';
@@ -200,12 +195,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
                                 echo "<td class='$class' style='padding: 12px !important;'>";
                                 if ($link != '') {
                                     echo "<a href='$link'>";
-                                    echo date('d', $currentDayTimestamp).'<br/>';
-                                    echo "<span>".date('M', $currentDayTimestamp).'</span>';
+                                    echo Format::dateReadable($lastNSchoolDays[$i], '%d').'<br/>';
+                                    echo "<span>".Format::dateReadable($lastNSchoolDays[$i], '%b').'</span>';
                                     echo '</a>';
                                 } else {
-                                    echo date('d', $currentDayTimestamp).'<br/>';
-                                    echo "<span>".date('M', $currentDayTimestamp).'</span>';
+                                    echo Format::dateReadable($lastNSchoolDays[$i], '%d').'<br/>';
+                                    echo "<span>".Format::dateReadable($lastNSchoolDays[$i], '%b').'</span>';
                                 }
                                 echo '</td>';
                             }
@@ -236,7 +231,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
                         }
 
                         while ($rowTutor = $resultTutor->fetch()) {
-                            echo formatName('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', true, true).'<br/>';
+                            echo Format::name('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', true, true).'<br/>';
                         }
                     }
                     echo '</td>';

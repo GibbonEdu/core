@@ -21,6 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\DataUpdater\MedicalUpdateGateway;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -64,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
         }
 
         echo '<h2>';
-        echo 'Choose User';
+        echo __('Choose User');
         echo '</h2>';
 
         $gibbonPersonID = null;
@@ -96,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 		$resultSet = ($result && $result->rowCount() > 0)? $result->fetchAll() : array();
 		$people = array_reduce($resultSet, function($carry, $person) use ($highestAction) {
 			$value = $person['gibbonPersonID'];
-			$carry[$value] = formatName('', htmlPrep($person['preferredName']), htmlPrep($person['surname']), 'Student', true);
+			$carry[$value] = Format::name('', htmlPrep($person['preferredName']), htmlPrep($person['surname']), 'Student', true);
 			if ($highestAction == 'Update Medical Data_any') {
 				$carry[$value] .= ' ('.$person['username'].')';
 			}
@@ -107,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 			$row->addLabel('gibbonPersonID', __('Person'));
 			$row->addSelect('gibbonPersonID')
                 ->fromArray($people)
-                ->isRequired()
+                ->required()
                 ->selected($gibbonPersonID)
 				->placeholder();
 
@@ -266,11 +267,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 								$sql = "SELECT name AS value, name FROM gibbonMedicalCondition ORDER BY name";
 								$row = $form->addRow();
 									$row->addLabel('name'.$count, __('Condition Name'));
-									$row->addSelect('name'.$count)->fromQuery($pdo, $sql)->isRequired()->placeholder()->selected($rowCond['name']);
+									$row->addSelect('name'.$count)->fromQuery($pdo, $sql)->required()->placeholder()->selected($rowCond['name']);
 
 								$row = $form->addRow();
 									$row->addLabel('gibbonAlertLevelID'.$count, __('Risk'));
-									$row->addSelectAlert('gibbonAlertLevelID'.$count)->isRequired()->selected($rowCond['gibbonAlertLevelID']);
+									$row->addSelectAlert('gibbonAlertLevelID'.$count)->required()->selected($rowCond['gibbonAlertLevelID']);
 
 								$row = $form->addRow();
 									$row->addLabel('triggers'.$count, __('Triggers'));
@@ -317,11 +318,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 						$sql = "SELECT name AS value, name FROM gibbonMedicalCondition ORDER BY name";
 						$row = $form->addRow()->addClass('addConditionRow');
 							$row->addLabel('name', __('Condition Name'));
-							$row->addSelect('name')->fromQuery($pdo, $sql)->isRequired()->placeholder();
+							$row->addSelect('name')->fromQuery($pdo, $sql)->required()->placeholder();
 
 						$row = $form->addRow()->addClass('addConditionRow');
 							$row->addLabel('gibbonAlertLevelID', __('Risk'));
-							$row->addSelectAlert('gibbonAlertLevelID')->isRequired();
+							$row->addSelectAlert('gibbonAlertLevelID')->required();
 
 						$row = $form->addRow()->addClass('addConditionRow');
 							$row->addLabel('triggers', __('Triggers'));

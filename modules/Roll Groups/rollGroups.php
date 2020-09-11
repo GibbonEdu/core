@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\RollGroups\RollGroupGateway;
+use Gibbon\Domain\School\YearGroupGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php') == false) {
     //Acess denied
@@ -30,13 +31,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php
     //Proceed!
     $page->breadcrumbs->add(__('View Roll Groups'));
 
-    echo '<p>';
-    echo __('This page shows all roll groups in the current school year.');
-    echo '</p>';
-
     $gateway = $container->get(RollGroupGateway::class);
     $rollGroups = $gateway->selectRollGroupsBySchoolYear($_SESSION[$guid]['gibbonSchoolYearID']);
-    
+
     $formatTutorsList = function($row) use ($gateway) {
         $tutors = $gateway->selectTutorsByRollGroup($row['gibbonRollGroupID'])->fetchAll();
         if (count($tutors) > 1) $tutors[0]['surname'] .= ' ('.__('Main Tutor').')';
@@ -45,11 +42,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php
     };
 
     $table = DataTable::create('rollGroups');
+    $table->setTitle(__('Roll Groups'));
+    $table->setDescription(__('This page shows all roll groups in the current school year.'));
 
     $table->addColumn('name', __('Name'));
     $table->addColumn('tutors', __('Form Tutors'))->format($formatTutorsList);
     $table->addColumn('space', __('Room'));
-    $table->addColumn('students', __('Students'));
+    if (getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2) == "Staff") {
+        $table->addColumn('students', __('Students'));
+    }
     $table->addColumn('website', __('Website'))->format(Format::using('link', 'website'));
 
     $actions = $table->addActionColumn()->addParam('gibbonRollGroupID');
@@ -57,4 +58,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php
             ->setURL('/modules/Roll Groups/rollGroups_details.php');
 
     echo $table->render($rollGroups->toDataSet());
+
+    //Display year group table for staff
+    $roleCategory = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
+    if ($roleCategory == 'Staff') {
+        $yearGroupGateway = $container->get(YearGroupGateway::class);
+
+        $criteria = $yearGroupGateway->newQueryCriteria(true)
+            ->sortBy(['gibbonYearGroup.sequenceNumber'])
+            ->fromPOST('clinics');
+
+        $yearGroups = $yearGroupGateway->queryYearGroups($criteria);
+
+        $table = DataTable::create('yearGroups');
+        $table->setTitle(__('Year Group Summary'));
+
+        $table->addColumn('name', __('Name'));
+        $table->addColumn('gibbonPersonIDHOY', __('Head of Year'))
+            ->format(function ($values) {
+                if (!empty($values['preferredName']) && !empty($values['surname'])) {
+                    return Format::name('', $values['preferredName'], $values['surname'], 'Staff', false, true);
+                }
+            });
+        $table->addColumn('students', __('Students'))
+            ->format(function ($values) use ($yearGroupGateway) {
+                return $yearGroupGateway->studentCountByYearGroup($values['gibbonYearGroupID']);
+            });
+
+        echo $table->render($yearGroups);
+    }
 }

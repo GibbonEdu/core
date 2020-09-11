@@ -19,11 +19,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
+use Gibbon\Tables\Prefab\ReportTable;
+use Gibbon\Domain\Library\LibraryReportGateway;
+use Gibbon\Domain\DataSet;
 
-//Module includes
+// Module includes
 require_once __DIR__ . '/moduleFunctions.php';
-
-$page->breadcrumbs->add(__('View Overdue Items'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdueItems.php') == false) {
     //Acess denied
@@ -32,114 +34,66 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
     echo '</div>';
 } else {
     //Proceed!
-    echo '<h2>';
-    echo __('Filter');
-    echo '</h2>';
-
-    $ignoreStatus = '';
-    if (isset($_GET['ignoreStatus'])) {
-        $ignoreStatus = $_GET['ignoreStatus'];
-    }
-
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
-
-    $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
-
-    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_viewOverdueItems.php");
-
-    $row = $form->addRow();
-        $row->addLabel('ignoreStatus', __('Ignore Status'))->description('Include all users, regardless of status and current enrolment.');
-        $row->addCheckbox('ignoreStatus')->checked($ignoreStatus);
-
-    $row = $form->addRow();
-        $row->addFooter(false);
-        $row->addSearchSubmit($gibbon->session);
-
-    echo $form->getOutput();
-
-    echo '<h2>';
-    echo __('Report Data');
-    echo '</h2>';
-
+    $viewMode = $_REQUEST['format'] ?? '';
+    $ignoreStatus = $_GET['ignoreStatus'] ?? '';
     $today = date('Y-m-d');
 
-    try {
-        $data = array('today' => $today);
-        if ($ignoreStatus == 'on') {
-            $sql = "SELECT gibbonLibraryItem.*, surname, preferredName, email FROM gibbonLibraryItem JOIN gibbonPerson ON (gibbonLibraryItem.gibbonPersonIDStatusResponsible=gibbonPerson.gibbonPersonID) WHERE gibbonLibraryItem.status='On Loan' AND borrowable='Y' AND returnExpected<:today ORDER BY surname, preferredName";
-        } else {
-            $sql = "SELECT gibbonLibraryItem.*, surname, preferredName, email FROM gibbonLibraryItem JOIN gibbonPerson ON (gibbonLibraryItem.gibbonPersonIDStatusResponsible=gibbonPerson.gibbonPersonID) WHERE gibbonLibraryItem.status='On Loan' AND borrowable='Y' AND returnExpected<:today AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
-        }
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
+    if (empty($viewMode)) {
+        $page->breadcrumbs->add(__('View Overdue Items'));
+
+        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form->setTitle(__('Filter'));
+        $form->setFactory(DatabaseFormFactory::create($pdo));
+        $form->setClass('noIntBorder fullWidth');
+
+        $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_viewOverdueItems.php");
+
+        $row = $form->addRow();
+            $row->addLabel('ignoreStatus', __('Ignore Status'))->description(__('Include all users, regardless of status and current enrolment.'));
+            $row->addCheckbox('ignoreStatus')->checked($ignoreStatus);
+
+        $row = $form->addRow();
+            $row->addFooter(false);
+            $row->addSearchSubmit($gibbon->session);
+
+        echo $form->getOutput();
     }
 
-    echo "<table cellspacing='0' style='width: 100%'>";
-    echo "<tr class='head'>";
-    echo '<th>';
-    echo __('Borrowing User');
-    echo '</th>';
-    echo '<th>';
-    echo __('Email');
-    echo '</th>';
-    echo '<th>';
-    echo __('Item').'<br/>';
-    echo "<span style='font-size: 85%; font-style: italic'>".__('Author/Producer').'</span>';
-    echo '</th>';
-    echo '<th>';
-    echo __('Due Date');
-    echo '</th>';
-    echo '<th>';
-    echo __('Days Overdue');
-    echo '</th>';
-    echo "<th style='width: 50px'>";
-    echo __('Actions');
-    echo '</th>';
-    echo '</tr>';
+    $reportGateway = $container->get(LibraryReportGateway::class);
+    $criteria = $reportGateway->newQueryCriteria(true)->fromPOST();
 
-    $count = 0;
-    $rowNum = 'odd';
-    while ($row = $result->fetch()) {
-        if ($count % 2 == 0) {
-            $rowNum = 'even';
-        } else {
-            $rowNum = 'odd';
-        }
-        ++$count;
+    $items = $reportGateway->queryOverdueItems($criteria, $ignoreStatus);
 
-		//COLOR ROW BY STATUS!
-		echo "<tr class=$rowNum>";
-        echo '<td>';
-        echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
-        echo '</td>';
-        echo '<td>';
-        echo $row['email'];
-        echo '</td>';
-        echo '<td>';
-        echo '<b>'.$row['name'].'</b><br/>';
-        echo "<span style='font-size: 85%; font-style: italic'>".$row['producer'].'</span>';
-        echo '</td>';
-        echo '<td>';
-        echo dateConvertBack($guid, $row['returnExpected']);
-        echo '</td>';
-        echo '<td>';
-        echo(strtotime($today) - strtotime($row['returnExpected'])) / (60 * 60 * 24);
-        echo '</td>';
-        echo '<td>';
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_lending_item.php&gibbonLibraryItemID='.$row['gibbonLibraryItemID']."&name=&gibbonLibraryTypeID=&gibbonSpaceID=&status='><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-        echo '</td>';
-        echo '</tr>';
-    }
-    if ($count == 0) {
-        echo "<tr class=$rowNum>";
-        echo '<td colspan=6>';
-        echo __('There are no records to display.');
-        echo '</td>';
-        echo '</tr>';
-    }
-    echo '</table>';
+    // DATA TABLE
+    $table = ReportTable::createPaginated('overdueItems', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table->setTitle(__('View Overdue Items'));
+
+    $table->addColumn('preferredName', __('Borrowing User'))
+        ->sortable(['surname', 'preferredName'])
+        ->format(function ($person) {
+            return Format::name('', $person['preferredName'], $person['surname'], 'Student', true);
+        });
+    $table->addColumn('email', __('Email'));
+    $table->addColumn('name', __('Item'))
+        ->description(__('Author/Producer'))
+        ->format(function ($item) {
+            return '<b>'.$item['name'].'</b><br/>'.Format::small($item['producer']);
+        });
+    $table->addColumn('returnExpected', __('Due Date'))->format(Format::using('date', 'returnExpected'));
+    $table->addColumn('dueDate', __('Days Overdue'))
+        ->sortable('returnExpected')
+        ->format(function ($item) use ($today) {
+            return (strtotime($today) - strtotime($item['returnExpected'])) / (60 * 60 * 24);
+        });
+
+    // ACTIONS
+    $table->addActionColumn()
+        ->addParam('gibbonLibraryItemID')
+        ->addParam('search', $criteria->getSearchText(true))
+        ->format(function ($person, $actions) use ($guid) {
+            $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/Library/library_lending_item.php');
+        });
+
+    echo $table->render($items);
 }
-?>

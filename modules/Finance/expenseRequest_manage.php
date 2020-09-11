@@ -280,9 +280,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                             echo $row['budget'];
                             echo '</td>';
                             echo '<td>';
-                            echo $row['status'].'<br/>';
+                            echo __($row['status']).'<br/>';
                             if ($row['paymentReimbursementStatus'] != '') {
-                                echo "<span style='font-style: italic; font-size: 75%'>".$row['paymentReimbursementStatus'].'</span><br/>';
+                                echo "<span style='font-style: italic; font-size: 75%'>".__($row['paymentReimbursementStatus']).'</span><br/>';
                             }
                             echo '</td>';
                             echo '<td>';

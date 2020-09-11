@@ -34,6 +34,7 @@ class SettingGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonSetting';
+    private static $primaryKey = 'gibbonSettingID';
 
     private static $searchableColumns = ['scope', 'name'];
     
@@ -53,5 +54,13 @@ class SettingGateway extends QueryableGateway
         $sql = "SELECT * FROM gibbonSetting WHERE scope=:scope ORDER BY name";
 
         return $this->db()->select($sql, $data)->fetchAll();
+    }
+
+    public function updateSettingByScope($scope, $name, $value)
+    {
+        $data = ['scope' => $scope, 'name' => $name, 'value' => $value];
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope=:scope AND name=:name";
+
+        return $this->db()->update($sql, $data);
     }
 }

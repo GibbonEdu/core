@@ -21,6 +21,7 @@ namespace Gibbon\Module\Finance\Forms;
 
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Services\Format;
 
 /**
  * FinanceFormFactory
@@ -82,7 +83,7 @@ class FinanceFormFactory extends DatabaseFormFactory
 
         // Add students by Roll Group and Name
         foreach ($students as $student) {
-            $fullName = formatName('', $student['preferredName'], $student['surname'], 'Student', true);
+            $fullName = Format::name('', $student['preferredName'], $student['surname'], 'Student', true);
 
             $values[$byRollGroup][$student['gibbonFinanceInvoiceeID']] = $student['rollGroupName'].' - '.$fullName;
             $values[$byName][$student['gibbonFinanceInvoiceeID']] = $fullName.' - '.$student['rollGroupName'];
@@ -102,7 +103,7 @@ class FinanceFormFactory extends DatabaseFormFactory
                 if (empty($student['dayType']) || !in_array($student['dayType'], $dayTypes)) continue;
 
                 $byDayType = $student['dayType'].' '.__('Students by Roll Groups');
-                $fullName = formatName('', $student['preferredName'], $student['surname'], 'Student', true);
+                $fullName = Format::name('', $student['preferredName'], $student['surname'], 'Student', true);
     
                 $values[$byDayType][$student['gibbonFinanceInvoiceeID']] = $student['rollGroupName'].' - '.$fullName;
             }
@@ -169,6 +170,7 @@ class FinanceFormFactory extends DatabaseFormFactory
                 FROM gibbonFinanceFee 
                 JOIN gibbonFinanceFeeCategory ON (gibbonFinanceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) 
                 WHERE gibbonFinanceFee.gibbonSchoolYearID=:gibbonSchoolYearID
+                AND gibbonFinanceFee.active='Y'
                 ORDER BY gibbonFinanceFeeCategory.name, gibbonFinanceFee.name";
 
         return $this->createSelect($name)
@@ -201,8 +203,8 @@ class FinanceFormFactory extends DatabaseFormFactory
     public function createSelectMonth($name)
     {
         $months = array_reduce(range(1,12), function($group, $item){
-            $month = date('m', mktime(0, 0, 0, $item, 1, 0));
-            $group[$month] = $month.' - '.date('F', mktime(0, 0, 0, $item, 1, 0));
+            $month = strftime('%m', mktime(0, 0, 0, $item, 1, 0));
+            $group[$month] = $month.' - '.strftime('%B', mktime(0, 0, 0, $item, 1, 0));
             return $group;
         }, array());
 
@@ -250,7 +252,7 @@ class FinanceFormFactory extends DatabaseFormFactory
                 $table->addRow()->addTableCell(__('There are no family members available to send this receipt to.'))->colSpan(2)->wrap('<div class="warning">', '</div>');
             } else {
                 while ($person = $result->fetch()) {
-                    $name = formatName(htmlPrep($person['title']), htmlPrep($person['preferredName']), htmlPrep($person['surname']), 'Parent', false);
+                    $name = Format::name(htmlPrep($person['title']), htmlPrep($person['preferredName']), htmlPrep($person['surname']), 'Parent', false);
                     $row = $table->addRow();
                         $row->addLabel($checkboxName, $name)->description($values['invoiceTo'] == 'Company'? __('(Family CC)') : '')->description($person['relationship']);
                         $row->onlyIf(!empty($person['email']))
@@ -269,7 +271,7 @@ class FinanceFormFactory extends DatabaseFormFactory
 
         // CC Self
         if (!empty($session->get('email'))) {
-            $name = formatName('', htmlPrep($session->get('preferredName')), htmlPrep($session->get('surname')), 'Parent', false);
+            $name = Format::name('', htmlPrep($session->get('preferredName')), htmlPrep($session->get('surname')), 'Parent', false);
             $row = $table->addRow()->addClass('emailReceiptSection');
                 $row->addLabel($checkboxName, $name)->description(__('(CC Self?)'));
                 $row->addCheckbox($checkboxName)

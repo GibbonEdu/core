@@ -32,6 +32,7 @@ class ApplicationFormGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonApplicationForm';
+    private static $primaryKey = 'gibbonApplicationFormID';
 
     private static $searchableColumns = ['gibbonApplicationFormID', 'preferredName', 'surname', 'paymentTransactionID'];
     

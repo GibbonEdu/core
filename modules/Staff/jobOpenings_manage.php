@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage.p
     $jobGateway = $container->get(StaffJobOpeningGateway::class);
 
     // QUERY
-    $criteria = $jobGateway->newQueryCriteria()
+    $criteria = $jobGateway->newQueryCriteria(true)
         ->sortBy(['dateOpen', 'jobTitle'])
         ->fromPOST();
 
@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage.p
     ]);
 
     // COLUMNS
-    $table->addColumn('type', __('Type'));
+    $table->addColumn('type', __('Type'))->translatable();
     $table->addColumn('jobTitle', __('Job Title'));
     $table->addColumn('dateOpen', __('Opening Date'))
         ->format(Format::using('date', 'dateOpen'));

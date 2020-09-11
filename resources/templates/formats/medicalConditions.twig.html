@@ -1,0 +1,62 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+
+Page Foot: Outputs the contents of the HTML <head> tag. This includes 
+all stylesheets and scripts with a 'head' context.
+-->#}
+
+{% if longTermMedication == 'Y' %}
+
+    <div style="border-left: 4px solid #939090; padding-left: 14px;">
+        <b><i>{{ __('Long Term Medication') }}:</i></b> {{ formatUsing('yesNo', longTermMedication) }}<br/>
+        <u><i>{{ __('Details') }}:</i></u> {{ condition.longTermMedicationDetails }}<br/>
+    </div>
+
+    {% if medicalConditions %}<br/>{% endif %}
+{% endif %}
+
+
+{% for condition in medicalConditions %}
+
+<div style="border-left: 4px solid #{{ condition.alertColor }}; padding-left: 14px;">
+
+    <b><i>{{ __('Condition') }} {{ loop.index }}:</i></b> {{ __(condition.name) }}<br/>
+
+    <u><i>{{ __('Risk') }}:</i></u> <span style="color: #{{ condition.alertColor }};font-weight: bold;">{{ __(condition.risk) }}</span><br/>
+
+    {% if condition.triggers %}
+        <u><i>{{ __('Triggers') }}:</i></u> {{ condition.triggers }}<br/>
+    {% endif %}
+
+    {% if condition.reaction %}
+        <u><i>{{ __('Reaction') }}:</i></u> {{ condition.reaction }}<br/>
+    {% endif %}
+
+    {% if condition.response %}
+        <u><i>{{ __('Response') }}:</i></u> {{ condition.response }}<br/>
+    {% endif %}
+
+    {% if condition.medication %}
+        <u><i>{{ __('Medication') }}:</i></u> {{ condition.medication }}<br/>
+    {% endif %}
+
+    {% if condition.lastEpisode or consition.lastEpisodeTreatment %}
+        <u><i>{{ __('Last Episode') }}:</i></u> 
+        {{ formatUsing('date', condition.lastEpisode) }}
+        {{ condition.lastEpisode ? ' | ' : '' }}
+        {{ condition.lastEpisodeTreatment }}<br/>
+    {% endif %}
+
+    {% if condition.comment %}
+        <u><i>{{ __('Comment') }}:</i></u> {{ condition.comment }}<br/>
+    {% endif %}
+
+</div>
+
+{% if not loop.last %}<br/>{% endif%}
+
+{% endfor %}

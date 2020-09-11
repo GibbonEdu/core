@@ -25,15 +25,15 @@ $newFormValues = array(
     'passwordPolicyNumeric'         => 'Y',
     'passwordPolicyNonAlphaNumeric' => 'Y',
     'sessionDuration'               => '2048',
-    'gibboneduComOrganisationName'  => 'Syndicate of Wordwide Gibbon Testers',
+    'gibboneduComOrganisationName'  => 'Syndicate of Worldwide Gibbon Testers',
     'gibboneduComOrganisationKey'   => '1234-5678-90',
     'country'                       => 'Antarctica',
     'firstDayOfTheWeek'             => 'Sunday',
-    'timezone'                      => 'Antarctica/Rothera',
+    'timezone'                      => 'UTC',
     'currency'                      => 'BTC',
     'emailLink'                     => 'http://email.test',
     'webLink'                       => 'http://web.test',
-    'pagination'                    => '42',
+    'pagination'                    => '100',
     'analytics'                     => '<script></script>',
 );
 

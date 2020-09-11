@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Gibbon system-wide includes
 include '../../gibbon.php';
@@ -65,8 +66,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
     $output .= '};';
     $output .= '</script>';
 
-    $output .= '<style>#'.$id.'ajaxFormSearch ul.token-input-list-facebook { margin: 0 10px; width: 610px !important; float: none }</style>';
-
     $output .= "<table cellspacing='0' style='width: 100%'>";
     $output .= "<tr id='".$id."resourceInsert'>";
     $output .= "<td colspan=2 style='padding-top: 0px'>";
@@ -103,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
         $col->addFinder('tags'.$id)
             ->fromQuery($pdo, $sql)
             ->setParameter('hintText', __('Type a tag...'))
-            ->addClass('floatNone')
+            ->addClass('floatNone w-4/5')
             ->selected($tags);
     
     $col->addSubmit(__('Go'));
@@ -197,7 +196,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
             } elseif ($row['type'] == 'HTML') {
                 $output .= "<a target='_blank' style='font-weight: bold' href='".$_SESSION[$guid]['absoluteURL'].'/modules/Planner/resources_view_standalone.php?gibbonResourceID='.$row['gibbonResourceID']."'>".$row['name'].'</a><br/>';
             }
-            $output .= "<span style='font-size: 85%; font-style: italic'>".formatName($row['title'], $row['preferredName'], $row['surname'], 'Staff').'</span>';
+            $output .= "<span style='font-size: 85%; font-style: italic'>".Format::name($row['title'], $row['preferredName'], $row['surname'], 'Staff').'</span>';
             $output .= '</td>';
             $output .= '<td>';
             $output .= $row['type'];

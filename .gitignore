@@ -28,3 +28,12 @@ nbproject/
 /vendor/**/unitTests
 /vendor/**/Examples
 /vendor/**/examples
+/vendor/**/samples
+/vendor/**/docs
+
+# Generated TCPDF font files
+/vendor/tecnickcom/tcpdf/fonts
+
+# Var Folder
+var/*
+!var/.htaccess

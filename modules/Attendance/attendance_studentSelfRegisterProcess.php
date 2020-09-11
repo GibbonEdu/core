@@ -97,11 +97,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
                     exit();
                 }
 
-                //Give student a like for their effort
-                $gibbonAttendanceLogPersonID = $connection2->lastInsertId();
-                setLike($connection2, 'Attendance', $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonAttendanceLogPersonID', $gibbonAttendanceLogPersonID, $_SESSION[$guid]['gibbonPersonID'], $_SESSION[$guid]['gibbonPersonID'], 'Attendance - Self Registration');
-                $_SESSION[$guid]['pageLoads'] = null;
-
                 $selfRegistrationRedirect = getSettingByScope($connection2, 'Attendance', 'selfRegistrationRedirect');
                 if ($selfRegistrationRedirect == 'Y') {
                     $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Messenger/messageWall_view.php&return=message0&status=$status";

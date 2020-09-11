@@ -1,0 +1,19 @@
+{#<!--
+name: Space
+category: Miscellaneous
+types: Body,Header,Footer
+icon: ruler-combined.svg
+config:
+    height:
+        label: Height
+        type: number
+        default: 4
+-->#}
+
+{{- stylesheet ? include(stylesheet) -}}
+
+<table class="w-full table" cellpadding="0" cellspacing="0">
+    <tr>
+        <td class="w-full" style="font-size: {{ config.height|default(4)}}mm;">&nbsp;</td>
+    </tr>
+</table>

@@ -1,0 +1,53 @@
+{#<!--
+name: Logo - Right
+category: Report Info
+types: Body,Header
+icon: align-right.svg
+sources:
+    school: School
+params:
+    height: 26
+config:
+    heading:
+        label: Heading
+        type: words
+        default:
+    text:
+        label: Text
+        type: text
+        default: 
+    logo:
+        label: Logo
+        type: image
+    logoHeight:
+        label: Logo Height
+        type: number
+        default: 18
+    dividerLine:
+        label: Divider Line
+        type: yesno
+        default: Y
+-->#}
+{{- stylesheet ? include(stylesheet) -}}
+<table class="w-full table" cellspacing="0">
+    <tr>
+        <td style="width:50%;text-align:left;font-size:8pt;">
+            {%- if config.heading is not empty or config.heading is not defined %}
+                <b>{{- config.heading|default(school.organisationName) -}}</b><br/>
+            {% endif %}
+
+            {%- if config.text is not empty or config.text is not defined %}
+                {{- config.text|default(school.address)|nl2br -}}<br/>
+            {% endif %}
+        </td>
+        <td style="width:50%;text-align:right;font-size:8pt;">
+            <img src="{{ basePath }}/{{ config.logo|default('themes/'~gibbonThemeName~'/img/anonymous_125.jpg') }}" style="display: inline-block; height: {{ config.logoHeight|default(18) }}mm;">
+        </td>
+    </tr>
+    {% if config.dividerLine|default('Y') == 'Y' %}
+    <tr>
+        <td colspan="3" class="divider-line" style="font-size: 5px;">&nbsp;</td>
+    </tr>
+    {% endif %}
+</table>
+    

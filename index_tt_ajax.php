@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include './gibbon.php';
 
 //Set up for i18n via gettext
-if (isset($_SESSION[$guid]['i18n']['code'])) {
+if (isset($_SESSION[$guid]['i18n']['code']) && function_exists('gettext')) {
     if ($_SESSION[$guid]['i18n']['code'] != null) {
         putenv('LC_ALL='.$_SESSION[$guid]['i18n']['code']);
         setlocale(LC_ALL, $_SESSION[$guid]['i18n']['code']);

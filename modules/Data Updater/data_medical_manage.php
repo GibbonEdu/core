@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
     $gateway = $container->get(MedicalUpdateGateway::class);
 
     // QUERY
-    $criteria = $gateway->newQueryCriteria()
+    $criteria = $gateway->newQueryCriteria(true)
         ->sortBy('status')
         ->sortBy('timestamp', 'DESC')
         ->fromPOST();
@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
         ->sortable(['updater.surname', 'updater.preferredName'])
         ->format(Format::using('name', ['updaterTitle', 'updaterPreferredName', 'updaterSurname', 'Parent']));
     $table->addColumn('timestamp', __('Date & Time'))->format(Format::using('dateTime', 'timestamp'));
-    $table->addColumn('status', __('Status'))->width('12%');
+    $table->addColumn('status', __('Status'))->translatable()->width('12%');
 
     // ACTIONS
     $table->addActionColumn()

@@ -79,32 +79,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
 			$form->addHiddenValue('gibbonLibraryTypeID', $values['gibbonLibraryTypeID']);
 			$form->addHiddenValue('gibbonLibraryItemID', $gibbonLibraryItemID);
+			$form->addHiddenValue('type', $values['type']);
+			$form->addHiddenValue('statusBorrowable', 'Available');
 
 			$form->addRow()->addHeading(__('Catalog Type'));
 
-			$sql = "SELECT gibbonLibraryTypeID AS value, name FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
 			$row = $form->addRow();
-				$row->addLabel('type', __('Type'));
-				$row->addTextField('type')->isRequired()->readOnly();
-
-			$form->toggleVisibilityByClass('general')->onSelect('gibbonLibraryTypeID')->whenNot('Please select...');
+				$row->addLabel('typeText', __('Type'));
+				$row->addTextField('typeText')->required()->readOnly()->setValue(__($values['type']));
 
 			$form->addRow()->addHeading(__('General Details'));
 
 			$row = $form->addRow();
 				$row->addLabel('name', __('Name'))->description(__('Volume or product name.'));
-				$row->addTextField('name')->isRequired()->maxLength(255);
+				$row->addTextField('name')->required()->maxLength(255);
 
 			$row = $form->addRow();
 				$row->addLabel('id', __('ID'));
 				$row->addTextField('id')
-					->isUnique('./modules/Library/library_manage_catalog_idCheckAjax.php', array('gibbonLibraryItemID' => $gibbonLibraryItemID))
-					->isRequired()
+					->uniqueField('./modules/Library/library_manage_catalog_idCheckAjax.php', array('gibbonLibraryItemID' => $gibbonLibraryItemID))
+					->required()
 					->maxLength(255);
 
 			$row = $form->addRow();
 				$row->addLabel('producer', __('Author/Brand'))->description(__('Who created the item?'));
-				$row->addTextField('producer')->isRequired()->maxLength(255);
+				$row->addTextField('producer')->required()->maxLength(255);
 
 			$row = $form->addRow();
 				$row->addLabel('vendor', __('Vendor'))->description(__('Who supplied the item?'));
@@ -124,20 +123,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
 			$form->toggleVisibilityByClass('imageFile')->onSelect('imageType')->when('File');
 
-			$row = $form->addRow()->addClass('general imageFile');
+			$row = $form->addRow()->addClass('imageFile');
 				$row->addLabel('imageFile', __('Image File'))
 					->description(__('240px x 240px or smaller.'));
 				$row->addFileUpload('imageFile')
 					->accepts('.jpg,.jpeg,.gif,.png')
 					->setMaxUpload(false)
-					->isRequired();
+					->required();
 
 			$form->toggleVisibilityByClass('imageLink')->onSelect('imageType')->when('Link');
 
-			$row = $form->addRow()->addClass('general imageLink');
+			$row = $form->addRow()->addClass('imageLink');
 				$row->addLabel('imageLink', __('Image Link'))
 					->description(__('240px x 240px or smaller.'));
-				$row->addURL('imageLink')->maxLength(255)->isRequired()->setValue($values['imageLocation']);
+				$row->addURL('imageLink')->maxLength(255)->required()->setValue($values['imageLocation']);
 
 			$row = $form->addRow();
 				$row->addLabel('gibbonSpaceID', __('Location'));
@@ -153,15 +152,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
 			$form->toggleVisibilityByClass('ownershipSchool')->onSelect('ownershipType')->when('School');
 
-			$row = $form->addRow()->addClass('general ownershipSchool');
+			$row = $form->addRow()->addClass('ownershipSchool');
 				$row->addLabel('gibbonPersonIDOwnershipSchool', __('Main User'))->description(__('Person the device is assigned to.'));
-				$row->addSelectUsers('gibbonPersonIDOwnershipSchool')->placeholder();
+				$row->addSelectUsers('gibbonPersonIDOwnershipSchool')->placeholder()->selected($values['gibbonPersonIDOwnership']);
 
 			$form->toggleVisibilityByClass('ownershipIndividual')->onSelect('ownershipType')->when('Individual');
 
-			$row = $form->addRow()->addClass('general ownershipIndividual');
+			$row = $form->addRow()->addClass('ownershipIndividual');
 				$row->addLabel('gibbonPersonIDOwnershipIndividual', __('Owner'));
-				$row->addSelectUsers('gibbonPersonIDOwnershipIndividual')->placeholder();
+				$row->addSelectUsers('gibbonPersonIDOwnershipIndividual')->placeholder()->selected($values['gibbonPersonIDOwnership']);
 
 			$sql = "SELECT gibbonDepartmentID AS value, name FROM gibbonDepartment ORDER BY name";
 			$row = $form->addRow();
@@ -189,24 +188,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 				'Repair' => __('Repair')
 			);
 			$row = $form->addRow()->addClass('statusBorrowable');
-				$row->addLabel('statusBorrowable', __('Status?'));
-				$row->addTextField('statusBorrowable')->isRequired()->readOnly()->setValue(__('Available'));
+				$row->addLabel('statusBorrowableText', __('Status?'));
+				$row->addTextField('statusBorrowableText')->required()->readOnly()->setValue(__('Available'));
 
-			$row = $form->addRow()->addClass('statusNotBorrowable');
+            $row = $form->addRow()->addClass('statusNotBorrowable');
 				$row->addLabel('statusNotBorrowable', __('Status?'));
-				$row->addSelect('statusNotBorrowable')->fromArray($statuses)->isRequired();
+				$row->addSelect('statusNotBorrowable')->fromArray($statuses)->required()->selected($values['status']);
 
 			$row = $form->addRow();
 				$row->addLabel('replacement', __('Plan Replacement?'));
-				$row->addYesNo('replacement')->isRequired()->selected('N');
+				$row->addYesNo('replacement')->required()->selected('N');
 
 			$form->toggleVisibilityByClass('replacement')->onSelect('replacement')->when('Y');
 
-			$row = $form->addRow()->addClass('general replacement');
+			$row = $form->addRow()->addClass('replacement');
 					$row->addLabel('gibbonSchoolYearIDReplacement', __('Replacement Year'))->description(__('When is this item scheduled for replacement.'));
 					$row->addSelectSchoolYear('gibbonSchoolYearIDReplacement', 'All', 'DESC');
 
-			$row = $form->addRow()->addClass('general replacement');
+			$row = $form->addRow()->addClass('replacement');
 				$row->addLabel('replacementCost', __('Replacement Cost'));
 				$row->addCurrency('replacementCost')->maxLength(9);
 

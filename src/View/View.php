@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\View;
 
+use Twig\Environment;
+
 /**
  * Base class for Views.
  *
@@ -36,7 +38,7 @@ class View implements \ArrayAccess
      *
      * @param $templateEngine
      */
-    public function __construct($templateEngine = null)
+    public function __construct(Environment $templateEngine = null)
     {
         // Do some duck typing, since Twig does not have a common Interface.
         if (!is_null($templateEngine) && !method_exists($templateEngine, 'render')) {

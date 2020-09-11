@@ -66,7 +66,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/medicalForm_manage_condition_editProcess.php?gibbonPersonMedicalID=$gibbonPersonMedicalID&search=$search&gibbonPersonMedicalConditionID=$gibbonPersonMedicalConditionID");
 
             $form->setFactory(DatabaseFormFactory::create($pdo));
-            $form->setClass('smallIntBorder fullWidth');
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('gibbonPersonMedicalID', $gibbonPersonMedicalID);
@@ -75,16 +74,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 
             $row = $form->addRow();
                 $row->addLabel('personName', __('Student'));
-                $row->addTextField('personName')->setValue(Format::name('', htmlPrep($values['preferredName']), htmlPrep($values['surname']), 'Student'))->isRequired()->readonly();
+                $row->addTextField('personName')->setValue(Format::name('', $values['preferredName'], $values['surname']), 'Student')->required()->readonly();
 
             $sql = "SELECT name AS value, name FROM gibbonMedicalCondition ORDER BY name";
             $row = $form->addRow();
                 $row->addLabel('name', __('Condition Name'));
-                $row->addSelect('name')->fromQuery($pdo, $sql)->isRequired()->placeholder();
+                $row->addSelect('name')->fromQuery($pdo, $sql)->required()->placeholder();
 
             $row = $form->addRow();
                 $row->addLabel('gibbonAlertLevelID', __('Risk'));
-                $row->addSelectAlert('gibbonAlertLevelID')->isRequired();
+                $row->addSelectAlert('gibbonAlertLevelID')->required();
 
             $row = $form->addRow();
                 $row->addLabel('triggers', __('Triggers'));

@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Module\Markbook\MarkbookView;
+use Gibbon\Services\Format;
 
 function sidebarExtra($guid, $pdo, $gibbonPersonID, $gibbonCourseClassID = '', $basePage = '')
 {
@@ -28,6 +29,8 @@ function sidebarExtra($guid, $pdo, $gibbonPersonID, $gibbonCourseClassID = '', $
     if (empty($basePage)) $basePage = 'markbook_view.php';
 
     //Show class picker in sidebar
+
+    $output .= '<div class="column-no-break">';
     $output .= '<h2>';
     $output .= __('Choose A Class');
     $output .= '</h2>';
@@ -35,15 +38,17 @@ function sidebarExtra($guid, $pdo, $gibbonPersonID, $gibbonCourseClassID = '', $
     $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('q', '/modules/Markbook/'.$basePage);
-    
+    $form->setClass('smallIntBorder w-full');
+
     $row = $form->addRow();
         $row->addSelectClass('gibbonCourseClassID', $_SESSION[$guid]['gibbonSchoolYearID'], $gibbonPersonID)
             ->selected($gibbonCourseClassID)
             ->placeholder()
             ->setClass('fullWidth');
         $row->addSubmit(__('Go'));
-    
+
     $output .= $form->getOutput();
+    $output .= '</div>';
 
     return $output;
 }
@@ -131,7 +136,7 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
     if ($enableRawAttainment == 'Y') $filters['raw'] = __('Raw Marks');
     $filters['marked'] = __('Marked');
     $filters['unmarked'] = __('Unmarked');
-    
+
     $col->addContent(__('Show').':')->prepend('&nbsp;&nbsp;');
     $col->addSelect('markbookFilter')
         ->fromArray($filters)
@@ -203,35 +208,6 @@ function getClass( $pdo, $gibbonPersonID, $gibbonCourseClassID, $highestAction )
     return ($result->rowCount() > 0)? $result->fetch() : NULL;
 }
 
-function getHookedUnits($pdo, $gibbonCourseClassID)
-{
-    $units = array();
-
-    $dataHooks = array();
-    $sqlHooks = "SELECT * FROM gibbonHook WHERE type='Unit' ORDER BY name";
-    $resultHooks = $pdo->executeQuery($dataHooks, $sqlHooks);
-
-    while ($rowHooks = $resultHooks->fetch()) {
-        $hookOptions = unserialize($rowHooks['options']);
-        $requiredFields = array('unitTable', 'unitIDField', 'unitCourseIDField', 'unitNameField', 'unitDescriptionField', 'classLinkTable', 'classLinkJoinFieldUnit', 'classLinkJoinFieldClass', 'classLinkIDField');
-
-        if (!array_diff_key(array_flip($requiredFields), $hookOptions)) {
-            $dataHookUnits = array('gibbonCourseClassID' => $gibbonCourseClassID);
-            $sqlHookUnits = 'SELECT * FROM '.$hookOptions['unitTable'].' JOIN '.$hookOptions['classLinkTable'].' ON ('.$hookOptions['unitTable'].'.'.$hookOptions['unitIDField'].'='.$hookOptions['classLinkTable'].'.'.$hookOptions['classLinkJoinFieldUnit'].') WHERE '.$hookOptions['classLinkJoinFieldClass'].'=:gibbonCourseClassID ORDER BY '.$hookOptions['classLinkTable'].'.'.$hookOptions['classLinkIDField'];
-            $resultHookUnits = $pdo->executeQuery($dataHookUnits, $sqlHookUnits);
-
-            while ($rowHookUnits = $resultHookUnits->fetch()) {
-                $groupBy = $rowHooks['name'];
-                $gibbonUnitID = $rowHookUnits[$hookOptions['unitIDField']];
-                $gibbonHookID = $rowHooks['gibbonHookID'];
-                $units[$groupBy][$gibbonUnitID.'-'.$gibbonHookID] = htmlPrep($rowHookUnits[$hookOptions['unitNameField']]);
-            }
-        }
-    }
-
-    return $units;
-}
-
 function getTeacherList( $pdo, $gibbonCourseClassID ) {
     try {
         $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
@@ -245,7 +221,7 @@ function getTeacherList( $pdo, $gibbonCourseClassID ) {
     $teacherList = array();
     if ($result->rowCount() > 0) {
         foreach ($result->fetchAll() as $teacher) {
-            $teacherList[ $teacher['gibbonPersonID'] ] = formatName($teacher['title'], $teacher['preferredName'], $teacher['surname'], 'Staff', false, false);
+            $teacherList[ $teacher['gibbonPersonID'] ] = Format::name($teacher['title'], $teacher['preferredName'], $teacher['surname'], 'Staff', false, false);
         }
     }
 

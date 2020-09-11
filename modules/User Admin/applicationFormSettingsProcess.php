@@ -28,7 +28,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
     //Proceed!
     $introduction = $_POST['introduction'];
     $applicationFormSENText = (isset($_POST['applicationFormSENText']))? $_POST['applicationFormSENText'] : '';
-    $applicationFormRefereeLink = $_POST['applicationFormRefereeLink'];
     $postscript = $_POST['postscript'];
     $scholarships = (isset($_POST['scholarships']))? $_POST['scholarships'] : '';
     $agreement = $_POST['agreement'];
@@ -36,6 +35,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
     $publicApplications = $_POST['publicApplications'];
     $milestones = $_POST['milestones'];
     $howDidYouHear = $_POST['howDidYouHear'];
+    $applicationFormRefereeLink = $_POST['applicationFormRefereeLink'];
+    $applicationFormRefereeRequired = $_POST['applicationFormRefereeRequired'];
     $requiredDocuments = $_POST['requiredDocuments'];
     $internalDocuments = $_POST['internalDocuments'];
     $requiredDocumentsText = $_POST['requiredDocumentsText'];
@@ -87,6 +88,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
     try {
         $data = array('value' => $applicationFormRefereeLink);
         $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Students' AND name='applicationFormRefereeLink'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    try {
+        $data = array('value' => $applicationFormRefereeRequired);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Students' AND name='applicationFormRefereeRequired'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {

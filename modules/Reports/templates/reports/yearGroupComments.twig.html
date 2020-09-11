@@ -1,0 +1,33 @@
+{#<!--
+name: Comments - Year Group
+category: Reporting Cycle
+types: Body
+icon: comment-alt.svg
+sources:
+    student: Student
+    reportingCycle: ReportingCycle
+    yearGroupCriteria: YearGroupCriteria
+-->#}
+{{- stylesheet ? include(stylesheet) -}}
+
+
+{%- for criteria in []|merge(yearGroupCriteria.perGroup|default([]))|merge(yearGroupCriteria.perStudent|default([])) -%}
+<table class="w-full table" cellspacing="0" cellpadding="0" nobr="true" style="padding: 0;">
+    {% if criteria.valueType == 'Comment' %}
+    <tr>
+        <td class="w-full header" style="line-height:1.8;font-size: 12pt; font-weight: bold;" colspan="2">
+            {{- criteria.criteriaName -}}
+        </td>
+    </tr>
+    <tr><td style="font-size: 4px;">&nbsp;</td></tr>
+    <tr>
+        <td class="w-full" style="font-size: 10pt" colspan="2">
+            "{{- criteria.comment -}}" –&nbsp;<b>{{ criteria.title }}&nbsp;{{ criteria.preferredName|first }}.&nbsp;{{ criteria.surname }}</b>
+        </td>
+    </tr>
+    {% endif %}
+</table>
+{% if not loop.last %}
+    <table cellspacing="0" cellpadding="6"><tr><td style="font-size: 1px;">&nbsp;</td></tr></table>
+{% endif %}
+{%- endfor -%}

@@ -23,13 +23,13 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\Attendance\AttendanceCodeGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSettings.php') == false) {
-    //Acess denied
+    //Access denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Attendance Settings'));
+    $page->breadcrumbs->add(__('Attendance Settings'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     $attendanceCodeGateway = $container->get(AttendanceCodeGateway::class);
 
     // QUERY
-    $criteria = $attendanceCodeGateway->newQueryCriteria()
+    $criteria = $attendanceCodeGateway->newQueryCriteria(true)
         ->sortBy(['sequenceNumber'])
         ->fromArray($_POST);
 
@@ -57,16 +57,16 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/School Admin/attendanceSettings_manage_add.php')
         ->displayLabel();
-    
+
     $table->modifyRows(function ($values, $row) {
         if ($values['active'] == 'N') $row->addClass('error');
         return $row;
     });
 
     $table->addColumn('nameShort', __('Code'));
-    $table->addColumn('name', __('Name'));
-    $table->addColumn('direction', __('Direction'));
-    $table->addColumn('scope', __('Scope'));
+    $table->addColumn('name', __('Name'))->translatable();
+    $table->addColumn('direction', __('Direction'))->translatable();
+    $table->addColumn('scope', __('Scope'))->translatable();
     $table->addColumn('active', __('Active'))->format(Format::using('yesNo', 'active'));
 
     // ACTIONS
@@ -97,24 +97,24 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     $setting = getSettingByScope($connection2, 'Attendance', 'attendanceReasons', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextArea($setting['name'])->setValue($setting['value'])->isRequired();
+        $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
 
-    $row = $form->addRow()->addHeading(__('Pre-Fills & Defaults'))->append(__('The pre-fill settings below determine which Attendance contexts are preset by data available from other contexts. This allows, for example, for attendance taken in a class to be preset by attendance already taken in a Roll Group. The contexts for attendance include Roll Group, Class, Person, Future and Self Registration.'));
+    $row = $form->addRow()->addHeading(__('Context & Defaults'));
 
-    $setting = getSettingByScope($connection2, 'Attendance', 'prefillRollGroup', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $setting = getSettingByScope($connection2, 'Attendance', 'prefillClass', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'recordFirstClassAsSchool', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $setting = getSettingByScope($connection2, 'Attendance', 'prefillPerson', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'crossFillClasses', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $sql = "SELECT name AS value, name FROM gibbonAttendanceCode WHERE active='Y' ORDER BY sequenceNumber ASC, name";
     $setting = getSettingByScope($connection2, 'Attendance', 'defaultRollGroupAttendanceType', true);
@@ -123,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         $row->addSelect($setting['name'])
             ->fromQuery($pdo, $sql)
             ->selected($setting['value'])
-            ->isRequired();
+            ->required();
 
     $setting = getSettingByScope($connection2, 'Attendance', 'defaultClassAttendanceType', true);
     $row = $form->addRow();
@@ -131,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         $row->addSelect($setting['name'])
             ->fromQuery($pdo, $sql)
             ->selected($setting['value'])
-            ->isRequired();
+            ->required();
 
 
     $row = $form->addRow()->addHeading(__('Student Self Registration'));
@@ -159,7 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     $setting = getSettingByScope($connection2, 'Attendance', 'selfRegistrationRedirect', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
 
     $row = $form->addRow()->addHeading(__('Attendance CLI'));
@@ -167,12 +167,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     $setting = getSettingByScope($connection2, 'Attendance', 'attendanceCLINotifyByRollGroup', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $setting = getSettingByScope($connection2, 'Attendance', 'attendanceCLINotifyByClass', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
 
     $setting = getSettingByScope($connection2, 'Attendance', 'attendanceCLIAdditionalUsers', true);
@@ -199,7 +199,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         if (in_array($rowSelect['gibbonPersonID'], $users) !== false) {
             array_push($selected, $rowSelect['gibbonPersonID']);
         }
-        $inputs[$rowSelect["roleName"]][$rowSelect['gibbonPersonID']] = formatName("", $rowSelect["preferredName"], $rowSelect["surname"], "Staff", true, true);
+        $inputs[__($rowSelect["roleName"])][$rowSelect['gibbonPersonID']] = Format::name("", $rowSelect["preferredName"], $rowSelect["surname"], "Staff", true, true);
     }
 
     $row = $form->addRow();

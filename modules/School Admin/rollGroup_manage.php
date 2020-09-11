@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
     $rollGroupGateway = $container->get(RollGroupGateway::class);
 
     // QUERY
-    $criteria = $rollGroupGateway->newQueryCriteria()
+    $criteria = $rollGroupGateway->newQueryCriteria(true)
         ->sortBy(['sequenceNumber', 'gibbonRollGroup.name'])
         ->fromPOST();
 
@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
             ->setIcon('copy')
             ->onClick('return confirm("'.__('Are you sure you want to continue?').' '.__('This operation cannot be undone.').'");')
             ->displayLabel()
-            ->isDirect()
+            ->directLink()
             ->append('&nbsp;|&nbsp;');
     }
 

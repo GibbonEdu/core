@@ -20,6 +20,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\Staff\StaffContractGateway;
+use Gibbon\Domain\Staff\StaffFacilityGateway;
+use Gibbon\Domain\Staff\StaffGateway;
+use Gibbon\Domain\User\RoleGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.php') == false) {
     //Acess denied
@@ -53,22 +58,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
             echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
-            try {
-                $data = array('gibbonStaffID' => $gibbonStaffID);
-                $sql = 'SELECT gibbonStaff.*, title, surname, preferredName, initials, dateStart, dateEnd FROM gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStaffID=:gibbonStaffID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
+            $staffGateway = $container->get(StaffGateway::class);
+            $staff = $staffGateway->selectStaffByStaffID($gibbonStaffID);
 
-            if ($result->rowCount() != 1) {
+            if ($staff->isEmpty()) {
                 echo "<div class='error'>";
                 echo __('The specified record cannot be found.');
                 echo '</div>';
             } else {
                 //Let's go!
-                $values = $result->fetch();
+                $values = $staff->fetch();
                 $gibbonPersonID = $values['gibbonPersonID'];
 
                 if ($search != '' or $allStaff != '') {
@@ -76,12 +75,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/staff_manage.php&search=$search&allStaff=$allStaff'>".__('Back to Search Results').'</a>';
                     echo '</div>';
                 }
-                echo '<h3>'.__('General Information').'</h3>';
 
                 $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/staff_manage_editProcess.php?gibbonStaffID='.$values['gibbonStaffID']."&search=$search&allStaff=$allStaff");
+                $form->setTitle(__('General Information'));
 
                 $form->setFactory(DatabaseFormFactory::create($pdo));
-                $form->setClass('smallIntBorder fullWidth');
 
                 $form->addHiddenValue('address', $_SESSION[$guid]['address']);
                 $form->addHiddenValue('gibbonPersonID', $values['gibbonPersonID']);
@@ -97,12 +95,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     $row->addTextField('initials')->maxlength(4);
 
                 $types = array(__('Basic') => array ('Teaching' => __('Teaching'), 'Support' => __('Support')));
-                $sql = "SELECT name as value, name FROM gibbonRole WHERE category='Staff' ORDER BY name";
-                $result = $pdo->executeQuery(array(), $sql);
-                $types[__('System Roles')] = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
+                $roleGateway = $container->get(RoleGateway::class);
+                // CRITERIA
+                $criteriaCategory = $roleGateway->newQueryCriteria()
+                    ->sortBy(['gibbonRole.name'])
+                    ->filterBy('category:Staff')
+                    ->fromPOST();
+                
+                $rolesCategoriesStaff = $roleGateway->queryRoles($criteriaCategory);
+                
+                $typesCategories = array();
+                foreach($rolesCategoriesStaff as $roleCategoriesStaff) {
+                   $typesCategories[$roleCategoriesStaff['name']] = __($roleCategoriesStaff['name']);
+                }
+                $types[__('System Roles')] = $typesCategories;
+
                 $row = $form->addRow();
                     $row->addLabel('type', __('Type'));
-                    $row->addSelect('type')->fromArray($types)->placeholder()->isRequired();
+                    $row->addSelect('type')->fromArray($types)->placeholder()->required();
 
                 $row = $form->addRow();
                     $row->addLabel('jobTitle', __('Job Title'));
@@ -139,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     $row->addTextField('qualifications')->maxlength(80);
 
                 $row = $form->addRow();
-                    $row->addLabel('biographicalGrouping', __('Grouping'));
+                    $row->addLabel('biographicalGrouping', __('Grouping'))->description(__('Used to group staff when creating a staff directory.'));
                     $row->addTextField('biographicalGrouping')->maxlength(100);
 
                 $row = $form->addRow();
@@ -158,140 +168,74 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 
                 echo $form->getOutput();
 
-                echo '<h3>'.__('Facilities').'</h3>';
-                try {
-                    $data = array('gibbonPersonID1' => $gibbonPersonID, 'gibbonPersonID2' => $gibbonPersonID, 'gibbonPersonID3' => $gibbonPersonID, 'gibbonPersonID4' => $gibbonPersonID, 'gibbonPersonID5' => $gibbonPersonID, 'gibbonPersonID6' => $gibbonPersonID, 'gibbonSchoolYearID1' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                    $sql = '(SELECT gibbonSpace.*, gibbonSpacePersonID, usageType, NULL AS \'exception\' FROM gibbonSpacePerson JOIN gibbonSpace ON (gibbonSpacePerson.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonPersonID=:gibbonPersonID1)
-                    UNION
-                    (SELECT DISTINCT gibbonSpace.*, NULL AS gibbonSpacePersonID, \'Roll Group\' AS usageType, NULL AS \'exception\' FROM gibbonRollGroup JOIN gibbonSpace ON (gibbonRollGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE (gibbonPersonIDTutor=:gibbonPersonID2 OR gibbonPersonIDTutor2=:gibbonPersonID3 OR gibbonPersonIDTutor3=:gibbonPersonID4) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID1)
-                    UNION
-                    (SELECT DISTINCT gibbonSpace.*, NULL AS gibbonSpacePersonID, \'Timetable\' AS usageType, gibbonTTDayRowClassException.gibbonPersonID AS \'exception\' FROM gibbonSpace JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND (gibbonTTDayRowClassException.gibbonPersonID=:gibbonPersonID6 OR gibbonTTDayRowClassException.gibbonPersonID IS NULL)) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID5)
-                    ORDER BY name';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
+                $staffFacilityGateway = $container->get(StaffFacilityGateway::class);
+                $criteria = $staffFacilityGateway->newQueryCriteria();
+                $facilities = $staffFacilityGateway->queryFacilitiesByPerson($criteria, $gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID);
 
-                echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/staff_manage_edit_facility_add.php&gibbonPersonID=$gibbonPersonID&gibbonStaffID=$gibbonStaffID&search=$search'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-                echo '</div>';
+                $table = DataTable::create('facilities');
 
-                if ($result->rowCount() < 1) {
-                    echo "<div class='error'>";
-                    echo __('There are no records to display.');
-                    echo '</div>';
-                } else {
-                    echo "<table cellspacing='0' style='width: 100%'>";
-                    echo "<tr class='head'>";
-                    echo '<th>';
-                    echo __('Name');
-                    echo '</th>';
-                    echo '<th>';
-                    echo __('Usage').'<br/>';
-                    echo '</th>';
-                    echo '<th>';
-                    echo __('Actions');
-                    echo '</th>';
-                    echo '</tr>';
+                $table->addHeaderAction('add', __('Add'))
+                    ->setURL('/modules/Staff/staff_manage_edit_facility_add.php')
+                    ->addParam('gibbonPersonID', $gibbonPersonID)
+                    ->addParam('gibbonStaffID', $gibbonStaffID)
+                    ->addParam('search', $search)
+                    ->displayLabel();
 
-                    $count = 0;
-                    $rowNum = 'odd';
-                    while ($row = $result->fetch()) {
-                        if ($row['exception'] == null) {
-                            if ($count % 2 == 0) {
-                                $rowNum = 'even';
-                            } else {
-                                $rowNum = 'odd';
-                            }
-                            ++$count;
+                $table->addColumn('name', __('Name'));
+                $table->addColumn('usageType', __('Usage'))->translatable();    
 
-                            echo "<tr class=$rowNum>";
-                            echo '<td>';
-                            echo $row['name'];
-                            echo '</td>';
-                            echo '<td>';
-                            echo $row['usageType'];
-                            echo '</td>';
-                            echo '<td>';
-                            if ($row['usageType'] != 'Roll Group' and $row['usageType'] != 'Timetable') {
-                                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/staff_manage_edit_facility_delete.php&gibbonSpacePersonID='.$row['gibbonSpacePersonID']."&gibbonStaffID=$gibbonStaffID&search=$search&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-                            }
-                            echo '</td>';
-                            echo '</tr>';
+                $table->addActionColumn()
+                    ->addParam('gibbonSpacePersonID')
+                    ->addParam('gibbonStaffID', $gibbonStaffID)
+                    ->addParam('search', $search)
+                    ->format(function ($room, $actions) use ($guid) {
+                        if ($room['usageType'] != 'Roll Group' and $room['usageType'] != 'Timetable') {
+                            $actions->addAction('delete', __('Delete'))
+                                    ->setURL('/modules/Staff/staff_manage_edit_facility_delete.php');
                         }
-                    }
-                    echo '</table>';
-                }
+                    });
 
+                echo $table->render($facilities);
 
                 if ($highestAction == 'Manage Staff_confidential') {
                     echo '<h3>'.__('Contracts').'</h3>';
-                    try {
-                        $data = array('gibbonStaffID' => $gibbonStaffID);
-                        $sql = 'SELECT * FROM gibbonStaffContract WHERE gibbonStaffID=:gibbonStaffID ORDER BY dateStart DESC';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
 
-                    echo "<div class='linkTop'>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/staff_manage_edit_contract_add.php&gibbonStaffID=$gibbonStaffID&search=$search'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-                    echo '</div>';
+                    $contractsGateway = $container->get(StaffContractGateway::class);
 
-                    if ($result->rowCount() < 1) {
-                        echo "<div class='error'>";
-                        echo __('There are no records to display.');
-                        echo '</div>';
-                    } else {
-                        echo "<table cellspacing='0' style='width: 100%'>";
-                        echo "<tr class='head'>";
-                        echo '<th>';
-                        echo __('Title');
-                        echo '</th>';
-                        echo '<th>';
-                        echo __('Status').'<br/>';
-                        echo '</th>';
-                        echo '<th>';
-                        echo __('Dates');
-                        echo '</th>';
-                        echo '<th>';
-                        echo __('Actions');
-                        echo '</th>';
-                        echo '</tr>';
+                    $criteria = $contractsGateway->newQueryCriteria()
+                        ->sortBy(["dateStart"], 'DESC');
 
-                        $count = 0;
-                        $rowNum = 'odd';
-                        while ($row = $result->fetch()) {
-                            if ($count % 2 == 0) {
-                                $rowNum = 'even';
+                    $contracts = $contractsGateway->queryContractsByStaff($criteria, $gibbonStaffID);
+
+                    $table = DataTable::create('contracts');
+
+                    $table->addHeaderAction('add', __('Add'))
+                        ->setURL('/modules/Staff/staff_manage_edit_contract_add.php')
+                        ->addParam('gibbonStaffID', $gibbonStaffID)
+                        ->addParam('search', $search)
+                        ->displayLabel();
+
+                    $table->addColumn('title', __('Title'));
+                    $table->addColumn('status', __('Status'));
+                    $table->addColumn('dates', __('Dates'))
+                        ->format(function ($row) {
+                            if ($row["dateEnd"] == '') {
+                                return Format::date($row['dateStart']);
                             } else {
-                                $rowNum = 'odd';
+                                return Format::dateRange($row['dateStart'], $row['dateEnd']);
                             }
-                            ++$count;
+                        });;
 
-                            echo "<tr class=$rowNum>";
-                            echo '<td>';
-                            echo $row['title'];
-                            echo '</td>';
-                            echo '<td>';
-                            echo $row['status'];
-                            echo '</td>';
-                            echo '<td>';
-                            if ($row['dateEnd'] == '') {
-                                echo dateConvertBack($guid, $row['dateStart']);
-                            } else {
-                                echo dateConvertBack($guid, $row['dateStart']).' - '.dateConvertBack($guid, $row['dateEnd']);
-                            }
-                            echo '</td>';
-                            echo '<td>';
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/staff_manage_edit_contract_edit.php&gibbonStaffContractID='.$row['gibbonStaffContractID']."&gibbonStaffID=$gibbonStaffID&search=$search'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                            echo '</td>';
-                            echo '</tr>';
-                        }
-                        echo '</table>';
-                    }
+                    $table->addActionColumn()
+                    ->addParam('gibbonStaffContractID')
+                    ->addParam('gibbonStaffID', $gibbonStaffID)
+                    ->addParam('search', $search)
+                    ->format(function ($staff, $actions) use ($guid) {
+                        $actions->addAction('edit', __('Edit'))
+                            ->setURL('/modules/Staff/staff_manage_edit_contract_edit.php');
+                    });
+
+                    echo $table->render($contracts);
                 }
             }
         }

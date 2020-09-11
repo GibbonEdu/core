@@ -32,6 +32,7 @@ class CourseEnrolmentGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonCourseClassPerson';
+    private static $primaryKey = 'gibbonCourseClassPersonID';
 
     private static $searchableColumns = ['gibbonCourse.name', 'gibbonCourse.nameShort'];
     
@@ -39,18 +40,17 @@ class CourseEnrolmentGateway extends QueryableGateway
      * @param QueryCriteria $criteria
      * @return DataSet
      */
-    public function queryCourseEnrolmentByClass(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonCourseClassID, $left = false)
+    public function queryCourseEnrolmentByClass(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonCourseClassID, $left = false, $includeExpected = false)
     {
         $query = $this
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonCourseClass.gibbonCourseClassID', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.status', 'gibbonPerson.email', 'gibbonCourseClassPerson.reportable', 'gibbonCourseClassPerson.role', "(CASE WHEN gibbonCourseClassPerson.role NOT LIKE 'Student%' THEN 0 ELSE 1 END) as roleSortOrder"
+                'gibbonCourseClassPerson.gibbonCourseClassPersonID', 'gibbonCourseClass.gibbonCourseClassID', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.title', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.status', 'gibbonPerson.dateStart', 'gibbonPerson.dateEnd', 'gibbonPerson.email', 'gibbonPerson.privacy', 'gibbonPerson.image_240', 'gibbonPerson.dob', 'gibbonCourseClassPerson.reportable', 'gibbonCourseClassPerson.role', "(CASE WHEN gibbonCourseClassPerson.role NOT LIKE 'Student%' THEN 0 ELSE 1 END) as roleSortOrder", "'Student' as roleCategory", 'gibbonCourse.gibbonYearGroupIDList as yearGroup'
             ])
             ->innerJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID')
             ->innerJoin('gibbonCourse', 'gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID')
             ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID')
-            ->where("(gibbonPerson.status = 'Full' OR gibbonPerson.status = 'Expected')")
             ->where('gibbonCourse.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->where('gibbonCourseClassPerson.gibbonCourseClassID = :gibbonCourseClassID')
@@ -61,6 +61,23 @@ class CourseEnrolmentGateway extends QueryableGateway
         } else {
             $query->where("gibbonCourseClassPerson.role NOT LIKE '%Left'");
         }
+
+        if ($includeExpected) {
+            $query->where("(gibbonPerson.status = 'Full' OR gibbonPerson.status = 'Expected')")
+                  ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :today)')
+                  ->bindValue('today', date('Y-m-d'));
+        } else {
+            $query->where("gibbonPerson.status = 'Full'")
+                  ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :today)')
+                  ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :today)')
+                  ->bindValue('today', date('Y-m-d'));
+        }
+
+        $criteria->addFilterRules([
+            'nonStudents' => function ($query, $role) {
+                return $query->where("gibbonCourseClassPerson.role NOT LIKE 'Student%'");
+            },
+        ]);
 
         return $this->runQuery($query, $criteria);
     }
@@ -145,6 +162,25 @@ class CourseEnrolmentGateway extends QueryableGateway
                 WHERE gibbonRollGroup.gibbonRollGroupID=:gibbonRollGroupID 
                 AND gibbonPerson.status='Full' 
                 ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectClassTeachersByStudent($gibbonSchoolYearID, $gibbonPersonIDStudent)
+    {
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent);
+        $sql = "SELECT DISTINCT teacher.gibbonPersonID, teacher.surname, teacher.preferredName, teacher.email 
+                FROM gibbonCourseClassPerson AS studentClass
+                JOIN gibbonCourseClassPerson AS teacherClass ON (studentClass.gibbonCourseClassID=teacherClass.gibbonCourseClassID)
+                JOIN gibbonPerson AS teacher ON (teacherClass.gibbonPersonID=teacher.gibbonPersonID)
+                JOIN gibbonCourseClass ON (studentClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+                WHERE teacher.status='Full' 
+                AND teacherClass.role='Teacher' 
+                AND studentClass.role='Student' 
+                AND studentClass.gibbonPersonID=:gibbonPersonIDStudent 
+                AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID 
+                ORDER BY teacher.preferredName, teacher.surname, teacher.email";
 
         return $this->db()->select($sql, $data);
     }

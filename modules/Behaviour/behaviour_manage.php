@@ -72,9 +72,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             $row->addLabel('gibbonYearGroupID',__('Year Group'));
             $row->addSelectYearGroup('gibbonYearGroupID')->placeholder()->selected($gibbonYearGroupID);
 
+        $arrTypes = array(
+            'Positive' => __('Positive'),
+            'Negative' => __('Negative')
+        );
+                
         $row = $form->addRow();
             $row->addLabel('type',__('Type'));
-            $row->addSelect('type')->fromArray(array('Positive', 'Negative'))->selected($type)->placeholder();
+            $row->addSelect('type')->fromArray($arrTypes)->selected($type)->placeholder();
 
 
         $row = $form->addRow();
@@ -85,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $behaviourGateway = $container->get(BehaviourGateway::class);
 
         // CRITERIA
-        $criteria = $behaviourGateway->newQueryCriteria()
+        $criteria = $behaviourGateway->newQueryCriteria(true)
             ->sortBy('timestamp', 'DESC')
             ->filterBy('student', $gibbonPersonID)
             ->filterBy('rollGroup', $gibbonRollGroupID)

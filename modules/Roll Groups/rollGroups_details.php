@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Tables\Prefab\RollGroupTable;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_details.php') == false) {
     //Acess denied
@@ -76,9 +78,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_det
             $primaryTutor240 = '';
             while ($rowTutor = $resultTutor->fetch()) {
                 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php')) {
-                    echo "<i><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowTutor['gibbonPersonID']."'>".formatName('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', false, true).'</a></i>';
+                    echo "<i><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowTutor['gibbonPersonID']."'>".Format::name('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', false, true).'</a></i>';
                 } else {
-                    echo '<i>'.formatName('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', false, true);
+                    echo '<i>'.Format::name('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', false, true);
                 }
                 if ($rowTutor['gibbonPersonID'] == $row['gibbonPersonIDTutor']) {
                     $primaryTutor240 = $rowTutor['image_240'];
@@ -101,9 +103,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_det
             }
             while ($rowTutor = $resultTutor->fetch()) {
                 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php')) {
-                    echo "<i><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowTutor['gibbonPersonID']."'>".formatName('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', false, true).'</a></i>';
+                    echo "<i><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowTutor['gibbonPersonID']."'>".Format::name('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', false, true).'</a></i>';
                 } else {
-                    echo '<i>'.formatName('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', false, true);
+                    echo '<i>'.Format::name('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', false, true);
                 }
                 echo '</i><br/>';
             }
@@ -124,18 +126,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_det
             }
             echo '</table>';
 
-            echo '<h2>';
-            echo __('Filters');
-            echo '</h2>';
-
-            $sortBy = null;
-            if (isset($_GET['sortBy'])) {
-                $sortBy = $_GET['sortBy'];
-            }
+            $sortBy = $_GET['sortBy'] ?? 'rollOrder, surname, preferredName';
 
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
 
             $form->setFactory(DatabaseFormFactory::create($pdo));
+            $form->setTitle(__('Filters'));
             $form->setClass('noIntBorder fullWidth');
 
             $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/rollGroups_details.php");
@@ -143,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_det
 
             $row = $form->addRow();
                 $row->addLabel('sortBy', __('Sort By'));
-                $row->addSelect('sortBy')->fromArray(array('normal' => __('Roll Order'), 'surname' => __('Surname'), 'preferredName' => __('Preferred Name')))->selected($sortBy)->isRequired();
+                $row->addSelect('sortBy')->fromArray(array('rollOrder, surname, preferredName' => __('Roll Order'), 'surname, preferredName' => __('Surname'), 'preferredName, surname' => __('Preferred Name')))->selected($sortBy)->required();
 
             $row = $form->addRow();
                 $row->addFooter();
@@ -151,10 +147,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_det
 
             echo $form->getOutput();
 
-            echo '<h3>';
-            echo __('Students');
-            echo '</h3>';
-            echo getRollGroupTable($guid, $gibbonRollGroupID, 5, $connection2, true, $sortBy, true);
+            // Students
+            $table = $container->get(RollGroupTable::class);
+            $table->build($gibbonRollGroupID, true, true, $sortBy);
+
+            echo $table->getOutput();
 
             //Set sidebar
             $_SESSION[$guid]['sidebarExtra'] = getUserPhoto($guid, $primaryTutor240, 240);

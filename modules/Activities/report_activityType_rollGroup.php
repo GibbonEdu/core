@@ -53,11 +53,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 
         $row = $form->addRow();
             $row->addLabel('gibbonRollGroupID', __('Roll Group'));
-            $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->isRequired();
+            $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->required();
 
         $row = $form->addRow();
             $row->addLabel('status', __('Status'));
-            $row->addSelect('status')->fromArray(array('Accepted' => __('Accepted'), 'Registered' => __('Registered')))->selected($status)->isRequired();
+            $row->addSelect('status')->fromArray(array('Accepted' => __('Accepted'), 'Registered' => __('Registered')))->selected($status)->required();
 
         $row = $form->addRow();
             $row->addFooter();
@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     $studentGateway = $container->get(StudentGateway::class);
 
     // CRITERIA
-    $criteria = $activityGateway->newQueryCriteria()
+    $criteria = $activityGateway->newQueryCriteria(true)
         ->searchBy($activityGateway->getSearchableColumns(), isset($_GET['search'])? $_GET['search'] : '')
         ->sortBy(['surname', 'preferredName'])
         ->pageSize(!empty($viewMode) ? 0 : 50)

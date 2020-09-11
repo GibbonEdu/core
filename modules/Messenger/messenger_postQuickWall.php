@@ -41,9 +41,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
     echo "<div class='warning'>";
     echo __('This page allows you to quick post a message wall entry to all users, without needing to set a range of options, making it a quick way to post to the Message Wall.');
 	echo '</div>';
-	
+
 	$form = Form::create('postQuickWall', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/messenger_postQuickWallProcess.php?address='.$_GET['q']);
-                
+
 	$form->addHiddenValue('messageWall', 'Y');
 
 	$sql = "SELECT DISTINCT category FROM gibbonRole ORDER BY category";
@@ -52,17 +52,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
 	foreach($categories as $key => $category) {
 		$form->addHiddenValue("roleCategories[$key]", $category);
 	}
-	
+
 	$form->addRow()->addHeading(__('Delivery Mode'));
 
 	$row = $form->addRow();
 		$row->addLabel('messageWallLabel', __('Message Wall'))->description(__('Place this message on user\'s message wall?'));
 		$row->addTextField('messageWallText')->readonly()->setValue(__('Yes'));
 
+    if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage.php", "Manage Messages_all")) {
+        $row = $form->addRow();
+            $row->addLabel('messageWallPin', __('Pin To Top?'));
+            $row->addYesNo('messageWallPin')->selected('N')->required();
+    }
+
 	$row = $form->addRow();
         $row->addLabel('date1', __('Publication Dates'))->description(__('Select up to three individual dates.'));
 		$col = $row->addColumn('date1')->addClass('stacked');
-		$col->addDate('date1')->setValue(dateConvertBack($guid, date('Y-m-d')))->isRequired();
+		$col->addDate('date1')->setValue(dateConvertBack($guid, date('Y-m-d')))->required();
 		$col->addDate('date2');
 		$col->addDate('date3');
 
@@ -70,12 +76,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
 
     $row = $form->addRow();
         $row->addLabel('subject', __('Subject'));
-        $row->addTextField('subject')->isRequired()->maxLength(60);
+        $row->addTextField('subject')->required()->maxLength(60);
 
     $row = $form->addRow();
         $col = $row->addColumn('body');
         $col->addLabel('body', __('Body'));
-        $col->addEditor('body', $guid)->isRequired()->setRows(20)->showMedia(true);
+        $col->addEditor('body', $guid)->required()->setRows(20)->showMedia(true);
 
     $row = $form->addRow();
         $row->addFooter();

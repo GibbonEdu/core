@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include './gibbon.php';
 
 //Check to see if academic year id variables are set, if not set them
-if (isset($_SESSION[$guid]['gibbonAcademicYearID']) == false or isset($_SESSION[$guid]['gibbonSchoolYearName']) == false) {
+if ($gibbon->session->exists('gibbonAcademicYearID') == false or $gibbon->session->exists('gibbonSchoolYearName') == false) {
     setCurrentSchoolYear($guid, $connection2);
 }
 
@@ -28,13 +28,13 @@ if (isset($_SESSION[$guid]['gibbonAcademicYearID']) == false or isset($_SESSION[
 $password = $_POST['password'];
 $passwordNew = $_POST['passwordNew'];
 $passwordConfirm = $_POST['passwordConfirm'];
-$forceReset = $_SESSION[$guid]['passwordForceReset'];
+$forceReset = $gibbon->session->get('passwordForceReset');
 
 if ($forceReset != 'Y') {
     $forceReset = 'N';
 }
 
-$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=preferences.php&forceReset=$forceReset";
+$URL = $gibbon->session->get('absoluteURL')."/index.php?q=preferences.php&forceReset=$forceReset";
 
 //Check passwords are not blank
 if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
@@ -59,7 +59,7 @@ if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
                 header("Location: {$URL}");
             } else {
                 //Check current password
-                if (hash('sha256', $_SESSION[$guid]['passwordStrongSalt'].$password) != $_SESSION[$guid]['passwordStrong']) {
+                if (hash('sha256', $gibbon->session->get('passwordStrongSalt').$password) != $gibbon->session->get('passwordStrong')) {
                     $URL .= '&return=error3';
                     header("Location: {$URL}");
                 } else {
@@ -67,7 +67,7 @@ if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
                     $salt = getSalt();
                     $passwordStrong = hash('sha256', $salt.$passwordNew);
                     try {
-                        $data = array('passwordStrong' => $passwordStrong, 'salt' => $salt, 'username' => $_SESSION[$guid]['username']);
+                        $data = array('passwordStrong' => $passwordStrong, 'salt' => $salt, 'username' => $gibbon->session->get('username'));
                         $sql = "UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:salt WHERE (username=:username)";
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
@@ -81,7 +81,7 @@ if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
                     if ($forceReset == 'Y') {
                         //Update passwordForceReset field
                         try {
-                            $data = array('username' => $_SESSION[$guid]['username']);
+                            $data = array('username' => $gibbon->session->get('username'));
                             $sql = "UPDATE gibbonPerson SET passwordForceReset='N' WHERE username=:username";
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
@@ -90,18 +90,18 @@ if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
                             header("Location: {$URL}");
                             exit();
                         }
-                        $_SESSION[$guid]['passwordForceReset'] = 'N';
-                        $_SESSION[$guid]['passwordStrongSalt'] = $salt;
-                        $_SESSION[$guid]['passwordStrong'] = $passwordStrong;
-                        $_SESSION[$guid]['pageLoads'] = null;
+                        $gibbon->session->set('passwordForceReset', 'N');
+                        $gibbon->session->set('passwordStrongSalt', $salt);
+                        $gibbon->session->set('passwordStrong', $passwordStrong);
+                        $gibbon->session->set('pageLoads', null);
                         $URL .= '&return=successa';
                         header("Location: {$URL}");
                         exit() ;
                     }
 
-                    $_SESSION[$guid]['passwordStrongSalt'] = $salt;
-                    $_SESSION[$guid]['passwordStrong'] = $passwordStrong;
-                    $_SESSION[$guid]['pageLoads'] = null;
+                    $gibbon->session->set('passwordStrongSalt', $salt);
+                    $gibbon->session->set('passwordStrong', $passwordStrong);
+                    $gibbon->session->set('pageLoads', null);
                     $URL .= '&return=success0';
                     header("Location: {$URL}");
                 }

@@ -71,11 +71,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
         $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_rollGroupSummary.php");
 
         $row = $form->addRow();
-            $row->addLabel('dateFrom', __('From Date'))->description('Start date must be before this date.')->append('<br/>')->append(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
+            $row->addLabel('dateFrom', __('From Date'))->description(__('Start date must be before this date.'))->append('<br/>')->append(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
             $row->addDate('dateFrom')->setValue($dateFrom);
 
         $row = $form->addRow();
-            $row->addLabel('dateTo', __('To Date'))->description('End date must be after this date.')->append('<br/>')->append(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
+            $row->addLabel('dateTo', __('To Date'))->description(__('End date must be after this date.'))->append('<br/>')->append(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
             $row->addDate('dateTo')->setValue($dateTo);
 
 
@@ -93,7 +93,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
         ->sortBy(['gibbonYearGroup.sequenceNumber', 'gibbonRollGroup.nameShort'])
         ->filterBy('from', Format::dateConvert($dateFrom))
         ->filterBy('to', Format::dateConvert($dateTo))
-        ->pageSize(0)
         ->fromPOST();
 
     $rollGroups = $reportGateway->queryStudentCountByRollGroup($criteria, $gibbonSchoolYearID);
@@ -114,9 +113,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
     $table->addColumn('total', __('Total'));
 
     $rollGroupsData = $rollGroups->toArray();
+    $filteredAges = array_filter(array_column($rollGroupsData, 'meanAge'));
+
     $rollGroupsData[] = [
         'rollGroup'   => __('All Roll Groups'),
-        'meanAge'     => number_format(array_sum(array_column($rollGroupsData, 'meanAge')) / count($rollGroupsData), 1),
+        'meanAge'     => !empty($filteredAges) ? number_format(array_sum($filteredAges) / count($filteredAges), 1) : 0,
         'totalMale'   => array_sum(array_column($rollGroupsData, 'totalMale')),
         'totalFemale' => array_sum(array_column($rollGroupsData, 'totalFemale')),
         'total'       => array_sum(array_column($rollGroupsData, 'total')),

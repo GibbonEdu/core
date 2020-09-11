@@ -17,11 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\View\View;
+use Gibbon\Services\Format;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Services\Format;
-
-$_SESSION[$guid]['report_student_emergencySummary.php_choices'] = '';
+use Gibbon\Tables\Prefab\ReportTable;
+use Gibbon\Domain\User\FamilyGateway;
+use Gibbon\Domain\Students\StudentReportGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -33,181 +35,130 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_em
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Student Emergency Data Summary'));
-
-    echo '<p>';
-    echo __('This report prints a summary of emergency data for the selected students. In case of emergency, please try to contact parents first, and if they cannot be reached then contact the listed emergency contacts.');
-    echo '</p>';
-
-    echo '<h2>';
-    echo __('Choose Students');
-    echo '</h2>';
-
-    $choices = isset($_POST['gibbonPersonID'])? $_POST['gibbonPersonID'] : array();
-
-    $form = Form::create('action',  $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/report_student_emergencySummary.php");
-
-    $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
-
-    $row = $form->addRow();
-        $row->addLabel('gibbonPersonID', __('Students'));
-        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array("allStudents" => false, "byName" => true, "byRoll" => true))->isRequired()->placeholder()->selectMultiple()->selected($choices);
-
-    $row = $form->addRow();
-        $row->addFooter();
-        $row->addSearchSubmit($gibbon->session);
-
-    echo $form->getOutput();
-
-    if (count($choices) > 0) {
-        $_SESSION[$guid]['report_student_emergencySummary.php_choices'] = $choices;
-
-        echo '<h2>';
-        echo __('Report Data');
-        echo '</h2>';
-
-        try {
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-            $sqlWhere = ' AND (';
-            for ($i = 0; $i < count($choices); ++$i) {
-                $data[$choices[$i]] = $choices[$i];
-                $sqlWhere = $sqlWhere.'gibbonPerson.gibbonPersonID=:'.$choices[$i].' OR ';
-            }
-            $sqlWhere = substr($sqlWhere, 0, -4);
-            $sqlWhere = $sqlWhere.')';
-            $sql = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonRollGroup.name AS name, emergency1Name, emergency1Number1, emergency1Number2, emergency1Relationship, emergency2Name, emergency2Number1, emergency2Number2, emergency2Relationship FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE status='Full' AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID $sqlWhere ORDER BY surname, preferredName";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
-
-        echo "<div class='linkTop'>";
-        echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module']."/report_student_emergencySummary_print.php'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
-        echo '</div>';
-
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __('Student');
-        echo '</th>';
-        echo '<th colspan=3>';
-        echo __('Last Update');
-        echo '</th>';
-        echo '</tr>';
-
-        $count = 0;
-        $rowNum = 'odd';
-        while ($row = $result->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
-            }
-            ++$count;
-
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo Format::name('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
-            echo '</td>';
-            echo '<td colspan=3>';
-                        //Get details of last personal data form update
-                        try {
-                            $dataMedical = array('gibbonPersonID' => $row['gibbonPersonID']);
-                            $sqlMedical = "SELECT * FROM gibbonPersonUpdate WHERE gibbonPersonID=:gibbonPersonID AND status='Complete' ORDER BY timestamp DESC";
-                            $resultMedical = $connection2->prepare($sqlMedical);
-                            $resultMedical->execute($dataMedical);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
-						if ($resultMedical->rowCount() > 0) {
-							$rowMedical = $resultMedical->fetch();
-                            //Is last update more recent than 90 days?
-                            if (substr($rowMedical['timestamp'], 0, 10) > date('Y-m-d', (time() - (90 * 24 * 60 * 60)))) {
-                                echo dateConvertBack($guid, substr($rowMedical['timestamp'], 0, 10));
-                            } else {
-                                echo "<span style='color: #ff0000; font-weight: bold'>".dateConvertBack($guid, substr($rowMedical['timestamp'], 0, 10)).'</span>';
-                            }
-            } else {
-                echo "<span style='color: #ff0000; font-weight: bold'>".__('NA').'</span>';
-            }
-            echo '</td>';
-            echo '</tr>';
-
-            echo "<tr class=$rowNum>";
-            echo '<td></td>';
-            echo "<td style='border-top: 1px solid #aaa; vertical-align: top'>";
-            echo '<b><i>'.__('Parents').'</i></b><br/>';
-            try {
-                $dataFamily = array('gibbonPersonID' => $row['gibbonPersonID']);
-                $sqlFamily = 'SELECT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID=:gibbonPersonID';
-                $resultFamily = $connection2->prepare($sqlFamily);
-                $resultFamily->execute($dataFamily);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            while ($rowFamily = $resultFamily->fetch()) {
-                try {
-                    $dataFamily2 = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
-                    $sqlFamily2 = 'SELECT * FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonPerson.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName';
-                    $resultFamily2 = $connection2->prepare($sqlFamily2);
-                    $resultFamily2->execute($dataFamily2);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                while ($rowFamily2 = $resultFamily2->fetch()) {
-                    echo '<u>'.Format::name($rowFamily2['title'], $rowFamily2['preferredName'], $rowFamily2['surname'], 'Parent').'</u><br/>';
-                    $numbers = 0;
-                    for ($i = 1; $i < 5; ++$i) {
-                        if ($rowFamily2['phone'.$i] != '') {
-                            if ($rowFamily2['phone'.$i.'Type'] != '') {
-                                echo '<i>'.$rowFamily2['phone'.$i.'Type'].':</i> ';
-                            }
-                            if ($rowFamily2['phone'.$i.'CountryCode'] != '') {
-                                echo '+'.$rowFamily2['phone'.$i.'CountryCode'].' ';
-                            }
-                            echo $rowFamily2['phone'.$i].'<br/>';
-                            ++$numbers;
-                        }
-                    }
-                    if ($numbers == 0) {
-                        echo "<span style='font-size: 85%; font-style: italic'>".__('No number available.').'</span><br/>';
-                    }
-                }
-            }
-            echo '</td>';
-            echo "<td style='border-top: 1px solid #aaa; vertical-align: top'>";
-            echo '<b><i>'.__('Emergency Contact 1').'</i></b><br/>';
-            echo '<u><i>'.__('Name').'</i></u>: '.$row['emergency1Name'].'<br/>';
-            echo '<u><i>'.__('Number').'</i></u>: '.$row['emergency1Number1'].'<br/>';
-            if ($row['emergency1Number2'] !== '') {
-                echo '<u><i>'.__('Number 2').'</i></u>: '.$row['emergency1Number2'].'<br/>';
-            }
-            if ($row['emergency1Relationship'] !== '') {
-                echo '<u><i>'.__('Relationship').'</i></u>: '.$row['emergency1Relationship'].'<br/>';
-            }
-            echo '</td>';
-            echo "<td style='border-top: 1px solid #aaa; vertical-align: top'>";
-            echo '<b><i>'.__('Emergency Contact 2').'</i></b><br/>';
-            echo '<u><i>'.__('Name').'</i></u>: '.$row['emergency2Name'].'<br/>';
-            echo '<u><i>'.__('Number').'</i></u>: '.$row['emergency2Number1'].'<br/>';
-            if ($row['emergency2Number2'] !== '') {
-                echo '<u><i>'.__('Number 2').'</i></u>: '.$row['emergency2Number2'].'<br/>';
-            }
-            if ($row['emergency2Relationship'] !== '') {
-                echo '<u><i>'.__('Relationship').'</i></u>: '.$row['emergency2Relationship'].'<br/>';
-            }
-            echo '</td>';
-            echo '</tr>';
-        }
-        if ($count == 0) {
-            echo "<tr class=$rowNum>";
-            echo '<td colspan=2>';
-            echo __('There are no records to display.');
-            echo '</td>';
-            echo '</tr>';
-        }
-        echo '</table>';
+    $viewMode = $_REQUEST['format'] ?? '';
+    $choices = $_POST['gibbonPersonID'] ?? [];
+    //If $choices is blank, check to see if session is being used to inject gibbonPersonID list
+    if (count($choices) == 0 && !empty($_SESSION[$guid]['report_student_emergencySummary.php_choices'])) {
+        $choices = $_SESSION[$guid]['report_student_emergencySummary.php_choices'];
     }
+    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+
+    if (isset($_GET['gibbonPersonIDList'])) {
+        $choices = explode(',', $_GET['gibbonPersonIDList']);
+    } else {
+        $_GET['gibbonPersonIDList'] = implode(',', $choices);
+    }
+
+    if (empty($viewMode)) {
+        $page->breadcrumbs->add(__('Student Emergency Data Summary'));
+
+        echo '<p>';
+        echo __('This report prints a summary of emergency data for the selected students. In case of emergency, please try to contact parents first, and if they cannot be reached then contact the listed emergency contacts.');
+        echo '</p>';
+
+        $choices = isset($_POST['gibbonPersonID'])? $_POST['gibbonPersonID'] : array();
+
+        $form = Form::create('action', $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/report_student_emergencySummary.php");
+        $form->setTitle(__('Choose Students'));
+        $form->setFactory(DatabaseFormFactory::create($pdo));
+        $form->setClass('noIntBorder fullWidth');
+
+        $row = $form->addRow();
+            $row->addLabel('gibbonPersonID', __('Students'));
+            $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array("allStudents" => false, "byName" => true, "byRoll" => true))
+                ->isRequired()
+                ->selectMultiple()
+                ->selected($choices);
+
+        $row = $form->addRow();
+            $row->addFooter();
+            $row->addSearchSubmit($gibbon->session);
+
+        echo $form->getOutput();
+    }
+
+    if (empty($choices)) {
+        return;
+    }
+
+    $cutoffDate = getSettingByScope($connection2, 'Data Updater', 'cutoffDate');
+    if (empty($cutoffDate)) $cutoffDate = Format::dateFromTimestamp(time() - (604800 * 26));
+
+    $reportGateway = $container->get(StudentReportGateway::class);
+    $familyGateway = $container->get(FamilyGateway::class);
+
+    // CRITERIA
+    $criteria = $reportGateway->newQueryCriteria(true)
+        ->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+        ->pageSize(!empty($viewMode) ? 0 : 50)
+        ->fromPOST();
+
+    $students = $reportGateway->queryStudentDetails($criteria, $choices);
+
+    // Join a set of family adults per student
+    $people = $students->getColumn('gibbonPersonID');
+    $familyAdults = $familyGateway->selectFamilyAdultsByStudent($people, true)->fetchGrouped();
+    $students->joinColumn('gibbonPersonID', 'familyAdults', $familyAdults);
+
+    // DATA TABLE
+    $table = ReportTable::createPaginated('studentEmergencySummary', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table->setTitle(__('Student Emergency Data Summary'));
+
+    $table->addMetaData('post', ['gibbonPersonID' => $choices]);
+
+    $table->addColumn('student', __('Student'))
+        ->description(__('Last Update'))
+        ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+        ->format(function ($student) use ($cutoffDate) {
+            $output = Format::name('', $student['preferredName'], $student['surname'], 'Student', true, true).'<br/><br/>';
+
+            $output .= ($student['lastPersonalUpdate'] < $cutoffDate) ? '<span style="color: #ff0000; font-weight: bold"><i>' : '<span><i>';
+            $output .= !empty($student['lastPersonalUpdate']) ? Format::date($student['lastPersonalUpdate']) : __('N/A');
+            $output .= '</i></span>';
+
+            return $output;
+        });
+
+    $view = new View($container->get('twig'));
+    $table->addColumn('contacts', __('Parents'))
+        ->width('25%')
+        ->notSortable()
+        ->format(function ($student) use ($view) {
+            return $view->fetchFromTemplate(
+                'formats/familyContacts.twig.html',
+                ['familyAdults' => $student['familyAdults']]
+            );
+        });
+
+    $table->addColumn('emergency1', __('Emergency Contact 1'))
+        ->width('25%')
+        ->sortable('emergency1Name')
+        ->format(function ($student) use ($view) {
+            return $view->fetchFromTemplate(
+                'formats/emergencyContact.twig.html',
+                [
+                    'name'         => $student['emergency1Name'],
+                    'number1'      => $student['emergency1Number1'],
+                    'number2'      => $student['emergency1Number2'],
+                    'relationship' => $student['emergency1Relationship'],
+                ]
+            );
+        });
+
+    $table->addColumn('emergency2', __('Emergency Contact 2'))
+        ->width('25%')
+        ->sortable('emergency2Name')
+        ->format(function ($student) use ($view) {
+            return $view->fetchFromTemplate(
+                'formats/emergencyContact.twig.html',
+                [
+                    'name'         => $student['emergency2Name'],
+                    'number1'      => $student['emergency2Number1'],
+                    'number2'      => $student['emergency2Number2'],
+                    'relationship' => $student['emergency2Relationship'],
+                ]
+            );
+        });
+
+    echo $table->render($students);
 }

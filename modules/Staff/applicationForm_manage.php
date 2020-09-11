@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
     $applicationGateway = $container->get(StaffApplicationFormGateway::class);
 
     // CRITERIA
-    $criteria = $applicationGateway->newQueryCriteria()
+    $criteria = $applicationGateway->newQueryCriteria(true)
         ->searchBy($applicationGateway->getSearchableColumns(), $search)
         ->sortBy('gibbonStaffApplicationForm.status')
         ->sortBy(['priority', 'timestamp'], 'DESC')
@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
         
         ->description(__('Milestones'))
         ->format(function($row) {
-            $output = '<strong>'.$row['status'].'</strong>';
+            $output = '<strong>'.__($row['status']).'</strong>';
             if ($row['status'] == 'Pending') {
                 $output .= '<br/><span class="small emphasis">'.trim(str_replace(',', '<br/>', $row['milestones'])).'</span>';
             }

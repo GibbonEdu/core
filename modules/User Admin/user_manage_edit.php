@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -86,8 +87,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                 echo '</div>';
 			}
 
-			echo '<div class="warning">';
-			echo __('Note that certain fields are hidden or revealed depending on the role categories (Staff, Student, Parent) that a user is assigned to. For example, parents do not get Emergency Contact fields, and stunders/staff do not get Employment fields.');
+			echo '<div class="message">';
+			echo __('Note that certain fields are hidden or revealed depending on the role categories (Staff, Student, Parent) that a user is assigned to. For example, parents do not get Emergency Contact fields, and students/staff do not get Employment fields.');
 			echo '</div>';
 
 			$form = Form::create('addUser', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/user_manage_editProcess.php?gibbonPersonID='.$gibbonPersonID.'&search='.$search);
@@ -105,19 +106,19 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 			$row = $form->addRow();
 				$row->addLabel('surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
-				$row->addTextField('surname')->isRequired()->maxLength(60);
+				$row->addTextField('surname')->required()->maxLength(60);
 
 			$row = $form->addRow();
 				$row->addLabel('firstName', __('First Name'))->description(__('First name as shown in ID documents.'));
-				$row->addTextField('firstName')->isRequired()->maxLength(60);
+				$row->addTextField('firstName')->required()->maxLength(60);
 
 			$row = $form->addRow();
 				$row->addLabel('preferredName', __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
-				$row->addTextField('preferredName')->isRequired()->maxLength(60);
+				$row->addTextField('preferredName')->required()->maxLength(60);
 
 			$row = $form->addRow();
 				$row->addLabel('officialName', __('Official Name'))->description(__('Full name as shown in ID documents.'));
-				$row->addTextField('officialName')->isRequired()->maxLength(150)->setTitle(__('Please enter full name as shown in ID documents'));
+				$row->addTextField('officialName')->required()->maxLength(150)->setTitle(__('Please enter full name as shown in ID documents'));
 
 			$row = $form->addRow();
 				$row->addLabel('nameInCharacters', __('Name In Characters'))->description(__('Chinese or other character-based name.'));
@@ -125,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 			$row = $form->addRow();
 				$row->addLabel('gender', __('Gender'));
-				$row->addSelectGender('gender')->isRequired();
+				$row->addSelectGender('gender')->required();
 
 			$row = $form->addRow();
 				$row->addLabel('dob', __('Date of Birth'));
@@ -166,7 +167,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 						return $carry;
 					}
 				}
-				$carry[$item['gibbonRoleID']] = $item['name'];
+				$carry[$item['gibbonRoleID']] = __($item['name']);
 				return $carry;
 			}, array());
 
@@ -186,7 +187,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 			} else {
                 $row = $form->addRow();
                 $row->addLabel('gibbonRoleIDPrimary', __('Primary Role'))->description(__('Controls what a user can do and see.'));
-                $row->addSelect('gibbonRoleIDPrimary')->fromArray($availableRoles)->isRequired()->placeholder();
+                $row->addSelect('gibbonRoleIDPrimary')->fromArray($availableRoles)->required()->placeholder();
 			}
 
 			// Grab the selected roles, and break apart into selectable roles and restricted roles
@@ -205,27 +206,27 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 				$restrictedRolesList = implode(', ', array_column($restrictedRoles, 'name'));
 
 				$row = $form->addRow();
-					$row->addLabel('gibbonRoleIDRestricted', __('Resticted Roles'));
+					$row->addLabel('gibbonRoleIDRestricted', __('Restricted Roles'));
 					$row->addTextField('gibbonRoleIDRestricted')->readOnly()->setValue($restrictedRolesList)->setClass('standardWidth');
 			}
 
             $row = $form->addRow();
                 $row->addLabel('username', __('Username'))->description(__('System login name.'));
                 $row->addUsername('username')
-                    ->isRequired()
+                    ->required()
                     ->setValue($values['username']);
 
 			$row = $form->addRow();
 				$row->addLabel('status', __('Status'))->description(__('This determines visibility within the system.'));
-				$row->addSelectStatus('status')->isRequired();
+				$row->addSelectStatus('status')->required();
 
 			$row = $form->addRow();
 				$row->addLabel('canLogin', __('Can Login?'));
-				$row->addYesNo('canLogin')->isRequired();
+				$row->addYesNo('canLogin')->required();
 
 			$row = $form->addRow();
 				$row->addLabel('passwordForceReset', __('Force Reset Password?'))->description(__('User will be prompted on next login.'));
-				$row->addYesNo('passwordForceReset')->isRequired();
+				$row->addYesNo('passwordForceReset')->required();
 
 			// CONTACT INFORMATION
 			$form->addRow()->addHeading(__('Contact Information'));
@@ -236,7 +237,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 			$uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
 			if ($uniqueEmailAddress == 'Y') {
-				$email->isUnique('./modules/User Admin/user_manage_emailAjax.php', array('gibbonPersonID' => $gibbonPersonID));
+				$email->uniqueField('./modules/User Admin/user_manage_emailAjax.php', array('gibbonPersonID' => $gibbonPersonID));
 			}
 
 			$row = $form->addRow();
@@ -289,7 +290,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 					$table = $row->addTable()->setClass('standardWidth');
 
                     while ($rowAddress = $resultAddress->fetch()) {
-                        $adressee = formatName($rowAddress['title'], $rowAddress['preferredName'], $rowAddress['surname'], $rowAddress['category']).' ('.$rowAddress['category'].')';
+                        $adressee = Format::name($rowAddress['title'], $rowAddress['preferredName'], $rowAddress['surname'], $rowAddress['category']).' ('.$rowAddress['category'].')';
 
                         $row = $table->addRow()->addClass('address');
                         $row->addTextField($addressCount.'-matchAddressLabel')->readOnly()->setValue($adressee)->setClass('fullWidth');
@@ -436,7 +437,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 			$row = $form->addRow();
 				$row->addLabel('citizenship1Passport', __('Citizenship 1 Passport Number'));
-				$row->addTextField('citizenship1Passport')->maxLength(30);
+                $row->addTextField('citizenship1Passport')->maxLength(30);
+
+            $row = $form->addRow();
+                $row->addLabel('citizenship1PassportExpiry', __('Citizenship 1 Passport Expiry Date'));
+                $row->addDate('citizenship1PassportExpiry');
 
 			$row = $form->addRow();
 				$row->addLabel('citizenship1PassportScan', __('Citizenship 1 Passport Scan'))->description(__('Less than 1440px by 900px').'. '.__('Accepts PDF files.'));
@@ -455,13 +460,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 			$row = $form->addRow();
 				$row->addLabel('citizenship2Passport', __('Citizenship 2 Passport Number'));
-				$row->addTextField('citizenship2Passport')->maxLength(30);
+                $row->addTextField('citizenship2Passport')->maxLength(30);
+
+            $row = $form->addRow();
+                $row->addLabel('citizenship2PassportExpiry', __('Citizenship 2 Passport Expiry Date'));
+                $row->addDate('citizenship2PassportExpiry');
 
 			if (!empty($_SESSION[$guid]['country'])) {
-				$nationalIDCardNumberLabel = $_SESSION[$guid]['country'].' '.__('ID Card Number');
-				$nationalIDCardScanLabel = $_SESSION[$guid]['country'].' '.__('ID Card Scan');
-				$residencyStatusLabel = $_SESSION[$guid]['country'].' '.__('Residency/Visa Type');
-				$visaExpiryDateLabel = $_SESSION[$guid]['country'].' '.__('Visa Expiry Date');
+				$nationalIDCardNumberLabel = __($_SESSION[$guid]['country']).' '.__('ID Card Number');
+				$nationalIDCardScanLabel = __($_SESSION[$guid]['country']).' '.__('ID Card Scan');
+				$residencyStatusLabel = __($_SESSION[$guid]['country']).' '.__('Residency/Visa Type');
+				$visaExpiryDateLabel = __($_SESSION[$guid]['country']).' '.__('Visa Expiry Date');
 			} else {
 				$nationalIDCardNumberLabel = __('National ID Card Number');
 				$nationalIDCardScanLabel = __('National ID Card Scan');
@@ -561,7 +570,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             if ($student) {
                 $row = $form->addRow();
                 	$row->addLabel('studentID', __('Student ID'))->description(__('Must be unique if set.'));
-                	$row->addTextField('studentID')->maxLength(10);
+                	$row->addTextField('studentID')->maxLength(15);
             }
 
 			if ($student || $staff) {
@@ -601,7 +610,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 					$row = $form->addRow();
 						$row->addLabel('privacyOptions[]', __('Privacy'))->description(__('Check to indicate which privacy options are required.'));
-						$row->addCheckbox('privacyOptions[]')->fromArray($options)->checked($values['privacyOptions']);
+						$row->addCheckbox('privacyOptions[]')->fromArray($options)->checked($values['privacyOptions'])->addClass('md:max-w-lg');
 				}
 
 				$studentAgreementOptions = getSettingByScope($connection2, 'School Admin', 'studentAgreementOptions');

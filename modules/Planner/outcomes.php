@@ -35,15 +35,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes.php') == 
         echo '</div>';
     } else {
         //Proceed!
-        //Get Smart Workflow help message
-        $category = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
-        if ($category == 'Staff') {
-            $smartWorkflowHelp = getSmartWorkflowHelp($connection2, $guid, 1);
-            if ($smartWorkflowHelp != false) {
-                echo $smartWorkflowHelp;
-            }
-        }
-
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);
         }
@@ -157,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes.php') == 
                 //COLOR ROW BY STATUS!
                 echo "<tr class=$rowNum>";
                 echo '<td>';
-                echo '<b>'.$row['scope'].'</b><br/>';
+                echo '<b>'.__($row['scope']).'</b><br/>';
                 if ($row['scope'] == 'Learning Area' and $row['department'] != '') {
                     echo "<span style='font-size: 75%; font-style: italic'>".$row['department'].'</span>';
                 }

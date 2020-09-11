@@ -19,9 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\System;
 
-use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
+use Gibbon\Domain\Traits\TableAware;
 
 /**
  * Log Gateway
@@ -34,17 +34,57 @@ class LogGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonLog';
+    private static $primaryKey = 'gibbonLogID';
 
     private static $searchableColumns = ['title'];
-    
+
+    /**
+     * Queries the list of System logs.
+     *
+     * @param QueryCriteria $criteria
+     * @return DataSet
+     */
+    public function queryLogs(QueryCriteria $criteria)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonLogID', 'gibbonModule.name AS module', 'surname', 'preferredName', 'username', 'gibbonSchoolYear.name AS schoolYear', 'timestamp', 'gibbonLog.title', 'serialisedArray', 'ip'
+            ])
+            ->leftJoin('gibbonModule', 'gibbonLog.gibbonModuleID=gibbonModule.gibbonModuleID')
+            ->leftJoin('gibbonPerson', 'gibbonLog.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->leftJoin('gibbonSchoolYear', 'gibbonLog.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID');
+
+        $criteria->addFilterRules([
+            'ip' => function ($query, $ip) {
+                return $query
+                    ->where('gibbonLog.ip = :ip')
+                    ->bindValue('ip', $ip);
+            },
+            'title' => function ($query, $title) {
+                return $query
+                    ->where('gibbonLog.title = :title')
+                    ->bindValue('title', $title);
+            },
+            'gibbonPersonID' => function ($query, $gibbonPersonID) {
+                return $query
+                    ->where('gibbonLog.gibbonPersonID = :gibbonPersonID')
+                    ->bindValue('gibbonPersonID', $gibbonPersonID);
+            },
+        ]);
+
+        return $this->runQuery($query, $criteria);
+    }
+
     public function selectLogsByModuleAndTitle($moduleName, $title)
     {
         $data = array('moduleName' => $moduleName, 'title' => $title);
         $sql = "SELECT gibbonLog.title as groupBy, gibbonLog.*, gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.title
-                FROM gibbonLog 
-                JOIN gibbonModule ON (gibbonModule.gibbonModuleID=gibbonLog.gibbonModuleID)
-                LEFT JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonLog.gibbonPersonID) 
-                WHERE gibbonModule.name=:moduleName
+                FROM gibbonLog
+                LEFT JOIN gibbonModule ON (gibbonModule.gibbonModuleID=gibbonLog.gibbonModuleID)
+                LEFT JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonLog.gibbonPersonID)
+                WHERE (gibbonModule.name=:moduleName OR (:moduleName IS NULL AND gibbonLog.gibbonModuleID IS NULL))
                 AND gibbonLog.title LIKE :title
                 ORDER BY gibbonLog.timestamp DESC";
 
@@ -54,9 +94,9 @@ class LogGateway extends QueryableGateway
     public function getLogByID($gibbonLogID)
     {
         $data = array('gibbonLogID' => $gibbonLogID);
-        $sql = "SELECT gibbonLog.*, gibbonPerson.username, gibbonPerson.surname, gibbonPerson.preferredName 
+        $sql = "SELECT gibbonLog.*, gibbonPerson.username, gibbonPerson.surname, gibbonPerson.preferredName
                 FROM gibbonLog
-                LEFT JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonLog.gibbonPersonID) 
+                LEFT JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonLog.gibbonPersonID)
                 WHERE gibbonLog.gibbonLogID=:gibbonLogID";
 
         return $this->db()->selectOne($sql, $data);

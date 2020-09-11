@@ -25,11 +25,11 @@ include './gibbon.php';
 //Module includes from User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/publicRegistration.php';
+$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/publicRegistration.php';
 
 $proceed = false;
 
-if (isset($_SESSION[$guid]['username']) == false) {
+if ($gibbon->session->exists('username') == false) {
     $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
     if ($enablePublicRegistration == 'Y') {
         $proceed = true;
@@ -174,8 +174,8 @@ if ($proceed == false) {
                         // Raise a new notification event
                         $event = new NotificationEvent('User Admin', 'New Public Registration');
 
-                        $event->addRecipient($_SESSION[$guid]['organisationAdmissions']);
-                        $event->setNotificationText(sprintf(__('An new public registration, for %1$s, is pending approval.'), formatName('', $preferredName, $surname, 'Student')));
+                        $event->addRecipient($gibbon->session->get('organisationAdmissions'));
+                        $event->setNotificationText(sprintf(__('An new public registration, for %1$s, is pending approval.'), Format::name('', $preferredName, $surname, 'Student')));
                         $event->setActionLink("/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID&search=");
 
                         $event->sendNotifications($pdo, $gibbon->session);

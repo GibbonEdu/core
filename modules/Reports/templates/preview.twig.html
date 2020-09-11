@@ -1,0 +1,100 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+<style>
+
+@font-face {
+  font-family: 'DroidSansFallback';
+  src: url('./resources/assets/fonts/DroidSansFallback.ttf')  format('truetype'); /* Safari, Android, iOS */
+}
+
+{% for fontFamily, fonts in fontList %}
+    {% for fontType, fontPath in fonts %}
+        @font-face {
+            font-family: '{{ fontFamily }}';
+            src: url('{{ fontURL }}/{{ fontPath }}')  format('truetype');
+            font-style: {{ 'I' in fontType ? 'italic' : 'normal' }};
+            font-weight: {{ 'B' in fontType ? '700' : 'normal' }};
+        }
+    {% endfor %}
+{% endfor %}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'DroidSansFallback', sans;
+    background-color: #e8e8e8;
+}
+
+table {
+    width: 100%;
+    max-width: 100%;
+    line-height: 1.2;
+}
+
+header {
+    margin-bottom: -4mm ;
+}
+
+section {
+    margin: 4mm 0mm;
+}
+
+footer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: calc(100% - ({{ marginX }}mm * 2));
+    padding: 0 {{ marginX }}mm;
+}
+</style>
+
+<!-- style="transform: scale(0.85); transform-origin: top center;" -->
+<div class="bg-gray-300 p-px"> 
+
+    <h1 class="text-center text-lg text-gray-700 font-bold my-4">{{ name }}</h1>
+
+    {% if debugData %}
+    <details class="mx-auto max-w-3xl mb-4">
+        <summary class="text-gray-700 text-sm">
+            {{ __('Inspect')}}
+        </summary>
+        <pre class="bg-white p-4">
+            {{- debugData -}}
+        </pre>
+    </details>
+    {% endif %}
+
+    {% if pageSize == 'letter' %}
+        {% set baseWidth = orientation == 'L' ? '279.4' : '215.9' %}
+        {% set baseHeight = orientation == 'L' ? '215.9' : '279.4' %}
+    {% else %}
+        {% set baseWidth = orientation == 'L' ? '297' : '210' %}
+        {% set baseHeight = orientation == 'L' ? '210' : '297' %}
+    {% endif%}
+    
+    {% for page in pages %}
+    <div class="relative mx-auto bg-white shadow-lg m-4 mb-8" style="padding: {{ marginY }}mm {{ marginX }}mm; width: calc({{ baseWidth }}mm - ({{ marginX }}mm * 2)); {% if not prototype %}min-height: calc({{ baseHeight }}mm - ({{ marginY }}mm * 2));{% endif %}">
+        
+        <div class="absolute top-0 left-0 w-24 h-8 text-xl font-bold text-gray-400 text-right mt-16" 
+             style="transform: rotate(-90deg);transform-origin: bottom left;">
+            {% if prototype %}
+                {{ __('Preview') }}
+            {% else %}
+                {{ __('Page') }} {{ loop.index }}
+            {% endif %}
+        </div>
+        
+        {{ page|raw }}
+    </div>
+    {% endfor %}
+
+    
+
+    <p class="-mt-2 mb-4 text-center text-xxs text-gray-600">{{ __('This HTML preview is for sample purposes and may not be an exact match to the final PDF.') }}</p>
+</div>

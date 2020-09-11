@@ -40,10 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
     echo 'Choose Students';
     echo '</h2>';
 
-    $choices = null;
-    if (isset($_POST['gibbonPersonID'])) {
-        $choices = $_POST['gibbonPersonID'];
-    }
+    $choices = $_POST['gibbonPersonID'] ?? [];
 
     $form = Form::create('action',  $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/report_students_IDCards.php");
 
@@ -52,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Students'));
-        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array("allStudents" => false, "byName" => true, "byRoll" => true))->isRequired()->placeholder()->selectMultiple()->selected($choices);
+        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array("allStudents" => false, "byName" => true, "byRoll" => true))->required()->placeholder()->selectMultiple()->selected($choices);
 
     $row = $form->addRow();
         $row->addLabel('file', __('Card Background'))->description('.png or .jpg file, 448 x 268px.');
@@ -138,7 +135,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
                 echo "<td style='padding: 0px ; width: 18px'></td>";
                 echo "<td style='padding: 15px 0 0 0 ; text-align: left; width: 280px; vertical-align: top; font-size: 22px'>";
                 echo "<div style='padding: 5px; background-color: rgba(255,255,255,0.3); min-height: 200px'>";
-                echo "<div style='font-weight: bold; font-size: 30px'>".$row['officialName'].'</div><br/>';
+                $size = (strlen($row['officialName']) <= 28) ? 30 : 20 ;
+                echo "<div style='font-weight: bold; font-size: ".$size."px'>".$row['officialName'].'</div><br/>';
                 echo '<b>'.__('DOB')."</b>: <span style='float: right'><i>".dateConvertBack($guid, $row['dob']).'</span><br/>';
                 echo '<b>'.$_SESSION[$guid]['organisationNameShort'].' '.__('ID')."</b>: <span style='float: right'><i>".$row['studentID'].'</span><br/>';
                 echo '<b>'.__('Year/Roll')."</b>: <span style='float: right'><i>".__($row['year']).' / '.$row['roll'].'</span><br/>';

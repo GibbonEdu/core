@@ -34,6 +34,7 @@ class RollGroupGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonRollGroup';
+    private static $primaryKey = 'gibbonRollGroupID';
     private static $searchableColumns = [];
 
     public function queryRollGroups(QueryCriteria $criteria, $gibbonSchoolYearID)
@@ -66,17 +67,18 @@ class RollGroupGateway extends QueryableGateway
     public function selectRollGroupsBySchoolYear($gibbonSchoolYearID)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'today' => date('Y-m-d'));
-        $sql = "SELECT gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.name, gibbonRollGroup.nameShort, gibbonSpace.name AS space, gibbonRollGroup.website, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, COUNT(DISTINCT students.gibbonPersonID) as students
+        $sql = "SELECT gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.name, gibbonRollGroup.nameShort, gibbonSpace.name AS space, gibbonRollGroup.website, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, COUNT(DISTINCT students.gibbonPersonID) as students, (SELECT MAX(sequenceNumber) FROM gibbonYearGroup JOIN gibbonStudentEnrolment ON (gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID) WHERE gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) as sequenceNumber
                 FROM gibbonRollGroup 
                 LEFT JOIN (
-                    SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolment.gibbonRollGroupID FROM gibbonStudentEnrolment 
+                    SELECT gibbonStudentEnrolment.gibbonPersonID, gibbonStudentEnrolment.gibbonRollGroupID FROM gibbonStudentEnrolment 
                     JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
                     WHERE status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)
+                    ORDER BY gibbonStudentEnrolment.gibbonYearGroupID
                 ) AS students ON (students.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
                 LEFT JOIN gibbonSpace ON (gibbonRollGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID) 
                 WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID 
                 GROUP BY gibbonRollGroup.gibbonRollGroupID
-                ORDER BY gibbonRollGroup.name";
+                ORDER BY LENGTH(gibbonRollGroup.name), gibbonRollGroup.name";
 
         return $this->db()->select($sql, $data);
     }
@@ -89,6 +91,21 @@ class RollGroupGateway extends QueryableGateway
                 LEFT JOIN gibbonPerson ON (gibbonPersonID=gibbonRollGroup.gibbonPersonIDTutor OR gibbonPersonID=gibbonRollGroup.gibbonPersonIDTutor2 OR gibbonPersonID=gibbonRollGroup.gibbonPersonIDTutor3)
                 WHERE gibbonRollGroup.gibbonRollGroupID=:gibbonRollGroupID 
                 ORDER BY gibbonPersonID=gibbonRollGroup.gibbonPersonIDTutor DESC, gibbonPersonID=gibbonRollGroup.gibbonPersonIDTutor2 DESC";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectRollGroupsByTutor($gibbonPersonID)
+    {
+        $data = array('gibbonPersonID' => $gibbonPersonID);
+        $sql = "SELECT gibbonRollGroup.*, gibbonSpace.name as spaceName
+                FROM gibbonRollGroup 
+                LEFT JOIN gibbonSpace ON (gibbonSpace.gibbonSpaceID=gibbonRollGroup.gibbonSpaceID)
+                WHERE (gibbonRollGroup.gibbonPersonIDTutor = :gibbonPersonID
+                    OR gibbonRollGroup.gibbonPersonIDTutor2 = :gibbonPersonID
+                    OR gibbonRollGroup.gibbonPersonIDTutor3 = :gibbonPersonID)
+                AND gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current' LIMIT 1)
+                ORDER BY gibbonRollGroup.nameShort";
 
         return $this->db()->select($sql, $data);
     }

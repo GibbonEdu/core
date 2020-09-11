@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
         $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
         $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
 
-        $canViewFullProfile = ($highestAction == 'View Student Profile_full' or $highestAction == 'View Student Profile_fullNoNotes');
+        $canViewFullProfile = ($highestAction == 'View Student Profile_full' or $highestAction == 'View Student Profile_fullNoNotes' or $highestAction == 'View Student Profile_fullEditAllNotes');
         $canViewBriefProfile = isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief');
 
         if ($highestAction == 'View Student Profile_myChildren' or $highestAction == 'View Student Profile_my') {
@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 ? array_merge($studentGateway->getSearchableColumns(), ['parent1.email', 'parent1.emailAlternate', 'parent2.email', 'parent2.emailAlternate'])
                 : $studentGateway->getSearchableColumns();
 
-            $criteria = $studentGateway->newQueryCriteria()
+            $criteria = $studentGateway->newQueryCriteria(true)
                 ->searchBy($searchColumns, $search)
                 ->sortBy(array_filter(explode(',', $sort)))
                 ->filterBy('all', $canViewFullProfile ? $allStudents : '')

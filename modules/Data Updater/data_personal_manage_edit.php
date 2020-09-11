@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 include './modules/User Admin/moduleFunctions.php';
@@ -131,8 +132,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 'religion'               => __('Religion'),
                 'citizenship1'           => __('Citizenship 1'),
                 'citizenship1Passport'   => __('Citizenship 1 Passport Number'),
+                'citizenship1PassportExpiry'   => __('Citizenship 1 Passport Expiry Date'),
                 'citizenship2'           => __('Citizenship 2'),
                 'citizenship2Passport'   => __('Citizenship 2 Passport Number'),
+                'citizenship2PassportExpiry'   => __('Citizenship 2 Passport Expiry Date'),
                 'nationalIDCardNumber'   => __('National ID Card Number'),
                 'residencyStatus'        => __('Residency/Visa Type'),
                 'visaExpiryDate'         => __('Visa Expiry Date'),
@@ -186,8 +189,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 $isNonUnique = false;
 
                 if ($fieldName == 'dob' || $fieldName == 'visaExpiryDate') {
-                    $oldValue = dateConvertBack($guid, $oldValue);
-                    $newValue = dateConvertBack($guid, $newValue);
+                    $oldValue = Format::date($oldValue);
+                    $newValue = Format::date($newValue);
                 }
 
                 if ($fieldName == 'email') {

@@ -1,0 +1,23 @@
+{#<!--
+name: Image
+category: Miscellaneous
+types: Body,Header,Footer
+icon: image.svg
+config:
+    image:
+        label: Image
+        type: image
+    height:
+        label: Height
+        type: words
+        default: 30
+    align:
+        label: Alignment
+        type: select
+        options: Left, Center, Right
+        default: center
+-->#}
+
+<div style="text-align: {{ config.align|lower|default('') }}">
+    <img src="{{ basePath }}/{{ config.image|default('themes/'~gibbonThemeName~'/img/anonymous_125.jpg') }}" style="display: inline-block; height: {{ config.height|default(30) }}mm;" >
+</div>

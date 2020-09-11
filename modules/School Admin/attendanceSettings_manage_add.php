@@ -24,14 +24,14 @@ use Gibbon\Forms\DatabaseFormFactory;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSettings_manage_add.php') == false) {
-    //Acess denied
+    //Access denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Manage Attendance Settings'), 'attendanceSettings.php')
+        ->add(__('Attendance Settings'), 'attendanceSettings.php')
         ->add(__('Add Attendance Code'));
 
     $editLink = '';
@@ -49,11 +49,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
-        $row->addTextField('name')->isRequired()->maxLength(30);
-    
+        $row->addTextField('name')->required()->maxLength(30);
+
     $row = $form->addRow();
         $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
-        $row->addTextField('nameShort')->isRequired()->maxLength(4);
+        $row->addTextField('nameShort')->required()->maxLength(4);
 
     $directions = array(
         'In'     => __('In Class'),
@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     );
     $row = $form->addRow();
         $row->addLabel('direction', __('Direction'));
-        $row->addSelect('direction')->isRequired()->fromArray($directions);
+        $row->addSelect('direction')->required()->fromArray($directions);
 
     $scopes = array(
         'Onsite'         => __('Onsite'),
@@ -71,23 +71,27 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     );
     $row = $form->addRow();
         $row->addLabel('scope', __('Scope'));
-        $row->addSelect('scope')->isRequired()->fromArray($scopes);
+        $row->addSelect('scope')->required()->fromArray($scopes);
 
     $row = $form->addRow();
         $row->addLabel('sequenceNumber', __('Sequence Number'));
-        $row->addSequenceNumber('sequenceNumber', 'gibbonAttendanceCode')->isRequired()->maxLength(3);
+        $row->addSequenceNumber('sequenceNumber', 'gibbonAttendanceCode')->required()->maxLength(3);
 
     $row = $form->addRow();
         $row->addLabel('active', __('Active'));
-        $row->addYesNo('active')->isRequired();
+        $row->addYesNo('active')->required();
 
     $row = $form->addRow();
         $row->addLabel('reportable', __('Reportable'));
-        $row->addYesNo('reportable')->isRequired();
+        $row->addYesNo('reportable')->required();
+
+    $row = $form->addRow();
+        $row->addLabel('prefill', __('Prefillable'))->description(__('Can this code prefill when taking attendance?'));
+        $row->addYesNo('prefill')->required();
 
     $row = $form->addRow();
         $row->addLabel('future', __('Allow Future Use'))->description(__('Can this code be used in Set Future Absence?'));
-        $row->addYesNo('future')->isRequired();
+        $row->addYesNo('future')->required();
 
     $row = $form->addRow();
         $row->addLabel('gibbonRoleIDAll', __('Available to Roles'))->description(__('Controls who can use this code.'));

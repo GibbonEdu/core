@@ -53,7 +53,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
     // CRITERIA
     $criteria = $i18nGateway->newQueryCriteria()
         ->sortBy('code')
-        ->pageSize(0)
         ->fromArray($_POST);
 
 
@@ -67,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
 
     $form->setClass('fullWidth');
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-    $form->getRenderer()->setWrapper('form', 'div')->setWrapper('row', 'div')->setWrapper('cell', 'fieldset');
+    $form->setClass('w-full blank');
 
     // DATA TABLE
     $table = $form->addRow()->addDataTable('i18n', $criteria)->withData($languages);
@@ -108,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
             if (version_compare($version, $i18n['version'], '>')) {
                 $actions->addAction('update', __('Update'))
                     ->setIcon('delivery2')
-                    ->isModal(650, 135)
+                    ->modalWindow(650, 135)
                     ->addParam('mode', 'update')
                     ->setURL('/modules/System Admin/i18n_manage_install.php');
             }
@@ -166,7 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
             if ($i18n['active'] == 'Y') {
                 $actions->addAction('install', __('Install'))
                     ->setIcon('page_new')
-                    ->isModal(650, 135)
+                    ->modalWindow(650, 135)
                     ->addParam('mode', 'install')
                     ->setURL('/modules/System Admin/i18n_manage_install.php');
             }

@@ -303,6 +303,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         $set .= 'gibbonPerson.citizenship1Passport=:citizenship1Passport, ';
                     }
                 }
+                if (isset($_POST['newcitizenship1PassportExpiryOn'])) {
+                    if ($_POST['newcitizenship1PassportExpiryOn'] == 'on') {
+                        $data['citizenship1PassportExpiry'] = $_POST['newcitizenship1PassportExpiry'] ?? null;
+                        $set .= 'gibbonPerson.citizenship1PassportExpiry=:citizenship1PassportExpiry, ';
+                    }
+                }
                 if (isset($_POST['newcitizenship2On'])) {
                     if ($_POST['newcitizenship2On'] == 'on') {
                         $data['citizenship2'] = $_POST['newcitizenship2'];
@@ -313,6 +319,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     if ($_POST['newcitizenship2PassportOn'] == 'on') {
                         $data['citizenship2Passport'] = $_POST['newcitizenship2Passport'];
                         $set .= 'gibbonPerson.citizenship2Passport=:citizenship2Passport, ';
+                    }
+                }
+                if (isset($_POST['newcitizenship2PassportExpiryOn'])) {
+                    if ($_POST['newcitizenship2PassportExpiryOn'] == 'on') {
+                        $data['citizenship2PassportExpiry'] = $_POST['newcitizenship2PassportExpiry'] ?? null;
+                        $set .= 'gibbonPerson.citizenship2PassportExpiry=:citizenship2PassportExpiry, ';
                     }
                 }
                 if (isset($_POST['newreligionOn'])) {
@@ -422,7 +434,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 //DEAL WITH CUSTOM FIELDS
                 //Prepare field values
                 $resultFields = getCustomFields($connection2, $guid, $student, $staff, $parent, $other, null, true);
-                $fields = array();
+                $fields = isset($row2['fields']) ? unserialize($row2['fields']) : [];
                 if ($resultFields->rowCount() > 0) {
                     while ($rowFields = $resultFields->fetch()) {
                         if (isset($_POST['newcustom'.$rowFields['gibbonPersonFieldID'].'On'])) {

@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
         ->add(__('Edit Assessment'));
 
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));
+        returnProcess($guid, $_GET['return']);
     }
 
     //Check if school year specified
@@ -101,7 +101,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
             }
 			
             $form = Form::create('editAssessment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/externalAssessment_manage_details_editProcess.php?search='.$search.'&allStudents='.$allStudents);
-            $form->removeClass('standardForm');
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
@@ -109,11 +108,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
             
             $row = $form->addRow();
                 $row->addLabel('name', __('Assessment Type'));
-                $row->addTextField('name')->isRequired()->readOnly()->setValue(__($values['assessment']));
+                $row->addTextField('name')->required()->readOnly()->setValue(__($values['assessment']));
 
             $row = $form->addRow();
                 $row->addLabel('date', __('Date'));
-                $row->addDate('date')->isRequired()->loadFrom($values);
+                $row->addDate('date')->required()->loadFrom($values);
 
             if ($values['allowFileUpload'] == 'Y') {
                 $row = $form->addRow();

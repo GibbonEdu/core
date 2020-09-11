@@ -1,0 +1,64 @@
+{#<!--
+name: Signature - Line
+category: Headers & Footers
+types: Footer
+icon: signature.svg
+sources:
+    reportingCycle: ReportingCycle
+params:
+    height: 28
+config:
+    signatureTitle:
+        label: Signature Title
+        type: words
+        default: Principal
+    signatureImage:
+        label: Signature Image
+        type: image
+    signatureWidth:
+        label: Signature Width
+        type: number
+        default: 240
+    signatureHeight:
+        label: Signature Height
+        type: number
+        default: 80
+    pageNumber:
+        label: Page Number
+        type: yesno
+        default: N
+-->#}
+{{- stylesheet ? include(stylesheet) -}}
+<table class="w-full table" cellpadding="0" cellspacing="0" style="background-color:#ffffff; height: 12mm;">
+    <tr>
+        <td class="" style="width:35%; height: 12mm; line-height: 1; border-bottom: 1.2pt solid #000000;">
+            {% if isDraft %}
+                <span style="color: #cccccc; font-size: 22pt; font-weight: bold; line-height:1.9;">DRAFT</span>
+            {% elseif config.signatureImage %}
+                <img src="{{ basePath }}/{{ config.signatureImage }}" style="max-height: 12mm; width: auto" width="{{ config.signatureWidth|default('240') }}" height="{{ config.signatureHeight|default('80') }}"/>
+            {% endif %}
+        </td> 
+        <td style="width:5%;"></td>
+        <td style="width:25%; line-height: 3; font-size: 10pt; border-bottom: 1.2pt solid #000000; vertical-align: middle;">
+            {{- reportingCycle.dateEnd|date("j F Y") -}} 
+        </td>
+        <td style="width:35%;"></td>
+    </tr>
+    <tr>
+        <td class="" style="width:35%; font-size: 9.5pt; line-height:2; vertical-align: middle;">
+            {{- config.signatureTitle|nl2br|default("Principal") -}}
+        </td> 
+        <td style="width:5%;"></td>
+        <td class="" style="width:25%; font-size: 9.5pt; line-height:2; vertical-align: middle;">
+            {{- __('Date') -}}
+        </td> 
+        <td style="width:35%;"></td>
+    </tr>
+</table>
+{%- if config.pageNumber == 'Y' -%}
+<table>
+    <tr>
+        <td style="color: #000; text-align:right;line-height:1.8;">{{ __('Page') }} {{ pageNum -}}</td> 
+    </tr>
+</table>
+{%- endif -%}

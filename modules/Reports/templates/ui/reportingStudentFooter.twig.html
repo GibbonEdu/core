@@ -1,0 +1,31 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+<div class="flex my-4 items-stretch">
+    <a class="block w-32 p-2 items-center rounded-l border bg-gray-100 text-gray-600 hover:bg-blue-200 hover:border-blue-700 hover:text-blue-800" href="{{ absoluteURL }}/index.php?q=/modules/Reports/reporting_write_byStudent.php&gibbonReportingCycleID={{ params.gibbonReportingCycleID }}&gibbonReportingScopeID={{ params.gibbonReportingScopeID }}&scopeTypeID={{ params.scopeTypeID }}&gibbonPersonID={{ params.gibbonPersonID }}&gibbonPersonIDStudent={{ prevStudent.gibbonPersonID }}">
+        <img class="inline-block  mr-2 w-4 h-4 align-top" title="{{ __('Prev') }}" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/page_left.png" >
+        <span class="inline-block px-1  text-sm leading-tight">
+            {{ __('Prev') }}
+        </span>
+    </a>
+
+    <a class="flex-1 flex items-center justify-center border-t border-b bg-gray-100 text-gray-600 hover:bg-blue-200 hover:border-blue-700 hover:text-blue-800"  href="#">
+        <img class="inline-block mr-2 w-4 h-4 align-top" title="{{ __('Prev') }}" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/upload.png" >
+        <span class="inline-block text-sm text-center leading-tight">
+                {{ __('Top') }} 
+        </span>
+    </a>
+
+    <a class="block w-32 p-2 items-center rounded-r border bg-gray-100 text-gray-600 text-right hover:bg-blue-200 hover:border-blue-700 hover:text-blue-800" href="{{ absoluteURL }}/index.php?q=/modules/Reports/reporting_write_byStudent.php&gibbonReportingCycleID={{ params.gibbonReportingCycleID }}&gibbonReportingScopeID={{ params.gibbonReportingScopeID }}&scopeTypeID={{ params.scopeTypeID }}&gibbonPersonID={{ params.gibbonPersonID }}&gibbonPersonIDStudent={{ nextStudent.gibbonPersonID }}">
+        
+        <span class="inline-block px-1  text-sm leading-tight">
+            {{ __('Next') }} 
+        </span>
+        <img class="inline-block  ml-2 w-4 h-4 align-top" title="{{ __('Next') }}" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/page_right.png" >
+    </a>
+</div>

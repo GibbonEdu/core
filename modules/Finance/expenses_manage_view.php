@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -193,7 +195,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 											<b><?php echo __('Status') ?></b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="name" id="name" maxlength=60 value="<?php echo $row['status']; ?>" type="text" class="standardWidth">
+											<input readonly name="name" id="name" maxlength=60 value="<?php echo __($row['status']); ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
@@ -238,7 +240,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 											<b><?php echo __('Purchase By') ?></b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php echo $row['purchaseBy']; ?>" type="text" class="standardWidth">
+											<input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php echo __($row['purchaseBy']); ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
@@ -314,7 +316,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 												if ($resultSelect->rowCount() == 1) {
 													$rowSelect = $resultSelect->fetch();
 													?>
-															<input readonly name="payee" id="payee" maxlength=10 value="<?php echo formatName(htmlPrep($rowSelect['title']), ($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true) ?>" type="text" class="standardWidth">
+															<input readonly name="payee" id="payee" maxlength=10 value="<?php echo Format::name(htmlPrep($rowSelect['title']), ($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true) ?>" type="text" class="standardWidth">
 															<?php
 
 												}

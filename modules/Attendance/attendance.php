@@ -22,7 +22,6 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
-use Gibbon\Tables\Renderer\SimpleRenderer;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -32,6 +31,12 @@ $session = $container->get('session');
 
 $page->breadcrumbs->add(__('View Daily Attendance'));
 
+// show access denied message, if needed
+if (!isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php')) {
+    $page->addError(__("You do not have access to this action."));
+    return;
+}
+
 // rendering parameters
 $currentDate = isset($_GET['currentDate']) ? Format::dateConvert($_GET['currentDate']) : date('Y-m-d');
 $today = date("Y-m-d");
@@ -40,12 +45,6 @@ $accessNotRegistered = isActionAccessible($guid, $connection2, "/modules/Attenda
     && isActionAccessible($guid, $connection2, "/modules/Attendance/report_courseClassesNotRegistered_byDate.php");
 $gibbonPersonID = ($accessNotRegistered && isset($_GET['gibbonPersonID'])) ?
     $_GET['gibbonPersonID'] : $session->get('gibbonPersonID');
-
-// show access denied message, if needed
-if (!isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php')) {
-    $page->addError(__("You do not have access to this action."));
-    return;
-}
 
 // define attendance filter form, if user is permit to view it
 $form = Form::create('action', $session->get('absoluteURL') . '/index.php', 'get');
@@ -58,12 +57,12 @@ $form->addHiddenValue('q', '/modules/' . $session->get('module') . '/attendance.
 
 $row = $form->addRow();
 $row->addLabel('currentDate', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-$row->addDate('currentDate')->setValue(Format::date($currentDate))->isRequired();
+$row->addDate('currentDate')->setValue(Format::date($currentDate))->required();
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGroupsNotRegistered_byDate.php')) {
     $row = $form->addRow();
     $row->addLabel('gibbonPersonID', __('Staff'));
-    $row->addSelectStaff('gibbonPersonID')->selected($gibbonPersonID)->placeholder()->isRequired();
+    $row->addSelectStaff('gibbonPersonID')->selected($gibbonPersonID)->placeholder()->required();
 } else {
     $form->addHiddenValue('gibbonPersonID', $session->get('gibbonPersonID'));
 }
@@ -72,6 +71,9 @@ $row = $form->addRow();
 $row->addFooter();
 $row->addSearchSubmit($gibbon->session);
 
+$page->write($form->getOutput());
+
+
 // define attendance tables, if user is permit to view them
 if (isset($_SESSION[$guid]["username"])) {
     // generator of basic attendance table
@@ -79,16 +81,11 @@ if (isset($_SESSION[$guid]["username"])) {
 
         // proto attendance table with columns for both
         // roll group and course class
-        $dailyAttendanceTable = DataTable::create(
-            '',
-            (new SimpleRenderer)
-                ->addClass('mini')
-                ->addClass('dailyAttendanceTable')
-        );
+        $dailyAttendanceTable = DataTable::create('dailyAttendanceTable');
 
         // column definitions
         $dailyAttendanceTable->addColumn('group', __('Group'))
-            ->width('80px')
+            ->context('primary')
             ->format(function ($row) use ($session, $rowID) {
                 return Format::link(
                     $session->get('absoluteURL') . '/index.php?' .
@@ -97,9 +94,9 @@ if (isset($_SESSION[$guid]["username"])) {
                 );
             });
         $dailyAttendanceTable->addColumn('recent-history', __('Recent History'))
-            ->width('342px')
+            ->width('40%')
             ->format(function ($row) use ($takeAttendanceURL, $rowID, $session) {
-                $dayTable = "<table class='historyCalendarMini'>";
+                $dayTable = "<table class='historyCalendarMini rounded-sm overflow-hidden' cellspacing='0'>";
 
                 $l = sizeof($row['recentHistory']);
                 for ($i = 0; $i < $l; $i++) {
@@ -119,8 +116,8 @@ if (isset($_SESSION[$guid]["username"])) {
                                 'currentDate' => $day['currentDate'],
                             ]);
                             $content =
-                                '<div class="day">' . date('d', $day['currentDayTimestamp']) . '</div>' .
-                                '<div class="month">' . date('M', $day['currentDayTimestamp']) . '</div>';
+                                '<div class="day text-xs">' . Format::dateReadable($day['currentDate'], '%d') . '</div>' .
+                                '<div class="month text-xxs mt-px">' . Format::dateReadable($day['currentDate'], '%b') . '</div>';
                         }
 
                         // determine how to display link and content
@@ -153,7 +150,8 @@ if (isset($_SESSION[$guid]["username"])) {
                 return $dayTable;
             });
         $dailyAttendanceTable->addColumn('today', __('Today'))
-            ->width('40px')
+            ->context('primary')
+            ->width('6%')
             ->format(function ($row) use ($session) {
                 switch ($row['today']) {
                     case 'taken':
@@ -169,14 +167,16 @@ if (isset($_SESSION[$guid]["username"])) {
                 }
             });
         $dailyAttendanceTable->addColumn('in', __('In'))
-            ->width('40px');
+            ->context('primary')
+            ->width('6%');
+
         $dailyAttendanceTable->addColumn('out', __('Out'))
-            ->width('40px');
+            ->context('primary')
+            ->width('6%');
 
         // action column, if user has the permission, and if this is a school day.
         if (isActionAccessible($guid, $connection2, $takeAttendanceURL) && isSchoolOpen($guid, $currentDate, $connection2)) {
             $dailyAttendanceTable->addActionColumn()
-                ->width('50px')
                 ->addParam($rowID)
                 ->addParam('currentDate')
                 ->addAction('takeAttendance')
@@ -189,9 +189,11 @@ if (isset($_SESSION[$guid]["username"])) {
     };
 
     if ($currentDate > $today) {
-        $page->addError(__("The specified date is in the future: it must be today or earlier."));
+        $page->write(Format::alert(__("The specified date is in the future: it must be today or earlier.")));
+        return;
     } elseif (isSchoolOpen($guid, $currentDate, $connection2)==false) {
-        $page->addError(__("School is closed on the specified date, and so attendance information cannot be recorded."));
+        $page->write(Format::alert(__("School is closed on the specified date, and so attendance information cannot be recorded.")));
+        return;
     }
 
     if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
@@ -278,7 +280,7 @@ if (isset($_SESSION[$guid]["username"])) {
                 // Attendance not taken
                 $row['today'] = ($resultLog->rowCount() < 1) ? 'not taken' : 'taken';
                 $row['in'] = ($resultLog->rowCount() < 1) ? "" : ($log["total"] - $log["absent"]);
-                $row['out'] = $log["absent"];
+                $row['out'] = $log["absent"] ?? '';
 
                 $attendanceByRollGroup[] = $row;
             }
@@ -420,7 +422,7 @@ if (isset($_SESSION[$guid]["username"])) {
                     $row['today'] = 'not timetabled';
                 }
                 $row['in'] = ($resultLog->rowCount() < 1) ? "" : ($log["total"] - $log["absent"]);
-                $row['out'] = $log["absent"];
+                $row['out'] = $log["absent"] ?? '';
 
                 $attendanceByCourseClass[] = $row;
             }
@@ -443,9 +445,6 @@ if (isset($_SESSION[$guid]["username"])) {
 //
 // write page outputs
 //
-if (isset($form)) {
-    $page->write($form->getOutput());
-}
 if (isset($attendanceByRollGroupTable)) {
     $page->write($attendanceByRollGroupTable->getOutput());
 }

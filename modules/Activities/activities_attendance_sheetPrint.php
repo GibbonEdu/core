@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -86,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
             echo '</th>';
             echo '</tr>';
             echo "<tr style='height: 75px' class='odd'>";
-            echo "<td style='vertical-align:top; width: 120px'>Date</td>";
+            echo "<td style='vertical-align:top; width: 120px'>".__('Date')."</td>";
             for ($i = 1; $i <= $numberOfColumns; ++$i) {
                 echo "<td style='color: #bbb; vertical-align:top; width: 15px'>$i</td>";
             }
@@ -107,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
                 //COLOR ROW BY STATUS!
                 echo '<tr>';
                 echo '<td>';
-                echo $count.'. '.formatName('', $row['preferredName'], $row['surname'], 'Student', true);
+                echo $count.'. '.Format::name('', $row['preferredName'], $row['surname'], 'Student', true);
                 echo '</td>';
                 for ($i = 1; $i <= $numberOfColumns; ++$i) {
                     echo '<td></td>';

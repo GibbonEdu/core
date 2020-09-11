@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -137,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
 			if ($result->rowCount() > 0) {
 				$students['--'.__('Enrolable Students').'--'] = array_reduce($result->fetchAll(), function($group, $item) {
-					$group[$item['gibbonPersonID']] = $item['rollGroupName'].' - '.formatName('', $item['preferredName'], $item['surname'], 'Student', true);
+					$group[$item['gibbonPersonID']] = $item['rollGroupName'].' - '. Format::name('', $item['preferredName'], $item['surname'], 'Student', true);
 					return $group;
 				}, array());
 			}
@@ -147,14 +148,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
             if ($result->rowCount() > 0) {
                 $students['--'.__('All Users').'--'] = array_reduce($result->fetchAll(), function ($group, $item) {
-                    $group[$item['gibbonPersonID']] = formatName('', $item['preferredName'], $item['surname'], 'Student', true).' ('.$item['username'].')';
+                    $group[$item['gibbonPersonID']] = Format::name('', $item['preferredName'], $item['surname'], 'Student', true).' ('.$item['username'].')';
                     return $group;
                 }, array());
             }
 
 			$row = $form->addRow();
                 $row->addLabel('Members[]', __('Students'));
-				$row->addSelect('Members[]')->fromArray($students)->selectMultiple()->isRequired();
+				$row->addSelect('Members[]')->fromArray($students)->selectMultiple()->required();
 				
 			$statuses = array('Accepted' => __('Accepted'));
 			$enrolment = getSettingByScope($connection2, 'Activities', 'enrolmentType');
@@ -166,7 +167,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
 			$row = $form->addRow();
                 $row->addLabel('status', __('Status'));
-                $row->addSelect('status')->fromArray($statuses)->isRequired();
+                $row->addSelect('status')->fromArray($statuses)->required();
 			
 			$row = $form->addRow();
                 $row->addFooter();

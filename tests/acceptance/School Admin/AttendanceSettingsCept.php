@@ -1,4 +1,4 @@
-<?php 
+<?php
 $I = new AcceptanceTester($scenario);
 $I->wantTo('update Attendance Settings');
 $I->loginAsAdmin();
@@ -13,9 +13,7 @@ $I->seeInFormFields('#content form', $originalFormValues);
 
 $newFormValues = array(
     'attendanceReasons'                  => 'Reason1,Reason2,Reason3',
-    'prefillRollGroup'                   => 'Y',
-    'prefillClass'                       => 'Y',
-    'prefillPerson'                      => 'Y',
+    'countClassAsSchool'                 => 'Y',
     'studentSelfRegistrationIPAddresses' => '127.0.0.1,192.168.0.1',
     'attendanceCLINotifyByRollGroup'     => 'Y',
     'attendanceCLINotifyByClass'         => 'Y',

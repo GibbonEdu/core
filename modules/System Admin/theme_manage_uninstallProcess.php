@@ -17,16 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\ThemeGateway;
+
 include '../../gibbon.php';
 
-$orphaned = '';
-if (isset($_GET['orphaned'])) {
-    if ($_GET['orphaned'] == 'true') {
-        $orphaned = 'true';
-    }
-}
+$gibbonThemeID = $_GET['gibbonThemeID'] ?? '';
+$orphaned = $_GET['orphaned'] ?? '';
 
-$gibbonThemeID = $_GET['gibbonThemeID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/theme_manage_uninstall.php&gibbonThemeID='.$gibbonThemeID;
 $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/theme_manage.php';
 
@@ -35,41 +32,27 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage_
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if role specified
+    //Check if theme specified
     if ($gibbonThemeID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
-        try {
-            $data = array('gibbonThemeID' => $gibbonThemeID);
-            $sql = "SELECT * FROM gibbonTheme WHERE gibbonThemeID=:gibbonThemeID AND active='N'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
-        if ($result->rowCount() != 1) {
+        $themeGateway = $container->get(ThemeGateway::class);
+        //Check for existence of theme
+        $dataTheme = array('gibbonThemeID' => $gibbonThemeID, 'active' => 'N');
+        $existsTheme = $themeGateway->selectBy($dataTheme)->rowCount();
+
+        if ($existsTheme == 0) {
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
-            //Remove theme
-            try {
-                $dataDelete = array('gibbonThemeID' => $gibbonThemeID);
-                $sqlDelete = 'DELETE FROM gibbonTheme WHERE gibbonThemeID=:gibbonThemeID';
-                $resultDelete = $connection2->prepare($sqlDelete);
-                $resultDelete->execute($dataDelete);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
+            //Delete to database
+            $themeGateway->delete($gibbonThemeID);
 
             if ($orphaned != 'true') {
-                $URLDelete = $URLDelete.'&return=success0';
-            } else {
                 $URLDelete = $URLDelete.'&return=warning0';
+            } else {
+                $URLDelete = $URLDelete.'&return=success2';
             }
             header("Location: {$URLDelete}");
         }

@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Returns amount paid on an particular table/ID combo
 function getAmountPaid($connection2, $guid, $foreignTable, $foreignTableID)
 {
@@ -105,7 +107,7 @@ function getPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $gib
                 $return .= dateConvertBack($guid, substr($row['timestamp'], 0, 10));
                 $return .= '</td>';
                 $return .= '<td>';
-                $return .= $row['status'];
+                $return .= __($row['status']);
                 $return .= '</td>';
                 $return .= '<td>';
                 $paymentTotal += $row['amount'];
@@ -115,10 +117,10 @@ function getPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $gib
                 $return .= number_format($row['amount'], 2, '.', ',');
                 $return .= '</td>';
                 $return .= '<td>';
-                $return .= $row['type'];
+                $return .= __($row['type']);
                 $return .= '</td>';
                 $return .= '<td>';
-                $return .= formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
+                $return .= Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
                 $return .= '</td>';
                 $return .= '<td>';
                 $return .= $row['paymentTransactionID'];
@@ -589,13 +591,13 @@ function getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2, $commentsOp
             //COLOR ROW BY STATUS!
             $output .= "<tr class=$rowNum>";
             $output .= '<td>';
-            $output .= formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
+            $output .= Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
             $output .= '</td>';
             $output .= '<td>';
             $output .= dateConvertBack($guid, substr($row['timestamp'], 0, 10));
             $output .= '</td>';
             $output .= '<td>';
-            $output .= $row['action'];
+            $output .= __($row['action']);
             $output .= '</td>';
             if ($commentsOpen == false) {
                 $output .= '<td>';
@@ -935,7 +937,7 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         $return .= "<table cellspacing='0' style='width: 100%'>";
         $return .= '<tr>';
         $return .= "<td style='padding-top: 15px; padding-left: 10px; vertical-align: top; $style $style3' colspan=3>";
-        $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Invoice To').' ('.$row['invoiceTo'].')</span><br/>';
+        $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Invoice To').' ('.__($row['invoiceTo']).')</span><br/>';
         if ($row['invoiceTo'] == 'Company') {
             $invoiceTo = '';
             if ($row['companyContact'] != '') {
@@ -967,7 +969,7 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
                 while ($rowParents = $resultParents->fetch()) {
                     $return .= '<li>';
                     $invoiceTo = '';
-                    $invoiceTo .= '<b>'.formatName(htmlPrep($rowParents['title']), htmlPrep($rowParents['preferredName']), htmlPrep($rowParents['surname']), 'Parent', false).'</b>, ';
+                    $invoiceTo .= '<b>'.Format::name(htmlPrep($rowParents['title']), htmlPrep($rowParents['preferredName']), htmlPrep($rowParents['surname']), 'Parent', false).'</b>, ';
                     if ($rowParents['email'] != '') {
                         $invoiceTo .= $rowParents['email'].', ';
                     }
@@ -1000,15 +1002,19 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         $return .= "<td style='width: 33%; padding-top: 15px; padding-left: 10px; vertical-align: top; $style $style4'>";
         $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Fees For').'</span><br/>';
         if ($invoiceeNameStyle =='Official Name') {
-            $return .= htmlPrep($row['officialName'])."<br/><span style='font-style: italic; font-size: 85%'>".__('Roll Group').' '.$row['rollgroup'].'</span><br/>';
+            $return .= htmlPrep($row['officialName'])."<br/><span style='font-style: italic; font-size: 85%'>".__('Roll Group').': '.$row['rollgroup'].'</span><br/>';
         }
         else {
-            $return .= formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true)."<br/><span style='font-style: italic; font-size: 85%'>".__('Roll Group').' '.$row['rollgroup'].'</span><br/>';
+            $return .= Format::name('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true)."<br/><span style='font-style: italic; font-size: 85%'>".__('Roll Group').': '.$row['rollgroup'].'</span><br/>';
+        }
+        if ($row['studentID'] != '') {
+            $return .= "<div style='font-size: 115%; font-weight: bold; margin-top: 10px'>".__('Student ID')."</div>";
+            $return .= "<span style='font-style: italic; font-size: 85%'>".$row['studentID']."</span>";
         }
         $return .= '</td>';
         $return .= "<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style4'>";
         $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Status').'</span><br/>';
-        $return .= $row['status'];
+        $return .= __($row['status']);
         $return .= '</td>';
         $return .= "<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style4'>";
         $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Schedule').'</span><br/>';
@@ -1069,7 +1075,7 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
                 $sqlFees = "(SELECT gibbonFinanceInvoiceFee.gibbonFinanceInvoiceFeeID, gibbonFinanceInvoiceFee.feeType, gibbonFinanceFeeCategory.name AS category, gibbonFinanceFee.name AS name, gibbonFinanceFee.fee AS fee, gibbonFinanceFee.description AS description, gibbonFinanceInvoiceFee.gibbonFinanceFeeID AS gibbonFinanceFeeID, gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID AS gibbonFinanceFeeCategoryID, sequenceNumber FROM gibbonFinanceInvoiceFee JOIN gibbonFinanceFee ON (gibbonFinanceInvoiceFee.gibbonFinanceFeeID=gibbonFinanceFee.gibbonFinanceFeeID) JOIN gibbonFinanceFeeCategory ON (gibbonFinanceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID1 AND feeType='Standard')";
             } else { //Get fees from gibbonFinanceInvoiceFee
                 //Standard
-                $sqlFees = "(SELECT gibbonFinanceInvoiceFee.gibbonFinanceInvoiceFeeID, gibbonFinanceInvoiceFee.feeType, gibbonFinanceFeeCategory.name AS category, gibbonFinanceFee.name AS name, gibbonFinanceInvoiceFee.fee AS fee, gibbonFinanceFee.description AS description, gibbonFinanceInvoiceFee.gibbonFinanceFeeID AS gibbonFinanceFeeID, gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID AS gibbonFinanceFeeCategoryID, sequenceNumber FROM gibbonFinanceInvoiceFee JOIN gibbonFinanceFee ON (gibbonFinanceInvoiceFee.gibbonFinanceFeeID=gibbonFinanceFee.gibbonFinanceFeeID) JOIN gibbonFinanceFeeCategory ON (gibbonFinanceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID1 AND feeType='Standard')";
+                $sqlFees = "(SELECT gibbonFinanceInvoiceFee.gibbonFinanceInvoiceFeeID, gibbonFinanceInvoiceFee.feeType, gibbonFinanceFeeCategory.name AS category, gibbonFinanceInvoiceFee.name AS name, gibbonFinanceInvoiceFee.fee AS fee, gibbonFinanceFee.description AS description, gibbonFinanceInvoiceFee.gibbonFinanceFeeID AS gibbonFinanceFeeID, gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID AS gibbonFinanceFeeCategoryID, sequenceNumber FROM gibbonFinanceInvoiceFee JOIN gibbonFinanceFee ON (gibbonFinanceInvoiceFee.gibbonFinanceFeeID=gibbonFinanceFee.gibbonFinanceFeeID) JOIN gibbonFinanceFeeCategory ON (gibbonFinanceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID1 AND feeType='Standard')";
             }
             //Ad Hoc
             $sqlFees .= ' UNION ';
@@ -1083,7 +1089,7 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         }
         if ($resultFees->rowCount() < 1) {
             $return .= "<div class='error'>";
-            $return .= __('There are no records to display');
+            $return .= __('There are no records to display.');
             $return .= '</div>';
         } else {
             $feeTotal = 0;
@@ -1207,8 +1213,22 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
     }
 }
 
-//$receiptNumber is the numerical position (counting from 0) of the payment within a series of payments. NULL $receipt Number means it is an old receipt, prior to multiple payments (e.g. before v11)
-function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $currency = '', $email = false, $receiptNumber)
+/**
+ * Get HTML receipt contents for emailing
+ *
+ * $receiptNumber is the numerical position (counting from 0) of the payment within a series of payments.
+ * NULL $receipt Number means it is an old receipt, prior to multiple payments (e.g. before v11)
+ *
+ * @param string $guid
+ * @param Connection $connection2
+ * @param string $gibbonFinanceInvoiceID
+ * @param string $gibbonSchoolYearID
+ * @param string $currency
+ * @param bool $email
+ * @param int $receiptNumber
+ * @return void
+ */
+function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $currency = '', $email = false, $receiptNumber = null)
 {
     $return = '';
 
@@ -1257,7 +1277,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         $return .= "<table cellspacing='0' style='width: 100%'>";
         $return .= '<tr>';
         $return .= "<td style='padding-top: 15px; padding-left: 10px; vertical-align: top; $style $style3' colspan=3>";
-        $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Receipt To').' ('.$row['invoiceTo'].')</span><br/>';
+        $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Receipt To').' ('._($row['invoiceTo']).')</span><br/>';
         if ($row['invoiceTo'] == 'Company') {
             $invoiceTo = '';
             if ($row['companyContact'] != '') {
@@ -1289,7 +1309,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
                 while ($rowParents = $resultParents->fetch()) {
                     $return .= '<li>';
                     $invoiceTo = '';
-                    $invoiceTo .= '<b>'.formatName(htmlPrep($rowParents['title']), htmlPrep($rowParents['preferredName']), htmlPrep($rowParents['surname']), 'Parent', false).'</b>, ';
+                    $invoiceTo .= '<b>'.Format::name(htmlPrep($rowParents['title']), htmlPrep($rowParents['preferredName']), htmlPrep($rowParents['surname']), 'Parent', false).'</b>, ';
                     if ($rowParents['email'] != '') {
                         $invoiceTo .= $rowParents['email'].', ';
                     }
@@ -1322,16 +1342,20 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         $return .= "<td style='width: 33%; padding-top: 15px; padding-left: 10px; vertical-align: top; $style $style4'>";
         $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Fees For').'</span><br/>';
         if ($invoiceeNameStyle =='Official Name') {
-            $return .= htmlPrep($row['officialName'])."<br/><span style='font-style: italic; font-size: 85%'>".__('Roll Group').' '.$row['rollgroup'].'</span><br/>';
+            $return .= htmlPrep($row['officialName'])."<br/><span style='font-style: italic; font-size: 85%'>".__('Roll Group').': '.$row['rollgroup'].'</span><br/>';
         }
         else {
-            $return .= formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true)."<br/><span style='font-style: italic; font-size: 85%'>".__('Roll Group').' '.$row['rollgroup'].'</span><br/>';
+            $return .= Format::name('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true)."<br/><span style='font-style: italic; font-size: 85%'>".__('Roll Group').': '.$row['rollgroup'].'</span><br/>';
+        }
+        if ($row['studentID'] != '') {
+            $return .= "<div style='font-size: 115%; font-weight: bold; margin-top: 10px'>".__('Student ID')."</div>";
+            $return .= "<span style='font-style: italic; font-size: 85%'>".$row['studentID']."</span>";
         }
         $return .= '</td>';
         $return .= "<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style4'>";
         $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Status').'</span><br/>';
-        if ($receiptNumber == null) { //Old style receipt, before multiple payments
-            $return .= $row['status'];
+        if ($receiptNumber === null) { //Old style receipt, before multiple payments
+            $return .= __($row['status']);
         } else {
             $paymentFail = false;
             if (is_numeric($receiptNumber) == false) {
@@ -1351,9 +1375,9 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
                     $paymentFail = true;
                 } else {
                     $rowPayment = $resultPayment->fetch();
-                    $return .= $row['status'];
+                    $return .= __($row['status']);
                     if ($row['status'] == 'Paid') {
-                        $return .= ' ('.$rowPayment['status'].')';
+                        $return .= ' ('.__($rowPayment['status']).')';
                     }
                 }
             }
@@ -1398,9 +1422,9 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         } else {
             $return .= ltrim($gibbonFinanceInvoiceID, '0');
         }
-        if ($receiptNumber != null) {
+        if ($receiptNumber !== null) {
             $return .= '<br/>';
-            $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Receipt Number (on this invoice)').'</span><br/>';
+            $return .= "<div style='font-size: 115%; font-weight: bold; margin-top: 10px'>".__('Receipt Number (on this invoice)')."</div>";
             $return .= ($receiptNumber + 1);
         }
         $return .= '</td>';
@@ -1428,7 +1452,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         }
         if ($resultFees->rowCount() < 1) {
             $return .= "<div class='error'>";
-            $return .= __('There are no records to display');
+            $return .= __('There are no records to display.');
             $return .= '</div>';
         } else {
             $feeTotal = 0;
@@ -1517,7 +1541,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         }
 
         //Payment details
-        if ($receiptNumber == null) { //Old style receipt, before multiple payments
+        if ($receiptNumber === null) { //Old style receipt, before multiple payments
             $return .= "<h3 style='padding-top: 40px; padding-left: 10px; margin: 0px; $style4'>";
             $return .= __('Payment Details');
             $return .= '</h3>';
@@ -1563,7 +1587,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         //Display balance
         if ($row['status'] == 'Paid' or $row['status'] == 'Paid - Partial' or $row['status'] == 'Refunded') {
             if (@$rowPayment['status'] == 'Partial') {
-                if ($receiptNumber != null) { //New style receipt, with multiple payments
+                if ($receiptNumber !== null) { //New style receipt, with multiple payments
                     $balanceFail = false;
                     $amountPaid = 0;
                     //Get amount paid until this point

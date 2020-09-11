@@ -31,6 +31,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
     //Proceed!
     $page->breadcrumbs->add(__('System Check'));
 
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], null, null);
+    }
+
     $versionDB = getSettingByScope($connection2, 'System', 'version');
 
     $trueIcon = "<img title='" . __('Yes'). "' src='".$_SESSION[$guid]["absoluteURL"]."/themes/".$_SESSION[$guid]["gibbonThemeName"]."/img/iconTick.png' style='width:20px;height:20px;margin-right:10px' />";
@@ -61,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
         $fileCount++;
     }
 
-    $form = Form::create('installer', "./install.php?step=1");
+    $form = Form::create('systemCheck', "")->setClass('smallIntBorder w-full');
 
     $form->addRow()->addHeading(__('System Requirements'));
 
@@ -120,15 +124,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
             ->addHeading(__('PHP Settings'))
             ->append(sprintf(__('Configuration values can be set in your system %s file. On shared host, use %s to set php settings.'), '<code>php.ini</code>', '.htaccess'));
 
-        foreach ($settings as $settingDetails) { 
+        foreach ($settings as $settingDetails) {
             if (!is_array($settingDetails) || count($settingDetails) != 3) continue;
             list($setting, $operator, $compare) = $settingDetails;
             $value = @ini_get($setting);
 
-            $isValid = ($operator == '==' && $value == $compare) 
-                || ($operator == '>=' && $value >= $compare) 
-                || ($operator == '<=' && $value <= $compare) 
-                || ($operator == '>' && $value > $compare) 
+            $isValid = ($operator == '==' && $value == $compare)
+                || ($operator == '>=' && $value >= $compare)
+                || ($operator == '<=' && $value <= $compare)
+                || ($operator == '>' && $value > $compare)
                 || ($operator == '<' && $value < $compare);
 
             $row = $form->addRow();
@@ -143,7 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
 
     $row = $form->addRow();
         $row->addLabel('systemWriteLabel', __('System not publicly writeable'));
-        $row->addTextField('systemWrite')->setValue(sprintf(__('%s files checked (%s publicly writeable)'), $fileCount, $publicWriteCount))->readonly();
+        $row->addTextArea('systemWrite')->setValue(sprintf(__('%s files checked (%s publicly writeable)'), $fileCount, $publicWriteCount))->setRows(1)->addClass('w-64 max-w-1/2 text-left')->readonly();
         $row->addContent($publicWriteCount == 0? $trueIcon : $falseIcon);
 
     $row = $form->addRow();
@@ -151,6 +155,17 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
         $row->addTextField('uploadsFolder')->setValue($_SESSION[$guid]['absoluteURL'].'/uploads')->readonly();
         $row->addContent(is_writable($_SESSION[$guid]['absolutePath'].'/uploads')? $trueIcon : $falseIcon);
 
+
+    echo $form->getOutput();
+
+
+    // CLEAR CACHE
+    $form = Form::create('clearCache', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/systemCheck_clearCacheProcess.php');
+    $form->addClass('mt-10');
+
+    $form->addRow()->addHeading(__('System Data'));
+
+    $row = $form->addRow()->addSubmit(__('Clear Cache'));
 
     echo $form->getOutput();
 }

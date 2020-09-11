@@ -21,6 +21,7 @@ namespace Gibbon\Database;
 
 use Gibbon\Contracts\Database\Connection as ConnectionInterface;
 use PDO;
+use Psr\Log\LoggerInterface;
 
 /**
  * Database Connection.
@@ -32,7 +33,7 @@ class Connection implements ConnectionInterface
 {
     /**
      * The active PDO connection.
-     * 
+     *
      * @var \PDO
      */
     protected $pdo;
@@ -48,11 +49,21 @@ class Connection implements ConnectionInterface
     protected $result = null;
 
     /**
+     * @var LoggerInterface|null
+     */
+    private $logger;
+
+    /**
+     * @var bool
+     */
+    protected $errorMessage = null;
+
+    /**
      * Create the connection wrapper around a \PDO instance.
      * @param \PDO $pdo
      * @param array $config
      */
-    public function __construct($pdo, array $config = [])
+    public function __construct(PDO $pdo, array $config = [])
     {
         $this->pdo = $pdo;
         $this->config = $config;
@@ -119,7 +130,7 @@ class Connection implements ConnectionInterface
      */
     public function update($query, $bindings = [])
     {
-        return $this->affectingStatement($query, $bindings);
+        return $this->statement($query, $bindings);
     }
 
     /**
@@ -183,7 +194,7 @@ class Connection implements ConnectionInterface
 
     /**
      * Currently downgrades fatal exceptions to user errors and returns a null statement.
-     * 
+     *
      * @param \PDOException $e
      * @return \PDOStatement
      */
@@ -191,13 +202,15 @@ class Connection implements ConnectionInterface
     {
         trigger_error($e->getMessage(), E_USER_WARNING);
 
+        $this->errorMessage = $e->getMessage();
+
         return new \PDOStatement();
     }
 
     /**
      * @deprecated v16
-     * Backwards compatability for the old Gibbon\sqlConnection class. 
-     * Replaced with more expressive method names. Also because the 
+     * Backwards compatability for the old Gibbon\sqlConnection class.
+     * Replaced with more expressive method names. Also because the
      * parameters are backwards. Hoping to phase this one out in v17.
      *
      * @param	array	Data Information
@@ -231,5 +244,34 @@ class Connection implements ConnectionInterface
     public function getResult()
     {
         return $this->result;
+    }
+
+    /**
+     * @param LoggerInterface|null $logger
+     * @return Connection
+     */
+    public function setLogger(LoggerInterface $logger): Connection
+    {
+        $this->logger = $logger;
+        return $this;
+    }
+
+    /**
+     * hasLogger
+     * @return bool
+     */
+    private function hasLogger(): bool
+    {
+        return $this->logger instanceof LoggerInterface;
+    }
+
+    /**
+     * Get the current PDO connection.
+     *
+     * @return string
+     */
+    public function getErrorMessage()
+    {
+        return $this->errorMessage;
     }
 }

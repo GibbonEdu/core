@@ -20,6 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Domain\Students\StudentNoteGateway;
+use Gibbon\Services\Format;
+use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
 
 include '../../gibbon.php';
 
@@ -65,6 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             }
             $comment = $_POST['comment'];
             $followup = $_POST['followup'];
+            $copyToNotes = $_POST['copyToNotes'] ?? null;
 
             if ($gibbonPersonID == '' or $date == '' or $type == '' or ($descriptor == '' and $enableDescriptors == 'Y')) {
                 $URL .= '&return=error1&step=1';
@@ -87,49 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                 $gibbonBehaviourID = $connection2->lastInsertID();
 
-                //Attempt to add like on positive behaviour
-                if ($type == 'Positive') {
-                    $likeComment = '';
-                    if ($descriptor != null) {
-                        $likeComment .= $descriptor;
-                    }
-                    if ($descriptor != null and $comment != '') {
-                        $likeComment .= ': ';
-                    }
-                    if ($comment != '') {
-                        $likeComment .= $comment;
-                    }
-                    $return = setLike($connection2, 'Behaviour', $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonBehaviourID', $gibbonBehaviourID, $_SESSION[$guid]['gibbonPersonID'], $gibbonPersonID, 'Positive Behaviour', $likeComment);
-
-
-                    try {
-                        $dataDetail = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
-                        $sqlDetail = 'SELECT gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, surname, preferredName, gibbonStudentEnrolment.gibbonYearGroupID FROM gibbonRollGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID';
-                        $resultDetail = $connection2->prepare($sqlDetail);
-                        $resultDetail->execute($dataDetail);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
-                    if ($resultDetail->rowCount() == 1) {
-                        $rowDetail = $resultDetail->fetch();
-
-                        $studentName = formatName('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false);
-                        $actionLink = "/index.php?q=/modules/Behaviour/behaviour_view_details.php&gibbonPersonID=$gibbonPersonID&search=";
-
-                        // Raise a new notification event
-                        $event = new NotificationEvent('Behaviour', 'New Positive Record');
-
-                        $event->setNotificationText(sprintf(__('Someone has created a positive behaviour record for %1$s.'), $studentName));
-                        $event->setActionLink($actionLink);
-
-                        $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
-                        $event->addScope('gibbonYearGroupID', $rowDetail['gibbonYearGroupID']);
-
-                        $event->sendNotifications($pdo, $gibbon->session);
-                    }
-                }
-
-                //Attempt to notify tutor(s) on negative behaviour
+                // Attempt to notify tutor(s) and EA(s) of negative behaviour
                 if ($type == 'Negative') {
                     try {
                         $dataDetail = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
@@ -146,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         $notificationGateway = new NotificationGateway($pdo);
                         $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
 
-                        $studentName = formatName('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false);
+                        $studentName = Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false);
                         $actionLink = "/index.php?q=/modules/Behaviour/behaviour_view_details.php&gibbonPersonID=$gibbonPersonID&search=";
 
                         // Raise a new notification event
@@ -158,26 +120,57 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
                         $event->addScope('gibbonYearGroupID', $rowDetail['gibbonYearGroupID']);
 
+                        // Add notifications for Educational Assistants
+                        if (getSettingByScope($connection2, 'Behaviour', 'notifyEducationalAssistants') == 'Y') {
+                            $educationalAssistants = $container->get(INAssistantGateway::class)->selectINAssistantsByStudent($gibbonPersonID)->fetchAll();
+                            foreach ($educationalAssistants as $ea) {
+                                $event->addRecipient($ea['gibbonPersonID']);
+                            }
+                        }
+
                         // Add event listeners to the notification sender
                         $event->pushNotifications($notificationGateway, $notificationSender);
 
                         // Add direct notifications to roll group tutors
                         if ($event->getEventDetails($notificationGateway, 'active') == 'Y') {
-                            $notificationText = sprintf(__('Someone has created a negative behaviour record for your tutee, %1$s.'), $studentName);
+                            if (getSettingByScope($connection2, 'Behaviour', 'notifyTutors') == 'Y') {
+                                $notificationText = sprintf(__('Someone has created a negative behaviour record for your tutee, %1$s.'), $studentName);
 
-                            if ($rowDetail['gibbonPersonIDTutor'] != null and $rowDetail['gibbonPersonIDTutor'] != $_SESSION[$guid]['gibbonPersonID']) {
-                                $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor'], $notificationText, 'Behaviour', $actionLink);
-                            }
-                            if ($rowDetail['gibbonPersonIDTutor2'] != null and $rowDetail['gibbonPersonIDTutor2'] != $_SESSION[$guid]['gibbonPersonID']) {
-                                $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor2'], $notificationText, 'Behaviour', $actionLink);
-                            }
-                            if ($rowDetail['gibbonPersonIDTutor3'] != null and $rowDetail['gibbonPersonIDTutor3'] != $_SESSION[$guid]['gibbonPersonID']) {
-                                $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor3'], $notificationText, 'Behaviour', $actionLink);
+                                if ($rowDetail['gibbonPersonIDTutor'] != null and $rowDetail['gibbonPersonIDTutor'] != $_SESSION[$guid]['gibbonPersonID']) {
+                                    $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor'], $notificationText, 'Behaviour', $actionLink);
+                                }
+                                if ($rowDetail['gibbonPersonIDTutor2'] != null and $rowDetail['gibbonPersonIDTutor2'] != $_SESSION[$guid]['gibbonPersonID']) {
+                                    $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor2'], $notificationText, 'Behaviour', $actionLink);
+                                }
+                                if ($rowDetail['gibbonPersonIDTutor3'] != null and $rowDetail['gibbonPersonIDTutor3'] != $_SESSION[$guid]['gibbonPersonID']) {
+                                    $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor3'], $notificationText, 'Behaviour', $actionLink);
+                                }
                             }
                         }
 
                         // Send all notifications
                         $notificationSender->sendNotifications();
+                    }
+                }
+
+                if ($copyToNotes == 'on') {
+                    //Write to notes
+                    $noteGateway = $container->get(StudentNoteGateway::class);
+                    $note = [
+                        'title'                       => __('Behaviour').': '.$descriptor,
+                        'note'                        => empty($followup) ? $comment : $comment.' <br/><br/>'.$followup,
+                        'gibbonPersonID'              => $gibbonPersonID,
+                        'gibbonPersonIDCreator'       => $_SESSION[$guid]['gibbonPersonID'],
+                        'gibbonStudentNoteCategoryID' => $noteGateway->getNoteCategoryIDByName('Behaviour') ?? null,
+                        'timestamp'                   => date('Y-m-d H:i:s', time()),
+                    ];
+
+                    $inserted = $noteGateway->insert($note);
+
+                    if (!$inserted) {
+                        $URL .= "&return=warning1&step=2&gibbonBehaviourID=$gibbonBehaviourID&editID=$AI";
+                        header("Location: {$URL}");
+                        exit;
                     }
                 }
 

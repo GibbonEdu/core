@@ -21,6 +21,7 @@ use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Module\Attendance\AttendanceView;
+use Gibbon\Services\Format;
 
 require getcwd().'/../gibbon.php';
 
@@ -36,6 +37,7 @@ if (!isCommandLineInterface()) {
     require_once __DIR__ . '/../modules/Attendance/src/AttendanceView.php';
     $attendance = new AttendanceView($gibbon, $pdo);
     
+    $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
     $firstDayOfTheWeek = $gibbon->session->get('firstDayOfTheWeek');
     $dateFormat = $_SESSION[$guid]['i18n']['dateFormat'];
     
@@ -58,8 +60,13 @@ if (!isCommandLineInterface()) {
             LEFT JOIN gibbonCourseClass ON (gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
             LEFT JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
             WHERE gibbonAttendanceLogPerson.date BETWEEN :dateStart AND :dateEnd
-            AND gibbonPerson.status='Full'
-            AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+            AND gibbonPerson.status='Full' ";
+
+    if ($countClassAsSchool == 'N') {
+        $sql .= "AND NOT gibbonAttendanceLogPerson.context='Class' ";
+    }
+
+    $sql .= "AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
             ORDER BY gibbonYearGroup.sequenceNumber, gibbonRollGroup.nameShort, gibbonPerson.surname, gibbonPerson.preferredName, gibbonAttendanceLogPerson.date, gibbonAttendanceLogPerson.timestampTaken
     ";
 
@@ -126,7 +133,7 @@ if (!isCommandLineInterface()) {
             foreach ($logsByStudent as $gibbonPersonID => $student) {
                 $report .= '<li>';
                 $report .= '<a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Attendance/report_studentHistory.php&gibbonPersonID='.$gibbonPersonID.'" target="_blank">';
-                $report .= formatName('', $student['preferredName'], $student['surname'], 'Student', true, true);
+                $report .= Format::name('', $student['preferredName'], $student['surname'], 'Student', true, true);
                 $report .= '</a>';
 
                 foreach ($student['days'] as $date => $logs) {

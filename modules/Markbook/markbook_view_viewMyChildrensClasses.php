@@ -18,18 +18,19 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-    use Gibbon\Forms\Form;
+use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
     $page->breadcrumbs->add(__('View Markbook'));
 
-	// Lock the file so other scripts cannot call it
-	if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $_SESSION[$guid]['gibbonPersonID'] ) . date('zWy') ) return;
+    // Lock the file so other scripts cannot call it
+    if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $_SESSION[$guid]['gibbonPersonID'] ) . date('zWy') ) return;
 
-	//Get settings
-	$enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
-	$enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
-	$attainmentAltName = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
-	$effortAltName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
+    //Get settings
+    $enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
+    $enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
+    $attainmentAltName = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
+    $effortAltName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
 
     $entryCount = 0;
     echo '<p>';
@@ -64,7 +65,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 echo "<div class='error'>".$e->getMessage().'</div>';
             }
             while ($rowChild = $resultChild->fetch()) {
-                $options[$rowChild['gibbonPersonID']]=formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
+                $options[$rowChild['gibbonPersonID']]=Format::name('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
             }
         }
 
@@ -242,7 +243,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                             $teachers = '<p><b>Taught by:</b> ';
                             while ($rowTeachers = $resultTeachers->fetch()) {
-                                $teachers = $teachers.formatName($rowTeachers['title'], $rowTeachers['preferredName'], $rowTeachers['surname'], 'Staff', false, false).', ';
+                                $teachers = $teachers.Format::name($rowTeachers['title'], $rowTeachers['preferredName'], $rowTeachers['surname'], 'Staff', false, false).', ';
                             }
                             $teachers = substr($teachers, 0, -2);
                             $teachers = $teachers.'</p>';
@@ -294,7 +295,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                                 echo '<td>';
                                 echo "<span title='".htmlPrep($rowEntry['description'])."'><b><u>".$rowEntry['name'].'</u></b></span><br/>';
                                 echo "<span style='font-size: 90%; font-style: italic; font-weight: normal'>";
-                                $unit = getUnit($connection2, $rowEntry['gibbonUnitID'], $rowEntry['gibbonHookID'], $rowEntry['gibbonCourseClassID']);
+                                $unit = getUnit($connection2, $rowEntry['gibbonUnitID'], $rowEntry['gibbonCourseClassID']);
                                 if (isset($unit[0])) {
                                     echo $unit[0].'<br/>';
                                     if ($unit[1] != '') {
@@ -486,7 +487,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                                             if (date('Y-m-d H:i:s') < $rowSub['homeworkDueDateTime']) {
                                                 echo "<span title='Pending'>".__('Pending').'</span>';
                                             } else {
-                                                if ($row['dateStart'] > $rowSub['date']) {
+                                                if ($rowChild['dateStart'] > $rowSub['date']) {
                                                     echo "<span title='".__('Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>".__('NA').'</span>';
                                                 } else {
                                                     if ($rowSub['homeworkSubmissionRequired'] == 'Compulsory') {

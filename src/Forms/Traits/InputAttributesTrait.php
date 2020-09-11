@@ -128,14 +128,22 @@ trait InputAttributesTrait
     }
 
     /**
-     * Set the input to disabled.
-     * @param   bool    $value
-     * @return  self
+     * @deprecated Remove setters that start with isXXX for code consistency.
      */
     public function isDisabled($disabled = true)
     {
         $this->setDisabled('disabled', $disabled);
         return $this;
+    }
+
+    /**
+     * Set the input to disabled.
+     * @param   bool    $value
+     * @return  self
+     */
+    public function disabled($disabled = true)
+    {
+        return $this->setDisabled('disabled', $disabled);
     }
 
     /**
@@ -159,11 +167,19 @@ trait InputAttributesTrait
     }
 
     /**
+     * @deprecated Remove setters that start with isXXX for code consistency.
+     */
+    public function isRequired($required = true)
+    {
+        return $this->setRequired($required);
+    }
+
+    /**
      * Set the input to required.
      * @param   bool    $value
      * @return  self
      */
-    public function isRequired($required = true)
+    public function required($required = true)
     {
         return $this->setRequired($required);
     }
@@ -230,7 +246,7 @@ trait InputAttributesTrait
 
         return $this;
     }
-
+    
     /**
      * Gets the input's tabindex attribute.
      * @return  int
@@ -238,5 +254,27 @@ trait InputAttributesTrait
     public function getTabIndex()
     {
         return $this->getAttribute('tabindex');
+    }
+
+    /**
+     * Set the input's aria property and value.
+     * @param  string      $property
+     * @param  string|int  $value
+     * @return self
+     */
+    public function setAria($property, $value)
+    {
+        $this->setAttribute('aria-'.$property, $value);
+
+        return $this;
+    }
+
+    /**
+     * Gets the input's aria property.
+     * @return  string|int
+     */
+    public function getAria($property)
+    {
+        return $this->getAttribute('aria-'.$property);
     }
 }

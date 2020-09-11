@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Library Settings'));
+    $page->breadcrumbs->add(__('Library Settings'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
     $setting = getSettingByScope($connection2, 'Library', 'defaultLoanLength', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelect($setting['name'])->fromString('0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31')->selected($setting['value'])->isRequired();
+        $row->addSelect($setting['name'])->fromString('0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31')->selected($setting['value'])->required();
 
     $setting = getSettingByScope($connection2, 'Library', 'browseBGColor', true);
 	$row = $form->addRow();
@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
     $setting = getSettingByScope($connection2, 'Library', 'browseBGImage', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextField($setting['name'])->setValue($setting['value'])->maxLength(6);
+        $row->addTextField($setting['name'])->setValue($setting['value'])->maxLength(255);
 
     $row = $form->addRow();
         $row->addFooter();

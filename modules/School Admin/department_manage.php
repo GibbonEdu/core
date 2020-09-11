@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
     $setting = getSettingByScope($connection2, 'Departments', 'makeDepartmentsPublic', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->isRequired()->selected($setting['value']);
+        $row->addYesNo($setting['name'])->required()->selected($setting['value']);
 
     $row = $form->addRow();
         $row->addFooter();
@@ -63,8 +63,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
     $departmentGateway = $container->get(DepartmentGateway::class);
 
     // QUERY
-    $criteria = $departmentGateway->newQueryCriteria()
-        ->sortBy('name')
+    $criteria = $departmentGateway->newQueryCriteria(true)
+        ->sortBy(['sequenceNumber', 'name'])
         ->fromPOST();
 
     $departments = $departmentGateway->queryDepartments($criteria);
@@ -76,8 +76,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
         ->setURL('/modules/School Admin/department_manage_add.php')
         ->displayLabel();
 
+    $table->addDraggableColumn('gibbonDepartmentID', $gibbon->session->get('absoluteURL').'/modules/School Admin/department_manage_editOrderAjax.php');
+
     $table->addColumn('name', __('Name'));
-    $table->addColumn('type', __('Type'));
+    $table->addColumn('type', __('Type'))->translatable();
     $table->addColumn('nameShort', __('Short Name'));
     $table->addColumn('staff', __('Staff'))
         ->sortable(false)

@@ -40,10 +40,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
 
     $setting = getSettingByScope($connection2, 'Formal Assessment', 'internalAssessmentTypes', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
-        $row->addTextArea($setting['name'])->setValue($setting['value'])->isRequired();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
 
-    $form->addRow()->addHeading(__('Primary External Assessement'))->append(__('These settings allow a particular type of external assessment to be associated with each year group. The selected assessment will be used as the primary assessment to be used as a baseline for comparison (for example, within the Markbook). You are required to select a particular field category can be chosen from which to draw data (if no category is chosen, the data will not be saved).'));
+    $form->addRow()->addHeading(__('Primary External Assessement'))->append(__('These settings allow a particular type of external assessment to be associated with each year group. The selected assessment will be used as the primary assessment to be used as a baseline for comparison (for example, within the Markbook). You are required to select a particular field category from which to draw data (if no category is chosen, the data will not be saved).'));
 
     $row = $form->addRow()->setClass('break');
         $row->addContent(__('Year Group'));
@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
     if ($results && $results->rowCount() > 0) {
         while ($assessment = $results->fetch()) {
             $key = $assessment['gibbonExternalAssessmentID'].'-'.$assessment['category'];
-            $externalAssessmentsFieldSetNames[$key] = substr($assessment['category'], strpos($assessment['category'], '_') + 1);
+            $externalAssessmentsFieldSetNames[$key] = mb_substr($assessment['category'], mb_strpos($assessment['category'], '_'));
             $externalAssessmentsFieldSetIDs[$key] = $assessment['gibbonExternalAssessmentID'];
         }
     }
@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
     $primaryExternalAssessmentByYearGroup = unserialize(getSettingByScope($connection2, 'School Admin', 'primaryExternalAssessmentByYearGroup'));
 
     // Split the ID portion off of the ID-category pair, for the first dropdown
-    $primaryExternalAssessmentIDsByYearGroup = array_map(function($v) { return (stripos($v, '-') !== false? substr($v, 0, strpos($v, '-')) : $v); }, $primaryExternalAssessmentByYearGroup);
+    $primaryExternalAssessmentIDsByYearGroup = array_map(function($v) { return (mb_strpos($v, '-') !== false? mb_substr($v, 0, mb_strpos($v, '-')) : $v); }, $primaryExternalAssessmentByYearGroup);
 
     $sql = 'SELECT gibbonYearGroupID, name FROM gibbonYearGroup ORDER BY sequenceNumber';
     $result = $pdo->executeQuery(array(), $sql);

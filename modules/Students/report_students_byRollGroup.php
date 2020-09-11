@@ -52,11 +52,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
 
         $row = $form->addRow();
             $row->addLabel('gibbonRollGroupID', __('Roll Group'));
-            $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'], true)->selected($gibbonRollGroupID)->placeholder()->isRequired();
+            $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'], true)->selected($gibbonRollGroupID)->placeholder()->required();
 
         $row = $form->addRow();
             $row->addLabel('view', __('View'));
-            $row->addSelect('view')->fromArray(array('basic' => __('Basic'), 'extended' =>__('Extended')))->selected($view)->isRequired();
+            $row->addSelect('view')->fromArray(array('basic' => __('Basic'), 'extended' =>__('Extended')))->selected($view)->required();
 
         $row = $form->addRow();
             $row->addFooter();
@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
     $medicalGateway = $container->get(MedicalGateway::class);
 
     // QUERY
-    $criteria = $studentGateway->newQueryCriteria()
+    $criteria = $studentGateway->newQueryCriteria(true)
         ->sortBy(['rollGroup', 'surname', 'preferredName'])
         ->pageSize(!empty($viewMode) ? 0 : 50)
         ->filterBy('view', $view)

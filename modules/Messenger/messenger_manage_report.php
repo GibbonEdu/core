@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Prefab\BulkActionForm;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage_report.php")==FALSE) {
 	//Acess denied
@@ -45,7 +46,7 @@ else {
 		echo '<h2>';
 		echo __('Report Data');
 		echo '</h2>';
-		
+
 		$nonConfirm = 0;
 		$noConfirm = 0;
 		$yesConfirm = 0;
@@ -109,7 +110,7 @@ else {
 			// Create a reusable confirmation closure
 			$icon = '<img src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/%1$s"/>';
 			$confirmationIndicator = function($recipient) use ($icon) {
-				if (is_null($recipient['key'])) return __('N/A');
+				if (empty($recipient['key'])) return __('N/A');
 				return sprintf($icon, $recipient['confirmed'] == 'Y'? 'iconTick.png' : 'iconCross.png');
 			};
 
@@ -157,7 +158,7 @@ else {
 						//Store receipt for this message data in an array
 						try {
 							$dataReceipts = array('gibbonMessengerID' => $gibbonMessengerID);
-							$sqlReceipts = "SELECT gibbonPersonID, gibbonMessengerReceiptID, confirmed, `key` FROM gibbonMessengerReceipt WHERE gibbonMessengerID=:gibbonMessengerID";
+							$sqlReceipts = "SELECT gibbonPersonID, gibbonMessengerReceiptID, confirmed, `key`, gibbonPersonIDListStudent FROM gibbonMessengerReceipt WHERE gibbonMessengerID=:gibbonMessengerID";
 							$resultReceipts = $connection2->prepare($sqlReceipts);
 							$resultReceipts->execute($dataReceipts);
 						} catch (PDOException $e) {}
@@ -172,15 +173,35 @@ else {
 						$rollGroups = $result->fetchAll(\PDO::FETCH_GROUP);
 						$countTotal = 0;
 
+						// Merge gibbonPersonIDListStudent into $receipts as an array
+                        $receipts = array_map(function ($item) {
+                            $item['gibbonPersonIDListStudent'] = (empty($item['gibbonPersonIDListStudent'])) ? null : explode(',', $item['gibbonPersonIDListStudent']);
+                            return $item;
+                        }, $receipts);
+
 						foreach ($rollGroups as $rollGroupName => $recipients) {
 							$count = 0;
 
 							// Filter the array for only those individuals involved in the message (student or parent)
 							$recipients = array_filter($recipients, function($recipient) use (&$receipts) {
-								return array_key_exists($recipient['gibbonPersonID'], $receipts)
-									|| array_key_exists($recipient['parent1gibbonPersonID'], $receipts)
-									|| array_key_exists($recipient['parent2gibbonPersonID'], $receipts);
+                                if (array_key_exists($recipient['gibbonPersonID'], $receipts)) {
+                                    return true;
+                                }
+
+                                if (array_key_exists($recipient['parent1gibbonPersonID'], $receipts)
+                                && (is_null($receipts[$recipient['parent1gibbonPersonID']]['gibbonPersonIDListStudent']) || in_array($recipient['gibbonPersonID'], $receipts[$recipient['parent1gibbonPersonID']]['gibbonPersonIDListStudent']))) {
+                                        return true;
+                                }
+
+                                if (array_key_exists($recipient['parent2gibbonPersonID'], $receipts)
+                                && (is_null($receipts[$recipient['parent2gibbonPersonID']]['gibbonPersonIDListStudent']) || in_array($recipient['gibbonPersonID'], $receipts[$recipient['parent2gibbonPersonID']]['gibbonPersonIDListStudent']))) {
+                                        return true;
+                                }
+
+                                return false;
 							});
+
+							//print_r($recipients);exit;
 
 							// Skip this roll group if there's no involved individuals
 							if (empty($recipients)) continue;
@@ -196,12 +217,15 @@ else {
 								$header->addContent(__('Parent 2'))->addClass('mediumWidth');
 
 							foreach ($recipients as $recipient) {
+								// print_r($recipient);
+								// echo "<br/><br/>";
+
 								$countTotal++;
 								$count++;
 
-								$studentName = formatName('', $recipient['preferredName'], $recipient['surname'], 'Student', true);
-								$parent1Name = formatName('', $recipient['parent1preferredName'], $recipient['parent1surname'], 'Parent', true);
-								$parent2Name = formatName('', $recipient['parent2preferredName'], $recipient['parent2surname'], 'Parent', true);
+								$studentName = Format::name('', $recipient['preferredName'], $recipient['surname'], 'Student', true);
+								$parent1Name = Format::name('', $recipient['parent1preferredName'], $recipient['parent1surname'], 'Parent', true);
+								$parent2Name = Format::name('', $recipient['parent2preferredName'], $recipient['parent2surname'], 'Parent', true);
 
 								//Tests for row completion, to set colour
 								$studentReceived = isset($receipts[$recipient['gibbonPersonID']]);
@@ -233,8 +257,9 @@ else {
 										$col->addContent($confirmationIndicator($studentReceipt));
 										$col->onlyIf($sender == true && !empty($studentReceipt) && $studentReceipt['confirmed'] == 'N')
 											->addCheckbox('gibbonMessengerReceiptIDs[]')
-											->setValue($studentReceipt['gibbonMessengerReceiptID'])
-											->setClass('');
+											->setValue($studentReceipt['gibbonMessengerReceiptID'] ?? '')
+                                            ->setClass('')
+                                            ->alignLeft();
 
 									$parent1Receipt = isset($receipts[$recipient['parent1gibbonPersonID']])? $receipts[$recipient['parent1gibbonPersonID']] : null;
 									$col = $row->addColumn();
@@ -243,7 +268,8 @@ else {
 										$col->onlyIf($sender == true && !empty($parent1Receipt) && $parent1Receipt['confirmed'] == 'N')
 											->addCheckbox('gibbonMessengerReceiptIDs[]')
 											->setValue($parent1Receipt['gibbonMessengerReceiptID'])
-											->setClass('');
+                                            ->setClass('')
+                                            ->alignLeft();
 
 									$parent2Receipt = isset($receipts[$recipient['parent2gibbonPersonID']])? $receipts[$recipient['parent2gibbonPersonID']] : null;
 									$col = $row->addColumn();
@@ -252,7 +278,8 @@ else {
 										$col->onlyIf($sender == true && !empty($parent2Receipt) && $parent2Receipt['confirmed'] == 'N')
 											->addCheckbox('gibbonMessengerReceiptIDs[]')
 											->setValue($parent2Receipt['gibbonMessengerReceiptID'])
-											->setClass('');
+                                            ->setClass('')
+                                            ->alignLeft();
 							}
 						}
 
@@ -308,7 +335,7 @@ else {
 						foreach ($recipients as $count => $recipient) {
 							$row = $table->addRow();
 								$row->addContent($count+1);
-								$row->addContent(($recipient['preferredName'] != '' && $recipient['surname'] != '') ? formatName('', $recipient['preferredName'], $recipient['surname'], 'Student', true) : __('N/A'));
+								$row->addContent(($recipient['preferredName'] != '' && $recipient['surname'] != '') ? Format::name('', $recipient['preferredName'], $recipient['surname'], 'Student', true) : __('N/A'));
 								$row->addContent($recipient['roleCategory']);
 								$row->addContent($recipient['contactType']);
 								$row->addContent($recipient['contactDetail']);
