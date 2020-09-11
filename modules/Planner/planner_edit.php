@@ -299,7 +299,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 
                 $row = $form->addRow()->setClass('homeworkSubmission');
                     $row->addLabel('homeworkSubmissionRequired', __('Submission Required'));
-                    $row->addSelect('homeworkSubmissionRequired')->fromArray(array('Optional' => __('Optional'), 'Compulsory' => __('Compulsory')))->required();
+                    $row->addSelect('homeworkSubmissionRequired')->fromArray(array('Optional' => __('Optional'), 'Required' => __('Required')))->required();
 
                 if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAssess.php')) {
                     $form->toggleVisibilityByClass('homeworkCrowdAssess')->onRadio('homeworkCrowdAssess')->when('Y');

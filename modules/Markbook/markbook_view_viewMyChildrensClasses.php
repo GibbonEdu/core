@@ -490,7 +490,7 @@ use Gibbon\Services\Format;
                                                 if ($rowChild['dateStart'] > $rowSub['date']) {
                                                     echo "<span title='".__('Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>".__('NA').'</span>';
                                                 } else {
-                                                    if ($rowSub['homeworkSubmissionRequired'] == 'Compulsory') {
+                                                    if ($rowSub['homeworkSubmissionRequired'] == 'Required') {
                                                         echo "<div style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px; margin: 2px 0px'>".__('Incomplete').'</div>';
                                                     } else {
                                                         echo __('Not submitted online');
