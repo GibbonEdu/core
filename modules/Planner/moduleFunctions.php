@@ -1,10 +1,4 @@
 <?php
-
-use Gibbon\Forms\Form;
-use Gibbon\Services\Format;
-use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Domain\Planner\PlannerEntryGateway;
-
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -22,6 +16,12 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+
+use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\Timetable\CourseGateway;
+use Gibbon\Domain\Planner\PlannerEntryGateway;
 
 //Make the display for a block, according to the input provided, where $i is a unique number appended to the block's field ids.
 //Mode can be masterAdd, masterEdit, workingDeploy, workingEdit, plannerEdit, embed
@@ -494,55 +494,40 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 
 function sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYearID)
 {
+    global $container;
+
     $output = '';
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        $output = "<div class='error'>";
-        $output .= __('The highest grouped action cannot be determined.');
-        $output .= '</div>';
+        $output = Format::error(__('The highest grouped action cannot be determined.'));
     } else {
-        //Show class picker in sidebar
-        $output .= '<h2>';
-        $output .= __('Choose A Course');
-        $output .= '</h2>';
+        // Show class picker in sidebar
+        $courseGateway = $container->get(CourseGateway::class);
 
-        $selectCount = 0;
-        $output .= "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/index.php'>";
-        $output .= "<table class='mini' cellspacing='0' style='width: 100%; margin: 0px 0px'>";
-        $output .= '<tr>';
-        $output .= "<td style='width: 190px'>";
-        $output .= "<input name='q' id='q' type='hidden' value='/modules/Planner/units.php'>";
-        $output .= "<input name='gibbonSchoolYearID' id='gibbonSchoolYearID' type='hidden' value='$gibbonSchoolYearID'>";
-        $output .= "<select name='gibbonCourseID' id='gibbonCourseID' style='width:161px'>";
-        $output .= "<option value=''></option>";
-        try {
-            if ($highestAction == 'Unit Planner_all') {
-                $dataSelect = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-                $sqlSelect = 'SELECT gibbonCourse.nameShort AS course, gibbonSchoolYear.name AS year, gibbonCourseID FROM gibbonCourse JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY nameShort';
-            } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                $dataSelect = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                $sqlSelect = "SELECT gibbonCourse.nameShort AS course, gibbonSchoolYear.name AS year, gibbonCourseID FROM gibbonCourse JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY gibbonCourse.nameShort";
-            }
-            $resultSelect = $connection2->prepare($sqlSelect);
-            $resultSelect->execute($dataSelect);
-        } catch (PDOException $e) {
+        if ($highestAction == 'Unit Planner_all') {
+            $courses = $courseGateway->selectCoursesBySchoolYear($gibbonSchoolYearID)->fetchKeyPair();
+        } elseif ($highestAction == 'Unit Planner_learningAreas') {
+            $courses = $courseGateway->selectCoursesByPerson($gibbonSchoolYearID, $_SESSION[$guid]['gibbonPersonID'])->fetchKeyPair();
         }
-        while ($rowSelect = $resultSelect->fetch()) {
-            $selected = '';
-            if ($rowSelect['gibbonCourseID'] == $gibbonCourseID) {
-                $selected = 'selected';
-                ++$selectCount;
-            }
-            $output .= "<option $selected value='".$rowSelect['gibbonCourseID']."'>".htmlPrep($rowSelect['course']).' ('.htmlPrep($rowSelect['year']).')</option>';
-        }
-        $output .= '</select>';
-        $output .= '</td>';
-        $output .= "<td class='right'>";
-        $output .= "<input type='submit' value='".__('Go')."'>";
-        $output .= '</td>';
-        $output .= '</tr>';
-        $output .= '</table>';
-        $output .= '</form>';
+
+        $form = Form::create('courseChooser', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form->setTitle(__('Choose A Course'));
+        $form->setClass('smallIntBorder w-full');
+
+        $form->addHiddenValue('q', '/modules/Planner/units.php');
+        $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+        $form->addHiddenValue('viewBy', 'class');
+
+        $row = $form->addRow();
+            $row->addSelect('gibbonCourseID')
+                ->setID('gibbonCourseIDSidebar')
+                ->fromArray($courses)
+                ->selected($gibbonCourseID)
+                ->placeholder()
+                ->setClass('float-none w-full');
+            $row->addSubmit(__('Go'));
+
+        $output .= $form->getOutput();
     }
 
     $_SESSION[$guid]['sidebarExtraPosition'] = 'bottom';
