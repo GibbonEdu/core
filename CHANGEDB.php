@@ -695,5 +695,7 @@ ALTER TABLE `gibbonReportArchiveEntry` ADD `timestampSent` TIMESTAMP NULL AFTER 
 INSERT INTO `gibbonEmailTemplate` (`templateName`, `moduleName`, `templateSubject`, `templateBody`, `variables`, `timestamp`) VALUES ('Send Reports to Students', 'Reports', 'Your {{reportName|title}}', '<p>Dear {{studentPreferredName}} {{studentSurname}},</p>\r\n<p>This email includes a link to your {{reportName|title}} created on {{date}}.</p>\r\n<p>Click the button below to download this report. To protect your security and privacy, this download link will expire after 1 week.</p>\r\n<p>Thank you,<br />{{organisationAdministratorName}}</p>', '{\"reportName\": \"Test Report\", \r\n\"studentPreferredName\": [\"firstName\"],\r\n\"studentSurname\": [\"lastName\"],\r\n\"date\": [\"date\"]\r\n}', '2020-09-02 16:58:10');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Finance', 'paymentTypeOptions', 'Payment Type Options', 'Which payment types are available for invoicing, as a csv list.', 'Online,Bank Transfer,Cash,Cheque,Credit Card,Other');end
 ALTER TABLE `gibbonPayment` CHANGE `type` `type` VARCHAR(60) NOT NULL DEFAULT 'Online';end
-
+ALTER TABLE `gibbonPlannerEntry` CHANGE `homeworkSubmissionRequired` `homeworkSubmissionRequired` enum('Optional','Compulsory','Required') DEFAULT NULL;end
+UPDATE `gibbonPlannerEntry` SET homeworkSubmissionRequired='Required' WHERE homeworkSubmissionRequired='Compulsory';end
+ALTER TABLE `gibbonPlannerEntry` CHANGE `homeworkSubmissionRequired` `homeworkSubmissionRequired` enum('Optional','Required') DEFAULT NULL;end
 ";

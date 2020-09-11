@@ -1032,7 +1032,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 																	if ($rowClass['dateStart'] > $row['date']) {
 																		echo "<span title='".__('Student joined school after lesson was taught.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>".__('NA').'</span>';
 																	} else {
-																		if ($row['homeworkSubmissionRequired'] == 'Compulsory') {
+																		if ($row['homeworkSubmissionRequired'] == 'Required') {
 																			echo "<span style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'>".__('Incomplete').'</span>';
 																		} else {
 																			echo __('Not submitted online');

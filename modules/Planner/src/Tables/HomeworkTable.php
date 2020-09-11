@@ -141,7 +141,7 @@ class HomeworkTable
                     $output .= Format::small(__('Late').': '.$late).'<br/>';
                     $output .= Format::small($statusLabel.': '.($total - $late - $onTime)).'<br/>';
                 } else {
-                    if ($homework['homeworkSubmissionRequired'] == 'Compulsory' 
+                    if ($homework['homeworkSubmissionRequired'] == 'Required' 
                         && ($statusLabel == __('Late') || $statusLabel == __('Incomplete'))) {
                         $output .= Format::tag($statusLabel, 'error mt-1');
                     } else {
@@ -162,7 +162,7 @@ class HomeworkTable
                         if ($latestSubmission['version'] == 'Final') return __('Yes');
                     }
 
-                    if ($roleCategory == 'Student' && $homework['homeworkSubmissionRequired'] != 'Compulsory') {
+                    if ($roleCategory == 'Student' && $homework['homeworkSubmissionRequired'] != 'Required') {
                         return '<input id="complete'.$homework['gibbonPlannerEntryID'].'" type="checkbox" class="mark-complete" data-id="'.$homework['gibbonPlannerEntryID'].'" data-type="'.$homework['type'].'" '.(!empty($homework['tracker']['homeworkComplete']) ? 'checked' : '').'>';
                     } else {
                         if (!empty($homework['tracker']['homeworkComplete'])) return __('Yes');
@@ -207,7 +207,7 @@ class HomeworkTable
             return __('Pending');
         }
 
-        if ($homework['homeworkSubmissionRequired'] == 'Compulsory') {
+        if ($homework['homeworkSubmissionRequired'] == 'Required') {
             return __('Incomplete');
         }
         
