@@ -314,7 +314,7 @@ function renderStudentSubmission($student, $submission, $markbookColumn)
             if (!empty($student['dateStart']) && $student['dateStart'] > $markbookColumn['lessonDate']) {
                 $output .= "<span title='".__('Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>NA</span>";
             } else {
-                if ($markbookColumn['homeworkSubmissionRequired'] == 'Compulsory') {
+                if ($markbookColumn['homeworkSubmissionRequired'] == 'Required') {
                     $output .= "<span title='".__('Incomplete')."' style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'>".__('Inc').'</span>';
                 } else {
                     $output .= "<span title='".__('Not submitted online')."'>".__('NA').'</span>';
