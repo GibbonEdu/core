@@ -28,6 +28,7 @@ v21.0.00
         School Admin: added Email Summary Settings to manage daily and weekly email CLI scripts
         System Admin: added an Email Templates section to customize emails sent by Gibbon
         Reports: added a Send Reports tool to bulk-send templated emails with download links
+        Timetable Admin: added ability to duplicate Columns and Days
 
     Changes With Important Notices
         System: renamed planner_parentWeeklyEmailSummary.php to schoolAdmin_parentWeeklyEmailSummary.php
