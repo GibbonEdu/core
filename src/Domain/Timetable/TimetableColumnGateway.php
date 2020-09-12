@@ -19,18 +19,43 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\Timetable;
 
-use Gibbon\Domain\Gateway;
+use Gibbon\Domain\Traits\TableAware;
+use Gibbon\Domain\QueryCriteria;
+use Gibbon\Domain\QueryableGateway;
 
 /**
- * @version v16
+ * @version v21
  * @since   v16
  */
-class TimetableColumnGateway extends Gateway
+class TimetableColumnGateway extends QueryableGateway
 {
+    use TableAware;
+
+    private static $tableName = 'gibbonTTColumn';
+    private static $primaryKey = 'gibbonTTColumnID';
+
+    /**
+     * @param QueryCriteria $criteria
+     * @return DataSet
+     */
+    public function queryTTColumns(QueryCriteria $criteria)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonTTColumn.gibbonTTColumnID', 'gibbonTTColumn.name', 'gibbonTTColumn.nameShort', 'COUNT(gibbonTTColumnRowID) as rowCount',
+            ])
+            ->leftJoin('gibbonTTColumnRow', 'gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID')
+            ->groupBy(['gibbonTTColumn.gibbonTTColumnID']);
+
+        return $this->runQuery($query, $criteria);
+    }
+
     public function selectTTColumns()
     {
         $sql = "SELECT gibbonTTColumn.gibbonTTColumnID, gibbonTTColumn.name, gibbonTTColumn.nameShort, COUNT(gibbonTTColumnRowID) as rowCount
-                FROM gibbonTTColumn 
+                FROM gibbonTTColumn
                 LEFT JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID)
                 GROUP BY gibbonTTColumn.gibbonTTColumnID
                 ORDER BY gibbonTTColumn.name";
@@ -50,10 +75,17 @@ class TimetableColumnGateway extends Gateway
     {
         $data = array('gibbonTTColumnID' => $gibbonTTColumnID);
         $sql = "SELECT gibbonTTColumnRowID, name, nameShort, timeStart, timeEnd, type
-                FROM gibbonTTColumnRow 
-                WHERE gibbonTTColumnID=:gibbonTTColumnID 
+                FROM gibbonTTColumnRow
+                WHERE gibbonTTColumnID=:gibbonTTColumnID
                 ORDER BY timeStart, name";
 
         return $this->db()->select($sql, $data);
+    }
+
+    public function insertColumnRow(array $data)
+    {
+        $sql = "INSERT INTO gibbonTTColumnRow SET gibbonTTColumnID=:gibbonTTColumnID, name=:name, nameShort=:nameShort, timeStart=:timeStart, timeEnd=:timeEnd, type=:type ON DUPLICATE KEY UPDATE gibbonTTColumnID=:gibbonTTColumnID";
+
+        return $this->db()->insert($sql, $data);
     }
 }

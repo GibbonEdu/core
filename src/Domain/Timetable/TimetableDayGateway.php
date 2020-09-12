@@ -19,14 +19,40 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\Timetable;
 
-use Gibbon\Domain\Gateway;
+use Gibbon\Domain\Traits\TableAware;
+use Gibbon\Domain\QueryCriteria;
+use Gibbon\Domain\QueryableGateway;
 
 /**
- * @version v16
+ * @version v21
  * @since   v16
  */
-class TimetableDayGateway extends Gateway
+class TimetableDayGateway extends QueryableGateway
 {
+    use TableAware;
+
+    private static $tableName = 'gibbonTTDay';
+    private static $primaryKey = 'gibbonTTDayID';
+
+    /**
+     * @param QueryCriteria $criteria
+     * @return DataSet
+     */
+    public function queryTTDays(QueryCriteria $criteria, $gibbonTTID)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonTTDay.*','gibbonTTColumn.name AS columnName'
+            ])
+            ->innerJoin('gibbonTTColumn', 'gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID')
+            ->where('gibbonTTID = :gibbonTTID')
+            ->bindValue('gibbonTTID', $gibbonTTID);
+
+        return $this->runQuery($query, $criteria);
+    }
+
     public function selectTTDaysByID($gibbonTTID)
     {
         $data = array('gibbonTTID' => $gibbonTTID);
@@ -52,16 +78,19 @@ class TimetableDayGateway extends Gateway
         return $this->db()->select($sql, $data);
     }
 
-    public function selectTTDayRowClassesByID($gibbonTTDayID, $gibbonTTColumnRowID) {
-        $data = array('gibbonTTColumnRowID' => $gibbonTTColumnRowID, 'gibbonTTDayID' => $gibbonTTDayID);
-        $sql = "SELECT gibbonTTDayRowClassID, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS courseName, gibbonCourseClass.nameShort AS className, gibbonSpace.gibbonSpaceID, gibbonSpace.name as location
+    public function selectTTDayRowClassesByID($gibbonTTDayID, $gibbonTTColumnRowID = null) {
+        $data = array('gibbonTTDayID' => $gibbonTTDayID);
+        $sql = "SELECT gibbonTTDayRowClassID, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS courseName, gibbonCourseClass.nameShort AS className, gibbonSpace.gibbonSpaceID, gibbonSpace.name as location, gibbonTTColumnRowID
                 FROM gibbonTTDayRowClass
                 JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
                 JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
                 LEFT JOIN gibbonSpace ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID)
-                WHERE gibbonTTColumnRowID=:gibbonTTColumnRowID
-                AND gibbonTTDayID=:gibbonTTDayID
-                ORDER BY courseName, className";
+                WHERE gibbonTTDayID=:gibbonTTDayID";
+                if (!empty($gibbonTTColumnRowID)) {
+                    $data['gibbonTTColumnRowID'] = $gibbonTTColumnRowID;
+                    $sql .= " AND gibbonTTColumnRowID=:gibbonTTColumnRowID";
+                }
+                $sql .= " ORDER BY courseName, className";
 
         return $this->db()->select($sql, $data);
     }
@@ -158,5 +187,19 @@ class TimetableDayGateway extends Gateway
         }
 
         return $this->db()->select($sql, $data);
+    }
+
+    public function insertDayRowClass(array $data)
+    {
+        $sql = "INSERT INTO gibbonTTDayRowClass SET gibbonTTDayID=:gibbonTTDayID, gibbonTTColumnRowID=:gibbonTTColumnRowID, gibbonCourseClassID=:gibbonCourseClassID, gibbonSpaceID=:gibbonSpaceID ON DUPLICATE KEY UPDATE gibbonTTDayID=:gibbonTTDayID";
+
+        return $this->db()->insert($sql, $data);
+    }
+
+    public function insertDayRowClassException(array $data)
+    {
+        $sql = "INSERT INTO gibbonTTDayRowClassException SET gibbonTTDayRowClassID=:gibbonTTDayRowClassID, gibbonPersonID=:gibbonPersonID ON DUPLICATE KEY UPDATE gibbonTTDayRowClassID=:gibbonTTDayRowClassID";
+
+        return $this->db()->insert($sql, $data);
     }
 }
