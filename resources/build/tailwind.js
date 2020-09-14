@@ -58,5 +58,9 @@ module.exports = {
         require('tailwindcss/lib/plugins/container')({
             center: true,
         }),
-    ]
+    ],
+    future: {
+        removeDeprecatedGapUtilities: true,
+        purgeLayersByDefault: true,
+    },
 };
