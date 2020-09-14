@@ -1,8 +1,9 @@
 <?php
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\Planner\PlannerEntryGateway;
 
 /*
 Gibbon, Flexible & Open School System
@@ -461,44 +462,23 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
             $output .= __('Homework & Deadlines');
             $output .= '</h2>';
 
-            try {
-                if ($highestAction == 'Lesson Planner_viewMyChildrensClasses') {
-                    $data = array('gibbonPersonID' => $gibbonPersonID, 'dateTime' => date('Y-m-d H:i:s'), 'date1' => date('Y-m-d'), 'date2' => date('Y-m-d'), 'timeEnd' => date('H:i:s'));
-                    $sql = "SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkDueDateTime, role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND homework='Y' AND role='Student' AND viewableParents='Y' AND homeworkDueDateTime>:dateTime AND ((date<:date1) OR (date=:date2 AND timeEnd<=:timeEnd)) ORDER BY homeworkDueDateTime";
-                } elseif ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewOnly') {
-                    $data = array('gibbonPersonID' => $gibbonPersonID, 'dateTime' => date('Y-m-d H:i:s'), 'date1' => date('Y-m-d'), 'date2' => date('Y-m-d'), 'timeEnd' => date('H:i:s'));
-                    $sql = "SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkDueDateTime, role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND homework='Y' AND (role='Teacher' OR (role='Student' AND viewableStudents='Y')) AND homeworkDueDateTime>:dateTime AND ((date<:date1) OR (date=:date2 AND timeEnd<=:timeEnd)) ORDER BY homeworkDueDateTime";
-                }
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $output .= "<div class='error'>".$e->getMessage().'</div>';
+            global $container, $page, $gibbon;
+
+            $plannerGateway = $container->get(PlannerEntryGateway::class);
+
+            if ($highestAction == 'Lesson Planner_viewMyChildrensClasses') {
+                $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, 'viewableParents')->fetchAll();
+            } elseif ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewOnly') {
+                $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, 'viewableStudents')->fetchAll();
             }
-            if ($result->rowCount() < 1) {
-                $output .= "<div class='success'>";
-                $output .= __('No upcoming deadlines!');
-                $output .= '</div>';
-            } else {
-                $output .= '<ol>';
-                $count = 0;
-                while ($row = $result->fetch()) {
-                    if ($count < 5) {
-                        $diff = (strtotime(substr($row['homeworkDueDateTime'], 0, 10)) - strtotime(date('Y-m-d'))) / 86400;
-                        $style = "style='padding-right: 3px;'";
-                        if ($diff < 2) {
-                            $style = "style='padding-right: 3px; border-right: 10px solid #cc0000'";
-                        } elseif ($diff < 4) {
-                            $style = "style='padding-right: 3px; border-right: 10px solid #D87718'";
-                        }
-                        $output .= "<li $style>";
-                        $output .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/planner_view_full.php&search=$gibbonPersonID&gibbonPlannerEntryID=".$row['gibbonPlannerEntryID'].'&viewBy=date&date='.$row['date']."&width=1000&height=550'>".$row['course'].'.'.$row['class'].'</a><br/>';
-                        $output .= "<span style='font-style: italic'>Due at ".substr($row['homeworkDueDateTime'], 11, 5).' on '.dateConvertBack($guid, substr($row['homeworkDueDateTime'], 0, 10));
-                        $output .= '</li>';
-                    }
-                    ++$count;
-                }
-                $output .= '</ol>';
-            }
+
+            $output .= $page->fetchFromTemplate('ui/upcomingDeadlines.twig.html', [
+                'gibbonPersonID' => $gibbonPersonID,
+                'deadlines' => $deadlines,
+                'hideLessonName' => true,
+                'heading' => 'h4'
+            ]);
+
 
             $output .= "<p style='padding-top: 15px; text-align: right'>";
             $output .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_deadlines.php&search=$gibbonPersonID'>View Homework</a>";

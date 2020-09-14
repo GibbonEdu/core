@@ -59,8 +59,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
         
         //Write to database
         try {
-            $data = array('gibbonDepartmentID' => $AI, 'type' => $type, 'name' => $name, 'nameShort' => $nameShort, 'subjectListing' => $subjectListing, 'blurb' => $blurb, 'logo' => $attachment);
-            $sql = 'INSERT INTO gibbonDepartment SET gibbonDepartmentID=:gibbonDepartmentID, type=:type, name=:name, nameShort=:nameShort, subjectListing=:subjectListing, blurb=:blurb, logo=:logo';
+            $data = array('type' => $type, 'name' => $name, 'nameShort' => $nameShort, 'subjectListing' => $subjectListing, 'blurb' => $blurb, 'logo' => $attachment);
+            $sql = 'INSERT INTO gibbonDepartment SET type=:type, name=:name, nameShort=:nameShort, subjectListing=:subjectListing, blurb=:blurb, logo=:logo';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {

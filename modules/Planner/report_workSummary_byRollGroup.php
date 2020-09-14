@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
 } else {
     //Proceed!
     echo '<p>';
-    echo __('This report draws data from the Markbook, Planner and Behaviour modules to give an overview of student performance and work completion. It only counts Online Submission data when submission is set to compulsory.');
+    echo __('This report draws data from the Markbook, Planner and Behaviour modules to give an overview of student performance and work completion. It only counts Online Submission data when submission is set to Required.');
     echo '</p>';
 
     echo '<h2>';
@@ -179,7 +179,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
             try {
 				$dataData['gibbonPersonID'] = $row['gibbonPersonID'];
 				$dataData['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
-				$sqlData = "SELECT DISTINCT gibbonPlannerEntryHomework.gibbonPlannerEntryID FROM gibbonPlannerEntryHomework JOIN gibbonPlannerEntry ON (gibbonPlannerEntryHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPlannerEntryHomework.gibbonPersonID=:gibbonPersonID AND status='On Time' AND gibbonSchoolYearID=:gibbonSchoolYearID AND homeworkSubmissionRequired='Compulsory'";
+				$sqlData = "SELECT DISTINCT gibbonPlannerEntryHomework.gibbonPlannerEntryID FROM gibbonPlannerEntryHomework JOIN gibbonPlannerEntry ON (gibbonPlannerEntryHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPlannerEntryHomework.gibbonPersonID=:gibbonPersonID AND status='On Time' AND gibbonSchoolYearID=:gibbonSchoolYearID AND homeworkSubmissionRequired='Required'";
 				$resultData = $connection2->prepare($sqlData);
 				$resultData->execute($dataData);
 			} catch (PDOException $e) {
@@ -236,7 +236,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
 			try {
 				$dataData2['gibbonPersonID'] = $row['gibbonPersonID'];
 				$dataData2['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
-				$sqlData2 = "SELECT DISTINCT gibbonPlannerEntryHomework.gibbonPlannerEntryID FROM gibbonPlannerEntryHomework JOIN gibbonPlannerEntry ON (gibbonPlannerEntryHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPlannerEntryHomework.gibbonPersonID=:gibbonPersonID AND status='Late' AND gibbonSchoolYearID=:gibbonSchoolYearID AND homeworkSubmissionRequired='Compulsory' $sqlWhere";
+				$sqlData2 = "SELECT DISTINCT gibbonPlannerEntryHomework.gibbonPlannerEntryID FROM gibbonPlannerEntryHomework JOIN gibbonPlannerEntry ON (gibbonPlannerEntryHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPlannerEntryHomework.gibbonPersonID=:gibbonPersonID AND status='Late' AND gibbonSchoolYearID=:gibbonSchoolYearID AND homeworkSubmissionRequired='Required' $sqlWhere";
 				$resultData2 = $connection2->prepare($sqlData2);
 				$resultData2->execute($dataData2);
 			} catch (PDOException $e) {
@@ -323,7 +323,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
 				$dataData2['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
 				$dataData2['homeworkDueDateTime'] = date('Y-m-d H:i:s');
 				$dataData2['date'] = date('Y-m-d');
-				$sqlData2 = "SELECT * FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND homeworkSubmission='Y' AND homeworkDueDateTime<:homeworkDueDateTime AND homeworkSubmissionRequired='Compulsory' AND date<=:date $sqlWhere";
+				$sqlData2 = "SELECT * FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND homeworkSubmission='Y' AND homeworkDueDateTime<:homeworkDueDateTime AND homeworkSubmissionRequired='Required' AND date<=:date $sqlWhere";
 				$resultData2 = $connection2->prepare($sqlData2);
 				$resultData2->execute($dataData2);
 			} catch (PDOException $e) {

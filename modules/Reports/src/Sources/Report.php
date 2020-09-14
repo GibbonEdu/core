@@ -30,13 +30,14 @@ class Report extends DataSource
             'status'     => "Final",
             'date'       => ['date', 'Y-m-d'],
             'schoolYear' => '2019-2020',
+            'currentYear' => '2019-2020',
         ];
     }
 
     public function getData($ids = [])
     {
         $data = ['gibbonReportID' => $ids['gibbonReportID']];
-        $sql = "SELECT gibbonReport.name, gibbonReport.status, gibbonReport.accessDate as date, gibbonSchoolYear.name as schoolYear
+        $sql = "SELECT gibbonReport.name, gibbonReport.status, gibbonReport.accessDate as date, gibbonSchoolYear.name as schoolYear, (SELECT name FROM gibbonSchoolYear WHERE status='Current' LIMIT 1) as currentYear
                 FROM gibbonReport 
                 JOIN gibbonSchoolYear ON (gibbonSchoolYear.gibbonSchoolYearID=gibbonReport.gibbonSchoolYearID)
                 WHERE gibbonReport.gibbonReportID=:gibbonReportID";

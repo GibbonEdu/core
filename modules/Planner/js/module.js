@@ -26,6 +26,29 @@ jQuery(function($){
 
 		// Show/hide the div container
 		$('#'+id+'-hideReasons').show();
-	});
+    });
 
+});
+
+// Handle checkbox toggles for student homework
+$(document).on('click', '.mark-complete', function () {
+    var complete = $(this).is(":checked");
+    $(this).parent().parent().toggleClass('success', complete);
+
+    $.ajax({
+        url: './modules/Planner/planner_deadlinesAjax.php',
+        data: {
+            complete: complete ? 'Y' : 'N',    
+            type: $(this).data('type'),    
+            gibbonPlannerEntryID: $(this).data('id')
+        },
+        type: 'POST',
+        success: function(data) {
+            if (data == 'error0') {
+                window.location = location.href += "&return=error0";
+            } else if (data == 'error1') {
+                window.location = location.href += "&return=error1";
+            }
+        },
+    });
 });
