@@ -33,7 +33,7 @@ try {
     } else {
         $I->fillField('databaseUsername', 'root');
     }
-    if (getenv('databasePassword')){
+    if (getenv('DB_PASSWORD')){
         $I->fillField('databasePassword', getenv('DB_PASSWORD'));
     } else {
         $I->fillField('databasePassword', 'root');
