@@ -95,8 +95,8 @@ $formValues = array(
 
 // Non-editable Values
 $I->fillField('username', 'testmctest');
-$I->fillField('passwordNew', 'ZY6pfPBb');
-$I->fillField('passwordConfirm', 'ZY6pfPBb');
+$I->fillField('passwordNew', 'ZY6pfPBb!');
+$I->fillField('passwordConfirm', 'ZY6pfPBb!');
 
 // Drop-downs
 $I->selectOption('gibbonRoleIDPrimary', 'Student');
