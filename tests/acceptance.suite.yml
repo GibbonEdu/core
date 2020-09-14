@@ -31,4 +31,4 @@ modules:
             cleanup: false
             reconnect: true
 groups:
-    users: [acceptance/Users]
+    users: [/Users]
