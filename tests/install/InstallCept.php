@@ -17,13 +17,28 @@ try {
 
     // STEP 2 --------------------------------------
     $I->see('Installation - Step 2', 'h2');
-
-    $I->fillField('databaseServer', getenv('DB_HOST'));
-    $I->fillField('databaseName', getenv('DB_NAME'));
-    $I->fillField('databaseUsername', getenv('DB_USERNAME'));
-    $I->fillField('databasePassword', getenv('DB_PASSWORD'));
+    
+    if (getenv('DB_HOST')){
+        $I->fillField('databaseServer', getenv('DB_HOST'));
+    } else {
+        $I->fillField('databaseServer', 'localhost');
+    }
+    if (getenv('DB_HOST')){
+        $I->fillField('databaseName', getenv('DB_NAME'));
+    } else {
+        $I->fillField('databaseName', 'gibbontest');
+    }
+    if (getenv('DB_USERNAME')){
+        $I->fillField('databaseUsername', getenv('DB_USERNAME'));
+    } else {
+        $I->fillField('databaseUsername', 'root');
+    }
+    if (getenv('databasePassword')){
+        $I->fillField('databasePassword', getenv('DB_PASSWORD'));
+    } else {
+        $I->fillField('databasePassword', 'root');
+    }
     $I->selectOption('demoData', 'Y');
-
     $I->click('Submit');
 
     // STEP 3 --------------------------------------
@@ -33,12 +48,12 @@ try {
 
     $formValues = array(
         'title'                 => 'Mr.',
-        'surname'               => 'CI',
-        'firstName'             => 'Travis',
+        'surname'               => 'Admin',
+        'firstName'             => 'Testing',
         'email'                 => 'testing@gibbon.test',
         'username'              => 'admin',
-        'passwordNew'           => 'travisci',
-        'passwordConfirm'       => 'travisci',
+        'passwordNew'           => '7SSbB9FZN24Q',
+        'passwordConfirm'       => '7SSbB9FZN24Q',
         'systemName'            => 'Gibbon',
         'installType'           => 'Testing',
         'cuttingEdgeCode'       => 'Y',
