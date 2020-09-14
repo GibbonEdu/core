@@ -18,26 +18,12 @@ try {
     // STEP 2 --------------------------------------
     $I->see('Installation - Step 2', 'h2');
     
-    if (getenv('DB_HOST')){
-        $I->fillField('databaseServer', getenv('DB_HOST'));
-    } else {
-        $I->fillField('databaseServer', 'localhost');
-    }
-    if (getenv('DB_HOST')){
-        $I->fillField('databaseName', getenv('DB_NAME'));
-    } else {
-        $I->fillField('databaseName', 'gibbontest');
-    }
-    if (getenv('DB_USERNAME')){
-        $I->fillField('databaseUsername', getenv('DB_USERNAME'));
-    } else {
-        $I->fillField('databaseUsername', 'root');
-    }
-    if (getenv('DB_PASSWORD')){
-        $I->fillField('databasePassword', getenv('DB_PASSWORD'));
-    } else {
-        $I->fillField('databasePassword', 'root');
-    }
+
+    $I->fillField('databaseServer', getenv('DB_HOST'));
+    $I->fillField('databaseName', getenv('DB_NAME'));
+    $I->fillField('databaseUsername', getenv('DB_USERNAME'));
+    $I->fillField('databasePassword', getenv('DB_PASSWORD'));
+
     $I->selectOption('demoData', 'Y');
     $I->click('Submit');
 
