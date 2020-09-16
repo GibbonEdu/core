@@ -88,19 +88,19 @@ if (isset($authUrl)){
         $form->setFactory(\Gibbon\Forms\DatabaseFormFactory::create($pdo));
         $form->setClass('blank fullWidth loginTableGoogle');
 
-        $loginIcon = '<img src="'.$_SESSION[$guid]['absoluteURL'].'/themes/'.$themeName.'/img/%1$s.png" style="width:20px;height:20px;margin:-2px 0 0 2px;" title="%2$s">';
+        $loginIcon = '<img src="'.$_SESSION[$guid]['absoluteURL'].'/themes/'.$themeName.'/img/%1$s.png" style="width:20px;height:20px;margin:2px 15px 0 12px;" title="%2$s">';
 
         $row = $form->addRow()->setClass('loginOptionsGoogle');
             $row->addContent(sprintf($loginIcon, 'planner', __('School Year')));
             $row->addSelectSchoolYear('gibbonSchoolYearIDGoogle')
-                ->setClass('fullWidth')
+                ->setClass('fullWidth p-1')
                 ->placeholder(null)
                 ->selected($_SESSION[$guid]['gibbonSchoolYearID']);
 
         $row = $form->addRow()->setClass('loginOptionsGoogle');
             $row->addContent(sprintf($loginIcon, 'language', __('Language')));
             $row->addSelectI18n('gibboni18nIDGoogle')
-                ->setClass('fullWidth')
+                ->setClass('fullWidth p-1')
                 ->placeholder(null)
                 ->selected($_SESSION[$guid]['i18n']['gibboni18nID']);
 
