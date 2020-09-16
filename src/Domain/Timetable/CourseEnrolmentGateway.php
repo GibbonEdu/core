@@ -166,7 +166,7 @@ class CourseEnrolmentGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
-    public function selectClassTeachersByStudent($gibbonSchoolYearID, $gibbonPersonIDStudent)
+    public function selectClassTeachersByStudent($gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID = null)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent);
         $sql = "SELECT DISTINCT teacher.gibbonPersonID, teacher.surname, teacher.preferredName, teacher.email 
@@ -177,10 +177,16 @@ class CourseEnrolmentGateway extends QueryableGateway
                 JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
                 WHERE teacher.status='Full' 
                 AND teacherClass.role='Teacher' 
-                AND studentClass.role='Student' 
+                AND studentClass.role='Student'
                 AND studentClass.gibbonPersonID=:gibbonPersonIDStudent 
-                AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID 
-                ORDER BY teacher.preferredName, teacher.surname, teacher.email";
+                AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID ";
+
+        if (!empty($gibbonCourseClassID)) {
+            $data['gibbonCourseClassID'] = $gibbonCourseClassID;
+            $sql .= " AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ";
+        }
+
+        $sql .= " ORDER BY teacher.preferredName, teacher.surname, teacher.email";
 
         return $this->db()->select($sql, $data);
     }
