@@ -17,340 +17,284 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\View\View;
+use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Domain\User\FamilyGateway;
+use Gibbon\Domain\RollGroups\RollGroupGateway;
+use Gibbon\Domain\Planner\PlannerParentWeeklyEmailSummaryGateway;
 
-require getcwd().'/../gibbon.php';
+$_POST['address'] = '/modules/School Admin/emailSummarySettings.php';
 
+require __DIR__.'/../gibbon.php';
+
+// Setup some of the globals
 getSystemSettings($guid, $connection2);
-
 setCurrentSchoolYear($guid, $connection2);
+Format::setupFromSession($container->get('session'));
 
+if (!isCommandLineInterface()) {
+    echo __('This script cannot be run from a browser, only via CLI.');
+    return;
+}
+
+// Check that one of the days in question is a school day
+$isSchoolOpen = false;
+for ($i = 0; $i < 7; ++$i) {
+    if (isSchoolOpen($guid, date('Y-m-d', strtotime("-$i day")), $connection2, true) == true) {
+        $isSchoolOpen = true;
+    }
+}
+
+if ($isSchoolOpen == false) {
+    echo __('School is not open, so no emails will be sent.');
+    return;
+}
+
+if ($_SESSION[$guid]['organisationEmail'] == '') {
+    echo __('This script cannot be run, as no school email address has been set.');
+    return;
+}
+
+$gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
 $parentWeeklyEmailSummaryIncludeBehaviour = getSettingByScope($connection2, 'School Admin', 'parentWeeklyEmailSummaryIncludeBehaviour');
 $parentWeeklyEmailSummaryIncludeMarkbook = getSettingByScope($connection2, 'School Admin', 'parentWeeklyEmailSummaryIncludeMarkbook');
+$sendReport = ['emailSent' => 0, 'emailFailed' => 0, 'emailErrors' => ''];
 
-//Set up for i18n via gettext
-if (isset($_SESSION[$guid]['i18n']['code'])) {
-    if ($_SESSION[$guid]['i18n']['code'] != null) {
-        putenv('LC_ALL='.$_SESSION[$guid]['i18n']['code']);
-        setlocale(LC_ALL, $_SESSION[$guid]['i18n']['code']);
-        bindtextdomain('gibbon', getcwd().'/../i18n');
-        textdomain('gibbon');
-    }
-}
+// Prep for email sending later
+$mail = $container->get(Mailer::class);
+$mail->SMTPKeepAlive = true;
 
-//Check for CLI, so this cannot be run through browser
-if (!isCommandLineInterface()) {
-	print __("This script cannot be run from a browser, only via CLI.") ;
-}
-else {
-    //Check that one of the days in question is a school day
-    $isSchoolOpen = false;
-    for ($i = 0; $i < 7; ++$i) {
-        if (isSchoolOpen($guid, date('Y-m-d', strtotime("-$i day")), $connection2, true) == true) {
-            $isSchoolOpen = true;
+$familyGateway = $container->get(FamilyGateway::class);
+$rollGroupGateway = $container->get(RollGroupGateway::class);
+$plannerEntryGateway = $container->get(PlannerEntryGateway::class);
+$emailSummaryGateway = $container->get(PlannerParentWeeklyEmailSummaryGateway::class);
+$view = $container->get(View::class);
+
+// Get all student data grouped by family
+$families = $familyGateway->selectFamiliesWithActiveStudents($gibbonSchoolYearID)->fetchGrouped();
+
+// TESTING
+$families = ['0000845' => $families['0000845'] ?? []];
+
+foreach ($families as $gibbonFamilyID => $students) {
+    // Get the adults in this family and filter by email settings
+    $familyAdults = $familyGateway->selectAdultsByFamily($gibbonFamilyID, true)->fetchAll();
+    $familyAdults = array_filter($familyAdults, function ($parent) {
+        return $parent['contactEmail'] == 'Y';
+    });
+
+    if (empty($familyAdults)) continue;
+
+    foreach ($students as $student) {
+
+        // HOMEWORK
+
+        $criteria = $plannerEntryGateway->newQueryCriteria(true)
+            ->sortBy(['date', 'timeStart'], 'DESC')
+            ->filterBy('weekly:Y')
+            ->filterBy('viewableParents:Y')
+            ->fromPOST();
+
+        $allHomework = $plannerEntryGateway->queryHomeworkByPerson($criteria, $gibbonSchoolYearID, $student['gibbonPersonID']);
+
+        $tracker = $plannerEntryGateway->selectHomeworkTrackerByStudent($gibbonSchoolYearID, $student['gibbonPersonID'])->fetchGroupedUnique();
+        $allHomework->joinColumn('gibbonPlannerEntryID', 'tracker', $tracker);
+
+        $submissions = $plannerEntryGateway->selectHomeworkSubmissionsByStudent($gibbonSchoolYearID, $student['gibbonPersonID'])->fetchGrouped();
+        $allHomework->joinColumn('gibbonPlannerEntryID', 'submissions', $submissions);
+
+
+        $dataHomework = ['gibbonPersonID' => $student['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d'), 'lastWeek' => date('Y-m-d', strtotime('-1 week'))];
+        $sqlHomework = "
+        (
+            SELECT 'teacherRecorded' AS type, gibbonPlannerEntryID, gibbonUnitID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, role, homeworkDueDateTime, homeworkDetails, homeworkSubmission, homeworkSubmissionRequired 
+            FROM gibbonPlannerEntry 
+                JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) 
+                JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) 
+                JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
+            WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID 
+                AND NOT role='Student - Left' 
+                AND NOT role='Teacher - Left' 
+                AND homework='Y' AND 
+                gibbonSchoolYearID=:gibbonSchoolYearID 
+                AND date>:lastWeek AND date<=:today
+        ) UNION (
+            SELECT 'studentRecorded' AS type, gibbonPlannerEntry2.gibbonPlannerEntryID, gibbonUnitID, gibbonPlannerEntry2.gibbonCourseClassID, gibbonCourse2.nameShort AS course, gibbonCourseClass2.nameShort AS class, gibbonPlannerEntry2.name, date, timeStart, timeEnd, 'Y' AS viewableStudents, 'Y' AS viewableParents, 'Y' AS homework, role, gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS homeworkDueDateTime, gibbonPlannerEntryStudentHomework.homeworkDetails AS homeworkDetails, 'N' AS homeworkSubmission, '' AS homeworkSubmissionRequired 
+            FROM gibbonPlannerEntry AS gibbonPlannerEntry2 
+                JOIN gibbonCourseClass AS gibbonCourseClass2 ON (gibbonPlannerEntry2.gibbonCourseClassID=gibbonCourseClass2.gibbonCourseClassID) 
+                JOIN gibbonCourseClassPerson AS gibbonCourseClassPerson2 ON (gibbonCourseClass2.gibbonCourseClassID=gibbonCourseClassPerson2.gibbonCourseClassID) 
+                JOIN gibbonCourse AS gibbonCourse2 ON (gibbonCourse2.gibbonCourseID=gibbonCourseClass2.gibbonCourseID) 
+                JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry2.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson2.gibbonPersonID) 
+            WHERE gibbonCourseClassPerson2.gibbonPersonID=:gibbonPersonID 
+                AND NOT role='Student - Left' 
+                AND NOT role='Teacher - Left' 
+                AND gibbonSchoolYearID=:gibbonSchoolYearID 
+                AND date>:lastWeek AND date<=:today
+        )
+        ORDER BY date, timeStart";
+            
+        $homework = $pdo->select($sqlHomework, $dataHomework)->fetchAll();
+
+        // BEHAVIOUR
+        if ($parentWeeklyEmailSummaryIncludeBehaviour == 'Y') {
+            $dataBehaviour = ['gibbonPersonID' => $student['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d'), 'lastWeek' => date('Y-m-d', strtotime('-1 week'))];
+            $sqlBehaviour = "
+                SELECT COUNT(DISTINCT CASE WHEN type='Positive' THEN gibbonBehaviourID END) as positive, 
+                COUNT(DISTINCT CASE WHEN type='Negative' THEN gibbonBehaviourID END) as negative 
+                FROM gibbonBehaviour 
+                WHERE gibbonPersonID=:gibbonPersonID 
+                AND gibbonSchoolYearID=:gibbonSchoolYearID 
+                AND date>:lastWeek AND date<=:today";
+
+            $behaviour = $pdo->selectOne($sqlBehaviour, $dataBehaviour);
         }
-    }
 
-    if ($isSchoolOpen == false) { //No school on any day in the last week
-        echo __('School is not open, so no emails will be sent.');
-    } else { //Yes school, so go ahead.
-        if ($_SESSION[$guid]['organisationEmail'] == '') {
-            echo __('This script cannot be run, as no school email address has been set.');
-        } else {
-            //Prep for email sending later
-            $mail = $container->get(Mailer::class);
-            $mail->SMTPKeepAlive = true;
+        // MARKBOOK
+        if ($parentWeeklyEmailSummaryIncludeMarkbook == 'Y') {
+            $dataMarkbook = ['gibbonPersonID' => $student['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d'), 'lastWeek' => date('Y-m-d', strtotime('-1 week'))];
+            $sqlMarkbook = "
+                SELECT
+                    CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS class,
+                    gibbonMarkbookColumn.name
+                FROM gibbonMarkbookEntry
+                    JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID)
+                    JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                    JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+                    JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonMarkbookEntry.gibbonPersonIDStudent=gibbonCourseClassPerson.gibbonPersonID)
+                WHERE
+                    gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID
+                    AND gibbonMarkbookEntry.gibbonPersonIDStudent=:gibbonPersonID
+                    AND complete='Y'
+                    AND completeDate >:lastWeek
+                    AND completeDate <=:today";
 
-            //Lock table
-            $lock = true;
-            try {
-                $sqlLock = 'LOCK TABLE gibbonBehaviour READ, gibbonCourse READ, gibbonCourse AS gibbonCourse2 READ, gibbonCourseClass READ, gibbonCourseClass AS gibbonCourseClass2 READ, gibbonCourseClassPerson READ, gibbonCourseClassPerson AS gibbonCourseClassPerson2 READ, gibbonFamily READ, gibbonFamilyAdult READ, gibbonFamilyChild READ, gibbonPerson READ, gibbonPlannerEntry READ, gibbonPlannerEntry AS gibbonPlannerEntry2 READ, gibbonPlannerEntryStudentHomework READ, gibbonPlannerParentWeeklyEmailSummary WRITE, gibbonRollGroup READ, gibbonStudentEnrolment READ, gibbonMarkbookEntry READ, gibbonMarkbookColumn READ';
-                $resultLock = $connection2->query($sqlLock);
-            } catch (PDOException $e) {
-                $lock = false;
-            }
+            $markbook = $pdo->select($sqlMarkbook, $dataMarkbook)->fetchAll();
+        }
 
-            if (!$lock) {
-                echo __('Your request failed due to a database error.');
+        // Format the student summary for emailing
+        $content = $view->fetchFromTemplate('cli/parentWeeklyEmailSummary.twig.html', [
+            'includeBehaviour' => $parentWeeklyEmailSummaryIncludeBehaviour,
+            'includeMarkbook' => $parentWeeklyEmailSummaryIncludeMarkbook,
+            'includeHomework' => 'Y',
+            'student' => $student,
+            // 'homework' => $homework,
+            'homework' => $allHomework->toArray(),
+            'behaviour' => $behaviour,
+            'markbook' => $markbook,
+        ]);
+
+        // Get main form tutor email for reply-to
+        $formTutor = $rollGroupGateway->selectTutorsByRollGroup($student['gibbonRollGroupID'])->fetch();
+        if (!empty($formTutor)) {
+            $replyTo = $formTutor['email'];
+            $replyToName = Format::name($formTutor['title'], $formTutor['preferredName'], $formTutor['surname'], 'Staff');
+        }
+    
+        // Check for send this week, and only proceed if no prior send
+        $parentContact1 = current($familyAdults);
+        $checkExistingSummary = $emailSummaryGateway->getWeeklySummaryDetailsByParent($gibbonSchoolYearID, $parentContact1['gibbonPersonID'], $student['gibbonPersonID']);
+
+        if (!empty($checkExistingSummary)) {
+            $sendReport['emailFailed']++;
+            $sendReport['emailErrors'] .= sprintf(__('Planner Weekly Summary Email: an error (%1$s) occurred sending an email to %2$s.'), 'duplicate key exists', $parentContact1['preferredName'].' '.$parentContact1['surname']).'<br/>';
+            continue;
+        }
+
+        // Make and store unique code for confirmation.
+        for ($count = 0; $count < 100; $count++) {
+            $key = randomPassword(40);
+            $checkUnique = $emailSummaryGateway->getAnySummaryDetailsByKey($key);
+
+            if (empty($checkUnique)) break;
+        }
+
+        // Check key exists
+        if (empty($key) || !empty($checkUnique)) {
+            $sendReport['emailFailed']++;
+            $sendReport['emailErrors'] .= sprintf(__('Planner Weekly Summary Email: an error (%1$s) occurred sending an email to %2$s.'), 'key create failed', $parentContact1['preferredName'].' '.$parentContact1['surname']).'<br/>';
+            continue;
+        } 
+
+        // Write key to database
+        $data = [
+            'gibbonSchoolYearID' => $gibbonSchoolYearID,
+            'gibbonPersonIDStudent' => $student['gibbonPersonID'],
+            'gibbonPersonIDParent' => $parentContact1['gibbonPersonID'],
+            'weekOfYear' => date('W'),
+            'confirmed' => 'N',
+            'key' => $key,
+        ];
+        $gibbonPlannerParentWeeklyEmailSummaryID = $emailSummaryGateway->insert($data);
+
+        // Check key was inserted
+        if (empty($gibbonPlannerParentWeeklyEmailSummaryID)) {
+            $sendReport['emailFailed']++;
+            $sendReport['emailErrors'] .= sprintf(__('Planner Weekly Summary Email: an error (%1$s) occurred sending an email to %2$s.'), 'key write failed', $parentContact1['preferredName'].' '.$parentContact1['surname']).'<br/>';
+            continue;
+        }
+
+        // Send an email to each parent using the same key
+        foreach ($familyAdults as $parent) {
+            
+            // Prep email
+            $buttonURL = "/index.php?q=/modules/Planner/planner_parentWeeklyEmailSummaryConfirm.php&key=$key&gibbonPersonIDStudent=".$student['gibbonPersonID'].'&gibbonPersonIDParent='.$parent['gibbonPersonID'].'&gibbonSchoolYearID='.$_SESSION[$guid]['gibbonSchoolYearID'];
+
+            $subject = sprintf(__('Weekly Planner Summary for %1$s via %2$s at %3$s'), $student['surname'].', '.$student['preferredName'].' ('.$student['rollGroup'].')', $gibbon->session->get('systemName'), $gibbon->session->get('organisationNameShort'));
+
+            $body = sprintf(__('Dear %1$s'), $parent['preferredName'].' '.$parent['surname']).',<br/><br/>';
+            $body .= $content;
+
+            $mail->AddReplyTo($replyTo ?? $gibbon->session->get('organisationEmail'), $replyToName ?? '');
+            $mail->AddAddress($parent['email'], $parent['surname'].', '.$parent['preferredName']);
+
+            $mail->setDefaultSender($subject);
+            $mail->renderBody('mail/message.twig.html', [
+                'title'  => __('Weekly Planner Summary'),
+                'body'   => $body,
+                'button' => [
+                    'url'  => $buttonURL,
+                    'text' => __('Click Here to Confirm'),
+                ],
+            ]);
+
+            // Send
+            if ($mail->Send()) {
+                $sendReport['emailSent']++;
             } else {
-                //Get list of all current students
-                try {
-                    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                    $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.name AS name, 'Student' AS role FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) { }
-
-                $studentCount = $result->rowCount();
-                $sendSucceedCount = 0;
-                $sendFailCount = 0;
-
-                if ($studentCount < 1) { //No students to display
-                    echo __('There are no records to display.');
-                } else { //Students to display so get going
-                    while ($row = $result->fetch()) {
-                        //Get all homework for the past week, ready for email
-                        $homework = '';
-                        $homework .= '<h2>'.__('Homework').'</h2>';
-                        $homework .= '<p>'.__('The list below includes all homework assigned during the past week.').'</p>';
-                        try {
-                            $dataHomework = array('gibbonPersonID1' => $row['gibbonPersonID'], 'gibbonSchoolYearID1' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID2' => $row['gibbonPersonID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                            $sqlHomework = "
-    						(SELECT 'teacherRecorded' AS type, gibbonPlannerEntryID, gibbonUnitID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, role, homeworkDueDateTime, homeworkDetails, homeworkSubmission, homeworkSubmissionRequired FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID1 AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND homework='Y' AND gibbonSchoolYearID=:gibbonSchoolYearID1 AND date>'".date('Y-m-d', strtotime('-1 week'))."' AND date<='".date('Y-m-d')."')
-    						UNION
-    						(SELECT 'studentRecorded' AS type, gibbonPlannerEntry2.gibbonPlannerEntryID, gibbonUnitID, gibbonPlannerEntry2.gibbonCourseClassID, gibbonCourse2.nameShort AS course, gibbonCourseClass2.nameShort AS class, gibbonPlannerEntry2.name, date, timeStart, timeEnd, 'Y' AS viewableStudents, 'Y' AS viewableParents, 'Y' AS homework, role, gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS homeworkDueDateTime, gibbonPlannerEntryStudentHomework.homeworkDetails AS homeworkDetails, 'N' AS homeworkSubmission, '' AS homeworkSubmissionRequired FROM gibbonPlannerEntry AS gibbonPlannerEntry2 JOIN gibbonCourseClass AS gibbonCourseClass2 ON (gibbonPlannerEntry2.gibbonCourseClassID=gibbonCourseClass2.gibbonCourseClassID) JOIN gibbonCourseClassPerson AS gibbonCourseClassPerson2 ON (gibbonCourseClass2.gibbonCourseClassID=gibbonCourseClassPerson2.gibbonCourseClassID) JOIN gibbonCourse AS gibbonCourse2 ON (gibbonCourse2.gibbonCourseID=gibbonCourseClass2.gibbonCourseID) JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry2.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson2.gibbonPersonID) WHERE gibbonCourseClassPerson2.gibbonPersonID=:gibbonPersonID2 AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND gibbonSchoolYearID=:gibbonSchoolYearID2 AND date>'".date('Y-m-d', strtotime('-1 week'))."' AND date<='".date('Y-m-d')."')
-    						ORDER BY date, timeStart";
-                            $resultHomework = $connection2->prepare($sqlHomework);
-                            $resultHomework->execute($dataHomework);
-                        } catch (PDOException $e) {
-                            $homework .= $e->getMessage();
-                        }
-                        if ($resultHomework->rowCount() > 0) {
-                            $homework .= '<ul>';
-                            while ($rowHomework = $resultHomework->fetch()) {
-                                $homework .= '<li><b>'.$rowHomework['course'].'.'.$rowHomework['class'].'</b> - '.$rowHomework['name'].' - '.sprintf(__('Due on %1$s at %2$s.'), dateConvertBack($guid, substr($rowHomework['homeworkDueDateTime'], 0, 10)), substr($rowHomework['homeworkDueDateTime'], 11, 5)).'</li>';
-                            }
-                            $homework .= '</ul><br/>';
-                        } else {
-                            $homework .= __('There are no records to display.').'<br/><br/>';
-                        }
-
-                        $behaviour = '';
-                        if ($parentWeeklyEmailSummaryIncludeBehaviour == 'Y') {
-                            //Get behaviour records for the past week, ready for email
-                            $behaviour .= '<h2>'.__('Behaviour').'</h2>';
-                            try {
-                                $dataBehaviourPositive = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                                $sqlBehaviourPositive = "SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND type='Positive' AND date>'".date('Y-m-d', strtotime('-1 week'))."' AND date<='".date('Y-m-d')."'";
-                                $resultBehaviourPositive = $connection2->prepare($sqlBehaviourPositive);
-                                $resultBehaviourPositive->execute($dataBehaviourPositive);
-                            } catch (PDOException $e) {
-                            }
-                            try {
-                                $dataBehaviourNegative = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                                $sqlBehaviourNegative = "SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND type='Negative' AND date>'".date('Y-m-d', strtotime('-1 week'))."' AND date<='".date('Y-m-d')."'";
-                                $resultBehaviourNegative = $connection2->prepare($sqlBehaviourNegative);
-                                $resultBehaviourNegative->execute($dataBehaviourNegative);
-                            } catch (PDOException $e) {
-                            }
-                            $behaviour .= '<ul>';
-                            $behaviour .= '<li>'.__('Positive behaviour records this week').': '.$resultBehaviourPositive->rowCount().'</li>';
-                            $behaviour .= '<li>'.__('Negative behaviour records this week').': '.$resultBehaviourNegative->rowCount().'</li>';
-                            $behaviour .= '</ul><br/>';
-                        }
-
-                        $markbook = '';
-                        if ($parentWeeklyEmailSummaryIncludeMarkbook == 'Y') {
-                            try {
-                                $dataMarkbook = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                                $sqlMarkbook = "
-                                    SELECT
-                                        CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS class,
-                                        gibbonMarkbookColumn.name
-                                    FROM
-                                        gibbonMarkbookEntry
-                                        JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID)
-                                        JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
-                                        JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
-                                        JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonMarkbookEntry.gibbonPersonIDStudent=gibbonCourseClassPerson.gibbonPersonID)
-                                    WHERE
-                                        gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID
-                                        AND gibbonMarkbookEntry.gibbonPersonIDStudent=:gibbonPersonID
-                                        AND complete='Y'
-                                        AND completeDate >'".date('Y-m-d', strtotime('-1 week'))."'
-                                        AND completeDate <='".date('Y-m-d')."'";
-                                $resultMarkbook = $connection2->prepare($sqlMarkbook);
-                                $resultMarkbook->execute($dataMarkbook);
-                            } catch (PDOException $e) { }
-
-                            if ($resultMarkbook->rowCount() > 0) {
-                                $markbook .= '<h2>'.__('Markbook').'</h2>';
-                                $markbook .= '<ul>';
-                                while ($rowMarkbook = $resultMarkbook->fetch()) {
-                                    $markbook .= '<li>'.$rowMarkbook['class'].' - '.$rowMarkbook['name'].'</li>';
-                                }
-                                $markbook .= '</ul>';
-                            }
-                        }
-
-                        //Get main form tutor email for reply-to
-                        $replyTo = '';
-                        $replyToName = '';
-                        try {
-                            $dataDetail = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
-                            $sqlDetail = 'SELECT surname, preferredName, email FROM gibbonRollGroup LEFT JOIN gibbonPerson ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID) WHERE gibbonRollGroupID=:gibbonRollGroupID';
-                            $resultDetail = $connection2->prepare($sqlDetail);
-                            $resultDetail->execute($dataDetail);
-                        } catch (PDOException $e) {
-                        }
-                        if ($resultDetail->rowCount() == 1) {
-                            $rowDetail = $resultDetail->fetch();
-                            $replyTo = $rowDetail['email'];
-                            $replyToName = $rowDetail['surname'].', '.$rowDetail['preferredName'];
-                        }
-
-                        //Get CP1 parent(s) email (might be multiples if in multiple families
-                        try {
-                            $dataFamily = array('gibbonPersonID' => $row['gibbonPersonID']);
-                            $sqlFamily = 'SELECT * FROM gibbonFamily JOIN gibbonFamilyChild ON (gibbonFamily.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID';
-                            $resultFamily = $connection2->prepare($sqlFamily);
-                            $resultFamily->execute($dataFamily);
-                        } catch (PDOException $e) {
-                        }
-
-                        while ($rowFamily = $resultFamily->fetch()) { //Run through each CP! family member
-                            try {
-                                $dataMember = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
-                                $sqlMember = 'SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID AND contactPriority=1 ORDER BY contactPriority, surname, preferredName';
-                                $resultMember = $connection2->prepare($sqlMember);
-                                $resultMember->execute($dataMember);
-                            } catch (PDOException $e) {
-                            }
-
-                            while ($rowMember = $resultMember->fetch()) {
-                                //Check for send this week, and only proceed if no prior send
-                                $keyReadFail = false;
-                                try {
-                                    $dataKeyRead = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonIDStudent' => $row['gibbonPersonID'], 'gibbonPersonIDParent' => $rowMember['gibbonPersonID'], 'weekOfYear' => date('W'));
-                                    $sqlKeyRead = 'SELECT * FROM gibbonPlannerParentWeeklyEmailSummary WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonPersonIDParent=:gibbonPersonIDParent AND weekOfYear=:weekOfYear';
-                                    $resultKeyRead = $connection2->prepare($sqlKeyRead);
-                                    $resultKeyRead->execute($dataKeyRead);
-                                } catch (PDOException $e) {
-                                    $keyReadFail = true;
-                                }
-
-                                if ($keyReadFail == true) {
-                                    ++$sendFailCount;
-                                    error_log(sprintf(__('Planner Weekly Summary Email: an error (%1$s) occured sending an email to %2$s.'), '1', $rowMember['preferredName'].' '.$rowMember['surname']));
-                                } else {
-                                    if ($resultKeyRead->rowCount() != 0) {
-                                        ++$sendFailCount;
-                                        error_log(sprintf(__('Planner Weekly Summary Email: an error (%1$s) occured sending an email to %2$s.'), '2', $rowMember['preferredName'].' '.$rowMember['surname']));
-                                    } else {
-                                        //Make and store unique code for confirmation. add it to email text.
-                                        $key = '';
-
-                                        //Let's go! Create key, send the invite
-                                        $continue = false;
-                                        $count = 0;
-                                        while ($continue == false and $count < 100) {
-                                            $key = randomPassword(40);
-                                            try {
-                                                $dataUnique = array('key' => $key);
-                                                $sqlUnique = 'SELECT * FROM gibbonPlannerParentWeeklyEmailSummary WHERE gibbonPlannerParentWeeklyEmailSummary.key=:key';
-                                                $resultUnique = $connection2->prepare($sqlUnique);
-                                                $resultUnique->execute($dataUnique);
-                                            } catch (PDOException $e) {
-                                            }
-
-                                            if ($resultUnique->rowCount() == 0) {
-                                                $continue = true;
-                                            }
-                                            ++$count;
-                                        }
-
-                                        if ($continue == false) {
-                                            ++$sendFailCount;
-                                            error_log(sprintf(__('Planner Weekly Summary Email: an error (%1$s) occured sending an email to %2$s.'), '3', $rowMember['preferredName'].' '.$rowMember['surname']));
-                                        } else {
-                                            //Write key to database
-                                            $keyWriteFail = false;
-                                            try {
-                                                $dataKeyWrite = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonIDStudent' => $row['gibbonPersonID'], 'gibbonPersonIDParent' => $rowMember['gibbonPersonID'], 'key' => $key, 'weekOfYear' => date('W'));
-                                                $sqlKeyWrite = "INSERT INTO gibbonPlannerParentWeeklyEmailSummary SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPlannerParentWeeklyEmailSummary.key=:key, gibbonPersonIDStudent=:gibbonPersonIDStudent, gibbonPersonIDParent=:gibbonPersonIDParent, weekOfYear=:weekOfYear, confirmed='N'";
-                                                $resultKeyWrite = $connection2->prepare($sqlKeyWrite);
-                                                $resultKeyWrite->execute($dataKeyWrite);
-                                            } catch (PDOException $e) {
-                                                $keyWriteFail = true;
-                                            }
-
-                                            if ($keyWriteFail == true) {
-                                                ++$sendFailCount;
-                                                error_log(sprintf(__('Planner Weekly Summary Email: an error (%1$s) occured sending an email to %2$s.'), '4', $rowMember['preferredName'].' '.$rowMember['surname']));
-                                            } else {
-                                                //Prep email
-                                                $buttonURL = "/index.php?q=/modules/Planner/planner_parentWeeklyEmailSummaryConfirm.php&key=$key&gibbonPersonIDStudent=".$row['gibbonPersonID'].'&gibbonPersonIDParent='.$rowMember['gibbonPersonID'].'&gibbonSchoolYearID='.$_SESSION[$guid]['gibbonSchoolYearID'];
-
-                                                $body = sprintf(__('Dear %1$s'), $rowMember['preferredName'].' '.$rowMember['surname']).',<br/><br/>';
-                                                if ($parentWeeklyEmailSummaryIncludeBehaviour == 'Y') {
-                                                    $body .= sprintf(__('Please find below a summary of homework and behaviour for %1$s.'), $row['preferredName'].' '.$row['surname']).'<br/><br/>';
-                                                }
-                                                else {
-                                                    $body .= sprintf(__('Please find below a summary of homework for %1$s.'), $row['preferredName'].' '.$row['surname']).'<br/><br/>';
-                                                }
-                                                $body .= $homework;
-                                                $body .= $behaviour;
-                                                $body .= $markbook;
-                                                $body .= __('Please click below to confirm that you have received and read this summary email.');
-
-                                                $subject = sprintf(__('Weekly Planner Summary for %1$s via %2$s at %3$s'), $row['surname'].', '.$row['preferredName'].' ('.$row['name'].')', $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']);
-
-                                                if ($replyTo != '') {
-                                                    $mail->AddReplyTo($replyTo, $replyToName);
-                                                }
-                                                $mail->AddAddress($rowMember['email'], $rowMember['surname'].', '.$rowMember['preferredName']);
-
-                                                $mail->setDefaultSender($subject);
-                                                $mail->renderBody('mail/message.twig.html', [
-                                                    'title'  => __('Weekly Planner Summary'),
-                                                    'body'   => $body,
-                                                    'button' => [
-                                                        'url'  => $buttonURL,
-                                                        'text' => __('Click Here to Confirm'),
-                                                    ],
-                                                ]);
-
-                                                //Send email
-                                                if ($mail->Send()) {
-                                                    ++$sendSucceedCount;
-                                                } else {
-                                                    error_log(sprintf(__('Planner Weekly Summary Email: an error (%1$s) occured sending an email to %2$s.'), '5', $rowMember['preferredName'].' '.$rowMember['surname']));
-                                                    ++$sendFailCount;
-                                                }
-
-                                                //Clear addresses
-                                                $mail->ClearAllRecipients( ); // clear all
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                $sendReport['emailFailed']++;
+                $sendReport['emailErrors'] .= sprintf(__('Planner Weekly Summary Email: an error (%1$s) occurred sending an email to %2$s.'), 'email send failed', $parent['preferredName'].' '.$parent['surname']).'<br/>';
             }
 
-            //Close SMTP connection
-            $mail->smtpClose();
-
-            //Unlock module table
-            try {
-                $sql = 'UNLOCK TABLES';
-                $result = $connection2->query($sql);
-            } catch (PDOException $e) {
-            }
-
-            $body = __('Week').': '.date('W').'<br/>';
-            $body .= __('Student Count').': '.$studentCount.'<br/>';
-            $body .= __('Send Succeed Count').': '.$sendSucceedCount.'<br/>';
-            $body .= __('Send Fail Count').': '.$sendFailCount.'<br/><br/>';
-
-            // Raise a new notification event
-            $event = new NotificationEvent('School Admin', 'Parent Weekly Email Summary');
-
-            $event->setNotificationText(__('A School Admin CLI script has run.').'<br/>'.$body);
-            $event->setActionLink('/index.php?q=/modules/Planner/report_parentWeeklyEmailSummaryConfirmation.php');
-
-            //Notify admin
-            $event->addRecipient($_SESSION[$guid]['organisationAdministrator']);
-
-            // Send all notifications
-            $sendReport = $event->sendNotifications($pdo, $gibbon->session);
-
-            // Output the result to terminal
-            echo sprintf('Sent %1$s notifications: %2$s inserts, %3$s updates, %4$s emails sent, %5$s emails failed.', $sendReport['count'], $sendReport['inserts'], $sendReport['updates'], $sendReport['emailSent'], $sendReport['emailFailed'])."\n";
+            // Clear addresses
+            $mail->ClearAllRecipients(); 
         }
     }
 }
-?>
+
+
+// Close SMTP connection
+$mail->smtpClose();
+
+// Raise a new notification event
+$event = new NotificationEvent('School Admin', 'Parent Weekly Email Summary');
+
+$body = __('Week').': '.date('W').'<br/>';
+$body .= __('Total Count').': '.($sendReport['emailSent'] + $sendReport['emailFailed']).'<br/>';
+$body .= __('Send Succeed Count').': '.$sendReport['emailSent'].'<br/>';
+$body .= __('Send Fail Count').': '.$sendReport['emailFailed'].'<br/><br/>';
+$body .= $sendReport['emailErrors'];
+
+$event->setNotificationText(__('A School Admin CLI script has run.').'<br/>'.$body);
+$event->setActionLink('/index.php?q=/modules/Planner/report_parentWeeklyEmailSummaryConfirmation.php');
+
+// Notify admin
+$event->addRecipient($gibbon->session->get('organisationAdministrator'));
+
+// Send all notifications
+$event->sendNotifications($pdo, $gibbon->session);
+
+// Output the result to terminal
+echo sprintf('Sent %1$s emails: %2$s emails sent, %3$s emails failed.', $sendReport['emailSent'] + $sendReport['emailFailed'], $sendReport['emailSent'], $sendReport['emailFailed'])."\n";
