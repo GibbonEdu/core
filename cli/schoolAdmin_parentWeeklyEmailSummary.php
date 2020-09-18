@@ -103,38 +103,6 @@ foreach ($families as $gibbonFamilyID => $students) {
         $submissions = $plannerEntryGateway->selectHomeworkSubmissionsByStudent($gibbonSchoolYearID, $student['gibbonPersonID'])->fetchGrouped();
         $allHomework->joinColumn('gibbonPlannerEntryID', 'submissions', $submissions);
 
-
-        $dataHomework = ['gibbonPersonID' => $student['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d'), 'lastWeek' => date('Y-m-d', strtotime('-1 week'))];
-        $sqlHomework = "
-        (
-            SELECT 'teacherRecorded' AS type, gibbonPlannerEntryID, gibbonUnitID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, role, homeworkDueDateTime, homeworkDetails, homeworkSubmission, homeworkSubmissionRequired 
-            FROM gibbonPlannerEntry 
-                JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) 
-                JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) 
-                JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
-            WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID 
-                AND NOT role='Student - Left' 
-                AND NOT role='Teacher - Left' 
-                AND homework='Y' AND 
-                gibbonSchoolYearID=:gibbonSchoolYearID 
-                AND date>:lastWeek AND date<=:today
-        ) UNION (
-            SELECT 'studentRecorded' AS type, gibbonPlannerEntry2.gibbonPlannerEntryID, gibbonUnitID, gibbonPlannerEntry2.gibbonCourseClassID, gibbonCourse2.nameShort AS course, gibbonCourseClass2.nameShort AS class, gibbonPlannerEntry2.name, date, timeStart, timeEnd, 'Y' AS viewableStudents, 'Y' AS viewableParents, 'Y' AS homework, role, gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS homeworkDueDateTime, gibbonPlannerEntryStudentHomework.homeworkDetails AS homeworkDetails, 'N' AS homeworkSubmission, '' AS homeworkSubmissionRequired 
-            FROM gibbonPlannerEntry AS gibbonPlannerEntry2 
-                JOIN gibbonCourseClass AS gibbonCourseClass2 ON (gibbonPlannerEntry2.gibbonCourseClassID=gibbonCourseClass2.gibbonCourseClassID) 
-                JOIN gibbonCourseClassPerson AS gibbonCourseClassPerson2 ON (gibbonCourseClass2.gibbonCourseClassID=gibbonCourseClassPerson2.gibbonCourseClassID) 
-                JOIN gibbonCourse AS gibbonCourse2 ON (gibbonCourse2.gibbonCourseID=gibbonCourseClass2.gibbonCourseID) 
-                JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry2.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson2.gibbonPersonID) 
-            WHERE gibbonCourseClassPerson2.gibbonPersonID=:gibbonPersonID 
-                AND NOT role='Student - Left' 
-                AND NOT role='Teacher - Left' 
-                AND gibbonSchoolYearID=:gibbonSchoolYearID 
-                AND date>:lastWeek AND date<=:today
-        )
-        ORDER BY date, timeStart";
-            
-        $homework = $pdo->select($sqlHomework, $dataHomework)->fetchAll();
-
         // BEHAVIOUR
         if ($parentWeeklyEmailSummaryIncludeBehaviour == 'Y') {
             $dataBehaviour = ['gibbonPersonID' => $student['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d'), 'lastWeek' => date('Y-m-d', strtotime('-1 week'))];
@@ -179,8 +147,8 @@ foreach ($families as $gibbonFamilyID => $students) {
             'student' => $student,
             // 'homework' => $homework,
             'homework' => $allHomework->toArray(),
-            'behaviour' => $behaviour,
-            'markbook' => $markbook,
+            'behaviour' => $behaviour ?? [],
+            'markbook' => $markbook ?? [],
         ]);
 
         // Get main form tutor email for reply-to
