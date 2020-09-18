@@ -111,6 +111,12 @@ placholder-to-value array, which will be bound to the query right then.
 
     // bind 'zim_val' to the :zim placeholder
     ->where('zim = :zim', ['zim' => 'zim_val'])
+    
+You can also use `IN` conditions by binding an array to the placeholder.
+
+```php
+    ->where('bar IN (:bar)', ['bar' => [1, 2, 3]])
+```
 
 ## GROUP BY
 
