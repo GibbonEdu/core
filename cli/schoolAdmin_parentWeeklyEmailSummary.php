@@ -76,9 +76,6 @@ $view = $container->get(View::class);
 // Get all student data grouped by family
 $families = $familyGateway->selectFamiliesWithActiveStudents($gibbonSchoolYearID)->fetchGrouped();
 
-// TESTING
-$families = ['0000845' => $families['0000845'] ?? []];
-
 foreach ($families as $gibbonFamilyID => $students) {
     // Get the adults in this family and filter by email settings
     $familyAdults = $familyGateway->selectAdultsByFamily($gibbonFamilyID, true)->fetchAll();
