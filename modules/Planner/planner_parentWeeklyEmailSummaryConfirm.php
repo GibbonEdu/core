@@ -43,8 +43,8 @@ if ($gibbonSchoolYearID == '' or $key == '' or $gibbonPersonIDStudent == '' or $
     //Check for record
     $keyReadFail = false;
     try {
-        $dataKeyRead = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent, 'gibbonPersonIDParent' => $gibbonPersonIDParent, 'key' => $key);
-        $sqlKeyRead = 'SELECT * FROM gibbonPlannerParentWeeklyEmailSummary WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonPersonIDParent=:gibbonPersonIDParent AND `key`=:key';
+        $dataKeyRead = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent, 'key' => $key);
+        $sqlKeyRead = 'SELECT * FROM gibbonPlannerParentWeeklyEmailSummary WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonIDStudent=:gibbonPersonIDStudent AND `key`=:key';
         $resultKeyRead = $connection2->prepare($sqlKeyRead);
         $resultKeyRead->execute($dataKeyRead);
     } catch (PDOException $e) {
@@ -68,7 +68,7 @@ if ($gibbonSchoolYearID == '' or $key == '' or $gibbonPersonIDStudent == '' or $
             $keyWriteFail = false;
             try {
                 $dataKeyWrite = array('gibbonPersonIDStudent' => $gibbonPersonIDStudent, 'gibbonPersonIDParent' => $gibbonPersonIDParent, 'key' => $key);
-                $sqlKeyWrite = "UPDATE gibbonPlannerParentWeeklyEmailSummary SET confirmed='Y' WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonPersonIDParent=:gibbonPersonIDParent AND `key`=:key";
+                $sqlKeyWrite = "UPDATE gibbonPlannerParentWeeklyEmailSummary SET confirmed='Y', gibbonPersonIDParent=:gibbonPersonIDParent WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND `key`=:key";
                 $resultKeyWrite = $connection2->prepare($sqlKeyWrite);
                 $resultKeyWrite->execute($dataKeyWrite);
             } catch (PDOException $e) {
