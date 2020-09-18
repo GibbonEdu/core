@@ -86,12 +86,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                 echo '<p>';
                 echo '<b>'.__('You seem to be all up to date, good work!').'</b>';
                 echo '</p>';
-            } elseif ($versionDB > $versionCode or $versionCode == '') {
+            } elseif (version_compare($versionDB, $versionCode, '>') or empty($versionCode)) {
                 //Error
                 echo "<div class='error'>";
                 echo __('An error has occurred determining the version of the system you are using.');
                 echo '</div>';
-            } elseif ($versionDB == $versionCode) {
+            } elseif (version_compare($versionDB, $versionCode, '=')) {
                 //Instructions on how to update
                 echo '<h3>';
                 echo __('Update Instructions');
@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                 echo '<li>'.__('Use an FTP client to upload the new files to your server\'s modules folder.').'</li>';
                 echo '<li>'.__('Reload this page and follow the instructions to update your database to the latest version.').'</li>';
                 echo '</ol>';
-            } elseif ($versionDB < $versionCode) {
+            } elseif (version_compare($versionDB, $versionCode, '<')) {
                 //Time to update
                 echo '<h3>';
                 echo __('Database Update');
