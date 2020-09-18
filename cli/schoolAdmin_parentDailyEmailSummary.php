@@ -34,7 +34,7 @@ setCurrentSchoolYear($guid, $connection2);
 Format::setupFromSession($container->get('session'));
 
 if (!isCommandLineInterface()) {
-    print __('This script cannot be run from a browser, only via CLI.');
+    echo __('This script cannot be run from a browser, only via CLI.');
     return;
 }
 
@@ -101,7 +101,7 @@ foreach ($families as $gibbonFamilyID => $students) {
         });
 
         // Format the student attendance log for emailing
-        $content .= $view->fetchFromTemplate('cli/attendanceEmailParent.twig.html', [
+        $content .= $view->fetchFromTemplate('cli/parentDailyEmailSummary.twig.html', [
             'student' => $student,
             'schoolLog' => $schoolLog,
             'classLogs' => $classLogs,
@@ -154,7 +154,7 @@ $event->setNotificationText(__('A School Admin CLI script has run.').'<br/><br/>
 $event->setActionLink('/index.php?q=/modules/School Admin/emailSummarySettings.php');
 
 // Notify admin
-$event->addRecipient($_SESSION[$guid]['organisationAdministrator']);
+$event->addRecipient($gibbon->session->get('organisationAdministrator'));
 
 // Send all notifications
 $event->sendNotifications($pdo, $gibbon->session);

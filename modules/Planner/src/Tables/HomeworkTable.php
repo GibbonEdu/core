@@ -88,7 +88,9 @@ class HomeworkTable
         $table->addMetaData('filterOptions', $filterOptions);
 
         $table->modifyRows(function ($homework, $row) {
-            if (!empty($homework['tracker']['homeworkComplete'])) $row->addClass('success');
+            if (!empty($homework['tracker']['homeworkComplete']) && $homework['tracker']['type'] == $homework['type']) {
+                $row->addClass('success');
+            }
 
             if ($homework['type'] == 'teacherRecorded' && !empty($homework['submissions'])) {
                 $latestSubmission = end($homework['submissions']);
@@ -164,8 +166,8 @@ class HomeworkTable
 
                     if ($roleCategory == 'Student' && $homework['homeworkSubmissionRequired'] != 'Required') {
                         return '<input id="complete'.$homework['gibbonPlannerEntryID'].'" type="checkbox" class="mark-complete" data-id="'.$homework['gibbonPlannerEntryID'].'" data-type="'.$homework['type'].'" '.(!empty($homework['tracker']['homeworkComplete']) ? 'checked' : '').'>';
-                    } else {
-                        if (!empty($homework['tracker']['homeworkComplete'])) return __('Yes');
+                    } else if (!empty($homework['tracker']['homeworkComplete']) && $homework['tracker']['type'] == $homework['type']) {
+                        return __('Yes');
                     }
 
                     return '';
@@ -199,7 +201,7 @@ class HomeworkTable
             return Format::tooltip(__('N/A'), __('Student joined school after assessment was given.'));
         }
 
-        if (!empty($homework['tracker']['homeworkComplete'])) {
+        if (!empty($homework['tracker']['homeworkComplete']) && $homework['tracker']['type'] == $homework['type']) {
             return __('On Time');
         }
 

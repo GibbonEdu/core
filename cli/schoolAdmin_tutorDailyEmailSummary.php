@@ -113,7 +113,7 @@ foreach ($yearGroups as $gibbonYearGroupID => $rollGroups) {
             $classLogs = $attendanceLogGateway->queryClassAttendanceByPersonAndDate($classLogCriteria, $gibbonSchoolYearID, $student['gibbonPersonID'], $currentDate);
 
             // Format the student attendance log for emailing
-            $content = $view->fetchFromTemplate('cli/attendanceEmailTutor.twig.html', [
+            $content = $view->fetchFromTemplate('cli/tutorDailyEmailSummary.twig.html', [
                 'student' => $student,
                 'schoolLog' => $schoolLog,
                 'classLogs' => $classLogs,

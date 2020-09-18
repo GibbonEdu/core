@@ -94,7 +94,7 @@ class FamilyGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonFamily.gibbonFamilyID', 'gibbonFamily.name', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonRollGroup.nameShort as rollGroup'
+                'gibbonFamily.gibbonFamilyID', 'gibbonFamily.name', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonRollGroup.nameShort as rollGroup', 'gibbonRollGroup.gibbonRollGroupID', 'gibbonYearGroup.gibbonYearGroupID'
             ])
             ->innerJoin('gibbonFamilyChild', 'gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID')
             ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonFamilyChild.gibbonPersonID')

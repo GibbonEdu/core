@@ -50,6 +50,23 @@ class PlannerEntryGateway extends QueryableGateway
                     ->where('gibbonPlannerEntry.homeworkSubmission = :homeworkSubmission')
                     ->bindValue('homeworkSubmission', $homeworkSubmission);
             },
+            'viewableParents' => function ($query, $viewableParents) {
+                return $query
+                    ->where('gibbonPlannerEntry.viewableParents = :viewableParents')
+                    ->bindValue('viewableParents', $viewableParents);
+            },
+            'viewableStudents' => function ($query, $viewableStudents) {
+                return $query
+                    ->where('gibbonPlannerEntry.viewableStudents = :viewableStudents')
+                    ->bindValue('viewableStudents', $viewableStudents);
+            },
+            'weekly' => function ($query, $weekly) {
+                return $query
+                    ->where('gibbonPlannerEntry.date>:lastWeek')
+                    ->bindValue('lastWeek', date('Y-m-d', strtotime('-1 week')))
+                    ->where('gibbonPlannerEntry.date<=:today')
+                    ->bindValue('today', date('Y-m-d'));
+            },
         ]);
 
         $query = $this
