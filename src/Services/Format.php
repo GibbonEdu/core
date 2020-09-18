@@ -611,7 +611,7 @@ class Format
      * @param bool $reverse
      * @param bool $informal
      * @param string $id
-     * @return string
+     * @return array
      */
     public static function nameListArray($list, $roleCategory = 'Staff', $reverse = false, $informal = false, $id = 'gibbonPersonID')
     {
