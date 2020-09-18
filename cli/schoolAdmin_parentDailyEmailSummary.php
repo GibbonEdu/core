@@ -101,7 +101,7 @@ foreach ($families as $gibbonFamilyID => $students) {
         });
 
         // Format the student attendance log for emailing
-        $content .= $view->fetchFromTemplate('cli/attendanceEmailParent.twig.html', [
+        $content .= $view->fetchFromTemplate('cli/parentDailyEmailSummary.twig.html', [
             'student' => $student,
             'schoolLog' => $schoolLog,
             'classLogs' => $classLogs,
