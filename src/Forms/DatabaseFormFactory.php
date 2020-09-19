@@ -627,12 +627,27 @@ class DatabaseFormFactory extends FormFactory
             return $this->createSelect($name)->fromArray(array("*" => "All"))->fromResults($results)->placeholder();
     }
 
-    public function createSelectSpace($name)
+    public function createSelectSpace($name, $params = [])
     {
-        $sql = "SELECT gibbonSpaceID as value, name FROM gibbonSpace ORDER BY name";
-        $results = $this->pdo->executeQuery(array(), $sql);
-
-        return $this->createSelect($name)->fromResults($results)->placeholder();
+        $params = array_replace(array(
+            'byType' => false,
+        ), $params);
+        
+        if ($params['byType'] == true) {
+            $sql = "SELECT gibbonSpaceID as value, name, type FROM gibbonSpace ORDER BY type, name";
+        
+            $results = $this->pdo->executeQuery(array(), $sql);
+            if ($results && $results->rowCount() > 0) {
+                while ($row = $results->fetch()) {
+                    $values[$row['value']] =  htmlPrep($row['name']).' - '. htmlPrep($row['type']);
+                }
+            }
+            return $this->createSelect($name)->fromArray($values)->placeholder();
+        } else {
+            $sql = "SELECT gibbonSpaceID as value, name FROM gibbonSpace ORDER BY name";
+            $results = $this->pdo->executeQuery(array(), $sql);
+            return $this->createSelect($name)->fromResults($results)->placeholder();
+        }
     }
 
     public function createTextFieldDistrict($name)
