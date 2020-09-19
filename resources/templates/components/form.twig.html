@@ -26,10 +26,10 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% for row in form.getRows %}
         {% set rowLoop = loop %}
         {% if true or renderStyle == 'flex' %}
-            {% set rowClass = 'flex flex-col sm:flex-row justify-between content-center p-0' %}
+            {% set rowClass = 'flex flex-col sm:flex-row justify-between sm:items-center content-center p-0' %}
         {% endif %}
 
-        <div id="{{ row.getID }}" class="{{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }} {{ "noIntBorder" not in form.getClass and not loop.last? 'border-b' }} ">
+        <div id="{{ row.getID }}" class="{{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }} {{ "noIntBorder" not in form.getClass and "blank" not in form.getClass and not loop.last? 'border-b' }} ">
 
         {% for element in row.getElements %}
             {% set colspan = loop.last and loop.length < totalColumns ? (totalColumns + 1 - loop.length) : 0  %}

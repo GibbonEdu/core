@@ -221,13 +221,13 @@ class Format
         $date = static::createDateTime($dateString, 'Y-m-d H:i:s');
 
         $timeDifference = time() - $date->format('U');
-        $seconds = abs($timeDifference);
+        $seconds = intval(abs($timeDifference));
 
         switch ($seconds) {
-            case ($seconds < 60 || empty($seconds)):
+            case ($seconds <= 60):
                 $time = __('Less than 1 min');
                 break;
-            case ($seconds >= 60 && $seconds < 3600):
+            case ($seconds > 60 && $seconds < 3600):
                 $minutes = floor($seconds / 60);
                 $time = __n('{count} min', '{count} mins', $minutes);
                 break;
@@ -251,7 +251,7 @@ class Format
         if ($timeDifference > 0) {
             $time = __('{time} ago', ['time' => $time]);
         } elseif ($timeDifference < 0) {
-            $time = __('{time} from now', ['time' => $time]);
+            $time = __('in {time}', ['time' => $time]);
         }
         
         return $tooltip
@@ -601,6 +601,27 @@ class Format
         }, $list);
 
         return implode($separator, $listFormatted);
+    }
+
+    /**
+     * Formats a list of names from an array into a key-value array of id => name.
+     *
+     * @param array $list
+     * @param string $roleCategory
+     * @param bool $reverse
+     * @param bool $informal
+     * @param string $id
+     * @return array
+     */
+    public static function nameListArray($list, $roleCategory = 'Staff', $reverse = false, $informal = false, $id = 'gibbonPersonID')
+    {
+        $listFormatted = array_reduce($list, function ($group, $person) use ($roleCategory, $reverse, $informal, $id) {
+            $group[$person[$id]] = static::name($person['title'] ?? '', $person['preferredName'], $person['surname'], $roleCategory, $reverse, $informal);
+
+            return $group;
+        }, []);
+
+        return $listFormatted;
     }
 
     /**
