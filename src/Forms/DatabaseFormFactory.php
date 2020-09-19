@@ -653,19 +653,14 @@ class DatabaseFormFactory extends FormFactory
     public function createSelectSpace($name, $params = [])
     {
         $params = array_replace(array(
-            'byType' => false,
+            'byType' => true,
         ), $params);
         
         if ($params['byType'] == true) {
-            $sql = "SELECT gibbonSpaceID as value, name, type FROM gibbonSpace ORDER BY type, name";
-        
+            $sql = "SELECT gibbonSpaceID as value, name, type as groupBy FROM gibbonSpace ORDER BY type, name";
             $results = $this->pdo->executeQuery(array(), $sql);
-            if ($results && $results->rowCount() > 0) {
-                while ($row = $results->fetch()) {
-                    $values[$row['value']] =  htmlPrep($row['name']).' - '. htmlPrep($row['type']);
-                }
-            }
-            return $this->createSelect($name)->fromArray($values)->placeholder();
+            return $this->createSelect($name)->fromResults($results, 'groupBy')->placeholder();
+        
         } else {
             $sql = "SELECT gibbonSpaceID as value, name FROM gibbonSpace ORDER BY name";
             $results = $this->pdo->executeQuery(array(), $sql);
