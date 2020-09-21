@@ -94,22 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     $row->addLabel('initials', __('Initials'))->description(__('Must be unique if set.'));
                     $row->addTextField('initials')->maxlength(4);
 
-                $types = array(__('Basic') => array ('Teaching' => __('Teaching'), 'Support' => __('Support')));
-                $roleGateway = $container->get(RoleGateway::class);
-                // CRITERIA
-                $criteriaCategory = $roleGateway->newQueryCriteria()
-                    ->sortBy(['gibbonRole.name'])
-                    ->filterBy('category:Staff')
-                    ->fromPOST();
-                
-                $rolesCategoriesStaff = $roleGateway->queryRoles($criteriaCategory);
-                
-                $typesCategories = array();
-                foreach($rolesCategoriesStaff as $roleCategoriesStaff) {
-                   $typesCategories[$roleCategoriesStaff['name']] = __($roleCategoriesStaff['name']);
-                }
-                $types[__('System Roles')] = $typesCategories;
-
+                $types = array('Teaching' => __('Teaching'), 'Support' => __('Support'));
                 $row = $form->addRow();
                     $row->addLabel('type', __('Type'));
                     $row->addSelect('type')->fromArray($types)->placeholder()->required();
@@ -182,7 +167,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     ->displayLabel();
 
                 $table->addColumn('name', __('Name'));
-                $table->addColumn('usageType', __('Usage'))->translatable();    
+                $table->addColumn('usageType', __('Usage'))->translatable();
 
                 $table->addActionColumn()
                     ->addParam('gibbonSpacePersonID')

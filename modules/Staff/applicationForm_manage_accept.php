@@ -146,22 +146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     }
 
                     //DETERMINE ROLE
-                    $gibbonRoleID = '006'; //Support staff by default
-                    if ($values['type'] == 'Teaching') {
-                        $gibbonRoleID = '002';
-                    } elseif ($values['type'] != 'Support') { //Work out role based on type, which appears to be drawn from role anyway
-                        try {
-                            $dataRole = array('name' => $values['type']);
-                            $sqlRole = 'SELECT gibbonRoleID FROM gibbonRole WHERE name=:name';
-                            $resultRole = $connection2->prepare($sqlRole);
-                            $resultRole->execute($dataRole);
-                        } catch (PDOException $e) {
-                        }
-                        if ($resultRole->rowCount() == 1) {
-                            $rowRole = $resultRole->fetch();
-                            $gibbonRoleID = $rowRole['gibbonRoleID'];
-                        }
-                    }
+                    $gibbonRoleID = ($values['type'] == 'Teaching') ? '002' : '006';
 
                     //CREATE APPLICANT
                     $failapplicant = true;

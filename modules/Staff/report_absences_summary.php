@@ -237,7 +237,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
             'all:on'        => __('All Staff'),
             'type:teaching' => __('Staff Type').': '.__('Teaching'),
             'type:support'  => __('Staff Type').': '.__('Support'),
-            'type:other'    => __('Staff Type').': '.__('Other'),
         ]);
     }
 

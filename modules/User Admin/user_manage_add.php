@@ -490,10 +490,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         $row->addLabel('staffRecord', __('Add Staff'));
         $row->addCheckbox('staffRecord')->setValue('Y')->description(__('Create a linked staff record?'));
 
-    $types = array(__('Basic') => array ('Teaching' => __('Teaching'), 'Support' => __('Support')));
-    $sql = "SELECT name as value, name FROM gibbonRole WHERE category='Staff' ORDER BY name";
-    $types[__('System Roles')] = $pdo->select($sql)->fetchKeyPair();
-
+    $types = array ('Teaching' => __('Teaching'), 'Support' => __('Support'));
     $row = $form->addRow()->addClass('staffRecord');
         $row->addLabel('staffType', __('Type'));
         $row->addSelect('staffType')->fromArray($types)->placeholder()->required();
