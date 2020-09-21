@@ -24,23 +24,34 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% for item in homework %}
 
         {% set difference = date(item.homeworkDueDateTime).diff(date()) %}
-        {% set onlineSubmission = (item.submissions|last).version == 'Final' ? 'Y' : 'N' %}
+        {% set latestSubmission = (item.submissions|last) %}
 
-        {% if item.homeworkComplete == 'Y'  or (item.type == 'teacherRecorded' and onlineSubmission == 'Y') or (item.type == item.tracker.type and item.tracker.homeworkComplete == 'Y') %}
+        {% if item.homeworkComplete == 'Y'  or (item.type == 'teacherRecorded' and latestSubmission.version == 'Final') or (item.type == item.tracker.type and item.tracker.homeworkComplete == 'Y') %}
             {% set style = "background-color: #c6f6d5;color: #2f855a;border: 0px solid #2f855a;border-right-width: 8px;" %}
-            {% set tag = "<div style='display: inline-block; margin-left: 8px; color: #2f855a; background-color: #c6f6d5; border-radius: 3px;'>" ~  __('Complete')  ~ "</div>" %}
-        {% elseif item.homeworkDueDateTime < date('now') %}
-            {% set style = "border: 0px solid #c53030;border-right-width: 8px;" %}
-            {% set tag = "<div style='display: inline-block; padding: 1px 8px; margin-left: 8px; color: #c53030; background-color: #fed7d7; border-radius: 3px;'>" ~  __('Incomplete')  ~ "</div>" %}
-        {% elseif difference.days <= 0 %}
-            {% set style = "border: 0px solid #c53030;border-right-width: 8px;" %}
-            {% set tag = "<div style='display: inline-block; padding: 1px 8px; margin-left: 8px; color: #c53030; background-color: #fed7d7; border-radius: 3px;'>" ~  __('Due Soon')  ~ "</div>" %}
-        {% elseif difference.days <= 2 %}
-            {% set style = "border: 0px solid #d45602;border-right-width: 8px;" %}
-            {% set tag = "<div style='display: inline-block; padding: 1px 8px; margin-left: 8px; color: #d45602; background-color: #ffd2a8; border-radius: 3px;'>" ~  __('Due Soon')  ~ "</div>" %}
+            {% set tag = "<div style='display: inline-block; margin-left: 8px; color: #2f855a; background-color: #c6f6d5; border-radius: 3px;'>" ~  __('Complete') ~ ' - ' ~ latestSubmission.status|default(item.status)|default('On Time')  ~ "</div>" %}
         {% else %}
-            {% set style = "" %}
-            {% set tag = "" %}
+            {% set label = '' %}
+            {% set style = '' %}
+            {% set colour = '' %}
+
+            {% if item.submissions %}
+                {% set label = latestSubmission.status %}
+            {% elseif date('now') > date(item.homeworkDueDateTime) %}
+                {% set colour = 'color: #c53030; background-color: #fed7d7;' %}
+                {% set style = "border: 0px solid #c53030;border-right-width: 8px;" %}
+                {% set label = 'Incomplete' %}
+            {% elseif difference.days <= 0 %}
+                {% set colour = 'color: #c53030; background-color: #fed7d7;' %}
+                {% set style = "border: 0px solid #c53030;border-right-width: 8px;" %}
+                {% set label = __('Due Soon') %}
+            {% elseif difference.days <= 2 %}
+                {% set colour = 'color: #d45602; background-color: #ffd2a8;' %}
+                {% set style = "border: 0px solid #d45602;border-right-width: 8px;" %}
+                {% set label = __('Due Soon') %}
+            {% endif %}
+
+            {% set tag = '<div style="display: inline-block; padding: 1px 8px; margin-left: 8px; border-radius: 3px;' ~ colour ~ '">' ~  __(label)  ~ '</div>' %}
+
         {% endif %}
 
         <li>
