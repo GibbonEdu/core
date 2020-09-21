@@ -62,6 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                 $name = $row['name' ];
                 $count = $_POST['count'];
                 $partialFail = false;
+                $attachmentFail = false;
                 $attainment = $row['attainment'];
                 $gibbonScaleIDAttainment = $row['gibbonScaleIDAttainment'];
                 if ($enableEffort != 'Y') {
@@ -256,6 +257,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             if (empty($attachment)) {
                                 $partialFail = true;
                             }
+
+                            // Create a log of failed uploads
+                            $errorMessage = $fileUploader->getLastError();
+                            if (!empty($errorMessage) || filesize($attachment) == 0) {
+                                $gibbonModuleID = getModuleIDFromName($connection2, 'Markbook');
+                                setLog($connection2, $gibbon->session->get('gibbonSchoolYearID'), $gibbonModuleID, $gibbon->session->get('gibbonPersonID'), 'Uploaded Response Failed', [
+                                    'gibbonMarkbookColumnID' => $gibbonMarkbookColumnID,
+                                    'gibbonPersonIDStudent' => $gibbonPersonIDStudent,
+                                    'name' => $row['name'],
+                                    'attachment' => $attachment,
+                                    'errorMessage' => $errorMessage,
+                                    'fileType' => $file['type'] ?? '',
+                                    'fileError' => $file['error'] ?? '',
+                                ]);
+
+                                $attachmentFail = true;
+                            }
                         } else {
                             $attachment = (isset($_POST["attachment$i"]))? $_POST["attachment$i"] : '';
                         }
@@ -319,6 +337,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                 //Return!
                 if ($partialFail == true) {
                     $URL .= '&return=error3';
+                    header("Location: {$URL}");
+                } elseif ($attachmentFail == true) {
+                    $URL .= '&return=warning1';
                     header("Location: {$URL}");
                 } else {
                     $URL .= '&return=success0';

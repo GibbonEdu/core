@@ -43,6 +43,7 @@ v21.0.00
         Formal Assessment: added a bulk action for External Assessment Data
         Individual Needs: removed Notes & Review from parent view of individual needs information
         Library: added ID column to View Overdue Items report
+        Markbook: added error logging for failed file uploads on Enter Data page
         Messenger: tied messages to school year
         Messenger: convert copy-pasted divs to paragraphs in New Quick Wall Message
         Planner: update the attendance list to exclude students with a timetable exception
