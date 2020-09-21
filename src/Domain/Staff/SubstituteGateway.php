@@ -214,7 +214,7 @@ class SubstituteGateway extends QueryableGateway
               ->bindValue('date', $date);
 
         if ($criteria->hasFilter('allStaff')) {
-            $query->where("gibbonRole.category='Staff' AND (gibbonStaff.type LIKE '%Teaching%' OR gibbonStaff.type LIKE '%Teacher%')");
+            $query->where("gibbonRole.category='Staff' AND gibbonStaff.type='Teaching'");
             $query->where("(SELECT COUNT(*) FROM gibbonCourseClassPerson 
                 INNER JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
                 INNER JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)

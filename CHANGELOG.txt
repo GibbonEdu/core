@@ -32,6 +32,7 @@ v21.0.00
 
     Changes With Important Notices
         System: renamed planner_parentWeeklyEmailSummary.php to schoolAdmin_parentWeeklyEmailSummary.php
+        Staff: removed roles-as-type in Manage Staff, reducing option to Teaching and Support and setting all non-Teaching users to Support
 
     Tweaks & Additions
         System: added Romanian Leu as currency option

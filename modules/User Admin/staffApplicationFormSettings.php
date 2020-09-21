@@ -76,24 +76,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffApplicatio
     $types=array() ;
     $types[0] = 'Teaching';
     $types[1] = 'Support';
-    $typeCount = 2 ;
-    try {
-        $dataSelect = array();
-        $sqlSelect = "SELECT * FROM gibbonRole WHERE category='Staff' ORDER BY name";
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {}
-    while ($rowSelect = $resultSelect->fetch()) {
-        $types[$typeCount] = $rowSelect['name'];
-        $typeCount++;
-    }
-    $typeCount=0 ;
+    $typeCount = 0 ;
     foreach ($types AS $type) {
         $row = $form->addRow();
-        if ($typeCount==0 || $typeCount==1)
             $row->addLabel($setting['name'], __("Staff Type").": ".__($type));
-        else
-            $row->addLabel($setting['name'], __("Staff Role").": ".__($type));
         $form->addHiddenValue("types[".$typeCount."]", $type);
         $row->addURL("refereeLinks[]")->setID('refereeLink'.$typeCount)->setValue(isset($applicationFormRefereeLink[$type]) ? $applicationFormRefereeLink[$type] : '');
         $typeCount++;
