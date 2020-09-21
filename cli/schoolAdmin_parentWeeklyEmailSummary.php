@@ -88,9 +88,8 @@ foreach ($families as $gibbonFamilyID => $students) {
     foreach ($students as $student) {
 
         // HOMEWORK
-
         $criteria = $plannerEntryGateway->newQueryCriteria(true)
-            ->sortBy(['date', 'timeStart'], 'DESC')
+            ->sortBy('homeworkDueDateTime', 'ASC')
             ->filterBy('weekly:Y')
             ->filterBy('viewableParents:Y')
             ->fromPOST();

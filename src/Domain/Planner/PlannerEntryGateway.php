@@ -145,7 +145,6 @@ class PlannerEntryGateway extends QueryableGateway
             ->bindValue('gibbonPersonID', $gibbonPersonID)
             ->where('gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
-            ->where("gibbonPlannerEntry.homework='Y'")
             ->where("NOT gibbonCourseClassPerson.role='Student - Left'")
             ->where("NOT gibbonCourseClassPerson.role='Teacher - Left'")
             ->where("(gibbonPlannerEntry.date < :todayDate OR (gibbonPlannerEntry.date=:todayDate AND timeEnd <= :todayTime))")

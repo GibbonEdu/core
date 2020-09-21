@@ -92,6 +92,10 @@ class HomeworkTable
                 $row->addClass('success');
             }
 
+            if (!empty($homework['tracker']['homeworkComplete']) && $homework['homeworkSubmissionRequired'] != 'Required') {
+                $row->addClass('success');
+            }
+
             if ($homework['type'] == 'teacherRecorded' && !empty($homework['submissions'])) {
                 $latestSubmission = end($homework['submissions']);
                 if ($latestSubmission['version'] == 'Final') $row->addClass('success');
