@@ -163,7 +163,7 @@ foreach ($families as $gibbonFamilyID => $students) {
 
         if (!empty($checkExistingSummary)) {
             $sendReport['emailFailed']++;
-            $sendReport['emailErrors'] .= sprintf(__('Planner Weekly Summary Email: an error (%1$s) occurred sending an email to %2$s.'), 'duplicate key exists', $parentContact1['preferredName'].' '.$parentContact1['surname']).'<br/>';
+            $sendReport['emailErrors'] .= sprintf(__('An error (%1$s) occurred sending an email to %2$s.'), 'duplicate key exists', $parentContact1['preferredName'].' '.$parentContact1['surname']).'<br/>';
             continue;
         }
 
@@ -178,7 +178,7 @@ foreach ($families as $gibbonFamilyID => $students) {
         // Check key exists
         if (empty($key) || !empty($checkUnique)) {
             $sendReport['emailFailed']++;
-            $sendReport['emailErrors'] .= sprintf(__('Planner Weekly Summary Email: an error (%1$s) occurred sending an email to %2$s.'), 'key create failed', $parentContact1['preferredName'].' '.$parentContact1['surname']).'<br/>';
+            $sendReport['emailErrors'] .= sprintf(__('An error (%1$s) occurred sending an email to %2$s.'), 'key create failed', $parentContact1['preferredName'].' '.$parentContact1['surname']).'<br/>';
             continue;
         } 
 
@@ -196,7 +196,7 @@ foreach ($families as $gibbonFamilyID => $students) {
         // Check key was inserted
         if (empty($gibbonPlannerParentWeeklyEmailSummaryID)) {
             $sendReport['emailFailed']++;
-            $sendReport['emailErrors'] .= sprintf(__('Planner Weekly Summary Email: an error (%1$s) occurred sending an email to %2$s.'), 'key write failed', $parentContact1['preferredName'].' '.$parentContact1['surname']).'<br/>';
+            $sendReport['emailErrors'] .= sprintf(__('An error (%1$s) occurred sending an email to %2$s.'), 'key write failed', $parentContact1['preferredName'].' '.$parentContact1['surname']).'<br/>';
             continue;
         }
 
@@ -229,7 +229,7 @@ foreach ($families as $gibbonFamilyID => $students) {
                 $sendReport['emailSent']++;
             } else {
                 $sendReport['emailFailed']++;
-                $sendReport['emailErrors'] .= sprintf(__('Planner Weekly Summary Email: an error (%1$s) occurred sending an email to %2$s.'), 'email send failed', $parent['preferredName'].' '.$parent['surname']).'<br/>';
+                $sendReport['emailErrors'] .= sprintf(__('An error (%1$s) occurred sending an email to %2$s.'), 'email send failed', $parent['preferredName'].' '.$parent['surname']).'<br/>';
             }
 
             // Clear addresses
