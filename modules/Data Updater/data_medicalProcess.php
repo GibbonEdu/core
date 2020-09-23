@@ -110,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                 $values = $medicalGateway->getByID($gibbonPersonMedicalID);
 
                 // COMPARE VALUES: Has the data changed?
-                $dataChanged = false;
+                $dataChanged = empty($values);
                 foreach ($values as $key => $value) {
                     if (!isset($data[$key])) continue; // Skip fields we don't plan to update
 
