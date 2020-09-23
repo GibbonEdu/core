@@ -71,4 +71,4 @@ script:
   - composer test
 
 after_failure:
-  - cat /home/travis/build/SKuipers/core/tests/log/*.travis_ci.fail.html
+  - cat /home/travis/build/GibbonEdu/core/tests/log/*.travis_ci.fail.html

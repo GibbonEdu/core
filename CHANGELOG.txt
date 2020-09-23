@@ -41,6 +41,7 @@ v21.0.00
         Departments: improved course/class naming in Class view
         Data Updater: data updates with no changes will be automatically accepted
         Finance: added a setting to customize Payment Type options
+        Finance: added error logging to the email reminder process
         Formal Assessment: added a bulk action for External Assessment Data
         Individual Needs: removed Notes & Review from parent view of individual needs information
         Library: added ID column to View Overdue Items report
