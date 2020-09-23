@@ -17,7 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Domain\Students\MedicalGateway;
+use Gibbon\Domain\DataUpdater\MedicalUpdateGateway;
 
 include '../../gibbon.php';
 
@@ -90,164 +93,136 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
             } else {
-                $existing = $_POST['existing'];
-                if ($existing != 'N') {
-                    $AI = $existing;
-                }
+                // Proceed!
+                $gibbonPersonMedicalID = $_POST['gibbonPersonMedicalID'] ?? null;
+                $data = [
+                    'gibbonPersonMedicalID'     => $gibbonPersonMedicalID,
+                    'gibbonPersonID'            => $gibbonPersonID,
+                    'bloodType'                 => $_POST['bloodType'] ?? '',
+                    'longTermMedication'        => $_POST['longTermMedication'] ?? 'N',
+                    'longTermMedicationDetails' => $_POST['longTermMedicationDetails'] ?? '',
+                    'tetanusWithin10Years'      => $_POST['tetanusWithin10Years'] ?? '',
+                    'comment'                   => $_POST['comment'] ?? '',
+                ];
 
-                //Get medical form fields
-                //Proceed!
-                if ($_POST['gibbonPersonMedicalID'] != '') {
-                    $gibbonPersonMedicalID = $_POST['gibbonPersonMedicalID'];
-                } else {
-                    $gibbonPersonMedicalID = null;
-                }
-                $bloodType = $_POST['bloodType'];
-                $longTermMedication = $_POST['longTermMedication'];
-                $longTermMedicationDetails = isset($_POST['longTermMedicationDetails'])? $_POST['longTermMedicationDetails'] : '';
-                $tetanusWithin10Years = $_POST['tetanusWithin10Years'];
-                $comment = $_POST['comment'];
+                // Get medical form fields
+                $medicalGateway = $container->get(MedicalGateway::class);
+                $values = $medicalGateway->getByID($gibbonPersonMedicalID);
 
-                //Write to database
-                try {
-                    if ($existing != 'N') {
-                        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonMedicalID' => $gibbonPersonMedicalID, 'gibbonPersonID' => $gibbonPersonID, 'bloodType' => $bloodType, 'longTermMedication' => $longTermMedication, 'longTermMedicationDetails' => $longTermMedicationDetails, 'tetanusWithin10Years' => $tetanusWithin10Years, 'comment' => $comment, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonMedicalUpdateID' => $existing);
-                        $sql = 'UPDATE gibbonPersonMedicalUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonMedicalID=:gibbonPersonMedicalID, gibbonPersonID=:gibbonPersonID, bloodType=:bloodType, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, tetanusWithin10Years=:tetanusWithin10Years, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=NOW() WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID';
-                    } else {
-                        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonMedicalID' => $gibbonPersonMedicalID, 'gibbonPersonID' => $gibbonPersonID, 'bloodType' => $bloodType, 'longTermMedication' => $longTermMedication, 'longTermMedicationDetails' => $longTermMedicationDetails, 'tetanusWithin10Years' => $tetanusWithin10Years, 'comment' => $comment, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID']);
-                        $sql = 'INSERT INTO gibbonPersonMedicalUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonMedicalID=:gibbonPersonMedicalID, gibbonPersonID=:gibbonPersonID, bloodType=:bloodType, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, tetanusWithin10Years=:tetanusWithin10Years, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater';
+                // COMPARE VALUES: Has the data changed?
+                $dataChanged = empty($values);
+                foreach ($values as $key => $value) {
+                    if (!isset($data[$key])) continue; // Skip fields we don't plan to update
+
+                    if ($data[$key] != $value) {
+                        $dataChanged = true;
                     }
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    $URL .= '&return=error2';
-                    header("Location: {$URL}");
-                    exit();
                 }
+
+                // Write to database
+                $existing = $_POST['existing'] ?? 'N';
+                $data['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
+                $data['gibbonPersonIDUpdater'] = $_SESSION[$guid]['gibbonPersonID'];
+                $data['timestamp'] = date('Y-m-d H:i:s');
                 
-                if ($existing == 'N') {
-                   $AI = $connection2->lastInsertID();
-                }
-
-                //Update existing medical conditions
-                $partialFail = false;
-                $count = 0;
-                if (isset($_POST['count'])) {
-                    $count = $_POST['count'];
-                }
-
                 if ($existing != 'N') {
-                    for ($i = 0; $i < $count; ++$i) {
-                        if ($AI != '') {
-                            $gibbonPersonMedicalUpdateID = $AI;
-                        } else {
-                            $gibbonPersonMedicalUpdateID = null;
-                        }
-                        $gibbonPersonMedicalConditionID = $_POST["gibbonPersonMedicalConditionID$i"];
-                        $gibbonPersonMedicalConditionUpdateID = $_POST["gibbonPersonMedicalConditionUpdateID$i"];
-                        $name = $_POST["name$i"];
-                        $gibbonAlertLevelID = $_POST["gibbonAlertLevelID$i"];
-                        $triggers = $_POST["triggers$i"];
-                        $reaction = $_POST["reaction$i"];
-                        $response = $_POST["response$i"];
-                        $medication = $_POST["medication$i"];
-                        if ($_POST["lastEpisode$i"] != '') {
-                            $lastEpisode = dateConvert($guid, $_POST["lastEpisode$i"]);
-                        } else {
-                            $lastEpisode = null;
-                        }
-                        $lastEpisodeTreatment = $_POST["lastEpisodeTreatment$i"];
-                        $commentCond = $_POST["commentCond$i"];
+                    $gibbonPersonMedicalUpdateID = $existing;
+                    $data['gibbonPersonMedicalUpdateID'] = $gibbonPersonMedicalUpdateID;
+                    $sql = 'UPDATE gibbonPersonMedicalUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonMedicalID=:gibbonPersonMedicalID, gibbonPersonID=:gibbonPersonID, bloodType=:bloodType, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, tetanusWithin10Years=:tetanusWithin10Years, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID';
+                    $pdo->update($sql, $data);
+                } else {
+                    $sql = 'INSERT INTO gibbonPersonMedicalUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonMedicalID=:gibbonPersonMedicalID, gibbonPersonID=:gibbonPersonID, bloodType=:bloodType, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, tetanusWithin10Years=:tetanusWithin10Years, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp';
+                    $gibbonPersonMedicalUpdateID = $pdo->insert($sql, $data);
+                }
 
-                        try {
-                            $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID, 'gibbonPersonMedicalID' => $gibbonPersonMedicalID, 'name' => $name, 'gibbonAlertLevelID' => $gibbonAlertLevelID, 'triggers' => $triggers, 'reaction' => $reaction, 'response' => $response, 'medication' => $medication, 'lastEpisode' => $lastEpisode, 'lastEpisodeTreatment' => $lastEpisodeTreatment, 'comment' => $commentCond, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonMedicalConditionUpdateID' => $gibbonPersonMedicalConditionUpdateID);
-                            $sql = 'UPDATE gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID, gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater WHERE gibbonPersonMedicalConditionUpdateID=:gibbonPersonMedicalConditionUpdateID';
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
-                        } catch (PDOException $e) {
-                            $partialFail = true;
+                // Update existing medical conditions
+                $partialFail = false;
+                $count = $_POST['count'] ?? 0;
+
+                for ($i = 0; $i < $count; ++$i) {
+                    $data = [
+                        'gibbonPersonMedicalID' => $gibbonPersonMedicalID,
+                        'gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID,
+                        'name'                  => $_POST["name$i"] ?? '',
+                        'gibbonAlertLevelID'    => $_POST["gibbonAlertLevelID$i"] ?? '',
+                        'triggers'              => $_POST["triggers$i"] ?? '',
+                        'reaction'              => $_POST["reaction$i"] ?? '',
+                        'response'              => $_POST["response$i"] ?? '',
+                        'medication'            => $_POST["medication$i"] ?? '',
+                        'lastEpisode'           => !empty($_POST["lastEpisode$i"]) ? Format::dateConvert($_POST["lastEpisode$i"]) : null,
+                        'lastEpisodeTreatment'  => $_POST["lastEpisodeTreatment$i"] ?? '',
+                        'comment'               => $_POST["commentCond$i"] ?? '',
+                        'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID'],
+                    ];
+
+                    // Get the values of the current condition
+                    $gibbonPersonMedicalConditionID = $_POST["gibbonPersonMedicalConditionID$i"] ?? null;
+                    $condition = $medicalGateway->getMedicalConditionByID($gibbonPersonMedicalConditionID);
+                    if (empty($condition)) {
+                        $dataChanged = true;
+                    }
+
+                    // Check for values that have changed
+                    foreach ($condition as $key => $value) {
+                        if (!isset($data[$key])) continue; // Skip fields we don't plan to update
+                        if ($data[$key] != $value) {
+                            $dataChanged = true;
                         }
                     }
-                } else {
-                    for ($i = 0; $i < $count; ++$i) {
-                        if ($AI != '') {
-                            $gibbonPersonMedicalUpdateID = $AI;
-                        } else {
-                            $gibbonPersonMedicalUpdateID = null;
-                        }
-                        $gibbonPersonMedicalConditionID = $_POST["gibbonPersonMedicalConditionID$i"];
-                        $name = $_POST["name$i"];
-                        $gibbonAlertLevelID = $_POST["gibbonAlertLevelID$i"];
-                        $triggers = $_POST["triggers$i"];
-                        $reaction = $_POST["reaction$i"];
-                        $response = $_POST["response$i"];
-                        $medication = $_POST["medication$i"];
-                        if ($_POST["lastEpisode$i"] != '') {
-                            $lastEpisode = dateConvert($guid, $_POST["lastEpisode$i"]);
-                        } else {
-                            $lastEpisode = null;
-                        }
-                        $lastEpisodeTreatment = $_POST["lastEpisodeTreatment$i"];
-                        $commentCond = $_POST["commentCond$i"];
 
-                        try {
-                            $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID, 'gibbonPersonMedicalConditionID' => $gibbonPersonMedicalConditionID, 'gibbonPersonMedicalID' => $gibbonPersonMedicalID, 'name' => $name, 'gibbonAlertLevelID' => $gibbonAlertLevelID, 'triggers' => $triggers, 'reaction' => $reaction, 'response' => $response, 'medication' => $medication, 'lastEpisode' => $lastEpisode, 'lastEpisodeTreatment' => $lastEpisodeTreatment, 'comment' => $commentCond, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID']);
-                            $sql = 'INSERT INTO gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID, gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID, gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater';
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
-                        } catch (PDOException $e) {
-                            $partialFail = true;
-                        }
+                    $data['timestamp'] = date('Y-m-d H:i:s');
+
+                    if ($existing != 'N' && !empty($_POST["gibbonPersonMedicalConditionUpdateID$i"])) {
+                        $data['gibbonPersonMedicalConditionUpdateID'] = $_POST["gibbonPersonMedicalConditionUpdateID$i"] ?? '';
+                        $sql = 'UPDATE gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID, gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp WHERE gibbonPersonMedicalConditionUpdateID=:gibbonPersonMedicalConditionUpdateID';
+                        $pdo->update($sql, $data);
+                    } else {
+                        $data['gibbonPersonMedicalConditionID'] = $gibbonPersonMedicalConditionID;
+                        $sql = 'INSERT INTO gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID, gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID, gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp';
+                        $gibbonPersonMedicalConditionUpdateID = $pdo->insert($sql, $data);
                     }
                 }
 
                 //Add new medical condition
-                if (isset($_POST['addCondition'])) {
-                    if ($_POST['addCondition'] == 'Yes') {
-                        if ($_POST['name'] != '' and $_POST['gibbonAlertLevelID'] != '') {
-                            if ($AI != '') {
-                                $gibbonPersonMedicalUpdateID = $AI;
-                            } else {
-                                $gibbonPersonMedicalUpdateID = null;
-                            }
-                            $name = $_POST['name'];
-                            $gibbonAlertLevelID = null;
-                            if ($_POST['gibbonAlertLevelID'] != 'Please select...') {
-                                $gibbonAlertLevelID = $_POST['gibbonAlertLevelID'];
-                            }
-                            $triggers = $_POST['triggers'];
-                            $reaction = $_POST['reaction'];
-                            $response = $_POST['response'];
-                            $medication = $_POST['medication'];
-                            if ($_POST['lastEpisode'] != '') {
-                                $lastEpisode = dateConvert($guid, $_POST['lastEpisode']);
-                            } else {
-                                $lastEpisode = null;
-                            }
-                            $lastEpisodeTreatment = $_POST['lastEpisodeTreatment'];
-                            $commentCond = $_POST['commentCond'];
+                if (isset($_POST['addCondition']) && $_POST['addCondition'] == 'Yes') {
+                    $dataChanged = true;
+                    $data = [
+                        'gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID,
+                        'gibbonPersonMedicalID'       => $gibbonPersonMedicalID,
+                        'name'                        => $_POST['name'] ?? '',
+                        'gibbonAlertLevelID'          => $_POST['gibbonAlertLevelID'] ?? '',
+                        'triggers'                    => $_POST['triggers'] ?? '',
+                        'reaction'                    => $_POST['reaction'] ?? '',
+                        'response'                    => $_POST['response'] ?? '',
+                        'medication'                  => $_POST['medication'] ?? '',
+                        'lastEpisode'                 => !empty($_POST['lastEpisode']) ? Format::dateConvert($_POST['lastEpisode']) :  null,
+                        'lastEpisodeTreatment'        => $_POST['lastEpisodeTreatment'] ?? '',
+                        'comment'                     => $_POST['commentCond'] ?? '',
+                        'gibbonPersonIDUpdater'       => $_SESSION[$guid]['gibbonPersonID'],
+                        'timestamp'                   => date('Y-m-d H:i:s'),
+                    ];
 
-                            try {
-                                $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID, 'gibbonPersonMedicalID' => $gibbonPersonMedicalID, 'name' => $name, 'gibbonAlertLevelID' => $gibbonAlertLevelID, 'triggers' => $triggers, 'reaction' => $reaction, 'response' => $response, 'medication' => $medication, 'lastEpisode' => $lastEpisode, 'lastEpisodeTreatment' => $lastEpisodeTreatment, 'comment' => $commentCond, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID']);
-                                $sql = 'INSERT INTO gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID, gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater';
-                                $result = $connection2->prepare($sql);
-                                $result->execute($data);
-                            } catch (PDOException $e) {
-                                $partialFail = true;
-                            }
-                        }
+                    if (!empty($data['name']) and !empty($data['gibbonAlertLevelID'])) {
+                        $sql = 'INSERT INTO gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID, gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp';
+                        $pdo->insert($sql, $data);
+                    } else {
+                        $partialFail = true;
                     }
                 }
 
-                // Raise a new notification event
-                $event = new NotificationEvent('Data Updater', 'Medical Form Updates');
+                // If no data has changed in the medical form and any conditions, then auto-accept the changes
+                if ($dataChanged == false) {
+                    $container->get(MedicalUpdateGateway::class)->update($gibbonPersonMedicalUpdateID, ['status' => 'Complete']);
+                } else {
+                    // Raise a new notification event
+                    $event = new NotificationEvent('Data Updater', 'Medical Form Updates');
 
-                $event->addRecipient($_SESSION[$guid]['organisationDBA']);
-                $event->setNotificationText(__('A medical data update request has been submitted.'));
-                $event->setActionLink('/index.php?q=/modules/Data Updater/data_medical_manage.php');
+                    $event->addRecipient($_SESSION[$guid]['organisationDBA']);
+                    $event->setNotificationText(__('A medical data update request has been submitted.'));
+                    $event->setActionLink('/index.php?q=/modules/Data Updater/data_medical_manage.php');
 
-                $event->sendNotifications($pdo, $gibbon->session);
-
+                    $event->sendNotifications($pdo, $gibbon->session);
+                }
 
                 if ($partialFail == true) {
                     $URL .= '&return=warning1';

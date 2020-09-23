@@ -39,6 +39,7 @@ v21.0.00
         System: update complete homework to display in green on the Parent Dashboard
         Attendance: added an Offsite - Late option for attendance codes
         Departments: improved course/class naming in Class view
+        Data Updater: data updates with no changes will be automatically accepted
         Finance: added a setting to customize Payment Type options
         Finance: added error logging to the email reminder process
         Formal Assessment: added a bulk action for External Assessment Data
