@@ -36,8 +36,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
         echo __('You do not have access to this action.');
         echo '</div>';
     } else {
-        $gibbonPersonID = $_GET['gibbonPersonID'];
-        $subpage = $_GET['subpage'];
+        $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+        $subpage = $_GET['subpage'] ?? '';
         if ($gibbonPersonID == '' or $subpage == '') {
             echo "<div class='error'>";
             echo __('You have not specified one or more required parameters.');

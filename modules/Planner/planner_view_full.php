@@ -1282,7 +1282,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 										</td>
 										<td class="right">
 											<input name="homeworkDueDate" id="homeworkDueDate" maxlength=10 value="<?php if ($rowMyHomework['homework'] == 'Y') { echo dateConvertBack($guid, substr($rowMyHomework['homeworkDueDateTime'], 0, 10));
-											} else {
+											} elseif (!empty($homeworkDueDate)) {
 												echo dateConvertBack($guid, substr($homeworkDueDate, 0, 10));
 											} ?>" type="text" class="standardWidth">
 											<script type="text/javascript">
@@ -1313,7 +1313,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 										</td>
 										<td class="right">
 											<input name="homeworkDueDateTime" id="homeworkDueDateTime" maxlength=5 value="<?php if ($rowMyHomework['homework'] == 'Y') { echo substr($rowMyHomework['homeworkDueDateTime'], 11, 5);
-											} else {
+											} elseif (!empty($homeworkDueDateTime)) {
 												echo substr($homeworkDueDateTime, 0, 5);
 											} ?>" type="text" class="standardWidth">
 											<script type="text/javascript">
