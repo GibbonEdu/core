@@ -50,6 +50,7 @@ v21.0.00
         Markbook: added error logging for failed file uploads on Enter Data page
         Messenger: tied messages to school year
         Messenger: convert copy-pasted divs to paragraphs in New Quick Wall Message
+        Messenger: fixed copy-pasted div/paragraph replacement in sender's copy of emails
         Planner: update the attendance list to exclude students with a timetable exception
         Planner: added smart block clarification to the Edit Working Copy page
         Planner: added a common template for all Upcoming Deadlines sections
