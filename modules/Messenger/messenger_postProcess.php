@@ -1948,7 +1948,11 @@ else {
 				$mail->CharSet="UTF-8";
 				$mail->Encoding="base64" ;
 				$mail->IsHTML(true);
-				$mail->Subject=$subject ;
+                $mail->Subject=$subject ;
+                
+                // Turn copy-pasted div breaks into paragraph breaks
+                $body = str_ireplace(['<div ', '<div>', '</div>'], ['<p ', '<p>', '</p>'], $body);
+
 				$mail->renderBody('mail/email.twig.html', [
 					'title'  => $subject,
 					'body'   => $body
@@ -2027,9 +2031,6 @@ else {
 							}
 							$bodyOut = $studentNames.$bodyOut;
                         }
-
-                        // Turn copy-pasted div breaks into paragraph breaks
-                        $bodyOut = str_replace(['<div ', '<div>', '</div>'], ['<p ', '<p>', '</p>'], $bodyOut);
 
 						$mail->renderBody('mail/email.twig.html', [
 							'title'  => $subject,
