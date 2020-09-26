@@ -856,8 +856,8 @@ if ($proceed == false) {
             $confirmPayment = confirmPayment($guid, $applicationFee, $paymentToken, $paymentPayerID);
 
             $ACK = $confirmPayment['ACK'];
-            $paymentTransactionID = $confirmPayment['PAYMENTINFO_0_TRANSACTIONID'];
-            $paymentReceiptID = $confirmPayment['PAYMENTINFO_0_RECEIPTID'];
+            $paymentTransactionID = $confirmPayment['PAYMENTINFO_0_TRANSACTIONID'] ?? '';
+            $paymentReceiptID = $confirmPayment['PAYMENTINFO_0_RECEIPTID'] ?? '';
 
             //Payment was successful. Yeah!
             if ($ACK == 'Success') {

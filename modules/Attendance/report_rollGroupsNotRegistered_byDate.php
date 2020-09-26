@@ -240,7 +240,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
             }
 
             if ($count == 0) {
-                echo "<tr class=$rowNum>";
+                echo "<tr>";
                 echo '<td colspan=4>';
                 echo __('All roll groups have been registered.');
                 echo '</td>';

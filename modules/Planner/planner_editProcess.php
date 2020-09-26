@@ -190,14 +190,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                         header("Location: {$URL}");
                     } else {
                         //Scan through guests
-                        $guests = null;
-                        if (isset($_POST['guests'])) {
-                            $guests = $_POST['guests'];
-                        }
-                        $role = $_POST['role'];
-                        if ($role == '') {
-                            $role = 'Student';
-                        }
+                        $guests = $_POST['guests'] ?? [];
+                        $role = $_POST['role'] ?? 'Student';
+
                         if (count($guests) > 0) {
                             foreach ($guests as $t) {
                                 //Check to see if person is already registered in this class
