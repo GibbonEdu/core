@@ -28,15 +28,18 @@ $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
+    exit();
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['address'], $connection2);
     if ($highestAction == false) {
         $URL .= "&return=error0$params";
         header("Location: {$URL}");
+        exit();
     } else {
         if (empty($_POST)) {
             $URL .= '&return=warning1';
             header("Location: {$URL}");
+            exit();
         } else {
             //Proceed!
             //Validate Inputs
@@ -63,13 +66,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $homework = $_POST['homework'];
             if ($_POST['homework'] == 'Y') {
                 $homework = 'Y';
-                $homeworkDetails = $_POST['homeworkDetails'];
-                if ($_POST['homeworkDueDateTime'] != '') {
+                $homeworkDetails = $_POST['homeworkDetails'] ?? '';
+                if (!empty($_POST['homeworkDueDateTime'])) {
                     $homeworkDueDateTime = $_POST['homeworkDueDateTime'].':59';
                 } else {
                     $homeworkDueDateTime = '21:00:00';
                 }
-                if ($_POST['homeworkDueDate'] != '') {
+                if (!empty($_POST['homeworkDueDate'])) {
                     $homeworkDueDate = dateConvert($guid, $_POST['homeworkDueDate']).' '.$homeworkDueDateTime;
                 }
 
@@ -171,6 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             if ($viewBy == '' or $gibbonCourseClassID == '' or $date == '' or $timeStart == '' or $timeEnd == '' or $name == '' or $homework == '' or $viewableParents == '' or $viewableStudents == '' or ($homework == 'Y' and ($homeworkDetails == '' or $homeworkDueDate == ''))) {
                 $URL .= "&return=error1$params";
                 header("Location: {$URL}");
+                exit();
             } else {
                 $partialFail = false;
                 
@@ -189,10 +193,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $AI = $connection2->lastInsertID();
 
                 //Scan through guests
-                $guests = null;
-                if (isset($_POST['guests'])) {
-                    $guests = $_POST['guests'];
-                }
+                $guests = $_POST['guests'] ?? [];
+                
                 $role = $_POST['role'] ?? 'Student';
 
                 if (count($guests) > 0) {

@@ -120,8 +120,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             } catch (PDOException $e) { print $e->getMessage(); }
-                            while ($row = $result->fetch()) {
-                                $event->addRecipient($row['gibbonPersonID']);
+                            while ($rowTutors = $result->fetch()) {
+                                $event->addRecipient($rowTutors['gibbonPersonID']);
                             }
 
                             // Add the HOY if there is one

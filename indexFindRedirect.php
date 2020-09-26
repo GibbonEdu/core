@@ -1,12 +1,11 @@
 <?php
 include './gibbon.php';
 
-$type = substr($_GET['fastFinderSearch'], 0, 3);
-$id = substr($_GET['fastFinderSearch'], 4);
+$type = substr($_GET['fastFinderSearch'] ?? '', 0, 3);
+$id = substr($_GET['fastFinderSearch'] ?? '', 4);
+$URL = './index.php';
 
-if ($_SESSION[$guid]['absoluteURL'] == '') {
-    $URL = './index.php';
-} else {
+if (!empty($_SESSION[$guid]['absoluteURL'])) {
     if ($type == 'Stu') {
         $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$id;
     } elseif ($type == 'Act') {

@@ -165,14 +165,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                         }
                         echo '</td>';
                         echo '<td>';
-                        $dataDiscuss = array('gibbonPlannerEntryHomeworkID' => $rowWork['gibbonPlannerEntryHomeworkID']);
+                        $dataDiscuss = array('gibbonPlannerEntryHomeworkID' => $rowWork['gibbonPlannerEntryHomeworkID'] ?? '');
                         $sqlDiscuss = 'SELECT gibbonCrowdAssessDiscuss.*, title, surname, preferredName, category FROM gibbonCrowdAssessDiscuss JOIN gibbonPerson ON (gibbonCrowdAssessDiscuss.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonPlannerEntryHomeworkID=:gibbonPlannerEntryHomeworkID';
                         $resultDiscuss = $connection2->prepare($sqlDiscuss);
                         $resultDiscuss->execute($dataDiscuss);
                         echo $resultDiscuss->rowCount();
                         echo '</td>';
                         echo '<td>';
-                        if ($rowWork['gibbonPlannerEntryHomeworkID'] != '' and $rowWork['status'] != 'Exemption') {
+                        if (!empty($rowWork['gibbonPlannerEntryHomeworkID']) and $rowWork['status'] != 'Exemption') {
                             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/crowdAssess_view_discuss.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=".$rowWork['gibbonPlannerEntryHomeworkID'].'&gibbonPersonID='.$rowList['gibbonPersonID']."'><img title='".__('View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
                         }
                         echo '</td>';

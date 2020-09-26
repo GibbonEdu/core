@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
     }
 
     //Check if school year specified
-    $gibbonPersonID = $_GET['gibbonPersonID'];
+    $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
     if ($gibbonPersonID == '') {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');

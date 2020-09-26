@@ -26,10 +26,10 @@ require __DIR__ . '/../../gibbon.php';
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$gibbonRollGroupID = $_POST['gibbonRollGroupID'];
-$currentDate = $_POST['currentDate'];
+$gibbonRollGroupID = $_POST['gibbonRollGroupID'] ?? '';
+$currentDate = $_POST['currentDate'] ?? '';
 $today = date('Y-m-d');
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/attendance_take_byRollGroup.php&gibbonRollGroupID=$gibbonRollGroupID&currentDate=".dateConvertBack($guid, $currentDate);
+$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Atendance/attendance_take_byRollGroup.php&gibbonRollGroupID=$gibbonRollGroupID&currentDate=".dateConvertBack($guid, $currentDate);
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byRollGroup.php') == false) {
     $URL .= '&return=error0';

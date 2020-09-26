@@ -233,20 +233,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                         echo Format::name('', $row['preferredName'], $row['surname'], 'Student', ($sort != 'preferredName') );
                     echo '</td>';
                     echo '<td>';
-                    $rowRollAttendance = null;
+                    $rowRollAttendance = $resultAttendance->fetch();
 
-                    if ($resultAttendance->rowCount() < 1) {
+                    if (empty($rowRollAttendance)) {
                         echo Format::small(__('Not registered'));
                     } else {
-                        $rowRollAttendance = $resultAttendance->fetch();
                         echo __($rowRollAttendance['type']);
                     }
                     echo '</td>';
                     echo '<td>';
-                        echo $rowRollAttendance['reason'];
+                        echo $rowRollAttendance['reason'] ?? '';
                     echo '</td>';
                     echo '<td>';
-                        echo $rowRollAttendance['comment'];
+                        echo $rowRollAttendance['comment'] ?? '';
                     echo '</td>';
                     echo '</tr>';
 

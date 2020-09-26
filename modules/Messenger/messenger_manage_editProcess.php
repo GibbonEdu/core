@@ -126,8 +126,8 @@ else {
 
 				//Role Categories
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_role") || isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_postQuickWall.php")) {
-					if ($_POST["roleCategory"]=="Y") {
-						$choices=$_POST["roleCategories"] ;
+					if (!empty($_POST['roleCategory']) && $_POST['roleCategory'] == 'Y') {
+						$choices=$_POST['roleCategories'] ?? '';
 						if ($choices!="") {
 							foreach ($choices as $t) {
 								try {

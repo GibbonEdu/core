@@ -142,7 +142,7 @@ else {
                         $type=$_POST[$i . "-type"] ;
                         $reason=$_POST[$i . "-reason"] ;
                         $comment=$_POST[$i . "-comment"] ;
-                        $prefilled=$_POST[$i . "-prefilled"] ;
+                        $prefilled=$_POST[$i . "-prefilled"] ?? '';
 
                         $attendanceCode = $attendance->getAttendanceCodeByType($type);
                         $direction = $attendanceCode['direction'];
