@@ -100,13 +100,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_scopes_m
     $reportingCriteria = $reportingCriteriaGateway->queryReportingCriteriaGroupsByScope($criteria, $urlParams['gibbonReportingScopeID'], $reportingScope['scopeType']);
 
     // BULK ACTIONS
-    $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Reports/reporting_criteria_manage_addMultiple.php');
+    $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'].'/modules/Reports/reporting_scopes_manage_editProcessBulk.php');
     $form->setTitle(__('Criteria'));
     $form->addHiddenValue('gibbonReportingScopeID', $urlParams['gibbonReportingScopeID']);
     $form->addHiddenValue('gibbonReportingCycleID', $reportingScope['gibbonReportingCycleID']);
 
     $bulkActions = array(
         'Add Multiple' => __('Add Multiple'),
+        'Delete' => __('Delete'),
     );
 
     $col = $form->createBulkActionColumn($bulkActions);
