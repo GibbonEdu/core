@@ -116,6 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
             });
 
         $table->addColumn('class', __('Class'))
+            ->sortable(['courseName', 'className'])
             ->format(function ($log) {
                 return Format::courseClassName($log['courseName'], $log['className']);
             });

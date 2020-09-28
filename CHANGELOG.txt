@@ -39,6 +39,7 @@ v21.0.00
         System: update complete homework to display in green on the Parent Dashboard
         System: added text labels to Print and Export options in ReportTable
         Attendance: added an Offsite - Late option for attendance codes
+        Attendance: fixed sortable Class column in Student Not In Class report
         Departments: improved course/class naming in Class view
         Data Updater: data updates with no changes will be automatically accepted
         Finance: added a setting to customize Payment Type options
