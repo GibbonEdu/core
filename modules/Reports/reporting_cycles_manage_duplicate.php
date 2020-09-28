@@ -36,7 +36,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
     }
 
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink, null);
+        returnProcess($guid, $_GET['return'], $editLink, [
+            'warning3' => __('Duplication was successful, however {count} criteria did not match roll groups or courses in the target school year and could not be copied.', ['count' => $_GET['failedCriteria'] ?? 0]),
+        ]);
     }
 
     $gibbonReportingCycleID = $_GET['gibbonReportingCycleID'] ?? '';
@@ -54,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
         return;
     }
 
-    $page->addWarning(__('Duplicating this reporting cycle will copy all milestones and criteria to the new reporting cycle. Reporting access will not be copied.'));
+    $page->addMessage(__('Duplicating this reporting cycle will copy all milestones and criteria to the new reporting cycle. Reporting access will not be copied.'));
 
     $form = Form::create('reportingCycles', $gibbon->session->get('absoluteURL').'/modules/Reports/reporting_cycles_manage_duplicateProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
