@@ -39,7 +39,6 @@ v21.0.00
         System: update complete homework to display in green on the Parent Dashboard
         System: added text labels to Print and Export options in ReportTable
         Attendance: added an Offsite - Late option for attendance codes
-        Attendance: fixed sortable Class column in Student Not In Class report
         Departments: improved course/class naming in Class view
         Data Updater: data updates with no changes will be automatically accepted
         Finance: added a setting to customize Payment Type options
@@ -51,7 +50,7 @@ v21.0.00
         Markbook: added error logging for failed file uploads on Enter Data page
         Messenger: tied messages to school year
         Messenger: convert copy-pasted divs to paragraphs in New Quick Wall Message
-        Messenger: fixed copy-pasted div/paragraph replacement in sender's copy of emails
+        
         Planner: update the attendance list to exclude students with a timetable exception
         Planner: added smart block clarification to the Edit Working Copy page
         Planner: added a common template for all Upcoming Deadlines sections
@@ -61,6 +60,7 @@ v21.0.00
         Planner: removed lessons with timetable exceptions from Today's Lessons on the dahsboard
         Reports: display the download link after a batch PDF has completed
         Reports: added full course name to the report writing page
+        Reports: added a bulk delete action in the Edit Reporting Scopes page
         School Admin: added Manage Medical Conditions action
         Students: updated application acceptance message to reflect automatically created medical record
         Students: added uniqueness checks for Student ID field
@@ -75,12 +75,15 @@ v21.0.00
         System: fixed validation not working for paginated bulk action forms
         System: added a fallback to translateN for systems that don't have gettext
         System Admin: fixed PHP deprecation errors in CSV importer
+        Attendance: fixed sortable Class column in Student Not In Class report
         Formal Assessment: removed Back link from delete modal
         Individual Needs: fixed description of Reason field in Manage Investigations
         Library: fixed broken delete function in Manage Catalog
         Messenger: fixed SMTP debug settings in New Message process page
+        Messenger: fixed copy-pasted div/paragraph replacement in sender's copy of emails
         Reports: fixed AttendanceByCycle data source counting school attendance as class attendance
         Reports: fixed MpdfRenderer not resetting headers when generating batch single files
+        Reports: fixed Reporting Cycle Duplicate copying criteria from year to year
         Planner: fixed Outcomes by Course for courses with multiple year groups
         Staff: fixed alternate email address causing an error on Personal subpage
         Students: fixed parent support link in application acceptance email
