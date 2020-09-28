@@ -56,17 +56,19 @@ if ($gibbonSchoolYearID == '' or $gibbonPersonID == '') { echo 'Fatal error load
                 //If student not in course, add them
                 if ($result->rowCount() == 0) {
                     try {
-                        $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonCourseClassID' => $t, 'role' => $role);
-                        $sql = 'INSERT INTO gibbonCourseClassPerson SET gibbonPersonID=:gibbonPersonID, gibbonCourseClassID=:gibbonCourseClassID, role=:role';
+                        $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonCourseClassID' => $t, 'role' => $role, 'dateStart' => date('Y-m-d'));
+                        $sql = 'INSERT INTO gibbonCourseClassPerson SET gibbonPersonID=:gibbonPersonID, gibbonCourseClassID=:gibbonCourseClassID, role=:role, dateStart=:dateStart';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
                         $update = false;
                     }
                 } else {
+                    $values = $result->fetch();
+                    $dateStart = $values['role'] != $role ? date('Y-m-d') : $values['dateStart'];
                     try {
-                        $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonCourseClassID' => $t, 'role' => $role);
-                        $sql = 'UPDATE gibbonCourseClassPerson SET role=:role WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID';
+                        $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonCourseClassID' => $t, 'role' => $role, 'dateStart' => $dateStart);
+                        $sql = 'UPDATE gibbonCourseClassPerson SET role=:role, dateStart=:dateStart, dateEnd=NULL WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {

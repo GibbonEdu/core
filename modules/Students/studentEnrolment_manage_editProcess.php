@@ -99,11 +99,11 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
                         // Remove existing auto-enrolment: moving a student from one Roll Group to another
                         $gibbonRollGroupIDOriginal = (isset($_POST['gibbonRollGroupIDOriginal']))? $_POST['gibbonRollGroupIDOriginal'] : 'N';
 
-                        $data = array('gibbonRollGroupIDOriginal' => $gibbonRollGroupIDOriginal, 'gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID);
+                        $data = array('gibbonRollGroupIDOriginal' => $gibbonRollGroupIDOriginal, 'gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID, 'dateEnd' => date('Y-m-d'));
                         $sql = "UPDATE gibbonCourseClassPerson
                                 JOIN gibbonStudentEnrolment ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                                 JOIN gibbonCourseClassMap ON (gibbonCourseClassMap.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
-                                SET role='Student - Left'
+                                SET role='Student - Left', dateEnd=:dateEnd
                                 WHERE gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID
                                 AND gibbonCourseClassMap.gibbonRollGroupID=:gibbonRollGroupIDOriginal";
                         $pdo->executeQuery($data, $sql);
@@ -115,9 +115,9 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
                         }
 
                         // Add course enrolments for new Roll Group
-                        $data = array('gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID);
-                        $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `reportable`)
-                                SELECT gibbonCourseClassMap.gibbonCourseClassID, gibbonStudentEnrolment.gibbonPersonID, 'Student', 'Y'
+                        $data = array('gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID, 'dateStart' => date('Y-m-d'));
+                        $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `dateStart`, `reportable`)
+                                SELECT gibbonCourseClassMap.gibbonCourseClassID, gibbonStudentEnrolment.gibbonPersonID, 'Student', :dateStart, 'Y'
                                 FROM gibbonStudentEnrolment
                                 JOIN gibbonCourseClassMap ON (gibbonCourseClassMap.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID)
                                 LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID AND gibbonCourseClassPerson.role='Student')

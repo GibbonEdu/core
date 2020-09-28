@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -193,17 +194,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
             echo __('The next school year cannot be determined, so this action cannot be performed.');
             echo '</div>';
         } else {
-            try {
-                $dataNext = array('gibbonSchoolYearID' => $nextYear);
-                $sqlNext = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-                $resultNext = $connection2->prepare($sqlNext);
-                $resultNext->execute($dataNext);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            if ($resultNext->rowCount() == 1) {
-                $rowNext = $resultNext->fetch();
-            }
+            
+            $dataCurrent = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+            $sqlCurrent = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+            $rowCurrent = $pdo->selectOne($sqlCurrent, $dataCurrent);
+            
+            $dataNext = array('gibbonSchoolYearID' => $nextYear);
+            $sqlNext = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+            $rowNext = $pdo->selectOne($sqlNext, $dataNext);
+
             $nameNext = $rowNext['name'];
             $sequenceNext = $rowNext['sequenceNumber'];
             if ($nameNext == '' or $sequenceNext == '') {
@@ -220,6 +219,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                 $count = isset($_POST['count'])? $_POST['count'] : '';
                 $rollStudents = isset($_POST['rollStudents'])? $_POST['rollStudents'] : '';
                 $rollTeachers = isset($_POST['rollTeachers'])? $_POST['rollTeachers'] : '';
+
+                $courseEnrolmentGateway = $container->get(CourseEnrolmentGateway::class);
 
                 if ($rollStudents != 'on' and $rollTeachers != 'on') {
                     echo "<div class='error'>";
@@ -241,7 +242,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                         //Get current enrolment, exclude people already enrolled or their status is not Full
                         try {
                             $dataCurrent = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonCourseClassIDNext' => $gibbonCourseClassIDNext);
-                            $sqlCurrent = "SELECT gibbonCourseClassPerson.gibbonPersonID, gibbonCourseClassPerson.role, gibbonCourseClassPerson.reportable
+                            $sqlCurrent = "SELECT gibbonCourseClassPerson.gibbonCourseClassPersonID, gibbonCourseClassPerson.gibbonPersonID, gibbonCourseClassPerson.role, gibbonCourseClassPerson.reportable
                             FROM gibbonCourseClassPerson
                             JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                             LEFT JOIN gibbonCourseClassPerson as gibbonCourseClassPersonNext ON (gibbonCourseClassPersonNext.gibbonCourseClassID=:gibbonCourseClassIDNext AND gibbonCourseClassPersonNext.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
@@ -256,9 +257,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                         }
                         if ($resultCurrent->rowCount() > 0) {
                             while ($rowCurrent = $resultCurrent->fetch()) {
+
+                                // Ensure any previous class enrolments have an end date
+                                $courseEnrolmentGateway->update($rowCurrent['gibbonCourseClassPersonID'], ['dateEnd' => $rowCurrent['lastDay']]);
+
                                 try {
-                                    $dataInsert = array('gibbonCourseClassID' => $gibbonCourseClassIDNext, 'gibbonPersonID' => $rowCurrent['gibbonPersonID'], 'role' => $rowCurrent['role'], 'reportable' => $rowCurrent['reportable']);
-                                    $sqlInsert = 'INSERT INTO gibbonCourseClassPerson SET gibbonCourseClassID=:gibbonCourseClassID, gibbonPersonID=:gibbonPersonID, role=:role, reportable=:reportable';
+                                    $dataInsert = array('gibbonCourseClassID' => $gibbonCourseClassIDNext, 'gibbonPersonID' => $rowCurrent['gibbonPersonID'], 'role' => $rowCurrent['role'], 'reportable' => $rowCurrent['reportable'], 'dateStart' => date('Y-m-d'));
+                                    $sqlInsert = 'INSERT INTO gibbonCourseClassPerson SET gibbonCourseClassID=:gibbonCourseClassID, gibbonPersonID=:gibbonPersonID, role=:role, dateStart=:dateStart, reportable=:reportable';
                                     $resultInsert = $connection2->prepare($sqlInsert);
                                     $resultInsert->execute($dataInsert);
                                 } catch (PDOException $e) {
