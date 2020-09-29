@@ -666,8 +666,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
 
                                                     //Write ID to gibbonCourseClassPerson
                                                     try {
-                                                        $dataMake = array('gibbonPersonID' => $rowConvert['gibbonPersonID'], 'gibbonCourseClassID' => $rowCheck['gibbonCourseClassID'],'dateStart' => date('Y-m-d'));
-                                                        $sqlMake = "INSERT INTO gibbonCourseClassPerson SET gibbonPersonID=:gibbonPersonID, gibbonCourseClassID=:gibbonCourseClassID, role='Teacher', dateStart=:dateStart";
+                                                        $dataMake = array('gibbonPersonID' => $rowConvert['gibbonPersonID'], 'gibbonCourseClassID' => $rowCheck['gibbonCourseClassID'],'dateEnrolled' => date('Y-m-d'));
+                                                        $sqlMake = "INSERT INTO gibbonCourseClassPerson SET gibbonPersonID=:gibbonPersonID, gibbonCourseClassID=:gibbonCourseClassID, role='Teacher', dateEnrolled=:dateEnrolled";
                                                         $resultMake = $connection2->prepare($sqlMake);
                                                         $resultMake->execute($dataMake);
                                                     } catch (PDOException $e) {

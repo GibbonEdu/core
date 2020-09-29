@@ -259,11 +259,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                             while ($rowCurrent = $resultCurrent->fetch()) {
 
                                 // Ensure any previous class enrolments have an end date
-                                $courseEnrolmentGateway->update($rowCurrent['gibbonCourseClassPersonID'], ['dateEnd' => $rowCurrent['lastDay']]);
+                                $courseEnrolmentGateway->update($rowCurrent['gibbonCourseClassPersonID'], ['dateUnenrolled' => $rowCurrent['lastDay']]);
 
                                 try {
-                                    $dataInsert = array('gibbonCourseClassID' => $gibbonCourseClassIDNext, 'gibbonPersonID' => $rowCurrent['gibbonPersonID'], 'role' => $rowCurrent['role'], 'reportable' => $rowCurrent['reportable'], 'dateStart' => date('Y-m-d'));
-                                    $sqlInsert = 'INSERT INTO gibbonCourseClassPerson SET gibbonCourseClassID=:gibbonCourseClassID, gibbonPersonID=:gibbonPersonID, role=:role, dateStart=:dateStart, reportable=:reportable';
+                                    $dataInsert = array('gibbonCourseClassID' => $gibbonCourseClassIDNext, 'gibbonPersonID' => $rowCurrent['gibbonPersonID'], 'role' => $rowCurrent['role'], 'reportable' => $rowCurrent['reportable'], 'dateEnrolled' => date('Y-m-d'));
+                                    $sqlInsert = 'INSERT INTO gibbonCourseClassPerson SET gibbonCourseClassID=:gibbonCourseClassID, gibbonPersonID=:gibbonPersonID, role=:role, dateEnrolled=:dateEnrolled, reportable=:reportable';
                                     $resultInsert = $connection2->prepare($sqlInsert);
                                     $resultInsert->execute($dataInsert);
                                 } catch (PDOException $e) {

@@ -48,11 +48,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                     'gibbonRollGroupID' => $gibbonRollGroupID,
                     'gibbonPersonID' => $gibbonPersonID,
                     'role' => $role,
-                    'dateStart' => date('Y-m-d'),
+                    'dateEnrolled' => date('Y-m-d'),
                 );
 
-                $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `dateStart`, `reportable`)
-                        SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, :role, :dateStart, 'Y'
+                $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `dateEnrolled`, `reportable`)
+                        SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, :role, :dateEnrolled, 'Y'
                         FROM gibbonCourseClassMap
                         LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID AND gibbonCourseClassPerson.role=:role)
                         WHERE gibbonCourseClassMap.gibbonRollGroupID=:gibbonRollGroupID
