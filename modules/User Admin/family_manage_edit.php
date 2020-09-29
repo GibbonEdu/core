@@ -198,7 +198,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                 echo "<div class='error'>".__('There are not enough people in this family to form relationships.').'</div>';
             } else {
 
-                $form = Form::create('action2', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_relationshipsProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search");
+                $form = Form::createTable('action2', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_relationshipsProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search");
 
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->setClass('colorOddEven fullWidth');
