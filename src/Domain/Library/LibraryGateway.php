@@ -200,7 +200,7 @@ class LibraryGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function queryCatalog(QueryCriteria $criteria)
+    public function queryCatalog(QueryCriteria $criteria, $gibbonSchoolYearID)
     {
         $query = $this
             ->newQuery()
@@ -223,12 +223,16 @@ class LibraryGateway extends QueryableGateway
                 'gibbonLibraryType.name as itemType',
                 'responsible.title as titleResponsible',
                 'responsible.surname as surnameResponsible',
-                'responsible.preferredName as preferredNameResponsible'
+                'responsible.preferredName as preferredNameResponsible',
+                'gibbonRollGroup.nameShort as rollGroup',
               ])
             ->innerJoin('gibbonLibraryType', 'gibbonLibraryItem.gibbonLibraryTypeID = gibbonLibraryType.gibbonLibraryTypeID')
             ->leftJoin('gibbonSpace', 'gibbonLibraryItem.gibbonSpaceID = gibbonSpace.gibbonSpaceID')
             ->leftJoin('gibbonPerson', 'gibbonLibraryItem.gibbonPersonIDOwnership = gibbonPerson.gibbonPersonID')
-            ->leftJoin('gibbonPerson as responsible', 'responsible.gibbonPersonID=gibbonLibraryItem.gibbonPersonIDStatusResponsible');
+            ->leftJoin('gibbonPerson as responsible', 'responsible.gibbonPersonID=gibbonLibraryItem.gibbonPersonIDStatusResponsible')
+            ->leftJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=responsible.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->leftJoin('gibbonRollGroup', 'gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
         $criteria->addFilterRules([
             'name' => function ($query, $name) {

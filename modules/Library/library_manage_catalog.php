@@ -110,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         ->filterBy('typeSpecificFields', $typeSpecificFields)
         ->pageSize(!empty($viewMode) ? 0 : 50)
         ->fromPOST();
-    $items = $gateway->queryCatalog($criteria);
+    $items = $gateway->queryCatalog($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
 
     $table = ReportTable::createPaginated('items', $criteria)->setViewMode($viewMode, $gibbon->session);
 
@@ -154,6 +154,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         ->format(function ($item) {
             $responsible = !empty($item['surnameResponsible'])
                 ? Format::name($item['titleResponsible'], $item['preferredNameResponsible'], $item['surnameResponsible'], 'Student')
+                : '';
+            $responsible .= !empty($item['rollGroup'])
+                ? ' ('.$item['rollGroup'].')'
                 : '';
             return '<b>' . __($item['status']) . '</b><br/>' . Format::small($responsible);
         });
