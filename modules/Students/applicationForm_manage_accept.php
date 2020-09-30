@@ -505,10 +505,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 $data = array(
                                     'gibbonRollGroupID' => $values['gibbonRollGroupID'],
                                     'gibbonPersonID' => $gibbonPersonID,
+                                    'gibbonSchoolYearIDEntry' => $values['gibbonSchoolYearIDEntry'],
                                 );
 
-                                $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `reportable`)
-                                        SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, 'Student', 'Y'
+                                $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `dateEnrolled`, `reportable`)
+                                        SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, 'Student', GREATEST((SELECT firstDay FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearIDEntry), CURRENT_DATE), 'Y'
                                         FROM gibbonCourseClassMap
                                         WHERE gibbonCourseClassMap.gibbonRollGroupID=:gibbonRollGroupID";
                                 $pdo->executeQuery($data, $sql);
