@@ -18,7 +18,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -220,8 +219,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                 $rollStudents = isset($_POST['rollStudents'])? $_POST['rollStudents'] : '';
                 $rollTeachers = isset($_POST['rollTeachers'])? $_POST['rollTeachers'] : '';
 
-                $courseEnrolmentGateway = $container->get(CourseEnrolmentGateway::class);
-
                 if ($rollStudents != 'on' and $rollTeachers != 'on') {
                     echo "<div class='error'>";
                     echo __('Your request failed because your inputs were invalid.');
@@ -257,9 +254,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                         }
                         if ($resultCurrent->rowCount() > 0) {
                             while ($rowCurrent = $resultCurrent->fetch()) {
-
-                                // Ensure any previous class enrolments have an end date
-                                $courseEnrolmentGateway->update($rowCurrent['gibbonCourseClassPersonID'], ['dateUnenrolled' => $rowCurrent['lastDay']]);
 
                                 try {
                                     $dataInsert = array('gibbonCourseClassID' => $gibbonCourseClassIDNext, 'gibbonPersonID' => $rowCurrent['gibbonPersonID'], 'role' => $rowCurrent['role'], 'reportable' => $rowCurrent['reportable'], 'dateEnrolled' => date('Y-m-d'));
