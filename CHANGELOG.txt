@@ -47,10 +47,10 @@ v21.0.00
         Individual Needs: removed Notes & Review from parent view of individual needs information
         Library: added ID column to View Overdue Items report
         Library: enabled printing and exporting the Manage Catalog table
+        Library: replaced borrowable with responsible user in Manage Catalog
         Markbook: added error logging for failed file uploads on Enter Data page
         Messenger: tied messages to school year
         Messenger: convert copy-pasted divs to paragraphs in New Quick Wall Message
-        
         Planner: update the attendance list to exclude students with a timetable exception
         Planner: added smart block clarification to the Edit Working Copy page
         Planner: added a common template for all Upcoming Deadlines sections
