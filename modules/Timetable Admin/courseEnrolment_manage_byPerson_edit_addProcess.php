@@ -65,7 +65,7 @@ if ($gibbonSchoolYearID == '' or $gibbonPersonID == '') { echo 'Fatal error load
                     }
                 } else {
                     $values = $result->fetch();
-                    $dateEnrolled = $values['role'] != $role ? date('Y-m-d') : $values['dateEnrolled'];
+                    $dateEnrolled = $values['role'] != $role || empty($values['dateEnrolled']) ? date('Y-m-d') : $values['dateEnrolled'];
                     try {
                         $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonCourseClassID' => $t, 'role' => $role, 'dateEnrolled' => $dateEnrolled);
                         $sql = 'UPDATE gibbonCourseClassPerson SET role=:role, dateEnrolled=:dateEnrolled, dateUnenrolled=NULL WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID';
