@@ -220,11 +220,15 @@ class LibraryGateway extends QueryableGateway
                 'gibbonPerson.title as title',
                 'gibbonPerson.preferredName',
                 'gibbonPerson.surname',
-                'gibbonLibraryType.name as itemType'
+                'gibbonLibraryType.name as itemType',
+                'responsible.title as titleResponsible',
+                'responsible.surname as surnameResponsible',
+                'responsible.preferredName as preferredNameResponsible'
               ])
-              ->innerJoin('gibbonLibraryType', 'gibbonLibraryItem.gibbonLibraryTypeID = gibbonLibraryType.gibbonLibraryTypeID')
-            ->join('left', 'gibbonSpace', 'gibbonLibraryItem.gibbonSpaceID = gibbonSpace.gibbonSpaceID')
-            ->join('left', 'gibbonPerson', 'gibbonLibraryItem.gibbonPersonIDOwnership = gibbonPerson.gibbonPersonID');
+            ->innerJoin('gibbonLibraryType', 'gibbonLibraryItem.gibbonLibraryTypeID = gibbonLibraryType.gibbonLibraryTypeID')
+            ->leftJoin('gibbonSpace', 'gibbonLibraryItem.gibbonSpaceID = gibbonSpace.gibbonSpaceID')
+            ->leftJoin('gibbonPerson', 'gibbonLibraryItem.gibbonPersonIDOwnership = gibbonPerson.gibbonPersonID')
+            ->leftJoin('gibbonPerson as responsible', 'responsible.gibbonPersonID=gibbonLibraryItem.gibbonPersonIDStatusResponsible');
 
         $criteria->addFilterRules([
             'name' => function ($query, $name) {

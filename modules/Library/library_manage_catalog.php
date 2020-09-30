@@ -150,10 +150,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             return $ownership . Format::small(Format::name($item['title'], $item['preferredName'], $item['surname'], "Student"));
         });
     $table->addColumn('status', __('Status'))
-        ->description(__('Borrowable'))
+        ->description(__('Responsible User'))
         ->format(function ($item) {
-            return '<b>' . __($item['status']) . '</b><br/>'
-                . Format::small(Format::yesNo($item['borrowable']));
+            $responsible = !empty($item['surnameResponsible'])
+                ? Format::name($item['titleResponsible'], $item['preferredNameResponsible'], $item['surnameResponsible'], 'Student')
+                : '';
+            return '<b>' . __($item['status']) . '</b><br/>' . Format::small($responsible);
         });
     $actions = $table->addActionColumn()
           ->addParam('gibbonLibraryItemID')
