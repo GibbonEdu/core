@@ -375,7 +375,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
             if ($highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses') {
                 echo '<div class="column-no-break">';
                 echo '<h2>';
-                echo __('Homework & Deadlines');
+                echo __('Homework & Due Dates');
                 echo '</h2>';
 
                 $plannerGateway = $this->getContainer()->get(PlannerEntryGateway::class);

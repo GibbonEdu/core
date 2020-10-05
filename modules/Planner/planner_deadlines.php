@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
 
         $page->breadcrumbs
             ->add(__('My Children\'s Classes'), 'planner.php')
-            ->add(__('Homework + Deadlines'));
+            ->add(__('Homework + Due Dates'));
 
         //Test data access field for permission
         
@@ -229,7 +229,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
 
         $page->breadcrumbs
             ->add(__('Planner'), 'planner.php', $params)
-            ->add(__('Homework + Deadlines'));
+            ->add(__('Homework + Due Dates'));
 
         //Proceed!
         if (isset($_GET['return'])) {

@@ -8,7 +8,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 {% if heading %}
 <{{ heading }}>
-    {{ __('Upcoming Deadlines') }}
+    {{ __('Upcoming Due Dates') }}
 </{{ heading }}>
 {% endif %}
 
@@ -50,5 +50,5 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     </ol>
 
 {% else %}
-    {{ formatUsing('alert', __('No upcoming deadlines!'), 'success') }}
+    {{ formatUsing('alert', __('No upcoming due dates!'), 'success') }}
 {% endif %}

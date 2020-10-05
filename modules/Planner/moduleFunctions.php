@@ -456,7 +456,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
             //Show upcoming deadlines
             $output .= '<div class="column-no-break">';
             $output .= '<h2>';
-            $output .= __('Homework & Deadlines');
+            $output .= __('Homework & Due Dates');
             $output .= '</h2>';
 
             global $container, $page, $gibbon;

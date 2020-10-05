@@ -132,7 +132,7 @@ class HomeworkTable
                     .'<br/>'.Format::small(Format::truncate(strip_tags($homework['homeworkDetails'])));
             });
 
-        $table->addColumn('homeworkDueDateTime', __('Deadline'))
+        $table->addColumn('homeworkDueDateTime', __('Due Date'))
             ->format(Format::using('date', 'homeworkDueDateTime'));
 
         $table->addColumn('onlineSubmission', __('Online Submission'))

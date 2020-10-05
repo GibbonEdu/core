@@ -634,7 +634,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                         if ($latestVersion != 'Final') {
                                             $status = 'On Time';
                                             if (date('Y-m-d H:i:s') > $values['homeworkDueDateTime']) {
-                                                echo "<span style='color: #C00; font-stlye: italic'>".__('The deadline has passed. Your work will be marked as late.').'</span><br/>';
+                                                echo "<span style='color: #C00; font-stlye: italic'>".__('The due date has passed. Your work will be marked as late.').'</span><br/>';
                                                 $status = 'Late';
                                             }
 
@@ -713,7 +713,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                         $rowNum = 'odd';
                                         if ($resultVersion->rowCount() < 1) {
                                             if (date('Y-m-d H:i:s') > $values['homeworkDueDateTime']) {
-                                                echo "<span style='color: #C00; font-stlye: italic'>".__('The deadline has passed, and no work has been submitted.').'</span><br/>';
+                                                echo "<span style='color: #C00; font-stlye: italic'>".__('The due date has passed, and no work has been submitted.').'</span><br/>';
                                             }
                                         } else {
                                             ?>
