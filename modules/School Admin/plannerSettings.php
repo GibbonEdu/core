@@ -56,6 +56,19 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setRows(10)->setValue($setting['value']);
 
+    $form->addRow()->addHeading(__('Interface'));
+
+    
+    $setting = getSettingByScope($connection2, 'Planner', 'homeworkAltNameSingular', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextField($setting['name'])->setValue($setting['value']);
+
+    $setting = getSettingByScope($connection2, 'Planner', 'homeworkAltNamePlural', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextField($setting['name'])->setValue($setting['value']);
+
     $form->addRow()->addHeading(__('Access Settings'));
 
     $setting = getSettingByScope($connection2, 'Planner', 'makeUnitsPublic', true);

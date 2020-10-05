@@ -42,6 +42,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
             'allowOutcomeEditing',
             'sharingDefaultParents',
             'sharingDefaultStudents',
+            'homeworkAltNameSingular',
+            'homeworkAltNamePlural',
         ]
     ];
 
