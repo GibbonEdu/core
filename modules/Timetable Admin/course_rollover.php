@@ -194,10 +194,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
             echo '</div>';
         } else {
             
-            $dataCurrent = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-            $sqlCurrent = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-            $rowCurrent = $pdo->selectOne($sqlCurrent, $dataCurrent);
-            
             $dataNext = array('gibbonSchoolYearID' => $nextYear);
             $sqlNext = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
             $rowNext = $pdo->selectOne($sqlNext, $dataNext);
