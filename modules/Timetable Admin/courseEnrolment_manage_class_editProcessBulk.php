@@ -73,8 +73,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                     // Insert new course participants
                     if ($resultCheck->rowCount() == 0) {
                         try {
-                            $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonCourseClassPersonID' => $gibbonCourseClassPersonID, 'gibbonCourseClassIDCopyTo' => $gibbonCourseClassIDCopyTo);
-                            $sql = 'INSERT INTO gibbonCourseClassPerson (gibbonCourseClassID, gibbonPersonID, role, reportable) SELECT :gibbonCourseClassIDCopyTo, gibbonPersonID, role, reportable FROM gibbonCourseClassPerson WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPersonID=:gibbonCourseClassPersonID';
+                            $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonCourseClassPersonID' => $gibbonCourseClassPersonID, 'gibbonCourseClassIDCopyTo' => $gibbonCourseClassIDCopyTo, 'dateEnrolled' => date('Y-m-d'));
+                            $sql = 'INSERT INTO gibbonCourseClassPerson (gibbonCourseClassID, gibbonPersonID, role, dateEnrolled, reportable) SELECT :gibbonCourseClassIDCopyTo, gibbonPersonID, role, :dateEnrolled, reportable FROM gibbonCourseClassPerson WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPersonID=:gibbonCourseClassPersonID';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
@@ -91,8 +91,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         } else if ($action == 'Mark as left') {
             foreach ($people as $gibbonCourseClassPersonID) {
                 try {
-                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonCourseClassPersonID' => $gibbonCourseClassPersonID);
-                    $sql = "UPDATE gibbonCourseClassPerson SET role=CONCAT(role, ' - Left ') WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPersonID=:gibbonCourseClassPersonID AND (role = 'Student' OR role = 'Teacher')";
+                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonCourseClassPersonID' => $gibbonCourseClassPersonID, 'dateUnenrolled' => date('Y-m-d'));
+                    $sql = "UPDATE gibbonCourseClassPerson SET role=CONCAT(role, ' - Left '), dateUnenrolled=:dateUnenrolled WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPersonID=:gibbonCourseClassPersonID AND (role = 'Student' OR role = 'Teacher')";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {

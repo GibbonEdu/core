@@ -67,6 +67,7 @@ v21.0.00
         Students: send notifications for student notes to the Head of Year, if available
         System Admin: adjusted View Log to show only current year's log entries
         System Admin: added a flag to import types to enable updating non-unique rows
+        Timetable Admin: added a dateEnrolled and dateUnenrolled to class enrolments
         Testing: Changed install suite admin username and password to be compliant with the default password requirements
 
     Bug Fixes
@@ -90,9 +91,9 @@ v21.0.00
         Students: fixed parent support link in application acceptance email
         Students: fixed students able to see other students in class lists
         Students: fixed issue preventing timetable edit link from working with left students and allStudent flag
-	Tests: Added fallback environment variables if .env is not defining DB details
-	Tests: Changed HTTP to HTTPs, so SSL enabled environments don't fail
-	Tests: Added Users group and changed reference in acceptance.suite.yml so that the acceptance suite does not fail
+	    Tests: added fallback environment variables if .env is not defining DB details
+	    Tests: changed HTTP to HTTPs, so SSL enabled environments don't fail
+	    Tests: added Users group and changed reference in acceptance.suite.yml so that the acceptance suite does not fail
 
 
 v20.0.00

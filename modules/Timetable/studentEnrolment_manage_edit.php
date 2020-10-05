@@ -167,8 +167,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
 
                     $row->addContent($student['email']);
                     $row->addContent($student['role']);
-                    $col = $row->addColumn()->addClass('inline');
+                    
                     if ($student['role'] == 'Student') {
+                        $col = $row->addColumn()->addClass('inline');
                         $col->addWebLink('<img title="' . __('Edit') . '" src="./themes/' . $_SESSION[$guid]['gibbonThemeName'] . '/img/config.png"/>')
                             ->setURL($_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/studentEnrolment_manage_edit_edit.php')
                             ->addParam('gibbonCourseID', $gibbonCourseID)
@@ -177,7 +178,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
                         $row->addCheckbox('gibbonPersonID[]')->setValue($student['gibbonPersonID'])->setClass('textCenter');
                     }
                     else {
-                        $row->addContent();
+                        $row->addContent(__('N/A'));
+                        $row->addContent('');
                     }
 
                 }
