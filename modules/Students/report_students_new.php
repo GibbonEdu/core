@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
             $row->addDate('startDateTo')->setValue($startDateTo)->required();
 
         $row = $form->addRow()->addClass('dateRange');
-            $row->addLabel('ignoreEnrolment', __('Ignore Enrolment'))->description(__('This is useful for picking up students who are set to Full, have a start date but are not yet enroled.'));
+            $row->addLabel('ignoreEnrolment', __('Ignore Enrolment'))->description(__('This is useful for picking up students who are set to Full, have a start date but are not yet enrolled.'));
             $row->addCheckbox('ignoreEnrolment')->checked($ignoreEnrolment);
 
         $row = $form->addRow();
@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
     if ($type == 'Date Range') {
         $table->setDescription(__('This report shows all students whose Start Date is on or between the indicated dates.'));
     } else {
-        $table->setDescription(__('This report shows all students who are newly arrived in the school during the current academic year (e.g. they were not enroled in the previous academic year).'));
+        $table->setDescription(__('This report shows all students who are newly arrived in the school during the current academic year (e.g. they were not enrolled in the previous academic year).'));
     }
 
     $table->addRowCountColumn($students->getPageFrom());

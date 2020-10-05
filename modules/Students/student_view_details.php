@@ -2710,7 +2710,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo '</div>';
                         } else {
                             echo '<p>';
-                            echo __('This report shows the current and historical activities that a student has enroled in.');
+                            echo __('This report shows the current and historical activities that a student has enrolled in.');
                             echo '</p>';
 
                             $dateType = getSettingByScope($connection2, 'Activities', 'dateType');

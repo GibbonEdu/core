@@ -190,7 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                 //SET EXPECTED USERS TO FULL
                 $form->addRow()->addHeading(__('Set Expected Users To Full'));
-                $form->addRow()->addContent(__('This step primes newcomers who have status set to "Expected" to be enroled as students or added as staff (below).'));
+                $form->addRow()->addContent(__('This step primes newcomers who have status set to "Expected" to be enrolled as students or added as staff (below).'));
 
                 try {
                     $dataExpect = array();
@@ -225,7 +225,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                 //ENROL NEW STUDENTS - EXPECTED
                 $form->addRow()->addHeading(__('Enrol New Students (Status Expected)'));
-                $form->addRow()->addContent(__('Take students who are marked expected and enrol them. All parents of new students who are enroled below will have their status set to "Full". If a student is not enroled, they will be set to "Left".'));
+                $form->addRow()->addContent(__('Take students who are marked expected and enrol them. All parents of new students who are enrolled below will have their status set to "Full". If a student is not enrolled, they will be set to "Left".'));
 
                 if (count($yearGroups) < 1 or count($rollGroups) < 1) {
                     $form->addRow()->addAlert(__('Year groups or roll groups are not properly set up, so you cannot proceed with this section.'), 'error');
@@ -269,7 +269,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                 //ENROL NEW STUDENTS - FULL
                 $form->addRow()->addHeading(__('Enrol New Students (Status Full)'));
-                $form->addRow()->addContent(__('Take new students who are already set as full, but who were not enroled last year, and enrol them. These students probably came through the Online Application form, and may already be enroled in next year: if this is the case, their enrolment will be updated as per the information below. All parents of new students who are enroled below will have their status set to "Full". If a student is not enroled, they will be set to "Left"'));
+                $form->addRow()->addContent(__('Take new students who are already set as full, but who were not enrolled last year, and enrol them. These students probably came through the Online Application form, and may already be enrolled in next year: if this is the case, their enrolment will be updated as per the information below. All parents of new students who are enrolled below will have their status set to "Full". If a student is not enrolled, they will be set to "Left"'));
 
                 if (count($yearGroups) < 1 or count($rollGroups) < 1) {
                     $form->addRow()->addAlert(__('Year groups or roll groups are not properly set up, so you cannot proceed with this section.'), 'error');
@@ -362,7 +362,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                 //RE-ENROL OTHER STUDENTS
                 $form->addRow()->addHeading(__('Re-Enrol Other Students'));
-                $form->addRow()->addContent(__('Any students who are not re-enroled will have their status set to "Left".').' '.__('Students who are already enroled will have their enrolment updated.'));
+                $form->addRow()->addContent(__('Any students who are not re-enrolled will have their status set to "Left".').' '.__('Students who are already enrolled will have their enrolment updated.'));
 
                 $lastYearGroup = getLastYearGroupID($connection2);
 
@@ -720,16 +720,16 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                                 //Write to database
                                 if ($enrol == 'Y') {
-                                    $enroled = true;
+                                    $enrolled = true;
                                     try {
                                         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'gibbonYearGroupID' => $gibbonYearGroupID, 'gibbonRollGroupID' => $gibbonRollGroupID);
                                         $sql = 'INSERT INTO gibbonStudentEnrolment SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonID=:gibbonPersonID, gibbonYearGroupID=:gibbonYearGroupID, gibbonRollGroupID=:gibbonRollGroupID';
                                         $result = $connection2->prepare($sql);
                                         $result->execute($data);
                                     } catch (PDOException $e) {
-                                        $enroled = false;
+                                        $enrolled = false;
                                     }
-                                    if ($enroled) {
+                                    if ($enrolled) {
                                         ++$success;
 
                                         try {
@@ -816,7 +816,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                                 //Write to database
                                 if ($enrol == 'Y') {
-                                    $enroled = true;
+                                    $enrolled = true;
 
                                     try {
                                         //Check for enrolment
@@ -825,9 +825,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                         $result = $connection2->prepare($sql);
                                         $result->execute($data);
                                     } catch (PDOException $e) {
-                                        $enroled = false;
+                                        $enrolled = false;
                                     }
-                                    if ($enroled) {
+                                    if ($enrolled) {
                                         if ($result->rowCount() == 0) {
                                             try {
                                                 $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'gibbonYearGroupID' => $gibbonYearGroupID, 'gibbonRollGroupID' => $gibbonRollGroupID);
@@ -835,7 +835,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                                 $result = $connection2->prepare($sql);
                                                 $result->execute($data);
                                             } catch (PDOException $e) {
-                                                $enroled = false;
+                                                $enrolled = false;
                                             }
                                         } elseif ($result->rowCount() == 1) {
                                             try {
@@ -844,14 +844,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                                 $result = $connection2->prepare($sql);
                                                 $result->execute($data);
                                             } catch (PDOException $e) {
-                                                $enroled = false;
+                                                $enrolled = false;
                                             }
                                         } else {
-                                            $enroled = false;
+                                            $enrolled = false;
                                         }
                                     }
 
-                                    if ($enroled) {
+                                    if ($enrolled) {
                                         ++$success;
                                         try {
                                             $dataFamily = array('gibbonPersonID' => $gibbonPersonID);
@@ -937,7 +937,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                                 //Write to database
                                 if ($enrol == 'Y') {
-                                    $reenroled = true;
+                                    $reenrolled = true;
                                     //Check for existing record...if exists, update
                                     try {
                                         $data = array('gibbonSchoolYearID' => $nextYear, 'gibbonPersonID' => $gibbonPersonID);
@@ -945,12 +945,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                         $result = $connection2->prepare($sql);
                                         $result->execute($data);
                                     } catch (PDOException $e) {
-                                        $reenroled = false;
+                                        $reenrolled = false;
                                         echo "<div class='error'>".$e->getMessage().'</div>';
                                     }
 
                                     if ($result->rowCount() != 1 and $result->rowCount() != 0) {
-                                        $reenroled = false;
+                                        $reenrolled = false;
                                         echo "<div class='error'>".$e->getMessage().'</div>';
                                     } elseif ($result->rowCount() == 1) {
                                         try {
@@ -959,10 +959,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                             $result2 = $connection2->prepare($sql2);
                                             $result2->execute($data2);
                                         } catch (PDOException $e) {
-                                            $reenroled = false;
+                                            $reenrolled = false;
                                             echo "<div class='error'>".$e->getMessage().'</div>';
                                         }
-                                        if ($reenroled) {
+                                        if ($reenrolled) {
                                             ++$success;
                                         }
                                     } elseif ($result->rowCount() == 0) {
@@ -973,25 +973,25 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                             $result2 = $connection2->prepare($sql2);
                                             $result2->execute($data2);
                                         } catch (PDOException $e) {
-                                            $reenroled = false;
+                                            $reenrolled = false;
                                             echo "<div class='error'>".$e->getMessage().'</div>';
                                         }
-                                        if ($reenroled) {
+                                        if ($reenrolled) {
                                             ++$success;
                                         }
                                     }
                                 } else {
-                                    $reenroled = true;
+                                    $reenrolled = true;
                                     try {
                                         $data = array('gibbonPersonID' => $gibbonPersonID, 'dateEnd' => $dateEnd);
                                         $sql = "UPDATE gibbonPerson SET status='Left', dateEnd=:dateEnd WHERE gibbonPersonID=:gibbonPersonID";
                                         $result = $connection2->prepare($sql);
                                         $result->execute($data);
                                     } catch (PDOException $e) {
-                                        $reenroled = false;
+                                        $reenrolled = false;
                                         echo "<div class='error'>".$e->getMessage().'</div>';
                                     }
-                                    if ($reenroled) {
+                                    if ($reenrolled) {
                                         ++$success;
                                     }
                                 }
@@ -1088,7 +1088,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                                 //Write to database
                                 if ($enrol == 'Y') {
-                                    $enroled = true;
+                                    $enrolled = true;
                                     //Check for existing record
                                     try {
                                         $dataCheck = array('gibbonPersonID' => $gibbonPersonID);
@@ -1096,7 +1096,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                         $resultCheck = $connection2->prepare($sqlCheck);
                                         $resultCheck->execute($dataCheck);
                                     } catch (PDOException $e) {
-                                        $enroled = false;
+                                        $enrolled = false;
                                         echo "<div class='error'>".$e->getMessage().'</div>';
                                     }
                                     if ($resultCheck->rowCount() == 0) {
@@ -1106,10 +1106,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                             $result = $connection2->prepare($sql);
                                             $result->execute($data);
                                         } catch (PDOException $e) {
-                                            $enroled = false;
+                                            $enrolled = false;
                                             echo "<div class='error'>".$e->getMessage().'</div>';
                                         }
-                                        if ($enroled) {
+                                        if ($enrolled) {
                                             ++$success;
                                         }
                                     } elseif ($resultCheck->rowCount() == 1) {
@@ -1119,10 +1119,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                             $result = $connection2->prepare($sql);
                                             $result->execute($data);
                                         } catch (PDOException $e) {
-                                            $enroled = false;
+                                            $enrolled = false;
                                             echo "<div class='error'>".$e->getMessage().'</div>';
                                         }
-                                        if ($enroled) {
+                                        if ($enrolled) {
                                             ++$success;
                                         }
                                     }
