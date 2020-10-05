@@ -57,17 +57,16 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
         $row->addTextArea($setting['name'])->setRows(10)->setValue($setting['value']);
 
     $form->addRow()->addHeading(__('Interface'));
-
     
-    $setting = getSettingByScope($connection2, 'Planner', 'homeworkAltNameSingular', true);
+    $setting = getSettingByScope($connection2, 'Planner', 'homeworkNameSingular', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextField($setting['name'])->setValue($setting['value']);
+        $row->addTextField($setting['name'])->required()->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Planner', 'homeworkAltNamePlural', true);
+    $setting = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextField($setting['name'])->setValue($setting['value']);
+        $row->addTextField($setting['name'])->required()->setValue($setting['value']);
 
     $form->addRow()->addHeading(__('Access Settings'));
 
