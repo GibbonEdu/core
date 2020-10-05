@@ -337,7 +337,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     echo 'Staff Listing';
                     echo '</h4>';
 
-                    $alreadyEnroled = false;
+                    $alreadyEnrolled = false;
                     $enrolmentCheckFail = false;
                     try {
                         $data = array('gibbonPersonID' => $values['gibbonPersonID']);
@@ -349,17 +349,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                         echo "<div class='error'>".$e->getMessage().'</div>';
                     }
                     if ($result->rowCount() == 1) {
-                        $alreadyEnroled = true;
+                        $alreadyEnrolled = true;
                     }
                     if ($enrolmentCheckFail) { //Enrolment check did not work, so report error
                         echo "<div class='warning'>";
                         echo __('Applicant could not be added to staff listing, so this will have to be done manually at a later date.');
                         echo '</div>';
-                    } elseif ($alreadyEnroled) { //User is already enroled, so display message
+                    } elseif ($alreadyEnrolled) { //User is already enrolled, so display message
                         echo "<div class='warning'>";
                         echo __('Applicant already exists in staff listing.');
                         echo '</div>';
-                    } else { //User is not yet enroled, so try and enrol them.
+                    } else { //User is not yet enrolled, so try and enrol them.
                         $enrolmentOK = true;
 
                         try {
