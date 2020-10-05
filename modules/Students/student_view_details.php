@@ -343,7 +343,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     }
 
                     echo '<h2>';
-                    if ($subpage != '') {
+                    if ($subpage == 'Homework') {
+                        $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
+                        echo __($homeworkNamePlural);
+                    } elseif ($subpage != '') {
                         echo __($subpage);
                     } else {
                         echo $hook;
@@ -2736,7 +2739,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $page->scripts->add('planner', '/modules/Planner/js/module.js');
 
                             $table = $container->get(HomeworkTable::class)->create($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, $role);
-                            $table->setTitle(__('Homework History'));
 
                             echo $table->getOutput();
                         }
@@ -2924,9 +2926,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         if ($subpage == 'Homework') {
                             $style = "style='font-weight: bold'";
                         }
+                        $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
                         $studentMenuCategory[$studentMenuCount] = $mainMenu['Planner'];
-                        $studentMenuName[$studentMenuCount] = __('Homework');
-                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Homework'>".__('Homework').'</a></li>';
+                        $studentMenuName[$studentMenuCount] = __($homeworkNamePlural);
+                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Homework'>".__($homeworkNamePlural).'</a></li>';
                         ++$studentMenuCount;
                     }
                     if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.php')) {

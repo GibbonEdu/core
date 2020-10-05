@@ -143,6 +143,8 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
         $guid = $this->session->get('guid');
         $connection2 = $this->db->getConnection();
 
+        $homeworkNameSingular = getSettingByScope($connection2, 'Planner', 'homeworkNameSingular');
+
         $return = false;
 
         $alert = getAlert($guid, $connection2, 002);
@@ -174,7 +176,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                 $plannerOutput .= "<span style='font-size: 85%; font-weight: normal; font-style: italic'>".__('Summary').'</span>';
                 $plannerOutput .= '</th>';
                 $plannerOutput .= '<th>';
-                $plannerOutput .= __('Homework');
+                $plannerOutput .= __($homeworkNameSingular);
                 $plannerOutput .= '</th>';
                 $plannerOutput .= '<th>';
                 $plannerOutput .= __('Action');
@@ -522,7 +524,9 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
         }
 
         //PREPARE UPCOMING DEADLINES
-        $deadlinesOutput = "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__('Upcoming Due Dates')."</span> . <span style='font-size: 70%'><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_deadlines.php&search='.$gibbonPersonID."'>".__('View Homework').'</a></span></div>';
+        $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
+        
+        $deadlinesOutput = "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__('Upcoming Due Dates')."</span> . <span style='font-size: 70%'><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_deadlines.php&search='.$gibbonPersonID."'>".__('View {homeworkName}', ['homeworkName' => __($homeworkNamePlural)]).'</a></span></div>';
         $deadlines = false;
 
         $plannerGateway = $this->getContainer()->get(PlannerEntryGateway::class);

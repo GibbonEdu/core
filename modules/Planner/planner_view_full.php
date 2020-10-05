@@ -44,6 +44,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
+
+        $homeworkNameSingular = getSettingByScope($connection2, 'Planner', 'homeworkNameSingular');
+        $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
+
         $viewBy = null;
         if (isset($_GET['viewBy'])) {
             $viewBy = $_GET['viewBy'];
@@ -518,13 +522,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                         echo $form->getOutput();
 
-                        echo "<h2 style='padding-top: 30px'>".__('Homework').'</h2>';
+                        echo "<h2 style='padding-top: 30px'>".__($homeworkNamePlural).'</h2>';
 
                         echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%;'>";
                         if ($values['role'] == 'Student') {
                             echo "<tr class='break'>";
                             echo "<td style='padding-top: 5px; width: 33%; vertical-align: top' colspan=3>";
-                            echo '<h3>'.__('Teacher Recorded Homework').'</h3>';
+                            echo '<h3>'.__('Teacher Recorded {homeworkName}', ['homeworkName' => __($homeworkNameSingular)]).'</h3>';
                             echo '</td>';
                             echo '</tr>';
                         }
@@ -536,9 +540,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             if ($values['homeworkSubmission'] == 'Y') {
                                 if ($values['role'] == 'Student' and ($highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses')) {
                                     echo "<span style='font-size: 115%; font-weight: bold'>".__('Online Submission').'</span><br/>';
-                                    echo '<i>'.sprintf(__('Online submission is %1$s for this homework.'), '<b>'.strtolower($values['homeworkSubmissionRequired']).'</b>').'</i><br/>';
+                                    echo '<i>'.__('Online submission is {required} for this {homeworkName}.', ['homeworkName' => mb_strtolower(__($homeworkNameSingular)), 'required' => '<b>'.strtolower($values['homeworkSubmissionRequired']).'</b>']).'</i><br/>';
                                     if (date('Y-m-d') < $values['homeworkSubmissionDateOpen']) {
-                                        echo '<i>Submission opens on '.dateConvertBack($guid, $values['homeworkSubmissionDateOpen']).'</i>';
+                                        echo '<i>Submission opens on '.Format::date($values['homeworkSubmissionDateOpen']).'</i>';
                                     } else {
                                         //Check previous submissions!
 										
@@ -698,7 +702,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     }
                                 } elseif ($values['role'] == 'Student' and $highestAction == 'Lesson Planner_viewMyChildrensClasses') {
                                     echo "<span style='font-size: 115%; font-weight: bold'>Online Submission</span><br/>";
-                                    echo '<i>Online submission is <b>'.strtolower($values['homeworkSubmissionRequired']).'</b> for this homework.</i><br/>';
+                                    echo '<i>'.__('Online submission is {required} for this {homeworkName}.', ['homeworkName' => mb_strtolower(__($homeworkNameSingular)), 'required' => '<b>'.strtolower($values['homeworkSubmissionRequired']).'</b>']).'</i><br/>';
                                     if (date('Y-m-d') < $values['homeworkSubmissionDateOpen']) {
                                         echo '<i>Submission opens on '.dateConvertBack($guid, $values['homeworkSubmissionDateOpen']).'</i>';
                                     } else {
@@ -783,7 +787,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     }
                                 } elseif ($values['role'] == 'Teacher') {
                                     echo "<span style='font-size: 115%; font-weight: bold'>".__('Online Submission').'</span><br/>';
+<<<<<<< HEAD
                                     echo '<i>'.sprintf(__('Online submission is %1$s for this homework.'), '<b>'.strtolower($values['homeworkSubmissionRequired']).'</b>').'</i><br/>';
+=======
+                                    echo '<i>'.__('Online submission is {required} for this {homeworkName}.', ['homeworkName' => mb_strtolower(__($homeworkNameSingular)), 'required' => '<b>'.strtolower($row['homeworkSubmissionRequired']).'</b>']).'</i><br/>';
+>>>>>>> b9754457b... Planner: implement the Homework Name settings
 
                                     if ($teacher == true) {
                                         //List submissions
@@ -949,9 +957,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                             echo "<tr class='break'>";
                             echo "<td style='padding-top: 5px; width: 33%; vertical-align: top' colspan=3>";
-                            echo '<h3>'.__('Student Recorded Homework').'</h3>';
+                            echo '<h3>'.__('Student Recorded {homeworkName}', ['homeworkName' => __($homeworkNameSingular)]).'</h3>';
                             if ($roleCategory == 'Student') {
-                                echo '<p>'.__('If your teacher has not entered homework into Gibbon, or you want to record extra homework, you can enter the details here.').'</p>';
+                                echo '<p>'.__('You can use this section to record your own {homeworkName}.', ['homeworkName' => mb_strtolower(__($homeworkNamePlural))]).'</p>';
                             }
                             echo '</td>';
                             echo '</tr>';
@@ -973,7 +981,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 									?>
 									<tr>
 										<td>
-											<b><?php echo __('Homework?') ?> *</b><br/>
+											<b><?php echo __('Add {homeworkName}?', ['homeworkName' => __($homeworkNameSingular)]) ?> *</b><br/>
 										</td>
 										<td>
 											<?php
@@ -991,7 +999,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 										?>
 										<tr>
 											<td>
-												<b><?php echo __('Homework Due Date') ?> *</b><br/>
+												<b><?php echo __('{homeworkName} Due Date', ['homeworkName' => __($homeworkNameSingular)]) ?> *</b><br/>
 											</td>
 											<td>
 												<?php if ($rowMyHomework['homework'] == 'Y') { echo dateConvertBack($guid, substr($rowMyHomework['homeworkDueDateTime'], 0, 10)); } ?>
@@ -999,7 +1007,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 										</tr>
 										<tr >
 											<td>
-												<b><?php echo __('Homework Due Date Time') ?></b><br/>
+												<b><?php echo __('{homeworkName} Due Date Time', ['homeworkName' => __($homeworkNameSingular)]) ?></b><br/>
 												<span class="emphasis small"><?php echo __('Format: hh:mm (24hr)') ?><br/></span>
 											</td>
 											<td >
@@ -1008,7 +1016,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 										</tr>
 										<tr>
 											<td>
-												<b><?php echo __('Homework Details') ?></b><br/>
+												<b><?php echo __('{homeworkName} Details', ['homeworkName' => __($homeworkNameSingular)]) ?></b><br/>
 											</td>
 											<td class="right">
 												<?php echo $rowMyHomework['homeworkDetails'] ?>
@@ -1086,7 +1094,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 $form->addHiddenValue('gibbonPlannerEntryID', $gibbonPlannerEntryID);
 
                                 $row = $form->addRow();
-                                    $row->addLabel('homework', __('Homework?'));
+                                    $row->addLabel('homework', __($homeworkNameSingular));
                                     $row->addYesNoRadio('homework')->checked($rowMyHomework['homework'] ?? 'N');
 
                                 $form->toggleVisibilityByClass('showHomework')->onRadio('homework')->when('Y');
@@ -1097,7 +1105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 }
 
                                 $row = $form->addRow()->addClass('showHomework');
-                                    $row->addLabel('homeworkDueDate', __('Homework Due Date'));
+                                    $row->addLabel('homeworkDueDate', __('{homeworkName} Due Date', ['homeworkName' => __($homeworkNameSingular)]));
                                     $col = $row->addColumn('homeworkDueDate');
                                     $col->addDate('homeworkDueDate')
                                         ->addClass('mr-2')
@@ -1107,7 +1115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                         ->setValue(!empty($homeworkDueDateTime) ? substr($homeworkDueDateTime, 0, 5) : '');
 
                                 $col = $form->addRow()->addClass('showHomework')->addColumn();
-                                    $col->addLabel('homeworkDetails', __('Homework Details'));
+                                    $col->addLabel('homeworkDetails', __('{homeworkName} Details', ['homeworkName' => __($homeworkNameSingular)]));
                                     $col->addEditor('homeworkDetails', $guid)->setRows(15)->showMedia()->required()->setValue($rowMyHomework['homeworkDetails'] ?? '');
 
                                 $row = $form->addRow();

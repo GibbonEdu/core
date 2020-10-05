@@ -453,10 +453,12 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 
 
         if ($_GET['q'] != '/modules/Planner/planner_deadlines.php') {
+            $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
+
             //Show upcoming deadlines
             $output .= '<div class="column-no-break">';
             $output .= '<h2>';
-            $output .= __('Homework & Due Dates');
+            $output .= __('{homeworkName} + Due Dates', ['homeworkName' => __($homeworkNamePlural)]);
             $output .= '</h2>';
 
             global $container, $page, $gibbon;

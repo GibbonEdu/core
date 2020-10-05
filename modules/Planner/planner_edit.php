@@ -37,6 +37,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
         //Set variables
         $today = date('Y-m-d');
 
+        $homeworkNameSingular = getSettingByScope($connection2, 'Planner', 'homeworkNameSingular');
+        $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
+
         //Proceed!
         //Get viewBy, date and class variables
         $params = [];
@@ -254,25 +257,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 }
 
                 //HOMEWORK
-                $form->addRow()->addHeading(__('Homework'));
+                $form->addRow()->addHeading(__($homeworkNamePlural));
 
                 $form->toggleVisibilityByClass('homework')->onRadio('homework')->when('Y');
                 $row = $form->addRow();
-                    $row->addLabel('homework', __('Homework?'));
+                    $row->addLabel('homework', __('Add {homeworkName}?', ['homeworkName' => __($homeworkNameSingular)]));
                     $row->addRadio('homework')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->required()->checked('N')->inline(true);
 
                 $row = $form->addRow()->addClass('homework');
-                    $row->addLabel('homeworkDueDate', __('Homework Due Date'));
+                    $row->addLabel('homeworkDueDate', __('{homeworkName} Due Date', ['homeworkName' => __($homeworkNameSingular)]));
                     $row->addDate('homeworkDueDate')->required()->setValue(Format::date(substr($values['homeworkDueDateTime'], 0, 10)));
 
                 $values['homeworkDueDateTime'] = substr($values['homeworkDueDateTime'], 11, 5);
                 $row = $form->addRow()->addClass('homework');
-                    $row->addLabel('homeworkDueDateTime', __('Homework Due Date Time'))->description(__("Format: hh:mm (24hr)"));
+                    $row->addLabel('homeworkDueDateTime', __('{homeworkName} Due Date Time', ['homeworkName' => __($homeworkNameSingular)]))->description(__("Format: hh:mm (24hr)"));
                     $row->addTime('homeworkDueDateTime');
 
                 $row = $form->addRow()->addClass('homework');
                     $column = $row->addColumn();
-                    $column->addLabel('homeworkDetails', __('Homework Details'));
+                    $column->addLabel('homeworkDetails', __('{homeworkName} Details', ['homeworkName' => __($homeworkNameSingular)]));
                     $column->addEditor('homeworkDetails', $guid)->setRows(15)->showMedia()->setValue($description)->required();
 
                 $form->toggleVisibilityByClass('homeworkSubmission')->onRadio('homeworkSubmission')->when('Y');
