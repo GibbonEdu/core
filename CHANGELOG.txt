@@ -49,6 +49,7 @@ v21.0.00
         Library: enabled printing and exporting the Manage Catalog table
         Library: replaced borrowable with responsible user in Manage Catalog
         Markbook: added error logging for failed file uploads on Enter Data page
+        Markbook: allow users with Edit Markbook_multiple and Edit Markbook_everything to edit grouped columns
         Messenger: tied messages to school year
         Messenger: convert copy-pasted divs to paragraphs in New Quick Wall Message
         Planner: update the attendance list to exclude students with a timetable exception
