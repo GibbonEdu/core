@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                         )
                         ->add(__('Edit Column'));
 
-                    if ($values['groupingID'] != '' and $values['gibbonPersonIDCreator'] != $_SESSION[$guid]['gibbonPersonID']) {
+                    if ($values['groupingID'] != '' && ($values['gibbonPersonIDCreator'] != $_SESSION[$guid]['gibbonPersonID'] && $highestAction != 'Edit Markbook_everything' && $highestAction != 'Edit Markbook_multipleClassesAcrossSchool' && $highestAction != 'Edit Markbook_multipleClassesInDepartment')) {
                         echo "<div class='error'>";
                         echo __('This column is part of a set of columns, which you did not create, and so cannot be individually edited.');
                         echo '</div>';
