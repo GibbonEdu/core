@@ -133,7 +133,10 @@ class HomeworkTable
             });
 
         $table->addColumn('homeworkDueDateTime', __('Due Date'))
-            ->format(Format::using('date', 'homeworkDueDateTime'));
+            ->format(function ($homework) {
+                return Format::date($homework['homeworkDueDateTime']) . '<br/>' .
+                    (!empty($homework['homeworkLocation']) && $homework['homeworkLocation'] == 'In Class' ? Format::small(__('In Class')) : '');
+            });
 
         $table->addColumn('onlineSubmission', __('Online Submission'))
             ->sortable(['homeworkSubmission', 'homeworkSubmissionRequired'])
