@@ -287,21 +287,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $row->addTime('homeworkDueDateTime');
 
             $row = $form->addRow()->addClass('homework');
+                $row->addLabel('homeworkDuration', __('Expected Duration'))->description(__('How long, in minutes, do you expect this work to take?'));
+                $row->addNumber('homeworkDuration')->required();
+
+            $row = $form->addRow()->addClass('homework');
                 $column = $row->addColumn();
                 $column->addLabel('homeworkDetails', __('{homeworkName} Details', ['homeworkName' => __($homeworkNameSingular)]));
                 $column->addEditor('homeworkDetails', $guid)->setRows(15)->showMedia()->setValue($description)->required();
-
-            $row = $form->addRow()->addClass('homework');
-                $row->addLabel('homeworkCompletionTime', __('Expected Duration'))->description(__('How long, in minutes, do you expect this work to take?'));
-                $row->addNumber('homeworkCompletionTime')->required();
-
-            $row = $form->addRow()->addClass('homework');
-                $row->addLabel('homeworkCompletionLocation', __('Completion Location'))->description(__('Where will this work be completed?'));
-                $row->addSelect('homeworkCompletionLocation')->required()->fromArray([
-                    'At Home' => __('At Home'),
-                    'In Class' => __('In Class'),
-                    'Both' => __('Both'),
-                ]);
 
             $form->toggleVisibilityByClass('homeworkSubmission')->onRadio('homeworkSubmission')->when('Y');
             $row = $form->addRow()->addClass('homework');
