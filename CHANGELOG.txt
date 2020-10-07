@@ -59,6 +59,7 @@ v21.0.00
         Planner: refactored the Parent Weekly Email Summary to match homework colouring
         Planner: replaced "Compulsory" with "Required" in relation to homework
         Planner: removed lessons with timetable exceptions from Today's Lessons on the dahsboard
+        Planner: adjust the display of homework lists to account for class enrolment dates
         Reports: display the download link after a batch PDF has completed
         Reports: added full course name to the report writing page
         Reports: added a bulk delete action in the Edit Reporting Scopes page
