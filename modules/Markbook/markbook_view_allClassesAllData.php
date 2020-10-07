@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Departments\DepartmentGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Markbook\MarkbookColumnGateway;
 use Gibbon\Module\Markbook\MarkbookView;
@@ -117,9 +118,11 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
     //Get class chooser
     echo classChooser($guid, $pdo, $gibbonCourseClassID);
 
+    $departmentAccess = $container->get(DepartmentGateway::class)->selectMemberOfDepartmentByRole($class['gibbonDepartmentID'], $_SESSION[$guid]['gibbonPersonID'], ['Coordinator', 'Teacher (Curriculum)'])->fetch();
+
     //Get teacher list
     $teacherList = getTeacherList( $pdo, $gibbonCourseClassID );
-	$canEditThisClass = (isset($teacherList[ $_SESSION[$guid]['gibbonPersonID'] ]) || $highestAction2 == 'Edit Markbook_everything');
+	$canEditThisClass = (isset($teacherList[ $_SESSION[$guid]['gibbonPersonID'] ]) || $highestAction2 == 'Edit Markbook_everything' || ($highestAction2 == 'Edit Markbook_multipleClassesInDepartment' && !empty($departmentAccess)));
 
     // Get criteria filter values, including session defaults
     $search = $_GET['search'] ?? '';

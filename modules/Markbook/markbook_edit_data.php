@@ -136,6 +136,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             LEFT JOIN gibbonScale ON (gibbonScale.gibbonScaleID=gibbonCourseClass.gibbonScaleIDTarget)
                             WHERE gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID
                             ORDER BY course, class";
+                } elseif ($highestAction == 'Edit Markbook_multipleClassesInDepartment') {
+                    $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonCourseClassID' => $gibbonCourseClassID);
+                    $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList 
+                    FROM gibbonCourse
+                    JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+                    JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonCourse.gibbonDepartmentID)
+                    WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID 
+                    AND (gibbonDepartmentStaff.role = 'Coordinator' OR gibbonDepartmentStaff.role= 'Teacher (Curriculum)')
+                    AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class";
                 } else {
                     $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonCourseClassID' => $gibbonCourseClassID);
                     $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonCourse.gibbonYearGroupIDList, gibbonScale.name as targetGradeScale
@@ -360,7 +369,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
 
                         $header->onlyIf($hasTarget)
                             ->addTableCell(__('Target'))
-                            ->setTitle(__('Personalised target grade').' | '.$course['targetGradeScale'].' '.__('Scale'))
+                            ->setTitle(__('Personalised target grade').' | '.($course['targetGradeScale'] ?? '').' '.__('Scale'))
                             ->rowSpan(2)
                             ->addClass('textCenter smallColumn dataColumn noPadding')
                             ->wrap('<div class="verticalText">', '</div>');
