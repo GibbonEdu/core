@@ -72,3 +72,14 @@ script:
 
 after_failure:
   - cat /home/travis/build/GibbonEdu/core/tests/log/*.travis_ci.fail.html
+
+deploy:
+  php: 7.0
+  provider: releases
+  api_key:
+    secure: REn1QbcAJSBtQApAGdcGVDsueCNVEBlClZPzVnucmxJIYoGdctD7O1FrJ7PiGq903yZ86mT1j/6RmMdWuPMXW8vZ+TwMw2t3Azs1ebmutQffob0Zr3fvryrZnAzBi3Wk+QxSL+PaZbm/JDG3jPImSdcU2M1icHxJpp1wY4+/C/C4ujlD5yaA5Q43ELRunYXZDuMn+Moywb5yDq3v4uhYZxcJ91HMbSqKzg9y9XRLTESu3FHC54kOuhLXt4SqNdWpAMll2hodedgOhGMXLswnqDdHK9cKtmjtoExlibsaRTU3paNKGQMr7rg0QRspvbS+H68qFftFE+G7XaU/H2tEFlViiKmCAHgCvwne15Ik96S7/v3V/rf8xAfeSCR8YYodEZbLqUvygMUcp7HBgY/AZ1QejsJybCDp1dR9MD5+l5qJ3aTBi2Od3ET7STDy5hUwY4w2Y4toaYBxB3fdsSUzH5xlO0mG03fFgSeaq8LsEigExIRXU9h0iLVLjK29CyJkkj3LPvZUAo0Ym7iItHMZjVS6A7+ia97Z5qBxRCllG3aoeXsM0z9+ikqvOXDPdJfeAh85tnQelwt2jOY2pFsRXoRyJHOp+xRJgxBsBTvmK42sMXVnGqfqruttuYO7wupkBlykDC/T11BPub++35ROni9mSWeDQKUnGxApwCs4nLQ=
+  file: "**/*"
+  on:
+    repo: yookoala/GibbonEduCore
+    branch: automatic-release
+  skip_cleanup: 'true'
