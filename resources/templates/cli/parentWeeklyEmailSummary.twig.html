@@ -64,6 +64,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {{ __('Due at {time} on {date}', {'time': formatUsing('time', item.homeworkDueDateTime), 'date': formatUsing('date', item.homeworkDueDateTime) })|raw }} 
 
                 {{ tag|raw }}
+
+                {% if item.homeworkLocation == 'In Class' %}<div style="display: inline-block; padding: 1px 8px; margin-left: 4px; border-radius: 3px; background-color: #ebeaea; color: #878282; ">{{ __('In Class') }}</div>{% endif %}
             </span>
             </div>
         </li>
