@@ -287,8 +287,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $row->addTime('homeworkDueDateTime');
 
             $row = $form->addRow()->addClass('homework');
-                $row->addLabel('homeworkDuration', __('Maximum Duration'))->description(__('The maximum time, in minutes, for students to work on this'));
-                $row->addNumber('homeworkDuration')->required();
+                $row->addLabel('homeworkDuration', __('Time Cap?'))->description(__('The maximum time, in minutes, for students to work on this'));
+                $row->addNumber('homeworkDuration');
 
             $row = $form->addRow()->addClass('homework');
                 $column = $row->addColumn();
