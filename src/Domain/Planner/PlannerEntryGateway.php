@@ -105,7 +105,7 @@ class PlannerEntryGateway extends QueryableGateway
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->where("gibbonPlannerEntry.homework='Y'")
             ->where('(gibbonCourseClassPerson.dateEnrolled IS NULL OR gibbonCourseClassPerson.dateEnrolled <= gibbonPlannerEntry.date)')
-            ->where('(gibbonCourseClassPerson.dateUnenrolled IS NULL OR gibbonCourseClassPerson.dateUnenrolled > gibbonPlannerEntry.homeworkDueDateTime)')
+            ->where("(gibbonCourseClassPerson.role NOT LIKE '%Left' OR gibbonCourseClassPerson.dateUnenrolled > gibbonPlannerEntry.homeworkDueDateTime)")
             ->where("(gibbonPlannerEntry.date < :todayDate OR (gibbonPlannerEntry.date=:todayDate AND timeEnd <= :todayTime))")
             ->bindValue('todayDate', date('Y-m-d'))
             ->bindValue('todayTime', date('H:i:s'));
@@ -146,7 +146,7 @@ class PlannerEntryGateway extends QueryableGateway
             ->where('gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->where('(gibbonCourseClassPerson.dateEnrolled IS NULL OR gibbonCourseClassPerson.dateEnrolled <= gibbonPlannerEntry.date)')
-            ->where('(gibbonCourseClassPerson.dateUnenrolled IS NULL OR gibbonCourseClassPerson.dateUnenrolled > gibbonPlannerEntry.homeworkDueDateTime)')
+            ->where("(gibbonCourseClassPerson.role NOT LIKE '%Left' OR gibbonCourseClassPerson.dateUnenrolled > gibbonPlannerEntry.homeworkDueDateTime)")
             ->where("(gibbonPlannerEntry.date < :todayDate OR (gibbonPlannerEntry.date=:todayDate AND timeEnd <= :todayTime))")
             ->bindValue('todayDate', date('Y-m-d'))
             ->bindValue('todayTime', date('H:i:s'));
@@ -187,7 +187,8 @@ class PlannerEntryGateway extends QueryableGateway
                 AND homeworkDueDateTime>:todayTime 
                 AND ((date<:todayDate) OR (date=:todayDate AND timeEnd<=:time))
                 AND (gibbonCourseClassPerson.dateEnrolled IS NULL OR gibbonCourseClassPerson.dateEnrolled <= gibbonPlannerEntry.date)
-                AND (gibbonCourseClassPerson.dateUnenrolled IS NULL OR gibbonCourseClassPerson.dateUnenrolled > gibbonPlannerEntry.homeworkDueDateTime))
+                AND (gibbonCourseClassPerson.dateUnenrolled IS NULL OR gibbonCourseClassPerson.dateUnenrolled > gibbonPlannerEntry.homeworkDueDateTime)
+            )
             UNION
             (SELECT 'studentRecorded' AS type, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, 'Y' AS viewableStudents, 'Y' AS viewableParents, 'Y' AS homework, gibbonPlannerEntryStudentHomework.homeworkDueDateTime, role, gibbonPlannerEntryStudentHomework.homeworkComplete, (CASE WHEN gibbonPlannerEntryHomework.gibbonPlannerEntryHomeworkID IS NOT NULL THEN 'Y' ELSE 'N' END) as onlineSubmission FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) 
                 JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) 
@@ -202,7 +203,8 @@ class PlannerEntryGateway extends QueryableGateway
                 AND gibbonPlannerEntryStudentHomework.homeworkDueDateTime>:todayTime 
                 AND ((date<:todayDate) OR (date=:todayDate AND timeEnd<=:time))
                 AND (gibbonCourseClassPerson.dateEnrolled IS NULL OR gibbonCourseClassPerson.dateEnrolled <= gibbonPlannerEntry.date)
-                AND (gibbonCourseClassPerson.dateUnenrolled IS NULL OR gibbonCourseClassPerson.dateUnenrolled > gibbonPlannerEntry.homeworkDueDateTime))
+                AND (gibbonCourseClassPerson.dateUnenrolled IS NULL OR gibbonCourseClassPerson.dateUnenrolled > gibbonPlannerEntry.homeworkDueDateTime)
+            )
             ORDER BY homeworkDueDateTime, type";
 
         return $this->db()->select($sql, $data);
@@ -249,7 +251,7 @@ class PlannerEntryGateway extends QueryableGateway
         $sql = "SELECT TRIM(LEADING '0' FROM gibbonPlannerEntry.gibbonPlannerEntryID) as groupBy,
             COUNT(DISTINCT CASE WHEN gibbonPlannerEntryHomework.version='Final' AND gibbonPlannerEntryHomework.status='On Time' THEN  gibbonPlannerEntryHomework.gibbonPersonID END) as onTime,
             COUNT(DISTINCT CASE WHEN gibbonPlannerEntryHomework.version='Final' AND gibbonPlannerEntryHomework.status='Late' THEN  gibbonPlannerEntryHomework.gibbonPersonID END) as late,
-            (SELECT COUNT(*) FROM gibbonCourseClassPerson WHERE gibbonCourseClassPerson.gibbonCourseClassID=gibbonPlannerEntry.gibbonCourseClassID AND role='Student' AND (gibbonCourseClassPerson.dateEnrolled IS NULL OR gibbonCourseClassPerson.dateEnrolled <= gibbonPlannerEntry.date) AND (gibbonCourseClassPerson.dateUnenrolled IS NULL OR gibbonCourseClassPerson.dateUnenrolled > gibbonPlannerEntry.date)) ) as total
+            (SELECT COUNT(*) FROM gibbonCourseClassPerson WHERE gibbonCourseClassPerson.gibbonCourseClassID=gibbonPlannerEntry.gibbonCourseClassID AND role='Student' AND (gibbonCourseClassPerson.dateEnrolled IS NULL OR gibbonCourseClassPerson.dateEnrolled <= gibbonPlannerEntry.date) AND (gibbonCourseClassPerson.dateUnenrolled IS NULL OR gibbonCourseClassPerson.dateUnenrolled > gibbonPlannerEntry.date) ) as total
             FROM gibbonPlannerEntry
             LEFT JOIN gibbonPlannerEntryHomework ON (gibbonPlannerEntry.gibbonPlannerEntryID=gibbonPlannerEntryHomework.gibbonPlannerEntryID)
             WHERE FIND_IN_SET(gibbonPlannerEntry.gibbonPlannerEntryID, :gibbonPlannerEntryIDList)
