@@ -81,5 +81,5 @@ deploy:
   file: "**/*"
   on:
     repo: yookoala/GibbonEduCore
-    branch: automatic-release
+    tags: true
   skip_cleanup: 'true'
