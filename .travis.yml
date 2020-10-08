@@ -74,18 +74,25 @@ after_failure:
   - cat /home/travis/build/GibbonEdu/core/tests/log/*.travis_ci.fail.html
 
 before_deploy:
+  - pwd
   # Remove all testing / generated files or folder, include /vendor
-  - git clean -fx
+  - git clean -fdx
   # Install all dependencies (exclude development dependencies)
-  - composer install --prefer-dist --no-interaction
+  - composer install --prefer-dist --no-dev --optimize-autoloader --no-interaction
+  # Remove unwanated folders (e.g. unit tests, examples) from the folder
+  #- find ./vendor -type d \( -name 'tests' -o -name 'unitTests' -o -name 'examples' -o -name 'Examples' -o -name 'samples' -o -name 'docs' \) -exec rm -Rf "{}" \;
+  # Create distribution folder
+  - if [ ! -d ./dist ]; then mkdir dist; fi
+  # Create distribution archives
+  - tar -czv --exclude="./dist" --exclude="./.git" -f "./dist/GibbonEduCore-InstallBundle-$TRAVIS_TAG.tar.gz" .
+  - zip -rv "./dist/GibbonEduCore-InstallBundle-$TRAVIS_TAG.zip" . -x "dist/**/*" -x ".git/**/*"
 
 deploy:
-  php: 7.0
-  provider: releases
-  api_key:
-    secure: REn1QbcAJSBtQApAGdcGVDsueCNVEBlClZPzVnucmxJIYoGdctD7O1FrJ7PiGq903yZ86mT1j/6RmMdWuPMXW8vZ+TwMw2t3Azs1ebmutQffob0Zr3fvryrZnAzBi3Wk+QxSL+PaZbm/JDG3jPImSdcU2M1icHxJpp1wY4+/C/C4ujlD5yaA5Q43ELRunYXZDuMn+Moywb5yDq3v4uhYZxcJ91HMbSqKzg9y9XRLTESu3FHC54kOuhLXt4SqNdWpAMll2hodedgOhGMXLswnqDdHK9cKtmjtoExlibsaRTU3paNKGQMr7rg0QRspvbS+H68qFftFE+G7XaU/H2tEFlViiKmCAHgCvwne15Ik96S7/v3V/rf8xAfeSCR8YYodEZbLqUvygMUcp7HBgY/AZ1QejsJybCDp1dR9MD5+l5qJ3aTBi2Od3ET7STDy5hUwY4w2Y4toaYBxB3fdsSUzH5xlO0mG03fFgSeaq8LsEigExIRXU9h0iLVLjK29CyJkkj3LPvZUAo0Ym7iItHMZjVS6A7+ia97Z5qBxRCllG3aoeXsM0z9+ikqvOXDPdJfeAh85tnQelwt2jOY2pFsRXoRyJHOp+xRJgxBsBTvmK42sMXVnGqfqruttuYO7wupkBlykDC/T11BPub++35ROni9mSWeDQKUnGxApwCs4nLQ=
-  file: "**/*"
-  on:
-    repo: yookoala/GibbonEduCore
-    tags: true
-  skip_cleanup: 'true'
+  - provider: script
+    script: bash ./cli/github-release.sh -k $GITHUB_DEPLOY_TOKEN -r $TRAVIS_REPO_SLUG -t $TRAVIS_TAG ./dist
+    on:
+      repo: yookoala/GibbonEduCore
+      condition: '"$GITHUB_DEPLOY_TOKEN" != "" && "$TRAVIS_PHP_VERSION" == "7.0"'
+      all_branches: true
+      tags: true
+    skip_cleanup: 'true'

@@ -23,6 +23,9 @@ nbproject/
 # Composer vendor folder
 /vendor
 
+# Dist folder for building release archive
+/dist
+
 # Var Folder
 var/*
 !var/.htaccess
