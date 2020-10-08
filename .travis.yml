@@ -73,6 +73,12 @@ script:
 after_failure:
   - cat /home/travis/build/GibbonEdu/core/tests/log/*.travis_ci.fail.html
 
+before_deploy:
+  # Remove all testing / generated files or folder, include /vendor
+  - git clean -fx
+  # Install all dependencies (exclude development dependencies)
+  - composer install --prefer-dist --no-interaction
+
 deploy:
   php: 7.0
   provider: releases
