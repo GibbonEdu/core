@@ -257,25 +257,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 }
 
                 //HOMEWORK
-                $form->addRow()->addHeading(__($homeworkNamePlural));
+                $form->addRow()->addHeading(__($homeworkNameSingular));
 
                 $form->toggleVisibilityByClass('homework')->onRadio('homework')->when('Y');
                 $row = $form->addRow();
                     $row->addLabel('homework', __('Add {homeworkName}?', ['homeworkName' => __($homeworkNameSingular)]));
                     $row->addRadio('homework')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->required()->checked('N')->inline(true);
 
-                $row = $form->addRow()->addClass('homework');
-                    $row->addLabel('homeworkDueDate', __('{homeworkName} Due Date', ['homeworkName' => __($homeworkNameSingular)]));
-                    $row->addDate('homeworkDueDate')->required()->setValue(Format::date(substr($values['homeworkDueDateTime'], 0, 10)));
-
+                $values['homeworkDueDate'] = Format::date(substr($values['homeworkDueDateTime'], 0, 10));
                 $values['homeworkDueDateTime'] = substr($values['homeworkDueDateTime'], 11, 5);
-                $row = $form->addRow()->addClass('homework');
-                    $row->addLabel('homeworkDueDateTime', __('{homeworkName} Due Date Time', ['homeworkName' => __($homeworkNameSingular)]))->description(__("Format: hh:mm (24hr)"));
-                    $row->addTime('homeworkDueDateTime');
 
                 $row = $form->addRow()->addClass('homework');
-                $row->addLabel('homeworkDuration', __('Time Cap?'))->description(__('The maximum time, in minutes, for students to work on this'));
-                    $row->addNumber('homeworkDuration');
+                    $row->addLabel('homeworkDueDate', __('Due Date'))->description(__('Date is required, time is optional.'));
+                    $col = $row->addColumn('homeworkDueDate')->addClass('homework');
+                    $col->addDate('homeworkDueDate')->addClass('mr-2')->required();
+                    $col->addTime('homeworkDueDateTime');
+
+                $row = $form->addRow()->addClass('homework');
+                $row->addLabel('homeworkTimeCap', __('Time Cap?'))->description(__('The maximum time, in minutes, for students to work on this.'));
+                    $row->addNumber('homeworkTimeCap');
 
                 $row = $form->addRow()->addClass('homework');
                     $column = $row->addColumn();

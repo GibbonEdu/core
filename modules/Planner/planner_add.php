@@ -271,7 +271,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $column->addEditor('teachersNotes', $guid)->setRows(25)->showMedia()->setValue($teachersNotes);
 
             //HOMEWORK
-            $form->addRow()->addHeading(__($homeworkNamePlural));
+            $form->addRow()->addHeading(__($homeworkNameSingular));
 
             $form->toggleVisibilityByClass('homework')->onRadio('homework')->when('Y');
             $row = $form->addRow();
@@ -279,16 +279,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $row->addRadio('homework')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->required()->checked('N')->inline(true);
 
             $row = $form->addRow()->addClass('homework');
-                $row->addLabel('homeworkDueDate', __('{homeworkName} Due Date', ['homeworkName' => __($homeworkNameSingular)]));
-                $row->addDate('homeworkDueDate')->required();
-
+                $row->addLabel('homeworkDueDate', __('Due Date'))->description(__('Date is required, time is optional.'));
+                $col = $row->addColumn('homeworkDueDate')->addClass('homework');
+                $col->addDate('homeworkDueDate')->addClass('mr-2')->required();
+                $col->addTime('homeworkDueDateTime');
+                
             $row = $form->addRow()->addClass('homework');
-                $row->addLabel('homeworkDueDateTime', __('{homeworkName} Due Date Time', ['homeworkName' => __($homeworkNameSingular)]))->description(__('Format: hh:mm (24hr)'));
-                $row->addTime('homeworkDueDateTime');
-
-            $row = $form->addRow()->addClass('homework');
-                $row->addLabel('homeworkDuration', __('Time Cap?'))->description(__('The maximum time, in minutes, for students to work on this'));
-                $row->addNumber('homeworkDuration');
+                $row->addLabel('homeworkTimeCap', __('Time Cap?'))->description(__('The maximum time, in minutes, for students to work on this.'));
+                $row->addNumber('homeworkTimeCap');
 
             $row = $form->addRow()->addClass('homework');
                 $column = $row->addColumn();
@@ -335,20 +333,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                         $column->addCheckbox('homeworkCrowdAssessOtherParentsRead')->description(__('Other Parents'));
             }
 
-            // OUTCOMES
-            if ($viewBy == 'date') {
-                $form->addRow()->addHeading(__('Outcomes'));
-                $form->addRow()->addAlert(__('Outcomes cannot be set when viewing the Planner by date. Use the "Choose A Class" dropdown in the sidebar to switch to a class. Make sure to save your changes first.'), 'warning');
-            } else {
-                $form->addRow()->addHeading(__('Outcomes'));
-                $form->addRow()->addContent(__('Link this lesson to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which lessons.'));
-
-                $allowOutcomeEditing = getSettingByScope($connection2, 'Planner', 'allowOutcomeEditing');
-
-                $row = $form->addRow();
-                    $row->addPlannerOutcomeBlocks('outcome', $gibbon->session, $gibbonYearGroupIDList, $gibbonDepartmentID, $allowOutcomeEditing);
-            }
-
             //MARKBOOK
             $form->addRow()->addHeading(__('Markbook'));
 
@@ -364,6 +348,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $row = $form->addRow();
                 $row->addCheckbox('advanced')->setValue('Y')->description(__('Show Advanced Options'));
 
+            // OUTCOMES
+            if ($viewBy == 'date') {
+                $form->addRow()->addHeading(__('Outcomes'))->addClass('advanced');
+                $form->addRow()->addAlert(__('Outcomes cannot be set when viewing the Planner by date. Use the "Choose A Class" dropdown in the sidebar to switch to a class. Make sure to save your changes first.'), 'warning')->addClass('advanced');
+            } else {
+                $form->addRow()->addHeading(__('Outcomes'))->addClass('advanced');
+                $form->addRow()->addContent(__('Link this lesson to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which lessons.'))->addClass('advanced');
+
+                $allowOutcomeEditing = getSettingByScope($connection2, 'Planner', 'allowOutcomeEditing');
+
+                $row = $form->addRow()->addClass('advanced');
+                    $row->addPlannerOutcomeBlocks('outcome', $gibbon->session, $gibbonYearGroupIDList, $gibbonDepartmentID, $allowOutcomeEditing);
+            }
+            
             //Access
             $form->addRow()->addHeading(__('Access'))->addClass('advanced');
 

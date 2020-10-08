@@ -725,6 +725,6 @@ CREATE TABLE `gibbonMigration` ( `gibbonMigrationID` INT(8) UNSIGNED ZEROFILL NO
 ALTER TABLE `gibbonPerson` CHANGE `fields` `fields` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'JSON object of custom field values';end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Planner', 'homeworkNameSingular', 'Homework Name - Singular', 'A name to use for \"Homework\" in the planner. This noun should be in a singular form.', 'Homework');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Planner', 'homeworkNamePlural', 'Homework Name - Plural', 'A name to use for \"Homework\" in the planner. This noun should be in a plural form.', 'Homework');end
-ALTER TABLE `gibbonPlannerEntry` ADD `homeworkDuration` INT(3) NULL DEFAULT NULL AFTER `homeworkDetails`;end
-ALTER TABLE `gibbonPlannerEntry` ADD `homeworkLocation` ENUM('Out of Class','In Class') NULL DEFAULT NULL AFTER `homeworkDuration`;end
+ALTER TABLE `gibbonPlannerEntry` ADD `homeworkTimeCap` INT(3) NULL DEFAULT NULL AFTER `homeworkDetails`;end
+ALTER TABLE `gibbonPlannerEntry` ADD `homeworkLocation` ENUM('Out of Class','In Class') NULL DEFAULT NULL AFTER `homeworkTimeCap`;end
 ";
