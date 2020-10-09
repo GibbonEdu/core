@@ -600,10 +600,10 @@ class Format
     {
         $name = self::name($title, $preferredName, $surname, $roleCategory, $reverse, $informal);
         if ($roleCategory == 'Staff') {
-            $url = '/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$gibbonPersonID;
+            $url = static::$settings['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$gibbonPersonID;
             $output = self::link($url, $name);
         } elseif ($roleCategory == 'Student') {
-            $url = '/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID;
+            $url = static::$settings['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID;
             $output = self::link($url, $name);
         } else {
             $output = $name;
