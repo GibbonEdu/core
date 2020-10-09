@@ -596,7 +596,7 @@ class Format
      * @param bool $informal
      * @return string
      */
-    public static function nameLinked($gibbonPersonID, $title, $preferredName, $surname, $roleCategory = 'Other', $params, $reverse = false, $informal = false)
+    public static function nameLinked($gibbonPersonID, $title, $preferredName, $surname, $roleCategory = 'Other', $reverse = false, $informal = false, $params = [])
     {
         $name = self::name($title, $preferredName, $surname, $roleCategory, $reverse, $informal);
         if ($roleCategory == 'Staff') {
