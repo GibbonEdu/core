@@ -537,7 +537,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         if ($values['homework'] == 'Y') {
 
                             if ($values['role'] == 'Student' && !empty($values['homeworkTimeCap'])) {
-                                echo Format::alert(__('Your teacher has indicated a <b><u>{timeCap} minute</u></b> time cap for this work. Aim to spend to more than {timeCap} minutes on this {homeworkName} and let your teacher know if you were unable to complete it in this time frame.', ['timeCap' => $values['homeworkTimeCap'], 'homeworkName' => mb_strtolower(__($homeworkNameSingular))]), 'message');
+                                echo Format::alert(__('Your teacher has indicated a <b><u>{timeCap} minute</u></b> time cap for this work. Aim to spend no more than {timeCap} minutes on this {homeworkName} and let your teacher know if you were unable to complete it within this time frame.', ['timeCap' => $values['homeworkTimeCap'], 'homeworkName' => mb_strtolower(__($homeworkNameSingular))]), 'message');
                             }
 
                             echo "<span style='font-weight: bold; color: #CC0000'>".sprintf(__('Due on %1$s at %2$s.'), dateConvertBack($guid, substr($values['homeworkDueDateTime'], 0, 10)), substr($values['homeworkDueDateTime'], 11, 5)).'</span><br/>';
@@ -792,11 +792,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     }
                                 } elseif ($values['role'] == 'Teacher') {
                                     echo "<span style='font-size: 115%; font-weight: bold'>".__('Online Submission').'</span><br/>';
-<<<<<<< HEAD
-                                    echo '<i>'.sprintf(__('Online submission is %1$s for this homework.'), '<b>'.strtolower($values['homeworkSubmissionRequired']).'</b>').'</i><br/>';
-=======
-                                    echo '<i>'.__('Online submission is {required} for this {homeworkName}.', ['homeworkName' => mb_strtolower(__($homeworkNameSingular)), 'required' => '<b>'.strtolower($row['homeworkSubmissionRequired']).'</b>']).'</i><br/>';
->>>>>>> b9754457b... Planner: implement the Homework Name settings
+                                    echo '<i>'.__('Online submission is {required} for this {homeworkName}.', ['homeworkName' => mb_strtolower(__($homeworkNameSingular)), 'required' => '<b>'.strtolower($values['homeworkSubmissionRequired']).'</b>']).'</i><br/>';
 
                                     if ($teacher == true) {
                                         //List submissions
