@@ -73,6 +73,7 @@ v21.0.00
         Timetable Admin: added a dateEnrolled and dateUnenrolled to class enrolments
         Testing: Changed install suite admin username and password to be compliant with the default password requirements
 	Format: added nameLinked formatter
+	Login: added custom login loader
 
     Bug Fixes
         System: fixed missing organization name on welcome page

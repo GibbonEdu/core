@@ -22,6 +22,9 @@ use Gibbon\Comms\NotificationEvent;
 // Gibbon system-wide include
 require_once './gibbon.php';
 
+$page = $container->get('page');
+$session = $container->get('session');
+
 setCurrentSchoolYear($guid, $connection2);
 
 //The current/actual school year info, just in case we are working in a different year
@@ -46,8 +49,23 @@ if (empty($username) or empty($password)) {
     header("Location: {$URL}");
     exit;
 }
-//VALIDATE LOGIN INFORMATION
 else {
+    // Custom login loader
+    if (!$session->exists('login_custom.php')) {
+        $globals = [
+            'guid'        => $guid,
+            'connection2' => $connection2,
+            'username' => $username,
+            'password' => $password
+        ];
+
+        $session->set('login_custom.php', $page->fetchFromFile('./login_custom.php', $globals));
+    }
+
+    if ($session->has('login_custom.php')) {
+        $page->write($session->get('login_custom.php'));
+    }
+    //VALIDATE LOGIN INFORMATION
     try {
         $data = array('username' => $username);
         $sql = "SELECT gibbonPerson.*, futureYearsLogin, pastYearsLogin FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE ((username=:username OR (LOCATE('@', :username)>0 AND email=:username) ) AND (status='Full'))";
