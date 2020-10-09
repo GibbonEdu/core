@@ -177,8 +177,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 
                     $row = $form->addRow();
                         $row->addHeading(__('Columns'));
-                        $row->addContent(__('Visualise?'))->setClass('textCenter')->wrap('<strong>', '</strong>');
-                        $row->addContent('')->setClass('w-64');
+                        $row->addContent(__('Visualise?'))->wrap('<strong class="block w-full text-left">', '</strong>');
 
 					$data = array('gibbonRubricID' => $gibbonRubricID);
 					$sql = "SELECT gibbonRubricColumnID, title, gibbonScaleGradeID, visualise FROM gibbonRubricColumn WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber";
@@ -192,28 +191,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 							$row = $form->addRow();
                             $row->addLabel('columnName'.$count, sprintf(__('Column %1$s Title'), ($count + 1)));
                             
-                            $row->addCheckbox('columnVisualise['.$count.']')
+                            $col = $row->addColumn();
+                            $col->addCheckbox('columnVisualise['.$count.']')
                                 ->setValue('Y')
                                 ->alignCenter()
                                 ->checked($rubricColumn['visualise'])
-                                ->setClass('textCenter');
+                                ->setClass('textCenter w-12 self-center');
 
 							// Handle non-grade scale columns as a text field, otherwise a dropdown
 							if ($values['gibbonScaleID'] == '') {
-								$row->addTextField('columnTitle['.$count.']')
+								$col->addTextField('columnTitle['.$count.']')
 									->setID('columnTitle'.$count)
                                     ->maxLength(20)
 									->required()
-                                    ->setClass('w-64')
+                                    ->setClass('flex-1 w-full')
 									->setValue($rubricColumn['title']);
 							} else {
 								$data = array('gibbonScaleID' => $values['gibbonScaleID']);
 								$sql = "SELECT gibbonScaleGradeID as value, CONCAT(value, ' - ', descriptor) as name FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID AND NOT value='Incomplete' ORDER BY sequenceNumber";
-								$row->addSelect('gibbonScaleGradeID['.$count.']')
+								$col->addSelect('gibbonScaleGradeID['.$count.']')
 									->setID('gibbonScaleGradeID'.$count)
 									->fromQuery($pdo, $sql, $data)
                                     ->required()
-                                    ->setClass('w-64')
+                                    ->setClass('flex-1 w-full')
 									->selected($rubricColumn['gibbonScaleGradeID']);
 							}
 							$form->addHiddenValue('gibbonRubricColumnID['.$count.']', $rubricColumn['gibbonRubricColumnID']);
