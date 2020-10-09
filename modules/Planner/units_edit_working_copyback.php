@@ -63,10 +63,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
     } 
 
     if ($highestAction == 'Unit Planner_all') {
-        $data = array('gibbonSchoolYearID' => $urlParams['gibbonSchoolYearID'], 'gibbonCourseID' => $urlParams['gibbonCourseID'], 'gibbonCourseClassID' => $urlParams['gibbonCourseClassID']);
+        $data = ['gibbonSchoolYearID' => $urlParams['gibbonSchoolYearID'], 'gibbonCourseID' => $urlParams['gibbonCourseID'], 'gibbonCourseClassID' => $urlParams['gibbonCourseClassID']];
         $sql = 'SELECT *, gibbonSchoolYear.name AS year, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=:gibbonCourseID AND gibbonCourseClassID=:gibbonCourseClassID';
     } elseif ($highestAction == 'Unit Planner_learningAreas') {
-        $data = array('gibbonSchoolYearID' => $urlParams['gibbonSchoolYearID'], 'gibbonCourseID' => $urlParams['gibbonCourseID'], 'gibbonCourseClassID' => $urlParams['gibbonCourseClassID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+        $data = ['gibbonSchoolYearID' => $urlParams['gibbonSchoolYearID'], 'gibbonCourseID' => $urlParams['gibbonCourseID'], 'gibbonCourseClassID' => $urlParams['gibbonCourseClassID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']];
         $sql = "SELECT gibbonCourse.gibbonCourseID, gibbonCourse.name, gibbonCourse.nameShort, gibbonSchoolYear.name AS year, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=:gibbonCourseID AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY gibbonCourse.nameShort";
     }
     $result = $pdo->select($sql, $data);

@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_smartBl
                         $URL .= '&copyReturn=error6';
                         header("Location: {$URL}");
                     } else {
-                        $URLCopy = $URLCopy.'&copyReturn=success1';
+                        $URLCopy = $URLCopy.'&copyReturn=success0';
                         header("Location: {$URLCopy}");
                     }
                 }
