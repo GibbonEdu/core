@@ -605,7 +605,6 @@ class Format
                 $url .= '&'.http_build_query($params);
             }
             $output = self::link($url, $name);
-            }
         } elseif ($roleCategory == 'Student') {
             $url = static::$settings['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID;
             if (!empty($params)) {
