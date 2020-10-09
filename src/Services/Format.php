@@ -596,14 +596,21 @@ class Format
      * @param bool $informal
      * @return string
      */
-    public static function nameLinked($gibbonPersonID, $title, $preferredName, $surname, $roleCategory = 'Other', $reverse = false, $informal = false)
+    public static function nameLinked($gibbonPersonID, $title, $preferredName, $surname, $roleCategory = 'Other', $params, $reverse = false, $informal = false)
     {
         $name = self::name($title, $preferredName, $surname, $roleCategory, $reverse, $informal);
         if ($roleCategory == 'Staff') {
             $url = static::$settings['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$gibbonPersonID;
+            if (!empty($params)) {
+                $url .= '&'.http_build_query($params);
+            }
             $output = self::link($url, $name);
+            }
         } elseif ($roleCategory == 'Student') {
             $url = static::$settings['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID;
+            if (!empty($params)) {
+                $url .= '&'.http_build_query($params);
+            }
             $output = self::link($url, $name);
         } else {
             $output = $name;
