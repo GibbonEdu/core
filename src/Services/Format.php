@@ -784,7 +784,7 @@ class Format
                 return __('After End Date');
             }
             if (empty($person['yearGroup'])) {
-                return __('Not Enroled');
+                return __('Not Enrolled');
             }
         } else {
             if (!empty($person['staffType'])) {
