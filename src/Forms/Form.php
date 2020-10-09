@@ -19,10 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms;
 
-use Gibbon\Forms\Traits\BasicAttributesTrait;
-use Gibbon\Forms\View\FormRendererInterface;
+use Gibbon\Tables\Action;
 use Gibbon\Forms\View\FormTableView;
 use Gibbon\Forms\FormFactoryInterface;
+use Gibbon\Forms\View\FormRendererInterface;
+use Gibbon\Forms\Traits\BasicAttributesTrait;
 
 /**
  * Form
@@ -39,9 +40,10 @@ class Form implements OutputableInterface
     protected $factory;
     protected $renderer;
 
-    protected $rows = array();
-    protected $triggers = array();
-    protected $values = array();
+    protected $rows = [];
+    protected $triggers = [];
+    protected $values = [];
+    protected $header = [];
 
     /**
      * Create a form with a specific factory and renderer.
@@ -242,6 +244,21 @@ class Form implements OutputableInterface
     public function addHiddenValue($name, $value)
     {
         $this->values[] = array('name' => $name, 'value' => $value);
+
+        return $this;
+    }
+
+    /**
+     * Adds a key => value array of input type=hidden values.
+     * @param  array  $array
+     */
+    public function addHiddenValues(array $array)
+    {
+        foreach ($array as $name => $value) {
+            $this->addHiddenValue($name, $value);
+        }
+
+        return $this;
     }
 
     /**
@@ -362,6 +379,30 @@ class Form implements OutputableInterface
         }
 
         return $this;
+    }
+
+    /**
+     * Add an action to the form, generally displayed in the header right-hand side.
+     *
+     * @param string $name
+     * @param string $label
+     * @return Action
+     */
+    public function addHeaderAction($name, $label = '')
+    {
+        $this->header[$name] = new Action($name, $label);
+
+        return $this->header[$name];
+    }
+
+    /**
+     * Get all header content in the table.
+     *
+     * @return array
+     */
+    public function getHeader()
+    {
+        return $this->header;
     }
 
     /**
