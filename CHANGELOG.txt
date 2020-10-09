@@ -72,6 +72,7 @@ v21.0.00
         System Admin: added a flag to import types to enable updating non-unique rows
         Timetable Admin: added a dateEnrolled and dateUnenrolled to class enrolments
         Testing: Changed install suite admin username and password to be compliant with the default password requirements
+	Format: added nameLinked formatter
 
     Bug Fixes
         System: fixed missing organization name on welcome page
