@@ -1,8 +1,4 @@
 <?php
-
-use Gibbon\Forms\Form;
-use Gibbon\Services\Format;
-use Gibbon\Tables\DataTable;
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -21,27 +17,24 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//Module includes
+use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+
+// Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-// common variables
-$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
-$gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
-$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
-$gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
+$urlParams = [
+    'gibbonSchoolYearID' => $_GET['gibbonSchoolYearID'] ?? '',
+    'gibbonCourseID' => $_GET['gibbonCourseID'] ?? '',
+    'gibbonCourseClassID' => $_GET['gibbonCourseClassID'] ?? '',
+    'gibbonUnitID' => $_GET['gibbonUnitID'] ?? '',
+];
 
 $page->breadcrumbs
-    ->add(__('Unit Planner'), 'units.php', [
-        'gibbonSchoolYearID' => $gibbonSchoolYearID,
-        'gibbonCourseID' => $gibbonCourseID,
-    ])
-    ->add(__('Edit Unit'), 'units_edit.php', [
-        'gibbonSchoolYearID' => $gibbonSchoolYearID,
-        'gibbonCourseID' => $gibbonCourseID,
-        'gibbonUnitID' => $gibbonUnitID,
-    ])
+    ->add(__('Unit Planner'), 'units.php', $urlParams)
+    ->add(__('Edit Unit'), 'units_edit.php', $urlParams)
     ->add(__('Copy Unit Back'));
-
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyBack.php') == false) {
     // Access denied
@@ -59,17 +52,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyBac
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    // Check if courseschool year specified
-    if ($gibbonCourseID == '' or $gibbonSchoolYearID == '' or $gibbonCourseClassID == '') {
+    // Check if course & school year specified
+    if ($urlParams['gibbonCourseID'] == '' or $urlParams['gibbonSchoolYearID'] == '' or $urlParams['gibbonCourseClassID'] == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
     }
 
     if ($highestAction == 'Unit Planner_all') {
-        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID, 'gibbonCourseClassID' => $gibbonCourseClassID);
+        $data = array('gibbonSchoolYearID' => $urlParams['gibbonSchoolYearID'], 'gibbonCourseID' => $urlParams['gibbonCourseID'], 'gibbonCourseClassID' => $urlParams['gibbonCourseClassID']);
         $sql = 'SELECT *, gibbonSchoolYear.name AS year, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=:gibbonCourseID AND gibbonCourseClassID=:gibbonCourseClassID';
     } elseif ($highestAction == 'Unit Planner_learningAreas') {
-        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID, 'gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+        $data = array('gibbonSchoolYearID' => $urlParams['gibbonSchoolYearID'], 'gibbonCourseID' => $urlParams['gibbonCourseID'], 'gibbonCourseClassID' => $urlParams['gibbonCourseClassID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
         $sql = "SELECT gibbonCourse.gibbonCourseID, gibbonCourse.name, gibbonCourse.nameShort, gibbonSchoolYear.name AS year, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=:gibbonCourseID AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY gibbonCourse.nameShort";
     }
     $result = $pdo->select($sql, $data);
@@ -82,12 +75,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyBac
     $values = $result->fetch();
 
     // Check if unit specified
-    if ($gibbonUnitID == '') {
+    if ($urlParams['gibbonUnitID'] == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
     }
 
-    $data = array('gibbonUnitID' => $gibbonUnitID, 'gibbonCourseID' => $gibbonCourseID);
+    $data = array('gibbonUnitID' => $urlParams['gibbonUnitID'], 'gibbonCourseID' => $urlParams['gibbonCourseID']);
     $sql = 'SELECT gibbonCourse.nameShort AS courseName, gibbonUnit.name as unit FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonUnitID=:gibbonUnitID AND gibbonUnit.gibbonCourseID=:gibbonCourseID';
     $result = $pdo->select($sql, $data);
 
@@ -96,7 +89,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyBac
         return;
     } 
 
-    // Let's go!
     $values += $result->fetch();
     
     // DETAILS
@@ -109,16 +101,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyBac
     echo $table->render([$values]);
 
     // FORM
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/units_edit_copyBackProcess.php?gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonSchoolYearID=$gibbonSchoolYearID");
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/units_edit_copyBackProcess.php?'.http_build_query($urlParams));
 
     $form->setTitle(__('Copy Unit Back'));
     $form->setDescription(sprintf(__('This function allows you to take all of the blocks from the selected working unit (%1$s in %2$s) and use them to replace the blocks in the master unit. In this way you can use your refined and improved unit as your master next time you deploy.'), $values['name'], Format::courseClassName($values['course'], $values['class'])));
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-    $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
-    $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
-    $form->addHiddenValue('gibbonCourseID', $gibbonCourseID);
-    $form->addHiddenValue('gibbonUnitID', $gibbonUnitID);
+    $form->addHiddenValues($urlParams);
 
     $row = $form->addRow();
         $col = $row->addColumn();
@@ -130,5 +119,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyBac
     echo $form->getOutput();
 
     //Print sidebar
-    $_SESSION[$guid]['sidebarExtra'] = sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYearID);
+    $_SESSION[$guid]['sidebarExtra'] = sidebarExtraUnits($guid, $connection2, $urlParams['gibbonCourseID'], $urlParams['gibbonSchoolYearID']);
 }
