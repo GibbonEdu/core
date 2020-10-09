@@ -383,9 +383,9 @@ class Format
      * @param string $value
      * @return string
      */
-    public static function tag($value, $class)
+    public static function tag($value, $class, $title = '')
     {
-        return '<span class="tag '.$class.'">'.$value.'</span>';
+        return '<span class="tag '.$class.'" title="'.$title.'">'.$value.'</span>';
     }
 
     /**
