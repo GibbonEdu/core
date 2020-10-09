@@ -22,17 +22,14 @@ include './gibbon.php';
 
 $output = '';
 
-$themeName = 'Default';
-if (isset($_SESSION[$guid]['gibbonThemeName'])) {
-    $themeName = $_SESSION[$guid]['gibbonThemeName'];
-}
+$themeName = $gibbon->session->get('gibbonThemeName') ?? 'Default';
 
-if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']) == false) {
+if (!isset($_SESSION[$guid]) or !$gibbon->session->exists('gibbonPersonID')) {
     $output .= "<a class='inactive' title='".__('Notifications')."' href='#'><img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='./themes/Default/img/notifications.png'></a>";
 } else {
     //CHECK FOR SYSTEM ALARM
-    if (isset($_SESSION[$guid]['gibbonRoleIDCurrentCategory'])) {
-        if ($_SESSION[$guid]['gibbonRoleIDCurrentCategory'] == 'Staff') {
+    if ($gibbon->session->exists('gibbonRoleIDCurrentCategory')) {
+        if ($gibbon->session->get('gibbonRoleIDCurrentCategory') == 'Staff') {
             $alarm = getSettingByScope($connection2, 'System', 'alarm');
             if ($alarm == 'General' or $alarm == 'Lockdown' or $alarm == 'Custom') {
                 $type = 'general';
@@ -47,7 +44,7 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
                         $(\"body\").append(\"<div id='TB_window'></div>\");
 					}
 					if ($('#TB_window').is(':visible')==false) {
-						var url = '".$_SESSION[$guid]['absoluteURL'].'/index_notification_ajax_alarm.php?type='.$type."&KeepThis=true&TB_iframe=true&width=1000&height=500';
+						var url = '".$gibbon->session->get('absoluteURL').'/index_notification_ajax_alarm.php?type='.$type."&KeepThis=true&TB_iframe=true&width=1000&height=500';
 						tb_show('', url);
 						$('#TB_window').addClass('alarm') ;
 					}
@@ -64,7 +61,7 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
 
     //GET & SHOW NOTIFICATIONS
     try {
-        $dataNotifications = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
+        $dataNotifications = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'), 'gibbonPersonID2' => $gibbon->session->get('gibbonPersonID'));
         $sqlNotifications = "(SELECT gibbonNotification.*, gibbonModule.name AS source FROM gibbonNotification JOIN gibbonModule ON (gibbonNotification.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonPersonID=:gibbonPersonID AND status='New')
 		UNION
 		(SELECT gibbonNotification.*, 'System' AS source FROM gibbonNotification WHERE gibbonModuleID IS NULL AND gibbonPersonID=:gibbonPersonID2 AND status='New')
@@ -78,7 +75,7 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
     if ($resultNotifications->rowCount() > 0) {
         $output .= "<a class='inline-block relative mr-4' title='".__('Notifications')."' href='./index.php?q=notifications.php'><span class='badge -mr-2 right-0'>".$resultNotifications->rowCount()."</span><img style='margin-left: 2px; vertical-align: -75%' src='./themes/".$themeName."/img/notifications.png'></a>";
     } else {
-        $output .= "<a class='inactive inline-block relative mr-4' title='".__('Notifications')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=notifications.php'><img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications.png'></a>";
+        $output .= "<a class='inactive inline-block relative mr-4' title='".__('Notifications')."' href='".$gibbon->session->get('absoluteURL')."/index.php?q=notifications.php'><img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='".$gibbon->session->get('absoluteURL').'/themes/'.$gibbon->session->get('gibbonThemeName')."/img/notifications.png'></a>";
     }
 }
 

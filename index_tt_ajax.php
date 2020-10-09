@@ -23,8 +23,8 @@ include './gibbon.php';
 //Set up for i18n via gettext
 if (isset($_SESSION[$guid]['i18n']['code']) && function_exists('gettext')) {
     if ($_SESSION[$guid]['i18n']['code'] != null) {
-        putenv('LC_ALL='.$_SESSION[$guid]['i18n']['code']);
-        setlocale(LC_ALL, $_SESSION[$guid]['i18n']['code']);
+        putenv('LC_ALL='.$gibbon->session->get('i18n')['code']);
+        setlocale(LC_ALL, $gibbon->session->get('i18n')['code']);
         bindtextdomain('gibbon', './i18n');
         textdomain('gibbon');
         bind_textdomain_codeset('gibbon', 'UTF-8');
@@ -33,11 +33,7 @@ if (isset($_SESSION[$guid]['i18n']['code']) && function_exists('gettext')) {
 
 //Setup variables
 $output = '';
-if (isset($_POST['gibbonTTID'])) {
-    $id = $_POST['gibbonTTID'];
-} else {
-    $id = '';
-}
+$id = $_POST['gibbonTTID'] ?? '';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == false) {
     //Acess denied
@@ -53,24 +49,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
 
     if ($_POST['fromTT'] == 'Y') {
         if ($_POST['schoolCalendar'] == 'on' or $_POST['schoolCalendar'] == 'Y') {
-            $_SESSION[$guid]['viewCalendarSchool'] = 'Y';
+            $gibbon->session->set('viewCalendarSchool', 'Y');
         } else {
-            $_SESSION[$guid]['viewCalendarSchool'] = 'N';
+            $gibbon->session->set('viewCalendarSchool', 'N');
         }
 
         if ($_POST['personalCalendar'] == 'on' or $_POST['personalCalendar'] == 'Y') {
-            $_SESSION[$guid]['viewCalendarPersonal'] = 'Y';
+            $gibbon->session->set('viewCalendarPersonal', 'Y');
         } else {
-            $_SESSION[$guid]['viewCalendarPersonal'] = 'N';
+            $gibbon->session->set('viewCalendarPersonal', 'N');
         }
 
         if ($_POST['spaceBookingCalendar'] == 'on' or $_POST['spaceBookingCalendar'] == 'Y') {
-            $_SESSION[$guid]['viewCalendarSpaceBooking'] = 'Y';
+            $gibbon->session->set('viewCalendarSpaceBooking', 'Y');
         } else {
-            $_SESSION[$guid]['viewCalendarSpaceBooking'] = 'N';
+            $gibbon->session->set('viewCalendarSpaceBooking', 'N');
         }
     }
-    $tt = renderTT($guid, $connection2, $_SESSION[$guid]['gibbonPersonID'], $id, false, $ttDate, '', '', 'trim');
+    $tt = renderTT($guid, $connection2, $gibbon->session->get('gibbonPersonID'), $id, false, $ttDate, '', '', 'trim');
     if ($tt != false) {
         $output .= $tt;
     } else {

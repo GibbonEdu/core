@@ -101,10 +101,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 	                i18nCheckAndUpdateVersion($container, $versionDB);
 
 					// Clear the templates cache folder
-	                removeDirectoryContents($_SESSION[$guid]['absolutePath'].'/uploads/cache');
+	                removeDirectoryContents($gibbon->session->get('absolutePath').'/uploads/cache');
 
 					// Clear the var folder and remove it
-	                removeDirectoryContents($_SESSION[$guid]['absolutePath'].'/var', true);
+	                removeDirectoryContents($gibbon->session->get('absolutePath').'/var', true);
 
                     echo "<div class='success'>";
                     echo __('Your request was completed successfully.');
@@ -223,10 +223,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 	                i18nCheckAndUpdateVersion($container, $versionDB);
 
 					// Clear the templates cache folder
-	                removeDirectoryContents($_SESSION[$guid]['absolutePath'].'/uploads/cache');
+	                removeDirectoryContents($gibbon->session->get('absolutePath').'/uploads/cache');
 
 					// Clear the var folder and remove it
-                    removeDirectoryContents($_SESSION[$guid]['absolutePath'].'/var', true);
+                    removeDirectoryContents($gibbon->session->get('absolutePath').'/var', true);
                     
                     echo "<div class='success'>";
                     echo __('Your request was completed successfully.');
