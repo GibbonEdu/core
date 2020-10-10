@@ -490,14 +490,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         //Report back
                         if ($enrolmentOK == false) {
                             echo "<div class='warning'>";
-                            echo __('Student could not be enroled, so this will have to be done manually at a later date.');
+                            echo __('Student could not be enrolled, so this will have to be done manually at a later date.');
                             echo '</div>';
                         } else {
                             echo '<h4>';
                             echo 'Student Enrolment';
                             echo '</h4>';
                             echo '<ul>';
-                            echo '<li>'.__('The student has successfully been enroled in the specified school year, year group and roll group.').'</li>';
+                            echo '<li>'.__('The student has successfully been enrolled in the specified school year, year group and roll group.').'</li>';
 
                             // Handle automatic course enrolment if enabled
                             $autoEnrolStudent = (isset($_POST['autoEnrolStudent']))? $_POST['autoEnrolStudent'] : 'N';
@@ -505,18 +505,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 $data = array(
                                     'gibbonRollGroupID' => $values['gibbonRollGroupID'],
                                     'gibbonPersonID' => $gibbonPersonID,
+                                    'gibbonSchoolYearIDEntry' => $values['gibbonSchoolYearIDEntry'],
                                 );
 
-                                $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `reportable`)
-                                        SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, 'Student', 'Y'
+                                $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `dateEnrolled`, `reportable`)
+                                        SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, 'Student', GREATEST((SELECT firstDay FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearIDEntry), CURRENT_DATE), 'Y'
                                         FROM gibbonCourseClassMap
                                         WHERE gibbonCourseClassMap.gibbonRollGroupID=:gibbonRollGroupID";
                                 $pdo->executeQuery($data, $sql);
 
                                 if (!$pdo->getQuerySuccess()) {
-                                    echo '<li class="warning">'.__('Student could not be automatically enroled in courses, so this will have to be done manually at a later date.').'</li>';
+                                    echo '<li class="warning">'.__('Student could not be automatically enrolled in courses, so this will have to be done manually at a later date.').'</li>';
                                 } else {
-                                    echo '<li>'.__('The student has automatically been enroled in courses for Roll Group.').'</li>';
+                                    echo '<li>'.__('The student has automatically been enrolled in courses for Roll Group.').'</li>';
                                 }
                             }
 
@@ -1206,9 +1207,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                     $notificationText = sprintf(__('An application form for %1$s (%2$s) has been accepted for the %3$s school year.'), $studentName, $studentGroup, $schoolYearName );
                     if ($enrolmentOK && !empty($values['gibbonRollGroupID'])) {
-                        $notificationText .= ' '.__('The student has successfully been enroled in the specified school year, year group and roll group.');
+                        $notificationText .= ' '.__('The student has successfully been enrolled in the specified school year, year group and roll group.');
                     } else {
-                        $notificationText .= ' '.__('Student could not be enroled, so this will have to be done manually at a later date.');
+                        $notificationText .= ' '.__('Student could not be enrolled, so this will have to be done manually at a later date.');
                     }
 
                     $event->addScope('gibbonYearGroupID', $values['gibbonYearGroupIDEntry']);

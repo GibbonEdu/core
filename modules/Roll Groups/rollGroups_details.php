@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_det
         $page->breadcrumbs
             ->add(__('View Roll Groups'), 'rollGroups.php');
 
-        $gibbonRollGroupID = $_GET['gibbonRollGroupID'];
+        $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
         if ($gibbonRollGroupID == '') {
             echo "<div class='error'>";
             echo __('You have not specified one or more required parameters.');

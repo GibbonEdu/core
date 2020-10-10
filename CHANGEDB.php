@@ -699,4 +699,6 @@ ALTER TABLE `gibbonPlannerEntry` CHANGE `homeworkSubmissionRequired` `homeworkSu
 UPDATE `gibbonPlannerEntry` SET homeworkSubmissionRequired='Required' WHERE homeworkSubmissionRequired='Compulsory';end
 ALTER TABLE `gibbonPlannerEntry` CHANGE `homeworkSubmissionRequired` `homeworkSubmissionRequired` enum('Optional','Required') DEFAULT NULL;end
 ALTER TABLE `gibbonModule` CHANGE `version` `version` VARCHAR(8) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
+UPDATE gibbonStaff SET type='Support' WHERE NOT type='Teaching';end
+ALTER TABLE `gibbonCourseClassPerson` ADD `dateEnrolled` DATE NULL DEFAULT NULL AFTER `role`, ADD `dateUnenrolled` DATE NULL DEFAULT NULL AFTER `dateEnrolled`;end
 ";

@@ -1263,9 +1263,9 @@ function isModuleAccessible($guid, $connection2, $address = '')
     }
     $output = false;
     //Check user is logged in
-    if ($_SESSION[$guid]['username'] != '') {
+    if (!empty($_SESSION[$guid]['username'])) {
         //Check user has a current role set
-        if ($_SESSION[$guid]['gibbonRoleIDCurrent'] != '') {
+        if (!empty($_SESSION[$guid]['gibbonRoleIDCurrent'])) {
             //Check module ready
             $moduleID = checkModuleReady($address, $connection2);
             if ($moduleID != false) {

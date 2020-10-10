@@ -33,16 +33,24 @@ v21.0.00
 
     Changes With Important Notices
         System: renamed planner_parentWeeklyEmailSummary.php to schoolAdmin_parentWeeklyEmailSummary.php
+        Staff: removed roles-as-type in Manage Staff, reducing option to Teaching and Support and setting all non-Teaching users to Support
 
     Tweaks & Additions
         System: added Romanian Leu as currency option
         System: update complete homework to display in green on the Parent Dashboard
+        System: added text labels to Print and Export options in ReportTable
         Attendance: added an Offsite - Late option for attendance codes
         Departments: improved course/class naming in Class view
+        Data Updater: data updates with no changes will be automatically accepted
         Finance: added a setting to customize Payment Type options
+        Finance: added error logging to the email reminder process
         Formal Assessment: added a bulk action for External Assessment Data
         Individual Needs: removed Notes & Review from parent view of individual needs information
         Library: added ID column to View Overdue Items report
+        Library: enabled printing and exporting the Manage Catalog table
+        Library: replaced borrowable with responsible user in Manage Catalog
+        Markbook: added error logging for failed file uploads on Enter Data page
+        Markbook: allow users with Edit Markbook_multiple and Edit Markbook_everything to edit grouped columns
         Messenger: tied messages to school year
         Messenger: convert copy-pasted divs to paragraphs in New Quick Wall Message
         Planner: update the attendance list to exclude students with a timetable exception
@@ -52,15 +60,20 @@ v21.0.00
         Planner: refactored the Parent Weekly Email Summary to match homework colouring
         Planner: replaced "Compulsory" with "Required" in relation to homework
         Planner: removed lessons with timetable exceptions from Today's Lessons on the dahsboard
+        Planner: adjust the display of homework lists to account for class enrolment dates
         Reports: display the download link after a batch PDF has completed
         Reports: added full course name to the report writing page
+        Reports: added a bulk delete action in the Edit Reporting Scopes page
         School Admin: added Manage Medical Conditions action
         Students: updated application acceptance message to reflect automatically created medical record
         Students: added uniqueness checks for Student ID field
         Students: send notifications for student notes to the Head of Year, if available
+        Students: adjusted the font size to scale down for names on Student ID cards
         System Admin: adjusted View Log to show only current year's log entries
         System Admin: added a flag to import types to enable updating non-unique rows
+        Timetable Admin: added a dateEnrolled and dateUnenrolled to class enrolments
         Testing: Changed install suite admin username and password to be compliant with the default password requirements
+	Format: added nameLinked formatter
 
     Bug Fixes
         System: fixed missing organization name on welcome page
@@ -68,20 +81,24 @@ v21.0.00
         System: fixed validation not working for paginated bulk action forms
         System: added a fallback to translateN for systems that don't have gettext
         System Admin: fixed PHP deprecation errors in CSV importer
+        Attendance: fixed sortable Class column in Student Not In Class report
         Formal Assessment: removed Back link from delete modal
         Individual Needs: fixed description of Reason field in Manage Investigations
         Library: fixed broken delete function in Manage Catalog
         Messenger: fixed SMTP debug settings in New Message process page
+        Messenger: fixed copy-pasted div/paragraph replacement in sender's copy of emails
         Reports: fixed AttendanceByCycle data source counting school attendance as class attendance
         Reports: fixed MpdfRenderer not resetting headers when generating batch single files
+        Reports: fixed Reporting Cycle Duplicate copying criteria from year to year
         Planner: fixed Outcomes by Course for courses with multiple year groups
+        Planner: fixed alignment of birthday icon in attendance on Lesson page
         Staff: fixed alternate email address causing an error on Personal subpage
         Students: fixed parent support link in application acceptance email
         Students: fixed students able to see other students in class lists
         Students: fixed issue preventing timetable edit link from working with left students and allStudent flag
-	Tests: Added fallback environment variables if .env is not defining DB details
-	Tests: Changed HTTP to HTTPs, so SSL enabled environments don't fail
-	Tests: Added Users group and changed reference in acceptance.suite.yml so that the acceptance suite does not fail
+	    Tests: added fallback environment variables if .env is not defining DB details
+	    Tests: changed HTTP to HTTPs, so SSL enabled environments don't fail
+	    Tests: added Users group and changed reference in acceptance.suite.yml so that the acceptance suite does not fail
 
 
 v20.0.00

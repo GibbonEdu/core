@@ -267,7 +267,7 @@ else {
 										$col->addContent($confirmationIndicator($parent1Receipt));
 										$col->onlyIf($sender == true && !empty($parent1Receipt) && $parent1Receipt['confirmed'] == 'N')
 											->addCheckbox('gibbonMessengerReceiptIDs[]')
-											->setValue($parent1Receipt['gibbonMessengerReceiptID'])
+											->setValue($parent1Receipt['gibbonMessengerReceiptID'] ?? '')
                                             ->setClass('')
                                             ->alignLeft();
 
@@ -277,7 +277,7 @@ else {
 										$col->addContent($confirmationIndicator($parent2Receipt));
 										$col->onlyIf($sender == true && !empty($parent2Receipt) && $parent2Receipt['confirmed'] == 'N')
 											->addCheckbox('gibbonMessengerReceiptIDs[]')
-											->setValue($parent2Receipt['gibbonMessengerReceiptID'])
+											->setValue($parent2Receipt['gibbonMessengerReceiptID'] ?? '')
                                             ->setClass('')
                                             ->alignLeft();
 							}

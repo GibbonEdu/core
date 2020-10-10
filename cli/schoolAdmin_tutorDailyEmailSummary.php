@@ -59,7 +59,7 @@ set_time_limit(1800);
 // Prep for email sending later
 $mail = $container->get(Mailer::class);
 $mail->SMTPKeepAlive = true;
-$sendReport = ['emailSent' => 0, 'emailFailed' => 0];
+$sendReport = ['emailSent' => 0, 'emailFailed' => 0, 'emailErrors' => ''];
 
 $currentDate = date('Y-m-d');
 $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
@@ -142,6 +142,7 @@ foreach ($yearGroups as $gibbonYearGroupID => $rollGroups) {
             $sendReport['emailSent']++;
         } else {
             $sendReport['emailFailed']++;
+            $sendReport['emailErrors'] .= sprintf(__('An error (%1$s) occurred sending an email to %2$s.'), 'failed to send', $tutor['preferredName'].' '.$tutor['surname']).'<br/>';
         }
 
         // Clear addresses
@@ -166,6 +167,7 @@ foreach ($yearGroups as $gibbonYearGroupID => $rollGroups) {
             $sendReport['emailSent']++;
         } else {
             $sendReport['emailFailed']++;
+            $sendReport['emailErrors'] .= sprintf(__('An error (%1$s) occurred sending an email to %2$s.'), 'failed to send', $HOY['preferredName'].' '.$HOY['surname']).'<br/>';
         }
 
         // Clear addresses
@@ -184,6 +186,7 @@ $body = __('Date').': '.Format::date(date('Y-m-d')).'<br/>';
 $body .= __('Total Count').': '.($sendReport['emailSent'] + $sendReport['emailFailed']).'<br/>';
 $body .= __('Send Succeed Count').': '.$sendReport['emailSent'].'<br/>';
 $body .= __('Send Fail Count').': '.$sendReport['emailFailed'].'<br/><br/>';
+$body .= $sendReport['emailErrors'];
 
 $event->setNotificationText(__('A School Admin CLI script has run.').'<br/><br/>'.$body);
 $event->setActionLink('/index.php?q=/modules/School Admin/emailSummarySettings.php');

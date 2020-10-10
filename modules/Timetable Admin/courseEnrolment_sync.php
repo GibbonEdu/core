@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     $table = DataTable::createPaginated('sync', $criteria);
 
     $table->setTitle(__('Map Classes'));
-    $table->setDescription(__('Syncing enrolment lets you enrol students into courses by mapping them to a Roll Group and Year Group within the school. If auto-enrol is turned on, new students accepted through the application form and student enrolment process will be enroled in courses automatically.'));
+    $table->setDescription(__('Syncing enrolment lets you enrol students into courses by mapping them to a Roll Group and Year Group within the school. If auto-enrol is turned on, new students accepted through the application form and student enrolment process will be enrolled in courses automatically.'));
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/Timetable Admin/courseEnrolment_sync_add.php')

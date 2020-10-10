@@ -18,6 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
+use Gibbon\Domain\Timetable\CourseGateway;
+use Gibbon\Domain\RollGroups\RollGroupGateway;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Module\Reports\Domain\ReportingScopeGateway;
 use Gibbon\Module\Reports\Domain\ReportingCriteriaGateway;
@@ -37,6 +39,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
     $reportingCycleGateway = $container->get(ReportingCycleGateway::class);
     $reportingScopeGateway = $container->get(ReportingScopeGateway::class);
     $reportingCriteriaGateway = $container->get(ReportingCriteriaGateway::class);
+    $rollGroupGateway = $container->get(RollGroupGateway::class);
+    $courseGateway = $container->get(CourseGateway::class);
 
     $data = [
         'gibbonSchoolYearID'    => $_POST['gibbonSchoolYearID'] ?? '',
@@ -86,6 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
 
     // Create the record
     $gibbonReportingCycleIDNew = $reportingCycleGateway->insert($data);
+    $failedCriteria = 0;
 
     // Duplicate the reporting scopes and criteria
     if (!empty($gibbonReportingCycleIDNew)) {
@@ -95,8 +100,43 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
             $gibbonReportingScopeIDNew = $reportingScopeGateway->insert($scopeData);
 
             if (!empty($gibbonReportingScopeIDNew)) {
-                $criteria = $reportingCriteriaGateway->selectBy(['gibbonReportingCycleID' => $gibbonReportingCycleID, 'gibbonReportingScopeID' => $scopeData['gibbonReportingScopeID']])->fetchAll();
+                $criteria = $reportingCriteriaGateway->selectBy([
+                    'gibbonReportingCycleID' => $gibbonReportingCycleID,
+                    'gibbonReportingScopeID' => $scopeData['gibbonReportingScopeID']]
+                )->fetchAll();
+
                 foreach ($criteria as $criteriaData) {
+                    // Grab the roll group ID by name if it's in a different school year
+                    if (!empty($criteriaData['gibbonRollGroupID']) && $data['gibbonSchoolYearID'] != $values['gibbonSchoolYearID']) {
+                        $rollGroupSource = $rollGroupGateway->getByID($criteriaData['gibbonRollGroupID']);
+                        $rollGroupDestination = $rollGroupGateway->selectBy([
+                            'gibbonSchoolYearID' => $data['gibbonSchoolYearID'], 
+                            'nameShort' => $rollGroupSource['nameShort'],
+                        ])->fetch();
+
+                        if (!empty($rollGroupDestination['gibbonRollGroupID'])) {
+                            $criteriaData['gibbonRollGroupID'] = $rollGroupDestination['gibbonRollGroupID'];
+                        } else {
+                            $failedCriteria++;
+                            continue;
+                        }
+                    }
+                    // Grab the course ID by name if it's in a different school year
+                    if (!empty($criteriaData['gibbonCourseID']) && $data['gibbonSchoolYearID'] != $values['gibbonSchoolYearID']) {
+                        $courseSource = $courseGateway->getByID($criteriaData['gibbonCourseID']);
+                        $courseDestination = $courseGateway->selectBy([
+                            'gibbonSchoolYearID' => $data['gibbonSchoolYearID'], 
+                            'nameShort' => $courseSource['nameShort'],
+                        ])->fetch();
+                        
+                        if (!empty($courseDestination['gibbonCourseID'])) {
+                            $criteriaData['gibbonCourseID'] = $courseDestination['gibbonCourseID'];
+                        } else {
+                            $failedCriteria++;
+                            continue;
+                        }
+                    }
+
                     $criteriaData['gibbonReportingCycleID'] = $gibbonReportingCycleIDNew;
                     $criteriaData['gibbonReportingScopeID'] = $gibbonReportingScopeIDNew;
                     $gibbonReportingCriteriaIDNew = $reportingCriteriaGateway->insert($criteriaData);
@@ -105,8 +145,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
         }
     }
 
-    $URL .= !$gibbonReportingCycleIDNew
-        ? "&return=error2"
+    if (!$gibbonReportingCycleIDNew) {
+        $URL .= "&return=error2";
+        header("Location: {$URL}");
+    }
+
+    $URL .= !empty($failedCriteria)
+        ? "&return=warning3&failedCriteria=$failedCriteria"
         : "&return=success0";
 
     header("Location: {$URL}&editID=$gibbonReportingCycleIDNew");

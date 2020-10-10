@@ -1282,7 +1282,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 										</td>
 										<td class="right">
 											<input name="homeworkDueDate" id="homeworkDueDate" maxlength=10 value="<?php if ($rowMyHomework['homework'] == 'Y') { echo dateConvertBack($guid, substr($rowMyHomework['homeworkDueDateTime'], 0, 10));
-											} else {
+											} elseif (!empty($homeworkDueDate)) {
 												echo dateConvertBack($guid, substr($homeworkDueDate, 0, 10));
 											} ?>" type="text" class="standardWidth">
 											<script type="text/javascript">
@@ -1313,7 +1313,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 										</td>
 										<td class="right">
 											<input name="homeworkDueDateTime" id="homeworkDueDateTime" maxlength=5 value="<?php if ($rowMyHomework['homework'] == 'Y') { echo substr($rowMyHomework['homeworkDueDateTime'], 11, 5);
-											} else {
+											} elseif (!empty($homeworkDueDateTime)) {
 												echo substr($homeworkDueDateTime, 0, 5);
 											} ?>" type="text" class="standardWidth">
 											<script type="text/javascript">
@@ -1526,7 +1526,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 							}
 
 							//Get photos
-							$_SESSION[$guid]['sidebarExtra'] .= '<div>';
+							$_SESSION[$guid]['sidebarExtra'] .= '<div class="relative">';
                             $_SESSION[$guid]['sidebarExtra'] .= Format::userPhoto($rowClassGroup['image_240'], 75, 'mx-auto');
 
                             if ($row['role'] == 'Teacher' and $teacher == true) {
@@ -1534,13 +1534,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     //HEY SHORTY IT'S YOUR BIRTHDAY!
 									$daysUntilNextBirthday = daysUntilNextBirthday($rowClassGroup['dob']);
                                     if ($daysUntilNextBirthday == 0) {
-                                        $_SESSION[$guid]['sidebarExtra'] .= "<img title='".sprintf(__('%1$s  birthday today!'), $rowClassGroup['preferredName'].'&#39;s')."' style='margin: -24px 0 0 0; width: 25px; height: 25px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/gift_pink.png'/>";
+                                        $_SESSION[$guid]['sidebarExtra'] .= "<img title='".sprintf(__('%1$s  birthday today!'), $rowClassGroup['preferredName'].'&#39;s')."' class='w-6 h-6 absolute right-0 bottom-0 mr-1' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/gift_pink.png'/>";
                                     } elseif ($daysUntilNextBirthday > 0 and $daysUntilNextBirthday < 8) {
                                         $_SESSION[$guid]['sidebarExtra'] .= "<img title='$daysUntilNextBirthday day";
                                         if ($daysUntilNextBirthday != 1) {
                                             $_SESSION[$guid]['sidebarExtra'] .= 's';
                                         }
-                                        $_SESSION[$guid]['sidebarExtra'] .= ' until '.$rowClassGroup['preferredName']."&#39;s birthday!' style='margin: -24px 0 0 0; width: 25px; height: 25px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/gift.png'/>";
+                                        $_SESSION[$guid]['sidebarExtra'] .= ' until '.$rowClassGroup['preferredName']."&#39;s birthday!' class='w-6 h-6 absolute right-0 bottom-0 mr-1' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/gift.png'/>";
                                     }
 
                                     $_SESSION[$guid]['sidebarExtra'] .= '</div>';

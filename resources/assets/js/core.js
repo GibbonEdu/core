@@ -51,7 +51,7 @@ jQuery(function($){
      * Form Class: generic check All/None checkboxes
      */
     $(document).on('click', '.checkall', function () {
-        $(this).closest('fieldset').find(':checkbox').attr('checked', $(this).prop('checked')).trigger('change');
+        $(this).closest('fieldset, .bulkActionForm').find(':checkbox').attr('checked', $(this).prop('checked')).trigger('change');
     });
 
     /**

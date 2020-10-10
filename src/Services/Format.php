@@ -383,9 +383,9 @@ class Format
      * @param string $value
      * @return string
      */
-    public static function tag($value, $class)
+    public static function tag($value, $class, $title = '')
     {
-        return '<span class="tag '.$class.'">'.$value.'</span>';
+        return '<span class="tag '.$class.'" title="'.$title.'">'.$value.'</span>';
     }
 
     /**
@@ -584,7 +584,39 @@ class Format
 
         return trim($output, ' ');
     }
-
+    
+    /**
+     * Formats a linked name based on roleCategory
+     * @param string $gibbonPersonID
+     * @param string $title
+     * @param string $preferredName
+     * @param string $surname
+     * @param string $roleCategory
+     * @param bool $reverse
+     * @param bool $informal
+     * @return string
+     */
+    public static function nameLinked($gibbonPersonID, $title, $preferredName, $surname, $roleCategory = 'Other', $reverse = false, $informal = false, $params = [])
+    {
+        $name = self::name($title, $preferredName, $surname, $roleCategory, $reverse, $informal);
+        if ($roleCategory == 'Staff') {
+            $url = static::$settings['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$gibbonPersonID;
+            if (!empty($params)) {
+                $url .= '&'.http_build_query($params);
+            }
+            $output = self::link($url, $name);
+        } elseif ($roleCategory == 'Student') {
+            $url = static::$settings['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID;
+            if (!empty($params)) {
+                $url .= '&'.http_build_query($params);
+            }
+            $output = self::link($url, $name);
+        } else {
+            $output = $name;
+        }
+        return $output;
+    }
+    
     /**
      * Formats a list of names from an array containing standard title, preferredName & surname fields.
      *
@@ -752,7 +784,7 @@ class Format
                 return __('After End Date');
             }
             if (empty($person['yearGroup'])) {
-                return __('Not Enroled');
+                return __('Not Enrolled');
             }
         } else {
             if (!empty($person['staffType'])) {

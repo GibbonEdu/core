@@ -139,6 +139,24 @@ class DatabaseFormFactory extends FormFactory
 
         $classes = array();
 
+        if (!empty($gibbonPersonID) && !empty($params['courseFilter'])) {
+            $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID, 'courseFilter' => '%'.$params['courseFilter'].'%'];
+            $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS class 
+                FROM gibbonCourse
+                JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+                JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID )
+                WHERE gibbonSchoolYearID=:gibbonSchoolYearID
+                AND gibbonCourse.name LIKE :courseFilter
+                AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID
+                AND NOT role LIKE '% - Left%'
+                ORDER BY class";
+
+            $result = $this->pdo->select($sql, $data);
+            if ($result->rowCount() > 0) {
+                $classes[$params['courseFilter']] = $result->fetchAll(\PDO::FETCH_KEY_PAIR);
+            }
+        }
+
         if (!empty($gibbonPersonID) && !empty($params['departments'])) {
             $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID, 'gibbonDepartmentIDList' => $params['departments']];
             $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS class 
@@ -650,12 +668,22 @@ class DatabaseFormFactory extends FormFactory
             return $this->createSelect($name)->fromArray(array("*" => "All"))->fromResults($results)->placeholder();
     }
 
-    public function createSelectSpace($name)
+    public function createSelectSpace($name, $params = [])
     {
-        $sql = "SELECT gibbonSpaceID as value, name FROM gibbonSpace ORDER BY name";
-        $results = $this->pdo->executeQuery(array(), $sql);
-
-        return $this->createSelect($name)->fromResults($results)->placeholder();
+        $params = array_replace(array(
+            'byType' => true,
+        ), $params);
+        
+        if ($params['byType'] == true) {
+            $sql = "SELECT gibbonSpaceID as value, name, type as groupBy FROM gibbonSpace ORDER BY type, name";
+            $results = $this->pdo->executeQuery(array(), $sql);
+            return $this->createSelect($name)->fromResults($results, 'groupBy')->placeholder();
+        
+        } else {
+            $sql = "SELECT gibbonSpaceID as value, name FROM gibbonSpace ORDER BY name";
+            $results = $this->pdo->executeQuery(array(), $sql);
+            return $this->createSelect($name)->fromResults($results)->placeholder();
+        }
     }
 
     public function createTextFieldDistrict($name)

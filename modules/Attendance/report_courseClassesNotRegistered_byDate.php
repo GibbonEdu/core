@@ -272,7 +272,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
             }
 
             if ($count == 0) {
-                echo "<tr";
+                echo "<tr>";
                 echo '<td colspan=3>';
                 echo __('All classes have been registered.');
                 echo '</td>';

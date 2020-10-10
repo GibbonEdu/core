@@ -92,6 +92,10 @@ class HomeworkTable
                 $row->addClass('success');
             }
 
+            if (!empty($homework['tracker']['homeworkComplete']) && $homework['homeworkSubmissionRequired'] != 'Required') {
+                $row->addClass('success');
+            }
+
             if ($homework['type'] == 'teacherRecorded' && !empty($homework['submissions'])) {
                 $latestSubmission = end($homework['submissions']);
                 if ($latestSubmission['version'] == 'Final') $row->addClass('success');
@@ -104,8 +108,13 @@ class HomeworkTable
             ->sortable(['course', 'class'])
             ->description(__('Date'))
             ->format(function ($homework) {
-                return Format::bold(Format::courseClassName($homework['course'], $homework['class'])).'<br/>'
-                        .Format::small(Format::date($homework['date']));
+                $output = Format::bold(Format::courseClassName($homework['course'], $homework['class'])).'<br/>'
+                         .Format::small(Format::date($homework['date']));
+                if (stripos($homework['role'], 'Left') !== false) {
+                    $output .= Format::tag(__('Left'), 'dull ml-2');
+                }
+                
+                return $output;
             });
 
         $table->addColumn('name', __('Lesson'))
@@ -183,8 +192,10 @@ class HomeworkTable
             ->addParam('search', $gibbonPersonID)
             ->addParam('viewBy', 'class')
             ->format(function ($homework, $actions) use ($roleCategory) {
-                $actions->addAction('view', __('View'))
-                    ->setURL('/modules/Planner/planner_view_full.php');
+                if (stripos($homework['role'], 'Left') === false) {
+                    $actions->addAction('view', __('View'))
+                        ->setURL('/modules/Planner/planner_view_full.php');
+                }
             });
 
         return $table;
