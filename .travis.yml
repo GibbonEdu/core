@@ -89,7 +89,7 @@ before_deploy:
 
 deploy:
   - provider: script
-    script: bash ./cli/github-release.sh -k $GITHUB_DEPLOY_TOKEN -r $TRAVIS_REPO_SLUG -t $TRAVIS_TAG ./dist
+    script: bash ./cli/github-release.sh -k $GITHUB_DEPLOY_TOKEN -r $TRAVIS_REPO_SLUG -t $TRAVIS_TAG ./dist "Install Bundle"
     on:
       repo: yookoala/GibbonEduCore
       condition: '"$GITHUB_DEPLOY_TOKEN" != "" && "$TRAVIS_PHP_VERSION" == "7.0"'
