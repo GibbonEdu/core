@@ -88,8 +88,8 @@ before_deploy:
   # Create distribution folder
   - if [ ! -d ./dist ]; then mkdir dist; fi
   # Create distribution archives
-  - tar -czv --exclude="./gibbon/.git" -f "./dist/GibbonEduCore-InstallBundle-$TRAVIS_TAG.tar.gz" ./gibbon
-  - zip -rv "./dist/GibbonEduCore-InstallBundle-$TRAVIS_TAG.zip" ./gibbon -x "gibbon/.git/**/*"
+  - GZIP=-9 tar -czv --exclude="./gibbon/.git" -f "./dist/GibbonEduCore-InstallBundle-$TRAVIS_TAG.tar.gz" ./gibbon
+  - zip -9 -rv "./dist/GibbonEduCore-InstallBundle-$TRAVIS_TAG.zip" ./gibbon -x "gibbon/.git/**/*"
 
 deploy:
   - provider: script
