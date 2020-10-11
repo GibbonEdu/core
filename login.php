@@ -25,9 +25,9 @@ require_once './gibbon.php';
 setCurrentSchoolYear($guid, $connection2);
 
 //The current/actual school year info, just in case we are working in a different year
-$gibbon->session->setet('gibbonSchoolYearIDCurrent', $gibbon->session->get('gibbonSchoolYearID'));
-$gibbon->session->setet('gibbonSchoolYearNameCurrent', $gibbon->session->get('gibbonSchoolYearName'));
-$gibbon->session->setet('gibbonSchoolYearSequenceNumberCurrent', $gibbon->session->get('gibbonSchoolYearSequenceNumber'));
+$gibbon->session->set('gibbonSchoolYearIDCurrent', $gibbon->session->get('gibbonSchoolYearID'));
+$gibbon->session->set('gibbonSchoolYearNameCurrent', $gibbon->session->get('gibbonSchoolYearName'));
+$gibbon->session->set('gibbonSchoolYearSequenceNumberCurrent', $gibbon->session->get('gibbonSchoolYearSequenceNumber'));
 
 $gibbon->session->set('pageLoads', null);
 
