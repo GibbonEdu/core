@@ -134,6 +134,10 @@ function release_get_id {
 #   GITHUB_REPO_SLUG   GitHub repository slug string (i.e. "username/reponame").
 #   TAG                The tag name of the release to retrieve.
 #   FILE               The full path to the file to add.
+#   LABEL              The string label to the asset. Can include substitution placeholder
+#                         for more complex labels. Placeholders supported:
+#                           :filename:   The full filename of the asset.
+#                           :extension:  The file extension of the asset.
 #
 # Argument:
 #   RELEASE_ID_VAR     A variable reference to receive the retrieved release id, if any.
@@ -147,7 +151,9 @@ function release_add_asset {
             local __LABEL=""
         else
             local __FILENAME=$(sed_escape_string "$FILENAME")
+            local __EXTENSION=$(sed_escape_string $(parse_extension "$FILENAME"))
             local __LABEL="$(echo $LABEL | sed --expression="s/:filename:/$__FILENAME/g")"
+            __LABEL="$(echo $__LABEL | sed --expression="s/:extension:/$__EXTENSION/g")"
             echo "inside if: __LABEL=$__LABEL"
         fi
         echo "outside if: __LABEL=$__LABEL"
@@ -203,6 +209,20 @@ function sed_escape_string {
     echo $1 | sed 's/[&/\]/\\&/g'
 }
 
+#
+# parse_extension
+#
+# Parse extension of a given file. Correctly parse .tar.gz
+# and .zip extension.
+function parse_extension {
+    local FILENAME="$1"
+    local EXT=$(echo ${FILENAME##*.} | tr '[:upper:]' '[:lower:]')
+    if [ "$EXT" == "gz" ] || [ "$EXT" == "bz2" ]; then
+        local __FILENAME="${FILENAME%.*}"
+        EXT=$(echo ${__FILENAME##*.}.$EXT | tr '[:upper:]' '[:lower:]')
+    fi
+    echo $EXT
+}
 
 #
 # main
