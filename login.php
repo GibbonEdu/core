@@ -52,14 +52,7 @@ if (empty($username) or empty($password)) {
 else {
     // Custom login loader
     if (!$session->exists('login_custom.php')) {
-        $globals = [
-            'guid'        => $guid,
-            'connection2' => $connection2,
-            'username' => $username,
-            'password' => $password
-        ];
-
-        $session->set('login_custom.php', $page->fetchFromFile('./login_custom.php', $globals));
+        require_once './login_custom.php';
     }
 
     if ($session->has('login_custom.php')) {
