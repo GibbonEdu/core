@@ -81,15 +81,19 @@ before_deploy:
   - composer install --prefer-dist --no-dev --optimize-autoloader --no-interaction
   # Remove unwanated folders (e.g. unit tests, examples) from the folder
   #- find ./vendor -type d \( -name 'tests' -o -name 'unitTests' -o -name 'examples' -o -name 'Examples' -o -name 'samples' -o -name 'docs' \) -exec rm -Rf "{}" \;
+  # Move up a level to rename the source code folder to "gibbon"
+  - export DIRNAME=$(basename $PWD)
+  - cd ..
+  - mv $DIRNAME gibbon
   # Create distribution folder
   - if [ ! -d ./dist ]; then mkdir dist; fi
   # Create distribution archives
-  - tar -czv --exclude="./dist" --exclude="./.git" -f "./dist/GibbonEduCore-InstallBundle-$TRAVIS_TAG.tar.gz" .
-  - zip -rv "./dist/GibbonEduCore-InstallBundle-$TRAVIS_TAG.zip" . -x "dist/**/*" -x ".git/**/*"
+  - tar -czv --exclude="./gibbon/.git" -f "./dist/GibbonEduCore-InstallBundle-$TRAVIS_TAG.tar.gz" ./gibbon
+  - zip -rv "./dist/GibbonEduCore-InstallBundle-$TRAVIS_TAG.zip" ./gibbon -x "gibbon/.git/**/*"
 
 deploy:
   - provider: script
-    script: bash ./cli/github-release.sh -k $GITHUB_DEPLOY_TOKEN -r $TRAVIS_REPO_SLUG -t $TRAVIS_TAG ./dist "Install Bundle"
+    script: bash ./gibbon/cli/github-release.sh -k $GITHUB_DEPLOY_TOKEN -r $TRAVIS_REPO_SLUG -t $TRAVIS_TAG ./dist "Install Bundle"
     on:
       repo: yookoala/GibbonEduCore
       condition: '"$GITHUB_DEPLOY_TOKEN" != "" && "$TRAVIS_PHP_VERSION" == "7.0"'
