@@ -95,7 +95,6 @@ function release_create {
         -H "Authorization: token $GITHUB_API_TOKEN" \
         -H "Accept: application/vnd.github.v3+json" \
         -d "{\"tag_name\": \"$TAG\"}" \
-        --silent \
         "https://api.github.com/repos/$GITHUB_REPO_SLUG/releases")
     eval $(echo "$RESPONSE" | grep -m 1 "id.:" | grep -w id | tr : = | tr -cd '[[:alnum:]]=')
     if [ -z "$id" ]; then
@@ -142,15 +141,25 @@ function release_get_id {
 function release_add_asset {
     # Upload asset
     if [ -s "$FILE" ]; then
+
         local FILENAME=$(basename $FILE)
         if [ -z "$LABEL" ]; then
-            local __LABEL="$FILENAME"
+            local __LABEL=""
         else
-            local __LABEL="$LABEL ($FILENAME)"
+            local __FILENAME=$(sed_escape_string "$FILENAME")
+            local __LABEL="$(echo $LABEL | sed --expression="s/:filename:/$__FILENAME/g")"
+            echo "inside if: __LABEL=$__LABEL"
         fi
+        echo "outside if: __LABEL=$__LABEL"
+
+        local QUERY="name=$(urlencode $FILENAME)"
+        if [ ! -z "$__LABEL" ]; then
+            QUERY="$QUERY&label=$(urlencode "$__LABEL")"
+        fi
+
         echo "Uploading asset: $FILENAME"
-        local QUERY="name=$(urlencode $FILENAME)&label=$(urlencode "$__LABEL")"
         echo "https://uploads.github.com/repos/$GITHUB_REPO_SLUG/releases/$RELEASE_ID/assets?$QUERY"
+
         curl \
             -X POST \
             -H "Authorization: token $GITHUB_API_TOKEN" \
@@ -186,6 +195,14 @@ function urlencode {
     LC_COLLATE=$old_lc_collate
 }
 
+#
+# sed_escape_string
+#
+# Escape string for escaping sed's regular expression
+function sed_escape_string {
+    echo $1 | sed 's/[&/\]/\\&/g'
+}
+
 
 #
 # main
@@ -200,10 +217,10 @@ IFS="$_IFS"
 
 # Find the release for the tag, or create one
 if GITHUB_API_TOKEN="$GITHUB_API_TOKEN" GITHUB_REPO_SLUG="$GITHUB_REPO_SLUG" TAG="$TAG" release_get_id RELEASE_ID; then
-    echo "RELEASE_ID=$RELEASE_ID"
+    echo "release found: RELEASE_ID=$RELEASE_ID"
     echo
 elif GITHUB_API_TOKEN="$GITHUB_API_TOKEN" GITHUB_REPO_SLUG="$GITHUB_REPO_SLUG" TAG="$TAG" release_create RELEASE_ID; then
-    echo "RELEASE_ID=$RELEASE_ID"
+    echo "release created: RELEASE_ID=$RELEASE_ID"
     echo
 fi
 if [ -z "$RELEASE_ID" ]; then
