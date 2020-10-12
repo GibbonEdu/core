@@ -21,11 +21,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include './gibbon.php';
 
 $gibbonPersonID = $_GET['gibbonPersonID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php';
+$URL = $gibbon->session->get('absoluteURL').'/index.php';
 
 //Proceed!
 //Check if planner specified
-if ($gibbonPersonID == '' or $gibbonPersonID != $_SESSION[$guid]['gibbonPersonID'] or $_FILES['file1']['tmp_name'] == '') {
+if ($gibbonPersonID == '' or $gibbonPersonID != $gibbon->session->get('gibbonPersonID') or $_FILES['file1']['tmp_name'] == '') {
     $URL .= '?return=error1';
     header("Location: {$URL}");
     exit();
@@ -51,10 +51,10 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $_SESSION[$guid]['gibbonPersonID
             $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
             $fileUploader->setFileSuffixType(Gibbon\FileUploader::FILE_SUFFIX_INCREMENTAL);
 
-            $file = (isset($_FILES['file1']))? $_FILES['file1'] : null;
+            $file = $_FILES['file1'] ?? null;
 
             // Upload the file, return the /uploads relative path
-            $attachment1 = $fileUploader->uploadFromPost($file, $_SESSION[$guid]['username'].'_240');
+            $attachment1 = $fileUploader->uploadFromPost($file, $gibbon->session->get('username').'_240');
 
             if (empty($attachment1)) {
                 $URL .= '?return=warning1';
@@ -63,7 +63,7 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $_SESSION[$guid]['gibbonPersonID
             }
         }
         
-        $path = $_SESSION[$guid]['absolutePath'];
+        $path = $gibbon->session->get('absolutePath');
 
         //Check for reasonable image
         $size = getimagesize($path.'/'.$attachment1);
@@ -95,7 +95,7 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $_SESSION[$guid]['gibbonPersonID
             }
 
             //Update session variables
-            $_SESSION[$guid]['image_240'] = $attachment1;
+            $gibbon->session->set('image_240', $attachment1);
 
             //Clear cusotm sidebar
             unset($_SESSION[$guid]['index_customSidebar.php']);

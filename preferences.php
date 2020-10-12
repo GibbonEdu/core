@@ -28,17 +28,10 @@ if (!$gibbon->session->exists("username")) {
 } else {
     $page->breadcrumbs->add(__('Preferences'));
 
-    $return = null;
-    if (isset($_GET['return'])) {
-        $return = $_GET['return'];
-    }
+    $return = $_GET['return'] ?? null;
 
     //Deal with force reset notification
-    if (isset($_GET['forceReset'])) {
-        $forceReset = $_GET['forceReset'];
-    } else {
-        $forceReset = null;
-    }
+    $forceReset = $_GET['forceReset'] ?? null;
     if ($forceReset == 'Y' AND $return != 'successa') {
         $forceResetReturnMessage = '<b><u>'.__('Your account has been flagged for a password reset. You cannot continue into the system until you change your password.').'</b></u>';
         echo "<div class='error'>";

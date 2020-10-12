@@ -21,11 +21,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include './gibbon.php';
 
 $gibbonPersonID = $_GET['gibbonPersonID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php';
+$URL = $gibbon->session->get('absoluteURL').'/index.php';
 
 //Proceed!
 //Check if planner specified
-if ($gibbonPersonID == '' or $gibbonPersonID != $_SESSION[$guid]['gibbonPersonID']) {
+if ($gibbonPersonID == '' or $gibbonPersonID != $gibbon->session->get('gibbonPersonID')) {
     $URL .= '?return=error1';
     header("Location: {$URL}");
 } else {
@@ -57,7 +57,7 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $_SESSION[$guid]['gibbonPersonID
         }
 
         //Update session variables
-        $_SESSION[$guid]['image_240'] = '';
+        $gibbon->session->set('image_240', '');
 
         //Clear cusotm sidebar
         unset($_SESSION[$guid]['index_customSidebar.php']);
