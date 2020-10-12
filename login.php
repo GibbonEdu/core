@@ -22,9 +22,6 @@ use Gibbon\Comms\NotificationEvent;
 // Gibbon system-wide include
 require_once './gibbon.php';
 
-$page = $container->get('page');
-$session = $container->get('session');
-
 setCurrentSchoolYear($guid, $connection2);
 
 //The current/actual school year info, just in case we are working in a different year
@@ -51,12 +48,8 @@ if (empty($username) or empty($password)) {
 }
 else {
     // Custom login loader
-    if (!$session->exists('login_custom.php')) {
+    if (file_exists('./login_custom.php')) {
         require_once './login_custom.php';
-    }
-
-    if ($session->has('login_custom.php')) {
-        $page->write($session->get('login_custom.php'));
     }
     //VALIDATE LOGIN INFORMATION
     try {
