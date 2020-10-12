@@ -1,0 +1,52 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+<div>
+    <table class='w-2/5'>
+        <tr>
+            <td class='bg-gray-200 font-bold'>
+                Event
+            </td>
+            <td class='bg-white'>
+                {{ event }}
+            </td>
+        </tr>
+        <tr>
+            <td class='bg-gray-200 font-bold'>
+                Dates
+            </td>
+            <td class='bg-white'>
+                {{ dates|raw }}
+            </td>
+        </tr>
+        <tr>
+            <td class='bg-gray-200 font-bold'>
+                Location
+            </td>
+            <td class='bg-white'>
+                {{ location }}
+            </td>
+        </tr>
+        <tr>
+            <td class='bg-gray-200 font-bold'>
+                Address
+            </td>
+            <td class='bg-white'>
+
+            </td>
+        </tr>
+        <tr>
+            <td class='bg-gray-200 font-bold'>
+                Lead Teacher
+            </td>
+            <td class='bg-white'>
+                {{ lead }}
+            </td>
+        </tr>
+    </table>
+</div>

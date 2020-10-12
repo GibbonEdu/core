@@ -1,0 +1,177 @@
+CHANGELOG
+=========
+v1.2.00
+-------
+Added Today's Trips report
+
+v1.1.01
+-------
+Fixed missing medical conditions from Trip Overview
+
+v1.1.00
+-------
+Added new all-in-one Trip Report
+
+v1.0.01
+-------
+v19 compatibility
+
+v1.0.00
+-------
+Added custom approval notifications
+
+v0.3.00
+-------
+Reordered CHANGELOG.txt into reverse chronological order
+Moved contents into Trip Planner sub-folder
+Removed Timetable Overlaps (great idea, but not in use, and very slow loading)
+Fixed isInvolved bug preventing involved teachers viewing trips
+
+v0.2.13
+-------
+Added Messenger Group to Add by Group in trip submission
+
+v0.2.12
+-------
+Added template for parent letter
+
+v0.2.11
+-------
+Added setting to disable the view of expired unapproved trips.
+
+v0.2.10
+-------
+Added validation to teachers
+Removed multiday button on trips_submitRequest.php
+Fixed various bugs regarding editing trips.
+Trip Planner now creates messenger groups on add and edit.
+Various bug fixes
+Fixed trips_managesettings.php always returning error1, dispite working correctly.
+Reworked the multiday selection input to be more user friendly.
+Added validation to multi day input.
+
+v0.2.01
+-------
+Added date column to trip_tripPlannerRequestCover in manifest.php
+Fixed bug where students wouldn't show up in timetable overlaps, if no previous trips had occured.
+Fixed Teacher Cover recommendations not showing up.
+
+v0.2.00
+-------
+Added Sumbit button to trips_manage.php
+OOifed trips_submitRequest.php form
+Made trips 100% editable.
+Added multiple non consecutive days support to trips_submitRequest.php
+Added ability to add students by activity as well as classes.
+
+v0.1.10
+-------
+Created tripPlannerRiskTemplates table
+Created Risk Assessment Templates Action
+Created trips_manageRiskTemplates.php, trips_addRiskTemplates.php, trips_addRiskTemplatesProcess.php and trips_deleteRiskTemplateProcess.php
+Added defaultRiskTemplate setting.
+Added Risk Assessment Templates to trips_submitRequest.php form.
+
+v0.1.01
+-------
+Fixed a typo when informing Approvers of a new request.
+
+v0.1.00
+-------
+OOified most forms.
+Added exits to process files.
+Changed May Require Cover to Requries Cover?
+Added ability to set Cover requirement.
+System cover reccomendations now state they are reccomended my the system.
+
+v0.0.09
+-------
+Fixed bug that stopped approval in trips_requestApproveProcess.php
+
+v0.0.08
+-------
+Fixed bug that stopped Two Of approval to return a database error.
+
+v0.0.07
+-------
+Fixed Approval log message
+Fixed Timetable overlaps showing classes outside trip times
+Comments and action will now inform everyone who has performed an action on the trip request.
+Indefinitly disabled the actions on timetable overlap.
+Risk Assessment and Letter to Parents can now be edited.
+Added more detailed error returns to trips_requestApprove.php
+Possible fix for comments not saving.
+Possible fix for Two Of approval not working correctly.
+Notifications now display the name of the trip.
+Changed log messages not displaying the correct event.
+
+v0.0.06
+-------
+Fixed multiple bugs with Timetable Overlaps in trips_requestView.php, trips_requestEdit.php and trips_requestApprove.php
+Fixed previousMissedClasses not working in trips_requestView.php, trips_requestEdit.php and trips_requestApprove.php
+Fixed isApprover errors.
+Made Letter To Parents not mandatory.
+Made student person list printable.
+Trips now become "Awaiting Final Approval" once normal approval process is finished, if "Risk Assessment Approval" is enabled
+Added ability to auto-generate Emergency and Medical information on all students in a trip.
+
+v0.0.05
+-------
+Fixed bug where endDate would improperly show up in trips_requestView.php, trips_requestEdit.php and trips_requestApprove.php
+Added new WIP features.
+
+v0.0.04
+-------
+Made students an optional field in trips_submitRequest.php
+Added Multiple Days option to trips_submitRequest.php
+Added All Day option to trips_submitRequest.php
+Added End Date field to trips_submitRequest.php
+Fixed multiple add bug in trips_submitRequest.php
+Added support for multiple days and all day events in trips_requestView.php, trips_requestEdit.php and trips_requestApprove.php
+Fixed broken redirects in trips_requestApprove.php
+Added Letter to Parents field in trips_submitRequest.php
+Put all staff in Teachers field in trips_submitRequest.php
+Added groups to Trip Planner Actions
+Made Add to Class default to No Class in trips_submitRequest.php
+Made the Risk Assessment field taller in trips_submitRequest.php
+Added Final Approval (WIP)
+Made Risk Assessment a final approval.
+Some other bug fixes I forgot about.
+
+v0.0.03
+-------
+Removed Total Cost field from trips_sumbmitRequest.php
+Total Cost is now calculated in trips_requestView.php, trips_requestEdit.php and trips_requestApprove.php
+Approvers now start with the Relation Filter "Awaiting my Approval"
+Approvers now get a notification if a trip has been requested.
+Added the ability to sort students by Form or Name in trips_submitRequest.php
+Added the ability to add students by Class in trips_submitRequest.php
+
+v0.0.02
+-------
+Fixed the page not rendering in trips_manageApprovers.php
+Fixed Add Approver button not showing up if the user's highest action was Manage Approvers_full.
+Moved return information to correct place in trips_manageApprovers.php
+Added setting to set the warning threshold for number of missed classes by a student in trips_manageSettings.php
+Fixed the edit record text now showing up in trips_submitRequst.php
+Fixed LiveValidation not updating on the date field in trips_submitRequest.php
+Fixed Edit Approver button not showing up if the user's highest action was Manage Approvers_full.
+Changed trips_addApproverProcess.php to redirect back to trips_addApprover.php on a successful additon.
+Added edit record text to success info in trips_addApprover.php
+Normalised studentPersonIDs and teacherPersonIds (Information will be put into the new database when the issue is requested).
+Fixed trips_submitRequestProcess.php not redirecting in the case of a database faliure.
+Moved breadcrumbs and return info above checks in trips_requestView.php, trips_requestEdit.php and trips_requestApprove.php
+Striped html tags from description in trips_manage.php
+Set max string length for description in trips_manage.php
+Implemented a system to check if a classes needs to be cover because of the requested trip and to check if a student has missed a class that they will miss agian if they go on the requested trip.
+Fixed incorrect redirects in trips_requestViewProcess.php, trips_requestEditProcess.php and trips_requestEditProcess.php.
+Fixed a bug where you could not use the actions in trips_requestViewProcess.php, trips_requestEditProcess.php and trips_requestEditProcess.php.
+Made trips_requestApproveProcess.php redirect to trips_manage.php on a successful return.
+Fixed a bug where trips_requestEditProcess.php didn't work.
+Fixed a bug where you could not delete Approvers.
+Fixed a bug where you could not edit Approvers.
+Fixed a typo in the breadcrumbs of trips_editApprover.php.
+
+v0.0.01
+-------
+First release.
