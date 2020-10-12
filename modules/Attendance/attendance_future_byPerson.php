@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
             : explode(",", $gibbonPersonID);
     }
     $absenceType = (isset($_GET['absenceType']))? $_GET['absenceType'] : 'full';
-    $date = (isset($_GET['date']))? date($_GET['date']) : '';
+    $date = (isset($_GET['date']))? $_GET['date'] : '';
 
     echo '<h2>'.__('Choose Student')."</h2>";
 
@@ -118,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
             $attendanceLog .= "<div id='attendanceLog'>";
                 //Get attendance log
                 try {
-                    $dataLog = array('gibbonPersonID' => $gibbonPersonID[0], 'date' => "$today-0-0-0"); //"$today-23-59-59"
+                    $dataLog = array('gibbonPersonID' => $gibbonPersonID[0], 'date' => $today);
                     $sqlLog = "SELECT gibbonAttendanceLogPersonID, date, direction, type, context, reason, comment, timestampTaken, gibbonAttendanceLogPerson.gibbonCourseClassID, preferredName, surname, gibbonCourseClass.nameShort as className, gibbonCourse.nameShort as courseName FROM gibbonAttendanceLogPerson JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonCourseClass ON (gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date>=:date ORDER BY date";
                     $resultLog = $connection2->prepare($sqlLog);
                     $resultLog->execute($dataLog);
@@ -128,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
                 //Get classes for partial attendance
                 try {
-                    $dataClasses = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID[0], 'date' => dateConvert($guid, $date));
+                    $dataClasses = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID[0], 'date' => !empty($date) ? Format::dateConvert($date) : date('Y-m-d'));
                     $sqlClasses = "SELECT DISTINCT gibbonTT.gibbonTTID, gibbonTT.name, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.nameShort as classNameShort, gibbonTTColumnRow.name as columnName, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonCourse.name as courseName, gibbonCourse.nameShort as courseNameShort FROM gibbonTT JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID) JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID)  JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND gibbonTTDayDate.date=:date ORDER BY gibbonTTColumnRow.timeStart ASC";
                     $resultClasses = $connection2->prepare($sqlClasses);
                     $resultClasses->execute($dataClasses);

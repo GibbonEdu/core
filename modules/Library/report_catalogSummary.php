@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
     }
 
     $reportGateway = $container->get(LibraryReportGateway::class);
-    $criteria = $reportGateway->newQueryCriteria()
+    $criteria = $reportGateway->newQueryCriteria(true)
         ->filterBy('id', $gibbonLibraryTypeID)
         ->filterBy('ownershipType', $ownershipType)
         ->filterBy('space', $gibbonSpaceID)

@@ -1936,8 +1936,9 @@ else {
 				$emailCount=0 ;
 				$mail= $container->get(Mailer::class);
                 $mail->SMTPKeepAlive = true;
-                $mail->SMTPDebug = 3;
-
+                $mail->SMTPDebug = 1;
+                $mail->Debugoutput = 'error_log';
+                
 				if ($emailReplyTo!="")
 					$mail->AddReplyTo($emailReplyTo, '');
 				if ($from!=$_SESSION[$guid]["email"])	//If sender is using school-wide address, send from school
@@ -1947,7 +1948,11 @@ else {
 				$mail->CharSet="UTF-8";
 				$mail->Encoding="base64" ;
 				$mail->IsHTML(true);
-				$mail->Subject=$subject ;
+                $mail->Subject=$subject ;
+                
+                // Turn copy-pasted div breaks into paragraph breaks
+                $body = str_ireplace(['<div ', '<div>', '</div>'], ['<p ', '<p>', '</p>'], $body);
+
 				$mail->renderBody('mail/email.twig.html', [
 					'title'  => $subject,
 					'body'   => $body
@@ -2026,9 +2031,6 @@ else {
 							}
 							$bodyOut = $studentNames.$bodyOut;
                         }
-
-                        // Turn copy-pasted div breaks into paragraph breaks
-                        $bodyOut = str_replace(['<div ', '<div>', '</div>'], ['<p ', '<p>', '</p>'], $bodyOut);
 
 						$mail->renderBody('mail/email.twig.html', [
 							'title'  => $subject,

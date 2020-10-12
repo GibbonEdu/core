@@ -20,6 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\Finance\ExpenseGateway;
+use Gibbon\Module\Finance\Tables\ExpenseLog;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -233,7 +236,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
 
                             $form->addRow()->addHeading(__('Log'));
                             
-                            $form->addRow()->addContent(getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2));
+                            $expenseLog = $container->get(ExpenseLog::class)->create($gibbonFinanceExpenseID);
+                            $form->addRow()->addContent($expenseLog->getOutput());
 
 							$isPaid = $values['status'] == 'Paid';
 							if (!$isPaid) {

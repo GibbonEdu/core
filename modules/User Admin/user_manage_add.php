@@ -433,8 +433,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         $row->addSelect('gibbonHouseID')->fromQuery($pdo, $sql)->placeholder();
 
     $row = $form->addRow();
-        $row->addLabel('studentID', __('Student ID'))->description(__('Must be unique if set.'));
-        $row->addTextField('studentID')->maxLength(15);
+        $row->addLabel('studentID', __('Student ID'));
+        $row->addTextField('studentID')
+            ->maxLength(15)
+            ->uniqueField('./modules/User Admin/user_manage_studentIDAjax.php', ['gibbonPersonID' => $gibbonPersonID]);
 
     $sql = "SELECT DISTINCT transport FROM gibbonPerson
             JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
@@ -488,10 +490,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         $row->addLabel('staffRecord', __('Add Staff'));
         $row->addCheckbox('staffRecord')->setValue('Y')->description(__('Create a linked staff record?'));
 
-    $types = array(__('Basic') => array ('Teaching' => __('Teaching'), 'Support' => __('Support')));
-    $sql = "SELECT name as value, name FROM gibbonRole WHERE category='Staff' ORDER BY name";
-    $types[__('System Roles')] = $pdo->select($sql)->fetchKeyPair();
-
+    $types = array ('Teaching' => __('Teaching'), 'Support' => __('Support'));
     $row = $form->addRow()->addClass('staffRecord');
         $row->addLabel('staffType', __('Type'));
         $row->addSelect('staffType')->fromArray($types)->placeholder()->required();

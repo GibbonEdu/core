@@ -81,7 +81,7 @@ trait TableAware
      * @param string $primaryKeyValue
      * @return array
      */
-    public function getByID($primaryKeyValue) : array
+    public function getByID($primaryKeyValue, $cols = []) : array
     {
         if (empty($primaryKeyValue)) {
             return [];
@@ -89,7 +89,7 @@ trait TableAware
 
         $query = $this
             ->newSelect()
-            ->cols(['*'])
+            ->cols(!empty($cols) ? $cols : ['*'])
             ->from($this->getTableName())
             ->where($this->getPrimaryKey().' = :primaryKey')
             ->bindValue('primaryKey', $primaryKeyValue);

@@ -120,7 +120,7 @@ div.message a, div.success a, div.warning a, div.error a, div.exception a, div.d
 */
 
 .LV_validation_message {
-    @apply absolute right-0 pt-px px-1 mt-1 mr-1 text-xs font-bold leading-relaxed bg-white z-10 pointer-events-none whitespace-no-wrap;
+    @apply absolute right-0 px-1 mt-2 mr-1 text-xs font-bold leading-relaxed bg-white z-10 pointer-events-none whitespace-no-wrap;
 }
 
 select + .LV_validation_message {
@@ -163,7 +163,7 @@ input[type="checkbox"] + .LV_validation_message {
 */
 
 input, select, textarea {
-    @apply border-gray-500;
+    @apply border-gray-400 bg-white rounded-sm outline-none py-2 px-2;
 }
 
 input:focus, select:focus, textarea:focus {
@@ -171,12 +171,26 @@ input:focus, select:focus, textarea:focus {
 
 }
 
+input[type="text"] {
+    @apply leading-relaxed;
+}
+
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+    @apply px-8;
+}
+
 input[readonly]:focus, select[readonly]:focus, textarea[readonly]:focus {
     @apply shadow-none;
 }
 
 input.button, a.button, button.button {
-    @apply py-1 px-2 border border-gray-500 text-gray-700 text-xs font-bold leading-normal ;
+    @apply py-2 px-2 border text-gray-700 text-xs font-bold leading-normal ;
+}
+
+input.button:hover, a.button:hover, button.button:hover {
+    @apply bg-gray-400;
 }
 
 .column.inline {
@@ -220,7 +234,7 @@ input.button, a.button, button.button {
 .token-input-list-facebook input,
 .token-input-input-token-facebook input {
     @apply shadow-none border-0 bg-transparent;
-    height: 26px;
+    height: 32px;
 }
 
 /* Token Style */

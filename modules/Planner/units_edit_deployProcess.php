@@ -84,54 +84,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
 
                     $partialFail = false;
 
-                    //CREATE LESSON PLANS
-                    try {
-                        $sql = 'LOCK TABLES gibbonPlannerEntry WRITE, gibbonUnitClassBlock WRITE';
-                        $result = $connection2->query($sql);
-                    } catch (PDOException $e) {
-                        $URL .= '&return=error2e';
-                        header("Location: {$URL}");
-                        exit();
-                    }
-
-                    //Get next autoincrement
-                    try {
-                        $sqlAI = "SHOW TABLE STATUS LIKE 'gibbonPlannerEntry'";
-                        $resultAI = $connection2->query($sqlAI);
-                    } catch (PDOException $e) {
-                        $URL .= '&return=error2f';
-                        header("Location: {$URL}");
-                        exit();
-                    }
-
-                    $rowAI = $resultAI->fetch();
-                    $AI = str_pad($rowAI['Auto_increment'], 14, '0', STR_PAD_LEFT);
-
                     $lessonCount = 0;
                     $sequenceNumber = 0;
                     $lessDescriptions = array();
                     foreach ($orders as $order) {
                         //It is a lesson, so add it
                         if (strpos($order, 'lessonHeader-') !== false) {
-                            if ($lessonCount != 0) {
-                                ++$AI;
-                                $AI = str_pad($AI, 14, '0', STR_PAD_LEFT);
-                            }
                             $summary = 'Part of the '.$row['name'].' unit.';
-                            $lessonDescriptions[$AI][0] = $AI;
-                            $lessonDescriptions[$AI][1] = '';
                             $teachersNotes = getSettingByScope($connection2, 'Planner', 'teachersNotesTemplate');
                             $viewableStudents = $_POST['viewableStudents'];
                             $viewableParents = $_POST['viewableParents'];
 
                             try {
-                                $data = array('gibbonPlannerEntryID' => $AI, 'gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $_POST["date$lessonCount"], 'timeStart' => $_POST["timeStart$lessonCount"], 'timeEnd' => $_POST["timeEnd$lessonCount"], 'gibbonUnitID' => $gibbonUnitID, 'name' => $row['name'].' '.($lessonCount + 1), 'summary' => $summary, 'teachersNotes' => $teachersNotes, 'viewableParents' => $viewableParents, 'viewableStudents' => $viewableStudents, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDLastEdit' => $_SESSION[$guid]['gibbonPersonID']);
-                                $sql = "INSERT INTO gibbonPlannerEntry SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonCourseClassID=:gibbonCourseClassID, date=:date, timeStart=:timeStart, timeEnd=:timeEnd, gibbonUnitID=:gibbonUnitID, name=:name, summary=:summary, description='', teachersNotes=:teachersNotes, homework='N', viewableParents=:viewableParents, viewableStudents=:viewableStudents, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit";
+                                $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $_POST["date$lessonCount"], 'timeStart' => $_POST["timeStart$lessonCount"], 'timeEnd' => $_POST["timeEnd$lessonCount"], 'gibbonUnitID' => $gibbonUnitID, 'name' => $row['name'].' '.($lessonCount + 1), 'summary' => $summary, 'teachersNotes' => $teachersNotes, 'viewableParents' => $viewableParents, 'viewableStudents' => $viewableStudents, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDLastEdit' => $_SESSION[$guid]['gibbonPersonID']);
+                                $sql = "INSERT INTO gibbonPlannerEntry SET gibbonCourseClassID=:gibbonCourseClassID, date=:date, timeStart=:timeStart, timeEnd=:timeEnd, gibbonUnitID=:gibbonUnitID, name=:name, summary=:summary, description='', teachersNotes=:teachersNotes, homework='N', viewableParents=:viewableParents, viewableStudents=:viewableStudents, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit";
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             } catch (PDOException $e) {
                                 $partialFail = true;
                             }
+
+                            $AI = $connection2->lastInsertID();
+
+                            $lessonDescriptions[$AI][0] = $AI;
+                            $lessonDescriptions[$AI][1] = '';
+
                             ++$lessonCount;
                         }
                         //It is a block, so add it to the last added lesson

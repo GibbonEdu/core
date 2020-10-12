@@ -209,6 +209,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                     $returns = array();
                     $returns['error6'] = __('An error occured with your submission, most likely because a submitted file was too large.');
+                    $returns['error7'] = __('The specified date is in the future: it must be today or earlier.');
                     if (isset($_GET['return'])) {
                         returnProcess($guid, $_GET['return'], null, $returns);
                     }
@@ -1031,7 +1032,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 																	if ($rowClass['dateStart'] > $row['date']) {
 																		echo "<span title='".__('Student joined school after lesson was taught.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>".__('NA').'</span>';
 																	} else {
-																		if ($row['homeworkSubmissionRequired'] == 'Compulsory') {
+																		if ($row['homeworkSubmissionRequired'] == 'Required') {
 																			echo "<span style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'>".__('Incomplete').'</span>';
 																		} else {
 																			echo __('Not submitted online');
@@ -1281,7 +1282,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 										</td>
 										<td class="right">
 											<input name="homeworkDueDate" id="homeworkDueDate" maxlength=10 value="<?php if ($rowMyHomework['homework'] == 'Y') { echo dateConvertBack($guid, substr($rowMyHomework['homeworkDueDateTime'], 0, 10));
-											} else {
+											} elseif (!empty($homeworkDueDate)) {
 												echo dateConvertBack($guid, substr($homeworkDueDate, 0, 10));
 											} ?>" type="text" class="standardWidth">
 											<script type="text/javascript">
@@ -1312,7 +1313,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 										</td>
 										<td class="right">
 											<input name="homeworkDueDateTime" id="homeworkDueDateTime" maxlength=5 value="<?php if ($rowMyHomework['homework'] == 'Y') { echo substr($rowMyHomework['homeworkDueDateTime'], 11, 5);
-											} else {
+											} elseif (!empty($homeworkDueDateTime)) {
 												echo substr($homeworkDueDateTime, 0, 5);
 											} ?>" type="text" class="standardWidth">
 											<script type="text/javascript">
@@ -1405,8 +1406,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $attendance = new Gibbon\Module\Attendance\AttendanceView($gibbon, $pdo);
 
                         try {
-                            $dataClassGroup = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                            $sqlClassGroup = "SELECT * FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND (NOT role='Student - Left') AND (NOT role='Teacher - Left') ORDER BY FIELD(role, 'Teacher', 'Assistant', 'Technician', 'Student', 'Parent'), surname, preferredName";
+                            $dataClassGroup = array('gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $row['date'], 'today' => date('Y-m-d'));
+                            $sqlClassGroup = "SELECT gibbonCourseClassPerson.*, gibbonPerson.* 
+                                FROM gibbonCourseClassPerson 
+                                INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID 
+                                LEFT JOIN (
+                                    SELECT gibbonTTDayRowClass.gibbonCourseClassID, gibbonTTDayRowClass.gibbonTTDayRowClassID FROM gibbonTTDayDate JOIN gibbonTTDayRowClass ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) WHERE gibbonTTDayDate.date=:date) AS gibbonTTDayRowClassSubset ON (gibbonTTDayRowClassSubset.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) 
+                                LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClassSubset.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
+                                WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID 
+                                AND status='Full' 
+                                AND (dateStart IS NULL OR dateStart<=:today) 
+                                AND (dateEnd IS NULL  OR dateEnd>=:today) 
+                                AND (NOT role='Student - Left') AND (NOT role='Teacher - Left')
+                                GROUP BY gibbonCourseClassPerson.gibbonCourseClassPersonID, gibbonPerson.gibbonPersonID
+                                HAVING COUNT(gibbonTTDayRowClassExceptionID) = 0
+                                ORDER BY FIELD(role, 'Teacher', 'Assistant', 'Technician', 'Student', 'Parent'), surname, preferredName";
                             $resultClassGroup = $connection2->prepare($sqlClassGroup);
                             $resultClassGroup->execute($dataClassGroup);
                         } catch (PDOException $e) {
@@ -1512,7 +1526,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 							}
 
 							//Get photos
-							$_SESSION[$guid]['sidebarExtra'] .= '<div>';
+							$_SESSION[$guid]['sidebarExtra'] .= '<div class="relative">';
                             $_SESSION[$guid]['sidebarExtra'] .= Format::userPhoto($rowClassGroup['image_240'], 75, 'mx-auto');
 
                             if ($row['role'] == 'Teacher' and $teacher == true) {
@@ -1520,13 +1534,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     //HEY SHORTY IT'S YOUR BIRTHDAY!
 									$daysUntilNextBirthday = daysUntilNextBirthday($rowClassGroup['dob']);
                                     if ($daysUntilNextBirthday == 0) {
-                                        $_SESSION[$guid]['sidebarExtra'] .= "<img title='".sprintf(__('%1$s  birthday today!'), $rowClassGroup['preferredName'].'&#39;s')."' style='margin: -24px 0 0 0; width: 25px; height: 25px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/gift_pink.png'/>";
+                                        $_SESSION[$guid]['sidebarExtra'] .= "<img title='".sprintf(__('%1$s  birthday today!'), $rowClassGroup['preferredName'].'&#39;s')."' class='w-6 h-6 absolute right-0 bottom-0 mr-1' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/gift_pink.png'/>";
                                     } elseif ($daysUntilNextBirthday > 0 and $daysUntilNextBirthday < 8) {
                                         $_SESSION[$guid]['sidebarExtra'] .= "<img title='$daysUntilNextBirthday day";
                                         if ($daysUntilNextBirthday != 1) {
                                             $_SESSION[$guid]['sidebarExtra'] .= 's';
                                         }
-                                        $_SESSION[$guid]['sidebarExtra'] .= ' until '.$rowClassGroup['preferredName']."&#39;s birthday!' style='margin: -24px 0 0 0; width: 25px; height: 25px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/gift.png'/>";
+                                        $_SESSION[$guid]['sidebarExtra'] .= ' until '.$rowClassGroup['preferredName']."&#39;s birthday!' class='w-6 h-6 absolute right-0 bottom-0 mr-1' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/gift.png'/>";
                                     }
 
                                     $_SESSION[$guid]['sidebarExtra'] .= '</div>';
@@ -1539,7 +1553,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                                     $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='$countStudents-gibbonPersonID' value='".$rowClassGroup['gibbonPersonID']."' data-id='$countStudents'>";
 
-                                    $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceTypeSelect( $rowLog['type'], "$countStudents-type", '96px');
+                                    $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceTypeSelect( $rowLog['type'], "$countStudents-type", '96px; font-size: 12px; padding: 0.25rem; height: 28px;');
 
                                     // Only hide the reason and comment fields if Present is the default attendance type
                                     if ($defaultAttendanceType == 'Present' || $attendance->isTypePresent($rowLog['type'])) {
@@ -1548,8 +1562,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                         $_SESSION[$guid]['sidebarExtra'] .= "<div>";
                                     }
 
-                                    $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceReasonSelect( $rowLog['reason'], "$countStudents-reason", '96px');
-                                    $_SESSION[$guid]['sidebarExtra'] .= "<input type='text' maxlength=255 name='$countStudents-comment' id='$countStudents-comment' style='float: none; width:96px; margin-bottom: 3px' value='".htmlPrep($rowLog['comment'])."'>";
+                                    $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceReasonSelect( $rowLog['reason'], "$countStudents-reason", '96px; font-size: 12px; padding: 0.25rem; height: 28px;');
+                                    $_SESSION[$guid]['sidebarExtra'] .= "<input type='text' maxlength=255 name='$countStudents-comment' id='$countStudents-comment' style='float: none; width:96px; ; font-size: 12px; padding: 0.25rem; height: 28px; margin-bottom: 3px' value='".htmlPrep($rowLog['comment'])."'>";
                                     $_SESSION[$guid]['sidebarExtra'] .= "</div>";
 
                                 }

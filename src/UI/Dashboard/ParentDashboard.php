@@ -19,9 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UI\Dashboard;
 
+use Gibbon\Forms\OutputableInterface;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
-use Gibbon\Forms\OutputableInterface;
+use Gibbon\Domain\Planner\PlannerEntryGateway;
+use League\Container\ContainerAwareTrait;
+use League\Container\ContainerAwareInterface;
 
 /**
  * Parent Dashboard View Composer
@@ -29,8 +32,10 @@ use Gibbon\Forms\OutputableInterface;
  * @version  v18
  * @since    v18
  */
-class ParentDashboard implements OutputableInterface
+class ParentDashboard implements OutputableInterface, ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
     protected $db;
     protected $session;
 
@@ -492,7 +497,7 @@ class ParentDashboard implements OutputableInterface
                                 if (!empty($dateStart) && $dateStart > $rowSub['date']) {
                                     $gradesOutput .= "<span title='".__('Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>".__('NA').'</span>';
                                 } else {
-                                    if ($rowSub['homeworkSubmissionRequired'] == 'Compulsory') {
+                                    if ($rowSub['homeworkSubmissionRequired'] == 'Required') {
                                         $gradesOutput .= "<div style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px; margin: 2px 0px'>".__('Incomplete').'</div>';
                                     } else {
                                         $gradesOutput .= __('Not submitted online');
@@ -523,46 +528,16 @@ class ParentDashboard implements OutputableInterface
         }
 
         //PREPARE UPCOMING DEADLINES
-        $deadlinesOutput = "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__('Upcoming Deadlines')."</span> . <span style='font-size: 70%'><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_deadlines.php&search='.$gibbonPersonID."'>".__('View All Deadlines').'</a></span></div>';
+        $deadlinesOutput = "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__('Upcoming Deadlines')."</span> . <span style='font-size: 70%'><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_deadlines.php&search='.$gibbonPersonID."'>".__('View Homework').'</a></span></div>';
         $deadlines = false;
 
-        try {
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
-            $sql = "
-            (SELECT 'teacherRecorded' AS type, gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkDueDateTime, role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND homework='Y' AND (role='Teacher' OR (role='Student' AND viewableStudents='Y')) AND homeworkDueDateTime>'".date('Y-m-d H:i:s')."' AND ((date<'".date('Y-m-d')."') OR (date='".date('Y-m-d')."' AND timeEnd<='".date('H:i:s')."')))
-            UNION
-            (SELECT 'studentRecorded' AS type, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, 'Y' AS viewableStudents, 'Y' AS viewableParents, 'Y' AS homework, gibbonPlannerEntryStudentHomework.homeworkDueDateTime, role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND (role='Teacher' OR (role='Student' AND viewableStudents='Y')) AND gibbonPlannerEntryStudentHomework.homeworkDueDateTime>'".date('Y-m-d H:i:s')."' AND ((date<'".date('Y-m-d')."') OR (date='".date('Y-m-d')."' AND timeEnd<='".date('H:i:s')."')))
-            ORDER BY homeworkDueDateTime, type";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $deadlinesOutput .= "<div class='error'>".$e->getMessage().'</div>';
-        }
+        $plannerGateway = $this->getContainer()->get(PlannerEntryGateway::class);
+        $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($_SESSION[$guid]['gibbonSchoolYearID'], $gibbonPersonID, 'viewableParents')->fetchAll();
 
-        if ($result->rowCount() > 0) {
-            $deadlines = true;
-            $deadlinesOutput .= "<ol style='margin-left: 15px'>";
-            while ($row = $result->fetch()) {
-                $diff = (strtotime(substr($row['homeworkDueDateTime'], 0, 10)) - strtotime(date('Y-m-d'))) / 86400;
-                $style = "style='padding-right: 3px;'";
-                if ($diff < 2) {
-                    $style = "style='padding-right: 3px; border-right: 10px solid #cc0000'";
-                } elseif ($diff < 4) {
-                    $style = "style='padding-right: 3px; border-right: 10px solid #D87718'";
-                }
-                $deadlinesOutput .= "<li $style>";
-                $deadlinesOutput .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&search='.$gibbonPersonID.'&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=date&date=$date&width=1000&height=550'>".$row['course'].'.'.$row['class'].'</a> ';
-                $deadlinesOutput .= "<span style='font-style: italic'>".sprintf(__('Due at %1$s on %2$s'), substr($row['homeworkDueDateTime'], 11, 5), dateConvertBack($guid, substr($row['homeworkDueDateTime'], 0, 10)));
-                $deadlinesOutput .= '</li>';
-            }
-            $deadlinesOutput .= '</ol>';
-        }
-
-        if ($deadlines == false) {
-            $deadlinesOutput .= "<div style='margin-top: 2px' class='warning'>";
-            $deadlinesOutput .= __('There are no records to display.');
-            $deadlinesOutput .= '</div>';
-        }
+        $deadlinesOutput .= $this->getContainer()->get('page')->fetchFromTemplate('ui/upcomingDeadlines.twig.html', [
+            'gibbonPersonID' => $gibbonPersonID,
+            'deadlines' => $deadlines,
+        ]);
 
         //PREPARE TIMETABLE
         $timetable = false;

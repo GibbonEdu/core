@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
         echo __('Choose A Student');
         echo '</h2>';
         echo '<p>';
-        echo __('This page displays all students enroled in the school, including those who have not yet met their start date. With the right permissions, you can set Individual Needs status and Individual Education Plan details for any student.');
+        echo __('This page displays all students enrolled in the school, including those who have not yet met their start date. With the right permissions, you can set Individual Needs status and Individual Education Plan details for any student.');
         echo '</p>';
 
         $students = $studentGateway->queryStudentsBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);

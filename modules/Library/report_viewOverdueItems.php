@@ -79,6 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
         ->format(function ($item) {
             return '<b>'.$item['name'].'</b><br/>'.Format::small($item['producer']);
         });
+    $table->addColumn('id', __('ID'));
     $table->addColumn('returnExpected', __('Due Date'))->format(Format::using('date', 'returnExpected'));
     $table->addColumn('dueDate', __('Days Overdue'))
         ->sortable('returnExpected')

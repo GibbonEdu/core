@@ -43,11 +43,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
 } else {
     include './modules/Timetable/moduleFunctions.php';
     $ttDate = '';
-    if ($_POST['ttDate'] != '') {
+    if (!empty($_POST['ttDate'])) {
         $ttDate = dateConvertToTimestamp(dateConvert($guid, $_POST['ttDate']));
     }
 
-    if ($_POST['fromTT'] == 'Y') {
+    if (!empty($_POST['fromTT']) && $_POST['fromTT'] == 'Y') {
         if ($_POST['schoolCalendar'] == 'on' or $_POST['schoolCalendar'] == 'Y') {
             $gibbon->session->set('viewCalendarSchool', 'Y');
         } else {

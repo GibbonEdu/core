@@ -148,13 +148,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
                 }
                 echo '</tr>';
 
-                    //Prep where for year group matching of outcomes to course
-					$where = '';
-					$yearGroups = explode(',', $row['gibbonYearGroupIDList']);
-					foreach ($yearGroups as $yearGroup) {
-						$where .= " AND gibbonYearGroupIDList LIKE concat('%', $yearGroup, '%')";
-					}
-
 				//SCHOOL OUTCOMES
 				echo "<tr class='break'>";
                 echo '<td colspan='.(($classCount * 2) + 2).'>';
@@ -162,8 +155,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
                 echo '</td>';
                 echo '</tr>';
                 try {
-                    $dataOutcomes = array();
-                    $sqlOutcomes = "SELECT * FROM gibbonOutcome WHERE scope='School' AND active='Y' $where ORDER BY category, name";
+                    $dataOutcomes = ['gibbonYearGroupIDList' => $row['gibbonYearGroupIDList']];
+                    $sqlOutcomes = "SELECT DISTINCT gibbonOutcome.* FROM gibbonOutcome JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonOutcome.gibbonYearGroupIDList)) WHERE scope='School' AND active='Y' AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList) ORDER BY gibbonOutcome.category, gibbonOutcome.name";
                     $resultOutcomes = $connection2->prepare($sqlOutcomes);
                     $resultOutcomes->execute($dataOutcomes);
                 } catch (PDOException $e) {

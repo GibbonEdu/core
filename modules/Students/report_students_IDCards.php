@@ -135,7 +135,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
                 echo "<td style='padding: 0px ; width: 18px'></td>";
                 echo "<td style='padding: 15px 0 0 0 ; text-align: left; width: 280px; vertical-align: top; font-size: 22px'>";
                 echo "<div style='padding: 5px; background-color: rgba(255,255,255,0.3); min-height: 200px'>";
-                $size = (strlen($row['officialName']) <= 28) ? 30 : 20 ;
+                $nameLength = strlen($row['officialName']);
+                switch ($nameLength) {
+                    case $nameLength > 40:  $size = 18; break;
+                    case $nameLength > 30:  $size = 22; break;
+                    case $nameLength > 20:  $size = 26; break;
+                    default: $size = 30;
+                }
+
                 echo "<div style='font-weight: bold; font-size: ".$size."px'>".$row['officialName'].'</div><br/>';
                 echo '<b>'.__('DOB')."</b>: <span style='float: right'><i>".dateConvertBack($guid, $row['dob']).'</span><br/>';
                 echo '<b>'.$_SESSION[$guid]['organisationNameShort'].' '.__('ID')."</b>: <span style='float: right'><i>".$row['studentID'].'</span><br/>';

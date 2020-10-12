@@ -242,7 +242,7 @@ class FormFactory implements FormFactoryInterface
 
     public function createSubheading($content, $tag = 'h4')
     {
-        $content = sprintf('<%1$s>%2$s</%1$s>', $tag, $content);
+        $content = sprintf('<%1$s class="m-0 p-0">%2$s</%1$s>', $tag, $content);
         return $this->createContent($content);
     }
 
@@ -277,7 +277,7 @@ class FormFactory implements FormFactoryInterface
     {
         $content = '';
         if ($required) {
-            $content = '<span class="emphasis small">* '.__('denotes a required field').'</span>';
+            $content = '<span class="text-xs text-gray-600">* '.__('denotes a required field').'</span>';
         }
         return $this->createContent($content);
     }
@@ -458,6 +458,7 @@ class FormFactory implements FormFactoryInterface
                 'NGN ₦' => 'Nigerian Naira (₦)',
                 'OMR ر.ع.' => 'Omani Rial (ر.ع.)',
                 'PKR ₨' => 'Pakistani Rupee (₨)',
+                'RON L' => 'Romanian Leu (L)',
                 'RUB ₽' => 'Russian Ruble (₽)',
                 'SAR ﷼‎' => 'Saudi Riyal (﷼‎)',
                 'ZAR R‎' => 'South African Rand (R‎)',

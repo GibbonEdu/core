@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Services\Format;
 
 include '../../gibbon.php';
@@ -528,6 +529,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     }
                 }
             }
+
+            // Check username and student ID for uniqueness
+            $userGateway = $container->get(UserGateway::class);
+            if (!empty($studentID) && !$userGateway->unique(['studentID' => $studentID], ['studentID'], $gibbonApplicationFormID)) {
+                $URL .= '&return=error7';
+                header("Location: {$URL}");
+                exit;
+            }
+            if (!empty($username) && !$userGateway->unique(['username' => $username], ['username'], $gibbonApplicationFormID)) {
+                $URL .= '&return=error7';
+                header("Location: {$URL}");
+                exit;
+            }
+            
+
             if ($priority == '' or $surname == '' or $firstName == '' or $preferredName == '' or $officialName == '' or $gender == '' or $dob == '' or $languageHomePrimary == '' or $languageFirst == '' or $gibbonSchoolYearIDEntry == '' or $dateStart == '' or $gibbonYearGroupIDEntry == '' or $sen == '' or $howDidYouHear == '' or $familyFail) {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");

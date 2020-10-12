@@ -56,9 +56,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
 	$prevDay = DateTime::createFromFormat($dateFormat, $date)->modify('-1 day')->format($dateFormat);
 	$nextDay = DateTime::createFromFormat($dateFormat, $date)->modify('+1 day')->format($dateFormat);
 
-	$col = $row->addColumn()->addClass('flex items-center');
-		$col->addButton(__('Previous Day'))->addClass('buttonLink mr-px')->onClick("window.location.href='{$link}&date={$prevDay}'");
-		$col->addButton(__('Next Day'))->addClass('buttonLink')->onClick("window.location.href='{$link}&date={$nextDay}'");
+	$col = $row->addColumn()->addClass('flex-1 flex items-center');
+		$col->addButton(__('Previous Day'))->addClass('buttonLink mr-px rounded-l-sm hover:bg-gray-400')->onClick("window.location.href='{$link}&date={$prevDay}'");
+		$col->addButton(__('Next Day'))->addClass('buttonLink rounded-r-sm hover:bg-gray-400')->onClick("window.location.href='{$link}&date={$nextDay}'");
 
 	$col = $row->addColumn()->addClass('flex items-center justify-end');
 		$col->addDate('date')->setValue($date)->setClass('shortWidth');
