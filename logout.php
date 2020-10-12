@@ -25,8 +25,8 @@ if (isset($_GET['timeout']) and $_GET['timeout'] == 'true') {
     $URL = './index.php?timeout=true';
 }
 
-unset($_SESION[$guid]['googleAPIAccessToken']);
-unset($_SESION[$guid]['gplusuer']);
+unset($_SESSION[$guid]['googleAPIAccessToken']);
+unset($_SESSION[$guid]['gplusuer']);
 
 session_destroy();
 
