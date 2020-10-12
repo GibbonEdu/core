@@ -30,7 +30,7 @@ $_GET = $validator->sanitize($_GET);
 $_POST = $validator->sanitize($_POST);
 
 //Check email address is not blank
-$input = isset($_GET['input'])? $_GET['input'] : (isset($_POST['email'])? $_POST['email'] : '');
+$input = $_GET['input'] ?? ($_POST['email'] ?? '');
 $step = $_GET['step'];
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=passwordReset.php';

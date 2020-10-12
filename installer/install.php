@@ -52,7 +52,7 @@ if (empty($step)) {
         }
     }
 } else {
-    $guid = isset($_POST['guid'])? $_POST['guid'] : '';
+    $guid = $_POST['guid'] ?? '';
     $guid = preg_replace('/[^a-z0-9-]/', '', substr($guid, 0, 36));
 }
 // Use the POSTed GUID in place of "undefined". 
@@ -83,12 +83,12 @@ $page = new Page($container->get('twig'), [
 ob_start();
 
 //Get and set database variables (not set until step 1)
-$databaseServer = (isset($_POST['databaseServer']))? $_POST['databaseServer'] : '';
-$databaseName = (isset($_POST['databaseName']))? $_POST['databaseName'] : '';
-$databaseUsername = (isset($_POST['databaseUsername']))? $_POST['databaseUsername'] : '';
+$databaseServer = $_POST['databaseServer'] ?? '';
+$databaseName = $_POST['databaseName'] ?? '';
+$databaseUsername = $_POST['databaseUsername'] ?? '';
 $databasePassword = $databasePasswordRaw;
-$demoData = (isset($_POST['demoData']))? $_POST['demoData'] : '';
-$code = (isset($_POST['code']))? $_POST['code'] : 'en_GB';
+$demoData = $_POST['demoData'] ?? '';
+$code = $_POST['code'] ?? 'en_GB';
 
 // Attempt to download & install the required language files
 if ($step >= 1) {
@@ -112,7 +112,7 @@ $canInstall = true;
 
 // Check session for the presence of a valid nonce; if found, remove it so it's used only once.
 if ($step >= 1) {
-    $checkNonce = isset($_POST['nonce'])? $_POST['nonce'] : '';
+    $checkNonce = $_POST['nonce'] ?? '';
     if (!empty($sessionNonce[$step]) && $sessionNonce[$step] == $checkNonce) {
         unset($sessionNonce[$step]);
     } else {
@@ -600,12 +600,7 @@ if ($canInstall == false) {
         $password = $_POST['passwordNew'];
         $passwordConfirm = $_POST['passwordConfirm'];
         $email = $_POST['email'];
-        $support = false;
-        if (isset($_POST['support'])) {
-            if ($_POST['support'] == 'true') {
-                $support = true;
-            }
-        }
+        $support = isset($_POST['support']) and $_POST['support'] == 'true';
 
         //Get system settings
         $absoluteURL = $_POST['absoluteURL'];

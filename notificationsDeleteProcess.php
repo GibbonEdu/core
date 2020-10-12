@@ -21,7 +21,7 @@ include './gibbon.php';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=notifications.php';
 
-if (isset($_GET['gibbonNotificationID']) == false) {
+if (!isset($_GET['gibbonNotificationID'])) {
     $URL = $URL.'&return=error1';
     header("Location: {$URL}");
     exit();
