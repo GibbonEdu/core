@@ -52,29 +52,23 @@ variables:
   MYSQL_USER: gibbon_test
   MYSQL_PASSWORD: gibbon_password
 
-php:7.0:
-  image: php:7.0
+.tests:
+  stage: test
   variables:
     PHPUNIT_VERSION: ^6
-  script:
-    - composer test
   tags:
     - git-annex
+  script:
+    - composer test
+
+php:7.0:
+  image: php:7.0
+  extends: .tests
 
 php:7.1:
   image: php:7.1
-  variables:
-    PHPUNIT_VERSION: ^6
-  script:
-    - composer test
-  tags:
-    - git-annex
+  extends: .tests
 
 php:7.2:
   image: php:7.2
-  variables:
-    PHPUNIT_VERSION: ^6
-  script:
-    - composer test
-  tags:
-    - git-annex
+  extends: .tests
