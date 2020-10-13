@@ -38,6 +38,7 @@ v21.0.00
         System: added Romanian Leu as currency option
         System: update complete homework to display in green on the Parent Dashboard
         System: added text labels to Print and Export options in ReportTable
+        System: prevented theme names with spaces from breaking background image
         Attendance: added an Offsite - Late option for attendance codes
         Departments: improved course/class naming in Class view
         Data Updater: data updates with no changes will be automatically accepted
