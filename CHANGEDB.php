@@ -703,4 +703,5 @@ UPDATE gibbonStaff SET type='Support' WHERE NOT type='Teaching';end
 ALTER TABLE `gibbonCourseClassPerson` ADD `dateEnrolled` DATE NULL DEFAULT NULL AFTER `role`, ADD `dateUnenrolled` DATE NULL DEFAULT NULL AFTER `dateEnrolled`;end
 ALTER TABLE `gibbonRubricColumn` ADD `backgroundColor` VARCHAR(7) NULL DEFAULT NULL AFTER `title`;end
 ALTER TABLE `gibbonRubricRow` ADD `backgroundColor` VARCHAR(7) NULL DEFAULT NULL AFTER `title`;end
+INSERT INTO `gibboni18n` (`code`, `name`, `version`, `active`, `installed`, `systemDefault`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`, `rtl`) VALUES ('af_ZN', 'Afrikaans - Suid-Afrika', '21.0.00', 'Y', 'Y', 'N', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N');end
 ";
