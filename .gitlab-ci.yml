@@ -25,7 +25,7 @@
   before_script:
     # install apt packages
     - apt-get update -qy
-    - apt-get install -qy gettext git libgd-dev libpng-dev locales unzip zip zlib1g-dev
+    - apt-get install -qy gettext git libzip-dev libgd-dev libpng-dev locales unzip zip zlib1g-dev
     # install php extensions
     - docker-php-ext-install gd gettext pdo_mysql zip > /dev/null
     # properly setup php
