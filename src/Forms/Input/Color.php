@@ -36,12 +36,11 @@ class Color extends Input
         parent::__construct($name);
 
         $this->setAttribute('maxlength', 7);
-        $this->setAttribute('style', 'padding: 4px; width: 36px; height:36px; border-width: 1px;');
-        $this->addClass('');
+        $this->setAttribute('style', 'padding: 4px; min-width: 36px; height:36px; border-width: 1px;');
 
         $this->addValidation(
             'Validate.Format',
-            'pattern: /#[0-9a-fA-F]{6}/, failureMessage: "Must be a hex color"'
+            'pattern: /#[0-9a-fA-F]{6}/, failureMessage: "'.__('Must be a valid hex color').'"'
         );
     }
 
