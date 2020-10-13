@@ -60,6 +60,7 @@ v21.0.00
         Planner: replaced "Compulsory" with "Required" in relation to homework
         Planner: removed lessons with timetable exceptions from Today's Lessons on the dahsboard
         Planner: adjust the display of homework lists to account for class enrolment dates
+        Planner: enabled homework to be submitted for lessons that already exist during a school closure
         Reports: display the download link after a batch PDF has completed
         Reports: added full course name to the report writing page
         Reports: added a bulk delete action in the Edit Reporting Scopes page
@@ -72,8 +73,7 @@ v21.0.00
         System Admin: added a flag to import types to enable updating non-unique rows
         Timetable Admin: added a dateEnrolled and dateUnenrolled to class enrolments
         Testing: Changed install suite admin username and password to be compliant with the default password requirements
-	Format: added nameLinked formatter
-	Login: added custom login loader
+        User Admin: added Guardian and Grandmother/Grandfather to emergency relationships
 
     Bug Fixes
         System: fixed missing organization name on welcome page
