@@ -701,4 +701,6 @@ ALTER TABLE `gibbonPlannerEntry` CHANGE `homeworkSubmissionRequired` `homeworkSu
 ALTER TABLE `gibbonModule` CHANGE `version` `version` VARCHAR(8) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 UPDATE gibbonStaff SET type='Support' WHERE NOT type='Teaching';end
 ALTER TABLE `gibbonCourseClassPerson` ADD `dateEnrolled` DATE NULL DEFAULT NULL AFTER `role`, ADD `dateUnenrolled` DATE NULL DEFAULT NULL AFTER `dateEnrolled`;end
+ALTER TABLE `gibbonRubricColumn` ADD `backgroundColor` VARCHAR(7) NULL DEFAULT NULL AFTER `title`;end
+ALTER TABLE `gibbonRubricRow` ADD `backgroundColor` VARCHAR(7) NULL DEFAULT NULL AFTER `title`;end
 ";

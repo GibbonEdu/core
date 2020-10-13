@@ -127,6 +127,11 @@ class FormFactory implements FormFactoryInterface
         return new Input\Range($name, $min, $max, $step);
     }
 
+    public function createColor($name)
+    {
+        return (new Input\Color($name));
+    }
+
     public function createFinder($name)
     {
         return new Input\Finder($name);
