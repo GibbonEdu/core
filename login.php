@@ -46,8 +46,12 @@ if (empty($username) or empty($password)) {
     header("Location: {$URL}");
     exit;
 }
-//VALIDATE LOGIN INFORMATION
 else {
+    // Custom login loader
+    if (file_exists('./login_custom.php')) {
+        require_once './login_custom.php';
+    }
+    //VALIDATE LOGIN INFORMATION
     try {
         $data = array('username' => $username);
         $sql = "SELECT gibbonPerson.*, futureYearsLogin, pastYearsLogin FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE ((username=:username OR (LOCATE('@', :username)>0 AND email=:username) ) AND (status='Full'))";
