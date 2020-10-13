@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 					$typeOptions = array('Standalone' => __('Standalone'), 'Outcome Based' => __('Outcome Based'));
 					
 					$data = array('gibbonRubricID' => $gibbonRubricID);
-					$sql = "SELECT gibbonRubricRowID, title, gibbonOutcomeID FROM gibbonRubricRow WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber";
+					$sql = "SELECT gibbonRubricRowID, title, gibbonOutcomeID, backgroundColor FROM gibbonRubricRow WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber";
                     $result = $pdo->executeQuery($data, $sql);
 					
 					if ($result->rowCount() <= 0) {
@@ -151,21 +151,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 
 							$row = $form->addRow();
 								$row->addLabel('rowName'.$count, sprintf(__('Row %1$s Title'), ($count + 1)) );
-								$column = $row->addColumn()->addClass('flex-col');
-								$column->addRadio('type'.$count)->fromArray($typeOptions)->inline()->checked($type);
-								$column->addTextField('rowTitle['.$count.']')
+                                $column = $row->addColumn()->addClass('flex-col');
+                                
+                                $column->addRadio('type'.$count)->fromArray($typeOptions)->inline()->checked($type);
+                                $col = $column->addColumn()->addClass('flex');
+								$col->addTextField('rowTitle['.$count.']')
 									->setID('rowTitle'.$count)
-									->addClass('rowTitle'.$count)
+									->addClass('flex-1 rowTitle'.$count)
 									->maxLength(40)
 									->required()
 									->setValue($rubricRow['title']);
-								$column->addSelect('gibbonOutcomeID['.$count.']')
+								$col->addSelect('gibbonOutcomeID['.$count.']')
 									->setID('gibbonOutcomeID'.$count)
-									->addClass('gibbonOutcomeID'.$count)
+									->addClass('flex-1 gibbonOutcomeID'.$count)
 									->fromArray($outcomes)
 									->required()
 									->placeholder()
-									->selected($rubricRow['gibbonOutcomeID']);
+                                    ->selected($rubricRow['gibbonOutcomeID']);
+                                    
+                                $col->addColor('rowColor['.$count.']')
+                                    ->addClass('pl-2')
+                                    ->setValue($rubricRow['backgroundColor'] ?? '#ffffff')
+                                    ->setTitle(__('Background Color'));
 
 							$form->toggleVisibilityByClass('rowTitle'.$count)->onRadio('type'.$count)->when('Standalone');
 							$form->toggleVisibilityByClass('gibbonOutcomeID'.$count)->onRadio('type'.$count)->when('Outcome Based');
@@ -180,7 +187,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                         $row->addContent(__('Visualise?'))->wrap('<strong class="block w-full text-left">', '</strong>');
 
 					$data = array('gibbonRubricID' => $gibbonRubricID);
-					$sql = "SELECT gibbonRubricColumnID, title, gibbonScaleGradeID, visualise FROM gibbonRubricColumn WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber";
+					$sql = "SELECT gibbonRubricColumnID, title, gibbonScaleGradeID, visualise, backgroundColor FROM gibbonRubricColumn WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber";
                     $result = $pdo->executeQuery($data, $sql);
 					
 					if ($result->rowCount() <= 0) {
@@ -215,7 +222,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                                     ->required()
                                     ->setClass('flex-1 w-full')
 									->selected($rubricColumn['gibbonScaleGradeID']);
-							}
+                            }
+                            
+                            $col->addColor('columnColor['.$count.']')
+                                ->addClass('pl-2')
+                                ->setValue($rubricColumn['backgroundColor'] ?? '#ffffff')
+                                ->setTitle(__('Background Color'));
+
 							$form->addHiddenValue('gibbonRubricColumnID['.$count.']', $rubricColumn['gibbonRubricColumnID']);
 
 							$count++;

@@ -80,7 +80,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
 
         // Column Headers
         for ($n = 0; $n < $columnCount; ++$n) {
-            $col = $row->addColumn()->addClass('rubricHeading');
+            $col = $row->addColumn()->addClass('rubricHeading column'.$columns[$n]['gibbonRubricColumnID']);
 
             // Display grade scale, otherwise column title
             if (!empty($gradeScales[$columns[$n]['gibbonScaleGradeID']])) {
@@ -99,7 +99,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
         $count = 0;
         for ($i = 0; $i < $rowCount; ++$i) {
             $row = $form->addRow();
-            $col = $row->addColumn()->addClass('rubricHeading');
+            $col = $row->addColumn()->addClass('rubricHeading row'.$rows[$i]['gibbonRubricRowID']);
 
             // Row Header
             if (!empty($outcomes[$rows[$i]['gibbonOutcomeID']])) {
@@ -130,6 +130,22 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
             $row->addSubmit();
 
         $output .= $form->getOutput();
+
+        $output .= "<style>";
+        for ($i = 0; $i < $rowCount; ++$i) {
+            $color = $rows[$i]['backgroundColor'] ?? '';
+            $color = $color == '#ffffff' ? '#666666' : $color;
+            $colorValue = hexdec(substr($color, 1, 2)) + hexdec(substr($color, 3, 2)) + hexdec(substr($color, 5, 2));
+            $textColor = $colorValue > 580 ? '#5b5757' : '#ffffff';
+            $output .= ".row".$rows[$i]['gibbonRubricRowID'].'{ background-color: '.$color.'; color: '.$textColor.'; } ';
+        }
+        for ($i = 0; $i < $columnCount; ++$i) {
+            $color = $columns[$i]['backgroundColor'] ?? '';
+            $colorValue = hexdec(substr($color, 1, 2)) + hexdec(substr($color, 3, 2)) + hexdec(substr($color, 5, 2));
+            $textColor = $colorValue > 480 ? '#5b5757' : '#ffffff';
+            $output .= ".column".$columns[$i]['gibbonRubricColumnID'].'{ background-color: '.$color.'; color: '.$textColor.'; } ';
+        }
+        $output .= "</style>";
     }
 
     return $output;
@@ -289,7 +305,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 
                     // Column Headers
                     for ($n = 0; $n < $columnCount; ++$n) {
-                        $column = $row->addColumn()->addClass('rubricHeading');
+                        $column = $row->addColumn()->addClass('rubricHeading column'.$columns[$n]['gibbonRubricColumnID']);
 
                         // Display grade scale, otherwise column title
                         if (!empty($gradeScales[$columns[$n]['gibbonScaleGradeID']])) {
@@ -306,7 +322,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                     $count = 0;
                     for ($i = 0; $i < $rowCount; ++$i) {
                         $row = $form->addRow();
-                        $col = $row->addColumn()->addClass('rubricHeading rubricRowHeading');
+                        $col = $row->addColumn()->addClass('rubricHeading rubricRowHeading row'.$rows[$i]['gibbonRubricRowID']);
 
                         // Row Header
                         if (!empty($outcomes[$rows[$i]['gibbonOutcomeID']])) {
@@ -410,6 +426,22 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                     });
                 });
             </script>";
+
+            $output .= "<style>";
+            for ($i = 0; $i < $rowCount; ++$i) {
+                $color = $rows[$i]['backgroundColor'] ?? '';
+                $color = $color == '#ffffff' ? '#666666' : $color;
+                $colorValue = hexdec(substr($color, 1, 2)) + hexdec(substr($color, 3, 2)) + hexdec(substr($color, 5, 2));
+                $textColor = $colorValue > 580 ? '#5b5757' : '#ffffff';
+                $output .= ".row".$rows[$i]['gibbonRubricRowID'].'{ background-color: '.$color.'; color: '.$textColor.'; } ';
+            }
+            for ($i = 0; $i < $columnCount; ++$i) {
+                $color = $columns[$i]['backgroundColor'] ?? '';
+                $colorValue = hexdec(substr($color, 1, 2)) + hexdec(substr($color, 3, 2)) + hexdec(substr($color, 5, 2));
+                $textColor = $colorValue > 480 ? '#5b5757' : '#ffffff';
+                $output .= ".column".$columns[$i]['gibbonRubricColumnID'].'{ background-color: '.$color.'; color: '.$textColor.'; } ';
+            }
+            $output .= "</style>";
         }
 
         // Append the Rubric stylesheet to the current page - for Markbook view of Rubric (only if it's not already included)
