@@ -1,9 +1,9 @@
 before_script:
   # install apt packages
   - apt-get update -qy
-  - apt-get install -qy git zip unzip zlib1g-dev gettext locales
+  - apt-get install -qy gettext git libgd-dev libpng-dev locales unzip zip zlib1g-dev
   # install php extensions
-  - docker-php-ext-install zip gettext pdo_mysql > /dev/null
+  - docker-php-ext-install gd gettext pdo_mysql zip > /dev/null
   # properly setup php
   - cp -pdf /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
   - php --ini
