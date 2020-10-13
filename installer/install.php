@@ -123,7 +123,7 @@ if ($step >= 1) {
 // Check config values for ' " \ / chars which will cause errors in config.php
 $pattern = '/[\'"\/\\\\]/';
 if (preg_match($pattern, $databaseServer) == true || preg_match($pattern, $databaseName) == true ||
-    preg_match($pattern, $databaseUsername) == true || preg_match($pattern, $databasePassword) == true) {
+    preg_match($pattern, $databaseUsername) == true) {
     $isConfigValid = false;
 }
 
