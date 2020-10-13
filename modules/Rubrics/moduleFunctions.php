@@ -133,16 +133,15 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
 
         $output .= "<style>";
         for ($i = 0; $i < $rowCount; ++$i) {
-            $color = $rows[$i]['backgroundColor'] ?? '';
-            $color = $color == '#ffffff' ? '#666666' : $color;
+            $color = $rows[$i]['backgroundColor'] ?? '#ffffff';
             $colorValue = hexdec(substr($color, 1, 2)) + hexdec(substr($color, 3, 2)) + hexdec(substr($color, 5, 2));
             $textColor = $colorValue > 580 ? '#5b5757' : '#ffffff';
             $output .= ".row".$rows[$i]['gibbonRubricRowID'].'{ background-color: '.$color.'; color: '.$textColor.'; } ';
         }
         for ($i = 0; $i < $columnCount; ++$i) {
-            $color = $columns[$i]['backgroundColor'] ?? '';
+            $color = $columns[$i]['backgroundColor'] ?? '#ffffff';
             $colorValue = hexdec(substr($color, 1, 2)) + hexdec(substr($color, 3, 2)) + hexdec(substr($color, 5, 2));
-            $textColor = $colorValue > 480 ? '#5b5757' : '#ffffff';
+            $textColor = $colorValue > 450 ? '#5b5757' : '#ffffff';
             $output .= ".column".$columns[$i]['gibbonRubricColumnID'].'{ background-color: '.$color.'; color: '.$textColor.'; } ';
         }
         $output .= "</style>";
@@ -429,16 +428,16 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 
             $output .= "<style>";
             for ($i = 0; $i < $rowCount; ++$i) {
-                $color = $rows[$i]['backgroundColor'] ?? '';
+                $color = $rows[$i]['backgroundColor'] ?? '#666666';
                 $color = $color == '#ffffff' ? '#666666' : $color;
                 $colorValue = hexdec(substr($color, 1, 2)) + hexdec(substr($color, 3, 2)) + hexdec(substr($color, 5, 2));
                 $textColor = $colorValue > 580 ? '#5b5757' : '#ffffff';
                 $output .= ".row".$rows[$i]['gibbonRubricRowID'].'{ background-color: '.$color.'; color: '.$textColor.'; } ';
             }
             for ($i = 0; $i < $columnCount; ++$i) {
-                $color = $columns[$i]['backgroundColor'] ?? '';
+                $color = $columns[$i]['backgroundColor'] ?? '#ffffff';
                 $colorValue = hexdec(substr($color, 1, 2)) + hexdec(substr($color, 3, 2)) + hexdec(substr($color, 5, 2));
-                $textColor = $colorValue > 480 ? '#5b5757' : '#ffffff';
+                $textColor = $colorValue > 450 ? '#5b5757' : '#ffffff';
                 $output .= ".column".$columns[$i]['gibbonRubricColumnID'].'{ background-color: '.$color.'; color: '.$textColor.'; } ';
             }
             $output .= "</style>";
