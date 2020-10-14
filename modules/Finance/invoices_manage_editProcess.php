@@ -247,7 +247,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                                 $receiptCount = $resultPayments->rowCount();
 
                                 //Prep message
-                                $body = receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], true, $receiptCount-1)."<p style='font-style: italic;'>Email sent via ".$_SESSION[$guid]['systemName'].' at '.$_SESSION[$guid]['organisationName'].'.</p>';
+                                $body = receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], true, $receiptCount-1);
 
                                 $mail = $container->get(Mailer::class);
                                 $mail->SetFrom($from, sprintf(__('%1$s Finance'), $_SESSION[$guid]['organisationName']));
@@ -263,6 +263,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                                 $mail->renderBody('mail/email.twig.html', [
                                     'title'  => $mail->Subject,
                                     'body'   => $body,
+                                    'maxWidth' => '900px',
                                 ]);
 
                                 if (!$mail->Send()) {
