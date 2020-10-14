@@ -45,6 +45,7 @@ v21.0.00
         Data Updater: data updates with no changes will be automatically accepted
         Finance: added a setting to customize Payment Type options
         Finance: added error logging to the email reminder process
+        Finance: improved the layout of invoice emails, reminders and receipts
         Formal Assessment: added a bulk action for External Assessment Data
         Individual Needs: removed Notes & Review from parent view of individual needs information
         Library: added ID column to View Overdue Items report
@@ -77,7 +78,7 @@ v21.0.00
         Timetable Admin: added a dateEnrolled and dateUnenrolled to class enrolments
         Testing: Changed install suite admin username and password to be compliant with the default password requirements
         User Admin: added Guardian and Grandmother/Grandfather to emergency relationships
-
+ 
     Bug Fixes
         System: fixed missing organization name on welcome page
         System: fixed date picker not using the First Day of the Week setting
