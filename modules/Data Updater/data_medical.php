@@ -312,6 +312,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 
 						$form->toggleVisibilityByClass('addConditionRow')->onCheckbox('addCondition')->when('Yes');
 
+                        if ($medicalConditionIntro = getSettingByScope($connection2, 'Students', 'medicalConditionIntro')) {
+                            $row = $form->addRow();
+                                $row->addContent($medicalConditionIntro);
+                        }
+
 						$row = $form->addRow();
 							$row->addCheckbox('addCondition')->setValue('Yes')->description(__('Check the box to add a new medical condition'));
 
