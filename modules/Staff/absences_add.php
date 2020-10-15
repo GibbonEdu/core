@@ -213,17 +213,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
         $row->addTextArea('comment')->setRows(5)->setValue($commentTemplate);
 
     // COVERAGE
-    if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php')) {
-        $form->addRow()->addHeading('Coverage', __('Coverage'))->addClass('approvalNotRequired');
+    if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php')) {
+        $form->toggleVisibilityByClass('coverageRequest')->onSelect('gibbonStaffAbsenceTypeID')->whenNot('Please select...');
 
-        $row = $form->addRow()->addClass('approvalNotRequired');
+        $form->addRow()->addHeading(__('Coverage'))->addClass('coverageRequest');
+
+        $row = $form->addRow()->addClass('coverageRequest');
             $row->addLabel('coverageRequired', __('Substitute Required'));
             $row->addYesNo('coverageRequired')->isRequired()->selected('N');
 
         $form->toggleVisibilityByClass('coverageOptions')->onSelect('coverageRequired')->whenNot('N');
 
-        $row = $form->addRow()->addClass('coverageOptions approvalNotRequired');
-            $row->addAlert(__("You'll have the option to send a coverage request after submitting this form."), 'success');
+        if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php')) {
+            $col = $form->addRow()->addClass('coverageOptions')->addColumn();
+                $col->addAlert(__("You'll have the option to send a coverage request after submitting this form."), 'success approvalNotRequired');
+                $col->addAlert(__("You'll have the option to send a coverage request once this absence has been approved."), 'warning approvalRequired');
+        }
     } else {
         $form->addHiddenValue('coverageRequired', 'N');
     }
