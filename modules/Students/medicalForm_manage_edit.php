@@ -105,13 +105,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 
             echo $form->getOutput();
 
-            echo '<h2>';
-            echo __('Medical Conditions');
-            echo '</h2>';
-
             $conditions = $medicalGateway->selectMedicalConditionsByID($gibbonPersonMedicalID);
 
             $table = DataTable::create('medicalConditions');
+            $table->setTitle(__('Medical Conditions'));
+            $table->setDescription(getSettingByScope($connection2, 'Students', 'medicalConditionIntro'));
 
             $table->addHeaderAction('add', __('Add'))
                 ->setURL('/modules/Students/medicalForm_manage_condition_add.php')
