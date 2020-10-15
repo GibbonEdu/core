@@ -18,12 +18,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Staff\SubstituteGateway;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
+use Gibbon\Domain\Timetable\TimetableGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
-use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Staff\StaffCoverageDateGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php') == false) {
     // Access denied
@@ -43,6 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     $substituteGateway = $container->get(SubstituteGateway::class);
     $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
     $staffAbsenceDateGateway = $container->get(StaffAbsenceDateGateway::class);
+    $staffCoverageDateGateway = $container->get(StaffCoverageDateGateway::class);
 
     if (empty($gibbonStaffAbsenceID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
@@ -68,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
         ->sortBy(['surname', 'preferredName']);
 
     $availableSubs = array_reduce($absenceDates, function ($group, $date) use ($substituteGateway, &$criteria) {
-        if (!empty($date['gibbonStaffCoverageID'])) return $group;
+        if (!empty($date['gibbonStaffCoverageID'])) return $group; // Already covered
 
         $availableByDate = $substituteGateway->queryAvailableSubsByDate($criteria, $date['date'], $date['timeStart'], $date['timeEnd'])->toArray();
         return array_merge($group, $availableByDate);
@@ -101,6 +105,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
         return $group;
     }, []);
 
+    // Get date ranges
+    $dateStart = $absenceDates[0] ?? '';
+    $dateEnd = $absenceDates[count($absenceDates) -1] ?? '';
+    $dateRange = Format::dateRangeReadable($dateStart['date'], $dateEnd['date']);
+    $timeRange = $dateStart['allDay'] == 'N'
+        ? Format::timeRange($dateStart['timeStart'], $dateStart['timeEnd'])
+        : '';
+
+    // Get timetabled classes
+    $classes = $staffCoverageDateGateway->selectTimetabledClassCoverageByPersonAndDate($gibbon->session->get('gibbonSchoolYearID'), $values['gibbonPersonID'], $dateStart['date'], $dateEnd['date'])->fetchAll();
+
+
+    // FORM
     $form = Form::create('staffAbsenceEdit', $session->get('absoluteURL').'/modules/Staff/coverage_requestProcess.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -114,13 +131,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     if (!empty($availableSubs)) {
         $requestTypes['Individual'] = __('Specific substitute');
     }
-
-    $dateStart = $absenceDates[0] ?? '';
-    $dateEnd = $absenceDates[count($absenceDates) -1] ?? '';
-    $dateRange = Format::dateRangeReadable($dateStart['date'], $dateEnd['date']);
-    $timeRange = $dateStart['allDay'] == 'N'
-        ? Format::timeRange($dateStart['timeStart'], $dateStart['timeEnd'])
-        : '';
 
     $row = $form->addRow();
         $row->addLabel('dateLabel', __('Absence'));
@@ -156,47 +166,155 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     $row = $form->addRow()->addClass('individualOptions');
         $row->addAlert(__("This option sends your request to the selected substitute. You'll receive a notification when they accept or decline. If your request is declined you'll have to option to send a new request."), 'message');
 
-    $row = $form->addRow()->addClass('individualOptions');
-        $row->addLabel('gibbonPersonIDCoverage', __('Substitute'))->description(__('Only available substitutes are listed here.'));
-        $row->addSelectPerson('gibbonPersonIDCoverage')
-            ->fromArray($availableSubsOptions)
-            ->placeholder()
-            ->selected($gibbonPersonIDCoverage)
-            ->isRequired();
+    // $row = $form->addRow()->addClass('individualOptions');
+    //     $row->addLabel('gibbonPersonIDCoverage', __('Substitute'))->description(__('Only available substitutes are listed here.'));
+    //     $row->addSelectPerson('gibbonPersonIDCoverage')
+    //         ->fromArray($availableSubsOptions)
+    //         ->placeholder()
+    //         ->selected($gibbonPersonIDCoverage)
+    //         ->isRequired();
+    
 
     $sql = "SELECT DATE_FORMAT(schoolStart, '%H:%i') as schoolStart, DATE_FORMAT(schoolEnd, '%H:%i') as schoolEnd FROM gibbonDaysOfWeek WHERE name=DATE_FORMAT(CURRENT_DATE, '%W') AND schoolDay='Y'";
     $weekday = $pdo->selectOne($sql);
 
-    // Time Options
-    if ($dateStart['allDay'] == 'Y') {
-        $row = $form->addRow();
-        $row->addLabel('allDay', __('When'));
-        $row->addCheckbox('allDay')
-            ->description(__('All Day'))
-            ->setValue('Y')
-            ->checked($dateStart['allDay']);
-    } else {
+    $col = $form->addRow()->addColumn();
+        $col->addLabel('when', __('When'));
+
+    if (!empty($classes)) {
+        // Has classes - Select absences by timetable
         $form->addHiddenValue('allDay', 'N');
+
+        $table = $col->addDataTable('staffAbsenceDates')->withData(new DataSet($classes));
+        $table->getRenderer()->addData('class', 'bulkActionForm mt-2');
+    
+        $table->modifyRows(function ($class, $row) {
+            // if (!empty($class['gibbonStaffCoverageID'])) return; // Hide requested dates?
+            return $row->addClass('h-12');
+        });
+    
+        $table->addColumn('dateLabel', __('Date'))
+            ->format(Format::using('dateReadable', 'date'));
+    
+        $table->addColumn('columnName', __('Period'));
+        $table->addColumn('courseClass', __('Class'))->format(Format::using('courseClassName', ['courseNameShort', 'classNameShort']));
+
+        $table->addColumn('timeStart', __('Time'))
+            ->format(function ($class) {
+                return Format::small(Format::timeRange($class['timeStart'], $class['timeEnd']));
+            });
+
+        $table->addColumn('substitute', __('Substitute'))
+            // ->description(__('Only available substitutes are listed here.'))
+            ->addClass('individualOptions')
+            
+            ->format(function ($class) use (&$substituteGateway, &$criteria, &$form) {
+                $availableByDate = $substituteGateway->queryAvailableSubsByDate($criteria, $class['date'], $class['timeStart'], $class['timeEnd'])->toArray();
+
+                $availableSubsOptions = array_reduce($availableByDate, function ($group, $item) {
+                    $group[$item['type']][$item['gibbonPersonID']] = Format::name($item['title'], $item['preferredName'], $item['surname'], 'Staff', true, true);
+                    return $group;
+                }, []);
+
+                return $form->getFactory()->createSelectPerson('gibbonPersonIDCoverage')
+                    ->fromArray($availableSubsOptions)
+                    ->setID('gibbonPersonIDCoverage'.$class['gibbonTTDayRowClassID'])
+                    ->photo(true, 'small')
+                    ->placeholder()
+                    ->setClass('individualOptions flex-1')
+                    ->getOutput();
+            });
+    
+        $table->addCheckboxColumn('timetableClasses', 'gibbonTTDayRowClassID')
+            ->width('15%')
+            ->checked(function ($class) use ($dateStart, $dateEnd) {
+                $insideTimeRange = $class['timeStart'] <= $dateStart['timeEnd'] && $class['timeEnd'] >= $dateEnd['timeStart'];
+
+                return $dateStart['allDay'] == 'Y' || $insideTimeRange ? $class['gibbonTTDayRowClassID'] : false;
+            })
+            ->format(function ($class) {
+                if (!empty($class['gibbonStaffCoverageID'])) {
+                    return Format::small(__('N/A'));
+                }
+            });
+        
+    } else {
+
+        $table = $col->addDataTable('staffAbsenceDates')->withData(new DataSet($absenceDates));
+        $table->getRenderer()->addData('class', 'bulkActionForm mt-2');
+
+        $table->modifyRows(function ($values, $row) {
+            return $row->addClass('h-12');
+        });
+
+        $table->addColumn('dateLabel', __('Date'))
+            ->format(Format::using('dateReadable', 'date'));
+
+        $table->addColumn('timeStart', __('Time'))
+            ->width('50%')
+            ->format(function ($absence) {
+                return $absence['allDay'] == 'N'
+                    ? Format::small(Format::timeRange($absence['timeStart'], $absence['timeEnd']))
+                    : Format::small(__('All Day'));
+            });
+
+            
+
+        $table->addCheckboxColumn('requestDates', 'date')
+            ->width('15%')
+            ->checked(true)
+            ->format(function ($date) use (&$unavailable, &$request) {
+                // Is this date unavailable: absent, already booked, or has an availability exception
+                if (isset($unavailable[$date['date']])) {
+                    $times = $unavailable[$date['date']];
+
+                    foreach ($times as $time) {
+                    
+                        // Handle full day and partial day unavailability
+                        if ($time['allDay'] == 'Y' 
+                        || ($time['allDay'] == 'N' && $request['allDay'] == 'Y')
+                        || ($time['allDay'] == 'N' && $request['allDay'] == 'N'
+                            && $time['timeStart'] < $request['timeEnd']
+                            && $time['timeEnd'] > $request['timeStart'])) {
+                            return Format::small(__($time['status'] ?? 'Not Available'));
+                        }
+                    }
+                }
+            });
+    
+        // No classes - Select absences by time range
+        // if ($dateStart['allDay'] == 'Y') {
+        //     $row = $form->addRow();
+        //     $row->addLabel('allDay', __('When'));
+        //     $row->addCheckbox('allDay')
+        //         ->description(__('All Day'))
+        //         ->setValue('Y')
+        //         ->checked($dateStart['allDay']);
+        // } else {
+        //     $form->addHiddenValue('allDay', 'N');
+        // }
+
+        // $form->toggleVisibilityByClass('timeOptions')->onCheckbox('allDay')->whenNot('Y');
+
+        // $row = $form->addRow()->addClass('timeOptions');
+        //     $row->addLabel('timeStart', __('Time'));
+        //     $col = $row->addColumn('timeStart');
+        //     $col->addTime('timeStart')
+        //         ->setClass('w-full mr-1')
+        //         ->isRequired()
+        //         ->setValue($dateStart['timeStart'] ?? $weekday['schoolStart']);
+        //     $col->addTime('timeEnd')
+        //         ->chainedTo('timeStart')
+        //         ->setClass('w-full')
+        //         ->isRequired()
+        //         ->setValue($dateStart['timeEnd'] ?? $weekday['schoolEnd']);
     }
 
-    $form->toggleVisibilityByClass('timeOptions')->onCheckbox('allDay')->whenNot('Y');
-
-    $row = $form->addRow()->addClass('timeOptions');
-        $row->addLabel('timeStart', __('Time'));
-        $col = $row->addColumn('timeStart');
-        $col->addTime('timeStart')
-            ->setClass('w-full mr-1')
-            ->isRequired()
-            ->setValue($dateStart['timeStart'] ?? $weekday['schoolStart']);
-        $col->addTime('timeEnd')
-            ->chainedTo('timeStart')
-            ->setClass('w-full')
-            ->isRequired()
-            ->setValue($dateStart['timeEnd'] ?? $weekday['schoolEnd']);
+    
 
     // Dates selection - Loaded via AJAX
-    $row = $form->addRow()->addClass('individualOptions');
-        $row->addContent('<div class="datesTable"></div>');
+    // $row = $form->addRow()->addClass('individualOptions');
+    //     $row->addContent('<div class="datesTable"></div>');
 
     $row = $form->addRow();
         $row->addLabel('notesStatus', __('Comment'))->description(__('This message is shared with substitutes, and is also visible to users who manage staff coverage.'));

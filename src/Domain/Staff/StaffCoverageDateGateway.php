@@ -61,4 +61,28 @@ class StaffCoverageDateGateway extends QueryableGateway
 
         return $this->db()->delete($sql, $data);
     }
+
+    public function selectTimetabledClassCoverageByPersonAndDate($gibbonSchoolYearID, $gibbonPersonID, $dateStart, $dateEnd)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd];
+        $sql = "SELECT DISTINCT gibbonTTDayDate.date, gibbonTT.gibbonTTID, gibbonTT.name, gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.nameShort as classNameShort, gibbonTTColumnRow.name as columnName, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonCourse.name as courseName, gibbonCourse.nameShort as courseNameShort, gibbonStaffCoverage.gibbonStaffCoverageID
+        FROM gibbonTT 
+        JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID) 
+        JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) 
+        JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) 
+        JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+        JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID)
+        JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+        JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+        LEFT JOIN gibbonStaffCoverageDate ON (gibbonStaffCoverageDate.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonStaffCoverageDate.date=gibbonTTDayDate.date)
+        LEFT JOIN gibbonStaffCoverage ON (gibbonStaffCoverage.gibbonStaffCoverageID=gibbonStaffCoverageDate.gibbonStaffCoverageID AND gibbonStaffCoverage.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
+        WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID 
+        AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID 
+        AND gibbonTT.active='Y' 
+        AND gibbonTTDayDate.date BETWEEN :dateStart AND :dateEnd
+        AND gibbonCourseClassPerson.role NOT LIKE '%Left'
+        ORDER BY gibbonTTDayDate.date, gibbonTTColumnRow.timeStart ASC";
+
+        return $this->db()->select($sql, $data);
+    }
 }
