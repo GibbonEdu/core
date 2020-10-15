@@ -62,7 +62,7 @@ class CheckboxColumn extends Column
     {
         return (new Checkbox('checkall'))
             ->setClass('floatNone checkall')
-            ->checked($this->checked)
+            ->checked(!is_callable($this->checked) ? $this->checked : false)
             ->wrap('<div class="text-center">', '</div>')
             ->alignCenter()
             ->getOutput();
@@ -85,7 +85,7 @@ class CheckboxColumn extends Column
             : ((new Checkbox($this->getID().'[]'))->wrap('<label for="'.$this->getID().$value.'" class="-m-4 p-4">', '</label>'))
             ->setID($this->getID().$value)
             ->setValue($value)
-            ->checked($this->checked ? $value : false)
+            ->checked(is_callable($this->checked) ? call_user_func($this->checked, $data) : ($this->checked ? $value : false) )
             ->alignCenter()
             ->getOutput();
     }
