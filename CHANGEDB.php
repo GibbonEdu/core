@@ -705,4 +705,5 @@ ALTER TABLE `gibbonRubricColumn` ADD `backgroundColor` VARCHAR(7) NULL DEFAULT N
 ALTER TABLE `gibbonRubricRow` ADD `backgroundColor` VARCHAR(7) NULL DEFAULT NULL AFTER `title`;end
 INSERT INTO `gibboni18n` (`code`, `name`, `version`, `active`, `installed`, `systemDefault`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`, `rtl`) VALUES ('af_ZN', 'Afrikaans - Suid-Afrika', '21.0.00', 'Y', 'Y', 'N', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N');end
 UPDATE gibboni18n SET code='af_ZA' WHERE code='af_ZN';end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Students', 'medicalConditionIntro', 'Medical Condition Introductory Text', 'HTML text that will appear above the medical conditions section.', '');end
 ";

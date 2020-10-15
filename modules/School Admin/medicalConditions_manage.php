@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Tables\DataTable;
+use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Students\MedicalConditionGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/medicalConditions_manage.php') == false) {
@@ -33,6 +34,21 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/medicalCondit
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
+
+    $form = Form::create('medicalSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/medicalConditions_manageProcess.php' );
+
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+    $setting = getSettingByScope($connection2, 'Students', 'medicalConditionIntro', true);
+    $col = $form->addRow()->addColumn();
+        $col->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $col->addEditor($setting['name'], $guid)->setRows(6)->setValue($setting['value']);
+
+    $row = $form->addRow();
+		$row->addFooter();
+		$row->addSubmit();
+
+	echo $form->getOutput();
 
     $medicalConditionGateway = $container->get(MedicalConditionGateway::class);
 

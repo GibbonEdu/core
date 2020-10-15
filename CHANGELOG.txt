@@ -69,6 +69,7 @@ v21.0.00
         Reports: added a bulk delete action in the Edit Reporting Scopes page
         Rubrics: added an option to colour rubric column and row headings
         School Admin: added Manage Medical Conditions action
+        School Admin: added optional introductory text setting for the Medical Conditions section
         Students: updated application acceptance message to reflect automatically created medical record
         Students: added uniqueness checks for Student ID field
         Students: send notifications for student notes to the Head of Year, if available
