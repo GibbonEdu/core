@@ -1,80 +1,69 @@
-before_script:
-  # install apt packages
-  - apt-get update -qy
-  - apt-get install -qy git zip unzip zlib1g-dev gettext locales
-  # install php extensions
-  - docker-php-ext-install zip gettext pdo_mysql > /dev/null
-  # properly setup php
-  - cp -pdf /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
-  - php --ini
-  # install composer
-  - mkdir $HOME/bin
-  - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-  - php -r "if (hash_file('SHA384', 'composer-setup.php') === '48e3236262b34d30969dca3c37281b3b4bbe3221bda826ac6a9a62d6444cdb0dcd0615698a5cbe587c3f0fe57a54d8f5') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-  - php composer-setup.php --install-dir=$HOME/bin --filename=composer
-  - php -r "unlink('composer-setup.php');"
-  - export PATH=$HOME/bin:$HOME/.phpunit/vendor/bin:$HOME/.composer/vendor/bin:$PATH
-  # run test server for codeception tests
-  - php -S 127.0.0.1:8888 -t $CI_PROJECT_DIR >/dev/null 2>&1 &
-  # install codeception globally in test environment
-  - COMPOSER_HOME=$HOME/.composer composer global require "codeception/codeception:2.1.*@dev" --no-progress
-  # install phpunit globally in test environment, but in different composer home
-  - COMPOSER_HOME=$HOME/.phpunit composer global require "phpunit/phpunit" "$PHPUNIT_VERSION" --no-progress
-  # install dependencies for test
-  - composer install --prefer-dist --no-interaction --no-progress
-  # setup system locale for test
-  - echo -e "es_ES.UTF-8 UTF-8\nfr_FR.UTF-8 UTF-8\nzh_TW.UTF-8 UTF-8" > /etc/locale.gen
-  - cat /etc/locale.gen
-  - locale-gen es_ES.utf8
-  - locale-gen fr_FR.utf8
-  - locale-gen zh_TW.utf8
-  - localedef --list-archive
-  - locale -a
-
-services:
-  - mariadb:latest
-
-variables:
-  # supporess interative prompt from debian-based OS
-  DEBIAN_FRONTEND: noninteractive
-  # variables required for Gibbon to test with
-  TEST_ENV: codeception
-  CI_PLATFORM: gitlab_ci
-  GIT_SUBMODULE_STRATEGY: recursive
-  ABSOLUTE_URL: http://127.0.0.1:8888
-  DB_HOST: mariadb
-  DB_NAME: gibbon_test
-  DB_USERNAME: gibbon_test
-  DB_PASSWORD: gibbon_password
-  # variables to setup mariadb docker
-  MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
-  MYSQL_DATABASE: gibbon_test
-  MYSQL_USER: gibbon_test
-  MYSQL_PASSWORD: gibbon_password
+.tests:
+  stage: test
+  services:
+    - mariadb:latest
+  variables:
+    # supporess interative prompt from debian-based OS
+    DEBIAN_FRONTEND: noninteractive
+    # variables required for Gibbon to test with
+    TEST_ENV: codeception
+    CI_PLATFORM: gitlab_ci
+    GIT_SUBMODULE_STRATEGY: recursive
+    ABSOLUTE_URL: http://127.0.0.1:8888
+    DB_HOST: mariadb
+    DB_NAME: gibbon_test
+    DB_USERNAME: gibbon_test
+    DB_PASSWORD: gibbon_password
+    # variables to setup mariadb docker
+    MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+    MYSQL_DATABASE: gibbon_test
+    MYSQL_USER: gibbon_test
+    MYSQL_PASSWORD: gibbon_password
+  tags:
+    - git-annex
+  before_script:
+    # install apt packages
+    - apt-get update -qy
+    - apt-get install -qy gettext git libzip-dev libgd-dev libpng-dev locales unzip zip zlib1g-dev
+    # install php extensions
+    - docker-php-ext-install gd gettext pdo_mysql zip > /dev/null
+    # properly setup php
+    - cp -pdf /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
+    - php --ini
+    # install composer
+    - mkdir $HOME/bin
+    - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+    - php -r "if (getenv('COMPOSER_CHECKSUM') === false) exit('No COMPOSER_CHECKSUM. Installer verification skipped.' . PHP_EOL); if (hash_file('SHA384', 'composer-setup.php') === getenv('COMPOSER_CHECKSUM')) { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); exit(1); } echo PHP_EOL;"
+    - php composer-setup.php --install-dir=$HOME/bin --filename=composer
+    - php -r "unlink('composer-setup.php');"
+    - export PATH=$HOME/bin:$HOME/.composer/vendor/bin:$PATH
+    # run test server for codeception tests
+    - php -S 127.0.0.1:8888 -t $CI_PROJECT_DIR >/dev/null 2>&1 &
+    # install dependencies for test
+    - composer install --prefer-dist --no-interaction --no-progress
+    # setup system locale for test
+    - echo -e "es_ES.UTF-8 UTF-8\nfr_FR.UTF-8 UTF-8\nzh_TW.UTF-8 UTF-8" > /etc/locale.gen
+    - cat /etc/locale.gen
+    - locale-gen es_ES.utf8
+    - locale-gen fr_FR.utf8
+    - locale-gen zh_TW.utf8
+    - localedef --list-archive
+    - locale -a
+  script:
+    - composer test
 
 php:7.0:
   image: php:7.0
-  variables:
-    PHPUNIT_VERSION: ^6
-  script:
-    - composer test
-  tags:
-    - git-annex
+  extends: .tests
 
 php:7.1:
   image: php:7.1
-  variables:
-    PHPUNIT_VERSION: ^6
-  script:
-    - composer test
-  tags:
-    - git-annex
+  extends: .tests
 
 php:7.2:
   image: php:7.2
-  variables:
-    PHPUNIT_VERSION: ^6
-  script:
-    - composer test
-  tags:
-    - git-annex
+  extends: .tests
+
+php:7.3:
+  image: php:7.3
+  extends: .tests
