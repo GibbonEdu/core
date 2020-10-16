@@ -26,6 +26,7 @@ v21.0.00
         System Admin: added a landing page to showcase the available support options
         Roll Groups: added new grouped action to restrict parent viewing to their own children's roll groups
         Students: added an optional application processing fee that can be sent manually by staff
+        Students: added My Student History, offering a visual overview of all students ever taught
         School Admin: added Email Summary Settings to manage daily and weekly email CLI scripts
         System Admin: added an Email Templates section to customize emails sent by Gibbon
         Reports: added a Send Reports tool to bulk-send templated emails with download links
@@ -79,7 +80,7 @@ v21.0.00
         Timetable Admin: added a dateEnrolled and dateUnenrolled to class enrolments
         Testing: Changed install suite admin username and password to be compliant with the default password requirements
         User Admin: added Guardian and Grandmother/Grandfather to emergency relationships
- 
+
     Bug Fixes
         System: fixed missing organization name on welcome page
         System: fixed date picker not using the First Day of the Week setting
