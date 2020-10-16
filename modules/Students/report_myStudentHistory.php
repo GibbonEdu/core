@@ -23,14 +23,9 @@ use Gibbon\Tables\View\GridView;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Students\StudentGateway;
 
-//Module includes
-require_once __DIR__ . '/moduleFunctions.php';
-
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_myStudentHistory.php') == false) {
     //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('My Student History'));
@@ -39,7 +34,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_myStudentH
     $studentGateway = $container->get(StudentGateway::class);
 
     $criteria = $studentGateway->newQueryCriteria()
-        ->sortBy(['dob'], 'DESC') //Is it possible to add in second sort, in name, but ASC?
+        ->sortBy('dob', 'DESC')
+        ->sortBy('surname')
         ->fromPOST();
 
     $students = $studentGateway->queryStudentHistoryByPerson($criteria, $gibbon->session->get('gibbonPersonID'));
@@ -49,17 +45,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_myStudentH
     $table = $container->get(DataTable::class)->setRenderer($gridRenderer);
 
     $table->setTitle(__('Students'));
+    $table->setDescription(__("This page allows a teacher to see every student they've ever taught on a single page, in reverse chronological order by student age. Hover over a student to see their name."));
+    $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/4 md:w-1/5 my-2 text-center');
 
     $table->addColumn('student')
-    ->notSortable()
-    ->addClass('h-full')
-    ->format(function($values) use ($guid, $gibbon) {
-        $return = null;
-        $return .= Format::userPhoto($values['image_240'], 'md', '')."<br/>";
-        $return .= Format::name('', $values['preferredName'], $values['surname'], 'Student', false, true)."<br/>";
-        $return .= "<span class='text-xxs italic'>".Format::date($values['dob'])."</span><br/><br/>";
-        return $return;
-    });
+        ->notSortable()
+        ->addClass('h-full')
+        ->format(function($values) use ($guid, $gibbon) {
+            $photo = Format::userPhoto($values['image_240'], 'md', '');
+            $title = Format::name('', $values['preferredName'], $values['surname'], 'Student', false, true).'<br/>'.Format::date($values['dob']);
+            
+            return '<div title="'.$title.'" class="mb-4">'.$photo.'</div>';
+        });
 
     echo $table->render($students);
 
