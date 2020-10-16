@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_myStudentH
     $studentGateway = $container->get(StudentGateway::class);
 
     $criteria = $studentGateway->newQueryCriteria()
-        ->sortBy('dob', 'DESC')
+        ->sortBy('dob', 'ASC')
         ->sortBy('surname')
         ->fromPOST();
 
@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_myStudentH
     $table = $container->get(DataTable::class)->setRenderer($gridRenderer);
 
     $table->setTitle(__('Students'));
-    $table->setDescription(__("This page allows a teacher to see every student they've ever taught on a single page, in reverse chronological order by student age. Hover over a student to see their name."));
+    $table->setDescription(__("This page allows a teacher to see every student they've ever taught on a single page, in reverse chronological order by student age. Only displays students who have a photo. Hover over a student to see their name."));
     $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/4 md:w-1/5 my-2 text-center');
 
     $table->addColumn('student')
