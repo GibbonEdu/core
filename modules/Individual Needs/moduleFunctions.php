@@ -114,10 +114,11 @@ function printINStatusTable($connection2, $guid, $gibbonPersonID, $mode = '', $a
     foreach ($alertLevels as $alertLevel) {
         $table
         ->addColumn("alert_${alertLevel['name']}", $alertLevel['name'])
-        ->format(function ($level) use ($alertLevel) {
-            $checked = $level["alert_${alertLevel['name']}"] == true ? "checked" : "";
+        ->format(function ($level) use ($alertLevel, $mode) {
+            $checked = $level["alert_${alertLevel['name']}"] == true ? 'checked' : '';
+            $disabled = $mode == 'disabled' ? 'disabled' : '';
             $value = "${level['gibbonINDescriptorID']}-${alertLevel['gibbonAlertLevelID']}";
-            return "<input type='checkbox' name='status[]' value=${value} ${checked}></input>";
+            return "<input type='checkbox' name='status[]' value=${value} ${checked} $disabled></input>";
         });
     }
     $output .= $table->render($dataset);
