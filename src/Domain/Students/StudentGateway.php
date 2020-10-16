@@ -333,20 +333,24 @@ class StudentGateway extends QueryableGateway
                 'gibbonPerson.gibbonPersonID', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.image_240',  'gibbonPerson.dob'
             ])
             ->innerJoin('gibbonCourseClassPerson AS student', 'student.gibbonPersonID=gibbonPerson.gibbonPersonID AND student.role LIKE \'Student%\'')
-            ->innerJoin('gibbonCourseClassPerson AS teacher', 'teacher.gibbonCourseClassID=student.gibbonCourseClassID AND teacher.role LIKE \'Teacher%\' AND teacher.gibbonPersonID=:gibbonPersonID')
+            ->innerJoin('gibbonCourseClassPerson AS teacher', 'teacher.gibbonCourseClassID=student.gibbonCourseClassID AND teacher.role LIKE \'Teacher%\'')
             ->innerJoin('gibbonCourseClass', 'student.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID')
             ->innerJoin('gibbonCourse', 'gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID')
+            ->where("(gibbonPerson.image_240 <> '' AND gibbonPerson.image_240 IS NOT NULL)")
+            ->where('teacher.gibbonPersonID=:gibbonPersonID')
             ->bindValue('gibbonPersonID', $gibbonPersonID);
 
         //Students from form/roll groups
-        $this->unionAllWithCriteria($query, $criteria)
+        $this->unionWithCriteria($query, $criteria)
             ->distinct()
             ->from('gibbonPerson')
             ->cols([
                 'gibbonPerson.gibbonPersonID', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.image_240',  'gibbonPerson.dob'
             ])
             ->innerJoin('gibbonStudentEnrolment AS student', 'student.gibbonPersonID=gibbonPerson.gibbonPersonID')
-            ->innerJoin('gibbonRollGroup', 'student.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND (gibbonPersonIDTutor=:gibbonPersonID OR gibbonPersonIDTutor2=:gibbonPersonID) OR gibbonPersonIDTutor3=:gibbonPersonID')
+            ->innerJoin('gibbonRollGroup', 'student.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
+            ->where("(gibbonPerson.image_240 <> '' AND gibbonPerson.image_240 IS NOT NULL)")
+            ->where('(gibbonPersonIDTutor=:gibbonPersonID OR gibbonPersonIDTutor2=:gibbonPersonID OR gibbonPersonIDTutor3=:gibbonPersonID)')
             ->bindValue('gibbonPersonID', $gibbonPersonID);
 
         return $this->runQuery($query, $criteria);
