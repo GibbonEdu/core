@@ -86,11 +86,38 @@ class INGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    public function queryIndividualNeedsPersonDescriptors(QueryCriteria $criteria)
+    {
+      $query = $this
+        ->newQuery()
+        ->from('gibbonINPersonDescriptor')
+        ->innerJoin('gibbonAlertLevel','gibbonAlertLevel.gibbonAlertLevelID = gibbonINPersonDescriptor.gibbonAlertLevelID')
+        ->cols([
+          'gibbonINPersonDescriptor.gibbonINPersonDescriptorID',
+          'gibbonINPersonDescriptor.gibbonPersonID',
+          'gibbonINPersonDescriptor.gibbonINDescriptorID',
+          'gibbonINPersonDescriptor.gibbonAlertLevelID',
+          'gibbonAlertLevel.gibbonAlertLevelID'
+        ]);
+
+      $criteria->addFilterRules([
+        'gibbonPersonID' => function($query,$gibbonPersonID)
+        {
+          return $query
+            ->where('gibbonINPersonDescriptor.gibbonPersonID = :gibbonPersonID')
+            ->bindValue('gibbonPersonID',$gibbonPersonID);
+        }
+      ]);
+
+      return $this->runQuery($query,$criteria);
+    }
+
     public function queryIndividualNeedsDescriptors(QueryCriteria $criteria)
     {
         $query = $this
             ->newQuery()
             ->from('gibbonINDescriptor')
+            ->orderBy(['gibbonINDescriptor.sequenceNumber'])
             ->cols([
                 'gibbonINDescriptorID', 'name', 'nameShort', 'description', 'sequenceNumber'
             ]);
@@ -143,5 +170,24 @@ class INGateway extends QueryableGateway
         }
 
         return $this->runQuery($query, $criteria);
+    }
+
+    public function queryAlertLevels(QueryCriteria $criteria)
+    {
+      $query = $this
+        ->newQuery()
+        ->distinct()
+        ->from('gibbonAlertLevel')
+        ->orderBy(['sequenceNumber'])
+        ->cols([
+          'gibbonAlertLevel.gibbonAlertLevelID',
+          'gibbonAlertLevel.name',
+          'gibbonAlertLevel.nameShort',
+          'gibbonAlertLevel.description',
+          'gibbonAlertLevel.color',
+          'gibbonAlertLevel.sequenceNumber'
+        ]);
+
+      return $this->runQuery($query,$criteria);
     }
 }
