@@ -2748,9 +2748,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                                     $table = DataTable::create('activities');
                                     $table->setTitle($rowYears['name']);
-                                    $table->addColumn('name', __('Activity NEW'));
+                                    $table->addColumn('name', __('Activity'));
                                     $table->addColumn('type', __('Type'));
-                                    $table->addColumn('date', $dateType == "Date" ? __('Date') : __('Terms'))
+                                    $table->addColumn('date', $dateType == "Date" ? __('Dates') : __('Term'))
                                           ->format(function ($row) use ($dateType) {
                                             if ($dateType != 'Date') {
                                                 return $row['terms'];
