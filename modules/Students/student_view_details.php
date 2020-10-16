@@ -1858,11 +1858,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 if ($resultCategories->rowCount() > 0) {
                                     $categories = true;
 
-                                    echo '<h3>';
-                                    echo __('Filter');
-                                    echo '</h3>';
-
                                     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+                                    $form->setTitle(__('Filter'));
                                     $form->setClass('noIntBorder fullWidth');
 
                                     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/student_view_details.php');
@@ -2738,107 +2735,40 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     if ($yearCount == 0) {
                                         $class = "class='top'";
                                     }
-                                    echo "<h3 $class>";
-                                    echo $rowYears['name'];
-                                    echo '</h3>';
-
+                                    
                                     ++$yearCount;
                                     try {
                                         $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $rowYears['gibbonSchoolYearID']);
-                                        $sql = "SELECT gibbonActivity.*, gibbonActivityStudent.status, NULL AS role FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) WHERE gibbonActivityStudent.gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name";
+                                        $sql = "SELECT gibbonActivity.gibbonActivityID, gibbonActivity.name, gibbonActivity.type, gibbonActivity.programStart, gibbonActivity.programEnd, GROUP_CONCAT(gibbonYearGroup.name ORDER BY gibbonYearGroup.sequenceNumber SEPARATOR ', ') as terms, gibbonActivityStudent.status, NULL AS role FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) LEFT JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonActivity.gibbonYearGroupIDList)) WHERE gibbonActivityStudent.gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' GROUP BY gibbonActivity.gibbonActivityID, gibbonActivityStudent.status ORDER BY gibbonActivity.name";
                                         $result = $connection2->prepare($sql);
                                         $result->execute($data);
+                                        $resultData = $result->fetchAll();
                                     } catch (PDOException $e) {
                                         echo "<div class='error'>".$e->getMessage().'</div>';
+                                        exit;
                                     }
 
-                                    if ($result->rowCount() < 1) {
-                                        echo "<div class='error'>";
-                                        echo __('There are no records to display.');
-                                        echo '</div>';
-                                    } else {
-                                        echo "<table cellspacing='0' style='width: 100%'>";
-                                        echo "<tr class='head'>";
-                                        echo '<th>';
-                                        echo __('Activity');
-                                        echo '</th>';
-                                        $options = getSettingByScope($connection2, 'Activities', 'activityTypes');
-                                        if ($options != '') {
-                                            echo '<th>';
-                                            echo __('Type');
-                                            echo '</th>';
-                                        }
-                                        echo '<th>';
-                                        if ($dateType != 'Date') {
-                                            echo __('Term');
-                                        } else {
-                                            echo __('Dates');
-                                        }
-                                        echo '</th>';
-                                        echo '<th>';
-                                        echo __('Status');
-                                        echo '</th>';
-                                        echo '<th>';
-                                        echo __('Actions');
-                                        echo '</th>';
-                                        echo '</tr>';
-
-                                        $count = 0;
-                                        $rowNum = 'odd';
-                                        while ($row = $result->fetch()) {
-                                            if ($count % 2 == 0) {
-                                                $rowNum = 'even';
-                                            } else {
-                                                $rowNum = 'odd';
-                                            }
-                                            ++$count;
-
-                                                //COLOR ROW BY STATUS!
-                                                echo "<tr class=$rowNum>";
-                                            echo '<td>';
-                                            echo $row['name'];
-                                            echo '</td>';
-                                            if ($options != '') {
-                                                echo '<td>';
-                                                echo trim($row['type']);
-                                                echo '</td>';
-                                            }
-                                            echo '<td>';
+                                    $table = DataTable::create('activities');
+                                    $table->setTitle($rowYears['name']);
+                                    $table->addColumn('name', __('Activity'));
+                                    $table->addColumn('type', __('Type'));
+                                    $table->addColumn('date', $dateType == "Date" ? __('Dates') : __('Term'))
+                                          ->format(function ($row) use ($dateType) {
                                             if ($dateType != 'Date') {
-                                                $terms = getTerms($connection2, $_SESSION[$guid]['gibbonSchoolYearID'], true);
-                                                $termList = '';
-                                                for ($i = 0; $i < count($terms); $i = $i + 2) {
-                                                    if (is_numeric(strpos($row['gibbonSchoolYearTermIDList'], $terms[$i]))) {
-                                                        $termList .= $terms[($i + 1)].'<br/>';
-                                                    }
-                                                }
-                                                echo $termList;
+                                                return $row['terms'];
                                             } else {
-                                                if (substr($row['programStart'], 0, 4) == substr($row['programEnd'], 0, 4)) {
-                                                    if (substr($row['programStart'], 5, 2) == substr($row['programEnd'], 5, 2)) {
-                                                        echo date('F', mktime(0, 0, 0, substr($row['programStart'], 5, 2))).' '.substr($row['programStart'], 0, 4);
-                                                    } else {
-                                                        echo date('F', mktime(0, 0, 0, substr($row['programStart'], 5, 2))).' - '.date('F', mktime(0, 0, 0, substr($row['programEnd'], 5, 2))).'<br/>'.substr($row['programStart'], 0, 4);
-                                                    }
-                                                } else {
-                                                    echo date('F', mktime(0, 0, 0, substr($row['programStart'], 5, 2))).' '.substr($row['programStart'], 0, 4).' -<br/>'.date('F', mktime(0, 0, 0, substr($row['programEnd'], 5, 2))).' '.substr($row['programEnd'], 0, 4);
-                                                }
+                                                return Format::dateRangeReadable($row['programStart'], $row['programEnd']);
                                             }
-                                            echo '</td>';
-                                            echo '<td>';
-                                            if ($row['status'] != '') {
-                                                echo __($row['status']);
-                                            } else {
-                                                echo '<i>'.__('NA').'</i>';
-                                            }
-                                            echo '</td>';
-                                            echo '<td>';
-                                            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Activities/activities_view_full.php&gibbonActivityID='.$row['gibbonActivityID']."&width=1000&height=550'><img title='".__('View Details')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
-                                            echo '</td>';
-                                            echo '</tr>';
-                                        }
-                                        echo '</table>';
-                                    }
+                                          });
+                                    $table->addColumn('status', __('Status'));
+                                    $table->addActionColumn()
+                                          ->format(function ($activity, $actions) {
+                                            $actions->addAction('view', __('View Details'))
+                                              ->setURL('/modules/Activities/activities_view_full.php')
+                                              ->addParam('gibbonActivityID', $activity['gibbonActivityID'])
+                                              ->isModal();
+                                          });
+                                    echo $table->render($resultData);
                                 }
                             }
                         }
