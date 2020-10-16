@@ -23,7 +23,7 @@
             "cd tests && codecept run acceptance --debug --env $CI_PLATFORM"
         ],
         "test:phpunit": [
-            "cd tests && ../vendor/bin/phpunit --verbose --configuration phpunit.xml"
+            "cd tests && ../vendor/bin/phpunit --verbose --colors=always --configuration phpunit.xml"
         ],
         "test:codesniffer": [
           "vendor/bin/phpcs --standard=PSR2 modules/Library/" 
