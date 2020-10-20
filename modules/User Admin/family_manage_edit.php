@@ -303,100 +303,60 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             echo $form->getOutput();
 
-            echo '<h3>';
-            echo __('View Adults');
-            echo '</h3>';
-            echo "<div class='warning'>";
-            echo __('Logic exists to try and ensure that there is always one and only one parent with Contact Priority set to 1. This may result in values being set which are not exactly what you chose.');
-            echo '</div>';
+            $table = DataTable::create('adults');
+            $table->setTitle(__('View Adults'));
+            $table->setDescription(Format::alert(__('Logic exists to try and ensure that there is always one and only one parent with Contact Priority set to 1. This may result in values being set which are not exactly what you chose.'), 'warning'));
 
-            if ($resultAdults->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __('There are no records to display.');
-                echo '</div>';
-            } else {
-                echo "<table cellspacing='0' style='width: 100%'>";
-                echo "<tr class='head'>";
-                echo '<th>';
-                echo __('Name');
-                echo '</th>';
-                echo '<th>';
-                echo __('Status');
-                echo '</th>';
-                echo '<th>';
-                echo __('Comment');
-                echo '</th>';
-                echo "<th style='max-width: 50px; padding-left: 1px; padding-right: 1px; height: 100px'>";
-                echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);'>".__('Data Access').'</div>';
-                echo '</th>';
-                echo "<th style='max-width: 50px; padding-left: 1px; padding-right: 1px'>";
-                echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);'>".__('Contact Priority').'</div>';
-                echo '</th>';
-                echo "<th style='max-width: 50px; padding-left: 1px; padding-right: 1px'>";
-                echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);'>".__('Contact By Phone').'</div>';
-                echo '</th>';
-                echo "<th style='max-width: 50px; padding-left: 1px; padding-right: 1px'>";
-                echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);'>".__('Contact By SMS').'</div>';
-                echo '</th>';
-                echo "<th style='max-width: 50px; padding-left: 1px; padding-right: 1px'>";
-                echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);'>".__('Contact By Email').'</div>';
-                echo '</th>';
-                echo "<th style='max-width: 50px; padding-left: 1px; padding-right: 1px'>";
-                echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);'>".__('Contact By Mail').'</div>';
-                echo '</th>';
-                echo '<th>';
-                echo __('Actions');
-                echo '</th>';
-                echo '</tr>';
+            $table->addColumn('name', __('Name'))
+                ->format(function ($adult) use ($guid) {
+                    $name = Format::name($adult['title'], $adult['preferredName'], $adult['surname'], 'Parent');
+                    return Format::link('./index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/family_manage_edit_editAdult.php&gibbonPersonID=' . $adult['gibbonPersonID'], $name);
+                });
 
-                $count = 0;
-                $rowNum = 'odd';
-                foreach ($adults as $adult) {
-                    if ($count % 2 == 0) {
-                        $rowNum = 'even';
-                    } else {
-                        $rowNum = 'odd';
-                    }
-                    ++$count;
+            $table->addColumn('status', __('Status'));
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
-                    echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID='.$adult['gibbonPersonID']."'>".Format::name($adult['title'], $adult['preferredName'], $adult['surname'], 'Parent').'</a>';
-                    echo '</td>';
-                    echo '<td>';
-                    echo $adult['status'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo nl2brr($adult['comment']);
-                    echo '</td>';
-                    echo "<td style='padding-left: 1px; padding-right: 1px'>";
-                    echo $adult['childDataAccess'];
-                    echo '</td>';
-                    echo "<td style='padding-left: 1px; padding-right: 1px'>";
-                    echo $adult['contactPriority'];
-                    echo '</td>';
-                    echo "<td style='padding-left: 1px; padding-right: 1px'>";
-                    echo $adult['contactCall'];
-                    echo '</td>';
-                    echo "<td style='padding-left: 1px; padding-right: 1px'>";
-                    echo $adult['contactSMS'];
-                    echo '</td>';
-                    echo "<td style='padding-left: 1px; padding-right: 1px'>";
-                    echo $adult['contactEmail'];
-                    echo '</td>';
-                    echo "<td style='padding-left: 1px; padding-right: 1px'>";
-                    echo $adult['contactMail'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_editAdult.php&gibbonFamilyID=$gibbonFamilyID&gibbonPersonID=".$adult['gibbonPersonID']."&search=$search'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_deleteAdult.php&gibbonFamilyID=$gibbonFamilyID&gibbonPersonID=".$adult['gibbonPersonID']."&search=$search&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/user_manage_password.php&gibbonPersonID='.$adult['gibbonPersonID']."&search=$search'><img title='".__('Change Password')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/key.png'/></a>";
-                    echo '</td>';
-                    echo '</tr>';
-                }
-                echo '</table>';
-            }
+            $table->addColumn('comment', __('Comment'))
+                ->format(function ($adult) {
+                    return nl2br($adult['comment']);
+                });
+
+            //Note: This is hacky, but will have to exist until rotating becomes built-in functionality
+            $table->addColumn('childDataAccess', '<div class="transform -rotate-90"> ' . __('Data Access') . '</div>')
+                ->width('50px');
+
+            $table->addColumn('contactPriority', '<div class="transform -rotate-90"> ' . __('Contact Priority') . '</div>')
+                ->width('50px');
+
+            $table->addColumn('contactCall', '<div class="transform -rotate-90"> ' . __('Contact By Phone') . '</div>')
+                ->width('50px');
+
+            $table->addColumn('contactSMS', '<div class="transform -rotate-90"> ' . __('Contact By SMS') . '</div>')
+                ->width('50px');
+
+            $table->addColumn('contactEmail', '<div class="transform -rotate-90"> ' . __('Contact By Email') . '</div>')
+                ->width('50px');
+
+            $table->addColumn('contactMail', '<div class="transform -rotate-90"> ' . __('Contact By Mail') . '</div>')
+                ->width('50px');
+
+            $table->addActionColumn()
+                ->addParam('gibbonFamilyID', $gibbonFamilyID)
+                ->addParam('gibbonPersonID')
+                ->addParam('search', $search)
+                ->format(function ($adult, $actions) use ($guid) {
+                    $actions->addAction('edit', __('Edit'))
+                        ->setURL('/modules/' . $_SESSION[$guid]['module'] . '/family_manage_edit_editAdult.php');
+
+                    $actions->addAction('delete', __('Delete'))
+                        ->setURL('/modules/' . $_SESSION[$guid]['module'] . '/family_manage_edit_deleteAdult.php');
+
+                    $actions->addAction('changePassword', __('Change Password'))
+                        ->setIcon('key')
+                        ->setURL('/modules/' . $_SESSION[$guid]['module'] . '/user_manage_password.php');
+                });
+
+            echo $table->render($adults);
+
 
             $form = Form::create('action4', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_addAdultProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search");
 
