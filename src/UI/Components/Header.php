@@ -49,7 +49,7 @@ class Header
 
         $return .= '<div class="flex flex-row-reverse mb-1">';
 
-        if $variableName = $_GET[$gibbon->session->get('username')] ?? '' != false) {
+        if $gibbon->session->get('username') = $_GET[$gibbon->session->get('username')] ?? '' != false) {
             //MESSAGE WALL!
             if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
                 $return .= "<div id='messageWall' class='relative'>";
