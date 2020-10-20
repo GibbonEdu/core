@@ -46,7 +46,7 @@ class Header
 
         $return .= '<div class="flex flex-row-reverse mb-1">';
 
-        if $gibbon->session->get('username') = $_GET[$gibbon->session->get('username')] ?? '' != false) {
+        if (null !== $gibbon->session->get('username')) {
             //MESSAGE WALL!
             if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
                 $return .= "<div id='messageWall' class='relative'>";
@@ -61,7 +61,7 @@ class Header
                 } else {
                     $return .= "<a class='inline-block relative mr-4' title='".__('Message Wall')."' href='$URL'><span class='badge -mr-2 right-0'>".count($messages)."</span><img class='minorLinkIcon' style='margin-left: 4px; vertical-align: -75%' src='".$gibbon->session->get('absoluteURL').'/themes/'.$gibbon->session->get('gibbonThemeName')."/img/messageWall.png'></a>";
 
-                    if (empty($gibbon->session->get('pageLoads')) and ($gibbon->session->get('messengerLastBubble') == null or $gibbon->session->get('messengerLastBubble') < date('Y-m-d'))) {
+                    if (empty($gibbon->session->get('pageLoads')) and $gibbon->session->get('messengerLastBubble') == null or $gibbon->session->get('messengerLastBubble') < date('Y-m-d')) {
                         $messageBubbleBGColor = getSettingByScope($connection2, 'Messenger', 'messageBubbleBGColor');
                         $bubbleBG = '';
                         if ($messageBubbleBGColor != '') {
@@ -81,7 +81,7 @@ class Header
                         $return .= "<div style='font-weight: bold; font-style: italic; font-size: 120%; margin-top: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dotted rgba(255,255,255,0.5); display: block'>".__('New Messages').'</div>';
                         
                         $output = array_values($messages);
-                        $test = ($output = $_GET['output'] ?? '') ? count($output) : 0;
+                        $test = isset($output) ? count($output) : 0;
                         if ($test > 3) {
                             $test = 3;
                         }
@@ -160,7 +160,7 @@ class Header
 
             $return .= "<div id='notifications'>";
                 //CHECK FOR SYSTEM ALARM
-                if ($gibbon->session->get('gibbonRoleIDCurrentCategory') = $_GET[$gibbon->session->get('gibbonRoleIDCurrentCategory')] ?? '') {
+                if (null !== $gibbon->session->get('gibbonRoleIDCurrentCategory')) {
                     if ($gibbon->session->get('gibbonRoleIDCurrentCategory') == 'Staff') {
                         $alarm = getSettingByScope($connection2, 'System', 'alarm');
                         if ($alarm == 'General' or $alarm == 'Lockdown' or $alarm == 'Custom') {
@@ -199,14 +199,14 @@ class Header
         $return = '';
 
         // Add a link to go back to the system/personal default language, if we're not using it
-        if ($gibbon->session->get('i18n')('default')('code') = $_GET[$gibbon->session->get('i18n')('default')('code')] ?? '' && $gibbon->session->get('i18n')('code') = $_GET[$gibbon->session->get('i18n')('code')] ?? '') {
+        if (null !== $gibbon->session->get('i18n')('default')('code') && null !== $gibbon->session->get('i18n')('code')) {
             if ($gibbon->session->get('i18n')('code') != $gibbon->session->get('i18n')('default')('code')) {
                 $systemDefaultShortName = trim(strstr($gibbon->session->get('i18n')('default')('name'), '-', true));
                 $languageLink = "<a class='link-white' href='".$gibbon->session->get('absoluteURL')."?i18n=".$gibbon->session->get('i18n')('default')('code')."'>".$systemDefaultShortName.'</a>';
             }
         }
 
-        if ($gibbon->session->get('username') = $_GET[$gibbon->session->get('username')] ?? '') == false) {
+        if (null !== $gibbon->session->get('username')) {
             $return .= !empty($languageLink) ? $languageLink : '';
 
             if ($gibbon->session->get('webLink') != '') {
@@ -215,7 +215,7 @@ class Header
             }
         } else {
             $name = $gibbon->session->get('preferredName').' '.$gibbon->session->get('surname');
-            if ($gibbon->session->get('gibbonRoleIDCurrentCategory') = $_GET[$gibbon->session->get('gibbonRoleIDCurrentCategory')] ?? '') {
+            if (null !== $gibbon->session->get('gibbonRoleIDCurrentCategory')) {
                 if ($gibbon->session->get('gibbonRoleIDCurrentCategory') == 'Student') {
                     $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
                     if ($highestAction == 'View Student Profile_brief') {
@@ -239,7 +239,7 @@ class Header
             $return .= !empty($languageLink) ? ' . '.$languageLink : '';
 
             //Check for house logo (needed to get bubble, below, in right spot)
-            if ($gibbon->session->get('gibbonHouseIDLogo') = $_GET[$gibbon->session->get('gibbonHouseIDLogo')] ?? '' and $gibbon->session->get('gibbonHouseIDName') = $_GET[$gibbon->session->get('gibbonHouseIDName')] ?? '') {
+            if (null !== $gibbon->session->get('gibbonHouseIDLogo') and null !== $gibbon->session->get('gibbonHouseIDName')) {
                 if ($gibbon->session->get('gibbonHouseIDLogo') != '') {
                     $return .= " . <img class='ml-1 w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16' title='".$gibbon->session->get('gibbonHouseIDName')."' style='vertical-align: -75%;' src='".$gibbon->session->get('absoluteURL').'/'.$gibbon->session->get('gibbonHouseIDLogo')."'/>";
                 }
