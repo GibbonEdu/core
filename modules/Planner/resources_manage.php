@@ -60,10 +60,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage.p
         echo __('Search');
         echo '</h2>';
 
-        $form = Form::create('resourcesManage', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form = Form::create('resourcesManage', $gibbon->session->get('absoluteURL').'/index.php', 'get');
         $form->setClass('noIntBorder fullWidth');
 
-        $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/resources_manage.php');
+        $form->addHiddenValue('q', '/modules/'.$gibbon->session->get('module').'/resources_manage.php');
 
         $row = $form->addRow();
             $row->addLabel('search', __('Search For'))->description(__('Resource name.'));
@@ -87,14 +87,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage.p
                     $sql = 'SELECT gibbonResource.*, surname, preferredName, title FROM gibbonResource JOIN gibbonPerson ON (gibbonResource.gibbonPersonID=gibbonPerson.gibbonPersonID) AND (name LIKE :name) ORDER BY timestamp DESC';
                 }
             } elseif ($highestAction == 'Manage Resources_my') {
-                $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID');
                 $sql = 'SELECT gibbonResource.*, surname, preferredName, title FROM gibbonResource JOIN gibbonPerson ON (gibbonResource.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonResource.gibbonPersonID=:gibbonPersonID ORDER BY timestamp DESC';
                 if ($search != '') {
-                    $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'name' => "%$search%");
+                    $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'), 'name' => "%$search%");
                     $sql = 'SELECT gibbonResource.*, surname, preferredName, title FROM gibbonResource JOIN gibbonPerson ON (gibbonResource.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonResource.gibbonPersonID=:gibbonPersonID AND (name LIKE :name) ORDER BY timestamp DESC';
                 }
             }
-            $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
+            $sqlPage = $sql.' LIMIT '.$gibbon->session->get('pagination').' OFFSET '.(($page - 1) * $gibbon->session->get('pagination'));
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage.p
         }
 
         echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/resources_manage_add.php&search='.$search."'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+        echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/resources_manage_add.php&search='.$search."'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/page_new.png'/></a>";
         echo '</div>';
 
         if ($result->rowCount() < 1) {
@@ -110,8 +110,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage.p
             echo __('There are no records to display.');
             echo '</div>';
         } else {
-            if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top');
+            if ($result->rowCount() > $gibbon->session->get('pagination')) {
+                printPagination($guid, $result->rowCount(), $page, $gibbon->session->get('pagination'), 'top');
             }
 
             echo "<table cellspacing='0' style='width: 100%'>";
@@ -212,14 +212,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage.p
                 }
                 echo '</td>';
                 echo '<td>';
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/resources_manage_edit.php&gibbonResourceID='.$row['gibbonResourceID']."&search=$search'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/resources_manage_edit.php&gibbonResourceID='.$row['gibbonResourceID']."&search=$search'><img title='".__('Edit')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/config.png'/></a> ";
                 echo '</td>';
                 echo '</tr>';
             }
             echo '</table>';
 
-            if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom');
+            if ($result->rowCount() > $gibbon->session->get('pagination')) {
+                printPagination($guid, $result->rowCount(), $page, $gibbon->session->get('pagination'), 'bottom');
             }
         }
     }
