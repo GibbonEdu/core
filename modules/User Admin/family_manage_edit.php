@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_edit.php') == false) {
     //Acess denied
@@ -38,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
     //Check if school year specified
     $gibbonFamilyID = $_GET['gibbonFamilyID'];
-    $search = null;
+    $search = '';
     if (isset($_GET['search'])) {
         $search = $_GET['search'];
     }
@@ -142,6 +143,20 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                 $children[$count]['surname'] = $rowChildren['surname'];
                 $children[$count]['status'] = $rowChildren['status'];
                 $children[$count]['comment'] = $rowChildren['comment'];
+
+                try {
+                    $dataDetail = array('gibbonPersonID' => $rowChildren['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                    $sqlDetail = 'SELECT * FROM gibbonRollGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID';
+                    $resultDetail = $connection2->prepare($sqlDetail);
+                    $resultDetail->execute($dataDetail);
+                } catch (PDOException $e) {
+                }
+
+                if ($resultDetail->rowCount() == 1) {
+                    $rowDetail = $resultDetail->fetch();
+                    $children[$count]['rollGroup'] = $rowDetail['name'];
+                }
+
                 ++$count;
             }
             //Get adults and prep array
@@ -232,84 +247,40 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                 echo $form->getOutput();
             }
 
-            echo '<h3>';
-            echo __('View Children');
-            echo '</h3>';
+            $table = DataTable::create('children');
+            $table->setTitle('View Children');
 
-            if ($resultChildren->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __('There are no records to display.');
-                echo '</div>';
-            } else {
-                echo "<table cellspacing='0' style='width: 100%'>";
-                echo "<tr class='head'>";
-                echo '<th>';
-                echo __('Photo');
-                echo '</th>';
-                echo '<th>';
-                echo __('Name');
-                echo '</th>';
-                echo '<th>';
-                echo __('Status');
-                echo '</th>';
-                echo '<th>';
-                echo __('Roll Group');
-                echo '</th>';
-                echo '<th>';
-                echo __('Comment');
-                echo '</th>';
-                echo '<th>';
-                echo __('Actions');
-                echo '</th>';
-                echo '</tr>';
+            $table->addColumn('photo', __('Photo'))
+                ->format(Format::using('photo', ['image_240']));
 
-                $count = 0;
-                $rowNum = 'odd';
-                foreach ($children as $child) {
-                    if ($count % 2 == 0) {
-                        $rowNum = 'even';
-                    } else {
-                        $rowNum = 'odd';
-                    }
-                    ++$count;
+            $table->addColumn('name', __('Name'))
+                ->format(Format::using('nameLinked', ['gibbonPersonID', '', 'preferredName', 'surname', 'Student']));
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
-                    echo '<td>';
-                    echo getUserPhoto($guid, $child['image_240'], 75);
-                    echo '</td>';
-                    echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID='.$child['gibbonPersonID']."'>".Format::name('', $child['preferredName'], $child['surname'], 'Student').'</a>';
-                    echo '</td>';
-                    echo '<td>';
-                    echo $child['status'];
-                    echo '</td>';
-                    echo '<td>';
-                    try {
-                        $dataDetail = array('gibbonPersonID' => $child['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                        $sqlDetail = 'SELECT * FROM gibbonRollGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID';
-                        $resultDetail = $connection2->prepare($sqlDetail);
-                        $resultDetail->execute($dataDetail);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
-                    if ($resultDetail->rowCount() == 1) {
-                        $rowDetail = $resultDetail->fetch();
-                        echo $rowDetail['name'];
-                    }
-                    echo '</td>';
-                    echo '<td>';
-                    echo nl2brr($child['comment']);
-                    echo '</td>';
-                    echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_editChild.php&gibbonFamilyID=$gibbonFamilyID&gibbonPersonID=".$child['gibbonPersonID']."&search=$search'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_deleteChild.php&gibbonFamilyID=$gibbonFamilyID&gibbonPersonID=".$child['gibbonPersonID']."&search=$search&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/user_manage_password.php&gibbonPersonID='.$child['gibbonPersonID']."&search=$search'><img title='".__('Change Password')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/key.png'/></a>";
-                    echo '</td>';
-                    echo '</tr>';
-                }
-                echo '</table>';
-            }
+            $table->addColumn('status', __('Status'));
+
+            $table->addColumn('rollGroup', __('Roll Group'));
+            $table->addColumn('comment', __('Comment'))
+                ->format(function ($child) {
+                    return nl2br($child['comment']);
+                });
+
+            $table->addActionColumn()
+                ->addParam('search', $search)
+                ->addParam('gibbonFamilyID', $gibbonFamilyID)
+                ->addParam('gibbonPersonID')
+                ->format(function($child, $actions) use ($guid) {
+                    $actions->addAction('edit', __('Edit'))
+                        ->setURL('/modules/' . $_SESSION[$guid]['module'] . '/family_manage_edit_editChild.php');
+
+                    $actions->addAction('delete', __('Delete'))
+                        ->setURL('/modules/' . $_SESSION[$guid]['module'] . '/family_manage_edit_deleteChild.php');
+
+                    $actions->addAction('changePassword', __('Change Password'))
+                        ->setIcon('key')
+                        ->setURL('/modules/' . $_SESSION[$guid]['module'] . '/user_manage_password.php');
+                });
+
+            echo $table->render($children);
 
             $form = Form::create('action3', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_addChildProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search");
             $form->setFactory(DatabaseFormFactory::create($pdo));
