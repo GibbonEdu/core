@@ -291,8 +291,9 @@ if ($canInstall == false) {
         echo '</div>';
     } else {
         //Set up config.php
+        include './installerFunctions.php';
         $configData = compact('databaseServer', 'databaseUsername', 'databasePassword', 'databaseName', 'guid');
-        $config = $page->fetchFromTemplate('installer/config.twig.html', $configData);
+        $config = $page->fetchFromTemplate('installer/config.twig.html', process_config_vars($configData));
 
         //Write config
         $fp = fopen('../config.php', 'wb');
@@ -310,8 +311,6 @@ if ($canInstall == false) {
                 echo __('../gibbon.sql does not exist, and so the installer cannot proceed.');
                 echo '</div>';
             } else {
-                include './installerFunctions.php';
-
                 $query = @fread(@fopen('../gibbon.sql', 'r'), @filesize('../gibbon.sql')) or die('Encountered a problem.');
                 $query = remove_remarks($query);
                 $query = split_sql_file($query, ';');
