@@ -51,14 +51,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
 
         $customResponces = array();
         $error3 = __('Your request was successful, but some data was not properly saved. An administrator will process your request as soon as possible. <u>You will not see the updated data in the system until it has been processed and approved.</u>');
-        if ($_SESSION[$guid]['organisationDBAEmail'] != '' and $_SESSION[$guid]['organisationDBAName'] != '') {
-            $error3 .= ' '.sprintf(__('Please contact %1$s if you have any questions.'), "<a href='mailto:".$_SESSION[$guid]['organisationDBAEmail']."'>".$_SESSION[$guid]['organisationDBAName'].'</a>');
+        if ($gibbon->session->get('organisationDBAEmail') != '' and $gibbon->session->get('organisationDBAName') != '') {
+            $error3 .= ' '.sprintf(__('Please contact %1$s if you have any questions.'), "<a href='mailto:".$gibbon->session->get('organisationDBAEmail')."'>".$gibbon->session->get('organisationDBAName').'</a>');
         }
         $customResponces['error3'] = $error3;
 
         $success0 = __('Your request was completed successfully. An administrator will process your request as soon as possible. You will not see the updated data in the system until it has been processed and approved.');
-        if ($_SESSION[$guid]['organisationDBAEmail'] != '' and $_SESSION[$guid]['organisationDBAName'] != '') {
-            $success0 .= ' '.sprintf(__('Please contact %1$s if you have any questions.'), "<a href='mailto:".$_SESSION[$guid]['organisationDBAEmail']."'>".$_SESSION[$guid]['organisationDBAName'].'</a>');
+        if ($gibbon->session->get('organisationDBAEmail') != '' and $gibbon->session->get('organisationDBAName') != '') {
+            $success0 .= ' '.sprintf(__('Please contact %1$s if you have any questions.'), "<a href='mailto:".$gibbon->session->get('organisationDBAEmail')."'>".$gibbon->session->get('organisationDBAName').'</a>');
         }
         $customResponces['success0'] = $success0;
 
@@ -72,14 +72,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
 
         $gibbonFamilyID = isset($_GET['gibbonFamilyID'])? $_GET['gibbonFamilyID'] : null;
 
-        $form = Form::create('selectFamily', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
-        $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/data_family.php');
+        $form = Form::create('selectFamily', $gibbon->session->get('absoluteURL').'/index.php', 'get');
+        $form->addHiddenValue('q', '/modules/'.$gibbon->session->get('module').'/data_family.php');
     
         if ($highestAction == 'Update Family Data_any') {
             $data = array();
             $sql = "SELECT gibbonFamily.gibbonFamilyID as value, name FROM gibbonFamily ORDER BY name";
         } else {
-            $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+            $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
             $sql = "SELECT gibbonFamily.gibbonFamilyID as value, name FROM gibbonFamily JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y' ORDER BY name";
         }
         $row = $form->addRow();
@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
                 }
             } else {
                 try {
-                    $dataCheck = array('gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                    $dataCheck = array('gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
                     $sqlCheck = "SELECT name, gibbonFamily.gibbonFamilyID FROM gibbonFamily JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y' AND gibbonFamily.gibbonFamilyID=:gibbonFamilyID";
                     $resultCheck = $connection2->prepare($sqlCheck);
                     $resultCheck->execute($dataCheck);
@@ -129,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
                 $existing = false;
                 $proceed = false;
                 try {
-                    $data = array('gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID']);
+                    $data = array('gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonIDUpdater' => $gibbon->session->get('gibbonPersonID'));
                     $sql = "SELECT * FROM gibbonFamilyUpdate WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPersonIDUpdater=:gibbonPersonIDUpdater AND status='Pending'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
@@ -172,10 +172,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
 
                     $required = ($highestAction != 'Update Family Data_any');
                     
-                    $form = Form::create('updateFamily', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_familyProcess.php?gibbonFamilyID='.$gibbonFamilyID);
+                    $form = Form::create('updateFamily', $gibbon->session->get('absoluteURL').'/modules/'.$gibbon->session->get('module').'/data_familyProcess.php?gibbonFamilyID='.$gibbonFamilyID);
                     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                    $form->addHiddenValue('address', $gibbon->session->get('address'));
                     $form->addHiddenValue('existing', isset($values['gibbonFamilyUpdateID'])? $values['gibbonFamilyUpdateID'] : 'N');
 
                     $row = $form->addRow();
