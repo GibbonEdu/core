@@ -62,7 +62,7 @@ v21.0.00
         Planner: refactored the All Homework tables and added row colouring
         Planner: refactored the Parent Weekly Email Summary to match homework colouring
         Planner: replaced "Compulsory" with "Required" in relation to homework
-        Planner: removed lessons with timetable exceptions from Today's Lessons on the dahsboard
+        Planner: removed lessons with timetable exceptions from Today's Lessons on the dashboard
         Planner: adjust the display of homework lists to account for class enrolment dates
         Planner: enabled homework to be submitted for lessons that already exist during a school closure
         Reports: display the download link after a batch PDF has completed
