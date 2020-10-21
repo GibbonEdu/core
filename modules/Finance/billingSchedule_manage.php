@@ -36,12 +36,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
     if (isset($_GET['gibbonSchoolYearID'])) {
         $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
     }
-    if ($gibbonSchoolYearID == '' or $gibbonSchoolYearID == $_SESSION[$guid]['gibbonSchoolYearID']) {
-        $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
-        $gibbonSchoolYearName = $_SESSION[$guid]['gibbonSchoolYearName'];
+    if ($gibbonSchoolYearID == '' or $gibbonSchoolYearID == $gibbon->session->get('gibbonSchoolYearID')) {
+        $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+        $gibbonSchoolYearName = $gibbon->session->get('gibbonSchoolYearName');
     }
 
-    if ($gibbonSchoolYearID != $_SESSION[$guid]['gibbonSchoolYearID']) {
+    if ($gibbonSchoolYearID != $gibbon->session->get('gibbonSchoolYearID')) {
         try {
             $data = array('gibbonSchoolYearID' => $_GET['gibbonSchoolYearID']);
             $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
@@ -69,13 +69,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
         echo "<div class='linkTop'>";
             //Print year picker
             if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/billingSchedule_manage.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
+                echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/billingSchedule_manage.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
             } else {
                 echo __('Previous Year').' ';
             }
         echo ' | ';
         if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/billingSchedule_manage.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
+            echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/billingSchedule_manage.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
         } else {
             echo __('Next Year').' ';
         }
@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
         echo __('Search');
         echo '</h3>'; 
 
-        $form = Form::create("searchBox", $_SESSION[$guid]['absoluteURL'] . "/index.php", "get", "noIntBorder fullWidth standardForm");
+        $form = Form::create("searchBox", $gibbon->session->get('absoluteURL') . "/index.php", "get", "noIntBorder fullWidth standardForm");
 
         $form->addHiddenValue("q", "/modules/Finance/billingSchedule_manage.php");
 
@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
                 $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'search' => "%$search%");
                 $sql = 'SELECT * FROM gibbonFinanceBillingSchedule WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND name LIKE :search ORDER BY invoiceIssueDate, name';
             }
-            $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
+            $sqlPage = $sql.' LIMIT '.$gibbon->session->get('pagination').' OFFSET '.(($page - 1) * $gibbon->session->get('pagination'));
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -129,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
         }
 
         echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/billingSchedule_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+        echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/billingSchedule_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/page_new.png'/></a>";
         echo '</div>';
 
         if ($result->rowCount() < 1) {
@@ -137,8 +137,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
             echo __('There are no records to display.');
             echo '</div>';
         } else {
-            if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search");
+            if ($result->rowCount() > $gibbon->session->get('pagination')) {
+                printPagination($guid, $result->rowCount(), $page, $gibbon->session->get('pagination'), 'top', "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search");
             }
 
             echo "<table cellspacing='0' style='width: 100%'>";
@@ -198,7 +198,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
                 echo dateConvertBack($guid, $row['invoiceDueDate']);
                 echo '</td>';
                 echo '<td>';
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/billingSchedule_manage_edit.php&gibbonFinanceBillingScheduleID='.$row['gibbonFinanceBillingScheduleID']."&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/billingSchedule_manage_edit.php&gibbonFinanceBillingScheduleID='.$row['gibbonFinanceBillingScheduleID']."&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img title='".__('Edit')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/config.png'/></a> ";
                 echo "<script type='text/javascript'>";
                 echo '$(document).ready(function(){';
                 echo "\$(\".comment-$count-$count\").hide();";
@@ -209,7 +209,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
                 echo '});';
                 echo '</script>';
                 if ($row['description'] != '') {
-                    echo "<a title='".__('View Description')."' class='show_hide-$count-$count' onclick='false' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='".__('Show Comment')."' onclick='return false;' /></a>";
+                    echo "<a title='".__('View Description')."' class='show_hide-$count-$count' onclick='false' href='#'><img style='padding-right: 5px' src='".$gibbon->session->get('absoluteURL').'/themes/'.$gibbon->session->get('gibbonThemeName')."/img/page_down.png' alt='".__('Show Comment')."' onclick='return false;' /></a>";
                 }
                 echo '</td>';
                 echo '</tr>';
@@ -223,10 +223,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
             }
             echo '</table>';
 
-            if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search");
+            if ($result->rowCount() > $gibbon->session->get('pagination')) {
+                printPagination($guid, $result->rowCount(), $page, $gibbon->session->get('pagination'), 'bottom', "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search");
             }
         }
     }
 }
-?>
