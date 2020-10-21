@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes.php') == 
         $form = Form::create('filter', $gibbon->session->get('absoluteURL').'/index.php', 'get');
         $form->setClass('noIntBorder fullWidth');
 
-        $form->addHiddenValue('q', '/modules/'.$$gibbon->session->get('module').'/outcomes.php');
+        $form->addHiddenValue('q', '/modules/'.$gibbon->session->get('module').'/outcomes.php');
 
         $sql = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
         $row = $form->addRow();
