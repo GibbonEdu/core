@@ -177,7 +177,7 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
 
     $googleOAuth = getSettingByScope($connection2, 'System', 'googleOAuth');
 
-    if ($googleOAuth == 'Y' and isset($_SESSION[$guid]['googleAPIAccessToken'])) {
+    if ($googleOAuth == 'Y' and null !== $gibbon->session->get('googleAPIAccessToken')) {
         $eventsSchool = array();
         $start = date("Y-m-d\TH:i:s", strtotime(date('Y-m-d', $startDayStamp)));
         $end = date("Y-m-d\TH:i:s", (strtotime(date('Y-m-d', $endDayStamp)) + 86399));
@@ -275,17 +275,17 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
     if ($highestAction == 'View Timetable by Person_allYears') {
         $proceed = true;
-    } else if ($_SESSION[$guid]['gibbonSchoolYearIDCurrent'] == $_SESSION[$guid]['gibbonSchoolYearID']) {
+    } else if ($gibbon->session->get('gibbonSchoolYearIDCurrent') == $gibbon->session->get('gibbonSchoolYearID')) {
 
         if ($highestAction == 'View Timetable by Person') {
             $proceed = true;
         } else if ($highestAction == 'View Timetable by Person_my') {
-            if ($gibbonPersonID == $_SESSION[$guid]['gibbonPersonID']) {
+            if ($gibbonPersonID == $gibbon->session->get('gibbonPersonID')) {
                 $proceed = true;
             }
         } else if ($highestAction == 'View Timetable by Person_myChildren') {
             try {
-                $data = array('gibbonPersonID1' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonID2' => $gibbonPersonID);
+                $data = array('gibbonPersonID1' => $gibbon->session->get('gibbonPersonID'), 'gibbonPersonID2' => $gibbonPersonID);
                 $sql = "SELECT gibbonFamilyChild.gibbonPersonID FROM gibbonFamilyChild
                     JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID)
                     WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID1 AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID2 AND gibbonFamilyAdult.childDataAccess='Y'";
@@ -305,12 +305,12 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
         $output .= "<div class='error'>".__('You do not have permission to access this timetable at this time.').'</div>';
     } else {
         $self = false;
-        if ($gibbonPersonID == $_SESSION[$guid]['gibbonPersonID'] and $edit == false) {
+        if ($gibbonPersonID == $gibbon->session->get('gibbonPersonID') and $edit == false) {
             $self = true;
             //Update display choices
-            if ($_SESSION[$guid]['viewCalendarSchool'] != false and $_SESSION[$guid]['viewCalendarPersonal'] != false and $_SESSION[$guid]['viewCalendarSpaceBooking'] != false) {
+            if ($gibbon->session->get('viewCalendarSchool') != false and $gibbon->session->get('viewCalendarPersonal') != false and $gibbon->session->get('viewCalendarSpaceBooking') != false) {
                 try {
-                    $dataDisplay = array('viewCalendarSchool' => $_SESSION[$guid]['viewCalendarSchool'], 'viewCalendarPersonal' => $_SESSION[$guid]['viewCalendarPersonal'], 'viewCalendarSpaceBooking' => $_SESSION[$guid]['viewCalendarSpaceBooking'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                    $dataDisplay = array('viewCalendarSchool' => $gibbon->session->get('viewCalendarSchool'), 'viewCalendarPersonal' => $gibbon->session->get('viewCalendarPersonal'), 'viewCalendarSpaceBooking' => $gibbon->session->get('viewCalendarSpaceBooking'), 'gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
                     $sqlDisplay = 'UPDATE gibbonPerson SET viewCalendarSchool=:viewCalendarSchool, viewCalendarPersonal=:viewCalendarPersonal, viewCalendarSpaceBooking=:viewCalendarSpaceBooking WHERE gibbonPersonID=:gibbonPersonID';
                     $resultDisplay = $connection2->prepare($sqlDisplay);
                     $resultDisplay->execute($dataDisplay);
@@ -327,7 +327,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
         //Find out which timetables I am involved in this year
         try {
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
+            $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID);
             $sql = "SELECT DISTINCT gibbonTT.gibbonTTID, gibbonTT.name, gibbonTT.nameShortDisplay FROM gibbonTT JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID) JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ";
             $result = $connection2->prepare($sql);
             $result->execute($data);
@@ -338,7 +338,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
         //If I am not involved in any timetables display all within the year
         if ($result->rowCount() == 0) {
             try {
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'));
                 $sql = "SELECT gibbonTT.gibbonTTID, gibbonTT.name, gibbonTT.nameShortDisplay FROM gibbonTT WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
@@ -354,11 +354,11 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $output .= '<td>';
             $output .= "<span style='font-size: 115%; font-weight: bold'>".__('Timetable Chooser').'</span>: ';
             while ($row = $result->fetch()) {
-                $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=$q&gibbonTTID=".$row['gibbonTTID']."$params'>";
-                $output .= "<input name='ttDate' value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], $startDayStamp)."' type='hidden'>";
-                $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendarSchool']."' type='hidden'>";
-                $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendarPersonal']."' type='hidden'>";
-                $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendarSpaceBooking']."' type='hidden'>";
+                $output .= "<form method='post' action='".$gibbon->session->get('absoluteURL')."/index.php?q=$q&gibbonTTID=".$row['gibbonTTID']."$params'>";
+                $output .= "<input name='ttDate' value='".date($gibbon->session->get('i18n')['dateFormatPHP'], $startDayStamp)."' type='hidden'>";
+                $output .= "<input name='schoolCalendar' value='".$gibbon->session->get('viewCalendarSchool')."' type='hidden'>";
+                $output .= "<input name='personalCalendar' value='".$gibbon->session->get('viewCalendarPersonal')."' type='hidden'>";
+                $output .= "<input name='spaceBookingCalendar' value='".$gibbon->session->get('viewCalendarSpaceBooking')."' type='hidden'>";
                 $output .= "<input name='fromTT' value='Y' type='hidden'>";
                 $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='".$row['name']."'>";
                 $output .= '</form>';
@@ -378,7 +378,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     $data = array('gibbonTTID' => $gibbonTTID);
                     $sql = "SELECT gibbonTT.gibbonTTID, gibbonTT.name, gibbonTT.nameShortDisplay FROM gibbonTT WHERE gibbonTT.gibbonTTID=:gibbonTTID";
                 } else {
-                    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonTTID' => $gibbonTTID);
+                    $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), 'gibbonTTID' => $gibbonTTID);
                     $sql = "SELECT DISTINCT gibbonTT.gibbonTTID, gibbonTT.name, gibbonTT.nameShortDisplay FROM gibbonTT JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID) JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonPersonID=$gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonTT.gibbonTTID=:gibbonTTID";
                 }
             }
@@ -403,35 +403,35 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $output .= "<table cellspacing='0' class='noIntBorder' style='width: 100%; margin: 10px 0 10px 0'>";
             $output .= '<tr>';
             $output .= "<td style='vertical-align: top;width:300px'>";
-            $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=$q&gibbonTTID=".$row['gibbonTTID']."$params'>";
-            $output .= "<input name='ttDate' value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp - (7 * 24 * 60 * 60)))."' type='hidden'>";
-            $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendarSchool']."' type='hidden'>";
-            $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendarPersonal']."' type='hidden'>";
-            $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendarSpaceBooking']."' type='hidden'>";
+            $output .= "<form method='post' action='".$gibbon->session->get('absoluteURL')."/index.php?q=$q&gibbonTTID=".$row['gibbonTTID']."$params'>";
+            $output .= "<input name='ttDate' value='".date($gibbon->session->get('i18n')['dateFormatPHP'], ($startDayStamp - (7 * 24 * 60 * 60)))."' type='hidden'>";
+            $output .= "<input name='schoolCalendar' value='".$gibbon->session->get('viewCalendarSchool')."' type='hidden'>";
+            $output .= "<input name='personalCalendar' value='".$gibbon->session->get('viewCalendarPersonal')."' type='hidden'>";
+            $output .= "<input name='spaceBookingCalendar' value='".$gibbon->session->get('viewCalendarSpaceBooking')."' type='hidden'>";
             $output .= "<input name='fromTT' value='Y' type='hidden'>";
             $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='< ".__('Last Week')."'>";
             $output .= '</form>';
-            $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=$q&gibbonTTID=".$row['gibbonTTID']."$params'>";
-            $output .= "<input name='ttDate' value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'],($thisWeek))."' type='hidden'>";
-            $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendarSchool']."' type='hidden'>";
-            $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendarPersonal']."' type='hidden'>";
-            $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendarSpaceBooking']."' type='hidden'>";
+            $output .= "<form method='post' action='".$gibbon->session->get('absoluteURL')."/index.php?q=$q&gibbonTTID=".$row['gibbonTTID']."$params'>";
+            $output .= "<input name='ttDate' value='".date($gibbon->session->get('i18n')['dateFormatPHP'],($thisWeek))."' type='hidden'>";
+            $output .= "<input name='schoolCalendar' value='".$gibbon->session->get('viewCalendarSchool')."' type='hidden'>";
+            $output .= "<input name='personalCalendar' value='".$gibbon->session->get('viewCalendarPersonal')."' type='hidden'>";
+            $output .= "<input name='spaceBookingCalendar' value='".$gibbon->session->get('viewCalendarSpaceBooking')."' type='hidden'>";
             $output .= "<input name='fromTT' value='Y' type='hidden'>";
             $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='".__('This Week')."'>";
             $output .= '</form>';
-            $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=$q&gibbonTTID=".$row['gibbonTTID']."$params'>";
-            $output .= "<input name='ttDate' value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (7 * 24 * 60 * 60)))."' type='hidden'>";
-            $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendarSchool']."' type='hidden'>";
-            $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendarPersonal']."' type='hidden'>";
-            $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendarSpaceBooking']."' type='hidden'>";
+            $output .= "<form method='post' action='".$gibbon->session->get('absoluteURL')."/index.php?q=$q&gibbonTTID=".$row['gibbonTTID']."$params'>";
+            $output .= "<input name='ttDate' value='".date($gibbon->session->get('i18n')['dateFormatPHP'], ($startDayStamp + (7 * 24 * 60 * 60)))."' type='hidden'>";
+            $output .= "<input name='schoolCalendar' value='".$gibbon->session->get('viewCalendarSchool')."' type='hidden'>";
+            $output .= "<input name='personalCalendar' value='".$gibbon->session->get('viewCalendarPersonal')."' type='hidden'>";
+            $output .= "<input name='spaceBookingCalendar' value='".$gibbon->session->get('viewCalendarSpaceBooking')."' type='hidden'>";
             $output .= "<input name='fromTT' value='Y' type='hidden'>";
             $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='".__('Next Week')." >'>";
             $output .= '</form>';
             $output .= '</td>';
             $output .= "<td style='vertical-align: top; text-align: right'>";
-            $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=$q&gibbonTTID=".$row['gibbonTTID']."$params'>";
+            $output .= "<form method='post' action='".$gibbon->session->get('absoluteURL')."/index.php?q=$q&gibbonTTID=".$row['gibbonTTID']."$params'>";
             $output .= '<span class="relative">';
-            $output .= "<input name='ttDate' id='ttDate' maxlength=10 value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], $startDayStamp)."' type='text' style='width:120px; margin-right: 0px; float: none'> ";
+            $output .= "<input name='ttDate' id='ttDate' maxlength=10 value='".date($gibbon->session->get('i18n')['dateFormatPHP'], $startDayStamp)."' type='text' style='width:120px; margin-right: 0px; float: none'> ";
             $output .= '</span>';
             $output .= '<script type="text/javascript">';
             $output .= "var ttDate=new LiveValidation('ttDate');";
@@ -453,9 +453,9 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $output .= '</script>';
 
             $output .= "<input style='margin-top: 0px; margin-right: -1px; padding-left: 1rem; padding-right: 1rem;' type='submit' value='".__('Go')."'>";
-            $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendarSchool']."' type='hidden'>";
-            $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendarPersonal']."' type='hidden'>";
-            $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendarSpaceBooking']."' type='hidden'>";
+            $output .= "<input name='schoolCalendar' value='".$gibbon->session->get('viewCalendarSchool')."' type='hidden'>";
+            $output .= "<input name='personalCalendar' value='".$gibbon->session->get('viewCalendarPersonal')."' type='hidden'>";
+            $output .= "<input name='spaceBookingCalendar' value='".$gibbon->session->get('viewCalendarSpaceBooking')."' type='hidden'>";
             $output .= "<input name='fromTT' value='Y' type='hidden'>";
             $output .= '</form>';
             $output .= '</td>';
@@ -493,7 +493,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
             //Sunday week adjust for timetable on home page (so Sundays show next week if the week starts on Sunday or Monday—i.e. it's Sunday now and Sunday is not a school day)
             $homeSunday = true ;
-            if ($q == '' && ($_SESSION[$guid]['firstDayOfTheWeek'] == 'Monday' || $_SESSION[$guid]['firstDayOfTheWeek'] == 'Sunday')) {
+            if ($q == '' && ($gibbon->session->get('firstDayOfTheWeek') == 'Monday' || $gibbon->session->get('firstDayOfTheWeek') == 'Sunday')) {
                 try {
                     $dataDays = array();
                     $sqlDays = "SELECT nameShort FROM gibbonDaysOfWeek WHERE nameShort='Sun' AND schoolDay='N'";
@@ -521,16 +521,16 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $schoolCalendarAlpha = 0.85;
             $ttAlpha = 1.0;
 
-            if ($_SESSION[$guid]['viewCalendarSchool'] != 'N' or $_SESSION[$guid]['viewCalendarPersonal'] != 'N' or $_SESSION[$guid]['viewCalendarSpaceBooking'] != 'N') {
+            if ($gibbon->session->get('viewCalendarSchool') != 'N' or $gibbon->session->get('viewCalendarPersonal') != 'N' or $gibbon->session->get('viewCalendarSpaceBooking') != 'N') {
                 $ttAlpha = 0.75;
             }
 
             //Get school calendar array
             $allDay = false;
             $eventsSchool = false;
-            if ($self == true and $_SESSION[$guid]['viewCalendarSchool'] == 'Y') {
-                if ($_SESSION[$guid]['calendarFeed'] != '') {
-                    $eventsSchool = getCalendarEvents($connection2, $guid,  $_SESSION[$guid]['calendarFeed'], $startDayStamp, $endDayStamp);
+            if ($self == true and $gibbon->session->get('viewCalendarSchool') == 'Y') {
+                if ($gibbon->session->get('calendarFeed') != '') {
+                    $eventsSchool = getCalendarEvents($connection2, $guid,  $gibbon->session->get('calendarFeed'), $startDayStamp, $endDayStamp);
                 }
                 //Any all days?
                 if ($eventsSchool != false) {
@@ -544,9 +544,9 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
             //Get personal calendar array
             $eventsPersonal = false;
-            if ($self == true and $_SESSION[$guid]['viewCalendarPersonal'] == 'Y') {
-                if ($_SESSION[$guid]['calendarFeedPersonal'] != '') {
-                    $eventsPersonal = getCalendarEvents($connection2, $guid,  $_SESSION[$guid]['calendarFeedPersonal'], $startDayStamp, $endDayStamp);
+            if ($self == true and $gibbon->session->get('viewCalendarPersonal') == 'Y') {
+                if ($gibbon->session->get('calendarFeedPersonal') != '') {
+                    $eventsPersonal = getCalendarEvents($connection2, $guid,  $gibbon->session->get('calendarFeedPersonal'), $startDayStamp, $endDayStamp);
                 }
                 //Any all days?
                 if ($eventsPersonal != false) {
@@ -562,8 +562,8 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $eventsSpaceBooking = false;
             if ($spaceBookingAvailable) {
                 //Get space booking array
-                if ($self == true and $_SESSION[$guid]['viewCalendarSpaceBooking'] == 'Y') {
-                    $eventsSpaceBooking = getSpaceBookingEvents($guid, $connection2, $startDayStamp, $_SESSION[$guid]['gibbonPersonID']);
+                if ($self == true and $gibbon->session->get('viewCalendarSpaceBooking') == 'Y') {
+                    $eventsSpaceBooking = getSpaceBookingEvents($guid, $connection2, $startDayStamp, $gibbon->session->get('gibbonPersonID'));
                 }
             }
 
@@ -614,7 +614,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                 }
                 $allDay = true;
                 $url = $canViewAbsences
-                    ? $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/absences_view_details.php&gibbonStaffAbsenceID='.$absence['gibbonStaffAbsenceID']
+                    ? $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_view_details.php&gibbonStaffAbsenceID='.$absence['gibbonStaffAbsenceID']
                     : '';
                 $eventsPersonal[] = [$summary, 'All Day', strtotime($absence['date']), null, '', $url];
             }
@@ -775,22 +775,22 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             }
             $output .= ";'>";
                 //Spit out controls for displaying calendars
-                if ($self == true and ($_SESSION[$guid]['calendarFeed'] != '' or $_SESSION[$guid]['calendarFeedPersonal'] != '' or $_SESSION[$guid]['viewCalendarSpaceBooking'] != '')) {
+                if ($self == true and ($gibbon->session->get('calendarFeed') != '' or $gibbon->session->get('calendarFeedPersonal') != '' or $gibbon->session->get('viewCalendarSpaceBooking') != '')) {
                     $output .= "<tr class='head' style='height: 37px;'>";
                     $output .= "<th class='ttCalendarBar' colspan=".($daysInWeek + 1).'>';
-                    $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=$q".$params."' style='padding: 5px 5px 0 0'>";
-                    if ($_SESSION[$guid]['calendarFeed'] != '' and $_SESSION[$guid]['googleAPIAccessToken'] != null) {
+                    $output .= "<form method='post' action='".$gibbon->session->get('absoluteURL')."/index.php?q=$q".$params."' style='padding: 5px 5px 0 0'>";
+                    if ($gibbon->session->get('calendarFeed') != '' and $gibbon->session->get('googleAPIAccessToken') != null) {
                         $checked = '';
-                        if ($_SESSION[$guid]['viewCalendarSchool'] == 'Y') {
+                        if ($gibbon->session->get('viewCalendarSchool') == 'Y') {
                             $checked = 'checked';
                         }
                         $output .= "<span class='ttSchoolCalendar' style='opacity: $schoolCalendarAlpha'>".__('School Calendar');
                         $output .= "<input $checked style='margin-left: 3px' type='checkbox' name='schoolCalendar' onclick='submit();'/>";
                         $output .= '</span>';
                     }
-                    if ($_SESSION[$guid]['calendarFeedPersonal'] != '' and isset($_SESSION[$guid]['googleAPIAccessToken'])) {
+                    if ($gibbon->session->get('calendarFeedPersonal') != '' and null !== $gibbon->session->get('googleAPIAccessToken')) {
                         $checked = '';
-                        if ($_SESSION[$guid]['viewCalendarPersonal'] == 'Y') {
+                        if ($gibbon->session->get('viewCalendarPersonal') == 'Y') {
                             $checked = 'checked';
                         }
                         $output .= "<span class='ttPersonalCalendar' style='opacity: $schoolCalendarAlpha'>".__('Personal Calendar');
@@ -798,18 +798,18 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                         $output .= '</span>';
                     }
                     if ($spaceBookingAvailable) {
-                        if ($_SESSION[$guid]['viewCalendarSpaceBooking'] != '') {
+                        if ($gibbon->session->get('viewCalendarSpaceBooking') != '') {
                             $checked = '';
-                            if ($_SESSION[$guid]['viewCalendarSpaceBooking'] == 'Y') {
+                            if ($gibbon->session->get('viewCalendarSpaceBooking') == 'Y') {
                                 $checked = 'checked';
                             }
-                            $output .= "<span class='ttSpaceBookingCalendar' style='opacity: $schoolCalendarAlpha'><a style='color: #fff' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable/spaceBooking_manage.php'>".__('Bookings').'</a> ';
+                            $output .= "<span class='ttSpaceBookingCalendar' style='opacity: $schoolCalendarAlpha'><a style='color: #fff' href='".$gibbon->session->get('absoluteURL')."/index.php?q=/modules/Timetable/spaceBooking_manage.php'>".__('Bookings').'</a> ';
                             $output .= "<input $checked style='margin-left: 3px' type='checkbox' name='spaceBookingCalendar' onclick='submit();'/>";
                             $output .= '</span>';
                         }
                     }
 
-                    $output .= "<input type='hidden' name='ttDate' value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], $startDayStamp)."'>";
+                    $output .= "<input type='hidden' name='ttDate' value='".date($gibbon->session->get('i18n')['dateFormatPHP'], $startDayStamp)."'>";
                     $output .= "<input name='fromTT' value='Y' type='hidden'>";
                     $output .= '</form>';
                     $output .= '</th>';
@@ -851,7 +851,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                         }
                     }
 
-                    $today = ((date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))) == date($_SESSION[$guid]['i18n']['dateFormatPHP'])) ? "class='ttToday'" : '');
+                    $today = ((date($gibbon->session->get('i18n')['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))) == date($gibbon->session->get('i18n')['dateFormatPHP'])) ? "class='ttToday'" : '');
                     $output .= "<th $today style='vertical-align: top; text-align: center; width: ";
 
                     if ($narrow == 'trim') {
@@ -875,7 +875,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                             $output .= __($day['nameShort']).'<br/>';
                         }
                     }
-                    $output .= "<span style='font-size: 80%; font-style: italic'>".date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))).'</span><br/>';
+                    $output .= "<span style='font-size: 80%; font-style: italic'>".date($gibbon->session->get('i18n')['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))).'</span><br/>';
                     try {
                         $dataSpecial = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))));
                         $sqlSpecial = "SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date AND type='Timing Change'";
@@ -935,7 +935,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     //Check to see if day is term time
                     $isDayInTerm = false;
                     try {
-                        $dataTerm = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                        $dataTerm = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'));
                         $sqlTerm = 'SELECT gibbonSchoolYearTerm.firstDay, gibbonSchoolYearTerm.lastDay FROM gibbonSchoolYearTerm, gibbonSchoolYear WHERE gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID';
                         $resultTerm = $connection2->prepare($sqlTerm);
                         $resultTerm->execute($dataTerm);
@@ -993,16 +993,16 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
     $schoolCalendarAlpha = 0.90;
     $ttAlpha = 1.0;
 
-    if ($_SESSION[$guid]['viewCalendarSchool'] != 'N' or $_SESSION[$guid]['viewCalendarPersonal'] != 'N' or $_SESSION[$guid]['viewCalendarSpaceBooking'] != 'N') {
+    if ($gibbon->session->get('viewCalendarSchool') != 'N' or $gibbon->session->get('viewCalendarPersonal') != 'N' or $gibbon->session->get('viewCalendarSpaceBooking') != 'N') {
         $ttAlpha = 0.75;
     }
 
     $date = date('Y-m-d', ($startDayStamp + (86400 * $count)));
 
     $self = false;
-    if ($gibbonPersonID == $_SESSION[$guid]['gibbonPersonID'] and $edit == false) {
+    if ($gibbonPersonID == $gibbon->session->get('gibbonPersonID') and $edit == false) {
         $self = true;
-        $roleCategory = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
+        $roleCategory = getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'), $connection2);
     }
 
     if ($narrow == 'trim') {
@@ -1181,7 +1181,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 
         $startPad = strtotime($dayTimeStart) - strtotime($gridTimeStart);
 
-        $today = ((date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $count))) == date($_SESSION[$guid]['i18n']['dateFormatPHP'])) ? "class='ttToday'" : '');
+        $today = ((date($gibbon->session->get('i18n')['dateFormatPHP'], ($startDayStamp + (86400 * $count))) == date($gibbon->session->get('i18n')['dateFormatPHP'])) ? "class='ttToday'" : '');
         $output .= "<td $today style='text-align: center; vertical-align: top; font-size: 11px'>";
 
         try {
@@ -1338,9 +1338,9 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         }
 
                         if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php') and $edit == false) {
-                            $output .= "<a style='text-decoration: none; font-weight: bold; font-size: 120%' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID']."&currentDate=".Format::date($date)."'>".$rowPeriods['course'].'.'.$rowPeriods['class'].'</a><br/>';
+                            $output .= "<a style='text-decoration: none; font-weight: bold; font-size: 120%' href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID']."&currentDate=".Format::date($date)."'>".$rowPeriods['course'].'.'.$rowPeriods['class'].'</a><br/>';
                         } elseif (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_class_edit.php') and $edit == true) {
-                            $output .= "<a style='text-decoration: none; font-weight: bold; font-size: 120%' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_class_edit.php&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID'].'&gibbonSchoolYearID='.$_SESSION[$guid]['gibbonSchoolYearID'].'&gibbonCourseID='.$rowPeriods['gibbonCourseID']."'>".$rowPeriods['course'].'.'.$rowPeriods['class'].'</a><br/>';
+                            $output .= "<a style='text-decoration: none; font-weight: bold; font-size: 120%' href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_class_edit.php&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID'].'&gibbonSchoolYearID='.$gibbon->session->get('gibbonSchoolYearID').'&gibbonCourseID='.$rowPeriods['gibbonCourseID']."'>".$rowPeriods['course'].'.'.$rowPeriods['class'].'</a><br/>';
                         } else {
                             $output .= "<span style='font-size: 120%'><b>".$rowPeriods['course'].'.'.$rowPeriods['class'].'</b></span><br/>';
                         }
@@ -1355,7 +1355,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                 }
                             }
                         } else {
-                            $output .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable Admin/tt_edit_day_edit_class_edit.php&gibbonTTDayID='.$rowPeriods['gibbonTTDayID']."&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$_SESSION[$guid]['gibbonSchoolYearID'].'&gibbonTTColumnRowID='.$rowPeriods['gibbonTTColumnRowID'].'&gibbonTTDayRowClass='.$rowPeriods['gibbonTTDayRowClassID'].'&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID']."'>".$rowPeriods['roomName'].'</a>';
+                            $output .= "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/tt_edit_day_edit_class_edit.php&gibbonTTDayID='.$rowPeriods['gibbonTTDayID']."&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$gibbon->session->get('gibbonSchoolYearID').'&gibbonTTColumnRowID='.$rowPeriods['gibbonTTColumnRowID'].'&gibbonTTDayRowClass='.$rowPeriods['gibbonTTDayRowClassID'].'&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID']."'>".$rowPeriods['roomName'].'</a>';
                         }
                         $output .= '</div>';
                         ++$zCount;
@@ -1380,11 +1380,11 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 
                                             if ($resultPlan->rowCount() == 1) {
                                                 $rowPlan = $resultPlan->fetch();
-                                                $output .= "<a style='pointer-events: auto' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID'].'&gibbonPlannerEntryID='.$rowPlan['gibbonPlannerEntryID']."'><img style='float: right; margin: ".(substr($height, 0, -2) - 27)."px 2px 0 0' title='Lesson planned: ".htmlPrep($rowPlan['name'])."' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/></a>";
+                                                $output .= "<a style='pointer-events: auto' href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID'].'&gibbonPlannerEntryID='.$rowPlan['gibbonPlannerEntryID']."'><img style='float: right; margin: ".(substr($height, 0, -2) - 27)."px 2px 0 0' title='Lesson planned: ".htmlPrep($rowPlan['name'])."' src='".$gibbon->session->get('absoluteURL').'/themes/'.$gibbon->session->get('gibbonThemeName')."/img/iconTick.png'/></a>";
                                             } elseif ($resultPlan->rowCount() == 0) {
-                                                $output .= "<a style='pointer-events: auto' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_add.php&viewBy=class&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID'].'&date='.$date.'&timeStart='.$effectiveStart.'&timeEnd='.$effectiveEnd."'><img style='float: right; margin: ".(substr($height, 0, -2) - 27)."px 2px 0 0' title='Add lesson plan' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+                                                $output .= "<a style='pointer-events: auto' href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/Planner/planner_add.php&viewBy=class&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID'].'&date='.$date.'&timeStart='.$effectiveStart.'&timeEnd='.$effectiveEnd."'><img style='float: right; margin: ".(substr($height, 0, -2) - 27)."px 2px 0 0' title='Add lesson plan' src='".$gibbon->session->get('absoluteURL').'/themes/'.$gibbon->session->get('gibbonThemeName')."/img/page_new.png'/></a>";
                                             } else {
-                                                $output .= "<a style='pointer-events: auto' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner.php&viewBy=class&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID'].'&date='.$date.'&timeStart='.$effectiveStart.'&timeEnd='.$effectiveEnd."'><div style='float: right; margin: ".(substr($height, 0, -2) - 17)."px 5px 0 0'>".__('Error').'</div></a>';
+                                                $output .= "<a style='pointer-events: auto' href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/Planner/planner.php&viewBy=class&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID'].'&date='.$date.'&timeStart='.$effectiveStart.'&timeEnd='.$effectiveEnd."'><div style='float: right; margin: ".(substr($height, 0, -2) - 17)."px 5px 0 0'>".__('Error').'</div></a>';
                                             }
                                             $output .= '</div>';
                                             ++$zCount;
@@ -1406,7 +1406,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                         }
                                         if ($resultPlan->rowCount() == 1) {
                                             $rowPlan = $resultPlan->fetch();
-                                            $output .= "<a style='pointer-events: auto' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID'].'&gibbonPlannerEntryID='.$rowPlan['gibbonPlannerEntryID']."&search=$gibbonPersonID'><img style='float: right; margin: ".(substr($height, 0, -2) - 27)."px 2px 0 0' title='".__('View lesson:').' '.htmlPrep($rowPlan['name'])."' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a>";
+                                            $output .= "<a style='pointer-events: auto' href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID'].'&gibbonPlannerEntryID='.$rowPlan['gibbonPlannerEntryID']."&search=$gibbonPersonID'><img style='float: right; margin: ".(substr($height, 0, -2) - 27)."px 2px 0 0' title='".__('View lesson:').' '.htmlPrep($rowPlan['name'])."' src='".$gibbon->session->get('absoluteURL').'/themes/'.$gibbon->session->get('gibbonThemeName')."/img/plus.png'/></a>";
                                         } elseif ($resultPlan->rowCount() > 1) {
                                             $output .= "<div style='float: right; margin: ".(substr($height, 0, -2) - 17)."px 5px 0 0'>".__('Error').'</div>';
                                         }
@@ -1419,7 +1419,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                 $output .= "<div $title style='z-index: $zCount; position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid rgba(136,136,136, $ttAlpha); height: $height; margin: 0px; padding: 0px; background-color: none; pointer-events: none'>";
                                     //Check for lesson plan
                                     $bgImg = 'none';
-                                $output .= "<a style='pointer-events: auto' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable Admin/tt_edit_day_edit_class_exception.php&gibbonTTDayID='.$rowPeriods['gibbonTTDayID']."&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$_SESSION[$guid]['gibbonSchoolYearID'].'&gibbonTTColumnRowID='.$rowPeriods['gibbonTTColumnRowID'].'&gibbonTTDayRowClass='.$rowPeriods['gibbonTTDayRowClassID'].'&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID']."'><img style='float: right; margin: ".(substr($height, 0, -2) - 27)."px 2px 0 0' title='".__('Manage Exceptions')."' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a>";
+                                $output .= "<a style='pointer-events: auto' href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/tt_edit_day_edit_class_exception.php&gibbonTTDayID='.$rowPeriods['gibbonTTDayID']."&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$gibbon->session->get('gibbonSchoolYearID').'&gibbonTTColumnRowID='.$rowPeriods['gibbonTTColumnRowID'].'&gibbonTTDayRowClass='.$rowPeriods['gibbonTTDayRowClassID'].'&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID']."'><img style='float: right; margin: ".(substr($height, 0, -2) - 27)."px 2px 0 0' title='".__('Manage Exceptions')."' src='".$gibbon->session->get('absoluteURL').'/themes/'.$gibbon->session->get('gibbonThemeName')."/img/attendance.png'/></a>";
                                 $output .= '</div>';
                                 ++$zCount;
                             }
@@ -1566,7 +1566,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
 
     //Find out which timetables I am involved in this year
     try {
-        $data = array('gibbonSpaceID' => $gibbonSpaceID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+        $data = array('gibbonSpaceID' => $gibbonSpaceID, 'gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'));
         $sql = "SELECT DISTINCT gibbonTT.gibbonTTID, gibbonTT.name, gibbonTT.nameShortDisplay FROM gibbonTT JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID) JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSpaceID=:gibbonSpaceID AND gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ";
         $result = $connection2->prepare($sql);
         $result->execute($data);
@@ -1577,7 +1577,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
     //If I am not involved in any timetables display all within the year
     if ($result->rowCount() == 0) {
         try {
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+            $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'));
             $sql = "SELECT gibbonTT.gibbonTTID, gibbonTT.name, gibbonTT.nameShortDisplay FROM gibbonTT WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ";
             $result = $connection2->prepare($sql);
             $result->execute($data);
@@ -1593,11 +1593,11 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
         $output .= '<td>';
         $output .= "<span style='font-size: 115%; font-weight: bold'>".__('Timetable Chooser').'</span>: ';
         while ($row = $result->fetch()) {
-            $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=$q".$params.'&gibbonTTID='.$row['gibbonTTID']."'>";
-            $output .= "<input name='ttDate' value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], $startDayStamp)."' type='hidden'>";
-            $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendarSchool']."' type='hidden'>";
-            $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendarPersonal']."' type='hidden'>";
-            $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendarSpaceBooking']."' type='hidden'>";
+            $output .= "<form method='post' action='".$gibbon->session->get('absoluteURL')."/index.php?q=$q".$params.'&gibbonTTID='.$row['gibbonTTID']."'>";
+            $output .= "<input name='ttDate' value='".date($gibbon->session->get('i18n')['dateFormatPHP'], $startDayStamp)."' type='hidden'>";
+            $output .= "<input name='schoolCalendar' value='".$gibbon->session->get('viewCalendarSchool')."' type='hidden'>";
+            $output .= "<input name='personalCalendar' value='".$gibbon->session->get('viewCalendarPersonal')."' type='hidden'>";
+            $output .= "<input name='spaceBookingCalendar' value='".$gibbon->session->get('viewCalendarSpaceBooking')."' type='hidden'>";
             $output .= "<input name='fromTT' value='Y' type='hidden'>";
             $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='".$row['name']."'>";
             $output .= '</form>';
@@ -1613,7 +1613,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
         $output .= '</table>';
 
         if ($gibbonTTID != '') {
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonTTID' => $gibbonTTID);
+            $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), 'gibbonTTID' => $gibbonTTID);
             $sql = "SELECT DISTINCT gibbonTT.gibbonTTID, gibbonTT.name, gibbonTT.nameShortDisplay FROM gibbonTT JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID) JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSpaceID=$gibbonSpaceID AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonTT.gibbonTTID=:gibbonTTID";
         }
         try {
@@ -1626,7 +1626,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
 
     //Get space booking array
     $eventsSpaceBooking = false;
-    if ($_SESSION[$guid]['viewCalendarSpaceBooking'] == 'Y') {
+    if ($gibbon->session->get('viewCalendarSpaceBooking') == 'Y') {
         $eventsSpaceBooking = getSpaceBookingEventsSpace($guid, $connection2, $startDayStamp, $gibbonSpaceID);
     }
 
@@ -1643,26 +1643,26 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
         $output .= "<table cellspacing='0' class='noIntBorder' cellspacing='0' style='width: 100%; margin: 10px 0 10px 0'>";
         $output .= '<tr>';
         $output .= "<td style='vertical-align: top'>";
-        $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=$q".$params.'&gibbonTTID='.$row['gibbonTTID']."'>";
-        $output .= "<input name='ttDate' maxlength=10 value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp - (7 * 24 * 60 * 60)))."' type='hidden'>";
-        $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendarSchool']."' type='hidden'>";
-        $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendarPersonal']."' type='hidden'>";
-        $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendarSpaceBooking']."' type='hidden'>";
+        $output .= "<form method='post' action='".$gibbon->session->get('absoluteURL')."/index.php?q=$q".$params.'&gibbonTTID='.$row['gibbonTTID']."'>";
+        $output .= "<input name='ttDate' maxlength=10 value='".date($gibbon->session->get('i18n')['dateFormatPHP'], ($startDayStamp - (7 * 24 * 60 * 60)))."' type='hidden'>";
+        $output .= "<input name='schoolCalendar' value='".$gibbon->session->get('viewCalendarSchool')."' type='hidden'>";
+        $output .= "<input name='personalCalendar' value='".$gibbon->session->get('viewCalendarPersonal')."' type='hidden'>";
+        $output .= "<input name='spaceBookingCalendar' value='".$gibbon->session->get('viewCalendarSpaceBooking')."' type='hidden'>";
         $output .= "<input name='fromTT' value='Y' type='hidden'>";
         $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='".__('Last Week')."'>";
         $output .= '</form>';
-        $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=$q".$params.'&gibbonTTID='.$row['gibbonTTID']."'>";
-        $output .= "<input name='ttDate' value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (7 * 24 * 60 * 60)))."' type='hidden'>";
-        $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendarSchool']."' type='hidden'>";
-        $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendarPersonal']."' type='hidden'>";
-        $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendarSpaceBooking']."' type='hidden'>";
+        $output .= "<form method='post' action='".$gibbon->session->get('absoluteURL')."/index.php?q=$q".$params.'&gibbonTTID='.$row['gibbonTTID']."'>";
+        $output .= "<input name='ttDate' value='".date($gibbon->session->get('i18n')['dateFormatPHP'], ($startDayStamp + (7 * 24 * 60 * 60)))."' type='hidden'>";
+        $output .= "<input name='schoolCalendar' value='".$gibbon->session->get('viewCalendarSchool')."' type='hidden'>";
+        $output .= "<input name='personalCalendar' value='".$gibbon->session->get('viewCalendarPersonal')."' type='hidden'>";
+        $output .= "<input name='spaceBookingCalendar' value='".$gibbon->session->get('viewCalendarSpaceBooking')."' type='hidden'>";
         $output .= "<input name='fromTT' value='Y' type='hidden'>";
         $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='".__('Next Week')."'>";
         $output .= '</form>';
         $output .= '</td>';
         $output .= "<td style='vertical-align: top; text-align: right'>";
-        $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=$q".$params.'&gibbonTTID='.$row['gibbonTTID']."'>";
-        $output .= "<input name='ttDate' id='ttDate' maxlength=10 value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], $startDayStamp)."' type='text' style='height: 22px; width:100px; margin-right: 0px; float: none'>";
+        $output .= "<form method='post' action='".$gibbon->session->get('absoluteURL')."/index.php?q=$q".$params.'&gibbonTTID='.$row['gibbonTTID']."'>";
+        $output .= "<input name='ttDate' id='ttDate' maxlength=10 value='".date($gibbon->session->get('i18n')['dateFormatPHP'], $startDayStamp)."' type='text' style='height: 22px; width:100px; margin-right: 0px; float: none'>";
         $output .= '<script type="text/javascript">';
         $output .= "var ttDate=new LiveValidation('ttDate');";
         $output .= 'ttDate.add( Validate.Format, {pattern: ';
@@ -1686,9 +1686,9 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
         $output .= '});';
         $output .= '</script>';
         $output .= "<input style='margin-top: 0px; margin-right: -1px;  padding-left: 1rem; padding-right: 1rem;' type='submit' value='".__('Go')."'>";
-        $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendarSchool']."' type='hidden'>";
-        $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendarPersonal']."' type='hidden'>";
-        $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendarSpaceBooking']."' type='hidden'>";
+        $output .= "<input name='schoolCalendar' value='".$gibbon->session->get('viewCalendarSchool')."' type='hidden'>";
+        $output .= "<input name='personalCalendar' value='".$gibbon->session->get('viewCalendarPersonal')."' type='hidden'>";
+        $output .= "<input name='spaceBookingCalendar' value='".$gibbon->session->get('viewCalendarSpaceBooking')."' type='hidden'>";
         $output .= "<input name='fromTT' value='Y' type='hidden'>";
         $output .= '</form>';
         $output .= '</td>';
@@ -1735,7 +1735,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
         $schoolCalendarAlpha = 0.85;
         $ttAlpha = 1.0;
 
-        if ($_SESSION[$guid]['viewCalendarSpaceBooking'] != 'N') {
+        if ($gibbon->session->get('viewCalendarSpaceBooking') != 'N') {
             $ttAlpha = 0.75;
         }
 
@@ -1809,21 +1809,21 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
         $output .= '<div id="ttWrapper">';
         $output .= "<table cellspacing='0' class='mini' cellspacing='0' style='width: 100%; min-width: 750px; margin: 0px 0px 30px 0px;'>";
             //Spit out controls for displaying calendars
-            if ($_SESSION[$guid]['viewCalendarSpaceBooking'] != '') {
+            if ($gibbon->session->get('viewCalendarSpaceBooking') != '') {
                 $output .= "<tr class='head' style='height: 37px;'>";
                 $output .= "<th class='ttCalendarBar' colspan=".($daysInWeek + 1).'>';
-                $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=$q".$params."' style='padding: 5px 5px 0 0'>";
-                if ($_SESSION[$guid]['viewCalendarSpaceBooking'] != '') {
+                $output .= "<form method='post' action='".$gibbon->session->get('absoluteURL')."/index.php?q=$q".$params."' style='padding: 5px 5px 0 0'>";
+                if ($gibbon->session->get('viewCalendarSpaceBooking') != '') {
                     $checked = '';
-                    if ($_SESSION[$guid]['viewCalendarSpaceBooking'] == 'Y') {
+                    if ($gibbon->session->get('viewCalendarSpaceBooking') == 'Y') {
                         $checked = 'checked';
                     }
-                    $output .= "<span class='ttSpaceBookingCalendar' style='opacity: $schoolCalendarAlpha'><a style='color: #fff' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable/spaceBooking_manage.php'>".__('Bookings').'</a> ';
+                    $output .= "<span class='ttSpaceBookingCalendar' style='opacity: $schoolCalendarAlpha'><a style='color: #fff' href='".$gibbon->session->get('absoluteURL')."/index.php?q=/modules/Timetable/spaceBooking_manage.php'>".__('Bookings').'</a> ';
                     $output .= "<input $checked style='margin-left: 3px' type='checkbox' name='spaceBookingCalendar' onclick='submit();'/>";
                     $output .= '</span>';
                 }
 
-                $output .= "<input type='hidden' name='ttDate' value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], $startDayStamp)."'>";
+                $output .= "<input type='hidden' name='ttDate' value='".date($gibbon->session->get('i18n')['dateFormatPHP'], $startDayStamp)."'>";
                 $output .= "<input name='fromTT' value='Y' type='hidden'>";
                 $output .= '</form>';
                 $output .= '</th>';
@@ -1847,7 +1847,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                     }
                     $dateCorrection = ($day['sequenceNumber'] - 1)-($firstSequence-1);
 
-                    $today = ((date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))) == date($_SESSION[$guid]['i18n']['dateFormatPHP'])) ? "class='ttToday'" : '');
+                    $today = ((date($gibbon->session->get('i18n')['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))) == date($gibbon->session->get('i18n')['dateFormatPHP'])) ? "class='ttToday'" : '');
                     $output .= "<th $today style='vertical-align: top; text-align: center; width: ";
 
                     $output .= (550 / $daysInWeek);
@@ -1870,7 +1870,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                             $output .= __($day['nameShort']).'<br/>';
                         }
                     }
-                    $output .= "<span style='font-size: 80%; font-style: italic'>".date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))).'</span><br/>';
+                    $output .= "<span style='font-size: 80%; font-style: italic'>".date($gibbon->session->get('i18n')['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))).'</span><br/>';
                     try {
                         $dataSpecial = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))));
                         $sqlSpecial = "SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date AND type='Timing Change'";
@@ -1914,7 +1914,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
             //Check to see if week is at all in term time...if it is, then display the grid
             $isWeekInTerm = false;
             try {
-                $dataTerm = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                $dataTerm = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'));
                 $sqlTerm = 'SELECT gibbonSchoolYearTerm.firstDay, gibbonSchoolYearTerm.lastDay FROM gibbonSchoolYearTerm, gibbonSchoolYear WHERE gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID';
                 $resultTerm = $connection2->prepare($sqlTerm);
                 $resultTerm->execute($dataTerm);
@@ -1945,7 +1945,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                     //Check to see if day is term time
                     $isDayInTerm = false;
                     try {
-                        $dataTerm = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                        $dataTerm = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'));
                         $sqlTerm = 'SELECT gibbonSchoolYearTerm.firstDay, gibbonSchoolYearTerm.lastDay FROM gibbonSchoolYearTerm, gibbonSchoolYear WHERE gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID';
                         $resultTerm = $connection2->prepare($sqlTerm);
                         $resultTerm->execute($dataTerm);
@@ -2072,7 +2072,7 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
 
     $startPad = strtotime($dayTimeStart) - strtotime($gridTimeStart);
 
-    $today = (date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $count))) == date($_SESSION[$guid]['i18n']['dateFormatPHP']) ? "class='ttToday'" : '');
+    $today = (date($gibbon->session->get('i18n')['dateFormatPHP'], ($startDayStamp + (86400 * $count))) == date($gibbon->session->get('i18n')['dateFormatPHP']) ? "class='ttToday'" : '');
     $output .= "<td $today style='text-align: center; vertical-align: top; font-size: 11px'>";
 
     try {
@@ -2142,14 +2142,14 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                     $output .= $rowPeriods['name'].'<br/>';
                     $output .= '<i>'.substr($effectiveStart, 0, 5).'-'.substr($effectiveEnd, 0, 5).'</i><br/>';
 
-                    if ($_SESSION[$guid]['viewCalendarSpaceBooking'] == 'Y' && isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_manage_add.php') && $date >= date('Y-m-d')) {
+                    if ($gibbon->session->get('viewCalendarSpaceBooking') == 'Y' && isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_manage_add.php') && $date >= date('Y-m-d')) {
                         $overlappingBookings = array_filter(is_array($eventsSpaceBooking)? $eventsSpaceBooking : [], 
                             function ($event) use ($date, $effectiveStart, $effectiveEnd) {
                                 return ($event[3] == $date) && ( ($event[4] >= $effectiveStart && $event[4] < $effectiveEnd) || ($effectiveStart >= $event[4] && $effectiveStart < $event[5]) );
                             }); 
 
                         if (empty($overlappingBookings)) {
-                            $output .= "<a style='pointer-events: auto; position: absolute; right: 5px; bottom: 5px;' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable/spaceBooking_manage_add.php&gibbonSpaceID='.$gibbonSpaceID.'&date='.$date.'&timeStart='.$effectiveStart.'&timeEnd='.$effectiveEnd."&source=tt'><img style='' title='".__('Add Facility Booking')."' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+                            $output .= "<a style='pointer-events: auto; position: absolute; right: 5px; bottom: 5px;' href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/Timetable/spaceBooking_manage_add.php&gibbonSpaceID='.$gibbonSpaceID.'&date='.$date.'&timeStart='.$effectiveStart.'&timeEnd='.$effectiveEnd."&source=tt'><img style='' title='".__('Add Facility Booking')."' src='".$gibbon->session->get('absoluteURL').'/themes/'.$gibbon->session->get('gibbonThemeName')."/img/page_new.png'/></a>";
                         }
                     }
                 }
@@ -2226,7 +2226,7 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                     }
 
                     if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php')) {
-                        $output .= "<a style='text-decoration: none; font-weight: bold; font-size: 120%' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID']."'>".$rowPeriods['course'].'.'.$rowPeriods['class'].'</a><br/>';
+                        $output .= "<a style='text-decoration: none; font-weight: bold; font-size: 120%' href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID']."'>".$rowPeriods['course'].'.'.$rowPeriods['class'].'</a><br/>';
                     } else {
                         $output .= "<span style='font-size: 120%'><b>".$rowPeriods['course'].'.'.$rowPeriods['class'].'</b></span><br/>';
                     }
