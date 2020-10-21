@@ -478,7 +478,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                     echo "<th class='columnLabel medColumn'>";
 
                     $scale = '';
-                    if ($markbook->getSetting('enableRawAttainment') == 'Y' && null !== $gibbon->session->get('markbookFilter') ) {
+                    if ($markbook->getSetting('enableRawAttainment') == 'Y' && $gibbon->session->has('markbookFilter') ) {
                         if ($gibbon->session->get('markbookFilter') == 'raw' && $column->displayRawMarks() and $column->hasAttainmentRawMax()) {
                             $scale = ' - ' . __('Raw Marks') .' '. __('out of') .': '. floatval($column->getData('attainmentRawMax') );
                         }
@@ -747,7 +747,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                                 if ($markbook->getSetting('enableRawAttainment') == 'Y' && $column->displayRawMarks() && $column->hasAttainmentRawMax()) {
 
                                     if (isset($rowEntry['attainmentValueRaw']) && !empty($rowEntry['attainmentValueRaw'])) {
-                                        if (null !== $gibbon->session->get('markbookFilter') && $gibbon->session->get('markbookFilter') == 'raw') {
+                                        if ($gibbon->session->get('markbookFilter') == 'raw') {
                                             $attainment = $rowEntry['attainmentValueRaw'];
                                         } else {
                                             $attainmentDesc .= '<br/>'. $rowEntry['attainmentValueRaw'] . ' / ' . floatval($column->getData('attainmentRawMax'));
