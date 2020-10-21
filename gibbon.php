@@ -76,7 +76,7 @@ if ($gibbon->isInstalled() == true) {
         // We need to handle failed database connections after install. Display an error if no connection 
         // can be established. Needs a specific error page once header/footer is split out of index.
         if (!$gibbon->isInstalling()) {
-            include('./error.php');
+            include(__DIR__ . '/error.php');
             exit;
         }
     }
