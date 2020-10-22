@@ -174,7 +174,7 @@ class Action extends WebLink
     {
         $this->modal = true;
 
-        $this->setClass('thickbox')
+        $this->addClass('thickbox')
             ->addParam('width', $width)
             ->addParam('height', $height);
 

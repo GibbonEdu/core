@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
     //Proceed!
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
-    }
+    } 
 
     try {
         $data = array();
@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
     }
 
     echo "<div class='linkTop'>";
-    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/cannedResponse_manage_add.php'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+    echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/cannedResponse_manage_add.php'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/page_new.png'/></a>";
     echo '</div>';
 
     if ($result->rowCount() < 1) {
@@ -74,8 +74,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
             echo $row['subject'];
             echo '</td>';
             echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/cannedResponse_manage_edit.php&gibbonMessengerCannedResponseID='.$row['gibbonMessengerCannedResponseID']."'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/cannedResponse_manage_delete.php&gibbonMessengerCannedResponseID='.$row['gibbonMessengerCannedResponseID']."&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+            echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/cannedResponse_manage_edit.php&gibbonMessengerCannedResponseID='.$row['gibbonMessengerCannedResponseID']."'><img title='".__('Edit')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/config.png'/></a> ";
+            echo "<a class='thickbox' href='".$gibbon->session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$gibbon->session->get('module').'/cannedResponse_manage_delete.php&gibbonMessengerCannedResponseID='.$row['gibbonMessengerCannedResponseID']."&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/garbage.png'/></a>";
             echo '</td>';
             echo '</tr>';
         }
