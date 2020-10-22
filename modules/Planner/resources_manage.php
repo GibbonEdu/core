@@ -46,10 +46,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage.p
         }
         
         
-        $form = Form::create('resourcesManage', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form = Form::create('resourcesManage', $gibbon->session->get('absoluteURL').'/index.php', 'get');
         $form->setClass('noIntBorder fullWidth');
         
-        $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/resources_manage.php');
+        $form->addHiddenValue('q', '/modules/'.$gibbon->session->get('module').'/resources_manage.php');
         
         $form->setTitle(__('Search'));
         
@@ -70,10 +70,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage.p
                 $sql = 'SELECT gibbonResource.*, surname, preferredName, title FROM gibbonResource JOIN gibbonPerson ON (gibbonResource.gibbonPersonID=gibbonPerson.gibbonPersonID) AND (name LIKE :name) ORDER BY timestamp DESC';
             }
         } elseif ($highestAction == 'Manage Resources_my') {
-            $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+            $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
             $sql = 'SELECT gibbonResource.*, surname, preferredName, title FROM gibbonResource JOIN gibbonPerson ON (gibbonResource.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonResource.gibbonPersonID=:gibbonPersonID ORDER BY timestamp DESC';
             if ($search != '') {
-                $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'name' => "%$search%");
+                $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'), 'name' => "%$search%");
                 $sql = 'SELECT gibbonResource.*, surname, preferredName, title FROM gibbonResource JOIN gibbonPerson ON (gibbonResource.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonResource.gibbonPersonID=:gibbonPersonID AND (name LIKE :name) ORDER BY timestamp DESC';
             }
         }
