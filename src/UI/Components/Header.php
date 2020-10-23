@@ -199,7 +199,7 @@ class Header
         $return = '';
 
         // Add a link to go back to the system/personal default language, if we're not using it
-        if ($this->session->has('i18n')['default']['code'] && $this->session->has('i18n')['code']) {
+        if (!empty($this->session->get('i18n')['default']['code']) && !empty($this->session->get('i18n')['code'])) {
             if ($this->session->get('i18n')['code'] != $this->session->get('i18n')['default']['code']) {
                 $systemDefaultShortName = trim(strstr($this->session->get('i18n')['default']['name'], '-', true));
                 $languageLink = "<a class='link-white' href='".$this->session->get('absoluteURL')."?i18n=".$this->session->get('i18n')['default']['code']."'>".$systemDefaultShortName.'</a>';
