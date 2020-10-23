@@ -65,6 +65,35 @@ class CourseGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    public function queryCoursesByDepartmentStaff(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonPersonID)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonCourse.gibbonCourseID', 'gibbonCourse.name', 'gibbonCourse.nameShort', 'gibbonDepartment.name as department', 'COUNT(DISTINCT gibbonCourseClassID) as classCount'
+            ])
+            ->innerJoin('gibbonDepartment', 'gibbonDepartment.gibbonDepartmentID=gibbonCourse.gibbonDepartmentID')
+            ->innerJoin('gibbonDepartmentStaff', 'gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID')
+            ->innerJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID')
+            ->where("(gibbonDepartmentStaff.role='Coordinator' OR gibbonDepartmentStaff.role='Assistant Coordinator')")
+            ->where('gibbonCourse.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where('gibbonDepartmentStaff.gibbonPersonID = :gibbonPersonID')
+            ->bindValue('gibbonPersonID', $gibbonPersonID)
+            ->groupBy(['gibbonCourse.gibbonCourseID']);
+
+        $criteria->addFilterRules([
+            'yearGroup' => function ($query, $gibbonYearGroupID) {
+                return $query
+                    ->where('FIND_IN_SET(:gibbonYearGroupID, gibbonCourse.gibbonYearGroupIDList)')
+                    ->bindValue('gibbonYearGroupID', $gibbonYearGroupID);
+            },
+        ]);
+
+        return $this->runQuery($query, $criteria);
+    }
+
     public function selectClassesBySchoolYear($gibbonSchoolYearID)
     {
         $data= array('gibbonSchoolYearID' => $gibbonSchoolYearID);
