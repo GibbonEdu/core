@@ -157,7 +157,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
                 return __($string, $domain);
             }));
 
-            $twig->addFunction(new \Twig\TwigFunction('__m', function ($string, $params = null) {
+            $twig->addFunction(new \Twig\TwigFunction('__m', function ($string, $params = []) {
                 return __m($string, $params);
             }));
 
