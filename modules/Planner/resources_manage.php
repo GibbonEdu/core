@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
-use Gibbon\Domain\DataSet;
 use Gibbon\Tables\DataTable;
+use Gibbon\Domain\Planner\ResourceGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -33,114 +33,90 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage.p
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
-    if ($highestAction == false) {
+    if (empty($highestAction)) {
         $page->addError(__('The highest grouped action cannot be determined.'));
-    } else {
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
-        }
-        
-        $search = null;
-        if (isset($_GET['search'])) {
-            $search = $_GET['search'];
-        }
-        
-        
-        $form = Form::create('resourcesManage', $gibbon->session->get('absoluteURL').'/index.php', 'get');
-        $form->setClass('noIntBorder fullWidth');
-        
-        $form->addHiddenValue('q', '/modules/'.$gibbon->session->get('module').'/resources_manage.php');
-        
-        $form->setTitle(__('Search'));
-        
-        $row = $form->addRow();
-            $row->addLabel('search', __('Search For'))->description(__('Resource name.'));
-            $row->addTextField('search')->setValue($search);
-
-        $row = $form->addRow();
-            $row->addSearchSubmit($gibbon->session, __('Clear Search'));
-
-        echo $form->getOutput();
-
-        if ($highestAction == 'Manage Resources_all') {
-            $data = array();
-            $sql = 'SELECT gibbonResource.*, surname, preferredName, title FROM gibbonResource JOIN gibbonPerson ON (gibbonResource.gibbonPersonID=gibbonPerson.gibbonPersonID) ORDER BY timestamp DESC';
-            if ($search != '') {
-                $data = array('name' => "%$search%");
-                $sql = 'SELECT gibbonResource.*, surname, preferredName, title FROM gibbonResource JOIN gibbonPerson ON (gibbonResource.gibbonPersonID=gibbonPerson.gibbonPersonID) AND (name LIKE :name) ORDER BY timestamp DESC';
-            }
-        } elseif ($highestAction == 'Manage Resources_my') {
-            $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
-            $sql = 'SELECT gibbonResource.*, surname, preferredName, title FROM gibbonResource JOIN gibbonPerson ON (gibbonResource.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonResource.gibbonPersonID=:gibbonPersonID ORDER BY timestamp DESC';
-            if ($search != '') {
-                $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'), 'name' => "%$search%");
-                $sql = 'SELECT gibbonResource.*, surname, preferredName, title FROM gibbonResource JOIN gibbonPerson ON (gibbonResource.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonResource.gibbonPersonID=:gibbonPersonID AND (name LIKE :name) ORDER BY timestamp DESC';
-            }
-        }
-        $result = $pdo->select($sql, $data)->toDataSet();
-        
-        $table = DataTable::create('resources');
-        $table->setTitle('View');
-         $table->addHeaderAction('add', __('Add'))
-            ->setURL('/modules/' .$gibbon->session->get('module') . '/resources_manage_add.php')
-            ->displayLabel();
-            
-        $table->addColumn('name', __('Name'))->description(__('Contributor'))->format(function ($row) use ($guid) {
-            return getResourceLink($guid, $row['gibbonResourceID'], $row['type'], $row['name'], $row['content']) . '<br/>'. Format::small(__(Format::name($row['title'], $row['preferredName'], $row['surname'], 'Staff')));
-        });
-        $table->addColumn('type', __('Type'));
-        $table->addColumn('category', __('Category'))->description(__('Purpose'))->format(function ($row) {
-            return $row['category'] . '<br/>'. Format::small(__($row['purpose']));
-        });
-        $table->addColumn('tags', __('Tags'))->format(function ($row) {
-                $output = '';
-                $tags = explode(',', $row['tags']);
-                natcasesort($tags);
-                foreach ($tags as $tag) {
-                    $output .= trim($tag).', ';
-                }
-                return substr($output, 0, -2);
-        });
-        
-        $table->addColumn('years', __('Year Groups'))->format(function ($row) use ($connection2) {
-                $dataYears = array();
-                $sqlYears = 'SELECT gibbonYearGroupID, nameShort, sequenceNumber FROM gibbonYearGroup ORDER BY sequenceNumber';
-                $resultYears = $connection2->prepare($sqlYears);
-                $resultYears->execute($dataYears);
-                
-                $years = explode(',', $row['gibbonYearGroupIDList']);
-                if (count($years) > 0 and $years[0] != '') {
-                    if (count($years) == $resultYears->rowCount()) {
-                        Return '<i>'.__('All Years').'</i>';
-                    } else {
-                        $count3 = 0;
-                        $count4 = 0;
-                        $output = '';
-                        while ($rowYears = $resultYears->fetch()) {
-                            for ($i = 0; $i < count($years); ++$i) {
-                                if ($rowYears['gibbonYearGroupID'] == $years[$i]) {
-                                    if ($count3 > 0 and $count4 > 0) {
-                                        $output .= ', ';
-                                    }
-                                    $output .= __($rowYears['nameShort']);
-                                    ++$count4;
-                                }
-                            }
-                            ++$count3;
-                        }
-                       return $output;
-                    }
-                } else {
-                    Return '<i>'.__('None').'</i>';
-                }
-        });
-        
-        $actions = $table->addActionColumn()->addParam('gibbonResourceID');
-        $actions->addAction('edit', __('Edit'))
-                ->setURL('/modules/Planner/resources_manage_edit.php');
-
-        echo $table->render($result);
-        
+        return;
     }
+
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], null, null);
+    }
+    
+    $search = $_GET['search'] ?? null;
+    
+    // FORM
+    $form = Form::create('resourcesManage', $gibbon->session->get('absoluteURL').'/index.php', 'get');
+    $form->setTitle(__('Search'));
+    $form->setClass('noIntBorder fullWidth');
+    
+    $form->addHiddenValue('q', '/modules/'.$gibbon->session->get('module').'/resources_manage.php');
+    
+    $row = $form->addRow();
+        $row->addLabel('search', __('Search For'))->description(__('Resource name.'));
+        $row->addTextField('search')->setValue($search);
+
+    $row = $form->addRow();
+        $row->addSearchSubmit($gibbon->session, __('Clear Search'));
+
+    echo $form->getOutput();
+
+    $resourceGateway = $container->get(ResourceGateway::class);
+
+    // QUERY
+    $criteria = $resourceGateway->newQueryCriteria(true)
+        ->searchBy($resourceGateway->getSearchableColumns(), $search)
+        ->sortBy('timestamp', 'DESC')
+        ->fromPOST();
+
+    $gibbonPersonID = $highestAction == 'Manage Resources_all' ? null : $gibbon->session->get('gibbonPersonID');
+    $resources = $resourceGateway->queryResources($criteria, $gibbonPersonID);
+    
+    // TABLE
+    $table = DataTable::createPaginated('resources', $criteria);
+    $table->setTitle('View');
+        $table->addHeaderAction('add', __('Add'))
+        ->setURL('/modules/' .$gibbon->session->get('module') . '/resources_manage_add.php')
+        ->displayLabel();
+        
+    $table->addColumn('name', __('Name'))
+        ->description(__('Contributor'))
+        ->format(function ($resource) use ($guid) {
+            return getResourceLink($guid, $resource['gibbonResourceID'], $resource['type'], $resource['name'], $resource['content']) 
+                . Format::small(Format::name($resource['title'], $resource['preferredName'], $resource['surname'], 'Staff'));
+        });
+    
+    $table->addColumn('type', __('Type'));
+
+    $table->addColumn('category', __('Category'))
+        ->description(__('Purpose'))
+        ->format(function ($resource) {
+            return $resource['category'] . '<br/>'. Format::small(__($resource['purpose']));
+        });
+
+    $table->addColumn('tags', __('Tags'))
+        ->format(function ($resource) {
+            $output = '';
+            $tags = explode(',', $resource['tags']);
+            natcasesort($tags);
+            foreach ($tags as $tag) {
+                $output .= trim($tag).', ';
+            }
+            return substr($output, 0, -2);
+        });
+    
+    $table->addColumn('yearGroupList', __('Year Groups'))
+        ->format(function ($resource) {
+            return $resource['yearGroups'] >= $resource['totalYearGroups']
+            ? __('All Years')
+            : $resource['yearGroupList'];
+        });
+    
+    $actions = $table->addActionColumn()
+        ->addParam('gibbonResourceID')
+        ->format(function ($resource, $actions) {
+            $actions->addAction('edit', __('Edit'))
+                ->setURL('/modules/Planner/resources_manage_edit.php');
+        });
+
+    echo $table->render($resources);
 }
-?>
