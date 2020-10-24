@@ -21,6 +21,8 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\Prefab\RollGroupTable;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\User\UserGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_details.php') == false) {
     //Acess denied
@@ -89,77 +91,59 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_det
 
                 $page->breadcrumbs->add($row['name']);
 
-                echo '<h3>';
-                echo __('Basic Information');
-                echo '</h3>';
+                $userGateway = $container->get(UserGateway::class);
+                $primaryTutor240 = $userGateway->getByID($row['gibbonPersonIDTutor'])['image_240'];
 
-                echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                echo '<tr>';
-                echo "<td style='width: 33%; vertical-align: top'>";
-                echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
-                echo '<i>'.$row['name'].'</i>';
-                echo '</td>';
-                echo "<td style='width: 33%; vertical-align: top'>";
-                echo "<span style='font-size: 115%; font-weight: bold'>".__('Tutors').'</span><br/>';
-                try {
-                    $dataTutor = array('gibbonPersonID1' => $row['gibbonPersonIDTutor'], 'gibbonPersonID2' => $row['gibbonPersonIDTutor2'], 'gibbonPersonID3' => $row['gibbonPersonIDTutor3']);
-                    $sqlTutor = 'SELECT gibbonPersonID, surname, preferredName, image_240 FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID1 OR gibbonPersonID=:gibbonPersonID2 OR gibbonPersonID=:gibbonPersonID3';
-                    $resultTutor = $connection2->prepare($sqlTutor);
-                    $resultTutor->execute($dataTutor);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                $primaryTutor240 = '';
-                while ($rowTutor = $resultTutor->fetch()) {
-                    if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php')) {
-                        echo "<i><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowTutor['gibbonPersonID']."'>".Format::name('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', false, true).'</a></i>';
-                    } else {
-                        echo '<i>'.Format::name('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', false, true);
-                    }
-                    if ($rowTutor['gibbonPersonID'] == $row['gibbonPersonIDTutor']) {
-                        $primaryTutor240 = $rowTutor['image_240'];
-                        if ($resultTutor->rowCount() > 1) {
-                            echo ' ('.__('Main Tutor').')';
-                        }
-                    }
-                    echo '</i><br/>';
-                }
-                echo '</td>';
-                echo "<td style='width: 33%; vertical-align: top'>";
-                echo "<span style='font-size: 115%; font-weight: bold'>".__('Educational Assistants').'</span><br/>';
-                try {
-                    $dataTutor = array('gibbonPersonID1' => $row['gibbonPersonIDEA'], 'gibbonPersonID2' => $row['gibbonPersonIDEA2'], 'gibbonPersonID3' => $row['gibbonPersonIDEA3']);
-                    $sqlTutor = 'SELECT gibbonPersonID, surname, preferredName, image_240 FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID1 OR gibbonPersonID=:gibbonPersonID2 OR gibbonPersonID=:gibbonPersonID3';
-                    $resultTutor = $connection2->prepare($sqlTutor);
-                    $resultTutor->execute($dataTutor);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                while ($rowTutor = $resultTutor->fetch()) {
-                    if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php')) {
-                        echo "<i><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowTutor['gibbonPersonID']."'>".Format::name('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', false, true).'</a></i>';
-                    } else {
-                        echo '<i>'.Format::name('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', false, true);
-                    }
-                    echo '</i><br/>';
-                }
-                echo '</td>';
-                echo '</tr>';
-                echo "<td style='width: 33%; vertical-align: top' colspan=3>";
-                echo "<span style='font-size: 115%; font-weight: bold'>".__('Location').'</span><br/>';
-                echo '<i>'.$row['space'].'</i>';
-                echo '</td>';
-                echo '</tr>';
-                if ($row['website'] != '') {
-                    echo '<tr>';
-                    echo "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Website').'</span><br/>';
-                    echo "<a target='_blank' href='".$row['website']."'>".$row['website'].'</a>';
-                    echo '</td>';
-                    echo '</tr>';
-                }
-                echo '</table>';
+                //Set up for foramtting
+                $linkStaff = isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php');
 
+                $formatStaff = function (&$staff) use ($userGateway, $linkStaff) {
+                    $staff = $userGateway->getByID($staff);
+
+                    if ($linkStaff) {
+                        $staff = Format::nameLinked($staff['gibbonPersonID'], $staff['title'], $staff['preferredName'], $staff['surname'], 'Staff', false, true);
+                    } else {
+                        $staff = Format::name($staff['title'], $staff['preferredName'], $staff['surname'], 'Staff', false, true);
+                    }
+                };
+
+                //Format Tutors
+                $tutors = array_filter(array($row['gibbonPersonIDTutor'], $row['gibbonPersonIDTutor2'], $row['gibbonPersonIDTutor3']));
+                array_walk($tutors, $formatStaff);
+
+                if (count($tutors) > 1) {
+                    $tutors[0] .= __(' (Main Tutor)');
+                }
+
+                $row['tutors'] = implode('<br/>', $tutors);
+
+                //Format Educational Assistants
+                $eduAssits = array_filter(array($row['gibbonPersonIDEA'], $row['gibbonPersonIDEA2'], $row['gibbonPersonIDEA3']));
+                array_walk($eduAssits, $formatStaff);
+                $row['educationalAssistants'] = implode('<br/>', $eduAssits);
+
+                //Create Details Table
+                $table = DataTable::createDetails('basicInfo');
+                $table->setTitle(__('Basic Information'));
+
+                $table->addColumn('name', __('Name'));
+
+                $table->addColumn('tutors', __('Tutors'));
+
+                $table->addColumn('educationalAssistants', __('Educational Assistants'));
+
+                $table->addColumn('space', __('Location'))
+                    ->width('100%');
+
+                if (!empty($row['website'])) {
+                    $table->addColumn('website', __('Website'))
+                        ->format(Format::using('link', ['website', 'website']))
+                        ->width('100%');
+                }
+
+                echo $table->render([$row]);
+
+                //Create Form
                 $sortBy = $_GET['sortBy'] ?? 'rollOrder, surname, preferredName';
 
                 $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
