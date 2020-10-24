@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
 
         try {
             if ($highestAction == 'View Timetable by Person_myChildren') {
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID1' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonID2' => $gibbonPersonID);
+                $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), 'gibbonPersonID1' => $gibbon->session->get('gibbonPersonID'), 'gibbonPersonID2' => $gibbonPersonID);
                 $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, title, image_240, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, 'Student' AS type, gibbonRoleIDPrimary
                     FROM gibbonPerson
                     JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
@@ -61,11 +61,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
                     GROUP BY gibbonPerson.gibbonPersonID";
             } else {
                 if ($allUsers == 'on' && $canViewAllTimetables && $gibbon->session->get('gibbonRoleIDCurrentCategory') == 'Staff') {
-                    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
+                    $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID);
                     $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, title, image_240, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, 'Student' AS type, gibbonRoleIDPrimary FROM gibbonPerson LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) 
                     WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName";
                 } else {
-                    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID1' => $gibbonPersonID, 'gibbonPersonID2' => $gibbonPersonID);
+                    $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), 'gibbonPersonID1' => $gibbonPersonID, 'gibbonPersonID2' => $gibbonPersonID);
                     $sql = "(SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, title, image_240, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, 'Student' AS type, gibbonRoleIDPrimary FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND gibbonPerson.gibbonPersonID=:gibbonPersonID1) UNION (SELECT gibbonPerson.gibbonPersonID, NULL AS gibbonStudentEnrolmentID, surname, preferredName, title, image_240, NULL AS yearGroup, NULL AS rollGroup, 'Staff' AS type, gibbonRoleIDPrimary FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary) WHERE gibbonStaff.type='Teaching' AND gibbonPerson.status='Full' AND gibbonPerson.gibbonPersonID=:gibbonPersonID2) ORDER BY surname, preferredName";
                 }
             }
@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
             echo "<div class='error'>";
             echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
-        } else if ($highestAction == 'View Timetable by Person_my' && $gibbonPersonID != $_SESSION[$guid]['gibbonPersonID']) {
+        } else if ($highestAction == 'View Timetable by Person_my' && $gibbonPersonID != $gibbon->session->get('gibbonPersonID')) {
             echo "<div class='error'>";
             echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
@@ -96,13 +96,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
             if ($allUsers == 'on' or $search != '' or $canEdit) {
                 echo "<div class='linkTop'>";
                 if ($search != '') {
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable/tt.php&search='.$search."&allUsers=$allUsers'>".__('Back to Search Results').'</a>';
+                    echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/Timetable/tt.php&search='.$search."&allUsers=$allUsers'>".__('Back to Search Results').'</a>';
                 }
                 if ($canEdit && ($roleCategory == 'Student' or $roleCategory == 'Staff')) {
                     if ($search != '') {
                         echo ' | ';
                     }
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=".$_SESSION[$guid]['gibbonSchoolYearID']."&type=$roleCategory&allUsers=$allUsers'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                    echo "<a href='".$gibbon->session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=".$gibbon->session->get('gibbonSchoolYearID')."&type=$roleCategory&allUsers=$allUsers'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/config.png'/></a> ";
                 }
                 echo '</div>';
             }
@@ -124,22 +124,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
             if (isset($_POST['fromTT'])) {
                 if ($_POST['fromTT'] == 'Y') {
                     if (@$_POST['schoolCalendar'] == 'on' or @$_POST['schoolCalendar'] == 'Y') {
-                        $_SESSION[$guid]['viewCalendarSchool'] = 'Y';
+                        $gibbon->session->set('viewCalendarSchool','Y');
                     } else {
-                        $_SESSION[$guid]['viewCalendarSchool'] = 'N';
+                        $gibbon->session->set('viewCalendarSchool','N');
                     }
 
                     if (@$_POST['personalCalendar'] == 'on' or @$_POST['personalCalendar'] == 'Y') {
-                        $_SESSION[$guid]['viewCalendarPersonal'] = 'Y';
+                        $gibbon->session->set('viewCalendarPersonal','Y');
                     } else {
-                        $_SESSION[$guid]['viewCalendarPersonal'] = 'N';
+                        $gibbon->session->set('viewCalendarPersonal','N');
                     }
 
                     $spaceBookingCalendar = $_POST['spaceBookingCalendar'] ?? '';
                     if ($spaceBookingCalendar == 'on' or $spaceBookingCalendar == 'Y') {
-                        $_SESSION[$guid]['viewCalendarSpaceBooking'] = 'Y';
+                        $gibbon->session->set('viewCalendarSpaceBooking','Y');
                     } else {
-                        $_SESSION[$guid]['viewCalendarSpaceBooking'] = 'N';
+                        $gibbon->session->set('viewCalendarSpaceBooking','N');
                     }
                 }
             }
@@ -154,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
             }
 
             //Set sidebar
-            $_SESSION[$guid]['sidebarExtra'] = getUserPhoto($guid, $row['image_240'], 240);
+            $gibbon->session->set('sidebarExtra', getUserPhoto($guid, $row['image_240'], 240));
         }
     }
 }

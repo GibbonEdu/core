@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
     //Proceed!
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
-    }
+    } 
 
     try {
         $data = array();
