@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Domain\DataSet;
+use Gibbon\Tables\DataTable;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -27,44 +29,30 @@ $page->breadcrumbs->add(__('Manage Resources'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage.php') == false) {
     //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);
         }
-
-        //Set pagination variable
-        $page = 1;
-        if (isset($_GET['page'])) {
-            $page = $_GET['page'];
-        }
-        if ((!is_numeric($page)) or $page < 1) {
-            $page = 1;
-        }
-
+        
         $search = null;
         if (isset($_GET['search'])) {
             $search = $_GET['search'];
         }
-
-        echo '<h2>';
-        echo __('Search');
-        echo '</h2>';
-
+        
+        
         $form = Form::create('resourcesManage', $gibbon->session->get('absoluteURL').'/index.php', 'get');
         $form->setClass('noIntBorder fullWidth');
-
+        
         $form->addHiddenValue('q', '/modules/'.$gibbon->session->get('module').'/resources_manage.php');
-
+        
+        $form->setTitle(__('Search'));
+        
         $row = $form->addRow();
             $row->addLabel('search', __('Search For'))->description(__('Resource name.'));
             $row->addTextField('search')->setValue($search);
@@ -74,154 +62,85 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage.p
 
         echo $form->getOutput();
 
-        echo '<h2>';
-        echo __('View');
-        echo '</h2>';
-
-        try {
-            if ($highestAction == 'Manage Resources_all') {
-                $data = array();
-                $sql = 'SELECT gibbonResource.*, surname, preferredName, title FROM gibbonResource JOIN gibbonPerson ON (gibbonResource.gibbonPersonID=gibbonPerson.gibbonPersonID) ORDER BY timestamp DESC';
-                if ($search != '') {
-                    $data = array('name' => "%$search%");
-                    $sql = 'SELECT gibbonResource.*, surname, preferredName, title FROM gibbonResource JOIN gibbonPerson ON (gibbonResource.gibbonPersonID=gibbonPerson.gibbonPersonID) AND (name LIKE :name) ORDER BY timestamp DESC';
-                }
-            } elseif ($highestAction == 'Manage Resources_my') {
-                $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
-                $sql = 'SELECT gibbonResource.*, surname, preferredName, title FROM gibbonResource JOIN gibbonPerson ON (gibbonResource.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonResource.gibbonPersonID=:gibbonPersonID ORDER BY timestamp DESC';
-                if ($search != '') {
-                    $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'), 'name' => "%$search%");
-                    $sql = 'SELECT gibbonResource.*, surname, preferredName, title FROM gibbonResource JOIN gibbonPerson ON (gibbonResource.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonResource.gibbonPersonID=:gibbonPersonID AND (name LIKE :name) ORDER BY timestamp DESC';
-                }
+        if ($highestAction == 'Manage Resources_all') {
+            $data = array();
+            $sql = 'SELECT gibbonResource.*, surname, preferredName, title FROM gibbonResource JOIN gibbonPerson ON (gibbonResource.gibbonPersonID=gibbonPerson.gibbonPersonID) ORDER BY timestamp DESC';
+            if ($search != '') {
+                $data = array('name' => "%$search%");
+                $sql = 'SELECT gibbonResource.*, surname, preferredName, title FROM gibbonResource JOIN gibbonPerson ON (gibbonResource.gibbonPersonID=gibbonPerson.gibbonPersonID) AND (name LIKE :name) ORDER BY timestamp DESC';
             }
-            $sqlPage = $sql.' LIMIT '.$gibbon->session->get('pagination').' OFFSET '.(($page - 1) * $gibbon->session->get('pagination'));
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
+        } elseif ($highestAction == 'Manage Resources_my') {
+            $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
+            $sql = 'SELECT gibbonResource.*, surname, preferredName, title FROM gibbonResource JOIN gibbonPerson ON (gibbonResource.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonResource.gibbonPersonID=:gibbonPersonID ORDER BY timestamp DESC';
+            if ($search != '') {
+                $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'), 'name' => "%$search%");
+                $sql = 'SELECT gibbonResource.*, surname, preferredName, title FROM gibbonResource JOIN gibbonPerson ON (gibbonResource.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonResource.gibbonPersonID=:gibbonPersonID AND (name LIKE :name) ORDER BY timestamp DESC';
+            }
         }
-
-        echo "<div class='linkTop'>";
-        echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/resources_manage_add.php&search='.$search."'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/page_new.png'/></a>";
-        echo '</div>';
-
-        if ($result->rowCount() < 1) {
-            echo "<div class='error'>";
-            echo __('There are no records to display.');
-            echo '</div>';
-        } else {
-            if ($result->rowCount() > $gibbon->session->get('pagination')) {
-                printPagination($guid, $result->rowCount(), $page, $gibbon->session->get('pagination'), 'top');
-            }
-
-            echo "<table cellspacing='0' style='width: 100%'>";
-            echo "<tr class='head'>";
-            echo '<th>';
-            echo __('Name').'<br/>';
-            echo "<span style='font-size: 85%; font-style: italic'>".__('Contributor').'</span>';
-            echo '</th>';
-            echo '<th>';
-            echo __('Type');
-            echo '</th>';
-            echo '<th>';
-            echo __('Category').'<br/>';
-            echo "<span style='font-size: 85%; font-style: italic'>".__('Purpose').'</span>';
-            echo '</th>';
-            echo '<th>';
-            echo __('Tags');
-            echo '</th>';
-            echo '<th>';
-            echo __('Year Groups');
-            echo '</th>';
-            echo '<th>';
-            echo __('Actions');
-            echo '</th>';
-            echo '</tr>';
-
-            $count = 0;
-            $rowNum = 'odd';
-            try {
-                $resultPage = $connection2->prepare($sqlPage);
-                $resultPage->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            while ($row = $resultPage->fetch()) {
-                if ($count % 2 == 0) {
-                    $rowNum = 'even';
-                } else {
-                    $rowNum = 'odd';
-                }
-                ++$count;
-
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
-                echo '<td>';
-                echo getResourceLink($guid, $row['gibbonResourceID'], $row['type'], $row['name'], $row['content']);
-                echo "<span style='font-size: 85%; font-style: italic'>".Format::name($row['title'], $row['preferredName'], $row['surname'], 'Staff').'</span>';
-                echo '</td>';
-                echo '<td>';
-                echo $row['type'];
-                echo '</td>';
-                echo '<td>';
-                echo '<b>'.$row['category'].'</b><br/>';
-                echo "<span style='font-size: 85%; font-style: italic'>".$row['purpose'].'</span>';
-                echo '</td>';
-                echo '</td>';
-                echo '<td>';
+        $result = $pdo->select($sql, $data)->toDataSet();
+        
+        $table = DataTable::create('resources');
+        $table->setTitle('View');
+         $table->addHeaderAction('add', __('Add'))
+            ->setURL('/modules/' .$gibbon->session->get('module') . '/resources_manage_add.php')
+            ->displayLabel();
+            
+        $table->addColumn('name', __('Name'))->description(__('Contributor'))->format(function ($row) use ($guid) {
+            return getResourceLink($guid, $row['gibbonResourceID'], $row['type'], $row['name'], $row['content']) . '<br/>'. Format::small(__(Format::name($row['title'], $row['preferredName'], $row['surname'], 'Staff')));
+        });
+        $table->addColumn('type', __('Type'));
+        $table->addColumn('category', __('Category'))->description(__('Purpose'))->format(function ($row) {
+            return $row['category'] . '<br/>'. Format::small(__($row['purpose']));
+        });
+        $table->addColumn('tags', __('Tags'))->format(function ($row) {
                 $output = '';
                 $tags = explode(',', $row['tags']);
                 natcasesort($tags);
                 foreach ($tags as $tag) {
                     $output .= trim($tag).', ';
                 }
-                echo substr($output, 0, -2);
-                echo '</td>';
-                echo '<td>';
-                try {
-                    $dataYears = array();
-                    $sqlYears = 'SELECT gibbonYearGroupID, nameShort, sequenceNumber FROM gibbonYearGroup ORDER BY sequenceNumber';
-                    $resultYears = $connection2->prepare($sqlYears);
-                    $resultYears->execute($dataYears);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-
+                return substr($output, 0, -2);
+        });
+        
+        $table->addColumn('years', __('Year Groups'))->format(function ($row) use ($connection2) {
+                $dataYears = array();
+                $sqlYears = 'SELECT gibbonYearGroupID, nameShort, sequenceNumber FROM gibbonYearGroup ORDER BY sequenceNumber';
+                $resultYears = $connection2->prepare($sqlYears);
+                $resultYears->execute($dataYears);
+                
                 $years = explode(',', $row['gibbonYearGroupIDList']);
                 if (count($years) > 0 and $years[0] != '') {
                     if (count($years) == $resultYears->rowCount()) {
-                        echo '<i>'.__('All Years').'</i>';
+                        Return '<i>'.__('All Years').'</i>';
                     } else {
                         $count3 = 0;
                         $count4 = 0;
+                        $output = '';
                         while ($rowYears = $resultYears->fetch()) {
                             for ($i = 0; $i < count($years); ++$i) {
                                 if ($rowYears['gibbonYearGroupID'] == $years[$i]) {
                                     if ($count3 > 0 and $count4 > 0) {
-                                        echo ', ';
+                                        $output .= ', ';
                                     }
-                                    echo __($rowYears['nameShort']);
+                                    $output .= __($rowYears['nameShort']);
                                     ++$count4;
                                 }
                             }
                             ++$count3;
                         }
+                       return $output;
                     }
                 } else {
-                    echo '<i>'.__('None').'</i>';
+                    Return '<i>'.__('None').'</i>';
                 }
-                echo '</td>';
-                echo '<td>';
-                echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/resources_manage_edit.php&gibbonResourceID='.$row['gibbonResourceID']."&search=$search'><img title='".__('Edit')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/config.png'/></a> ";
-                echo '</td>';
-                echo '</tr>';
-            }
-            echo '</table>';
+        });
+        
+        $actions = $table->addActionColumn()->addParam('gibbonResourceID');
+        $actions->addAction('edit', __('Edit'))
+                ->setURL('/modules/Planner/resources_manage_edit.php');
 
-            if ($result->rowCount() > $gibbon->session->get('pagination')) {
-                printPagination($guid, $result->rowCount(), $page, $gibbon->session->get('pagination'), 'bottom');
-            }
-        }
+        echo $table->render($result);
+        
     }
 }
 ?>
