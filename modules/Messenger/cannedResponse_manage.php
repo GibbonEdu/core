@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Messenger\CannedResponseGateway;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 
@@ -31,36 +32,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
     //Proceed!
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
-    } 
+    }   
 
-    try {
-        $data = array();
-        $sql = 'SELECT * FROM gibbonMessengerCannedResponse ORDER BY subject';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
+    // QUERY
+    $cannedResponseGateway = $container->get(CannedResponseGateway::class);
+    $criteria = $cannedResponseGateway->newQueryCriteria(true)
+        ->sortBy('subject')
+        ->fromPOST();
 
-    $moduleName = $gibbon->session->get('module');
+    $cannedResponses = $cannedResponseGateway->queryCannedResponses($criteria);
 
-    $table = DataTable::create('cannedResponses');
+    // TABLE
+    $table = DataTable::createPaginated('cannedResponses', $criteria);
 
     $table->addHeaderAction('add', __('Add'))
         ->displayLabel()
-        ->setURL('/modules/' . $moduleName . '/cannedResponse_manage_add.php');
+        ->setURL('/modules/Messenger/cannedResponse_manage_add.php');
 
     $table->addColumn('subject', __('Subject'));
 
     $table->addActionColumn()
         ->addParam('gibbonMessengerCannedResponseID')
-        ->format(function ($cannedResponse, $actions) use ($moduleName) {
+        ->format(function ($cannedResponse, $actions) {
             $actions->addAction('edit', __('Edit'))
-                ->setURL('/modules/' . $moduleName . '/cannedResponse_manage_edit.php');
+                ->setURL('/modules/Messenger/cannedResponse_manage_edit.php');
 
             $actions->addAction('delete', __('Delete'))
-                ->setURL('/modules/' . $moduleName . '/cannedResponse_manage_delete.php');
+                ->setURL('/modules/Messenger/cannedResponse_manage_delete.php');
         });
 
-    echo $table->render($result->toDataSet());
+    echo $table->render($cannedResponses);
 }
