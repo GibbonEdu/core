@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\User\FamilyGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
@@ -43,42 +44,25 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
     if (isset($_GET['search'])) {
         $search = $_GET['search'];
     }
-    if ($gibbonFamilyID == '') {
-        echo '<h1>';
-        echo __('Edit Family');
-        echo '</h1>';
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+    if (empty($gibbonFamilyID)) {
+        $page->addError(__('You have not specified one or more required parameters.'));
+        return;
     } else {
-        try {
-            $data = array('gibbonFamilyID' => $gibbonFamilyID);
-            $sql = 'SELECT * FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
+        $familyGateway = $container->get(FamilyGateway::class);
+        $family = $familyGateway->getByID($gibbonFamilyID);
 
-        if ($result->rowCount() != 1) {
-            echo '<h1>';
-            echo 'Edit Family';
-            echo '</h1>';
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+        if (empty($family)) {
+            $page->addError(__('The specified record cannot be found.'));
+            return;
         } else {
             //Let's go!
-            $values = $result->fetch();
-
-            if ($search != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/family_manage.php&search=$search'>".__('Back to Search Results').'</a>';
-                echo '</div>';
-            }
-
             $form = Form::create('action1', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_editProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search");
             $form->setFactory(DatabaseFormFactory::create($pdo));
+
+            $form->addHeaderAction('back', __('Back to Search Results'))
+                ->displayLabel()
+                ->addParam('search', $search)
+                ->setURL('/modules/User Admin/family_manage.php');
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
@@ -120,20 +104,16 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                 $row->addFooter();
                 $row->addSubmit();
 
-            $form->loadAllValuesFrom($values);
+            $form->loadAllValuesFrom($family);
 
             echo $form->getOutput();
 
 
             //Get children and prep array
-            try {
-                $dataChildren = array('gibbonFamilyID' => $gibbonFamilyID);
-                $sqlChildren = 'SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY surname, preferredName';
-                $resultChildren = $connection2->prepare($sqlChildren);
-                $resultChildren->execute($dataChildren);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
+            $dataChildren = array('gibbonFamilyID' => $gibbonFamilyID);
+            $sqlChildren = 'SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY surname, preferredName';
+            $resultChildren = $pdo->select($sqlChildren, $dataChildren);
+
             $children = array();
             $count = 0;
             while ($rowChildren = $resultChildren->fetch()) {
@@ -144,13 +124,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                 $children[$count]['status'] = $rowChildren['status'];
                 $children[$count]['comment'] = $rowChildren['comment'];
 
-                try {
-                    $dataDetail = array('gibbonPersonID' => $rowChildren['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                    $sqlDetail = 'SELECT * FROM gibbonRollGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID';
-                    $resultDetail = $connection2->prepare($sqlDetail);
-                    $resultDetail->execute($dataDetail);
-                } catch (PDOException $e) {
-                }
+                $dataDetail = array('gibbonPersonID' => $rowChildren['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                $sqlDetail = 'SELECT * FROM gibbonRollGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID';
+                $resultDetail = $pdo->select($sqlDetail, $dataDetail);
 
                 if ($resultDetail->rowCount() == 1) {
                     $rowDetail = $resultDetail->fetch();
@@ -160,14 +136,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                 ++$count;
             }
             //Get adults and prep array
-            try {
-                $dataAdults = array('gibbonFamilyID' => $gibbonFamilyID);
-                $sqlAdults = 'SELECT * FROM gibbonFamilyAdult, gibbonPerson WHERE (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) AND gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName';
-                $resultAdults = $connection2->prepare($sqlAdults);
-                $resultAdults->execute($dataAdults);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
+            $dataAdults = array('gibbonFamilyID' => $gibbonFamilyID);
+            $sqlAdults = 'SELECT * FROM gibbonFamilyAdult, gibbonPerson WHERE (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) AND gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName';
+            $resultAdults = $pdo->select($sqlAdults, $dataAdults);
+
             $adults = array();
             $count = 0;
             while ($rowAdults = $resultAdults->fetch()) {
@@ -188,14 +160,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
             }
 
             //Get relationships and prep array
-            try {
-                $dataRelationships = array('gibbonFamilyID' => $gibbonFamilyID);
-                $sqlRelationships = 'SELECT * FROM gibbonFamilyRelationship WHERE gibbonFamilyID=:gibbonFamilyID';
-                $resultRelationships = $connection2->prepare($sqlRelationships);
-                $resultRelationships->execute($dataRelationships);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
+            $dataRelationships = array('gibbonFamilyID' => $gibbonFamilyID);
+            $sqlRelationships = 'SELECT * FROM gibbonFamilyRelationship WHERE gibbonFamilyID=:gibbonFamilyID';
+            $resultRelationships = $pdo->select($sqlRelationships, $dataRelationships);
+
             $relationships = array();
             $count = 0;
             while ($rowRelationships = $resultRelationships->fetch()) {
@@ -203,18 +171,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                 ++$count;
             }
 
-            echo '<h3>';
-            echo __('Relationships');
-            echo '</h3>';
-            echo '<p>';
-            echo __('Use the table below to show how each child is related to each adult in the family.');
-            echo '</p>';
+            // RELATIONSHIPS
+            $form = Form::createTable('action2', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_relationshipsProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search");
+            $form->setTitle(__('Relationships'));
+            $form->setDescription(__('Use the table below to show how each child is related to each adult in the family.'));
+
             if ($resultChildren->rowCount() < 1 or $resultAdults->rowCount() < 1) {
-                echo "<div class='error'>".__('There are not enough people in this family to form relationships.').'</div>';
+                $form->setDescription(Format::alert(__('There are not enough people in this family to form relationships.')));
             } else {
-
-                $form = Form::createTable('action2', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_relationshipsProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search");
-
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->setClass('colorOddEven fullWidth');
 
@@ -242,11 +206,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                 $row = $form->addRow();
                     $row->addSubmit();
 
-                $form->loadAllValuesFrom($values);
-
-                echo $form->getOutput();
+                $form->loadAllValuesFrom($family);
             }
 
+            echo $form->getOutput();
+
+            // CHILDREN
             $table = DataTable::create('children');
             $table->setTitle('View Children');
 
@@ -282,6 +247,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             echo $table->render($children);
 
+            // ADD CHILD
             $form = Form::create('action3', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_addChildProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search");
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
@@ -303,6 +269,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             echo $form->getOutput();
 
+            // ADULTS
             $table = DataTable::create('adults');
             $table->setTitle(__('View Adults'));
             $table->setDescription(Format::alert(__('Logic exists to try and ensure that there is always one and only one parent with Contact Priority set to 1. This may result in values being set which are not exactly what you chose.'), 'warning'));
@@ -367,16 +334,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
             $form->addRow()->addHeading(__('Add Adult'));
 
             $adults = array();
-            try {
-                $dataSelect = array();
-                $sqlSelect = "SELECT status, gibbonPersonID, preferredName, surname, username FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName";
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) { }
+
+            $sqlSelect = "SELECT status, gibbonPersonID, preferredName, surname, username FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName";
+            $resultSelect = $pdo->select($sqlSelect);
+
             while ($rowSelect = $resultSelect->fetch()) {
                 $expected = (($rowSelect['status'] == 'Expected') ? ' ('.__('Expected').')' : '');
                 $adults[$rowSelect['gibbonPersonID']] = Format::name('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Parent', true, true).' ('.$rowSelect['username'].')'.$expected;
             }
+
             $row = $form->addRow();
                 $row->addLabel('gibbonPersonID2', __('Adult\'s Name'));
                 $row->addSelect('gibbonPersonID2')->fromArray($adults)->placeHolder()->required();
