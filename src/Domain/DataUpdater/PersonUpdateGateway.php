@@ -46,10 +46,11 @@ class PersonUpdateGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonPersonUpdateID', 'gibbonPersonUpdate.status', 'gibbonPersonUpdate.timestamp', 'target.preferredName', 'target.surname', 'updater.title as updaterTitle', 'updater.preferredName as updaterPreferredName', 'updater.surname as updaterSurname'
+                'gibbonPersonUpdateID', 'gibbonPersonUpdate.status', 'gibbonPersonUpdate.timestamp', 'target.preferredName', 'target.surname', 'updater.title as updaterTitle', 'updater.preferredName as updaterPreferredName', 'updater.surname as updaterSurname', 'gibbonRole.category as roleCategory'
             ])
             ->leftJoin('gibbonPerson AS target', 'target.gibbonPersonID=gibbonPersonUpdate.gibbonPersonID')
             ->leftJoin('gibbonPerson AS updater', 'updater.gibbonPersonID=gibbonPersonUpdate.gibbonPersonIDUpdater')
+            ->leftJoin('gibbonRole', 'gibbonRole.gibbonRoleID=target.gibbonRoleIDPrimary')
             ->where('gibbonPersonUpdate.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 

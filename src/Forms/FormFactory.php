@@ -127,6 +127,11 @@ class FormFactory implements FormFactoryInterface
         return new Input\Range($name, $min, $max, $step);
     }
 
+    public function createColor($name)
+    {
+        return (new Input\Color($name));
+    }
+
     public function createFinder($name)
     {
         return new Input\Finder($name);
@@ -344,6 +349,9 @@ class FormFactory implements FormFactoryInterface
             'Parent'         => __('Parent'),
             'Spouse'         => __('Spouse'),
             'Offspring'      => __('Offspring'),
+            'Guardian'       => __('Guardian'),
+            'Grandmother'    => __('Grandmother'),
+            'Grandfather'    => __('Grandfather'),
             'Friend'         => __('Friend'),
             'Other Relation' => __('Other Relation'),
             'Doctor'         => __('Doctor'),

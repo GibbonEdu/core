@@ -43,12 +43,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
         if (isset($_GET['gibbonSchoolYearID'])) {
             $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
         }
-        if ($gibbonSchoolYearID == '' or $gibbonSchoolYearID == $_SESSION[$guid]['gibbonSchoolYearID']) {
-            $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
-            $gibbonSchoolYearName = $_SESSION[$guid]['gibbonSchoolYearName'];
+        if ($gibbonSchoolYearID == '' or $gibbonSchoolYearID == $gibbon->session->get('gibbonSchoolYearID')) {
+            $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+            $gibbonSchoolYearName = $gibbon->session->get('gibbonSchoolYearName');
         }
 
-        if ($gibbonSchoolYearID != $_SESSION[$guid]['gibbonSchoolYearID']) {
+        if ($gibbonSchoolYearID != $gibbon->session->get('gibbonSchoolYearID')) {
             try {
                 $data = array('gibbonSchoolYearID' => $_GET['gibbonSchoolYearID']);
                 $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
                         $sql = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY nameShort';
                     } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                        $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
+                        $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
                         $sql = "SELECT gibbonCourseID, gibbonCourse.name, gibbonCourse.nameShort FROM gibbonCourse JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY gibbonCourse.nameShort";
                     }
                     $result = $connection2->prepare($sql);
@@ -146,13 +146,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
             echo "<div class='linkTop'>";
                 //Print year picker
                 if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."&gibbonCourseID=$gibbonCourseIDPrevious'>".__('Previous Year').'</a> ';
+                    echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/units.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."&gibbonCourseID=$gibbonCourseIDPrevious'>".__('Previous Year').'</a> ';
                 } else {
                     echo __('Previous Year').' ';
                 }
 				echo ' | ';
 				if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-					echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."&gibbonCourseID=$gibbonCourseIDNext'>".__('Next Year').'</a> ';
+					echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/units.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."&gibbonCourseID=$gibbonCourseIDNext'>".__('Next Year').'</a> ';
 				} else {
 					echo __('Next Year').' ';
 				}
@@ -170,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID);
                         $sql = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID';
                     } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID, 'gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
                         $sql = "SELECT gibbonCourseID, gibbonCourse.name, gibbonCourse.nameShort FROM gibbonCourse JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID ORDER BY gibbonCourse.nameShort";
                     }
                     $result = $connection2->prepare($sql);
@@ -201,7 +201,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                     }
 
                     echo "<div class='linkTop'>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+                    echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/units_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/page_new.png'/></a>";
                     echo '</div>';
 
                     if ($result->rowCount() < 1) {
@@ -209,7 +209,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                         echo __('There are no records to display.');
                         echo '</div>';
                     } else {
-                        echo "<form onsubmit='return confirm(\"".__('Are you sure you wish to process this action? It cannot be undone.')."\")' method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/unitsProcessBulk.php'>";
+                        echo "<form onsubmit='return confirm(\"".__('Are you sure you wish to process this action? It cannot be undone.')."\")' method='post' action='".$gibbon->session->get('absoluteURL').'/modules/'.$gibbon->session->get('module')."/unitsProcessBulk.php'>";
                         echo "<fieldset style='border: none'>";
                         echo "<div class='linkTop' style='height: 27px'>"; ?>
         						<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __('Go') ?>'>
@@ -237,7 +237,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                                                 $sqlSelect="SELECT gibbonCourse.gibbonCourseID, gibbonCourse.nameShort AS course, gibbonSchoolYear.name AS year FROM gibbonCourse JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE (gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID".$sqlWhere.") ORDER BY gibbonSchoolYear.sequenceNumber, gibbonCourse.nameShort" ;
                                             }
                                             else {
-                                                $dataSelect['gibbonPersonID'] = $_SESSION[$guid]["gibbonPersonID"];
+                                                $dataSelect['gibbonPersonID'] = $gibbon->session->get("gibbonPersonID");
                                                 $sqlSelect="SELECT gibbonCourse.gibbonCourseID, gibbonCourse.nameShort AS course, gibbonSchoolYear.name AS year FROM gibbonCourse JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND (gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID".$sqlWhere.") ORDER BY gibbonSchoolYear.sequenceNumber, gibbonCourse.nameShort" ;
                                             }
                                             $resultSelect=$connection2->prepare($sqlSelect);
@@ -332,10 +332,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                             echo ynExpander($guid, $row['active']);
                             echo '</td>';
                             echo '<td>';
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_edit.php&gibbonUnitID='.$row['gibbonUnitID']."&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_delete.php&gibbonUnitID='.$row['gibbonUnitID']."&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_duplicate.php&gibbonCourseID=$gibbonCourseID&gibbonUnitID=".$row['gibbonUnitID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='".__('Duplicate')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copy.png'/></a> ";
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_dump.php&gibbonCourseID=$gibbonCourseID&gibbonUnitID=".$row['gibbonUnitID']."&gibbonSchoolYearID=$gibbonSchoolYearID&sidebar=false'><img title='".__('Export')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
+                            echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/units_edit.php&gibbonUnitID='.$row['gibbonUnitID']."&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='".__('Edit')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/config.png'/></a> ";
+                            echo "<a class='thickbox' href='".$gibbon->session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$gibbon->session->get('module').'/units_delete.php&gibbonUnitID='.$row['gibbonUnitID']."&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/garbage.png'/></a> ";
+                            echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/units_duplicate.php&gibbonCourseID=$gibbonCourseID&gibbonUnitID=".$row['gibbonUnitID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='".__('Duplicate')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/copy.png'/></a> ";
+                            echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/units_dump.php&gibbonCourseID=$gibbonCourseID&gibbonUnitID=".$row['gibbonUnitID']."&gibbonSchoolYearID=$gibbonSchoolYearID&sidebar=false'><img title='".__('Export')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/download.png'/></a>";
                             echo '</td>';
                             echo '<td>';
                             echo "<input name='gibbonUnitID-$count' value='".$row['gibbonUnitID']."' type='hidden'>";
@@ -359,5 +359,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
         }
     }
     //Print sidebar
-    $_SESSION[$guid]['sidebarExtra'] = sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYearID);
+    $gibbon->session->set('sidebarExtra',sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYearID));
 }

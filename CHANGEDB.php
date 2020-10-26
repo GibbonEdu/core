@@ -701,4 +701,12 @@ ALTER TABLE `gibbonPlannerEntry` CHANGE `homeworkSubmissionRequired` `homeworkSu
 ALTER TABLE `gibbonModule` CHANGE `version` `version` VARCHAR(8) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 UPDATE gibbonStaff SET type='Support' WHERE NOT type='Teaching';end
 ALTER TABLE `gibbonCourseClassPerson` ADD `dateEnrolled` DATE NULL DEFAULT NULL AFTER `role`, ADD `dateUnenrolled` DATE NULL DEFAULT NULL AFTER `dateEnrolled`;end
+ALTER TABLE `gibbonRubricColumn` ADD `backgroundColor` VARCHAR(7) NULL DEFAULT NULL AFTER `title`;end
+ALTER TABLE `gibbonRubricRow` ADD `backgroundColor` VARCHAR(7) NULL DEFAULT NULL AFTER `title`;end
+INSERT INTO `gibboni18n` (`code`, `name`, `version`, `active`, `installed`, `systemDefault`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`, `rtl`) VALUES ('af_ZN', 'Afrikaans - Suid-Afrika', '21.0.00', 'Y', 'Y', 'N', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N');end
+UPDATE gibboni18n SET code='af_ZA' WHERE code='af_ZN';end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Students', 'medicalConditionIntro', 'Medical Condition Introductory Text', 'HTML text that will appear above the medical conditions section.', '');end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES((SELECT gibbonModuleID FROM gibbonModule WHERE name='Students'), 'My Student History', 0, 'Visualise', '', 'report_myStudentHistory.php', 'report_myStudentHistory.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
+INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Students' AND gibbonAction.name='My Student History'));end
+INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('002', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Students' AND gibbonAction.name='My Student History'));end
 ";

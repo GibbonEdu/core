@@ -20,12 +20,14 @@ v21.0.00
 --------
     Headlines
         MySQL 8 compatibility
+        Added Afrikaans as an available language
 
     Significant Changes
         System: accessibility - full review
         System Admin: added a landing page to showcase the available support options
         Roll Groups: added new grouped action to restrict parent viewing to their own children's roll groups
         Students: added an optional application processing fee that can be sent manually by staff
+        Students: added My Student History, offering a visual overview of all students ever taught
         School Admin: added Email Summary Settings to manage daily and weekly email CLI scripts
         System Admin: added an Email Templates section to customize emails sent by Gibbon
         Reports: added a Send Reports tool to bulk-send templated emails with download links
@@ -39,11 +41,13 @@ v21.0.00
         System: added Romanian Leu as currency option
         System: update complete homework to display in green on the Parent Dashboard
         System: added text labels to Print and Export options in ReportTable
+        System: prevented theme names with spaces from breaking background image
         Attendance: added an Offsite - Late option for attendance codes
         Departments: improved course/class naming in Class view
         Data Updater: data updates with no changes will be automatically accepted
         Finance: added a setting to customize Payment Type options
         Finance: added error logging to the email reminder process
+        Finance: improved the layout of invoice emails, reminders and receipts
         Formal Assessment: added a bulk action for External Assessment Data
         Individual Needs: removed Notes & Review from parent view of individual needs information
         Library: added ID column to View Overdue Items report
@@ -59,12 +63,15 @@ v21.0.00
         Planner: refactored the All Homework tables and added row colouring
         Planner: refactored the Parent Weekly Email Summary to match homework colouring
         Planner: replaced "Compulsory" with "Required" in relation to homework
-        Planner: removed lessons with timetable exceptions from Today's Lessons on the dahsboard
+        Planner: removed lessons with timetable exceptions from Today's Lessons on the dashboard
         Planner: adjust the display of homework lists to account for class enrolment dates
+        Planner: enabled homework to be submitted for lessons that already exist during a school closure
         Reports: display the download link after a batch PDF has completed
         Reports: added full course name to the report writing page
         Reports: added a bulk delete action in the Edit Reporting Scopes page
+        Rubrics: added an option to colour rubric column and row headings
         School Admin: added Manage Medical Conditions action
+        School Admin: added optional introductory text setting for the Medical Conditions section
         Students: updated application acceptance message to reflect automatically created medical record
         Students: added uniqueness checks for Student ID field
         Students: send notifications for student notes to the Head of Year, if available
@@ -73,7 +80,7 @@ v21.0.00
         System Admin: added a flag to import types to enable updating non-unique rows
         Timetable Admin: added a dateEnrolled and dateUnenrolled to class enrolments
         Testing: Changed install suite admin username and password to be compliant with the default password requirements
-	Format: added nameLinked formatter
+        User Admin: added Guardian and Grandmother/Grandfather to emergency relationships
 
     Bug Fixes
         System: fixed missing organization name on welcome page

@@ -22,10 +22,8 @@ use Gibbon\Forms\Form;
 $page->breadcrumbs->add(__('Password Reset'));
 
 $step = 1;
-if (isset($_GET['step'])) {
-    if ($_GET['step'] == 2) {
-        $step = 2;
-    }
+if (isset($_GET['step']) and $_GET['step'] == 2) {
+    $step = 2;
 }
 
 if ($step == 1) {

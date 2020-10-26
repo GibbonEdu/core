@@ -48,7 +48,7 @@ $isLoggedIn = $session->has('username') && $session->has('gibbonRoleIDCurrent');
  */
 if ($isLoggedIn && $module = $page->getModule()) {
     $page->breadcrumbs->setBaseURL('index.php?q=/modules/'.$module->name.'/');
-    $page->breadcrumbs->add(__($module->name), $module->entryURL);
+    $page->breadcrumbs->add($module->type == 'Core' ? __($module->name) : __m($module->name), $module->entryURL);
 }
 
 /**
@@ -370,7 +370,7 @@ if (getSettingByScope($connection2, 'User Admin', 'personalBackground') == 'Y' &
 
 $page->stylesheets->add(
     'personal-background',
-    'body { background: url('.$backgroundImage.') '.$backgroundScroll.' #626cd3!important; }',
+    'body { background: url("'.$backgroundImage.'") '.$backgroundScroll.' #626cd3!important; }',
     ['type' => 'inline']
 );
 

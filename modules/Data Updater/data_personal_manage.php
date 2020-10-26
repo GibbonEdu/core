@@ -83,6 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
     $table->addColumn('target', __('Target User'))
         ->sortable(['target.surname', 'target.preferredName'])
         ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student']));
+    $table->addColumn('roleCategory', __('Role Category'));
     $table->addColumn('updater', __('Requesting User'))
         ->sortable(['updater.surname', 'updater.preferredName'])
         ->format(Format::using('name', ['updaterTitle', 'updaterPreferredName', 'updaterSurname', 'Parent']));

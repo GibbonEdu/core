@@ -1158,12 +1158,6 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         //Let's go!
         $row = $result->fetch();
 
-        if ($email == true) {
-            $return .= "<div style='width: 100%; text-align: right'>";
-            $return .= "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL']."'><img height='100px' width='400px' class='School Logo' alt='Logo' src='".$_SESSION[$guid]['absoluteURL'].'/'.$_SESSION[$guid]['organisationLogo']."'/></a>";
-            $return .= '</div>';
-        }
-
         //Receipt Text
         $receiptText = getSettingByScope($connection2, 'Finance', 'receiptText');
         if ($receiptText != '') {
@@ -1183,7 +1177,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
             $style4 = 'background-color: #f6f6f6; ';
         }
         //Receipt Details
-        $return .= "<table cellspacing='0' style='width: 100%'>";
+        $return .= "<table cellspacing='0' style='width: 100%; font-size: 12px;'>";
         $return .= '<tr>';
         $return .= "<td style='padding-top: 15px; padding-left: 10px; vertical-align: top; $style $style3' colspan=3>";
         $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Receipt To').' ('._($row['invoiceTo']).')</span><br/>';
@@ -1372,7 +1366,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
                 $return .= __('Fee Table');
                 $return .= '</h3>';
 
-                $return .= "<table cellspacing='0' style='width: 100%; $style4'>";
+                $return .= "<table cellspacing='0' style='width: 100%; font-size: 12px; $style4'>";
                 $return .= "<tr class='head'>";
                 $return .= "<th style='text-align: left; padding-left: 10px'>";
                 $return .= __('Name');
@@ -1454,7 +1448,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
             $return .= "<h3 style='padding-top: 40px; padding-left: 10px; margin: 0px; $style4'>";
             $return .= __('Payment Details');
             $return .= '</h3>';
-            $return .= "<p style='margin-top: 10px; text-align: right'>";
+            $return .= "<p style='margin-top: 10px; text-align: right; $style4'>";
             $return .= __('Payment Total').': ';
             if (substr($currency, 4) != '') {
                 $return .= substr($currency, 4).' ';
@@ -1471,12 +1465,15 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
                     $return .= __('There are no records to display.');
                     $return .= '</div>';
                 } else {
+                    $return .= "<div style='font-size: 12px; $style4'>";
                     $return .= getPaymentLog($connection2, $guid, 'gibbonFinanceInvoice', $gibbonFinanceInvoiceID, $rowPayment['gibbonPaymentID']);
+                    $return .= '</div>';
                 }
             } else {
                 $return .= "<h3 style='padding-top: 40px; padding-left: 10px; margin: 0px; $style4'>";
                 $return .= __('Amount Paid');
                 $return .= '</h3>';
+                $return .= "<div style='font-size: 12px; $style4'>";
                 if ($paymentFail) {
                     $return .= "<div class='error'>";
                     $return .= __('There are no records to display.');
@@ -1490,6 +1487,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
                     $return .= '<b>'.number_format($rowPayment['amount'], 2, '.', ',').'</b>';
                     $return .= '</p>';
                 }
+                $return .= '</div>';
             }
         }
 

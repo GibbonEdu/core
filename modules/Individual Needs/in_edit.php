@@ -155,7 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
             $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
 
             // IN STATUS TABLE - TODO: replace this with OO
-            $form->addRow()->addHeading(__('Individual Needs Status'));
+            $form->addRow()->addSubheading(__('Individual Needs Status'))->setClass('mt-4 mb-2');
 
             $statusTableDisabled = (!empty($gibbonINArchiveID) || $highestAction == 'Individual Needs Records_view' || $highestAction == 'Individual Needs Records_viewContribute')? 'disabled' : '';
             $statusTableDescriptors = !empty($gibbonINArchiveID)? $archivedIEP['descriptors'] : '';
@@ -169,7 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
             
             // LIST EDUCATIONAL ASSISTANTS
             if (empty($gibbonINArchiveID)) {
-                $form->addRow()->addHeading(__('Educational Assistants'));
+                $form->addRow()->addSubheading(__('Educational Assistants'))->setClass('mt-4 mb-2');
                 
                 if (!empty($educationalAssistants)) {
                     $table = $form->addRow()->addTable()->addClass('smallIntBorder fullWidth colorOddEven');
@@ -201,21 +201,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
 
             // ADD EDUCATIONAL ASSISTANTS
             if (empty($gibbonINArchiveID) && $highestAction == 'Individual Needs Records_viewEdit') {
-                $form->addRow()->addHeading(__('Add New Assistants'));
+                $form->addRow()->addSubheading(__('Add New Assistants'))->setClass('mt-4 mb-2');
 
                 $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth');
 
                 $row = $table->addRow();
-                    $row->addLabel('staff', __('Staff'))->addClass('w-48');
-                    $row->addSelectStaff('staff')->selectMultiple()->addClass('w-full sm:max-w-xs');
+                    $row->addLabel('staff', __('Staff'))->addClass('w-1/2');
+                    $row->addSelectStaff('staff')->selectMultiple()->addClass('w-full');
 
                 $row = $table->addRow();
                     $row->addLabel('comment', __('Comment'));
-                    $row->addTextArea('comment')->setRows(4)->addClass('w-full sm:max-w-xs');
+                    $row->addTextArea('comment')->setRows(4)->addClass('w-full');
             }
 
             // DISPLAY AND EDIT IEP
-            $form->addRow()->addHeading(__('Individual Education Plan'));
+            $form->addRow()->addSubheading(__('Individual Education Plan'))->setClass('mt-4 mb-2');
 
             $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth');
 

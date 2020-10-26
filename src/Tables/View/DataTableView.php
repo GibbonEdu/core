@@ -158,7 +158,7 @@ class DataTableView extends View implements RendererInterface
         $th = new TableCell($column->getLabel());
 
         $th->setTitle($column->getTitle())
-           ->setClass('column sticky top-0 z-10')
+           ->setClass('column sticky top-0 z-10 '.$column->getClass())
            ->addData('description', $column->getDescription());
 
         $this->applyContexts($column, $th);
@@ -193,7 +193,7 @@ class DataTableView extends View implements RendererInterface
     protected function createTableCell(array $data, DataTable $table, Column $column)
     {
         $cell = new Element();
-        $cell->addClass('p-2 sm:p-3');
+        $cell->addClass('p-2 sm:p-3 '.$column->getClass());
         $this->applyContexts($column, $cell);
 
         foreach ($column->getCellModifiers() as $callable) {
