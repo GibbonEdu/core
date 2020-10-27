@@ -106,7 +106,7 @@ trait TableAware
      * @param string $primaryKeyValue
      * @return array
      */
-    public function selectBy(array $keysAndValues)
+    public function selectBy(array $keysAndValues, $cols = [])
     {
         if (empty($keysAndValues)) {
             throw new \InvalidArgumentException("Gateway selectBy method for {$this->getTableName()} must provide an array of keys and values.");
@@ -114,7 +114,7 @@ trait TableAware
 
         $query = $this
             ->newSelect()
-            ->cols(['*'])
+            ->cols(!empty($cols) ? $cols : ['*'])
             ->from($this->getTableName());
 
         $count = 0;
