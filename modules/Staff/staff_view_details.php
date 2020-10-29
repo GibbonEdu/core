@@ -258,17 +258,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         $table->addColumn('website', __('Website'))
                             ->format(Format::using('link', ['website', 'website']));
 
-                        if ($row['address1'] != '') {
-                            $table->addColumn('address1', __('Address 1'))
-                                ->width('100%')
-                                ->format(Format::using('address', ['address1', 'address1District', 'address1Country']));
-                        }
-                        if ($row['address2'] != '') {
-                            $table->addColumn('address2', __('Address 2'))
-                                ->width('100%')
-                                ->format(Format::using('address', ['address2', 'address2District', 'address2Country']));
-                        }
-
                         echo $table->render([$row]);
 
                         $table = DataTable::createDetails("misc");

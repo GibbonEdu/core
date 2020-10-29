@@ -71,6 +71,7 @@ v21.0.00
         Rubrics: added an option to colour rubric column and row headings
         School Admin: added Manage Medical Conditions action
         School Admin: added optional introductory text setting for the Medical Conditions section
+        Staff: removed the display of addresses in the Staff Profile
         Students: updated application acceptance message to reflect automatically created medical record
         Students: added uniqueness checks for Student ID field
         Students: send notifications for student notes to the Head of Year, if available
