@@ -218,19 +218,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
 
                 return $form->getFactory()->createSelectPerson('gibbonPersonIDCoverage')
                     ->fromArray($availableSubsOptions)
-                    ->setID('gibbonPersonIDCoverage'.$class['gibbonTTDayRowClassID'])
+                    ->setName('gibbonPersonIDCoverage['.$class['timetableClassPeriod'].']')
+                    ->setID('gibbonPersonIDCoverage'.$class['timetableClassPeriod'])
                     ->photo(true, 'small')
                     ->placeholder()
                     ->setClass('individualOptions flex-1')
                     ->getOutput();
             });
     
-        $table->addCheckboxColumn('timetableClasses', 'gibbonTTDayRowClassID')
+        $table->addCheckboxColumn('timetableClasses', 'timetableClassPeriod')
             ->width('15%')
             ->checked(function ($class) use ($dateStart, $dateEnd) {
                 $insideTimeRange = $class['timeStart'] <= $dateStart['timeEnd'] && $class['timeEnd'] >= $dateEnd['timeStart'];
 
-                return $dateStart['allDay'] == 'Y' || $insideTimeRange ? $class['gibbonTTDayRowClassID'] : false;
+                return $dateStart['allDay'] == 'Y' || $insideTimeRange ? $class['timetableClassPeriod'] : false;
             })
             ->format(function ($class) {
                 if (!empty($class['gibbonStaffCoverageID'])) {
@@ -351,17 +352,17 @@ $(document).ready(function() {
     });
 
     // Individual requests: Prevent clicking submit until at least one date has been selected
-    $(document).on('change', '#requestType, input[name="requestDates[]"]', function() {
-        var checked = $('input[name="requestDates[]"]:checked');
+    // $(document).on('change', '#requestType, input[name="requestDates[]"]', function() {
+    //     var checked = $('input[name="requestDates[]"]:checked');
 
-        if ($('#requestType').val() == 'Individual' && checked.length <= 0) {
-            $('.coverageNoSubmit').show();
-            $('.coverageSubmit :input').prop('disabled', true);
-        } else {
-            $('.coverageNoSubmit').hide();
-            $('.coverageSubmit :input').prop('disabled', false);
-        }
-    });
+    //     if ($('#requestType').val() == 'Individual' && checked.length <= 0) {
+    //         $('.coverageNoSubmit').show();
+    //         $('.coverageSubmit :input').prop('disabled', true);
+    //     } else {
+    //         $('.coverageNoSubmit').hide();
+    //         $('.coverageSubmit :input').prop('disabled', false);
+    //     }
+    // });
 
     $('#requestType').trigger('change');
 }) ;

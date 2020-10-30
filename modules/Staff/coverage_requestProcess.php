@@ -33,9 +33,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonStaffAbsenceID = $_POST['gibbonStaffAbsenceID'] ?? '';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_request.php&gibbonStaffAbsenceID='.$gibbonStaffAbsenceID;
-$URLSuccess = isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_edit.php')
-    ? $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_view_edit.php&gibbonStaffAbsenceID='.$gibbonStaffAbsenceID
-    : $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_view_details.php&gibbonStaffAbsenceID='.$gibbonStaffAbsenceID;
+$URLSuccess = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_view_details.php&gibbonStaffAbsenceID='.$gibbonStaffAbsenceID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php') == false) {
     $URL .= '&return=error0';
@@ -51,6 +49,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     $requestDates = $_POST['requestDates'] ?? [];
     $substituteTypes = $_POST['substituteTypes'] ?? [];
     $timetableClasses = $_POST['timetableClasses'] ?? [];
+
+    $partialFail = false;
 
     // Validate the database relationships exist
     $absence = $container->get(StaffAbsenceGateway::class)->getByID($gibbonStaffAbsenceID);
@@ -74,100 +74,159 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
         'notificationSent'       => 'N',
     ];
 
+    $gibbonPersonIDCoverageList = is_array($data['gibbonPersonIDCoverage']) ? $data['gibbonPersonIDCoverage'] : [$data['gibbonPersonIDCoverage']];
+
     // Validate the required values are present
     if (empty($data['gibbonStaffAbsenceID']) || !($data['requestType'] == 'Individual' || $data['requestType'] == 'Broadcast')) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
     }
+
+    $requests = [];
     
     if ($data['requestType'] == 'Individual') {
         // Return a custom error message if no dates have been selected
-        if (empty($requestDates)) {
+        if (empty($requestDates) && empty($timetableClasses)) {
             $URL .= '&return=error8';
             header("Location: {$URL}");
             exit;
         }
 
-        // Ensure the person is selected & exists for Individual coverage requests
-        $personCoverage = $container->get(UserGateway::class)->getByID($data['gibbonPersonIDCoverage']);
-        if (empty($personCoverage)) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit;
-        }
-    }
+        // Group coverage requests by person
+        if (!empty($timetableClasses)) {
+            // Get selected substitute per timetable class
+            foreach ($timetableClasses as $timetableClassPeriod) {
+                $data['gibbonPersonIDCoverage'] = $gibbonPersonIDCoverageList[$timetableClassPeriod] ?? '';
+                if (empty($data['gibbonPersonIDCoverage'])) continue;
 
-    // Create the coverage request
-    $gibbonStaffCoverageID = $staffCoverageGateway->insert($data);
-    $gibbonStaffCoverageID = str_pad($gibbonStaffCoverageID, 14, '0', STR_PAD_LEFT);
-
-    if (!$gibbonStaffCoverageID) {
-        $URL .= '&return=error2';
-        header("Location: {$URL}");
-        exit;
-    }
-
-    $partialFail = false;
-
-    $absenceDates = $staffAbsenceDateGateway->selectDatesByAbsence($data['gibbonStaffAbsenceID']);
-
-    // Create a coverage date for each absence date, allow coverage request form to override absence times
-    foreach ($absenceDates as $absenceDate) {
-        // Skip any absence dates that have already been covered
-        if (!empty($absenceDate['gibbonStaffCoverageID'])) {
-            continue;
-        }
-
-        // Skip dates that were not selected for Individual requests
-        if ($data['requestType'] == 'Individual' && !in_array($absenceDate['date'], $requestDates)) {
-            continue;
-        }
-
-        $dateData = [
-            'gibbonStaffCoverageID'    => $gibbonStaffCoverageID,
-            'gibbonStaffAbsenceDateID' => $absenceDate['gibbonStaffAbsenceDateID'],
-            'date'      => $absenceDate['date'],
-            'allDay'    => $_POST['allDay'] ?? 'N',
-            'timeStart' => $_POST['timeStart'] ?? $absenceDate['timeStart'],
-            'timeEnd'   => $_POST['timeEnd'] ?? $absenceDate['timeEnd'],
-        ];
-
-        // Calculate the day 'value' of each date, based on thresholds from Staff Settings.
-        if ($dateData['allDay'] == 'Y') {
-            $dateData['value'] = 1.0;
+                // Ensure the person is selected & exists for Individual coverage requests
+                $personCoverage = $container->get(UserGateway::class)->getByID($data['gibbonPersonIDCoverage']);
+                if (empty($personCoverage)) {
+                    $URL .= '&return=error2';
+                    header("Location: {$URL}");
+                    exit;
+                }
+                
+                $requests[$data['gibbonPersonIDCoverage']]['data'] = $data;
+                $requests[$data['gibbonPersonIDCoverage']]['periods'][] = $timetableClassPeriod;
+            }
         } else {
-            $start = new DateTime($absenceDate['date'].' '.$dateData['timeStart']);
-            $end = new DateTime($absenceDate['date'].' '.$dateData['timeEnd']);
+            // Get selected substitute per date
+            foreach ($requestDates as $date) {
+                $data['gibbonPersonIDCoverage'] = $gibbonPersonIDCoverageList[$date] ?? '';
+                if (empty($data['gibbonPersonIDCoverage'])) continue;
 
-            $timeDiff = $end->getTimestamp() - $start->getTimestamp();
-            $hoursCovered = abs($timeDiff / 3600);
-            
-            if ($hoursCovered > $fullDayThreshold) {
-                $dateData['value'] = 1.0;
-            } else {
-                $dateData['value'] = 0.5;
+                // Ensure the person is selected & exists for Individual coverage requests
+                $personCoverage = $container->get(UserGateway::class)->getByID($data['gibbonPersonIDCoverage']);
+                if (empty($personCoverage)) {
+                    $URL .= '&return=error2';
+                    header("Location: {$URL}");
+                    exit;
+                }
+                
+                $requests[$data['gibbonPersonIDCoverage']]['data'] = $data;
+                $requests[$data['gibbonPersonIDCoverage']]['dates'][] = $date;
+            }
+        }
+        
+    } else {
+        // Add a single request for broadcasts
+        $requests[] = ['data' => $data, 'periods' => $timetableClasses, 'dates' => $requestDates];
+    }
+
+    // Create the coverage request(s)
+    foreach ($requests as $index => $request) {
+        $gibbonStaffCoverageID = $staffCoverageGateway->insert($request['data']);
+        $requests[$index]['gibbonStaffCoverageID'] = str_pad($gibbonStaffCoverageID, 14, '0', STR_PAD_LEFT);
+
+        $partialFail &= empty($gibbonStaffCoverageID);
+    }
+
+    // Get absence dates by date(
+    $absenceDatesByDate = $staffAbsenceDateGateway->selectDatesByAbsence($data['gibbonStaffAbsenceID'])->fetchAll();
+    $absenceDatesByDate = array_reduce($absenceDatesByDate, function ($group, $item) {
+        $group[$item['date']] = $item;
+        return $group;
+    }, []);
+
+    // Create coverage data per request
+    foreach ($requests as $request) {
+        $absenceDates = [];
+
+        // Get the specific absence dates and times that relate to this request
+        if (!empty($request['periods'])) {
+            // Get and merge timetable period times with absence times
+            foreach ($request['periods'] as $timetableClassPeriod) {
+                list($date, $gibbonTTDayRowClassID) = explode(':', $timetableClassPeriod);
+                $times = $staffCoverageDateGateway->getCoverageTimesByTimetableClass($gibbonTTDayRowClassID);
+                if (empty($absenceDatesByDate[$date])) continue;
+
+                $absenceDates[] = array_merge($absenceDatesByDate[$date], $times, ['gibbonTTDayRowClassID' => $gibbonTTDayRowClassID]);
+            }
+        } elseif (!empty($request['dates'])) {
+            // Get absence dates and times
+            foreach ($request['dates'] as $date) {
+                if (empty($absenceDatesByDate[$date])) continue;
+
+                $absenceDates[] = $absenceDatesByDate[$date] ?? [];
             }
         }
 
-        if ($staffCoverageDateGateway->unique($dateData, ['gibbonStaffCoverageID', 'date'])) {
-            $partialFail &= !$staffCoverageDateGateway->insert($dateData);
-        } else {
-            $partialFail = true;
-        }
-    }
+        // Create a coverage date for each absence date, allow coverage request form to override absence times
+        foreach ($absenceDates as $absenceDate) {
+            // Skip any absence dates that have already been covered
+            if (!empty($absenceDate['gibbonStaffCoverageID'])) {
+                continue;
+            }
 
-    // Send messages (Mail, SMS) to relevant users
-    $process = $container->get(CoverageNotificationProcess::class);
-    if ($data['requestType'] == 'Broadcast') {
-        $process->startBroadcastRequest($gibbonStaffCoverageID);
-    } else {
-        $process->startIndividualRequest($gibbonStaffCoverageID);
+            $dateData = [
+                'gibbonStaffCoverageID'    => $request['gibbonStaffCoverageID'],
+                'gibbonStaffAbsenceDateID' => $absenceDate['gibbonStaffAbsenceDateID'],
+                'gibbonTTDayRowClassID' => $absenceDate['gibbonTTDayRowClassID'] ?? null,
+                'date'      => $absenceDate['date'],
+                'allDay'    => $_POST['allDay'] ?? 'N',
+                'timeStart' => $_POST['timeStart'] ?? $absenceDate['timeStart'],
+                'timeEnd'   => $_POST['timeEnd'] ?? $absenceDate['timeEnd'],
+            ];
+
+            // Calculate the day 'value' of each date, based on thresholds from Staff Settings.
+            if ($dateData['allDay'] == 'Y') {
+                $dateData['value'] = 1.0;
+            } else {
+                $start = new DateTime($absenceDate['date'].' '.$dateData['timeStart']);
+                $end = new DateTime($absenceDate['date'].' '.$dateData['timeEnd']);
+
+                $timeDiff = $end->getTimestamp() - $start->getTimestamp();
+                $hoursCovered = abs($timeDiff / 3600);
+                
+                if ($hoursCovered > $fullDayThreshold) {
+                    $dateData['value'] = 1.0;
+                } else {
+                    $dateData['value'] = 0.5;
+                }
+            }
+
+            if ($staffCoverageDateGateway->unique($dateData, ['gibbonStaffCoverageID', 'date', 'gibbonTTDayRowClassID'])) {
+                $partialFail &= !$staffCoverageDateGateway->insert($dateData);
+            } else {
+                $partialFail = true;
+            }
+        }
+
+        // Send messages (Mail, SMS) to relevant users, per coverage request
+        $process = $container->get(CoverageNotificationProcess::class);
+        if ($data['requestType'] == 'Broadcast') {
+            $process->startBroadcastRequest($request['gibbonStaffCoverageID']);
+        } else {
+            $process->startIndividualRequest($request['gibbonStaffCoverageID']);
+        }
+
     }
     
     $URLSuccess .= $partialFail
         ? "&return=warning1"
         : "&return=success0";
 
-    header("Location: {$URLSuccess}&gibbonStaffCoverageID={$gibbonStaffCoverageID}");
+    header("Location: {$URLSuccess}");
 }
