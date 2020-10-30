@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
             $participants = array();
             try {
                 $dataSelect = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonTTDayRowClassID' => $gibbonTTDayRowClassID);
-                $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname
+                $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonCourseClassPerson.role
                     FROM gibbonPerson
                         JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                         LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonTTDayRowClassException.gibbonTTDayRowClassID=:gibbonTTDayRowClassID)
@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 $resultSelect->execute($dataSelect);
             } catch (PDOException $e) { echo $e->getMessage();}
             while ($rowSelect = $resultSelect->fetch()) {
-                $participants[$rowSelect['gibbonPersonID']] = Format::name('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true);
+                $participants[$rowSelect['gibbonPersonID']] = Format::name('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.__($rowSelect['role'].')');
             }
 
             $row = $form->addRow();

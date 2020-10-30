@@ -82,6 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 ->addParam('gibbonTTDayID', $gibbonTTDayID)
                 ->addParam('gibbonTTColumnRowID', $gibbonTTColumnRowID)
                 ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
+                ->addParam('gibbonTTDayRowClassID', $gibbonTTDayRowClassID)
                 ->displayLabel();
 
             $table->addColumn('name', __('Name'))->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true]));
