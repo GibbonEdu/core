@@ -137,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
             }
 
             //Count forward to the end of the week
-            $endDayStamp = $startDayStamp + (86400 * ($daysInWeek - 1));
+            $endDayStamp = $startDayStamp + (86400 * ($daysInWeek ));
 
             //Convert dates
             $startDate = Format::dateFromTimestamp($startDayStamp, 'Y-m-d');
@@ -146,9 +146,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
             //Get and store room bookings for use later
             $facilityBookingGateway = $container->get(FacilityBookingGateway::class);
             $facilityBookings = $facilityBookingGateway->queryFacilityBookingsByDate($startDate, $endDate)->fetchAll();
+
             $bookings = array();
-            foreach ($facilityBookings as $facilityBookings) {
-                $bookings[$facilityBookings['date']][$facilityBookings['gibbonSpaceID']][]=array('timeStart' => $facilityBookings['timeStart'], 'timeEnd' => $facilityBookings['timeEnd']);
+            foreach ($facilityBookings as $facilityBooking) {
+                $bookings[$facilityBooking['date']][$facilityBooking['gibbonSpaceID']][]=array('timeStart' => $facilityBooking['timeStart'], 'timeEnd' => $facilityBooking['timeEnd']);
             }
 
             $schoolCalendarAlpha = 0.85;
@@ -452,6 +453,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 
                                                 //Add any bookings to removers
                                                 if (!empty($bookings[$date][$rowSelect['gibbonSpaceID']]) && is_array($bookings[$date][$rowSelect['gibbonSpaceID']])) {
+                                                    
                                                     foreach ($bookings[$date][$rowSelect['gibbonSpaceID']] AS $bookingInner) {
                                                         if (($bookingInner['timeStart'] <= $effectiveEnd) && ($bookingInner['timeEnd'] >= $effectiveStart)) {
                                                             $removers[$rowSelect['name']] = $rowSelect['name'];
