@@ -49,7 +49,7 @@ class Heading extends Element implements OutputableInterface, RowDependancyInter
     {
         $this->row = $row;
 
-        $this->row->setClass('break sticky top-0 bg-gray-300 z-10');
+        $this->row->setClass('break top-0 bg-gray-300 z-10');
     }
 
     /**
