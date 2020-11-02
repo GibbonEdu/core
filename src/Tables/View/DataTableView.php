@@ -124,12 +124,13 @@ class DataTableView extends View implements RendererInterface
     protected function getTableRows(DataTable $table, DataSet $dataSet)
     {
         $rows = [];
+        $count = 0;
 
-        foreach ($dataSet as $index => $data) {
+        foreach ($dataSet as $data) {
             $row = $this->createTableRow($data, $table);
             if (!$row) continue; // Can be removed by rowLogic
             
-            $row->addClass($index % 2 == 0? 'odd' : 'even');
+            $row->addClass($count % 2 == 0? 'odd' : 'even');
 
             $cells = [];
 
@@ -141,7 +142,8 @@ class DataTableView extends View implements RendererInterface
                 $cells[$columnIndex] = $cell;
             }
 
-            $rows[$index] = ['data' => $data, 'row' => $row, 'cells' => $cells];
+            $rows[$count] = ['data' => $data, 'row' => $row, 'cells' => $cells];
+            $count++;
         }
 
         return $rows;
