@@ -37,6 +37,44 @@ class PlannerEntryGateway extends QueryableGateway
     private static $primaryKey = 'gibbonPlannerEntryID';
     private static $searchableColumns = [];
     
+
+    public function queryPlannerTimeSlotsByClass($criteria, $gibbonSchoolYearID, $gibbonCourseClassID)
+    {
+        $query = $this
+            ->newQuery()
+            ->cols(['gibbonTTColumnRow.timeStart', 'gibbonTTColumnRow.timeEnd', 'gibbonTTDayDate.date', 'gibbonTTColumnRow.name AS period', 'gibbonTTDayRowClass.gibbonTTDayRowClassID', 'gibbonTTDayDate.gibbonTTDayDateID', 'gibbonPlannerEntry.gibbonPlannerEntryID', 'gibbonPlannerEntry.name as lesson', 'gibbonSchoolYearTerm.nameShort as termName', 'gibbonSchoolYearTerm.firstDay', 'gibbonSchoolYearTerm.lastDay', 'gibbonSchoolYearSpecialDay.name as specialDay', "CONCAT(gibbonTTDayRowClass.gibbonTTDayRowClassID, '-', gibbonTTDayDate.gibbonTTDayDateID) as identifier"])
+            ->from('gibbonTTDayRowClass')
+            ->innerJoin('gibbonTTColumnRow', 'gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID')
+            ->innerJoin('gibbonTTColumn', 'gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID')
+            ->innerJoin('gibbonTTDayDate', 'gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID')
+            ->innerJoin('gibbonSchoolYearTerm', 'gibbonTTDayDate.date BETWEEN gibbonSchoolYearTerm.firstDay AND gibbonSchoolYearTerm.lastDay')
+            ->leftJoin('gibbonSchoolYearSpecialDay', "gibbonSchoolYearSpecialDay.date=gibbonTTDayDate.date and gibbonSchoolYearSpecialDay.type='School Closure'")
+            ->leftJoin('gibbonPlannerEntry', 'gibbonPlannerEntry.date=gibbonTTDayDate.date 
+                AND gibbonPlannerEntry.timeStart=gibbonTTColumnRow.timeStart 
+                AND gibbonPlannerEntry.timeEnd=gibbonTTColumnRow.timeEnd 
+                AND gibbonPlannerEntry.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID')
+            ->where('gibbonTTDayRowClass.gibbonCourseClassID=:gibbonCourseClassID')
+            ->bindValue('gibbonCourseClassID', $gibbonCourseClassID)
+            ->where('gibbonSchoolYearTerm.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+
+        return $this->runQuery($query, $criteria);
+    }
+
+    public function getPlannerTimesByTTRow($gibbonTTDayRowClassID, $gibbonTTDayDateID)
+    {
+        $data = ['gibbonTTDayRowClassID' => $gibbonTTDayRowClassID, 'gibbonTTDayDateID' => $gibbonTTDayDateID];
+        $sql = "SELECT gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonTTColumnRow.name as period, gibbonTTDayDate.date
+            FROM gibbonTTDayRowClass
+            JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID)
+            JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)
+            WHERE gibbonTTDayRowClass.gibbonTTDayRowClassID=:gibbonTTDayRowClassID
+            AND gibbonTTDayDate.gibbonTTDayDateID=:gibbonTTDayDateID";
+        
+        return $this->db()->selectOne($sql, $data);
+    }
+
+
     public function queryHomeworkByPerson($criteria, $gibbonSchoolYearID, $gibbonPersonID)
     {
         $criteria->addFilterRules([

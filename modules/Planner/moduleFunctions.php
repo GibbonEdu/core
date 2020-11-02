@@ -35,10 +35,10 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
         ?>
 		<style>
 			.sortable { list-style-type: none; margin: 0; padding: 0; width: 100%; }
-			.sortable div.ui-state-default { margin: 0 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 72px; }
-			div.ui-state-default_dud { margin: 5px 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 72px; }
+			.sortable div.ui-state-default { margin: 0 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 82px; }
+			div.ui-state-default_dud { margin: 5px 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 82px; }
 			html>body .sortable li { min-height: 58px; line-height: 1.2em; }
-			.sortable .ui-state-highlight { margin-bottom: 5px; min-height: 72px; line-height: 1.2em; width: 100%; }
+			.sortable .ui-state-highlight { margin-bottom: 5px; min-height: 82px; line-height: 1.2em; width: 100%; }
 		</style>
 
 		<script type='text/javascript'>
@@ -49,7 +49,7 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
 
 				$( ".sortable" ).bind( "sortstart", function(event, ui) {
 					$("#blockInner<?php echo $i ?>").css("display","none") ;
-					$("#block<?php echo $i ?>").css("height","72px") ;
+					$("#block<?php echo $i ?>").css("height","82px") ;
 					$('#show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png\'"?>)");
 					tinyMCE.execCommand('mceRemoveEditor', false, 'contents<?php echo $i ?>') ;
 					tinyMCE.execCommand('mceRemoveEditor', false, 'teachersNotes<?php echo $i ?>') ;
@@ -62,13 +62,13 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
 		<script type='text/javascript'>
 			$(document).ready(function(){
 				$("#blockInner<?php echo $i ?>").css("display","none");
-				$("#block<?php echo $i ?>").css("height","72px")
+				$("#block<?php echo $i ?>").css("height","82px")
 
 				//Block contents control
 				$('#show<?php echo $i ?>').unbind('click').click(function() {
 					if ($("#blockInner<?php echo $i ?>").is(":visible")) {
 						$("#blockInner<?php echo $i ?>").css("display","none");
-						$("#block<?php echo $i ?>").css("height","72px")
+						$("#block<?php echo $i ?>").css("height","82px")
 						$('#show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png\'"?>)");
 						tinyMCE.execCommand('mceRemoveEditor', false, 'contents<?php echo $i ?>') ;
 						tinyMCE.execCommand('mceRemoveEditor', false, 'teachersNotes<?php echo $i ?>') ;
@@ -550,7 +550,7 @@ function makeBlockOutcome($guid,  $i, $type = '', $gibbonOutcomeID = '', $title 
 
 				$( "#<?php echo $type ?>" ).bind( "sortstart", function(event, ui) {
 					$("#<?php echo $type ?>BlockInner<?php echo $i ?>").css("display","none");
-					$("#<?php echo $type ?>Block<?php echo $i ?>").css("height","72px") ;
+					$("#<?php echo $type ?>Block<?php echo $i ?>").css("height","82px") ;
 					$('#<?php echo $type ?>show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png\'"?>)");
 					tinyMCE.execCommand('mceRemoveEditor', false, '<?php echo $type ?>contents<?php echo $i ?>') ;
 					$("#<?php echo $type ?>").sortable( "refreshPositions" ) ;
@@ -559,20 +559,20 @@ function makeBlockOutcome($guid,  $i, $type = '', $gibbonOutcomeID = '', $title 
 				$( "#<?php echo $type ?>" ).bind( "sortstop", function(event, ui) {
 					//This line has been removed to improve performance with long lists
 					//tinyMCE.execCommand('mceAddEditor', false, '<?php echo $type ?>contents<?php echo $i ?>') ;
-					$("#<?php echo $type ?>Block<?php echo $i ?>").css("height","72px") ;
+					$("#<?php echo $type ?>Block<?php echo $i ?>").css("height","82px") ;
 				});
 			});
 		</script>
 		<script type="text/javascript">
 			$(document).ready(function(){
 				$("#<?php echo $type ?>BlockInner<?php echo $i ?>").css("display","none");
-				$("#<?php echo $type ?>Block<?php echo $i ?>").css("height","72px") ;
+				$("#<?php echo $type ?>Block<?php echo $i ?>").css("height","82px") ;
 
 				//Block contents control
 				$('#<?php echo $type ?>show<?php echo $i ?>').unbind('click').click(function() {
 					if ($("#<?php echo $type ?>BlockInner<?php echo $i ?>").is(":visible")) {
 						$("#<?php echo $type ?>BlockInner<?php echo $i ?>").css("display","none");
-						$("#<?php echo $type ?>Block<?php echo $i ?>").css("height","72px") ;
+						$("#<?php echo $type ?>Block<?php echo $i ?>").css("height","82px") ;
 						$('#<?php echo $type ?>show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png\'"?>)");
 						tinyMCE.execCommand('mceRemoveEditor', false, '<?php echo $type ?>contents<?php echo $i ?>') ;
 					} else {
@@ -594,7 +594,7 @@ function makeBlockOutcome($guid,  $i, $type = '', $gibbonOutcomeID = '', $title 
 
 			});
 		</script>
-		<div class='hiddenReveal' style='border: 1px solid #d8dcdf; margin: 0 0 5px' id="<?php echo $type ?>Block<?php echo $i ?>" style='padding: 0px'>
+		<div class='hiddenReveal' style='border: 1px solid #d8dcdf; margin: 0 0 5px;' id="<?php echo $type ?>Block<?php echo $i ?>" style='padding: 0px'>
 			<table class='blank' cellspacing='0' style='width: 100%'>
 				<tr>
 					<td style='width: 50%'>
