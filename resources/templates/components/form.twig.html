@@ -35,14 +35,15 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
     {% set renderStyle = "standardForm" in form.getClass or "noIntBorder" in form.getClass and "blank" not in form.getClass ? 'flex' : 'table' %}
 
-    <div class="{{ form.getClass }} font-sans text-xs text-gray-700 relative overflow-hidden {{ "blank" not in form.getClass ? 'bg-gray-100 rounded border mt-3' }}" style="{{ "noIntBorder" in form.getClass ? 'background:#edf7ff' }}" cellspacing="0">
-    {% for row in form.getRows %}
+    <div class="{{ form.getClass }} font-sans text-xs text-gray-700 relative overflow-hidden {{ "blank" not in form.getClass ? 'bg-gray-100 rounded border border-b-0 mt-3' }}" style="{{ "noIntBorder" in form.getClass ? 'background:#edf7ff' }}" cellspacing="0">
+    {% for num, row in form.getRows if row.getElements %}
+    
         {% set rowLoop = loop %}
         {% if true or renderStyle == 'flex' %}
             {% set rowClass = 'flex flex-col sm:flex-row justify-between sm:items-center content-center p-0' %}
         {% endif %}
 
-        <div id="{{ row.getID }}" class="{{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }} {{ "noIntBorder" not in form.getClass and "blank" not in form.getClass and not loop.last? 'border-b' }} ">
+        <div id="{{ row.getID }}" class="{{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }} {{ "noIntBorder" not in form.getClass and "blank" not in form.getClass ? 'border-b' }} ">
 
         {% for element in row.getElements %}
             {% set colspan = loop.last and loop.length < totalColumns ? (totalColumns + 1 - loop.length) : 0  %}
