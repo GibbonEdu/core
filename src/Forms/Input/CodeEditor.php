@@ -30,11 +30,18 @@ use Gibbon\Forms\Input\Input;
 class CodeEditor extends Input
 {
     protected $mode = 'mysql';
+    protected $autocomplete = null;
 
     public function setMode($mode)
     {
         $this->mode = $mode;
         
+        return $this;
+    }
+
+    public function autocomplete($wordList)
+    {
+        $this->autocomplete = is_array($wordList) ? $wordList : explode(',', $wordList);
         return $this;
     }
 
@@ -56,7 +63,17 @@ class CodeEditor extends Input
         $output .= '</div>';
 
         $output .= '<script src="./lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>';
-        $output .= '<script>
+
+        if ($this->autocomplete) {
+            $output .= '<script src="./lib/ace/ext-language_tools.js" type="text/javascript" charset="utf-8"></script>';
+        }
+        
+        $output .= '<script>';
+        if ($this->autocomplete) {
+            $output .= 'var languageTools = ace.require("ace/ext/language_tools");';
+        }
+
+        $output .= '
             var editor = ace.edit("editor");
             editor.getSession().setUseWrapMode(true);
             editor.getSession().on("change", function(e) {
@@ -67,6 +84,30 @@ class CodeEditor extends Input
             $output .= 'editor.getSession().setMode("ace/mode/twig");';
         } elseif ($this->mode == 'mysql') {
             $output .= 'editor.getSession().setMode("ace/mode/mysql");';
+        }
+
+        if ($this->autocomplete) {
+            $output .= 'editor.setOptions({
+                enableBasicAutocompletion: false,
+                enableSnippets: true,
+                enableLiveAutocompletion: true
+            });
+
+            var staticWordCompleter = {
+                getCompletions: function(editor, session, pos, prefix, callback) {
+                    var wordList = '.json_encode($this->autocomplete).';
+                    callback(null, wordList.map(function(word) {
+                        return {
+                            caption: word,
+                            value: word,
+                            meta: "static"
+                        };
+                    }));
+                }
+            }
+            
+            languageTools.addCompleter(staticWordCompleter);
+            ';
         }
 
         $output .= '</script>';
