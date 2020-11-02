@@ -203,7 +203,7 @@ class FileUpload extends Input
 
                     global $gibbon;
                     $absolutePath = $gibbon->session->get('absolutePath');
-                    if (!empty($this->absoluteURL) && !is_file($absolutePath.'/'.$attachmentPath) || filesize($absolutePath.'/'.$attachmentPath) == 0) {
+                    if (!empty($this->absoluteURL) && (!is_file($absolutePath.'/'.$attachmentPath) || filesize($absolutePath.'/'.$attachmentPath) == 0)) {
                         $output .= Format::tag(__('Error'), 'error ml-2', __('This file is missing or empty. It may have failed to upload or is no longer on the server.'));
                     }
 
