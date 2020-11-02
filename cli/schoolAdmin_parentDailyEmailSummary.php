@@ -138,6 +138,7 @@ foreach ($families as $gibbonFamilyID => $students) {
 
     // Clear addresses
     $mail->ClearAllRecipients();
+    $mail->clearReplyTos();
 }
 
 // Close SMTP connection

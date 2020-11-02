@@ -147,6 +147,7 @@ foreach ($yearGroups as $gibbonYearGroupID => $rollGroups) {
 
         // Clear addresses
         $mail->ClearAllRecipients();
+        $mail->clearReplyTos();
     }
 
     // Send a year group summary to the HOY
@@ -172,6 +173,7 @@ foreach ($yearGroups as $gibbonYearGroupID => $rollGroups) {
 
         // Clear addresses
         $mail->ClearAllRecipients();
+        $mail->clearReplyTos();
     }
 }
 
