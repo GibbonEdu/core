@@ -89,6 +89,7 @@ v21.0.00
         System: added a fallback to translateN for systems that don't have gettext
         System Admin: fixed PHP deprecation errors in CSV importer
         Attendance: fixed sortable Class column in Student Not In Class report
+        Data Updater: fixed passport expiry fields not properly hiding
         Formal Assessment: removed Back link from delete modal
         Individual Needs: fixed description of Reason field in Manage Investigations
         Library: fixed broken delete function in Manage Catalog
