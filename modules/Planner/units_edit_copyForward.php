@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 require_once __DIR__ . '/moduleFunctions.php';
 
 use Gibbon\Forms\Form;
+use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Module\Planner\Forms\PlannerFormFactory;
 
 // common variables
@@ -65,18 +66,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyFor
             echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
-            try {
-                if ($highestAction == 'Unit Planner_all') {
-                    $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID, 'gibbonCourseClassID' => $gibbonCourseClassID);
-                    $sql = 'SELECT *, gibbonSchoolYear.name AS year, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=:gibbonCourseID AND gibbonCourseClassID=:gibbonCourseClassID';
-                } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                    $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID, 'gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                    $sql = "SELECT gibbonCourse.gibbonCourseID, gibbonCourse.name, gibbonCourse.nameShort, gibbonSchoolYear.name AS year, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=:gibbonCourseID AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY gibbonCourse.nameShort";
-                }
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
+
+            $courseGateway = $container->get(CourseGateway::class);
+
+            // Check access to specified course
+            if ($highestAction == 'Unit Planner_all') {
+                $result = $courseGateway->selectCourseDetailsByClass($gibbonCourseClassID);
+            } elseif ($highestAction == 'Unit Planner_learningAreas') {
+                $result = $courseGateway->selectCourseDetailsByClassAndPerson($gibbonCourseClassID, $gibbon->session->get('gibbonPersonID'));
             }
 
             if ($result->rowCount() != 1) {
@@ -85,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyFor
                 echo '</div>';
             } else {
                 $values = $result->fetch();
-                $year = $values['year'];
+                $year = $values['schoolYear'];
                 $course = $values['course'];
                 $class = $values['class'];
 
