@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Timetable\CourseGateway;
+
 include '../../gibbon.php';
 
 //Module includes
@@ -40,6 +42,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
         //Validate Inputs
         $gibbonCourseIDTarget = $_POST['gibbonCourseIDTarget'];
         $copyLessons = $_POST['copyLessons'];
+
+        $courseGateway = $container->get(CourseGateway::class);
+
+        // Check access to specified course
+        if ($highestAction == 'Unit Planner_all') {
+            $result = $courseGateway->selectCourseDetailsByCourse($gibbonCourseID);
+        } elseif ($highestAction == 'Unit Planner_learningAreas') {
+            $result = $courseGateway->selectCourseDetailsByCourseAndPerson($gibbonCourseID, $gibbon->session->get('gibbonPersonID'));
+        }
+
+        if ($result->rowCount() == 0) {
+            $URL .= '&return=error0';
+            header("Location: {$URL}");
+            exit;
+        }
 
         if ($gibbonSchoolYearID == '' or $gibbonCourseID == '' or $gibbonUnitID == '' or $gibbonCourseIDTarget == '') {
             $URL .= '&return=error3';
