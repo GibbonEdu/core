@@ -1,4 +1,6 @@
 <?php
+
+use Gibbon\Domain\Planner\PlannerEntryGateway;
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -24,22 +26,23 @@ $gibbonCourseID = $_GET['gibbonCourseID'];
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
 $gibbonUnitClassID = $_GET['gibbonUnitClassID'];
 $gibbonUnitID = $_GET['gibbonUnitID'];
-$lessonCount = $_POST['count'];
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/units_edit_working.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitClassID=$gibbonUnitClassID";
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/units_edit_working.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitClassID=$gibbonUnitClassID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working_add.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $highestAction = getHighestGroupedAction($guid, $_GET['address'], $connection2);
+    $highestAction = getHighestGroupedAction($guid, $_POST['address'], $connection2);
     if ($highestAction == false) {
         $URL .= "&return=error0$params";
         header("Location: {$URL}");
     } else {
+        $lessonsChecked = $_POST['lessons'] ?? [];
+
         //Proceed!
         //Validate Inputs
-        if ($gibbonSchoolYearID == '' or $gibbonCourseID == '' or $gibbonUnitID == '' or $gibbonCourseClassID == '' or $lessonCount == '' or $gibbonUnitClassID == '') {
+        if ($gibbonSchoolYearID == '' or $gibbonCourseID == '' or $gibbonUnitID == '' or $gibbonCourseClassID == '' or $gibbonUnitClassID == '' or empty($lessonsChecked)) {
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
@@ -83,21 +86,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                     $row = $result->fetch();
                     $partialFail = false;
 
-                    for ($i = 1; $i <= $lessonCount; ++$i) {
-                        if (isset($_POST["deploy$i"])) {
-                            if ($_POST["deploy$i"] == 'on') {
-                                $summary = 'Part of the '.$row['name'].' unit.';
-                                $teachersNotes = getSettingByScope($connection2, 'Planner', 'teachersNotesTemplate');
-                                try {
-                                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $_POST["date$i"], 'timeStart' => $_POST["timeStart$i"], 'timeEnd' => $_POST["timeEnd$i"], 'gibbonUnitID' => $gibbonUnitID, 'name' => $row['name'].' Additional', 'summary' => $summary, 'teachersNotes' => $teachersNotes, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDLastEdit' => $_SESSION[$guid]['gibbonPersonID']);
-                                    $sql = "INSERT INTO gibbonPlannerEntry SET gibbonCourseClassID=:gibbonCourseClassID, date=:date, timeStart=:timeStart, timeEnd=:timeEnd, gibbonUnitID=:gibbonUnitID, name=:name, summary=:summary, description='', teachersNotes=:teachersNotes, homework='N', viewableParents='Y', viewableStudents='Y', gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit";
-                                    $result = $connection2->prepare($sql);
-                                    $result->execute($data);
-                                } catch (PDOException $e) {
-                                    $partialFail = true;
-                                }
-                            }
-                        }
+                    $plannerEntryGateway = $container->get(PlannerEntryGateway::class);
+
+                    $lessons = $plannerEntryGateway->selectPlannerEntriesByUnitAndClass($gibbonUnitID, $gibbonCourseClassID)->fetchAll();
+                    $lessonCount = count($lessons);
+
+                    foreach ($lessonsChecked as $lesson) {
+                        list($gibbonTTDayRowClassID, $gibbonTTDayDateID) = explode('-', $lesson);
+                        $values = $plannerEntryGateway->getPlannerTTByIDs($gibbonTTDayRowClassID, $gibbonTTDayDateID);
+
+                        $summary = 'Part of the '.$row['name'].' unit.';
+                        $teachersNotes = getSettingByScope($connection2, 'Planner', 'teachersNotesTemplate');
+
+                        $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $values['date'], 'timeStart' => $values['timeStart'], 'timeEnd' => $values['timeEnd'], 'gibbonUnitID' => $gibbonUnitID, 'name' => $row['name'].' '.($lessonCount + 1), 'summary' => $summary, 'teachersNotes' => $teachersNotes, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDLastEdit' => $_SESSION[$guid]['gibbonPersonID']);
+                        $sql = "INSERT INTO gibbonPlannerEntry SET gibbonCourseClassID=:gibbonCourseClassID, date=:date, timeStart=:timeStart, timeEnd=:timeEnd, gibbonUnitID=:gibbonUnitID, name=:name, summary=:summary, description='', teachersNotes=:teachersNotes, homework='N', viewableParents='Y', viewableStudents='Y', gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit";
+
+                        $inserted = $pdo->insert($sql, $data);
+                        $partialFail &= !$inserted;
+                        $lessonCount++;
                     }
 
                     //RETURN

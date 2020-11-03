@@ -203,7 +203,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
         // Get date and period information for each lesson
         foreach ($lessonsChecked as $lesson) {
             list($gibbonTTDayRowClassID, $gibbonTTDayDateID) = explode('-', $lesson);
-            $lessons[] = $plannerEntryGateway->getPlannerTimesByTTRow($gibbonTTDayRowClassID, $gibbonTTDayDateID);
+            $lessons[] = $plannerEntryGateway->getPlannerTTByIDs($gibbonTTDayRowClassID, $gibbonTTDayDateID);
         }
 
         // FORM
@@ -284,7 +284,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
     }
 
     // Print sidebar
-    $_SESSION[$guid]['sidebarExtra'] = sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYearID);
+    $page->addSidebarExtra(sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYearID));
 }
 ?>
 

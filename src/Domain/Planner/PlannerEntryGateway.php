@@ -61,7 +61,7 @@ class PlannerEntryGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function getPlannerTimesByTTRow($gibbonTTDayRowClassID, $gibbonTTDayDateID)
+    public function getPlannerTTByIDs($gibbonTTDayRowClassID, $gibbonTTDayDateID)
     {
         $data = ['gibbonTTDayRowClassID' => $gibbonTTDayRowClassID, 'gibbonTTDayDateID' => $gibbonTTDayDateID];
         $sql = "SELECT gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonTTColumnRow.name as period, gibbonTTDayDate.date
@@ -74,6 +74,13 @@ class PlannerEntryGateway extends QueryableGateway
         return $this->db()->selectOne($sql, $data);
     }
 
+    public function getPlannerTTByClassTimes($gibbonCourseClassID, $date, $timeStart, $timeEnd)
+    {
+        $data = ['date' => $date, 'timeStart' => $timeStart, 'timeEnd' => $timeEnd, 'gibbonCourseClassID' => $gibbonCourseClassID];
+        $sql = 'SELECT timeStart, timeEnd, date, gibbonTTColumnRow.name AS period, gibbonTTDayRowClassID, gibbonTTDayDateID FROM gibbonTTDayRowClass JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTColumn ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY date, timestart';
+        
+        return $this->db()->selectOne($sql, $data);
+    }
 
     public function queryHomeworkByPerson($criteria, $gibbonSchoolYearID, $gibbonPersonID)
     {
@@ -198,6 +205,14 @@ class PlannerEntryGateway extends QueryableGateway
         $sql = "SELECT * FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID";
 
         return $this->db()->selectOne($sql, $data);
+    }
+
+    public function selectPlannerEntriesByUnitAndClass($gibbonUnitID, $gibbonCourseClassID)
+    {
+        $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonUnitID' => $gibbonUnitID];
+        $sql = "SELECT * FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID ORDER BY date, timeStart";
+
+        return $this->db()->select($sql, $data);
     }
 
     public function selectUpcomingHomeworkByStudent($gibbonSchoolYearID, $gibbonPersonID, $viewableBy = 'viewableStudents')
