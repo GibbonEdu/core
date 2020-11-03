@@ -265,6 +265,8 @@ else {
                         if ($_GET['q'] == '/publicRegistration.php') {
                             $URL = './index.php';
                         } else {
+                            unset($_GET['return']); // Ensure error messages are not passed via login
+
                             $URL = './index.php?'.http_build_query($_GET);
                         }
                     } else {
