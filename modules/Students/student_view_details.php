@@ -1984,8 +1984,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             // Register scripts available to the core, but not included by default
                             $page->scripts->add('chart');
 
-                            $highestAction = getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $connection2);
-                            if ($highestAction == false) {
+                            $highestAction2 = getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $connection2);
+                            if ($highestAction2 == false) {
                                 echo "<div class='error'>";
                                 echo __('The highest grouped action cannot be determined.');
                                 echo '</div>';
@@ -2104,7 +2104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 </script>
 
                                 <?php
-                                if ($highestAction == 'View Markbook_myClasses') {
+                                if ($highestAction2 == 'View Markbook_myClasses') {
                                     // Get class list (limited to a teacher's classes)
                                     try {
                                         $dataList['gibbonPersonIDTeacher'] = $_SESSION[$guid]['gibbonPersonID'];
@@ -2153,9 +2153,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         try {
                                             $dataEntry['gibbonPersonID'] = $gibbonPersonID;
                                             $dataEntry['gibbonCourseClassID'] = $rowList['gibbonCourseClassID'];
-                                            if ($highestAction == 'View Markbook_viewMyChildrensClasses') {
+                                            if ($highestAction2 == 'View Markbook_viewMyChildrensClasses') {
                                                 $sqlEntry = "SELECT *, gibbonMarkbookColumn.comment AS commentOn, gibbonMarkbookColumn.uploadedResponse AS uploadedResponseOn, gibbonMarkbookEntry.comment AS comment FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) WHERE gibbonPersonIDStudent=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND complete='Y' AND completeDate<='".date('Y-m-d')."' AND viewableParents='Y' $and2 ORDER BY completeDate";
-                                            } elseif ($highestAction == 'View Markbook_myMarks') {
+                                            } elseif ($highestAction2 == 'View Markbook_myMarks') {
                                                 $sqlEntry = "SELECT *, gibbonMarkbookColumn.comment AS commentOn, gibbonMarkbookColumn.uploadedResponse AS uploadedResponseOn, gibbonMarkbookEntry.comment AS comment FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) WHERE gibbonPersonIDStudent=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND complete='Y' AND completeDate<='".date('Y-m-d')."' AND viewableStudents='Y' $and2 ORDER BY completeDate";
                                             } else {
                                                 $sqlEntry = "SELECT *, gibbonMarkbookColumn.comment AS commentOn, gibbonMarkbookColumn.uploadedResponse AS uploadedResponseOn, gibbonMarkbookEntry.comment AS comment FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) WHERE gibbonPersonIDStudent=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND complete='Y' AND completeDate<='".date('Y-m-d')."' $and2 ORDER BY completeDate";
@@ -2478,8 +2478,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo __('Your request failed because you do not have access to this action.');
                             echo '</div>';
                         } else {
-                            $highestAction = getHighestGroupedAction($guid, '/modules/Formal Assessment/internalAssessment_view.php', $connection2);
-                            if ($highestAction == false) {
+                            $highestAction2 = getHighestGroupedAction($guid, '/modules/Formal Assessment/internalAssessment_view.php', $connection2);
+                            if ($highestAction2 == false) {
                                 echo "<div class='error'>";
                                 echo __('The highest grouped action cannot be determined.');
                                 echo '</div>';
@@ -2487,11 +2487,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 //Module includes
                                 include './modules/Formal Assessment/moduleFunctions.php';
 
-                                if ($highestAction == 'View Internal Assessments_all') {
+                                if ($highestAction2 == 'View Internal Assessments_all') {
                                     echo getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID);
-                                } elseif ($highestAction == 'View Internal Assessments_myChildrens') {
+                                } elseif ($highestAction2 == 'View Internal Assessments_myChildrens') {
                                     echo getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, 'parent');
-                                } elseif ($highestAction == 'View Internal Assessments_mine') {
+                                } elseif ($highestAction2 == 'View Internal Assessments_mine') {
                                     echo getInternalAssessmentRecord($guid, $connection2, $_SESSION[$guid]['gibbonPersonID'], 'student');
                                 }
                             }
@@ -2735,7 +2735,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     if ($yearCount == 0) {
                                         $class = "class='top'";
                                     }
-                                    
+
                                     ++$yearCount;
                                     try {
                                         $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $rowYears['gibbonSchoolYearID']);

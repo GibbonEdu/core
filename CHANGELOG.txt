@@ -105,6 +105,7 @@ v21.0.00
         Students: fixed parent support link in application acceptance email
         Students: fixed students able to see other students in class lists
         Students: fixed issue preventing timetable edit link from working with left students and allStudent flag
+        Students: fixed missing alert bar in Markbook and Internal Assessment sub-pages in student profile
         Timetable: fixed View Available Facilities not counting bookings on Friday
 	    Tests: added fallback environment variables if .env is not defining DB details
 	    Tests: changed HTTP to HTTPs, so SSL enabled environments don't fail
