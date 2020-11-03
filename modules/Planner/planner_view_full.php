@@ -487,76 +487,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 echo "<div style='padding: 12px 5px; margin-top: 0px; text-align: right; border-bottom: 1px solid #666; border-top: 1px solid #666'>";
                                 echo '<i>'.__('Smart Blocks').'</i>: ';
                                 if ($resultBlocks->rowCount() > 0) {
-                                    echo "<a class='active' href='#' id='viewBlocks'>".__('View')."</a> | <a href='#' id='editBlocks'>".__('Edit Blocks').'</a> | ';
+                                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_edit.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&gibbonPlannerEntryID=$gibbonPlannerEntryID&date=".$row['date']."&subView=$subView#SmartBlocks'>".__('Edit Blocks').'</a> | ';
                                 }
                                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_edit_working.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=".$row['gibbonCourseID'].'&gibbonUnitID='.$row['gibbonUnitID'].'&gibbonSchoolYearID='.$_SESSION[$guid]['gibbonSchoolYearID']."&gibbonUnitClassID=$gibbonUnitClassID'>".__('Edit Unit').'</a> ';
                                 echo '</div>';
                             }
+                            
                             if ($resultBlocks->rowCount() > 0) {
-                                if ($row['role'] == 'Teacher' and $teacher == true) {
-                                    ?>
-									<script type="text/javascript">
-										$(document).ready(function(){
-											$("#smartEdit").hide() ;
-
-											$('#viewBlocks').click(function() {
-												$("#smartView").show() ;
-												$("#viewBlocks").addClass("active") ;
-												$("#smartEdit").hide() ;
-												$("#editBlocks").removeClass("active") ;
-											}) ;
-											$('#editBlocks').click(function() {
-												$("#smartView").hide() ;
-												$("#viewBlocks").removeClass("active") ;
-												$("#smartEdit").show() ;
-												$("#editBlocks").addClass("active") ;
-											}) ;
-										}) ;
-									</script>
-									<?php
-									echo "<div id='smartEdit'>";
-                                    echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/planner_view_full_smartProcess.php'>"; ?>
-										<style>
-											#sortable { list-style-type: none; margin: 0; padding: 0; width: 100%; }
-											#sortable div.ui-state-default { margin: 0 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
-											div.ui-state-default_dud { margin: 5px 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
-											html>body #sortable li { min-height: 58px; line-height: 1.2em; }
-											#sortable .ui-state-highlight { margin-bottom: 5px; min-height: 58px; line-height: 1.2em; width: 100%; }
-										</style>
-										<script type="text/javascript">
-											$(function() {
-												$( "#sortable" ).sortable({
-													placeholder: "ui-state-highlight",
-													axis: 'y'
-												});
-											});
-										</script>
-
-										<div class="sortable" id="sortable" style='width: 100%; padding: 5px 0px 0px 0px; border-top: 1px dotted #666; border-bottom: 1px dotted #666'>
-											<?php
-											$i = 1;
-											$minSeq = 0;
-											while ($rowBlocks = $resultBlocks->fetch()) {
-												if ($i == 1) {
-													$minSeq = $rowBlocks['sequenceNumber'];
-												}
-												makeBlock($guid, $connection2, $i, 'plannerEdit', $rowBlocks['title'], $rowBlocks['type'], $rowBlocks['length'], $rowBlocks['contents'], $rowBlocks['complete'], '', $rowBlocks['gibbonUnitClassBlockID'], $rowBlocks['teachersNotes'], true);
-												++$i;
-											}
-											?>
-										</div>
-										<?php
-										echo "<div style='text-align: right; margin-top: 3px'>";
-										echo "<input type='hidden' name='minSeq' value='$minSeq'>";
-										echo "<input type='hidden' name='mode' value='edit'>";
-										echo "<input type='hidden' name='params' value='$paramsVar'>";
-										echo "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>";
-										echo "<input type='hidden' name='address' value='".$_SESSION[$guid]['address']."'>";
-										echo "<input type='submit' value='Submit'>";
-										echo '</div>';
-									echo '</form>';
-									echo '</div>';
-								}
                                 echo "<div id='smartView' class='hiddenReveal'>";
                                 echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/planner_view_full_smartProcess.php'>";
                                 $templateView = $container->get(View::class);
