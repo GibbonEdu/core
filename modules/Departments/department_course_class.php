@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
     $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
     $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
     $gibbonDepartmentID = $_GET['gibbonDepartmentID'] ?? '';
-    $currentDate = $_GET['currentDate'] ?? '';
+    $currentDate = $_GET['currentDate'] ?? Format::date(date('Y-m-d'));
 
     if (empty($gibbonCourseClassID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
