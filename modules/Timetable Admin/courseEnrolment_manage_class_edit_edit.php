@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 				$row->addSelect('role')->fromArray($roles)->required()->selected($values['role']);
 			
 			$row = $form->addRow();
-				$row->addLabel('reportable', __('Reportable'));
+				$row->addLabel('reportable', __('Reportable'))->description(__("Students set to non-reportable won't display in reports. Teachers set to non-reportable won't display in lists of class teachers."));
 				$row->addYesNo('reportable')->required()->selected($values['reportable']);
 
             if (!empty($values['dateEnrolled'])) {

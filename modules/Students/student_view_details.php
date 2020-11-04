@@ -2171,7 +2171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                                             try {
                                                 $dataTeachers = array('gibbonCourseClassID' => $rowList['gibbonCourseClassID']);
-                                                $sqlTeachers = "SELECT title, surname, preferredName FROM gibbonPerson JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName";
+                                                $sqlTeachers = "SELECT title, surname, preferredName, gibbonCourseClassPerson.reportable FROM gibbonPerson JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName";
                                                 $resultTeachers = $connection2->prepare($sqlTeachers);
                                                 $resultTeachers->execute($dataTeachers);
                                             } catch (PDOException $e) {
@@ -2180,6 +2180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                                             $teachers = '<p><b>'.__('Taught by:').'</b> ';
                                             while ($rowTeachers = $resultTeachers->fetch()) {
+                                                if ($rowTeachers['reportable'] != 'Y') continue;
                                                 $teachers = $teachers.Format::name($rowTeachers['title'], $rowTeachers['preferredName'], $rowTeachers['surname'], 'Staff', false, false).', ';
                                             }
                                             $teachers = substr($teachers, 0, -2);
