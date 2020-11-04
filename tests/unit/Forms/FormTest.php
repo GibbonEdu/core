@@ -40,7 +40,8 @@ class FormTest extends TestCase
         $form = Form::create('testID', 'testAction');
 
         $this->assertTrue(count($form->getRows()) == 0);
-        $row = $form->addRow()->addContent('Test');
+        $row = $form->addRow();
+        $row->addContent('Test');
 
         $this->assertTrue(count($form->getRows()) > 0);
         $this->assertSame($row, $form->getRow());
