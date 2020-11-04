@@ -233,7 +233,9 @@ class Form implements OutputableInterface
      */
     public function getRows()
     {
-        return $this->rows;
+        return array_filter($this->rows, function ($item) {
+            return !empty($item->getElements());
+        });
     }
 
     /**
