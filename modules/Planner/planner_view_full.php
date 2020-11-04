@@ -21,6 +21,10 @@ use Gibbon\View\View;
 use Gibbon\Forms\Form;
 use Gibbon\FileUploader;
 use Gibbon\Services\Format;
+use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
+use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
+use Gibbon\Domain\Attendance\AttendanceLogCourseClassGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -55,13 +59,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
         $date = null;
         $dateStamp = null;
         if ($viewBy == 'date') {
-            $date = $_GET['date'];
+            $date = $_GET['date'] ?? date('Y-m-d');
             if (isset($_GET['dateHuman'])) {
                 $date = dateConvert($guid, $_GET['dateHuman']);
             }
-            if ($date == '') {
-                $date = date('Y-m-d');
-            }
+            
             list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
             $dateStamp = mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);
         } elseif ($viewBy == 'class') {
@@ -189,7 +191,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                     $params = [];
                     $params['gibbonPlannerEntryID'] = $gibbonPlannerEntryID;
                     if ($date != '') {
-                        $params['date'] = $_GET['date'];
+                        $params['date'] = $_GET['date'] ?? '';
                     }
                     if ($viewBy != '') {
                         $params['viewBy'] = $_GET['viewBy'] ?? '';
@@ -488,6 +490,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         if (!empty($blocks)) {
                             $form->addHiddenValue('address', $gibbon->session->get('address'));
                             $form->addHiddenValue('gibbonPlannerEntryID', $gibbonPlannerEntryID);
+                            $form->addHiddenValue('date', $values['date']);
                             $form->addHiddenValue('mode', 'view');
                             $form->addHiddenValues($params);
 
@@ -520,7 +523,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                             foreach ($blocks as $block) {
                                 $blockContent = $templateView->fetchFromTemplate('ui/unitBlock.twig.html', $block + [
-                                    'roleCategory' => $roleCategory, 'gibbonPersonID' => $_SESSION[$guid]['username'] ?? '', 'blockCount' => $blockCount, 'checked' => ($block['complete'] == 'Y' ? 'checked' : ''), 'role' => $values['role'], 'teacher' => $teacher ?? ''
+                                    'roleCategory' => $roleCategory, 'gibbonPersonID' => $_SESSION[$guid]['username'] ?? '', 'blockCount' => $blockCount, 'checked' => ($block['complete'] == 'Y' ? 'checked' : ''), 'role' => $values['role'], 'teacher' => $values['role'] == 'Teacher' and $teacher == true ?? ''
                                 ]);
 
                                 $form->addRow()->addContent($blockContent);
@@ -1190,267 +1193,165 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $crossFillClasses = getSettingByScope($connection2, 'Attendance', 'crossFillClasses');
 
                         $attendance = new Gibbon\Module\Attendance\AttendanceView($gibbon, $pdo);
+                        $attendanceGateway = $container->get(AttendanceLogPersonGateway::class);
 
-                        try {
-                            $dataClassGroup = array('gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $values['date'], 'today' => date('Y-m-d'));
-                            $sqlClassGroup = "SELECT gibbonCourseClassPerson.*, gibbonPerson.* 
-                                FROM gibbonCourseClassPerson 
-                                INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID 
-                                LEFT JOIN (
-                                    SELECT gibbonTTDayRowClass.gibbonCourseClassID, gibbonTTDayRowClass.gibbonTTDayRowClassID FROM gibbonTTDayDate JOIN gibbonTTDayRowClass ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) WHERE gibbonTTDayDate.date=:date) AS gibbonTTDayRowClassSubset ON (gibbonTTDayRowClassSubset.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) 
-                                LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClassSubset.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
-                                WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID 
-                                AND status='Full' 
-                                AND (dateStart IS NULL OR dateStart<=:today) 
-                                AND (dateEnd IS NULL  OR dateEnd>=:today) 
-                                AND (NOT role='Student - Left') AND (NOT role='Teacher - Left')
-                                GROUP BY gibbonCourseClassPerson.gibbonCourseClassPersonID, gibbonPerson.gibbonPersonID
-                                HAVING COUNT(gibbonTTDayRowClassExceptionID) = 0
-                                ORDER BY FIELD(role, 'Teacher', 'Assistant', 'Technician', 'Student', 'Parent'), surname, preferredName";
-                            $resultClassGroup = $connection2->prepare($sqlClassGroup);
-                            $resultClassGroup->execute($dataClassGroup);
-                        } catch (PDOException $e) {
-                            $_SESSION[$guid]['sidebarExtra'] .= "<div class='error'>".$e->getMessage().'</div>';
-                        }
+                        $participants = $container->get(CourseEnrolmentGateway::class)->selectClassParticipantsByDate($gibbonCourseClassID, $values['date'])->fetchAll();
+                        $defaults = ['type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '', 'prefill' => 'Y'];
 
-                        $_SESSION[$guid]['sidebarExtra'] = "<div style='width:260px; float: right; font-size: 115%; font-weight: bold; margin-top: 8px; padding-left: 25px'>";
+                        // Build attendance data
+                        foreach ($participants as $key => $student) {
+                            if ($student['role'] != 'Student') continue;
 
-                        if ($attendanceEnabled) {
-                             $_SESSION[$guid]['sidebarExtra'] .= __('Participants') .' & '. __('Attendance') . "<br/>";
-                        } else {
-                            $_SESSION[$guid]['sidebarExtra'] .= __('Participants') . "<br/>";
-                        }
-                            //Show attendance log for the current day
-                            if ($attendanceEnabled && ( ($values['role'] == 'Teacher' and $teacher == true))) {
-                                try {
-                                    $dataLog = array( 'date' => $values['date'], 'gibbonCourseClassID' => $gibbonCourseClassID);
-                                    $sqlLog = 'SELECT * FROM gibbonAttendanceLogCourseClass, gibbonPerson WHERE gibbonAttendanceLogCourseClass.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND date LIKE :date AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY timestampTaken';
-                                    $resultLog = $connection2->prepare($sqlLog);
-                                    $resultLog->execute($dataLog);
-                                } catch (PDOException $e) {
-                                    $_SESSION[$guid]['sidebarExtra'] .= "<div class='error'>".$e->getMessage().'</div>';
-                                }
-                                if ($resultLog->rowCount() < 1) {
-                                    $_SESSION[$guid]['sidebarExtra'] .= "<div class='error'>";
-                                    $_SESSION[$guid]['sidebarExtra'] .= __('Attendance has not been taken. The entries below are a best-guess, not actual data.');
-                                    $_SESSION[$guid]['sidebarExtra'] .= '</div>';
-                                } else {
-                                    $_SESSION[$guid]['sidebarExtra'] .= "<div class='success'>";
-                                    $_SESSION[$guid]['sidebarExtra'] .= __('Attendance has been taken at the following times for this lesson:');
-                                    $_SESSION[$guid]['sidebarExtra'] .= "<ul style='margin-left: 20px'>";
-                                    while ($rowLog = $resultLog->fetch()) {
-                                        $_SESSION[$guid]['sidebarExtra'] .= '<li><a style="color:inherit;" href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$gibbonCourseClassID.'&currentDate='.dateConvertBack($guid, $values['date'] ).'">'.substr($rowLog['timestampTaken'], 11, 5).' '.dateConvertBack($guid, substr($rowLog['timestampTaken'], 0, 10)).' '.__('by').' '.Format::name('', $rowLog['preferredName'], $rowLog['surname'], 'Student', true).'</a></li>';
-                                    }
-                                    $_SESSION[$guid]['sidebarExtra'] .= '</ul>';
-                                    $_SESSION[$guid]['sidebarExtra'] .= '</div>';
+                            $result = $attendanceGateway->selectClassAttendanceLogsByPersonAndDate($gibbonCourseClassID, $student['gibbonPersonID'], $values['date']);
+
+                            $log = ($result->rowCount() > 0) ? $result->fetch() : $defaults;
+                            $log['prefilled'] = $result->rowCount() > 0 ? $log['context'] : '';
+
+                            //Check for school prefill if attendance not taken in this class
+                            if ($result->rowCount() == 0) {
+                                $result = $attendanceGateway->selectAttendanceLogsByPersonAndDate($student['gibbonPersonID'], $values['date'], $crossFillClasses);
+
+                                $log = ($result->rowCount() > 0) ? $result->fetch() : $log;
+                                $log['prefilled'] = $result->rowCount() > 0 ? $log['context'] : '';
+
+                                if ($log['prefill'] == 'N') {
+                                    $log = $defaults;
                                 }
                             }
 
-                        if ($attendanceEnabled && $values['role'] == 'Teacher' and $teacher == true) {
-                            $_SESSION[$guid]['sidebarExtra'] .= "<form autocomplete=\"off\" method='post' action='".$_SESSION[$guid]['absoluteURL']."/modules/Attendance/attendance_take_byCourseClassProcess.php'>";
+                            $participants[$key]['cellHighlight'] = '';
+                            if ($attendance->isTypeAbsent($log['type'])) {
+                                $participants[$key]['cellHighlight'] = 'bg-red-200';
+                            } elseif ($attendance->isTypeOffsite($log['type'])) {
+                                $participants[$key]['cellHighlight'] = 'bg-blue-200';
+                            } elseif ($attendance->isTypeLate($log['type'])) {
+                                $participants[$key]['cellHighlight'] = 'bg-orange-200';
+                            }
+
+                            $participants[$key]['log'] = $log;
                         }
-                        $_SESSION[$guid]['sidebarExtra'] .= "<table class='noIntBorder' cellspacing='0' style='width:260px; float: right; margin-bottom: 30px'>";
+
+                        // ATTENDANCE FORM
+                        $form = Form::create('attendanceByClass', $_SESSION[$guid]['absoluteURL'] . '/modules/Attendance/attendance_take_byCourseClassProcess.php');
+                        $form->setClass('noIntBorder fullWidth');
+                        $form->setAutocomplete('off');
+                        $form->setTitle($attendanceEnabled ? __('Participants & Attendance') : __('Participants'));
+
+                        // Display the dated this attendance was taken, if any 
+                        if ($attendanceEnabled && ($values['role'] == 'Teacher' and $teacher == true)) {
+                            $classLogs = $container->get(AttendanceLogCourseClassGateway::class)->selectClassAttendanceLogsByDate($gibbonCourseClassID, $values['date'])->fetchAll();
+                            if (empty($classLogs)) {
+                                $form->setDescription(Format::alert(__('Attendance has not been taken. The entries below are a best-guess, not actual data.')));
+                            } else {
+                                $logText = '<ul class="ml-4">';
+                                foreach ($classLogs as $log) {
+                                    $linkText = Format::time($log['timestampTaken']).' '.Format::date($log['date']).' '.__('by').' '.Format::name('', $log['preferredName'], $log['surname'], 'Student', true);
+
+                                    $logText .= '<li>'.Format::link('./index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$gibbonCourseClassID.'&currentDate='.Format::date($log['date']), $linkText, ['style' => 'color: inherit']).'</li>';
+                                    
+                                }
+                                $logText .= '</ul>';
+                                $form->setDescription(Format::alert(__('Attendance has been taken at the following times for this lesson:').$logText, 'success'));
+                            }
+                        }
+
+                        $grid = $form->addRow()->addGrid('attendance')->setClass('-mx-3 -my-2')->setBreakpoints('w-1/2');
+
+                        // Display attendance grid
                         $count = 0;
-                        $countStudents = 0;
-                        while ($rowClassGroup = $resultClassGroup->fetch()) {
-                            if ($count % $columns == 0) {
-                                $_SESSION[$guid]['sidebarExtra'] .= '<tr>';
+
+                        foreach ($participants as $person) {
+                            $form->addHiddenValue($count . '-gibbonPersonID', $person['gibbonPersonID']);
+                            $form->addHiddenValue($count . '-prefilled', $person['log']['prefilled'] ?? '');
+
+                            $cell = $grid->addCell()
+                                ->setClass('text-center py-4 px-1 -mr-px -mb-px flex flex-col justify-start')
+                                ->addClass($person['cellHighlight'] ?? '');
+
+                            // Display alerts and birthdays, teacher only
+                            if ($person['role'] == 'Student' && $values['role'] == 'Teacher' && $teacher == true) {
+                                $alert = getAlertBar($guid, $connection2, $person['gibbonPersonID'], $person['privacy'], "id='confidentialPlan$count'");
+
+                                $icon = Format::userBirthdayIcon($person['dob'], $person['preferredName']);
                             }
 
-							//Get attendance status for students
-                            $rowLog = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '');
+                            // Display a photo per user
+                            $cell->addContent(Format::userPhoto($person['image_240'], 75, ''))
+                                ->setClass('relative')
+                                ->prepend($alert ?? '')
+                                ->append($icon ?? '');
 
-                            if ($rowClassGroup['role'] == 'Student') {
-                                //Get any student log data for this class
-                                try {
-                                    $dataLog = array('gibbonPersonID' => $rowClassGroup['gibbonPersonID'], 'date' => $values['date'] . '%', 'gibbonCourseClassID' => $gibbonCourseClassID);
-                                    $sqlLog = "SELECT type, reason, comment, context, timestampTaken FROM gibbonAttendanceLogPerson
-                                            JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                                            WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
-                                            AND date LIKE :date
-                                            AND context='Class' AND gibbonCourseClassID=:gibbonCourseClassID
-                                            ORDER BY timestampTaken DESC";
-                                    $resultLog=$connection2->prepare($sqlLog);
-                                    $resultLog->execute($dataLog);
-                                }
-                                catch(PDOException $e) {
-                                    print "<div class='error'>" . $e->getMessage() . "</div>" ;
+                            if ($person['role'] == 'Student') {
+                                // Add attendance fields, teacher only
+                                if ($values['role'] == 'Teacher' && $teacher == true) {
+                                    $form->toggleVisibilityByClass($count.'-attendance')->onSelect($count . '-type')->whenNot('Present');
+                                    $cell->addSelect($count . '-type')
+                                        ->fromArray(array_keys($attendance->getAttendanceTypes()))
+                                        ->selected($person['log']['type'] ?? '')  
+                                        ->setClass('mx-auto float-none w-24 text-xs p-0 m-0 mb-px');
+                                    $cell->addSelect($count . '-reason')
+                                        ->fromArray($attendance->getAttendanceReasons())
+                                        ->selected($person['log']['reason'] ?? '')
+                                        ->setClass($count.'-attendance mx-auto float-none w-24 text-xs p-0 m-0 mb-px');
+                                    $cell->addTextField($count . '-comment')
+                                        ->maxLength(255)
+                                        ->setValue($person['log']['comment'] ?? '')
+                                        ->setClass($count.'-attendance mx-auto float-none w-24 text-xs p-0 m-0');
                                 }
 
-                                if ($resultLog && $resultLog->rowCount() > 0 ) {
-                                    $rowLog = $resultLog->fetch();
+                                // Display a student profile link if this user has access
+                                if (($values['role'] == 'Teacher' && $teacher == true) || $canAccessProfile) {
+                                    $cell->addWebLink(Format::name('', $person['preferredName'], $person['surname'], 'Student', false))
+                                        ->setURL('index.php?q=/modules/Students/student_view_details.php')
+                                        ->addParam('gibbonPersonID', $person['gibbonPersonID'])
+                                        ->setClass('font-bold underline mt-1');
+                                } else {
+                                    $cell->addContent(Format::name('', $person['preferredName'], $person['surname'], 'Student', false))->wrap('<b>', '</b>');
                                 }
-                                //Check for school prefill if attendance not taken in this class
-                                else {
-                                    $dataLog = array('gibbonPersonID' => $rowClassGroup['gibbonPersonID'], 'date' => $values['date'] . '%');
-                                    $sqlLog = "SELECT type, reason, comment, context, timestampTaken FROM gibbonAttendanceLogPerson
-                                            JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                                            WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
-                                            AND date LIKE :date";
-                                    if ($crossFillClasses == "N") {
-                                        $sqlLog .= " AND NOT context='Class'";
-                                    }
-                                    $sqlLog .= " ORDER BY timestampTaken DESC";
-                                    $resultLog = $pdo->executeQuery($dataLog, $sqlLog);
 
-                                    if ($resultLog && $resultLog->rowCount() > 0 ) {
-                                        $rowLog = $resultLog->fetch();
-                                    }
-                                }
-                            }
-
-                            //$rowLog['type'] == 'Absent' or $rowLog['type'] == 'Left - Early' or $rowLog['type'] == 'Left' or $rowLog['type'] == 'Present - Offsite'
-                            if ( $attendance->isTypeAbsent($rowLog['type']) && $rowClassGroup['role'] == 'Student' ) {
-                                $_SESSION[$guid]['sidebarExtra'] .= "<td style='border: 1px solid #CC0000; background-color: #F6CECB; width:20%; text-align: center; vertical-align: top'>";
+                                $count++;
                             } else {
-                                $_SESSION[$guid]['sidebarExtra'] .= "<td style='border: 1px solid #rgba (1,1,1,0); width:20%; text-align: center; vertical-align: top'>";
+                                $cell->addContent(Format::name('', $person['preferredName'], $person['surname'], 'Staff', false))->wrap('<b>', '</b>');
                             }
 
-							//Alerts, if permission allows
-							if ($values['role'] == 'Teacher' and $teacher == true) {
-								$_SESSION[$guid]['sidebarExtra'] .= getAlertBar($guid, $connection2, $rowClassGroup['gibbonPersonID'], $rowClassGroup['privacy'], "id='confidentialPlan$count'");
-							}
-
-							//Get photos
-							$_SESSION[$guid]['sidebarExtra'] .= '<div class="relative">';
-                            $_SESSION[$guid]['sidebarExtra'] .= Format::userPhoto($rowClassGroup['image_240'], 75, 'mx-auto');
-
-                            if ($values['role'] == 'Teacher' and $teacher == true) {
-                                if ($rowClassGroup['role'] == 'Student') {
-                                    //HEY SHORTY IT'S YOUR BIRTHDAY!
-									$daysUntilNextBirthday = daysUntilNextBirthday($rowClassGroup['dob']);
-                                    if ($daysUntilNextBirthday == 0) {
-                                        $_SESSION[$guid]['sidebarExtra'] .= "<img title='".sprintf(__('%1$s  birthday today!'), $rowClassGroup['preferredName'].'&#39;s')."' class='w-6 h-6 absolute right-0 bottom-0 mr-1' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/gift_pink.png'/>";
-                                    } elseif ($daysUntilNextBirthday > 0 and $daysUntilNextBirthday < 8) {
-                                        $_SESSION[$guid]['sidebarExtra'] .= "<img title='$daysUntilNextBirthday day";
-                                        if ($daysUntilNextBirthday != 1) {
-                                            $_SESSION[$guid]['sidebarExtra'] .= 's';
-                                        }
-                                        $_SESSION[$guid]['sidebarExtra'] .= ' until '.$rowClassGroup['preferredName']."&#39;s birthday!' class='w-6 h-6 absolute right-0 bottom-0 mr-1' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/gift.png'/>";
-                                    }
-
-                                    $_SESSION[$guid]['sidebarExtra'] .= '</div>';
-                                }
-                            }
-                            $_SESSION[$guid]['sidebarExtra'] .= '</div>';
-
-                            if ($attendanceEnabled && $values['role'] == 'Teacher' and $teacher == true) {
-                                if ($rowClassGroup['role'] == 'Student') {
-
-                                    $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='$countStudents-gibbonPersonID' value='".$rowClassGroup['gibbonPersonID']."' data-id='$countStudents'>";
-
-                                    $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceTypeSelect( $rowLog['type'], "$countStudents-type", '96px; font-size: 12px; padding: 0.25rem; height: 28px;');
-
-                                    // Only hide the reason and comment fields if Present is the default attendance type
-                                    if ($defaultAttendanceType == 'Present' || $attendance->isTypePresent($rowLog['type'])) {
-                                        $_SESSION[$guid]['sidebarExtra'] .= "<div id='$countStudents-hideReasons' style='display:none;'>";
-                                    } else {
-                                        $_SESSION[$guid]['sidebarExtra'] .= "<div>";
-                                    }
-
-                                    $_SESSION[$guid]['sidebarExtra'] .= $attendance->renderAttendanceReasonSelect( $rowLog['reason'], "$countStudents-reason", '96px; font-size: 12px; padding: 0.25rem; height: 28px;');
-                                    $_SESSION[$guid]['sidebarExtra'] .= "<input type='text' maxlength=255 name='$countStudents-comment' id='$countStudents-comment' style='float: none; width:96px; ; font-size: 12px; padding: 0.25rem; height: 28px; margin-bottom: 3px' value='".htmlPrep($rowLog['comment'])."'>";
-                                    $_SESSION[$guid]['sidebarExtra'] .= "</div>";
-
-                                }
-                            }
-
-                            if ($rowClassGroup['role'] == 'Student' && $canAccessProfile) {
-                                $_SESSION[$guid]['sidebarExtra'] .= "<div style='padding-top: 5px'><b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowClassGroup['gibbonPersonID']."'>".Format::name('', $rowClassGroup['preferredName'], $rowClassGroup['surname'], 'Student').'</a></b><br/>';
-                            } else if ($rowClassGroup['role'] == 'Student') {
-                                $_SESSION[$guid]['sidebarExtra'] .= "<div style='padding-top: 5px'><b>".Format::name('', $rowClassGroup['preferredName'], $rowClassGroup['surname'], 'Student').'</b><br/>';
-                            } else {
-                                $_SESSION[$guid]['sidebarExtra'] .= "<div style='padding-top: 5px'><b>".Format::name($rowClassGroup['title'], $rowClassGroup['preferredName'], $rowClassGroup['surname'], 'Staff').'</b><br/>';
-                            }
-
-                            $_SESSION[$guid]['sidebarExtra'] .= '<i>'.__($rowClassGroup['role']).'</i><br/><br/></div>';
-                            $_SESSION[$guid]['sidebarExtra'] .= '</td>';
-
-                            if ($count % $columns == ($columns - 1)) {
-                                $_SESSION[$guid]['sidebarExtra'] .= '</tr>';
-                            }
-
-                            ++$count;
-                            if ($rowClassGroup['role'] == 'Student') {
-                                ++$countStudents;
-                            }
-                        }
-
-                        for ($i = 0;$i < $columns - ($count % $columns);++$i) {
-                            $_SESSION[$guid]['sidebarExtra'] .= "<td style='width:20%;'></td>";
-                        }
-
-                        if ($count % $columns != 0) {
-                            $_SESSION[$guid]['sidebarExtra'] .= '</tr>';
+                            $cell->addContent($person['role']);
                         }
 
                         if ($attendanceEnabled && $values['role'] == 'Teacher' and $teacher == true) {
-                            $_SESSION[$guid]['sidebarExtra'] .= '<tr>';
-                            $_SESSION[$guid]['sidebarExtra'] .= "<td class='right' colspan=5>";
-                            $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='params' value='$paramsVar'>";
-                            $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='gibbonCourseClassID' value='$gibbonCourseClassID'>";
-                            $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>";
-                            $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='currentDate' value='".$values['date']."'>";
-                            $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='count' value='$countStudents'>";
-                            $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='address' value='".$_SESSION[$guid]['address']."'>";
-                            $_SESSION[$guid]['sidebarExtra'] .= "<input type='submit' value='Submit'>";
-                            $_SESSION[$guid]['sidebarExtra'] .= '</td>';
-                            $_SESSION[$guid]['sidebarExtra'] .= '</tr>';
-                            $_SESSION[$guid]['sidebarExtra'] .= '</form>';
+                            $form->addHiddenValue('address', $gibbon->session->get('address'));
+                            $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
+                            $form->addHiddenValue('gibbonPlannerEntryID', $gibbonPlannerEntryID);
+                            $form->addHiddenValue('currentDate', $values['date']);
+                            $form->addHiddenValue('count', $count);
+                            $form->addHiddenValues($params);
+
+                            $form->addRow()->addSubmit();
                         }
+                        
+                        $page->addSidebarExtra($form->getOutput());
 
-                        $_SESSION[$guid]['sidebarExtra'] .= '</table>';
 
+                        // GUESTS
+                        $guests = $container->get(PlannerEntryGateway::class)->selectPlannerGuests($gibbonPlannerEntryID)->fetchAll();
 
+                        if (!empty($guests)) {
+                            $form = Form::create('plannerGuests', '');
+                            $form->setClass('noIntBorder fullWidth');
+                            $form->setTitle(__('Guests'));
 
-                        //Guests
-                        try {
-                            $dataClassGroup = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                            $sqlClassGroup = "SELECT * FROM gibbonPlannerEntryGuest INNER JOIN gibbonPerson ON gibbonPlannerEntryGuest.gibbonPersonID=gibbonPerson.gibbonPersonID JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND status='Full' ORDER BY role DESC, surname, preferredName";
-                            $resultClassGroup = $connection2->prepare($sqlClassGroup);
-                            $resultClassGroup->execute($dataClassGroup);
-                        } catch (PDOException $e) {
-                            $_SESSION[$guid]['sidebarExtra'] .= "<div class='error'>".$e->getMessage().'</div>';
-                        }
-                        if ($resultClassGroup->rowCount() > 0) {
-                            $_SESSION[$guid]['sidebarExtra'] .= "<span style='font-size: 115%; font-weight: bold; padding-top: 21px'>".__('Guests').'<br/></span>';
-                            $_SESSION[$guid]['sidebarExtra'] .= "<table class='noIntBorder' cellspacing='0' style='width:260px; float: right'>";
-                            $count2 = 0;
-                            $count2Students = 0;
-                            while ($rowClassGroup = $resultClassGroup->fetch()) {
-                                if ($count2 % $columns == 0) {
-                                    $_SESSION[$guid]['sidebarExtra'] .= '<tr>';
-                                }
+                            $grid = $form->addRow()->addGrid('attendance')->setClass('-mx-3 -my-2')->setBreakpoints('w-1/2');
 
-                                $_SESSION[$guid]['sidebarExtra'] .= "<td style='border: 1px solid #ffffff; width:20%; text-align: center; vertical-align: top'>";
+                            foreach ($guests as $guest) {
+                                $cell = $grid->addCell()->setClass('text-center py-4 px-1 -mr-px -mb-px flex flex-col justify-start');
 
-                                $_SESSION[$guid]['sidebarExtra'] .= getUserPhoto($guid, $rowClassGroup['image_240'], 75);
-
-                                $_SESSION[$guid]['sidebarExtra'] .= "<div style='padding-top: 5px'><b>".Format::name($rowClassGroup['title'], $rowClassGroup['preferredName'], $rowClassGroup['surname'], 'Staff').'</b><br/>';
-
-                                $_SESSION[$guid]['sidebarExtra'] .= '<i>'.$rowClassGroup['role'].'</i><br/><br/></div>';
-                                $_SESSION[$guid]['sidebarExtra'] .= '</td>';
-
-                                if ($count2 % $columns == ($columns - 1)) {
-                                    $_SESSION[$guid]['sidebarExtra'] .= '</tr>';
-                                }
-
-                                ++$count2;
-                                if ($rowClassGroup['role'] == 'Student') {
-                                    ++$count2Students;
-                                }
+                                $cell->addContent(Format::userPhoto($guest['image_240'], 75, ''));
+                                $cell->addContent(Format::name($guest['title'], $guest['preferredName'], $guest['surname'], 'Staff', false))->wrap('<b>', '</b>');
+                                $cell->addContent($guest['role']);
                             }
 
-                            for ($i = 0;$i < $columns - ($count2 % $columns);++$i) {
-                                $_SESSION[$guid]['sidebarExtra'] .= "<td style='width:20%;'></td>";
-                            }
-
-                            if ($count2 % $columns != 0) {
-                                $_SESSION[$guid]['sidebarExtra'] .= '</tr>';
-                            }
-                            $_SESSION[$guid]['sidebarExtra'] .= '</table>';
+                            $page->addSidebarExtra($form->getOutput());
                         }
-                        $_SESSION[$guid]['sidebarExtra'] .= '</div>';
+                        
                         ?>
 						<script type="text/javascript">
 							/* Confidential Control */

@@ -42,7 +42,5 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% if role == 'Teacher' and teacher == 'true'  %}
         <div style='text-align: right; font-weight: bold; margin-top: 20px'> {{ __('Complete?') }} <input name='complete{{ blockCount }}' style='margin-right: 2px' type='checkbox' {{ checked }}></div>
         <input type="hidden" name="gibbonUnitClassBlockID[]" value="{{ gibbonUnitClassBlockID }}">
-    {% else %}
-        <div style='text-align: right; font-weight: bold; margin-top: 20px'> {{ __('Complete?') }} <input disabled name='complete{{ blockCount }}' style='margin-right: 2px' type='checkbox' {{ checked }}></div>
     {% endif %}
 </div>
