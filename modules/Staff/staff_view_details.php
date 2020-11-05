@@ -37,6 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestActionManage = getHighestGroupedAction($guid, "/modules/Staff/staff_manage.php", $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
         echo __('The highest grouped action cannot be determined.');
@@ -333,110 +334,117 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                         echo $table->render($facilities);
                     } elseif ($subpage == 'Emergency Contacts') {
-                        if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php') == true) {
-                            echo "<div class='linkTop'>";
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                            echo '</div>';
-                        }
-
-                        echo '<p>';
-                        echo __('In an emergency, please try and contact the adult family members listed below first. If these cannot be reached, then try the emergency contacts below.');
-                        echo '</p>';
-
-                        echo '<h4>';
-                        echo __('Adult Family Members');
-                        echo '</h4>';
-
-                        try {
-                            $dataFamily = array('gibbonPersonID' => $gibbonPersonID);
-                            $sqlFamily = 'SELECT * FROM gibbonFamily JOIN gibbonFamilyChild ON (gibbonFamily.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID';
-                            $resultFamily = $connection2->prepare($sqlFamily);
-                            $resultFamily->execute($dataFamily);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
-
-                        if ($resultFamily->rowCount() != 1) {
+                        if ($highestActionManage != 'Manage Staff_confidential') {
                             echo "<div class='error'>";
-                            echo __('There is no family information available for the current staff member.');
+                            echo __('You do not have access to this action.');
                             echo '</div>';
-                        } else {
-                            $rowFamily = $resultFamily->fetch();
-                            $count = 1;
-                            //Get adults
+                        }
+                        else {
+                            if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php') == true) {
+                                echo "<div class='linkTop'>";
+                                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                                echo '</div>';
+                            }
+
+                            echo '<p>';
+                            echo __('In an emergency, please try and contact the adult family members listed below first. If these cannot be reached, then try the emergency contacts below.');
+                            echo '</p>';
+
+                            echo '<h4>';
+                            echo __('Adult Family Members');
+                            echo '</h4>';
+
                             try {
-                                $dataMember = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
-                                $sqlMember = 'SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName';
-                                $resultMember = $connection2->prepare($sqlMember);
-                                $resultMember->execute($dataMember);
+                                $dataFamily = array('gibbonPersonID' => $gibbonPersonID);
+                                $sqlFamily = 'SELECT * FROM gibbonFamily JOIN gibbonFamilyChild ON (gibbonFamily.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID';
+                                $resultFamily = $connection2->prepare($sqlFamily);
+                                $resultFamily->execute($dataFamily);
                             } catch (PDOException $e) {
                                 echo "<div class='error'>".$e->getMessage().'</div>';
                             }
 
-                            while ($rowMember = $resultMember->fetch()) {
-                                $table = DataTable::createDetails('family' . $count);
+                            if ($resultFamily->rowCount() != 1) {
+                                echo "<div class='error'>";
+                                echo __('There is no family information available for the current staff member.');
+                                echo '</div>';
+                            } else {
+                                $rowFamily = $resultFamily->fetch();
+                                $count = 1;
+                                //Get adults
+                                try {
+                                    $dataMember = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
+                                    $sqlMember = 'SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName';
+                                    $resultMember = $connection2->prepare($sqlMember);
+                                    $resultMember->execute($dataMember);
+                                } catch (PDOException $e) {
+                                    echo "<div class='error'>".$e->getMessage().'</div>';
+                                }
 
-                                $table->addColumn('preferredName', __('Name'))
-                                    ->format(Format::using('name', ['title', 'preferredName', 'surname', 'Parent']));
+                                while ($rowMember = $resultMember->fetch()) {
+                                    $table = DataTable::createDetails('family' . $count);
 
-                                $table->addColumn('relationship', __('Relationship'))
-                                    ->format(function($rowMember) {
-                                        if ($rowMember['role'] == 'Parent') {
-                                            if ($rowMember['gender'] == 'M') {
-                                                echo __('Father');
-                                            } elseif ($rowMember['gender'] == 'F') {
-                                                echo __('Mother');
+                                    $table->addColumn('preferredName', __('Name'))
+                                        ->format(Format::using('name', ['title', 'preferredName', 'surname', 'Parent']));
+
+                                    $table->addColumn('relationship', __('Relationship'))
+                                        ->format(function($rowMember) {
+                                            if ($rowMember['role'] == 'Parent') {
+                                                if ($rowMember['gender'] == 'M') {
+                                                    echo __('Father');
+                                                } elseif ($rowMember['gender'] == 'F') {
+                                                    echo __('Mother');
+                                                } else {
+                                                    echo $rowMember['role'];
+                                                }
                                             } else {
                                                 echo $rowMember['role'];
                                             }
-                                        } else {
-                                            echo $rowMember['role'];
-                                        }
-                                    });
+                                        });
 
-                                $table->addColumn('phone', __('Contact By Phone'))
-                                    ->format(function($rowMember) {
-                                        $phones = '';
+                                    $table->addColumn('phone', __('Contact By Phone'))
+                                        ->format(function($rowMember) {
+                                            $phones = '';
 
-                                        for ($i = 1; $i < 5; ++$i) {
-                                            if ($rowMember['phone'.$i] != '') {
-                                                $phones = $phones . Format::using('phone', ['phone' . $i, 'phone'.$i.'CountryCode', 'phone'.$i.'Type']) . '<br/>';
+                                            for ($i = 1; $i < 5; ++$i) {
+                                                if ($rowMember['phone'.$i] != '') {
+                                                    $phones = $phones . Format::using('phone', ['phone' . $i, 'phone'.$i.'CountryCode', 'phone'.$i.'Type']) . '<br/>';
+                                                }
                                             }
-                                        }
 
-                                        return $phones;
+                                            return $phones;
+                                        });
+
+                                    echo $table->render([$rowMember]);
+
+                                    ++$count;
+                                }
+                            }
+
+                            $table = DataTable::createDetails('emergency');
+                            $table->setTitle(__('Emergency Contacts'));
+
+                            for ($i = 1; $i <= 2; $i++) {
+                                $emergency = 'emergency' . $i;
+                                $table->addColumn($emergency . 'Name', __('Contact ' . $i))
+                                    ->format(function($row) use ($emergency) {
+                                        if ($row[$emergency . 'Relationship'] != '') {
+                                            return $row[$emergency . 'Name'] . ' (' . $row[$emergency . 'Relationship'] . ')';
+                                        }
+                                        return $row[$emergency . 'Name'];
                                     });
 
-                                echo $table->render([$rowMember]);
-
-                                ++$count;
+                                $table->addColumn($emergency . 'Number1', __('Number 1'));
+                                $table->addColumn($emergency . 'Number2', __('Number 2'));
                             }
+
+                            echo $table->render([$row]);
                         }
-
-                        $table = DataTable::createDetails('emergency');
-                        $table->setTitle(__('Emergency Contacts'));
-
-                        for ($i = 1; $i <= 2; $i++) {
-                            $emergency = 'emergency' . $i;
-                            $table->addColumn($emergency . 'Name', __('Contact ' . $i))
-                                ->format(function($row) use ($emergency) {
-                                    if ($row[$emergency . 'Relationship'] != '') {
-                                        return $row[$emergency . 'Name'] . ' (' . $row[$emergency . 'Relationship'] . ')';
-                                    }
-                                    return $row[$emergency . 'Name'];
-                                });
-
-                            $table->addColumn($emergency . 'Number1', __('Number 1'));
-                            $table->addColumn($emergency . 'Number2', __('Number 2'));
-                        }
-
-                        echo $table->render([$row]);
 
                     } elseif ($subpage == 'Activities') {
-                        
+
                         $highestActionActivities = getHighestGroupedAction($guid, '/modules/Activities/activities_attendance.php', $connection2);
                         $canAccessEnrolment = isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_enrolment.php');
-    
+
                         // CRITERIA
                         $activityGateway = $container->get(ActivityGateway::class);
                         $criteria = $activityGateway->newQueryCriteria()
@@ -477,7 +485,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                                     ->isModal(1000, 550)
                                     ->setURL('/modules/Activities/activities_my_full.php');
 
-                                if ($highestActionActivities == "Enter Activity Attendance" || 
+                                if ($highestActionActivities == "Enter Activity Attendance" ||
                                 ($highestActionActivities == "Enter Activity Attendance_leader" && ($activity['role'] == 'Organiser' || $activity['role'] == 'Assistant' || $activity['role'] == 'Coach'))) {
                                     $actions->addAction('attendance', __('Attendance'))
                                         ->setIcon('attendance')
@@ -485,7 +493,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                                 }
                             });
 
-                        echo $table->render($activities);   
+                        echo $table->render($activities);
 
                     } elseif ($subpage == 'Timetable') {
                         if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') == false) {
@@ -520,6 +528,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     }
 
                     $page->addSidebarExtra($page->fetchFromTemplate('profile/sidebar.twig.html', [
+                        'canViewEmergency' => ($highestActionManage == 'Manage Staff_confidential') ? true : false,
                         'userPhoto' => Format::userPhoto($row['image_240'], 240),
                         'canViewTimetable' => isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php'),
                         'gibbonPersonID' => $gibbonPersonID,
