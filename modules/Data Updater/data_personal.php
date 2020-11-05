@@ -410,13 +410,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
                     $addressSet = ($values['address1'] != '' or $values['address1District'] != '' or $values['address1Country'] != '' or $values['address2'] != '' or $values['address2District'] != '' or $values['address2Country'] != '')? 'Yes' : '';
 
-                    $row = $form->addRow();
+                    $row = $form->addRow()->onlyIf($isVisible('address1'));
                         $row->addLabel('showAddresses', __('Enter Personal Address?'));
-                        $row->addCheckbox('showAddresses')->setValue('Yes')->checked($addressSet);
+                        $row->addCheckbox('showAddresses')
+                            ->setValue('Yes')
+                            ->checked($addressSet)
+                            ->setDisabled(isset($requiredFields['address1']) && $requiredFields['address1'] == 'readonly');
 
                     $form->toggleVisibilityByClass('address')->onCheckbox('showAddresses')->when('Yes');
 
-                    $row = $form->addRow()->addClass('address');
+                    $row = $form->addRow()->onlyIf($isVisible('address1'))->addClass('address');
                     $row->addAlert(__('Address information for an individual only needs to be set under the following conditions:'), 'warning')
                         ->append('<ol>')
                         ->append('<li>'.__('If the user is not in a family.').'</li>')
@@ -424,19 +427,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         ->append('<li>'.__('If the user needs an address in addition to their family\'s home address.').'</li>')
                         ->append('</ol>');
 
-                    $row = $form->addRow()->addClass('address');
+                    $row = $form->addRow()->onlyIf($isVisible('address1'))->addClass('address');
                         $row->addLabel('address1', __('Address 1'))->description(__('Unit, Building, Street'));
                         $row->addTextArea('address1')->maxLength(255)->setRows(2);
 
-                    $row = $form->addRow()->addClass('address');
+                    $row = $form->addRow()->onlyIf($isVisible('address1District'))->addClass('address');
                         $row->addLabel('address1District', __('Address 1 District'))->description(__('County, State, District'));
                         $row->addTextFieldDistrict('address1District');
 
-                    $row = $form->addRow()->addClass('address');
+                    $row = $form->addRow()->onlyIf($isVisible('address1Country'))->addClass('address');
                         $row->addLabel('address1Country', __('Address 1 Country'));
                         $row->addSelectCountry('address1Country');
 
-                    if ($values['address1'] != '') {
+                    if ($values['address1'] != '' && $isVisible('address1')) {
                         try {
                             $dataAddress = array(
                                 'gibbonPersonID' => $values['gibbonPersonID'],
@@ -475,15 +478,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         }
                     }
 
-                    $row = $form->addRow()->addClass('address');
+                    $row = $form->addRow()->onlyIf($isVisible('address2'))->addClass('address');
                         $row->addLabel('address2', __('Address 2'))->description(__('Unit, Building, Street'));
                         $row->addTextArea('address2')->maxLength(255)->setRows(2);
 
-                    $row = $form->addRow()->addClass('address');
+                    $row = $form->addRow()->onlyIf($isVisible('address2District'))->addClass('address');
                         $row->addLabel('address2District', __('Address 2 District'))->description(__('County, State, District'));
                         $row->addTextFieldDistrict('address2District');
 
-                    $row = $form->addRow()->addClass('address');
+                    $row = $form->addRow()->onlyIf($isVisible('address2Country'))->addClass('address');
                         $row->addLabel('address2Country', __('Address 2 Country'));
                         $row->addSelectCountry('address2Country');
 
