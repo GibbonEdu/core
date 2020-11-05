@@ -190,4 +190,25 @@ class CourseEnrolmentGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    public function selectClassParticipantsByDate($gibbonCourseClassID, $date)
+    {
+        $data =['gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $date, 'today' => date('Y-m-d')];
+        $sql = "SELECT gibbonCourseClassPerson.*, gibbonPerson.* 
+            FROM gibbonCourseClassPerson 
+            INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID 
+            LEFT JOIN (
+                SELECT gibbonTTDayRowClass.gibbonCourseClassID, gibbonTTDayRowClass.gibbonTTDayRowClassID FROM gibbonTTDayDate JOIN gibbonTTDayRowClass ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) WHERE gibbonTTDayDate.date=:date) AS gibbonTTDayRowClassSubset ON (gibbonTTDayRowClassSubset.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) 
+            LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClassSubset.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
+            WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID 
+            AND status='Full' 
+            AND (dateStart IS NULL OR dateStart<=:today) 
+            AND (dateEnd IS NULL  OR dateEnd>=:today) 
+            AND (NOT role='Student - Left') AND (NOT role='Teacher - Left') AND NOT (role='Teacher' AND reportable='N')
+            GROUP BY gibbonCourseClassPerson.gibbonCourseClassPersonID, gibbonPerson.gibbonPersonID
+            HAVING COUNT(gibbonTTDayRowClassExceptionID) = 0
+            ORDER BY FIELD(role, 'Teacher', 'Assistant', 'Technician', 'Student', 'Parent'), surname, preferredName";
+
+        return $this->db()->select($sql, $data);
+    }
 }
