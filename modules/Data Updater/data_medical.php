@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 
         $customResponces = array();
 
-        $success0 = __('Your request was completed successfully. An administrator will process your request as soon as possible. You will not see the updated data in the system until it has been processed and approved.');
+        $success0 = __('Your request was completed successfully. An administrator will process your request as soon as possible. You will not see the updated data in the system until it has been processed.');
         if ($_SESSION[$guid]['organisationDBAEmail'] != '' and $_SESSION[$guid]['organisationDBAName'] != '') {
             $success0 .= ' '.sprintf(__('Please contact %1$s if you have any questions.'), "<a href='mailto:".$_SESSION[$guid]['organisationDBAEmail']."'>".$_SESSION[$guid]['organisationDBAName'].'</a>');
         }
@@ -195,7 +195,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                     } elseif ($resultForm->rowCount() == 1) {
                         $existing = true;
                         echo "<div class='warning'>";
-                        echo __('You have already submitted a form, which is pending approval by an administrator. If you wish to make changes, please edit the data below, but remember your data will not appear in the system until it has been approved.');
+                        echo __('You have already submitted a form, which is awaiting processing by an administrator. If you wish to make changes, please edit the data below, but remember your data will not appear in the system until it has been processed.');
                         echo '</div>';
                         $proceed = true;
                     } else {
