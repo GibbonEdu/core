@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
     } else {
         //Proceed!
         $page->breadcrumbs->add(__('Update Family Data'));
-        
+
         if ($highestAction == 'Update Personal Data_any') {
             echo '<p>';
             echo __('This page allows a user to request selected family data updates for any family.');
@@ -50,13 +50,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
         }
 
         $customResponces = array();
-        $error3 = __('Your request was successful, but some data was not properly saved. An administrator will process your request as soon as possible. <u>You will not see the updated data in the system until it has been processed and approved.</u>');
+        $error3 = __('Your request was successful, but some data was not properly saved. An administrator will process your request as soon as possible. You will not see the updated data in the system until it has been processed.');
         if ($gibbon->session->get('organisationDBAEmail') != '' and $gibbon->session->get('organisationDBAName') != '') {
             $error3 .= ' '.sprintf(__('Please contact %1$s if you have any questions.'), "<a href='mailto:".$gibbon->session->get('organisationDBAEmail')."'>".$gibbon->session->get('organisationDBAName').'</a>');
         }
         $customResponces['error3'] = $error3;
 
-        $success0 = __('Your request was completed successfully. An administrator will process your request as soon as possible. You will not see the updated data in the system until it has been processed and approved.');
+        $success0 = __('Your request was completed successfully. An administrator will process your request as soon as possible. You will not see the updated data in the system until it has been processed.');
         if ($gibbon->session->get('organisationDBAEmail') != '' and $gibbon->session->get('organisationDBAName') != '') {
             $success0 .= ' '.sprintf(__('Please contact %1$s if you have any questions.'), "<a href='mailto:".$gibbon->session->get('organisationDBAEmail')."'>".$gibbon->session->get('organisationDBAName').'</a>');
         }
@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
 
         $form = Form::create('selectFamily', $gibbon->session->get('absoluteURL').'/index.php', 'get');
         $form->addHiddenValue('q', '/modules/'.$gibbon->session->get('module').'/data_family.php');
-    
+
         if ($highestAction == 'Update Family Data_any') {
             $data = array();
             $sql = "SELECT gibbonFamily.gibbonFamilyID as value, name FROM gibbonFamily ORDER BY name";
@@ -89,11 +89,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
                 ->required()
                 ->selected($gibbonFamilyID)
                 ->placeholder();
-        
+
         $row = $form->addRow();
             $row->addSubmit();
-        
-        echo $form->getOutput();                   
+
+        echo $form->getOutput();
 
         if ($gibbonFamilyID != '') {
             echo '<h2>';
@@ -144,7 +144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
                 } elseif ($result->rowCount() == 1) {
                     $existing = true;
                     echo "<div class='warning'>";
-                    echo __('You have already submitted a form, which is pending approval by an administrator. If you wish to make changes, please edit the data below, but remember your data will not appear in the system until it has been approved.');
+                    echo __('You have already submitted a form, which is awaiting processing by an administrator. If you wish to make changes, please edit the data below, but remember your data will not appear in the system until it has been processed.');
                     echo '</div>';
                     $proceed = true;
                 } else {
@@ -168,10 +168,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
 
                 if ($proceed == true) {
                     //Let's go!
-                    $values = $result->fetch(); 
+                    $values = $result->fetch();
 
                     $required = ($highestAction != 'Update Family Data_any');
-                    
+
                     $form = Form::create('updateFamily', $gibbon->session->get('absoluteURL').'/modules/'.$gibbon->session->get('module').'/data_familyProcess.php?gibbonFamilyID='.$gibbonFamilyID);
                     $form->setFactory(DatabaseFormFactory::create($pdo));
 

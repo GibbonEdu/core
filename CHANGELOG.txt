@@ -45,6 +45,7 @@ v21.0.00
         Departments: improved course/class naming in Class view
         Data Updater: data updates with no changes will be automatically accepted
         Data Updater: enabled address fields to be read only or hidden in Data Updater Settings
+        Data Updater: adjusted language in user messages to focus on process not approval
         Finance: added a setting to customize Payment Type options
         Finance: added error logging to the email reminder process
         Finance: improved the layout of invoice emails, reminders and receipts
