@@ -44,6 +44,7 @@ v21.0.00
         Attendance: added an Offsite - Late option for attendance codes
         Departments: improved course/class naming in Class view
         Data Updater: data updates with no changes will be automatically accepted
+        Data Updater: enabled address fields to be read only or hidden in Data Updater Settings
         Finance: added a setting to customize Payment Type options
         Finance: added error logging to the email reminder process
         Finance: improved the layout of invoice emails, reminders and receipts
