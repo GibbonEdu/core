@@ -29,10 +29,10 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     </div>
 
     {% if teachersNotes and roleCategory == 'Staff' and gibbonPersonID is not empty %}
-        <div class="teachersNotes hidden bg-red-200">
-            <div class="border-t pt-4 mb-4 uppercase font-sans text-base leading-snug text-gray-800 p-1">
+        <div class="teachersNotes hidden border bg-red-200 rounded p-4 mt-4">
+            <h4 class="mt-0 mb-2 uppercase font-sans text-base leading-snug text-gray-800 p-1">
                 {{ __("Teacher's Notes") }}
-            </div>
+            </h4>
             <div class="-mb-4 text-sm p-1">
                 {{ teachersNotes|raw }}
             </div>
@@ -42,7 +42,5 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% if role == 'Teacher' and teacher == 'true'  %}
         <div style='text-align: right; font-weight: bold; margin-top: 20px'> {{ __('Complete?') }} <input name='complete{{ blockCount }}' style='margin-right: 2px' type='checkbox' {{ checked }}></div>
         <input type="hidden" name="gibbonUnitClassBlockID[]" value="{{ gibbonUnitClassBlockID }}">
-    {% else %}
-        <div style='text-align: right; font-weight: bold; margin-top: 20px'> {{ __('Complete?') }} <input disabled name='complete{{ blockCount }}' style='margin-right: 2px' type='checkbox' {{ checked }}></div>
     {% endif %}
 </div>

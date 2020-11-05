@@ -350,4 +350,18 @@ class PlannerEntryGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    public function selectPlannerGuests($gibbonPlannerEntryID)
+    {
+        $data = ['gibbonPlannerEntryID' => $gibbonPlannerEntryID];
+        $sql = "SELECT title, surname, preferredName, image_240, gibbonPlannerEntryGuest.role
+                FROM gibbonPlannerEntryGuest 
+                JOIN gibbonPerson ON gibbonPlannerEntryGuest.gibbonPersonID=gibbonPerson.gibbonPersonID 
+                JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) 
+                WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID 
+                AND status='Full' 
+                ORDER BY role DESC, surname, preferredName";
+
+        return $this->db()->select($sql, $data);
+    }
 }
