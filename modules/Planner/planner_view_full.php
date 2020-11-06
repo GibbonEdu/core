@@ -462,6 +462,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             echo '</table>';
                         }
 
+                        //Get Smart Blocks
+                        $dataBlocks = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
+                        $sqlBlocks = "SELECT * FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY sequenceNumber";
+                        $blocks = $pdo->select($sqlBlocks, $dataBlocks)->fetchAll();
+                        
                         // LESSON CONTENTS
                         $form = Form::create('smartBlockCompletion', $gibbon->session->get('absoluteURL').'/modules/Planner/planner_view_full_smartProcess.php');
                         $form->setClass('blank');
@@ -481,11 +486,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         }
 
                         $form->setDescription($description);
-
-                        //Get Smart Blocks
-                        $dataBlocks = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                        $sqlBlocks = "SELECT * FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY sequenceNumber";
-                        $blocks = $pdo->select($sqlBlocks, $dataBlocks)->fetchAll();
 
                         if (!empty($blocks)) {
                             $form->addHiddenValue('address', $gibbon->session->get('address'));
