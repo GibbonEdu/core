@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
             if (isset($_GET['dateHuman'])) {
                 $date = dateConvert($guid, $_GET['dateHuman']);
             }
-            
+
             list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
             $dateStamp = mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);
         } elseif ($viewBy == 'class') {
@@ -466,7 +466,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $dataBlocks = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
                         $sqlBlocks = "SELECT * FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY sequenceNumber";
                         $blocks = $pdo->select($sqlBlocks, $dataBlocks)->fetchAll();
-                        
+
                         // LESSON CONTENTS
                         $form = Form::create('smartBlockCompletion', $gibbon->session->get('absoluteURL').'/modules/Planner/planner_view_full_smartProcess.php');
                         $form->setClass('blank');
@@ -474,7 +474,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $form->setTitle(__('Lesson Content'));
                         $description = '';
                         if (!empty($values['description'])) {
-                            $description = '<div class="unit-block rounded p-8 mb-4 border bg-gray-100 text-gray-700">'.$values['description'].'</div>'; 
+                            $description = '<div class="unit-block rounded p-8 mb-4 border bg-gray-100 text-gray-700">'.$values['description'].'</div>';
                         }
 
                         if (empty($blocks) and empty($values['description'])) {
@@ -532,7 +532,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                             if ($values['role'] == 'Teacher' and $teacher == true) {
                                 $row = $form->addRow()->addSubmit();
-                            }   
+                            }
                         }
 
                         echo $form->getOutput();
@@ -690,7 +690,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                             } else {
                                                 $versions = ['Final' => __('Final')];
                                             }
-                                            
+
                                             $row = $form->addRow();
                                                 $row->addLabel('version', __('Version'));
                                                 $row->addSelect('version')->fromArray($versions)->required();
@@ -1112,7 +1112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 											$homeworkDueDateTime = $rowNext['timeStart'];
 										}
 									}
-                                
+
                                 // SUBMIT HOMEWORK - Student Recorded
                                 $form = Form::create('homeworkStudent', $gibbon->session->get('absoluteURL')."/modules/Planner/planner_view_full_myHomeworkProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&address=".$gibbon->session->get('address')."&gibbonCourseClassID=$gibbonCourseClassID&date=$date");
 
@@ -1126,10 +1126,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 $form->toggleVisibilityByClass('showHomework')->onRadio('homework')->when('Y');
 
                                 if (!empty($rowMyHomework['homeworkDueDateTime'])) {
-                                    $homeworkDueDate = substr($rowMyHomework['homeworkDueDateTime'], 0, 10); 
-                                    $homeworkDueDateTime = substr($rowMyHomework['homeworkDueDateTime'], 11, 5); 
+                                    $homeworkDueDate = substr($rowMyHomework['homeworkDueDateTime'], 0, 10);
+                                    $homeworkDueDateTime = substr($rowMyHomework['homeworkDueDateTime'], 11, 5);
                                 }
-                                
+
                                 $row = $form->addRow()->addClass('showHomework');
                                     $row->addLabel('homeworkDueDate', __('Homework Due Date'));
                                     $col = $row->addColumn('homeworkDueDate');
@@ -1143,7 +1143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 $col = $form->addRow()->addClass('showHomework')->addColumn();
                                     $col->addLabel('homeworkDetails', __('Homework Details'));
                                     $col->addEditor('homeworkDetails', $guid)->setRows(15)->showMedia()->required()->setValue($rowMyHomework['homeworkDetails'] ?? '');
-                                    
+
                                 $row = $form->addRow();
                                     $row->addFooter();
                                     $row->addSubmit();
@@ -1237,7 +1237,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $form->setAutocomplete('off');
                         $form->setTitle($attendanceEnabled ? __('Participants & Attendance') : __('Participants'));
 
-                        // Display the dated this attendance was taken, if any 
+                        // Display the dated this attendance was taken, if any
                         if ($attendanceEnabled && ($values['role'] == 'Teacher' and $teacher == true)) {
                             $classLogs = $container->get(AttendanceLogCourseClassGateway::class)->selectClassAttendanceLogsByDate($gibbonCourseClassID, $values['date'])->fetchAll();
                             if (empty($classLogs)) {
@@ -1248,7 +1248,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     $linkText = Format::time($log['timestampTaken']).' '.Format::date($log['date']).' '.__('by').' '.Format::name('', $log['preferredName'], $log['surname'], 'Student', true);
 
                                     $logText .= '<li>'.Format::link('./index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$gibbonCourseClassID.'&currentDate='.Format::date($log['date']), $linkText, ['style' => 'color: inherit']).'</li>';
-                                    
+
                                 }
                                 $logText .= '</ul>';
                                 $form->setDescription(Format::alert(__('Attendance has been taken at the following times for this lesson:').$logText, 'success'));
@@ -1271,7 +1271,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             // Display alerts and birthdays, teacher only
                             if ($person['role'] == 'Student' && $values['role'] == 'Teacher' && $teacher == true) {
                                 $alert = getAlertBar($guid, $connection2, $person['gibbonPersonID'], $person['privacy'], "id='confidentialPlan$count'");
+                            }
 
+                            $canViewStudents = isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief')
+                                || ($highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes' || $highestAction == 'View Student Profile_fullEditAllNotes');
+                            if ($person['role'] == 'Student' && $canViewStudents) {
                                 $icon = Format::userBirthdayIcon($person['dob'], $person['preferredName']);
                             }
 
@@ -1287,7 +1291,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     $form->toggleVisibilityByClass($count.'-attendance')->onSelect($count . '-type')->whenNot('Present');
                                     $cell->addSelect($count . '-type')
                                         ->fromArray(array_keys($attendance->getAttendanceTypes()))
-                                        ->selected($person['log']['type'] ?? '')  
+                                        ->selected($person['log']['type'] ?? '')
                                         ->setClass('mx-auto float-none w-24 text-xs p-0 m-0 mb-px');
                                     $cell->addSelect($count . '-reason')
                                         ->fromArray($attendance->getAttendanceReasons())
@@ -1327,7 +1331,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                             $form->addRow()->addSubmit();
                         }
-                        
+
                         $page->addSidebarExtra($form->getOutput());
 
 
@@ -1351,7 +1355,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                             $page->addSidebarExtra($form->getOutput());
                         }
-                        
+
                         ?>
 						<script type="text/javascript">
 							/* Confidential Control */
