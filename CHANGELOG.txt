@@ -79,6 +79,7 @@ v21.0.00
         Students: added uniqueness checks for Student ID field
         Students: send notifications for student notes to the Head of Year, if available
         Students: adjusted the font size to scale down for names on Student ID cards
+        Students: removed Student ID from View Student Profile_brief
         System Admin: adjusted View Log to show only current year's log entries
         System Admin: added a flag to import types to enable updating non-unique rows
         Timetable Admin: added a dateEnrolled and dateUnenrolled to class enrolments
