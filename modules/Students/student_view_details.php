@@ -180,12 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo "<i><a href='".$row['website']."'>".$row['website'].'</a></i>';
                     }
                     echo '</td>';
-                    echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Student ID').'</span><br/>';
-                    if ($row['studentID'] != '') {
-                        echo '<i>'.$row['studentID'].'</a></i>';
-                    }
-                    echo '</td>';
+                    echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'></td>";
                     echo '</tr>';
                     echo '</table>';
 
