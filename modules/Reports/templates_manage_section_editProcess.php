@@ -51,6 +51,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_s
         $data['flags'] = array_reduce($_POST['flags'], function ($group, $item) {
             return $group |= $item;
         }, 0);
+    } else {
+        $data['flags'] = 0;
     }
 
     // Handle file uploads for custom config fields
