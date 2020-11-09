@@ -109,13 +109,15 @@ class AttendanceByCycle extends DataSource
 
                 // Optionally grab the class absent and late counts too
                 if ($this->countClassAsSchool == 'Y') {
-                    $absent += count(array_filter($endOfClasses, function ($log) {
-                        return ($log['direction'] == 'Out' && $log['scope'] == 'Offsite');
-                    }));
+                    foreach ($endOfClasses as $classes) {
+                        $absent += count(array_filter($classes, function ($log) {
+                            return ($log['direction'] == 'Out' && $log['scope'] == 'Offsite');
+                        }));
 
-                    $late += count(array_filter($endOfClasses, function ($log) {
-                        return ($log['scope'] == 'Onsite - Late');
-                    }));
+                        $late += count(array_filter($classes, function ($log) {
+                            return ($log['scope'] == 'Onsite - Late');
+                        }));
+                    }
                 }
 
                 return array('absent' => $absent, 'late' => $late);
