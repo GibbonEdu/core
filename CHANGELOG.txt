@@ -67,6 +67,7 @@ v21.0.00
         Planner: removed lessons with timetable exceptions from Today's Lessons on the dashboard
         Planner: adjust the display of homework lists to account for class enrolment dates
         Planner: enabled homework to be submitted for lessons that already exist during a school closure
+        Planner: brought student birthday icon display into line with class and form group view
         Reports: display the download link after a batch PDF has completed
         Reports: added full course name to the report writing page
         Reports: added a bulk delete action in the Edit Reporting Scopes page
