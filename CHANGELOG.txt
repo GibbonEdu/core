@@ -100,6 +100,7 @@ v21.0.00
         Formal Assessment: removed Back link from delete modal
         Individual Needs: fixed description of Reason field in Manage Investigations
         Library: fixed broken delete function in Manage Catalog
+        Markbook: fixed rubric data not visible for students set to Left in a class
         Messenger: fixed SMTP debug settings in New Message process page
         Messenger: fixed copy-pasted div/paragraph replacement in sender's copy of emails
         Reports: fixed AttendanceByCycle data source counting school attendance as class attendance
