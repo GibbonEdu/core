@@ -72,6 +72,7 @@ v21.0.00
         Reports: added full course name to the report writing page
         Reports: added a bulk delete action in the Edit Reporting Scopes page
         Rubrics: added an option to colour rubric column and row headings
+        Reports: enabled plain text and numeric fields in Criteria Types
         School Admin: added Manage Medical Conditions action
         School Admin: added optional introductory text setting for the Medical Conditions section
         Staff: removed the display of addresses in the Staff Profile
