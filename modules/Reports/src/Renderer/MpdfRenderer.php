@@ -143,7 +143,7 @@ class MpdfRenderer implements ReportRendererInterface
         if ($section->x != null && $section->y != null) {
             $this->pdf->WriteFixedPosHTML($html, floatval($section->x), floatval($section->y), !empty($section->width) ? $section->width : '100%', !empty($section->height) ? $section->height : '100%', 'visible');
         } else {
-            $this->pdf->writeHTML($html.'<br/>');
+            $this->pdf->writeHTML($html);
         }
 
         $this->firstPage = false;
@@ -283,8 +283,8 @@ class MpdfRenderer implements ReportRendererInterface
         $this->template->addData(['lastPage' => true]);
         $this->lastPage = true;
         
-        // $this->setHeader();
-        // $this->setFooter();
+        $this->setHeader();
+        $this->setFooter();
 
         $this->runPostProcess($reportData);
 
