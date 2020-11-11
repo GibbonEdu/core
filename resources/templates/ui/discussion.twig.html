@@ -35,7 +35,11 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             <div class="absolute top-0 left-0 border-8 border-transparent" style="margin: 16px 0 0 -16px; border-width: 8px; border-right-color: #fafafa;"></div>
 
             <div class="px-4 py-3 text-gray-700 text-sm font-sans leading-relaxed">
-                <span class="inline-block font-semibold">{{ formatUsing('name', item.title, item.preferredName, item.surname, 'Student', false, true) }}</span> 
+                <span class="inline-block font-semibold">
+                    {% if item.url %}<a href="{{ item.url }}" class="text-gray-800 underline">{% endif %}
+                    {{ formatUsing('name', item.title, item.preferredName, item.surname, 'Student', false, true) }}
+                    {% if item.url %}</a>{% endif %}
+                </span> 
                 
                 {% if item.timestamp %}
                     {{ item.action ? item.action|lower : "&nbsp" }}
