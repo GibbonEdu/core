@@ -115,6 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
 
     // Get timetabled classes
     $classes = $staffCoverageDateGateway->selectTimetabledClassCoverageByPersonAndDate($gibbon->session->get('gibbonSchoolYearID'), $values['gibbonPersonID'], $dateStart['date'], $dateEnd['date'])->fetchAll();
+    $coverageByTimetable = !empty($classes);
 
 
     // FORM
@@ -181,34 +182,49 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     $col = $form->addRow()->addColumn();
         $col->addLabel('when', __('When'));
 
-    if (!empty($classes)) {
-        // Has classes - Select absences by timetable
-        $form->addHiddenValue('allDay', 'N');
-
-        $table = $col->addDataTable('staffAbsenceDates')->withData(new DataSet($classes));
+        $table = $col->addDataTable('staffAbsenceDates')->withData(new DataSet($coverageByTimetable ? $classes : $absenceDates));
         $table->getRenderer()->addData('class', 'bulkActionForm mt-2');
     
         $table->modifyRows(function ($class, $row) {
-            // if (!empty($class['gibbonStaffCoverageID'])) return; // Hide requested dates?
-            return $row->addClass('h-12');
+            if (!empty($class['gibbonStaffCoverageID'])) $row->addClass('dull');
+            return $row->addClass('h-16');
         });
     
         $table->addColumn('dateLabel', __('Date'))
             ->format(Format::using('dateReadable', 'date'));
     
-        $table->addColumn('columnName', __('Period'));
-        $table->addColumn('courseClass', __('Class'))->format(Format::using('courseClassName', ['courseNameShort', 'classNameShort']));
+        if ($coverageByTimetable) {
+            $table->addColumn('columnName', __('Period'));
+            $table->addColumn('courseClass', __('Class'))->format(Format::using('courseClassName', ['courseNameShort', 'classNameShort']));
+            $table->addColumn('timeStart', __('Time'))
+                ->format(function ($class) {
+                    return Format::small(Format::timeRange($class['timeStart'], $class['timeEnd']));
+                });
+        } else {
+            $table->addColumn('allDay', __('All Day'))
+                ->format(Format::using('yesNo', 'allDay'));
 
-        $table->addColumn('timeStart', __('Time'))
-            ->format(function ($class) {
-                return Format::small(Format::timeRange($class['timeStart'], $class['timeEnd']));
+            $table->addColumn('timeStart', __('Time'))
+                ->width('50%')
+                ->format(function ($absence) {
+                    return $absence['allDay'] == 'N'
+                        ? Format::small(Format::timeRange($absence['timeStart'], $absence['timeEnd']))
+                        : Format::small(__('All Day'));
             });
 
+        }
+
         $table->addColumn('substitute', __('Substitute'))
-            // ->description(__('Only available substitutes are listed here.'))
+            ->description(__('Only available substitutes are listed here.'))
             ->addClass('individualOptions')
-            
-            ->format(function ($class) use (&$substituteGateway, &$criteria, &$form) {
+            ->width('40%')
+            ->format(function ($class) use (&$substituteGateway, &$criteria, &$form, &$coverageByTimetable) {
+                if (!empty($class['gibbonStaffCoverageID'])) {
+                    return !empty($class['surnameCoverage'])
+                        ? Format::name('', $class['surnameCoverage'], $class['preferredNameCoverage'], 'Staff')
+                        : __('Any available substitute');
+                }
+
                 $availableByDate = $substituteGateway->queryAvailableSubsByDate($criteria, $class['date'], $class['timeStart'], $class['timeEnd'])->toArray();
 
                 $availableSubsOptions = array_reduce($availableByDate, function ($group, $item) {
@@ -216,16 +232,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
                     return $group;
                 }, []);
 
+                $id = $coverageByTimetable ? $class['timetableClassPeriod'] : $class['date'];
                 return $form->getFactory()->createSelectPerson('gibbonPersonIDCoverage')
                     ->fromArray($availableSubsOptions)
-                    ->setName('gibbonPersonIDCoverage['.$class['timetableClassPeriod'].']')
-                    ->setID('gibbonPersonIDCoverage'.$class['timetableClassPeriod'])
+                    ->setName('gibbonPersonIDCoverage['.$id.']')
+                    ->setID('gibbonPersonIDCoverage'.$id)
                     ->photo(true, 'small')
                     ->placeholder()
                     ->setClass('individualOptions flex-1')
                     ->getOutput();
             });
     
+    if ($coverageByTimetable) {
+        $form->addHiddenValue('allDay', 'N');
+
         $table->addCheckboxColumn('timetableClasses', 'timetableClassPeriod')
             ->width('15%')
             ->checked(function ($class) use ($dateStart, $dateEnd) {
@@ -235,32 +255,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
             })
             ->format(function ($class) {
                 if (!empty($class['gibbonStaffCoverageID'])) {
-                    return Format::small(__('N/A'));
+                    return  $class['status'] == 'Requested'
+                        ? Format::tag(__('Pending'), 'message')
+                        : Format::small(__($class['status']));
                 }
             });
-        
     } else {
-
-        $table = $col->addDataTable('staffAbsenceDates')->withData(new DataSet($absenceDates));
-        $table->getRenderer()->addData('class', 'bulkActionForm mt-2');
-
-        $table->modifyRows(function ($values, $row) {
-            return $row->addClass('h-12');
-        });
-
-        $table->addColumn('dateLabel', __('Date'))
-            ->format(Format::using('dateReadable', 'date'));
-
-        $table->addColumn('timeStart', __('Time'))
-            ->width('50%')
-            ->format(function ($absence) {
-                return $absence['allDay'] == 'N'
-                    ? Format::small(Format::timeRange($absence['timeStart'], $absence['timeEnd']))
-                    : Format::small(__('All Day'));
-            });
-
-            
-
         $table->addCheckboxColumn('requestDates', 'date')
             ->width('15%')
             ->checked(true)
@@ -282,35 +282,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
                     }
                 }
             });
-    
-        // No classes - Select absences by time range
-        // if ($dateStart['allDay'] == 'Y') {
-        //     $row = $form->addRow();
-        //     $row->addLabel('allDay', __('When'));
-        //     $row->addCheckbox('allDay')
-        //         ->description(__('All Day'))
-        //         ->setValue('Y')
-        //         ->checked($dateStart['allDay']);
-        // } else {
-        //     $form->addHiddenValue('allDay', 'N');
-        // }
-
-        // $form->toggleVisibilityByClass('timeOptions')->onCheckbox('allDay')->whenNot('Y');
-
-        // $row = $form->addRow()->addClass('timeOptions');
-        //     $row->addLabel('timeStart', __('Time'));
-        //     $col = $row->addColumn('timeStart');
-        //     $col->addTime('timeStart')
-        //         ->setClass('w-full mr-1')
-        //         ->isRequired()
-        //         ->setValue($dateStart['timeStart'] ?? $weekday['schoolStart']);
-        //     $col->addTime('timeEnd')
-        //         ->chainedTo('timeStart')
-        //         ->setClass('w-full')
-        //         ->isRequired()
-        //         ->setValue($dateStart['timeEnd'] ?? $weekday['schoolEnd']);
     }
+        
+    // No classes - Select absences by time range
+    // if ($dateStart['allDay'] == 'Y') {
+    //     $row = $form->addRow();
+    //     $row->addLabel('allDay', __('When'));
+    //     $row->addCheckbox('allDay')
+    //         ->description(__('All Day'))
+    //         ->setValue('Y')
+    //         ->checked($dateStart['allDay']);
+    // } else {
+    //     $form->addHiddenValue('allDay', 'N');
+    // }
 
+    // $form->toggleVisibilityByClass('timeOptions')->onCheckbox('allDay')->whenNot('Y');
+
+    // $row = $form->addRow()->addClass('timeOptions');
+    //     $row->addLabel('timeStart', __('Time'));
+    //     $col = $row->addColumn('timeStart');
+    //     $col->addTime('timeStart')
+    //         ->setClass('w-full mr-1')
+    //         ->isRequired()
+    //         ->setValue($dateStart['timeStart'] ?? $weekday['schoolStart']);
+    //     $col->addTime('timeEnd')
+    //         ->chainedTo('timeStart')
+    //         ->setClass('w-full')
+    //         ->isRequired()
+    //         ->setValue($dateStart['timeEnd'] ?? $weekday['schoolEnd']);
     
 
     // Dates selection - Loaded via AJAX
@@ -322,48 +321,50 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
         $row->addTextArea('notesStatus')->setRows(3);
 
     $row = $form->addRow()->addClass('coverageSubmit');
-        $row->addSubmit()->prepend('<div class="coverageNoSubmit inline text-right text-xs text-gray-600 italic pr-1">'.__('Select a substitute and at least one date before continuing.').'</div>');
+        $row->addSubmit()->prepend('<div class="coverageNoSubmit inline text-right text-xs text-gray-600 italic pr-1">'.__('Select at least one date and/or time before continuing.').'</div>');
 
     echo $form->getOutput();
 }
 ?>
 
 <script>
+
+checkSelections = function ()
+{
+    // Prevent clicking submit until at least one date (and sub) has been selected
+    var datesChecked = $('input[name="timetableClasses[]"]:checked');
+    var subsChecked = $('.personSelect').filter(function () {
+        return $(this).val() != '';
+    }).length;
+
+    if (datesChecked.length <= 0 || ($('#requestType').val() == 'Individual' && subsChecked <= 0 ) ) {
+        $('.coverageNoSubmit').show();
+        $('.coverageSubmit :input').prop('disabled', true);
+    } else {
+        $('.coverageNoSubmit').hide();
+        $('.coverageSubmit :input').prop('disabled', false);
+    }
+}
+
 $(document).ready(function() {
-    $('#gibbonPersonIDCoverage, #allDay, #timeStart, #timeEnd').on('change', function() {
-        if ($('#gibbonPersonIDCoverage').val() == '') return;
-        if ($('#requestType').val() == 'Broadcast') return;
 
-        // Individual requests: Load the available dates per sub via AJAX
-        $('.datesTable').load('./modules/Staff/coverage_requestAjax.php', {
-            'gibbonStaffAbsenceID': '<?php echo $gibbonStaffAbsenceID ?? ''; ?>',
-            'gibbonPersonIDCoverage': $('#gibbonPersonIDCoverage').val(),
-            'allDay': $('input[name=allDay]:checked').val(),
-            'timeStart': $('#timeStart').val(),
-            'timeEnd': $('#timeEnd').val(),
-        }, function() {
-            // Pre-highlight selected rows
-            $('.bulkActionForm').find('.bulkCheckbox :checkbox').each(function () {
-                $(this).closest('tr').toggleClass('selected', $(this).prop('checked'));
-            });
-
-            $('#requestType').trigger('change');
-        });
+    $(document).on('change', '.personSelect', function() {
+        checkSelections();
     });
 
-    // Individual requests: Prevent clicking submit until at least one date has been selected
-    // $(document).on('change', '#requestType, input[name="requestDates[]"]', function() {
-    //     var checked = $('input[name="requestDates[]"]:checked');
+    $(document).on('change', 'input[name="timetableClasses[]"]', function() {
+        var checkbox = this;
+        $(this).parents('tr').find('.individualOptions.personSelect').each(function() {
+            $(this).toggle($(checkbox).prop("checked"));
+        });
 
-    //     if ($('#requestType').val() == 'Individual' && checked.length <= 0) {
-    //         $('.coverageNoSubmit').show();
-    //         $('.coverageSubmit :input').prop('disabled', true);
-    //     } else {
-    //         $('.coverageNoSubmit').hide();
-    //         $('.coverageSubmit :input').prop('disabled', false);
-    //     }
-    // });
+        checkSelections();
+    });
 
-    $('#requestType').trigger('change');
+    $('input[name="timetableClasses[]"]').trigger('change');
+
+    $(document).on('change', '#requestType', function() {
+        $('input[name="timetableClasses[]"]').trigger('change');
+    });
 }) ;
 </script>

@@ -149,13 +149,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
 
     // APPROVAL
     if (!empty($typesRequiringApproval)) {
-        $form->toggleVisibilityByClass('approvalRequired')->onSelect('gibbonStaffAbsenceTypeID')->when($typesRequiringApproval);
-        $form->toggleVisibilityByClass('approvalNotRequired')->onSelect('gibbonStaffAbsenceTypeID')->whenNot(array_merge($typesRequiringApproval, ['Please select...']));
-
         // Pre-fill the last approver from the one most recently used
         $gibbonPersonIDApproval = $staffAbsenceGateway->getMostRecentApproverByPerson($gibbonPersonID);
 
-        $form->addRow()->addHeading('Requires Approval', __('Requires Approval'))->addClass('approvalRequired');
+        $form->addRow()->addClass('approvalRequired')->addHeading('Requires Approval', __('Requires Approval'))->addClass('approvalRequired');
 
         $row = $form->addRow()->addClass('approvalRequired');
         $row->addLabel('gibbonPersonIDApproval', __('Approver'));
@@ -214,9 +211,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
 
     // COVERAGE
     if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php')) {
-        $form->toggleVisibilityByClass('coverageRequest')->onSelect('gibbonStaffAbsenceTypeID')->whenNot('Please select...');
+        // $form->toggleVisibilityByClass('coverageRequest')->onSelect('gibbonStaffAbsenceTypeID')->whenNot('Please select...');
 
-        $form->addRow()->addHeading(__('Coverage'))->addClass('coverageRequest');
+        $form->addRow()->addClass('coverageRequest')->addHeading(__('Coverage'))->addClass('coverageRequest');
 
         $row = $form->addRow()->addClass('coverageRequest');
             $row->addLabel('coverageRequired', __('Substitute Required'));
@@ -226,8 +223,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
 
         if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php')) {
             $col = $form->addRow()->addClass('coverageOptions')->addColumn();
-                $col->addAlert(__("You'll have the option to send a coverage request after submitting this form."), 'success approvalNotRequired');
-                $col->addAlert(__("You'll have the option to send a coverage request once this absence has been approved."), 'warning approvalRequired');
+                $col->addAlert(__("You'll have the option to send a coverage request after submitting this form."), 'success');
         }
     } else {
         $form->addHiddenValue('coverageRequired', 'N');
