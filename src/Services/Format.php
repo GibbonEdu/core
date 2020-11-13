@@ -341,6 +341,20 @@ class Format
     }
 
     /**
+     * Formats a filesize in bytes to display in KB, MB, etc.
+     *
+     * @param int $bytes
+     * @return string
+     */
+    public static function filesize($bytes)
+    {
+        $unit = ['bytes','KB','MB','GB','TB','PB'];
+        return !empty($bytes)
+            ? @round($bytes/pow(1024, ($i=floor(log($bytes, 1024)))), 2).' '.$unit[$i]
+            : '0 KB';
+    }
+
+    /**
      * Formats a long string by truncating after $length characters
      * and displaying the full string on hover.
      *

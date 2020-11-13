@@ -61,6 +61,11 @@ class GenerateReportProcess extends BackgroundProcess implements ContainerAwareI
             return false;
         }
 
+        // Set reports to cache in a separate location
+        $session = $this->container->get('session');
+        $cachePath = $session->has('cachePath') ? $session->get('cachePath').'/reports' : '/uploads/cache';
+        $this->container->get('twig')->setCache($session->get('absolutePath').$cachePath);
+
         $reportArchiveEntryGateway = $this->container->get(ReportArchiveEntryGateway::class);
         $studentGateway = $this->container->get(StudentGateway::class);
 
