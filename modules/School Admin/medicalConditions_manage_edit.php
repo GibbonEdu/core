@@ -58,6 +58,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/medicalCondit
         $row->addTextField('name')->required()->maxlength(80);
 
     $row = $form->addRow();
+        $row->addLabel('description', __('Description'))->description(__('Medical condition descriptions are displayed next to the condition and can offer additional background information.'));
+        $row->addTextArea('description');
+
+    $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();
 
