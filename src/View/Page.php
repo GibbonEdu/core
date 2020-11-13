@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\View;
 
+use Twig\Environment;
 use Gibbon\View\View;
 use Gibbon\View\AssetBundle;
 use Gibbon\View\Components\Breadcrumbs;
@@ -56,7 +57,7 @@ class Page extends View
      *
      * @param array $params Essential parameters for building a page.
      */
-    public function __construct($templateEngine = null, array $params = [])
+    public function __construct(Environment $templateEngine = null, array $params = [])
     {
         parent::__construct($templateEngine);
         
@@ -326,6 +327,35 @@ class Page extends View
             'extraFoot'    => $this->getExtraCode('foot'),
             'extraSidebar' => $this->getExtraCode('sidebar'),
         ];
+    }
+
+    /**
+     * Initializes the page class with some usable defaults. Useful for error pages where the full index has not been initialized.
+     *
+     * @param string $absolutePath
+     * @return self
+     */
+    public function setDefaults($absolutePath)
+    {
+        $server = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
+        $absoluteURL = $server . dirname($_SERVER['PHP_SELF']);
+        $this->addData([
+            'title'           => __('Gibbon'),
+            'gibbonThemeName' => 'Default',
+            'absolutePath'    => $absolutePath,
+            'absoluteURL'     => $absoluteURL,
+        ]);
+
+        $this->stylesheets->add('main', 'themes/Default/css/main.css');
+        $this->stylesheets->add('theme', 'resources/assets/css/theme.min.css');
+        $this->stylesheets->add('core', 'resources/assets/css/core.min.css', ['weight' => 10]);
+        $this->stylesheets->add(
+            'personal-background',
+            'body { background: url("'.$absoluteURL.'/themes/Default/img/backgroundPage.jpg'.'") repeat fixed center top #626cd3!important; }',
+            ['type' => 'inline']
+        );
+
+        return $this;
     }
 
     /**

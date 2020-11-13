@@ -53,7 +53,7 @@ class Locale implements LocaleInterface
     {
         $this->absolutePath = $absolutePath;
         $this->session = $session;
-        $this->supportsGetText = function_exists('gettext');
+        $this->supportsGetText = function_exists('gettext') && function_exists('dgettext');
     }
 
     /**
@@ -245,6 +245,10 @@ class Locale implements LocaleInterface
     public function translate(string $text, array $params = [], array $options = [])
     {
         if ($text === '') {
+            return $text;
+        }
+
+        if (empty($this->i18ncode)) {
             return $text;
         }
 
