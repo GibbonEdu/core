@@ -249,11 +249,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
                 }
 
                 //UNLOCK TABLES
-                try {
+                
                     $sql = 'UNLOCK TABLES';
                     $result = $connection2->query($sql);
-                } catch (PDOException $e) {
-                }
             }
         }
     }

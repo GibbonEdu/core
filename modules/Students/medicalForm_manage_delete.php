@@ -34,14 +34,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
     if ($gibbonPersonMedicalID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonPersonMedicalID' => $gibbonPersonMedicalID);
             $sql = 'SELECT gibbonPersonMedicalID, surname, preferredName FROM gibbonPersonMedical JOIN gibbonPerson ON (gibbonPersonMedical.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPersonMedicalID=:gibbonPersonMedicalID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));

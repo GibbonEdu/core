@@ -30,14 +30,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
     if ($gibbonSchoolYearID == '' or $dateStamp == '' or $gibbonTTDayID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('date' => date('Y-m-d', $dateStamp), 'gibbonTTDayID' => $gibbonTTDayID);
             $sql = 'SELECT * FROM gibbonTTDayDate JOIN gibbonTTDay ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTT ON (gibbonTTDay.gibbonTTID=gibbonTT.gibbonTTID) WHERE date=:date AND gibbonTTDay.gibbonTTDayID=:gibbonTTDayID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() < 1) {
             $page->addError(__('The specified record cannot be found.'));

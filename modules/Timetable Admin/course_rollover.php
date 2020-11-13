@@ -52,14 +52,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
             echo __('The next school year cannot be determined, so this action cannot be performed.');
             echo '</div>';
         } else {
-            try {
+            
                 $dataNext = array('gibbonSchoolYearID' => $nextYear);
                 $sqlNext = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
                 $resultNext = $connection2->prepare($sqlNext);
                 $resultNext->execute($dataNext);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
             if ($resultNext->rowCount() == 1) {
                 $rowNext = $resultNext->fetch();
             }
@@ -94,14 +91,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
             echo __('The next school year cannot be determined, so this action cannot be performed.');
             echo '</div>';
         } else {
-            try {
+            
                 $dataNext = array('gibbonSchoolYearID' => $nextYear);
                 $sqlNext = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
                 $resultNext = $connection2->prepare($sqlNext);
                 $resultNext->execute($dataNext);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
             if ($resultNext->rowCount() == 1) {
                 $rowNext = $resultNext->fetch();
             }

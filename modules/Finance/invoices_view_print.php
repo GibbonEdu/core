@@ -65,14 +65,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
             } else {
                 $rowChild = $resultChild->fetch();
 
-                try {
+                
                     $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID, 'gibbonPersonID' => $gibbonPersonID);
                     $sql = "SELECT surname, preferredName, gibbonFinanceInvoice.* FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID AND gibbonFinanceInvoicee.gibbonPersonID=:gibbonPersonID AND (gibbonFinanceInvoice.status='Issued' OR gibbonFinanceInvoice.status='Paid' OR gibbonFinanceInvoice.status='Paid - Partial')";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 if ($result->rowCount() != 1) {
                     echo "<div class='error'>";
@@ -108,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
                         echo '</h2>';
                         //Get receipt number
                         $receiptNumber = null;
-                        try {
+                        
                             $dataReceiptNumber = array('gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
                             $sqlReceiptNumber = "SELECT *
                                 FROM gibbonPayment
@@ -118,7 +115,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
                             ";
                             $resultReceiptNumber = $connection2->prepare($sqlReceiptNumber);
                             $resultReceiptNumber->execute($dataReceiptNumber);
-                        } catch (PDOException $e) { }
                         $receiptNumber = ($resultReceiptNumber->rowCount()-1) ;
                         $receiptContents = receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], false, $receiptNumber);
                         if ($receiptContents == false) {

@@ -44,14 +44,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
     if ($gibbonPersonID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonPersonID' => $gibbonPersonID);
             $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));
@@ -267,14 +264,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 				$row->addSelectCountry('address1Country');
 
 			if ($values['address1'] != '') {
-				try {
+				
 					$dataAddress = array('gibbonPersonID' => $values['gibbonPersonID'], 'addressMatch' => '%'.strtolower(preg_replace('/ /', '%', preg_replace('/,/', '%', $values['address1']))).'%');
 					$sqlAddress = "SELECT gibbonPersonID, title, preferredName, surname, category FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE status='Full' AND address1 LIKE :addressMatch AND NOT gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName";
 					$resultAddress = $connection2->prepare($sqlAddress);
 					$resultAddress->execute($dataAddress);
-				} catch (PDOException $e) {
-					echo "<div class='error'>".$e->getMessage().'</div>';
-				}
 
 				if ($resultAddress->rowCount() > 0) {
 					$addressCount = 0;

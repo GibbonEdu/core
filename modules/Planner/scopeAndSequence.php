@@ -49,12 +49,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
     $form->setClass('noIntBorder fullWidth');
 
     $options = array();
-    try {
+    
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
         $sql = "SELECT gibbonCourse.gibbonCourseID, gibbonCourse.name, gibbonDepartment.name AS department FROM gibbonCourse LEFT JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonYearGroupIDList='' AND map='Y' ORDER BY department, gibbonCourse.nameShort";
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) { }
     while ($row = $result->fetch()) {
         $options[$row["department"]][$row["gibbonCourseID"]] = $row["name"];
     }
@@ -140,14 +139,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
                 echo $row['name'].' - '.$row['nameShort'];
                 echo '</h2>';
 
-                try {
+                
                     $dataUnit = array('gibbonCourseID' => $gibbonCourseID);
                     $sqlUnit = 'SELECT gibbonUnitID, gibbonUnit.name, gibbonUnit.description, attachment, tags FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonUnit.gibbonCourseID=:gibbonCourseID AND active=\'Y\' AND gibbonCourse.map=\'Y\' AND gibbonUnit.map=\'Y\' ORDER BY ordering, name';
                     $resultUnit = $connection2->prepare($sqlUnit);
                     $resultUnit->execute($dataUnit);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 if ($resultUnit->rowCount() < 1) {
                     echo "<div class='error'>";

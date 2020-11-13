@@ -61,14 +61,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
 	$result = $pdo->executeQuery($data, $sql, '_');
 
     //Cache TypeFields
-    try {
+    
         $dataTypeFields = array() ;
         $sqlTypeFields = "SELECT gibbonLibraryType.* FROM gibbonLibraryType";
         $resultTypeFields = $connection2->prepare($sqlTypeFields);
         $resultTypeFields->execute($dataTypeFields);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
     $typeFieldsTemp = $resultTypeFields->fetchAll();
 
     $typeFields = array();

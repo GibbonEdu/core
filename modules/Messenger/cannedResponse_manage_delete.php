@@ -33,14 +33,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
     if ($gibbonMessengerCannedResponseID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonMessengerCannedResponseID' => $gibbonMessengerCannedResponseID);
             $sql = 'SELECT * FROM gibbonMessengerCannedResponse WHERE gibbonMessengerCannedResponseID=:gibbonMessengerCannedResponseID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));

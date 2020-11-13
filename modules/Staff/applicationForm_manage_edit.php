@@ -41,14 +41,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
     if ($gibbonStaffApplicationFormID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID);
             $sql = 'SELECT gibbonStaffApplicationForm.*, gibbonStaffJobOpening.jobTitle, gibbonStaffJobOpening.type FROM gibbonStaffApplicationForm JOIN gibbonStaffJobOpening ON (gibbonStaffApplicationForm.gibbonStaffJobOpeningID=gibbonStaffJobOpening.gibbonStaffJobOpeningID) LEFT JOIN gibbonPerson ON (gibbonStaffApplicationForm.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
@@ -301,13 +298,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     $row = $form->addRow();
                         $row->addLabel('file'.$i, $requiredDocumentsList[$i]);
 
-                    try {
+                    
                         $dataFile = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID, 'name' => $requiredDocumentsList[$i]);
                         $sqlFile = 'SELECT * FROM gibbonStaffApplicationFormFile WHERE gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID AND name=:name ORDER BY name';
                         $resultFile = $connection2->prepare($sqlFile);
                         $resultFile->execute($dataFile);
-                    } catch (PDOException $e) {
-                    }
                     if ($resultFile->rowCount() == 0) {
                             $row->addFileUpload('file'.$i)
                                 ->accepts($fileUploader->getFileExtensions())

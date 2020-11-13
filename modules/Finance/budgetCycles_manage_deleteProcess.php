@@ -60,13 +60,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
                 exit();
             }
 
-            try {
+            
                 $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
                 $sql = 'DELETE FROM gibbonFinanceBudgetCycleAllocation WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) {
-            }
 
             $URLDelete = $URLDelete.'&return=success0';
             header("Location: {$URLDelete}");

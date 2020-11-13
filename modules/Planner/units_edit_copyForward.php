@@ -90,14 +90,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyFor
                     echo __('You have not specified one or more required parameters.');
                     echo '</div>';
                 } else {
-                    try {
+                    
                         $data = array('gibbonUnitID' => $gibbonUnitID, 'gibbonCourseID' => $gibbonCourseID);
                         $sql = 'SELECT gibbonCourse.nameShort AS courseName, gibbonUnit.* FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonUnitID=:gibbonUnitID AND gibbonUnit.gibbonCourseID=:gibbonCourseID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
 
                     if ($result->rowCount() != 1) {
                         echo "<div class='error'>";

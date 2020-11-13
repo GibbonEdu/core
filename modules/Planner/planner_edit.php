@@ -145,13 +145,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 //Get gibbonUnitClassID
                 $gibbonUnitID = $values['gibbonUnitID'];
                 $gibbonUnitClassID = null;
-                try {
+                
                     $dataUnitClass = array('gibbonCourseClassID' => $values['gibbonCourseClassID'], 'gibbonUnitID' => $gibbonUnitID);
                     $sqlUnitClass = 'SELECT gibbonUnitClassID FROM gibbonUnitClass WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID';
                     $resultUnitClass = $connection2->prepare($sqlUnitClass);
                     $resultUnitClass->execute($dataUnitClass);
-                } catch (PDOException $e) {
-                }
                 if ($resultUnitClass->rowCount() == 1) {
                     $rowUnitClass = $resultUnitClass->fetch();
                     $gibbonUnitClassID = $rowUnitClass['gibbonUnitClassID'];

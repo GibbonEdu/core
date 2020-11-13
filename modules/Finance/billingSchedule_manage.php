@@ -40,14 +40,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
     }
 
     if ($gibbonSchoolYearID != $gibbon->session->get('gibbonSchoolYearID')) {
-        try {
+        
             $data = array('gibbonSchoolYearID' => $_GET['gibbonSchoolYearID']);
             $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
         if ($result->rowcount() != 1) {
             echo "<div class='error'>";
             echo __('The specified record does not exist.');
@@ -159,12 +156,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
 
             $count = 0;
             $rowNum = 'odd';
-            try {
+            
                 $resultPage = $connection2->prepare($sqlPage);
                 $resultPage->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
             while ($row = $resultPage->fetch()) {
                 if ($count % 2 == 0) {
                     $rowNum = 'even';

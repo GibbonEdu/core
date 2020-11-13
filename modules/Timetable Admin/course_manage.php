@@ -44,14 +44,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
     }
 
     if ($gibbonSchoolYearID != $_SESSION[$guid]['gibbonSchoolYearID']) {
-        try {
+        
             $data = array('gibbonSchoolYearID' => $_GET['gibbonSchoolYearID']);
             $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";

@@ -52,14 +52,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
             if ($highestAction == 'Staff Directory_brief') {
                 //Proceed!
-                try {
+                
                     $data = array('gibbonPersonID' => $gibbonPersonID);
                     $sql = "SELECT title, surname, preferredName, type, gibbonStaff.jobTitle, email, website, countryOfOrigin, qualifications, biography, image_240 FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 if ($result->rowCount() != 1) {
                     $page->addError(__('The selected record does not exist, or you do not have access to it.'));
@@ -373,14 +370,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             echo __('Adult Family Members');
                             echo '</h4>';
 
-                            try {
+                            
                                 $dataFamily = array('gibbonPersonID' => $gibbonPersonID);
                                 $sqlFamily = 'SELECT * FROM gibbonFamily JOIN gibbonFamilyChild ON (gibbonFamily.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID';
                                 $resultFamily = $connection2->prepare($sqlFamily);
                                 $resultFamily->execute($dataFamily);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
 
                             if ($resultFamily->rowCount() != 1) {
                                 echo "<div class='error'>";
@@ -390,14 +384,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                                 $rowFamily = $resultFamily->fetch();
                                 $count = 1;
                                 //Get adults
-                                try {
+                                
                                     $dataMember = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
                                     $sqlMember = 'SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName';
                                     $resultMember = $connection2->prepare($sqlMember);
                                     $resultMember->execute($dataMember);
-                                } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
 
                                 while ($rowMember = $resultMember->fetch()) {
                                     $table = DataTable::createDetails('family' . $count);

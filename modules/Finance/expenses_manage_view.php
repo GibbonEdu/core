@@ -153,14 +153,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                         <td class="right">
                                             <?php
                                             $yearName = '';
-                                            try {
+                                            
                                                 $dataYear = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
                                                 $sqlYear = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
                                                 $resultYear = $connection2->prepare($sqlYear);
                                                 $resultYear->execute($dataYear);
-                                            } catch (PDOException $e) {
-                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                            }
                                             if ($resultYear->rowCount() == 1) {
                                                 $rowYear = $resultYear->fetch();
                                                 $yearName = $rowYear['name'];
@@ -319,13 +316,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                             </td>
                                             <td class="right">
                                                 <?php
-                                                try {
+                                                
                                                     $dataSelect = array('gibbonPersonID' => $row['gibbonPersonIDPayment']);
                                                     $sqlSelect = 'SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
                                                     $resultSelect = $connection2->prepare($sqlSelect);
                                                     $resultSelect->execute($dataSelect);
-                                                } catch (PDOException $e) {
-                                                }
                                                 if ($resultSelect->rowCount() == 1) {
                                                     $rowSelect = $resultSelect->fetch();
                                                     ?>

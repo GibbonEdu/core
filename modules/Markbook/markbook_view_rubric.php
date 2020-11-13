@@ -67,42 +67,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
             echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
-            try {
+            
                 $data2 = array('gibbonMarkbookColumnID' => $gibbonMarkbookColumnID);
                 $sql2 = 'SELECT * FROM gibbonMarkbookColumn WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID';
                 $result2 = $connection2->prepare($sql2);
                 $result2->execute($data2);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
 
             if ($result2->rowCount() != 1) {
                 echo "<div class='error'>";
                 echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
-                try {
+                
                     $data3 = array('gibbonRubricID' => $gibbonRubricID);
                     $sql3 = 'SELECT * FROM gibbonRubric WHERE gibbonRubricID=:gibbonRubricID';
                     $result3 = $connection2->prepare($sql3);
                     $result3->execute($data3);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 if ($result3->rowCount() != 1) {
                     echo "<div class='error'>";
                     echo __('The specified record does not exist.');
                     echo '</div>';
                 } else {
-                    try {
+                    
                         $data4 = array('gibbonPersonID' => $gibbonPersonID, 'gibbonCourseClassID' => $gibbonCourseClassID);
                         $sql4 = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND (role='Student' OR role='Student - Left')";
                         $result4 = $connection2->prepare($sql4);
                         $result4->execute($data4);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
 
                     if ($result4->rowCount() != 1) {
                         echo "<div class='error'>";

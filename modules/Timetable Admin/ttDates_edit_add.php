@@ -34,14 +34,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
             echo __('School is not open on the specified day.');
             echo '</div>';
         } else {
-            try {
+            
                 $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
                 $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
 
             if ($result->rowCount() != 1) {
                 echo "<div class='error'>";

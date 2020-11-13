@@ -36,14 +36,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view_ful
     }
     //Check existence of and access to this class.
     else {
-        try {
+        
             $data = array('gibbonResourceID' => $gibbonResourceID);
             $sql = 'SELECT * FROM gibbonResource WHERE gibbonResourceID=:gibbonResourceID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             echo "<div class='warning'>";

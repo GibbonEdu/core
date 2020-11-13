@@ -34,14 +34,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
     if ($gibbonDepartmentID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonDepartmentID' => $gibbonDepartmentID);
             $sql = 'SELECT * FROM gibbonDepartment WHERE gibbonDepartment.gibbonDepartmentID=:gibbonDepartmentID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
@@ -138,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
             }
 
             //Print current course list
-            try {
+            
                 $dataCourse = array('gibbonDepartmentID' => $gibbonDepartmentID);
                 $sqlCourse = "SELECT gibbonCourse.* FROM gibbonCourse 
                     JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) 
@@ -149,9 +146,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
                     ORDER BY nameShort, name";
                 $resultCourse = $connection2->prepare($sqlCourse);
                 $resultCourse->execute($dataCourse);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
 
             if ($resultCourse->rowCount() > 0) {
                 $sidebarExtra .= '<div class="column-no-break">';
@@ -213,14 +207,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
             }
 
             //Print useful reading
-            try {
+            
                 $dataReading = array('gibbonDepartmentID' => $gibbonDepartmentID);
                 $sqlReading = 'SELECT * FROM gibbonDepartmentResource WHERE gibbonDepartmentID=:gibbonDepartmentID ORDER BY name';
                 $resultReading = $connection2->prepare($sqlReading);
                 $resultReading->execute($dataReading);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
 
             if ($resultReading->rowCount() > 0 or $role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Director' or $role == 'Manager') {
                 $sidebarExtra .= '<div class="column-no-break">';

@@ -37,14 +37,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edi
     if ($gibbonRoleID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonRoleID' => $gibbonRoleID);
             $sql = 'SELECT * FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));

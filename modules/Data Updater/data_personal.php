@@ -135,31 +135,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             $checkCount = 0;
             $self = false;
             if ($highestAction == 'Update Personal Data_any') {
-                try {
+                
                     $dataSelect = array();
                     $sqlSelect = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE status='Full' ORDER BY surname, preferredName";
                     $resultSelect = $connection2->prepare($sqlSelect);
                     $resultSelect->execute($dataSelect);
-                } catch (PDOException $e) {
-                }
                 $checkCount = $resultSelect->rowCount();
                 $self = true;
             } else {
-                try {
+                
                     $dataCheck = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
                     $sqlCheck = "SELECT gibbonFamilyAdult.gibbonFamilyID, name FROM gibbonFamilyAdult JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y' ORDER BY name";
                     $resultCheck = $connection2->prepare($sqlCheck);
                     $resultCheck->execute($dataCheck);
-                } catch (PDOException $e) {
-                }
                 while ($rowCheck = $resultCheck->fetch()) {
-                    try {
+                    
                         $dataCheck2 = array('gibbonFamilyID1' => $rowCheck['gibbonFamilyID'], 'gibbonFamilyID2' => $rowCheck['gibbonFamilyID']);
                         $sqlCheck2 = "(SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFamilyID FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND gibbonFamilyID=:gibbonFamilyID1) UNION (SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFamilyID FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND gibbonFamilyID=:gibbonFamilyID2)";
                         $resultCheck2 = $connection2->prepare($sqlCheck2);
                         $resultCheck2->execute($dataCheck2);
-                    } catch (PDOException $e) {
-                    }
                     while ($rowCheck2 = $resultCheck2->fetch()) {
                         if ($gibbonPersonID == $rowCheck2['gibbonPersonID']) {
                             ++$checkCount;
@@ -182,13 +176,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 echo '</div>';
             } else {
                 //Get categories
-                try {
+                
                     $dataSelect = array('gibbonPersonID' => $gibbonPersonID);
                     $sqlSelect = 'SELECT gibbonRoleIDAll, gibbonRoleIDPrimary FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
                     $resultSelect = $connection2->prepare($sqlSelect);
                     $resultSelect->execute($dataSelect);
-                } catch (PDOException $e) {
-                }
                 if ($resultSelect->rowCount() == 1) {
                     $rowSelect = $resultSelect->fetch();
                     //Get categories
@@ -244,14 +236,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     }
                 }
 
-                try {
+                
                     $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID']);
                     $sql = "SELECT * FROM gibbonPersonUpdate WHERE gibbonPersonID=:gibbonPersonID AND gibbonPersonIDUpdater=:gibbonPersonIDUpdater AND status='Pending'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 if ($result->rowCount() > 1) {
                     echo "<div class='error'>";
@@ -270,14 +259,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     }
                 } else {
                     //Get user's data
-                    try {
+                    
                         $data = array('gibbonPersonID' => $gibbonPersonID);
                         $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
                     if ($result->rowCount() != 1) {
                         echo "<div class='error'>";
                         echo __('The specified record cannot be found.');
@@ -438,7 +424,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         $row->addSelectCountry('address1Country');
 
                     if ($values['address1'] != '' && $isVisible('address1')) {
-                        try {
+                        
                             $dataAddress = array(
                                 'gibbonPersonID' => $values['gibbonPersonID'],
                                 'addressMatch' => '%'.strtolower(preg_replace('/ /', '%', preg_replace('/,/', '%', $values['address1']))).'%',
@@ -451,9 +437,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                                 ORDER BY surname, preferredName";
                             $resultAddress = $connection2->prepare($sqlAddress);
                             $resultAddress->execute($dataAddress);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
 
                         if ($resultAddress->rowCount() > 0) {
                             $addressCount = 0;

@@ -38,14 +38,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
     if ($gibbonStringID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonStringID' => $gibbonStringID);
             $sql = 'SELECT gibbonString.* FROM gibbonString WHERE gibbonStringID=:gibbonStringID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));

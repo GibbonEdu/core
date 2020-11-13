@@ -100,13 +100,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
 
             //Check access to person
             if ($highestAction == 'Update Family Data_any') {
-                try {
+                
                     $dataCheck = array('gibbonFamilyID' => $gibbonFamilyID);
                     $sqlCheck = 'SELECT name, gibbonFamily.gibbonFamilyID FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
                     $resultCheck = $connection2->prepare($sqlCheck);
                     $resultCheck->execute($dataCheck);
-                } catch (PDOException $e) {
-                }
             } else {
                 try {
                     $dataCheck = array('gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
@@ -126,14 +124,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
                 //Check if there is already a pending form for this user
                 $existing = false;
                 $proceed = false;
-                try {
+                
                     $data = array('gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonIDUpdater' => $gibbon->session->get('gibbonPersonID'));
                     $sql = "SELECT * FROM gibbonFamilyUpdate WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPersonIDUpdater=:gibbonPersonIDUpdater AND status='Pending'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 if ($result->rowCount() > 1) {
                     echo "<div class='error'>";
@@ -147,14 +142,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
                     $proceed = true;
                 } else {
                     //Get user's data
-                    try {
+                    
                         $data = array('gibbonFamilyID' => $gibbonFamilyID);
                         $sql = 'SELECT * FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
                     if ($result->rowCount() != 1) {
                         echo "<div class='error'>";
                         echo __('The specified record cannot be found.');

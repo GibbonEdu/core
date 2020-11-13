@@ -61,14 +61,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         echo __('Report Data');
         echo '</h2>';
 
-        try {
+        
             $data = array('gibbonRollGroupID' => $gibbonRollGroupID, 'today' => date('Y-m-d'));
             $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, name FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) AND gibbonStudentEnrolment.gibbonRollGroupID=:gibbonRollGroupID ORDER BY surname, preferredName";
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() < 1) {
             echo "<div class='error'>";
@@ -93,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 
                 echo '<td>';
 
-                try {
+                
                     $dataActivities = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                     $sqlActivities = "SELECT gibbonActivity.*, gibbonActivityStudent.status, GROUP_CONCAT(CONCAT(gibbonDaysOfWeek.nameShort, ' ', TIME_FORMAT(gibbonActivitySlot.timeStart, '%H:%i'), ' - ', (CASE WHEN gibbonActivitySlot.gibbonSpaceID IS NOT NULL THEN gibbonSpace.name ELSE gibbonActivitySlot.locationExternal END)) SEPARATOR '<br/>') as days
                         FROM gibbonActivity 
@@ -107,9 +104,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
                         ORDER BY gibbonActivity.name";
                     $resultActivities = $connection2->prepare($sqlActivities);
                     $resultActivities->execute($dataActivities);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 if ($resultActivities->rowCount() > 0) {
                     echo '<table cellspacing="0" class="mini fullWidth">';

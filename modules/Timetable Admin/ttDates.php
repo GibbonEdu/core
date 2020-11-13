@@ -40,14 +40,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
     }
 
     if ($gibbonSchoolYearID != $_SESSION[$guid]['gibbonSchoolYearID']) {
-        try {
+        
             $data = array('gibbonSchoolYearID' => $_GET['gibbonSchoolYearID']);
             $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
         if ($result->rowcount() != 1) {
             echo "<div class='error'>";
             echo __('The specified record does not exist.');
@@ -82,14 +79,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
         }
         echo '</div>';
 
-        try {
+        
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
             $sql = 'SELECT * FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() < 1) {
             echo "<div class='error'>";
@@ -123,38 +117,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
                 }
 
                 //Get the special days
-                try {
+                
                     $dataSpecial = array('gibbonSchoolYearTermID' => $values['gibbonSchoolYearTermID']);
                     $sqlSpecial = 'SELECT date, type, name FROM gibbonSchoolYearSpecialDay WHERE gibbonSchoolYearTermID=:gibbonSchoolYearTermID ORDER BY date';
                     $resultSpecial = $connection2->prepare($sqlSpecial);
                     $resultSpecial->execute($dataSpecial);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 $specialDays = $resultSpecial->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE);
 
                 // Get the TT day names
-                try {
+                
                     $dataDay = array();
                     $sqlDay = 'SELECT date, gibbonTTDay.nameShort AS dayName, gibbonTT.nameShort AS ttName FROM gibbonTTDayDate JOIN gibbonTTDay ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTT ON (gibbonTTDay.gibbonTTID=gibbonTT.gibbonTTID)';
                     $resultDay = $connection2->prepare($sqlDay);
                     $resultDay->execute($dataDay);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 $ttDays = $resultDay->fetchAll(\PDO::FETCH_GROUP);
 
 				//Check which days are school days
-                try {
+                
                     $dataDays = array();
                     $sqlDays = "SELECT nameShort, schoolDay FROM gibbonDaysOfWeek";
                     $resultDays = $connection2->prepare($sqlDays);
                     $resultDays->execute($dataDays);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 $days = $resultDays->fetchAll(\PDO::FETCH_KEY_PAIR);
 

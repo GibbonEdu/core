@@ -35,14 +35,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
         $search = isset($_REQUEST['search']) ? $_REQUEST['search'] : null;
         $gibbonTTID = isset($_REQUEST['gibbonTTID']) ? $_REQUEST['gibbonTTID'] : null;
 
-        try {
+        
             $data = array('gibbonSpaceID' => $gibbonSpaceID);
             $sql = 'SELECT * FROM gibbonSpace WHERE gibbonSpaceID=:gibbonSpaceID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";

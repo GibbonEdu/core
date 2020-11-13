@@ -685,14 +685,11 @@ if ($proceed == false) {
             }
 
             // Get the family relationships
-            try {
+            
                 $dataRelationships = array('gibbonFamilyID' => $rowSelect['gibbonFamilyID']);
                 $sqlRelationships = 'SELECT surname, preferredName, title, gender, gibbonFamilyAdult.gibbonPersonID FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID';
                 $resultRelationships = $connection2->prepare($sqlRelationships);
                 $resultRelationships->execute($dataRelationships);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
 
             $row = $table->addRow()->setClass('break');
             $row->addContent($rowSelect['name'])->wrap('<strong>','</strong>')->addClass('shortWidth');
@@ -730,14 +727,11 @@ if ($proceed == false) {
 
     // List siblings who have been to or are at the school
     if (isset($gibbonFamilyID)) {
-        try {
+        
             $dataSibling = array('gibbonFamilyID' => $gibbonFamilyID);
             $sqlSibling = 'SELECT surname, preferredName, dob, dateStart FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY dob ASC, surname, preferredName';
             $resultSibling = $connection2->prepare($sqlSibling);
             $resultSibling->execute($dataSibling);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         while ($rowSibling = $resultSibling->fetch()) {
             $name = Format::name('', $rowSibling['preferredName'], $rowSibling['surname'], 'Student');

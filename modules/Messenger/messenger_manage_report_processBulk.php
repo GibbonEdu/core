@@ -57,12 +57,11 @@ if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading
             $partialFail = false;
 
             //Check message exists
-            try {
+            
                 $data = array("gibbonMessengerID" => $gibbonMessengerID);
                 $sql = "SELECT * FROM gibbonMessenger WHERE gibbonMessengerID=:gibbonMessengerID";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) { }
 
             if ($result->rowCount() != 1) {
                 $URL .= '&return=error0';
@@ -91,12 +90,11 @@ if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading
                     //Scan through receipients
                     foreach ($gibbonMessengerReceiptIDs as $gibbonMessengerReceiptID) {
                         //Check recipient status
-                        try {
+                        
                             $dataRecipt = array("gibbonMessengerID" => $gibbonMessengerID, "gibbonMessengerReceiptID" => $gibbonMessengerReceiptID);
                             $sqlRecipt = "SELECT * FROM gibbonMessengerReceipt WHERE gibbonMessengerID=:gibbonMessengerID AND gibbonMessengerReceiptID=:gibbonMessengerReceiptID";
                             $resultRecipt = $connection2->prepare($sqlRecipt);
                             $resultRecipt->execute($dataRecipt);
-                        } catch (PDOException $e) { }
 
                         if ($resultRecipt->rowCount() != 1) {
                             $partialFail = true;

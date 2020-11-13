@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_edit.p
     if ($gibbonFinanceFeeID == '' or $gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceFeeID' => $gibbonFinanceFeeID);
             $sql = 'SELECT gibbonFinanceFee.*, gibbonSchoolYear.name AS schoolYear
                 FROM gibbonFinanceFee
@@ -51,9 +51,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_edit.p
                     AND gibbonFinanceFeeID=:gibbonFinanceFeeID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));

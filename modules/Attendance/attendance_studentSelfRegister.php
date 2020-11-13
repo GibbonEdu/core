@@ -57,14 +57,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
         }
         else {
             //Check for existence of records today
-            try {
+            
                 $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'date' => $currentDate);
                 $sql = "SELECT type FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date=:date ORDER BY timestampTaken DESC";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
 
             if ($result->rowCount() > 0) { //Records! Output current status
                 $row = $result->fetch();

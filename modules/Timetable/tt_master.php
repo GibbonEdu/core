@@ -41,13 +41,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_master.php') 
         $gibbonTTID = $_GET['gibbonTTID'];
     }
     if ($gibbonTTID == null) { //If TT not set, get the first timetable in the current year, and display that
-        try {
+        
             $dataSelect = array();
             $sqlSelect = "SELECT gibbonTTID FROM gibbonTT JOIN gibbonSchoolYear ON (gibbonTT.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonSchoolYear.status='Current' ORDER BY gibbonTT.name LIMIT 0, 1";
             $resultSelect = $connection2->prepare($sqlSelect);
             $resultSelect->execute($dataSelect);
-        } catch (PDOException $e) {
-        }
         if ($resultSelect->rowCount() == 1) {
             $rowSelect = $resultSelect->fetch();
             $gibbonTTID = $rowSelect['gibbonTTID'];

@@ -115,14 +115,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         if ($scope == 'single') {
             $attendanceLog .= "<div id='attendanceLog'>";
                 //Get attendance log
-                try {
+                
                     $dataLog = array('gibbonPersonID' => $gibbonPersonID[0], 'date' => $today);
                     $sqlLog = "SELECT gibbonAttendanceLogPersonID, date, direction, type, context, reason, comment, timestampTaken, gibbonAttendanceLogPerson.gibbonCourseClassID, preferredName, surname, gibbonCourseClass.nameShort as className, gibbonCourse.nameShort as courseName FROM gibbonAttendanceLogPerson JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonCourseClass ON (gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date>=:date ORDER BY date";
                     $resultLog = $connection2->prepare($sqlLog);
                     $resultLog->execute($dataLog);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 //Get classes for partial attendance
                 try {

@@ -82,14 +82,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                     $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
                 }
                 if ($gibbonFinanceBudgetCycleID == '') {
-                    try {
+                    
                         $data = array();
                         $sql = "SELECT * FROM gibbonFinanceBudgetCycle WHERE status='Current'";
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
                     if ($result->rowcount() != 1) {
                         echo "<div class='error'>";
                         echo __('The Current budget cycle cannot be determined.');
@@ -101,14 +98,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                     }
                 }
                 if ($gibbonFinanceBudgetCycleID != '') {
-                    try {
+                    
                         $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
                         $sql = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
                     if ($result->rowcount() != 1) {
                         echo "<div class='error'>";
                         echo __('The specified budget cycle cannot be determined.');

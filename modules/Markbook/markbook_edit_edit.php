@@ -86,14 +86,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                 echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
-                try {
+                
                     $data2 = array('gibbonMarkbookColumnID' => $gibbonMarkbookColumnID);
                     $sql2 = 'SELECT * FROM gibbonMarkbookColumn WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID';
                     $result2 = $connection2->prepare($sql2);
                     $result2->execute($data2);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 if ($result2->rowCount() != 1) {
                     echo "<div class='error'>";

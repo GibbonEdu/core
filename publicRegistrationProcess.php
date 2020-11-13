@@ -164,11 +164,9 @@ if ($proceed == false) {
 
                     $gibbonPersonID = $connection2->lastInsertId();
 
-                    try {
+                    
                         $sqlLock = 'UNLOCK TABLES';
                         $result = $connection2->query($sqlLock);
-                    } catch (PDOException $e) {
-                    }
 
                     if ($status == 'Pending Approval') {
                         // Raise a new notification event

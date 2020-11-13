@@ -53,14 +53,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes.php') == 
             $where .= " WHERE gibbonDepartment.gibbonDepartmentID=:gibbonDepartmentID";
         }
 
-        try {
+        
             $sql = "SELECT gibbonOutcome.*, gibbonDepartment.name AS department FROM gibbonOutcome LEFT JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) $where ORDER BY scope, gibbonDepartmentID, category, nameShort";
             $sqlPage = $sql.' LIMIT '.$gibbon->session->get('pagination').' OFFSET '.(($page - 1) * $gibbon->session->get('pagination'));
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         echo '<h3>';
         echo __('Filter');
@@ -126,12 +123,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes.php') == 
 
             $count = 0;
             $rowNum = 'odd';
-            try {
+            
                 $resultPage = $connection2->prepare($sqlPage);
                 $resultPage->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
             while ($row = $resultPage->fetch()) {
                 if ($count % 2 == 0) {
                     $rowNum = 'even';
@@ -180,14 +174,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes.php') == 
                     echo "<a class='thickbox' href='".$gibbon->session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$gibbon->session->get('module').'/outcomes_delete.php&gibbonOutcomeID='.$row['gibbonOutcomeID']."&filter2=$filter2&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/garbage.png'/></a> ";
                 } elseif ($highestAction == 'Manage Outcomes_viewAllEditLearningArea') {
                     if ($row['scope'] == 'Learning Area' and $row['gibbonDepartmentID'] != '') {
-                        try {
+                        
                             $dataLearningAreaStaff = array('gibbonDepartmentID' => $row['gibbonDepartmentID'], 'gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
                             $sqlLearningAreaStaff = "SELECT * FROM gibbonDepartment JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonDepartment.gibbonDepartmentID=:gibbonDepartmentID AND gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Teacher (Curriculum)')";
                             $resultLearningAreaStaff = $connection2->prepare($sqlLearningAreaStaff);
                             $resultLearningAreaStaff->execute($dataLearningAreaStaff);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
                         if ($resultLearningAreaStaff->rowCount() > 0) {
                             echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/outcomes_edit.php&gibbonOutcomeID='.$row['gibbonOutcomeID']."&filter2=$filter2'><img title='".__('Edit')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/config.png'/></a> ";
                             echo "<a class='thickbox' href='".$gibbon->session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$gibbon->session->get('module').'/outcomes_delete.php&gibbonOutcomeID='.$row['gibbonOutcomeID']."&filter2=$filter2&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/garbage.png'/></a> ";

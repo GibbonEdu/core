@@ -56,14 +56,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
             echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
-            try {
+            
                 $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
                 $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
 
             if ($result->rowCount() != 1) {
                 echo "<div class='error'>";
@@ -149,14 +146,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                         //CLASSES
                         $form->addRow()->addHeading(__('Classes'))->append(__('Select classes which will have access to this unit.'));
 
-                        try {
+                        
                             $dataClass = array();
                             $sqlClass = "SELECT * FROM gibbonCourseClass WHERE gibbonCourseID=$gibbonCourseID ORDER BY name";
                             $resultClass = $connection2->prepare($sqlClass);
                             $resultClass->execute($dataClass);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
 
                         if ($resultClass->rowCount() < 1) {
                             $form->addRow()->addAlert(__('There are no records to display.'), 'error');
@@ -196,12 +190,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                             $column->addAlert($content, 'message');
                             $column->addEditor('details', $guid)->setRows(30)->showMedia()->setValue($unitOutline);
 
-                        try {
+                        
                             $dataExt = array();
                             $sqlExt = 'SELECT * FROM gibbonFileExtension';
                             $resultExt = $connection2->prepare($sqlExt);
                             $resultExt->execute($dataExt);
-                        } catch (PDOException $e) {}
                         $ext = '';
                         while ($rowExt = $resultExt->fetch()) {
                             $ext .= "'.".$rowExt['extension']."',";

@@ -42,14 +42,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             header("Location: {$URL}");
         } else {
             //Check access to specified course
-            try {
+            
                 $data = array('gibbonCourseID' => $gibbonCourseID);
                 $sql = 'SELECT * FROM gibbonCourse WHERE gibbonCourseID=:gibbonCourseID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
 
             if ($result->rowCount() != 1) {
                 $URL .= '&return=error1';

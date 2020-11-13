@@ -163,12 +163,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
 
         $count = 0;
         $rowNum = 'odd';
-        try {
+        
             $resultPage = $connection2->prepare($sqlPage);
             $resultPage->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
         while ($row = $resultPage->fetch()) {
             if ($count % 2 == 0) {
                 $rowNum = 'even';
@@ -200,14 +197,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
             echo substr($output, 0, -2);
             echo '</td>';
             echo '<td>';
-            try {
+            
                 $dataYears = array();
                 $sqlYears = 'SELECT gibbonYearGroupID, nameShort, sequenceNumber FROM gibbonYearGroup ORDER BY sequenceNumber';
                 $resultYears = $connection2->prepare($sqlYears);
                 $resultYears->execute($dataYears);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
             $years = explode(',', $row['gibbonYearGroupIDList']);
             if (count($years) > 0 and $years[0] != '') {
                 if (count($years) == $resultYears->rowCount()) {

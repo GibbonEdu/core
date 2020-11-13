@@ -36,14 +36,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
     if ($gibbonFinanceFeeCategoryID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonFinanceFeeCategoryID' => $gibbonFinanceFeeCategoryID);
             $sql = 'SELECT * FROM gibbonFinanceFeeCategory WHERE gibbonFinanceFeeCategoryID=:gibbonFinanceFeeCategoryID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";

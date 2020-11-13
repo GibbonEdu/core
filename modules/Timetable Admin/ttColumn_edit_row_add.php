@@ -28,14 +28,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
     if ($gibbonTTColumnID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonTTColumnID' => $gibbonTTColumnID);
             $sql = 'SELECT name AS columnName FROM gibbonTTColumn WHERE gibbonTTColumnID=:gibbonTTColumnID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";

@@ -74,14 +74,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
     $row = $form->addRow();
         $row->addHeading(__("Budget Allocations"));
 
-    try {
+    
         $dataBudget = array();
         $sqlBudget = 'SELECT * FROM gibbonFinanceBudget ORDER BY name';
         $resultBudget = $connection2->prepare($sqlBudget);
         $resultBudget->execute($dataBudget);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
     
     if ($resultBudget->rowCount() < 1) {
         $row = $form->addRow();

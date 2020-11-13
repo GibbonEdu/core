@@ -152,14 +152,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 									<td class="right">
 										<?php
                                         $yearName = '';
-										try {
+										
 											$dataYear = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
 											$sqlYear = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
 											$resultYear = $connection2->prepare($sqlYear);
 											$resultYear->execute($dataYear);
-										} catch (PDOException $e) {
-											echo "<div class='error'>".$e->getMessage().'</div>';
-										}
 										if ($resultYear->rowCount() == 1) {
 											$rowYear = $resultYear->fetch();
 											$yearName = $rowYear['name'];

@@ -36,14 +36,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
     if ($gibbonPersonMedicalUpdateID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID);
             $sql = 'SELECT * FROM gibbonPersonMedicalUpdate WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";

@@ -35,14 +35,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 		$page->addError(__('You have not specified one or more required parameters.'));
 	} else {
 	    //Proceed!
-	    try {
+	    
 			$dataPerson = array('gibbonPersonID' => $gibbonPersonID, 'gibbonAttendanceLogPersonID' => $gibbonAttendanceLogPersonID );
 			$sqlPerson = "SELECT gibbonAttendanceLogPersonID FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonAttendanceLogPersonID=:gibbonAttendanceLogPersonID ";
 			$resultPerson = $connection2->prepare($sqlPerson);
 			$resultPerson->execute($dataPerson);
-		} catch (PDOException $e) {
-			echo "<div class='error'>".$e->getMessage().'</div>';
-		}
 
 	    if ($resultPerson->rowCount() != 1) {
 	    	echo "<div class='error'>";

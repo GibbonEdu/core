@@ -32,14 +32,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view_full.
     if ($gibbonRubricID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data3 = array('gibbonRubricID' => $gibbonRubricID);
             $sql3 = 'SELECT * FROM gibbonRubric WHERE gibbonRubricID=:gibbonRubricID';
             $result3 = $connection2->prepare($sql3);
             $result3->execute($data3);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result3->rowCount() != 1) {
             echo "<div class='error'>";

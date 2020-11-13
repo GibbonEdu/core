@@ -30,14 +30,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    try {
+    
         $data = array();
         $sql = 'SELECT * FROM gibbonAlertLevel ORDER BY sequenceNumber';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
 
     //Let's go!
     $form = Form::create('alertLevelSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/alertLevelSettingsProcess.php' );

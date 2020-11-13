@@ -88,14 +88,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                     echo '</div>';
                 } else {
                     //Ready to go! Just check record exists and we have access, and load it ready to use...
-                    try {
+                    
                         $data = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID']);
                         $sql = 'SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget FROM gibbonFinanceExpense JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) WHERE gibbonFinanceExpenseID=:gibbonFinanceExpenseID AND gibbonFinanceExpense.gibbonPersonIDCreator=:gibbonPersonIDCreator';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
 
                     if ($result->rowCount() != 1) {
                         echo "<div class='error'>";

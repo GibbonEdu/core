@@ -76,14 +76,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     $continue = false;
                     //Student
                     if ($roleCategory == 'Student' and $highestAction == 'View Activities_studentRegister') {
-                        try {
+                        
                             $dataStudent = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                             $sqlStudent = 'SELECT * FROM gibbonStudentEnrolment WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID';
                             $resultStudent = $connection2->prepare($sqlStudent);
                             $resultStudent->execute($dataStudent);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
                         if ($resultStudent->rowCount() == 1) {
                             $rowStudent = $resultStudent->fetch();
                             $gibbonYearGroupID = $rowStudent['gibbonYearGroupID'];
@@ -95,14 +92,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     }
                     //Parent
                     else if ($roleCategory == 'Parent' and $highestAction == 'View Activities_studentRegisterByParent' and $gibbonPersonID != '') {
-                        try {
+                        
                             $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
                             $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
 
                         if ($result->rowCount() < 1) {
                             echo "<div class='error'>";
@@ -111,14 +105,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         } else {
                             $countChild = 0;
                             while ($values = $result->fetch()) {
-                                try {
+                                
                                     $dataChild = array('gibbonFamilyID' => $values['gibbonFamilyID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
                                     $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName ";
                                     $resultChild = $connection2->prepare($sqlChild);
                                     $resultChild->execute($dataChild);
-                                } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
                                 while ($rowChild = $resultChild->fetch()) {
                                     ++$countChild;
                                     $gibbonYearGroupID = $rowChild['gibbonYearGroupID'];
@@ -170,14 +161,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 $values = $result->fetch();
 
                                 //Check for existing registration
-                                try {
+                                
                                     $dataReg = array('gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
                                     $sqlReg = 'SELECT * FROM gibbonActivityStudent WHERE gibbonActivityID=:gibbonActivityID AND gibbonPersonID=:gibbonPersonID';
                                     $resultReg = $connection2->prepare($sqlReg);
                                     $resultReg->execute($dataReg);
-                                } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
 
                                 if ($resultReg->rowCount() > 0) {
                                     echo "<div class='error'>";
@@ -193,14 +181,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                     if ($dateType == 'Term' and $maxPerTerm > 0) {
                                         $termsList = explode(',', $values['gibbonSchoolYearTermIDList']);
                                         foreach ($termsList as $term) {
-                                            try {
+                                            
                                                 $dataActivityCount = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearTermIDList' => '%'.$term.'%');
                                                 $sqlActivityCount = "SELECT * FROM gibbonActivityStudent JOIN gibbonActivity ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearTermIDList LIKE :gibbonSchoolYearTermIDList AND NOT status='Not Accepted'";
                                                 $resultActivityCount = $connection2->prepare($sqlActivityCount);
                                                 $resultActivityCount->execute($dataActivityCount);
-                                            } catch (PDOException $e) {
-                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                            }
                                             if ($resultActivityCount->rowCount() >= $maxPerTerm) {
                                                 $proceed = false;
                                             }
@@ -321,14 +306,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 $values = $result->fetch();
 
                                 //Check for existing registration
-                                try {
+                                
                                     $dataReg = array('gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $gibbonPersonID);
                                     $sqlReg = 'SELECT * FROM gibbonActivityStudent WHERE gibbonActivityID=:gibbonActivityID AND gibbonPersonID=:gibbonPersonID';
                                     $resultReg = $connection2->prepare($sqlReg);
                                     $resultReg->execute($dataReg);
-                                } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
 
                                 if ($resultReg->rowCount() < 1) {
                                     echo "<div class='error'>";
