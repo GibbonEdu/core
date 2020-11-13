@@ -42,16 +42,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/cacheManager.
     $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($cachePath), RecursiveIteratorIterator::SELF_FIRST);
 
     while($iterator->valid()) {
-        if (!$iterator->isDot()) {
-            $subPath = $iterator->getSubPathName();
+        $subPath = $cachePath.'/'.$iterator->getSubPathName();
 
-            $fileCount++;
-            $fileWriteable += is_writeable($cachePath.'/'.$subPath);
-            if (stripos($subPath, 'reports') !== false) {
-                $reportsSize += intval(filesize($cachePath.'/'.$subPath));
-            } else {
-                $templatesSize += intval(filesize($cachePath.'/'.$subPath));
-            }
+        $fileCount++;
+        $fileWriteable += is_writeable($subPath);
+        if (stripos($iterator->getSubPath(), 'reports/') !== false) {
+            $reportsSize += intval(filesize($subPath));
+        } else {
+            $templatesSize += intval(filesize($subPath));
         }
         
         $iterator->next();
