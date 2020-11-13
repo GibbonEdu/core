@@ -90,9 +90,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                 try {
                     $data = array('gibbonPersonID' => $gibbonPersonID);
                     if ($allStaff != 'on') {
-                        $sql = "SELECT gibbonPerson.*, gibbonStaff.initials, gibbonStaff.type, gibbonStaff.jobTitle, countryOfOrigin, qualifications, biography, gibbonStaff.gibbonStaffID FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
+                        $sql = "SELECT gibbonPerson.*, gibbonStaff.initials, gibbonStaff.type, gibbonStaff.jobTitle, countryOfOrigin, qualifications, biography, gibbonStaff.gibbonStaffID, firstAidQualified, firstAidExpiry FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
                     } else {
-                        $sql = 'SELECT gibbonPerson.*, gibbonStaff.initials, gibbonStaff.type, gibbonStaff.jobTitle, countryOfOrigin, qualifications, biography, gibbonStaff.gibbonStaffID FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID';
+                        $sql = 'SELECT gibbonPerson.*, gibbonStaff.initials, gibbonStaff.type, gibbonStaff.jobTitle, countryOfOrigin, qualifications, biography, gibbonStaff.gibbonStaffID, firstAidQualified, firstAidExpiry FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID';
                     }
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
@@ -260,6 +260,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             ->format(Format::using('link', ['website', 'website']));
 
                         echo $table->render([$row]);
+
+
+                        $table = DataTable::createDetails('firstAid');
+                        $table->setTitle(__('First Aid'));
+
+                        $table->addColumn('firstAidQualified', __('First Aid Qualified'))
+                            ->format(Format::using('yesNo', 'firstAidQualified'));
+                        if ($row["firstAidQualified"] == "Y") {
+                            $table->addColumn('firstAidExpiry', __('Expiry Date'))
+                                ->format(function($row) {
+                                    $output = Format::date($row['firstAidExpiry']);
+                                    if ($row['firstAidExpiry'] <= date('Y-m-d')) {
+                                        $output .= Format::tag(__('Expired'), 'warning ml-2');
+                                    }
+                                    return $output;
+                                });
+                        }
+
+                        echo $table->render([$row]);
+
 
                         $table = DataTable::createDetails("misc");
                         $table->setTitle(__('Miscellaneous'));
