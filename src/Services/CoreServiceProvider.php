@@ -143,8 +143,9 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
                 $loader->prependPath($absolutePath.'/modules/'.$moduleName.'/templates');
             }
 
+            $cachePath = $session->has('cachePath') ? $session->get('cachePath').'/templates' : '/uploads/cache';
             $twig = new \Twig\Environment($loader, array(
-                'cache' => $absolutePath.'/uploads/cache',
+                'cache' => $absolutePath.$cachePath,
                 'debug' => $enableDebug,
             ));
 
