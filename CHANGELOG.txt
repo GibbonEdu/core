@@ -42,6 +42,7 @@ v21.0.00
         System: added text labels to Print and Export options in ReportTable
         System: prevented theme names with spaces from breaking background image
         System: removed the unused gibbonPersonMedicalSymptoms table
+        System: improved the error page when the database connection fails
         Attendance: added an Offsite - Late option for attendance codes
         Departments: improved course/class naming in Class view
         Data Updater: data updates with no changes will be automatically accepted
