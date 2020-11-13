@@ -38,9 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage_
 
     //Check if theme specified
     if ($gibbonThemeID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         $themeGateway = $container->get(ThemeGateway::class);
         //Check for existence of theme

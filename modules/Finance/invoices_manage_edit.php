@@ -49,9 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
     }
 
     if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
@@ -70,9 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
         }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             $values = $result->fetch();

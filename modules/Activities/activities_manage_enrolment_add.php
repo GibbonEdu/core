@@ -65,9 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $gibbonActivityID = $_GET['gibbonActivityID'];
 
     if ($gibbonActivityID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonActivityID' => $gibbonActivityID);

@@ -35,9 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
     //Check if school year specified
     $gibbonSpaceID = $_GET['gibbonSpaceID'];
     if ($gibbonSpaceID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonSpaceID' => $gibbonSpaceID);
@@ -49,9 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
         }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             $values = $result->fetch();

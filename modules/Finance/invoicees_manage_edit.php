@@ -49,9 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
 
     //Check if invoicee is specified
     if ($gibbonFinanceInvoiceeID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID);

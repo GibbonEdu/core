@@ -45,9 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
     }
 
     if ($gibbonPersonID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             if ($allStudents != 'on') {

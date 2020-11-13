@@ -31,9 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
     //Check if school year specified
     $gibbonStudentNoteCategoryID = $_GET['gibbonStudentNoteCategoryID'];
     if ($gibbonStudentNoteCategoryID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonStudentNoteCategoryID' => $gibbonStudentNoteCategoryID);
@@ -45,9 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
         }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/studentsSettings_noteCategory_deleteProcess.php?gibbonStudentNoteCategoryID=$gibbonStudentNoteCategoryID");
             echo $form->getOutput();

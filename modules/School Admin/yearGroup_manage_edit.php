@@ -36,9 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
     //Check if school year specified
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'];
     if ($gibbonYearGroupID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonYearGroupID' => $gibbonYearGroupID);
@@ -50,9 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
         }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             $values = $result->fetch();

@@ -27,9 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
     $dateStamp = $_GET['dateStamp'] ?? '';
 
     if ($gibbonSchoolYearID == '' or $dateStamp == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         if (isSchoolOpen($guid, date('Y-m-d', $dateStamp), $connection2, true) != true) {
             echo "<div class='error'>";

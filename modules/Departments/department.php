@@ -32,9 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
 } else {
     $gibbonDepartmentID = $_GET['gibbonDepartmentID'];
     if ($gibbonDepartmentID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonDepartmentID' => $gibbonDepartmentID);

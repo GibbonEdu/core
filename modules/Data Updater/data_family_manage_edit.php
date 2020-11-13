@@ -37,9 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
     //Check if school year specified
     $gibbonFamilyUpdateID = $_GET['gibbonFamilyUpdateID'];
     if ($gibbonFamilyUpdateID == 'Y') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonFamilyUpdateID' => $gibbonFamilyUpdateID);

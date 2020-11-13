@@ -27,9 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
     $gibbonScaleID = $_GET['gibbonScaleID'] ?? '';
 
     if ($gibbonScaleID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonScaleID' => $gibbonScaleID);

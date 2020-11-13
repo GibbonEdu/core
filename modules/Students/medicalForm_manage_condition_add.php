@@ -54,18 +54,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
     $gibbonPersonMedicalID = $_GET['gibbonPersonMedicalID'];
     $search = $_GET['search'];
     if ($gibbonPersonMedicalID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
 
         $medicalGateway = $container->get(MedicalGateway::class);
         $values = $medicalGateway->getMedicalFormByID($gibbonPersonMedicalID);
 
         if (empty($values)) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             if ($search != '') {

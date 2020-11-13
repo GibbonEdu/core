@@ -41,9 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
     //Check if school year specified
     $gibbonScaleID = (isset($_GET['gibbonScaleID']))? $_GET['gibbonScaleID'] : null;
     if (empty($gibbonScaleID)) {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonScaleID' => $gibbonScaleID);
@@ -55,9 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
         }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             $values = $result->fetch();

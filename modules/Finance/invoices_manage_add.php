@@ -63,9 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
     echo '</p>';
 
     if ($gibbonSchoolYearID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         $data= array('gibbonSchoolYearID' => $gibbonSchoolYearID);
         $sql = "SELECT name AS schoolYear FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID";

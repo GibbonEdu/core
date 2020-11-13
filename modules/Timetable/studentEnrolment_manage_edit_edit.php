@@ -29,9 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
     $gibbonCourseID = $_GET['gibbonCourseID'];
     $gibbonPersonID = $_GET['gibbonPersonID'];
     if ($gibbonCourseClassID == '' or $gibbonCourseID == '' or $gibbonPersonID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID2' => $gibbonPersonID);
@@ -43,9 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
         }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             $values = $result->fetch();

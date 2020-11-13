@@ -41,9 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     $search = isset($_GET['search']) ? $_GET['search'] : '';
 
     if (empty($gibbonPersonID) or empty($gibbonSchoolYearID)) {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         $courseGateway = $container->get(CourseGateway::class);
         $courseEnrolmentGateway = $container->get(CourseEnrolmentGateway::class);
@@ -69,9 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             $values = $result->fetch();

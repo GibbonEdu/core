@@ -48,16 +48,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
     $gibbonTTID = $_GET['gibbonTTID'];
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
     if ($gibbonTTID == '' || $gibbonSchoolYearID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         $values = $timetableGateway->getTTByID($gibbonTTID);
 
         if (empty($values)) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/tt_editProcess.php');

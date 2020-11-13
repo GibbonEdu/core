@@ -36,9 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
     //Check if school year specified
     $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
     if ($gibbonFinanceBudgetCycleID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
@@ -50,9 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
         }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             $values = $result->fetch();

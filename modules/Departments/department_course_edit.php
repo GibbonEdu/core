@@ -31,9 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
     $gibbonCourseID = $_GET['gibbonCourseID'];
 
     if ($gibbonDepartmentID == '' or $gibbonCourseID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonCourseID' => $gibbonCourseID);

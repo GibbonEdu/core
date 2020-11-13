@@ -31,9 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     //Check if school year specified
     $gibbonAttendanceCodeID = (isset($_GET['gibbonAttendanceCodeID']))? $_GET['gibbonAttendanceCodeID'] : NULL;
     if ($gibbonAttendanceCodeID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonAttendanceCodeID' => $gibbonAttendanceCodeID);
@@ -45,9 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/attendanceSettings_manage_deleteProcess.php?gibbonAttendanceCodeID=$gibbonAttendanceCodeID", false, false);
             $form->addRow()->addContent(__('These codes should not be changed during an active school year. Removing an attendace code after attendance has been recorded can result in lost information.'));

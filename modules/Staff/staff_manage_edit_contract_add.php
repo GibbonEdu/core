@@ -45,9 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 
     //Check if school year specified
     if ($gibbonStaffID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonStaffID' => $gibbonStaffID);
@@ -59,9 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
         }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             $values = $result->fetch();
 

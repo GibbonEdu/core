@@ -31,9 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_d
     //Check if school year specified
     $gibbonStaffJobOpeningID = $_GET['gibbonStaffJobOpeningID'];
     if ($gibbonStaffJobOpeningID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonStaffJobOpeningID' => $gibbonStaffJobOpeningID);
@@ -45,9 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_d
         }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/jobOpenings_manage_deleteProcess.php?gibbonStaffJobOpeningID=$gibbonStaffJobOpeningID");
             echo $form->getOutput();

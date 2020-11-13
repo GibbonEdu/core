@@ -29,9 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
     if (empty($gibbonYearGroupID) || empty($gibbonSchoolYearID)) {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_sync_deleteProcess.php');
         echo $form->getOutput();

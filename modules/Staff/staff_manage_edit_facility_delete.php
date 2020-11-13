@@ -42,9 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_fa
 
     //Check if school year specified
     if ($gibbonSpacePersonID == '' or $gibbonStaffID =='') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonSpacePersonID' => $gibbonSpacePersonID);
@@ -56,9 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_fa
         }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/staff_manage_edit_facility_deleteProcess.php?gibbonStaffID=$gibbonStaffID&gibbonSpacePersonID=$gibbonSpacePersonID&search=$search&allStaff=$allStaff");
             echo $form->getOutput();

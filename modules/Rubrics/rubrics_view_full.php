@@ -30,9 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view_full.
     //Check if school year specified
     $gibbonRubricID = $_GET['gibbonRubricID'];
     if ($gibbonRubricID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data3 = array('gibbonRubricID' => $gibbonRubricID);

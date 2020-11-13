@@ -31,9 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
     //Check if school year specified
     $gibbonMessengerCannedResponseID = $_GET['gibbonMessengerCannedResponseID'];
     if ($gibbonMessengerCannedResponseID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonMessengerCannedResponseID' => $gibbonMessengerCannedResponseID);
@@ -45,9 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
         }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cannedResponse_manage_deleteProcess.php?gibbonMessengerCannedResponseID=$gibbonMessengerCannedResponseID");
             echo $form->getOutput();

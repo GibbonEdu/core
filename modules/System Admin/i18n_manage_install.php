@@ -34,9 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
     $mode = isset($_GET['mode'])? $_GET['mode'] : 'install';
 
     if (empty($gibboni18nID)) {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         $i18nGateway = $container->get(I18nGateway::class);
 
@@ -44,9 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
 
         //Check for a valid language
         if (empty($i18n)) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             $form = Form::create('install', $_SESSION[$guid]['absoluteURL'].'/modules/System Admin/i18n_manage_installProcess.php');
             $form->addHiddenValue('address', $_GET['q']);

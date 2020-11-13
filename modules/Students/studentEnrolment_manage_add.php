@@ -42,9 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
 
     //Check if school year specified
     if ($gibbonSchoolYearID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         if ($search != '') {
             echo "<div class='linkTop'>";

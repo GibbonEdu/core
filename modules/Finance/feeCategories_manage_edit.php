@@ -38,9 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
     //Check if school year specified
     $gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'];
     if ($gibbonFinanceFeeCategoryID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonFinanceFeeCategoryID' => $gibbonFinanceFeeCategoryID);

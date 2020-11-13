@@ -34,9 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 
     //Check if school year specified
     if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonPersonMedicalConditionID' => $gibbonPersonMedicalConditionID);
@@ -48,9 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
         }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             if ($search != '') {

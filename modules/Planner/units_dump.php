@@ -40,9 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
 } else {
     //Check if courseschool year specified
     if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID);

@@ -36,9 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings_ed
     //Check if school year specified
     $gibbonINDescriptorID = $_GET['gibbonINDescriptorID'];
     if ($gibbonINDescriptorID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonINDescriptorID' => $gibbonINDescriptorID);
@@ -50,9 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings_ed
         }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             $values = $result->fetch();

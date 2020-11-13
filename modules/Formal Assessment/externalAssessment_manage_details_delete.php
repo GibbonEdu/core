@@ -35,9 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 
     //Check if school year specified
     if ($gibbonExternalAssessmentStudentID == '' or $gibbonPersonID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonExternalAssessmentStudentID' => $gibbonExternalAssessmentStudentID);
@@ -48,9 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
             echo "<div class='error'>".$e->getMessage().'</div>';
         }
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             $row = $result->fetch();

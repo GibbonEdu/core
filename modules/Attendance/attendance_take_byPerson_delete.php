@@ -32,9 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 	$currentDate = isset($_GET['currentDate']) ? $_GET['currentDate'] : '';
 
 	if ( empty($gibbonAttendanceLogPersonID) || empty($gibbonPersonID) || empty($currentDate) ) {
-		echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+		$page->addError(__('You have not specified one or more required parameters.'));
 	} else {
 	    //Proceed!
 	    try {

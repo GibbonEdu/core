@@ -40,9 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 	$gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
 
 	if ( empty($gibbonAttendanceLogPersonID) || empty($gibbonPersonID) ) {
-		echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+		$page->addError(__('You have not specified one or more required parameters.'));
 	} else {
 	    //Proceed!
 	    if (isset($_GET['return'])) {

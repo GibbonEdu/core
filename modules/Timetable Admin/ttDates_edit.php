@@ -38,9 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
     $dateStamp = $_GET['dateStamp'];
     if ($gibbonSchoolYearID == '' or $dateStamp == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('date' => date('Y-m-d', $dateStamp));

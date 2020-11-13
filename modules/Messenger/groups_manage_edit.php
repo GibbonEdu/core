@@ -40,9 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
 
     //Check if school year specified
     if ($gibbonGroupID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         $groupGateway = $container->get(GroupGateway::class);
         
@@ -54,9 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
         }
 
         if ($result->isEmpty()) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             $values = $result->fetch();

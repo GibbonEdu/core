@@ -31,9 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
     header("Location: {$URL}");
 } else {
     if ($gibbonDepartmentID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         //Proceed!
         //Validate Inputs

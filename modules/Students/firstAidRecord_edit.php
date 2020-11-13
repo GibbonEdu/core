@@ -44,9 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 
     if ($gibbonFirstAidID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonFirstAidID' => $gibbonFirstAidID);

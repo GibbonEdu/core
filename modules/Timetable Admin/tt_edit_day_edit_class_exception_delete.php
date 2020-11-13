@@ -34,17 +34,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
     $gibbonTTDayRowClassExceptionID = $_GET['gibbonTTDayRowClassExceptionID'] ?? '';
 
     if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $gibbonTTColumnRowID == '' or $gibbonCourseClassID == '' or $gibbonTTDayRowClassID == '' or $gibbonTTDayRowClassExceptionID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         $timetableDayGateway = $container->get(TimetableDayGateway::class);
         $values = $timetableDayGateway->getTTDayRowClassByID($gibbonTTDayID, $gibbonTTColumnRowID, $gibbonCourseClassID);
 
         if (empty($values)) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             $values = $timetableDayGateway->getTTDayRowClassExceptionByID($gibbonTTDayRowClassExceptionID);

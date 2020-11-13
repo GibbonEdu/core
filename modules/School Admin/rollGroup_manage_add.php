@@ -42,9 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
     if ($gibbonSchoolYearID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);

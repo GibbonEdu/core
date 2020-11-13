@@ -37,9 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     }
 
     if ($gibbonApplicationFormID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         //Proceed!
         try {

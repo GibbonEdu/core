@@ -38,9 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
     //Check if school year specified
     $gibbonFinanceInvoiceeUpdateID = $_GET['gibbonFinanceInvoiceeUpdateID'];
     if ($gibbonFinanceInvoiceeUpdateID == 'Y') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonFinanceInvoiceeUpdateID' => $gibbonFinanceInvoiceeUpdateID);

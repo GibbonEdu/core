@@ -41,9 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     $gibbonAttendanceCodeID = (isset($_GET['gibbonAttendanceCodeID']))? $_GET['gibbonAttendanceCodeID'] : NULL;
 
     if (empty($gibbonAttendanceCodeID)) {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
 	    try {
 	        $data = array('gibbonAttendanceCodeID' => $gibbonAttendanceCodeID);

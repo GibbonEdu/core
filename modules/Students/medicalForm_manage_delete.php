@@ -32,9 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
     $gibbonPersonMedicalID = $_GET['gibbonPersonMedicalID'];
     $search = $_GET['search'];
     if ($gibbonPersonMedicalID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonPersonMedicalID' => $gibbonPersonMedicalID);
@@ -46,9 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
         }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/medicalForm_manage_deleteProcess.php?gibbonPersonMedicalID=$gibbonPersonMedicalID&search=$search");
             echo $form->getOutput();

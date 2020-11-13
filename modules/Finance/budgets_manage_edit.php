@@ -40,9 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
     //Check if school year specified
     $gibbonFinanceBudgetID = $_GET['gibbonFinanceBudgetID'];
     if ($gibbonFinanceBudgetID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonFinanceBudgetID' => $gibbonFinanceBudgetID);

@@ -35,9 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
     $gibbonStaffApplicationFormID = $_GET['gibbonStaffApplicationFormID'];
     $search = $_GET['search'];
     if ($gibbonStaffApplicationFormID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID);

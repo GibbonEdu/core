@@ -32,9 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_d
     $gibbonFamilyID = $_GET['gibbonFamilyID'];
     $search = $_GET['search'];
     if ($gibbonFamilyID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonFamilyID' => $gibbonFamilyID);
@@ -46,9 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_d
         }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_deleteProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search", true);
             echo $form->getOutput();

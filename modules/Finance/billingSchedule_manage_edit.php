@@ -40,9 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
     $gibbonFinanceBillingScheduleID = $_GET['gibbonFinanceBillingScheduleID'];
     $search = $_GET['search'];
     if ($gibbonFinanceBillingScheduleID == '' or $gibbonSchoolYearID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceBillingScheduleID' => $gibbonFinanceBillingScheduleID);
@@ -54,9 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
         }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             $resultRow = $result->fetch();

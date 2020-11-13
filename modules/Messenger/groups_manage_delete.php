@@ -32,9 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_de
     }
 
     if ($gibbonGroupID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         $groupGateway = $container->get(GroupGateway::class);
 
@@ -46,9 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_de
         }
 
         if ($result->isEmpty()) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/groups_manage_deleteProcess.php?gibbonGroupID=$gibbonGroupID");

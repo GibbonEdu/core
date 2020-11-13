@@ -34,9 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
 
     //Check if school year specified
     if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID);
@@ -48,9 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
         }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/studentEnrolment_manage_deleteProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&search=$search", true);
             echo $form->getOutput();

@@ -28,9 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
     $gibbonExternalAssessmentID = $_GET['gibbonExternalAssessmentID'] ?? '';
 
     if ($gibbonExternalAssessmentID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID);

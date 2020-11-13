@@ -35,9 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
     $gibbonPersonID = $_GET['gibbonPersonID'];
     $gibbonRubricID = $_GET['gibbonRubricID'];
     if ($gibbonCourseClassID == '' or $gibbonMarkbookColumnID == '' or $gibbonPersonID == '' or $gibbonRubricID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         $roleCategory = getRoleCategory($_SESSION[$guid]['gibbonRoleIDPrimary'], $connection2);
         $contextDBTableGibbonRubricIDField = 'gibbonRubricID';

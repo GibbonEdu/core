@@ -33,9 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 } else {
     $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
     if ($gibbonCourseClassID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonCourseClassID' => $gibbonCourseClassID);

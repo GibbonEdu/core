@@ -40,9 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $gibbonPersonIDOwnership = $_GET['gibbonPersonIDOwnership'] ?? '';
     $typeSpecificFields = $_GET['typeSpecificFields'] ?? '';
     if ($gibbonLibraryItemID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonLibraryItemID' => $gibbonLibraryItemID);

@@ -27,9 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
     $gibbonExternalAssessmentFieldID = $_GET['gibbonExternalAssessmentFieldID'] ?? '';
     $gibbonExternalAssessmentID = $_GET['gibbonExternalAssessmentID'] ?? '';
     if ($gibbonExternalAssessmentFieldID == '' or $gibbonExternalAssessmentID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonExternalAssessmentFieldID' => $gibbonExternalAssessmentFieldID);
@@ -41,9 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
         }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);

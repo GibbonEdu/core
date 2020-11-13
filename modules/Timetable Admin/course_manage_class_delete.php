@@ -33,9 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
     $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
     if ($gibbonCourseClassID == '' or $gibbonCourseID == '' or $gibbonSchoolYearID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         try {
             $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
@@ -47,9 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/course_manage_class_deleteProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID");
             echo $form->getOutput();

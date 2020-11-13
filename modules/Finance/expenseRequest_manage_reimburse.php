@@ -46,9 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
     $status2 = $_GET['status2'];
     $gibbonFinanceBudgetID2 = $_GET['gibbonFinanceBudgetID2'];
     if ($gibbonFinanceExpenseID == '' or $gibbonFinanceBudgetCycleID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         //Get and check settings
         $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');

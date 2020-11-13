@@ -31,9 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
     $gibbonUsernameFormatID = isset($_GET['gibbonUsernameFormatID'])? $_GET['gibbonUsernameFormatID'] : '';
 
     if ($gibbonUsernameFormatID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/userSettings_usernameFormat_deleteProcess.php");
         echo $form->getOutput();
