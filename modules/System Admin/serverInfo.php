@@ -17,10 +17,55 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
+// Module includes
+require_once __DIR__ . '/moduleFunctions.php';
+
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/serverInfo.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
     $page->breadcrumbs->add(__('Server Info'));
+
+    $info = phpinfoArray();
+
+    // FORM
+    $form = Form::create('info', '');
+    $form->setTitle(__('Server Info'));
+    $form->setDescription(__("This page outputs a large amount of information about the your server's configuration. This is useful for troubleshooting and debugging."));
+
+    $form->addRow()->addHeading(__('System Logs'));
+
+    // Display the log information at the top for easy reference
+    $row = $form->addRow();
+        $row->addLabel('logs', __('Error Log Location'));
+        $row->addContent(dirname($info['Core']['error_log'] ?? ''))
+            ->wrap('<div class="text-left w-full">', '</div>');
+
+    $row = $form->addRow();
+        $row->addLabel('logs', __('Display Errors'));
+        $row->addContent(__($info['Core']['display_errors'][0] ?? 'Off'))
+            ->wrap('<div class="text-left w-full">', '</div>');
+
+    $row = $form->addRow();
+        $row->addLabel('logs', __('Log Errors'));
+        $row->addContent(__($info['Core']['log_errors'] ?? 'Off'))
+            ->wrap('<div class="text-left w-full">', '</div>');
+
+    // Display the full contents of the phpinfo function
+    foreach ($info as $section => $vars) {
+        $form->addRow()->addHeading($section);
+        
+        foreach ($vars as $name => $value) {
+            $value = is_array($value) ? current($value) : $value;
+
+            $row = $form->addRow();
+            $row->addLabel('', $name);
+            $row->addContent($value)->wrap('<div class="text-left w-full">', '</div>');
+        }
+    }
+    
+    echo $form->getOutput();
 }
