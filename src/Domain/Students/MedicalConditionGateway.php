@@ -46,7 +46,7 @@ class MedicalConditionGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonMedicalConditionID', 'name'
+                'gibbonMedicalConditionID', 'name', 'description'
             ]);
 
         return $this->runQuery($query, $criteria);

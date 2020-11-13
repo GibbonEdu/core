@@ -1714,7 +1714,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             //Get medical conditions
                             try {
                                 $dataCondition = array('gibbonPersonMedicalID' => $rowMedical['gibbonPersonMedicalID']);
-                                $sqlCondition = 'SELECT * FROM gibbonPersonMedicalCondition WHERE gibbonPersonMedicalID=:gibbonPersonMedicalID ORDER BY name';
+                                $sqlCondition = 'SELECT gibbonPersonMedicalCondition.*, gibbonMedicalCondition.description FROM gibbonPersonMedicalCondition LEFT JOIN gibbonMedicalCondition ON (gibbonMedicalCondition.name=gibbonPersonMedicalCondition.name) WHERE gibbonPersonMedicalID=:gibbonPersonMedicalID ORDER BY name';
                                 $resultCondition = $connection2->prepare($sqlCondition);
                                 $resultCondition->execute($dataCondition);
                             } catch (PDOException $e) {
@@ -1775,6 +1775,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     echo __($rowCondition['name'])." <span style='color: #".$alert['color']."'>(".__($alert['name']).' '.__('Risk').')</span>';
                                 }
                                 echo '</h4>';
+                                if (!empty($rowCondition['description'])) {
+                                    echo '<p class="text-xs text-gray-700">';
+                                    echo $rowCondition['description'];
+                                    echo '</p>';
+                                }
 
                                 echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
                                 echo '<tr>';

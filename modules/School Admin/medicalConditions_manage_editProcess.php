@@ -34,7 +34,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/medicalCondit
     $medicalConditionGateway = $container->get(MedicalConditionGateway::class);
 
     $data = [
-        'name'         => $_POST['name'] ?? ''
+        'name'        => $_POST['name'] ?? '',
+        'description' => $_POST['description'] ?? '',
     ];
 
     // Validate the required values are present

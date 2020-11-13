@@ -67,6 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/medicalCondit
         ->displayLabel();
 
     $table->addColumn('name', __('Name'));
+    $table->addColumn('description', __('Description'))->format(Format::using('truncate', 'description'));
 
     // ACTIONS
     $table->addActionColumn()
