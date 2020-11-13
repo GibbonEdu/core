@@ -85,14 +85,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
         }
     }
     if ($gibbonCourseID != '') {
-        try {
+        
             $data = array('gibbonCourseID' => $gibbonCourseID);
             $sql = 'SELECT * FROM gibbonCourse WHERE gibbonCourseID=:gibbonCourseID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
         if ($result->rowCount() == 1) {
             $row = $result->fetch();
         }
@@ -102,13 +99,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
     $gibbonCourseIDPrevious = '';
     $gibbonSchoolYearIDPrevious = getPreviousSchoolYearID($gibbonSchoolYearID, $connection2);
     if ($gibbonSchoolYearIDPrevious != false and isset($row['nameShort'])) {
-        try {
+        
             $dataPrevious = array('gibbonSchoolYearID' => $gibbonSchoolYearIDPrevious, 'nameShort' => $row['nameShort']);
             $sqlPrevious = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND nameShort=:nameShort';
             $resultPrevious = $connection2->prepare($sqlPrevious);
             $resultPrevious->execute($dataPrevious);
-        } catch (PDOException $e) {
-        }
         if ($resultPrevious->rowCount() == 1) {
             $rowPrevious = $resultPrevious->fetch();
             $gibbonCourseIDPrevious = $rowPrevious['gibbonCourseID'];
@@ -117,13 +112,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
     $gibbonCourseIDNext = '';
     $gibbonSchoolYearIDNext = getNextSchoolYearID($gibbonSchoolYearID, $connection2);
     if ($gibbonSchoolYearIDNext != false and isset($row['nameShort'])) {
-        try {
+        
             $dataNext = array('gibbonSchoolYearID' => $gibbonSchoolYearIDNext, 'nameShort' => $row['nameShort']);
             $sqlNext = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND nameShort=:nameShort';
             $resultNext = $connection2->prepare($sqlNext);
             $resultNext->execute($dataNext);
-        } catch (PDOException $e) {
-        }
         if ($resultNext->rowCount() == 1) {
             $rowNext = $resultNext->fetch();
             $gibbonCourseIDNext = $rowNext['gibbonCourseID'];

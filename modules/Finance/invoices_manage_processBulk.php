@@ -98,13 +98,11 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                 if ($thisLockFail == false) {
                     $emailFail = false;
                     foreach ($gibbonFinanceInvoiceIDs as $gibbonFinanceInvoiceID) {
-                        try {
+                        
                             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
                             $sql = "SELECT gibbonFinanceInvoice.*, gibbonFinanceBillingSchedule.invoiceDueDate AS invoiceDueDateScheduled FROM gibbonFinanceInvoice LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID AND status='Pending'";
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
-                        } catch (PDOException $e) {
-                        }
 
                         if ($result->rowCount() != 1) {
                             $partialFail = true;
@@ -207,21 +205,18 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                 }
 
                 //Unlock invoice table
-                try {
+                
                     $sql = 'UNLOCK TABLES';
                     $result = $connection2->query($sql);
-                } catch (PDOException $e) {}
 
                 if ($action == 'issue') {
                     //Loop through invoices again, this time to send invoices....they can not be sent in first loop due to table locking issues.
                     foreach ($gibbonFinanceInvoiceIDs as $gibbonFinanceInvoiceID) {
-                        try {
+                        
                             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
                             $sql = 'SELECT gibbonFinanceInvoice.*, gibbonFinanceBillingSchedule.invoiceDueDate AS invoiceDueDateScheduled FROM gibbonFinanceInvoice LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
-                        } catch (PDOException $e) {
-                        }
 
                         $emails = array();
                         $emailsCount = 0;
@@ -350,13 +345,11 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
             //REMINDERS
             elseif ($action == 'reminders') {
                 foreach ($gibbonFinanceInvoiceIDs as $gibbonFinanceInvoiceID) {
-                    try {
+                    
                         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
                         $sql = "SELECT gibbonFinanceInvoice.*, gibbonFinanceBillingSchedule.invoiceDueDate AS invoiceDueDateScheduled FROM gibbonFinanceInvoice LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID AND (status='Issued' OR status='Paid - Partial')";
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
-                    } catch (PDOException $e) {
-                    }
 
                     $emailFail = false;
                     $emails = array();
@@ -453,13 +446,11 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
 
                         //Update reminder count
                         if ($row['reminderCount'] < 3) {
-                            try {
+                            
                                 $data = array('gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
                                 $sql = 'UPDATE gibbonFinanceInvoice SET reminderCount='.($row['reminderCount'] + 1).' WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
-                            } catch (PDOException $e) {
-                            }
                         }
 
                         $mail = $container->get(Mailer::class);

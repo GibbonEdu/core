@@ -23,10 +23,8 @@ use Gibbon\Forms\Form;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Update'));
@@ -186,14 +184,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         else { //Eligible
             //CHECK DEFAULT ENGINE
             $currentEngine = 'Unknown';
-            try {
+            
                 $data = array();
                 $sql = 'SHOW ENGINES';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
             if ($result->rowCount() < 1) {
                 echo "<div class='error'>";
                 echo __('There are no records to display.');
@@ -221,14 +216,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
             $tableUpdate = false;
             $tablesTotal = 0;
             $tablesInnoDB = 0;
-            try {
+            
                 $data = array();
                 $sql = 'SHOW TABLE STATUS';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
             if ($result->rowCount() < 1) {
                 echo "<div class='error'>";
                 echo __('There are no records to display.');

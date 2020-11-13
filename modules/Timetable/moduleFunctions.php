@@ -145,13 +145,11 @@ function getSpaceBookingEventsSpace($guid, $connection2, $startDayStamp, $gibbon
 {
     $return = false;
 
-    try {
+    
         $dataSpaceBooking = array('gibbonSpaceID' => $gibbonSpaceID);
         $sqlSpaceBooking = "SELECT gibbonTTSpaceBooking.*, name, title, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonSpace ON (gibbonTTSpaceBooking.foreignKeyID=gibbonSpace.gibbonSpaceID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignKey='gibbonSpaceID' AND gibbonTTSpaceBooking.foreignKeyID=:gibbonSpaceID AND date>='".date('Y-m-d', $startDayStamp)."' AND  date<='".date('Y-m-d', ($startDayStamp + (7 * 24 * 60 * 60)))."' ORDER BY date, timeStart, name";
         $resultSpaceBooking = $connection2->prepare($sqlSpaceBooking);
         $resultSpaceBooking->execute($dataSpaceBooking);
-    } catch (PDOException $e) {
-    }
     if ($resultSpaceBooking->rowCount() > 0) {
         $return = array();
         $count = 0;
@@ -284,16 +282,13 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                 $proceed = true;
             }
         } else if ($highestAction == 'View Timetable by Person_myChildren') {
-            try {
+            
                 $data = array('gibbonPersonID1' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonID2' => $gibbonPersonID);
                 $sql = "SELECT gibbonFamilyChild.gibbonPersonID FROM gibbonFamilyChild
                     JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID)
                     WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID1 AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID2 AND gibbonFamilyAdult.childDataAccess='Y'";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
 
             if ($result->rowCount() > 0) {
                 $proceed = true;
@@ -835,12 +830,11 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
                     unset($rowDay);
                     $color = '';
-                    try {
+                    
                         $dataDay = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))), 'gibbonTTID' => $gibbonTTID);
                         $sqlDay = 'SELECT nameShort, color, fontColor FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) WHERE date=:date AND gibbonTTID=:gibbonTTID';
                         $resultDay = $connection2->prepare($sqlDay);
                         $resultDay->execute($dataDay);
-                    } catch (PDOException $e) {}
                     if ($resultDay->rowCount() == 1) {
                         $rowDay = $resultDay->fetch();
                         if ($rowDay['color'] != '') {
@@ -1020,13 +1014,11 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
     $allDay = 0;
 
     if ($schoolOpen == false) {
-        try {
+        
             $dataSpecialDay = array('date' => $date);
             $sqlSpecialDay = "SELECT name, description FROM gibbonSchoolYearSpecialDay WHERE date=:date";
             $resultSpecialDay = $connection2->prepare($sqlSpecialDay);
             $resultSpecialDay->execute($dataSpecialDay);
-        } catch (PDOException $e) {
-        }
 
         $specialDay = $resultSpecialDay->rowCount() > 0? $resultSpecialDay->fetch() : array('name' => '', 'description' => '');
 
@@ -1133,13 +1125,11 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
     } else {
         //Make array of space changes
         $spaceChanges = array();
-        try {
+        
             $dataSpaceChange = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))));
             $sqlSpaceChange = 'SELECT gibbonTTSpaceChange.*, gibbonSpace.name AS space, phoneInternal FROM gibbonTTSpaceChange LEFT JOIN gibbonSpace ON (gibbonTTSpaceChange.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE date=:date';
             $resultSpaceChange = $connection2->prepare($sqlSpaceChange);
             $resultSpaceChange->execute($dataSpaceChange);
-        } catch (PDOException $e) {
-        }
         while ($rowSpaceChange = $resultSpaceChange->fetch()) {
             $spaceChanges[$rowSpaceChange['gibbonTTDayRowClassID']][0] = $rowSpaceChange['space'];
             $spaceChanges[$rowSpaceChange['gibbonTTDayRowClassID']][1] = $rowSpaceChange['phoneInternal'];
@@ -1856,12 +1846,11 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                         $output .= __($day['nameShort']).'<br/>';
                     }
                     else {
-                        try {
+                        
                             $dataDay = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))), 'gibbonTTID' => $gibbonTTID);
                             $sqlDay = 'SELECT nameShort FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) WHERE date=:date AND gibbonTTID=:gibbonTTID';
                             $resultDay = $connection2->prepare($sqlDay);
                             $resultDay->execute($dataDay);
-                        } catch (PDOException $e) {}
                         if ($resultDay->rowCount() == 1) {
                             $rowDay = $resultDay->fetch();
                             $output .= $rowDay['nameShort'].'<br/>';
@@ -2024,13 +2013,11 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
 
     //Make array of space changes
     $spaceChanges = array();
-    try {
+    
         $dataSpaceChange = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))));
         $sqlSpaceChange = 'SELECT gibbonTTSpaceChange.*, gibbonSpace.name AS space, phoneInternal FROM gibbonTTSpaceChange LEFT JOIN gibbonSpace ON (gibbonTTSpaceChange.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE date=:date';
         $resultSpaceChange = $connection2->prepare($sqlSpaceChange);
         $resultSpaceChange->execute($dataSpaceChange);
-    } catch (PDOException $e) {
-    }
     while ($rowSpaceChange = $resultSpaceChange->fetch()) {
         $spaceChanges[$rowSpaceChange['gibbonTTDayRowClassID']][0] = $rowSpaceChange['space'];
         $spaceChanges[$rowSpaceChange['gibbonTTDayRowClassID']][1] = $rowSpaceChange['phoneInternal'];

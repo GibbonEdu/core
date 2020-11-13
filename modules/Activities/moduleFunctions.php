@@ -30,14 +30,11 @@ function getActivityWeekDays($connection2, $gibbonActivityID)
 {
 
     // Get the time slots for this activity to determine weekdays
-    try {
+    
         $data = array('gibbonActivityID' => $gibbonActivityID);
         $sql = 'SELECT nameShort FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY gibbonDaysOfWeek.gibbonDaysOfWeekID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
 
     return $result->fetchAll(PDO::FETCH_COLUMN);
 }
@@ -80,24 +77,18 @@ function getActivityTimespan($connection2, $gibbonActivityID, $gibbonSchoolYearT
             return array();
         }
 
-        try {
+        
             $data = array();
             $sql = 'SELECT MIN(UNIX_TIMESTAMP(firstDay)) as start, MAX(UNIX_TIMESTAMP(lastDay)) as end FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearTermID IN ('.$gibbonSchoolYearTermIDList.')';
             $result = $connection2->prepare($sql);
             $result->execute();
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
         $timespan = $result->fetch();
     } else {
-        try {
+        
             $data = array('gibbonActivityID' => $gibbonActivityID);
             $sql = 'SELECT UNIX_TIMESTAMP(programStart) as start, UNIX_TIMESTAMP(programEnd) as end FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
         $timespan = $result->fetch();
     }
 

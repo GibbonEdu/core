@@ -142,14 +142,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                     $page = 1;
                 }
 
-                try {
+                
                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
                     $sql = 'SELECT * FROM gibbonMarkbookColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY completeDate DESC, name';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 if ($canEditThisClass) {
                     echo "<div class='linkTop'>";

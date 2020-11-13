@@ -80,14 +80,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_add
             if (count($staff) > 0) {
                 foreach ($staff as $t) {
                     //Check to see if person is already registered in this budget
-                    try {
+                    
                         $dataGuest = array('gibbonPersonID' => $t, 'gibbonFinanceBudgetID' => $AI);
                         $sqlGuest = 'SELECT * FROM gibbonFinanceBudgetPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID';
                         $resultGuest = $connection2->prepare($sqlGuest);
                         $resultGuest->execute($dataGuest);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
 
                     if ($resultGuest->rowCount() == 0) {
                         try {

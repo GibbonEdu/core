@@ -53,10 +53,8 @@ function getDateRange($firstDate, $lastDate, $step = '+1 day', $output_format = 
 }
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_graph_studentEnrolment.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Student Enrolment Trends'));

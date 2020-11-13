@@ -63,13 +63,11 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
 
         if ($behaviourLettersLetter1Count != '' and $behaviourLettersLetter1Text != '' and $behaviourLettersLetter2Count != '' and $behaviourLettersLetter2Text != '' and $behaviourLettersLetter3Count != '' and $behaviourLettersLetter3Text != '' and is_numeric($behaviourLettersLetter1Count) and is_numeric($behaviourLettersLetter2Count) and is_numeric($behaviourLettersLetter3Count)) {
             //SCAN THROUGH ALL STUDENTS
-            try {
+            
                 $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                 $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.name AS rollGroup, 'Student' AS role, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3 FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) {
-            }
 
             if ($result->rowCount() > 0) {
                 while ($row = $result->fetch()) { //For every student
@@ -77,23 +75,19 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                     $rollGroup = $row['rollGroup'];
 
                     //Check count of negative behaviour records in the current year
-                    try {
+                    
                         $dataBehaviour = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                         $sqlBehaviour = "SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND type='Negative'";
                         $resultBehaviour = $connection2->prepare($sqlBehaviour);
                         $resultBehaviour->execute($dataBehaviour);
-                    } catch (PDOException $e) {
-                    }
                     $behaviourCount = $resultBehaviour->rowCount();
                     if ($behaviourCount > 0) { //Only worry about students with more than zero negative records in the current year
                         //Get most recent letter entry
-                        try {
+                        
                             $dataLetters = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                             $sqlLetters = 'SELECT * FROM gibbonBehaviourLetter WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY timestamp DESC LIMIT 0, 1';
                             $resultLetters = $connection2->prepare($sqlLetters);
                             $resultLetters->execute($dataLetters);
-                        } catch (PDOException $e) {
-                        }
 
                         $newLetterRequired = false;
                         $newLetterRequiredLevel = null;
@@ -181,13 +175,11 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                             }
                             //Prepare behaviour record for replacement
                             $behaviourRecord = '<ul>';
-                            try {
+                            
                                 $dataBehaviourRecord = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                                 $sqlBehaviourRecord = "SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND type='Negative' ORDER BY timestamp DESC";
                                 $resultBehaviourRecord = $connection2->prepare($sqlBehaviourRecord);
                                 $resultBehaviourRecord->execute($dataBehaviourRecord);
-                            } catch (PDOException $e) {
-                            }
                             while ($rowBehaviourRecord = $resultBehaviourRecord->fetch()) {
                                 $behaviourRecord .= '<li>';
                                 $behaviourRecord .= dateConvertBack($guid, substr($rowBehaviourRecord['timestamp'], 0, 10));
@@ -266,13 +258,11 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
 
                                     //Notify teachers
                                     $notificationText = sprintf(__('A warning has been issued for a student (%1$s) in one of your classes, pending a behaviour letter.'), $studentName);
-                                    try {
+                                    
                                         $dataTeachers = array('gibbonPersonID' => $row['gibbonPersonID']);
                                         $sqlTeachers = "SELECT DISTINCT teacher.gibbonPersonID FROM gibbonPerson AS teacher JOIN gibbonCourseClassPerson AS teacherClass ON (teacherClass.gibbonPersonID=teacher.gibbonPersonID)  JOIN gibbonCourseClassPerson AS studentClass ON (studentClass.gibbonCourseClassID=teacherClass.gibbonCourseClassID) JOIN gibbonPerson AS student ON (studentClass.gibbonPersonID=student.gibbonPersonID) JOIN gibbonCourseClass ON (studentClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE teacher.status='Full' AND teacherClass.role='Teacher' AND studentClass.role='Student' AND student.gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY teacher.preferredName, teacher.surname, teacher.email ;";
                                         $resultTeachers = $connection2->prepare($sqlTeachers);
                                         $resultTeachers->execute($dataTeachers);
-                                    } catch (PDOException $e) {
-                                    }
                                     while ($rowTeachers = $resultTeachers->fetch()) {
                                         $notificationSender->addNotification($rowTeachers['gibbonPersonID'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
                                     }
@@ -313,13 +303,11 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                         if ($email) {
                             $recipientList = '';
                             //Send emails
-                            try {
+                            
                                 $dataMember = array('gibbonPersonID' => $row['gibbonPersonID']);
                                 $sqlMember = "SELECT DISTINCT email, preferredName, surname FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonPerson.status='Full' AND contactEmail='Y' ORDER BY contactPriority, surname, preferredName";
                                 $resultMember = $connection2->prepare($sqlMember);
                                 $resultMember->execute($dataMember);
-                            } catch (PDOException $e) {
-                            }
                             while ($rowMember = $resultMember->fetch()) {
                                 ++$emailSendCount;
                                 if ($rowMember['email'] == '') {
@@ -356,13 +344,11 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                                 $recipientList = substr($recipientList, 0, -2);
 
                                 //Record email recipients in letter record
-                                try {
+                                
                                     $dataUpdate = array('recipientList' => $recipientList, 'gibbonBehaviourLetterID' => $gibbonBehaviourLetterID);
                                     $sqlUpdate = 'UPDATE gibbonBehaviourLetter set recipientList=:recipientList WHERE gibbonBehaviourLetterID=:gibbonBehaviourLetterID';
                                     $resultUpdate = $connection2->prepare($sqlUpdate);
                                     $resultUpdate->execute($dataUpdate);
-                                } catch (PDOException $e) {
-                                }
                             }
                         }
                     }

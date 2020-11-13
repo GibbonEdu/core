@@ -94,11 +94,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_dup
             }
 
             //Unlock locked database tables
-            try {
+            
                 $sql = 'UNLOCK TABLES';
                 $result = $connection2->query($sql);
-            } catch (PDOException $e) {
-            }
 
             if ($partialFail == true) {
                 $URL .= '&return=error6';

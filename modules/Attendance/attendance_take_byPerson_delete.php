@@ -23,10 +23,8 @@ use Gibbon\Forms\Prefab\DeleteForm;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson_delete.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
 
 	$gibbonAttendanceLogPersonID = isset($_GET['gibbonAttendanceLogPersonID'])? $_GET['gibbonAttendanceLogPersonID'] : '';
@@ -34,19 +32,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 	$currentDate = isset($_GET['currentDate']) ? $_GET['currentDate'] : '';
 
 	if ( empty($gibbonAttendanceLogPersonID) || empty($gibbonPersonID) || empty($currentDate) ) {
-		echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+		$page->addError(__('You have not specified one or more required parameters.'));
 	} else {
 	    //Proceed!
-	    try {
+	    
 			$dataPerson = array('gibbonPersonID' => $gibbonPersonID, 'gibbonAttendanceLogPersonID' => $gibbonAttendanceLogPersonID );
 			$sqlPerson = "SELECT gibbonAttendanceLogPersonID FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonAttendanceLogPersonID=:gibbonAttendanceLogPersonID ";
 			$resultPerson = $connection2->prepare($sqlPerson);
 			$resultPerson->execute($dataPerson);
-		} catch (PDOException $e) {
-			echo "<div class='error'>".$e->getMessage().'</div>';
-		}
 
 	    if ($resultPerson->rowCount() != 1) {
 	    	echo "<div class='error'>";

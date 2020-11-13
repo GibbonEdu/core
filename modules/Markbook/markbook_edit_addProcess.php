@@ -198,11 +198,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
             $AI = str_pad($connection2->lastInsertID(), 10, '0', STR_PAD_LEFT);
 
             //Unlock module table
-            try {
+            
                 $sql = 'UNLOCK TABLES';
                 $result = $connection2->query($sql);
-            } catch (PDOException $e) {
-            }
 
             if ($partialFail == true) {
                 $URL .= '&return=warning1';

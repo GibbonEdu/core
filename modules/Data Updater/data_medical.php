@@ -27,10 +27,8 @@ use Gibbon\Services\Format;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
@@ -126,30 +124,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
             //Check access to person
             $checkCount = 0;
             if ($highestAction == 'Update Medical Data_any') {
-                try {
+                
                     $dataSelect = array();
                     $sqlSelect = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE status='Full' ORDER BY surname, preferredName";
                     $resultSelect = $connection2->prepare($sqlSelect);
                     $resultSelect->execute($dataSelect);
-                } catch (PDOException $e) {
-                }
                 $checkCount = $resultSelect->rowCount();
             } else {
-                try {
+                
                     $dataCheck = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
                     $sqlCheck = "SELECT gibbonFamilyAdult.gibbonFamilyID, name FROM gibbonFamilyAdult JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y' ORDER BY name";
                     $resultCheck = $connection2->prepare($sqlCheck);
                     $resultCheck->execute($dataCheck);
-                } catch (PDOException $e) {
-                }
                 while ($rowCheck = $resultCheck->fetch()) {
-                    try {
+                    
                         $dataCheck2 = array('gibbonFamilyID' => $rowCheck['gibbonFamilyID'], 'gibbonFamilyID2' => $rowCheck['gibbonFamilyID']);
                         $sqlCheck2 = '(SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFamilyID FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID) UNION (SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFamilyID FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID2)';
                         $resultCheck2 = $connection2->prepare($sqlCheck2);
                         $resultCheck2->execute($dataCheck2);
-                    } catch (PDOException $e) {
-                    }
                     while ($rowCheck2 = $resultCheck2->fetch()) {
                         if ($gibbonPersonID == $rowCheck2['gibbonPersonID']) {
                             ++$checkCount;
@@ -163,14 +155,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                 echo '</div>';
             } else {
                 //Get user's data
-                try {
+                
                     $data = array('gibbonPersonID' => $gibbonPersonID);
                     $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 if ($result->rowCount() != 1) {
                     echo "<div class='error'>";
@@ -180,14 +169,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                     //Check if there is already a pending form for this user
                     $existing = false;
                     $proceed = false;
-                    try {
+                    
                         $dataForm = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
                         $sqlForm = "SELECT * FROM gibbonPersonMedicalUpdate WHERE gibbonPersonID=:gibbonPersonID AND gibbonPersonIDUpdater=:gibbonPersonID2 AND status='Pending'";
                         $resultForm = $connection2->prepare($sqlForm);
                         $resultForm->execute($dataForm);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
                     if ($resultForm->rowCount() > 1) {
                         echo "<div class='error'>";
                         echo __('Your request failed due to a database error.');
@@ -200,14 +186,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                         $proceed = true;
                     } else {
                         //Get user's data
-                        try {
+                        
                             $dataForm = array('gibbonPersonID' => $gibbonPersonID);
                             $sqlForm = 'SELECT * FROM gibbonPersonMedical WHERE gibbonPersonID=:gibbonPersonID';
                             $resultForm = $connection2->prepare($sqlForm);
                             $resultForm->execute($dataForm);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
 
                         if ($result->rowCount() == 1) {
                             $proceed = true;

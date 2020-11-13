@@ -23,10 +23,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_print.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $highestAction = getHighestGroupedAction($guid, '/modules/Finance/expenses_manage_print.php', $connection2);
     if ($highestAction == false) {
@@ -139,14 +137,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 									<td class="right">
 										<?php
                                         $yearName = '';
-										try {
+										
 											$dataYear = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
 											$sqlYear = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
 											$resultYear = $connection2->prepare($sqlYear);
 											$resultYear->execute($dataYear);
-										} catch (PDOException $e) {
-											echo "<div class='error'>".$e->getMessage().'</div>';
-										}
 										if ($resultYear->rowCount() == 1) {
 											$rowYear = $resultYear->fetch();
 											$yearName = $rowYear['name'];

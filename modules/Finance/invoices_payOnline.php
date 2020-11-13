@@ -36,9 +36,7 @@ if (isset($_GET['return'])) {
 if (!isset($_GET['return'])) { //No return message, so must just be landing to make payment
     //Check variables
     if ($gibbonFinanceInvoiceID == '' or $key == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         //Check for record
         $keyReadFail = false;

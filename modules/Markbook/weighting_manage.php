@@ -107,14 +107,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
                 echo __('Markbook Weightings');
                 echo '</h3>';
 
-                try {
+                
                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
                     $sql = 'SELECT * FROM gibbonMarkbookWeight WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY calculate, weighting DESC';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 if ($teaching || $highestAction == 'Manage Weightings_everything') {
                     echo "<div class='linkTop'>";

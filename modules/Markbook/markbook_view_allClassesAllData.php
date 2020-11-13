@@ -485,14 +485,11 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                     }
 
                     if (empty($scale)) {
-                        try {
+                        
                             $dataScale = array('gibbonScaleID' => $column->getData('gibbonScaleIDAttainment'));
                             $sqlScale = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
                             $resultScale = $connection2->prepare($sqlScale);
                             $resultScale->execute($dataScale);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
 
                         if ($resultScale->rowCount() == 1) {
                             $rowScale = $resultScale->fetch();
@@ -508,14 +505,11 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                 }
                 if ($column->displayEffort() ) {
                     echo "<th class='columnLabel medColumn'>";
-                    try {
+                    
                         $dataScale = array('gibbonScaleID' => $column->getData('gibbonScaleIDEffort'));
                         $sqlScale = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
                         $resultScale = $connection2->prepare($sqlScale);
                         $resultScale->execute($dataScale);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
                     $scale = '';
                     if ($resultScale->rowCount() == 1) {
                         $rowScale = $resultScale->fetch();
@@ -673,7 +667,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                 // Display baseline
                 if ($markbook->hasExternalAssessments() == true) {
                     echo '<td class="dataColumn">';
-                    try {
+                    
                         $dataEntry = array('gibbonPersonID' => $rowStudents['gibbonPersonID'], 'gibbonExternalAssessmentFieldID' => $externalAssessmentFields[0]);
                         $sqlEntry = "SELECT gibbonScaleGrade.value, gibbonScaleGrade.descriptor, gibbonExternalAssessmentStudent.date
 							FROM gibbonExternalAssessmentStudentEntry
@@ -685,9 +679,6 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 							ORDER BY date DESC";
                         $resultEntry = $connection2->prepare($sqlEntry);
                         $resultEntry->execute($dataEntry);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
                     if ($resultEntry->rowCount() >= 1) {
                         $rowEntry = $resultEntry->fetch();
                         echo "<a title='".__($rowEntry['descriptor']).' | '.__('Test taken on').' '.dateConvertBack($guid, $rowEntry['date'])."' href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowStudents['gibbonPersonID']."&subpage=External Assessment'>".__($rowEntry['value']).'</a>';
@@ -711,14 +702,11 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                 	echo '<table class="columnLabels blank" cellspacing=0><tr>';
 
 
-                    try {
+                    
                         $dataEntry = array('gibbonMarkbookColumnID' => $column->gibbonMarkbookColumnID, 'gibbonPersonIDStudent' => $rowStudents['gibbonPersonID']);
                         $sqlEntry = 'SELECT * FROM gibbonMarkbookEntry WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID AND gibbonPersonIDStudent=:gibbonPersonIDStudent LIMIT 1';
                         $resultEntry = $connection2->prepare($sqlEntry);
                         $resultEntry->execute($dataEntry);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
                     if ($resultEntry->rowCount() == 1) {
                         $rowEntry = $resultEntry->fetch();
 
@@ -860,14 +848,11 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                     if ($column->displaySubmission()) {
 
                         echo "<td class='smallColumn'>";
-                        try {
+                        
                             $dataWork = array('gibbonPlannerEntryID' => $column->getData('gibbonPlannerEntryID'), 'gibbonPersonID' => $rowStudents['gibbonPersonID']);
                             $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
                             $resultWork = $connection2->prepare($sqlWork);
                             $resultWork->execute($dataWork);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
                         if ($resultWork->rowCount() > 0) {
                             $rowWork = $resultWork->fetch();
 

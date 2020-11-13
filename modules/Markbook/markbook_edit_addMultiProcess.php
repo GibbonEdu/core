@@ -197,11 +197,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
             }
 
             //Unlock module table
-            try {
+            
                 $sql = 'UNLOCK TABLES';
                 $result = $connection2->query($sql);
-            } catch (PDOException $e) {
-            }
 
             if ($partialFail != false) {
                 $URL .= '&return=warning1';

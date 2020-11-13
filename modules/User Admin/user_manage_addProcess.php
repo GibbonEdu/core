@@ -340,11 +340,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                     $AI = str_pad($connection2->lastInsertID(), 10, '0', STR_PAD_LEFT);
 
                     //Unlock tables
-                    try {
+                    
                         $sql = 'UNLOCK TABLES';
                         $result = $connection2->query($sql);
-                    } catch (PDOException $e) {
-                    }
 
                     // Create a staff record for this new user
                     $staffRecord = $_POST['staffRecord'] ?? 'N';

@@ -110,13 +110,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             $physicalCondition = $_POST['physicalCondition'];
 
             //Get type-specific fields
-            try {
+            
                 $data = array('gibbonLibraryTypeID' => $gibbonLibraryTypeID);
                 $sql = "SELECT * FROM gibbonLibraryType WHERE gibbonLibraryTypeID=:gibbonLibraryTypeID AND active='Y' ORDER BY name";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) {
-            }
 
             if ($result->rowCount() == 1) {
                 $row = $result->fetch();

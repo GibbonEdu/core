@@ -96,14 +96,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                     echo __('Your request failed because some required values were not unique.');
                     echo '</div>';
                 } else {
-                    try {
+                    
                         $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
                         $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
                         $resultChild = $connection2->prepare($sqlChild);
                         $resultChild->execute($dataChild);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
 
                     if ($resultChild->rowCount() < 1) {
                         echo "<div class='error'>";
@@ -124,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
             elseif ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses'  or $highestAction == 'Lesson Planner_viewOnly') {
                 $sql = "SELECT gibbonCourse.gibbonCourseID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, 'Teacher' AS role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType, homeworkSubmissionRequired, gibbonDepartmentID, gibbonCourseClass.attendance FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonPlannerEntryID=$gibbonPlannerEntryID ORDER BY date, timeStart";
                 $teacher = false;
-                try {
+                
                     $dataTeacher = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPlannerEntryID2' => $gibbonPlannerEntryID, 'date2' => $date);
                     $sqlTeacher = "(SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType, homeworkSubmissionRequired
 						FROM gibbonPlannerEntry
@@ -144,20 +141,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 						ORDER BY date, timeStart";
                     $resultTeacher = $connection2->prepare($sqlTeacher);
                     $resultTeacher->execute($dataTeacher);
-                } catch (PDOException $e) {
-                }
                 if ($resultTeacher->rowCount() > 0) {
                     $teacher = true;
                 }
             }
 
             if (isset($sql)) {
-                try {
+                
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
                 if ($result->rowCount() != 1) {
                     echo "<div class='warning'>";
                     echo __('The selected record does not exist, or you do not have access to it.');
@@ -172,13 +164,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                     $gibbonUnitID = $values['gibbonUnitID'];
 
                     //Get gibbonUnitClassID
-                    try {
+                    
                         $dataUnitClass = array('gibbonCourseClassID' => $values['gibbonCourseClassID'], 'gibbonUnitID' => $gibbonUnitID);
                         $sqlUnitClass = 'SELECT gibbonUnitClassID FROM gibbonUnitClass WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID';
                         $resultUnitClass = $connection2->prepare($sqlUnitClass);
                         $resultUnitClass->execute($dataUnitClass);
-                    } catch (PDOException $e) {
-                    }
                     if ($resultUnitClass->rowCount() == 1) {
                         $rowUnitClass = $resultUnitClass->fetch();
                         $gibbonUnitClassID = $rowUnitClass['gibbonUnitClassID'];
@@ -313,14 +303,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_unitOverview.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&gibbonPlannerEntryID=$gibbonPlannerEntryID&date=".$values['date']."&subView=$subView&gibbonUnitID=".$values['gibbonUnitID']."'>".__('Unit Overview').'</a> | ';
                             }
                             echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_edit.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&gibbonPlannerEntryID=$gibbonPlannerEntryID&date=".$values['date']."&subView=$subView'>".__('Edit')."<img style='margin: 0 0 -4px 3px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> | ";
-                            try {
+                            
                                 $dataMarkbook = array('gibbonCourseClassID' => $values['gibbonCourseClassID'], 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
                                 $sqlMarkbook = 'SELECT * FROM gibbonMarkbookColumn WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
                                 $resultMarkbook = $connection2->prepare($sqlMarkbook);
                                 $resultMarkbook->execute($dataMarkbook);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
                             if ($resultMarkbook->rowCount() == 1) {
                                 $rowMarkbook = $resultMarkbook->fetch();
                                 echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Markbook/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$rowMarkbook['gibbonMarkbookColumnID']."'>".__('Linked Markbook')."<img style='margin: 0 5px -4px 3px' title='".__('Linked Markbook')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/markbook.png'/></a> | ";
@@ -365,14 +352,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         echo '</table>';
 
                         //Lesson outcomes
-                        try {
+                        
                             $dataOutcomes = array('gibbonPlannerEntryID' => $values['gibbonPlannerEntryID']);
                             $sqlOutcomes = "SELECT scope, name, nameShort, category, gibbonYearGroupIDList, sequenceNumber, content FROM gibbonPlannerEntryOutcome JOIN gibbonOutcome ON (gibbonPlannerEntryOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND active='Y' ORDER BY (sequenceNumber='') ASC, sequenceNumber, category, name";
                             $resultOutcomes = $connection2->prepare($sqlOutcomes);
                             $resultOutcomes->execute($dataOutcomes);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
 
                         if ($resultOutcomes->rowCount() > 0) {
                             echo '<h2>'.__('Lesson Outcomes').'</h2>';
@@ -409,14 +393,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 echo '<td>';
                                 echo '<b>'.$rowOutcomes['scope'].'</b><br/>';
                                 if ($rowOutcomes['scope'] == 'Learning Area' and $gibbonDepartmentID != '') {
-                                    try {
+                                    
                                         $dataLearningArea = array('gibbonDepartmentID' => $gibbonDepartmentID);
                                         $sqlLearningArea = 'SELECT * FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID';
                                         $resultLearningArea = $connection2->prepare($sqlLearningArea);
                                         $resultLearningArea->execute($dataLearningArea);
-                                    } catch (PDOException $e) {
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
-                                    }
                                     if ($resultLearningArea->rowCount() == 1) {
                                         $rowLearningAreas = $resultLearningArea->fetch();
                                         echo "<span style='font-size: 75%; font-style: italic'>".$rowLearningAreas['name'].'</span>';
@@ -560,14 +541,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                         echo '<i>Submission opens on '.dateConvertBack($guid, $values['homeworkSubmissionDateOpen']).'</i>';
                                     } else {
                                         //Check previous submissions!
-										try {
+										
 											$dataVersion = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPlannerEntryID' => $values['gibbonPlannerEntryID']);
 											$sqlVersion = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPersonID=:gibbonPersonID AND gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY count';
 											$resultVersion = $connection2->prepare($sqlVersion);
 											$resultVersion->execute($dataVersion);
-										} catch (PDOException $e) {
-											echo "<div class='error'>".$e->getMessage().'</div>';
-										}
 
                                         $latestVersion = '';
                                         $count = 0;
@@ -725,14 +703,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                         echo '<i>Submission opens on '.dateConvertBack($guid, $values['homeworkSubmissionDateOpen']).'</i>';
                                     } else {
                                         //Check previous submissions!
-										try {
+										
 											$dataVersion = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPlannerEntryID' => $values['gibbonPlannerEntryID']);
 											$sqlVersion = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPersonID=:gibbonPersonID AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
 											$resultVersion = $connection2->prepare($sqlVersion);
 											$resultVersion->execute($dataVersion);
-										} catch (PDOException $e) {
-											echo "<div class='error'>".$e->getMessage().'</div>';
-										}
                                         $latestVersion = '';
                                         $count = 0;
                                         $rowNum = 'odd';
@@ -812,14 +787,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                                     if ($teacher == true) {
                                         //List submissions
-										try {
+										
 											$dataClass = array('gibbonCourseClassID' => $values['gibbonCourseClassID']);
 											$sqlClass = "SELECT * FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND role='Student' ORDER BY role DESC, surname, preferredName";
 											$resultClass = $connection2->prepare($sqlClass);
 											$resultClass->execute($dataClass);
-										} catch (PDOException $e) {
-											echo "<div class='error'>".$e->getMessage().'</div>';
-										}
                                         $count = 0;
                                         $rowNum = 'odd';
                                         if ($resultClass->rowCount() > 0) {
@@ -863,14 +835,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
 														<?php
 
-														try {
+														
 															$dataVersion = array('gibbonPlannerEntryID' => $values['gibbonPlannerEntryID'], 'gibbonPersonID' => $rowClass['gibbonPersonID']);
 															$sqlVersion = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
 															$resultVersion = $connection2->prepare($sqlVersion);
 															$resultVersion->execute($dataVersion);
-														} catch (PDOException $e) {
-															echo "<div class='error'>".$e->getMessage().'</div>';
-														}
 													if ($resultVersion->rowCount() < 1) {
 														?>
 															<td colspan=4>
@@ -1098,14 +1067,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 										$homeworkDueDate = '';
 										$homeworkDueDateTime = '';
 
-										try {
+										
 											$dataNext = array('gibbonCourseClassID' => $values['gibbonCourseClassID'], 'date' => $values['date']);
 											$sqlNext = 'SELECT timeStart, timeEnd, date FROM gibbonTTDayRowClass JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTColumn ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND date>:date ORDER BY date, timeStart LIMIT 0, 10';
 											$resultNext = $connection2->prepare($sqlNext);
 											$resultNext->execute($dataNext);
-										} catch (PDOException $e) {
-											echo "<div class='error'>".$e->getMessage().'</div>';
-										}
 										if ($resultNext->rowCount() > 0) {
 											$rowNext = $resultNext->fetch();
 											$homeworkDueDate = $rowNext['date'];

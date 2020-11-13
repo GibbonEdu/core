@@ -24,13 +24,11 @@ include './moduleFunctions.php';
 $gibbonStudentNoteCategoryID = $_GET['gibbonStudentNoteCategoryID'];
 
 if ($gibbonStudentNoteCategoryID != '') {
-    try {
+    
         $data = array('gibbonStudentNoteCategoryID' => $gibbonStudentNoteCategoryID);
         $sql = 'SELECT * FROM gibbonStudentNoteCategory WHERE gibbonStudentNoteCategoryID=:gibbonStudentNoteCategoryID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-    }
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
         echo $row['template'];

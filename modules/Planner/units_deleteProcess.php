@@ -55,14 +55,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_delete.php')
                 header("Location: {$URL}");
             } else {
                 //Check existence of specified unit
-                try {
+                
                     $data = array('gibbonUnitID' => $gibbonUnitID, 'gibbonCourseID' => $gibbonCourseID);
                     $sql = 'SELECT * FROM gibbonUnit WHERE gibbonUnitID=:gibbonUnitID AND gibbonCourseID=:gibbonCourseID';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 if ($result->rowCount() != 1) {
                     $URL .= '&deleteReturn=error4';

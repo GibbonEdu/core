@@ -24,10 +24,8 @@ $gibbonThemeID = $_GET['gibbonThemeID'] ?? '';
 $orphaned = $_GET['orphaned'] ?? '';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage_uninstall.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs
@@ -40,9 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage_
 
     //Check if theme specified
     if ($gibbonThemeID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         $themeGateway = $container->get(ThemeGateway::class);
         //Check for existence of theme

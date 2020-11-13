@@ -87,11 +87,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
             $successCount = count($dates) - $failCount;
 
             //Unlock locked database tables
-            try {
+            
                 $sql = 'UNLOCK TABLES';
                 $result = $connection2->query($sql);
-            } catch (PDOException $e) {
-            }
 
             if ($successCount == 0) {
                 $URL .= '&return=error3';

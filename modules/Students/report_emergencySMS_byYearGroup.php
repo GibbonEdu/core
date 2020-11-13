@@ -25,10 +25,8 @@ use Gibbon\Services\Format;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_emergencySMS_byYearGroup.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Emergency SMS by Year Group'));
@@ -136,14 +134,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_emergencyS
                 echo '</td>';
             }
             echo '<td>';
-            try {
+            
                 $dataFamily = array('gibbonPersonID' => $row['gibbonPersonID']);
                 $sqlFamily = "SELECT gibbonPerson.* FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=(SELECT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID=:gibbonPersonID) AND (phone1Type='Mobile' OR phone2Type='Mobile' OR phone3Type='Mobile' OR phone4Type='Mobile') AND status='Full'";
                 $resultFamily = $connection2->prepare($sqlFamily);
                 $resultFamily->execute($dataFamily);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
             if ($resultFamily->rowCount() > 0) {
                 while ($rowFamily = $resultFamily->fetch()) {
                     for ($i = 1; $i < 5; ++$i) {

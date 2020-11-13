@@ -71,22 +71,18 @@ if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
                 //Enforce one and only one contactPriority=1 parent
                 if ($contactPriority == 1) {
                     //Set all other parents in family who are set to 1, to 2
-                    try {
+                    
                         $dataCP = array('gibbonPersonID' => $gibbonPersonID, 'gibbonFamilyID' => $gibbonFamilyID);
                         $sqlCP = 'UPDATE gibbonFamilyAdult SET contactPriority=contactPriority+1 WHERE contactPriority < 3 AND gibbonFamilyID=:gibbonFamilyID AND NOT gibbonPersonID=:gibbonPersonID';
                         $resultCP = $connection2->prepare($sqlCP);
                         $resultCP->execute($dataCP);
-                    } catch (PDOException $e) {
-                    }
                 } else {
                     //Check to see if there is a parent set to 1 already, and if not, change this one to 1
-                    try {
+                    
                         $dataCP = array('gibbonPersonID' => $gibbonPersonID, 'gibbonFamilyID' => $gibbonFamilyID);
                         $sqlCP = 'SELECT * FROM gibbonFamilyAdult WHERE contactPriority=1 AND gibbonFamilyID=:gibbonFamilyID AND NOT gibbonPersonID=:gibbonPersonID';
                         $resultCP = $connection2->prepare($sqlCP);
                         $resultCP->execute($dataCP);
-                    } catch (PDOException $e) {
-                    }
                     if ($resultCP->rowCount() < 1) {
                         $contactPriority = 1;
                         $contactCall = 'Y';
@@ -97,13 +93,11 @@ if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
 
                     // Set any other contact priority 2 to 3
                     if ($contactPriority == 2) {
-                        try {
+                        
                         $dataCP = array('gibbonPersonID' => $gibbonPersonID, 'gibbonFamilyID' => $gibbonFamilyID);
                             $sqlCP = 'UPDATE gibbonFamilyAdult SET contactPriority=3 WHERE contactPriority=2 AND gibbonFamilyID=:gibbonFamilyID AND NOT gibbonPersonID=:gibbonPersonID';
                             $resultCP = $connection2->prepare($sqlCP);
                             $resultCP->execute($dataCP);
-                        } catch (PDOException $e) {
-                        }
                     }
                 }
 

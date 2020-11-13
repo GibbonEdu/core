@@ -25,10 +25,8 @@ use Gibbon\Domain\Students\ApplicationFormGateway;
 use Gibbon\Domain\User\FamilyGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Manage Applications'));
@@ -47,14 +45,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     }
 
     if ($gibbonSchoolYearID != $_SESSION[$guid]['gibbonSchoolYearID']) {
-        try {
+        
             $data = array('gibbonSchoolYearID' => $_GET['gibbonSchoolYearID']);
             $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
         if ($result->rowcount() != 1) {
             echo "<div class='error'>";
             echo __('The specified record does not exist.');

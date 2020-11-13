@@ -644,13 +644,11 @@ if ($proceed == false) {
                 $secureAI = sha1($AI.'X2J53ZGy'.$guid.$gibbonSchoolYearIDEntry);
 
                 // Update the Application Form with a hash for looking up this record in the future
-                try {
+                
                     $data = array('gibbonApplicationFormID' => $AI, 'gibbonApplicationFormHash' => $secureAI );
                     $sql = 'UPDATE gibbonApplicationForm SET gibbonApplicationFormHash=:gibbonApplicationFormHash WHERE gibbonApplicationFormID=:gibbonApplicationFormID';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
 
                 //Deal with family relationships
                 if ($gibbonFamily == 'TRUE') {
@@ -658,13 +656,11 @@ if ($proceed == false) {
                     $relationshipsGibbonPersonIDs = $_POST[$gibbonFamilyID.'-relationshipsGibbonPersonID'];
                     $count = 0;
                     foreach ($relationships as $relationship) {
-                        try {
+                        
                             $data = array('gibbonApplicationFormID' => $AI, 'gibbonPersonID' => $relationshipsGibbonPersonIDs[$count], 'relationship' => $relationship);
                             $sql = 'INSERT INTO gibbonApplicationFormRelationship SET gibbonApplicationFormID=:gibbonApplicationFormID, gibbonPersonID=:gibbonPersonID, relationship=:relationship';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
-                        } catch (PDOException $e) {
-                        }
                         ++$count;
                     }
                 }
@@ -690,13 +686,11 @@ if ($proceed == false) {
 
                         // Write files to database, if there is one
                         if (!empty($attachment)) {
-                            try {
+                            
                                 $dataFile = array('gibbonApplicationFormID' => $AI, 'name' => $fileName, 'path' => $attachment);
                                 $sqlFile = 'INSERT INTO gibbonApplicationFormFile SET gibbonApplicationFormID=:gibbonApplicationFormID, name=:name, path=:path';
                                 $resultFile = $connection2->prepare($sqlFile);
                                 $resultFile->execute($dataFile);
-                            } catch (PDOException $e) {
-                            }
                         }
                     }
                 }

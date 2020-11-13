@@ -21,21 +21,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAssess.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $page->breadcrumbs->add(__('View All Assessments'));
     
     $sql = getLessons($guid, $connection2);
 
-    try {
+    
         $result = $connection2->prepare($sql[1]);
         $result->execute($sql[0]);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
 
     echo '<p>';
     echo __('The list below shows all lessons in which there is work that you can crowd assess.');
@@ -82,13 +77,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
             echo '<b>'.$row['name'].'</b><br/>';
             echo "<span style='font-size: 85%; font-style: italic'>";
             if ($row['gibbonUnitID'] != '') {
-                try {
+                
                     $dataUnit = array('gibbonUnitID' => $row['gibbonUnitID']);
                     $sqlUnit = 'SELECT * FROM gibbonUnit WHERE gibbonUnitID=:gibbonUnitID';
                     $resultUnit = $connection2->prepare($sqlUnit);
                     $resultUnit->execute($dataUnit);
-                } catch (PDOException $e) {
-                }
                 if ($resultUnit->rowCount() == 1) {
                     $rowUnit = $resultUnit->fetch();
                     echo $rowUnit['name'];

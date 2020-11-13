@@ -268,10 +268,9 @@ function checkLogForApprovalComplete($guid, $gibbonFinanceExpenseID, $connection
         }
 
         //Unlock tables
-        try {
+        
             $sql = 'UNLOCK TABLES';
             $result = $connection2->query($sql);
-        } catch (PDOException $e) {}
     }
 }
 
@@ -405,10 +404,9 @@ function approvalRequired($guid, $gibbonPersonID, $gibbonFinanceExpenseID, $gibb
         }
 
         //Unlock tables
-        try {
+        
             $sql = 'UNLOCK TABLES';
             $result = $connection2->query($sql);
-        } catch (PDOException $e) {}
     }
 }
 
@@ -534,10 +532,9 @@ function setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBu
         }
 
         //Unlock tables
-        try {
+        
             $sql = 'UNLOCK TABLES';
             $result = $connection2->query($sql);
-        } catch (PDOException $e) {}
     }
 }
 
@@ -606,12 +603,11 @@ function getBudgetCycleName($gibbonFinanceBudgetCycleID, $connection2)
 {
     $output = false;
 
-    try {
+    
         $dataCycle = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
         $sqlCycle = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
         $resultCycle = $connection2->prepare($sqlCycle);
         $resultCycle->execute($dataCycle);
-    } catch (PDOException $e) { }
     if ($resultCycle->rowCount() == 1) {
         $rowCycle = $resultCycle->fetch();
         $output = $rowCycle['name'];
@@ -625,22 +621,18 @@ function getPreviousBudgetCycleID($gibbonFinanceBudgetCycleID, $connection2)
 {
     $output = false;
 
-    try {
+    
         $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
         $sql = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-    }
     if ($result->rowcount() == 1) {
         $row = $result->fetch();
-        try {
+        
             $dataPrevious = array('sequenceNumber' => $row['sequenceNumber']);
             $sqlPrevious = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE sequenceNumber<:sequenceNumber ORDER BY sequenceNumber DESC';
             $resultPrevious = $connection2->prepare($sqlPrevious);
             $resultPrevious->execute($dataPrevious);
-        } catch (PDOException $e) {
-        }
         if ($resultPrevious->rowCount() >= 1) {
             $rowPrevious = $resultPrevious->fetch();
             $output = $rowPrevious['gibbonFinanceBudgetCycleID'];
@@ -655,22 +647,18 @@ function getNextBudgetCycleID($gibbonFinanceBudgetCycleID, $connection2)
 {
     $output = false;
 
-    try {
+    
         $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
         $sql = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-    }
     if ($result->rowcount() == 1) {
         $row = $result->fetch();
-        try {
+        
             $dataPrevious = array('sequenceNumber' => $row['sequenceNumber']);
             $sqlPrevious = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE sequenceNumber>:sequenceNumber ORDER BY sequenceNumber ASC';
             $resultPrevious = $connection2->prepare($sqlPrevious);
             $resultPrevious->execute($dataPrevious);
-        } catch (PDOException $e) {
-        }
         if ($resultPrevious->rowCount() >= 1) {
             $rowPrevious = $resultPrevious->fetch();
             $output = $rowPrevious['gibbonFinanceBudgetCycleID'];
@@ -725,13 +713,11 @@ function makeFeeBlock($guid, $connection2, $i, $mode = 'add', $feeType, $gibbonF
                             ?>
                             <select name="gibbonFinanceFeeCategoryID<?php echo $i ?>" id="gibbonFinanceFeeCategoryID<?php echo $i ?>" style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; margin-top: 2px; font-size: 110%; font-style: italic; width: 250px'>
                                 <?php
-                                try {
+                                
                                     $dataSelect = array();
                                     $sqlSelect = "SELECT * FROM gibbonFinanceFeeCategory WHERE active='Y' AND NOT gibbonFinanceFeeCategoryID=1 ORDER BY name";
                                     $resultSelect = $connection2->prepare($sqlSelect);
                                     $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                }
                                 echo "<option value='0001'>".__('Other').'</option>';
                                 while ($rowSelect = $resultSelect->fetch()) {
                                     $selected = '' ;

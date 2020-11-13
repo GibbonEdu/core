@@ -100,13 +100,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                             exit();
                         }
 
-                        try {
+                        
                             $data = array('gibbonRubricID' => $gibbonRubricID, 'gibbonRubricColumnID' => $gibbonRubricColumnID);
                             $sql = 'DELETE FROM gibbonRubricCell WHERE gibbonRubricCell.gibbonRubricID=:gibbonRubricID AND gibbonRubricCell.gibbonRubricColumnID=:gibbonRubricColumnID';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
-                        } catch (PDOException $e) {
-                        }
 
                         $URL .= '&return=success0';
                         header("Location: {$URL}");

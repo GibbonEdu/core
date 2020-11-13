@@ -74,25 +74,21 @@ $gibbon->session->set('receiveNotificationEmails', $receiveNotificationEmails);
 
 //Update language settings in session (to personal preference if set, or system default if not)
 if (!is_null($gibboni18nIDPersonal)) {
-    try {
+    
         $data = array('gibboni18nID' => $gibboni18nIDPersonal);
         $sql = 'SELECT * FROM gibboni18n WHERE gibboni18nID=:gibboni18nID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-    }
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
         setLanguageSession($guid, $row);
     }
 } else {
-    try {
+    
         $data = array();
         $sql = "SELECT * FROM gibboni18n WHERE systemDefault='Y'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-    }
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
         setLanguageSession($guid, $row);

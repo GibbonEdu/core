@@ -23,10 +23,8 @@ use Gibbon\Forms\Form;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rollover.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $page->breadcrumbs->add(__('Course Enrolment Rollover'));
 
@@ -54,14 +52,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
             echo __('The next school year cannot be determined, so this action cannot be performed.');
             echo '</div>';
         } else {
-            try {
+            
                 $dataNext = array('gibbonSchoolYearID' => $nextYear);
                 $sqlNext = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
                 $resultNext = $connection2->prepare($sqlNext);
                 $resultNext->execute($dataNext);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
             if ($resultNext->rowCount() == 1) {
                 $rowNext = $resultNext->fetch();
             }
@@ -96,14 +91,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
             echo __('The next school year cannot be determined, so this action cannot be performed.');
             echo '</div>';
         } else {
-            try {
+            
                 $dataNext = array('gibbonSchoolYearID' => $nextYear);
                 $sqlNext = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
                 $resultNext = $connection2->prepare($sqlNext);
                 $resultNext->execute($dataNext);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
             if ($resultNext->rowCount() == 1) {
                 $rowNext = $resultNext->fetch();
             }
