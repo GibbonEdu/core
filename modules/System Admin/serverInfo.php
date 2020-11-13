@@ -17,23 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../gibbon.php';
-include '../../config.php';
-
-//Module includes
-include './moduleFunctions.php';
-
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/System Admin/systemCheck.php';
-
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.php') == false) {
-    $URL .= '&return=error0';
-    header("Location: {$URL}");
-    exit;
+if (isActionAccessible($guid, $connection2, '/modules/System Admin/serverInfo.php') == false) {
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
-    // Clear the templates cache folder
-    removeDirectoryContents($_SESSION[$guid]['absolutePath'].'/uploads/cache');
-
-    $URL .= '&return=success0';
-    header("Location: {$URL}");
-    exit;
+    // Proceed!
+    $page->breadcrumbs->add(__('Server Info'));
 }
