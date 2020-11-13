@@ -30,10 +30,8 @@ use Gibbon\Domain\DataSet;
 include './modules/User Admin/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);

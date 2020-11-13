@@ -22,10 +22,8 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_edit_class_exception_add.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Check if school year specified
     $gibbonTTDayID = $_GET['gibbonTTDayID'] ?? '';

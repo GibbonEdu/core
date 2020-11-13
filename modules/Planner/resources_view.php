@@ -27,10 +27,8 @@ require_once __DIR__ . '/moduleFunctions.php';
 $page->breadcrumbs->add(__('View Resources'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     echo '<h3>';
     echo __('Filters');

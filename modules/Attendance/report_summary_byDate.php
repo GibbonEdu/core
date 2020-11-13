@@ -28,10 +28,8 @@ require_once __DIR__ . '/moduleFunctions.php';
 $page->breadcrumbs->add(__('Attendance Summary by Date'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_byDate.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     echo '<h2>';

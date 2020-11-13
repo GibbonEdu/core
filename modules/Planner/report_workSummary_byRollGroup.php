@@ -27,10 +27,8 @@ require_once __DIR__ . '/moduleFunctions.php';
 $page->breadcrumbs->add(__('Work Summary by Roll Group'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary_byRollGroup.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     echo '<p>';

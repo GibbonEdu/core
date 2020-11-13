@@ -21,10 +21,8 @@ use Gibbon\Forms\Prefab\DeleteForm;
 use Gibbon\Domain\Messenger\GroupGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_delete.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $gibbonGroupID = (isset($_GET['gibbonGroupID']))? $_GET['gibbonGroupID'] : null;

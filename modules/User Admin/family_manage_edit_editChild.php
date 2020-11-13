@@ -21,10 +21,8 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_edit_editChild.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $urlParams = ['gibbonFamilyID' => $_GET['gibbonFamilyID']];

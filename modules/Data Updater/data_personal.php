@@ -26,10 +26,8 @@ require_once __DIR__ . '/moduleFunctions.php';
 include './modules/User Admin/moduleFunctions.php'; //for User Admin (for custom fields)
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);

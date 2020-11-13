@@ -25,10 +25,8 @@ use Gibbon\Domain\Students\ApplicationFormGateway;
 use Gibbon\Domain\User\FamilyGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Manage Applications'));

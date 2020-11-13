@@ -24,10 +24,8 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\Students\StudentGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);

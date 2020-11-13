@@ -30,10 +30,8 @@ require_once __DIR__ . '/src/AttendanceView.php';
 $page->breadcrumbs->add(__('Set Future Absence'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_future_byPerson.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     if (isset($_GET['return'])) {

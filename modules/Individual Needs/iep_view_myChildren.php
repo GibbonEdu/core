@@ -21,10 +21,8 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_myChildren.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $entryCount = 0;
     $page->breadcrumbs->add(__('View Individual Education Plans'));
