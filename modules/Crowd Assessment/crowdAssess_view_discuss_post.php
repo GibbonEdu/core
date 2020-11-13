@@ -23,10 +23,8 @@ use Gibbon\Forms\Form;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAssess_view_discuss_post.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Get class variable
     $gibbonPersonID = $_GET['gibbonPersonID'];
@@ -53,12 +51,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
     else {
         $and = " AND gibbonPlannerEntryID=$gibbonPlannerEntryID";
         $sql = getLessons($guid, $connection2, $and);
-        try {
+        
             $result = $connection2->prepare($sql[1]);
             $result->execute($sql[0]);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
@@ -75,12 +70,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
             $sqlList = getStudents($guid, $connection2, $role, $row['gibbonCourseClassID'], $row['homeworkCrowdAssessOtherTeachersRead'], $row['homeworkCrowdAssessOtherParentsRead'], $row['homeworkCrowdAssessSubmitterParentsRead'], $row['homeworkCrowdAssessClassmatesParentsRead'], $row['homeworkCrowdAssessOtherStudentsRead'], $row['homeworkCrowdAssessClassmatesRead'], " AND gibbonPerson.gibbonPersonID=$gibbonPersonID");
 
             if ($sqlList[1] != '') {
-                try {
+                
                     $resultList = $connection2->prepare($sqlList[1]);
                     $resultList->execute($sqlList[0]);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 if ($resultList->rowCount() != 1) {
                     echo "<div class='error'>";

@@ -23,10 +23,8 @@ use Gibbon\Services\Format;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_byDate.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
@@ -71,15 +69,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
         echo __('Report Data').': '. Format::dateRangeReadable($dateStart, $dateEnd);                
         echo '</h2>';
 
-        try {
+        
             $dataSchoolDays = array( 'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
             $sqlSchoolDays = "SELECT COUNT(DISTINCT CASE WHEN date>=gibbonSchoolYear.firstDay AND date<=gibbonSchoolYear.lastDay THEN date END) as total, COUNT(DISTINCT CASE WHEN date>=:dateStart AND date <=:dateEnd THEN date END) as dateRange FROM gibbonAttendanceLogPerson, gibbonSchoolYearTerm, gibbonSchoolYear WHERE date>=gibbonSchoolYearTerm.firstDay AND date <= gibbonSchoolYearTerm.lastDay AND date <= NOW() AND gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID";
 
             $resultSchoolDays = $connection2->prepare($sqlSchoolDays);
             $resultSchoolDays->execute($dataSchoolDays);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
         $schoolDayCounts = $resultSchoolDays->fetch();
 
         echo '<p style="color:#666;">';

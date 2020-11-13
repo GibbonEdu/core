@@ -37,10 +37,8 @@ $page->breadcrumbs
     ->add(__('Duplicate Unit'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
@@ -88,14 +86,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                         echo __('You have not specified one or more required parameters.');
                         echo '</div>';
                     } else {
-                        try {
+                        
                             $data = array();
                             $sql = "SELECT gibbonCourse.nameShort AS courseName, gibbonSchoolYearID, gibbonUnit.* FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonUnitID=$gibbonUnitID AND gibbonUnit.gibbonCourseID=$gibbonCourseID";
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
 
                         if ($result->rowCount() != 1) {
                             echo "<div class='error'>";
@@ -178,13 +173,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                                     echo '</div>';
                                 } else {
 
-                                    try {
+                                    
                                         $dataSelect2 = array('gibbonCourseID' => $gibbonCourseIDTarget);
                                         $sqlSelect2 = 'SELECT gibbonCourse.name AS course, gibbonSchoolYear.name AS year FROM gibbonCourse JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonCourseID=:gibbonCourseID';
                                         $resultSelect2 = $connection2->prepare($sqlSelect2);
                                         $resultSelect2->execute($dataSelect2);
-                                    } catch (PDOException $e) {
-                                    }
                                     if ($resultSelect2->rowCount() == 1) {
                                         $rowSelect2 = $resultSelect2->fetch();
                                         $access = true;

@@ -25,10 +25,8 @@ use Gibbon\Services\Format;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Rollover'));
@@ -57,14 +55,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
             echo __('The next school year cannot be determined, so this action cannot be performed.');
             echo '</div>';
         } else {
-            try {
+            
                 $dataNext = array('gibbonSchoolYearID' => $nextYear);
                 $sqlNext = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
                 $resultNext = $connection2->prepare($sqlNext);
                 $resultNext->execute($dataNext);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
             if ($resultNext->rowCount() == 1) {
                 $rowNext = $resultNext->fetch();
             }
@@ -100,14 +95,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
             echo __('The next school year cannot be determined, so this action cannot be performed.');
             echo '</div>';
         } else {
-            try {
+            
                 $dataNext = array('gibbonSchoolYearID' => $nextYear);
                 $sqlNext = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
                 $resultNext = $connection2->prepare($sqlNext);
                 $resultNext->execute($dataNext);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
             if ($resultNext->rowCount() == 1) {
                 $rowNext = $resultNext->fetch();
             }
@@ -124,27 +116,21 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                 //Set up years, roll groups and statuses arrays for use later on
                 $yearGroups = array();
-                try {
+                
                     $dataSelect = array();
                     $sqlSelect = 'SELECT gibbonYearGroupID, name FROM gibbonYearGroup ORDER BY sequenceNumber';
                     $resultSelect = $connection2->prepare($sqlSelect);
                     $resultSelect->execute($dataSelect);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
                 while ($rowSelect = $resultSelect->fetch()) {
                     $yearGroups[$rowSelect['gibbonYearGroupID']] =  htmlPrep($rowSelect['name']);
                 }
 
                 $rollGroups = array();
-                try {
+                
                     $dataSelect = array('gibbonSchoolYearID' => $nextYear);
                     $sqlSelect = 'SELECT gibbonRollGroupID, name FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
                     $resultSelect = $connection2->prepare($sqlSelect);
                     $resultSelect->execute($dataSelect);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
                 while ($rowSelect = $resultSelect->fetch()) {
                     $rollGroups[$rowSelect['gibbonRollGroupID']] =  htmlPrep($rowSelect['name']);
                 }
@@ -523,14 +509,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
             echo __('The next school year cannot be determined, so this action cannot be performed.');
             echo '</div>';
         } else {
-            try {
+            
                 $dataNext = array('gibbonSchoolYearID' => $nextYear);
                 $sqlNext = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
                 $resultNext = $connection2->prepare($sqlNext);
                 $resultNext->execute($dataNext);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
             if ($resultNext->rowCount() == 1) {
                 $rowNext = $resultNext->fetch();
             }
@@ -564,14 +547,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                         echo '</div>';
                     } else {
                         //Check unique inputs for uniqueness
-                        try {
+                        
                             $data = array('name' => $name, 'sequenceNumber' => $sequenceNumber);
                             $sql = 'SELECT * FROM gibbonSchoolYear WHERE name=:name OR sequenceNumber=:sequenceNumber';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
 
                         if ($result->rowCount() > 0) {
                             echo "<div class='error'>";
@@ -732,32 +712,23 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                     if ($enrolled) {
                                         ++$success;
 
-                                        try {
+                                        
                                             $dataFamily = array('gibbonPersonID' => $gibbonPersonID);
                                             $sqlFamily = 'SELECT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID=:gibbonPersonID';
                                             $resultFamily = $connection2->prepare($sqlFamily);
                                             $resultFamily->execute($dataFamily);
-                                        } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
-                                        }
                                         while ($rowFamily = $resultFamily->fetch()) {
-                                            try {
+                                            
                                                 $dataFamily2 = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
                                                 $sqlFamily2 = 'SELECT gibbonPersonID FROM gibbonFamilyAdult WHERE gibbonFamilyID=:gibbonFamilyID';
                                                 $resultFamily2 = $connection2->prepare($sqlFamily2);
                                                 $resultFamily2->execute($dataFamily2);
-                                            } catch (PDOException $e) {
-                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                            }
                                             while ($rowFamily2 = $resultFamily2->fetch()) {
-                                                try {
+                                                
                                                     $dataFamily3 = array('gibbonPersonID' => $rowFamily2['gibbonPersonID']);
                                                     $sqlFamily3 = "UPDATE gibbonPerson SET status='Full' WHERE gibbonPersonID=:gibbonPersonID";
                                                     $resultFamily3 = $connection2->prepare($sqlFamily3);
                                                     $resultFamily3->execute($dataFamily3);
-                                                } catch (PDOException $e) {
-                                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                                }
                                             }
                                         }
                                     }
@@ -853,32 +824,23 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                                     if ($enrolled) {
                                         ++$success;
-                                        try {
+                                        
                                             $dataFamily = array('gibbonPersonID' => $gibbonPersonID);
                                             $sqlFamily = 'SELECT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID=:gibbonPersonID';
                                             $resultFamily = $connection2->prepare($sqlFamily);
                                             $resultFamily->execute($dataFamily);
-                                        } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
-                                        }
                                         while ($rowFamily = $resultFamily->fetch()) {
-                                            try {
+                                            
                                                 $dataFamily2 = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
                                                 $sqlFamily2 = 'SELECT gibbonPersonID FROM gibbonFamilyAdult WHERE gibbonFamilyID=:gibbonFamilyID';
                                                 $resultFamily2 = $connection2->prepare($sqlFamily2);
                                                 $resultFamily2->execute($dataFamily2);
-                                            } catch (PDOException $e) {
-                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                            }
                                             while ($rowFamily2 = $resultFamily2->fetch()) {
-                                                try {
+                                                
                                                     $dataFamily3 = array('gibbonPersonID' => $rowFamily2['gibbonPersonID']);
                                                     $sqlFamily3 = "UPDATE gibbonPerson SET status='Full' WHERE gibbonPersonID=:gibbonPersonID";
                                                     $resultFamily3 = $connection2->prepare($sqlFamily3);
                                                     $resultFamily3->execute($dataFamily3);
-                                                } catch (PDOException $e) {
-                                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                                }
                                             }
                                         }
                                     }

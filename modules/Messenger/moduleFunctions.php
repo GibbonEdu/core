@@ -65,12 +65,11 @@ function getSignature($guid, $connection2, $gibbonPersonID)
 {
     $return = false;
 
-    try {
+    
         $data = array('gibbonPersonID' => $gibbonPersonID);
         $sql = 'SELECT gibbonStaff.*, surname, preferredName, initials FROM gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) { }
 
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
@@ -122,21 +121,17 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
     //If parent get a list of student IDs
     if ($parent) {
         $children = '(';
-        try {
+        
             $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
             $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-        }
         while ($row = $result->fetch()) {
-            try {
+            
                 $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                 $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
                 $resultChild = $connection2->prepare($sqlChild);
                 $resultChild->execute($dataChild);
-            } catch (PDOException $e) {
-            }
             while ($rowChild = $resultChild->fetch()) {
                 $children .= 'gibbonPersonID='.$rowChild['gibbonPersonID'].' OR ';
             }
@@ -248,13 +243,11 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
     //My roll groups
     if ($staff) {
         $sqlWhere = '(';
-        try {
+        
             $dataRollGroup = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonIDTutor' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor3' => $_SESSION[$guid]['gibbonPersonID']);
             $sqlRollGroup = 'SELECT * FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3)';
             $resultRollGroup = $connection2->prepare($sqlRollGroup);
             $resultRollGroup->execute($dataRollGroup);
-        } catch (PDOException $e) {
-        }
         if ($resultRollGroup->rowCount() > 0) {
             while ($rowRollGroup = $resultRollGroup->fetch()) {
                 $dataPosts['roll'.$rowRollGroup['gibbonRollGroupID']] = $rowRollGroup['gibbonRollGroupID'];
@@ -287,13 +280,11 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
 
     //My courses
     //First check for any course, then do specific parent check
-    try {
+    
         $dataClasses = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
         $sqlClasses = "SELECT DISTINCT gibbonCourseClass.gibbonCourseID FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND NOT role LIKE '%- Left'";
         $resultClasses = $connection2->prepare($sqlClasses);
         $resultClasses->execute($dataClasses);
-    } catch (PDOException $e) {
-    }
     $sqlWhere = '(';
     if ($resultClasses->rowCount() > 0) {
         while ($rowClasses = $resultClasses->fetch()) {
@@ -317,13 +308,11 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         }
     }
     if ($parent and $children != false) {
-        try {
+        
             $dataClasses = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
             $sqlClasses = 'SELECT DISTINCT gibbonCourseClass.gibbonCourseID FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND '.preg_replace('/gibbonPersonID/', 'gibbonCourseClassPerson.gibbonPersonID', $children)." AND NOT role LIKE '%- Left'";
             $resultClasses = $connection2->prepare($sqlClasses);
             $resultClasses->execute($dataClasses);
-        } catch (PDOException $e) {
-        }
         $sqlWhere = '(';
         if ($resultClasses->rowCount() > 0) {
             while ($rowClasses = $resultClasses->fetch()) {
@@ -342,13 +331,11 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
 
     //My classes
     //First check for any role, then do specific parent check
-    try {
+    
         $dataClasses = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
         $sqlClasses = "SELECT gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND NOT role LIKE '%- Left'";
         $resultClasses = $connection2->prepare($sqlClasses);
         $resultClasses->execute($dataClasses);
-    } catch (PDOException $e) {
-    }
     $sqlWhere = '(';
     if ($resultClasses->rowCount() > 0) {
         while ($rowClasses = $resultClasses->fetch()) {
@@ -372,13 +359,11 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         }
     }
     if ($parent and $children != false) {
-        try {
+        
             $dataClasses = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
             $sqlClasses = 'SELECT gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND '.preg_replace('/gibbonPersonID/', 'gibbonCourseClassPerson.gibbonPersonID', $children)." AND NOT role LIKE '%- Left'";
             $resultClasses = $connection2->prepare($sqlClasses);
             $resultClasses->execute($dataClasses);
-        } catch (PDOException $e) {
-        }
         $sqlWhere = '(';
         if ($resultClasses->rowCount() > 0) {
             while ($rowClasses = $resultClasses->fetch()) {
@@ -397,13 +382,11 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
 
     //My activities
     if ($staff) {
-        try {
+        
             $dataActivities = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
             $sqlActivities = 'SELECT gibbonActivity.gibbonActivityID FROM gibbonActivity JOIN gibbonActivityStaff ON (gibbonActivityStaff.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonActivityStaff.gibbonPersonID=:gibbonPersonID';
             $resultActivities = $connection2->prepare($sqlActivities);
             $resultActivities->execute($dataActivities);
-        } catch (PDOException $e) {
-        }
         $sqlWhere = '(';
         if ($resultActivities->rowCount() > 0) {
             while ($rowActivities = $resultActivities->fetch()) {
@@ -420,13 +403,11 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         }
     }
     if ($student) {
-        try {
+        
             $dataActivities = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
             $sqlActivities = "SELECT gibbonActivity.gibbonActivityID FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonActivityStudent.gibbonPersonID=:gibbonPersonID AND status='Accepted'";
             $resultActivities = $connection2->prepare($sqlActivities);
             $resultActivities->execute($dataActivities);
-        } catch (PDOException $e) {
-        }
         $sqlWhere = '(';
         if ($resultActivities->rowCount() > 0) {
             while ($rowActivities = $resultActivities->fetch()) {
@@ -443,13 +424,11 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         }
     }
     if ($parent and $children != false) {
-        try {
+        
             $dataActivities = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
             $sqlActivities = 'SELECT gibbonActivity.gibbonActivityID FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND '.preg_replace('/gibbonPersonID/', 'gibbonActivityStudent.gibbonPersonID', $children)." AND status='Accepted'";
             $resultActivities = $connection2->prepare($sqlActivities);
             $resultActivities->execute($dataActivities);
-        } catch (PDOException $e) {
-        }
         $sqlWhere = '(';
         if ($resultActivities->rowCount() > 0) {
             while ($rowActivities = $resultActivities->fetch()) {

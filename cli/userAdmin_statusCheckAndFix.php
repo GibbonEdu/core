@@ -41,42 +41,36 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
     $count = 0;
 
     //Scan through every user to correct own status
-    try {
+    
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
         $sql = 'SELECT gibbonPersonID, status, dateEnd, dateStart, gibbonRoleIDAll FROM gibbonPerson ORDER BY gibbonPersonID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-    }
 
     while ($row = $result->fetch()) {
         //Check for status=='Expected' when met or exceeded start date and set to 'Full'
         if ($row['dateStart'] != '' and date('Y-m-d') >= $row['dateStart'] and $row['status'] == 'Expected') {
-            try {
+            
                 $dataUpdate = array('gibbonPersonID' => $row['gibbonPersonID']);
                 $sqlUpdate = "UPDATE gibbonPerson SET status='Full' WHERE gibbonPersonID=:gibbonPersonID";
                 $resultUpdate = $connection2->prepare($sqlUpdate);
                 $resultUpdate->execute($dataUpdate);
-            } catch (PDOException $e) {
-            }
             ++$count;
         }
 
         //Check for status=='Full' when end date exceeded, and set to 'Left'
         if ($row['dateEnd'] != '' and date('Y-m-d') > $row['dateEnd'] and $row['status'] == 'Full') {
-            try {
+            
                 $dataUpdate = array('gibbonPersonID' => $row['gibbonPersonID']);
                 $sqlUpdate = "UPDATE gibbonPerson SET status='Left' WHERE gibbonPersonID=:gibbonPersonID";
                 $resultUpdate = $connection2->prepare($sqlUpdate);
                 $resultUpdate->execute($dataUpdate);
-            } catch (PDOException $e) {
-            }
             ++$count;
         }
     }
 
     // Look for parents who are set to Full and counts the active children (also catches parents with no children)
-    try {
+    
         $data = array();
         $sql = "SELECT adult.gibbonPersonID,
                 COUNT(DISTINCT CASE WHEN NOT child.status='Left' THEN child.gibbonPersonID END) as activeChildren
@@ -88,23 +82,19 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                 GROUP BY adult.gibbonPersonID";
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-    }
 
     while ($row = $result->fetch()) {
         // Skip parents who have any active children
         if ($row['activeChildren'] > 0) continue;
 
         // Mark parents as Left only if they don't have other non-parent roles
-        try {
+        
             $data = array('gibbonPersonID' => $row['gibbonPersonID']);
             $sql = "UPDATE gibbonPerson SET gibbonPerson.status='Left' 
                     WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID 
                     AND (SELECT COUNT(*) FROM gibbonRole WHERE FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll) AND category<>'Parent') = 0";
             $resultUpdate = $connection2->prepare($sql);
             $resultUpdate->execute($data);
-        } catch (PDOException $e) {
-        }
 
         // Add the number of updated rows to the count
         $count += $resultUpdate->rowCount();

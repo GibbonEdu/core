@@ -21,27 +21,20 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAssessments_manage_edit_field_add.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $gibbonExternalAssessmentID = $_GET['gibbonExternalAssessmentID'] ?? '';
 
     if ($gibbonExternalAssessmentID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID);
             $sql = 'SELECT name as assessmentName FROM gibbonExternalAssessment WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";

@@ -128,13 +128,11 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                                         $approval = 'Approval - Partial - Budget';
                                     } else {
                                         //Check if school approver, if not, abort
-                                        try {
+                                        
                                             $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
                                             $sql = "SELECT * FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND gibbonFinanceExpenseApprover.gibbonPersonID=:gibbonPersonID";
                                             $result = $connection2->prepare($sql);
                                             $result->execute($data);
-                                        } catch (PDOException $e) {
-                                        }
 
                                         if ($result->rowCount() == 1) {
                                             $approval = 'Approval - Partial - School';

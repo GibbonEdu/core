@@ -284,13 +284,11 @@ if ($proceed == false) {
                         if ($requiredDocuments != false && !empty($uploadedDocuments) && is_array($uploadedDocuments)) {
                             foreach ($uploadedDocuments as $fileName => $attachment) {
                                 //Write files to database, one for each attachment
-                                try {
+                                
                                     $dataFile = array('gibbonStaffApplicationFormID' => $AI, 'name' => $fileName, 'path' => $attachment);
                                     $sqlFile = 'INSERT INTO gibbonStaffApplicationFormFile SET gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID, name=:name, path=:path';
                                     $resultFile = $connection2->prepare($sqlFile);
                                     $resultFile->execute($dataFile);
-                                } catch (PDOException $e) {
-                                }
                             }
                         }
 

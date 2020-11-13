@@ -29,10 +29,8 @@ require_once __DIR__ . '/moduleFunctions.php';
 include './modules/User Admin/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage_edit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $gibbonApplicationFormID = $_GET['gibbonApplicationFormID'] ?? '';
@@ -45,20 +43,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     //Check if school year specified
     if ($gibbonApplicationFormID == '' or $gibbonSchoolYearID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
         return;
     }
 
-    try {
+    
         $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
         $sql = "SELECT *, gibbonApplicationForm.status AS 'applicationStatus', gibbonPayment.status AS 'paymentStatus' FROM gibbonApplicationForm LEFT JOIN gibbonPayment ON (gibbonApplicationForm.gibbonPaymentID=gibbonPayment.gibbonPaymentID AND foreignTable='gibbonApplicationForm') WHERE gibbonApplicationFormID=:gibbonApplicationFormID";
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
 
     if ($result->rowCount() != 1) {
         echo "<div class='error'>";
@@ -734,14 +727,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $header->addContent(__('Relationships'));
 
             // Get the family relationships
-            try {
+            
                 $dataRelationships = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
                 $sqlRelationships = 'SELECT surname, preferredName, title, gender, gibbonApplicationFormRelationship.gibbonPersonID, relationship FROM gibbonApplicationFormRelationship JOIN gibbonPerson ON (gibbonApplicationFormRelationship.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonApplicationFormRelationship.gibbonApplicationFormID=:gibbonApplicationFormID';
                 $resultRelationships = $connection2->prepare($sqlRelationships);
                 $resultRelationships->execute($dataRelationships);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
 
             $row = $table->addRow()->setClass('break');
             $row->addContent($rowFamily['name'])->wrap('<strong>','</strong>')->addClass('shortWidth');

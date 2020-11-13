@@ -108,10 +108,8 @@ echo "<script type='text/javascript'>";
 echo '</script>';
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_data.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
@@ -169,7 +167,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                 echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
-                try {
+                
                     $data2 = array('gibbonMarkbookColumnID' => $gibbonMarkbookColumnID);
                     $sql2 = "SELECT gibbonMarkbookColumn.*, gibbonUnit.name as unitName, attainmentScale.name as scaleNameAttainment, attainmentScale.usage as usageAttainment, attainmentScale.lowestAcceptable as lowestAcceptableAttainment, effortScale.name as scaleNameEffort, effortScale.usage as usageEffort, effortScale.lowestAcceptable as lowestAcceptableEffort
                             FROM gibbonMarkbookColumn
@@ -179,9 +177,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID";
                     $result2 = $connection2->prepare($sql2);
                     $result2->execute($data2);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 if ($result2->rowCount() != 1) {
                     echo "<div class='error'>";
@@ -264,14 +259,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
 
                     // WORK OUT IF THERE IS SUBMISSION
                     if (is_null($values['gibbonPlannerEntryID']) == false) {
-                        try {
+                        
                             $dataSub = array('gibbonPlannerEntryID' => $values['gibbonPlannerEntryID']);
                             $sqlSub = "SELECT * FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND homeworkSubmission='Y'";
                             $resultSub = $connection2->prepare($sqlSub);
                             $resultSub->execute($dataSub);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
 
                         if ($resultSub->rowCount() == 1) {
                             $hasSubmission = true;

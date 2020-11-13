@@ -177,7 +177,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 
     $setting = getSettingByScope($connection2, 'Attendance', 'attendanceCLIAdditionalUsers', true);
     $inputs = array();
-    try {
+    
         $data=array( 'action1' => '%report_rollGroupsNotRegistered_byDate.php%', 'action2' => '%report_courseClassesNotRegistered_byDate.php%' );
         $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname, gibbonRole.name as roleName
                 FROM gibbonPerson
@@ -190,8 +190,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
                 ORDER BY gibbonRole.gibbonRoleID, surname, preferredName" ;
         $resultSelect=$connection2->prepare($sql);
         $resultSelect->execute($data);
-    } catch (PDOException $e) {
-    }
 
     $users = explode(',', $setting['value']);
     $selected = array();

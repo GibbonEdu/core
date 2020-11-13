@@ -161,13 +161,11 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                                 $count = 0;
                                 while ($continue == false and $count < 100) {
                                     $key = randomPassword(40);
-                                    try {
+                                    
                                         $dataUnique = array('key' => $key);
                                         $sqlUnique = 'SELECT * FROM gibbonFinanceInvoice WHERE gibbonFinanceInvoice.`key`=:key';
                                         $resultUnique = $connection2->prepare($sqlUnique);
                                         $resultUnique->execute($dataUnique);
-                                    } catch (PDOException $e) {
-                                    }
 
                                     if ($resultUnique->rowCount() == 0) {
                                         $continue = true;
@@ -295,13 +293,11 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                                 $count = 0;
                                 while ($continue == false and $count < 100) {
                                     $key = randomPassword(40);
-                                    try {
+                                    
                                         $dataUnique = array('key' => $key);
                                         $sqlUnique = 'SELECT * FROM gibbonFinanceInvoice WHERE gibbonFinanceInvoice.`key`=key';
                                         $resultUnique = $connection2->prepare($sqlUnique);
                                         $resultUnique->execute($dataUnique);
-                                    } catch (PDOException $e) {
-                                    }
 
                                     if ($resultUnique->rowCount() == 0) {
                                         $continue = true;
@@ -411,12 +407,11 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                         $gibbonFinanceInvoiceID = $AI;
 
                     //SET gibbonFinanceFeeCategoryIDList WITH ALL FEES (doing this now due to the complex nature of adding fees above)
-                    try {
+                    
                         $dataTemp = array('gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
                         $sqlTemp = 'SELECT gibbonFinanceFeeCategoryID FROM gibbonFinanceInvoiceFee WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
                         $resultTemp = $connection2->prepare($sqlTemp);
                         $resultTemp->execute($dataTemp);
-                    } catch (PDOException $e) {}
 
                     $gibbonFinanceFeeCategoryIDList = '';
                     while ($rowTemp = $resultTemp->fetch()) {
@@ -425,12 +420,11 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 
                     $gibbonFinanceFeeCategoryIDList = substr($gibbonFinanceFeeCategoryIDList, 0, -1);
                     if ($gibbonFinanceFeeCategoryIDList != '') {
-                        try {
+                        
                             $dataTemp2 = array('gibbonFinanceFeeCategoryIDList' => $gibbonFinanceFeeCategoryIDList, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
                             $sqlTemp2 = 'UPDATE gibbonFinanceInvoice SET gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
                             $resultTemp2 = $connection2->prepare($sqlTemp2);
                             $resultTemp2->execute($dataTemp2);
-                        } catch (PDOException $e) {}
                     }
                 }
 

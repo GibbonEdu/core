@@ -151,14 +151,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     echo '</td>';
                     echo "<td style='padding-top: 15px; width: 33%; vertical-align: top'>";
                     echo "<span style='font-size: 115%; font-weight: bold'>".__('Staff').'</span><br/>';
-                    try {
+                    
                         $dataStaff = array('gibbonActivityID' => $row['gibbonActivityID']);
                         $sqlStaff = "SELECT title, preferredName, surname, role FROM gibbonActivityStaff JOIN gibbonPerson ON (gibbonActivityStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
                         $resultStaff = $connection2->prepare($sqlStaff);
                         $resultStaff->execute($dataStaff);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
 
                     if ($resultStaff->rowCount() < 1) {
                         echo '<i>'.__('None').'</i>';
@@ -196,14 +193,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     //Slots & Participants
                     echo "<div style='width:400px; float: right; font-size: 115%; padding-top: 6px'>";
                     echo "<h3 style='padding-top: 0px; margin-top: 5px'>".__('Time Slots').'</h3>';
-                    try {
+                    
                         $dataSlots = array('gibbonActivityID' => $row['gibbonActivityID']);
                         $sqlSlots = 'SELECT gibbonActivitySlot.*, gibbonDaysOfWeek.name AS day, gibbonSpace.name AS space FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) LEFT JOIN gibbonSpace ON (gibbonActivitySlot.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY sequenceNumber';
                         $resultSlots = $connection2->prepare($sqlSlots);
                         $resultSlots->execute($dataSlots);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
 
                     $count = 0;
                     while ($rowSlots = $resultSlots->fetch()) {
@@ -227,14 +221,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     if ($role == 'Staff') {
                         echo '<h3>'.__('Participants').'</h3>';
 
-                        try {
+                        
                             $dataStudents = array('gibbonActivityID' => $row['gibbonActivityID']);
                             $sqlStudents = "SELECT title, preferredName, surname FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonActivityStudent.status='Accepted' ORDER BY surname, preferredName";
                             $resultStudents = $connection2->prepare($sqlStudents);
                             $resultStudents->execute($dataStudents);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
 
                         if ($resultStudents->rowCount() < 1) {
                             echo '<i>'.__('None').'</i>';
@@ -246,14 +237,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             echo '</ul>';
                         }
 
-                        try {
+                        
                             $dataStudents = array('gibbonActivityID' => $row['gibbonActivityID']);
                             $sqlStudents = "SELECT title, preferredName, surname FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonActivityStudent.status='Waiting List' ORDER BY timestamp";
                             $resultStudents = $connection2->prepare($sqlStudents);
                             $resultStudents->execute($dataStudents);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
 
                         if ($resultStudents->rowCount() > 0) {
                             echo '<h3>'.__('Waiting List').'</h3>';

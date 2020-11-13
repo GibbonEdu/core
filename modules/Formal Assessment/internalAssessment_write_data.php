@@ -40,10 +40,8 @@ echo "<script type='text/javascript'>";
 echo '</script>';
 
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_write_data.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
@@ -78,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
-                try {
+                
                     $data2 = array('gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID);
                     $sql2 = "SELECT gibbonInternalAssessmentColumn.*, attainmentScale.name as scaleNameAttainment, attainmentScale.usage as usageAttainment, attainmentScale.lowestAcceptable as lowestAcceptableAttainment, effortScale.name as scaleNameEffort, effortScale.usage as usageEffort, effortScale.lowestAcceptable as lowestAcceptableEffort
                         FROM gibbonInternalAssessmentColumn 
@@ -87,9 +85,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID";
                     $result2 = $connection2->prepare($sql2);
                     $result2->execute($data2);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 if ($result2->rowCount() != 1) {
                     echo "<div class='error'>";

@@ -23,10 +23,8 @@ use Gibbon\Forms\Prefab\DeleteForm;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal_manage_delete.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     if (isset($_GET['return'])) {
@@ -36,18 +34,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
     //Check if school year specified
     $gibbonPersonUpdateID = $_GET['gibbonPersonUpdateID'];
     if ($gibbonPersonUpdateID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonPersonUpdateID' => $gibbonPersonUpdateID);
             $sql = 'SELECT * FROM gibbonPersonUpdate WHERE gibbonPersonUpdateID=:gibbonPersonUpdateID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";

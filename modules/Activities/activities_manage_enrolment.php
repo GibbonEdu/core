@@ -24,24 +24,19 @@ use Gibbon\Services\Format;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_enrolment.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $gibbonActivityID = (isset($_GET['gibbonActivityID']))? $_GET['gibbonActivityID'] : null;
 
     $highestAction = getHighestGroupedAction($guid, '/modules/Activities/activities_manage_enrolment.php', $connection2);
     if ($highestAction == 'My Activities_viewEditEnrolment') {
-        try {
+        
             $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), 'gibbonActivityID' => $gibbonActivityID);
             $sql = "SELECT gibbonActivity.*, NULL as status, gibbonActivityStaff.role FROM gibbonActivity JOIN gibbonActivityStaff ON (gibbonActivity.gibbonActivityID=gibbonActivityStaff.gibbonActivityID) WHERE gibbonActivity.gibbonActivityID=:gibbonActivityID AND gibbonActivityStaff.gibbonPersonID=:gibbonPersonID AND gibbonActivityStaff.role='Organiser' AND gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name";
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if (!$result || $result->rowCount() == 0) {
             //Acess denied
@@ -62,18 +57,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
     //Check if school year specified
     if ($gibbonActivityID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonActivityID' => $gibbonActivityID);
             $sql = 'SELECT * FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
@@ -119,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
 
             $enrolment = getSettingByScope($connection2, 'Activities', 'enrolmentType');
-            try {
+            
                 $data = array('gibbonActivityID' => $gibbonActivityID, 'today' => date('Y-m-d'), 'statusCheck' => ($enrolment == 'Competitive'? 'Pending' : 'Waiting List'));
                 $sql = "SELECT gibbonActivityStudent.*, surname, preferredName, gibbonRollGroup.nameShort as rollGroupNameShort
                         FROM gibbonActivityStudent
@@ -133,9 +123,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                         ORDER BY gibbonActivityStudent.status, timestamp";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
 
             echo "<div class='linkTop'>";
             echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/activities_manage_enrolment_add.php&gibbonActivityID=$gibbonActivityID&search=".$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID']."'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/page_new.png'/></a>";

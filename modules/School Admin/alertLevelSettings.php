@@ -20,10 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Manage Alert Levels'));
@@ -32,14 +30,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    try {
+    
         $data = array();
         $sql = 'SELECT * FROM gibbonAlertLevel ORDER BY sequenceNumber';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
 
     //Let's go!
     $form = Form::create('alertLevelSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/alertLevelSettingsProcess.php' );

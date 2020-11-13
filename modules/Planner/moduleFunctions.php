@@ -283,14 +283,11 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
         $days['Sat'] = 'Y';
         $days['Sun'] = 'Y';
 
-        try {
+        
             $dataDays = array();
             $sqlDays = "SELECT * FROM gibbonDaysOfWeek WHERE schoolDay='N'";
             $resultDays = $connection2->prepare($sqlDays);
             $resultDays->execute($dataDays);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
         while ($rowDays = $resultDays->fetch()) {
             if ($rowDays['nameShort'] == 'Mon') {
                 $days['Mon'] = 'N';
@@ -756,13 +753,11 @@ function getResourcesTagCloud($guid, $connection2, $tagCount = 50) {
     $max_count = 0;
     $min_count = 0;
 
-    try {
+    
         $sql = "SELECT * FROM gibbonResourceTag ORDER BY count DESC LIMIT $tagCount";
         $data = array();
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-    }
 
     if ($result->rowCount() > 0) {
         while ($row = $result->fetch()) {

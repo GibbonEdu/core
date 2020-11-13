@@ -31,13 +31,11 @@ if (empty($gibbonSchoolYearID)) {
     header("Location: {$URL}");
     exit;
 } else {
-    try {
+    
         $data = array('gibbonRoleID' => $gibbon->session->get('gibbonRoleIDCurrent'));
         $sql = "SELECT futureYearsLogin, pastYearsLogin FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID";
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-    }
 
     //Test to see if username exists and is unique
     if ($result->rowCount() == 1) {
@@ -49,20 +47,18 @@ if (empty($gibbonSchoolYearID)) {
             exit();
         } else {
             //Get details on requested school year
-            try {
+            
                 $dataYear = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
                 $sqlYear = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
                 $resultYear = $connection2->prepare($sqlYear);
                 $resultYear->execute($dataYear);
-            } catch (PDOException $e) { }
 
             //Get current year sequenceNumber
-            try {
+            
                 $dataYearCurrent = array();
                 $sqlYearCurrent = "SELECT * FROM gibbonSchoolYear WHERE status='Current'";
                 $resultYearCurrent = $connection2->prepare($sqlYearCurrent);
                 $resultYearCurrent->execute($dataYearCurrent);
-            } catch (PDOException $e) { }
 
             //Check number of rows returned.
             //If it is not 1, show error

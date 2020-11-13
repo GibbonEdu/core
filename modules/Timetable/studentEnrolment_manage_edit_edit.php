@@ -21,33 +21,24 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment_manage_edit_edit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Check if school year specified
     $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
     $gibbonCourseID = $_GET['gibbonCourseID'];
     $gibbonPersonID = $_GET['gibbonPersonID'];
     if ($gibbonCourseClassID == '' or $gibbonCourseID == '' or $gibbonPersonID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID2' => $gibbonPersonID);
             $sql = "SELECT surname, preferredName, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClassPerson.role, gibbonCourseClassPerson.dateEnrolled, gibbonCourseClassPerson.dateUnenrolled, gibbonCourseClass.name, gibbonCourseClass.nameShort, gibbonCourse.gibbonCourseID, gibbonCourse.name AS courseName, gibbonCourse.nameShort as courseNameShort, gibbonCourse.description AS courseDescription, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName, gibbonYearGroupIDList FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE (gibbonDepartmentStaff.role='Coordinator' OR gibbonDepartmentStaff.role='Assistant Coordinator') AND gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID2";
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             $values = $result->fetch();

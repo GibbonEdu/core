@@ -23,10 +23,8 @@ use Gibbon\Forms\Prefab\DeleteForm;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_delete.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Check if school year specified
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
@@ -43,18 +41,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_de
     }
 
     if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
             $sql = "SELECT * FROM gibbonFinanceInvoice WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID AND status='Pending'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";

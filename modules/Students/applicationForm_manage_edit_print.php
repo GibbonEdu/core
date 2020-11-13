@@ -23,10 +23,8 @@ use Gibbon\Services\Format;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage_edit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     echo '<h2>';
     echo __('Student Application Form Printout');
@@ -39,19 +37,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     }
 
     if ($gibbonApplicationFormID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         //Proceed!
-        try {
+        
             $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
             $sql = "SELECT * FROM gibbonApplicationForm LEFT JOIN gibbonPayment ON (gibbonApplicationForm.gibbonPaymentID=gibbonPayment.gibbonPaymentID AND foreignTable='gibbonApplicationForm') WHERE gibbonApplicationFormID=:gibbonApplicationFormID";
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
@@ -82,14 +75,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             echo '</td>';
             echo "<td style='padding-top: 15px; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__('Year of Entry').'</span><br/>';
-            try {
+            
                 $dataSelect = array('gibbonSchoolYearIDEntry' => $row['gibbonSchoolYearIDEntry']);
                 $sqlSelect = 'SELECT name FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearIDEntry';
                 $resultSelect = $connection2->prepare($sqlSelect);
                 $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
             if ($resultSelect->rowCount() == 1) {
                 $rowSelect = $resultSelect->fetch();
                 echo '<i>'.$rowSelect['name'].'</i>';
@@ -97,14 +87,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             echo '</td>';
             echo "<td style='padding-top: 15px; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__('Year Group at Entry').'</span><br/>';
-            try {
+            
                 $dataSelect = array('gibbonYearGroupIDEntry' => $row['gibbonYearGroupIDEntry']);
                 $sqlSelect = 'SELECT name FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupIDEntry';
                 $resultSelect = $connection2->prepare($sqlSelect);
                 $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
             if ($resultSelect->rowCount() == 1) {
                 $rowSelect = $resultSelect->fetch();
                 echo '<i>'.__($rowSelect['name']);
@@ -119,14 +106,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             echo '<tr>';
             echo "<td style='padding-top: 15px; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__('Roll Group at Entry').'</span><br/>';
-            try {
+            
                 $dataSelect = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
                 $sqlSelect = 'SELECT name FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
                 $resultSelect = $connection2->prepare($sqlSelect);
                 $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
             if ($resultSelect->rowCount() == 1) {
                 $rowSelect = $resultSelect->fetch();
                 echo '<i>'.$rowSelect['name'].'</i>';
@@ -344,14 +328,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     $start = 2;
 
                     //Spit out parent 1 data from Gibbon
-                    try {
+                    
                         $dataMember = array('gibbonPersonID' => $row['parent1gibbonPersonID']);
                         $sqlMember = 'SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
                         $resultMember = $connection2->prepare($sqlMember);
                         $resultMember->execute($dataMember);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
 
                     while ($rowMember = $resultMember->fetch()) {
                         echo "<table cellspacing='0' style='width: 100%'>";
@@ -492,14 +473,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             //Yes family
             else {
                 //Spit out parent1/parent2 data from Gibbon
-                try {
+                
                     $dataFamily = array('gibbonFamilyID' => $row['gibbonFamilyID']);
                     $sqlFamily = 'SELECT * FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
                     $resultFamily = $connection2->prepare($sqlFamily);
                     $resultFamily->execute($dataFamily);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 if ($resultFamily->rowCount() < 1) {
                     echo "<div class='error'>";
@@ -542,14 +520,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         echo '</table>';
 
                         //Get adults
-                        try {
+                        
                             $dataMember = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
                             $sqlMember = 'SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName';
                             $resultMember = $connection2->prepare($sqlMember);
                             $resultMember->execute($dataMember);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
 
                         while ($rowMember = $resultMember->fetch()) {
                             echo "<table cellspacing='0' style='width: 100%'>";
@@ -652,14 +627,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 }
                 //Get siblings from Gibbon family
                 if ($row['gibbonFamilyID'] != '') {
-                    try {
+                    
                         $dataMember = array('gibbonFamilyID' => $row['gibbonFamilyID']);
                         $sqlMember = 'SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY surname, preferredName';
                         $resultMember = $connection2->prepare($sqlMember);
                         $resultMember->execute($dataMember);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
 
                     if ($resultMember->rowCount() > 0) {
                         while ($rowMember = $resultMember->fetch()) {

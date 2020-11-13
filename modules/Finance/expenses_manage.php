@@ -25,10 +25,8 @@ use Gibbon\Services\Format;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
@@ -109,14 +107,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                         $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
                     }
                     if ($gibbonFinanceBudgetCycleID == '') {
-                        try {
+                        
                             $data = array();
                             $sql = "SELECT * FROM gibbonFinanceBudgetCycle WHERE status='Current'";
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
                         if ($result->rowcount() != 1) {
                             echo "<div class='error'>";
                             echo __('The Current budget cycle cannot be determined.');
@@ -128,14 +123,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                         }
                     }
                     if ($gibbonFinanceBudgetCycleID != '') {
-                        try {
+                        
                             $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
                             $sql = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
                         if ($result->rowcount() != 1) {
                             echo "<div class='error'>";
                             echo __('The specified budget cycle cannot be determined.');
