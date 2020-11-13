@@ -266,6 +266,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         $table->setTitle(__('First Aid'));
 
                         $table->addColumn('firstAidQualified', __('First Aid Qualified'))
+                            ->addClass('grid')
                             ->format(Format::using('yesNo', 'firstAidQualified'));
                         if ($row["firstAidQualified"] == "Y") {
                             $table->addColumn('firstAidExpiry', __('Expiry Date'))
