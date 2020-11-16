@@ -1622,117 +1622,77 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $highestColour = $alert[3];
                                 $highestColourBG = $alert[4];
                                 echo "<div class='error' style='background-color: #".$highestColourBG.'; border: 1px solid #'.$highestColour.'; color: #'.$highestColour."'>";
-                                echo '<b>'.sprintf(__('This student has one or more %1$s risk medical conditions.'), strToLower($highestLevel)).'</b>.';
+                                echo '<b>'.sprintf(__('This student has one or more %1$s risk medical conditions.'), strToLower($highestLevel)).'</b>';
                                 echo '</div>';
                             }
 
                             //Get medical conditions
-                            
-                                $dataCondition = array('gibbonPersonMedicalID' => $rowMedical['gibbonPersonMedicalID']);
-                                $sqlCondition = 'SELECT gibbonPersonMedicalCondition.*, gibbonMedicalCondition.description FROM gibbonPersonMedicalCondition LEFT JOIN gibbonMedicalCondition ON (gibbonMedicalCondition.name=gibbonPersonMedicalCondition.name) WHERE gibbonPersonMedicalID=:gibbonPersonMedicalID ORDER BY name';
-                                $resultCondition = $connection2->prepare($sqlCondition);
-                                $resultCondition->execute($dataCondition);
+                            $dataCondition = array('gibbonPersonMedicalID' => $rowMedical['gibbonPersonMedicalID']);
+                            $sqlCondition = 'SELECT gibbonPersonMedicalCondition.*, gibbonMedicalCondition.description FROM gibbonPersonMedicalCondition LEFT JOIN gibbonMedicalCondition ON (gibbonMedicalCondition.name=gibbonPersonMedicalCondition.name) WHERE gibbonPersonMedicalID=:gibbonPersonMedicalID ORDER BY name';
+                            $resultCondition = $connection2->prepare($sqlCondition);
+                            $resultCondition->execute($dataCondition);
 
-                            echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                            echo '<tr>';
-                            echo "<td style='width: 33%; vertical-align: top'>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>".__('Long Term Medication').'</span><br/>';
-                            if ($rowMedical['longTermMedication'] == '') {
-                                echo '<i>'.__('Unknown').'</i>';
-                            } else {
-                                echo $rowMedical['longTermMedication'];
-                            }
-                            echo '</td>';
-                            echo "<td style='width: 67%; vertical-align: top' colspan=2>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>".__('Details').'</span><br/>';
-                            echo $rowMedical['longTermMedicationDetails'];
-                            echo '</td>';
-                            echo '</tr>';
-                            echo '<tr>';
-                            echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>".__('Tetanus Last 10 Years?').'</span><br/>';
-                            if ($rowMedical['tetanusWithin10Years'] == '') {
-                                echo '<i>'.__('Unknown').'</i>';
-                            } else {
-                                echo $rowMedical['tetanusWithin10Years'];
-                            }
-                            echo '</td>';
-                            echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>".__('Blood Type').'</span><br/>';
-                            echo $rowMedical['bloodType'];
-                            echo '</td>';
-                            echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>".__('Medical Conditions?').'</span><br/>';
-                            if ($resultCondition->rowCount() > 0) {
-                                echo __('Yes').'. '.__('Details below.');
-                            } else {
-                                __('No');
-                            }
-                            echo '</td>';
-                            echo '</tr>';
+                            // MEDICAL DETAILS
+                            $table = DataTable::createDetails('medical');
+
+                            $table->addColumn('longTermMedication', __('Long Term Medication'))
+                                ->format(Format::using('yesno', 'longTermMedication'));
+
+                            $table->addColumn('longTermMedicationDetails', __('Details'))
+                                ->addClass('col-span-2')
+                                ->format(function ($medical) {
+                                    return !empty($medical['longTermMedication'])
+                                        ? $medical['longTermMedicationDetails']
+                                        : Format::small(__('Unknown'));
+                                });
+
+                            $table->addColumn('tetanusWithin10Years', __('Tetanus Last 10 Years?'))
+                                ->format(Format::using('yesno', 'longTermMedication'));
+
+                            $table->addColumn('bloodType', __('Blood Type'));
+                            $table->addColumn('medicalConditions', __('Medical Conditions?'))
+                                ->format(function ($medical) use ($resultCondition) {
+                                    return $resultCondition->rowCount() > 0
+                                        ? __('Yes').'. '.__('Details below.')
+                                        : __('No');
+                                });
+
                             if (!empty($rowMedical['comment'])) {
-                                echo '<tr>';
-                                echo "<td padding-top: 15px; vertical-align: top' colspan=3>";
-                                echo "<span style='font-size: 115%; font-weight: bold'>".__('Comment').'</span><br/>';
-                                echo $rowMedical['comment'];
-                                echo '</td>';
-                                echo '</tr>';
+                                $table->addColumn('comment', __('Comment'))->addClass('col-span-3');
                             }
-                            echo '</table>';
+
+                            echo $table->render([$rowMedical]);
+
+                            // MEDICAL CONDITIONS
+                            $canManageMedical = isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage.php');
 
                             while ($rowCondition = $resultCondition->fetch()) {
-                                echo '<h4>';
+
                                 $alert = getAlert($guid, $connection2, $rowCondition['gibbonAlertLevelID']);
-                                if ($alert != false) {
-                                    echo __($rowCondition['name'])." <span style='color: #".$alert['color']."'>(".__($alert['name']).' '.__('Risk').')</span>';
-                                }
-                                echo '</h4>';
-                                if (!empty($rowCondition['description'])) {
-                                    echo '<p class="text-xs text-gray-700">';
-                                    echo $rowCondition['description'];
-                                    echo '</p>';
+
+                                $table = DataTable::createDetails('medicalConditions');
+                                $table->setTitle(__($rowCondition['name'])." <span style='color: #".$alert['color']."'>(".__($alert['name']).' '.__('Risk').')</span>');
+                                $table->setDescription($rowCondition['description']);
+                                $table->addMetaData('gridClass', 'grid-cols-1 md:grid-cols-2');
+
+                                $table->addColumn('triggers', __('Triggers'));
+                                $table->addColumn('reaction', __('Reaction'));
+                                $table->addColumn('response', __('Response'));
+                                $table->addColumn('medication', __('Medication'));
+                                $table->addColumn('lastEpisode', __('Last Episode Date'))
+                                    ->format(Format::using('date', 'lastEpisode'));
+                                $table->addColumn('lastEpisodeTreatment', __('Last Episode Treatment'));
+                                $table->addColumn('comment', __('Comments'))->addClass('col-span-2');
+
+                                if ($canManageMedical && !empty($rowCondition['attachment'])) {
+                                    $table->addColumn('attachment', __('Attachment'))
+                                        ->addClass('col-span-2')
+                                        ->format(function ($condition) {
+                                            return Format::link('./'.$condition['attachment'], __('View Attachment'), ['target' => '_blank']);
+                                        });
                                 }
 
-                                echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                                echo '<tr>';
-                                echo "<td style='width: 50%; vertical-align: top'>";
-                                echo "<span style='font-size: 115%; font-weight: bold'>".__('Triggers').'</span><br/>';
-                                echo $rowCondition['triggers'];
-                                echo '</td>';
-                                echo "<td style='width: 50%; vertical-align: top' colspan=2>";
-                                echo "<span style='font-size: 115%; font-weight: bold'>".__('Reaction').'</span><br/>';
-                                echo $rowCondition['reaction'];
-                                echo '</td>';
-                                echo '</tr>';
-                                echo '<tr>';
-                                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                                echo "<span style='font-size: 115%; font-weight: bold'>".__('Response').'</span><br/>';
-                                echo $rowCondition['response'];
-                                echo '</td>';
-                                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                                echo "<span style='font-size: 115%; font-weight: bold'>".__('Medication').'</span><br/>';
-                                echo $rowCondition['medication'];
-                                echo '</td>';
-                                echo '</tr>';
-                                echo '<tr>';
-                                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                                echo "<span style='font-size: 115%; font-weight: bold'>".__('Last Episode Date').'</span><br/>';
-                                if (is_null($row['dob']) == false and $row['dob'] != '0000-00-00') {
-                                    echo dateConvertBack($guid, $rowCondition['lastEpisode']);
-                                }
-                                echo '</td>';
-                                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                                echo "<span style='font-size: 115%; font-weight: bold'>".__('Last Episode Treatment').'</span><br/>';
-                                echo $rowCondition['lastEpisodeTreatment'];
-                                echo '</td>';
-                                echo '</tr>';
-                                echo '<tr>';
-                                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=2>";
-                                echo "<span style='font-size: 115%; font-weight: bold'>".__('Comments').'</span><br/>';
-                                echo $rowCondition['comment'];
-                                echo '</td>';
-                                echo '</tr>';
-                                echo '</table>';
+                                echo $table->render([$rowCondition]);
                             }
                         }
                     } elseif ($subpage == 'Notes') {
