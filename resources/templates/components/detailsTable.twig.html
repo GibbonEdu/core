@@ -9,7 +9,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 {% extends "components/dataTable.twig.html" %}
 
 {% block title %}
-    <h4>{{ table.getTitle }}</h4>
+    <h4>{{ table.getTitle|raw }}</h4>
 {% endblock title %}
 
 {% block table %}
