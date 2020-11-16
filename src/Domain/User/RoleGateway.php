@@ -99,12 +99,14 @@ class RoleGateway extends QueryableGateway
     public function selectUsersByAction($name)
     {
         $data = array('name' => $name);
-        $sql = "SELECT gibbonPersonID, surname, preferredName
+        $sql = "SELECT DISTINCT gibbonPersonID, surname, preferredName
                 FROM gibbonAction
                 JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
                 JOIN gibbonRole ON (gibbonPermission.gibbonRoleID=gibbonRole.gibbonRoleID)
                 JOIN gibbonPerson ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll))
-                WHERE gibbonAction.name=:name OR (gibbonAction.name LIKE CONCAT(:name,'\_%'))
+                WHERE
+                    (gibbonAction.name=:name OR (gibbonAction.name LIKE CONCAT(:name,'\_%')))
+                    AND gibbonPerson.status='Full'
                 ORDER BY surname, preferredName";
 
         return $this->db()->select($sql, $data);
