@@ -1,4 +1,6 @@
 <?php
+
+use Gibbon\FileUploader;
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -66,14 +68,29 @@ if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') { ech
                 $lastEpisodeTreatment = $_POST['lastEpisodeTreatment'];
                 $comment = $_POST['comment'];
 
+                // File Upload
+                if (!empty($_FILES['attachment'])) {
+                    // Upload the file, return the /uploads relative path
+                    $fileUploader = new FileUploader($pdo, $gibbon->session);
+                    $attachment = $fileUploader->uploadFromPost($_FILES['attachment']);
+
+                    if (empty($attachment)) {
+                        $URL .= '&return=error3';
+                        header("Location: {$URL}");
+                        exit;
+                    }
+                } else {
+                    $attachment = $_POST['attachment'] ?? null;
+                }
+
                 if ($name == '' or $gibbonAlertLevelID == '') {
                     $URL .= '&return=error3';
                     header("Location: {$URL}");
                 } else {
                     //Write to database
                     try {
-                        $data = array('gibbonPersonMedicalID' => $gibbonPersonMedicalID, 'name' => $name, 'gibbonAlertLevelID' => $gibbonAlertLevelID, 'triggers' => $triggers, 'reaction' => $reaction, 'response' => $response, 'medication' => $medication, 'lastEpisode' => $lastEpisode, 'lastEpisodeTreatment' => $lastEpisodeTreatment, 'comment' => $comment, 'gibbonPersonMedicalConditionID' => $gibbonPersonMedicalConditionID);
-                        $sql = 'UPDATE gibbonPersonMedicalCondition SET gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment WHERE gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID';
+                        $data = array('gibbonPersonMedicalID' => $gibbonPersonMedicalID, 'name' => $name, 'gibbonAlertLevelID' => $gibbonAlertLevelID, 'triggers' => $triggers, 'reaction' => $reaction, 'response' => $response, 'medication' => $medication, 'lastEpisode' => $lastEpisode, 'lastEpisodeTreatment' => $lastEpisodeTreatment, 'comment' => $comment, 'attachment' => $attachment, 'gibbonPersonMedicalConditionID' => $gibbonPersonMedicalConditionID);
+                        $sql = 'UPDATE gibbonPersonMedicalCondition SET gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment, attachment=:attachment WHERE gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
