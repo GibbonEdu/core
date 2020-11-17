@@ -1,6 +1,4 @@
 <?php
-
-use Gibbon\FileUploader;
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -18,6 +16,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+
+use Gibbon\FileUploader;
+use Gibbon\Services\Format;
+use Gibbon\Comms\NotificationEvent;
+use Gibbon\Domain\Students\StudentGateway;
 
 include '../../gibbon.php';
 
@@ -53,6 +56,8 @@ if ($gibbonPersonMedicalID == '') { echo 'Fatal error loading this page!';
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
             } else {
+                $values = $result->fetch();
+
                 //Validate Inputs
                 $name = $_POST['name'];
                 $gibbonAlertLevelID = $_POST['gibbonAlertLevelID'];
@@ -69,7 +74,9 @@ if ($gibbonPersonMedicalID == '') { echo 'Fatal error loading this page!';
                 $comment = $_POST['comment'];
 
                 // File Upload
-                if (!empty($_FILES['attachment'])) {
+                $attachment = null;
+                if (!empty($_FILES['attachment']['tmp_name'])) {
+
                     // Upload the file, return the /uploads relative path
                     $fileUploader = new FileUploader($pdo, $gibbon->session);
                     $attachment = $fileUploader->uploadFromPost($_FILES['attachment']);
@@ -98,7 +105,26 @@ if ($gibbonPersonMedicalID == '') { echo 'Fatal error loading this page!';
                     }
 
                     //Last insert ID
-                    $AI = str_pad($connection2->lastInsertID(), 12, '0', STR_PAD_LEFT);
+                    $AI = str_pad($connection2->lastInsertID() , 12, '0', STR_PAD_LEFT);
+
+                    $student = $container->get(StudentGateway::class)->selectActiveStudentByPerson($gibbon->session->get('gibbonSchoolYearID'), $values['gibbonPersonID'])->fetch();
+                    $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
+
+                    // Raise a new notification event
+                    $event = new NotificationEvent('Students', 'Medical Condition');
+                    $event->addScope('gibbonPersonIDStudent', $student['gibbonPersonID']);
+                    $event->addScope('gibbonYearGroupID', $student['gibbonYearGroupID']);
+
+                    $event->setNotificationText(__('{name} has a new or updated medical condition ({condition}) with a {risk} risk level.', [
+                        'name' => Format::name('', $student['preferredName'], $student['surname'], 'Student', false, true),
+                        'condition' => $name,
+                        'risk' => $alert['name'],
+                    ]));
+                    $event->setActionLink('/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'].'&search=&allStudents=&subpage=Medical');
+
+                    // Send all notifications
+                    $sendReport = $event->sendNotifications($pdo, $gibbon->session);
+
 
                     $URL .= "&return=success0&editID=$AI";
                     header("Location: {$URL}");

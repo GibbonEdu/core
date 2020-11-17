@@ -1621,7 +1621,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $table->addHeaderAction('edit', __('Edit'))
                                     ->setURL('/modules/Students/medicalForm_manage_edit.php')
                                     ->addParam('gibbonPersonID', $gibbonPersonID)
-                                    ->addParam('medical', $medical['gibbonPersonMedicalID'])
+                                    ->addParam('gibbonPersonMedicalID', $medical['gibbonPersonMedicalID'])
                                     ->addParam('search', $search)
                                     ->displayLabel();
                             }

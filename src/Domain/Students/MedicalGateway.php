@@ -99,7 +99,7 @@ class MedicalGateway extends QueryableGateway
     public function getMedicalConditionByID($gibbonPersonMedicalConditionID)
     {
         $data = array('gibbonPersonMedicalConditionID' => $gibbonPersonMedicalConditionID);
-        $sql = "SELECT gibbonPersonMedicalCondition.*, (CASE WHEN gibbonMedicalCondition.gibbonMedicalConditionID IS NOT NULL THEN gibbonMedicalCondition.name ELSE gibbonPersonMedicalCondition.name END) as name, surname, preferredName
+        $sql = "SELECT gibbonPersonMedicalCondition.*, (CASE WHEN gibbonMedicalCondition.gibbonMedicalConditionID IS NOT NULL THEN gibbonMedicalCondition.name ELSE gibbonPersonMedicalCondition.name END) as name, surname, preferredName, gibbonPerson.gibbonPersonID
                 FROM gibbonPersonMedicalCondition
                 JOIN gibbonPersonMedical ON (gibbonPersonMedicalCondition.gibbonPersonMedicalID=gibbonPersonMedical.gibbonPersonMedicalID)
                 JOIN gibbonPerson ON (gibbonPersonMedical.gibbonPersonID=gibbonPerson.gibbonPersonID)

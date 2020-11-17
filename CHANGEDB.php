@@ -717,4 +717,5 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='System Admin' AND gibbonAction.name='Cache Manager'));end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System', 'cachePath', 'Cache Path', 'Relative to the Gibbon root directory.', '/uploads/cache');end
 ALTER TABLE `gibbonPersonMedicalCondition` ADD `attachment` VARCHAR(255) NULL DEFAULT NULL AFTER `comment`;end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Medical Condition', 'Students', 'Manage Medical Forms', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y');end
 ";
