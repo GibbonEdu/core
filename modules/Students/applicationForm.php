@@ -324,7 +324,7 @@ if ($proceed == false) {
 
         $row = $form->addRow()->setClass('senDetailsRow');
             $column = $row->addColumn();
-            $column->addLabel('', __('SEN Details'))->description(__('Provide any comments or information concerning your child\'s development and SEN history.'));
+            $column->addLabel('senDetails', __('SEN Details'))->description(__('Provide any comments or information concerning your child\'s development and SEN history.'));
             $column->addTextArea('senDetails')->setRows(5)->required()->setClass('fullWidth');
 
     } else {
@@ -338,7 +338,7 @@ if ($proceed == false) {
     $form->toggleVisibilityByClass('medicalDetailsRow')->onSelect('medical')->when('Y');
         
     $col = $form->addRow()->setClass('medicalDetailsRow')->addColumn();
-        $col->addLabel('', __('Medical Information'))->description(__('Please indicate any medical conditions.'));
+        $col->addLabel('medicalInformation', __('Medical Information'))->description(__('Please indicate any medical conditions.'));
         $col->addTextArea('medicalInformation')->setRows(5)->required()->setClass('fullWidth');
 
     // STUDENT EDUCATION
@@ -975,7 +975,7 @@ if ($proceed == false) {
         $form->addRow()->addHeading(__('For Office Use'));
 
         $row = $form->addRow();
-            $row->addLabel('skipEmailNotification', '<b>'.__('Skip sending a notification email to parents?').'</b>');
+            $row->addLabel('skipEmailNotification', __('Skip sending a notification email to parents?'));
             $row->addCheckbox('skipEmailNotification')->description(__('Yes'))->setValue('on')->checked('on');
     }
 

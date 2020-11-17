@@ -87,6 +87,7 @@ v21.0.00
         Students: removed Student ID from View Student Profile_brief
         Students: added optional attachments to the medical condition section
         Students: added notifications for High and Medium medical conditions
+        Students: added notifications for accepted applications with SEN/Medical needs
         School Admin: added optional descriptions for medical conditions
         System Admin: adjusted View Log to show only current year's log entries
         System Admin: added a flag to import types to enable updating non-unique rows

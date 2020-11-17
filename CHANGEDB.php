@@ -718,4 +718,5 @@ INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001',
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System', 'cachePath', 'Cache Path', 'Relative to the Gibbon root directory.', '/uploads/cache');end
 ALTER TABLE `gibbonPersonMedicalCondition` ADD `attachment` VARCHAR(255) NULL DEFAULT NULL AFTER `comment`;end
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Medical Condition', 'Students', 'Manage Medical Forms', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y');end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('New Application with SEN/Medical', 'Students', 'Manage Applications', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y');end
 ";
