@@ -73,8 +73,8 @@ v21.0.00
         Reports: display the download link after a batch PDF has completed
         Reports: added full course name to the report writing page
         Reports: added a bulk delete action in the Edit Reporting Scopes page
-        Rubrics: added an option to colour rubric column and row headings
         Reports: enabled plain text and numeric fields in Criteria Types
+        Rubrics: added an option to colour rubric column and row headings
         School Admin: added Manage Medical Conditions action
         School Admin: added optional introductory text setting for the Medical Conditions section
         Staff: removed the display of addresses in the Staff Profile
@@ -91,6 +91,7 @@ v21.0.00
         School Admin: added optional descriptions for medical conditions
         System Admin: adjusted View Log to show only current year's log entries
         System Admin: added a flag to import types to enable updating non-unique rows
+        System Admin: added a Purge Logs action to the View Logs page
         Timetable Admin: added a dateEnrolled and dateUnenrolled to class enrolments
         Timetable Admin: hide teachers listed as non-reportable from teacher lists
         Testing: Changed install suite admin username and password to be compliant with the default password requirements

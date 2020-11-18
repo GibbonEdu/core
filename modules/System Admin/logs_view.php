@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
     $page->breadcrumbs->add(__('View Logs'));
 
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, $returns);
+        returnProcess($guid, $_GET['return'], null, null);
     }
 
     $ip = isset($_GET['ip'])? $_GET['ip'] : '';
@@ -81,6 +81,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
 
     $table = DataTable::createPaginated('logView', $criteria);
     $table->setTitle(__('Data'));
+
+    $table->addHeaderAction('purge', __('Purge Logs'))
+        ->setIcon('garbage')
+        ->setURL('/modules/System Admin/logs_view_purge.php')
+        ->displayLabel();
 
     $table->addExpandableColumn('comment')
         ->format(function($log) {

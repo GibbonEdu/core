@@ -103,4 +103,14 @@ class LogGateway extends QueryableGateway
 
         return $this->db()->selectOne($sql, $data);
     }
+
+    public function purgeLogs($title, $cutoffDate)
+    {
+        $titleList = is_array($title) ? implode(',', $title) : $title;
+
+        $data = ['titleList' => $titleList, 'cutoffDate' => $cutoffDate];
+        $sql = "DELETE FROM gibbonLog WHERE FIND_IN_SET(title, :titleList) AND timestamp <= :cutoffDate";
+
+        return $this->db()->delete($sql, $data);
+    }
 }
