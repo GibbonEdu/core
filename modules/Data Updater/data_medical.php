@@ -187,10 +187,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                     } else {
                         //Get user's data
                         
-                            $dataForm = array('gibbonPersonID' => $gibbonPersonID);
-                            $sqlForm = 'SELECT * FROM gibbonPersonMedical WHERE gibbonPersonID=:gibbonPersonID';
-                            $resultForm = $connection2->prepare($sqlForm);
-                            $resultForm->execute($dataForm);
+                        $dataForm = array('gibbonPersonID' => $gibbonPersonID);
+                        $sqlForm = 'SELECT * FROM gibbonPersonMedical WHERE gibbonPersonID=:gibbonPersonID';
+                        $resultForm = $connection2->prepare($sqlForm);
+                        $resultForm->execute($dataForm);
 
                         if ($result->rowCount() == 1) {
                             $proceed = true;
@@ -204,8 +204,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 						$form->setFactory(DatabaseFormFactory::create($pdo));
 
 						$form->addHiddenValue('address', $_SESSION[$guid]['address']);
-						$form->addHiddenValue('gibbonPersonMedicalID', $values['gibbonPersonMedicalID']);
-						$form->addHiddenValue('existing', isset($values['gibbonPersonMedicalUpdateID'])? $values['gibbonPersonMedicalUpdateID'] : 'N');
+						$form->addHiddenValue('gibbonPersonMedicalID', $values['gibbonPersonMedicalID'] ?? '');
+						$form->addHiddenValue('existing', $values['gibbonPersonMedicalUpdateID'] ?? 'N');
 
 						$row = $form->addRow();
 							$row->addLabel('bloodType', __('Blood Type'));
@@ -231,7 +231,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 
 						// EXISTING CONDITIONS
 						$count = 0;
-						if ($values['gibbonPersonMedicalID'] != '' or $existing == true) {
+						if (!empty($values['gibbonPersonMedicalID']) or $existing == true) {
 
                             if ($existing == true) {
                                 $medicalUpdateGateway = $container->get(MedicalUpdateGateway::class);

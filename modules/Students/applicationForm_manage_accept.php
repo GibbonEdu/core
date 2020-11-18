@@ -442,11 +442,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     }
 
                     //Create medical record if possible
-                    
-                        $data = array('gibbonPersonID' => $gibbonPersonID, 'comment' => $values['medicalInformation']);
-                        $sql = 'INSERT INTO gibbonPersonMedical SET gibbonPersonID=:gibbonPersonID, comment=:comment';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
+                    $data = array('gibbonPersonID' => $gibbonPersonID, 'comment' => $values['medicalInformation']);
+                    $sql = 'INSERT INTO gibbonPersonMedical SET gibbonPersonID=:gibbonPersonID, comment=:comment';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
 
                     //Enrol student
                     $enrolmentOK = true;
@@ -1154,6 +1153,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     $event->setActionLink("/index.php?q=/modules/Students/applicationForm_manage_edit.php&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=".$values['gibbonSchoolYearIDEntry']."&search=");
 
                     $event->sendNotifications($pdo, $gibbon->session);
+
+
+                    // Raise a new notification event for SEN
+                    if (!empty($values['senDetails']) || !empty($values['medicalInformation'])) {
+                        $event = new NotificationEvent('Students', 'New Application with SEN/Medical');
+                        $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
+                        $event->addScope('gibbonYearGroupID', $values['gibbonYearGroupIDEntry']);
+
+                        $event->setNotificationText(__('An application form has been accepted for {name} ({group}) with SEN or Medical needs. Please visit the student profile to review these details.', [
+                            'name' => $studentName,
+                            'group' => $studentGroup,
+                        ]));
+                        $event->setActionLink('/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&search=&allStudents=on');
+
+                        // Send all notifications
+                        $event->sendNotifications($pdo, $gibbon->session);
+                    }
 
                     //SET STATUS TO ACCEPTED
                     $failStatus = false;
