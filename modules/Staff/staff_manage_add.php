@@ -80,6 +80,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
     $form->toggleVisibilityByClass('firstAid')->onSelect('firstAidQualified')->when('Y');
 
     $row = $form->addRow()->addClass('firstAid');
+        $row->addLabel('firstAidQualification', __('First Aid Qualification'));
+        $row->addTextField('firstAidQualification')->maxlength(100);
+
+    $row = $form->addRow()->addClass('firstAid');
         $row->addLabel('firstAidExpiry', __('First Aid Expiry'));
         $row->addDate('firstAidExpiry');
 

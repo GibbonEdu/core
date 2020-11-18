@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
             if ($highestAction == 'Staff Directory_brief') {
                 //Proceed!
-                
+
                     $data = array('gibbonPersonID' => $gibbonPersonID);
                     $sql = "SELECT title, surname, preferredName, type, gibbonStaff.jobTitle, email, website, countryOfOrigin, qualifications, biography, image_240 FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
                     $result = $connection2->prepare($sql);
@@ -85,9 +85,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                 try {
                     $data = array('gibbonPersonID' => $gibbonPersonID);
                     if ($allStaff != 'on') {
-                        $sql = "SELECT gibbonPerson.*, gibbonStaff.initials, gibbonStaff.type, gibbonStaff.jobTitle, countryOfOrigin, qualifications, biography, gibbonStaff.gibbonStaffID, firstAidQualified, firstAidExpiry FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
+                        $sql = "SELECT gibbonPerson.*, gibbonStaff.initials, gibbonStaff.type, gibbonStaff.jobTitle, countryOfOrigin, qualifications, biography, gibbonStaff.gibbonStaffID, firstAidQualified, firstAidQualification, firstAidExpiry FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
                     } else {
-                        $sql = 'SELECT gibbonPerson.*, gibbonStaff.initials, gibbonStaff.type, gibbonStaff.jobTitle, countryOfOrigin, qualifications, biography, gibbonStaff.gibbonStaffID, firstAidQualified, firstAidExpiry FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID';
+                        $sql = 'SELECT gibbonPerson.*, gibbonStaff.initials, gibbonStaff.type, gibbonStaff.jobTitle, countryOfOrigin, qualifications, biography, gibbonStaff.gibbonStaffID, firstAidQualified, firstAidQualification, firstAidExpiry FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID';
                     }
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
@@ -264,11 +264,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             ->addClass('grid')
                             ->format(Format::using('yesNo', 'firstAidQualified'));
                         if ($row["firstAidQualified"] == "Y") {
+                            $table->addColumn('firstAidQualification', __('First Aid Qualification'))
+                                ->addClass('grid')
+                                ->format(Format::using('truncate', 'firstAidQualification'));
                             $table->addColumn('firstAidExpiry', __('Expiry Date'))
                                 ->format(function($row) {
                                     $output = Format::date($row['firstAidExpiry']);
                                     if ($row['firstAidExpiry'] <= date('Y-m-d')) {
                                         $output .= Format::tag(__('Expired'), 'warning ml-2');
+                                    }
+                                    else if ($row['firstAidExpiry'] > date('Y-m-d')) {
+                                        $output .= Format::tag(__('Current'), 'success ml-2');
                                     }
                                     return $output;
                                 });
@@ -370,7 +376,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             echo __('Adult Family Members');
                             echo '</h4>';
 
-                            
+
                                 $dataFamily = array('gibbonPersonID' => $gibbonPersonID);
                                 $sqlFamily = 'SELECT * FROM gibbonFamily JOIN gibbonFamilyChild ON (gibbonFamily.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID';
                                 $resultFamily = $connection2->prepare($sqlFamily);
@@ -384,7 +390,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                                 $rowFamily = $resultFamily->fetch();
                                 $count = 1;
                                 //Get adults
-                                
+
                                     $dataMember = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
                                     $sqlMember = 'SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName';
                                     $resultMember = $connection2->prepare($sqlMember);
