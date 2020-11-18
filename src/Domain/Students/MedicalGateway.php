@@ -64,13 +64,25 @@ class MedicalGateway extends QueryableGateway
         $gibbonPersonMedicalID = is_array($gibbonPersonMedicalID) ? implode(',', $gibbonPersonMedicalID) : $gibbonPersonMedicalID;
 
         $data = array('gibbonPersonMedicalID' => $gibbonPersonMedicalID);
-        $sql = "SELECT gibbonPersonMedicalCondition.gibbonPersonMedicalID, gibbonPersonMedicalCondition.*, gibbonAlertLevel.name AS risk, gibbonAlertLevel.color as alertColor, (CASE WHEN gibbonMedicalCondition.gibbonMedicalConditionID IS NOT NULL THEN gibbonMedicalCondition.name ELSE gibbonPersonMedicalCondition.name END) as name 
+        $sql = "SELECT gibbonPersonMedicalCondition.gibbonPersonMedicalID, gibbonPersonMedicalCondition.*, gibbonAlertLevel.name AS risk, gibbonAlertLevel.color as alertColor, (CASE WHEN gibbonMedicalCondition.gibbonMedicalConditionID IS NOT NULL THEN gibbonMedicalCondition.name ELSE gibbonPersonMedicalCondition.name END) as name , gibbonMedicalCondition.description
                 FROM gibbonPersonMedicalCondition 
                 JOIN gibbonAlertLevel ON (gibbonPersonMedicalCondition.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID) 
-                LEFT JOIN gibbonMedicalCondition ON (gibbonMedicalCondition.gibbonMedicalConditionID=gibbonPersonMedicalCondition.name)
-                WHERE FIND_IN_SET(gibbonPersonMedicalCondition.gibbonPersonMedicalID, :gibbonPersonMedicalID)";
+                LEFT JOIN gibbonMedicalCondition ON (gibbonMedicalCondition.gibbonMedicalConditionID=gibbonPersonMedicalCondition.name OR gibbonMedicalCondition.name=gibbonPersonMedicalCondition.name)
+                WHERE FIND_IN_SET(gibbonPersonMedicalCondition.gibbonPersonMedicalID, :gibbonPersonMedicalID)
+                ORDER BY gibbonAlertLevel.sequenceNumber DESC, gibbonPersonMedicalCondition.name";
 
         return $this->db()->select($sql, $data);
+    }
+
+    public function getMedicalFormByPerson($gibbonPersonID)
+    {
+        $data = array('gibbonPersonID' => $gibbonPersonID);
+        $sql = "SELECT gibbonPersonMedical.*, surname, preferredName
+                FROM gibbonPersonMedical
+                JOIN gibbonPerson ON (gibbonPersonMedical.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                WHERE gibbonPersonMedical.gibbonPersonID=:gibbonPersonID";
+
+        return $this->db()->selectOne($sql, $data);
     }
 
     public function getMedicalFormByID($gibbonPersonMedicalID)
@@ -87,7 +99,7 @@ class MedicalGateway extends QueryableGateway
     public function getMedicalConditionByID($gibbonPersonMedicalConditionID)
     {
         $data = array('gibbonPersonMedicalConditionID' => $gibbonPersonMedicalConditionID);
-        $sql = "SELECT gibbonPersonMedicalCondition.*, (CASE WHEN gibbonMedicalCondition.gibbonMedicalConditionID IS NOT NULL THEN gibbonMedicalCondition.name ELSE gibbonPersonMedicalCondition.name END) as name, surname, preferredName
+        $sql = "SELECT gibbonPersonMedicalCondition.*, (CASE WHEN gibbonMedicalCondition.gibbonMedicalConditionID IS NOT NULL THEN gibbonMedicalCondition.name ELSE gibbonPersonMedicalCondition.name END) as name, surname, preferredName, gibbonPerson.gibbonPersonID
                 FROM gibbonPersonMedicalCondition
                 JOIN gibbonPersonMedical ON (gibbonPersonMedicalCondition.gibbonPersonMedicalID=gibbonPersonMedical.gibbonPersonMedicalID)
                 JOIN gibbonPerson ON (gibbonPersonMedical.gibbonPersonID=gibbonPerson.gibbonPersonID)

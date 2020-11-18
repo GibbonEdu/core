@@ -324,18 +324,22 @@ if ($proceed == false) {
 
         $row = $form->addRow()->setClass('senDetailsRow');
             $column = $row->addColumn();
-            $column->addLabel('', __('SEN Details'))->description(__('Provide any comments or information concerning your child\'s development and SEN history.'));
-            $column->addTextArea('senDetails')->setRows(5)->setClass('fullWidth');
+            $column->addLabel('senDetails', __('SEN Details'))->description(__('Provide any comments or information concerning your child\'s development and SEN history.'));
+            $column->addTextArea('senDetails')->setRows(5)->required()->setClass('fullWidth');
 
     } else {
         $form->addHiddenValue('sen', 'N');
     }
 
     $row = $form->addRow();
-        $column = $row->addColumn();
-        $column->addLabel('', __('Medical Information'))->description(__('Please indicate any medical conditions.'));
-        $column->addTextArea('medicalInformation')->setRows(5)->setClass('fullWidth');
+        $row->addLabel('medical', __('Medical Conditions'))->description(__('Does your child have any medical conditions or concerns?'));
+        $row->addYesNo('medical')->required()->placeholder(__('Please select...'));
 
+    $form->toggleVisibilityByClass('medicalDetailsRow')->onSelect('medical')->when('Y');
+        
+    $col = $form->addRow()->setClass('medicalDetailsRow')->addColumn();
+        $col->addLabel('medicalInformation', __('Medical Information'))->description(__('Please indicate any medical conditions.'));
+        $col->addTextArea('medicalInformation')->setRows(5)->required()->setClass('fullWidth');
 
     // STUDENT EDUCATION
     $heading = $form->addRow()->addSubheading(__('Student Education'));
@@ -971,7 +975,7 @@ if ($proceed == false) {
         $form->addRow()->addHeading(__('For Office Use'));
 
         $row = $form->addRow();
-            $row->addLabel('skipEmailNotification', '<b>'.__('Skip sending a notification email to parents?').'</b>');
+            $row->addLabel('skipEmailNotification', __('Skip sending a notification email to parents?'));
             $row->addCheckbox('skipEmailNotification')->description(__('Yes'))->setValue('on')->checked('on');
     }
 
