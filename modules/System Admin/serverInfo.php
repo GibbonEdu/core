@@ -41,17 +41,19 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/serverInfo.ph
     // Display the log information at the top for easy reference
     $row = $form->addRow();
         $row->addLabel('logs', __('Error Log Location'));
-        $row->addContent(dirname($info['Core']['error_log'] ?? ''))
+        $row->addContent($info['Environment']['APACHE_LOG_DIR'] ?? $info['Core']['error_log'] ?? '')
             ->wrap('<div class="text-left w-full">', '</div>');
 
+    $displayErrors = $info['Core']['display_errors'] ?? 'Off';
     $row = $form->addRow();
         $row->addLabel('logs', __('Display Errors'));
-        $row->addContent(__($info['Core']['display_errors'][0] ?? 'Off'))
+        $row->addContent(__(is_array($displayErrors) ? $displayErrors[0] : $displayErrors))
             ->wrap('<div class="text-left w-full">', '</div>');
-
+        
+    $logErrors = $info['Core']['log_errors'] ?? 'Off';
     $row = $form->addRow();
         $row->addLabel('logs', __('Log Errors'));
-        $row->addContent(__($info['Core']['log_errors'] ?? 'Off'))
+        $row->addContent(__(is_array($logErrors) ? $logErrors[0] : $logErrors))
             ->wrap('<div class="text-left w-full">', '</div>');
 
     // Display the full contents of the phpinfo function
