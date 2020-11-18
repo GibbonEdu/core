@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\FileUploader;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\Students\MedicalGateway;
@@ -152,8 +153,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                         'lastEpisode'           => !empty($_POST["lastEpisode$i"]) ? Format::dateConvert($_POST["lastEpisode$i"]) : null,
                         'lastEpisodeTreatment'  => $_POST["lastEpisodeTreatment$i"] ?? '',
                         'comment'               => $_POST["commentCond$i"] ?? '',
+                        'attachment'            => $_POST["attachment$i"] ?? null,
                         'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID'],
                     ];
+
+                    if (!empty($_FILES["attachment$i"]['tmp_name'])) {
+                        // Upload the file, return the /uploads relative path
+                        $fileUploader = new FileUploader($pdo, $gibbon->session);
+                        $data['attachment'] = $fileUploader->uploadFromPost($_FILES["attachment$i"]);
+    
+                        if (empty($data['attachment'])) {
+                            $partialFail = true;
+                        }
+                    }
 
                     // Get the values of the current condition
                     $gibbonPersonMedicalConditionID = $_POST["gibbonPersonMedicalConditionID$i"] ?? null;
@@ -174,11 +186,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 
                     if ($existing != 'N' && !empty($_POST["gibbonPersonMedicalConditionUpdateID$i"])) {
                         $data['gibbonPersonMedicalConditionUpdateID'] = $_POST["gibbonPersonMedicalConditionUpdateID$i"] ?? '';
-                        $sql = 'UPDATE gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID, gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp WHERE gibbonPersonMedicalConditionUpdateID=:gibbonPersonMedicalConditionUpdateID';
+                        $sql = 'UPDATE gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID, gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment, attachment=:attachment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp WHERE gibbonPersonMedicalConditionUpdateID=:gibbonPersonMedicalConditionUpdateID';
                         $pdo->update($sql, $data);
                     } else {
                         $data['gibbonPersonMedicalConditionID'] = $gibbonPersonMedicalConditionID;
-                        $sql = 'INSERT INTO gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID, gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID, gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp';
+                        $sql = 'INSERT INTO gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID, gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID, gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment, attachment=:attachment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp';
                         $gibbonPersonMedicalConditionUpdateID = $pdo->insert($sql, $data);
                     }
                 }
@@ -198,12 +210,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                         'lastEpisode'                 => !empty($_POST['lastEpisode']) ? Format::dateConvert($_POST['lastEpisode']) :  null,
                         'lastEpisodeTreatment'        => $_POST['lastEpisodeTreatment'] ?? '',
                         'comment'                     => $_POST['commentCond'] ?? '',
+                        'attachment'                  => $_POST['attachment'] ?? '',
                         'gibbonPersonIDUpdater'       => $_SESSION[$guid]['gibbonPersonID'],
                         'timestamp'                   => date('Y-m-d H:i:s'),
                     ];
 
+                    if (!empty($_FILES['attachment']['tmp_name'])) {
+                        // Upload the file, return the /uploads relative path
+                        $fileUploader = new FileUploader($pdo, $gibbon->session);
+                        $data['attachment'] = $fileUploader->uploadFromPost($_FILES['attachment']);
+    
+                        if (empty($data['attachment'])) {
+                            $partialFail = true;
+                        }
+                    }
+
                     if (!empty($data['name']) and !empty($data['gibbonAlertLevelID'])) {
-                        $sql = 'INSERT INTO gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID, gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp';
+                        $sql = 'INSERT INTO gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID, gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment, attachment=:attachment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp';
                         $pdo->insert($sql, $data);
                     } else {
                         $partialFail = true;

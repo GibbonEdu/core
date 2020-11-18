@@ -282,7 +282,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 
 								$row = $form->addRow();
 									$row->addLabel('commentCond'.$count, __('Comment'));
-									$row->addTextArea('commentCond'.$count)->setValue($rowCond['comment']);
+                                    $row->addTextArea('commentCond'.$count)->setValue($rowCond['comment']);
+                                    
+                                $row = $form->addRow();
+                                    $row->addLabel('attachment'.$count, __('Attachment'))
+                                        ->description(__('Additional details about this medical condition. Attachments are only visible to users who manage medical data.'));
+                                    $row->addFileUpload('attachment'.$count)
+                                        ->setAttachment('attachment', $gibbon->session->get('absoluteURL'), $rowCond['attachment'] ?? '');
 
 								$count++;
 							}
@@ -338,7 +344,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 
 						$row = $form->addRow()->addClass('addConditionRow');
 							$row->addLabel('commentCond', __('Comment'));
-							$row->addTextArea('commentCond');
+                            $row->addTextArea('commentCond');
+                            
+                        $row = $form->addRow()->addClass('addConditionRow');
+                            $row->addLabel('attachment', __('Attachment'))
+                                ->description(__('Additional details about this medical condition. Attachments are only visible to users who manage medical data.'));
+                            $row->addFileUpload('attachment');
 
 						$row = $form->addRow();
 							$row->addFooter();
