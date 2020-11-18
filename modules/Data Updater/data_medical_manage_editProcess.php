@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\Students\StudentGateway;
 
 include '../../gibbon.php';
@@ -37,6 +38,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
+        $medicalGateway = $container->get(MedicalGateway::class);
+
         try {
             $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID);
             $sql = 'SELECT * FROM gibbonPersonMedicalUpdate WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID';
@@ -54,7 +57,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
         } else {
             $row = $result->fetch();
             $gibbonPersonMedicalID = $row['gibbonPersonMedicalID'];
-
+            $conditions = [];
+            
             //Set values
             $data = array();
             $sqlSet = '';
@@ -114,6 +118,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                             if ($_POST["gibbonAlertLevelID$i"] != '') {
                                 $dataCond['gibbonAlertLevelID'] = $_POST["gibbonAlertLevelID$i"];
                                 $sqlSetCond .= 'gibbonAlertLevelID=:gibbonAlertLevelID, ';
+
+                                $gibbonAlertLevelID = $dataCond['gibbonAlertLevelID'];
+                                $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
+                                if (!empty($_POST["gibbonPersonMedicalConditionID$i"]) && ($alert['name'] == 'High' || $alert['name'] == 'Medium')) {
+                                    $condition = $medicalGateway->getMedicalConditionByID($_POST["gibbonPersonMedicalConditionID$i"]);
+                                    $conditions[] = $condition['name'] ?? '';
+                                }
                             }
                         }
                     }
@@ -164,6 +175,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                         }
                     }
 
+                    if (!empty($_POST["attachmentOn$i"]) && $_POST["attachmentOn$i"] == 'on') {
+                        $dataCond['attachment'] = $_POST["attachment$i"] ?? null;
+                        $sqlSetCond .= 'attachment=:attachment, ';
+                    }
+
                     try {
                         $dataCond['gibbonPersonMedicalID'] = $gibbonPersonMedicalID;
                         $dataCond['gibbonPersonMedicalConditionID'] = $_POST["gibbonPersonMedicalConditionID$i"];
@@ -194,157 +210,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                                 if ($_POST["gibbonAlertLevelID$i"] != '') {
                                     $dataCond['gibbonAlertLevelID'] = $_POST["gibbonAlertLevelID$i"];
                                     $sqlSetCond .= 'gibbonAlertLevelID=:gibbonAlertLevelID, ';
-                                }
-                            }
-                        }
-                        if (isset($_POST["triggersOn$i"])) {
-                            if ($_POST["triggersOn$i"] == 'on') {
-                                $dataCond['triggers'] = $_POST["triggers$i"];
-                                $sqlSetCond .= 'triggers=:triggers, ';
-                            }
-                        }
-                        if (isset($_POST["reactionOn$i"])) {
-                            if ($_POST["reactionOn$i"] == 'on') {
-                                $dataCond['reaction'] = $_POST["reaction$i"];
-                                $sqlSetCond .= 'reaction=:reaction, ';
-                            }
-                        }
-                        if (isset($_POST["responseOn$i"])) {
-                            if ($_POST["responseOn$i"] == 'on') {
-                                $dataCond['response'] = $_POST["response$i"];
-                                $sqlSetCond .= 'response=:response, ';
-                            }
-                        }
-                        if (isset($_POST["medicationOn$i"])) {
-                            if ($_POST["medicationOn$i"] == 'on') {
-                                $dataCond['medication'] = $_POST["medication$i"];
-                                $sqlSetCond .= 'medication=:medication, ';
-                            }
-                        }
-                        if (isset($_POST["lastEpisodeOn$i"])) {
-                            if ($_POST["lastEpisodeOn$i"] == 'on') {
-                                if ($_POST["lastEpisode$i"] != '') {
-                                    $dataCond['lastEpisode'] = $_POST["lastEpisode$i"];
-                                    $sqlSetCond .= 'lastEpisode=:lastEpisode, ';
-                                } else {
-                                    $sqlSetCond .= 'lastEpisode=NULL, ';
-                                }
-                            }
-                        }
-                        if (isset($_POST["lastEpisodeTreatmentOn$i"])) {
-                            if ($_POST["lastEpisodeTreatmentOn$i"] == 'on') {
-                                $dataCond['lastEpisodeTreatment'] = $_POST["lastEpisodeTreatment$i"];
-                                $sqlSetCond .= 'lastEpisodeTreatment=:lastEpisodeTreatment, ';
-                            }
-                        }
-                        if (isset($_POST["commentOn$i"])) {
-                            if ($_POST["commentOn$i"] == 'on') {
-                                $dataCond['comment'] = $_POST["comment$i"];
-                                $sqlSetCond .= 'comment=:comment, ';
-                            }
-                        }
-
-                        try {
-                            $dataCond['gibbonPersonMedicalID'] = $gibbonPersonMedicalID;
-                            $sqlCond = "INSERT INTO gibbonPersonMedicalCondition SET $sqlSetCond gibbonPersonMedicalID=:gibbonPersonMedicalID";
-                            $resultCond = $connection2->prepare($sqlCond);
-                            $resultCond->execute($dataCond);
-                        } catch (PDOException $e) {
-                            $partialFail = true;
-                        }
-
-                        try {
-                            $dataCond = array('gibbonPersonMedicalConditionID' => $connection2->lastInsertID(), 'gibbonPersonMedicalConditionUpdateID' => $_POST["gibbonPersonMedicalConditionUpdateID$i"]);
-                            $sqlCond = 'UPDATE gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID WHERE gibbonPersonMedicalConditionUpdateID=:gibbonPersonMedicalConditionUpdateID';
-                            $resultCond = $connection2->prepare($sqlCond);
-                            $resultCond->execute($dataCond);
-                        } catch (PDOException $e) {
-                            $partialFail = true;
-                        }
-                    }
-                }
-
-                try {
-                    $data['gibbonPersonMedicalID'] = $gibbonPersonMedicalID;
-                    $data['gibbonPersonID'] = $gibbonPersonID;
-                    $sql = "UPDATE gibbonPersonMedical SET $sqlSet gibbonPersonMedicalID=:gibbonPersonMedicalID WHERE gibbonPersonID=:gibbonPersonID";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                    $URL .= '&return=error2';
-                    header("Location: {$URL}");
-                    exit();
-                }
-
-                if ($partialFail == true) {
-                    $URL .= '&return=warning1';
-                    header("Location: {$URL}");
-                } else {
-                    //Write to database
-                    try {
-                        $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID);
-                        $sql = "UPDATE gibbonPersonMedicalUpdate SET status='Complete' WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID";
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $URL .= '&return=warning1';
-                        header("Location: {$URL}");
-                        exit();
-                    }
-
-                    $URL .= '&return=success0';
-                    header("Location: {$URL}");
-                }
-            }
-
-            //If form does not already exist
-            else {
-                try {
-                    if ($sqlSet != '') {
-                        $data['gibbonPersonID'] = $gibbonPersonID;
-                        $sql = 'INSERT INTO gibbonPersonMedical SET gibbonPersonID=:gibbonPersonID, '.substr($sqlSet, 0, (strlen($sqlSet) - 2));
-                    } else {
-                        $data['gibbonPersonID'] = $gibbonPersonID;
-                        $sql = 'INSERT INTO gibbonPersonMedical SET gibbonPersonID=:gibbonPersonID';
-                    }
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    $URL .= '&return=error2';
-                    header("Location: {$URL}");
-                    exit();
-                }
-            
-                $gibbonPersonMedicalID = $connection2->lastInsertID();
-            
-                //Scan through new conditions
-                if (isset($_POST['count2'])) {
-                    $count2 = $_POST['count2'];
-                }
-                $conditions = [];
-                for ($i = ($count + 1); $i <= ($count + $count2); ++$i) {
-                    if ($_POST["nameOn$i"] == 'on' and $_POST["gibbonAlertLevelIDOn$i"] == 'on') {
-                        //Scan through existing conditions
-                        $dataCond = array();
-                        $sqlSetCond = '';
-                        if (isset($_POST["nameOn$i"])) {
-                            if ($_POST["nameOn$i"] == 'on') {
-                                $dataCond['name'] = $_POST["name$i"];
-                                $sqlSetCond .= 'name=:name, ';
-                                
-                            }
-                        }
-                        if (isset($_POST["gibbonAlertLevelIDOn$i"])) {
-                            if ($_POST["gibbonAlertLevelIDOn$i"] == 'on') {
-                                if ($_POST["gibbonAlertLevelID$i"] != '') {
-                                    $dataCond['gibbonAlertLevelID'] = $_POST["gibbonAlertLevelID$i"];
-                                    $sqlSetCond .= 'gibbonAlertLevelID=:gibbonAlertLevelID, ';
 
                                     $gibbonAlertLevelID = $dataCond['gibbonAlertLevelID'];
                                     $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
-                                    if ($alert['name'] == 'High' || $alert['name'] == 'Medium') {
-                                        $conditions[] = $dataCond['name'];
+                                    if (!empty($_POST["name$i"]) && ($alert['name'] == 'High' || $alert['name'] == 'Medium')) {
+                                        $conditions[] = $_POST["name$i"] ?? '';
                                     }
                                 }
                             }
@@ -396,6 +266,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                             }
                         }
 
+                        if (!empty($_POST["attachmentOn$i"]) && $_POST["attachmentOn$i"] == 'on') {
+                            $dataCond['attachment'] = $_POST["attachment$i"] ?? null;
+                            $sqlSetCond .= 'attachment=:attachment, ';
+                        }
+
                         try {
                             $dataCond['gibbonPersonMedicalID'] = $gibbonPersonMedicalID;
                             $sqlCond = "INSERT INTO gibbonPersonMedicalCondition SET $sqlSetCond gibbonPersonMedicalID=:gibbonPersonMedicalID";
@@ -416,26 +291,158 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                     }
                 }
 
-                if (!empty($conditions)) {
-                    $student = $container->get(StudentGateway::class)->selectActiveStudentByPerson($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetch();
-                    $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
-
-                    // Raise a new notification event
-                    $event = new NotificationEvent('Students', 'Medical Condition');
-                    $event->addScope('gibbonPersonIDStudent', $student['gibbonPersonID']);
-                    $event->addScope('gibbonYearGroupID', $student['gibbonYearGroupID']);
-
-                    $event->setNotificationText(__('{name} has a new or updated medical condition ({condition}) with a {risk} risk level.', [
-                        'name' => Format::name('', $student['preferredName'], $student['surname'], 'Student', false, true),
-                        'condition' => implode(', ', $conditions),
-                        'risk' => $alert['name'],
-                    ]));
-                    $event->setActionLink('/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'].'&search=&allStudents=&subpage=Medical');
-
-                    // Send all notifications
-                    $sendReport = $event->sendNotifications($pdo, $gibbon->session);
+                try {
+                    $data['gibbonPersonMedicalID'] = $gibbonPersonMedicalID;
+                    $data['gibbonPersonID'] = $gibbonPersonID;
+                    $sql = "UPDATE gibbonPersonMedical SET $sqlSet gibbonPersonMedicalID=:gibbonPersonMedicalID WHERE gibbonPersonID=:gibbonPersonID";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
+                    $URL .= '&return=error2';
+                    header("Location: {$URL}");
+                    exit();
                 }
 
+                if ($partialFail == true) {
+                    $URL .= '&return=warning1';
+                    header("Location: {$URL}");
+                } else {
+                    //Write to database
+                    try {
+                        $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID);
+                        $sql = "UPDATE gibbonPersonMedicalUpdate SET status='Complete' WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID";
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        $URL .= '&return=warning1';
+                        header("Location: {$URL}");
+                        exit();
+                    }
+                }
+            }
+
+            //If form does not already exist
+            else {
+                try {
+                    if ($sqlSet != '') {
+                        $data['gibbonPersonID'] = $gibbonPersonID;
+                        $sql = 'INSERT INTO gibbonPersonMedical SET gibbonPersonID=:gibbonPersonID, '.substr($sqlSet, 0, (strlen($sqlSet) - 2));
+                    } else {
+                        $data['gibbonPersonID'] = $gibbonPersonID;
+                        $sql = 'INSERT INTO gibbonPersonMedical SET gibbonPersonID=:gibbonPersonID';
+                    }
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    $URL .= '&return=error2';
+                    header("Location: {$URL}");
+                    exit();
+                }
+            
+                $gibbonPersonMedicalID = $connection2->lastInsertID();
+            
+                //Scan through new conditions
+                if (isset($_POST['count2'])) {
+                    $count2 = $_POST['count2'];
+                }
+                for ($i = ($count + 1); $i <= ($count + $count2); ++$i) {
+                    if ($_POST["nameOn$i"] == 'on' and $_POST["gibbonAlertLevelIDOn$i"] == 'on') {
+                        //Scan through existing conditions
+                        $dataCond = array();
+                        $sqlSetCond = '';
+                        if (isset($_POST["nameOn$i"])) {
+                            if ($_POST["nameOn$i"] == 'on') {
+                                $dataCond['name'] = $_POST["name$i"];
+                                $sqlSetCond .= 'name=:name, ';
+                                
+                            }
+                        }
+                        if (isset($_POST["gibbonAlertLevelIDOn$i"])) {
+                            if ($_POST["gibbonAlertLevelIDOn$i"] == 'on') {
+                                if ($_POST["gibbonAlertLevelID$i"] != '') {
+                                    $dataCond['gibbonAlertLevelID'] = $_POST["gibbonAlertLevelID$i"];
+                                    $sqlSetCond .= 'gibbonAlertLevelID=:gibbonAlertLevelID, ';
+
+                                    $gibbonAlertLevelID = $dataCond['gibbonAlertLevelID'];
+                                    $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
+                                    if (!empty($_POST["name$i"]) && ($alert['name'] == 'High' || $alert['name'] == 'Medium')) {
+                                        $conditions[] = $_POST["name$i"];
+                                    }
+                                }
+                            }
+                        }
+                        if (isset($_POST["triggersOn$i"])) {
+                            if ($_POST["triggersOn$i"] == 'on') {
+                                $dataCond['triggers'] = $_POST["triggers$i"];
+                                $sqlSetCond .= 'triggers=:triggers, ';
+                            }
+                        }
+                        if (isset($_POST["reactionOn$i"])) {
+                            if ($_POST["reactionOn$i"] == 'on') {
+                                $dataCond['reaction'] = $_POST["reaction$i"];
+                                $sqlSetCond .= 'reaction=:reaction, ';
+                            }
+                        }
+                        if (isset($_POST["responseOn$i"])) {
+                            if ($_POST["responseOn$i"] == 'on') {
+                                $dataCond['response'] = $_POST["response$i"];
+                                $sqlSetCond .= 'response=:response, ';
+                            }
+                        }
+                        if (isset($_POST["medicationOn$i"])) {
+                            if ($_POST["medicationOn$i"] == 'on') {
+                                $dataCond['medication'] = $_POST["medication$i"];
+                                $sqlSetCond .= 'medication=:medication, ';
+                            }
+                        }
+                        if (isset($_POST["lastEpisodeOn$i"])) {
+                            if ($_POST["lastEpisodeOn$i"] == 'on') {
+                                if ($_POST["lastEpisode$i"] != '') {
+                                    $dataCond['lastEpisode'] = $_POST["lastEpisode$i"];
+                                    $sqlSetCond .= 'lastEpisode=:lastEpisode, ';
+                                } else {
+                                    $sqlSetCond .= 'lastEpisode=NULL, ';
+                                }
+                            }
+                        }
+                        if (isset($_POST["lastEpisodeTreatmentOn$i"])) {
+                            if ($_POST["lastEpisodeTreatmentOn$i"] == 'on') {
+                                $dataCond['lastEpisodeTreatment'] = $_POST["lastEpisodeTreatment$i"];
+                                $sqlSetCond .= 'lastEpisodeTreatment=:lastEpisodeTreatment, ';
+                            }
+                        }
+                        if (isset($_POST["commentOn$i"])) {
+                            if ($_POST["commentOn$i"] == 'on') {
+                                $dataCond['comment'] = $_POST["comment$i"];
+                                $sqlSetCond .= 'comment=:comment, ';
+                            }
+                        }
+
+                        if (!empty($_POST["attachmentOn$i"]) && $_POST["attachmentOn$i"] == 'on') {
+                            $dataCond['attachment'] = $_POST["attachment$i"] ?? null;
+                            $sqlSetCond .= 'attachment=:attachment, ';
+                        }
+
+                        try {
+                            $dataCond['gibbonPersonMedicalID'] = $gibbonPersonMedicalID;
+                            $sqlCond = "INSERT INTO gibbonPersonMedicalCondition SET $sqlSetCond gibbonPersonMedicalID=:gibbonPersonMedicalID";
+                            $resultCond = $connection2->prepare($sqlCond);
+                            $resultCond->execute($dataCond);
+                        } catch (PDOException $e) {
+                            $partialFail = true;
+                        }
+
+                        try {
+                            $dataCond = array('gibbonPersonMedicalConditionID' => $connection2->lastInsertID(), 'gibbonPersonMedicalConditionUpdateID' => $_POST["gibbonPersonMedicalConditionUpdateID$i"]);
+                            $sqlCond = 'UPDATE gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID WHERE gibbonPersonMedicalConditionUpdateID=:gibbonPersonMedicalConditionUpdateID';
+                            $resultCond = $connection2->prepare($sqlCond);
+                            $resultCond->execute($dataCond);
+                        } catch (PDOException $e) {
+                            $partialFail = true;
+                        }
+                    }
+                }
 
                 if ($partialFail == true) {
                     $URL .= '&return=warning1';
@@ -452,11 +459,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                         header("Location: {$URL}");
                         exit();
                     }
-
-                    $URL .= '&return=success0';
-                    header("Location: {$URL}");
                 }
             }
+
+            if (!empty($conditions)) {
+                $student = $container->get(StudentGateway::class)->selectActiveStudentByPerson($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetch();
+                $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
+
+                // Raise a new notification event
+                $event = new NotificationEvent('Students', 'Medical Condition');
+                $event->addScope('gibbonPersonIDStudent', $student['gibbonPersonID']);
+                $event->addScope('gibbonYearGroupID', $student['gibbonYearGroupID']);
+
+                $event->setNotificationText(__('{name} has a new or updated medical condition ({condition}) with a {risk} risk level.', [
+                    'name' => Format::name('', $student['preferredName'], $student['surname'], 'Student', false, true),
+                    'condition' => implode(', ', $conditions),
+                    'risk' => $alert['name'],
+                ]));
+                $event->setActionLink('/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'].'&search=&allStudents=&subpage=Medical');
+
+                // Send all notifications
+                $sendReport = $event->sendNotifications($pdo, $gibbon->session);
+            }
+
+            $URL .= '&return=success0';
+            header("Location: {$URL}");
         }
     }
 }
