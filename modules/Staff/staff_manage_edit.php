@@ -82,6 +82,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                 $form->addHiddenValue('address', $_SESSION[$guid]['address']);
                 $form->addHiddenValue('gibbonPersonID', $values['gibbonPersonID']);
 
+                $form->addHeaderAction('view', __('View'))
+                    ->setURL('/modules/Staff/staff_view_details.php')
+                    ->addParam('gibbonStaffID', $values['gibbonStaffID'])
+                    ->addParam('gibbonPersonID', $gibbonPersonID)
+                    ->addParam('search', $search)
+                    ->addParam('allStaff', $allStaff)
+                    ->displayLabel();
+
                 $form->addRow()->addHeading(__('Basic Information'));
 
                 $row = $form->addRow();
