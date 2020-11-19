@@ -28,6 +28,7 @@ class Updater
 {
     public $versionDB;
     public $versionCode;
+    
     public $cuttingEdgeCode;
     public $cuttingEdgeCodeLine;
     public $cuttingEdgeVersion;
@@ -66,6 +67,10 @@ class Updater
             return false;
         }
 
+        if (version_compare($this->versionCode, $this->versionDB) === -1) {
+            return false;
+        }
+
         return true;
     }
 
@@ -76,13 +81,8 @@ class Updater
         }
 
         if (!$this->isCuttingEdge()) {
-            return version_compare($this->versionDB, $this->versionCode);
+            return version_compare($this->versionCode, $this->versionDB);
         }
-
-        $latestVersion = end($this->sql);
-        $sqlTokens = explode(';end', $latestVersion[1]);
-        $this->cuttingEdgeVersion = $latestVersion[0];
-        $this->cuttingEdgeMaxLine = count($sqlTokens) - 1;
 
         if (version_compare($this->cuttingEdgeVersion, $this->versionDB, '>')) {
             return true;
@@ -114,6 +114,18 @@ class Updater
 
         include $this->absolutePath.'/CHANGEDB.php';
 
+        $this->loadCuttingEdgeDetails($sql);
+
         return $sql;
+    }
+
+    protected function loadCuttingEdgeDetails(&$sql)
+    {
+        if (!$this->isCuttingEdge()) return;
+
+        $latestVersion = end($sql);
+        $sqlTokens = explode(';end', $latestVersion[1]);
+        $this->cuttingEdgeVersion = $latestVersion[0];
+        $this->cuttingEdgeMaxLine = count($sqlTokens) - 1;
     }
 }

@@ -70,6 +70,15 @@ class EngineUpdate implements Migration, RepeatableMigration
 
     public function migrate()
     {
+        $partialFail = false;
+        $tables = $this->db->select("SHOW TABLE STATUS");
 
+        foreach ($tables as $table) {
+            if ($table['Engine'] == 'InnoDB') continue;
+
+            $partialFail &= !$this->db->statement("ALTER TABLE ".$table['Name']." ENGINE=InnoDB;");
+        }
+
+        return !$partialFail;
     }
 }

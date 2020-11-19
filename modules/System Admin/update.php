@@ -68,8 +68,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         // Check for new version of Gibbon
         echo getCurrentVersion($guid, $connection2, $version);
 
-        $form = Form::create('action', $gibbon->session->get('absoluteURL').'/modules/System Admin/updateProcess.php?type=regularRelease');
+        $form = Form::create('action', $gibbon->session->get('absoluteURL').'/modules/System Admin/updateProcess.php');
         $form->addHiddenValue('address', $gibbon->session->get('address'));
+        $form->addHiddenValue('type', 'regularRelease');
 
         if ($return == 'success0') {
             $form->setDescription('<b>'.__('You seem to be all up to date, good work buddy!').'</b>');
@@ -104,8 +105,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         // Go! Start with warning about cutting edge code
         echo Format::alert(__('Your system is set up to run Cutting Edge code, which may or may not be as reliable as regular release code. Backup before installing, and avoid using cutting edge in production.'), 'warning');
 
-        $form = Form::create('action', $gibbon->session->get('absoluteURL').'/modules/System Admin/updateProcess.php?type=cuttingEdge');
+        $form = Form::create('action', $gibbon->session->get('absoluteURL').'/modules/System Admin/updateProcess.php');
         $form->addHiddenValue('address', $gibbon->session->get('address'));
+        $form->addHiddenValue('type', 'cuttingEdge');
 
         if ($return == 'success0') {
             $form->setDescription('<b>'.__('You seem to be all up to date, good work buddy!').'</b>');
