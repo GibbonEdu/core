@@ -720,4 +720,5 @@ ALTER TABLE `gibbonPersonMedicalCondition` ADD `attachment` VARCHAR(255) NULL DE
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Medical Condition', 'Students', 'Manage Medical Forms', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y');end
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('New Application with SEN/Medical', 'Students', 'Manage Applications', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y');end
 ALTER TABLE `gibbonPersonMedicalConditionUpdate` ADD `attachment` VARCHAR(255) NULL DEFAULT NULL AFTER `comment`;end
+ALTER TABLE `gibbonStaff` ADD `firstAidQualification` VARCHAR(100) NULL DEFAULT NULL AFTER `firstAidQualified`;end
 ";
