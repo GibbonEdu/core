@@ -81,6 +81,7 @@ v21.0.00
         Staff: removed the display of addresses in the Staff Profile
         Staff: restricted access to Emergency Contacts to users with Manage Staff_confidential
         Staff: added first aid information to Personal sub-page of staff profile
+        Staff: added First Aid Qualification field
         Students: updated application acceptance message to reflect automatically created medical record
         Students: added uniqueness checks for Student ID field
         Students: send notifications for student notes to the Head of Year, if available

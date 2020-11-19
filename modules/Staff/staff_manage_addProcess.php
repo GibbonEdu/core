@@ -46,6 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
     $type = $_POST['type'];
     $jobTitle = $_POST['jobTitle'];
     $firstAidQualified = $_POST['firstAidQualified'];
+    $firstAidQualification = $_POST['firstAidQualification'] ?? null;
     $firstAidExpiry = null;
     if ($firstAidQualified == 'Y' and $_POST['firstAidExpiry'] != '') {
         $firstAidExpiry = dateConvert($guid, $_POST['firstAidExpiry']);
@@ -84,8 +85,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
         } else {
             //Write to database
             try {
-                $data = array('gibbonPersonID' => $gibbonPersonID, 'initials' => $initials, 'type' => $type, 'jobTitle' => $jobTitle, 'firstAidQualified' => $firstAidQualified, 'firstAidExpiry' => $firstAidExpiry, 'countryOfOrigin' => $countryOfOrigin, 'qualifications' => $qualifications, 'biographicalGrouping' => $biographicalGrouping, 'biographicalGroupingPriority' => $biographicalGroupingPriority, 'biography' => $biography);
-                $sql = 'INSERT INTO gibbonStaff SET gibbonPersonID=:gibbonPersonID, initials=:initials, type=:type, jobTitle=:jobTitle, firstAidQualified=:firstAidQualified, firstAidExpiry=:firstAidExpiry, countryOfOrigin=:countryOfOrigin, qualifications=:qualifications, biographicalGrouping=:biographicalGrouping, biographicalGroupingPriority=:biographicalGroupingPriority, biography=:biography';
+                $data = array('gibbonPersonID' => $gibbonPersonID, 'initials' => $initials, 'type' => $type, 'jobTitle' => $jobTitle, 'firstAidQualified' => $firstAidQualified, 'firstAidQualification' => $firstAidQualification, 'firstAidExpiry' => $firstAidExpiry, 'countryOfOrigin' => $countryOfOrigin, 'qualifications' => $qualifications, 'biographicalGrouping' => $biographicalGrouping, 'biographicalGroupingPriority' => $biographicalGroupingPriority, 'biography' => $biography);
+                $sql = 'INSERT INTO gibbonStaff SET gibbonPersonID=:gibbonPersonID, initials=:initials, type=:type, jobTitle=:jobTitle, firstAidQualified=:firstAidQualified, firstAidQualification=:firstAidQualification, firstAidExpiry=:firstAidExpiry, countryOfOrigin=:countryOfOrigin, qualifications=:qualifications, biographicalGrouping=:biographicalGrouping, biographicalGroupingPriority=:biographicalGroupingPriority, biography=:biography';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
