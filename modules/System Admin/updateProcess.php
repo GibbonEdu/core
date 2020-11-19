@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Database\Updater;
+
 include '../../gibbon.php';
 
 //Module includes
@@ -32,6 +34,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
 } else {
     //Proceed!
     $type = $_GET['type'];
+
+    $updater = $container->get(Updater::class);
+
     if ($type != 'regularRelease' && $type != 'cuttingEdge' && $type != 'InnoDB') {
         $URL .= '&return=error3';
         header("Location: {$URL}");
