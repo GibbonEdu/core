@@ -552,6 +552,17 @@ class Format
         return ($address? $address.'<br/>' : '') . ($addressDistrict? $addressDistrict.'<br/>' : '') . ($addressCountry? $addressCountry.'<br/>' : '');
     }
 
+    public static function list(array $items, $tag = 'ul', $listClass = '', $itemClass = 'leading-normal')
+    {
+        $output = "<$tag class='$listClass'>";
+        foreach ($items as $item) {
+            $output .= "<li class='$itemClass'>".$item.'</li>';
+        }
+        $output .= "</$tag>";
+
+        return $output;
+    }
+
     /**
      * Formats a name based on the provided Role Category. Optionally reverses the name (surname first) or uses an informal format (no title).
      *
