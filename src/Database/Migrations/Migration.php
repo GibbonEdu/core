@@ -22,7 +22,11 @@ namespace Gibbon\Database\Migrations;
 /**
  * 
  */
-interface Migration
+abstract class Migration
 {
-    public function migrate();
+    public function canMigrate() : bool {
+        return true;
+    }
+
+    public abstract function migrate();
 }

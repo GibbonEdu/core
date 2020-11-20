@@ -37,6 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     if ($return) {
         returnProcess($guid, $return, null, [
             'warning1' => __('Some aspects of your request failed, but others were successful. The elements that failed are shown below:'),
+            'error3' => __('Your request failed because your inputs were invalid, or no update was required.'),
         ]);
     }
 
@@ -73,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         $form->addHiddenValue('type', 'regularRelease');
 
         if ($return == 'success0') {
-            $form->setDescription('<br>'.__('You seem to be all up to date, good work buddy!').'</br>');
+            $form->addRow()->addContent(__('You seem to be all up to date, good work buddy!'))->addClass('py-16 text-center text-gray-600 text-lg');
         } elseif ($updateRequired === -1) {
             // Error
             $form->setDescription(Format::alert(__('An error has occurred determining the version of the system you are using.'), 'error'));
@@ -110,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         $form->addHiddenValue('type', 'cuttingEdge');
 
         if ($return == 'success0') {
-            $form->setDescription('<b>'.__('You seem to be all up to date, good work buddy!').'</b>');
+            $form->addRow()->addContent(__('You seem to be all up to date, good work buddy!'))->addClass('py-16 text-center text-gray-600 text-lg');
         } elseif (!$updateRequired) {
             // Instructions on how to update
             $form->setTitle(__('Update Instructions'));

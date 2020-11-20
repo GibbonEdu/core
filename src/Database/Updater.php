@@ -19,15 +19,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Database;
 
-use PDOException;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Contracts\Database\Connection;
+use League\Container\ContainerAwareTrait;
+use League\Container\ContainerAwareInterface;
+use League\Container\Exception\NotFoundException;
 
 /**
  * Database Updater
  */
-class Updater 
+class Updater implements ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
     public $versionDB;
     public $versionCode;
     
@@ -105,30 +109,33 @@ class Updater
 
         if (!$this->isCuttingEdge()) {
             // Regular release: run all lines for all versions
-            $this->fullVersionUpdate(false);
-        }
-
-        if (version_compare($this->cuttingEdgeVersion, $this->versionDB, '>')) {
+            $this->fullVersionUpdate();
+        } elseif (version_compare($this->cuttingEdgeVersion, $this->versionDB, '>')) {
             // Cutting edge: at least one full version needs to be done first
             $this->partialVersionUpdate();
         } else {
             // Cutting edge: less than one whole version, get up to speed in max version
-            $this->fullVersionUpdate(true);
+            $this->fullVersionUpdate();
         }
 
-        if (!$this->errors) {
-            // Update DB version
-            $this->settingGateway->updateSettingByScope('System', 'version', $this->versionCode);
-            $this->settingGateway->updateSettingByScope('System', 'cuttingEdgeCodeLine', $this->isCuttingEdge()? $this->cuttingEdgeMaxLine : 0);
+        $this->settingGateway->updateSettingByScope('System', 'version', $this->versionDB);
+        $this->settingGateway->updateSettingByScope('System', 'cuttingEdgeCodeLine', $this->isCuttingEdge()? $this->cuttingEdgeMaxLine : 0);
+
+        if (empty($this->errors)) {
+            $this->runMigrations();
         }
 
         return $this->errors;
     }
 
-    protected function fullVersionUpdate($cuttingEdge = false)
+    protected function fullVersionUpdate()
     {
+        $cuttingEdge = $this->isCuttingEdge();
+
         foreach ($this->sql as $version) {
             $tokenCount = 0;
+
+            if (!empty($this->errors)) break;
 
             if (version_compare($version[0], $this->versionDB, $cuttingEdge ? '>=' : '>') && version_compare($version[0], $this->versionCode, '<=')) {
                 $sqlTokens = explode(';end', $version[1]);
@@ -137,9 +144,17 @@ class Updater
                     if ($cuttingEdge && version_compare($tokenCount, $this->cuttingEdgeCodeLine, '>=')) {
                         $this->executeSQL($sqlToken);
                     }
+
+                    if ($cuttingEdge && !empty($this->errors)) {
+                        $this->cuttingEdgeMaxLine = $tokenCount;
+                        break;
+                    }
                     
                     $tokenCount++;
                 }
+
+                // Save where we left off, for interrupted updates
+                $this->versionDB = $version[0];
             }
         }
     }
@@ -148,6 +163,9 @@ class Updater
     {
         foreach ($this->sql as $version) {
             $tokenCount = 0;
+
+            if (!empty($this->errors)) break;
+
             if (version_compare($version[0], $this->versionDB, '>=') and version_compare($version[0], $this->versionCode, '<=')) {
                 $sqlTokens = explode(';end', $version[1]);
                 if ($version[0] == $this->versionDB) { 
@@ -155,6 +173,11 @@ class Updater
                     foreach ($sqlTokens as $sqlToken) {
                         if (version_compare($tokenCount, $this->cuttingEdgeCodeLine, '>=')) {
                             $this->executeSQL($sqlToken);
+                        }
+
+                        if (!empty($this->errors)) {
+                            $this->cuttingEdgeMaxLine = $tokenCount;
+                            break;
                         }
                         
                         ++$tokenCount;
@@ -165,6 +188,9 @@ class Updater
                         $this->executeSQL($sqlToken);
                     }
                 }
+
+                // Save where we left off, for interrupted updates
+                $this->versionDB = $version[0];
             }
         }
     }
@@ -175,8 +201,55 @@ class Updater
 
         try {
             $this->db->getConnection()->query($sqlToken);
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             $this->errors[] = htmlPrep($sqlToken).'<br/><b>'.$e->getMessage().'</b><br/>';
+        }
+    }
+
+    public function runMigrations()
+    {
+        // Get the list of migrations from the db
+        $migrationsDB = $this->db->select("SELECT name, version FROM gibbonMigration ORDER BY timestamp")->fetchKeyPair();
+
+        // Get the list of migrations from the filesystem, in order of their date
+        $migrations = glob($this->absolutePath.'/src/Database/Migrations/*-*-*-*.php');
+        sort($migrations);
+
+        foreach ($migrations as $migrationPath) {
+            // Extract the class name from the file name
+            $fileName = strchr(basename($migrationPath), '.', true);
+            $className = implode('', array_slice(explode('-', $fileName), 3));
+
+            // Skip migrations that have already been run
+            if (isset($migrationsDB[$className])) continue;
+
+            // Include the file directly, because the filename does not match the classname
+            include $migrationPath;
+
+            // Instantiate this object through the container
+            try {
+                $migration = $this->container->get($className);
+            } catch (NotFoundException $e) {
+                $this->errors[] = __('Migration Error').': <b>'.$fileName.':</b> '.$e->getMessage().'<br/>';
+                continue;
+            }
+
+            if (!$migration->canMigrate()) continue;
+
+            // Do the migration, catch and log any errors
+            try {
+                $migration->migrate();
+            } catch (\Exception $e) {
+                $this->errors[] = __('Migration Error').': <b>'.$fileName.':</b> '.$e->getMessage().'<br/>';
+                continue;
+            }
+
+            // Add this migration to the database
+            if (empty($this->errors)) {
+                $data = ['name' => $className, 'version' => $this->versionCode];
+                $sql = "INSERT INTO gibbonMigration SET name=:name, version=:version";
+                $this->db->insert($sql, $data);
+            }
         }
     }
 

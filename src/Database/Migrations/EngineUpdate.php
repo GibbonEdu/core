@@ -24,7 +24,7 @@ use Gibbon\Contracts\Database\Connection;
 /**
  * Migrate MyISAM tables to use the InnoDB engine.
  */
-class EngineUpdate implements Migration, RepeatableMigration
+class EngineUpdate extends Migration
 {
     protected $db;
 
@@ -49,7 +49,7 @@ class EngineUpdate implements Migration, RepeatableMigration
         }, 'Unknown');
     }
     
-    public function canMigrate()
+    public function canMigrate() : bool
     {
         $tables = $this->db->select("SHOW TABLE STATUS")->fetchAll();
         
