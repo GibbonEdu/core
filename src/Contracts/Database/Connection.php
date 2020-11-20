@@ -98,33 +98,26 @@ interface Connection
      */
     public function affectingStatement($query, $bindings = []);
 
-    // /**
-    //  * Start a new database transaction.
-    //  *
-    //  * @return void
-    //  */
-    // public function beginTransaction();
+    /**
+     * Start a new database transaction.
+     *
+     * @return void
+     */
+    public function beginTransaction();
 
-    // /**
-    //  * Commit the active database transaction.
-    //  *
-    //  * @return void
-    //  */
-    // public function commit();
+    /**
+     * Commit the active database transaction.
+     *
+     * @return void
+     */
+    public function commit();
 
-    // /**
-    //  * Rollback the active database transaction.
-    //  *
-    //  * @return void
-    //  */
-    // public function rollBack();
-
-    // /**
-    //  * Get the number of active transactions.
-    //  *
-    //  * @return int
-    //  */
-    // public function transactionLevel();
+    /**
+     * Rollback the active database transaction.
+     *
+     * @return void
+     */
+    public function rollBack();
 
     /**
      * @deprecated
