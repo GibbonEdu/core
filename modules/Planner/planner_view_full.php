@@ -1152,7 +1152,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $canAccessProfile = ($highestAction == 'View Student Profile_brief' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes' || $highestAction == 'View Student Profile_fullEditAllNotes') ;
 
                         // Only show certain options if Class Attendance is Enabled school-wide, and for this particular class
-                        $attendanceEnabled = isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php") && $values['attendance'] == 'Y';
+                        $attendanceEnabled = $values['attendance'] == 'Y';
+                        $canTakeAttendance = $attendanceEnabled && isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php");
 
                         // Get attendance pre-fill and default settings
                         $defaultAttendanceType = getSettingByScope($connection2, 'Attendance', 'defaultClassAttendanceType');
@@ -1196,8 +1197,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                             $participants[$key]['log'] = $log;
                         }
-
-                        $canTakeAttendance = $attendanceEnabled && (($values['role'] == 'Teacher' and $teacher == true) || $roleCategory == 'Staff');
 
                         // ATTENDANCE FORM
                         $form = Form::create('attendanceByClass', $_SESSION[$guid]['absoluteURL'] . '/modules/Attendance/attendance_take_byCourseClassProcess.php');
