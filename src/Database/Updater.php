@@ -19,7 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Database;
 
+use PDOException;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Contracts\Database\Connection;
 
 /**
  * Database Updater
@@ -34,14 +36,16 @@ class Updater
     public $cuttingEdgeVersion;
     public $cuttingEdgeMaxLine;
 
+    protected $db;
     protected $settingGateway;
     protected $absolutePath;
 
     protected $sql = [];
     protected $errors = [];
 
-    public function __construct(SettingGateway $settingGateway)
+    public function __construct(Connection $db, SettingGateway $settingGateway)
     {
+        $this->db = $db;
         $this->settingGateway = $settingGateway;
         $this->absolutePath = $this->settingGateway->getSettingByScope('System', 'absolutePath');
 
@@ -93,13 +97,87 @@ class Updater
         return false;
     }
 
-    public function update()
+    public function update() : array
     {
         if (!$this->isUpdateRequired()) {
-            return false;
+            return [];
         }
 
-        return true;
+        if (!$this->isCuttingEdge()) {
+            // Regular release: run all lines for all versions
+            $this->fullVersionUpdate(false);
+        }
+
+        if (version_compare($this->cuttingEdgeVersion, $this->versionDB, '>')) {
+            // Cutting edge: at least one full version needs to be done first
+            $this->partialVersionUpdate();
+        } else {
+            // Cutting edge: less than one whole version, get up to speed in max version
+            $this->fullVersionUpdate(true);
+        }
+
+        if (!$this->errors) {
+            // Update DB version
+            $this->settingGateway->updateSettingByScope('System', 'version', $this->versionCode);
+            $this->settingGateway->updateSettingByScope('System', 'cuttingEdgeCodeLine', $this->isCuttingEdge()? $this->cuttingEdgeMaxLine : 0);
+        }
+
+        return $this->errors;
+    }
+
+    protected function fullVersionUpdate($cuttingEdge = false)
+    {
+        foreach ($this->sql as $version) {
+            $tokenCount = 0;
+
+            if (version_compare($version[0], $this->versionDB, $cuttingEdge ? '>=' : '>') && version_compare($version[0], $this->versionCode, '<=')) {
+                $sqlTokens = explode(';end', $version[1]);
+                foreach ($sqlTokens as $sqlToken) {
+                    // Only run lines that haven't already been run for cutting edge
+                    if ($cuttingEdge && version_compare($tokenCount, $this->cuttingEdgeCodeLine, '>=')) {
+                        $this->executeSQL($sqlToken);
+                    }
+                    
+                    $tokenCount++;
+                }
+            }
+        }
+    }
+
+    protected function partialVersionUpdate()
+    {
+        foreach ($this->sql as $version) {
+            $tokenCount = 0;
+            if (version_compare($version[0], $this->versionDB, '>=') and version_compare($version[0], $this->versionCode, '<=')) {
+                $sqlTokens = explode(';end', $version[1]);
+                if ($version[0] == $this->versionDB) { 
+                    // Finish current version
+                    foreach ($sqlTokens as $sqlToken) {
+                        if (version_compare($tokenCount, $this->cuttingEdgeCodeLine, '>=')) {
+                            $this->executeSQL($sqlToken);
+                        }
+                        
+                        ++$tokenCount;
+                    }
+                } else { 
+                    // Update intermediate versions and max version
+                    foreach ($sqlTokens as $sqlToken) {
+                        $this->executeSQL($sqlToken);
+                    }
+                }
+            }
+        }
+    }
+
+    protected function executeSQL($sqlToken)
+    {
+        if (trim($sqlToken) == '') return;
+
+        try {
+            $this->db->getConnection()->query($sqlToken);
+        } catch (PDOException $e) {
+            $this->errors[] = htmlPrep($sqlToken).'<br/><b>'.$e->getMessage().'</b><br/>';
+        }
     }
 
     protected function loadChangeDB()

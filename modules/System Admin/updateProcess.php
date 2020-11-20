@@ -43,7 +43,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         exit;
     }
 
-    $sessionGateway = $container->get(SessionGateway::class);
     $updater = $container->get(Updater::class);
 
     if (!$updater->isVersionValid()) {
@@ -58,39 +57,24 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         exit;
     }
 
-    if ($type == 'regularRelease') { //Do regular release update
+    if ($type == 'regularRelease' || $type == 'cuttingEdge') {
+        // Do the update
+        $errors = $updater->update();
 
-        foreach ($sql as $version) {
-            if (version_compare($version[0], $updater->versionDB, '>') and version_compare($version[0], $updater->versionCode, '<=')) {
-                $sqlTokens = explode(';end', $version[1]);
-                foreach ($sqlTokens as $sqlToken) {
-                    if (trim($sqlToken) != '') {
-                        try {
-                            $result = $connection2->query($sqlToken);
-                        } catch (PDOException $e) {
-                            $partialFail = true;
-                            $_SESSION[$guid]['systemUpdateError'] .= htmlPrep($sqlToken).'<br/><b>'.$e->getMessage().'</b><br/><br/>';
-                        }
-                    }
-                }
-            }
-        }
+        if (!empty($errors)) {
+            $gibbon->session->set('systemUpdateError', $errors);
 
-        if ($partialFail == true) {
             $URL .= '&return=warning1';
             header("Location: {$URL}");
         } else {
-            // Update DB version
-            $sessionGateway->updateSettingByScope('System', 'version', $updater->versionCode);
-
             // Update DB version for existing languages
             i18nCheckAndUpdateVersion($container, $updater->versionDB);
 
             // Clear the templates cache folder
-            removeDirectoryContents($_SESSION[$guid]['absolutePath'].'/uploads/cache');
+            removeDirectoryContents($gibbon->session->get('absolutePath').'/uploads/cache');
 
             // Clear the var/log folder
-            removeDirectoryContents($_SESSION[$guid]['absolutePath'].'/var/log');
+            removeDirectoryContents($gibbon->session->get('absolutePath').'/var', true);
 
             // Reset cache to force top-menu reload
             $gibbon->session->forget('pageLoads');
@@ -98,89 +82,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
             $URL .= '&return=success0';
             header("Location: {$URL}");
         }
-        
-    } elseif ($type == 'cuttingEdge') { //Do cutting edge update
-
-        
-            if (version_compare($updater->cuttingEdgeVersion, $updater->versionDB, '>')) { //At least one whole verison needs to be done
-                foreach ($sql as $version) {
-                    $tokenCount = 0;
-                    if (version_compare($version[0], $updater->versionDB, '>=') and version_compare($version[0], $updater->versionCode, '<=')) {
-                        $sqlTokens = explode(';end', $version[1]);
-                        if ($version[0] == $updater->versionDB) { //Finish current version
-                            foreach ($sqlTokens as $sqlToken) {
-                                if (version_compare($tokenCount, $updater->cuttingEdgeCodeLine, '>=')) {
-                                    if (trim($sqlToken) != '') { //Decide whether this has been run or not
-                                        try {
-                                            $result = $connection2->query($sqlToken);
-                                        } catch (PDOException $e) {
-                                            $partialFail = true;
-                                            $_SESSION[$guid]['systemUpdateError'] .= htmlPrep($sqlToken).'<br/><b>'.$e->getMessage().'</b><br/><br/>';
-                                        }
-                                    }
-                                }
-                                ++$tokenCount;
-                            }
-                        } else { //Update intermediate versions and max version
-                            foreach ($sqlTokens as $sqlToken) {
-                                if (trim($sqlToken) != '') { //Decide whether this has been run or not
-                                    try {
-                                        $result = $connection2->query($sqlToken);
-                                    } catch (PDOException $e) {
-                                        $partialFail = true;
-                                        $_SESSION[$guid]['systemUpdateError'] .= htmlPrep($sqlToken).'<br/><b>'.$e->getMessage().'</b><br/><br/>';
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            } else { //Less than one whole version
-                //Get up to speed in max version
-                foreach ($sql as $version) {
-                    $tokenCount = 0;
-                    if (version_compare($version[0], $updater->versionDB, '>=') and version_compare($version[0], $updater->versionCode, '<=')) {
-                        $sqlTokens = explode(';end', $version[1]);
-                        foreach ($sqlTokens as $sqlToken) {
-                            if (version_compare($tokenCount, $updater->cuttingEdgeCodeLine, '>=')) {
-                                if (trim($sqlToken) != '') { //Decide whether this has been run or not
-                                    try {
-                                        $result = $connection2->query($sqlToken);
-                                    } catch (PDOException $e) {
-                                        $partialFail = true;
-                                        $_SESSION[$guid]['systemUpdateError'] .= htmlPrep($sqlToken).'<br/><b>'.$e->getMessage().'</b><br/><br/>';
-                                    }
-                                }
-                            }
-                            ++$tokenCount;
-                        }
-                    }
-                }
-            }
-
-            if ($partialFail == true) {
-                $URL .= '&return=warning1';
-                header("Location: {$URL}");
-            } else {
-                // Update DB version
-                $sessionGateway->updateSettingByScope('System', 'version', $updater->cuttingEdgeVersion);
-                $sessionGateway->updateSettingByScope('System', 'cuttingEdgeCodeLine', $updater->cuttingEdgeMaxLine);
-
-                // Update DB version for existing languages
-                i18nCheckAndUpdateVersion($container, $updater->versionDB);
-
-                // Clear the templates cache folder
-                removeDirectoryContents($_SESSION[$guid]['absolutePath'].'/uploads/cache');
-
-                // Clear the var folder and remove it
-                removeDirectoryContents($_SESSION[$guid]['absolutePath'].'/var', true);
-
-                // Reset cache to force top-menu reload
-                $gibbon->session->forget('pageLoads');
-
-                $URL .= '&return=success0';
-                header("Location: {$URL}");
-            }
         
     } elseif ($type == 'InnoDB') {
         // Do InnoDB migration work

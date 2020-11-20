@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
 
     // Get and display SQL errors
     if ($gibbon->session->has('systemUpdateError')) {
-        echo Format::alert(__('The following SQL statements caused errors:').' '.$gibbon->session->get('systemUpdateError'));
+        echo Format::alert(__('The following SQL statements caused errors:').'<br/>'.implode('<br/>', $gibbon->session->get('systemUpdateError')));
         $gibbon->session->forget('systemUpdateError');
     }
 
@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         $form->addHiddenValue('type', 'regularRelease');
 
         if ($return == 'success0') {
-            $form->setDescription('<b>'.__('You seem to be all up to date, good work buddy!').'</b>');
+            $form->setDescription('<br>'.__('You seem to be all up to date, good work buddy!').'</br>');
         } elseif ($updateRequired === -1) {
             // Error
             $form->setDescription(Format::alert(__('An error has occurred determining the version of the system you are using.'), 'error'));
