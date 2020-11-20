@@ -1197,6 +1197,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             $participants[$key]['log'] = $log;
                         }
 
+                        $canTakeAttendance = $attendanceEnabled && (($values['role'] == 'Teacher' and $teacher == true) || $roleCategory == 'Staff');
+
                         // ATTENDANCE FORM
                         $form = Form::create('attendanceByClass', $_SESSION[$guid]['absoluteURL'] . '/modules/Attendance/attendance_take_byCourseClassProcess.php');
                         $form->setClass('noIntBorder fullWidth');
@@ -1204,7 +1206,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $form->setTitle($attendanceEnabled ? __('Participants & Attendance') : __('Participants'));
 
                         // Display the dated this attendance was taken, if any
-                        if ($attendanceEnabled && ($values['role'] == 'Teacher' and $teacher == true)) {
+                        if ($canTakeAttendance) {
                             $classLogs = $container->get(AttendanceLogCourseClassGateway::class)->selectClassAttendanceLogsByDate($gibbonCourseClassID, $values['date'])->fetchAll();
                             if (empty($classLogs)) {
                                 $form->setDescription(Format::alert(__('Attendance has not been taken. The entries below are a best-guess, not actual data.')));
@@ -1253,7 +1255,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                             if ($person['role'] == 'Student') {
                                 // Add attendance fields, teacher only
-                                if ($values['role'] == 'Teacher' && $teacher == true) {
+                                if ($canTakeAttendance) {
                                     $form->toggleVisibilityByClass($count.'-attendance')->onSelect($count . '-type')->whenNot('Present');
                                     $cell->addSelect($count . '-type')
                                         ->fromArray(array_keys($attendance->getAttendanceTypes()))
@@ -1287,7 +1289,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             $cell->addContent($person['role']);
                         }
 
-                        if ($attendanceEnabled && $values['role'] == 'Teacher' and $teacher == true) {
+                        if ($canTakeAttendance) {
                             $form->addHiddenValue('address', $gibbon->session->get('address'));
                             $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
                             $form->addHiddenValue('gibbonPlannerEntryID', $gibbonPlannerEntryID);
