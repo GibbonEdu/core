@@ -44,6 +44,7 @@ v21.0.00
         System: prevented theme names with spaces from breaking background image
         System: removed the unused gibbonPersonMedicalSymptoms table
         System: improved the error page when the database connection fails
+        System: improved the update process and added a migration system to handle complex updates
         Attendance: added an Offsite - Late option for attendance codes
         Departments: improved course/class naming in Class view
         Data Updater: data updates with no changes will be automatically accepted
