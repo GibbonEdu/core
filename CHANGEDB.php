@@ -721,4 +721,5 @@ INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `typ
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('New Application with SEN/Medical', 'Students', 'Manage Applications', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y');end
 ALTER TABLE `gibbonPersonMedicalConditionUpdate` ADD `attachment` VARCHAR(255) NULL DEFAULT NULL AFTER `comment`;end
 ALTER TABLE `gibbonStaff` ADD `firstAidQualification` VARCHAR(100) NULL DEFAULT NULL AFTER `firstAidQualified`;end
+CREATE TABLE `gibbonMigration` ( `gibbonMigrationID` INT(8) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT , `name` VARCHAR(60) NOT NULL , `version` VARCHAR(8) NOT NULL , `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`gibbonMigrationID`)) ENGINE = InnoDB;end
 ";
