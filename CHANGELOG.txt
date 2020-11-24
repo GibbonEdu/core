@@ -96,6 +96,7 @@ v21.0.00
         System Admin: adjusted View Log to show only current year's log entries
         System Admin: added a flag to import types to enable updating non-unique rows
         System Admin: added a Purge Logs action to the View Logs page
+        Timetable: improved role ordering in class tables
         Timetable Admin: added a dateEnrolled and dateUnenrolled to class enrolments
         Timetable Admin: hide teachers listed as non-reportable from teacher lists
         Testing: Changed install suite admin username and password to be compliant with the default password requirements
