@@ -1159,7 +1159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '</table>';
 
                         //Custom Fields
-                        $fields = unserialize($row['fields']);
+                        $fields = json_decode($row['fields'], true);
                         $resultFields = getCustomFields($connection2, $guid, true);
                         if ($resultFields->rowCount() > 0) {
                             echo '<h4>';

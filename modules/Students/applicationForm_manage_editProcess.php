@@ -614,14 +614,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     $URL .= '&return=error3';
                     header("Location: {$URL}");
                 } else {
-                    $fields = serialize($fields);
+                    $fields = json_encode($fields);
                     if (isset($parent1fields)) {
-                        $parent1fields = serialize($parent1fields);
+                        $parent1fields = json_encode($parent1fields);
                     } else {
                         $parent1fields = '';
                     }
                     if (isset($parent2fields)) {
-                        $parent2fields = serialize($parent2fields);
+                        $parent2fields = json_encode($parent2fields);
                     } else {
                         $parent2fields = '';
                     }

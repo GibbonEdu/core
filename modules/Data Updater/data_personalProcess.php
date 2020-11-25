@@ -249,7 +249,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         $URL .= '&return=error1';
                         header("Location: {$URL}");
                     } else {
-                        $data['fields'] = serialize($fields);
+                        $data['fields'] = json_encode($fields);
 
                         //Write to database
                         $existing = $_POST['existing'] ?? 'N';

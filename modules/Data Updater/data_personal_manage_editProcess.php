@@ -434,7 +434,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 //DEAL WITH CUSTOM FIELDS
                 //Prepare field values
                 $resultFields = getCustomFields($connection2, $guid, $student, $staff, $parent, $other, null, true);
-                $fields = isset($row2['fields']) ? unserialize($row2['fields']) : [];
+                $fields = isset($row2['fields']) ? json_decode($row2['fields'], true) : [];
                 if ($resultFields->rowCount() > 0) {
                     while ($rowFields = $resultFields->fetch()) {
                         if (isset($_POST['newcustom'.$rowFields['gibbonPersonFieldID'].'On'])) {
@@ -449,7 +449,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     }
                 }
 
-                $fields = serialize($fields);
+                $fields = json_encode($fields);
 
                 if (strlen($set) > 1) {
                     //Write to database
