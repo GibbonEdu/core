@@ -216,7 +216,7 @@ class DataTableView extends View implements RendererInterface
         if ($column->hasContext('secondary')) {
             $element->addClass('hidden sm:table-cell');
         } elseif (!$column->hasContext('primary') && !$column->hasContext('action')) {
-            $element->addClass('hidden md:table-cell');
+            $element->addClass('hidden lg:table-cell');
         }
     }
 }
