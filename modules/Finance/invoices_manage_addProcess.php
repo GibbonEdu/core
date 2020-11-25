@@ -295,7 +295,7 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                                     $key = randomPassword(40);
                                     
                                         $dataUnique = array('key' => $key);
-                                        $sqlUnique = 'SELECT * FROM gibbonFinanceInvoice WHERE gibbonFinanceInvoice.`key`=key';
+                                        $sqlUnique = 'SELECT * FROM gibbonFinanceInvoice WHERE gibbonFinanceInvoice.`key`=:key';
                                         $resultUnique = $connection2->prepare($sqlUnique);
                                         $resultUnique->execute($dataUnique);
 
