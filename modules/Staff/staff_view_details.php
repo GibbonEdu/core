@@ -293,7 +293,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         echo $table->render([$row]);
 
                         //Custom Fields
-                        $fields = unserialize($row['fields']);
+                        $fields = json_decode($row['fields'], true);
                         $resultFields = getCustomFields($connection2, $guid, false, true);
                         if ($resultFields->rowCount() > 0) {
                             echo '<h4>';
