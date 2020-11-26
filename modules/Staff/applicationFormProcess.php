@@ -212,7 +212,7 @@ if ($proceed == false) {
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
-            $fields = serialize($fields);
+            $fields = json_encode($fields);
             $partialFail = false;
             $ids = '';
 

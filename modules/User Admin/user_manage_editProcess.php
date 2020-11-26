@@ -512,7 +512,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                         $URL .= '&return=error3';
                         header("Location: {$URL}");
                     } else {
-                        $fields = serialize($fields);
+                        $fields = json_encode($fields);
 
                         //Write to database
                         try {

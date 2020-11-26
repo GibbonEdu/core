@@ -108,7 +108,7 @@ if ($proceed == false) {
             header("Location: {$URL}");
             exit();
         } else {
-            $fields = serialize($fields);
+            $fields = json_encode($fields);
         }
 
         //Check strength of password
