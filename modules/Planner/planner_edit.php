@@ -25,10 +25,8 @@ use Gibbon\Services\Format;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
@@ -147,13 +145,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 //Get gibbonUnitClassID
                 $gibbonUnitID = $values['gibbonUnitID'];
                 $gibbonUnitClassID = null;
-                try {
+                
                     $dataUnitClass = array('gibbonCourseClassID' => $values['gibbonCourseClassID'], 'gibbonUnitID' => $gibbonUnitID);
                     $sqlUnitClass = 'SELECT gibbonUnitClassID FROM gibbonUnitClass WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID';
                     $resultUnitClass = $connection2->prepare($sqlUnitClass);
                     $resultUnitClass->execute($dataUnitClass);
-                } catch (PDOException $e) {
-                }
                 if ($resultUnitClass->rowCount() == 1) {
                     $rowUnitClass = $resultUnitClass->fetch();
                     $gibbonUnitClassID = $rowUnitClass['gibbonUnitClassID'];

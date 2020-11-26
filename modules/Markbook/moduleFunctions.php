@@ -165,26 +165,20 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
 }
 
 function isDepartmentCoordinator( $pdo, $gibbonPersonID ) {
-    try {
+    
         $data = array('gibbonPersonID' => $gibbonPersonID );
         $sql = "SELECT count(*) FROM gibbonDepartmentStaff WHERE gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)')";
         $result = $pdo->executeQuery($data, $sql);
 
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
 
     return ($result->rowCount() > 0)? ($result->fetchColumn() >= 1) : false;
 }
 
 function getAnyTaughtClass( $pdo, $gibbonPersonID, $gibbonSchoolYearID ) {
-    try {
+    
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID);
         $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID ORDER BY course, class LIMIT 1';
         $result = $pdo->executeQuery($data, $sql);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
 
     return ($result->rowCount() > 0)? $result->fetch() : NULL;
 }
@@ -209,18 +203,17 @@ function getClass( $pdo, $gibbonPersonID, $gibbonCourseClassID, $highestAction )
 }
 
 function getTeacherList( $pdo, $gibbonCourseClassID ) {
-    try {
+    
         $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName";
+        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, gibbonCourseClassPerson.reportable FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName";
         $result = $pdo->executeQuery($data, $sql);
 
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
 
     $teacherList = array();
     if ($result->rowCount() > 0) {
         foreach ($result->fetchAll() as $teacher) {
+            if ($teacher['reportable'] != 'Y') continue;
+
             $teacherList[ $teacher['gibbonPersonID'] ] = Format::name($teacher['title'], $teacher['preferredName'], $teacher['surname'], 'Staff', false, false);
         }
     }

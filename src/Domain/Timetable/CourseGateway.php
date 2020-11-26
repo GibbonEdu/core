@@ -131,4 +131,100 @@ class CourseGateway extends QueryableGateway
 
         return $this->db()->selectOne($sql, $data);
     }
+
+    public function selectCoursesBySchoolYear($gibbonSchoolYearID)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = "SELECT gibbonCourseID, CONCAT(gibbonCourse.nameShort, ' - ', gibbonCourse.name) AS course
+                FROM gibbonCourse 
+                JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) 
+                WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID 
+                ORDER BY nameShort";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectActiveAndUpcomingCourses($gibbonSchoolYearID)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = "SELECT gibbonSchoolYear.name as groupBy, gibbonCourseID as value, CONCAT(gibbonCourse.nameShort, ' - ', gibbonCourse.name) AS name
+                FROM gibbonCourse 
+                JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) 
+                WHERE gibbonCourse.gibbonSchoolYearID>=:gibbonSchoolYearID 
+                ORDER BY gibbonSchoolYear.sequenceNumber, gibbonCourse.nameShort";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectCoursesByPerson($gibbonSchoolYearID, $gibbonPersonID)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID];
+        $sql = "SELECT gibbonCourseID, CONCAT(gibbonCourse.nameShort, ' - ', gibbonCourse.name) AS course
+                FROM gibbonCourse 
+                JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) 
+                JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) 
+                JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) 
+                WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID 
+                AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID 
+                AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') 
+                ORDER BY gibbonCourse.nameShort";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectCourseDetailsByCourse($gibbonCourseID)
+    {
+        $data = ['gibbonCourseID' => $gibbonCourseID];
+        $sql = 'SELECT *, gibbonSchoolYear.name AS schoolYear, gibbonCourse.nameShort AS course 
+                FROM gibbonCourse 
+                JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) 
+                WHERE gibbonCourse.gibbonCourseID=:gibbonCourseID';
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectCourseDetailsByCourseAndPerson($gibbonCourseID, $gibbonPersonID)
+    {
+        $data = ['gibbonCourseID' => $gibbonCourseID, 'gibbonPersonID' => $gibbonPersonID];
+        $sql = "SELECT gibbonCourseID, gibbonCourse.name, gibbonCourse.nameShort, gibbonCourse.gibbonYearGroupIDList, gibbonCourse.gibbonDepartmentID, gibbonSchoolYear.name AS schoolYear
+            FROM gibbonCourse 
+            JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) 
+            JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) 
+            JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) 
+            WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID 
+            AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') 
+            AND gibbonCourseID=:gibbonCourseID 
+            ORDER BY gibbonCourse.nameShort";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectCourseDetailsByClass($gibbonCourseClassID)
+    {
+        $data = ['gibbonCourseClassID' => $gibbonCourseClassID];
+        $sql = 'SELECT *, gibbonSchoolYear.name AS schoolYear, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class 
+                FROM gibbonCourse 
+                JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
+                JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) 
+                WHERE gibbonCourseClassID=:gibbonCourseClassID';
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectCourseDetailsByClassAndPerson($gibbonCourseClassID, $gibbonPersonID)
+    {
+        $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $gibbonPersonID];
+        $sql = "SELECT gibbonCourse.gibbonCourseID, gibbonCourse.name, gibbonCourse.nameShort, gibbonSchoolYear.name AS schoolYear, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class 
+                FROM gibbonCourse 
+                JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
+                JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) 
+                JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) 
+                JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) 
+                WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID 
+                AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') 
+                AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID 
+                ORDER BY gibbonCourse.nameShort";
+
+        return $this->db()->select($sql, $data);
+    }
 }

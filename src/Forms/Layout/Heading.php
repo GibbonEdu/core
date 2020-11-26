@@ -49,7 +49,10 @@ class Heading extends Element implements OutputableInterface, RowDependancyInter
     {
         $this->row = $row;
 
-        $this->row->setClass('break sticky top-0 bg-gray-300 z-10');
+        $this->row->addClass('break top-0 bg-gray-300 z-10');
+
+        $headingID = preg_replace('/[^a-zA-Z0-9]/', '', substr(strip_tags($this->content), 0, 60)); 
+        $this->row->setID($headingID);
     }
 
     /**

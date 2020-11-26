@@ -163,13 +163,11 @@ function renderGradeScaleSelect($connection2, $guid, $gibbonScaleID, $fieldName,
     $return = false;
 
     $return .= "<select name='$fieldName' id='$fieldName' style='width: ".$width."px'>";
-    try {
+    
         $dataSelect = array('gibbonScaleID' => $gibbonScaleID);
         $sqlSelect = 'SELECT * FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID ORDER BY sequenceNumber';
         $resultSelect = $connection2->prepare($sqlSelect);
         $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
     $return .= "<option value=''></option>";
     $sequence = '';
     $descriptor = '';
@@ -403,13 +401,11 @@ function getAlert($guid, $connection2, $gibbonAlertLevelID)
 {
     $output = false;
 
-    try {
+    
         $dataAlert = array('gibbonAlertLevelID' => $gibbonAlertLevelID);
         $sqlAlert = 'SELECT * FROM gibbonAlertLevel WHERE gibbonAlertLevelID=:gibbonAlertLevelID';
         $resultAlert = $connection2->prepare($sqlAlert);
         $resultAlert->execute($dataAlert);
-    } catch (PDOException $e) {
-    }
     if ($resultAlert->rowCount() == 1) {
         $rowAlert = $resultAlert->fetch();
         $output = array();
@@ -644,13 +640,11 @@ function getTerms($connection2, $gibbonSchoolYearID, $short = false)
 {
     $output = false;
     //Scan through year groups
-    try {
+    
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
         $sql = 'SELECT * FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-    }
 
     while ($row = $result->fetch()) {
         $output .= $row['gibbonSchoolYearTermID'].',';
@@ -740,13 +734,11 @@ function getHighestMedicalRisk($guid, $gibbonPersonID, $connection2)
 {
     $output = false;
 
-    try {
+    
         $dataAlert = array('gibbonPersonID' => $gibbonPersonID);
         $sqlAlert = 'SELECT * FROM gibbonPersonMedical JOIN gibbonPersonMedicalCondition ON (gibbonPersonMedical.gibbonPersonMedicalID=gibbonPersonMedicalCondition.gibbonPersonMedicalID) JOIN gibbonAlertLevel ON (gibbonPersonMedicalCondition.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonAlertLevel.sequenceNumber DESC';
         $resultAlert = $connection2->prepare($sqlAlert);
         $resultAlert->execute($dataAlert);
-    } catch (PDOException $e) {
-    }
 
     if ($resultAlert->rowCount() > 0) {
         $rowAlert = $resultAlert->fetch();
@@ -797,13 +789,11 @@ function getRoleCategory($gibbonRoleID, $connection2)
 {
     $output = false;
 
-    try {
+    
         $data = array('gibbonRoleID' => $gibbonRoleID);
         $sql = 'SELECT * FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-    }
 
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
@@ -855,13 +845,11 @@ function isSchoolOpen($guid, $date, $connection2, $allYears = '')
 
     //See if date's day of week is a school day
     if ($isInTerm == true) {
-        try {
+        
             $data = array('nameShort' => $dayOfWeek);
             $sql = "SELECT * FROM gibbonDaysOfWeek WHERE nameShort=:nameShort AND schoolDay='Y'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-        }
         if ($result->rowCount() > 0) {
             $isSchoolDay = true;
         }
@@ -869,13 +857,11 @@ function isSchoolOpen($guid, $date, $connection2, $allYears = '')
 
     //See if there is a special day
     if ($isInTerm == true and $isSchoolDay == true) {
-        try {
+        
             $data = array('date' => $date);
             $sql = "SELECT * FROM gibbonSchoolYearSpecialDay WHERE type='School Closure' AND date=:date";
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-        }
 
         if ($result->rowCount() < 1) {
             $isSchoolOpen = true;
@@ -912,12 +898,11 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
     if ($highestAction == 'View Student Profile_full' or $highestAction == 'View Student Profile_fullNoNotes' or $highestAction == 'View Student Profile_fullEditAllNotes') {
 
         // Individual Needs
-        try {
+        
             $dataAlert = array('gibbonPersonID' => $gibbonPersonID);
             $sqlAlert = "SELECT * FROM gibbonINPersonDescriptor JOIN gibbonAlertLevel ON (gibbonINPersonDescriptor.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY sequenceNumber DESC";
             $resultAlert = $connection2->prepare($sqlAlert);
             $resultAlert->execute($dataAlert);
-        } catch (PDOException $e) {}
 
         if ($alert = $resultAlert->fetch()) {
             $title = $resultAlert->rowCount() == 1
@@ -937,7 +922,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         // Academic
         $gibbonAlertLevelID = '';
         $alertThresholdText = '';
-        try {
+        
             $dataAlert = array('gibbonPersonIDStudent' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d'), 'date' => date('Y-m-d', (time() - (24 * 60 * 60 * 60))));
             $sqlAlert = "SELECT *
             FROM gibbonMarkbookEntry
@@ -953,7 +938,6 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
                 ";
             $resultAlert = $connection2->prepare($sqlAlert);
             $resultAlert->execute($dataAlert);
-        } catch (PDOException $e) {}
 
         $academicAlertLowThreshold = getSettingByScope($connection2, 'Students', 'academicAlertLowThreshold');
         $academicAlertMediumThreshold = getSettingByScope($connection2, 'Students', 'academicAlertMediumThreshold');
@@ -985,12 +969,11 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         // Behaviour
         $gibbonAlertLevelID = '';
         $alertThresholdText = '';
-        try {
+        
             $dataAlert = array('gibbonPersonID' => $gibbonPersonID, 'date' => date('Y-m-d', (time() - (24 * 60 * 60 * 60))));
             $sqlAlert = "SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND type='Negative' AND date>:date";
             $resultAlert = $connection2->prepare($sqlAlert);
             $resultAlert->execute($dataAlert);
-        } catch (PDOException $e) {}
 
         $behaviourAlertLowThreshold = getSettingByScope($connection2, 'Students', 'behaviourAlertLowThreshold');
         $behaviourAlertMediumThreshold = getSettingByScope($connection2, 'Students', 'behaviourAlertMediumThreshold');
@@ -1093,52 +1076,44 @@ function getSystemSettings($guid, $connection2)
 
     //Get names and emails for administrator, dba, admissions
     //System Administrator
-    try {
+    
         $data = array('gibbonPersonID' => $_SESSION[$guid]['organisationAdministrator']);
         $sql = 'SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-    }
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
         $_SESSION[$guid]['organisationAdministratorName'] = Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
         $_SESSION[$guid]['organisationAdministratorEmail'] = $row['email'];
     }
     //DBA
-    try {
+    
         $data = array('gibbonPersonID' => $_SESSION[$guid]['organisationDBA']);
         $sql = 'SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-    }
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
         $_SESSION[$guid]['organisationDBAName'] = Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
         $_SESSION[$guid]['organisationDBAEmail'] = $row['email'];
     }
     //Admissions
-    try {
+    
         $data = array('gibbonPersonID' => $_SESSION[$guid]['organisationAdmissions']);
         $sql = 'SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-    }
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
         $_SESSION[$guid]['organisationAdmissionsName'] = Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
         $_SESSION[$guid]['organisationAdmissionsEmail'] = $row['email'];
     }
     //HR Administraotr
-    try {
+    
         $data = array('gibbonPersonID' => $_SESSION[$guid]['organisationHR']);
         $sql = 'SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-    }
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
         $_SESSION[$guid]['organisationHRName'] = Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
@@ -1182,13 +1157,11 @@ function setLanguageSession($guid, $row, $defaultLanguage = true)
 //Gets the desired setting, specified by name and scope.
 function getSettingByScope($connection2, $scope, $name, $returnRow = false )
 {
-    try {
+    
         $data = array('scope' => $scope, 'name' => $name);
         $sql = 'SELECT * FROM gibbonSetting WHERE scope=:scope AND name=:name';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-    }
 
     if ($result && $result->rowCount() == 1) {
 
@@ -1355,13 +1328,11 @@ function getRoleList($gibbonRoleIDAll, $connection2)
     //Check that roles exist
     $count = 0;
     for ($i = 0; $i < count($roles); ++$i) {
-        try {
+        
             $data = array('gibbonRoleID' => $roles[$i]);
             $sql = 'SELECT * FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-        }
         if ($result->rowCount() == 1) {
             $row = $result->fetch();
             $output[$count][0] = $row['gibbonRoleID'];
@@ -1416,13 +1387,11 @@ function getModuleCategory($address, $connection2)
     //Get module name from address
     $module = getModuleName($address);
 
-    try {
+    
         $data = array('name' => $module);
         $sql = "SELECT * FROM gibbonModule WHERE name=:name AND active='Y'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-    }
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
         $output = __($row['category']);
@@ -1435,13 +1404,11 @@ function getModuleCategory($address, $connection2)
 function setCurrentSchoolYear($guid,  $connection2)
 {
     //Run query
-    try {
+    
         $data = array();
         $sql = "SELECT * FROM gibbonSchoolYear WHERE status='Current'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-    }
 
     //Check number of rows returned.
     //If it is not 1, show error
@@ -1469,22 +1436,18 @@ function getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)
 {
     $output = false;
 
-    try {
+    
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
         $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-    }
     if ($result->rowcount() == 1) {
         $row = $result->fetch();
-        try {
+        
             $dataPrevious = array('sequenceNumber' => $row['sequenceNumber']);
             $sqlPrevious = 'SELECT * FROM gibbonSchoolYear WHERE sequenceNumber<:sequenceNumber ORDER BY sequenceNumber DESC';
             $resultPrevious = $connection2->prepare($sqlPrevious);
             $resultPrevious->execute($dataPrevious);
-        } catch (PDOException $e) {
-        }
         if ($resultPrevious->rowCount() >= 1) {
             $rowPrevious = $resultPrevious->fetch();
             $output = $rowPrevious['gibbonSchoolYearID'];
@@ -1499,22 +1462,18 @@ function getNextSchoolYearID($gibbonSchoolYearID, $connection2)
 {
     $output = false;
 
-    try {
+    
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
         $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-    }
     if ($result->rowcount() == 1) {
         $row = $result->fetch();
-        try {
+        
             $dataPrevious = array('sequenceNumber' => $row['sequenceNumber']);
             $sqlPrevious = 'SELECT * FROM gibbonSchoolYear WHERE sequenceNumber>:sequenceNumber ORDER BY sequenceNumber ASC';
             $resultPrevious = $connection2->prepare($sqlPrevious);
             $resultPrevious->execute($dataPrevious);
-        } catch (PDOException $e) {
-        }
         if ($resultPrevious->rowCount() >= 1) {
             $rowPrevious = $resultPrevious->fetch();
             $output = $rowPrevious['gibbonSchoolYearID'];
@@ -1528,22 +1487,18 @@ function getNextSchoolYearID($gibbonSchoolYearID, $connection2)
 function getNextYearGroupID($gibbonYearGroupID, $connection2)
 {
     $output = false;
-    try {
+    
         $data = array('gibbonYearGroupID' => $gibbonYearGroupID);
         $sql = 'SELECT * FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-    }
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
-        try {
+        
             $dataPrevious = array('sequenceNumber' => $row['sequenceNumber']);
             $sqlPrevious = 'SELECT * FROM gibbonYearGroup WHERE sequenceNumber>:sequenceNumber ORDER BY sequenceNumber ASC';
             $resultPrevious = $connection2->prepare($sqlPrevious);
             $resultPrevious->execute($dataPrevious);
-        } catch (PDOException $e) {
-        }
         if ($resultPrevious->rowCount() >= 1) {
             $rowPrevious = $resultPrevious->fetch();
             $output = $rowPrevious['gibbonYearGroupID'];
@@ -1557,12 +1512,11 @@ function getNextYearGroupID($gibbonYearGroupID, $connection2)
 function getNextRollGroupID($gibbonRollGroupID, $connection2)
 {
     $output = false;
-    try {
+    
         $data = array('gibbonRollGroupID' => $gibbonRollGroupID);
         $sql = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) { }
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
         if (!is_null($row['gibbonRollGroupIDNext'])) {
@@ -1577,13 +1531,11 @@ function getNextRollGroupID($gibbonRollGroupID, $connection2)
 function getLastYearGroupID($connection2)
 {
     $output = false;
-    try {
+    
         $data = array();
         $sql = 'SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber DESC';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-    }
     if ($result->rowCount() > 1) {
         $row = $result->fetch();
         $output = $row['gibbonYearGroupID'];
@@ -1743,14 +1695,12 @@ function getModuleID($connection2, $address)
 
 function getModuleIDFromName($connection2, $name)
 {
-    try {
+    
         $dataModuleID = array('name' => $name);
         $sqlModuleID = 'SELECT gibbonModuleID FROM gibbonModule WHERE name=:name';
         $resultModuleID = $connection2->prepare($sqlModuleID);
         $resultModuleID->execute($dataModuleID);
         $row = $resultModuleID->fetch();
-    } catch (PDOException $e) {
-    }
 
     return $row['gibbonModuleID'];
 }

@@ -158,14 +158,11 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
     $output = false;
     $hasContexts = $contextDBTable != '' and $contextDBTableIDField != '' and $contextDBTableID != '' and $contextDBTableGibbonRubricIDField != '' and $contextDBTableNameField != '' and $contextDBTableDateField != '';
 
-    try {
+    
         $data = array('gibbonRubricID' => $gibbonRubricID);
         $sql = 'SELECT * FROM gibbonRubric WHERE gibbonRubricID=:gibbonRubricID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
 
     if ($result->rowCount() != 1) {
         echo "<div class='error'>";

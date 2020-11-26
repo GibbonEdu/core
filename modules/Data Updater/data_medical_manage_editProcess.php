@@ -17,6 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+use Gibbon\Comms\NotificationEvent;
+use Gibbon\Domain\Students\MedicalGateway;
+use Gibbon\Domain\Students\StudentGateway;
+
 include '../../gibbon.php';
 
 $gibbonPersonMedicalUpdateID = $_GET['gibbonPersonMedicalUpdateID'];
@@ -33,6 +38,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
+        $medicalGateway = $container->get(MedicalGateway::class);
+
         try {
             $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID);
             $sql = 'SELECT * FROM gibbonPersonMedicalUpdate WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID';
@@ -50,7 +57,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
         } else {
             $row = $result->fetch();
             $gibbonPersonMedicalID = $row['gibbonPersonMedicalID'];
-
+            $conditions = [];
+            
             //Set values
             $data = array();
             $sqlSet = '';
@@ -110,6 +118,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                             if ($_POST["gibbonAlertLevelID$i"] != '') {
                                 $dataCond['gibbonAlertLevelID'] = $_POST["gibbonAlertLevelID$i"];
                                 $sqlSetCond .= 'gibbonAlertLevelID=:gibbonAlertLevelID, ';
+
+                                $gibbonAlertLevelID = $dataCond['gibbonAlertLevelID'];
+                                $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
+                                if (!empty($_POST["gibbonPersonMedicalConditionID$i"]) && ($alert['name'] == 'High' || $alert['name'] == 'Medium')) {
+                                    $condition = $medicalGateway->getMedicalConditionByID($_POST["gibbonPersonMedicalConditionID$i"]);
+                                    $conditions[] = $condition['name'] ?? '';
+                                }
                             }
                         }
                     }
@@ -160,6 +175,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                         }
                     }
 
+                    if (!empty($_POST["attachmentOn$i"]) && $_POST["attachmentOn$i"] == 'on') {
+                        $dataCond['attachment'] = $_POST["attachment$i"] ?? null;
+                        $sqlSetCond .= 'attachment=:attachment, ';
+                    }
+
                     try {
                         $dataCond['gibbonPersonMedicalID'] = $gibbonPersonMedicalID;
                         $dataCond['gibbonPersonMedicalConditionID'] = $_POST["gibbonPersonMedicalConditionID$i"];
@@ -190,6 +210,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                                 if ($_POST["gibbonAlertLevelID$i"] != '') {
                                     $dataCond['gibbonAlertLevelID'] = $_POST["gibbonAlertLevelID$i"];
                                     $sqlSetCond .= 'gibbonAlertLevelID=:gibbonAlertLevelID, ';
+
+                                    $gibbonAlertLevelID = $dataCond['gibbonAlertLevelID'];
+                                    $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
+                                    if (!empty($_POST["name$i"]) && ($alert['name'] == 'High' || $alert['name'] == 'Medium')) {
+                                        $conditions[] = $_POST["name$i"] ?? '';
+                                    }
                                 }
                             }
                         }
@@ -238,6 +264,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                                 $dataCond['comment'] = $_POST["comment$i"];
                                 $sqlSetCond .= 'comment=:comment, ';
                             }
+                        }
+
+                        if (!empty($_POST["attachmentOn$i"]) && $_POST["attachmentOn$i"] == 'on') {
+                            $dataCond['attachment'] = $_POST["attachment$i"] ?? null;
+                            $sqlSetCond .= 'attachment=:attachment, ';
                         }
 
                         try {
@@ -288,9 +319,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                         header("Location: {$URL}");
                         exit();
                     }
-
-                    $URL .= '&return=success0';
-                    header("Location: {$URL}");
                 }
             }
 
@@ -327,6 +355,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                             if ($_POST["nameOn$i"] == 'on') {
                                 $dataCond['name'] = $_POST["name$i"];
                                 $sqlSetCond .= 'name=:name, ';
+                                
                             }
                         }
                         if (isset($_POST["gibbonAlertLevelIDOn$i"])) {
@@ -334,6 +363,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                                 if ($_POST["gibbonAlertLevelID$i"] != '') {
                                     $dataCond['gibbonAlertLevelID'] = $_POST["gibbonAlertLevelID$i"];
                                     $sqlSetCond .= 'gibbonAlertLevelID=:gibbonAlertLevelID, ';
+
+                                    $gibbonAlertLevelID = $dataCond['gibbonAlertLevelID'];
+                                    $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
+                                    if (!empty($_POST["name$i"]) && ($alert['name'] == 'High' || $alert['name'] == 'Medium')) {
+                                        $conditions[] = $_POST["name$i"];
+                                    }
                                 }
                             }
                         }
@@ -384,6 +419,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                             }
                         }
 
+                        if (!empty($_POST["attachmentOn$i"]) && $_POST["attachmentOn$i"] == 'on') {
+                            $dataCond['attachment'] = $_POST["attachment$i"] ?? null;
+                            $sqlSetCond .= 'attachment=:attachment, ';
+                        }
+
                         try {
                             $dataCond['gibbonPersonMedicalID'] = $gibbonPersonMedicalID;
                             $sqlCond = "INSERT INTO gibbonPersonMedicalCondition SET $sqlSetCond gibbonPersonMedicalID=:gibbonPersonMedicalID";
@@ -404,7 +444,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                     }
                 }
 
-
                 if ($partialFail == true) {
                     $URL .= '&return=warning1';
                     header("Location: {$URL}");
@@ -420,11 +459,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                         header("Location: {$URL}");
                         exit();
                     }
-
-                    $URL .= '&return=success0';
-                    header("Location: {$URL}");
                 }
             }
+
+            if (!empty($conditions)) {
+                $student = $container->get(StudentGateway::class)->selectActiveStudentByPerson($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetch();
+                $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
+
+                // Raise a new notification event
+                $event = new NotificationEvent('Students', 'Medical Condition');
+                $event->addScope('gibbonPersonIDStudent', $student['gibbonPersonID']);
+                $event->addScope('gibbonYearGroupID', $student['gibbonYearGroupID']);
+
+                $event->setNotificationText(__('{name} has a new or updated medical condition ({condition}) with a {risk} risk level.', [
+                    'name' => Format::name('', $student['preferredName'], $student['surname'], 'Student', false, true),
+                    'condition' => implode(', ', $conditions),
+                    'risk' => $alert['name'],
+                ]));
+                $event->setActionLink('/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'].'&search=&allStudents=&subpage=Medical');
+
+                // Send all notifications
+                $sendReport = $event->sendNotifications($pdo, $gibbon->session);
+            }
+
+            $URL .= '&return=success0';
+            header("Location: {$URL}");
         }
     }
 }

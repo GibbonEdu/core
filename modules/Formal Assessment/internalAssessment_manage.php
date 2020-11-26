@@ -33,14 +33,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
     if (isset($_GET['gibbonCourseClassID'])) {
         $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
     } else {
-        try {
+        
             $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
             $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY course, class";
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
         if ($result->rowCount() > 0) {
             $row = $result->fetch();
             $gibbonCourseClassID = $row['gibbonCourseClassID'];
@@ -56,14 +53,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
     }
     //Check existence of and access to this class.
     else {
-        try {
+        
             $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
             $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             echo '<h1>';
@@ -87,20 +81,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
             //Get teacher list
             $teaching = false;
-            try {
+            
                 $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName";
+                $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, gibbonCourseClassPerson.reportable FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
             if ($result->rowCount() > 0) {
                 echo '<h3>';
                 echo __('Teachers');
                 echo '</h3>';
                 echo '<ul>';
                 while ($row = $result->fetch()) {
+                    if ($row['reportable'] != 'Y') continue;
+
                     echo '<li>'.Format::name($row['title'], $row['preferredName'], $row['surname'], 'Staff').'</li>';
                     if ($row['gibbonPersonID'] == $gibbon->session->get('gibbonPersonID')) {
                         $teaching = true;
@@ -123,14 +116,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 $page = 1;
             }
 
-            try {
+            
                 $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
                 $sql = 'SELECT * FROM gibbonInternalAssessmentColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY completeDate DESC, name';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
 
             if ($result->rowCount() < 1) {
                 echo "<div class='error'>";

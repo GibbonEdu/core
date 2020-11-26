@@ -266,14 +266,11 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID, $mode = 'manage
 
 function externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbonYearGroupID = null, $manage = false, $search = '', $allStudents = '')
 {
-    try {
+    
         $dataAssessments = array('gibbonPersonID' => $gibbonPersonID);
         $sqlAssessments = 'SELECT * FROM gibbonExternalAssessmentStudent JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentStudent.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY date';
         $resultAssessments = $connection2->prepare($sqlAssessments);
         $resultAssessments->execute($dataAssessments);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
 
     if ($resultAssessments->rowCount() < 1) {
         echo "<div class='error'>";
@@ -299,7 +296,7 @@ function externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbon
             }
 
             //Get results
-            try {
+            
                 $dataResults = array('gibbonPersonID' => $gibbonPersonID, 'gibbonExternalAssessmentStudentID' => $rowAssessments['gibbonExternalAssessmentStudentID']);
                 $sqlResults = "SELECT gibbonExternalAssessmentField.name, gibbonExternalAssessmentField.category, resultGrade.value, resultGrade.descriptor, result.usage, result.lowestAcceptable, resultGrade.sequenceNumber
                     FROM gibbonExternalAssessmentStudentEntry
@@ -315,9 +312,6 @@ function externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbon
                     ORDER BY category, gibbonExternalAssessmentField.order";
                 $resultResults = $connection2->prepare($sqlResults);
                 $resultResults->execute($dataResults);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
 
             if ($resultResults->rowCount() < 1) {
                 echo "<div class='warning'>";

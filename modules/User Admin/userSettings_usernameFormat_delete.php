@@ -20,10 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Prefab\DeleteForm;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed! 
     if (isset($_GET['return'])) {
@@ -33,9 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
     $gibbonUsernameFormatID = isset($_GET['gibbonUsernameFormatID'])? $_GET['gibbonUsernameFormatID'] : '';
 
     if ($gibbonUsernameFormatID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/userSettings_usernameFormat_deleteProcess.php");
         echo $form->getOutput();

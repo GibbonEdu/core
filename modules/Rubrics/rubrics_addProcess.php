@@ -84,22 +84,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
 
                 //Create rows & columns
                 for ($i = 1; $i <= $_POST['rows']; ++$i) {
-                    try {
+                    
                         $data = array('gibbonRubricID' => $AI, 'title' => "Row $i", 'sequenceNumber' => $i);
                         $sql = 'INSERT INTO gibbonRubricRow SET gibbonRubricID=:gibbonRubricID, title=:title, sequenceNumber=:sequenceNumber';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
-                    } catch (PDOException $e) {
-                    }
                 }
                 for ($i = 1; $i <= $_POST['columns']; ++$i) {
-                    try {
+                    
                         $data = array('gibbonRubricID' => $AI, 'title' => "Column $i", 'sequenceNumber' => $i);
                         $sql = 'INSERT INTO gibbonRubricColumn SET gibbonRubricID=:gibbonRubricID, title=:title, sequenceNumber=:sequenceNumber';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
-                    } catch (PDOException $e) {
-                    }
                 }
 
                 $URL = $URLSuccess."&return=success0&gibbonRubricID=$AI";

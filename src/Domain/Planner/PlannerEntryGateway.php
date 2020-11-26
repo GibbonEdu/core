@@ -37,6 +37,51 @@ class PlannerEntryGateway extends QueryableGateway
     private static $primaryKey = 'gibbonPlannerEntryID';
     private static $searchableColumns = [];
     
+
+    public function queryPlannerTimeSlotsByClass($criteria, $gibbonSchoolYearID, $gibbonCourseClassID)
+    {
+        $query = $this
+            ->newQuery()
+            ->cols(['gibbonTTColumnRow.timeStart', 'gibbonTTColumnRow.timeEnd', 'gibbonTTDayDate.date', 'gibbonTTColumnRow.name AS period', 'gibbonTTDayRowClass.gibbonTTDayRowClassID', 'gibbonTTDayDate.gibbonTTDayDateID', 'gibbonPlannerEntry.gibbonPlannerEntryID', 'gibbonPlannerEntry.name as lesson', 'gibbonSchoolYearTerm.nameShort as termName', 'gibbonSchoolYearTerm.firstDay', 'gibbonSchoolYearTerm.lastDay', 'gibbonSchoolYearSpecialDay.name as specialDay', "CONCAT(gibbonTTDayRowClass.gibbonTTDayRowClassID, '-', gibbonTTDayDate.gibbonTTDayDateID) as identifier"])
+            ->from('gibbonTTDayRowClass')
+            ->innerJoin('gibbonTTColumnRow', 'gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID')
+            ->innerJoin('gibbonTTColumn', 'gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID')
+            ->innerJoin('gibbonTTDayDate', 'gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID')
+            ->innerJoin('gibbonSchoolYearTerm', 'gibbonTTDayDate.date BETWEEN gibbonSchoolYearTerm.firstDay AND gibbonSchoolYearTerm.lastDay')
+            ->leftJoin('gibbonSchoolYearSpecialDay', "gibbonSchoolYearSpecialDay.date=gibbonTTDayDate.date and gibbonSchoolYearSpecialDay.type='School Closure'")
+            ->leftJoin('gibbonPlannerEntry', 'gibbonPlannerEntry.date=gibbonTTDayDate.date 
+                AND gibbonPlannerEntry.timeStart=gibbonTTColumnRow.timeStart 
+                AND gibbonPlannerEntry.timeEnd=gibbonTTColumnRow.timeEnd 
+                AND gibbonPlannerEntry.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID')
+            ->where('gibbonTTDayRowClass.gibbonCourseClassID=:gibbonCourseClassID')
+            ->bindValue('gibbonCourseClassID', $gibbonCourseClassID)
+            ->where('gibbonSchoolYearTerm.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+
+        return $this->runQuery($query, $criteria);
+    }
+
+    public function getPlannerTTByIDs($gibbonTTDayRowClassID, $gibbonTTDayDateID)
+    {
+        $data = ['gibbonTTDayRowClassID' => $gibbonTTDayRowClassID, 'gibbonTTDayDateID' => $gibbonTTDayDateID];
+        $sql = "SELECT gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonTTColumnRow.name as period, gibbonTTDayDate.date
+            FROM gibbonTTDayRowClass
+            JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID)
+            JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)
+            WHERE gibbonTTDayRowClass.gibbonTTDayRowClassID=:gibbonTTDayRowClassID
+            AND gibbonTTDayDate.gibbonTTDayDateID=:gibbonTTDayDateID";
+        
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function getPlannerTTByClassTimes($gibbonCourseClassID, $date, $timeStart, $timeEnd)
+    {
+        $data = ['date' => $date, 'timeStart' => $timeStart, 'timeEnd' => $timeEnd, 'gibbonCourseClassID' => $gibbonCourseClassID];
+        $sql = 'SELECT timeStart, timeEnd, date, gibbonTTColumnRow.name AS period, gibbonTTDayRowClassID, gibbonTTDayDateID FROM gibbonTTDayRowClass JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTColumn ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY date, timestart';
+        
+        return $this->db()->selectOne($sql, $data);
+    }
+
     public function queryHomeworkByPerson($criteria, $gibbonSchoolYearID, $gibbonPersonID)
     {
         $criteria->addFilterRules([
@@ -160,6 +205,14 @@ class PlannerEntryGateway extends QueryableGateway
         $sql = "SELECT * FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID";
 
         return $this->db()->selectOne($sql, $data);
+    }
+
+    public function selectPlannerEntriesByUnitAndClass($gibbonUnitID, $gibbonCourseClassID)
+    {
+        $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonUnitID' => $gibbonUnitID];
+        $sql = "SELECT * FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID ORDER BY date, timeStart";
+
+        return $this->db()->select($sql, $data);
     }
 
     public function selectUpcomingHomeworkByStudent($gibbonSchoolYearID, $gibbonPersonID, $viewableBy = 'viewableStudents')
@@ -294,6 +347,20 @@ class PlannerEntryGateway extends QueryableGateway
             AND (gibbonCourseClassPerson.dateEnrolled IS NULL OR gibbonCourseClassPerson.dateEnrolled <= gibbonPlannerEntry.date)
             AND (gibbonCourseClassPerson.dateUnenrolled IS NULL OR gibbonCourseClassPerson.dateUnenrolled > gibbonPlannerEntry.date)
             ORDER BY name";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectPlannerGuests($gibbonPlannerEntryID)
+    {
+        $data = ['gibbonPlannerEntryID' => $gibbonPlannerEntryID];
+        $sql = "SELECT title, surname, preferredName, image_240, gibbonPlannerEntryGuest.role
+                FROM gibbonPlannerEntryGuest 
+                JOIN gibbonPerson ON gibbonPlannerEntryGuest.gibbonPersonID=gibbonPerson.gibbonPersonID 
+                JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) 
+                WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID 
+                AND status='Full' 
+                ORDER BY role DESC, surname, preferredName";
 
         return $this->db()->select($sql, $data);
     }

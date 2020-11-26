@@ -28,10 +28,8 @@ $enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescrip
 $enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
 
 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage_add.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
@@ -165,14 +163,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 echo '</div>';
             } else {
                 //Check for existence of behaviour record
-                try {
+                
                     $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonBehaviourID' => $gibbonBehaviourID);
                     $sql = "SELECT * FROM gibbonBehaviour JOIN gibbonPerson ON (gibbonBehaviour.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonBehaviourID=:gibbonBehaviourID";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
                 if ($result->rowCount() != 1) {
                     echo "<div class='error'>";
                     echo __('The specified record cannot be found.');
@@ -195,22 +190,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     //Lessons
                     $lessons = array();
                     $minDate = date('Y-m-d', (time() - (24 * 60 * 60 * 30)));
-                    try {
+                    
                         $dataSelect = array('date1' => date('Y-m-d', time()), 'date2' => $minDate, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $values['gibbonPersonID']);
                         $sqlSelect = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.name AS lesson, gibbonPlannerEntryID, date, homework, homeworkSubmission FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonPlannerEntry ON (gibbonCourseClass.gibbonCourseClassID=gibbonPlannerEntry.gibbonCourseClassID) WHERE (date<=:date1 AND date>=:date2) AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Student' ORDER BY course, class, date DESC, timeStart";
                         $resultSelect = $connection2->prepare($sqlSelect);
                         $resultSelect->execute($dataSelect);
-                    } catch (PDOException $e) {
-                    }
                     while ($rowSelect = $resultSelect->fetch()) {
                         $show = true;
                         if ($highestAction == 'Manage Behaviour Records_my') {
-                            try {
+                            
                                 $dataShow = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonCourseClassID' => $rowSelect['gibbonCourseClassID']);
                                 $sqlShow = "SELECT * FROM gibbonCourseClassPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND role='Teacher'";
                                 $resultShow = $connection2->prepare($sqlShow);
                                 $resultShow->execute($dataShow);
-                            } catch (PDOException $e) { }
                             if ($resultShow->rowCount() != 1) {
                                 $show = false;
                             }

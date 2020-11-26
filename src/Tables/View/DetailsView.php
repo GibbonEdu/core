@@ -48,6 +48,7 @@ class DetailsView extends View implements RendererInterface
                 'columns'    => $table->getColumns(),
                 'rows'       => $dataSet,
                 'blankSlate' => $table->getMetaData('blankSlate'),
+                'gridClass' => $table->getMetaData('gridClass'),
             ]);
         }
 

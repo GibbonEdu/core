@@ -27,10 +27,8 @@ use Gibbon\Domain\Staff\StaffGateway;
 use Gibbon\Domain\User\RoleGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
@@ -84,6 +82,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                 $form->addHiddenValue('address', $_SESSION[$guid]['address']);
                 $form->addHiddenValue('gibbonPersonID', $values['gibbonPersonID']);
 
+                $form->addHeaderAction('view', __('View'))
+                    ->setURL('/modules/Staff/staff_view_details.php')
+                    ->addParam('gibbonStaffID', $values['gibbonStaffID'])
+                    ->addParam('gibbonPersonID', $gibbonPersonID)
+                    ->addParam('search', $search)
+                    ->addParam('allStaff', $allStaff)
+                    ->displayLabel();
+
                 $form->addRow()->addHeading(__('Basic Information'));
 
                 $row = $form->addRow();
@@ -118,6 +124,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     $row->addYesNo('firstAidQualified')->placeHolder();
 
                 $form->toggleVisibilityByClass('firstAid')->onSelect('firstAidQualified')->when('Y');
+
+                $row = $form->addRow()->addClass('firstAid');
+                    $row->addLabel('firstAidQualification', __('First Aid Qualification'));
+                    $row->addTextField('firstAidQualification')->maxlength(100);
 
                 $row = $form->addRow()->addClass('firstAid');
                     $row->addLabel('firstAidExpiry', __('First Aid Expiry'));

@@ -553,13 +553,11 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
         //Show year switcher if user is staff and has access to multiple years
         if ($this->session->exists('username') && $this->category == 'Staff' && $this->session->get('address') == '') {
             //Check for multiple-year login
-            try {
+            
                 $data = array('gibbonRoleID' => $this->session->get('gibbonRoleIDCurrent'));
                 $sql = "SELECT futureYearsLogin, pastYearsLogin FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) {
-            }
 
             //Test to see if username exists and is unique
             if ($result->rowCount() == 1) {

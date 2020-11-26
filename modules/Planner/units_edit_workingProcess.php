@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Timetable\CourseGateway;
+
 include '../../gibbon.php';
 
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
@@ -26,13 +28,13 @@ $gibbonUnitID = $_GET['gibbonUnitID'];
 $gibbonUnitClassID = $_GET['gibbonUnitClassID'];
 $orders = $_POST['order'];
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/units_edit_working.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitClassID=$gibbonUnitClassID";
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/units_edit_working.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitClassID=$gibbonUnitClassID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $highestAction = getHighestGroupedAction($guid, $_GET['address'], $connection2);
+    $highestAction = getHighestGroupedAction($guid, $_POST['address'], $connection2);
     if ($highestAction == false) {
         $URL .= "&return=error0$params";
         header("Location: {$URL}");
@@ -43,21 +45,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
             $URL .= '&return=error3';
             header("Location: {$URL}");
         } else {
-            //Check access to specified course
-            try {
-                if ($highestAction == 'Unit Planner_all') {
-                    $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID);
-                    $sql = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID';
-                } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                    $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                    $sql = "SELECT gibbonCourseID, gibbonCourse.name, gibbonCourse.nameShort FROM gibbonCourse JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID ORDER BY gibbonCourse.nameShort";
-                }
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
+            $courseGateway = $container->get(CourseGateway::class);
+
+            // Check access to specified course
+            if ($highestAction == 'Unit Planner_all') {
+                $result = $courseGateway->selectCourseDetailsByClass($gibbonCourseClassID);
+            } elseif ($highestAction == 'Unit Planner_learningAreas') {
+                $result = $courseGateway->selectCourseDetailsByClassAndPerson($gibbonCourseClassID, $gibbon->session->get('gibbonPersonID'));
             }
 
             if ($result->rowCount() != 1) {

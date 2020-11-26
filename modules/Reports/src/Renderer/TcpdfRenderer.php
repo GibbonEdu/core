@@ -50,7 +50,8 @@ class TcpdfRenderer implements ReportRendererInterface
 
     public function setMode(int $bitmask)
     {
-        $this->mode |= $bitmask;
+        if ($bitmask == 0) $this->mode = 0;
+        else $this->mode |= $bitmask;
     }
 
     public function hasMode(int $bitmask)
@@ -117,10 +118,11 @@ class TcpdfRenderer implements ReportRendererInterface
 
     protected function renderSection(ReportSection &$section, ReportData &$reportData)
     {
-        if ($section->hasFlag(ReportSection::SKIP_IF_EMPTY)) {
-            $data = array_filter($reportData->getData(array_keys($section->sources)));
+        $data = $reportData->getData(array_keys($section->sources));
 
-            if (empty($data)) {
+        // Skip this section if any of the data sources are empty
+        if ($section->hasFlag(ReportSection::SKIP_IF_EMPTY)) {
+            if (count(array_filter($data)) != count($data)) {
                 return;
             }
         }
@@ -294,7 +296,7 @@ class TcpdfRenderer implements ReportRendererInterface
         $this->runPostProcess($reportData);
 
         // Add a page with odd-numbered reports for two-sided printing
-        if ($this->hasMode(self::OUTPUT_TWO_SIDED)) {
+        if ($this->hasMode(self::OUTPUT_CONTINUOUS) && $this->hasMode(self::OUTPUT_TWO_SIDED)) {
             if ($this->pdf->getPageNumber(true) % 2 != 0) {
                 $this->pdf->addPage();
                 $this->pdf->setLastPage(false);

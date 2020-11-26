@@ -23,10 +23,8 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\Timetable\TimetableDayGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_edit_class_exception.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Check if school year specified
     $gibbonTTDayID = $_GET['gibbonTTDayID'] ?? '';
@@ -36,18 +34,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
     $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 
     if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $gibbonTTColumnRowID == '' or $gibbonCourseClassID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
 
         $timetableDayGateway = $container->get(TimetableDayGateway::class);
         $values = $timetableDayGateway->getTTDayRowClassByID($gibbonTTDayID, $gibbonTTColumnRowID, $gibbonCourseClassID);
 
         if (empty($values)) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             $gibbonTTDayRowClassID = $values['gibbonTTDayRowClassID'];
@@ -82,6 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 ->addParam('gibbonTTDayID', $gibbonTTDayID)
                 ->addParam('gibbonTTColumnRowID', $gibbonTTColumnRowID)
                 ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
+                ->addParam('gibbonTTDayRowClassID', $gibbonTTDayRowClassID)
                 ->displayLabel();
 
             $table->addColumn('name', __('Name'))->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true]));

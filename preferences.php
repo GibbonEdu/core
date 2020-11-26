@@ -21,10 +21,8 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 if (!$gibbon->session->exists("username")) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $page->breadcrumbs->add(__('Preferences'));
 
@@ -50,14 +48,11 @@ if (!$gibbon->session->exists("username")) {
         returnProcess($guid, $_GET['return'], null, $returns);
     }
 
-    try {
+    
         $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
         $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
     if ($result->rowCount() == 1) {
         $values = $result->fetch();
     }

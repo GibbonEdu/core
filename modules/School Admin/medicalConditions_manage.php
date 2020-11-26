@@ -23,10 +23,8 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Students\MedicalConditionGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/medicalConditions_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Manage Medical Conditions'));
@@ -67,6 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/medicalCondit
         ->displayLabel();
 
     $table->addColumn('name', __('Name'));
+    $table->addColumn('description', __('Description'))->format(Format::using('truncate', 'description'));
 
     // ACTIONS
     $table->addActionColumn()

@@ -18,10 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpecialDay_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Manage Special Days'));
@@ -40,14 +38,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
     }
 
     if ($gibbonSchoolYearID != $gibbon->session->get('gibbonSchoolYearID')) {
-        try {
+        
             $data = array('gibbonSchoolYearID' => $_GET['gibbonSchoolYearID']);
             $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
             echo __('The specified record does not exist.');
@@ -79,14 +74,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
         }
         echo '</div>';
 
-        try {
+        
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
             $sql = 'SELECT * FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() < 1) {
             echo "<div class='error'>";
@@ -113,14 +105,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
                 }
 
                 //Get the special days
-                try {
+                
                     $dataSpecial = array('firstDay' => $row['firstDay'], 'lastDay' => $row['lastDay']);
                     $sqlSpecial = 'SELECT * FROM gibbonSchoolYearSpecialDay WHERE date BETWEEN :firstDay AND :lastDay ORDER BY date';
                     $resultSpecial = $connection2->prepare($sqlSpecial);
                     $resultSpecial->execute($dataSpecial);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
                 if ($resultSpecial->rowCount() > 0) {
                     $rowSpecial = $resultSpecial->fetch();
                 }
@@ -134,14 +123,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
                 $days['Fri'] = 'Y';
                 $days['Sat'] = 'Y';
                 $days['Sun'] = 'Y';
-                try {
+                
                     $dataDays = array();
                     $sqlDays = "SELECT * FROM gibbonDaysOfWeek WHERE schoolDay='N'";
                     $resultDays = $connection2->prepare($sqlDays);
                     $resultDays->execute($dataDays);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
                 while ($rowDays = $resultDays->fetch()) {
                     if ($rowDays['nameShort'] == 'Mon') {
                         $days['Mon'] = 'N';

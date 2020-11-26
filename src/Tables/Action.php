@@ -34,6 +34,7 @@ class Action extends WebLink
     protected $url;
     protected $icon;
     protected $params = array();
+    protected $urlFragment;
 
     protected $modal = false;
     protected $direct = false;
@@ -73,11 +74,13 @@ class Action extends WebLink
      * Sets the internal url for this action.
      *
      * @param string $url
+     * @param string $urlFragment
      * @return self
      */
-    public function setURL($url)
+    public function setURL($url, $urlFragment = null)
     {
         $this->url = $url;
+        $this->urlFragment = $urlFragment;
 
         return $this;
     }
@@ -86,13 +89,15 @@ class Action extends WebLink
      * Sets the external url for this action.
      *
      * @param string $url
+     * @param string $urlFragment
      * @return self
      */
-    public function setExternalURL($url)
+    public function setExternalURL($url, $urlFragment = null)
     {
         $this->url = $url;
         $this->external = true;
         $this->target = '_blank';
+        $this->urlFragment = $urlFragment;
 
         return $this;
     }
@@ -243,13 +248,13 @@ class Action extends WebLink
         }
 
         if ($this->external) {
-            $this->setAttribute('href', $this->url);
+            $this->setAttribute('href', $this->url.$this->urlFragment);
         } else if ($this->direct) {
-            $this->setAttribute('href', $_SESSION[$guid]['absoluteURL'].$this->url.'?'.http_build_query($queryParams));
+            $this->setAttribute('href', $_SESSION[$guid]['absoluteURL'].$this->url.'?'.http_build_query($queryParams).$this->urlFragment);
         } else if ($this->modal) {
-            $this->setAttribute('href', $_SESSION[$guid]['absoluteURL'].'/fullscreen.php?'.http_build_query($queryParams));
+            $this->setAttribute('href', $_SESSION[$guid]['absoluteURL'].'/fullscreen.php?'.http_build_query($queryParams).$this->urlFragment);
         } else {
-            $this->setAttribute('href', $_SESSION[$guid]['absoluteURL'].'/index.php?'.http_build_query($queryParams));
+            $this->setAttribute('href', $_SESSION[$guid]['absoluteURL'].'/index.php?'.http_build_query($queryParams).$this->urlFragment);
         }
 
         return parent::getOutput();

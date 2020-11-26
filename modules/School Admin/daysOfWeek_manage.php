@@ -32,14 +32,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    try {
+    
         $data = array();
         $sql = "SELECT * FROM gibbonDaysOfWeek WHERE name='Monday' OR name='Tuesday' OR name='Wednesday' OR name='Thursday' OR name='Friday' OR name='Saturday' OR name='Sunday' ORDER BY sequenceNumber";
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
 
     if ($result->rowCount() != 7) {
         echo "<div class='error'>";

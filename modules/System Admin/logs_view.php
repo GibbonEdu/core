@@ -27,16 +27,14 @@ use Gibbon\Domain\System\LogGateway;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('View Logs'));
 
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, $returns);
+        returnProcess($guid, $_GET['return'], null, null);
     }
 
     $ip = isset($_GET['ip'])? $_GET['ip'] : '';
@@ -83,6 +81,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
 
     $table = DataTable::createPaginated('logView', $criteria);
     $table->setTitle(__('Data'));
+
+    $table->addHeaderAction('purge', __('Purge Logs'))
+        ->setIcon('garbage')
+        ->setURL('/modules/System Admin/logs_view_purge.php')
+        ->displayLabel();
 
     $table->addExpandableColumn('comment')
         ->format(function($log) {

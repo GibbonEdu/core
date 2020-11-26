@@ -61,7 +61,7 @@ class Header
                 } else {
                     $return .= "<a class='inline-block relative mr-4' title='".__('Message Wall')."' href='$URL'><span class='badge -mr-2 right-0'>".count($messages)."</span><img class='minorLinkIcon' style='margin-left: 4px; vertical-align: -75%' src='".$this->session->get('absoluteURL').'/themes/'.$this->session->get('gibbonThemeName')."/img/messageWall.png' alt='".__('Message Wall')."'></a>";
 
-                    if (empty($this->session->get('pageLoads')) and $this->session->get('messengerLastBubble') == null or $this->session->get('messengerLastBubble') < date('Y-m-d')) {
+                    if (!$this->session->has('pageLoads') and ($this->session->get('messengerLastBubble') == null or $this->session->get('messengerLastBubble') < date('Y-m-d'))) {
                         $messageBubbleBGColor = getSettingByScope($connection2, 'Messenger', 'messageBubbleBGColor');
                         $bubbleBG = '';
                         if ($messageBubbleBGColor != '') {

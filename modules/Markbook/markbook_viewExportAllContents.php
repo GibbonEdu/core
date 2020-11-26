@@ -40,10 +40,8 @@ else
     $effortAdjust = 1 ;
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     // Check existence of and access to this class.
     $highestAction = getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $connection2);

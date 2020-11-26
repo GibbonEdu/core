@@ -32,14 +32,7 @@ if ($gibbonCourseID == '' or $gibbonCourseIDCopyTo == '' or $gibbonSchoolYearID 
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {
-        $units = array();
-        for ($i = 0; $i < $_POST['count']; ++$i) {
-            if (isset($_POST["check-$i"])) {
-                if ($_POST["check-$i"] == 'on') {
-                    $units[$i] = $_POST["gibbonUnitID-$i"];
-                }
-            }
-        }
+        $units = $_POST['gibbonUnitID'] ?? [];
 
         //Proceed!
         //Check if person specified

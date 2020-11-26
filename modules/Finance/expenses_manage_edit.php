@@ -28,10 +28,8 @@ use Gibbon\Module\Finance\Tables\ExpenseLog;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_edit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_add.php', 'Manage Expenses_all') == false) {
@@ -107,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
                         echo '</div>';
                     } else {
                         //Ready to go! Just check record exists and we have access, and load it ready to use...
-                        try {
+                        
                             //Set Up filter wheres
                             $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID, 'gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
                             $sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, 'Full' AS access
@@ -117,9 +115,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
 									WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceExpenseID=:gibbonFinanceExpenseID";
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
 
                         if ($result->rowCount() != 1) {
                             echo "<div class='error'>";
