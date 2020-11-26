@@ -216,7 +216,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     $URL .= '&return=error3';
                     header("Location: {$URL}");
                 } else {
-                    $fields = serialize($fields);
+                    $fields = json_encode($fields);
 
                     //Write to database
                     try {
