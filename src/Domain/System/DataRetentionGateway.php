@@ -128,7 +128,7 @@ class DataRetentionGateway extends QueryableGateway
 
                 $data = [
                     'gibbonPersonID'            => $gibbonPersonID,
-                    'tables'                    => implode(",", $tables),
+                    'tables'                    => json_encode($tables),
                     'status'                    => $status,
                     'gibbonPersonIDOperator'    => $gibbon->session->get('gibbonPersonID'),
                 ];
