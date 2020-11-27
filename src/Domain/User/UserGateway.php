@@ -39,7 +39,7 @@ class UserGateway extends QueryableGateway
     private static $primaryKey = 'gibbonPersonID';
 
     private static $searchableColumns = ['preferredName', 'surname', 'username', 'studentID', 'email', 'emailAlternate', 'phone1', 'phone2', 'phone3', 'phone4', 'vehicleRegistration', 'gibbonRole.name'];
-    
+
     /**
      * Queries the list of users for the Manage Users page.
      *
@@ -52,7 +52,7 @@ class UserGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.username', 
+                'gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.username',
                 'gibbonPerson.image_240', 'gibbonPerson.status', 'gibbonRole.name as primaryRole'
             ])
             ->leftJoin('gibbonRole', 'gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID');
@@ -74,27 +74,33 @@ class UserGateway extends QueryableGateway
         $data = array('idList' => $idList);
         $sql = "(
             SELECT LPAD(gibbonFamilyAdult.gibbonPersonID, 10, '0'), gibbonFamilyAdult.gibbonFamilyID, 'adult' AS role, gibbonFamily.name, (SELECT gibbonFamilyChild.gibbonPersonID FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID ORDER BY gibbonPerson.dob DESC LIMIT 1) as gibbonPersonIDStudent
-            FROM gibbonFamily 
-            JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) 
+            FROM gibbonFamily
+            JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
             WHERE FIND_IN_SET(gibbonFamilyAdult.gibbonPersonID, :idList)
         ) UNION (
             SELECT LPAD(gibbonFamilyChild.gibbonPersonID, 10, '0'), gibbonFamilyChild.gibbonFamilyID, 'child' AS role, gibbonFamily.name, gibbonFamilyChild.gibbonPersonID as gibbonPersonIDStudent
-            FROM gibbonFamily 
-            JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) 
+            FROM gibbonFamily
+            JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
             WHERE FIND_IN_SET(gibbonFamilyChild.gibbonPersonID, :idList)
         ) ORDER BY gibbonFamilyID";
 
         return $this->db()->select($sql, $data);
     }
 
-    public function selectUserNamesByStatus($status = 'Full')
+    public function selectUserNamesByStatus($status = 'Full', $category = null)
     {
         $data = array('statusList' => is_array($status) ? implode(',', $status) : $status );
-        $sql = "SELECT gibbonPersonID, surname, preferredName, status, username, gibbonRole.category as roleCategory
-                FROM gibbonPerson 
+        $sql = "SELECT gibbonPersonID, surname, preferredName, status, dateEnd, username, lastTimestamp, gibbonRole.category as roleCategory
+                FROM gibbonPerson
                 JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary)
-                WHERE FIND_IN_SET(gibbonPerson.status, :statusList) 
-                ORDER BY surname, preferredName";
+                WHERE FIND_IN_SET(gibbonPerson.status, :statusList)";
+
+        if (!is_null($category)) {
+            $data['category'] = $category;
+            $sql .= " AND gibbonRole.category=:category";
+        }
+
+        $sql .= " ORDER BY surname, preferredName";
 
         return $this->db()->select($sql, $data);
     }
@@ -105,10 +111,10 @@ class UserGateway extends QueryableGateway
 
         $data = ['gibbonPersonIDList' => implode(',', $gibbonPersonIDList)];
         $sql = "SELECT gibbonPerson.gibbonPersonID as groupBy, gibbonPerson.gibbonPersonID, title, surname, preferredName, gibbonPerson.status, image_240, username, email, phone1, phone1CountryCode, phone1Type, gibbonRole.category as roleCategory, gibbonStaff.jobTitle, gibbonStaff.type
-                FROM gibbonPerson 
+                FROM gibbonPerson
                 JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary)
                 LEFT JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                WHERE FIND_IN_SET(gibbonPerson.gibbonPersonID, :gibbonPersonIDList) 
+                WHERE FIND_IN_SET(gibbonPerson.gibbonPersonID, :gibbonPersonIDList)
                 ORDER BY FIND_IN_SET(gibbonPerson.gibbonPersonID, :gibbonPersonIDList), surname, preferredName";
 
         return $this->db()->select($sql, $data);
