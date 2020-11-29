@@ -114,8 +114,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             }
             // Homework
             if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.php')) {
+                $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
                 $menuItems[] = [
-                    'name' => __('Homework'),
+                    'name' => __($homeworkNamePlural),
                     'url'  => './index.php?q=/modules/Planner/planner_deadlines.php&gibbonCourseClassIDFilter='.$gibbonCourseClassID,
                     'icon' => 'homework_large.png',
                 ];

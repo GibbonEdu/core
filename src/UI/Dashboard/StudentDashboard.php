@@ -67,6 +67,8 @@ class StudentDashboard implements OutputableInterface
         $connection2 = $this->db->getConnection();
         $gibbonPersonID = $this->session->get('gibbonPersonID');
 
+        $homeworkNameSingular = getSettingByScope($connection2, 'Planner', 'homeworkNameSingular');
+
         $return = false;
 
         //GET PLANNER
@@ -117,7 +119,7 @@ class StudentDashboard implements OutputableInterface
             $planner .= "<span style='font-size: 85%; font-style: italic'>".__('Unit').'</span>';
             $planner .= '</th>';
             $planner .= '<th>';
-            $planner .= __('Homework');
+            $planner .=  __($homeworkNameSingular);
             $planner .= '</th>';
             $planner .= '<th>';
             $planner .= __('Summary');

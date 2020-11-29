@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
             echo '</tr>';
             echo '<tr>';
             echo "<td style='padding-top: 15px; width: 34%; vertical-align: top' colspan=3>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__('Homework Details').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Details').'</span><br/>';
             echo $row['homeworkDetails'];
             echo '</td>';
             echo '</tr>';

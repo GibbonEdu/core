@@ -36,6 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
     $today = date('Y-m-d');
 
     $plannerGateway = $container->get(PlannerEntryGateway::class);
+    $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
 
     //Proceed!
     //Get viewBy, date and class variables
@@ -102,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
 
         $page->breadcrumbs
             ->add(__('My Children\'s Classes'), 'planner.php')
-            ->add(__('Homework + Deadlines'));
+            ->add(__('{homeworkName} + Due Dates', ['homeworkName' => __($homeworkNamePlural)]));
 
         //Test data access field for permission
         
@@ -215,7 +216,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
 
                         // HOMEWORK TABLE
                         $table = $container->get(HomeworkTable::class)->create($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, 'Parent');
-                        $table->setTitle(__('All Homework'));
+                        $table->setTitle($homeworkNamePlural);
 
                         echo $table->getOutput();
                     }
@@ -229,7 +230,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
 
         $page->breadcrumbs
             ->add(__('Planner'), 'planner.php', $params)
-            ->add(__('Homework + Deadlines'));
+            ->add(__('{homeworkName} + Due Dates', ['homeworkName' => __($homeworkNamePlural)]));
 
         //Proceed!
         if (isset($_GET['return'])) {
@@ -280,7 +281,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
 
             // HOMEWORK TABLE
             $table = $container->get(HomeworkTable::class)->create($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, $category);
-            $table->setTitle(__('All Homework'));
+            $table->setTitle($homeworkNamePlural);
 
             echo $table->getOutput();
         }

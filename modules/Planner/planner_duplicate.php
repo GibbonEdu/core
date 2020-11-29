@@ -35,6 +35,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
         //Set variables
         $today = date('Y-m-d');
 
+        $homeworkNameSingular = getSettingByScope($connection2, 'Planner', 'homeworkNameSingular');
+        $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
+
         //Proceed!
         //Get viewBy, date and class variables
         $params = [];
@@ -298,14 +301,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                             $row->addTime('timeEnd')->setValue(substr($next['end'], 0, 5))->required();
 
                         if ($values['homework'] == 'Y') {
-                            $form->addRow()->addHeading(__('Homework'));
+                            $form->addRow()->addHeading(__($homeworkNamePlural));
 
                             $row = $form->addRow();
-                                $row->addLabel('homeworkDueDate', __('Homework Due Date'));
+                                $row->addLabel('homeworkDueDate', __('{homeworkName} Due Date', ['homeworkName' => __($homeworkNameSingular)]));
                                 $row->addDate('homeworkDueDate')->setValue(dateConvertBack($guid, $next['date2']))->required();
 
                             $row = $form->addRow();
-                                $row->addLabel('homeworkDueDateTime', __('Homework Due Date Time'))->description("Format: hh:mm (24hr)");
+                                $row->addLabel('homeworkDueDateTime', __('{homeworkName} Due Date Time', ['homeworkName' => __($homeworkNameSingular)]))->description("Format: hh:mm (24hr)");
                                 $row->addTime('homeworkDueDateTime')->setValue(substr($next['start2'], 0, 5))->required();
 
                             if ($values['homeworkSubmission'] == 'Y') {
