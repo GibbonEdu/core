@@ -140,11 +140,12 @@ foreach ($families as $gibbonFamilyID => $students) {
 
         // Format the student summary for emailing
         $content = $view->fetchFromTemplate('cli/parentWeeklyEmailSummary.twig.html', [
+            'homeworkNameSingular' => getSettingByScope($connection2, 'Planner', 'homeworkNameSingular'),
+            'homeworkNamePlural' => getSettingByScope($connection2, 'Planner', 'homeworkNamePlural'),
             'includeBehaviour' => $parentWeeklyEmailSummaryIncludeBehaviour,
             'includeMarkbook' => $parentWeeklyEmailSummaryIncludeMarkbook,
             'includeHomework' => 'Y',
             'student' => $student,
-            // 'homework' => $homework,
             'homework' => $allHomework->toArray(),
             'behaviour' => $behaviour ?? [],
             'markbook' => $markbook ?? [],
