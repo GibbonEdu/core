@@ -480,7 +480,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 
 
             $output .= "<p style='padding-top: 15px; text-align: right'>";
-            $output .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_deadlines.php&search=$gibbonPersonID'>View Homework</a>";
+            $output .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_deadlines.php&search=$gibbonPersonID'>".__('View {homeworkName}', ['homeworkName' => __($homeworkNamePlural)])."</a>";
             $output .= '</p>';
             $output .= '</div>';
         }
