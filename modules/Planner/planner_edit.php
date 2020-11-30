@@ -264,7 +264,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $row->addLabel('homework', __('Add {homeworkName}?', ['homeworkName' => __($homeworkNameSingular)]));
                     $row->addRadio('homework')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->required()->checked('N')->inline(true);
 
-                $values['homeworkDueDate'] = Format::date(substr($values['homeworkDueDateTime'], 0, 10));
+                $values['homeworkDueDate'] = substr(Format::date($values['homeworkDueDateTime'], 'Y-m-d H:i:s'), 0, 10);
                 $values['homeworkDueDateTime'] = substr($values['homeworkDueDateTime'], 11, 5);
 
                 $row = $form->addRow()->addClass('homework');

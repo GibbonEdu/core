@@ -73,6 +73,8 @@ v21.0.00
         Planner: enabled homework to be submitted for lessons that already exist during a school closure
         Planner: brought student birthday icon display into line with class and form group view
         Planner: any staff can take attendance in the planner if they have Attendance by Class permission
+        Planner: added a setting to customize what homework is called in the planner
+        Planner: added the ability to set a time cap for homework
         Reports: display the download link after a batch PDF has completed
         Reports: added full course name to the report writing page
         Reports: added a bulk delete action in the Edit Reporting Scopes page
