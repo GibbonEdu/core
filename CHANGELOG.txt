@@ -62,6 +62,7 @@ v21.0.00
         Markbook: allow users with Edit Markbook_multiple and Edit Markbook_everything to edit grouped columns
         Messenger: tied messages to school year
         Messenger: convert copy-pasted divs to paragraphs in New Quick Wall Message
+        Messenger: fixed issue where read receipts weren't clickable until all messages sent
         Planner: update the attendance list to exclude students with a timetable exception
         Planner: added smart block clarification to the Edit Working Copy page
         Planner: added a common template for all Upcoming Deadlines sections
