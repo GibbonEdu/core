@@ -168,7 +168,7 @@ else {
 								else {
 									try {
 										$dataEmail=array('gibbonRoleID'=>$gibbonRoleID);
-										$sqlEmail="SELECT DISTINCT email, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE NOT email='' AND FIND_IN_SET(:gibbonRoleID, gibbonPerson.gibbonRoleIDAll) AND status='Full'" ;
+										$sqlEmail="SELECT DISTINCT email, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE NOT email='' AND FIND_IN_SET(:gibbonRoleID, gibbonPerson.gibbonRoleIDAll) AND status='Full' AND (dateStart IS NULL OR dateStart<=CURRENT_DATE) AND (dateEnd IS NULL OR dateEnd>=CURRENT_DATE)" ;
 										$resultEmail=$connection2->prepare($sqlEmail);
 										$resultEmail->execute($dataEmail);
 									}
@@ -200,10 +200,10 @@ else {
 								else {
 									try {
 										$dataEmail=array('gibbonRoleID'=>$gibbonRoleID);
-										$sqlEmail="(SELECT phone1 AS phone, phone1CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE NOT phone1='' AND phone1Type='Mobile' AND FIND_IN_SET(:gibbonRoleID, gibbonPerson.gibbonRoleIDAll) AND status='Full')" ;
-										$sqlEmail.=" UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE NOT phone2='' AND phone2Type='Mobile' AND FIND_IN_SET(:gibbonRoleID, gibbonPerson.gibbonRoleIDAll) AND status='Full')" ;
-										$sqlEmail.=" UNION (SELECT phone3 AS phone, phone3CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE NOT phone3='' AND phone3Type='Mobile' AND FIND_IN_SET(:gibbonRoleID, gibbonPerson.gibbonRoleIDAll) AND status='Full')" ;
-										$sqlEmail.=" UNION (SELECT phone4 AS phone, phone4CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE NOT phone4='' AND phone4Type='Mobile' AND FIND_IN_SET(:gibbonRoleID, gibbonPerson.gibbonRoleIDAll) AND status='Full')" ;
+										$sqlEmail="(SELECT phone1 AS phone, phone1CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE NOT phone1='' AND phone1Type='Mobile' AND FIND_IN_SET(:gibbonRoleID, gibbonPerson.gibbonRoleIDAll) AND status='Full' AND (dateStart IS NULL OR dateStart<=CURRENT_DATE) AND (dateEnd IS NULL OR dateEnd>=CURRENT_DATE))" ;
+										$sqlEmail.=" UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE NOT phone2='' AND phone2Type='Mobile' AND FIND_IN_SET(:gibbonRoleID, gibbonPerson.gibbonRoleIDAll) AND status='Full' AND (dateStart IS NULL OR dateStart<=CURRENT_DATE) AND (dateEnd IS NULL OR dateEnd>=CURRENT_DATE))" ;
+										$sqlEmail.=" UNION (SELECT phone3 AS phone, phone3CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE NOT phone3='' AND phone3Type='Mobile' AND FIND_IN_SET(:gibbonRoleID, gibbonPerson.gibbonRoleIDAll) AND status='Full' AND (dateStart IS NULL OR dateStart<=CURRENT_DATE) AND (dateEnd IS NULL OR dateEnd>=CURRENT_DATE))" ;
+										$sqlEmail.=" UNION (SELECT phone4 AS phone, phone4CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE NOT phone4='' AND phone4Type='Mobile' AND FIND_IN_SET(:gibbonRoleID, gibbonPerson.gibbonRoleIDAll) AND status='Full' AND (dateStart IS NULL OR dateStart<=CURRENT_DATE) AND (dateEnd IS NULL OR dateEnd>=CURRENT_DATE))" ;
 										$resultEmail=$connection2->prepare($sqlEmail);
 										$resultEmail->execute($dataEmail);
 									}
@@ -253,7 +253,7 @@ else {
 								else {
 									try {
 										$dataEmail=array("category"=>$t);
-										$sqlEmail="SELECT DISTINCT email, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll)) WHERE NOT email='' AND category=:category AND status='Full'" ;
+										$sqlEmail="SELECT DISTINCT email, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll)) WHERE NOT email='' AND category=:category AND status='Full' AND (dateStart IS NULL OR dateStart<=CURRENT_DATE) AND (dateEnd IS NULL OR dateEnd>=CURRENT_DATE)" ;
 										$resultEmail=$connection2->prepare($sqlEmail);
 										$resultEmail->execute($dataEmail);
 									}
@@ -285,10 +285,10 @@ else {
 								else {
 									try {
 										$dataEmail=array("category"=>$t);
-										$sqlEmail="(SELECT phone1 AS phone, phone1CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll)) WHERE NOT phone1='' AND phone1Type='Mobile' AND category=:category AND status='Full')" ;
-										$sqlEmail.=" UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll)) WHERE NOT phone2='' AND phone2Type='Mobile' AND category=:category AND status='Full')" ;
-										$sqlEmail.=" UNION (SELECT phone3 AS phone, phone3CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll)) WHERE NOT phone3='' AND phone3Type='Mobile' AND category=:category AND status='Full')" ;
-										$sqlEmail.=" UNION (SELECT phone4 AS phone, phone4CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll)) WHERE NOT phone4='' AND phone4Type='Mobile' AND category=:category AND status='Full')" ;
+										$sqlEmail="(SELECT phone1 AS phone, phone1CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll)) WHERE NOT phone1='' AND phone1Type='Mobile' AND category=:category AND status='Full' AND (dateStart IS NULL OR dateStart<=CURRENT_DATE) AND (dateEnd IS NULL OR dateEnd>=CURRENT_DATE))" ;
+										$sqlEmail.=" UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll)) WHERE NOT phone2='' AND phone2Type='Mobile' AND category=:category AND status='Full' AND (dateStart IS NULL OR dateStart<=CURRENT_DATE) AND (dateEnd IS NULL OR dateEnd>=CURRENT_DATE))" ;
+										$sqlEmail.=" UNION (SELECT phone3 AS phone, phone3CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll)) WHERE NOT phone3='' AND phone3Type='Mobile' AND category=:category AND status='Full' AND (dateStart IS NULL OR dateStart<=CURRENT_DATE) AND (dateEnd IS NULL OR dateEnd>=CURRENT_DATE))" ;
+										$sqlEmail.=" UNION (SELECT phone4 AS phone, phone4CountryCode AS countryCode, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll)) WHERE NOT phone4='' AND phone4Type='Mobile' AND category=:category AND status='Full' AND (dateStart IS NULL OR dateStart<=CURRENT_DATE) AND (dateEnd IS NULL OR dateEnd>=CURRENT_DATE))" ;
 										$resultEmail=$connection2->prepare($sqlEmail);
 										$resultEmail->execute($dataEmail);
 									}

@@ -62,7 +62,7 @@ v21.0.00
         Markbook: allow users with Edit Markbook_multiple and Edit Markbook_everything to edit grouped columns
         Messenger: tied messages to school year
         Messenger: convert copy-pasted divs to paragraphs in New Quick Wall Message
-        Messenger: fixed issue where read receipts weren't clickable until all messages sent
+        Messenger: messages sent by role or role category will honour user start and end dates
         Planner: update the attendance list to exclude students with a timetable exception
         Planner: added smart block clarification to the Edit Working Copy page
         Planner: added a common template for all Upcoming Deadlines sections
@@ -95,6 +95,7 @@ v21.0.00
         Students: added optional attachments to the medical condition section
         Students: added notifications for High and Medium medical conditions
         Students: added notifications for accepted applications with SEN/Medical needs
+        Students: application forms accepted to upcoming years will set students to Expected
         School Admin: added optional descriptions for medical conditions
         System Admin: adjusted View Log to show only current year's log entries
         System Admin: added a flag to import types to enable updating non-unique rows
@@ -120,6 +121,7 @@ v21.0.00
         Markbook: fixed rubric data not visible for students set to Left in a class
         Messenger: fixed SMTP debug settings in New Message process page
         Messenger: fixed copy-pasted div/paragraph replacement in sender's copy of emails
+        Messenger: fixed issue where read receipts weren't clickable until all messages sent
         Reports: fixed AttendanceByCycle data source counting school attendance as class attendance
         Reports: fixed MpdfRenderer not resetting headers when generating batch single files
         Reports: fixed Reporting Cycle Duplicate copying criteria from year to year
