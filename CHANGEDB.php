@@ -727,4 +727,8 @@ INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `val
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Planner', 'homeworkNamePlural', 'Homework Name - Plural', 'A name to use for \"Homework\" in the planner. This noun should be in a plural form.', 'Homework');end
 ALTER TABLE `gibbonPlannerEntry` ADD `homeworkTimeCap` INT(3) NULL DEFAULT NULL AFTER `homeworkDetails`;end
 ALTER TABLE `gibbonPlannerEntry` ADD `homeworkLocation` ENUM('Out of Class','In Class') NULL DEFAULT NULL AFTER `homeworkTimeCap`;end
+ALTER TABLE 'gibbonAlertLevel' CHANGE `color` varchar(7) NOT NULL COMMENT 'RGB Hex, leading #';end
+ALTER TABLE 'gibbonAlertLevel' CHANGE `colorBG` varchar(7) NOT NULL COMMENT 'RGB Hex, leading #';end
+ALTER TABLE 'gibbonTTDay' CHANGE `color` varchar(7) NOT NULL COMMENT 'RGB Hex, leading #';end
+ALTER TABLE 'gibbonTTDay' CHANGE `fontColor` varchar(7) NOT NULL COMMENT 'RGB Hex, leading #';end
 ";
