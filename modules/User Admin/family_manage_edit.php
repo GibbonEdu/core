@@ -275,7 +275,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
             $table->addColumn('name', __('Name'))
                 ->format(function ($adult) use ($guid) {
                     $name = Format::name($adult['title'], $adult['preferredName'], $adult['surname'], 'Parent');
-                    return Format::link('./index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/family_manage_edit_editAdult.php&gibbonPersonID=' . $adult['gibbonPersonID'], $name);
+                    return Format::link('./index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=' . $adult['gibbonPersonID'], $name);
                 });
 
             $table->addColumn('status', __('Status'));
