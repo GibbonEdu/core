@@ -727,12 +727,12 @@ INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `val
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Planner', 'homeworkNamePlural', 'Homework Name - Plural', 'A name to use for \"Homework\" in the planner. This noun should be in a plural form.', 'Homework');end
 ALTER TABLE `gibbonPlannerEntry` ADD `homeworkTimeCap` INT(3) NULL DEFAULT NULL AFTER `homeworkDetails`;end
 ALTER TABLE `gibbonPlannerEntry` ADD `homeworkLocation` ENUM('Out of Class','In Class') NULL DEFAULT NULL AFTER `homeworkTimeCap`;end
-ALTER TABLE 'gibbonAlertLevel' CHANGE color color varchar(7) NOT NULL COMMENT 'RGB Hex, leading #';end
-ALTER TABLE 'gibbonAlertLevel' CHANGE colorBG colorBG varchar(7) NOT NULL COMMENT 'RGB Hex, leading #';end
-UPDATE 'gibbonAlertLevel' SET color=CONCAT('#', color) WHERE NOT color='';end
-UPDATE 'gibbonAlertLevel' SET colorBG=CONCAT('#', colorBG) WHERE NOT colorBG='';end
-ALTER TABLE 'gibbonTTDay' CHANGE color color varchar(7) NOT NULL COMMENT 'RGB Hex, leading #';end
-ALTER TABLE 'gibbonTTDay' CHANGE fontColor fontColor varchar(7) NOT NULL COMMENT 'RGB Hex, leading #';end
-UPDATE 'gibbonTTDay' SET color=CONCAT('#', color) WHERE NOT color='';end
-UPDATE 'gibbonTTDay' SET fontColor=CONCAT('#', fontColor) WHERE NOT fontColor='';end
+ALTER TABLE `gibbonAlertLevel` CHANGE color color varchar(7) NOT NULL COMMENT 'RGB Hex, leading #';end
+ALTER TABLE `gibbonAlertLevel` CHANGE colorBG colorBG varchar(7) NOT NULL COMMENT 'RGB Hex, leading #';end
+UPDATE `gibbonAlertLevel` SET color=CONCAT('#', color) WHERE NOT color='';end
+UPDATE `gibbonAlertLevel` SET colorBG=CONCAT('#', colorBG) WHERE NOT colorBG='';end
+ALTER TABLE `gibbonTTDay` CHANGE color color varchar(7) NOT NULL COMMENT 'RGB Hex, leading #';end
+ALTER TABLE `gibbonTTDay` CHANGE fontColor fontColor varchar(7) NOT NULL COMMENT 'RGB Hex, leading #';end
+UPDATE `gibbonTTDay` SET color=CONCAT('#', color) WHERE NOT color='';end
+UPDATE `gibbonTTDay` SET fontColor=CONCAT('#', fontColor) WHERE NOT fontColor='';end
 ";
