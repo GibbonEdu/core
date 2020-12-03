@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    
+
         $data = array();
         $sql = 'SELECT * FROM gibbonAlertLevel ORDER BY sequenceNumber';
         $result = $connection2->prepare($sql);
@@ -62,17 +62,17 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
             ->required();
 
         $row = $form->addRow();
-        	$row->addLabel('color'.$count, __('Font/Border Color'))->description(__('RGB Hex value, without leading #.'));
-    		$row->addTextField('color'.$count)
+        	$row->addLabel('color'.$count, __('Font/Border Color'))->description(__('Click to select a color.'));
+    		$row->addColor('color['.$count.']')
+                ->addClass('pl-2')
                 ->setValue($rowSQL['color'])
-                ->maxLength(6)
                 ->required();
 
         $row = $form->addRow();
         	$row->addLabel('colorBG'.$count, __('Background Color'))->description(__('RGB Hex value, without leading #.'));
-    		$row->addTextField('colorBG'.$count)
+    		$row->addColor('colorBG['.$count.']')
+                ->addClass('pl-2')
                 ->setValue($rowSQL['colorBG'])
-                ->maxLength(6)
                 ->required();
 
         $row = $form->addRow();
