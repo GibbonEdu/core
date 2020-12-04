@@ -2773,12 +2773,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $options = unserialize($rowHook['options']);
 
                             //Check for permission to hook
-
-                                $dataHook = array('gibbonRoleIDCurrent' => $_SESSION[$guid]['gibbonRoleIDCurrent'], 'sourceModuleName' => $options['sourceModuleName']);
-                                $sqlHook = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action FROM gibbonHook JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE gibbonModule.name='".$options['sourceModuleName']."' AND gibbonAction.name='".$options['sourceModuleAction']."' AND gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent AND name=:sourceModuleName) AND gibbonHook.type='Student Profile' ORDER BY name";
+                                $dataHook = array('gibbonRoleIDCurrent' => $_SESSION[$guid]['gibbonRoleIDCurrent'], 'sourceModuleName' => $options['sourceModuleName'], 'sourceModuleAction' => $options['sourceModuleAction']);
+                                $sqlHook = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action 
+                                    FROM gibbonHook 
+                                    JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID) 
+                                    JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) 
+                                    JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) 
+                                    WHERE gibbonModule.name=:sourceModuleName 
+                                    AND FIND_IN_SET(gibbonAction.name, :sourceModuleAction) 
+                                    AND gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent
+                                    AND gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:sourceModuleName) 
+                                    AND gibbonHook.type='Student Profile' ORDER BY name";
                                 $resultHook = $connection2->prepare($sqlHook);
                                 $resultHook->execute($dataHook);
-                            if ($resultHook->rowcount() != 1) {
+                            if ($resultHook->rowCount() == 0) {
                                 echo "<div class='error'>";
                                 echo __('Your request failed because you do not have access to this action.');
                                 echo '</div>';
@@ -2997,11 +3005,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $options = unserialize($rowHooks['options']);
                             //Check for permission to hook
 
-                                $dataHook = array('gibbonRoleIDCurrent' => $_SESSION[$guid]['gibbonRoleIDCurrent'], 'sourceModuleName' => $options['sourceModuleName']);
-                                $sqlHook = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action FROM gibbonHook JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE gibbonModule.name='".$options['sourceModuleName']."' AND  gibbonAction.name='".$options['sourceModuleAction']."' AND gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent AND name=:sourceModuleName) AND gibbonHook.type='Student Profile' ORDER BY name";
+                                $dataHook = array('gibbonRoleIDCurrent' => $_SESSION[$guid]['gibbonRoleIDCurrent'], 'sourceModuleName' => $options['sourceModuleName'],  'sourceModuleAction' => $options['sourceModuleAction']);
+                                $sqlHook = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action 
+                                        FROM gibbonHook 
+                                        JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID) 
+                                        JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) 
+                                        JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) 
+                                        WHERE gibbonModule.name=:sourceModuleName 
+                                        AND FIND_IN_SET(gibbonAction.name, :sourceModuleAction)
+                                        AND gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent
+                                        AND gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:sourceModuleName) 
+                                        AND gibbonHook.type='Student Profile' 
+                                        ORDER BY name";
                                 $resultHook = $connection2->prepare($sqlHook);
                                 $resultHook->execute($dataHook);
-                            if ($resultHook->rowCount() == 1) {
+                            if ($resultHook->rowCount() >= 1) {
                                 $style = '';
                                 if ($hook == $rowHooks['name'] and $_GET['module'] == $options['sourceModuleName']) {
                                     $style = "style='font-weight: bold'";
