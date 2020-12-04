@@ -63,14 +63,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
 
         $row = $form->addRow();
         	$row->addLabel('color'.$count, __('Font/Border Color'))->description(__('Click to select a color.'));
-    		$row->addColor('color['.$count.']')
+    		$row->addColor("color$count")
                 ->addClass('pl-2')
                 ->setValue($rowSQL['color'])
                 ->required();
 
         $row = $form->addRow();
-        	$row->addLabel('colorBG'.$count, __('Background Color'))->description(__('RGB Hex value, without leading #.'));
-    		$row->addColor('colorBG['.$count.']')
+        	$row->addLabel('colorBG'.$count, __('Background Color'))->description(__('Click to select a color.'));
+    		$row->addColor("colorBG$count")
                 ->addClass('pl-2')
                 ->setValue($rowSQL['colorBG'])
                 ->required();

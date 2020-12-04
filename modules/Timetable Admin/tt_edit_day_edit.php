@@ -75,13 +75,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
 
             $row = $form->addRow();
                 $row->addLabel('color', __('Header Background Colour'))->description(__('RGB Hex value, without leading #.'));
-                $row->addColor('color['.$count.']')
+                $row->addColor("color$count")
                         ->addClass('pl-2')
                         ->setValue($rowSQL['color']);
 
             $row = $form->addRow();
                 $row->addLabel('fontColor', __('Header Font Colour'))->description(__('RGB Hex value, without leading #.'));
-                $row->addColor('fontColor['.$count.']')
+                $row->addColor("fontColor$count")
                         ->addClass('pl-2')
                         ->setValue($rowSQL['fontColor']);
 
