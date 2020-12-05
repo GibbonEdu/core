@@ -1,0 +1,129 @@
+details:
+    type: reportingValuesCourse
+    category: Reports
+    name: Reporting Values by Course
+    table: gibbonReportingValue
+    modes: { update: true, insert: true, export: false }
+access:
+    module: Reports
+    action: Manage Reporting Cycles
+primaryKey:
+    gibbonReportingValueID
+uniqueKeys:
+    - gibbonPersonID
+fields:
+    gibbonSchoolYearID: 
+        name: "School Year"
+        desc: "School year name, as set in School Admin. Must already exist."
+        args: { filter: schoolyear, required: true, custom: true, readonly: [gibbonReportingProgress]  }
+        relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
+    gibbonReportingCycleID: 
+        name: "Reporting Cycle"
+        desc: "Reporting Cycle name"
+        args: { filter: string, required: true, custom: true, readonly: [gibbonReportingProgress]  }
+        relationship: { table: gibbonReportingCycle, key: gibbonReportingCycleID, field: [name, gibbonSchoolYearID]  }
+    gibbonReportingScopeID: 
+        name: "Reporting Scope"
+        desc: "Reporting Scope name"
+        args: { filter: string, required: true, custom: true, readonly: [gibbonReportingValue]  }
+        relationship: { table: gibbonReportingScope, key: gibbonReportingScopeID, field: [name, gibbonReportingCycleID]  }
+    gibbonCourseID: 
+        name: "Course"
+        desc: "Short Name"
+        args: { filter: nospaces, required: true, custom: true, readonly: [gibbonReportingValue, gibbonReportingProgress]  }
+        relationship: { table: gibbonCourse, key: gibbonCourseID, field: [nameShort, gibbonSchoolYearID]  }
+    gibbonCourseClassID: 
+        name: "Class"
+        desc: "Short Name"
+        args: { filter: nospaces, required: true, custom: true, readonly: false  }
+        relationship: { table: gibbonCourseClass, key: gibbonCourseClassID, field: [nameShort, gibbonCourseID]  }
+    target: 
+        name: "Criteria Target"
+        desc: ""
+        value: "Per Student"
+        args: { filter: string, required: true, custom: true, readonly: [gibbonReportingValue]  }
+    gibbonReportingCriteriaID: 
+        name: "Criteria Name"
+        desc: ""
+        args: { filter: string, required: true, custom: true, readonly: false  }
+        relationship: { table: gibbonReportingCriteria, key: gibbonReportingCriteriaID, field: [name, target, gibbonReportingScopeID, gibbonCourseID]  }
+    gibbonPersonIDStudent:
+        name: "Student"
+        desc: "email"
+        args: { filter: email, required: true, readonly: false  }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: email  }
+    value:
+        name: "Value"
+        desc: ""
+        args: { filter: string, custom: false, readonly: false }
+    comment:
+        name: "Comment"
+        desc: ""
+        args: { filter: string, custom: false, readonly: false }
+    gibbonPersonIDCreated:
+        name: "Teacher"
+        desc: "Email"
+        args: { filter: email, custom: true, readonly: false  }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: email  }
+    timestampCreated:
+        name: "Created On"
+        desc: ""
+        args: { filter: timestamp, hidden: true, function: timestamp }
+    gibbonPersonIDModified:
+        name: "Teacher"
+        desc: "Email"
+        args: { filter: email, linked: gibbonPersonIDCreated, readonly: false  }
+    timestampModified:
+        name: "Created On"
+        desc: ""
+        args: { filter: timestamp, hidden: true, function: timestamp }
+    gibbonScaleID:
+        name: "Grade Scale"
+        desc: ""
+        args: { filter: string, linked: gibbonReportingCriteriaID, readonly: [gibbonReportingValue] }
+        relationship: { table: gibbonReportingCriteria, key: gibbonReportingCriteriaID, field: [gibbonScaleID]  }
+    gibbonScaleGradeID:
+        name: "Grade Scale Grade"
+        desc: ""
+        args: { filter: string, linked: value, readonly: false }
+        relationship: { table: gibbonScaleGrade, key: gibbonScaleGradeID, field: [value, gibbonScaleID]  }
+    status: 
+        name: "Status"
+        desc: ""
+        args: { filter: string, required: true, custom: true }
+tables:
+    gibbonReportingValue: 
+        primaryKey:
+            gibbonReportingValueID
+        uniqueKeys:
+            - [gibbonReportingCriteriaID, gibbonPersonIDStudent, gibbonCourseClassID]
+        fields:
+            - gibbonSchoolYearID
+            - gibbonReportingCycleID
+            - gibbonReportingScopeID
+            - gibbonCourseID
+            - gibbonCourseClassID
+            - target
+            - gibbonReportingCriteriaID
+            - gibbonPersonIDStudent
+            - gibbonScaleID
+            - gibbonScaleGradeID
+            - value
+            - comment
+            - gibbonPersonIDCreated
+            - timestampCreated
+            - gibbonPersonIDModified
+            - timestampModified
+    gibbonReportingProgress:
+        primaryKey:
+            gibbonReportingProgressID
+        uniqueKeys:
+            - [gibbonReportingScopeID, gibbonCourseClassID, gibbonPersonIDStudent]
+        fields:
+            - gibbonSchoolYearID
+            - gibbonReportingCycleID
+            - gibbonReportingScopeID
+            - gibbonCourseID
+            - gibbonCourseClassID
+            - gibbonPersonIDStudent
+            - status
