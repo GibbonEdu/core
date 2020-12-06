@@ -25,7 +25,7 @@ function setFirstDayOfTheWeek($connection2, $fdotw, $databaseName)
 {
     $return = true;
 
-    if ($fdotw != 'Monday' and $fdotw != 'Sunday') {
+    if ($fdotw != 'Monday' and $fdotw != 'Sunday' and $fdotw != 'Saturday') {
         $return = false;
     } else {
         //Remove index on sequenceNumber
@@ -48,17 +48,7 @@ function setFirstDayOfTheWeek($connection2, $fdotw, $databaseName)
 
         $nameShort = '';
         for ($i = 1; $i <= 7; ++$i) {
-            if ($fdotw == 'Monday') {
-                switch ($i) {
-                    case 1: { $nameShort = 'Mon'; break; }
-                    case 2: { $nameShort = 'Tue'; break; }
-                    case 3: { $nameShort = 'Wed'; break; }
-                    case 4: { $nameShort = 'Thu'; break; }
-                    case 5: { $nameShort = 'Fri'; break; }
-                    case 6: { $nameShort = 'Sat'; break; }
-                    case 7: { $nameShort = 'Sun'; break; }
-                }
-            } else {
+            if ($fdotw == 'Sunday') {
                 switch ($i) {
                     case 1: { $nameShort = 'Sun'; break; }
                     case 2: { $nameShort = 'Mon'; break; }
@@ -67,6 +57,26 @@ function setFirstDayOfTheWeek($connection2, $fdotw, $databaseName)
                     case 5: { $nameShort = 'Thu'; break; }
                     case 6: { $nameShort = 'Fri'; break; }
                     case 7: { $nameShort = 'Sat'; break; }
+                }
+            } else if ($fdotw == 'Saturday') {
+                switch ($i) {
+                    case 1: { $nameShort = 'Sat'; break; }
+                    case 2: { $nameShort = 'Sun'; break; }
+                    case 3: { $nameShort = 'Mon'; break; }
+                    case 4: { $nameShort = 'Tue'; break; }
+                    case 5: { $nameShort = 'Wed'; break; }
+                    case 6: { $nameShort = 'Thu'; break; }
+                    case 7: { $nameShort = 'Fri'; break; }
+                }
+            } else {
+                switch ($i) {
+                    case 1: { $nameShort = 'Mon'; break; }
+                    case 2: { $nameShort = 'Tue'; break; }
+                    case 3: { $nameShort = 'Wed'; break; }
+                    case 4: { $nameShort = 'Thu'; break; }
+                    case 5: { $nameShort = 'Fri'; break; }
+                    case 6: { $nameShort = 'Sat'; break; }
+                    case 7: { $nameShort = 'Sun'; break; }
                 }
             }
 
@@ -114,7 +124,7 @@ function getModuleManifest($moduleName, $guid)
         include $manifestFile;
         $manifestOK = ($name == $moduleName);
     }
-    
+
     return compact('name', 'description', 'entryURL', 'type', 'category', 'version', 'author', 'url', 'manifestOK');
 }
 
@@ -153,7 +163,7 @@ function getThemeManifest($themeName, $guid)
         include $manifestFile;
         $manifestOK = ($name == $themeName);
     }
-    
+
     return compact('themeName', 'name', 'description', 'version', 'author', 'url', 'responsive', 'manifestOK');
 }
 
