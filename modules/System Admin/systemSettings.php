@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         'Production' => __("Production"),
         'Testing' =>  __("Testing"),
         'Development' =>  __("Development")
-    );        
+    );
     $setting = getSettingByScope($connection2, 'System', 'installType', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
@@ -176,9 +176,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
 
     $firstDayOfTheWeekOptions = array(
         'Monday' => __("Monday"),
-        'Sunday' => __("Sunday")
+        'Sunday' => __("Sunday"),
+        'Saturday' => __("Saturday")
     );
-    
+
     $setting = getSettingByScope($connection2, 'System', 'firstDayOfTheWeek', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
