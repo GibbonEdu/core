@@ -62,7 +62,7 @@ class DataRetentionGateway extends QueryableGateway
         'gibbonINInvestigation' => [['tableKey', 'gibbonPersonIDStudent'],['date',''],['reason',''],['strategiesTried',''],['parentsInformed',''],['parentsResponse',null],['resolutionDetails',null]],
         'gibbonINInvestigationContribution' => [['tableKey', ['gibbonINInvestigation.gibbonPersonIDStudent',' JOIN gibbonINInvestigation ON (gibbonINInvestigationContribution.gibbonINInvestigationID=gibbonINInvestigation.gibbonINInvestigationID)']],['cognition',null],['memory',null],['selfManagement',null],['attention',null],['socialInteraction',null],['communication',null],['comment',null]],
         'gibbonINPersonDescriptor' => [['tableKey', 'gibbonPersonID'],['gibbonINDescriptorID',null],['gibbonAlertLevelID',null]],
-        'gibbonPerson' => [['tableKey', 'gibbonPersonID'],['password','randomString'],['passwordStrong','randomString'],['passwordStrongSalt','randomString'],['address1',''],['address1District',''],['address1Country',''],['address2',''],['address2District',''],['address2Country',''],['phone1Type',''],['phone1CountryCode',''],['phone1',''],['phone3Type',''],['phone3CountryCode',''],['phone3',''],['phone2Type',''],['phone2CountryCode',''],['phone2',''],['phone4Type',''],['phone4CountryCode',''],['phone4',''],['website',''],['languageFirst',''],['languageSecond',''],['languageThird',''],['countryOfBirth',''],['birthCertificateScan',''],['ethnicity',''],['citizenship1',''],['citizenship1Passport',''],['citizenship1PassportExpiry',null],['citizenship1PassportScan',''],['citizenship2',''],['citizenship2Passport',''],['citizenship2PassportExpiry',null],['religion',''],['nationalIDCardNumber',''],['nationalIDCardScan',''],['residencyStatus',''],['visaExpiryDate',null],['profession',''],['employer',''],['jobTitle',''],['emergency1Name',''],['emergency1Number1',''],['emergency1Number2',''],['emergency1Relationship',''],['emergency2Name',''],['emergency2Number1',''],['emergency2Number2',''],['emergency2Relationship',''],['transport',''],['transportNotes',''],['calendarFeedPersonal',''],['lockerNumber',''],['vehicleRegistration',''],['personalBackground',''],['studentAgreements',null],['fields','']],
+        // 'gibbonPerson' => [['tableKey', 'gibbonPersonID'],['password','randomString'],['passwordStrong','randomString'],['passwordStrongSalt','randomString'],['address1',''],['address1District',''],['address1Country',''],['address2',''],['address2District',''],['address2Country',''],['phone1Type',''],['phone1CountryCode',''],['phone1',''],['phone3Type',''],['phone3CountryCode',''],['phone3',''],['phone2Type',''],['phone2CountryCode',''],['phone2',''],['phone4Type',''],['phone4CountryCode',''],['phone4',''],['website',''],['languageFirst',''],['languageSecond',''],['languageThird',''],['countryOfBirth',''],['birthCertificateScan',''],['ethnicity',''],['citizenship1',''],['citizenship1Passport',''],['citizenship1PassportExpiry',null],['citizenship1PassportScan',''],['citizenship2',''],['citizenship2Passport',''],['citizenship2PassportExpiry',null],['religion',''],['nationalIDCardNumber',''],['nationalIDCardScan',''],['residencyStatus',''],['visaExpiryDate',null],['profession',''],['employer',''],['jobTitle',''],['emergency1Name',''],['emergency1Number1',''],['emergency1Number2',''],['emergency1Relationship',''],['emergency2Name',''],['emergency2Number1',''],['emergency2Number2',''],['emergency2Relationship',''],['transport',''],['transportNotes',''],['calendarFeedPersonal',''],['lockerNumber',''],['vehicleRegistration',''],['personalBackground',''],['studentAgreements',null],['fields','']],
         'gibbonPersonMedical' => [['tableKey', 'gibbonPersonID'],['bloodType',''],['longTermMedication',''],['longTermMedicationDetails',''],['tetanusWithin10Years',''],['comment','']],
         'gibbonPersonMedicalCondition' => [['tableKey', ['gibbonPersonMedical.gibbonPersonID',' JOIN gibbonPersonMedical ON (
             gibbonPersonMedicalCondition.gibbonPersonMedicalID=gibbonPersonMedical.gibbonPersonMedicalID)']],['name',''],['gibbonAlertLevelID',null],['triggers',''],['reaction',''],['response',''],['medication',''],['lastEpisode',null],['lastEpisodeTreatment',''],['comment',''],['attachment',null]],
@@ -93,7 +93,7 @@ class DataRetentionGateway extends QueryableGateway
                 ],
             ],
             'Parent Data'               => [
-                'description' => __(''),
+                'description' => __('Clear personal data such as passwords, addresses, phone numbers, id numbers, etc.'),
                 'context' => ['Parent'],
                 'gateways' => [
                     UserGateway::class,
@@ -104,7 +104,7 @@ class DataRetentionGateway extends QueryableGateway
                 'gateways' => [],
             ],
             'Student Data'              => [
-                'description' => __(''),
+                'description' => __('Clear personal data such as passwords, addresses, phone numbers, id numbers, etc.'),
                 'context' => ['Student'],
                 'gateways' => [
                     UserGateway::class,
@@ -129,7 +129,7 @@ class DataRetentionGateway extends QueryableGateway
                 'gateways' => [],
             ],
             'Staff Data'                => [
-                'description' => __(''),
+                'description' => __('Clear personal data such as passwords, addresses, phone numbers, id numbers, etc.'),
                 'context' => ['Staff'],
                 'gateways' => [
                     UserGateway::class,

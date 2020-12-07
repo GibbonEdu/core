@@ -56,6 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/dataRetention
 
     $gatewayFail = false;
     $partialFail = false;
+    $scrubbedTotal = 0;
 
     // Cycle through each selected domain
     foreach ($selectedDomains as $domain) {
@@ -70,16 +71,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/dataRetention
             }
 
             $scrubbed = $gateway->scrub($data['date'], $domain['context'] ?? []);
-            $partialFail &= !$scrubbed;
+            $scrubbedTotal += $scrubbed;
+            $partialFail &= !empty($scrubbed);
         }
     }
-
-    echo '<pre>';
-    print_r($gatewayFail);
-    print_r($partialFail);
-    echo '</pre>';
-    exit;
-
 
     // Todo: write the results to a table?
 
@@ -87,14 +82,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/dataRetention
     setLog($connection2, $gibbon->session->get('gibbonSchoolYearID'), getModuleID($connection2, $_POST["address"]), $gibbon->session->get('gibbonPersonID'), 'Data Retention', array('Status' => (!$partialFail) ? "Success" : "Partial Failure", 'Count' => $processCount));
 
     // Return
-    if ($gatewayFail == true) {
+    if ($gatewayFail) {
         $URL .= '&return=error7';
         header("Location: {$URL}");
-    } elseif ($partialFail == true) {
+    } elseif ($partialFail) {
         $URL .= '&return=warning1';
         header("Location: {$URL}");
     } else {
-        $URL .= '&return=success0';
+        $URL .= '&return=success0&scrubbed='.$scrubbedTotal;
         header("Location: {$URL}");
     }
 }

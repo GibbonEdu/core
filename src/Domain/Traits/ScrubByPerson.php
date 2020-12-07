@@ -52,7 +52,7 @@ trait ScrubByPerson
         return static::$scrubbableColumns;
     }
 
-    public function scrub(string $cutoffDate, array $context = []) : bool
+    public function scrub(string $cutoffDate, array $context = []) : int
     {
         // Select scrubbable records
 
@@ -85,7 +85,7 @@ trait ScrubByPerson
 
         echo get_called_class().' was scrubbed: '.$scrubbedCount;
 
-        return $scrubbedCount == count($scrubbable);
+        return $scrubbedCount;
     }
 
     public function getScrubbableRecords(string $cutoffDate, array $context = []) : array

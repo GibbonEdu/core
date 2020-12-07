@@ -52,7 +52,7 @@ trait ScrubByTimestamp
         return static::$scrubbableColumns;
     }
 
-    public function scrub(string $cutoffDate, array $context = []) : bool
+    public function scrub(string $cutoffDate, array $context = []) : int
     {
         echo get_called_class().' was scrubbed';
 
