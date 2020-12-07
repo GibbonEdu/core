@@ -649,7 +649,7 @@ if ($proceed == false) {
                 $row->addTextField("parent{$i}employer")->maxLength(90)->loadFrom($application);
 
             // CUSTOM FIELDS FOR PARENTS
-            $existingFields = (isset($application["parent{$i}fields"]))? josn_decode($application["parent{$i}fields"]) : null;
+            $existingFields = (isset($application["parent{$i}fields"]))? json_decode($application["parent{$i}fields"]) : null;
             $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
             if ($resultFields->rowCount() > 0) {
                 $row = $form->addRow()->setClass("parentSection{$i}");

@@ -46,6 +46,7 @@ v21.0.00
         System: improved the error page when the database connection fails
         System: improved the update process and added a migration system to handle complex updates
         System: improved consistency in storage of colors in the database
+        System: added ability to set first day of week to Saturday
         Attendance: added an Offsite - Late option for attendance codes
         Departments: improved course/class naming in Class view
         Data Updater: data updates with no changes will be automatically accepted
