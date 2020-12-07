@@ -19,10 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\User;
 
-use Gibbon\Domain\Traits\TableAware;
-use Gibbon\Domain\Traits\SharedUserLogic;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
+use Gibbon\Domain\ScrubbableGateway;
+use Gibbon\Domain\Traits\TableAware;
+use Gibbon\Domain\Traits\ScrubByPerson;
+use Gibbon\Domain\Traits\SharedUserLogic;
 
 /**
  * User Gateway
@@ -30,15 +32,19 @@ use Gibbon\Domain\QueryableGateway;
  * @version v16
  * @since   v16
  */
-class UserGateway extends QueryableGateway
+class UserGateway extends QueryableGateway implements ScrubbableGateway
 {
     use TableAware;
     use SharedUserLogic;
+    use ScrubByPerson;
 
     private static $tableName = 'gibbonPerson';
     private static $primaryKey = 'gibbonPersonID';
 
     private static $searchableColumns = ['preferredName', 'surname', 'username', 'studentID', 'email', 'emailAlternate', 'phone1', 'phone2', 'phone3', 'phone4', 'vehicleRegistration', 'gibbonRole.name'];
+
+    private static $scrubbableKey = false;
+    private static $scrubbableColumns = ['password' => 'randomString', 'passwordStrong' => 'randomString', 'passwordStrongSalt' => 'randomString', 'address1' => '', 'address1District' => '', 'address1Country' => '', 'address2' => '', 'address2District' => '', 'address2Country' => '', 'phone1Type' => '', 'phone1CountryCode' => '', 'phone1' => '', 'phone3Type' => '', 'phone3CountryCode' => '', 'phone3' => '', 'phone2Type' => '', 'phone2CountryCode' => '', 'phone2' => '', 'phone4Type' => '', 'phone4CountryCode' => '', 'phone4' => '', 'website' => '', 'languageFirst' => '', 'languageSecond' => '', 'languageThird' => '', 'countryOfBirth' => '', 'birthCertificateScan' => '', 'ethnicity' => '', 'citizenship1' => '', 'citizenship1Passport' => '', 'citizenship1PassportExpiry' => null, 'citizenship1PassportScan' => '', 'citizenship2' => '', 'citizenship2Passport' => '', 'citizenship2PassportExpiry' => null, 'religion' => '', 'nationalIDCardNumber' => '', 'nationalIDCardScan' => '', 'residencyStatus' => '', 'visaExpiryDate' => null, 'profession' => '', 'employer' => '', 'jobTitle' => '', 'emergency1Name' => '', 'emergency1Number1' => '', 'emergency1Number2' => '', 'emergency1Relationship' => '', 'emergency2Name' => '', 'emergency2Number1' => '', 'emergency2Number2' => '', 'emergency2Relationship' => '', 'transport' => '', 'transportNotes' => '', 'calendarFeedPersonal' => '', 'lockerNumber' => '', 'vehicleRegistration' => '', 'personalBackground' => '', 'studentAgreements' =>null, 'fields' => ''];
 
     /**
      * Queries the list of users for the Manage Users page.
