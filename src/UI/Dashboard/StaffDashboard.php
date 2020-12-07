@@ -73,6 +73,8 @@ class StaffDashboard implements OutputableInterface
 
         $return = false;
 
+        $homeworkNameSingular = getSettingByScope($connection2, 'Planner', 'homeworkNameSingular');
+
         //GET PLANNER
         $planner = false;
         $date = date('Y-m-d');
@@ -131,7 +133,7 @@ class StaffDashboard implements OutputableInterface
             $planner .= "<span style='font-size: 85%; font-style: italic'>".__('Unit').'</span>';
             $planner .= '</th>';
             $planner .= '<th>';
-            $planner .= __('Homework');
+            $planner .= __($homeworkNameSingular);
             $planner .= '</th>';
             $planner .= '<th>';
             $planner .= __('Summary');

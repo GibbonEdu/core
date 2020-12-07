@@ -38,6 +38,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
     } else {
         //Set variables
         $today = date('Y-m-d');
+        $homeworkNameSingular = getSettingByScope($connection2, 'Planner', 'homeworkNameSingular');
+        $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
 
         //Proceed!
         //Get viewBy, date and class variables
@@ -240,7 +242,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                     echo __('Time');
                                     echo '</th>';
                                     echo '<th>';
-                                    echo __('Homework');
+                                    echo __($homeworkNameSingular);
                                     echo '</th>';
                                     echo '<th>';
                                     echo __('Access');
@@ -374,7 +376,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                         echo __('Time');
                                         echo '</th>';
                                         echo '<th>';
-                                        echo __('Homework');
+                                        echo __($homeworkNameSingular);
                                         echo '</th>';
                                         echo '<th>';
                                         echo __('Access');
@@ -537,7 +539,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                         echo __('Time');
                         echo '</th>';
                         echo '<th>';
-                        echo __('Homework');
+                        echo __($homeworkNameSingular);
                         echo '</th>';
                         echo '<th>';
                         echo __('Access');
@@ -732,7 +734,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                 echo __('Time');
                                 echo '</th>';
                                 echo '<th>';
-                                echo __('Homework');
+                                echo __($homeworkNameSingular);
                                 echo '</th>';
                                 echo '<th>';
                                 echo __('Access');
