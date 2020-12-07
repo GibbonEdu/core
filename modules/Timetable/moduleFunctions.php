@@ -145,7 +145,7 @@ function getSpaceBookingEventsSpace($guid, $connection2, $startDayStamp, $gibbon
 {
     $return = false;
 
-    
+
         $dataSpaceBooking = array('gibbonSpaceID' => $gibbonSpaceID);
         $sqlSpaceBooking = "SELECT gibbonTTSpaceBooking.*, name, title, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonSpace ON (gibbonTTSpaceBooking.foreignKeyID=gibbonSpace.gibbonSpaceID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignKey='gibbonSpaceID' AND gibbonTTSpaceBooking.foreignKeyID=:gibbonSpaceID AND date>='".date('Y-m-d', $startDayStamp)."' AND  date<='".date('Y-m-d', ($startDayStamp + (7 * 24 * 60 * 60)))."' ORDER BY date, timeStart, name";
         $resultSpaceBooking = $connection2->prepare($sqlSpaceBooking);
@@ -182,7 +182,7 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
 
         $service = $container->get('Google_Service_Calendar');
         $getFail = empty($service);
-        
+
         $calendarListEntry = array();
         try {
             $optParams = array('timeMin' => $start.'+00:00', 'timeMax' => $end.'+00:00', 'singleEvents' => true);
@@ -282,7 +282,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                 $proceed = true;
             }
         } else if ($highestAction == 'View Timetable by Person_myChildren') {
-            
+
                 $data = array('gibbonPersonID1' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonID2' => $gibbonPersonID);
                 $sql = "SELECT gibbonFamilyChild.gibbonPersonID FROM gibbonFamilyChild
                     JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID)
@@ -830,7 +830,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
                     unset($rowDay);
                     $color = '';
-                    
+
                         $dataDay = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))), 'gibbonTTID' => $gibbonTTID);
                         $sqlDay = 'SELECT nameShort, color, fontColor FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) WHERE date=:date AND gibbonTTID=:gibbonTTID';
                         $resultDay = $connection2->prepare($sqlDay);
@@ -838,10 +838,10 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     if ($resultDay->rowCount() == 1) {
                         $rowDay = $resultDay->fetch();
                         if ($rowDay['color'] != '') {
-                            $color .= "; background-color: #".$rowDay['color']."; background-image: none";
+                            $color .= "; background-color: ".$rowDay['color']."; background-image: none";
                         }
                         if ($rowDay['fontColor'] != '') {
-                            $color .= "; color: #".$rowDay['fontColor'];
+                            $color .= "; color: ".$rowDay['fontColor'];
                         }
                     }
 
@@ -1014,7 +1014,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
     $allDay = 0;
 
     if ($schoolOpen == false) {
-        
+
             $dataSpecialDay = array('date' => $date);
             $sqlSpecialDay = "SELECT name, description FROM gibbonSchoolYearSpecialDay WHERE date=:date";
             $resultSpecialDay = $connection2->prepare($sqlSpecialDay);
@@ -1125,7 +1125,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
     } else {
         //Make array of space changes
         $spaceChanges = array();
-        
+
             $dataSpaceChange = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))));
             $sqlSpaceChange = 'SELECT gibbonTTSpaceChange.*, gibbonSpace.name AS space, phoneInternal FROM gibbonTTSpaceChange LEFT JOIN gibbonSpace ON (gibbonTTSpaceChange.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE date=:date';
             $resultSpaceChange = $connection2->prepare($sqlSpaceChange);
@@ -1846,7 +1846,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                         $output .= __($day['nameShort']).'<br/>';
                     }
                     else {
-                        
+
                             $dataDay = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))), 'gibbonTTID' => $gibbonTTID);
                             $sqlDay = 'SELECT nameShort FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) WHERE date=:date AND gibbonTTID=:gibbonTTID';
                             $resultDay = $connection2->prepare($sqlDay);
@@ -2013,7 +2013,7 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
 
     //Make array of space changes
     $spaceChanges = array();
-    
+
         $dataSpaceChange = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))));
         $sqlSpaceChange = 'SELECT gibbonTTSpaceChange.*, gibbonSpace.name AS space, phoneInternal FROM gibbonTTSpaceChange LEFT JOIN gibbonSpace ON (gibbonTTSpaceChange.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE date=:date';
         $resultSpaceChange = $connection2->prepare($sqlSpaceChange);
@@ -2130,10 +2130,10 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                     $output .= '<i>'.substr($effectiveStart, 0, 5).'-'.substr($effectiveEnd, 0, 5).'</i><br/>';
 
                     if ($_SESSION[$guid]['viewCalendarSpaceBooking'] == 'Y' && isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_manage_add.php') && $date >= date('Y-m-d')) {
-                        $overlappingBookings = array_filter(is_array($eventsSpaceBooking)? $eventsSpaceBooking : [], 
+                        $overlappingBookings = array_filter(is_array($eventsSpaceBooking)? $eventsSpaceBooking : [],
                             function ($event) use ($date, $effectiveStart, $effectiveEnd) {
                                 return ($event[3] == $date) && ( ($event[4] >= $effectiveStart && $event[4] < $effectiveEnd) || ($effectiveStart >= $event[4] && $effectiveStart < $event[5]) );
-                            }); 
+                            });
 
                         if (empty($overlappingBookings)) {
                             $output .= "<a style='pointer-events: auto; position: absolute; right: 5px; bottom: 5px;' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable/spaceBooking_manage_add.php&gibbonSpaceID='.$gibbonSpaceID.'&date='.$date.'&timeStart='.$effectiveStart.'&timeEnd='.$effectiveEnd."&source=tt'><img style='' title='".__('Add Facility Booking')."' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
