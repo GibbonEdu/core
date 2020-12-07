@@ -74,6 +74,9 @@ class StudentHistoryData
         if ($firstDayOfTheWeek == 'Sunday' && in_array('Sunday', $daysOfWeek)) {
             $daysOfWeek = array('Sun' => 'Sunday') + $daysOfWeek;
         }
+        if ($firstDayOfTheWeek == 'Saturday' && in_array('Saturday', $daysOfWeek)) {
+            $daysOfWeek = array('Sat' => 'Saturday') + $daysOfWeek;
+        }
 
         // Get Terms
         $criteria = $this->termGateway->newQueryCriteria(true)
