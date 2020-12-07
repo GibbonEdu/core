@@ -749,4 +749,5 @@ INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001',
 CREATE TABLE `gibbonDataRetention` (`gibbonDataRetentionID` int(11) unsigned zerofill NOT NULL AUTO_INCREMENT,`gibbonPersonID` int(10) unsigned zerofill NOT NULL,`tables` text NOT NULL,`status` enum('Success','Partial Failure') DEFAULT NULL,`timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,`gibbonPersonIDOperator` int(10) unsigned zerofill NOT NULL,PRIMARY KEY (`gibbonDataRetentionID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
 ALTER TABLE `gibbonINPersonDescriptor` CHANGE `gibbonINDescriptorID` `gibbonINDescriptorID` int(3) unsigned zerofill NULL DEFAULT NULL;end
 ALTER TABLE `gibbonINPersonDescriptor` CHANGE `gibbonAlertLevelID` `gibbonAlertLevelID` int(3) unsigned zerofill NULL DEFAULT NULL;
+UPDATE `gibbonSetting` SET `name` = 'dataRetentionDomains', `nameDisplay` = 'Data Retention Domains', `description` = 'A list of areas to pre-select when undertaking data retention work.', `value` = '' WHERE `scope` = 'System' AND `name` = 'dataRetentionTables';end
 ";

@@ -21,7 +21,12 @@ namespace Gibbon\Domain\System;
 
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Traits\TableAware;
+use Gibbon\Domain\Finance\InvoiceeGateway;
+use Gibbon\Domain\Behaviour\BehaviourGateway;
+use Gibbon\Domain\Behaviour\BehaviourLetterGateway;
+use Gibbon\Domain\DataUpdater\FinanceUpdateGateway;
 
 /**
  * Log Gateway
@@ -36,35 +41,106 @@ class DataRetentionGateway extends QueryableGateway
     private static $tableName = 'gibbonDataRetention';
     private static $primaryKey = 'gibbonDataRetentionID';
 
+    // ['gibbonPersonID', 'gibbonFinanceInvoicee', 'gibbonFinanceInvoiceeID']
+
     /*
      * tableKey denotes the following:
      *  string - standard case
      *  array - more complex case requiring a join
     */
     protected $allTables = [
-        'gibbonBehaviour' => [['tableKey', 'gibbonPersonID'],['descriptor',null], ['level',null], ['comment','emptyString'], ['followup','emptyString']],
-        'gibbonBehaviourLetter' => [['tableKey', 'gibbonPersonID'],['body','emptyString']],
-        'gibbonFamilyAdult' => [['tableKey', 'gibbonPersonID'],['comment','emptyString']],
-        'gibbonFamilyChild' => [['tableKey', 'gibbonPersonID'],['comment','emptyString']],
-        'gibbonFinanceInvoicee' => [['tableKey', 'gibbonPersonID'],['companyContact',null],['companyAddress',null],['companyEmail',null],['companyCCFamily',null],['companyPhone',null]],
-        'gibbonFinanceInvoiceeUpdate' => [['tableKey', ['gibbonFinanceInvoicee.gibbonPersonID',' JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoiceeUpdate.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID)']],['companyName',null],['companyContact',null],['companyAddress',null],['companyEmail',null],['companyCCFamily',null],['companyPhone',null],['companyAll',null]],
-        'gibbonFirstAid' => [['tableKey', 'gibbonPersonIDPatient'],['description','emptyString'],['actionTaken','emptyString'],['followUp','emptyString']],
-        'gibbonFirstAidFollowup' => [['tableKey', ['gibbonFirstAid.gibbonPersonIDPatient',' JOIN gibbonFirstAid ON (gibbonFirstAidFollowUp.gibbonFirstAidID=gibbonFirstAid.gibbonFirstAidID)']],['followUp','emptyString']],
-        'gibbonIN' => [['tableKey', 'gibbonPersonID'],['strategies','emptyString'],['targets','emptyString'],['notes','emptyString']],
-        'gibbonINArchive' => [['tableKey', 'gibbonPersonID'],['strategies','emptyString'],['targets','emptyString'],['notes','emptyString'],['descriptors','emptyString']],
-        'gibbonINInvestigation' => [['tableKey', 'gibbonPersonIDStudent'],['date','emptyString'],['reason','emptyString'],['strategiesTried','emptyString'],['parentsInformed','emptyString'],['parentsResponse',null],['resolutionDetails',null]],
+        // 'gibbonBehaviour' => [['tableKey', 'gibbonPersonID'],['descriptor',null], ['level',null], ['comment',''], ['followup','']],
+        // 'gibbonBehaviourLetter' => [['tableKey', 'gibbonPersonID'],['body','']],
+        'gibbonFamilyAdult' => [['tableKey', 'gibbonPersonID'],['comment','']],
+        'gibbonFamilyChild' => [['tableKey', 'gibbonPersonID'],['comment','']],
+        // 'gibbonFinanceInvoicee' => [['tableKey', 'gibbonPersonID'],['companyContact',null],['companyAddress',null],['companyEmail',null],['companyCCFamily',null],['companyPhone',null]],
+        // 'gibbonFinanceInvoiceeUpdate' => [['tableKey', ['gibbonFinanceInvoicee.gibbonPersonID',' JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoiceeUpdate.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID)']],['companyName',null],['companyContact',null],['companyAddress',null],['companyEmail',null],['companyCCFamily',null],['companyPhone',null],['companyAll',null]],
+        'gibbonFirstAid' => [['tableKey', 'gibbonPersonIDPatient'],['description',''],['actionTaken',''],['followUp','']],
+        'gibbonFirstAidFollowup' => [['tableKey', ['gibbonFirstAid.gibbonPersonIDPatient',' JOIN gibbonFirstAid ON (gibbonFirstAidFollowUp.gibbonFirstAidID=gibbonFirstAid.gibbonFirstAidID)']],['followUp','']],
+        'gibbonIN' => [['tableKey', 'gibbonPersonID'],['strategies',''],['targets',''],['notes','']],
+        'gibbonINArchive' => [['tableKey', 'gibbonPersonID'],['strategies',''],['targets',''],['notes',''],['descriptors','']],
+        'gibbonINInvestigation' => [['tableKey', 'gibbonPersonIDStudent'],['date',''],['reason',''],['strategiesTried',''],['parentsInformed',''],['parentsResponse',null],['resolutionDetails',null]],
         'gibbonINInvestigationContribution' => [['tableKey', ['gibbonINInvestigation.gibbonPersonIDStudent',' JOIN gibbonINInvestigation ON (gibbonINInvestigationContribution.gibbonINInvestigationID=gibbonINInvestigation.gibbonINInvestigationID)']],['cognition',null],['memory',null],['selfManagement',null],['attention',null],['socialInteraction',null],['communication',null],['comment',null]],
         'gibbonINPersonDescriptor' => [['tableKey', 'gibbonPersonID'],['gibbonINDescriptorID',null],['gibbonAlertLevelID',null]],
-        'gibbonPerson' => [['tableKey', 'gibbonPersonID'],['password','randomString'],['passwordStrong','randomString'],['passwordStrongSalt','randomString'],['address1','emptyString'],['address1District','emptyString'],['address1Country','emptyString'],['address2','emptyString'],['address2District','emptyString'],['address2Country','emptyString'],['phone1Type','emptyString'],['phone1CountryCode','emptyString'],['phone1','emptyString'],['phone3Type','emptyString'],['phone3CountryCode','emptyString'],['phone3','emptyString'],['phone2Type','emptyString'],['phone2CountryCode','emptyString'],['phone2','emptyString'],['phone4Type','emptyString'],['phone4CountryCode','emptyString'],['phone4','emptyString'],['website','emptyString'],['languageFirst','emptyString'],['languageSecond','emptyString'],['languageThird','emptyString'],['countryOfBirth','emptyString'],['birthCertificateScan','emptyString'],['ethnicity','emptyString'],['citizenship1','emptyString'],['citizenship1Passport','emptyString'],['citizenship1PassportExpiry',null],['citizenship1PassportScan','emptyString'],['citizenship2','emptyString'],['citizenship2Passport','emptyString'],['citizenship2PassportExpiry',null],['religion','emptyString'],['nationalIDCardNumber','emptyString'],['nationalIDCardScan','emptyString'],['residencyStatus','emptyString'],['visaExpiryDate',null],['profession','emptyString'],['employer','emptyString'],['jobTitle','emptyString'],['emergency1Name','emptyString'],['emergency1Number1','emptyString'],['emergency1Number2','emptyString'],['emergency1Relationship','emptyString'],['emergency2Name','emptyString'],['emergency2Number1','emptyString'],['emergency2Number2','emptyString'],['emergency2Relationship','emptyString'],['transport','emptyString'],['transportNotes','emptyString'],['calendarFeedPersonal','emptyString'],['lockerNumber','emptyString'],['vehicleRegistration','emptyString'],['personalBackground','emptyString'],['studentAgreements',null],['fields','emptyString']],
-        'gibbonPersonMedical' => [['tableKey', 'gibbonPersonID'],['bloodType','emptyString'],['longTermMedication','emptyString'],['longTermMedicationDetails','emptyString'],['tetanusWithin10Years','emptyString'],['comment','emptyString']],
+        'gibbonPerson' => [['tableKey', 'gibbonPersonID'],['password','randomString'],['passwordStrong','randomString'],['passwordStrongSalt','randomString'],['address1',''],['address1District',''],['address1Country',''],['address2',''],['address2District',''],['address2Country',''],['phone1Type',''],['phone1CountryCode',''],['phone1',''],['phone3Type',''],['phone3CountryCode',''],['phone3',''],['phone2Type',''],['phone2CountryCode',''],['phone2',''],['phone4Type',''],['phone4CountryCode',''],['phone4',''],['website',''],['languageFirst',''],['languageSecond',''],['languageThird',''],['countryOfBirth',''],['birthCertificateScan',''],['ethnicity',''],['citizenship1',''],['citizenship1Passport',''],['citizenship1PassportExpiry',null],['citizenship1PassportScan',''],['citizenship2',''],['citizenship2Passport',''],['citizenship2PassportExpiry',null],['religion',''],['nationalIDCardNumber',''],['nationalIDCardScan',''],['residencyStatus',''],['visaExpiryDate',null],['profession',''],['employer',''],['jobTitle',''],['emergency1Name',''],['emergency1Number1',''],['emergency1Number2',''],['emergency1Relationship',''],['emergency2Name',''],['emergency2Number1',''],['emergency2Number2',''],['emergency2Relationship',''],['transport',''],['transportNotes',''],['calendarFeedPersonal',''],['lockerNumber',''],['vehicleRegistration',''],['personalBackground',''],['studentAgreements',null],['fields','']],
+        'gibbonPersonMedical' => [['tableKey', 'gibbonPersonID'],['bloodType',''],['longTermMedication',''],['longTermMedicationDetails',''],['tetanusWithin10Years',''],['comment','']],
         'gibbonPersonMedicalCondition' => [['tableKey', ['gibbonPersonMedical.gibbonPersonID',' JOIN gibbonPersonMedical ON (
-            gibbonPersonMedicalCondition.gibbonPersonMedicalID=gibbonPersonMedical.gibbonPersonMedicalID)']],['name','emptyString'],['gibbonAlertLevelID',null],['triggers','emptyString'],['reaction','emptyString'],['response','emptyString'],['medication','emptyString'],['lastEpisode',null],['lastEpisodeTreatment','emptyString'],['comment','emptyString'],['attachment',null]],
-        'gibbonPersonMedicalConditionUpdate' => [['tableKey', ['gibbonPersonMedical.gibbonPersonID',' JOIN gibbonPersonMedical ON (gibbonPersonMedicalConditionUpdate.gibbonPersonMedicalID=gibbonPersonMedical.gibbonPersonMedicalID)']],['name','emptyString'],['gibbonAlertLevelID',null],['triggers','emptyString'],['reaction','emptyString'],['response','emptyString'],['medication','emptyString'],['lastEpisode',null],['lastEpisodeTreatment','emptyString'],['comment','emptyString'],['attachment',null]],
-        'gibbonPersonMedicalUpdate' => [['tableKey', 'gibbonPersonID'],['bloodType','emptyString'],['longTermMedication','emptyString'],['longTermMedicationDetails','emptyString'],['tetanusWithin10Years','emptyString'],['comment','emptyString']],
-        'gibbonPersonUpdate' => [['tableKey', 'gibbonPersonID'],['address1','emptyString'],['address1District','emptyString'],['address1Country','emptyString'],['address2','emptyString'],['address2District','emptyString'],['address2Country','emptyString'],['phone1Type','emptyString'],['phone1CountryCode','emptyString'],['phone1','emptyString'],['phone3Type','emptyString'],['phone3CountryCode','emptyString'],['phone3','emptyString'],['phone2Type','emptyString'],['phone2CountryCode','emptyString'],['phone2','emptyString'],['phone4Type','emptyString'],['phone4CountryCode','emptyString'],['phone4','emptyString'],['languageFirst','emptyString'],['languageSecond','emptyString'],['languageThird','emptyString'],['countryOfBirth','emptyString'],['ethnicity','emptyString'],['citizenship1','emptyString'],['citizenship1Passport','emptyString'],['citizenship1PassportExpiry',null],['citizenship2','emptyString'],['citizenship2Passport','emptyString'],['citizenship2PassportExpiry',null],['religion','emptyString'],['nationalIDCardCountry','emptyString'],['nationalIDCardNumber','emptyString'],['residencyStatus','emptyString'],['visaExpiryDate',null],['profession',null],['employer',null],['jobTitle',null],['emergency1Name',null],['emergency1Number1',null],['emergency1Number2',null],['emergency1Relationship',null],['emergency2Name',null],['emergency2Number1',null],['emergency2Number2',null],['emergency2Relationship',null],['vehicleRegistration','emptyString'],['fields','emptyString'],],
+            gibbonPersonMedicalCondition.gibbonPersonMedicalID=gibbonPersonMedical.gibbonPersonMedicalID)']],['name',''],['gibbonAlertLevelID',null],['triggers',''],['reaction',''],['response',''],['medication',''],['lastEpisode',null],['lastEpisodeTreatment',''],['comment',''],['attachment',null]],
+        'gibbonPersonMedicalConditionUpdate' => [['tableKey', ['gibbonPersonMedical.gibbonPersonID',' JOIN gibbonPersonMedical ON (gibbonPersonMedicalConditionUpdate.gibbonPersonMedicalID=gibbonPersonMedical.gibbonPersonMedicalID)']],['name',''],['gibbonAlertLevelID',null],['triggers',''],['reaction',''],['response',''],['medication',''],['lastEpisode',null],['lastEpisodeTreatment',''],['comment',''],['attachment',null]],
+        'gibbonPersonMedicalUpdate' => [['tableKey', 'gibbonPersonID'],['bloodType',''],['longTermMedication',''],['longTermMedicationDetails',''],['tetanusWithin10Years',''],['comment','']],
+        'gibbonPersonUpdate' => [['tableKey', 'gibbonPersonID'],['address1',''],['address1District',''],['address1Country',''],['address2',''],['address2District',''],['address2Country',''],['phone1Type',''],['phone1CountryCode',''],['phone1',''],['phone3Type',''],['phone3CountryCode',''],['phone3',''],['phone2Type',''],['phone2CountryCode',''],['phone2',''],['phone4Type',''],['phone4CountryCode',''],['phone4',''],['languageFirst',''],['languageSecond',''],['languageThird',''],['countryOfBirth',''],['ethnicity',''],['citizenship1',''],['citizenship1Passport',''],['citizenship1PassportExpiry',null],['citizenship2',''],['citizenship2Passport',''],['citizenship2PassportExpiry',null],['religion',''],['nationalIDCardCountry',''],['nationalIDCardNumber',''],['residencyStatus',''],['visaExpiryDate',null],['profession',null],['employer',null],['jobTitle',null],['emergency1Name',null],['emergency1Number1',null],['emergency1Number2',null],['emergency1Relationship',null],['emergency2Name',null],['emergency2Number1',null],['emergency2Number2',null],['emergency2Relationship',null],['vehicleRegistration',''],['fields',''],],
         'gibbonStaffAbsence' => [['tableKey', 'gibbonPersonID'],['commentConfidential',null]],
-        'gibbonStudentNote' => [['tableKey', 'gibbonPersonID'],['note','emptyString']],
+        'gibbonStudentNote' => [['tableKey', 'gibbonPersonID'],['note','']],
     ];
+
+    public function getDomains()
+    {
+        return [
+            'Behaviour Records' => [
+                'description' => __('Clear all behaviour data including positive and negative behaviour records and any behaviour letters sent to parents.'), 
+                'context' => ['Student'],
+                'gateways' => [
+                    BehaviourGateway::class,
+                    BehaviourLetterGateway::class
+                ] 
+            ],
+            'Individual Needs'          => [
+                'description' => __(''),
+                'context' => ['Student'],
+                'gateways' => [
+                    InvoiceeGateway::class,
+                    FinanceUpdateGateway::class,
+                ],
+            ],
+            'Parent Data'               => [
+                'description' => __(''),
+                'context' => ['Parent'],
+                'gateways' => [
+                    UserGateway::class,
+                ],
+            ],
+            'Family Data'               => [
+                'description' => __(''),
+                'gateways' => [],
+            ],
+            'Student Data'              => [
+                'description' => __(''),
+                'context' => ['Student'],
+                'gateways' => [
+                    UserGateway::class,
+                ],
+            ],
+            'Medical Data'              => [
+                'description' => __(''),
+                'context' => ['Student'],
+                'gateways' => [],
+            ],
+            'Finance Data'              => [
+                'description' => __(''),
+                'context' => ['Student'],
+                'gateways' => [
+                    InvoiceeGateway::class,
+                    FinanceUpdateGateway::class,
+                ],
+            ],
+            'Student Application Forms' => [
+                'description' => __(''),
+                'context' => ['Student'],
+                'gateways' => [],
+            ],
+            'Staff Data'                => [
+                'description' => __(''),
+                'context' => ['Staff'],
+                'gateways' => [
+                    UserGateway::class,
+                ],
+            ],
+            'Staff Application Forms'   => [
+                'description' => __(''),
+                'gateways' => [],
+            ],
+        ];
+    }
 
     public function getAllTables()
     {
@@ -109,7 +185,7 @@ class DataRetentionGateway extends QueryableGateway
                 // Data array replace
                 $data = array_map(
                     function($value) {
-                        $value = str_replace('emptyString', '', $value);
+                        $value = str_replace('', '', $value);
                         $value = str_replace('randomString', randomPassword(20), $value);
                         return $value;
                     },

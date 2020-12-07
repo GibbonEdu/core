@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\System\DataRetentionGateway;
 
@@ -38,32 +39,42 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/dataRetention
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-    $categories = array(
-        'Staff'   => __('Staff'),
-        'Student' => __('Student'),
-        'Parent'  => __('Parent'),
-        'Other'   => __('Other'),
-    );
-    $row = $form->addRow();
-        $row->addLabel('category', __('Category'))->description(__('Based on Primary Role only'));
-        $row->addSelect('category')->fromArray($categories)->required()->placeholder();
+    // $categories = array(
+    //     'Staff'   => __('Staff'),
+    //     'Student' => __('Student'),
+    //     'Parent'  => __('Parent'),
+    //     'Other'   => __('Other'),
+    // );
+    // $row = $form->addRow();
+    //     $row->addLabel('category', __('Category'))->description(__('Based on Primary Role only'));
+    //     $row->addSelect('category')->fromArray($categories)->required()->placeholder();
+
+    // $row = $form->addRow();
+    //     $row->addLabel('status', __('Status'));
+    //     $row->addTextField('status')->readonly()->required()->setValue(__('Left'));
 
     $row = $form->addRow();
-        $row->addLabel('status', __('Status'));
-        $row->addTextField('status')->readonly()->required()->setValue(__('Left'));
-
-    $row = $form->addRow();
-        $row->addLabel('date', __('Date'))->description(__("Include users with an end date preceeding this date.")."<br/>".__("Last login is used as a fallback"));
+        $row->addLabel('date', __('Cutoff Date'))->description(__("Include users with an end date preceeding this date.")."<br/>".__("Last login is used as a fallback"));
         $row->addDate('date')->required();
 
     $dataRetentionGateway = $container->get(DataRetentionGateway::class);
-    $tables = array_keys($dataRetentionGateway->getAllTables());
+    $checked = explode(',', $container->get(SettingGateway::class)->getSettingByScope('System', 'dataRetentionDomains'));
+    $domains = $dataRetentionGateway->getDomains();
 
-    $checked = explode(",", $container->get(SettingGateway::class)->getSettingByScope('System', 'dataRetentionTables'));
+    $col = $form->addRow()->addColumn();
+        $col->addLabel('domains', __('Category'))
+            ->description(__('Areas of the system to scrub. The current selection will persist.'));
 
-    $row = $form->addRow();
-        $row->addLabel('tables', __('Tables'))->description(__('Database tables to scrub.')."<br/>".__('The current selection will persist.'));
-        $row->addCheckbox('tables')->fromArray($tables)->addCheckAllNone()->checked($checked);
+        foreach ($domains as $name => $domain) {
+            $description = '<div class="flex-1 text-left"><span class="text-base leading-normal">'.__($name).'</span><br/><span class="text-xxs text-gray-600">'.($domain['description'] ?? '' ).'</span></div>';
+            $col->addCheckbox("domains[{$name}]")
+                ->setValue($name)
+                ->checked(in_array($name, $checked) ? $name : '')
+                ->description($description)
+                ->alignRight()
+                ->setLabelClass('w-full')
+                ->addClass('border rounded p-6 my-2 bg-blue-100');
+        }
 
     $row = $form->addRow();
         $row->addFooter();

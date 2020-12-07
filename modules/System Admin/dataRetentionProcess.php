@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
-use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\ScrubbableGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\System\DataRetentionGateway;
 
@@ -31,58 +31,70 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/dataRetention
     header("Location: {$URL}");
 } else {
     $data = [
-        'category' => $_POST['category'] ?? null,
         'date' => (!empty($_POST['date'])) ? Format::dateConvert($_POST['date']) : null,
-        'tables' => $_POST['tables'] ?? []
+        'domains' => $_POST['domains'] ?? []
     ];
 
     // Validate Inputs
-    if ($data['category'] == '' OR $data['date'] == '' OR count($data['tables']) < 1) {
+    if ($data['date'] == '' OR count($data['domains']) < 1) {
         $URL .= '&return=error3';
         header("Location: {$URL}");
-    } else {
-        // Ensure table selection persists
-        $container->get(SettingGateway::class)->updateSettingByScope('System', 'dataRetentionTables', implode(",", $data['tables']));
+        return;
+    } 
 
-        // Prepare data retention gateway
-        $dataRetentionGateway = $container->get(DataRetentionGateway::class);
+    // Ensure table selection persists
+    $container->get(SettingGateway::class)->updateSettingByScope('System', 'dataRetentionDomains', implode(',', $data['domains']));
 
-        // Locate Users
-        $userGateway = $container->get(UserGateway::class);
-        $users = $userGateway->selectUserNamesByStatus(['Left'], $data['category'])->fetchAll();
+    // Prepare data retention gateway
+    $dataRetentionGateway = $container->get(DataRetentionGateway::class);
 
-        // Cycle through users
-        $partialFail = false;
+    $allDomains = $dataRetentionGateway->getDomains();
+    $selectedDomains = array_filter($allDomains, function ($key) use (&$data) {
+        return in_array($key, $data['domains']);
+    }, ARRAY_FILTER_USE_KEY);
 
-        $processCount = 0;
-        foreach ($users as $user) {
-            //Check dateEnd and last login
-            $proceed = false;
-            if (!empty($user['dateEnd'])) {
-                $proceed = ($user['dateEnd'] < $data['date']);
-            } else if (!empty($user['lastTimestamp'])) {
-                $proceed = (substr($user['lastTimestamp'], 0, 10) < $data['date']);
-            } else {
-                $proceed = true;
+
+    $gatewayFail = false;
+    $partialFail = false;
+
+    // Cycle through each selected domain
+    foreach ($selectedDomains as $domain) {
+        if (empty($domain['gateways'])) continue;
+
+        // Cycle through each gateway and scrub data
+        foreach ($domain['gateways'] as $gatewayClass) {
+            $gateway = $container->get($gatewayClass);
+
+            if (!$gateway instanceof ScrubbableGateway) {
+                $gatewayFail = true;
             }
 
-            if ($proceed) {
-                if (!$dataRetentionGateway->runUserScrub($gibbon, $connection2, $user['gibbonPersonID'], $data['tables'])){
-                    $partialFail = true;
-                }
-                $processCount ++;
-            }
+            $scrubbed = $gateway->scrub($data['date'], $domain['context'] ?? []);
+            $partialFail &= !$scrubbed;
         }
+    }
 
-        //Write to log
-        setLog($connection2, $gibbon->session->get('gibbonSchoolYearID'), getModuleID($connection2, $_POST["address"]), $gibbon->session->get('gibbonPersonID'), 'Data Retention', array('Status' => (!$partialFail) ? "Success" : "Partial Failure", 'Count' => $processCount));
-        //Return
-        if ($partialFail == true) {
-           $URL .= '&return=warning1';
-           header("Location: {$URL}");
-       } else {
-           $URL .= '&return=success0';
-           header("Location: {$URL}");
-       }
+    echo '<pre>';
+    print_r($gatewayFail);
+    print_r($partialFail);
+    echo '</pre>';
+    exit;
+
+
+    // Todo: write the results to a table?
+
+    // Write to log
+    setLog($connection2, $gibbon->session->get('gibbonSchoolYearID'), getModuleID($connection2, $_POST["address"]), $gibbon->session->get('gibbonPersonID'), 'Data Retention', array('Status' => (!$partialFail) ? "Success" : "Partial Failure", 'Count' => $processCount));
+
+    // Return
+    if ($gatewayFail == true) {
+        $URL .= '&return=error7';
+        header("Location: {$URL}");
+    } elseif ($partialFail == true) {
+        $URL .= '&return=warning1';
+        header("Location: {$URL}");
+    } else {
+        $URL .= '&return=success0';
+        header("Location: {$URL}");
     }
 }
