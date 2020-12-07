@@ -45,6 +45,7 @@ v21.0.00
         System: removed the unused gibbonPersonMedicalSymptoms table
         System: improved the error page when the database connection fails
         System: improved the update process and added a migration system to handle complex updates
+        System: improved consistency in storage of colors in the database
         System: added ability to set first day of week to Saturday
         Attendance: added an Offsite - Late option for attendance codes
         Departments: improved course/class naming in Class view
@@ -84,6 +85,7 @@ v21.0.00
         Rubrics: added an option to colour rubric column and row headings
         School Admin: added Manage Medical Conditions action
         School Admin: added optional introductory text setting for the Medical Conditions section
+        School Admin: added color picker to Manage Alert Levels page
         Staff: removed the display of addresses in the Staff Profile
         Staff: restricted access to Emergency Contacts to users with Manage Staff_confidential
         Staff: added first aid information to Personal sub-page of staff profile
@@ -104,6 +106,7 @@ v21.0.00
         Timetable: improved role ordering in class tables
         Timetable Admin: added a dateEnrolled and dateUnenrolled to class enrolments
         Timetable Admin: hide teachers listed as non-reportable from teacher lists
+        Timetable Admin: added color picker to Edit Timetable Day section
         Testing: Changed install suite admin username and password to be compliant with the default password requirements
         User Admin: added Guardian and Grandmother/Grandfather to emergency relationships
 
