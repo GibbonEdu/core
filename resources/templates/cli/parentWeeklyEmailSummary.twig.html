@@ -7,17 +7,17 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
 
 {% if includeBehaviour == 'Y' %}
-    {{ __('Please find below a summary of homework and behaviour for %1$s.')|format(student.preferredName ~ " " ~ student.surname) }}<br/><br/>
+    {{ __('Please find below a summary of the {homeworkName} and behaviour for {studentName}.', {'homeworkName': homeworkNamePlural, 'studentName': student.preferredName ~ " " ~ student.surname}) }}<br/><br/>
 {% elseif includeHomework == 'Y' %}
-    {{ __('Please find below a summary of homework for %1$s.')|format(student.preferredName ~ " " ~ student.surname) }}<br/><br/>
+    {{ __('Please find below a summary of the {homeworkName} for {studentName}.', {'homeworkName': homeworkNamePlural, 'studentName': student.preferredName ~ " " ~ student.surname}) }}<br/><br/>
 {% endif %}
 
 {% if includeHomework == 'Y' %}
     <h2>
-        {{ __('Homework') }}
+        {{ __(homeworkNamePlural) }}
     </h2>
     <p>
-        {{ __('The list below includes all homework assigned during the past week') }}
+        {{ __('The list below includes all items assigned during the past week') }}
     </p>
 
     <ol>
@@ -64,6 +64,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {{ __('Due at {time} on {date}', {'time': formatUsing('time', item.homeworkDueDateTime), 'date': formatUsing('date', item.homeworkDueDateTime) })|raw }} 
 
                 {{ tag|raw }}
+
+                {% if item.homeworkLocation == 'In Class' %}<div style="display: inline-block; padding: 1px 8px; margin-left: 4px; border-radius: 3px; background-color: #ebeaea; color: #878282; ">{{ __('In Class') }}</div>{% endif %}
             </span>
             </div>
         </li>
