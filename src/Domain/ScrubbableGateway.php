@@ -27,5 +27,11 @@ namespace Gibbon\Domain;
  */
 interface ScrubbableGateway
 {
-   public function scrub(string $cutoffDate, string $category = '');
+    public function getScrubbableKey();
+
+    public function getScrubbableColumns() : array;
+
+    public function getScrubbableRecords(string $cutoffDate, array $context = []) : array;
+
+    public function scrub(string $cutoffDate, array $context = []) : bool;
 }

@@ -24,8 +24,38 @@ namespace Gibbon\Domain\Traits;
  */
 trait ScrubByTimestamp
 {
-    public function scrub(string $cutoffDate, string $category = '')
+    /**
+     * Gets the table key that identified what can be scrubbed.
+     *
+     * @return string|array
+     */
+    public function getScrubbableKey()
     {
+        if (empty(static::$scrubbableKey)) {
+            throw new \BadMethodCallException(get_called_class().' must define $scrubbableKey');
+        }
 
+        return static::$scrubbableKey;
+    }
+
+    /**
+     * Gets the table columns that can be scrubbed.
+     *
+     * @return array
+     */
+    public function getScrubbableColumns() : array
+    {
+        if (empty(static::$scrubbableColumns)) {
+            throw new \BadMethodCallException(get_called_class().' must define $scrubbableColumns');
+        }
+
+        return static::$scrubbableColumns;
+    }
+
+    public function scrub(string $cutoffDate, array $context = []) : bool
+    {
+        echo get_called_class().' was scrubbed';
+
+        return true;
     }
 }
