@@ -79,15 +79,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
 
             $row = $form->addRow();
                 $row->addLabel('color', __('Header Background Colour'))->description(__('Click to select a color.'));
-                $row->addColor('color')
-                        ->addClass('pl-2')
-                        ->setValue($rowSQL['color']);
+                $row->addColor('color');
 
             $row = $form->addRow();
                 $row->addLabel('fontColor', __('Header Font Colour'))->description(__('Click to select a color.'));
-                $row->addColor('fontColor')
-                        ->addClass('pl-2')
-                        ->setValue($rowSQL['fontColor']);
+                $row->addColor('fontColor');
 
             $data = array();
             $sql = "SELECT gibbonTTColumnID as value, name FROM gibbonTTColumn ORDER BY name";
