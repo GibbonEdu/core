@@ -51,8 +51,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/alertLevelSet
                     $resultUpdate->execute($dataUpdate);
                 } catch (PDOException $e) {
                     $partialFail = false;
-                    $e->getMessage();
-                    exit;
                 }
             }
         }
