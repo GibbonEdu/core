@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
     if ($gibbonSchoolYearID == '' or $gibbonTTID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonTTID' => $gibbonTTID, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
             $sql = 'SELECT gibbonTTID, gibbonSchoolYear.name AS schoolYear, gibbonTT.name AS ttName FROM gibbonTT JOIN gibbonSchoolYear ON (gibbonTT.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonTTID=:gibbonTTID AND gibbonTT.gibbonSchoolYearID=:gibbonSchoolYearID';
             $result = $connection2->prepare($sql);
@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 ->add(__('Manage Timetables'), 'tt.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
                 ->add(__('Edit Timetable'), 'tt_edit.php', ['gibbonTTID' => $gibbonTTID, 'gibbonSchoolYearID' => $gibbonSchoolYearID])
                 ->add(__('Add Timetable Day'));
-        
+
             $editLink = '';
             if (isset($_GET['editID'])) {
                 $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable Admin/tt_edit_day_edit.php&gibbonTTDayID='.$_GET['editID'].'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonTTID='.$_GET['gibbonTTID'];
@@ -78,12 +78,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 $row->addTextField('nameShort')->maxLength(4)->required();
 
             $row = $form->addRow();
-                $row->addLabel('color', __('Header Background Colour'))->description(__('RGB Hex value, without leading #.'));
-                $row->addTextField('color')->maxLength(6);
+                $row->addLabel('color', __('Header Background Colour'))->description(__('Click to select a color.'));
+                $row->addColor('color');
 
             $row = $form->addRow();
-                $row->addLabel('fontColor', __('Header Font Colour'))->description(__('RGB Hex value, without leading #.'));
-                $row->addTextField('fontColor')->maxLength(6);
+                $row->addLabel('fontColor', __('Header Font Colour'))->description(__('Click to select a color.'));
+                $row->addColor('fontColor');
 
             $data = array();
             $sql = "SELECT gibbonTTColumnID as value, name FROM gibbonTTColumn ORDER BY name";

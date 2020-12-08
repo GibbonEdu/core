@@ -373,9 +373,12 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
         if ($this->session->get('address') == '' and isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
             $highestAction = getHighestGroupedAction($guid, '/modules/Planner/planner.php', $connection2);
             if ($highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses') {
+
+                $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
+
                 echo '<div class="column-no-break">';
                 echo '<h2>';
-                echo __('Homework & Deadlines');
+                echo __('{homeworkName} + Due Dates', ['homeworkName' => __($homeworkNamePlural)]);
                 echo '</h2>';
 
                 $plannerGateway = $this->getContainer()->get(PlannerEntryGateway::class);
@@ -388,7 +391,10 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 ]);
 
                 echo "<p style='padding-top: 0px; text-align: right'>";
-                echo "<a href='".$this->session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_deadlines.php'>".__('View Homework').'</a>';
+                echo "<a href='".$this->session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_deadlines.php'>";
+                
+                echo __('View {homeworkName}', ['homeworkName' => __($homeworkNamePlural)]);
+                echo '</a>';
                 echo '</p>';
                 echo '</div>';
             }
@@ -500,8 +506,10 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     }
                     echo '</td>';
                     if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
+                        $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
+
                         echo "<td style='text-align: center'>";
-                        echo "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Planner/planner_deadlines.php&gibbonCourseClassIDFilter='.$row['gibbonCourseClassID']."'title='".__('View Homework')."'><img style='margin-top: 3px' alt='".__('View Homework')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/homework.png'/></a> ";
+                        echo "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Planner/planner_deadlines.php&gibbonCourseClassIDFilter='.$row['gibbonCourseClassID']."'><img style='margin-top: 3px' title='".__('View {homeworkName}', ['homeworkName' => __($homeworkNamePlural)])."' src='./themes/".$this->session->get('gibbonThemeName')."/img/homework.png'/></a> ";
                         echo '</td>';
                     }
                     echo '</tr>';

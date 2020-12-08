@@ -46,6 +46,8 @@ v21.0.00
         System: removed the unused gibbonPersonMedicalSymptoms table
         System: improved the error page when the database connection fails
         System: improved the update process and added a migration system to handle complex updates
+        System: improved consistency in storage of colors in the database
+        System: added ability to set first day of week to Saturday
         Attendance: added an Offsite - Late option for attendance codes
         Departments: improved course/class naming in Class view
         Data Updater: data updates with no changes will be automatically accepted
@@ -63,6 +65,7 @@ v21.0.00
         Markbook: allow users with Edit Markbook_multiple and Edit Markbook_everything to edit grouped columns
         Messenger: tied messages to school year
         Messenger: convert copy-pasted divs to paragraphs in New Quick Wall Message
+        Messenger: messages sent by role or role category will honour user start and end dates
         Planner: update the attendance list to exclude students with a timetable exception
         Planner: added smart block clarification to the Edit Working Copy page
         Planner: added a common template for all Upcoming Deadlines sections
@@ -74,6 +77,8 @@ v21.0.00
         Planner: enabled homework to be submitted for lessons that already exist during a school closure
         Planner: brought student birthday icon display into line with class and form group view
         Planner: any staff can take attendance in the planner if they have Attendance by Class permission
+        Planner: added a setting to customize what homework is called in the planner
+        Planner: added the ability to set a time cap for homework
         Reports: display the download link after a batch PDF has completed
         Reports: added full course name to the report writing page
         Reports: added a bulk delete action in the Edit Reporting Scopes page
@@ -81,6 +86,7 @@ v21.0.00
         Rubrics: added an option to colour rubric column and row headings
         School Admin: added Manage Medical Conditions action
         School Admin: added optional introductory text setting for the Medical Conditions section
+        School Admin: added color picker to Manage Alert Levels page
         Staff: removed the display of addresses in the Staff Profile
         Staff: restricted access to Emergency Contacts to users with Manage Staff_confidential
         Staff: added first aid information to Personal sub-page of staff profile
@@ -93,6 +99,7 @@ v21.0.00
         Students: added optional attachments to the medical condition section
         Students: added notifications for High and Medium medical conditions
         Students: added notifications for accepted applications with SEN/Medical needs
+        Students: application forms accepted to upcoming years will set students to Expected
         School Admin: added optional descriptions for medical conditions
         System Admin: adjusted View Log to show only current year's log entries
         System Admin: added a flag to import types to enable updating non-unique rows
@@ -100,6 +107,7 @@ v21.0.00
         Timetable: improved role ordering in class tables
         Timetable Admin: added a dateEnrolled and dateUnenrolled to class enrolments
         Timetable Admin: hide teachers listed as non-reportable from teacher lists
+        Timetable Admin: added color picker to Edit Timetable Day section
         Testing: Changed install suite admin username and password to be compliant with the default password requirements
         User Admin: added Guardian and Grandmother/Grandfather to emergency relationships
 
@@ -118,6 +126,7 @@ v21.0.00
         Markbook: fixed rubric data not visible for students set to Left in a class
         Messenger: fixed SMTP debug settings in New Message process page
         Messenger: fixed copy-pasted div/paragraph replacement in sender's copy of emails
+        Messenger: fixed issue where read receipts weren't clickable until all messages sent
         Reports: fixed AttendanceByCycle data source counting school attendance as class attendance
         Reports: fixed MpdfRenderer not resetting headers when generating batch single files
         Reports: fixed Reporting Cycle Duplicate copying criteria from year to year

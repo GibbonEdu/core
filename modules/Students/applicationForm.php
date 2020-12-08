@@ -336,7 +336,7 @@ if ($proceed == false) {
         $row->addYesNo('medical')->required()->placeholder(__('Please select...'));
 
     $form->toggleVisibilityByClass('medicalDetailsRow')->onSelect('medical')->when('Y');
-        
+
     $col = $form->addRow()->setClass('medicalDetailsRow')->addColumn();
         $col->addLabel('medicalInformation', __('Medical Information'))->description(__('Please indicate any medical conditions.'));
         $col->addTextArea('medicalInformation')->setRows(5)->required()->setClass('fullWidth');
@@ -509,7 +509,7 @@ if ($proceed == false) {
                 $row->addSelectRelationship('parent1relationship')->required();
 
             // CUSTOM FIELDS FOR PARENT 1 WITH FAMILY
-            $existingFields = (!empty($parent1fields))? unserialize($parent1fields) : null;
+            $existingFields = (!empty($parent1fields))? json_decode($parent1fields) : null;
             $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
             if ($resultFields->rowCount() > 0) {
                 $row = $form->addRow();
@@ -649,7 +649,7 @@ if ($proceed == false) {
                 $row->addTextField("parent{$i}employer")->maxLength(90)->loadFrom($application);
 
             // CUSTOM FIELDS FOR PARENTS
-            $existingFields = (isset($application["parent{$i}fields"]))? unserialize($application["parent{$i}fields"]) : null;
+            $existingFields = (isset($application["parent{$i}fields"]))? json_decode($application["parent{$i}fields"]) : null;
             $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
             if ($resultFields->rowCount() > 0) {
                 $row = $form->addRow()->setClass("parentSection{$i}");
@@ -689,7 +689,7 @@ if ($proceed == false) {
             }
 
             // Get the family relationships
-            
+
                 $dataRelationships = array('gibbonFamilyID' => $rowSelect['gibbonFamilyID']);
                 $sqlRelationships = 'SELECT surname, preferredName, title, gender, gibbonFamilyAdult.gibbonPersonID FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID';
                 $resultRelationships = $connection2->prepare($sqlRelationships);
@@ -731,7 +731,7 @@ if ($proceed == false) {
 
     // List siblings who have been to or are at the school
     if (isset($gibbonFamilyID)) {
-        
+
             $dataSibling = array('gibbonFamilyID' => $gibbonFamilyID);
             $sqlSibling = 'SELECT surname, preferredName, dob, dateStart FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY dob ASC, surname, preferredName';
             $resultSibling = $connection2->prepare($sqlSibling);
