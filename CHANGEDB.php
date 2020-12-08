@@ -735,4 +735,5 @@ ALTER TABLE `gibbonTTDay` CHANGE color color varchar(7) NOT NULL COMMENT 'RGB He
 ALTER TABLE `gibbonTTDay` CHANGE fontColor fontColor varchar(7) NOT NULL COMMENT 'RGB Hex, leading #';end
 UPDATE `gibbonTTDay` SET color=CONCAT('#', color) WHERE NOT color='';end
 UPDATE `gibbonTTDay` SET fontColor=CONCAT('#', fontColor) WHERE NOT fontColor='';end
+ALTER TABLE `gibbonModule` CHANGE `category` `category` VARCHAR(12) NOT NULL;end
 ";
