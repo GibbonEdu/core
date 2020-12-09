@@ -25,11 +25,13 @@ Useful for scripts that need to execute after the page has loaded.
                 {{ __('OK') }}
             </a>
         </div>
+        {% if hasPrivacyPolicy %}
         <div class="md:pl-4 py-3">
             <a href="{{ absoluteURL }}/index.php?q=privacyPolicy.php" class="inline-block text-sm text-white leading-tight underline">
                 {{ __('Privacy Policy') }}
             </a>
         </div>
+        {% endif %}
     </div>
 
 {% endif %}

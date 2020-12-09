@@ -430,10 +430,12 @@ if ($isLoggedIn) {
     }
 
     $cookieConsentEnabled = getSettingByScope($connection2, 'System Admin', 'cookieConsentEnabled');
+    $privacyPolicy = getSettingByScope($connection2, 'System Admin', 'privacyPolicy');
     if ($cookieConsentEnabled == 'Y' && $gibbon->session->get('cookieConsent') != 'Y') {
         $page->addData([
             'cookieConsentEnabled' => 'Y',
             'cookieConsentText' => getSettingByScope($connection2, 'System Admin', 'cookieConsentText'),
+            'hasPrivacyPolicy' => !empty($privacyPolicy),
         ]);
     }
 }
