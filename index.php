@@ -422,6 +422,22 @@ if ($isLoggedIn) {
     }
 }
 
+// Cookie Consent
+if ($isLoggedIn) {
+    if (!empty($_GET['cookieConsent'])) {
+        $container->get(UserGateway::class)->update($gibbon->session->get('gibbonPersonID'), ['cookieConsent' => 'Y']);
+        $gibbon->session->set('cookieConsent', 'Y');
+    }
+
+    $cookieConsentEnabled = getSettingByScope($connection2, 'System Admin', 'cookieConsentEnabled');
+    if ($cookieConsentEnabled == 'Y' && $gibbon->session->get('cookieConsent') != 'Y') {
+        $page->addData([
+            'cookieConsentEnabled' => 'Y',
+            'cookieConsentText' => getSettingByScope($connection2, 'System Admin', 'cookieConsentText'),
+        ]);
+    }
+}
+
 /**
  * RETURN PROCESS
  *
@@ -564,6 +580,7 @@ if (!$session->has('address')) {
             'publicStaffApplications'   => getSettingByScope($connection2, 'Staff Application Form', 'staffApplicationFormPublicApplications') == 'Y',
             'makeDepartmentsPublic'     => getSettingByScope($connection2, 'Departments', 'makeDepartmentsPublic') == 'Y',
             'makeUnitsPublic'           => getSettingByScope($connection2, 'Planner', 'makeUnitsPublic') == 'Y',
+            'privacyPolicy'           => getSettingByScope($connection2, 'System Admin', 'privacyPolicy'),
         ];
 
         // Get any elements hooked into public home page, checking if they are turned on

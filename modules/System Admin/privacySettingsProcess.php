@@ -25,9 +25,9 @@ include '../../config.php';
 // Module includes
 include './moduleFunctions.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/systemSettings.php';
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/privacySettings.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSettings.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/System Admin/privacySettings.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -38,66 +38,32 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
 
     $settingsToUpdate = [
         'System' => [
-            'absoluteURL',
-            'absolutePath',
-            'systemName',
-            'indexText',
-            'organisationName',
-            'organisationNameShort',
-            'organisationEmail',
-            'organisationLogo',
-            'organisationBackground',
-            'organisationAdministrator',
-            'organisationDBA',
-            'organisationHR',
-            'organisationAdmissions',
-            'pagination',
-            'timezone',
-            'country',
-            'firstDayOfTheWeek',
-            'analytics',
-            'emailLink',
-            'webLink',
-            'defaultAssessmentScale',
-            'installType',
-            'statsCollection',
-            'currency',
-            'backgroundProcessing',
+            'passwordPolicyMinLength',
+            'passwordPolicyAlpha',
+            'passwordPolicyNumeric',
+            'passwordPolicyNonAlphaNumeric',
+            'sessionDuration',
+        ],
+        'System Admin' => [
+            'cookieConsentEnabled',
+            'cookieConsentText',
+            'privacyPolicy',
         ],
     ];
-
-    $_POST['absolutePath'] = rtrim($_POST['absolutePath'], '/');
-    $_POST['absoluteURL'] = trim($_POST['absoluteURL'], '/');
-
-    // Validate timezone before changing
-    try {
-        new DateTimeZone($_POST['timezone']);
-    } catch(Exception $e) {
-        $URL .= '&return=error1';
-        header("Location: {$URL}");
-        exit;
-    }
 
     foreach ($settingsToUpdate as $scope => $settings) {
         foreach ($settings as $name) {
             $value = $_POST[$name] ?? '';
+            if ($name == 'cookieConsentText' && empty($value)) continue;
 
             $updated = $settingGateway->updateSettingByScope($scope, $name, $value);
             $partialFail &= !$updated;
         }
     }
 
-    // Update and re-order the weekday table
-    if (setFirstDayOfTheWeek($connection2, $_POST['firstDayOfTheWeek'], $databaseName) != true) {
-        $URL .= '&return=error2';
-        header("Location: {$URL}");
-        exit;
-    }
-
     // Update all the system settings that are stored in the session
     getSystemSettings($guid, $connection2);
     $_SESSION[$guid]['pageLoads'] = null;
-
 
     $URL .= $partialFail
         ? '&return=warning1'
