@@ -119,29 +119,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
                 $ttDate = dateConvertToTimestamp(dateConvert($guid, $_POST['ttDate']));
             }
 
-            if (isset($_POST['fromTT'])) {
-                if ($_POST['fromTT'] == 'Y') {
-                    if (@$_POST['schoolCalendar'] == 'on' or @$_POST['schoolCalendar'] == 'Y') {
-                        $gibbon->session->set('viewCalendarSchool','Y');
-                    } else {
-                        $gibbon->session->set('viewCalendarSchool','N');
-                    }
-
-                    if (@$_POST['personalCalendar'] == 'on' or @$_POST['personalCalendar'] == 'Y') {
-                        $gibbon->session->set('viewCalendarPersonal','Y');
-                    } else {
-                        $gibbon->session->set('viewCalendarPersonal','N');
-                    }
-
-                    $spaceBookingCalendar = $_POST['spaceBookingCalendar'] ?? '';
-                    if ($spaceBookingCalendar == 'on' or $spaceBookingCalendar == 'Y') {
-                        $gibbon->session->set('viewCalendarSpaceBooking','Y');
-                    } else {
-                        $gibbon->session->set('viewCalendarSpaceBooking','N');
-                    }
-                }
-            }
-
             $tt = renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, false, $ttDate, '/modules/Timetable/tt_view.php', "&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search");
             if ($tt != false) {
                 echo $tt;
