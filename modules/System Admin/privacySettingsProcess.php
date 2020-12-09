@@ -38,23 +38,35 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/privacySettin
 
     $settingsToUpdate = [
         'System' => [
-            'passwordPolicyMinLength',
-            'passwordPolicyAlpha',
-            'passwordPolicyNumeric',
-            'passwordPolicyNonAlphaNumeric',
-            'sessionDuration',
+            'passwordPolicyMinLength' => 'required',
+            'passwordPolicyAlpha' => 'required',
+            'passwordPolicyNumeric' => 'required',
+            'passwordPolicyNonAlphaNumeric' => 'required',
+            'sessionDuration' => 'required',
         ],
         'System Admin' => [
-            'cookieConsentEnabled',
-            'cookieConsentText',
-            'privacyPolicy',
+            'cookieConsentEnabled' => 'required',
+            'cookieConsentText' => 'skip-empty',
+            'privacyPolicy' => '',
         ],
     ];
 
+    // Validate required fields
     foreach ($settingsToUpdate as $scope => $settings) {
-        foreach ($settings as $name) {
+        foreach ($settings as $name => $property) {
+            if ($property == 'required' && empty($_POST[$name])) {
+                $URL .= '&return=error1';
+                header("Location: {$URL}");
+                exit;
+            }
+        }
+    }
+
+    // Update fields
+    foreach ($settingsToUpdate as $scope => $settings) {
+        foreach ($settings as $name => $property) {
             $value = $_POST[$name] ?? '';
-            if ($name == 'cookieConsentText' && empty($value)) continue;
+            if ($property == 'skip-empty' && empty($value)) continue;
 
             $updated = $settingGateway->updateSettingByScope($scope, $name, $value);
             $partialFail &= !$updated;
