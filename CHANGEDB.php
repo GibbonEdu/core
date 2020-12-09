@@ -741,4 +741,5 @@ INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001',
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'cookieConsentEnabled', 'Ask Users for Cookie Consent?', 'Display a banner for users to accept the use of cookies.', 'Y');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'cookieConsentText', 'Cookie Consent Text', 'The message diplayed to users when they click to give consent.', 'Gibbon uses cookies which are strictly necessary for user account login and basic session data. It does not track or analyze user behaviour. By continuing to use this platform, users accept the use of cookies. Read the privacy policy to find out more.');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'privacyPolicy', 'Privacy Policy', 'Display a privacy policy document and add a link to it from the homepage.', '');end
+ALTER TABLE `gibbonPerson` ADD `cookieConsent` ENUM('Y','N') NULL DEFAULT NULL AFTER `receiveNotificationEmails`;end
 ";

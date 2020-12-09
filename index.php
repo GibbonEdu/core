@@ -422,6 +422,22 @@ if ($isLoggedIn) {
     }
 }
 
+// Cookie Consent
+if ($isLoggedIn) {
+    if (!empty($_GET['cookieConsent'])) {
+        $container->get(UserGateway::class)->update($gibbon->session->get('gibbonPersonID'), ['cookieConsent' => 'Y']);
+        $gibbon->session->set('cookieConsent', 'Y');
+    }
+
+    $cookieConsentEnabled = getSettingByScope($connection2, 'System Admin', 'cookieConsentEnabled');
+    if ($cookieConsentEnabled == 'Y' && $gibbon->session->get('cookieConsent') != 'Y') {
+        $page->addData([
+            'cookieConsentEnabled' => 'Y',
+            'cookieConsentText' => getSettingByScope($connection2, 'System Admin', 'cookieConsentText'),
+        ]);
+    }
+}
+
 /**
  * RETURN PROCESS
  *
