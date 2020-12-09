@@ -38,31 +38,31 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
 
     $settingsToUpdate = [
         'System' => [
-            'absoluteURL',
-            'absolutePath',
-            'systemName',
-            'indexText',
-            'organisationName',
-            'organisationNameShort',
-            'organisationEmail',
-            'organisationLogo',
-            'organisationBackground',
-            'organisationAdministrator',
-            'organisationDBA',
-            'organisationHR',
-            'organisationAdmissions',
-            'pagination',
-            'timezone',
-            'country',
-            'firstDayOfTheWeek',
-            'analytics',
-            'emailLink',
-            'webLink',
-            'defaultAssessmentScale',
-            'installType',
-            'statsCollection',
-            'currency',
-            'backgroundProcessing',
+            'absoluteURL' => 'required',
+            'absolutePath' => 'required',
+            'systemName' => 'required',
+            'indexText' => 'required',
+            'organisationName' => 'required',
+            'organisationNameShort' => 'required',
+            'organisationEmail' => 'required',
+            'organisationLogo' => 'required',
+            'organisationBackground' => '',
+            'organisationAdministrator' => 'required',
+            'organisationDBA' => 'required',
+            'organisationHR' => 'required',
+            'organisationAdmissions' => 'required',
+            'pagination' => 'required',
+            'timezone' => 'required',
+            'country' => '',
+            'firstDayOfTheWeek' => 'required',
+            'analytics' => '',
+            'emailLink' => '',
+            'webLink' => '',
+            'defaultAssessmentScale' => 'required',
+            'installType' => 'required',
+            'statsCollection' => 'required',
+            'currency' => 'required',
+            'backgroundProcessing' => 'required',
         ],
     ];
 
@@ -78,9 +78,22 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         exit;
     }
 
+    // Validate required fields
     foreach ($settingsToUpdate as $scope => $settings) {
-        foreach ($settings as $name) {
+        foreach ($settings as $name => $property) {
+            if ($property == 'required' && empty($_POST[$name])) {
+                $URL .= '&return=error1';
+                header("Location: {$URL}");
+                exit;
+            }
+        }
+    }
+
+    // Update fields
+    foreach ($settingsToUpdate as $scope => $settings) {
+        foreach ($settings as $name => $property) {
             $value = $_POST[$name] ?? '';
+            if ($property == 'skip-empty' && empty($value)) continue;
 
             $updated = $settingGateway->updateSettingByScope($scope, $name, $value);
             $partialFail &= !$updated;
