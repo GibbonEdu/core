@@ -230,6 +230,17 @@ if ($isLoggedIn) {
     $sessionDuration = $session->get('sessionDuration');
     $sessionDuration = max(intval($sessionDuration), 1200);
     $sessionDuration *= 1000; // Seconds to miliseconds
+
+    // Set a hard limit for session durations, handled server-side.
+    // This helps catch cases where the client-side timeout does not kick in.
+    $sessionLastActive = $session->get('sessionLastActive', null);
+    $sessionHardLimit = $session->get('sessionDuration') + 600;
+    if (!empty($sessionLastActive) && time() - $sessionLastActive > $sessionHardLimit ) {
+        $URL = $session->get('absoluteURL').'/logout.php?timeout=true';
+        header("Location: {$URL}");
+        exit();
+    }
+    $session->set('sessionLastActive', time());
 }
 
 /**
