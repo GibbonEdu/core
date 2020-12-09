@@ -564,6 +564,7 @@ if (!$session->has('address')) {
             'publicStaffApplications'   => getSettingByScope($connection2, 'Staff Application Form', 'staffApplicationFormPublicApplications') == 'Y',
             'makeDepartmentsPublic'     => getSettingByScope($connection2, 'Departments', 'makeDepartmentsPublic') == 'Y',
             'makeUnitsPublic'           => getSettingByScope($connection2, 'Planner', 'makeUnitsPublic') == 'Y',
+            'privacyPolicy'           => getSettingByScope($connection2, 'System Admin', 'privacyPolicy'),
         ];
 
         // Get any elements hooked into public home page, checking if they are turned on
