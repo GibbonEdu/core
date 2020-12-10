@@ -750,4 +750,5 @@ CREATE TABLE `gibbonDataRetention` (`gibbonDataRetentionID` int(11) unsigned zer
 ALTER TABLE `gibbonINPersonDescriptor` CHANGE `gibbonINDescriptorID` `gibbonINDescriptorID` int(3) unsigned zerofill NULL DEFAULT NULL;end
 ALTER TABLE `gibbonINPersonDescriptor` CHANGE `gibbonAlertLevelID` `gibbonAlertLevelID` int(3) unsigned zerofill NULL DEFAULT NULL;
 UPDATE `gibbonSetting` SET `name` = 'dataRetentionDomains', `nameDisplay` = 'Data Retention Domains', `description` = 'A list of areas to pre-select when undertaking data retention work.', `value` = '' WHERE `scope` = 'System' AND `name` = 'dataRetentionTables';end
+ALTER TABLE `gibbonDataRetention` ADD UNIQUE(`gibbonPersonID`);end
 ";
