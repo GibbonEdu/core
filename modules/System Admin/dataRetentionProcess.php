@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/dataRetention
 
         $data = [
             'gibbonPersonID'            => $gibbonPersonID,
-            'tables'                    => json_encode($tables),
+            'tables'                    => json_encode(array_values(array_unique($tables))),
             'status'                    => !empty($tables) ? 'Success' : 'Partial Failure',
             'gibbonPersonIDOperator'    => $gibbon->session->get('gibbonPersonID'),
         ];
@@ -96,7 +96,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/dataRetention
         // Update existing records to merge the list of scrubbed tables
         $existing = $dataRetentionGateway->selectBy(['gibbonPersonID' => $gibbonPersonID], ['gibbonDataRetentionID', 'tables'])->fetch();
         if (!empty($existing)) {
-            $data['tables'] = json_encode($tables + json_decode($existing['tables'], true));
+            $updatedTables = array_merge($tables, json_decode($existing['tables']));
+            $data['tables'] = json_encode(array_values(array_unique($updatedTables)));
             $dataRetentionGateway->update($existing['gibbonDataRetentionID'], $data);
         } else {
             $dataRetentionGateway->insert($data);
