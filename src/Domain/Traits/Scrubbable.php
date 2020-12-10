@@ -99,9 +99,9 @@ trait Scrubbable
                 ->where($this->getPrimaryKey().' = :primaryKey')
                 ->bindValue('primaryKey', $primaryKey);
 
-            $this->runUpdate($query);
+            $success = $this->runUpdate($query);
 
-            $scrubbed[$values['gibbonPersonID']][] = $this->getTableName();
+            $scrubbed[$values['gibbonPersonID']][$this->getTableName()] = $success;
         }
 
         return $scrubbed;
