@@ -58,10 +58,6 @@ trait Scrubbable
         $scrubbable = $this->getScrubbableRecords($cutoffDate, $context);
         $scrubbed = [];
 
-        echo '<pre>';
-        print_r($scrubbable);
-        echo '</pre>';
-        
         // Get scrubbable columns, randomize values as needed
         $columns = $this->getScrubbableColumns();
         $columns = array_map(function ($item) {
@@ -98,8 +94,6 @@ trait Scrubbable
 
             $scrubbed[$values['gibbonPersonID']][] = $this->getTableName();
         }
-
-        echo get_called_class().' was scrubbed: '.count($scrubbed);
 
         return $scrubbed;
     }
