@@ -532,12 +532,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
             // Check username and student ID for uniqueness
             $userGateway = $container->get(UserGateway::class);
-            if (!empty($studentID) && !$userGateway->unique(['studentID' => $studentID], ['studentID'], $gibbonApplicationFormID)) {
+            if ($status == 'Pending' && !empty($studentID) && !$userGateway->unique(['studentID' => $studentID], ['studentID'])) {
                 $URL .= '&return=error7';
                 header("Location: {$URL}");
                 exit;
             }
-            if (!empty($username) && !$userGateway->unique(['username' => $username], ['username'], $gibbonApplicationFormID)) {
+            if ($status == 'Pending' && !empty($username) && !$userGateway->unique(['username' => $username], ['username'])) {
                 $URL .= '&return=error7';
                 header("Location: {$URL}");
                 exit;
