@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Domain\Students;
+namespace Gibbon\Domain\DataUpdater;
 
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
@@ -30,17 +30,17 @@ use Gibbon\Domain\Traits\ScrubByPerson;
  * @version v21
  * @since   v21
  */
-class MedicalConditionGateway extends QueryableGateway implements ScrubbableGateway
+class MedicalConditionUpdateGateway extends QueryableGateway implements ScrubbableGateway
 {
     use TableAware;
     use Scrubbable;
     use ScrubByPerson;
 
-    private static $tableName = 'gibbonPersonMedicalCondition';
-    private static $primaryKey = 'gibbonPersonMedicalConditionID';
+    private static $tableName = 'gibbonPersonMedicalConditionUpdate';
+    private static $primaryKey = 'gibbonPersonMedicalConditionUpdateID';
 
-    private static $searchableColumns = [];
+    private static $searchableColumns = [''];
 
     private static $scrubbableKey = ['gibbonPersonID', 'gibbonPersonMedical', 'gibbonPersonMedicalID'];
-    private static $scrubbableColumns = ['name' => '','gibbonAlertLevelID'=> null,'triggers' => '','reaction' => '','response' => '','medication' => '','lastEpisode'=> null,'lastEpisodeTreatment' => '','comment' => '','attachment'=> 'deleteFile'];
+    private static $scrubbableColumns = ['name' => '','gibbonAlertLevelID'=> null,'triggers' => '','reaction' => '','response' => '','medication' => '','lastEpisode'=> null,'lastEpisodeTreatment' => '','comment' => '','attachment'=> null];
 }

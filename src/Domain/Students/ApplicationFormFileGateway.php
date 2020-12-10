@@ -24,23 +24,23 @@ use Gibbon\Domain\QueryableGateway;
 use Gibbon\Domain\ScrubbableGateway;
 use Gibbon\Domain\Traits\Scrubbable;
 use Gibbon\Domain\Traits\TableAware;
-use Gibbon\Domain\Traits\ScrubByPerson;
+use Gibbon\Domain\Traits\ScrubByTimestamp;
 
 /**
  * @version v21
  * @since   v21
  */
-class MedicalConditionGateway extends QueryableGateway implements ScrubbableGateway
+class ApplicationFormFileGateway extends QueryableGateway implements ScrubbableGateway
 {
     use TableAware;
     use Scrubbable;
-    use ScrubByPerson;
+    use ScrubByTimestamp;
 
-    private static $tableName = 'gibbonPersonMedicalCondition';
-    private static $primaryKey = 'gibbonPersonMedicalConditionID';
+    private static $tableName = 'gibbonApplicationFormFile';
+    private static $primaryKey = 'gibbonApplicationFormFileID';
 
     private static $searchableColumns = [];
 
-    private static $scrubbableKey = ['gibbonPersonID', 'gibbonPersonMedical', 'gibbonPersonMedicalID'];
-    private static $scrubbableColumns = ['name' => '','gibbonAlertLevelID'=> null,'triggers' => '','reaction' => '','response' => '','medication' => '','lastEpisode'=> null,'lastEpisodeTreatment' => '','comment' => '','attachment'=> 'deleteFile'];
+    private static $scrubbableKey = ['timestamp', 'gibbonApplicationForm', 'gibbonApplicationFormID'];
+    private static $scrubbableColumns = ['path' => 'deleteFile'];
 }

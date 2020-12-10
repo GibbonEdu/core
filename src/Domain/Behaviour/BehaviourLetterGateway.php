@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Domain\Students;
+namespace Gibbon\Domain\Behaviour;
 
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
@@ -27,45 +27,22 @@ use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\Traits\ScrubByPerson;
 
 /**
- * @version v16
- * @since   v16
+ * Behaviour Letter Gateway
+ *
+ * @version v17
+ * @since   v17
  */
-class StudentNoteGateway extends QueryableGateway implements ScrubbableGateway
+class BehaviourLetterGateway extends QueryableGateway implements ScrubbableGateway
 {
     use TableAware;
     use Scrubbable;
     use ScrubByPerson;
 
-    private static $tableName = 'gibbonStudentNote';
-    private static $primaryKey = 'gibbonStudentNoteID';
+    private static $tableName = 'gibbonBehaviourLetter';
+    private static $primaryKey = 'gibbonBehaviourLetterID';
 
-    private static $searchableColumns = ['name'];
+    private static $searchableColumns = [];
 
     private static $scrubbableKey = 'gibbonPersonID';
-    private static $scrubbableColumns = ['note' => ''];
-    
-    /**
-     * @param QueryCriteria $criteria
-     * @return DataSet
-     */
-    public function queryStudentNoteCategories(QueryCriteria $criteria)
-    {
-        $query = $this
-            ->newQuery()
-            ->from('gibbonStudentNoteCategory')
-            ->cols([
-                'gibbonStudentNoteCategoryID', 'name', 'template', 'active'
-            ]);
-
-
-        return $this->runQuery($query, $criteria);
-    }
-
-    public function getNoteCategoryIDByName($name)
-    {
-        $data = ['name' => $name];
-        $sql = "SELECT gibbonStudentNoteCategoryID FROM gibbonStudentNoteCategory WHERE name=:name";
-
-        return $this->db()->selectOne($sql, $data);
-    }
+    private static $scrubbableColumns = ['body' => ''];
 }

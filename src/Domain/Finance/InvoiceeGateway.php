@@ -2,17 +2,26 @@
 
 namespace Gibbon\Domain\Finance;
 
-use Gibbon\Domain\QueryableGateway;
-use Gibbon\Domain\QueryCriteria;
-use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\DataSet;
+use Gibbon\Domain\QueryCriteria;
+use Gibbon\Domain\QueryableGateway;
+use Gibbon\Domain\ScrubbableGateway;
+use Gibbon\Domain\Traits\Scrubbable;
+use Gibbon\Domain\Traits\TableAware;
+use Gibbon\Domain\Traits\ScrubByPerson;
 
-class InvoiceeGateway extends QueryableGateway
+class InvoiceeGateway extends QueryableGateway implements ScrubbableGateway
 {
     use TableAware;
+    use Scrubbable;
+    use ScrubByPerson;
+
     private static $primaryKey = 'gibbonFinanceInvoiceeID';
     private static $tableName = 'gibbonFinanceInvoicee';
     private static $searchableColumns = ['preferredName', 'surname', 'username'];
+
+    private static $scrubbableKey = 'gibbonPersonID';
+    private static $scrubbableColumns = ['companyName' => null,'companyContact' => null,'companyAddress' => null,'companyEmail' => null,'companyCCFamily' => null,'companyPhone' => null];
 
     public function queryInvoicees(QueryCriteria $criteria)
     {

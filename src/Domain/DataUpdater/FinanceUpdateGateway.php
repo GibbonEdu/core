@@ -19,23 +19,31 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\DataUpdater;
 
-use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
+use Gibbon\Domain\ScrubbableGateway;
+use Gibbon\Domain\Traits\Scrubbable;
+use Gibbon\Domain\Traits\TableAware;
+use Gibbon\Domain\Traits\ScrubByPerson;
 
 /**
  * @version v16
  * @since   v16
  */
-class FinanceUpdateGateway extends QueryableGateway
+class FinanceUpdateGateway extends QueryableGateway implements ScrubbableGateway
 {
     use TableAware;
+    use Scrubbable;
+    use ScrubByPerson;
 
     private static $tableName = 'gibbonFinanceInvoiceeUpdate';
     private static $primaryKey = 'gibbonFinanceInvoiceeUpdateID';
 
     private static $searchableColumns = [''];
     
+    private static $scrubbableKey = ['gibbonPersonID', 'gibbonFinanceInvoicee', 'gibbonFinanceInvoiceeID'];
+    private static $scrubbableColumns = ['companyName' => null,'companyContact' => null,'companyAddress' => null,'companyEmail' => null,'companyCCFamily' => null,'companyPhone' => null,'companyAll' => null];
+
     /**
      * @param QueryCriteria $criteria
      * @return DataSet
