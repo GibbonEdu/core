@@ -615,7 +615,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 			}
 
 			// CUSTOM FIELDS
-			$existingFields = (isset($values['fields']))? unserialize($values['fields']) : null;
+			$existingFields = (isset($values['fields']))? json_decode($values['fields'], true) : null;
 			$resultFields = getCustomFields($connection2, $guid, $student, $staff, $parent, $other);
 			if ($resultFields->rowCount() > 0) {
 				$heading = $form->addRow()->addHeading(__('Custom Fields'));
