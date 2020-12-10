@@ -21,6 +21,7 @@ v21.0.00
     Headlines
         MySQL 8 compatibility
         Added Afrikaans as an available language
+        New Data Retention and Data Privacy functionality
 
     Significant Changes
         System Admin: added a landing page to showcase the available support options

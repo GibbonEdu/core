@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Prefab\DeleteForm;
-use Gibbon\Domain\Students\MedicalConditionGateway;
+use Gibbon\Domain\School\MedicalConditionGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/medicalConditions_manage_delete.php') == false) {
     // Access denied

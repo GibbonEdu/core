@@ -17,30 +17,32 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Domain\Students;
+namespace Gibbon\Domain\Staff;
 
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
 use Gibbon\Domain\ScrubbableGateway;
 use Gibbon\Domain\Traits\Scrubbable;
 use Gibbon\Domain\Traits\TableAware;
-use Gibbon\Domain\Traits\ScrubByPerson;
+use Gibbon\Domain\Traits\ScrubByTimestamp;
 
 /**
+ * StaffApplicationFormFile Gateway
+ *
  * @version v21
  * @since   v21
  */
-class MedicalConditionGateway extends QueryableGateway implements ScrubbableGateway
+class StaffApplicationFormFileGateway extends QueryableGateway implements ScrubbableGateway
 {
     use TableAware;
     use Scrubbable;
-    use ScrubByPerson;
+    use ScrubByTimestamp;
 
-    private static $tableName = 'gibbonPersonMedicalCondition';
-    private static $primaryKey = 'gibbonPersonMedicalConditionID';
+    private static $tableName = 'gibbonStaffApplicationFormFile';
+    private static $primaryKey = 'gibbonStaffApplicationFormFileID';
 
-    private static $searchableColumns = [];
-
-    private static $scrubbableKey = ['gibbonPersonID', 'gibbonPersonMedical', 'gibbonPersonMedicalID'];
-    private static $scrubbableColumns = ['name' => '','gibbonAlertLevelID'=> null,'triggers' => '','reaction' => '','response' => '','medication' => '','lastEpisode'=> null,'lastEpisodeTreatment' => '','comment' => '','attachment'=> 'deleteFile'];
+    private static $searchableColumns = ['gibbonStaffApplicationFormID', 'gibbonStaffApplicationForm.preferredName', 'gibbonStaffApplicationForm.surname', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonStaffJobOpening.jobTitle'];
+    
+    private static $scrubbableKey = ['timestamp', 'gibbonStaffApplicationForm', 'gibbonStaffApplicationFormID'];
+    private static $scrubbableColumns = ['path' => 'deleteFile'];
 }

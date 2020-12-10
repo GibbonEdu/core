@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Domain\Students\MedicalConditionGateway;
+use Gibbon\Domain\School\MedicalConditionGateway;
 use Gibbon\Tables\Action;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/medicalConditions_manage_edit.php') == false) {
