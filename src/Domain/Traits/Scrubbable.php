@@ -52,6 +52,15 @@ trait Scrubbable
         return static::$scrubbableColumns;
     }
 
+    /**
+     * Cycles through all scrubbable records in this gateway to overwrite certain fields.
+     * Handles randomizing string data as well as deleting files.
+     * The getScrubbableRecords method is implemented by separate traits.
+     *
+     * @param string $cutoffDate
+     * @param array $context
+     * @return array returns and array of scrubbed tables per user
+     */
     public function scrub(string $cutoffDate, array $context = []) : array
     {
         // Select scrubbable records

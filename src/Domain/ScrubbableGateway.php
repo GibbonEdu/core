@@ -20,7 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Domain;
 
 /**
- * ScrubbableGateway
+ * Implementing this interface adds functionality for scrubbing personal data from this gateway.
+ * Use with the Scrubbable trait, along with ScrubByPerson, ScrubByTimestamp or ScrubByFamily.
  *
  * @version v21
  * @since   v21

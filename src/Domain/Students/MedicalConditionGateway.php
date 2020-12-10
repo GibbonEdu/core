@@ -42,5 +42,5 @@ class MedicalConditionGateway extends QueryableGateway implements ScrubbableGate
     private static $searchableColumns = [];
 
     private static $scrubbableKey = ['gibbonPersonID', 'gibbonPersonMedical', 'gibbonPersonMedicalID'];
-    private static $scrubbableColumns = ['name' => '','gibbonAlertLevelID'=> null,'triggers' => '','reaction' => '','response' => '','medication' => '','lastEpisode'=> null,'lastEpisodeTreatment' => '','comment' => '','attachment'=> null];
+    private static $scrubbableColumns = ['name' => '','gibbonAlertLevelID'=> null,'triggers' => '','reaction' => '','response' => '','medication' => '','lastEpisode'=> null,'lastEpisodeTreatment' => '','comment' => '','attachment'=> 'deleteFile'];
 }
