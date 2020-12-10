@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Domain\Behaviour;
+namespace Gibbon\Domain\User;
 
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
@@ -27,22 +27,20 @@ use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\Traits\ScrubByPerson;
 
 /**
- * Behaviour Letter Gateway
- *
- * @version v17
- * @since   v17
+ * @version v21
+ * @since   v21
  */
-class BehaviourLetterGateway extends QueryableGateway implements ScrubbableGateway
+class FamilyChildGateway extends QueryableGateway implements ScrubbableGateway
 {
     use TableAware;
     use Scrubbable;
     use ScrubByPerson;
 
-    private static $tableName = 'gibbonBehaviourLetter';
-    private static $primaryKey = 'gibbonBehaviourLetterID';
+    private static $tableName = 'gibbonFamilyChild';
+    private static $primaryKey = 'gibbonFamilyChildID';
 
-    private static $searchableColumns = [];
+    private static $searchableColumns = [''];
 
     private static $scrubbableKey = 'gibbonPersonID';
-    private static $scrubbableColumns = ['body' => ''];
+    private static $scrubbableColumns = ['comment' => ''];
 }

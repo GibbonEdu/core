@@ -19,36 +19,28 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\Students;
 
-use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
+use Gibbon\Domain\ScrubbableGateway;
+use Gibbon\Domain\Traits\Scrubbable;
+use Gibbon\Domain\Traits\TableAware;
+use Gibbon\Domain\Traits\ScrubByPerson;
 
 /**
  * @version v21
  * @since   v21
  */
-class MedicalConditionGateway extends QueryableGateway
+class MedicalConditionGateway extends QueryableGateway implements ScrubbableGateway
 {
     use TableAware;
+    use Scrubbable;
+    use ScrubByPerson;
 
-    private static $tableName = 'gibbonMedicalCondition';
-    private static $primaryKey = 'gibbonMedicalConditionID';
+    private static $tableName = 'gibbonPersonMedicalCondition';
+    private static $primaryKey = 'gibbonPersonMedicalConditionID';
 
     private static $searchableColumns = [];
 
-    /**
-     * @param QueryCriteria $criteria
-     * @return DataSet
-     */
-    public function queryMedicalConditions(QueryCriteria $criteria)
-    {
-        $query = $this
-            ->newQuery()
-            ->from($this->getTableName())
-            ->cols([
-                'gibbonMedicalConditionID', 'name', 'description'
-            ]);
-
-        return $this->runQuery($query, $criteria);
-    }
+    private static $scrubbableKey = ['gibbonPersonID', 'gibbonPersonMedical', 'gibbonPersonMedicalID'];
+    private static $scrubbableColumns = ['name' => '','gibbonAlertLevelID'=> null,'triggers' => '','reaction' => '','response' => '','medication' => '','lastEpisode'=> null,'lastEpisodeTreatment' => '','comment' => '','attachment'=> null];
 }

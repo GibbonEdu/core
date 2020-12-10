@@ -19,23 +19,31 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\Students;
 
-use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
+use Gibbon\Domain\ScrubbableGateway;
+use Gibbon\Domain\Traits\Scrubbable;
+use Gibbon\Domain\Traits\TableAware;
+use Gibbon\Domain\Traits\ScrubByTimestamp;
 
 /**
  * @version v17
  * @since   v17
  */
-class ApplicationFormGateway extends QueryableGateway
+class ApplicationFormGateway extends QueryableGateway implements ScrubbableGateway
 {
     use TableAware;
+    use Scrubbable;
+    use ScrubByTimestamp;
 
     private static $tableName = 'gibbonApplicationForm';
     private static $primaryKey = 'gibbonApplicationFormID';
 
     private static $searchableColumns = ['gibbonApplicationFormID', 'preferredName', 'surname', 'paymentTransactionID'];
-    
+
+    private static $scrubbableKey = 'timestamp';
+    private static $scrubbableColumns = ['gibbonApplicationFormHash' => 'randomString', 'dob' => null, 'email' => null, 'homeAddress' => null, 'homeAddressDistrict' => null, 'homeAddressCountry' => null, 'phone1Type' => '', 'phone1CountryCode' => '', 'phone1' => '', 'phone2Type' => '', 'phone2CountryCode' => '', 'phone2' => '', 'countryOfBirth' => '', 'citizenship1' => '', 'citizenship1Passport' => '', 'citizenship1PassportExpiry' => null, 'nationalIDCardNumber' => '', 'residencyStatus' => '', 'visaExpiryDate' => null, 'referenceEmail' => null, 'schoolName1' => '', 'schoolAddress1' => '', 'schoolGrades1' => '', 'schoolLanguage1' => '', 'schoolDate1' => null, 'schoolName2' => '', 'schoolAddress2' => '', 'schoolGrades2' => '', 'schoolLanguage2' => '', 'schoolDate2' => null, 'siblingName1' => '', 'siblingDOB1' => null, 'siblingSchool1' => '', 'siblingSchoolJoiningDate1' => null, 'siblingName2' => '', 'siblingDOB2' => null, 'siblingSchool2' => '', 'siblingSchoolJoiningDate2' => null, 'siblingName3' => '', 'siblingDOB3' => null, 'siblingSchool3' => '', 'siblingSchoolJoiningDate3' => null, 'languageHomePrimary' => '', 'languageHomeSecondary' => '', 'languageFirst' => '', 'languageSecond' => '', 'languageThird' => '', 'medicalInformation' => '', 'sen' => null, 'senDetails' => '', 'languageChoice' => null, 'languageChoiceExperience' => '', 'payment' => '', 'companyName' => null, 'companyContact' => null, 'companyAddress' => null, 'companyEmail' => null, 'companyCCFamily' => null, 'companyPhone' => null, 'companyAll' => null, 'gibbonFinanceFeeCategoryIDList' => null, 'parent1languageFirst' => null, 'parent1languageSecond' => null, 'parent1citizenship1' => null, 'parent1nationalIDCardNumber' => null, 'parent1residencyStatus' => null, 'parent1visaExpiryDate' => null, 'parent1email' => null, 'parent1phone1Type' => null, 'parent1phone1CountryCode' => null, 'parent1phone1' => null, 'parent1phone2Type' => null, 'parent1phone2CountryCode' => null, 'parent1phone2' => null, 'parent1profession' => null, 'parent1employer' => null, 'parent2languageFirst' => null, 'parent2languageSecond' => null, 'parent2citizenship1' => null, 'parent2nationalIDCardNumber' => null, 'parent2residencyStatus' => null, 'parent2visaExpiryDate' => null, 'parent2email' => null, 'parent2phone1Type' => null, 'parent2phone1CountryCode' => null, 'parent2phone1' => null, 'parent2phone2Type' => null, 'parent2phone2CountryCode' => null, 'parent2phone2' => null, 'parent2profession' => null, 'parent2employer' => null, 'notes' => '', 'fields' => '', 'parent1fields' => '', 'parent2fields' => ''];
+
     /**
      * @param QueryCriteria $criteria
      * @return DataSet

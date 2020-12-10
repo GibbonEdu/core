@@ -22,6 +22,7 @@ namespace Gibbon\Domain\Behaviour;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
 use Gibbon\Domain\ScrubbableGateway;
+use Gibbon\Domain\Traits\Scrubbable;
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\Traits\ScrubByPerson;
 
@@ -34,6 +35,7 @@ use Gibbon\Domain\Traits\ScrubByPerson;
 class BehaviourGateway extends QueryableGateway implements ScrubbableGateway
 {
     use TableAware;
+    use Scrubbable;
     use ScrubByPerson;
 
     private static $tableName = 'gibbonBehaviour';
