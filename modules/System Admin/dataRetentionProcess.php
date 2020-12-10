@@ -53,10 +53,20 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/dataRetention
         return in_array($key, $data['domains']);
     }, ARRAY_FILTER_USE_KEY);
 
-
-    $gatewayFail = false;
     $partialFail = false;
-    $scrubbedTotal = 0;
+    $scrubbedList = [];
+
+    // Validate each of the domains is scrubbable before proceeding
+    foreach ($selectedDomains as $domain) {
+        foreach ($domain['gateways'] as $gatewayClass) {
+            $gateway = $container->get($gatewayClass);
+            if (!$gateway instanceof ScrubbableGateway) {
+                $URL .= '&return=error2';
+                header("Location: {$URL}");
+                exit;
+            }
+        }
+    }
 
     // Cycle through each selected domain
     foreach ($selectedDomains as $domain) {
@@ -66,30 +76,39 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/dataRetention
         foreach ($domain['gateways'] as $gatewayClass) {
             $gateway = $container->get($gatewayClass);
 
-            if (!$gateway instanceof ScrubbableGateway) {
-                $gatewayFail = true;
-            }
-
             $scrubbed = $gateway->scrub($data['date'], $domain['context'] ?? []);
-            $scrubbedTotal += $scrubbed;
+            $scrubbedList = array_merge_recursive($scrubbedList, $scrubbed);
             $partialFail &= !empty($scrubbed);
         }
     }
 
-    // Todo: write the results to a table?
+    // Store a record of which users and which tables were scrubbed
+    foreach ($scrubbedList as $gibbonPersonID => $tables) {
+        if (empty($gibbonPersonID)) continue;
+
+        $data = [
+            'gibbonPersonID'            => $gibbonPersonID,
+            'tables'                    => json_encode($tables),
+            'status'                    => !empty($tables) ? 'Success' : 'Partial Failure',
+            'gibbonPersonIDOperator'    => $gibbon->session->get('gibbonPersonID'),
+        ];
+
+        // Update existing records to merge the list of scrubbed tables
+        $existing = $dataRetentionGateway->selectBy(['gibbonPersonID' => $gibbonPersonID], ['gibbonDataRetentionID', 'tables'])->fetch();
+        if (!empty($existing)) {
+            $data['tables'] = json_encode($tables + json_decode($existing['tables'], true));
+            $dataRetentionGateway->update($existing['gibbonDataRetentionID'], $data);
+        } else {
+            $dataRetentionGateway->insert($data);
+        }
+    }
 
     // Write to log
-    setLog($connection2, $gibbon->session->get('gibbonSchoolYearID'), getModuleID($connection2, $_POST["address"]), $gibbon->session->get('gibbonPersonID'), 'Data Retention', array('Status' => (!$partialFail) ? "Success" : "Partial Failure", 'Count' => $processCount));
+    setLog($connection2, $gibbon->session->get('gibbonSchoolYearID'), getModuleID($connection2, $_POST["address"]), $gibbon->session->get('gibbonPersonID'), 'Data Retention', array('Status' => (!$partialFail) ? "Success" : "Partial Failure", 'Count' => count($scrubbedList)));
 
-    // Return
-    if ($gatewayFail) {
-        $URL .= '&return=error7';
-        header("Location: {$URL}");
-    } elseif ($partialFail) {
-        $URL .= '&return=warning1';
-        header("Location: {$URL}");
-    } else {
-        $URL .= '&return=success0&scrubbed='.$scrubbedTotal;
-        header("Location: {$URL}");
-    }
+    $URL .= $partialFail
+        ?'&return=warning2'
+        : '&return=success0&count='.count($scrubbedList, COUNT_RECURSIVE);
+    header("Location: {$URL}");
+    
 }

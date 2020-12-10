@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\ScrubbableGateway;
@@ -31,32 +32,21 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/dataRetention
     $page->breadcrumbs->add(__('Data Retention'));
 
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
+        returnProcess($guid, $_GET['return'], null, ['success0' => __('{count} records were successfully scrubbed. These records still exist in the database, but their personal data has now been removed.', ['count' => $_GET['count'] ?? 0])]);
     }
 
-    $page->addMessage(__('Comply with privacy regulations by flushing older, non-academic, data from the system.')." ".__('This action will scrub selected data for all users in the specified category whose status is Left, and whose end date preceeds the specified data. This process clears certain fields, rather than removing any database rows.'));
-
     $form = Form::create('dataRetention', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/dataRetentionProcess.php');
+    
+    $form->setDescription(__('Comply with privacy regulations by flushing older, non-academic, data from the system.')." ".__('This action will scrub selected data for all users in the specified category whose status is Left, and whose end date preceeds the specified data. This process clears certain fields, rather than removing any database rows.'));
+    $form->addConfirmation(__('Are you sure you wish to process this action? It cannot be undone.'));
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-    // $categories = array(
-    //     'Staff'   => __('Staff'),
-    //     'Student' => __('Student'),
-    //     'Parent'  => __('Parent'),
-    //     'Other'   => __('Other'),
-    // );
-    // $row = $form->addRow();
-    //     $row->addLabel('category', __('Category'))->description(__('Based on Primary Role only'));
-    //     $row->addSelect('category')->fromArray($categories)->required()->placeholder();
-
-    // $row = $form->addRow();
-    //     $row->addLabel('status', __('Status'));
-    //     $row->addTextField('status')->readonly()->required()->setValue(__('Left'));
+    $schoolYear = $container->get(SchoolYearGateway::class)->getByID($gibbon->session->get('gibbonSchoolYearIDCurrent'), ['firstDay']);
 
     $row = $form->addRow();
-        $row->addLabel('date', __('Cutoff Date'))->description(__("Include users with an end date preceeding this date.")."<br/>".__("Last login is used as a fallback"));
-        $row->addDate('date')->required();
+        $row->addLabel('date', __('Cutoff Date'))->description(__("Include users with an end date preceding this date. Last login is used as a fallback. Must be prior to the current school year."));
+        $row->addDate('date')->required()->maximum($schoolYear['firstDay'] ?? date('Y-m-d'));
 
     $dataRetentionGateway = $container->get(DataRetentionGateway::class);
     $checked = explode(',', $container->get(SettingGateway::class)->getSettingByScope('System', 'dataRetentionDomains'));
