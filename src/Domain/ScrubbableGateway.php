@@ -33,5 +33,5 @@ interface ScrubbableGateway
 
     public function getScrubbableRecords(string $cutoffDate, array $context = []) : array;
 
-    public function scrub(string $cutoffDate, array $context = []) : int;
+    public function scrub(string $cutoffDate, array $context = []) : array;
 }

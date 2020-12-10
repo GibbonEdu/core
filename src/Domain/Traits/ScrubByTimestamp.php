@@ -24,38 +24,27 @@ namespace Gibbon\Domain\Traits;
  */
 trait ScrubByTimestamp
 {
-    /**
-     * Gets the table key that identified what can be scrubbed.
-     *
-     * @return string|array
-     */
-    public function getScrubbableKey()
+    public function getScrubbableRecords(string $cutoffDate, array $context = []) : array
     {
-        if (empty(static::$scrubbableKey)) {
-            throw new \BadMethodCallException(get_called_class().' must define $scrubbableKey');
+        // Only get records whose timestamp field is before the cutoff date
+        $query = $this
+            ->newSelect()
+            ->cols([$this->getTableName().'.'.$this->getPrimaryKey(), 'NULL as gibbonPersonID'])
+            ->from($this->getTableName());
+
+        // Handle tables that need to be joined with another table to get the scrubbable record
+        $scrubbableKey = $this->getScrubbableKey();
+        if (is_array($scrubbableKey)) {
+            list($keyID, $tableJoin, $tableJoinID) = $scrubbableKey;
+
+            $query->innerJoin($tableJoin, $tableJoin.'.'.$tableJoinID.'='.$this->getTableName().'.'.$tableJoinID)
+                ->where($tableJoin.'.'.$keyID.' < :cutoffDate')
+                ->bindValue('cutoffDate', $cutoffDate);
+        } else if (is_string($scrubbableKey)) {
+            $query->where($this->getTableName().'.'.$scrubbableKey.' < :cutoffDate')
+                ->bindValue('cutoffDate', $cutoffDate);
         }
 
-        return static::$scrubbableKey;
-    }
-
-    /**
-     * Gets the table columns that can be scrubbed.
-     *
-     * @return array
-     */
-    public function getScrubbableColumns() : array
-    {
-        if (empty(static::$scrubbableColumns)) {
-            throw new \BadMethodCallException(get_called_class().' must define $scrubbableColumns');
-        }
-
-        return static::$scrubbableColumns;
-    }
-
-    public function scrub(string $cutoffDate, array $context = []) : int
-    {
-        echo get_called_class().' was scrubbed';
-
-        return true;
+        return $this->runSelect($query)->fetchGroupedUnique();
     }
 }

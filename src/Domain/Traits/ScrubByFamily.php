@@ -22,24 +22,26 @@ namespace Gibbon\Domain\Traits;
 /**
  * Implements the ScrubbableGateway interface.
  */
-trait ScrubByPerson
+trait ScrubByFamily
 {
     public function getScrubbableRecords(string $cutoffDate, array $context = []) : array
     {
+        $tableName = $this->getTableName();
+        $scrubbableKey = $this->getScrubbableKey();
+
         $query = $this
             ->newSelect()
             ->cols([$this->getTableName().'.'.$this->getPrimaryKey(), 'gibbonPerson.gibbonPersonID'])
             ->from($this->getTableName())
             ->where("gibbonPerson.status='Left'");
 
-        // Handle tables that need to be joined with another table to get the scrubbable record
-        $scrubbableKey = $this->getScrubbableKey();
-        if (is_array($scrubbableKey)) {
-            list($keyID, $tableJoin, $tableJoinID) = $scrubbableKey;
-            $query->innerJoin($tableJoin, $tableJoin.'.'.$tableJoinID.'='.$this->getTableName().'.'.$tableJoinID)
-                  ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID='.$tableJoin.'.'.$keyID);
-        } else if (is_string($scrubbableKey)) {
-            $query->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID='.$this->getTableName().'.'.$this->getScrubbableKey());
+        // Join the correct family relation based on the role category
+        if (in_array('Student', $context)) {
+            $query->innerJoin('gibbonFamilyChild', "gibbonFamilyChild.gibbonFamilyID={$tableName}.{$scrubbableKey}")
+                ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonFamilyChild.gibbonPersonID');
+        } else {
+            $query->innerJoin('gibbonFamilyAdult', "gibbonFamilyAdult.gibbonFamilyID={$tableName}.{$scrubbableKey}")
+                ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID');
         }
 
         // Apply the context based on user role
@@ -54,6 +56,12 @@ trait ScrubByPerson
             OR (gibbonPerson.lastTimestamp IS NOT NULL AND gibbonPerson.lastTimestamp < :cutoffDate) 
             OR (gibbonPerson.dateEnd IS NULL AND gibbonPerson.lastTimestamp IS NULL))')
             ->bindValue('cutoffDate', $cutoffDate);
+
+        // Check that all members of this family are no longer active
+        $query->cols([
+            "(SELECT COUNT(p.gibbonPersonID) FROM gibbonFamilyAdult AS fa JOIN gibbonPerson AS p ON (fa.gibbonPersonID=p.gibbonPersonID) WHERE p.status <> 'Left' AND fa.gibbonFamilyID=$tableName.$scrubbableKey) as activeAdults", 
+            "(SELECT COUNT(p.gibbonPersonID) FROM gibbonFamilyChild AS fc JOIN gibbonPerson AS p ON (fc.gibbonPersonID=p.gibbonPersonID) WHERE p.status <> 'Left' AND fc.gibbonFamilyID=$tableName.$scrubbableKey) as activeChildren"])
+            ->having("(activeAdults + activeChildren) = 0");
 
         return $this->runSelect($query)->fetchGroupedUnique();
     }
