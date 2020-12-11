@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
     if ($gibbonModuleID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonModuleID' => $gibbonModuleID);
             $sql = 'SELECT * FROM gibbonModule WHERE gibbonModuleID=:gibbonModuleID';
             $result = $connection2->prepare($sql);
@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
 
             $row = $form->addRow();
                $row->addLabel('category', __('Category'))->description(__('Determines menu structure'));
-               $row->addTextField('category')->setValue(($values['category']))->required()->maxLength(10);
+               $row->addTextField('category')->setValue(($values['category']))->required()->maxLength(12);
 
             $row = $form->addRow();
                 $row->addLabel('active', __('Active'));

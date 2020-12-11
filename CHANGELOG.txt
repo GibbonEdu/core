@@ -21,10 +21,12 @@ v21.0.00
     Headlines
         MySQL 8 compatibility
         Added Afrikaans as an available language
+        New Data Retention and Data Privacy functionality
 
     Significant Changes
         System: accessibility - full review
         System Admin: added a landing page to showcase the available support options
+        System Admin: add Security & Privacy Settings and optional cookie consent banner
         Roll Groups: added new grouped action to restrict parent viewing to their own children's roll groups
         Students: added an optional application processing fee that can be sent manually by staff
         Students: added My Student History, offering a visual overview of all students ever taught
@@ -37,6 +39,7 @@ v21.0.00
     Changes With Important Notices
         System: renamed planner_parentWeeklyEmailSummary.php to schoolAdmin_parentWeeklyEmailSummary.php
         Staff: removed roles-as-type in Manage Staff, reducing option to Teaching and Support and setting all non-Teaching users to Support
+        System Admin: displaying a cookie consent message to users is enabled by default
 
     Tweaks & Additions
         System: added Romanian Leu as currency option
@@ -48,6 +51,8 @@ v21.0.00
         System: improved the update process and added a migration system to handle complex updates
         System: improved consistency in storage of colors in the database
         System: added ability to set first day of week to Saturday
+        System: lengthened module Category field to 12 characters
+        System: added a server-side hard limit for session durations
         Attendance: added an Offsite - Late option for attendance codes
         Departments: improved course/class naming in Class view
         Data Updater: data updates with no changes will be automatically accepted

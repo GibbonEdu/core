@@ -302,6 +302,13 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
         $self = false;
         if ($gibbonPersonID == $_SESSION[$guid]['gibbonPersonID'] and $edit == false) {
             $self = true;
+
+            if (!empty($_POST['fromTT']) && $_POST['fromTT'] == 'Y') {
+                $_SESSION[$guid]['viewCalendarSchool'] = !empty($_POST['schoolCalendar']) ? 'Y' : 'N';
+                $_SESSION[$guid]['viewCalendarPersonal'] = !empty($_POST['personalCalendar']) ? 'Y' : 'N';
+                $_SESSION[$guid]['viewCalendarSpaceBooking'] = !empty($_POST['spaceBookingCalendar']) ? 'Y' : 'N';
+            }
+
             //Update display choices
             if ($_SESSION[$guid]['viewCalendarSchool'] != false and $_SESSION[$guid]['viewCalendarPersonal'] != false and $_SESSION[$guid]['viewCalendarSpaceBooking'] != false) {
                 try {
