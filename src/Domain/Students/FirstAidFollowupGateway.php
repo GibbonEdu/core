@@ -30,17 +30,18 @@ use Gibbon\Domain\Traits\ScrubByPerson;
  * @version v21
  * @since   v21
  */
-class MedicalConditionGateway extends QueryableGateway implements ScrubbableGateway
+class FirstAidFollowupGateway extends QueryableGateway implements ScrubbableGateway
 {
     use TableAware;
     use Scrubbable;
     use ScrubByPerson;
 
-    private static $tableName = 'gibbonPersonMedicalCondition';
-    private static $primaryKey = 'gibbonPersonMedicalConditionID';
+    private static $tableName = 'gibbonFirstAidFollowup';
+    private static $primaryKey = 'gibbonFirstAidFollowupID';
 
-    private static $searchableColumns = [];
+    private static $searchableColumns = [''];
+    
+    private static $scrubbableKey = ['gibbonPersonIDPatient', 'gibbonFirstAid', 'gibbonFirstAidID'];
+    private static $scrubbableColumns = ['followUp' => ''];
 
-    private static $scrubbableKey = ['gibbonPersonID', 'gibbonPersonMedical', 'gibbonPersonMedicalID'];
-    private static $scrubbableColumns = ['name' => '','gibbonAlertLevelID'=> null,'triggers' => '','reaction' => '','response' => '','medication' => '','lastEpisode'=> null,'lastEpisodeTreatment' => '','comment' => '','attachment'=> 'deleteFile'];
 }

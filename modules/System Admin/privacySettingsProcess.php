@@ -25,9 +25,9 @@ include '../../config.php';
 // Module includes
 include './moduleFunctions.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/systemSettings.php';
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/privacySettings.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSettings.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/System Admin/privacySettings.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -38,45 +38,18 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
 
     $settingsToUpdate = [
         'System' => [
-            'absoluteURL' => 'required',
-            'absolutePath' => 'required',
-            'systemName' => 'required',
-            'indexText' => 'required',
-            'organisationName' => 'required',
-            'organisationNameShort' => 'required',
-            'organisationEmail' => 'required',
-            'organisationLogo' => 'required',
-            'organisationBackground' => '',
-            'organisationAdministrator' => 'required',
-            'organisationDBA' => 'required',
-            'organisationHR' => 'required',
-            'organisationAdmissions' => 'required',
-            'pagination' => 'required',
-            'timezone' => 'required',
-            'country' => '',
-            'firstDayOfTheWeek' => 'required',
-            'analytics' => '',
-            'emailLink' => '',
-            'webLink' => '',
-            'defaultAssessmentScale' => 'required',
-            'installType' => 'required',
-            'statsCollection' => 'required',
-            'currency' => 'required',
-            'backgroundProcessing' => 'required',
+            'passwordPolicyMinLength' => 'required',
+            'passwordPolicyAlpha' => 'required',
+            'passwordPolicyNumeric' => 'required',
+            'passwordPolicyNonAlphaNumeric' => 'required',
+            'sessionDuration' => 'required',
+        ],
+        'System Admin' => [
+            'cookieConsentEnabled' => 'required',
+            'cookieConsentText' => 'skip-empty',
+            'privacyPolicy' => '',
         ],
     ];
-
-    $_POST['absolutePath'] = rtrim($_POST['absolutePath'], '/');
-    $_POST['absoluteURL'] = trim($_POST['absoluteURL'], '/');
-
-    // Validate timezone before changing
-    try {
-        new DateTimeZone($_POST['timezone']);
-    } catch(Exception $e) {
-        $URL .= '&return=error1';
-        header("Location: {$URL}");
-        exit;
-    }
 
     // Validate required fields
     foreach ($settingsToUpdate as $scope => $settings) {
@@ -100,17 +73,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         }
     }
 
-    // Update and re-order the weekday table
-    if (setFirstDayOfTheWeek($connection2, $_POST['firstDayOfTheWeek'], $databaseName) != true) {
-        $URL .= '&return=error2';
-        header("Location: {$URL}");
-        exit;
-    }
-
     // Update all the system settings that are stored in the session
     getSystemSettings($guid, $connection2);
     $_SESSION[$guid]['pageLoads'] = null;
-
 
     $URL .= $partialFail
         ? '&return=warning1'

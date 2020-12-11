@@ -44,7 +44,6 @@ class LoginCest
         $I->see('Logout', 'a');
         $I->see('Preferences', 'a');
         $I->see('Support TestUser');
-        $I->dontSee('Login');
         $lastTimestamp = $I->grabFromDatabase('gibbonPerson', 'lastTimestamp', ['username' => 'testingsupport']);
         $I->seeInDatabase('gibbonLog', ['title' => 'Login - Success', 'serialisedArray LIKE' => '%testingsupport%', 'timestamp >=' => $lastTimestamp]);
     }
