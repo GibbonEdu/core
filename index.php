@@ -230,6 +230,17 @@ if ($isLoggedIn) {
     $sessionDuration = $session->get('sessionDuration');
     $sessionDuration = max(intval($sessionDuration), 1200);
     $sessionDuration *= 1000; // Seconds to miliseconds
+
+    // Set a hard limit for session durations, handled server-side.
+    // This helps catch cases where the client-side timeout does not kick in.
+    $sessionLastActive = $session->get('sessionLastActive', null);
+    $sessionHardLimit = $session->get('sessionDuration') + 600;
+    if (!empty($sessionLastActive) && time() - $sessionLastActive > $sessionHardLimit ) {
+        $URL = $session->get('absoluteURL').'/logout.php?timeout=true';
+        header("Location: {$URL}");
+        exit();
+    }
+    $session->set('sessionLastActive', time());
 }
 
 /**
@@ -422,6 +433,24 @@ if ($isLoggedIn) {
     }
 }
 
+// Cookie Consent
+if ($isLoggedIn) {
+    if (!empty($_GET['cookieConsent'])) {
+        $container->get(UserGateway::class)->update($gibbon->session->get('gibbonPersonID'), ['cookieConsent' => 'Y']);
+        $gibbon->session->set('cookieConsent', 'Y');
+    }
+
+    $cookieConsentEnabled = getSettingByScope($connection2, 'System Admin', 'cookieConsentEnabled');
+    $privacyPolicy = getSettingByScope($connection2, 'System Admin', 'privacyPolicy');
+    if ($cookieConsentEnabled == 'Y' && $gibbon->session->get('cookieConsent') != 'Y') {
+        $page->addData([
+            'cookieConsentEnabled' => 'Y',
+            'cookieConsentText' => getSettingByScope($connection2, 'System Admin', 'cookieConsentText'),
+            'hasPrivacyPolicy' => !empty($privacyPolicy),
+        ]);
+    }
+}
+
 /**
  * RETURN PROCESS
  *
@@ -564,6 +593,7 @@ if (!$session->has('address')) {
             'publicStaffApplications'   => getSettingByScope($connection2, 'Staff Application Form', 'staffApplicationFormPublicApplications') == 'Y',
             'makeDepartmentsPublic'     => getSettingByScope($connection2, 'Departments', 'makeDepartmentsPublic') == 'Y',
             'makeUnitsPublic'           => getSettingByScope($connection2, 'Planner', 'makeUnitsPublic') == 'Y',
+            'privacyPolicy'           => getSettingByScope($connection2, 'System Admin', 'privacyPolicy'),
         ];
 
         // Get any elements hooked into public home page, checking if they are turned on

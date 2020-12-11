@@ -114,6 +114,10 @@ TODO: add template variable details.
             </div>
         </div>
 
+        {% block privacy %}
+        {{ include('privacy.twig.html') }}
+        {% endblock privacy %}
+
         {% block foot %}
         {{ include('foot.twig.html') }}
         {% endblock foot %}

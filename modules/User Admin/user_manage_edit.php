@@ -18,8 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\System\DataRetentionGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -76,11 +77,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                 echo "<div class='linkTop'>";
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage.php&search='.$search."'>".__('Back to Search Results').'</a>';
                 echo '</div>';
-			}
+            }
+            
+            $scrubbed = $container->get(DataRetentionGateway::class)->selectBy(['gibbonPersonID' => $gibbonPersonID])->fetch();
+            if (!empty($scrubbed)) {
+                echo Format::alert(__("This user's personal data was cleared on {date} as part of a data retention action. The following database tables were cleared: {tables}", ['date' => Format::date($scrubbed['timestamp']), 'tables' => Format::list(json_decode($scrubbed['tables']), 'ul', 'text-xs mb-0')] ), 'warning');
+            }
 
-			echo '<div class="message">';
-			echo __('Note that certain fields are hidden or revealed depending on the role categories (Staff, Student, Parent) that a user is assigned to. For example, parents do not get Emergency Contact fields, and students/staff do not get Employment fields.');
-			echo '</div>';
+            echo Format::alert(__('Note that certain fields are hidden or revealed depending on the role categories (Staff, Student, Parent) that a user is assigned to. For example, parents do not get Emergency Contact fields, and students/staff do not get Employment fields.'), 'message');
 
 			$form = Form::create('addUser', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/user_manage_editProcess.php?gibbonPersonID='.$gibbonPersonID.'&search='.$search);
 			$form->setFactory(DatabaseFormFactory::create($pdo));
@@ -615,7 +619,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 			}
 
 			// CUSTOM FIELDS
-			$existingFields = (isset($values['fields']))? unserialize($values['fields']) : null;
+			$existingFields = (isset($values['fields']))? json_decode($values['fields'], true) : null;
 			$resultFields = getCustomFields($connection2, $guid, $student, $staff, $parent, $other);
 			if ($resultFields->rowCount() > 0) {
 				$heading = $form->addRow()->addHeading(__('Custom Fields'));
