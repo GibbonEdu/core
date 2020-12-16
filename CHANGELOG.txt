@@ -52,6 +52,7 @@ v21.0.00
         System: added ability to set first day of week to Saturday
         System: lengthened module Category field to 12 characters
         System: added a server-side hard limit for session durations
+        System: adjusted robots meta tag to dissuade Google from indexing Gibbon installs
         Attendance: added an Offsite - Late option for attendance codes
         Departments: improved course/class naming in Class view
         Data Updater: data updates with no changes will be automatically accepted
