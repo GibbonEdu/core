@@ -113,7 +113,7 @@ v21.0.00
         Timetable Admin: added a dateEnrolled and dateUnenrolled to class enrolments
         Timetable Admin: hide teachers listed as non-reportable from teacher lists
         Timetable Admin: added color picker to Edit Timetable Day section
-        Testing: Changed install suite admin username and password to be compliant with the default password requirements
+        Tests: Changed install suite admin username and password to be compliant with the default password requirements
         User Admin: added Guardian and Grandmother/Grandfather to emergency relationships
 
     Bug Fixes
@@ -125,6 +125,7 @@ v21.0.00
         Attendance: fixed sortable Class column in Student Not In Class report
         Data Updater: fixed passport expiry fields not properly hiding
         Departments: fixed attendance link not prefilling the current date
+        Finance: fixed invoicee ordering bug in Add Invoice
         Formal Assessment: removed Back link from delete modal
         Individual Needs: fixed description of Reason field in Manage Investigations
         Library: fixed broken delete function in Manage Catalog
