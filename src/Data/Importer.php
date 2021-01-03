@@ -440,7 +440,7 @@ class Importer
                 if (!empty($serialize)) {
                     if ($serialize == $fieldName) {
                         // Is this the field we're serializing? Grab the array
-                        $value = serialize($this->serializeData[$serialize]);
+                        $value = json_encode($this->serializeData[$serialize]);
                         $fields[$fieldName] = $value;
                     } else {
                         // Otherwise collect values in an array
@@ -565,8 +565,8 @@ class Importer
                 // Handle merging existing custom field data with partial custom field imports
                 if ($importType->isUsingCustomFields() && $fieldName == 'fields') {
                     if (isset($keyRow['fields']) && !empty($keyRow['fields'])) {
-                        $sqlData['fields'] = array_merge(unserialize($keyRow['fields']), unserialize($fieldData));
-                        $sqlData['fields'] = serialize($sqlData['fields']);
+                        $sqlData['fields'] = array_merge(json_decode($keyRow['fields'], true), json_decode($fieldData, true));
+                        $sqlData['fields'] = json_encode($sqlData['fields']);
                     }
                 }
             }
