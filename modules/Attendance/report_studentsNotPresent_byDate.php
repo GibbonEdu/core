@@ -21,6 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Module\Attendance\AttendanceView;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -149,6 +150,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
             echo __('There are no records to display.');
             echo '</div>';
         } else {
+          $gateway = $container->get(AttendanceLogPersonGateway::class);
+          $criteria = $gateway->newQueryCriteria()
+                              ->filterBy('gibbonSchoolYearID',$gibbonSchoolYearID)
+                              ->filterBy('date',$currentDate);
+
+          switch($sort)
+          {
+          case 'preferredName':
+            $criteria->orderBy([
+              'gibbonPerson.preferredName',
+              'gibbonPerson.surname',
+              'LENGTH(gibbonRollGroup.nameShort)',
+              'gibbonRollGroup.nameShort'
+            ]);
+            break;
+
+          case 'surname':
+            $criteria->orderBy(
+          }
+          $gateway->queryStudentsNotPresent($criteria);
+          $table = DataTable::create('attendance');
+          $table->addColumn('count',__('Count'));
+          $table->addColumn('rollGroup',__('Roll Group'));
+          $table->addColumn('name',__('Name'));
+          $table->addColumn('status',__('Status'));
+          $table->addColumn('reason',__('Reason'));
+          $table->addColumn('comment',__('Comment'));
+          echo $table->render($attendance);
+
             echo "<div class='linkTop'>";
             echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_studentsNotPresent_byDate_print.php&currentDate='.dateConvertBack($guid, $currentDate)."&allStudents=" . $allStudents . "&sort=" . $sort . "&gibbonYearGroupIDList=";
             if (is_array($gibbonYearGroupIDList)) {
@@ -183,6 +213,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
 
             while ($row = $result->fetch()) {
+
                 if (isset($log[$row['gibbonPersonID']]) == false) {
 
                     try {
