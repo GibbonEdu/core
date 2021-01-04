@@ -17,49 +17,41 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\ModuleGateway;
+
 include '../../gibbon.php';
 
-$gibbonModuleID = $_GET['gibbonModuleID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/module_manage_update.php&gibbonModuleID='.$gibbonModuleID;
-$_SESSION[$guid]['moduleUpdateError'] = '';
+$gibbonModuleID = $_GET['gibbonModuleID'] ?? '';  
+$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/module_manage_update.php&gibbonModuleID='.$gibbonModuleID;
+$gibbon->session->set('moduleUpdateError', '');
+
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage_update.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    //Proceed!
-    //Check if role specified
-    if ($gibbonModuleID == '') {
+    // Check if module specified
+    if (empty($gibbonModuleID)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
-        //NAMED
-        try {
-            $data = array('gibbonModuleID' => $gibbonModuleID);
-            $sql = 'SELECT * FROM gibbonModule WHERE gibbonModuleID=:gibbonModuleID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
+        $moduleGateway = $container->get(ModuleGateway::class);
+        $module = $moduleGateway->getByID($gibbonModuleID);
 
-        if ($result->rowCount() != 1) {
+        if (empty($module)) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
-            $row = $result->fetch();
+            // Inputs
+            $versionDB = $_POST['versionDB'] ?? '';
+            $versionCode = $_POST['versionCode'] ?? '';
 
-            $versionDB = $_POST['versionDB'];
-            $versionCode = $_POST['versionCode'];
-
-            //Validate Inputs
-            if ($versionDB == '' or $versionCode == '' or version_compare($versionDB, $versionCode) != -1) {
+            // Validate Inputs
+            if (empty($versionDB) or empty($versionCode) or version_compare($versionDB, $versionCode) != -1) {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
             } else {
-                include $_SESSION[$guid]['absolutePath'].'/modules/'.$row['name'].'/CHANGEDB.php';
+                include $gibbon->session->get('absolutePath').'/modules/'.$module['name'].'/CHANGEDB.php';
 
                 $partialFail = false;
                 foreach ($sql as $version) {
@@ -70,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                                 try {
                                     $result = $connection2->query($sqlToken);
                                 } catch (PDOException $e) {
-                                    $_SESSION[$guid]['moduleUpdateError'] .= htmlPrep($sqlToken).'<br/><b>'.$e->getMessage().'</b><br/><br/>';
+                                    $gibbon->session->set('moduleUpdateError', $gibbon->session->get('moduleUpdateError').htmlPrep($sqlToken).'<br/><b>'.$e->getMessage().'</b><br/><br/>');
                                     $partialFail = true;
                                 }
                             }
@@ -82,17 +74,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                     $URL .= '&return=warning1';
                     header("Location: {$URL}");
                 } else {
-                    //Update DB version
-                    try {
-                        $data = array('versionCode' => $versionCode, 'name' => $row['name']);
-                        $sql = 'UPDATE gibbonModule SET version=:versionCode WHERE name=:name';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $URL .= '&return=error2';
-                        header("Location: {$URL}");
-                        exit();
-                    }
+                    // Update DB version
+                    $moduleGateway->update($module['gibbonModuleID'], ['version' => $versionCode]);
 
                     $URL .= '&return=success0';
                     header("Location: {$URL}");
