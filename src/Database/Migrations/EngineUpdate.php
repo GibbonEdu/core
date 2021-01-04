@@ -58,7 +58,7 @@ class EngineUpdate extends Migration
         }
 
         $tablesInnoDB = array_filter($tables, function ($table) {
-            return $table['Engine'] == 'InnoDB';
+            return $table['Engine'] == 'InnoDB' || $table['Engine'] === null;
         });
 
         if (count($tables) - count($tablesInnoDB) > 0) {
