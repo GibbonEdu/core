@@ -380,8 +380,8 @@ if ($proceed == false) {
         }
 
         //GET SIBLING FIELDS
-        $siblingName1 = $_POST['siblingName1'];
-        $siblingDOB1 = $_POST['siblingDOB1'];
+        $siblingName1 = $_POST['siblingName1'] ?? '';
+        $siblingDOB1 = $_POST['siblingDOB1'] ?? '';
         if ($siblingDOB1 == '') {
             $siblingDOB1 = null;
         } else {
@@ -394,8 +394,8 @@ if ($proceed == false) {
         } else {
             $siblingSchoolJoiningDate1 = dateConvert($guid, $siblingSchoolJoiningDate1);
         }
-        $siblingName2 = $_POST['siblingName2'];
-        $siblingDOB2 = $_POST['siblingDOB2'];
+        $siblingName2 = $_POST['siblingName2'] ?? '';
+        $siblingDOB2 = $_POST['siblingDOB2'] ?? '';
         if ($siblingDOB2 == '') {
             $siblingDOB2 = null;
         } else {
@@ -408,8 +408,8 @@ if ($proceed == false) {
         } else {
             $siblingSchoolJoiningDate2 = dateConvert($guid, $siblingSchoolJoiningDate2);
         }
-        $siblingName3 = $_POST['siblingName3'];
-        $siblingDOB3 = $_POST['siblingDOB3'];
+        $siblingName3 = $_POST['siblingName3'] ?? '';
+        $siblingDOB3 = $_POST['siblingDOB3'] ?? '';
         if ($siblingDOB3 == '') {
             $siblingDOB3 = null;
         } else {
