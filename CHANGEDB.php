@@ -754,4 +754,6 @@ ALTER TABLE `gibbonApplicationForm` CHANGE `gender` `gender` ENUM('M','F','Other
 ALTER TABLE `gibbonStaffApplicationForm` CHANGE `gender` `gender` ENUM('M','F','Other','Unspecified') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unspecified';end
 UPDATE `gibbonSetting` SET description='Click to select a colour.' WHERE name='browseBGColor' AND scope='Library';end
 UPDATE `gibbonSetting` SET value=CONCAT('#', value) WHERE name='browseBGColor' AND scope='Library' AND NOT value='';end
+UPDATE `gibbonSetting` SET nameDisplay='Browse Library BG Colour' WHERE name='browseBGColor' AND scope='Library';end
+UPDATE `gibbonSetting` SET nameDisplay='Message Bubble Background Colour', description='Message bubble background colour in RGBA (e.g. 100,100,100,0.50). If blank, theme default will be used.' WHERE name='messageBubbleBGColor' AND scope='Messenger';end
 ";
