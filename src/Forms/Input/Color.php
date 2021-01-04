@@ -36,8 +36,6 @@ class Color extends Input
         parent::__construct($name);
 
         $this->setAttribute('maxlength', 7);
-        $this->setAttribute('style', 'padding: 4px; min-width: 36px; height:36px; border-width: 1px;');
-
         $this->addValidation(
             'Validate.Format',
             'pattern: /#[0-9a-fA-F]{6}/, failureMessage: "'.__('Must be a valid hex colour').'"'
@@ -50,7 +48,12 @@ class Color extends Input
      */
     protected function getElement()
     {
-        $output = '<input type="color" '.$this->getAttributeString().'>';
+        $value = !empty($this->getValue()) ? $this->getValue() : '#ffffff';
+
+        $output = '<div class="flex">';
+        $output .= '<input type="color" data-for="'.$this->getID().'" class="colorPicker mr-2 w-16" style="padding: 4px; min-width: 36px; height:36px; border-width: 1px;" value="'.$value.'">';
+        $output .= '<input type="text" '.$this->getAttributeString().'>';
+        $output .= '</div>';
 
         return $output;
     }
