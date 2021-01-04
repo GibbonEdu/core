@@ -167,7 +167,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                                 $col->addColor('rowColor['.$count.']')
                                     ->addClass('pl-2')
                                     ->setValue($rubricRow['backgroundColor'] ?? '#ffffff')
-                                    ->setTitle(__('Background Color'));
+                                    ->setTitle(__('Background Colour'));
 
 							$form->toggleVisibilityByClass('rowTitle'.$count)->onRadio('type'.$count)->when('Standalone');
 							$form->toggleVisibilityByClass('gibbonOutcomeID'.$count)->onRadio('type'.$count)->when('Outcome Based');
@@ -222,7 +222,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                             $col->addColor('columnColor['.$count.']')
                                 ->addClass('pl-2')
                                 ->setValue($rubricColumn['backgroundColor'] ?? '#ffffff')
-                                ->setTitle(__('Background Color'));
+                                ->setTitle(__('Background Colour'));
 
 							$form->addHiddenValue('gibbonRubricColumnID['.$count.']', $rubricColumn['gibbonRubricColumnID']);
 
