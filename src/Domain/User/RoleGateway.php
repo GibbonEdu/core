@@ -35,7 +35,7 @@ class RoleGateway extends QueryableGateway
     private static $primaryKey = 'gibbonRoleID';
 
     private static $searchableColumns = ['name', 'nameShort'];
-    
+
     /**
      * @param QueryCriteria $criteria
      * @return DataSet
@@ -56,7 +56,7 @@ class RoleGateway extends QueryableGateway
                     ->bindValue('category', $category);
             },
         ]);
-        
+
         return $this->runQuery($query, $criteria);
     }
 
@@ -66,7 +66,7 @@ class RoleGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonPerson.gibbonPersonID', "(CASE WHEN gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID THEN 'Y' ELSE 'N' END) AS primaryRole", 
+                'gibbonPerson.gibbonPersonID', "(CASE WHEN gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID THEN 'Y' ELSE 'N' END) AS primaryRole",
                 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.username', 'gibbonPerson.image_240', 'gibbonPerson.status', 'gibbonPerson.canLogin',
                 "GROUP_CONCAT(allRoles.name ORDER BY allRoles.name SEPARATOR ',') as allRoles"
             ])
@@ -92,17 +92,33 @@ class RoleGateway extends QueryableGateway
                 return $query;
             },
         ]);
-        
+
         return $this->runQuery($query, $criteria);
     }
-    
+
+    public function selectUsersByAction($name)
+    {
+        $data = array('name' => $name);
+        $sql = "SELECT DISTINCT gibbonPersonID, surname, preferredName
+                FROM gibbonAction
+                JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
+                JOIN gibbonRole ON (gibbonPermission.gibbonRoleID=gibbonRole.gibbonRoleID)
+                JOIN gibbonPerson ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll))
+                WHERE
+                    (gibbonAction.name=:name OR (gibbonAction.name LIKE CONCAT(:name,'\_%')))
+                    AND gibbonPerson.status='Full'
+                ORDER BY surname, preferredName";
+
+        return $this->db()->select($sql, $data);
+    }
+
     public function selectActionsByRole($gibbonRoleID)
     {
         $query = $this
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonModule.name as moduleName', 'gibbonRole.gibbonRoleID', 'gibbonAction.name', 'gibbonAction.description', 
+                'gibbonModule.name as moduleName', 'gibbonRole.gibbonRoleID', 'gibbonAction.name', 'gibbonAction.description',
             ])
             ->innerJoin('gibbonPermission', 'gibbonPermission.gibbonRoleID=gibbonRole.gibbonRoleID')
             ->innerJoin('gibbonAction', 'gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID')
@@ -125,8 +141,8 @@ class RoleGateway extends QueryableGateway
     public function selectAllRolesByPerson($gibbonPersonID)
     {
         $data = array('gibbonPersonID' => $gibbonPersonID);
-        $sql = "SELECT gibbonRoleID AS groupBy, gibbonRole.* 
-                FROM gibbonPerson 
+        $sql = "SELECT gibbonRoleID AS groupBy, gibbonRole.*
+                FROM gibbonPerson
                 JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll))
                 WHERE gibbonPersonID=:gibbonPersonID";
 

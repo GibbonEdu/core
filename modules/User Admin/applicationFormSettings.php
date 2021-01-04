@@ -21,10 +21,8 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationFormSettings.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Application Form Settings'));
@@ -54,16 +52,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
-
-    $setting = getSettingByScope($connection2, 'Application Form', 'applicationFee', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))
-            ->description(__($setting['description']))
-            ->append(sprintf(__('In %1$s.'), $_SESSION[$guid]['currency']));
-        $row->addNumber($setting['name'])
-            ->setValue($setting['value'])
-            ->decimalPlaces(2)
-            ->required();
 
     $setting = getSettingByScope($connection2, 'Application Form', 'publicApplications', true);
     $row = $form->addRow();
@@ -99,6 +87,29 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
         if (empty($setting['value'])) {
             $years->selectAll();
         }
+
+    $row = $form->addRow()->addHeading(__('Application Fee'));
+
+    $setting = getSettingByScope($connection2, 'Application Form', 'applicationFee', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))
+            ->description(__($setting['description']));
+        $row->addCurrency($setting['name'])
+            ->setValue($setting['value'])
+            ->required();
+
+    $setting = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))
+            ->description(__($setting['description']));
+        $row->addCurrency($setting['name'])
+            ->setValue($setting['value'])
+            ->required();
+
+    $setting = getSettingByScope($connection2, 'Application Form', 'applicationProcessFeeText', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $row = $form->addRow()->addHeading(__('References'));
 

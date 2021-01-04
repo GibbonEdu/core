@@ -58,6 +58,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_b
         exit;
     }
 
+    // Set reports to cache in a separate location
+    $cachePath = $gibbon->session->has('cachePath') ? $gibbon->session->get('cachePath').'/reports' : '/uploads/cache';
+    $container->get('twig')->setCache($gibbon->session->get('absolutePath').$cachePath);
+
     $reportBuilder = $container->get(ReportBuilder::class);
     $archive = $container->get(ReportArchiveGateway::class)->getByID($report['gibbonReportArchiveID']);
     $archiveFile = $container->get(ArchiveFile::class);

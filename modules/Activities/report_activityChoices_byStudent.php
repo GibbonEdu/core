@@ -27,10 +27,8 @@ use Gibbon\Services\Format;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activityChoices_byStudent.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Activity Choices By Student'));
@@ -62,6 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         echo '<h2>';
         echo __('Report Data');
         echo '</h2>';
+
 
         $options = getSettingByScope($connection2, 'Activities', 'activityTypes');
         $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
@@ -104,6 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
                         }
                         return Format::small(__('Not assigned to term'));
                     }
+
                     return $item['terms'];
                   });
             } else {

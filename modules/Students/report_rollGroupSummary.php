@@ -28,10 +28,8 @@ use Gibbon\Domain\Students\StudentReportGateway;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupSummary.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $viewMode = $_REQUEST['format'] ?? '';
@@ -48,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
         echo '</h2>';
 
         echo '<p>';
-        echo __('By default this report counts all students who are enroled in the current academic year and whose status is currently set to full. However, if dates are set, only those students who have start and end dates outside of the specified dates, or have no start and end dates, will be shown (irrespective of their status).');
+        echo __('By default this report counts all students who are enrolled in the current academic year and whose status is currently set to full. However, if dates are set, only those students who have start and end dates outside of the specified dates, or have no start and end dates, will be shown (irrespective of their status).');
         echo '</p>';
 
         if (empty($dateFrom) && !empty($dateTo)) {

@@ -18,8 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Domain\Timetable\TimetableGateway;
 use Gibbon\Domain\Timetable\TimetableDayGateway;
 
@@ -27,10 +28,8 @@ use Gibbon\Domain\Timetable\TimetableDayGateway;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
@@ -49,16 +48,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
     $gibbonTTID = $_GET['gibbonTTID'];
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
     if ($gibbonTTID == '' || $gibbonSchoolYearID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         $values = $timetableGateway->getTTByID($gibbonTTID);
 
         if (empty($values)) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/tt_editProcess.php');
@@ -115,10 +110,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
             echo '</h2>';
 
             $timetableDayGateway = $container->get(TimetableDayGateway::class);
-            $ttDays = $timetableDayGateway->selectTTDaysByID($gibbonTTID);
+
+            $criteria = $timetableDayGateway->newQueryCriteria(true)
+                ->sortBy(['name'])
+                ->fromPOST();
+
+            $ttDays = $timetableDayGateway->queryTTDays($criteria, $gibbonTTID);
+
+            // FORM
+            $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/tt_editProcessBulk.php?gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID");
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+            // BULK ACTIONS
+            $bulkActions = array(
+                'Duplicate' => __('Duplicate')
+            );
+            $col = $form->createBulkActionColumn($bulkActions);
+                $col->addSubmit(__('Go'));
 
             // DATA TABLE
-            $table = DataTable::create('timetableDays');
+            $table = $form->addRow()->addDataTable('ttEdit', $criteria)->withData($ttDays);
+
+            $table->addMetaData('bulkActions', $col);
 
             $table->addHeaderAction('add', __('Add'))
                 ->setURL('/modules/Timetable Admin/tt_edit_day_add.php')
@@ -143,7 +156,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
                         ->setURL('/modules/Timetable Admin/tt_edit_day_delete.php');
                 });
 
-            echo $table->render($ttDays->toDataSet());
+            $table->addCheckboxColumn('gibbonTTDayIDList', 'gibbonTTDayID');
+
+            echo $form->getOutput();
         }
     }
 }

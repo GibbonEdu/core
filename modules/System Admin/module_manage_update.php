@@ -20,10 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage_update.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs
@@ -51,23 +49,16 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
     //Check if school year specified
     $gibbonModuleID = $_GET['gibbonModuleID'];
     if ($gibbonModuleID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonModuleID' => $gibbonModuleID);
             $sql = 'SELECT * FROM gibbonModule WHERE gibbonModuleID=:gibbonModuleID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             $values = $result->fetch();
@@ -86,12 +77,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                 echo '<p>';
                 echo '<b>'.__('You seem to be all up to date, good work!').'</b>';
                 echo '</p>';
-            } elseif ($versionDB > $versionCode or $versionCode == '') {
+            } elseif (version_compare($versionDB, $versionCode, '>') or empty($versionCode)) {
                 //Error
                 echo "<div class='error'>";
                 echo __('An error has occurred determining the version of the system you are using.');
                 echo '</div>';
-            } elseif ($versionDB == $versionCode) {
+            } elseif (version_compare($versionDB, $versionCode, '=')) {
                 //Instructions on how to update
                 echo '<h3>';
                 echo __('Update Instructions');
@@ -103,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                 echo '<li>'.__('Use an FTP client to upload the new files to your server\'s modules folder.').'</li>';
                 echo '<li>'.__('Reload this page and follow the instructions to update your database to the latest version.').'</li>';
                 echo '</ol>';
-            } elseif ($versionDB < $versionCode) {
+            } elseif (version_compare($versionDB, $versionCode, '<')) {
                 //Time to update
                 echo '<h3>';
                 echo __('Database Update');

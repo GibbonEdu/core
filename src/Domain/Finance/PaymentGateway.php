@@ -17,23 +17,25 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../gibbon.php';
-include '../../config.php';
+namespace Gibbon\Domain\Finance;
 
-//Module includes
-include './moduleFunctions.php';
+use Gibbon\Domain\Traits\TableAware;
+use Gibbon\Domain\QueryCriteria;
+use Gibbon\Domain\QueryableGateway;
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/System Admin/systemCheck.php';
+/**
+ * Payment Gateway
+ *
+ * @version v21
+ * @since   v21
+ */
+class PaymentGateway extends QueryableGateway
+{
+    use TableAware;
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.php') == false) {
-    $URL .= '&return=error0';
-    header("Location: {$URL}");
-    exit;
-} else {
-    // Clear the templates cache folder
-    removeDirectoryContents($_SESSION[$guid]['absolutePath'].'/uploads/cache');
+    private static $tableName = 'gibbonPayment';
+    private static $primaryKey = 'gibbonPaymentID';
 
-    $URL .= '&return=success0';
-    header("Location: {$URL}");
-    exit;
+    private static $searchableColumns = [];
+    
 }

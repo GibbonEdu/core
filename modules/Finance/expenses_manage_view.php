@@ -18,15 +18,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
+use Gibbon\Domain\Finance\ExpenseGateway;
+use Gibbon\Tables\DataTable;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_view.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
@@ -37,11 +37,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
         //Proceed!
         $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
     
-        $urlParams = compact('gibbonFinanceBudgetCycleID');        
+        $urlParams = compact('gibbonFinanceBudgetCycleID');
         
         $page->breadcrumbs
-            ->add(__('Manage Expenses'), 'expenses_manage.php',  $urlParams)
-            ->add(__('View Expense'));        
+            ->add(__('Manage Expenses'), 'expenses_manage.php', $urlParams)
+            ->add(__('View Expense'));
 
         //Check if params are specified
         $gibbonFinanceExpenseID = isset($_GET['gibbonFinanceExpenseID'])? $_GET['gibbonFinanceExpenseID'] : '';
@@ -140,213 +140,218 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                 echo '</div>';
                             }
                             ?>
-								<table class='smallIntBorder fullWidth' cellspacing='0'>
-									<tr class='break'>
-										<td colspan=2>
-											<h3><?php echo __('Basic Information') ?></h3>
-										</td>
-									</tr>
-									<tr>
-										<td style='width: 275px'>
-											<b><?php echo __('Budget Cycle') ?></b><br/>
-										</td>
-										<td class="right">
-											<?php
+                                <table class='smallIntBorder fullWidth' cellspacing='0'>
+                                    <tr class='break'>
+                                        <td colspan=2>
+                                            <h3><?php echo __('Basic Information') ?></h3>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style='width: 275px'>
+                                            <b><?php echo __('Budget Cycle') ?></b><br/>
+                                        </td>
+                                        <td class="right">
+                                            <?php
                                             $yearName = '';
-											try {
-												$dataYear = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
-												$sqlYear = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
-												$resultYear = $connection2->prepare($sqlYear);
-												$resultYear->execute($dataYear);
-											} catch (PDOException $e) {
-												echo "<div class='error'>".$e->getMessage().'</div>';
-											}
-											if ($resultYear->rowCount() == 1) {
-												$rowYear = $resultYear->fetch();
-												$yearName = $rowYear['name'];
-											}
-											?>
-											<input readonly name="name" id="name" maxlength=20 value="<?php echo $yearName ?>" type="text" class="standardWidth">
-											<input name="gibbonFinanceBudgetCycleID" id="gibbonFinanceBudgetCycleID" maxlength=20 value="<?php echo $gibbonFinanceBudgetCycleID ?>" type="hidden" class="standardWidth">
-											<script type="text/javascript">
-												var gibbonFinanceBudgetCycleID=new LiveValidation('gibbonFinanceBudgetCycleID');
-												gibbonFinanceBudgetCycleID.add(Validate.Presence);
-											</script>
-										</td>
-									</tr>
-									<tr>
-										<td style='width: 275px'>
-											<b><?php echo __('Budget') ?></b><br/>
-										</td>
-										<td class="right">
-											<input readonly name="name" id="name" maxlength=20 value="<?php echo $row['budget']; ?>" type="text" class="standardWidth">
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<b><?php echo __('Title') ?></b><br/>
-										</td>
-										<td class="right">
-											<input readonly name="name" id="name" maxlength=60 value="<?php echo $row['title']; ?>" type="text" class="standardWidth">
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<b><?php echo __('Status') ?></b><br/>
-										</td>
-										<td class="right">
-											<input readonly name="name" id="name" maxlength=60 value="<?php echo __($row['status']); ?>" type="text" class="standardWidth">
-										</td>
-									</tr>
-									<tr>
-										<td colspan=2>
-											<b><?php echo __('Description') ?></b>
-											<?php
-                                                echo '<p>';
-												echo $row['body'];
-												echo '</p>'
+                                            
+                                                $dataYear = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
+                                                $sqlYear = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
+                                                $resultYear = $connection2->prepare($sqlYear);
+                                                $resultYear->execute($dataYear);
+                                            if ($resultYear->rowCount() == 1) {
+                                                $rowYear = $resultYear->fetch();
+                                                $yearName = $rowYear['name'];
+                                            }
                                             ?>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<b><?php echo __('Total Cost') ?></b><br/>
-											<span style="font-size: 90%">
-												<i>
-												<?php
+                                            <input readonly name="name" id="name" maxlength=20 value="<?php echo $yearName ?>" type="text" class="standardWidth">
+                                            <input name="gibbonFinanceBudgetCycleID" id="gibbonFinanceBudgetCycleID" maxlength=20 value="<?php echo $gibbonFinanceBudgetCycleID ?>" type="hidden" class="standardWidth">
+                                            <script type="text/javascript">
+                                                var gibbonFinanceBudgetCycleID=new LiveValidation('gibbonFinanceBudgetCycleID');
+                                                gibbonFinanceBudgetCycleID.add(Validate.Presence);
+                                            </script>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style='width: 275px'>
+                                            <b><?php echo __('Budget') ?></b><br/>
+                                        </td>
+                                        <td class="right">
+                                            <input readonly name="name" id="name" maxlength=20 value="<?php echo $row['budget']; ?>" type="text" class="standardWidth">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b><?php echo __('Title') ?></b><br/>
+                                        </td>
+                                        <td class="right">
+                                            <input readonly name="name" id="name" maxlength=60 value="<?php echo $row['title']; ?>" type="text" class="standardWidth">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b><?php echo __('Status') ?></b><br/>
+                                        </td>
+                                        <td class="right">
+                                            <input readonly name="name" id="name" maxlength=60 value="<?php echo __($row['status']); ?>" type="text" class="standardWidth">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan=2>
+                                            <b><?php echo __('Description') ?></b>
+                                            <?php
+                                                echo '<p>';
+                                                echo $row['body'];
+                                                echo '</p>'
+                                            ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b><?php echo __('Total Cost') ?></b><br/>
+                                            <span style="font-size: 90%">
+                                                <i>
+                                                <?php
                                                 if ($_SESSION[$guid]['currency'] != '') {
                                                     echo sprintf(__('Numeric value of the fee in %1$s.'), $_SESSION[$guid]['currency']);
                                                 } else {
                                                     echo __('Numeric value of the fee.');
                                                 }
-                            					?>
-												</i>
-											</span>
-										</td>
-										<td class="right">
-											<input readonly name="name" id="name" maxlength=60 value="<?php echo $row['cost']; ?>" type="text" class="standardWidth">
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<b><?php echo __('Count Against Budget') ?> *</b><br/>
-										</td>
-										<td class="right">
-											<input readonly name="countAgainstBudget" id="countAgainstBudget" maxlength=60 value="<?php echo ynExpander($guid, $row['countAgainstBudget']); ?>" type="text" class="standardWidth">
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<b><?php echo __('Purchase By') ?></b><br/>
-										</td>
-										<td class="right">
-											<input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php echo __($row['purchaseBy']); ?>" type="text" class="standardWidth">
-										</td>
-									</tr>
-									<tr>
-										<td colspan=2>
-											<b><?php echo __('Purchase Details') ?></b>
-											<?php
+                                                ?>
+                                                </i>
+                                            </span>
+                                        </td>
+                                        <td class="right">
+                                            <input readonly name="name" id="name" maxlength=60 value="<?php echo $row['cost']; ?>" type="text" class="standardWidth">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b><?php echo __('Count Against Budget') ?> *</b><br/>
+                                        </td>
+                                        <td class="right">
+                                            <input readonly name="countAgainstBudget" id="countAgainstBudget" maxlength=60 value="<?php echo ynExpander($guid, $row['countAgainstBudget']); ?>" type="text" class="standardWidth">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b><?php echo __('Purchase By') ?></b><br/>
+                                        </td>
+                                        <td class="right">
+                                            <input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php echo __($row['purchaseBy']); ?>" type="text" class="standardWidth">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan=2>
+                                            <b><?php echo __('Purchase Details') ?></b>
+                                            <?php
                                                 echo '<p>';
-												echo $row['purchaseDetails'];
-												echo '</p>'
+                                                echo $row['purchaseDetails'];
+                                                echo '</p>'
                                             ?>
-										</td>
-									</tr>
+                                        </td>
+                                    </tr>
 
-									<tr class='break'>
-										<td colspan=2>
-											<h3><?php echo __('Log') ?></h3>
-										</td>
-									</tr>
-									<tr>
-										<td colspan=2>
-											<?php
-                                            echo getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2);
-                            				?>
-										</td>
-									</tr>
+                                    <tr class='break'>
+                                        <td colspan=2>
+                                            <h3><?php echo __('Log') ?></h3>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan=2>
+                            <?php
+                            $gateway = $container->get(ExpenseGateway::class);
+                            $criteria = $gateway->newQueryCriteria()
+                                ->sortBy('timestamp')
+                                ->fromPOST();
+                            $expenses = $gateway->queryExpenseLogByID($criteria, $gibbonFinanceExpenseID);
 
-									<?php
+                            $table = DataTable::create('expenseLog');
+                            $table->addColumn('name', __('Person'))
+                                ->format(Format::using('name', ['title', 'preferredName', 'surname', 'Staff', false, true]));
+                            $table->addColumn('date', __('Date'))
+                                ->format(Format::using('date', 'timestamp'));
+                            $table->addColumn('action', __('Event'));
+                            
+                            echo $table->render($expenses);
+                            ?>
+                                        </td>
+                                    </tr>
+
+                                    <?php
                                     if ($row['status'] == 'Paid') {
                                         ?>
-										<tr class='break' id="paidTitle">
-											<td colspan=2>
-												<h3><?php echo __('Payment Information') ?></h3>
-											</td>
-										</tr>
-										<tr id="paymentDateRow">
-											<td>
-												<b><?php echo __('Date Paid') ?></b><br/>
-												<span class="emphasis small"><?php echo __('Date of payment, not entry to system.') ?></span>
-											</td>
-											<td class="right">
-												<input readonly name="paymentDate" id="paymentDate" maxlength=10 value="<?php echo dateConvertBack($guid, $row['paymentDate']) ?>" type="text" class="standardWidth">
-											</td>
-										</tr>
-										<tr id="paymentAmountRow">
-											<td>
-												<b><?php echo __('Amount Paid') ?></b><br/>
-												<span class="emphasis small"><?php echo __('Final amount paid.') ?>
-												<?php
+                                        <tr class='break' id="paidTitle">
+                                            <td colspan=2>
+                                                <h3><?php echo __('Payment Information') ?></h3>
+                                            </td>
+                                        </tr>
+                                        <tr id="paymentDateRow">
+                                            <td>
+                                                <b><?php echo __('Date Paid') ?></b><br/>
+                                                <span class="emphasis small"><?php echo __('Date of payment, not entry to system.') ?></span>
+                                            </td>
+                                            <td class="right">
+                                                <input readonly name="paymentDate" id="paymentDate" maxlength=10 value="<?php echo dateConvertBack($guid, $row['paymentDate']) ?>" type="text" class="standardWidth">
+                                            </td>
+                                        </tr>
+                                        <tr id="paymentAmountRow">
+                                            <td>
+                                                <b><?php echo __('Amount Paid') ?></b><br/>
+                                                <span class="emphasis small"><?php echo __('Final amount paid.') ?>
+                                                <?php
                                                 if ($_SESSION[$guid]['currency'] != '') {
                                                     echo "<span style='font-style: italic; font-size: 85%'>".$_SESSION[$guid]['currency'].'</span>';
                                                 }
-                                        		?>
-												</span>
-											</td>
-											<td class="right">
-												<input readonly name="paymentAmount" id="paymentAmount" maxlength=10 value="<?php echo number_format($row['paymentAmount'], 2, '.', ',') ?>" type="text" class="standardWidth">
-											</td>
-										</tr>
-										<tr id="payeeRow">
-											<td>
-												<b><?php echo __('Payee') ?></b><br/>
-												<span class="emphasis small"><?php echo __('Staff who made, or arranged, the payment.') ?></span>
-											</td>
-											<td class="right">
-												<?php
-                                                try {
+                                                ?>
+                                                </span>
+                                            </td>
+                                            <td class="right">
+                                                <input readonly name="paymentAmount" id="paymentAmount" maxlength=10 value="<?php echo number_format($row['paymentAmount'], 2, '.', ',') ?>" type="text" class="standardWidth">
+                                            </td>
+                                        </tr>
+                                        <tr id="payeeRow">
+                                            <td>
+                                                <b><?php echo __('Payee') ?></b><br/>
+                                                <span class="emphasis small"><?php echo __('Staff who made, or arranged, the payment.') ?></span>
+                                            </td>
+                                            <td class="right">
+                                                <?php
+                                                
                                                     $dataSelect = array('gibbonPersonID' => $row['gibbonPersonIDPayment']);
                                                     $sqlSelect = 'SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
                                                     $resultSelect = $connection2->prepare($sqlSelect);
                                                     $resultSelect->execute($dataSelect);
-                                                } catch (PDOException $e) {
+                                                if ($resultSelect->rowCount() == 1) {
+                                                    $rowSelect = $resultSelect->fetch();
+                                                    ?>
+                                                            <input readonly name="payee" id="payee" maxlength=10 value="<?php echo Format::name(htmlPrep($rowSelect['title']), ($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true) ?>" type="text" class="standardWidth">
+                                                            <?php
                                                 }
-												if ($resultSelect->rowCount() == 1) {
-													$rowSelect = $resultSelect->fetch();
-													?>
-															<input readonly name="payee" id="payee" maxlength=10 value="<?php echo Format::name(htmlPrep($rowSelect['title']), ($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true) ?>" type="text" class="standardWidth">
-															<?php
-
-												}
-												?>
-											</td>
-										</tr>
-										<tr id="paymentMethodRow">
-											<td>
-												<b><?php echo __('Payment Method') ?></b><br/>
-											</td>
-											<td class="right">
-												<input readonly name="paymentMethod" id="paymentMethod" maxlength=10 value="<?php echo $row['paymentMethod'] ?>" type="text" class="standardWidth">
-											</td>
-										</tr>
-										<tr id="paymentIDRow">
-											<td>
-												<b><?php echo __('Payment ID') ?></b><br/>
-												<span class="emphasis small"><?php echo __('Transaction ID to identify this payment.') ?></span>
-											</td>
-											<td class="right">
-												<input readonly name="paymentID" id="paymentID" maxlength=100 value="<?php echo $row['paymentID'] ?>" type="text" class="standardWidth">
-											</td>
-										</tr>
-										<?php
-
+                                                ?>
+                                            </td>
+                                        </tr>
+                                        <tr id="paymentMethodRow">
+                                            <td>
+                                                <b><?php echo __('Payment Method') ?></b><br/>
+                                            </td>
+                                            <td class="right">
+                                                <input readonly name="paymentMethod" id="paymentMethod" maxlength=10 value="<?php echo $row['paymentMethod'] ?>" type="text" class="standardWidth">
+                                            </td>
+                                        </tr>
+                                        <tr id="paymentIDRow">
+                                            <td>
+                                                <b><?php echo __('Payment ID') ?></b><br/>
+                                                <span class="emphasis small"><?php echo __('Transaction ID to identify this payment.') ?></span>
+                                            </td>
+                                            <td class="right">
+                                                <input readonly name="paymentID" id="paymentID" maxlength=100 value="<?php echo $row['paymentID'] ?>" type="text" class="standardWidth">
+                                            </td>
+                                        </tr>
+                                        <?php
                                     }
-                            		?>
-								</table>
-							<?php
-
+                                    ?>
+                                </table>
+                            <?php
                         }
                     }
                 }

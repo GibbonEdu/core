@@ -51,7 +51,7 @@ TODO: add template variable details.
                         <br style="clear: both">
                     {% endif %}
 
-                    <div id="content" class="w-full max-w-full {{ not sidebar ?'pt-0 sm:pt-6' }} lg:flex-1  p-6 lg:pt-0 {{ not preventOverflow ? 'overflow-x-scroll sm:overflow-x-auto' }}">
+                    <div id="content" class="w-full max-w-full {{ not sidebar ?'pt-0 sm:pt-6' }} lg:flex-1  p-6 lg:pt-0 {{ not preventOverflow ? 'overflow-x-scroll lg:overflow-x-auto' : 'overflow-x-auto xl:overflow-x-unset' }} ">
 
                         {% block page %}
 
@@ -62,19 +62,19 @@ TODO: add template variable details.
                         {% endif %}
 
                         {% if page.breadcrumbs %}
-                        <div class="sm:pt-10 lg:pt-0">
-                            <div class="absolute lg:static top-0 my-6 text-xs text-blue-700">
+                        <nav aria-label="breadcrumb" class="sm:pt-10 lg:pt-0">
+                            <ol class="absolute lg:static top-0 my-6 mx-0 text-xs text-blue-700">
                                 {% for title, src in page.breadcrumbs %}
                                     {% if loop.last %}
-                                        <span class="trailEnd">{{ title }}</span>
+                                        <li aria-current="page" class="list-none inline ml-0 trailEnd">{{ title }}</li>
                                     {% elseif loop.revindex > 5 and loop.index != 1 %}
-                                        <a class="text-blue-700 underline" href="{{ absoluteURL }}/{{ src }}">...</a> > 
+                                        <li class="list-none inline ml-0 "><a class="text-blue-700 underline" href="{{ absoluteURL }}/{{ src }}">...</a> > </li>
                                     {% else %}
-                                        <a class="text-blue-700 underline" href="{{ absoluteURL }}/{{ src }}">{{ title }}</a> > 
+                                        <li class="list-none inline ml-0 "><a class="text-blue-700 underline" href="{{ absoluteURL }}/{{ src }}">{{ title }}</a> > </li>
                                     {% endif %}
                                 {% endfor %}
-                            </div>
-                        </div>
+                            </ol>
+                        </nav>
                         {% endif %}
 
 
@@ -113,6 +113,10 @@ TODO: add template variable details.
                 {% endblock %}
             </div>
         </div>
+
+        {% block privacy %}
+        {{ include('privacy.twig.html') }}
+        {% endblock privacy %}
 
         {% block foot %}
         {{ include('foot.twig.html') }}

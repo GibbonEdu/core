@@ -28,15 +28,18 @@ $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
+    exit();
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['address'], $connection2);
     if ($highestAction == false) {
         $URL .= "&return=error0$params";
         header("Location: {$URL}");
+        exit();
     } else {
         if (empty($_POST)) {
             $URL .= '&return=warning1';
             header("Location: {$URL}");
+            exit();
         } else {
             //Proceed!
             //Validate Inputs
@@ -63,14 +66,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $homework = $_POST['homework'];
             if ($_POST['homework'] == 'Y') {
                 $homework = 'Y';
-                $homeworkDetails = $_POST['homeworkDetails'];
-                if ($_POST['homeworkDueDateTime'] != '') {
+                $homeworkDetails = $_POST['homeworkDetails'] ?? '';
+                $homeworkTimeCap = !empty($_POST['homeworkTimeCap'])? $_POST['homeworkTimeCap'] : null;
+                $homeworkLocation = $_POST['homeworkLocation'] ?? 'Out of Class';
+                if (!empty($_POST['homeworkDueDateTime'])) {
                     $homeworkDueDateTime = $_POST['homeworkDueDateTime'].':59';
                 } else {
                     $homeworkDueDateTime = '21:00:00';
                 }
-                if ($_POST['homeworkDueDate'] != '') {
+                if (!empty($_POST['homeworkDueDate'])) {
                     $homeworkDueDate = dateConvert($guid, $_POST['homeworkDueDate']).' '.$homeworkDueDateTime;
+                }
+
+                // Check if the homework due date is within this class
+                $homeworkTimestamp = strtotime($homeworkDueDate);
+                if ($homeworkTimestamp >= strtotime($date.' '.$timeStart.':00') &&  $homeworkTimestamp <= strtotime($date.' '.$timeEnd.':59')) {
+                    $homeworkLocation = 'In Class';
                 }
 
                 if ($_POST['homeworkSubmission'] == 'Y') {
@@ -154,6 +165,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $homeworkCrowdAssessSubmitterParentsRead = 'N';
                 $homeworkCrowdAssessClassmatesParentsRead = 'N';
                 $homeworkCrowdAssessOtherParentsRead = 'N';
+                $homeworkTimeCap = null;
+                $homeworkLocation = null;
             }
 
             $viewableParents = $_POST['viewableParents'] ?? 'Y';
@@ -168,40 +181,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $params = "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView";
             }
 
-            //Lock markbook column table
-            try {
-                $sql = 'LOCK TABLES gibbonPlannerEntry WRITE, gibbonPlannerEntryGuest WRITE, gibbonCourseClassPerson WRITE, gibbonPlannerEntryOutcome WRITE';
-                $result = $connection2->query($sql);
-            } catch (PDOException $e) {
-                $URL .= "&return=error2$params";
-                header("Location: {$URL}");
-                exit();
-            }
-
-            //Get next autoincrement
-            try {
-                $sqlAI = "SHOW TABLE STATUS LIKE 'gibbonPlannerEntry'";
-                $resultAI = $connection2->query($sqlAI);
-            } catch (PDOException $e) {
-                $URL .= "&return=error2$params";
-                header("Location: {$URL}");
-                exit();
-            }
-
-            $rowAI = $resultAI->fetch();
-            $AI = str_pad($rowAI['Auto_increment'], 14, '0', STR_PAD_LEFT);
-
             if ($viewBy == '' or $gibbonCourseClassID == '' or $date == '' or $timeStart == '' or $timeEnd == '' or $name == '' or $homework == '' or $viewableParents == '' or $viewableStudents == '' or ($homework == 'Y' and ($homeworkDetails == '' or $homeworkDueDate == ''))) {
                 $URL .= "&return=error1$params";
                 header("Location: {$URL}");
+                exit();
             } else {
                 $partialFail = false;
+                
+                //Write to database
+                try {
+                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $date, 'timeStart' => $timeStart, 'timeEnd' => $timeEnd, 'gibbonUnitID' => $gibbonUnitID, 'name' => $name, 'summary' => $summary, 'description' => $description, 'teachersNotes' => $teachersNotes, 'homework' => $homework, 'homeworkDueDate' => $homeworkDueDate, 'homeworkDetails' => $homeworkDetails, 'homeworkTimeCap' => $homeworkTimeCap, 'homeworkLocation' => $homeworkLocation, 'homeworkSubmission' => $homeworkSubmission, 'homeworkSubmissionDateOpen' => $homeworkSubmissionDateOpen, 'homeworkSubmissionDrafts' => $homeworkSubmissionDrafts, 'homeworkSubmissionType' => $homeworkSubmissionType, 'homeworkSubmissionRequired' => $homeworkSubmissionRequired, 'homeworkCrowdAssess' => $homeworkCrowdAssess, 'homeworkCrowdAssessOtherTeachersRead' => $homeworkCrowdAssessOtherTeachersRead, 'homeworkCrowdAssessClassmatesRead' => $homeworkCrowdAssessClassmatesRead, 'homeworkCrowdAssessOtherStudentsRead' => $homeworkCrowdAssessOtherStudentsRead, 'homeworkCrowdAssessSubmitterParentsRead' => $homeworkCrowdAssessSubmitterParentsRead, 'homeworkCrowdAssessClassmatesParentsRead' => $homeworkCrowdAssessClassmatesParentsRead, 'homeworkCrowdAssessOtherParentsRead' => $homeworkCrowdAssessOtherParentsRead, 'viewableParents' => $viewableParents, 'viewableStudents' => $viewableStudents, 'gibbonPersonIDCreator' => $gibbonPersonIDCreator, 'gibbonPersonIDLastEdit' => $gibbonPersonIDLastEdit);
+                    $sql = 'INSERT INTO gibbonPlannerEntry SET gibbonCourseClassID=:gibbonCourseClassID, date=:date, timeStart=:timeStart, timeEnd=:timeEnd, gibbonUnitID=:gibbonUnitID, name=:name, summary=:summary, description=:description, teachersNotes=:teachersNotes, homework=:homework, homeworkDueDateTime=:homeworkDueDate, homeworkDetails=:homeworkDetails, homeworkTimeCap=:homeworkTimeCap, homeworkLocation=:homeworkLocation, homeworkSubmission=:homeworkSubmission, homeworkSubmissionDateOpen=:homeworkSubmissionDateOpen, homeworkSubmissionDrafts=:homeworkSubmissionDrafts, homeworkSubmissionType=:homeworkSubmissionType, homeworkSubmissionRequired=:homeworkSubmissionRequired, homeworkCrowdAssess=:homeworkCrowdAssess, homeworkCrowdAssessOtherTeachersRead=:homeworkCrowdAssessOtherTeachersRead, homeworkCrowdAssessClassmatesRead=:homeworkCrowdAssessClassmatesRead, homeworkCrowdAssessOtherStudentsRead=:homeworkCrowdAssessOtherStudentsRead, homeworkCrowdAssessSubmitterParentsRead=:homeworkCrowdAssessSubmitterParentsRead, homeworkCrowdAssessClassmatesParentsRead=:homeworkCrowdAssessClassmatesParentsRead, homeworkCrowdAssessOtherParentsRead=:homeworkCrowdAssessOtherParentsRead, viewableParents=:viewableParents, viewableStudents=:viewableStudents, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    $URL .= "&return=error2$params";
+                    header("Location: {$URL}");
+                    exit();
+                }
+                
+                $AI = $connection2->lastInsertID();
 
                 //Scan through guests
-                $guests = null;
-                if (isset($_POST['guests'])) {
-                    $guests = $_POST['guests'];
-                }
+                $guests = $_POST['guests'] ?? [];
+                
                 $role = $_POST['role'] ?? 'Student';
 
                 if (count($guests) > 0) {
@@ -247,25 +250,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                             ++$count;
                         }
                     }
-                }
-
-                //Write to database
-                try {
-                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $date, 'timeStart' => $timeStart, 'timeEnd' => $timeEnd, 'gibbonUnitID' => $gibbonUnitID, 'name' => $name, 'summary' => $summary, 'description' => $description, 'teachersNotes' => $teachersNotes, 'homework' => $homework, 'homeworkDueDate' => $homeworkDueDate, 'homeworkDetails' => $homeworkDetails, 'homeworkSubmission' => $homeworkSubmission, 'homeworkSubmissionDateOpen' => $homeworkSubmissionDateOpen, 'homeworkSubmissionDrafts' => $homeworkSubmissionDrafts, 'homeworkSubmissionType' => $homeworkSubmissionType, 'homeworkSubmissionRequired' => $homeworkSubmissionRequired, 'homeworkCrowdAssess' => $homeworkCrowdAssess, 'homeworkCrowdAssessOtherTeachersRead' => $homeworkCrowdAssessOtherTeachersRead, 'homeworkCrowdAssessClassmatesRead' => $homeworkCrowdAssessClassmatesRead, 'homeworkCrowdAssessOtherStudentsRead' => $homeworkCrowdAssessOtherStudentsRead, 'homeworkCrowdAssessSubmitterParentsRead' => $homeworkCrowdAssessSubmitterParentsRead, 'homeworkCrowdAssessClassmatesParentsRead' => $homeworkCrowdAssessClassmatesParentsRead, 'homeworkCrowdAssessOtherParentsRead' => $homeworkCrowdAssessOtherParentsRead, 'viewableParents' => $viewableParents, 'viewableStudents' => $viewableStudents, 'gibbonPersonIDCreator' => $gibbonPersonIDCreator, 'gibbonPersonIDLastEdit' => $gibbonPersonIDLastEdit);
-                    $sql = 'INSERT INTO gibbonPlannerEntry SET gibbonCourseClassID=:gibbonCourseClassID, date=:date, timeStart=:timeStart, timeEnd=:timeEnd, gibbonUnitID=:gibbonUnitID, name=:name, summary=:summary, description=:description, teachersNotes=:teachersNotes, homework=:homework, homeworkDueDateTime=:homeworkDueDate, homeworkDetails=:homeworkDetails, homeworkSubmission=:homeworkSubmission, homeworkSubmissionDateOpen=:homeworkSubmissionDateOpen, homeworkSubmissionDrafts=:homeworkSubmissionDrafts, homeworkSubmissionType=:homeworkSubmissionType, homeworkSubmissionRequired=:homeworkSubmissionRequired, homeworkCrowdAssess=:homeworkCrowdAssess, homeworkCrowdAssessOtherTeachersRead=:homeworkCrowdAssessOtherTeachersRead, homeworkCrowdAssessClassmatesRead=:homeworkCrowdAssessClassmatesRead, homeworkCrowdAssessOtherStudentsRead=:homeworkCrowdAssessOtherStudentsRead, homeworkCrowdAssessSubmitterParentsRead=:homeworkCrowdAssessSubmitterParentsRead, homeworkCrowdAssessClassmatesParentsRead=:homeworkCrowdAssessClassmatesParentsRead, homeworkCrowdAssessOtherParentsRead=:homeworkCrowdAssessOtherParentsRead, viewableParents=:viewableParents, viewableStudents=:viewableStudents, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    $URL .= "&return=error2$params";
-                    header("Location: {$URL}");
-                    exit();
-                }
-
-                //Unlock module table
-                try {
-                    $sql = 'UNLOCK TABLES';
-                    $result = $connection2->query($sql);
-                } catch (PDOException $e) {
                 }
 
                 if ($partialFail == true) {

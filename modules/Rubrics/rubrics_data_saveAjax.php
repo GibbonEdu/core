@@ -23,20 +23,16 @@ include './moduleFunctions.php';
 
 $mode = $_GET['mode'];
 if ($mode == 'Add') {
-    try {
+    
         $data = array('gibbonRubricID' => $_GET['gibbonRubricID'], 'gibbonPersonID' => $_GET['gibbonPersonID'], 'gibbonRubricCellID' => $_GET['gibbonRubricCellID'], 'contextDBTable' => $_GET['contextDBTable'], 'contextDBTableID' => $_GET['contextDBTableID']);
         $sql = 'INSERT INTO gibbonRubricEntry SET gibbonRubricID=:gibbonRubricID, gibbonPersonID=:gibbonPersonID, gibbonRubricCellID=:gibbonRubricCellID, contextDBTable=:contextDBTable, contextDBTableID=:contextDBTableID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-    }
 }
 if ($mode == 'Remove') {
-    try {
+    
         $data = array('gibbonRubricID' => $_GET['gibbonRubricID'], 'gibbonPersonID' => $_GET['gibbonPersonID'], 'gibbonRubricCellID' => $_GET['gibbonRubricCellID'], 'contextDBTable' => $_GET['contextDBTable'], 'contextDBTableID' => $_GET['contextDBTableID']);
         $sql = 'DELETE FROM gibbonRubricEntry WHERE gibbonRubricID=:gibbonRubricID AND gibbonPersonID=:gibbonPersonID AND gibbonRubricCellID=:gibbonRubricCellID AND contextDBTable=:contextDBTable AND contextDBTableID=:contextDBTableID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-    }
 }

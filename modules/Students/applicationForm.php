@@ -48,10 +48,8 @@ if (isset($_SESSION[$guid]['gibbonPersonID'])) {
 }
 
 if ($proceed == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Application Form'));
@@ -130,16 +128,22 @@ if ($proceed == false) {
 
     $currency = getSettingByScope($connection2, 'System', 'currency');
     $applicationFee = getSettingByScope($connection2, 'Application Form', 'applicationFee');
+    $applicationProcessFee = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee');
     $enablePayments = getSettingByScope($connection2, 'System', 'enablePayments');
     $paypalAPIUsername = getSettingByScope($connection2, 'System', 'paypalAPIUsername');
     $paypalAPIPassword = getSettingByScope($connection2, 'System', 'paypalAPIPassword');
     $paypalAPISignature = getSettingByScope($connection2, 'System', 'paypalAPISignature');
     $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
 
-    if ($applicationFee > 0 and is_numeric($applicationFee)) {
+    if (!empty($applicationFee) || !empty($applicationProcessFee)) {
         echo "<div class='warning'>";
-        echo __('Please note that there is an application fee of:').' <b><u>'.$currency.$applicationFee.'</u></b>.';
-        if ($enablePayments == 'Y' and $paypalAPIUsername != '' and $paypalAPIPassword != '' and $paypalAPISignature != '') {
+        if ($applicationFee > 0 and is_numeric($applicationFee)) {
+            echo __('Please note that there is an application fee of:').' <b><u>'.$currency.$applicationFee.'</u></b>. ';
+        }
+        if ($applicationProcessFee > 0 and is_numeric($applicationProcessFee)) {
+            echo __('A processing fee of {fee} may be sent by email after your application has been submitted.', ['fee' => '<b><u>'.$currency.$applicationProcessFee.'</u></b>']);
+        }
+        if ($enablePayments == 'Y' and $paypalAPIUsername != '' and $paypalAPIPassword != '' and $paypalAPISignature != '' && !empty($applicationFee)) {
             echo ' '.__('Payment must be made by credit card, using our secure PayPal payment gateway. When you press Submit at the end of this form, you will be directed to PayPal in order to make payment. During this process we do not see or store your credit card details.');
         }
         echo '</div>';
@@ -320,18 +324,22 @@ if ($proceed == false) {
 
         $row = $form->addRow()->setClass('senDetailsRow');
             $column = $row->addColumn();
-            $column->addLabel('', __('SEN Details'))->description(__('Provide any comments or information concerning your child\'s development and SEN history.'));
-            $column->addTextArea('senDetails')->setRows(5)->setClass('fullWidth');
+            $column->addLabel('senDetails', __('SEN Details'))->description(__('Provide any comments or information concerning your child\'s development and SEN history.'));
+            $column->addTextArea('senDetails')->setRows(5)->required()->setClass('fullWidth');
 
     } else {
         $form->addHiddenValue('sen', 'N');
     }
 
     $row = $form->addRow();
-        $column = $row->addColumn();
-        $column->addLabel('', __('Medical Information'))->description(__('Please indicate any medical conditions.'));
-        $column->addTextArea('medicalInformation')->setRows(5)->setClass('fullWidth');
+        $row->addLabel('medical', __('Medical Conditions'))->description(__('Does your child have any medical conditions or concerns?'));
+        $row->addYesNo('medical')->required()->placeholder(__('Please select...'));
 
+    $form->toggleVisibilityByClass('medicalDetailsRow')->onSelect('medical')->when('Y');
+
+    $col = $form->addRow()->setClass('medicalDetailsRow')->addColumn();
+        $col->addLabel('medicalInformation', __('Medical Information'))->description(__('Please indicate any medical conditions.'));
+        $col->addTextArea('medicalInformation')->setRows(5)->required()->setClass('fullWidth');
 
     // STUDENT EDUCATION
     $heading = $form->addRow()->addSubheading(__('Student Education'));
@@ -501,7 +509,7 @@ if ($proceed == false) {
                 $row->addSelectRelationship('parent1relationship')->required();
 
             // CUSTOM FIELDS FOR PARENT 1 WITH FAMILY
-            $existingFields = (!empty($parent1fields))? unserialize($parent1fields) : null;
+            $existingFields = (!empty($parent1fields))? json_decode($parent1fields) : null;
             $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
             if ($resultFields->rowCount() > 0) {
                 $row = $form->addRow();
@@ -641,7 +649,7 @@ if ($proceed == false) {
                 $row->addTextField("parent{$i}employer")->maxLength(90)->loadFrom($application);
 
             // CUSTOM FIELDS FOR PARENTS
-            $existingFields = (isset($application["parent{$i}fields"]))? unserialize($application["parent{$i}fields"]) : null;
+            $existingFields = (isset($application["parent{$i}fields"]))? json_decode($application["parent{$i}fields"]) : null;
             $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
             if ($resultFields->rowCount() > 0) {
                 $row = $form->addRow()->setClass("parentSection{$i}");
@@ -681,14 +689,11 @@ if ($proceed == false) {
             }
 
             // Get the family relationships
-            try {
+
                 $dataRelationships = array('gibbonFamilyID' => $rowSelect['gibbonFamilyID']);
                 $sqlRelationships = 'SELECT surname, preferredName, title, gender, gibbonFamilyAdult.gibbonPersonID FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID';
                 $resultRelationships = $connection2->prepare($sqlRelationships);
                 $resultRelationships->execute($dataRelationships);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
 
             $row = $table->addRow()->setClass('break');
             $row->addContent($rowSelect['name'])->wrap('<strong>','</strong>')->addClass('shortWidth');
@@ -726,14 +731,11 @@ if ($proceed == false) {
 
     // List siblings who have been to or are at the school
     if (isset($gibbonFamilyID)) {
-        try {
+
             $dataSibling = array('gibbonFamilyID' => $gibbonFamilyID);
             $sqlSibling = 'SELECT surname, preferredName, dob, dateStart FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY dob ASC, surname, preferredName';
             $resultSibling = $connection2->prepare($sqlSibling);
             $resultSibling->execute($dataSibling);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         while ($rowSibling = $resultSibling->fetch()) {
             $name = Format::name('', $rowSibling['preferredName'], $rowSibling['surname'], 'Student');
@@ -973,7 +975,7 @@ if ($proceed == false) {
         $form->addRow()->addHeading(__('For Office Use'));
 
         $row = $form->addRow();
-            $row->addLabel('skipEmailNotification', '<b>'.__('Skip sending a notification email to parents?').'</b>');
+            $row->addLabel('skipEmailNotification', __('Skip sending a notification email to parents?'));
             $row->addCheckbox('skipEmailNotification')->description(__('Yes'))->setValue('on')->checked('on');
     }
 

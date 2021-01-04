@@ -27,22 +27,19 @@ use Gibbon\Domain\System\LogGateway;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('View Logs'));
 
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, $returns);
+        returnProcess($guid, $_GET['return'], null, null);
     }
 
     $ip = isset($_GET['ip'])? $_GET['ip'] : '';
     $title = isset($_GET['title'])? $_GET['title'] : '';
     $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
-
 
     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
 
@@ -80,10 +77,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
         ->filterBy('gibbonPersonID', $gibbonPersonID)
         ->fromPOST();
 
-    $logs = $logGateway->queryLogs($criteria);
+    $logs = $logGateway->queryLogs($criteria, $gibbon->session->get('gibbonSchoolYearID'));
 
     $table = DataTable::createPaginated('logView', $criteria);
     $table->setTitle(__('Data'));
+
+    $table->addHeaderAction('purge', __('Purge Logs'))
+        ->setIcon('garbage')
+        ->setURL('/modules/System Admin/logs_view_purge.php')
+        ->displayLabel();
 
     $table->addExpandableColumn('comment')
         ->format(function($log) {

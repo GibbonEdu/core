@@ -139,7 +139,7 @@ class AttendanceView
             return false;
         }
 
-        return ($this->attendanceTypes[$type]['scope'] == 'Onsite - Late');
+        return ($this->attendanceTypes[$type]['scope'] == 'Onsite - Late' || $this->attendanceTypes[$type]['scope'] == 'Offsite - Late');
     }
 
     public function isTypeLeft($type)
@@ -175,7 +175,7 @@ class AttendanceView
             return false;
         }
 
-        return (stristr($this->attendanceTypes[$type]['scope'], 'Offsite') !== false);
+        return ($this->attendanceTypes[$type]['scope'] == 'Offsite' || $this->attendanceTypes[$type]['scope'] == 'Offsite - Left');
     }
 
     public function renderMiniHistory($gibbonPersonID, $context, $gibbonCourseClassID = null, $cssClass = '')
@@ -218,7 +218,7 @@ class AttendanceView
         $dateFormat = $_SESSION[$this->guid]['i18n']['dateFormatPHP'];
 
         $output = '';
-        $output .= '<table cellspacing="0" class="historyCalendarMini ' . $cssClass . '">';
+        $output .= '<table cellspacing="0" class="historyCalendarMini smallIntBorder ' . $cssClass . '">';
         $output .= '<tr>';
         for ($i = 4; $i >= 0; --$i) {
             if (!isset($this->last5SchoolDays[$i])) {

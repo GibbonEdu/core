@@ -265,4 +265,34 @@ class AttendanceLogPersonGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    function selectClassAttendanceLogsByPersonAndDate($gibbonCourseClassID, $gibbonPersonID, $date)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID, 'date' => $date, 'gibbonCourseClassID' => $gibbonCourseClassID];
+        $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, context, timestampTaken FROM gibbonAttendanceLogPerson
+                JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
+                AND date=:date
+                AND context='Class' AND gibbonCourseClassID=:gibbonCourseClassID
+                ORDER BY timestampTaken DESC";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    function selectAttendanceLogsByPersonAndDate($gibbonPersonID, $date, $crossFillClasses)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID, 'date' => $date];
+        $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, context, timestampTaken, gibbonAttendanceCode.prefill
+                FROM gibbonAttendanceLogPerson
+                JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                JOIN gibbonAttendanceCode ON (gibbonAttendanceCode.gibbonAttendanceCodeID=gibbonAttendanceLogPerson.gibbonAttendanceCodeID)
+                WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
+                AND date=:date";
+        if ($crossFillClasses == "N") {
+            $sql .= " AND NOT context='Class'";
+        }
+        $sql .= " ORDER BY timestampTaken DESC";
+
+        return $this->db()->select($sql, $data);
+    }
 }

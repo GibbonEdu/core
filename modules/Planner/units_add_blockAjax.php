@@ -43,14 +43,11 @@ if (isset($_GET['gibbonUnitID'])) {
 }
 
 if ($gibbonUnitBlockID != '') {
-    try {
+    
         $data = array('gibbonUnitBlockID' => $gibbonUnitBlockID);
         $sql = 'SELECT * FROM gibbonUnitBlock WHERE gibbonUnitBlockID=:gibbonUnitBlockID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
         $title = $row['title'];

@@ -114,9 +114,9 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                         // Handle automatic course enrolment if enabled
                         $autoEnrolStudent = (isset($_POST['autoEnrolStudent']))? $_POST['autoEnrolStudent'] : 'N';
                         if ($autoEnrolStudent == 'Y') {
-                            $data = array('gibbonRollGroupID' => $gibbonRollGroupID, 'gibbonPersonID' => $gibbonPersonID);
-                            $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `reportable`)
-                                    SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, 'Student', 'Y'
+                            $data = array('gibbonRollGroupID' => $gibbonRollGroupID, 'gibbonPersonID' => $gibbonPersonID, 'dateEnrolled' => date('Y-m-d'));
+                            $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `dateEnrolled`, `reportable`)
+                                    SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, 'Student', :dateEnrolled, 'Y'
                                     FROM gibbonCourseClassMap
                                     LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID AND gibbonCourseClassPerson.role='Student')
                                     WHERE gibbonCourseClassMap.gibbonRollGroupID=:gibbonRollGroupID

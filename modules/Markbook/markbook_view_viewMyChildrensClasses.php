@@ -38,14 +38,11 @@ use Gibbon\Services\Format;
     echo '</p>';
 
     //Test data access field for permission
-    try {
+    
         $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
         $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
 
     if ($result->rowCount() < 1) {
         echo "<div class='error'>";
@@ -56,14 +53,11 @@ use Gibbon\Services\Format;
         $count = 0;
         $options = array();
         while ($row = $result->fetch()) {
-            try {
+            
                 $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                 $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
                 $resultChild = $connection2->prepare($sqlChild);
                 $resultChild->execute($dataChild);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
             while ($rowChild = $resultChild->fetch()) {
                 $options[$rowChild['gibbonPersonID']]=Format::name('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
             }
@@ -103,14 +97,11 @@ use Gibbon\Services\Format;
 
         if (!empty($gibbonPersonID) and count($options) > 0) {
             //Confirm access to this student
-            try {
+            
                 $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
                 $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
                 $resultChild = $connection2->prepare($sqlChild);
                 $resultChild->execute($dataChild);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
             if ($resultChild->rowCount() < 1) {
                 echo "<div class='error'>";
                 echo __('The selected record does not exist, or you do not have access to it.');
@@ -209,15 +200,12 @@ use Gibbon\Services\Format;
                 <?php
 
                 //Get class list
-                try {
+                
                     $dataList['gibbonPersonID'] = $gibbonPersonID;
                     $dataList['gibbonPersonID2'] = $gibbonPersonID;
                     $sqlList = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.name, gibbonCourseClass.gibbonCourseClassID, gibbonScaleGrade.value AS target FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonMarkbookTarget ON (gibbonMarkbookTarget.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonMarkbookTarget.gibbonPersonIDStudent=:gibbonPersonID2) LEFT JOIN gibbonScaleGrade ON (gibbonMarkbookTarget.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID $and ORDER BY course, class";
                     $resultList = $connection2->prepare($sqlList);
                     $resultList->execute($dataList);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
                 if ($resultList->rowCount() > 0) {
                     while ($rowList = $resultList->fetch()) {
                         try {
@@ -232,14 +220,11 @@ use Gibbon\Services\Format;
                         if ($resultEntry->rowCount() > 0) {
                             echo '<h4>'.$rowList['course'].'.'.$rowList['class']." <span style='font-size:85%; font-style: italic'>(".$rowList['name'].')</span></h4>';
 
-                            try {
+                            
                                 $dataTeachers = array('gibbonCourseClassID' => $rowList['gibbonCourseClassID']);
                                 $sqlTeachers = "SELECT title, surname, preferredName FROM gibbonPerson JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName";
                                 $resultTeachers = $connection2->prepare($sqlTeachers);
                                 $resultTeachers->execute($dataTeachers);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
 
                             $teachers = '<p><b>Taught by:</b> ';
                             while ($rowTeachers = $resultTeachers->fetch()) {
@@ -332,14 +317,11 @@ use Gibbon\Services\Format;
                                 } else {
                                     echo "<td style='text-align: center'>";
                                     $attainmentExtra = '';
-                                    try {
+                                    
                                         $dataAttainment = array('gibbonScaleID' => $rowEntry['gibbonScaleIDAttainment']);
                                         $sqlAttainment = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
                                         $resultAttainment = $connection2->prepare($sqlAttainment);
                                         $resultAttainment->execute($dataAttainment);
-                                    } catch (PDOException $e) {
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
-                                    }
                                     if ($resultAttainment->rowCount() == 1) {
                                         $rowAttainment = $resultAttainment->fetch();
                                         $attainmentExtra = '<br/>'.__($rowAttainment['usage']);
@@ -366,14 +348,11 @@ use Gibbon\Services\Format;
 	                                } else {
 	                                    echo "<td style='text-align: center'>";
 	                                    $effortExtra = '';
-	                                    try {
+	                                    
 	                                        $dataEffort = array('gibbonScaleID' => $rowEntry['gibbonScaleIDEffort']);
 	                                        $sqlEffort = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
 	                                        $resultEffort = $connection2->prepare($sqlEffort);
 	                                        $resultEffort->execute($dataEffort);
-	                                    } catch (PDOException $e) {
-	                                        echo "<div class='error'>".$e->getMessage().'</div>';
-	                                    }
 	                                    if ($resultEffort->rowCount() == 1) {
 	                                        $rowEffort = $resultEffort->fetch();
 	                                        $effortExtra = '<br/>'.__($rowEffort['usage']);
@@ -432,14 +411,11 @@ use Gibbon\Services\Format;
                                     echo __('N/A');
                                     echo '</td>';
                                 } else {
-                                    try {
+                                    
                                         $dataSub = array('gibbonPlannerEntryID' => $rowEntry['gibbonPlannerEntryID']);
                                         $sqlSub = "SELECT * FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND homeworkSubmission='Y'";
                                         $resultSub = $connection2->prepare($sqlSub);
                                         $resultSub->execute($dataSub);
-                                    } catch (PDOException $e) {
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
-                                    }
                                     if ($resultSub->rowCount() != 1) {
                                         echo "<td class='dull' style='color: #bbb; text-align: left'>";
                                         echo __('N/A');
@@ -448,14 +424,11 @@ use Gibbon\Services\Format;
                                         echo '<td>';
                                         $rowSub = $resultSub->fetch();
 
-                                        try {
+                                        
                                             $dataWork = array('gibbonPlannerEntryID' => $rowEntry['gibbonPlannerEntryID'], 'gibbonPersonID' => $gibbonPersonID);
                                             $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
                                             $resultWork = $connection2->prepare($sqlWork);
                                             $resultWork->execute($dataWork);
-                                        } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
-                                        }
                                         if ($resultWork->rowCount() > 0) {
                                             $rowWork = $resultWork->fetch();
 
@@ -490,7 +463,7 @@ use Gibbon\Services\Format;
                                                 if ($rowChild['dateStart'] > $rowSub['date']) {
                                                     echo "<span title='".__('Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>".__('NA').'</span>';
                                                 } else {
-                                                    if ($rowSub['homeworkSubmissionRequired'] == 'Compulsory') {
+                                                    if ($rowSub['homeworkSubmissionRequired'] == 'Required') {
                                                         echo "<div style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px; margin: 2px 0px'>".__('Incomplete').'</div>';
                                                     } else {
                                                         echo __('Not submitted online');
@@ -520,14 +493,11 @@ use Gibbon\Services\Format;
 
                             echo '</table>';
 
-                            try {
+                            
                                 $dataEntry2 = array('gibbonPersonIDStudent' => $_SESSION[$guid]['gibbonPersonID']);
                                 $sqlEntry2 = "SELECT gibbonMarkbookEntryID, gibbonMarkbookColumn.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND complete='Y' AND completeDate<='".date('Y-m-d')."' AND viewableParents='Y' ORDER BY completeDate DESC, name";
                                 $resultEntry2 = $connection2->prepare($sqlEntry2);
                                 $resultEntry2->execute($dataEntry2);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
                             if ($resultEntry2->rowCount() > 0) {
                                 $_SESSION[$guid]['sidebarExtra'] = "<h2 class='sidebar'>";
                                 $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra'].__('Recent Marks');

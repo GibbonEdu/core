@@ -21,8 +21,8 @@ use Gibbon\Data\UsernameGenerator;
 
 include './gibbon.php';
 
-$username = (isset($_POST['username']))? $_POST['username'] : '';
-$currentUsername = (isset($_POST['currentUsername']))? $_POST['currentUsername'] : '';
+$username = $_POST['username'] ?? '';
+$currentUsername = $_POST['currentUsername'] ?? '';
 
 if (!empty($currentUsername) && $currentUsername == $username) {
     echo '0';
@@ -31,7 +31,7 @@ if (!empty($currentUsername) && $currentUsername == $username) {
     echo $generator->isUsernameUnique($username)? '0' : '1';
 }
 
-$email = (isset($_POST['email']))? $_POST['email']: '';
+$email = $_POST['email'] ?? '';
 
 if (!empty($email)) {
     $data = array('email' => $email);

@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\Timetable\CourseGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -36,10 +37,8 @@ $page->breadcrumbs
     ->add(__('Duplicate Unit'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
@@ -58,30 +57,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
             echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
-            try {
-                if ($highestAction == 'Unit Planner_all') {
-                    $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID);
-                    $sql = 'SELECT gibbonCourseID, gibbonCourse.name, gibbonCourse.nameShort, gibbonSchoolYear.name AS schoolYear
-                        FROM gibbonCourse
-                        JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-                        WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID
-                        AND gibbonCourseID=:gibbonCourseID';
-                } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                    $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                    $sql = "SELECT gibbonCourseID, gibbonCourse.name, gibbonCourse.nameShort, gibbonSchoolYear.name AS schoolYear
-                        FROM gibbonCourse
-                            JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID)
-                            JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID)
-                            JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-                        WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID
-                            AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)')
-                            AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID
-                        ORDER BY gibbonCourse.nameShort";
-                }
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
+            $courseGateway = $container->get(CourseGateway::class);
+
+            // Check access to specified course
+            if ($highestAction == 'Unit Planner_all') {
+                $result = $courseGateway->selectCourseDetailsByCourse($gibbonCourseID);
+            } elseif ($highestAction == 'Unit Planner_learningAreas') {
+                $result = $courseGateway->selectCourseDetailsByCourseAndPerson($gibbonCourseID, $gibbon->session->get('gibbonPersonID'));
             }
 
             if ($result->rowCount() != 1) {
@@ -104,14 +86,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                         echo __('You have not specified one or more required parameters.');
                         echo '</div>';
                     } else {
-                        try {
+                        
                             $data = array();
                             $sql = "SELECT gibbonCourse.nameShort AS courseName, gibbonSchoolYearID, gibbonUnit.* FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonUnitID=$gibbonUnitID AND gibbonUnit.gibbonCourseID=$gibbonCourseID";
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
 
                         if ($result->rowCount() != 1) {
                             echo "<div class='error'>";
@@ -194,13 +173,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                                     echo '</div>';
                                 } else {
 
-                                    try {
+                                    
                                         $dataSelect2 = array('gibbonCourseID' => $gibbonCourseIDTarget);
                                         $sqlSelect2 = 'SELECT gibbonCourse.name AS course, gibbonSchoolYear.name AS year FROM gibbonCourse JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonCourseID=:gibbonCourseID';
                                         $resultSelect2 = $connection2->prepare($sqlSelect2);
                                         $resultSelect2->execute($dataSelect2);
-                                    } catch (PDOException $e) {
-                                    }
                                     if ($resultSelect2->rowCount() == 1) {
                                         $rowSelect2 = $resultSelect2->fetch();
                                         $access = true;

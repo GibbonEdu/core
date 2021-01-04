@@ -18,18 +18,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Tables\DataTable;
-use Gibbon\Domain\Library\LibraryGateway;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
-
-$page->breadcrumbs->add(__('Manage Catalog'));
+use Gibbon\Tables\DataTable;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Tables\Prefab\ReportTable;
+use Gibbon\Domain\Library\LibraryGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_catalog.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     if (isset($_GET['return'])) {
@@ -37,6 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     }
 
     //Get current filter values
+    $viewMode = $_REQUEST['format'] ?? '';
     $name = $_REQUEST['name'] ?? '';
     $gibbonLibraryTypeID = $_REQUEST['gibbonLibraryTypeID'] ?? '';
     $gibbonSpaceID = $_REQUEST['gibbonSpaceID'] ?? '';
@@ -44,70 +42,75 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $gibbonPersonIDOwnership = $_REQUEST['gibbonPersonIDOwnership'] ?? '';
     $typeSpecificFields = $_REQUEST['typeSpecificFields'] ?? '';
 
-    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
-    $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
-    $form->setTitle(__('Search & Filter'));
+    if (empty($viewMode)) {
+        $page->breadcrumbs->add(__('Manage Catalog'));
 
-    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/library_manage_catalog.php");
+        $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form->setFactory(DatabaseFormFactory::create($pdo));
+        $form->setClass('noIntBorder fullWidth');
+        $form->setTitle(__('Search & Filter'));
 
-    $row = $form->addRow();
-        $row->addLabel('name', __('ID/Name/Producer'));
-        $row->addTextField('name')->setValue($name);
+        $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/library_manage_catalog.php");
 
-    $sql = "SELECT gibbonLibraryTypeID AS value, name FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
-    $row = $form->addRow();
-    $row->addLabel('gibbonLibraryTypeID', __('Type'));
-    $row->addSelect('gibbonLibraryTypeID')
-        ->fromQuery($pdo, $sql, array())
-        ->selected($gibbonLibraryTypeID)
-        ->placeholder();
+        $row = $form->addRow();
+            $row->addLabel('name', __('ID/Name/Producer'));
+            $row->addTextField('name')->setValue($name);
 
-    $row = $form->addRow();
-        $row->addLabel('gibbonSpaceID', __('Location'));
-        $row->addSelectSpace('gibbonSpaceID')->selected($gibbonSpaceID)->placeholder();
+        $sql = "SELECT gibbonLibraryTypeID AS value, name FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
+        $row = $form->addRow();
+        $row->addLabel('gibbonLibraryTypeID', __('Type'));
+        $row->addSelect('gibbonLibraryTypeID')
+            ->fromQuery($pdo, $sql, array())
+            ->selected($gibbonLibraryTypeID)
+            ->placeholder();
 
-    $statuses = array(
-        'Available' => __('Available'),
-        'Decommissioned' => __('Decommissioned'),
-        'In Use' => __('In Use'),
-        'Lost' => __('Lost'),
-        'On Loan' => __('On Loan'),
-        'Repair' => __('Repair'),
-        'Reserved' => __('Reserved')
-    );
-    $row = $form->addRow();
-        $row->addLabel('status', __('Status'));
-        $row->addSelect('status')->fromArray($statuses)->selected($status)->placeholder();
+        $row = $form->addRow();
+            $row->addLabel('gibbonSpaceID', __('Location'));
+            $row->addSelectSpace('gibbonSpaceID')->selected($gibbonSpaceID)->placeholder();
 
-    $row = $form->addRow();
-        $row->addLabel('gibbonPersonIDOwnership', __('Owner/User'));
-        $row->addSelectUsers('gibbonPersonIDOwnership')->selected($gibbonPersonIDOwnership)->placeholder();
+        $statuses = array(
+            'Available' => __('Available'),
+            'Decommissioned' => __('Decommissioned'),
+            'In Use' => __('In Use'),
+            'Lost' => __('Lost'),
+            'On Loan' => __('On Loan'),
+            'Repair' => __('Repair'),
+            'Reserved' => __('Reserved')
+        );
+        $row = $form->addRow();
+            $row->addLabel('status', __('Status'));
+            $row->addSelect('status')->fromArray($statuses)->selected($status)->placeholder();
 
-    $row = $form->addRow();
-    $row->addLabel('typeSpecificFields', __('Type-Specific Fields'))
-        ->description(__('For example, a computer\'s MAC address or a book\'s ISBN.'));
-    $row->addTextField('typeSpecificFields')
-        ->setValue($typeSpecificFields);
+        $row = $form->addRow();
+            $row->addLabel('gibbonPersonIDOwnership', __('Owner/User'));
+            $row->addSelectUsers('gibbonPersonIDOwnership')->selected($gibbonPersonIDOwnership)->placeholder();
 
-    $row = $form->addRow();
-    $row->addSearchSubmit($gibbon->session, __('Clear Search'));
+        $row = $form->addRow();
+        $row->addLabel('typeSpecificFields', __('Type-Specific Fields'))
+            ->description(__('For example, a computer\'s MAC address or a book\'s ISBN.'));
+        $row->addTextField('typeSpecificFields')
+            ->setValue($typeSpecificFields);
 
-    echo $form->getOutput();
+        $row = $form->addRow();
+        $row->addSearchSubmit($gibbon->session, __('Clear Search'));
+
+        echo $form->getOutput();
+    }
 
     $gateway = $container->get(LibraryGateway::class);
     $criteria = $gateway->newQueryCriteria(true)
-                        ->sortBy('id')
-                        ->filterBy('name', $name)
-                        ->filterBy('type', $gibbonLibraryTypeID)
-                        ->filterBy('location', $gibbonSpaceID)
-                        ->filterBy('status', $status)
-                        ->filterBy('owner', $gibbonPersonIDOwnership)
-                        ->filterBy('typeSpecificFields', $typeSpecificFields)
-                        ->fromPOST();
-    $items = $gateway->queryCatalog($criteria);
+        ->sortBy('id')
+        ->filterBy('name', $name)
+        ->filterBy('type', $gibbonLibraryTypeID)
+        ->filterBy('location', $gibbonSpaceID)
+        ->filterBy('status', $status)
+        ->filterBy('owner', $gibbonPersonIDOwnership)
+        ->filterBy('typeSpecificFields', $typeSpecificFields)
+        ->pageSize(!empty($viewMode) ? 0 : 50)
+        ->fromPOST();
+    $items = $gateway->queryCatalog($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
 
-    $table = DataTable::createPaginated('items', $criteria);
+    $table = ReportTable::createPaginated('items', $criteria)->setViewMode($viewMode, $gibbon->session);
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/Library/library_manage_catalog_add.php')
@@ -142,13 +145,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             } elseif ($item['ownershipType'] == 'Individual') {
                 $ownership .= sprintf('<b>%1$s</b><br/>', __('Individual'));
             }
-            echo $ownership . Format::small(Format::name($item['title'], $item['preferredName'], $item['surname'], "Student"));
+            return $ownership . Format::small(Format::name($item['title'], $item['preferredName'], $item['surname'], "Student"));
         });
     $table->addColumn('status', __('Status'))
-        ->description(__('Borrowable'))
+        ->description(__('Responsible User'))
         ->format(function ($item) {
-            return '<b>' . __($item['status']) . '</b><br/>'
-                . Format::small(Format::yesNo($item['borrowable']));
+            $responsible = !empty($item['surnameResponsible'])
+                ? Format::name($item['titleResponsible'], $item['preferredNameResponsible'], $item['surnameResponsible'], 'Student')
+                : '';
+            $responsible .= !empty($item['rollGroup'])
+                ? ' ('.$item['rollGroup'].')'
+                : '';
+            return '<b>' . __($item['status']) . '</b><br/>' . Format::small($responsible);
         });
     $actions = $table->addActionColumn()
           ->addParam('gibbonLibraryItemID')

@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon;
 
 use Gibbon\Contracts\Database\Connection;
-use Gibbon\Session;
+use Gibbon\Contracts\Services\Session;
 use ZipArchive;
 
 /**

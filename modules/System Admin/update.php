@@ -18,249 +18,162 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
+use Gibbon\Database\Updater;
+use Gibbon\Tables\DataTable;
+use Gibbon\Database\Migrations\EngineUpdate;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Update'));
 
-    $return = null;
-    if (isset($_GET['return'])) {
-        $return = $_GET['return'];
-    }
-    $returns = array();
-    $returns['warning1'] = __('Some aspects of your request failed, but others were successful. The elements that failed are shown below:');
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, $returns);
+    $return = $_GET['return'] ?? null;
+    if ($return) {
+        returnProcess($guid, $return, null, [
+            'warning1' => __('Some aspects of your request failed, but others were successful. The elements that failed are shown below:'),
+            'error3' => __('Your request failed because your inputs were invalid, or no update was required.'),
+        ]);
     }
 
-    if (isset($_SESSION[$guid]['systemUpdateError'])) {
-        if ($_SESSION[$guid]['systemUpdateError'] != '') {
-            echo "<div class='error'>";
-            echo __('The following SQL statements caused errors:').' '.$_SESSION[$guid]['systemUpdateError'];
-            echo '</div>';
-        }
-        $_SESSION[$guid]['systemUpdateError'] = null;
+    // Get and display SQL errors
+    if ($gibbon->session->has('systemUpdateError')) {
+        echo Format::alert(__('The following SQL statements caused errors:').'<br/>'.implode('<br/>', $gibbon->session->get('systemUpdateError')));
+        $gibbon->session->forget('systemUpdateError');
     }
 
-    getSystemSettings($guid, $connection2);
+    $updater = $container->get(Updater::class);
+    $updateRequired = $updater->isUpdateRequired();
 
-    $versionDB = getSettingByScope($connection2, 'System', 'version');
-    $versionCode = $version;
+    $table = DataTable::createDetails('version');
+    $table->setDescription(__('This page allows you to semi-automatically update your Gibbon installation to a new version. You need to take care of the file updates, and based on the new files, Gibbon will do the database upgrades.'));
 
-    echo '<p>';
-    echo __('This page allows you to semi-automatically update your Gibbon installation to a new version. You need to take care of the file updates, and based on the new files, Gibbon will do the database upgrades.');
-    echo '</p>';
+    $table->addColumn('versionCode', __('Codebase Version'));
+    $table->addColumn('versionDB', __('Database Version'));
+    if ($updater->isCuttingEdge()) {
+        $table->addColumn('cuttingEdgeCode', __('Cutting Edge Code'));
+    }
 
-    $cuttingEdgeCode = getSettingByScope($connection2, 'System', 'cuttingEdgeCode');
-    $databaseUpdated = false;
-    if ($cuttingEdgeCode != 'Y') {
-        //Check for new version of Gibbon
+    echo $table->render([[
+        'versionCode'     => 'v'.$updater->versionCode,
+        'versionDB'       => 'v'.$updater->versionDB,
+        'cuttingEdgeCode' => __('Line').': '.$updater->cuttingEdgeCodeLine,
+    ]]);
+
+    if (!$updater->isCuttingEdge()) {
+        // Check for new version of Gibbon
         echo getCurrentVersion($guid, $connection2, $version);
 
+        $form = Form::create('action', $gibbon->session->get('absoluteURL').'/modules/System Admin/updateProcess.php');
+        $form->addHiddenValue('address', $gibbon->session->get('address'));
+        $form->addHiddenValue('type', 'regularRelease');
+
         if ($return == 'success0') {
-            $databaseUpdated = true;
-            echo '<p>';
-            echo '<b>'.__('You seem to be all up to date, good work buddy!').'</b>';
-            echo '</p>';
-        } elseif (version_compare($versionDB, $versionCode, '=')) {
-            $databaseUpdated = true;
-            //Instructions on how to update
-            echo '<h3>';
-            echo __('Update Instructions');
-            echo '</h3>';
-            echo '<ol>';
-            echo '<li>'.sprintf(__('You are currently using Gibbon v%1$s.'), $versionCode).'</i></li>';
-            echo '<li>'.sprintf(__('Check %1$s for a newer version of Gibbon.'), "<a target='_blank' href='https://gibbonedu.org/download'>the Gibbon download page</a>").'</li>';
-            echo '<li>'.__('Download the latest version, and unzip it on your computer.').'</li>';
-            echo '<li>'.__('Use an FTP client to upload the new files to your server, making sure not to overwrite any additional modules and themes previously added to the system.').'</li>';
-            echo '<li>'.__('Reload this page and follow the instructions to update your database to the latest version.').'</li>';
-            echo '</ol>';
-        } elseif (version_compare($versionDB, $versionCode, '>')) {
-            //Error
-            echo "<div class='error'>";
-            echo __('An error has occurred determining the version of the system you are using.');
-            echo '</div>';
-        } elseif (version_compare($versionDB, $versionCode, '<')) {
-            //Time to update
-            echo '<h3>';
-            echo __('Database Update');
-            echo '</h3>';
-            echo '<p>';
-            echo sprintf(__('It seems that you have updated your Gibbon code to a new version, and are ready to update your database from v%1$s to v%2$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), $versionDB, $versionCode).'</b>';
-            echo '</p>';
+            $form->addRow()->addContent(__('You seem to be all up to date, good work buddy!'))->addClass('py-16 text-center text-gray-600 text-lg');
+        } elseif ($updateRequired === -1) {
+            // Error
+            $form->setDescription(Format::alert(__('An error has occurred determining the version of the system you are using.'), 'error'));
+        } elseif (!$updateRequired) {
+            // Instructions on how to update
+            $form->setTitle(__('Update Instructions'));
+            $form->setDescription(Format::list([
+                sprintf(__('You are currently using Gibbon v%1$s.'), $updater->versionCode),
+                sprintf(__('Check %1$s for a newer version of Gibbon.'), "<a target='_blank' href='https://gibbonedu.org/download'>the Gibbon download page</a>"),
+                __('Download the latest version, and unzip it on your computer.'),
+                __('Use an FTP client to upload the new files to your server, making sure not to overwrite any additional modules and themes previously added to the system.'),
+                __('Reload this page and follow the instructions to update your database to the latest version.'),
+            ], 'ol'));
+        } elseif ($updateRequired) {
+            // Time to update
+            $form->setTitle(__('Database Update'));
+            $form->setDescription(sprintf(__('It seems that you have updated your Gibbon code to a new version, and are ready to update your database from v%1$s to v%2$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), $updater->versionDB, $updater->versionCode).'</b>');
 
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/updateProcess.php?type=regularRelease');
-
-            $form->addHiddenValue('versionDB', $versionDB);
-            $form->addHiddenValue('versionCode', $versionCode);
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $row = $form->addRow();
+                $row->addContent('v'.$updater->versionDB)->addClass('text-xl text-right');
+                $row->addContent('<img src="'.$gibbon->session->get('absoluteURL').'/themes/'.$gibbon->session->get('gibbonThemeName').'/img/page_right.png" class="w-6">')->addClass('flex-none w-16');
+                $row->addContent('v'.$updater->versionCode)->addClass('text-xl text-left flex-1');
 
             $form->addRow()->addSubmit();
-            echo $form->getOutput();
         }
+
+        echo $form->getOutput();
     } else {
-        $cuttingEdgeCodeLine = getSettingByScope($connection2, 'System', 'cuttingEdgeCodeLine');
-        if ($cuttingEdgeCodeLine == '' or is_null($cuttingEdgeCodeLine)) {
-            $cuttingEdgeCodeLine = 0;
-        }
+        // Go! Start with warning about cutting edge code
+        echo Format::alert(__('Your system is set up to run Cutting Edge code, which may or may not be as reliable as regular release code. Backup before installing, and avoid using cutting edge in production.'), 'warning');
 
-        //Check to see if there are any updates
-        include './CHANGEDB.php';
-        $versionMax = $sql[(count($sql))][0];
-        $sqlTokens = explode(';end', $sql[(count($sql))][1]);
-        $versionMaxLinesMax = (count($sqlTokens) - 1);
-        $update = false;
-        if (version_compare($versionMax, $versionDB, '>')) {
-            $update = true;
-        } else {
-            if ($versionMaxLinesMax > $cuttingEdgeCodeLine) {
-                $update = true;
-            }
-        }
-
-        //Go! Start with warning about cutting edge code
-        echo "<div class='warning'>";
-        echo __('Your system is set up to run Cutting Edge code, which may or may not be as reliable as regular release code. Backup before installing, and avoid using cutting edge in production.');
-        echo '</div>';
+        $form = Form::create('action', $gibbon->session->get('absoluteURL').'/modules/System Admin/updateProcess.php');
+        $form->addHiddenValue('address', $gibbon->session->get('address'));
+        $form->addHiddenValue('type', 'cuttingEdge');
 
         if ($return == 'success0') {
-            $databaseUpdated = true;
-            echo '<p>';
-            echo '<b>'.__('You seem to be all up to date, good work buddy!').'</b>';
-            echo '</p>';
-        } elseif ($update == false) {
-            $databaseUpdated = true;
-            //Instructions on how to update
-            echo '<h3>';
-            echo __('Update Instructions');
-            echo '</h3>';
-            echo '<ol>';
-            echo '<li>'.sprintf(__('You are currently using Cutting Edge Gibbon v%1$s'), $versionCode).'</i></li>';
-            echo '<li>'.sprintf(__('Check %1$s to get the latest commits.'), "<a target='_blank' href='https://github.com/GibbonEdu/core'>our GitHub repo</a>").'</li>';
-            echo '<li>'.__('Download the latest commits, and unzip it on your computer.').'</li>';
-            echo '<li>'.__('Use an FTP client to upload the new files to your server, making sure not to overwrite any additional modules and themes previously added to the system.').'</li>';
-            echo '<li>'.__('Reload this page and follow the instructions to update your database to the latest version.').'</li>';
-            echo '</ol>';
-        } elseif ($update == true) {
-            //Time to update
-            echo '<h3>';
-            echo __('Database Update');
-            echo '</h3>';
-            echo '<p>';
-            echo sprintf(__('It seems that you have updated your Gibbon code to a new version, and are ready to update your database from v%1$s line %2$s to v%3$s line %4$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), $versionDB, $cuttingEdgeCodeLine, $versionCode, $versionMaxLinesMax).'</b>';
-            echo '</p>';
+            $form->addRow()->addContent(__('You seem to be all up to date, good work buddy!'))->addClass('py-16 text-center text-gray-600 text-lg');
+        } elseif (!$updateRequired) {
+            // Instructions on how to update
+            $form->setTitle(__('Update Instructions'));
+            $form->setDescription(Format::list([
+                sprintf(__('You are currently using Cutting Edge Gibbon v%1$s'), $updater->versionCode),
+                sprintf(__('Check %1$s to get the latest commits.'), "<a target='_blank' href='https://github.com/GibbonEdu/core'>our GitHub repo</a>"),
+                __('Download the latest commits, and unzip it on your computer.'),
+                __('Use an FTP client to upload the new files to your server, making sure not to overwrite any additional modules and themes previously added to the system.'),
+                __('Reload this page and follow the instructions to update your database to the latest version.'),
+            ], 'ol'));
 
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/updateProcess.php?type=cuttingEdge');
+        } elseif ($updateRequired) {
+            // Time to update
+            $form->setTitle(__('Database Update'));
+            $form->setDescription(sprintf(__('It seems that you have updated your Gibbon code to a new version, and are ready to update your database from v%1$s line %2$s to v%3$s line %4$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), $updater->versionDB, $updater->cuttingEdgeCodeLine, $updater->cuttingEdgeVersion, $updater->cuttingEdgeMaxLine).'</b>');
 
-            $form->addHiddenValue('versionDB', $versionDB);
-            $form->addHiddenValue('versionCode', $versionCode);
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $row = $form->addRow();
+                $row->addContent('v'.$updater->versionDB)
+                    ->addClass('text-xl text-right')
+                    ->append('<br/><span class="text-xs">'.__('Line').': '.$updater->cuttingEdgeCodeLine.'</span>');
+                $row->addContent('<img src="'.$gibbon->session->get('absoluteURL').'/themes/'.$gibbon->session->get('gibbonThemeName').'/img/page_right.png" class="w-6">')->addClass('flex-none w-16');
+                $row->addContent('v'.$updater->versionCode)
+                    ->addClass('text-xl text-left flex-1')
+                    ->append('<br/><span class="text-xs">'.__('Line').': '.$updater->cuttingEdgeMaxLine.'</span>');
 
             $form->addRow()->addSubmit();
-            echo $form->getOutput();
+            
         }
+        echo $form->getOutput();
     }
 
-    //INNODB UPGRADE - can be removed
-    if (version_compare($version, '16.0.00', '>=')) {
-        echo '<h3>';
-        echo __('Database Engine Migration');
-        echo '</h3>';
-        echo '<p>';
-        echo __('Starting from v16, Gibbon is offering installations the option to migrate from MySQL\'s MyISAM engine to InnoDB, as a way to achieve greater reliability and performance.');
-        echo '</p>';
+    // INNODB UPGRADE - only displays if an update is required
+    if (version_compare($updater->versionCode, '16.0.00', '>=')) {
+        $engineUpdate = $container->get(EngineUpdate::class);
 
-        if (!$databaseUpdated) { //Not eligible
-            echo '<div class=\'warning\'>';
-                echo __('Please run the database update, above, before proceeding with the Database Engine Migration.');
-            echo '</div>';
-        }
-        else { //Eligible
-            //CHECK DEFAULT ENGINE
-            $currentEngine = 'Unknown';
-            try {
-                $data = array();
-                $sql = 'SHOW ENGINES';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            if ($result->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __('There are no records to display.');
-                echo '</div>';
-            } else {
-                while ($row = $result->fetch()) {
-                    if ($row['Support'] == 'DEFAULT') {
-                        $currentEngine = $row['Engine'];
-                    }
+        if ($engineUpdate->canMigrate()) {
+            $form = Form::create('innoDB', $gibbon->session->get('absoluteURL').'/modules/System Admin/updateProcess.php?type=InnoDB');
+            $form->addHiddenValue('address', $gibbon->session->get('address'));
+
+            $form->setTitle(__('Database Engine Migration'));
+            $form->setDescription(__('Starting from v16, Gibbon is offering installations the option to migrate from MySQL\'s MyISAM engine to InnoDB, as a way to achieve greater reliability and performance.'));
+            $output = '';
+
+            if ($updateRequired) {
+                $output .= Format::alert(__('Please run the database update, above, before proceeding with the Database Engine Migration.'), 'warning');
+            } else { 
+                $currentEngine = $engineUpdate->checkEngine();
+
+                if ($currentEngine == 'InnoDB') {
+                    $output .= Format::alert(sprintf(__('Your current default database engine is: %1$s'), $currentEngine), 'message');
+                } else {
+                    $output .= Format::alert(sprintf(__('Your current default database engine is: %1$s.'), $currentEngine).' '.__('It is advised that you change your server config so that your default storage engine is set to InnoDB.'), 'warning');
                 }
-            }
 
-            if ($currentEngine == 'InnoDB') {
-                echo "<div class='message'>";
-                    echo sprintf(__('Your current default database engine is: %1$s'), $currentEngine);
-                echo "</div>";
-            }
-            else {
-                echo "<div class='warning'>";
-                    echo sprintf(__('Your current default database engine is: %1$s.'), $currentEngine).' '.__('It is advised that you change your server config so that your default storage engine is set to InnoDB.');
-                echo "</div>";
-            }
-
-            //CHECK TABLES
-            $tableUpdate = false;
-            $tablesTotal = 0;
-            $tablesInnoDB = 0;
-            try {
-                $data = array();
-                $sql = 'SHOW TABLE STATUS';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            if ($result->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __('There are no records to display.');
-                echo '</div>';
-            } else {
-                while ($row = $result->fetch()) {
-                    if ($row['Engine'] == 'InnoDB') {
-                        $tablesInnoDB++;
-                    }
-                    $tablesTotal++;
-                }
-                if ($tablesTotal-$tablesInnoDB > 0) {
-                    $tableUpdate = true;
-                }
-            }
-
-            if (!$tableUpdate) { //No tables to update
-                echo "<div class='success'>";
-                    echo __('All of your tables are set to InnoDB. Well done!');
-                echo "</div>";
-            }
-            else {
-                echo "<div class='warning'>";
-                    echo sprintf(__('%1$s of your tables are not set to InnoDB.'), $tablesTotal-$tablesInnoDB).' <b>'.__('Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!').'</b>';
-                echo "</div>";
-                $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/updateProcess.php?type=InnoDB');
-
-                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                $output .= Format::alert(sprintf(__('%1$s of your tables are not set to InnoDB.'), $tablesTotal - $tablesInnoDB).' <b>'.__('Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), 'warning');
 
                 $form->addRow()->addSubmit();
-                echo $form->getOutput();
             }
+
+            $form->setDescription($form->getDescription().$output);
+
+            echo $form->getOutput();
         }
     }
 }

@@ -39,23 +39,16 @@ if ($makeUnitsPublic != 'Y') {
 } else {
     //Check if courseschool year specified
     if ($gibbonUnitID == '' or $gibbonSchoolYearID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonUnitID' => $gibbonUnitID);
             $sql = "SELECT gibbonCourse.nameShort AS courseName, gibbonSchoolYearID, gibbonUnit.* FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonUnitID=:gibbonUnitID AND sharedPublic='Y'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             $row = $result->fetch(); ?>
@@ -79,14 +72,11 @@ if ($makeUnitsPublic != 'Y') {
 
             echo "<div id='tabs' style='width: 100%; margin: 20px 0'>";
                 //Prep classes in this unit
-                try {
+                
                     $dataClass = array('gibbonUnitID' => $gibbonUnitID);
                     $sqlClass = 'SELECT gibbonUnitClass.gibbonCourseClassID, gibbonCourseClass.nameShort FROM gibbonUnitClass JOIN gibbonCourseClass ON (gibbonUnitClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonUnitID=:gibbonUnitID ORDER BY nameShort';
                     $resultClass = $connection2->prepare($sqlClass);
                     $resultClass->execute($dataClass);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 //Tab links
                 echo '<ul>';
@@ -121,14 +111,11 @@ if ($makeUnitsPublic != 'Y') {
             }
             echo '</div>';
             echo "<div id='tabs2'>";
-            try {
+            
                 $dataBlocks = array('gibbonUnitID' => $gibbonUnitID);
                 $sqlBlocks = 'SELECT * FROM gibbonUnitBlock WHERE gibbonUnitID=:gibbonUnitID ORDER BY sequenceNumber';
                 $resultBlocks = $connection2->prepare($sqlBlocks);
                 $resultBlocks->execute($dataBlocks);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
 
             $resourceContents = '';
 
@@ -272,14 +259,11 @@ if ($makeUnitsPublic != 'Y') {
             echo '</div>';
             echo "<div id='tabs4'>";
 				//Spit out outcomes
-				try {
+				
 					$dataBlocks = array('gibbonUnitID' => $gibbonUnitID);
 					$sqlBlocks = "SELECT gibbonUnitOutcome.*, scope, name, nameShort, category, gibbonYearGroupIDList FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber";
 					$resultBlocks = $connection2->prepare($sqlBlocks);
 					$resultBlocks->execute($dataBlocks);
-				} catch (PDOException $e) {
-					echo "<div class='error'>".$e->getMessage().'</div>';
-				}
             if ($resultBlocks->rowCount() > 0) {
                 echo "<table cellspacing='0' style='width: 100%'>";
                 echo "<tr class='head'>";

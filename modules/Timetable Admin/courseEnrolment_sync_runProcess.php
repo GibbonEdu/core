@@ -44,14 +44,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             if (empty($usersToEnrol)) continue;
 
             foreach ($usersToEnrol as $gibbonPersonID => $role) {
+
                 $data = array(
                     'gibbonRollGroupID' => $gibbonRollGroupID,
                     'gibbonPersonID' => $gibbonPersonID,
                     'role' => $role,
+                    'dateEnrolled' => date('Y-m-d'),
                 );
 
-                $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `reportable`)
-                        SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, :role, 'Y'
+                // Update existing course enrolments
+                $sql = "UPDATE gibbonCourseClassPerson 
+                        JOIN gibbonStudentEnrolment ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                        JOIN gibbonCourseClassMap ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID 
+                            AND gibbonCourseClassMap.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID)
+                        SET gibbonCourseClassPerson.role=:role, gibbonCourseClassPerson.dateEnrolled=:dateEnrolled, gibbonCourseClassPerson.dateUnenrolled=NULL, reportable='Y'
+                        WHERE gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID
+                        AND gibbonStudentEnrolment.gibbonRollGroupID=:gibbonRollGroupID
+                        AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NOT NULL";
+                $pdo->executeQuery($data, $sql);
+                
+                // Add course enrolments
+                $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `dateEnrolled`, `reportable`)
+                        SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, :role, :dateEnrolled, 'Y'
                         FROM gibbonCourseClassMap
                         LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID AND gibbonCourseClassPerson.role=:role)
                         WHERE gibbonCourseClassMap.gibbonRollGroupID=:gibbonRollGroupID

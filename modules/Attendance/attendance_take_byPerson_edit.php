@@ -32,19 +32,15 @@ $page->breadcrumbs
 	->add(__('Edit Attendance by Person'));      
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson_edit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
 
 	$gibbonAttendanceLogPersonID = isset($_GET['gibbonAttendanceLogPersonID'])? $_GET['gibbonAttendanceLogPersonID'] : '';
 	$gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
 
 	if ( empty($gibbonAttendanceLogPersonID) || empty($gibbonPersonID) ) {
-		echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+		$page->addError(__('You have not specified one or more required parameters.'));
 	} else {
 	    //Proceed!
 	    if (isset($_GET['return'])) {
@@ -53,14 +49,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
 	    $attendance = new AttendanceView($gibbon, $pdo);
 
-	    try {
+	    
 			$dataPerson = array('gibbonPersonID' => $gibbonPersonID, 'gibbonAttendanceLogPersonID' => $gibbonAttendanceLogPersonID );
 			$sqlPerson = "SELECT p.preferredName, p.surname, type, reason, comment, date, context, timestampTaken, gibbonAttendanceLogPerson.gibbonCourseClassID, t.preferredName as teacherPreferredName, t.surname as teacherSurname, gibbonCourseClass.nameShort as className, gibbonCourse.nameShort as courseName FROM gibbonAttendanceLogPerson JOIN gibbonPerson p ON (gibbonAttendanceLogPerson.gibbonPersonID=p.gibbonPersonID) JOIN gibbonPerson t ON (gibbonAttendanceLogPerson.gibbonPersonIDTaker=t.gibbonPersonID) LEFT JOIN gibbonCourseClass ON (gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND gibbonAttendanceLogPersonID=:gibbonAttendanceLogPersonID ";
 			$resultPerson = $connection2->prepare($sqlPerson);
 			$resultPerson->execute($dataPerson);
-		} catch (PDOException $e) {
-			echo "<div class='error'>".$e->getMessage().'</div>';
-		}
 
 	    if ($resultPerson->rowCount() != 1) {
 	    	echo "<div class='error'>";

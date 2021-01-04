@@ -23,17 +23,20 @@ all stylesheets and scripts with a 'head' context.
         <i>{{ __('Email') }}</i>: {{ formatUsing('link', "mailto:" ~ adult.email, adult.email)|raw }}<br/>
     {% endif %}
 
-    {% set phoneNumbers = 0 %}
+    {% if includePhoneNumbers %}
+        {% set phoneNumbers = 0 %}
 
-    {% for i in 1..4 %}
-        {% if adult["phone"~i] %}
-            {{ formatUsing('phone', adult["phone"~i], adult["phone"~i~"CountryCode"], "<i>"~adult["phone"~i~"Type"]~"</i>")|raw }}<br/>
-            {% set phoneNumbers = phoneNumbers + 1 %}
+        {% for i in 1..4 %}
+            {% if adult["phone"~i] %}
+                {{ formatUsing('phone', adult["phone"~i], adult["phone"~i~"CountryCode"], "<i>"~adult["phone"~i~"Type"]~"</i>")|raw }}<br/>
+                {% set phoneNumbers = phoneNumbers + 1 %}
+            {% endif %}
+        {% endfor %}
+
+        {% if phoneNumbers == 0 %}
+            <i>{{ __('Phone') }}: {{ __('No number available.') }}</i><br/>
         {% endif %}
-    {% endfor %}
 
-    {% if phoneNumbers == 0 %}
-        <i>{{ __('Phone') }}: {{ __('No number available.') }}</i><br/>
     {% endif %}
 
     {% if includeCitizenship %}

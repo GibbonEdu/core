@@ -74,6 +74,9 @@ class StudentHistoryData
         if ($firstDayOfTheWeek == 'Sunday' && in_array('Sunday', $daysOfWeek)) {
             $daysOfWeek = array('Sun' => 'Sunday') + $daysOfWeek;
         }
+        if ($firstDayOfTheWeek == 'Saturday' && in_array('Saturday', $daysOfWeek)) {
+            $daysOfWeek = array('Sat' => 'Saturday') + $daysOfWeek;
+        }
 
         // Get Terms
         $criteria = $this->termGateway->newQueryCriteria(true)
@@ -115,7 +118,7 @@ class StudentHistoryData
                         $log['status'] = 'absent';
                         $log['statusClass'] = 'error';
                         $absentCount++;
-                    } elseif ($log['scope'] == 'Onsite - Late' || $log['scope'] == 'Offsite - Left') {
+                    } elseif ($log['scope'] == 'Onsite - Late' || $log['scope'] == 'Offsite - Late' || $log['scope'] == 'Offsite - Left') {
                         $log['status'] = 'partial';
                         $log['statusClass'] = 'warning';
                         $partialCount++;

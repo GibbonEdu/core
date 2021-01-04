@@ -25,16 +25,17 @@ if ($gibbon->session->exists('gibbonAcademicYearID') == false or $gibbon->sessio
 }
 
 //Check password address is not blank
-$password = $_POST['password'];
-$passwordNew = $_POST['passwordNew'];
-$passwordConfirm = $_POST['passwordConfirm'];
+$password = $_POST['password'] ?? '';
+$passwordNew = $_POST['passwordNew'] ?? '';
+$passwordConfirm = $_POST['passwordConfirm'] ?? '';
 $forceReset = $gibbon->session->get('passwordForceReset');
 
 if ($forceReset != 'Y') {
     $forceReset = 'N';
+    $URL = $gibbon->session->get('absoluteURL')."/index.php?q=preferences.php&forceReset=N";
+} else {
+    $URL = $gibbon->session->get('absoluteURL')."/index.php?forceReset=Y";
 }
-
-$URL = $gibbon->session->get('absoluteURL')."/index.php?q=preferences.php&forceReset=$forceReset";
 
 //Check passwords are not blank
 if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {

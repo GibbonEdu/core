@@ -380,8 +380,8 @@ if ($proceed == false) {
         }
 
         //GET SIBLING FIELDS
-        $siblingName1 = $_POST['siblingName1'];
-        $siblingDOB1 = $_POST['siblingDOB1'];
+        $siblingName1 = $_POST['siblingName1'] ?? '';
+        $siblingDOB1 = $_POST['siblingDOB1'] ?? '';
         if ($siblingDOB1 == '') {
             $siblingDOB1 = null;
         } else {
@@ -394,8 +394,8 @@ if ($proceed == false) {
         } else {
             $siblingSchoolJoiningDate1 = dateConvert($guid, $siblingSchoolJoiningDate1);
         }
-        $siblingName2 = $_POST['siblingName2'];
-        $siblingDOB2 = $_POST['siblingDOB2'];
+        $siblingName2 = $_POST['siblingName2'] ?? '';
+        $siblingDOB2 = $_POST['siblingDOB2'] ?? '';
         if ($siblingDOB2 == '') {
             $siblingDOB2 = null;
         } else {
@@ -408,8 +408,8 @@ if ($proceed == false) {
         } else {
             $siblingSchoolJoiningDate2 = dateConvert($guid, $siblingSchoolJoiningDate2);
         }
-        $siblingName3 = $_POST['siblingName3'];
-        $siblingDOB3 = $_POST['siblingDOB3'];
+        $siblingName3 = $_POST['siblingName3'] ?? '';
+        $siblingDOB3 = $_POST['siblingDOB3'] ?? '';
         if ($siblingDOB3 == '') {
             $siblingDOB3 = null;
         } else {
@@ -615,14 +615,14 @@ if ($proceed == false) {
                 header("Location: {$URL}");
                 exit();
             } else {
-                $fields = serialize($fields);
+                $fields = json_encode($fields);
                 if (isset($parent1fields)) {
-                    $parent1fields = serialize($parent1fields);
+                    $parent1fields = json_encode($parent1fields);
                 } else {
                     $parent1fields = '';
                 }
                 if (isset($parent2fields)) {
-                    $parent2fields = serialize($parent2fields);
+                    $parent2fields = json_encode($parent2fields);
                 } else {
                     $parent2fields = '';
                 }
@@ -644,13 +644,11 @@ if ($proceed == false) {
                 $secureAI = sha1($AI.'X2J53ZGy'.$guid.$gibbonSchoolYearIDEntry);
 
                 // Update the Application Form with a hash for looking up this record in the future
-                try {
+                
                     $data = array('gibbonApplicationFormID' => $AI, 'gibbonApplicationFormHash' => $secureAI );
                     $sql = 'UPDATE gibbonApplicationForm SET gibbonApplicationFormHash=:gibbonApplicationFormHash WHERE gibbonApplicationFormID=:gibbonApplicationFormID';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
 
                 //Deal with family relationships
                 if ($gibbonFamily == 'TRUE') {
@@ -658,13 +656,11 @@ if ($proceed == false) {
                     $relationshipsGibbonPersonIDs = $_POST[$gibbonFamilyID.'-relationshipsGibbonPersonID'];
                     $count = 0;
                     foreach ($relationships as $relationship) {
-                        try {
+                        
                             $data = array('gibbonApplicationFormID' => $AI, 'gibbonPersonID' => $relationshipsGibbonPersonIDs[$count], 'relationship' => $relationship);
                             $sql = 'INSERT INTO gibbonApplicationFormRelationship SET gibbonApplicationFormID=:gibbonApplicationFormID, gibbonPersonID=:gibbonPersonID, relationship=:relationship';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
-                        } catch (PDOException $e) {
-                        }
                         ++$count;
                     }
                 }
@@ -690,13 +686,11 @@ if ($proceed == false) {
 
                         // Write files to database, if there is one
                         if (!empty($attachment)) {
-                            try {
+                            
                                 $dataFile = array('gibbonApplicationFormID' => $AI, 'name' => $fileName, 'path' => $attachment);
                                 $sqlFile = 'INSERT INTO gibbonApplicationFormFile SET gibbonApplicationFormID=:gibbonApplicationFormID, name=:name, path=:path';
                                 $resultFile = $connection2->prepare($sqlFile);
                                 $resultFile->execute($dataFile);
-                            } catch (PDOException $e) {
-                            }
                         }
                     }
                 }
@@ -856,8 +850,8 @@ if ($proceed == false) {
             $confirmPayment = confirmPayment($guid, $applicationFee, $paymentToken, $paymentPayerID);
 
             $ACK = $confirmPayment['ACK'];
-            $paymentTransactionID = $confirmPayment['PAYMENTINFO_0_TRANSACTIONID'];
-            $paymentReceiptID = $confirmPayment['PAYMENTINFO_0_RECEIPTID'];
+            $paymentTransactionID = $confirmPayment['PAYMENTINFO_0_TRANSACTIONID'] ?? '';
+            $paymentReceiptID = $confirmPayment['PAYMENTINFO_0_RECEIPTID'] ?? '';
 
             //Payment was successful. Yeah!
             if ($ACK == 'Success') {
