@@ -78,11 +78,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 $row->addTextField('nameShort')->maxLength(4)->required();
 
             $row = $form->addRow();
-                $row->addLabel('color', __('Header Background Colour'))->description(__('Click to select a color.'));
+                $row->addLabel('color', __('Header Background Colour'))->description(__('Click to select a colour.'));
                 $row->addColor('color');
 
             $row = $form->addRow();
-                $row->addLabel('fontColor', __('Header Font Colour'))->description(__('Click to select a color.'));
+                $row->addLabel('fontColor', __('Header Font Colour'))->description(__('Click to select a colour.'));
                 $row->addColor('fontColor');
 
             $data = array();
