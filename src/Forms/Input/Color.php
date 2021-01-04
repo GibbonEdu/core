@@ -40,7 +40,7 @@ class Color extends Input
 
         $this->addValidation(
             'Validate.Format',
-            'pattern: /#[0-9a-fA-F]{6}/, failureMessage: "'.__('Must be a valid hex color').'"'
+            'pattern: /#[0-9a-fA-F]{6}/, failureMessage: "'.__('Must be a valid hex colour').'"'
         );
     }
 
