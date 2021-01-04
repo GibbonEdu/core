@@ -199,6 +199,15 @@ class NotificationGateway extends QueryableGateway
         return $this->db()->delete($sql, $data);
     }
 
+    /* NOTIFICATION MODULES */
+    public function deleteCascadeNotificationByModuleName($moduleName)
+    {
+        $data = array('moduleName' => $moduleName);
+        $sql = 'DELETE gibbonNotificationEvent, gibbonNotificationListener FROM gibbonNotificationEvent LEFT JOIN gibbonNotificationListener ON (gibbonNotificationEvent.gibbonNotificationEventID=gibbonNotificationListener.gibbonNotificationEventID) WHERE gibbonNotificationEvent.moduleName=:moduleName';
+
+        return $this->db()->delete($sql, $data);
+    }
+    
     /* NOTIFICATION PREFERENCES */
     public function getNotificationPreference($gibbonPersonID)
     {
