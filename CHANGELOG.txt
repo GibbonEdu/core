@@ -92,6 +92,7 @@ v21.0.00
         School Admin: added Manage Medical Conditions action
         School Admin: added optional introductory text setting for the Medical Conditions section
         School Admin: added color picker to Manage Alert Levels page
+        School Admin: updated library background colour selection to use colour picker
         Staff: removed the display of addresses in the Staff Profile
         Staff: restricted access to Emergency Contacts to users with Manage Staff_confidential
         Staff: added first aid information to Personal sub-page of staff profile
