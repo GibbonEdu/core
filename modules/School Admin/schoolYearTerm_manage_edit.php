@@ -21,10 +21,8 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTerm_manage_edit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $page->breadcrumbs
         ->add(__('Manage Terms'), 'schoolYearTerm_manage.php')
@@ -37,23 +35,16 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
     //Check if school year specified
     $gibbonSchoolYearTermID = $_GET['gibbonSchoolYearTermID'];
     if ($gibbonSchoolYearTermID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonSchoolYearTermID' => $gibbonSchoolYearTermID);
             $sql = 'SELECT * FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearTermID=:gibbonSchoolYearTermID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             $values = $result->fetch();

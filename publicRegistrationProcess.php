@@ -108,7 +108,7 @@ if ($proceed == false) {
             header("Location: {$URL}");
             exit();
         } else {
-            $fields = serialize($fields);
+            $fields = json_encode($fields);
         }
 
         //Check strength of password
@@ -164,11 +164,9 @@ if ($proceed == false) {
 
                     $gibbonPersonID = $connection2->lastInsertId();
 
-                    try {
+                    
                         $sqlLock = 'UNLOCK TABLES';
                         $result = $connection2->query($sqlLock);
-                    } catch (PDOException $e) {
-                    }
 
                     if ($status == 'Pending Approval') {
                         // Raise a new notification event

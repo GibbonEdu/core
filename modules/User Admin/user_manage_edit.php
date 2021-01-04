@@ -18,17 +18,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\System\DataRetentionGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs
@@ -42,25 +41,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
     }
 
     //Check if school year specified
-    $gibbonPersonID = $_GET['gibbonPersonID'];
+    $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
     if ($gibbonPersonID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonPersonID' => $gibbonPersonID);
             $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             $values = $result->fetch();
@@ -85,11 +77,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                 echo "<div class='linkTop'>";
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage.php&search='.$search."'>".__('Back to Search Results').'</a>';
                 echo '</div>';
-			}
+            }
+            
+            $scrubbed = $container->get(DataRetentionGateway::class)->selectBy(['gibbonPersonID' => $gibbonPersonID])->fetch();
+            if (!empty($scrubbed)) {
+                echo Format::alert(__("This user's personal data was cleared on {date} as part of a data retention action. The following database tables were cleared: {tables}", ['date' => Format::date($scrubbed['timestamp']), 'tables' => Format::list(json_decode($scrubbed['tables']), 'ul', 'text-xs mb-0')] ), 'warning');
+            }
 
-			echo '<div class="message">';
-			echo __('Note that certain fields are hidden or revealed depending on the role categories (Staff, Student, Parent) that a user is assigned to. For example, parents do not get Emergency Contact fields, and students/staff do not get Employment fields.');
-			echo '</div>';
+            echo Format::alert(__('Note that certain fields are hidden or revealed depending on the role categories (Staff, Student, Parent) that a user is assigned to. For example, parents do not get Emergency Contact fields, and students/staff do not get Employment fields.'), 'message');
 
 			$form = Form::create('addUser', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/user_manage_editProcess.php?gibbonPersonID='.$gibbonPersonID.'&search='.$search);
 			$form->setFactory(DatabaseFormFactory::create($pdo));
@@ -273,14 +268,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 				$row->addSelectCountry('address1Country');
 
 			if ($values['address1'] != '') {
-				try {
+				
 					$dataAddress = array('gibbonPersonID' => $values['gibbonPersonID'], 'addressMatch' => '%'.strtolower(preg_replace('/ /', '%', preg_replace('/,/', '%', $values['address1']))).'%');
 					$sqlAddress = "SELECT gibbonPersonID, title, preferredName, surname, category FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE status='Full' AND address1 LIKE :addressMatch AND NOT gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName";
 					$resultAddress = $connection2->prepare($sqlAddress);
 					$resultAddress->execute($dataAddress);
-				} catch (PDOException $e) {
-					echo "<div class='error'>".$e->getMessage().'</div>';
-				}
 
 				if ($resultAddress->rowCount() > 0) {
 					$addressCount = 0;
@@ -569,8 +561,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
             if ($student) {
                 $row = $form->addRow();
-                	$row->addLabel('studentID', __('Student ID'))->description(__('Must be unique if set.'));
-                	$row->addTextField('studentID')->maxLength(15);
+                	$row->addLabel('studentID', __('Student ID'));
+                    $row->addTextField('studentID')
+                        ->maxLength(15)
+                        ->uniqueField('./modules/User Admin/user_manage_studentIDAjax.php', ['gibbonPersonID' => $gibbonPersonID]);
             }
 
 			if ($student || $staff) {
@@ -625,7 +619,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 			}
 
 			// CUSTOM FIELDS
-			$existingFields = (isset($values['fields']))? unserialize($values['fields']) : null;
+			$existingFields = (isset($values['fields']))? json_decode($values['fields'], true) : null;
 			$resultFields = getCustomFields($connection2, $guid, $student, $staff, $parent, $other);
 			if ($resultFields->rowCount() > 0) {
 				$heading = $form->addRow()->addHeading(__('Custom Fields'));

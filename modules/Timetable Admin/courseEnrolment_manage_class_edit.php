@@ -27,10 +27,8 @@ use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Domain\User\UserGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_class_edit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Check if school year specified
     $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
@@ -39,9 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     $search = $_GET['search'] ?? '';
 
     if (empty($gibbonCourseID) or empty($gibbonSchoolYearID) or empty($gibbonCourseClassID)) {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         $userGateway = $container->get(UserGateway::class);
         $courseGateway = $container->get(CourseGateway::class);
@@ -50,9 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         $values = $courseGateway->getCourseClassByID($gibbonCourseClassID);
 
         if (empty($values)) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             $page->breadcrumbs

@@ -44,64 +44,78 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
             if ($highestAction == 'Update Family Data_any') {
                 $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_family.php&gibbonFamilyID='.$gibbonFamilyID;
 
-                try {
+                
                     $dataCheck = array('gibbonFamilyID' => $gibbonFamilyID);
-                    $sqlCheck = 'SELECT name, gibbonFamily.gibbonFamilyID FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
+                    $sqlCheck = 'SELECT gibbonFamily.* FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
                     $resultCheck = $connection2->prepare($sqlCheck);
                     $resultCheck->execute($dataCheck);
-                } catch (PDOException $e) {
-                }
             } else {
                 $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_updates.php&gibbonFamilyID='.$gibbonFamilyID;
 
-                try {
+                
                     $dataCheck = array('gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                    $sqlCheck = "SELECT name, gibbonFamily.gibbonFamilyID FROM gibbonFamily JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y' AND gibbonFamily.gibbonFamilyID=:gibbonFamilyID";
+                    $sqlCheck = "SELECT gibbonFamily.* FROM gibbonFamily JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y' AND gibbonFamily.gibbonFamilyID=:gibbonFamilyID";
                     $resultCheck = $connection2->prepare($sqlCheck);
                     $resultCheck->execute($dataCheck);
-                } catch (PDOException $e) {
-                }
             }
 
             if ($resultCheck->rowCount() != 1) {
                 $URL .= '&return=warning';
                 header("Location: {$URL}");
             } else {
+                $values = $resultCheck->fetch();
+
                 //Proceed!
-                $nameAddress = $_POST['nameAddress'];
-                $homeAddress = $_POST['homeAddress'];
-                $homeAddressDistrict = $_POST['homeAddressDistrict'];
-                $homeAddressCountry = $_POST['homeAddressCountry'];
-                $languageHomePrimary = $_POST['languageHomePrimary'];
-                $languageHomeSecondary = $_POST['languageHomeSecondary'];
+                $data = [
+                    'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'],
+                    'nameAddress' => $_POST['nameAddress'] ?? '',
+                    'homeAddress' => $_POST['homeAddress'] ?? '',
+                    'homeAddressDistrict' => $_POST['homeAddressDistrict'] ?? '',
+                    'homeAddressCountry' => $_POST['homeAddressCountry'] ?? '',
+                    'languageHomePrimary' => $_POST['languageHomePrimary'] ?? '',
+                    'languageHomeSecondary' => $_POST['languageHomeSecondary'] ?? '',
+                    'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID'],
+                ];
 
-                //Write to database
-                $existing = $_POST['existing'];
+                // COMPARE VALUES: Has the data changed?
+                $dataChanged = false;
+                foreach ($values as $key => $value) {
+                    if (!isset($data[$key])) continue; // Skip fields we don't plan to update
 
-                try {
-                    if ($existing != 'N') {
-                        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'nameAddress' => $nameAddress, 'homeAddress' => $homeAddress, 'homeAddressDistrict' => $homeAddressDistrict, 'homeAddressCountry' => $homeAddressCountry, 'languageHomePrimary' => $languageHomePrimary, 'languageHomeSecondary' => $languageHomeSecondary, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonFamilyUpdateID' => $existing);
-                        $sql = 'UPDATE gibbonFamilyUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, nameAddress=:nameAddress, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, languageHomePrimary=:languageHomePrimary, languageHomeSecondary=:languageHomeSecondary, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=NOW() WHERE gibbonFamilyUpdateID=:gibbonFamilyUpdateID';
-                    } else {
-                        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonFamilyID' => $gibbonFamilyID, 'nameAddress' => $nameAddress, 'homeAddress' => $homeAddress, 'homeAddressDistrict' => $homeAddressDistrict, 'homeAddressCountry' => $homeAddressCountry, 'languageHomePrimary' => $languageHomePrimary, 'languageHomeSecondary' => $languageHomeSecondary, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID']);
-                        $sql = 'INSERT INTO gibbonFamilyUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonFamilyID=:gibbonFamilyID, nameAddress=:nameAddress, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, languageHomePrimary=:languageHomePrimary, languageHomeSecondary=:languageHomeSecondary, gibbonPersonIDUpdater=:gibbonPersonIDUpdater';
+                    if ($data[$key] != $value) {
+                        $dataChanged = true;
                     }
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    $URL .= '&return=error2';
-                    header("Location: {$URL}");
-                    exit();
                 }
 
-                // Raise a new notification event
-                $event = new NotificationEvent('Data Updater', 'Family Data Updates');
+                // Auto-accept updates where no data had changed
+                $data['status'] = $dataChanged ? 'Pending' : 'Complete';
 
-                $event->addRecipient($_SESSION[$guid]['organisationDBA']);
-                $event->setNotificationText(__('A family data update request has been submitted.'));
-                $event->setActionLink('/index.php?q=/modules/Data Updater/data_family_manage.php');
+                //Write to database
+                $existing = $_POST['existing'] ?? 'N';
+                $data['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
+                $data['gibbonPersonIDUpdater'] = $_SESSION[$guid]['gibbonPersonID'];
+                $data['timestamp'] = date('Y-m-d H:i:s');
 
-                $event->sendNotifications($pdo, $gibbon->session);
+                if ($existing != 'N') {
+                    $data['gibbonFamilyUpdateID'] = $existing;
+                    $sql = 'UPDATE gibbonFamilyUpdate SET `status`=:status, gibbonSchoolYearID=:gibbonSchoolYearID, nameAddress=:nameAddress, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, languageHomePrimary=:languageHomePrimary, languageHomeSecondary=:languageHomeSecondary, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp WHERE gibbonFamilyUpdateID=:gibbonFamilyUpdateID';
+                } else {
+                    $data['gibbonFamilyID'] = $gibbonFamilyID;
+                    $sql = 'INSERT INTO gibbonFamilyUpdate SET `status`=:status, gibbonSchoolYearID=:gibbonSchoolYearID, gibbonFamilyID=:gibbonFamilyID, nameAddress=:nameAddress, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, languageHomePrimary=:languageHomePrimary, languageHomeSecondary=:languageHomeSecondary, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp';
+                }
+                $pdo->statement($sql, $data);
+
+
+                if ($dataChanged) {
+                    // Raise a new notification event
+                    $event = new NotificationEvent('Data Updater', 'Family Data Updates');
+
+                    $event->addRecipient($_SESSION[$guid]['organisationDBA']);
+                    $event->setNotificationText(__('A family data update request has been submitted.'));
+                    $event->setActionLink('/index.php?q=/modules/Data Updater/data_family_manage.php');
+
+                    $event->sendNotifications($pdo, $gibbon->session);
+                }
 
                 $URLSuccess .= '&return=success0';
                 header("Location: {$URLSuccess}");

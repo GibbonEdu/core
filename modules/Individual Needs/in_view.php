@@ -23,10 +23,8 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Students\StudentGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
@@ -76,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
         echo __('Choose A Student');
         echo '</h2>';
         echo '<p>';
-        echo __('This page displays all students enroled in the school, including those who have not yet met their start date. With the right permissions, you can set Individual Needs status and Individual Education Plan details for any student.');
+        echo __('This page displays all students enrolled in the school, including those who have not yet met their start date. With the right permissions, you can set Individual Needs status and Individual Education Plan details for any student.');
         echo '</p>';
 
         $students = $studentGateway->queryStudentsBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);

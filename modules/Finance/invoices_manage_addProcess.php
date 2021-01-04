@@ -75,18 +75,6 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                 header("Location: {$URL}");
                 exit();
             } else {
-                //LOCK INVOICE TABLES
-                try {
-                    $data = array();
-                    $sql = 'LOCK TABLES gibbonFinanceInvoice WRITE, gibbonFinanceInvoiceFee WRITE, gibbonFinanceInvoicee WRITE';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    $URL .= '&return=error2';
-                    header("Location: {$URL}");
-                    exit();
-                }
-
                 //CYCLE THROUGH STUDENTS
                 foreach ($gibbonFinanceInvoiceeIDs as $gibbonFinanceInvoiceeID) {
                     $thisStudentFailed = false;
@@ -164,90 +152,68 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                                 $thisInvoiceFailed = true;
                             }
                             if ($resultInvoice->rowCount() == 0 and $thisInvoiceFailed == false) {
-                                //ADD INVOICE
-                                //Get next autoincrement
-                                try {
-                                    $dataAI = array();
-                                    $sqlAI = "SHOW TABLE STATUS LIKE 'gibbonFinanceInvoice'";
-                                    $resultAI = $connection2->prepare($sqlAI);
-                                    $resultAI->execute($dataAI);
-                                } catch (PDOException $e) {
-                                    ++$invoiceFailCount;
-                                    $thisInvoiceFailed = true;
-                                }
-                                if ($resultAI->rowCount() == 1) {
-                                    $rowAI = $resultAI->fetch();
-                                    $AI = str_pad($rowAI['Auto_increment'], 14, '0', STR_PAD_LEFT);
+                                //Add invoice
+                                //Make and store unique code for confirmation. add it to email text.
+                                $key = '';
+
+                                //Let's go! Create key, send the invite
+                                $continue = false;
+                                $count = 0;
+                                while ($continue == false and $count < 100) {
+                                    $key = randomPassword(40);
+                                    
+                                        $dataUnique = array('key' => $key);
+                                        $sqlUnique = 'SELECT * FROM gibbonFinanceInvoice WHERE gibbonFinanceInvoice.`key`=:key';
+                                        $resultUnique = $connection2->prepare($sqlUnique);
+                                        $resultUnique->execute($dataUnique);
+
+                                    if ($resultUnique->rowCount() == 0) {
+                                        $continue = true;
+                                    }
+                                    ++$count;
                                 }
 
-                                if ($AI == '') {
-                                    if ($thisInvoiceFailed == false) {
+                                if ($continue == false) {
+                                    $URL .= '&return=error2';
+                                    header("Location: {$URL}");
+                                    exit();
+                                } else {
+                                    try {
+                                        if ($scheduling == 'Scheduled') {
+                                            $dataInvoiceAdd = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID, 'gibbonFinanceBillingScheduleID' => $gibbonFinanceBillingScheduleID, 'notes' => $notes, 'key' => $key, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID']);
+                                            $sqlInvoiceAdd = "INSERT INTO gibbonFinanceInvoice SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID, invoiceTo='Family', billingScheduleType='Scheduled', gibbonFinanceBillingScheduleID=:gibbonFinanceBillingScheduleID, notes=:notes, `key`=:key, status='Pending', separated='N', gibbonPersonIDCreator=:gibbonPersonIDCreator, timeStampCreator='".date('Y-m-d H:i:s')."'";
+                                        } else {
+                                            $dataInvoiceAdd = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID, 'invoiceDueDate' => dateConvert($guid, $invoiceDueDate), 'notes' => $notes, 'key' => $key, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID']);
+                                            $sqlInvoiceAdd = "INSERT INTO gibbonFinanceInvoice SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID, invoiceTo='Family', billingScheduleType='Ad Hoc', status='Pending', invoiceDueDate=:invoiceDueDate, notes=:notes, `key`=:key, gibbonPersonIDCreator=:gibbonPersonIDCreator, timeStampCreator='".date('Y-m-d H:i:s')."'";
+                                        }
+                                        $resultInvoiceAdd = $connection2->prepare($sqlInvoiceAdd);
+                                        $resultInvoiceAdd->execute($dataInvoiceAdd);
+                                    } catch (PDOException $e) {
+                                        echo $e->getMessage();
                                         ++$invoiceFailCount;
                                         $thisInvoiceFailed = true;
                                     }
-                                } else {
-                                    //Add invoice
-                                    //Make and store unique code for confirmation. add it to email text.
-                                    $key = '';
-
-                                    //Let's go! Create key, send the invite
-                                    $continue = false;
-                                    $count = 0;
-                                    while ($continue == false and $count < 100) {
-                                        $key = randomPassword(40);
-                                        try {
-                                            $dataUnique = array('key' => $key);
-                                            $sqlUnique = 'SELECT * FROM gibbonFinanceInvoice WHERE gibbonFinanceInvoice.`key`=:key';
-                                            $resultUnique = $connection2->prepare($sqlUnique);
-                                            $resultUnique->execute($dataUnique);
-                                        } catch (PDOException $e) {
-                                        }
-
-                                        if ($resultUnique->rowCount() == 0) {
-                                            $continue = true;
-                                        }
-                                        ++$count;
-                                    }
-
-                                    if ($continue == false) {
-                                        $URL .= '&return=error2';
-                                        header("Location: {$URL}");
-                                        exit();
-                                    } else {
-                                        try {
-                                            if ($scheduling == 'Scheduled') {
-                                                $dataInvoiceAdd = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID, 'gibbonFinanceBillingScheduleID' => $gibbonFinanceBillingScheduleID, 'notes' => $notes, 'key' => $key, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID']);
-                                                $sqlInvoiceAdd = "INSERT INTO gibbonFinanceInvoice SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID, invoiceTo='Family', billingScheduleType='Scheduled', gibbonFinanceBillingScheduleID=:gibbonFinanceBillingScheduleID, notes=:notes, `key`=:key, status='Pending', separated='N', gibbonPersonIDCreator=:gibbonPersonIDCreator, timeStampCreator='".date('Y-m-d H:i:s')."'";
-                                            } else {
-                                                $dataInvoiceAdd = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID, 'invoiceDueDate' => dateConvert($guid, $invoiceDueDate), 'notes' => $notes, 'key' => $key, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID']);
-                                                $sqlInvoiceAdd = "INSERT INTO gibbonFinanceInvoice SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID, invoiceTo='Family', billingScheduleType='Ad Hoc', status='Pending', invoiceDueDate=:invoiceDueDate, notes=:notes, `key`=:key, gibbonPersonIDCreator=:gibbonPersonIDCreator, timeStampCreator='".date('Y-m-d H:i:s')."'";
-                                            }
-                                            $resultInvoiceAdd = $connection2->prepare($sqlInvoiceAdd);
-                                            $resultInvoiceAdd->execute($dataInvoiceAdd);
-                                        } catch (PDOException $e) {
-                                            echo $e->getMessage();
-                                            ++$invoiceFailCount;
-                                            $thisInvoiceFailed = true;
-                                        }
-                                        if ($thisInvoiceFailed == false) {
-                                            //Add fees to invoice
-                                            $count = 0;
-                                            foreach ($fees as $fee) {
-                                                ++$count;
-                                                if ($invoiceTo == 'Family' or ($invoiceTo == 'Company' and $companyAll == 'N' and strpos($gibbonFinanceFeeCategoryIDList2, $fee['gibbonFinanceFeeCategoryID']) === false)) {
-                                                    try {
-                                                        if ($fee['feeType'] == 'Standard') {
-                                                            $dataInvoiceFee = array('gibbonFinanceInvoiceID' => $AI, 'feeType' => $fee['feeType'], 'gibbonFinanceFeeID' => $fee['gibbonFinanceFeeID']);
-                                                            $sqlInvoiceFee = "INSERT INTO gibbonFinanceInvoiceFee SET gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID, feeType=:feeType, gibbonFinanceFeeID=:gibbonFinanceFeeID, separated='N', sequenceNumber=$count";
-                                                        } else {
-                                                            $dataInvoiceFee = array('gibbonFinanceInvoiceID' => $AI, 'feeType' => $fee['feeType'], 'name' => $fee['name'], 'description' => $fee['description'], 'gibbonFinanceFeeCategoryID' => $fee['gibbonFinanceFeeCategoryID'], 'fee' => $fee['fee']);
-                                                            $sqlInvoiceFee = "INSERT INTO gibbonFinanceInvoiceFee SET gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID, feeType=:feeType, name=:name, description=:description, gibbonFinanceFeeCategoryID=:gibbonFinanceFeeCategoryID, fee=:fee, sequenceNumber=$count";
-                                                        }
-                                                        $resultInvoiceFee = $connection2->prepare($sqlInvoiceFee);
-                                                        $resultInvoiceFee->execute($dataInvoiceFee);
-                                                    } catch (PDOException $e) {
-                                                        ++$invoiceFeeFailCount;
+                                    
+                                    $AI = $connection2->lastInsertID();
+                                    
+                                    if ($thisInvoiceFailed == false) {
+                                        //Add fees to invoice
+                                        $count = 0;
+                                        foreach ($fees as $fee) {
+                                            ++$count;
+                                            if ($invoiceTo == 'Family' or ($invoiceTo == 'Company' and $companyAll == 'N' and strpos($gibbonFinanceFeeCategoryIDList2, $fee['gibbonFinanceFeeCategoryID']) === false)) {
+                                                try {
+                                                    if ($fee['feeType'] == 'Standard') {
+                                                        $dataInvoiceFee = array('gibbonFinanceInvoiceID' => $AI, 'feeType' => $fee['feeType'], 'gibbonFinanceFeeID' => $fee['gibbonFinanceFeeID']);
+                                                        $sqlInvoiceFee = "INSERT INTO gibbonFinanceInvoiceFee SET gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID, feeType=:feeType, gibbonFinanceFeeID=:gibbonFinanceFeeID, separated='N', sequenceNumber=$count";
+                                                    } else {
+                                                        $dataInvoiceFee = array('gibbonFinanceInvoiceID' => $AI, 'feeType' => $fee['feeType'], 'name' => $fee['name'], 'description' => $fee['description'], 'gibbonFinanceFeeCategoryID' => $fee['gibbonFinanceFeeCategoryID'], 'fee' => $fee['fee']);
+                                                        $sqlInvoiceFee = "INSERT INTO gibbonFinanceInvoiceFee SET gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID, feeType=:feeType, name=:name, description=:description, gibbonFinanceFeeCategoryID=:gibbonFinanceFeeCategoryID, fee=:fee, sequenceNumber=$count";
                                                     }
+                                                    $resultInvoiceFee = $connection2->prepare($sqlInvoiceFee);
+                                                    $resultInvoiceFee->execute($dataInvoiceFee);
+                                                } catch (PDOException $e) {
+                                                    ++$invoiceFeeFailCount;
                                                 }
                                             }
                                         }
@@ -319,89 +285,67 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                             }
                             if ($resultInvoice->rowCount() == 0 and $thisInvoiceFailed == false) {
                                 //ADD INVOICE
-                                //Get next autoincrement
-                                try {
-                                    $dataAI = array();
-                                    $sqlAI = "SHOW TABLE STATUS LIKE 'gibbonFinanceInvoice'";
-                                    $resultAI = $connection2->prepare($sqlAI);
-                                    $resultAI->execute($dataAI);
-                                } catch (PDOException $e) {
-                                    ++$invoiceFailCount;
-                                    $thisInvoiceFailed = true;
-                                }
-                                if ($resultAI->rowCount() == 1) {
-                                    $rowAI = $resultAI->fetch();
-                                    $AI = str_pad($rowAI['Auto_increment'], 14, '0', STR_PAD_LEFT);
+                                //Make and store unique code for confirmation. add it to email text.
+                                $key = '';
+
+                                //Let's go! Create key, send the invite
+                                $continue = false;
+                                $count = 0;
+                                while ($continue == false and $count < 100) {
+                                    $key = randomPassword(40);
+                                    
+                                        $dataUnique = array('key' => $key);
+                                        $sqlUnique = 'SELECT * FROM gibbonFinanceInvoice WHERE gibbonFinanceInvoice.`key`=:key';
+                                        $resultUnique = $connection2->prepare($sqlUnique);
+                                        $resultUnique->execute($dataUnique);
+
+                                    if ($resultUnique->rowCount() == 0) {
+                                        $continue = true;
+                                    }
+                                    ++$count;
                                 }
 
-                                if ($AI == '') {
-                                    if ($thisInvoiceFailed == false) {
+                                if ($continue == false) {
+                                    $URL .= '&return=error2';
+                                    header("Location: {$URL}");
+                                    exit();
+                                } else {
+                                    try {
+                                        if ($scheduling == 'Scheduled') {
+                                            $dataInvoiceAdd = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID, 'gibbonFinanceBillingScheduleID' => $gibbonFinanceBillingScheduleID, 'notes' => $notes, 'key' => $key, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID']);
+                                            $sqlInvoiceAdd = "INSERT INTO gibbonFinanceInvoice SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID, invoiceTo='Company', billingScheduleType='Scheduled', gibbonFinanceBillingScheduleID=:gibbonFinanceBillingScheduleID, notes=:notes, `key`=:key, status='Pending', separated='N', gibbonPersonIDCreator=:gibbonPersonIDCreator, timeStampCreator='".date('Y-m-d H:i:s')."'";
+                                        } else {
+                                            $dataInvoiceAdd = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID, 'invoiceDueDate' => dateConvert($guid, $invoiceDueDate), 'notes' => $notes, 'key' => $key, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID']);
+                                            $sqlInvoiceAdd = "INSERT INTO gibbonFinanceInvoice SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID, invoiceTo='Company', billingScheduleType='Ad Hoc', status='Pending', invoiceDueDate=:invoiceDueDate, notes=:notes, `key`=:key, gibbonPersonIDCreator=:gibbonPersonIDCreator, timeStampCreator='".date('Y-m-d H:i:s')."'";
+                                        }
+                                        $resultInvoiceAdd = $connection2->prepare($sqlInvoiceAdd);
+                                        $resultInvoiceAdd->execute($dataInvoiceAdd);
+                                    } catch (PDOException $e) {
+                                        echo $e->getMessage();
                                         ++$invoiceFailCount;
                                         $thisInvoiceFailed = true;
                                     }
-                                } else {
-                                    //Add invoice
-                                    //Make and store unique code for confirmation. add it to email text.
-                                    $key = '';
-
-                                    //Let's go! Create key, send the invite
-                                    $continue = false;
-                                    $count = 0;
-                                    while ($continue == false and $count < 100) {
-                                        $key = randomPassword(40);
-                                        try {
-                                            $dataUnique = array('key' => $key);
-                                            $sqlUnique = 'SELECT * FROM gibbonFinanceInvoice WHERE gibbonFinanceInvoice.`key`=key';
-                                            $resultUnique = $connection2->prepare($sqlUnique);
-                                            $resultUnique->execute($dataUnique);
-                                        } catch (PDOException $e) {
-                                        }
-
-                                        if ($resultUnique->rowCount() == 0) {
-                                            $continue = true;
-                                        }
-                                        ++$count;
-                                    }
-
-                                    if ($continue == false) {
-                                        $URL .= '&return=error2';
-                                        header("Location: {$URL}");
-                                        exit();
-                                    } else {
-                                        try {
-                                            if ($scheduling == 'Scheduled') {
-                                                $dataInvoiceAdd = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID, 'gibbonFinanceBillingScheduleID' => $gibbonFinanceBillingScheduleID, 'notes' => $notes, 'key' => $key, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID']);
-                                                $sqlInvoiceAdd = "INSERT INTO gibbonFinanceInvoice SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID, invoiceTo='Company', billingScheduleType='Scheduled', gibbonFinanceBillingScheduleID=:gibbonFinanceBillingScheduleID, notes=:notes, `key`=:key, status='Pending', separated='N', gibbonPersonIDCreator=:gibbonPersonIDCreator, timeStampCreator='".date('Y-m-d H:i:s')."'";
-                                            } else {
-                                                $dataInvoiceAdd = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID, 'invoiceDueDate' => dateConvert($guid, $invoiceDueDate), 'notes' => $notes, 'key' => $key, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID']);
-                                                $sqlInvoiceAdd = "INSERT INTO gibbonFinanceInvoice SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID, invoiceTo='Company', billingScheduleType='Ad Hoc', status='Pending', invoiceDueDate=:invoiceDueDate, notes=:notes, `key`=:key, gibbonPersonIDCreator=:gibbonPersonIDCreator, timeStampCreator='".date('Y-m-d H:i:s')."'";
-                                            }
-                                            $resultInvoiceAdd = $connection2->prepare($sqlInvoiceAdd);
-                                            $resultInvoiceAdd->execute($dataInvoiceAdd);
-                                        } catch (PDOException $e) {
-                                            echo $e->getMessage();
-                                            ++$invoiceFailCount;
-                                            $thisInvoiceFailed = true;
-                                        }
-                                        if ($thisInvoiceFailed == false) {
-                                            //Add fees to invoice
-                                            $count = 0;
-                                            foreach ($fees as $fee) {
-                                                ++$count;
-                                                if (($invoiceTo == 'Company' and $companyAll == 'Y') or ($invoiceTo == 'Company' and $companyAll == 'N' and is_numeric(strpos($gibbonFinanceFeeCategoryIDList2, $fee['gibbonFinanceFeeCategoryID'])))) {
-                                                    try {
-                                                        if ($fee['feeType'] == 'Standard') {
-                                                            $dataInvoiceFee = array('gibbonFinanceInvoiceID' => $AI, 'feeType' => $fee['feeType'], 'gibbonFinanceFeeID' => $fee['gibbonFinanceFeeID']);
-                                                            $sqlInvoiceFee = "INSERT INTO gibbonFinanceInvoiceFee SET gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID, feeType=:feeType, gibbonFinanceFeeID=:gibbonFinanceFeeID, separated='N', sequenceNumber=$count";
-                                                        } else {
-                                                            $dataInvoiceFee = array('gibbonFinanceInvoiceID' => $AI, 'feeType' => $fee['feeType'], 'name' => $fee['name'], 'description' => $fee['description'], 'gibbonFinanceFeeCategoryID' => $fee['gibbonFinanceFeeCategoryID'], 'fee' => $fee['fee']);
-                                                            $sqlInvoiceFee = "INSERT INTO gibbonFinanceInvoiceFee SET gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID, feeType=:feeType, name=:name, description=:description, gibbonFinanceFeeCategoryID=:gibbonFinanceFeeCategoryID, fee=:fee, sequenceNumber=$count";
-                                                        }
-                                                        $resultInvoiceFee = $connection2->prepare($sqlInvoiceFee);
-                                                        $resultInvoiceFee->execute($dataInvoiceFee);
-                                                    } catch (PDOException $e) {
-                                                        ++$invoiceFeeFailCount;
+                                    
+                                    $AI = $connection2->lastInsertID();
+                                    
+                                    if ($thisInvoiceFailed == false) {
+                                        //Add fees to invoice
+                                        $count = 0;
+                                        foreach ($fees as $fee) {
+                                            ++$count;
+                                            if (($invoiceTo == 'Company' and $companyAll == 'Y') or ($invoiceTo == 'Company' and $companyAll == 'N' and is_numeric(strpos($gibbonFinanceFeeCategoryIDList2, $fee['gibbonFinanceFeeCategoryID'])))) {
+                                                try {
+                                                    if ($fee['feeType'] == 'Standard') {
+                                                        $dataInvoiceFee = array('gibbonFinanceInvoiceID' => $AI, 'feeType' => $fee['feeType'], 'gibbonFinanceFeeID' => $fee['gibbonFinanceFeeID']);
+                                                        $sqlInvoiceFee = "INSERT INTO gibbonFinanceInvoiceFee SET gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID, feeType=:feeType, gibbonFinanceFeeID=:gibbonFinanceFeeID, separated='N', sequenceNumber=$count";
+                                                    } else {
+                                                        $dataInvoiceFee = array('gibbonFinanceInvoiceID' => $AI, 'feeType' => $fee['feeType'], 'name' => $fee['name'], 'description' => $fee['description'], 'gibbonFinanceFeeCategoryID' => $fee['gibbonFinanceFeeCategoryID'], 'fee' => $fee['fee']);
+                                                        $sqlInvoiceFee = "INSERT INTO gibbonFinanceInvoiceFee SET gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID, feeType=:feeType, name=:name, description=:description, gibbonFinanceFeeCategoryID=:gibbonFinanceFeeCategoryID, fee=:fee, sequenceNumber=$count";
                                                     }
+                                                    $resultInvoiceFee = $connection2->prepare($sqlInvoiceFee);
+                                                    $resultInvoiceFee->execute($dataInvoiceFee);
+                                                } catch (PDOException $e) {
+                                                    ++$invoiceFeeFailCount;
                                                 }
                                             }
                                         }
@@ -463,12 +407,11 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                         $gibbonFinanceInvoiceID = $AI;
 
                     //SET gibbonFinanceFeeCategoryIDList WITH ALL FEES (doing this now due to the complex nature of adding fees above)
-                    try {
+                    
                         $dataTemp = array('gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
                         $sqlTemp = 'SELECT gibbonFinanceFeeCategoryID FROM gibbonFinanceInvoiceFee WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
                         $resultTemp = $connection2->prepare($sqlTemp);
                         $resultTemp->execute($dataTemp);
-                    } catch (PDOException $e) {}
 
                     $gibbonFinanceFeeCategoryIDList = '';
                     while ($rowTemp = $resultTemp->fetch()) {
@@ -477,20 +420,12 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 
                     $gibbonFinanceFeeCategoryIDList = substr($gibbonFinanceFeeCategoryIDList, 0, -1);
                     if ($gibbonFinanceFeeCategoryIDList != '') {
-                        try {
+                        
                             $dataTemp2 = array('gibbonFinanceFeeCategoryIDList' => $gibbonFinanceFeeCategoryIDList, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
                             $sqlTemp2 = 'UPDATE gibbonFinanceInvoice SET gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
                             $resultTemp2 = $connection2->prepare($sqlTemp2);
                             $resultTemp2->execute($dataTemp2);
-                        } catch (PDOException $e) {}
                     }
-                }
-
-                //Unlock module table
-                try {
-                    $sql = 'UNLOCK TABLES';
-                    $result = $connection2->query($sql);
-                } catch (PDOException $e) {
                 }
 
                 //Return results, include three types of fail and counts

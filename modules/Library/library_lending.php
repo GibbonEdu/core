@@ -26,10 +26,8 @@ use Gibbon\Services\Format;
 $page->breadcrumbs->add(__('Lending & Activity Log'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     if (isset($_GET['return'])) {
@@ -102,28 +100,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
         return sprintf('<b>%1$s</b><br/>%2$s', $item['name'], Format::small($item['producer']));
     });
     $table->addColumn('typeName', __('Type'))->translatable();
-    $table->addColumn('spaceName', __('Location'))
-          ->format(function ($item) {
+    $table->addColumn('location', __('Location'))
+        ->sortable(['spaceName', 'locationDetail'])
+        ->format(function ($item) {
             return sprintf('<b>%1$s</b><br/>%2$s', $item['spaceName'], Format::small($item['locationDetail']));
-          });
+        });
     $table->addColumn('timestampStatus', __('Status'))
-            ->description(__('Return'))
-            ->format(function ($item) {
-        $statusDetail = "";
-        if ($item['returnExpected'] != null) {
-            $statusDetail .= sprintf(
-                '<br/>%1$s<br/>%2$s',
-                Format::small(Format::date($item['returnExpected'])),
-                Format::small(Format::name($item['title'], $item['preferredName'], $item['surname'], 'Student', false, true))
+        ->description(__('Return'))
+        ->format(function ($item) {
+            $statusDetail = "";
+            if ($item['returnExpected'] != null) {
+                $statusDetail .= sprintf(
+                    '<br/>%1$s<br/>%2$s',
+                    Format::small(Format::date($item['returnExpected'])),
+                    Format::small(Format::name($item['title'], $item['preferredName'], $item['surname'], 'Student', false, true))
+                );
+            }
+            return sprintf(
+                '<b>%1$s</b>%2$s',
+                __($item['status']),
+                $statusDetail
             );
-        }
-        return sprintf(
-            '<b>%1$s</b>%2$s',
-            __($item['status']),
-            $statusDetail
-        );
-    });
-            
+        });
+                
     $table->addActionColumn()
           ->addParam('gibbonLibraryItemID')
           ->addParam('name', $name)

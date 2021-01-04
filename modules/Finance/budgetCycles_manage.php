@@ -22,10 +22,8 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Manage Budget Cycles'));
@@ -40,6 +38,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
                         
     $budgetCycles = $gateway->queryFinanceCycles($criteria);
     $table = DataTable::createPaginated('cycles', $criteria);
+
+    $table->modifyRows(function ($item, $row) {
+        return $item['status'] == 'Current' ? $row->addClass('success') : $row;
+    });
+
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/Finance/budgetCycles_manage_add.php')
         ->displayLabel();

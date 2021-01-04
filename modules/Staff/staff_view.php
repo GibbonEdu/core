@@ -51,6 +51,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
         'sidebar' => 'false',
     ];
 
+    if ($viewMode == 'export') {
+        $urlParams['view'] = 'list';
+    }
+
     // QUERY
     $staffGateway = $container->get(StaffGateway::class);
     $criteria = $staffGateway->newQueryCriteria(!$directoryView)
@@ -180,7 +184,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
         $table->addMetaData('filterOptions', [
             'type:teaching' => __('Staff Type').': '.__('Teaching'),
             'type:support'  => __('Staff Type').': '.__('Support'),
-            'type:other'    => __('Staff Type').': '.__('Other'),
         ]);
 
         $table->addMetaData('listOptions', [

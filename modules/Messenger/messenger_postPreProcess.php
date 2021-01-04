@@ -34,6 +34,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 
     $from = $_POST['from'] ?? '';
     $data = [
+        'gibbonSchoolYearID'=> $gibbon->session->get('gibbonSchoolYearID'), 
         'email'             => $_POST['email'] ?? 'N',
         'messageWall'       => $_POST['messageWall'] ?? 'N',
         'messageWallPin'    => $_POST['messageWallPin'] ?? 'N',

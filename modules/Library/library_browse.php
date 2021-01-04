@@ -28,10 +28,8 @@ require_once __DIR__ . '/moduleFunctions.php';
 $page->breadcrumbs->add(__('Browse The Library'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     //Get display settings
@@ -237,20 +235,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     });
 
     $table->addColumn('name', __('Name'))
-            ->description(__('Author/Producer'))
-            ->format(function ($item) {
-        return sprintf('<b>%1$s</b><br/><span style="font-size: 85%%; font-style:italic;">%2$s</span>', $item['name'], __($item['producer']));
-    });
+        ->description(__('Author/Producer'))
+        ->format(function ($item) {
+            return sprintf('<b>%1$s</b><br/><span style="font-size: 85%%; font-style:italic;">%2$s</span>', $item['name'], __($item['producer']));
+        });
 
     $table->addColumn('id', __('ID'))
-            ->description(__('Status'))
-            ->format(function ($item) {
-        return sprintf('<b>%1$s</b><br/><span style="font-size: 85%%; font-style:italic;">%2$s</span>', $item['id'], __($item['status']));
-    });
+        ->description(__('Status'))
+        ->format(function ($item) {
+            return sprintf('<b>%1$s</b><br/><span style="font-size: 85%%; font-style:italic;">%2$s</span>', $item['id'], __($item['status']));
+        });
 
-    $table->addColumn('location', __('Location'))->format(function ($item) {
-        return sprintf('<b>%1$s</b><br/><span style="font-size: 85%%; font-style:italic;">%2$s</span>', $item['spaceName'], $item['locationDetail']);
-    });
+    $table->addColumn('spaceName', __('Location'))
+        ->sortable(['spaceName', 'locationDetail'])
+        ->format(function ($item) {
+            return sprintf('<b>%1$s</b><br/><span style="font-size: 85%%; font-style:italic;">%2$s</span>', $item['spaceName'], $item['locationDetail']);
+        });
+
     echo $table->render($books);
 
     echo '</div>';

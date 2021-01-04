@@ -28,10 +28,8 @@ $page->breadcrumbs
     ->add(__('Add Item'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_catalog_add.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $urlParamKeys = array('name' => '', 'gibbonLibraryTypeID' => '', 'gibbonSpaceID' => '', 'status' => '', 'gibbonPersonIDOwnership' => '', 'typeSpecificFields' => '');
@@ -215,9 +213,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 		$('#gibbonLibraryTypeID').change(function(){
 			var path = '<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/Library/library_manage_catalog_fields_ajax.php'; ?>';
 
-            $('#detailsRow td').html("<div id='details' name='details' style='min-height: 100px; text-align: center'><img style='margin: 10px 0 5px 0' src='<?php echo $_SESSION[$guid]['absoluteURL']; ?>/themes/<?php echo $_SESSION[$guid]['gibbonThemeName']; ?>/img/loading.gif' alt='Loading' onclick='return false;' /><br/>Loading</div>");
+            $('#detailsRow .general').html("<div id='details' name='details' style='min-height: 100px; text-align: center'><img style='margin: 10px 0 5px 0' src='<?php echo $_SESSION[$guid]['absoluteURL']; ?>/themes/<?php echo $_SESSION[$guid]['gibbonThemeName']; ?>/img/loading.gif' alt='Loading' onclick='return false;' /><br/>Loading</div>");
 
-			$('#detailsRow td').load(path, { 'gibbonLibraryTypeID': $(this).val() });
+			$('#detailsRow .general').load(path, { 'gibbonLibraryTypeID': $(this).val() });
 		});
 	});
 </script>

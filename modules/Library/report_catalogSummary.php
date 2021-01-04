@@ -29,10 +29,8 @@ $_SESSION[$guid]['report_student_emergencySummary.php_choices'] = '';
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSummary.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
     $viewMode = $_REQUEST['format'] ?? '';
@@ -79,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
     }
 
     $reportGateway = $container->get(LibraryReportGateway::class);
-    $criteria = $reportGateway->newQueryCriteria()
+    $criteria = $reportGateway->newQueryCriteria(true)
         ->filterBy('id', $gibbonLibraryTypeID)
         ->filterBy('ownershipType', $ownershipType)
         ->filterBy('space', $gibbonSpaceID)
@@ -92,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
     $table = ReportTable::createPaginated('catalogSummary', $criteria)->setViewMode($viewMode, $gibbon->session);
     $table->setTitle(__('Catalog Summary'));
 
-    $table->addColumn('schoolID', __('School ID'))->description(__('Type'))
+    $table->addColumn('id', __('School ID'))->description(__('Type'))
         ->format(function ($item) {
             return '<b>'.$item['id'].'</b><br/>'.Format::small(__($item['type']));
         });
@@ -102,13 +100,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
             return '<b>'.$item['name'].'</b><br/>'.Format::small($item['producer']);
         });
 
-    $table->addColumn('location', __('Location'))
+    $table->addColumn('space', __('Location'))
+        ->sortable(['space', 'locationDetail'])
         ->width('15%')
         ->format(function ($item) {
             return $item['space'].'<br/>'.Format::small($item['locationDetail']);
         });
 
     $table->addColumn('ownership', __('Ownership'))->description(__('User/Owner'))
+        ->sortable(['ownershipType', 'surname'])
         ->format(function ($item) use ($gibbon) {
             $output = '';
             if ($item['ownershipType'] == 'School') {
@@ -128,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
             return __($item['status']).'<br/>'.Format::small(Format::yesNo($item['borrowable']));
         });
 
-    $table->addColumn('date', __('Purchase Date'))->description(__('Vendor'))
+    $table->addColumn('purchaseDate', __('Purchase Date'))->description(__('Vendor'))
         ->format(function ($item) {
             $output = !empty($item['purchaseDate']) 
                 ? Format::date($item['purchaseDate']) 

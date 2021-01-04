@@ -28,10 +28,8 @@ $page->breadcrumbs
     ->add(__('Edit Item'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_catalog_edit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     if (isset($_GET['return'])) {
@@ -41,18 +39,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     //Check if school year specified
     $gibbonLibraryItemID = $_GET['gibbonLibraryItemID'];
     if ($gibbonLibraryItemID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonLibraryItemID' => $gibbonLibraryItemID);
             $sql = 'SELECT gibbonLibraryItem.*, gibbonLibraryType.name AS type FROM gibbonLibraryItem JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) WHERE gibbonLibraryItemID=:gibbonLibraryItemID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
@@ -244,9 +237,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
 		var path = '<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/Library/library_manage_catalog_fields_ajax.php'; ?>';
 
-		$('#detailsRow td').html("<div id='details' name='details' style='min-height: 100px; text-align: center'><img style='margin: 10px 0 5px 0' src='<?php echo $_SESSION[$guid]['absoluteURL']; ?>/themes/<?php echo $_SESSION[$guid]['gibbonThemeName']; ?>/img/loading.gif' alt='Loading' onclick='return false;' /><br/>Loading</div>");
+		$('#detailsRow div').html("<div id='details' name='details' style='min-height: 100px; text-align: center'><img style='margin: 10px 0 5px 0' src='<?php echo $_SESSION[$guid]['absoluteURL']; ?>/themes/<?php echo $_SESSION[$guid]['gibbonThemeName']; ?>/img/loading.gif' alt='Loading' onclick='return false;' /><br/>Loading</div>");
 
-		$('#detailsRow td').load(path, { 'gibbonLibraryTypeID': '<?php echo $values['gibbonLibraryTypeID']; ?>', 'gibbonLibraryItemID': '<?php echo $gibbonLibraryItemID; ?>' });
+		$('#detailsRow div').load(path, { 'gibbonLibraryTypeID': '<?php echo $values['gibbonLibraryTypeID']; ?>', 'gibbonLibraryItemID': '<?php echo $gibbonLibraryItemID; ?>' });
 
 	});
 </script>

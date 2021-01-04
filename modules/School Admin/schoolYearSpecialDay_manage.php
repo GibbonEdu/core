@@ -18,10 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpecialDay_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Manage Special Days'));
@@ -34,20 +32,17 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
     if (isset($_GET['gibbonSchoolYearID'])) {
         $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
     }
-    if ($gibbonSchoolYearID == '' or $gibbonSchoolYearID == $_SESSION[$guid]['gibbonSchoolYearID']) {
-        $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
-        $gibbonSchoolYearName = $_SESSION[$guid]['gibbonSchoolYearName'];
+    if ($gibbonSchoolYearID == '' or $gibbonSchoolYearID == $gibbon->session->get('gibbonSchoolYearID')) {
+        $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+        $gibbonSchoolYearName = $gibbon->session->get('gibbonSchoolYearName');
     }
 
-    if ($gibbonSchoolYearID != $_SESSION[$guid]['gibbonSchoolYearID']) {
-        try {
+    if ($gibbonSchoolYearID != $gibbon->session->get('gibbonSchoolYearID')) {
+        
             $data = array('gibbonSchoolYearID' => $_GET['gibbonSchoolYearID']);
             $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
             echo __('The specified record does not exist.');
@@ -67,26 +62,23 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
         echo "<div class='linkTop'>";
             //Print year picker
             if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/schoolYearSpecialDay_manage.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
+                echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/schoolYearSpecialDay_manage.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
             } else {
                 echo __('Previous Year').' ';
             }
         echo ' | ';
         if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/schoolYearSpecialDay_manage.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
+            echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/schoolYearSpecialDay_manage.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
         } else {
             echo __('Next Year').' ';
         }
         echo '</div>';
 
-        try {
+        
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
             $sql = 'SELECT * FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() < 1) {
             echo "<div class='error'>";
@@ -113,14 +105,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
                 }
 
                 //Get the special days
-                try {
+                
                     $dataSpecial = array('firstDay' => $row['firstDay'], 'lastDay' => $row['lastDay']);
                     $sqlSpecial = 'SELECT * FROM gibbonSchoolYearSpecialDay WHERE date BETWEEN :firstDay AND :lastDay ORDER BY date';
                     $resultSpecial = $connection2->prepare($sqlSpecial);
                     $resultSpecial->execute($dataSpecial);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
                 if ($resultSpecial->rowCount() > 0) {
                     $rowSpecial = $resultSpecial->fetch();
                 }
@@ -134,14 +123,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
                 $days['Fri'] = 'Y';
                 $days['Sat'] = 'Y';
                 $days['Sun'] = 'Y';
-                try {
+                
                     $dataDays = array();
                     $sqlDays = "SELECT * FROM gibbonDaysOfWeek WHERE schoolDay='N'";
                     $resultDays = $connection2->prepare($sqlDays);
                     $resultDays->execute($dataDays);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
                 while ($rowDays = $resultDays->fetch()) {
                     if ($rowDays['nameShort'] == 'Mon') {
                         $days['Mon'] = 'N';
@@ -210,13 +196,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
                         if ($i == $specialDayStamp) {
                             echo "<span style='color: #ff0000'>".dateConvertBack($guid, date('Y-m-d', $i)).'<br/>'.$rowSpecial['name'].'</span>';
                             echo '<br/>';
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/schoolYearSpecialDay_manage_edit.php&gibbonSchoolYearSpecialDayID='.$rowSpecial['gibbonSchoolYearSpecialDayID']."&gibbonSchoolYearTermID=".$row['gibbonSchoolYearTermID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img style='margin-top: 3px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/schoolYearSpecialDay_manage_delete.php&gibbonSchoolYearSpecialDayID='.$rowSpecial['gibbonSchoolYearSpecialDayID']."&gibbonSchoolYearID=$gibbonSchoolYearID&width=650&height=135'><img style='margin-top: 3px' title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                            echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/schoolYearSpecialDay_manage_edit.php&gibbonSchoolYearSpecialDayID='.$rowSpecial['gibbonSchoolYearSpecialDayID']."&gibbonSchoolYearTermID=".$row['gibbonSchoolYearTermID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img style='margin-top: 3px' title='".__('Edit')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/config.png'/></a> ";
+                            echo "<a class='thickbox' href='".$gibbon->session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$gibbon->session->get('module').'/schoolYearSpecialDay_manage_delete.php&gibbonSchoolYearSpecialDayID='.$rowSpecial['gibbonSchoolYearSpecialDayID']."&gibbonSchoolYearID=$gibbonSchoolYearID&width=650&height=135'><img style='margin-top: 3px' title='".__('Delete')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/garbage.png'/></a> ";
                             $rowSpecial = $resultSpecial->fetch();
                         } else {
                             echo "<span style='color: #000000'>".dateConvertBack($guid, date('Y-m-d', $i)).'<br/>'.__('School Day').'</span>';
                             echo '<br/>';
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/schoolYearSpecialDay_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=".$i.'&gibbonSchoolYearTermID='.$row['gibbonSchoolYearTermID']."&firstDay=$firstDayStamp&lastDay=$lastDayStamp'><img style='margin-top: 3px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a> ";
+                            echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/schoolYearSpecialDay_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=".$i.'&gibbonSchoolYearTermID='.$row['gibbonSchoolYearTermID']."&firstDay=$firstDayStamp&lastDay=$lastDayStamp'><img style='margin-top: 3px' title='".__('Add')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/page_new.png'/></a> ";
                         }
                         echo '</td>';
                     }

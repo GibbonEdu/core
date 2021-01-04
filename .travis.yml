@@ -69,3 +69,6 @@ before_script:
 # use the $DB env variable to determine the phpunit.xml to use
 script:
   - composer test
+
+after_failure:
+  - cat /home/travis/build/GibbonEdu/core/tests/log/*.travis_ci.fail.html

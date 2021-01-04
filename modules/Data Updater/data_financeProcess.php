@@ -45,35 +45,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
             if ($highestAction == 'Update Finance Data_any') {
                 $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_finance.php&gibbonFinanceInvoiceeID='.$gibbonFinanceInvoiceeID;
                 
-                try {
+                
                     $dataSelect = array('gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID);
-                    $sqlSelect = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFinanceInvoiceeID FROM gibbonFinanceInvoicee JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID ORDER BY surname, preferredName";
+                    $sqlSelect = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFinanceInvoicee.* FROM gibbonFinanceInvoicee JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID ORDER BY surname, preferredName";
                     $resultSelect = $connection2->prepare($sqlSelect);
                     $resultSelect->execute($dataSelect);
-                } catch (PDOException $e) {
-                }
                 $checkCount = $resultSelect->rowCount();
+                $values = $resultSelect->fetch();
             } else {
                 $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_updates.php&gibbonFinanceInvoiceeID='.$gibbonFinanceInvoiceeID;
                 
-                try {
+                
                     $dataCheck = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
                     $sqlCheck = "SELECT gibbonFamilyAdult.gibbonFamilyID, name FROM gibbonFamilyAdult JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y' ORDER BY name";
                     $resultCheck = $connection2->prepare($sqlCheck);
                     $resultCheck->execute($dataCheck);
-                } catch (PDOException $e) {
-                }
                 while ($rowCheck = $resultCheck->fetch()) {
-                    try {
+                    
                         $dataCheck2 = array('gibbonFamilyID' => $rowCheck['gibbonFamilyID']);
-                        $sqlCheck2 = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFamilyID, gibbonFinanceInvoiceeID FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND gibbonFamilyID=:gibbonFamilyID";
+                        $sqlCheck2 = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFamilyID, gibbonFinanceInvoicee.* FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND gibbonFamilyID=:gibbonFamilyID";
                         $resultCheck2 = $connection2->prepare($sqlCheck2);
                         $resultCheck2->execute($dataCheck2);
-                    } catch (PDOException $e) {
-                    }
                     while ($rowCheck2 = $resultCheck2->fetch()) {
                         if ($gibbonFinanceInvoiceeID == $rowCheck2['gibbonFinanceInvoiceeID']) {
                             ++$checkCount;
+                            $values = $rowCheck2;
                         }
                     }
                 }
@@ -84,64 +80,77 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
                 header("Location: {$URL}");
             } else {
                 //Proceed!
-                $invoiceTo = $_POST['invoiceTo'];
+                $invoiceTo = $_POST['invoiceTo'] ?? '';
                 if ($invoiceTo == 'Company') {
-                    $companyName = $_POST['companyName'];
-                    $companyContact = $_POST['companyContact'];
-                    $companyAddress = $_POST['companyAddress'];
-                    $companyEmail = $_POST['companyEmail'];
-                    $companyCCFamily = $_POST['companyCCFamily'];
-                    $companyPhone = $_POST['companyPhone'];
-                    $companyAll = $_POST['companyAll'];
-                    $gibbonFinanceFeeCategoryIDList = null;
-                    if ($companyAll == 'N') {
-                        $gibbonFinanceFeeCategoryIDList == '';
-                        $gibbonFinanceFeeCategoryIDArray = $_POST['gibbonFinanceFeeCategoryIDList'];
-                        if (count($gibbonFinanceFeeCategoryIDArray) > 0) {
-                            foreach ($gibbonFinanceFeeCategoryIDArray as $gibbonFinanceFeeCategoryID) {
-                                $gibbonFinanceFeeCategoryIDList .= $gibbonFinanceFeeCategoryID.',';
-                            }
-                            $gibbonFinanceFeeCategoryIDList = substr($gibbonFinanceFeeCategoryIDList, 0, -1);
-                        }
+                    $data = [
+                        'invoiceTo' => $invoiceTo,
+                        'companyName' => $_POST['companyName'] ?? '',
+                        'companyContact' => $_POST['companyContact'] ?? '',
+                        'companyAddress' => $_POST['companyAddress'] ?? '',
+                        'companyEmail' => $_POST['companyEmail'] ?? '',
+                        'companyCCFamily' => $_POST['companyCCFamily'] ?? '',
+                        'companyPhone' => $_POST['companyPhone'] ?? '',
+                        'companyAll' => $_POST['companyAll'] ?? '',
+                        'gibbonFinanceFeeCategoryIDList' => $_POST['gibbonFinanceFeeCategoryIDList'] ?? '',
+                    ];
+
+                    if ($data['companyAll'] == 'N') {
+                        $data['gibbonFinanceFeeCategoryIDList'] = is_array($data['gibbonFinanceFeeCategoryIDList'])
+                            ? implode(',', $data['gibbonFinanceFeeCategoryIDList'])
+                            : $data['gibbonFinanceFeeCategoryIDList'];
                     }
                 } else {
-                    $companyName = null;
-                    $companyContact = null;
-                    $companyAddress = null;
-                    $companyEmail = null;
-                    $companyCCFamily = null;
-                    $companyPhone = null;
-                    $companyAll = null;
-                    $gibbonFinanceFeeCategoryIDList = null;
+                    $data = [
+                        'invoiceTo' => $invoiceTo,
+                        'companyName' => '',
+                        'companyContact' => '',
+                        'companyAddress' => '',
+                        'companyEmail' => '',
+                        'companyCCFamily' => '',
+                        'companyPhone' => '',
+                        'companyAll' => '',
+                        'gibbonFinanceFeeCategoryIDList' => '',
+                    ];
                 }
+
+                // COMPARE VALUES: Has the data changed?
+                $dataChanged = false;
+                foreach ($values as $key => $value) {
+                    if (!isset($data[$key])) continue; // Skip fields we don't plan to update
+
+                    if ($data[$key] != $value) {
+                        $dataChanged = true;
+                    }
+                }
+
+                // Auto-accept updates where no data had changed
+                $data['status'] = $dataChanged ? 'Pending' : 'Complete';
+                $data['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
+                $data['gibbonPersonIDUpdater'] = $_SESSION[$guid]['gibbonPersonID'];
+                $data['timestamp'] = date('Y-m-d H:i:s');
 
                 //Write to database
                 $existing = $_POST['existing'];
 
-                try {
-                    if ($existing != 'N') {
-                        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'invoiceTo' => $invoiceTo, 'companyName' => $companyName, 'companyContact' => $companyContact, 'companyAddress' => $companyAddress, 'companyEmail' => $companyEmail, 'companyCCFamily' => $companyCCFamily, 'companyPhone' => $companyPhone, 'companyAll' => $companyAll, 'gibbonFinanceFeeCategoryIDList' => $gibbonFinanceFeeCategoryIDList, 'gibbonFinanceInvoiceeUpdateID' => $existing);
-                        $sql = 'UPDATE gibbonFinanceInvoiceeUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, invoiceTo=:invoiceTo, companyName=:companyName, companyContact=:companyContact, companyAddress=:companyAddress, companyEmail=:companyEmail, companyCCFamily=:companyCCFamily, companyPhone=:companyPhone, companyAll=:companyAll, gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList, timestamp=NOW() WHERE gibbonFinanceInvoiceeUpdateID=:gibbonFinanceInvoiceeUpdateID';
-                    } else {
-                        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID, 'invoiceTo' => $invoiceTo, 'companyName' => $companyName, 'companyContact' => $companyContact, 'companyAddress' => $companyAddress, 'companyEmail' => $companyEmail, 'companyCCFamily' => $companyCCFamily, 'companyPhone' => $companyPhone, 'companyAll' => $companyAll, 'gibbonFinanceFeeCategoryIDList' => $gibbonFinanceFeeCategoryIDList, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID']);
-                        $sql = 'INSERT INTO gibbonFinanceInvoiceeUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID, invoiceTo=:invoiceTo, companyName=:companyName, companyContact=:companyContact, companyAddress=:companyAddress, companyEmail=:companyEmail, companyCCFamily=:companyCCFamily, companyPhone=:companyPhone, companyAll=:companyAll, gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList, gibbonPersonIDUpdater=:gibbonPersonIDUpdater';
-                    }
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    $URL .= '&return=error2';
-                    header("Location: {$URL}");
-                    exit();
+                if ($existing != 'N') {
+                    $data['gibbonFinanceInvoiceeUpdateID'] = $existing;
+                    $sql = 'UPDATE gibbonFinanceInvoiceeUpdate SET `status`=:status, gibbonSchoolYearID=:gibbonSchoolYearID, invoiceTo=:invoiceTo, companyName=:companyName, companyContact=:companyContact, companyAddress=:companyAddress, companyEmail=:companyEmail, companyCCFamily=:companyCCFamily, companyPhone=:companyPhone, companyAll=:companyAll, gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp WHERE gibbonFinanceInvoiceeUpdateID=:gibbonFinanceInvoiceeUpdateID';
+                } else {
+                    $data['gibbonFinanceInvoiceeID'] = $gibbonFinanceInvoiceeID;
+                    $sql = 'INSERT INTO gibbonFinanceInvoiceeUpdate SET `status`=:status, gibbonSchoolYearID=:gibbonSchoolYearID, gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID, invoiceTo=:invoiceTo, companyName=:companyName, companyContact=:companyContact, companyAddress=:companyAddress, companyEmail=:companyEmail, companyCCFamily=:companyCCFamily, companyPhone=:companyPhone, companyAll=:companyAll, gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp';
                 }
+                $pdo->statement($sql, $data);
 
-                // Raise a new notification event
-                $event = new NotificationEvent('Data Updater', 'Finance Data Updates');
+                if ($dataChanged) {
+                    // Raise a new notification event
+                    $event = new NotificationEvent('Data Updater', 'Finance Data Updates');
 
-                $event->addRecipient($_SESSION[$guid]['organisationDBA']);
-                $event->setNotificationText(__('A finance data update request has been submitted.'));
-                $event->setActionLink('/index.php?q=/modules/Data Updater/data_finance_manage.php');
+                    $event->addRecipient($_SESSION[$guid]['organisationDBA']);
+                    $event->setNotificationText(__('A finance data update request has been submitted.'));
+                    $event->setActionLink('/index.php?q=/modules/Data Updater/data_finance_manage.php');
 
-                $event->sendNotifications($pdo, $gibbon->session);
+                    $event->sendNotifications($pdo, $gibbon->session);
+                }
 
 
                 $URLSuccess .= '&return=success0';

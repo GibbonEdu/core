@@ -27,10 +27,8 @@ if (isset($_GET['orphaned'])) {
 }
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage_uninstall.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs
@@ -62,18 +60,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
     //Check if school year specified
     $gibbonModuleID = $_GET['gibbonModuleID'];
     if ($gibbonModuleID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonModuleID' => $gibbonModuleID);
             $sql = 'SELECT * FROM gibbonModule WHERE gibbonModuleID=:gibbonModuleID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";

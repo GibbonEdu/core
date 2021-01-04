@@ -23,10 +23,8 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Manage Fee Categories'));
@@ -43,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
     $table->setDescription(__('Categories are used to group fees together into related sets. Some examples might be Tuition Fees, Learning Support Fees or Transport Fees. Categories enable you to control who receives invoices for different kinds of fees.'));
 
     $table->modifyRows(function ($item, $row) {
-        return $item['active'] == 'N' ? $row->addClass('warning') : $row;
+        return $item['active'] == 'N' ? $row->addClass('error') : $row;
     });
 
     $table->addHeaderAction('add', __('Add'))

@@ -22,10 +22,8 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Manage Budgets'));
@@ -37,11 +35,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage.php
     $gateway = $container->get(FinanceGateway::class);
     $criteria = $gateway
       ->newQueryCriteria(true)
+      ->sortBy('gibbonFinanceBudget.active', 'DESC')
       ->fromPOST();
     
     $budgets = $gateway->queryFinanceBudget($criteria);
     $table = DataTable::createPaginated('budgets', $criteria);
     $table->setDescription(__('Budgets are used within purchase requisitions and expense records in order to segregate records into different areas.'));
+
+    $table->modifyRows(function ($item, $row) {
+        return $item['active'] == 'N' ? $row->addClass('error') : $row;
+    });
 
     $table->addHeaderAction('add', __('Add'))
       ->setURL('/modules/Finance/budgets_manage_add.php')
@@ -50,8 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage.php
     $table->addColumn('name', __('Name'));
     $table->addColumn('nameShort', __('Short Name'));
     $table->addColumn('category', __('Category'));
-    $table
-      ->addColumn('active', __('Active'))
+    $table->addColumn('active', __('Active'))
       ->format(Format::using('yesNo', 'active'));
     
     $table

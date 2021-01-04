@@ -22,20 +22,15 @@ use Gibbon\Services\Format;
 include '../../config.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_student.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    try {
+    
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
         $sql = "SELECT gibbonPerson.gibbonPersonID, transport, surname, preferredName, address1, address1District, address1Country, nameShort FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY transport, surname, preferredName";
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
 
     $excel = new Gibbon\Excel('studentTransport.xlsx');
 	if ($excel->estimateCellCount($pdo) > 8000)    //  If too big, then render csv instead.

@@ -1,0 +1,81 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+<div class="flex items-center my-4 shadow bg-white rounded font-sans">
+
+    <div class="w-1/2 flex flex-wrap items-start justify-between py-5 px-6 border-r border-gray-300">
+        <div class="w-full text-xl font-semibold text-gray-800">
+            {{ __('Expert Support Contract') }}
+        </div>
+
+        <div class="mt-2 text-xs font-light text-gray-600 leading-normal">
+            {% if expertSupport == 'Y' %}
+                {{ expertSupportExpiry ? __('Until {date}', {'date': formatUsing('date', expertSupportExpiry)}) : __('Lifetime') }}
+            {% else %}
+                {{ __('Visit {link} to learn more.', {link: '<a href="http://gibbonedu.com" target="_blank" class="text-red-700 underline">gibbonedu.com</a>'})|raw }}
+            {% endif %}
+        </div>
+        
+        <div class="mt-1">
+            {% if expertSupport == 'Y' %}
+                {% set expiryCheck = expertSupportExpiry is empty or expertSupportExpiry > 'now'|date('Y-m-d') %}
+                <span class="tag rounded-full {{ expiryCheck ? 'success' : 'error' }}">
+                    {{ expiryCheck ? __('Active') : __('Expired') }}
+                </span>
+            {% else %}
+                <span class="tag rounded-full dull">
+                    {{ __('Available') }}
+                </span>
+            {% endif %}
+        </div>
+    </div>
+
+    <p class="flex-1 m-0 py-2 px-6 text-gray-600">
+        {{ __('Members of the Gibbon team are available to help with your support needs.') }}
+
+        {% if expertSupport == 'Y' and expertSupportContract is not empty %}
+            <a href="{{ expertSupportContract }}" target="_blank">
+                {{ __('View your support contract.') }}
+            </a>
+        {% endif %}
+    </p>
+</div>
+
+<div class="flex items-center my-4 bg-white shadow rounded font-sans">
+
+    <div class="w-1/2 flex flex-wrap items-start justify-between py-5 px-6 border-r border-gray-300">
+        <div class="w-full text-xl font-semibold text-gray-800">
+            {{ __('Query Builder License') }}
+        </div>
+        <div class="mt-2 text-xs font-light text-gray-600 leading-normal">
+            {% if queryBuilder == 'Y' %}
+                {{ expiry ? __('Until {date}', {'date': formatUsing('date', expiry)}) : __('Lifetime') }}
+            {% else %}
+                {{ __('Visit {link} to learn more.', {link: '<a href="http://gibbonedu.com" target="_blank" class="text-red-700 underline">gibbonedu.com</a>'})|raw }}
+            {% endif %}
+        </div>
+        
+        <div class="mt-1">
+            {% if queryBuilder == 'Y' %}
+            {% set expiryCheck = expiry is empty or expiry > 'now'|date('Y-m-d') %}
+            <span class="tag rounded-full {{ expiryCheck ? 'success' : 'error' }}">
+                {{ expiryCheck ? __('Active') : __('Expired') }}
+            </span>
+            {% else %}
+            <span class="tag rounded-full dull">
+                {{ __('Available') }}
+            </span>
+            {% endif %}
+        </div>
+    </div>
+
+    <p class="flex-1 m-0 py-2 px-6 text-gray-600">
+        {{ __('This license enables you to access a collection of useful queries through the Query Builder module.') }}
+    </p>
+</div>
+

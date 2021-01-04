@@ -57,8 +57,8 @@ if ($gibbonCourseClassID == '' or $gibbonCourseID == '' or $action == '') { echo
                 if ($action == 'Mark as left') {
                     foreach ($people as $gibbonPersonID) {
                         try {
-                            $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $gibbonPersonID);
-                            $sql = "UPDATE gibbonCourseClassPerson SET role=CONCAT(role, ' - Left ') WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID  AND (role = 'Student' OR role = 'Teacher')";
+                            $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $gibbonPersonID, 'dateUnenrolled' => date('Y-m-d'));
+                            $sql = "UPDATE gibbonCourseClassPerson SET role=CONCAT(role, ' - Left'), dateUnenrolled=:dateUnenrolled  WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID  AND (role = 'Student' OR role = 'Teacher')";
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {

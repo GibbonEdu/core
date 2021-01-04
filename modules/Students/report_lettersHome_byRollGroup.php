@@ -23,15 +23,13 @@ use Gibbon\Services\Format;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_new') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Letters Home by Roll Group'));
 
-    try {
+    
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
         $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.nameShort AS rollGroup, gibbonFamily.gibbonFamilyID, gibbonFamily.name AS familyName
             FROM gibbonPerson
@@ -44,9 +42,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
             ORDER BY rollGroup, surname, preferredName";
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
     if ($result->rowCount() < 1) {
         echo "<div class='error'>";
         echo __('There are no records to display.');
@@ -96,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
             //PUMP OUT STUDENT DATA
             //Check for older siblings
             $proceed = false;
-            try {
+            
                 $dataSibling = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonFamilyID' => $row['gibbonFamilyID']);
                 $sqlSibling = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonFamily.name, gibbonFamily.gibbonFamilyID
                     FROM gibbonPerson
@@ -109,9 +104,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
                     ORDER BY gibbonFamily.gibbonFamilyID, dob";
                 $resultSibling = $connection2->prepare($sqlSibling);
                 $resultSibling->execute($dataSibling);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
 
             if ($resultSibling->rowCount() == 1) {
                 $proceed = true;

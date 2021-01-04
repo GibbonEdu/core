@@ -28,10 +28,8 @@ use Gibbon\Domain\DataSet;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdueItems.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $viewMode = $_REQUEST['format'] ?? '';
@@ -60,9 +58,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
     }
 
     $reportGateway = $container->get(LibraryReportGateway::class);
-    $criteria = $reportGateway->newQueryCriteria()->fromPOST();
+    $criteria = $reportGateway->newQueryCriteria(true)->fromPOST();
 
-    $items = $reportGateway->selectOverdueItems($ignoreStatus)->fetchAll();
+    $items = $reportGateway->queryOverdueItems($criteria, $ignoreStatus);
 
     // DATA TABLE
     $table = ReportTable::createPaginated('overdueItems', $criteria)->setViewMode($viewMode, $gibbon->session);
@@ -79,8 +77,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
         ->format(function ($item) {
             return '<b>'.$item['name'].'</b><br/>'.Format::small($item['producer']);
         });
+    $table->addColumn('id', __('ID'));
     $table->addColumn('returnExpected', __('Due Date'))->format(Format::using('date', 'returnExpected'));
-    $table->addColumn('committee', __('Days Overdue'))
+    $table->addColumn('dueDate', __('Days Overdue'))
+        ->sortable('returnExpected')
         ->format(function ($item) use ($today) {
             return (strtotime($today) - strtotime($item['returnExpected'])) / (60 * 60 * 24);
         });
@@ -94,5 +94,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
                     ->setURL('/modules/Library/library_lending_item.php');
         });
 
-    echo $table->render(new DataSet($items));
+    echo $table->render($items);
 }

@@ -24,10 +24,8 @@ use Gibbon\Module\Planner\Forms\PlannerFormFactory;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
@@ -37,6 +35,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
     } else {
         //Set variables
         $today = date('Y-m-d');
+
+        $homeworkNameSingular = getSettingByScope($connection2, 'Planner', 'homeworkNameSingular');
+        $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
 
         //Proceed!
         //Get viewBy, date and class variables
@@ -210,26 +211,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 }
 
                 if ($nextDate == '') {
-                    try {
+                    
                         $dataNext = array('gibbonCourseClassID' => $gibbonCourseClassID, 'date' => date('Y-m-d'));
                         $sqlNext = 'SELECT timeStart, timeEnd, date FROM gibbonTTDayRowClass JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTColumn ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND date>=:date ORDER BY date, timestart LIMIT 0, 10';
                         $resultNext = $connection2->prepare($sqlNext);
                         $resultNext->execute($dataNext);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
                     $nextDate = '';
                     $nextTimeStart = '';
                     $nextTimeEnd = '';
                     while ($rowNext = $resultNext->fetch()) {
-                        try {
+                        
                             $dataPlanner = array('date' => $rowNext['date'], 'timeStart' => $rowNext['timeStart'], 'timeEnd' => $rowNext['timeEnd'], 'gibbonCourseClassID' => $gibbonCourseClassID);
                             $sqlPlanner = 'SELECT * FROM gibbonPlannerEntry WHERE date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd AND gibbonCourseClassID=:gibbonCourseClassID';
                             $resultPlanner = $connection2->prepare($sqlPlanner);
                             $resultPlanner->execute($dataPlanner);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
                         if ($resultPlanner->rowCount() == 0) {
                             $nextDate = $rowNext['date'];
                             $nextTimeStart = $rowNext['timeStart'];
@@ -276,24 +271,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $column->addEditor('teachersNotes', $guid)->setRows(25)->showMedia()->setValue($teachersNotes);
 
             //HOMEWORK
-            $form->addRow()->addHeading(__('Homework'));
+            $form->addRow()->addHeading(__($homeworkNameSingular));
 
             $form->toggleVisibilityByClass('homework')->onRadio('homework')->when('Y');
             $row = $form->addRow();
-                $row->addLabel('homework', __('Homework?'));
+                $row->addLabel('homework', __('Add {homeworkName}?', ['homeworkName' => __($homeworkNameSingular)]));
                 $row->addRadio('homework')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->required()->checked('N')->inline(true);
 
             $row = $form->addRow()->addClass('homework');
-                $row->addLabel('homeworkDueDate', __('Homework Due Date'));
-                $row->addDate('homeworkDueDate')->required();
-
+                $row->addLabel('homeworkDueDate', __('Due Date'))->description(__('Date is required, time is optional.'));
+                $col = $row->addColumn('homeworkDueDate')->addClass('homework');
+                $col->addDate('homeworkDueDate')->addClass('mr-2')->required();
+                $col->addTime('homeworkDueDateTime');
+                
             $row = $form->addRow()->addClass('homework');
-                $row->addLabel('homeworkDueDateTime', __('Homework Due Date Time'))->description(__('Format: hh:mm (24hr)'));
-                $row->addTime('homeworkDueDateTime');
+                $row->addLabel('homeworkTimeCap', __('Time Cap?'))->description(__('The maximum time, in minutes, for students to work on this.'));
+                $row->addNumber('homeworkTimeCap');
 
             $row = $form->addRow()->addClass('homework');
                 $column = $row->addColumn();
-                $column->addLabel('homeworkDetails', __('Homework Details'));
+                $column->addLabel('homeworkDetails', __('{homeworkName} Details', ['homeworkName' => __($homeworkNameSingular)]));
                 $column->addEditor('homeworkDetails', $guid)->setRows(15)->showMedia()->setValue($description)->required();
 
             $form->toggleVisibilityByClass('homeworkSubmission')->onRadio('homeworkSubmission')->when('Y');
@@ -315,7 +312,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 
             $row = $form->addRow()->setClass('homeworkSubmission');
                 $row->addLabel('homeworkSubmissionRequired', __('Submission Required'));
-                $row->addSelect('homeworkSubmissionRequired')->fromArray(array('Optional' => __('Optional'), 'Compulsory' => __('Compulsory')))->required();
+                $row->addSelect('homeworkSubmissionRequired')->fromArray(array('Optional' => __('Optional'), 'Required' => __('Required')))->required();
 
             if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAssess.php')) {
                 $form->toggleVisibilityByClass('homeworkCrowdAssess')->onRadio('homeworkCrowdAssess')->when('Y');
@@ -324,7 +321,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                     $row->addRadio('homeworkCrowdAssess')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->required()->checked('N')->inline(true);
 
                 $row = $form->addRow()->addClass('homeworkCrowdAssess');
-                    $row->addLabel('homeworkCrowdAssessControl', __('Access Controls?'))->description(__('Decide who can see this homework.'));
+                    $row->addLabel('homeworkCrowdAssessControl', __('Access Controls?'))->description(__('Decide who can see this {homeworkName}.', ['homeworkName' => __($homeworkNameSingular)]));
                     $column = $row->addColumn()->setClass('flex-col items-end');
                         $column->addCheckbox('homeworkCrowdAssessClassTeacher')->checked(true)->description(__('Class Teacher'))->disabled();
                         $column->addCheckbox('homeworkCrowdAssessClassSubmitter')->checked(true)->description(__('Submitter'))->disabled();
@@ -334,20 +331,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                         $column->addCheckbox('homeworkCrowdAssessSubmitterParentsRead')->description(__('Submitter\'s Parents'));
                         $column->addCheckbox('homeworkCrowdAssessClassmatesParentsRead')->description(__('Classmates\'s Parents'));
                         $column->addCheckbox('homeworkCrowdAssessOtherParentsRead')->description(__('Other Parents'));
-            }
-
-            // OUTCOMES
-            if ($viewBy == 'date') {
-                $form->addRow()->addHeading(__('Outcomes'));
-                $form->addRow()->addAlert(__('Outcomes cannot be set when viewing the Planner by date. Use the "Choose A Class" dropdown in the sidebar to switch to a class. Make sure to save your changes first.'), 'warning');
-            } else {
-                $form->addRow()->addHeading(__('Outcomes'));
-                $form->addRow()->addContent(__('Link this lesson to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which lessons.'));
-
-                $allowOutcomeEditing = getSettingByScope($connection2, 'Planner', 'allowOutcomeEditing');
-
-                $row = $form->addRow();
-                    $row->addPlannerOutcomeBlocks('outcome', $gibbon->session, $gibbonYearGroupIDList, $gibbonDepartmentID, $allowOutcomeEditing);
             }
 
             //MARKBOOK
@@ -365,6 +348,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $row = $form->addRow();
                 $row->addCheckbox('advanced')->setValue('Y')->description(__('Show Advanced Options'));
 
+            // OUTCOMES
+            if ($viewBy == 'date') {
+                $form->addRow()->addHeading(__('Outcomes'))->addClass('advanced');
+                $form->addRow()->addAlert(__('Outcomes cannot be set when viewing the Planner by date. Use the "Choose A Class" dropdown in the sidebar to switch to a class. Make sure to save your changes first.'), 'warning')->addClass('advanced');
+            } else {
+                $form->addRow()->addHeading(__('Outcomes'))->addClass('advanced');
+                $form->addRow()->addContent(__('Link this lesson to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which lessons.'))->addClass('advanced');
+
+                $allowOutcomeEditing = getSettingByScope($connection2, 'Planner', 'allowOutcomeEditing');
+
+                $row = $form->addRow()->addClass('advanced');
+                    $row->addPlannerOutcomeBlocks('outcome', $gibbon->session, $gibbonYearGroupIDList, $gibbonDepartmentID, $allowOutcomeEditing);
+            }
+            
             //Access
             $form->addRow()->addHeading(__('Access'))->addClass('advanced');
 

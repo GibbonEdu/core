@@ -68,8 +68,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
 
             //Status
             $row = $form->addRow();
-            	$row->addLabel('status', __('Status'));
-            	$row->addTextField('status')->setValue(__('Referral'))->required()->readonly();
+            	$row->addLabel('statusText', __('Status'));
+            	$row->addTextField('statusText')->setValue(__($investigation['status']))->required()->readonly();
 
             //Date
             $row = $form->addRow();
@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
     		//Reason
             $row = $form->addRow();
                 $column = $row->addColumn();
-                $column->addLabel('reason', __('Reason'))->description(__('Why should this student\'s individual needs should be investigated?'));;
+                $column->addLabel('reason', __('Reason'))->description(__('Why should this student\'s individual needs be investigated?'));;
             	$column->addTextArea('reason')->setRows(5)->setClass('fullWidth')->required()->readonly();
 
             //Strategies Tried
@@ -112,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             //Type
             $row = $form->addRow();
                 $row->addLabel('type', __('Type'));
-                $row->addTextField('type')->setValue($contribution['type'])->required()->readonly();
+                $row->addTextField('type')->setValue(__($contribution['type']))->required()->readonly();
 
             //Type
             if ($contribution['type'] == 'Teacher') {

@@ -1,0 +1,111 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% if includeBehaviour == 'Y' %}
+    {{ __('Please find below a summary of the {homeworkName} and behaviour for {studentName}.', {'homeworkName': homeworkNamePlural, 'studentName': student.preferredName ~ " " ~ student.surname}) }}<br/><br/>
+{% elseif includeHomework == 'Y' %}
+    {{ __('Please find below a summary of the {homeworkName} for {studentName}.', {'homeworkName': homeworkNamePlural, 'studentName': student.preferredName ~ " " ~ student.surname}) }}<br/><br/>
+{% endif %}
+
+{% if includeHomework == 'Y' %}
+    <h2>
+        {{ __(homeworkNamePlural) }}
+    </h2>
+    <p>
+        {{ __('The list below includes all items assigned during the past week') }}
+    </p>
+
+    <ol>
+        {% for item in homework %}
+
+        {% set difference = date(item.homeworkDueDateTime).diff(date()) %}
+        {% set latestSubmission = (item.submissions|last) %}
+
+        {% if item.homeworkComplete == 'Y'  or (item.type == 'teacherRecorded' and latestSubmission.version == 'Final') or (item.type == item.tracker.type and item.tracker.homeworkComplete == 'Y') %}
+            {% set style = "background-color: #c6f6d5;color: #2f855a;border: 0px solid #2f855a;border-right-width: 8px;" %}
+            {% set tag = "<div style='display: inline-block; margin-left: 8px; color: #2f855a; background-color: #c6f6d5; border-radius: 3px;'>" ~  __('Complete') ~ ' - ' ~ latestSubmission.status|default(item.status)|default('On Time')  ~ "</div>" %}
+        {% else %}
+            {% set label = '' %}
+            {% set style = '' %}
+            {% set colour = '' %}
+
+            {% if item.submissions %}
+                {% set label = latestSubmission.status %}
+            {% elseif date('now') > date(item.homeworkDueDateTime) %}
+                {% set colour = 'color: #c53030; background-color: #fed7d7;' %}
+                {% set style = "border: 0px solid #c53030;border-right-width: 8px;" %}
+                {% set label = 'Incomplete' %}
+            {% elseif difference.days <= 0 %}
+                {% set colour = 'color: #c53030; background-color: #fed7d7;' %}
+                {% set style = "border: 0px solid #c53030;border-right-width: 8px;" %}
+                {% set label = __('Due Soon') %}
+            {% elseif difference.days <= 2 %}
+                {% set colour = 'color: #d45602; background-color: #ffd2a8;' %}
+                {% set style = "border: 0px solid #d45602;border-right-width: 8px;" %}
+                {% set label = __('Due Soon') %}
+            {% endif %}
+
+            {% set tag = '<div style="display: inline-block; padding: 1px 8px; margin-left: 8px; border-radius: 3px;' ~ colour ~ '">' ~  __(label)  ~ '</div>' %}
+
+        {% endif %}
+
+        <li>
+            <div style="{{ style }}; padding: 4px 6px; margin-bottom: 10px;">
+            <b>
+                {{ formatUsing('courseClassName', item.course, item.class) }} - {{ item.name }}
+            </b>
+            <br/>
+            <span style="font-size: 80%; font-style: italic;">
+                {{ __('Due at {time} on {date}', {'time': formatUsing('time', item.homeworkDueDateTime), 'date': formatUsing('date', item.homeworkDueDateTime) })|raw }} 
+
+                {{ tag|raw }}
+
+                {% if item.homeworkLocation == 'In Class' %}<div style="display: inline-block; padding: 1px 8px; margin-left: 4px; border-radius: 3px; background-color: #ebeaea; color: #878282; ">{{ __('In Class') }}</div>{% endif %}
+            </span>
+            </div>
+        </li>
+        {% else %}
+        <li>
+            {{ __('There are no records to display.') }}
+        </li>
+        {% endfor %}
+    <br/>
+    </ol>
+{% endif %}
+
+{% if includeBehaviour == 'Y' %}
+    <h2>
+        {{ __('Behaviour') }}
+    </h2>
+
+    <ul>
+        <li>{{ __('Positive behaviour records this week') }}: {{ behaviour.positive }}</li>
+        <li>{{ __('Negative behaviour records this week') }}: {{ behaviour.negative }}</li>
+    <br/>
+    </ul>
+{% endif %}
+
+{% if includeMarkbook == 'Y' %}
+    <h2>
+        {{ __('Markbook') }}
+    </h2>
+    <ul>
+        {% for item in markbook %}
+        <li>
+            {{ item.class }} - {{ item.name }}
+        </li>
+        {% else %}
+        <li>
+            {{ __('There are no records to display.') }}
+        </li>
+        {% endfor %}
+    <br/>
+    </ul>
+{% endif %}
+
+{{ __('Please click below to confirm that you have received and read this summary email.') }}

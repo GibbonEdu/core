@@ -30,10 +30,8 @@ require_once __DIR__ . '/moduleFunctions.php';
 $page->breadcrumbs->add(__('Consecutive Absences'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbsences.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $numberOfSchoolDays = (!empty($_GET['numberOfSchoolDays']) && is_numeric($_GET['numberOfSchoolDays'])) ? $_GET['numberOfSchoolDays'] : 7;
@@ -74,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
             echo __('There are no records to display.');
             echo '</div>';
         } else {
-            try {
+
                 $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'));
                 $sql = "
                 SELECT 
@@ -93,12 +91,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
                   AND (dateEnd IS NULL  OR dateEnd >= CURRENT_TIMESTAMP)
                   AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
                 ORDER BY surname, preferredName, LENGTH(rollGroup), rollGroup";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
 
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
 
             $results = array_map(function ($row) use (
                 $gibbon,

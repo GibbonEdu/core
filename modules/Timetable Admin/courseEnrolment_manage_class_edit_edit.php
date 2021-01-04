@@ -21,10 +21,8 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Check if school year specified
     $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
@@ -32,23 +30,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
     $gibbonCourseClassPersonID = $_GET['gibbonCourseClassPersonID'];
     if ($gibbonCourseClassID == '' or $gibbonCourseID == '' or $gibbonSchoolYearID == '' or $gibbonCourseClassPersonID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonCourseID' => $gibbonCourseID, 'gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonCourseClassPersonID' => $gibbonCourseClassPersonID);
-            $sql = "SELECT role, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.gibbonPersonID, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.name, gibbonCourseClass.nameShort, gibbonCourse.gibbonCourseID, gibbonCourse.name AS courseName, gibbonCourse.nameShort as courseNameShort, gibbonCourse.description AS courseDescription, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName, gibbonCourseClassPerson.reportable FROM gibbonPerson, gibbonCourseClass, gibbonCourseClassPerson,gibbonCourse, gibbonSchoolYear WHERE gibbonPerson.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=:gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPerson.gibbonCourseClassPersonID=:gibbonCourseClassPersonID AND (gibbonPerson.status='Full' OR gibbonPerson.status='Expected')";
+            $sql = "SELECT role, gibbonCourseClassPerson.dateEnrolled, gibbonCourseClassPerson.dateUnenrolled, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.gibbonPersonID, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.name, gibbonCourseClass.nameShort, gibbonCourse.gibbonCourseID, gibbonCourse.name AS courseName, gibbonCourse.nameShort as courseNameShort, gibbonCourse.description AS courseDescription, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName, gibbonCourseClassPerson.reportable FROM gibbonPerson, gibbonCourseClass, gibbonCourseClassPerson,gibbonCourse, gibbonSchoolYear WHERE gibbonPerson.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=:gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPerson.gibbonCourseClassPersonID=:gibbonCourseClassPersonID AND (gibbonPerson.status='Full' OR gibbonPerson.status='Expected')";
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             $values = $result->fetch();
@@ -100,8 +91,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 				$row->addSelect('role')->fromArray($roles)->required()->selected($values['role']);
 			
 			$row = $form->addRow();
-				$row->addLabel('reportable', __('Reportable'));
+				$row->addLabel('reportable', __('Reportable'))->description(__("Students set to non-reportable won't display in reports. Teachers set to non-reportable won't display in lists of class teachers."));
 				$row->addYesNo('reportable')->required()->selected($values['reportable']);
+
+            if (!empty($values['dateEnrolled'])) {
+                $row = $form->addRow();
+                    $row->addLabel('dateEnrolled', __('Date Enrolled'));
+                    $row->addTextField('dateEnrolled')->readonly()->setValue(Format::date($values['dateEnrolled']));
+            }
+                
+            if (!empty($values['dateUnenrolled']) && stripos($values['role'], 'Left') !== false) {
+                $row = $form->addRow();
+                    $row->addLabel('dateUnenrolled', __('Date Unenrolled'));
+                    $row->addTextField('dateUnenrolled')->readonly()->setValue(Format::date($values['dateUnenrolled']));
+            }
 
 			$row = $form->addRow();
 				$row->addFooter();

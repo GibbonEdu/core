@@ -56,7 +56,7 @@ class AttendanceByCycle extends DataSource
             'gibbonStudentEnrolmentID' => $ids['gibbonStudentEnrolmentID'],
             'gibbonReportID'       => $ids['gibbonReportID']
         ];
-        $sql = "SELECT gibbonReportingCycle.cycleNumber , gibbonReport.gibbonReportID, gibbonAttendanceLogPerson.gibbonCourseClassID, gibbonAttendanceLogPerson.date, gibbonAttendanceLogPerson.timestampTaken, gibbonAttendanceLogPerson.type, gibbonAttendanceLogPerson.context, gibbonAttendanceCode.scope, gibbonAttendanceCode.direction
+        $sql = "SELECT DISTINCT gibbonReportingCycle.cycleNumber , gibbonReport.gibbonReportID, gibbonAttendanceLogPerson.gibbonCourseClassID, gibbonAttendanceLogPerson.date, gibbonAttendanceLogPerson.timestampTaken, gibbonAttendanceLogPerson.type, gibbonAttendanceLogPerson.context, gibbonAttendanceCode.scope, gibbonAttendanceCode.direction
                 FROM gibbonReport
                 JOIN gibbonReportingCycle ON (gibbonReportingCycle.gibbonSchoolYearID=gibbonReport.gibbonSchoolYearID)
                 JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonReport.gibbonSchoolYearID)
@@ -65,7 +65,7 @@ class AttendanceByCycle extends DataSource
                 JOIN gibbonAttendanceCode ON (gibbonAttendanceCode.gibbonAttendanceCodeID=gibbonAttendanceLogPerson.gibbonAttendanceCodeID)
                 WHERE gibbonReport.gibbonReportID=:gibbonReportID
                 AND gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID
-                AND FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, gibbonReport.gibbonYearGroupIDList)
+                AND FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, gibbonReportingCycle.gibbonYearGroupIDList)
                 AND gibbonAttendanceLogPerson.date>=gibbonSchoolYear.firstDay
                 AND gibbonAttendanceLogPerson.date<=CURDATE()
                 GROUP BY gibbonAttendanceLogPerson.gibbonAttendanceLogPersonID
@@ -105,17 +105,19 @@ class AttendanceByCycle extends DataSource
 
                 // Grab the the absent and late count (school-wide)
                 $absent = ($endOfDay['direction'] == 'Out' && $endOfDay['scope'] == 'Offsite')? 1 : 0;
-                $late = ($endOfDay['scope'] == 'Onsite - Late')? 1 : 0;
+                $late = ($endOfDay['scope'] == 'Onsite - Late' || $endOfDay['scope'] == 'Offsite - Late')? 1 : 0;
 
                 // Optionally grab the class absent and late counts too
                 if ($this->countClassAsSchool == 'Y') {
-                    $absent += count(array_filter($nonClassLogs, function ($log) {
-                        return ($log['direction'] == 'Out' && $log['scope'] == 'Offsite');
-                    }));
+                    foreach ($endOfClasses as $classes) {
+                        $absent += count(array_filter($classes, function ($log) {
+                            return ($log['direction'] == 'Out' && $log['scope'] == 'Offsite');
+                        }));
 
-                    $late += count(array_filter($endOfClasses, function ($log) {
-                        return ($log['scope'] == 'Onsite - Late');
-                    }));
+                        $late += count(array_filter($classes, function ($log) {
+                            return ($log['scope'] == 'Onsite - Late');
+                        }));
+                    }
                 }
 
                 return array('absent' => $absent, 'late' => $late);

@@ -22,10 +22,8 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\School\ExternalAssessmentGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAssessments_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Manage External Assessments'));
@@ -58,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
     $table->addColumn('name', __('Name'))->format(function ($externalAssessment) {
         return '<strong>' . __($externalAssessment['name']) . '</strong>';
       });
-    $table->addColumn('description', __('description'))->translatable();
+    $table->addColumn('description', __('Description'))->translatable();
     $table->addColumn('active', __('Active'))->format(Format::using('yesNo', ['active']));
     $table->addColumn('allowFileUpload', __('File Upload'))->format(Format::using('yesNo', ['allowFileUpload']));
         

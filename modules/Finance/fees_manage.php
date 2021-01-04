@@ -23,10 +23,8 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Manage Fees'));
@@ -51,14 +49,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage.php') 
 
 
     if ($gibbonSchoolYearID != $_SESSION[$guid]['gibbonSchoolYearID']) {
-        try {
+        
             $data = array('gibbonSchoolYearID' => $_GET['gibbonSchoolYearID']);
             $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
         if ($result->rowcount() != 1) {
             echo "<div class='error'>";
             echo __('The specified record does not exist.');
@@ -110,9 +105,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage.php') 
 
             $gateway = $container->get(FinanceGateway::class);
             $criteria = $gateway->newQueryCriteria(true)
-                                ->filterBy('gibbonSchoolYearID', $gibbonSchoolYearID)
-                                ->filterBy('search', $search)
-                                ->fromPOST();
+                ->filterBy('gibbonSchoolYearID', $gibbonSchoolYearID)
+                ->filterBy('search', $search)
+                ->sortBy('gibbonFinanceFee.active')
+                ->sortBy('gibbonFinanceFee.name')
+                ->fromPOST();
 
             $fees = $gateway->queryFees($criteria);
             $table = DataTable::createPaginated('fees', $criteria);
@@ -128,19 +125,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage.php') 
             });
 
             $table->addExpandableColumn('description', __('Description'));
-            $table
-              ->addColumn('name', __('Name'))
+            $table->addColumn('name', __('Name'))
               ->description(__('Short Name'))
               ->format(function ($fee) {
                 return sprintf('<b>%1$s</b><br/>%2$s', $fee['name'], Format::small($fee['nameShort']));
               });
-            $table
-              ->addColumn('category', __('Category'));
-            $table
-              ->addColumn('fee', __('Fee'))
+
+            $table->addColumn('category', __('Category'));
+
+            $table->addColumn('fee', __('Fee'))
               ->format(function ($fee) {
                 return Format::currency($fee['fee']);
               });
+
+            $table->addColumn('active', __('Active'))
+              ->format(Format::using('yesNo', 'active'));
+
             $table->addActionColumn()
                   ->addParam('gibbonSchoolYearID')
                   ->addParam('gibbonFinanceFeeID')

@@ -127,13 +127,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
                                     $count = 0;
                                     while ($continue == false and $count < 100) {
                                         $key = randomPassword(40);
-                                        try {
+                                        
                                             $dataUnique = array('key' => $key);
                                             $sqlUnique = 'SELECT * FROM gibbonFinanceInvoice WHERE gibbonFinanceInvoice.`key`=:key';
                                             $resultUnique = $connection2->prepare($sqlUnique);
                                             $resultUnique->execute($dataUnique);
-                                        } catch (PDOException $e) {
-                                        }
 
                                         if ($resultUnique->rowCount() == 0) {
                                             $continue = true;
@@ -231,11 +229,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
         }
 
         //Unlock module table
-        try {
+        
             $sql = 'UNLOCK TABLES';
             $result = $connection2->query($sql);
-        } catch (PDOException $e) {
-        }
 
         if ($partialFail == true) {
             $URL .= '&return=warning1';

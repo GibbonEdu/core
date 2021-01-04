@@ -41,6 +41,7 @@ class FormTest extends TestCase
 
         $this->assertTrue(count($form->getRows()) == 0);
         $row = $form->addRow();
+        $row->addContent('Test');
 
         $this->assertTrue(count($form->getRows()) > 0);
         $this->assertSame($row, $form->getRow());

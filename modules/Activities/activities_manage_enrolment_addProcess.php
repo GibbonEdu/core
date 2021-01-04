@@ -51,14 +51,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         } else {
             foreach ($choices as $t) {
                 //Check to see if student is already registered in this activity
-                try {
+                
                     $data = array('gibbonPersonID' => $t, 'gibbonActivityID' => $gibbonActivityID);
                     $sql = 'SELECT * FROM gibbonActivityStudent WHERE gibbonPersonID=:gibbonPersonID AND gibbonActivityID=:gibbonActivityID';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 //If student not in activity, add them
                 if ($result->rowCount() == 0) {
