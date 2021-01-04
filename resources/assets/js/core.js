@@ -150,6 +150,22 @@ jQuery(function($){
     });
 
     /**
+    * Color Picker. Chain the color select to the text field.
+    */
+    $('.colorPicker').each(function () {
+        var item = this;
+        var target = $(item).data('for');
+
+        $(item).change(function () {
+            $("#" + target).val($(this).val());
+        }); 
+
+        $("#" + target).on('input', function () {
+            $(item).val($(this).val());
+        }); 
+    });
+
+    /**
     * Data Table: Simple Drag-Drop
     */
     $('.dataTable table[data-drag-url]').each(DraggableDataTable);

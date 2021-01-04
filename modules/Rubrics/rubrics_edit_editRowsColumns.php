@@ -164,8 +164,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 									->placeholder()
                                     ->selected($rubricRow['gibbonOutcomeID']);
                                     
-                                $col->addColor('rowColor['.$count.']')
-                                    ->addClass('pl-2')
+                                $column->addColor('rowColor['.$count.']')
+                                    ->setID('rowColor'.$count)
                                     ->setValue($rubricRow['backgroundColor'] ?? '#ffffff')
                                     ->setTitle(__('Background Colour'));
 
@@ -179,7 +179,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 
                     $row = $form->addRow();
                         $row->addHeading(__('Columns'));
-                        $row->addContent(__('Visualise?'))->wrap('<strong class="block w-full text-left">', '</strong>');
+                        $row->addContent(__('Visualise?'))->setClass('font-bold text-center');
+                        $row->addContent()->setClass('w-full sm:max-w-sm');
 
 					$data = array('gibbonRubricID' => $gibbonRubricID);
 					$sql = "SELECT gibbonRubricColumnID, title, gibbonScaleGradeID, visualise, backgroundColor FROM gibbonRubricColumn WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber";
@@ -193,12 +194,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 							$row = $form->addRow();
                             $row->addLabel('columnName'.$count, sprintf(__('Column %1$s Title'), ($count + 1)));
                             
-                            $col = $row->addColumn();
-                            $col->addCheckbox('columnVisualise['.$count.']')
+                            
+                            $row->addCheckbox('columnVisualise['.$count.']')
                                 ->setValue('Y')
                                 ->alignCenter()
                                 ->checked($rubricColumn['visualise'])
-                                ->setClass('textCenter w-12 self-center');
+                                ->setClass('textCenter flex-1 self-center');
+                            $column = $row->addColumn()->setClass('sm:max-w-sm');
+                            $col = $column->addColumn()->addClass('flex-col');
 
 							// Handle non-grade scale columns as a text field, otherwise a dropdown
 							if ($values['gibbonScaleID'] == '') {
@@ -220,7 +223,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                             }
                             
                             $col->addColor('columnColor['.$count.']')
-                                ->addClass('pl-2')
+                                ->setID('columnColor'.$count)
                                 ->setValue($rubricColumn['backgroundColor'] ?? '#ffffff')
                                 ->setTitle(__('Background Colour'));
 
