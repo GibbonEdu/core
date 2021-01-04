@@ -106,11 +106,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                             }
                         }
                     }
+
+                    $actionGateway = $container->get(ActionGateway::class);
+
                     // Create module actions
-                    if (is_null(@$actionRows) == false) {
-                        
-                        $actionGateway = $container->get(ActionGateway::class);
-                        
+                    if (!empty($actionRows)) {
+  
                         for ($i = 0;$i < count($actionRows);++$i) {
                             $categoryPermissionStaff = 'Y';
                             $categoryPermissionStudent = 'Y';
