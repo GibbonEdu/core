@@ -164,7 +164,7 @@ class FormFactory implements FormFactoryInterface
             ->placeholder('http://')
             ->addValidation(
                 'Validate.Format',
-                'pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://"'
+                'pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "'.__('Must start with http:// or https://').'"'
             );
     }
 
