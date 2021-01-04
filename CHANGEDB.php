@@ -753,4 +753,5 @@ ALTER TABLE `gibbonDataRetention` ADD UNIQUE(`gibbonPersonID`);end
 ALTER TABLE `gibbonApplicationForm` CHANGE `gender` `gender` ENUM('M','F','Other','Unspecified') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unspecified';end
 ALTER TABLE `gibbonStaffApplicationForm` CHANGE `gender` `gender` ENUM('M','F','Other','Unspecified') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unspecified';end
 UPDATE `gibbonSetting` SET description='Click to select a colour.' WHERE name='browseBGColor' AND scope='Library';end
+UPDATE `gibbonSetting` SET value=CONCAT('#', value) WHERE name='browseBGColor' AND scope='Library' AND NOT value='';end
 ";
