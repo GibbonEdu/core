@@ -48,9 +48,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
     $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_consecutiveAbsences.php");
 
     $row = $form->addRow();
-        $row->addLabel('numberOfSchoolDays', __('Number of School Day'))
-        ->description(__("The number of school days previous to today you wish to check for absences"));
-    $row->addNumber('numberOfSchoolDays')->setValue($numberOfSchoolDays)->required()->minimum(1)->maximum(99);
+        $row->addLabel('numberOfSchoolDays', __('Number of School Days'));
+        $row->addNumber('numberOfSchoolDays')->setValue($numberOfSchoolDays)->required()->minimum(1)->maximum(99);
 
     $row = $form->addRow();
         $row->addFooter();
@@ -73,8 +72,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
             echo '</div>';
         } else {
 
-                $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'));
-                $sql = "
+            $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'));
+            $sql = "
                 SELECT 
                   gibbonPerson.gibbonPersonID, 
                   gibbonPerson.title, 
@@ -95,12 +94,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
             $result = $connection2->prepare($sql);
             $result->execute($data);
 
-            $results = array_map(function ($row) use (
-                $gibbon,
-                $connection2,
-                $dates
-            ) {
-              //Get number of absences within date range
+            $absences = array_map(function ($row) use ($gibbon, $connection2, $dates) {
+              // Get number of absences within date range
                 $row['count'] = getAbsenceCount(
                     $gibbon->session->get('guid'),
                     $row['gibbonPersonID'],
@@ -111,15 +106,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
                 return $row;
             }, $result->fetchAll());
 
-            $results = array_filter(
-                $results,
-                function ($row) use ($numberOfSchoolDays) {
-                    return $row['count'] > 0;
-
-                  //If there are more absences found between the provided number of school days previous and now, keep the entry, otherwise delete it from the results
-                  //return ($row['count'] >= $numberOfSchoolDays);
-                }
-            );
+            $absences = array_filter($absences, function ($row) use ($numberOfSchoolDays) {
+                return ($row['count'] >= $numberOfSchoolDays);
+            });
 
             $table = DataTable::create('report');
             $table->setTitle(__('Report Data'));
@@ -139,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
                         true
                     );
                   });
-            $absences = new DataSet($results);
+
             echo $table->render($absences);
         }
     }
