@@ -291,7 +291,6 @@ class ActivityReportGateway extends QueryableGateway
             'gibbonPerson.surname',
             'gibbonSchoolYear.sequenceNumber'
         ])
-        ->orderBy(['gibbonActivity.name'])
         ->distinct();
 
         $criteria->addFilterRules([

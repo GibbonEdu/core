@@ -33,14 +33,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     //Proceed!
     $page->breadcrumbs->add(__('Activity Choices By Student'));
 
-    echo '<h2>';
-    echo __('Choose Student');
-    echo '</h2>';
-
     $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL']."/index.php", "get");
-
+    $form->setTitle(__('Choose Student'));
     $form->setClass('noIntBorder fullWidth');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
@@ -56,12 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 
     echo $form->getOutput();
 
-    if ($gibbonPersonID != '') {
-        echo '<h2>';
-        echo __('Report Data');
-        echo '</h2>';
-
-
+    if (!empty($gibbonPersonID)) {
         $options = getSettingByScope($connection2, 'Activities', 'activityTypes');
         $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
         if ($dateType == 'Term') {
@@ -70,56 +61,57 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 
         $gateway = $container->get(ActivityReportGateway::class);
         $criteriaYears = $gateway
-          ->newQueryCriteria()
-          ->filterBy('gibbonPersonID', $gibbonPersonID)
-          ->fromPOST();
-        $enroledYears = $gateway->queryStudentYears($criteriaYears);
-        foreach ($enroledYears as $enroledYear) {
-          //Bools for storing error message state. Shown per year for better visibility.
-            $showTermError = false;
-            $showDateError = false;
-
-            $criteriaActivities = $gateway
             ->newQueryCriteria()
             ->filterBy('gibbonPersonID', $gibbonPersonID)
-            ->filterBy('gibbonSchoolYearID', $enroledYear['gibbonSchoolYearID']);
+            ->fromPOST();
+
+        $enroledYears = $gateway->queryStudentYears($criteriaYears);
+        
+        foreach ($enroledYears as $enroledYear) {
+            $criteriaActivities = $gateway
+                ->newQueryCriteria()
+                ->sortBy('activityName')
+                ->filterBy('gibbonPersonID', $gibbonPersonID)
+                ->filterBy('gibbonSchoolYearID', $enroledYear['gibbonSchoolYearID'])
+                ->fromPOST();
 
             $activities = $gateway->queryStudentActivities($criteriaActivities);
-            $table = DataTable::createPaginated('activities', $criteriaActivities);
-            $table->setTitle(__($enroledYear['name']));
+            $table = DataTable::create('activities');
+            $table->setTitle($enroledYear['name']);
             $table->addColumn('activityName', __('Activity'));
+
             if ($options != '') {
                 $table->addColumn('activityType', __('Type'));
             }
 
             if ($dateType != 'Date') {
-              //If system is configured for term based activities, show the term assigned to the assigned activity
+                //If system is configured for term based activities, show the term assigned to the assigned activity
                 $table->addColumn('terms', __('Terms'))
-                  ->format(function ($item) {
-                    //Check terms have been assigned to this activity
-                    if ($item['terms'] == '') {
-                        if ($item['programStart'] != '' || $item['programEnd'] != '') {
-                            return Format::small(__('Assigned to date'));
+                    ->format(function ($item) {
+                        //Check terms have been assigned to this activity
+                        if ($item['terms'] == '') {
+                            if ($item['programStart'] != '' || $item['programEnd'] != '') {
+                                return Format::small(__('Assigned to date'));
+                            }
+                            return Format::small(__('Not assigned to term'));
                         }
-                        return Format::small(__('Not assigned to term'));
-                    }
 
-                    return $item['terms'];
-                  });
+                        return $item['terms'];
+                    });
             } else {
-              //If system is configured for date based activities, summarise the date range
-              //e.g. 01-01-2020 -> 31-07-2020 into July 2020
-                $table->addColumn('dates', __('Dates'))
-                  ->format(function ($item) {
-                    if ($item['programStart'] == '' || $item['programEnd'] == '') {
-                        if ($item['terms'] != '') {
-                            return Format::small(__('Assigned to term'));
+                //If system is configured for date based activities, summarise the date range
+                //e.g. 01-01-2020 -> 31-07-2020 into July 2020
+                $table->addColumn('programStart', __('Dates'))
+                    ->format(function ($item) {
+                        if ($item['programStart'] == '' || $item['programEnd'] == '') {
+                            if ($item['terms'] != '') {
+                                return Format::small(__('Assigned to term'));
+                            }
+                            return Format::small(__('Not assigned to date range'));
+                        } else {
+                            return Format::dateRangeReadable($item['programStart'], $item['programEnd']);
                         }
-                        return Format::small(__('Not assigned to date range'));
-                    } else {
-                        return Format::dateRangeReadable($item['programStart'], $item['programEnd']);
-                    }
-                  });
+                    });
             }
 
             $table->addColumn('status', __('Status'));
@@ -127,37 +119,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
                 ->addParam('gibbonActivityID')
                 ->format(function ($item, $actions) {
                     $actions
-                    ->addAction('view', __('View Details'))
-                    ->setURL('/modules/Activities/activities_view_full.php')
-                    ->isModal();
+                        ->addAction('view', __('View Details'))
+                        ->setURL('/modules/Activities/activities_view_full.php')
+                        ->isModal(900, 500);
                 });
-
-          //Error handling where a required column doesn't exist. Won't break the table but should be highlighted.
-
-            foreach ($activities as $activity) {
-                switch ($dateType) {
-                    case 'Date':
-                        if ($activity['programStart'] || $activity['programEnd']) {
-                            $showDateError = true;
-                        }
-                        break;
-
-                    case 'Term':
-                    default:
-                        if ($activity['terms'] == '') {
-                            $showTermError = true;
-                        }
-                        break;
-                }
-            }
-
-            if ($showTermError) {
-                echo Format::alert(__('Some activities shown in the table below are not assigned to terms. Check the term column to find out which activities are affected. These may assigned to dates as part of a migration, in which case you should consider changing these to term based activities.'));
-            }
-
-            if ($showDateError) {
-                echo Format::alert(__('Some activities shown in the table below are not assigned to dates. Check the dates column to find out which activities are affected. These may be assigned to terms as part of a migration, in which case you should consider changing these to date based activities.'));
-            }
 
             echo $table->render($activities);
         }
