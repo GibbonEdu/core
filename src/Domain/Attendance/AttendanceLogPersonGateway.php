@@ -179,6 +179,49 @@ class AttendanceLogPersonGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    public function queryStudentsNotPresent(QueryCriteria $criteria)
+    {
+      $query = $this
+        ->newQuery()
+        ->from('gibbonPerson')
+        ->innerJoin('gibbonStudentEnrolment','gibbonPerson.gibbonPersonID = gibbonStudentEnrolment')
+        ->innerJoin('gibbonAttendanceLogPerson','gibbonAttendanceLogPerson.gibbonPersonID = gibbonPerson.gibbonPersonID')
+        ->innerJoin('gibbonRollGroup','gibbonStudentEnrolment.gibbonRollGroupID = gibbonRollGroup.gibbonRollGroupID')
+        ->where("gibbonPerson.status = 'Full'")
+        ->where('(gibbonPerson.startDate IS NULL OR gibbonPerson.startDate <= CURRENT_TIMESTAMP)')
+        ->where('(gibbonPerson.endDate IS NULL OR gibbonPerson.endDate >= CURRENT_TIMESTAMP)')
+        ->cols([
+          'gibbonPerson.title',
+          'gibbonPerson.preferredName',
+          'gibbonPerson.surname',
+          'gibbonRollGroup.name as rollGroupName',
+          'gibbonRollGroup.nameShort as rollGroup'
+        ]);
+
+      $criteria->addFilterRules([
+        'gibbonSchoolYearID' => function($query,$gibbonSchoolYearID)
+        {
+          return $query
+            ->where('gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+        },
+        'date' => function($query,$date)
+        {
+          return $query
+            ->where('gibbonAttendanceLogPerson.date = :date')
+            ->bindValue('date',$date);
+        },
+        'contextNot' => function($query,$contextNot)
+        {
+          return $query
+            ->where('NOT gibbonAttendanceLogPerson.context = :contextNot')
+            ->bindValue('contextNot',$contextNot);
+        }
+      ]);
+
+      return $this->runQuery($query,$criteria);
+    }
+
     public function queryStudentsNotInClass($criteria, $gibbonSchoolYearID, $date, $allStudents = null)
     {
         $query = $this
