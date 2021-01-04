@@ -408,7 +408,7 @@ if ($canInstall == false) {
                         $row->addEmail('email')->required();
 
                     $row = $form->addRow();
-                        $row->addLabel('support', '<b>'.__('Receive Support?').'</b>')->description(__('Join our mailing list and recieve a welcome email from the team.'));
+                        $row->addLabel('support', __('Receive Support?'))->description(__('Join our mailing list and recieve a welcome email from the team.'));
                         $row->addCheckbox('support')->description(__('Yes'))->setValue('on')->checked('on')->setID('support');
 
                     $row = $form->addRow();
@@ -492,16 +492,16 @@ if ($canInstall == false) {
                         '__edge_code_check_failed__' => __('Cutting Edge Code check failed'),
                     ]);
                     echo <<<HTML
-<script type="text/javascript">
-window.gibboninstaller = {
-    version: $js_version,
-    i18n: $js_i18n,
-    msg: function (msg) {
-        return this.i18n[msg] || msg;
-    },
-};
-</script>
-HTML;
+                    <script type="text/javascript">
+                    window.gibboninstaller = {
+                        version: $js_version,
+                        i18n: $js_i18n,
+                        msg: function (msg) {
+                            return this.i18n[msg] || msg;
+                        },
+                    };
+                    </script>
+                    HTML;
 
                     $statusInitial = "<div id='status' class='warning'><div style='width: 100%; text-align: center'><img style='margin: 10px 0 5px 0' src='../themes/Default/img/loading.gif' alt='Loading'/><br/>".__('Checking for Cutting Edge Code.')."</div></div>";
                     $row = $form->addRow();
