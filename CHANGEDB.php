@@ -750,4 +750,7 @@ CREATE TABLE `gibbonDataRetention` (`gibbonDataRetentionID` int(11) unsigned zer
 ALTER TABLE `gibbonINPersonDescriptor` CHANGE `gibbonINDescriptorID` `gibbonINDescriptorID` int(3) unsigned zerofill NULL DEFAULT NULL;end
 ALTER TABLE `gibbonINPersonDescriptor` CHANGE `gibbonAlertLevelID` `gibbonAlertLevelID` int(3) unsigned zerofill NULL DEFAULT NULL;
 ALTER TABLE `gibbonDataRetention` ADD UNIQUE(`gibbonPersonID`);end
+ALTER TABLE `gibbonApplicationForm` CHANGE `gender` `gender` ENUM('M','F','Other','Unspecified') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unspecified';end
+ALTER TABLE `gibbonStaffApplicationForm` CHANGE `gender` `gender` ENUM('M','F','Other','Unspecified') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unspecified';end
+
 ";
