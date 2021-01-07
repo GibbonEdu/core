@@ -384,7 +384,7 @@ class ReportingAccessGateway extends QueryableGateway
             ->innerJoin('gibbonCourseClass', "gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID")
             ->innerJoin('gibbonCourseClassPerson', 'gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID')
             ->leftJoin('gibbonReportingValue', "gibbonReportingValue.gibbonReportingCriteriaID=gibbonReportingCriteria.gibbonReportingCriteriaID
-                AND gibbonCourseClass.gibbonCourseClassID=.gibbonReportingValue.gibbonCourseClassID
+                AND gibbonCourseClass.gibbonCourseClassID=gibbonReportingValue.gibbonCourseClassID
                 AND (gibbonReportingCriteria.target='Per Group' OR (gibbonReportingValue.gibbonPersonIDStudent=gibbonStudentEnrolment.gibbonPersonID) AND gibbonReportingCriteria.target='Per Student')
                 ")
             ->leftJoin('gibbonScaleGrade', 'gibbonScaleGrade.gibbonScaleID=gibbonReportingCriteriaType.gibbonScaleID AND gibbonReportingValue.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID')
