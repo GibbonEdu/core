@@ -31,8 +31,12 @@ $(document).ready(function(){
         $(document).tooltip({
             show: 800,
             hide: false,
+            items: "*[title]:not(.tox-edit-area__iframe):not(.tox-collection__item):not(.tox-button):not(.tox-tbtn--select)",
             content: function () {
                 return $(this).prop('title');
+            },
+            open: function(event, ui) {
+                ui.tooltip.delay(3000).fadeTo(1000, 0);
             },
             position: {
                 my: "center bottom-20",
@@ -57,8 +61,9 @@ $(document).ready(function(){
         selector: "div#editorcontainer textarea",
         width: '100%',
         menubar : false,
-        toolbar: 'bold, italic, underline,forecolor,backcolor,|,alignleft, aligncenter, alignright, alignjustify, |, formatselect, |, fontselect, fontsizeselect, |, table, |, bullist, numlist,outdent, indent, |, link, unlink, image, media, hr, charmap, subscript, superscript, |, cut, copy, paste, undo, redo, fullscreen',
-        plugins: 'table, template, paste, visualchars, link, template, textcolor, hr, charmap, fullscreen',
+        toolbar_mode: 'sliding',
+        toolbar: 'bold italic underline  forecolor backcolor |  alignleft aligncenter alignright alignjustify | bullist numlist indent outdent | link unlink hr charmap | fullscreen | styleselect fontselect fontsizeselect | table | subscript superscript | cut copy paste undo redo ',
+        plugins: 'table lists paste link hr charmap fullscreen',
         statusbar: false,
         valid_elements: Gibbon.config.tinymce.valid_elements,
         invalid_elements: '',
