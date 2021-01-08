@@ -22,7 +22,6 @@ v21.0.00
         MySQL 8 compatibility
         Added Afrikaans as an available language
         New Data Retention and Data Privacy functionality
-        Updated TinyMCE Editor to version 5.6.1
 
     Significant Changes
         System Admin: added a landing page to showcase the available support options
@@ -40,6 +39,9 @@ v21.0.00
         System: renamed planner_parentWeeklyEmailSummary.php to schoolAdmin_parentWeeklyEmailSummary.php
         Staff: removed roles-as-type in Manage Staff, reducing option to Teaching and Support and setting all non-Teaching users to Support
         System Admin: displaying a cookie consent message to users is enabled by default
+
+    Security
+        Updated TinyMCE Editor to version 5.6.2
 
     Tweaks & Additions
         System: added Romanian Leu as currency option
