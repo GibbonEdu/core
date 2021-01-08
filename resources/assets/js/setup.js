@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 $(document).ready(function(){
 
+    $(document).trigger('gibbon-setup');
+
     // Initialize datepicker
     var dateDefaults = $.datepicker.regional[Gibbon.config.datepicker.locale];
     dateDefaults.dateFormat = Gibbon.config.datepicker.dateFormat;
@@ -66,6 +68,7 @@ $(document).ready(function(){
         plugins: 'table lists paste link hr charmap fullscreen',
         statusbar: false,
         valid_elements: Gibbon.config.tinymce.valid_elements,
+        extended_valid_elements : Gibbon.config.tinymce.extended_valid_elements,
         invalid_elements: '',
         apply_source_formatting : true,
         browser_spellcheck: true,
