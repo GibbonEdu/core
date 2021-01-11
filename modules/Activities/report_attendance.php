@@ -220,14 +220,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
             if (isset($sessionAttendanceData[$sessionDate]['data'])) {
                 // Handle instances where the time slot has been deleted after creating an attendance record
                         if (!in_array(date('D', $sessionTimestamp), $activityWeekDays) || ($sessionTimestamp < $activityTimespan['start']) || ($sessionTimestamp > $activityTimespan['end'])) {
-                            echo "<td style='vertical-align:top; width: 45px;' class='warning' title='".__('Does not match the time slots for this activity.')."'>";
+                            echo "<td style='vertical-align:top; width: 50px;  white-space: nowrap;' class='warning' title='".__('Does not match the time slots for this activity.')."'>";
                         } else {
-                            echo "<td style='vertical-align:top; width: 45px;'>";
+                            echo "<td style='vertical-align:top; width: 50px;  white-space: nowrap;'>";
                         }
 
                 printf("<span title='%s'>%s</span><br/>&nbsp;<br/>", $sessionAttendanceData[$sessionDate]['info'], Format::dateReadable($sessionDate, '%a <br /> %b %e'));
             } else {
-                echo "<td style='color: #bbb; vertical-align:top; width: 45px;'>";
+                echo "<td style='color: #bbb; vertical-align:top; width: 50px; white-space: nowrap;'>";
                 echo Format::dateReadable($sessionDate, '%a <br /> %b %e').'<br/>&nbsp;<br/>';
             }
             echo '</td>';
