@@ -126,7 +126,6 @@ v21.0.00
         System: fixed date picker not using the First Day of the Week setting
         System: fixed validation not working for paginated bulk action forms
         System: added a fallback to translateN for systems that don't have gettext
-        System Admin: fixed PHP deprecation errors in CSV importer
         Attendance: fixed sortable Class column in Student Not In Class report
         Data Updater: fixed passport expiry fields not properly hiding
         Departments: fixed attendance link not prefilling the current date
@@ -150,6 +149,8 @@ v21.0.00
         Students: fixed students able to see other students in class lists
         Students: fixed issue preventing timetable edit link from working with left students and allStudent flag
         Students: fixed missing alert bar in Markbook and Internal Assessment sub-pages in student profile
+        System Admin: fixed PHP deprecation errors in CSV importer
+        System Admin: fixed empty numeric values importing as 0 rather than null
         Timetable: fixed View Available Facilities not counting bookings on Friday
 	    Tests: added fallback environment variables if .env is not defining DB details
 	    Tests: changed HTTP to HTTPs, so SSL enabled environments don't fail
