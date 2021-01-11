@@ -560,7 +560,7 @@ div#ui-datepicker-div {
 
 /* From WP for tinymce display */
 .editor-toolbar .active {
-    background-color: #f0f0f0;
+    background-color: #ffffff;
     color: #333;
     padding-bottom: 0.5rem;
     margin-bottom: -1px;
@@ -1196,6 +1196,10 @@ table.smallIntBorder td.noPadding {
 .dataTable .expander.expanded:before {
     transform: rotate(45deg);
     -webkit-transform: rotate(45deg);
+}
+
+.whitespace-nowrap {
+    white-space: nowrap;
 }
 
 
