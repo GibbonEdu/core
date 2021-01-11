@@ -191,7 +191,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
         $form->addHiddenValue('gibbonPersonID', $_SESSION[$guid]['gibbonPersonID']);
 
-        $row = $form->addRow('doublescroll-wrapper')->setClass('block doublescroll-wrapper smallIntBorder w-full max-w-full')->addColumn()->setClass('pl-48');
+        $row = $form->addRow('doublescroll-wrapper')->setClass('block doublescroll-wrapper smallIntBorder w-full max-w-full')->addColumn();
 
         // Headings as a separate table
         $table = $row->addTable()->setClass('mini w-full m-0 border-0');
@@ -213,7 +213,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         $i = 0;
         foreach ($activitySessions as $sessionDate => $sessionTimestamp) {
             $col = $row->addColumn()->addClass('h-24 px-2 text-center');
-            $dateLabel = $col->addContent(Format::dateReadable($sessionDate, '%a<br>%b %e'))->addClass('w-10 mx-auto');
+            $dateLabel = $col->addContent(Format::dateReadable($sessionDate, '%a<br>%b %e'))->addClass('w-10 mx-auto whitespace-nowrap');
 
             if (isset($sessionAttendanceData[$sessionDate]['data'])) {
                 $col->addWebLink(sprintf($icon, __('Edit'), 'config.png'))
