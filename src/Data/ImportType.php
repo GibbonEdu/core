@@ -831,14 +831,13 @@ class ImportType
                 break;
 
             case 'numeric':
-                $value = preg_replace("/[^0-9]/u", '', $value);
+                $value = !empty($value) ? preg_replace("/[^0-9]/u", '', $value) : null;
                 break;
 
             case 'phone':   // Handle phone numbers - strip all non-numeric chars
-                $value = preg_replace("/[^0-9,\/]/u", '', $value);
+                $value = !empty($value) ? preg_replace("/[^0-9,\/]/u", '', $value) : null;
 
                 if (mb_strpos($value, ',') !== false || mb_strpos($value, '/') !== false || mb_strpos($value, ' ') !== false) {
-                    //$value = preg_replace("/[^0-9,\/]/u", '', $value);
                     $numbers = preg_split("/[,\/]*/u", $value);
                     $value = (isset($numbers[0]))? $numbers[0] : '';
                 }
@@ -948,9 +947,9 @@ class ImportType
         $kind = $this->getField($fieldName, 'kind');
 
         switch ($kind) {
-            case 'integer': $value = intval($value); break;
-            case 'decimal': $value = floatval($value); break;
-            case 'boolean': $value = boolval($value); break;
+            case 'integer': $value = !empty($value) ? intval($value) : null; break;
+            case 'decimal': $value = !empty($value) ? floatval($value) : null; break;
+            case 'boolean': $value = !empty($value) ? boolval($value) : null; break;
         }
 
         if ($strvalue == 'NOT REQUIRED' || $value == 'N/A') {
@@ -1034,7 +1033,7 @@ class ImportType
                             }
                             break;
 
-            case 'decimal': $value = floatval($value);
+            case 'decimal': $value = !empty($value) ? floatval($value) : null;
                             $length = $this->getField($fieldName, 'length');
 
                             if (mb_strpos($value, '.') !== false) {
