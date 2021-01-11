@@ -1198,6 +1198,10 @@ table.smallIntBorder td.noPadding {
     -webkit-transform: rotate(45deg);
 }
 
+.whitespace-nowrap {
+    white-space: nowrap;
+}
+
 
 @-moz-keyframes spin {
     from {
