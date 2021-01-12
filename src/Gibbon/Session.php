@@ -266,7 +266,7 @@ class Session implements SessionInterface
         $this->set('gibboni18nIDPersonal', $userData['gibboni18nIDPersonal']);
         $this->set('googleAPIRefreshToken', $userData['googleAPIRefreshToken']);
         $this->set('receiveNotificationEmails', $userData['receiveNotificationEmails']);
-        $this->set('cookieConsent', $userData['cookieConsent']);
+        $this->set('cookieConsent', $userData['cookieConsent'] ?? '');
         $this->set('gibbonHouseID', $userData['gibbonHouseID']);
 
         //Deal with themes
