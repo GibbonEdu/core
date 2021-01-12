@@ -126,6 +126,7 @@ v21.0.00
         System: fixed date picker not using the First Day of the Week setting
         System: fixed validation not working for paginated bulk action forms
         System: added a fallback to translateN for systems that don't have gettext
+        System: fixed wrapping of long summaries in Today's Lessons
         Attendance: fixed sortable Class column in Student Not In Class report
         Data Updater: fixed passport expiry fields not properly hiding
         Departments: fixed attendance link not prefilling the current date
