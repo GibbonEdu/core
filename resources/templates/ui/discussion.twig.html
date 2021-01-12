@@ -34,7 +34,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             <div class="absolute top-0 left-0 border-transparent" style="margin: 15px 0 0 -18px; border-width: 9px; border-right-color: #d2d0d0;"></div>
             <div class="absolute top-0 left-0 border-8 border-transparent" style="margin: 16px 0 0 -16px; border-width: 8px; border-right-color: #fafafa;"></div>
 
-            <div class="px-4 py-3 text-gray-700 text-sm font-sans leading-relaxed">
+            <div class="px-4 py-3 text-gray-700 text-sm font-sans leading-relaxed flex flex-col sm:flex-row justify-between">
+                <div>
                 <span class="inline-block font-semibold">
                     {% if item.url %}<a href="{{ item.url }}" class="text-gray-800 underline">{% endif %}
                     {{ formatUsing('name', item.title, item.preferredName, item.surname, 'Student', false, true) }}
@@ -50,11 +51,11 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {% endif %}
 
                 {% if item.type %}
-                    <span class="mx-2 tag {{ item.tag ?? 'dull' }}">{{ __(item.type) }}</span>
+                    <span class="sm:mx-2 mt-2 sm:mt-0 tag {{ item.tag ?? 'dull' }}">{{ __(item.type) }}</span>
                 {% endif %}
-                
+                </div>
                 {% if item.attachmentLocation %}
-                    <a class="tag block px-0 break-all float-right" target="_blank" href="{{ item.attachmentType == 'Link' ? item.attachmentLocation : absoluteURL ~ "/" ~ item.attachmentLocation }}">{{ __('View Attachment') }}</a>
+                    <a class="tag block px-0 break-all mt-2 sm:mt-0" target="_blank" href="{{ item.attachmentType == 'Link' ? item.attachmentLocation : absoluteURL ~ "/" ~ item.attachmentLocation }}">{{ __('View Attachment') }}</a>
                 {% endif %}
             </div>
 
