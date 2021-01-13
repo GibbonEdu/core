@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
     $form->toggleVisibilityByClass('general')->onSelect('gibbonLibraryTypeID')->whenNot('Please select...');
 
-    $form->addRow()->addHeading(__('General Details'))->addClass('general');
+    $form->addRow()->addClass('general')->addHeading(__('General Details'))->addClass('general');
 
     $row = $form->addRow()->addClass('general');
         $row->addLabel('name', __('Name'))->description(__('Volume or product name.'));
@@ -197,10 +197,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         $row->addLabel('comment', __('Comments/Notes'));
         $row->addTextArea('comment')->setRows(10);
 
-    $form->addRow()->addHeading(__('Type-Specific Details'))->addClass('general');
+    $form->addRow()->addClass('general')->addHeading(__('Type-Specific Details'))->addClass('general');
 
     // Type-specific form fields loaded via ajax
-    $row = $form->addRow('detailsRow')->addContent('')->addClass('general');
+    $row = $form->addRow('detailsRow')->addClass('general')->addContent('')->addClass('general');
 
     $row = $form->addRow()->addClass('general');
         $row->addSubmit();
