@@ -293,6 +293,7 @@ if ($paid != 'Y') { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
                 $mail->renderBody('mail/email.twig.html', [
                     'title'  => $mail->Subject,
                     'body'   => $body,
+                    'maxWidth' => '900px',
                 ]);
 
                 $mail->Send();

@@ -131,6 +131,7 @@ v21.0.00
         Data Updater: fixed passport expiry fields not properly hiding
         Departments: fixed attendance link not prefilling the current date
         Finance: fixed invoicee ordering bug in Add Invoice
+        Finance: fixed table width in invoice email formatting
         Formal Assessment: removed Back link from delete modal
         Individual Needs: fixed description of Reason field in Manage Investigations
         Library: fixed broken delete function in Manage Catalog
