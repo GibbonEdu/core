@@ -30,7 +30,7 @@ function getLessons($guid, $connection2, $and = '')
     $sql = "(SELECT $fields FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE homeworkSubmissionDateOpen<=:today1 AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID1 AND (role='Teacher' OR role='Student') AND homeworkCrowdAssess='Y' AND ADDTIME(date, '1344:00:00.0')>=:now1 AND gibbonSchoolYearID=:gibbonSchoolYearID1 $and)";
 
     //Get other classes if teacher
-    
+
         $dataTeacher = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
         $sqlTeacher = "SELECT * FROM gibbonStaff WHERE gibbonPersonID=:gibbonPersonID AND type='Teaching'";
         $resultTeacher = $connection2->prepare($sqlTeacher);
@@ -43,7 +43,7 @@ function getLessons($guid, $connection2, $and = '')
     }
 
     //Get other classes if student
-    
+
         $dataStudent = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
         $sqlStudent = 'SELECT * FROM gibbonStudentEnrolment WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID';
         $resultStudent = $connection2->prepare($sqlStudent);
@@ -56,7 +56,7 @@ function getLessons($guid, $connection2, $and = '')
     }
 
     //Get classes if parent
-    
+
         $dataParent = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
         $sqlParent = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
         $resultParent = $connection2->prepare($sqlParent);
@@ -66,7 +66,7 @@ function getLessons($guid, $connection2, $and = '')
         //Get child list for family
         $childCount = 0;
         while ($rowParent = $resultParent->fetch()) {
-            
+
                 $dataChild = array('gibbonFamilyID' => $rowParent['gibbonFamilyID']);
                 $sqlChild = "SELECT gibbonPerson.gibbonPersonID, image_240, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName ";
                 $resultChild = $connection2->prepare($sqlChild);
@@ -102,7 +102,7 @@ function getCARole($guid, $connection2, $gibbonCourseClassID)
         $count = 0;
         $children = array();
 
-        
+
             $dataParent = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
             $sqlParent = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
             $resultParent = $connection2->prepare($sqlParent);
@@ -111,13 +111,13 @@ function getCARole($guid, $connection2, $gibbonCourseClassID)
         if ($resultParent->rowCount() > 0) {
             //Get child list for family
             while ($rowParent = $resultParent->fetch()) {
-                
+
                     $dataChild = array('gibbonFamilyID' => $rowParent['gibbonFamilyID']);
                     $sqlChild = "SELECT gibbonPerson.gibbonPersonID, image_240, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName ";
                     $resultChild = $connection2->prepare($sqlChild);
                     $resultChild->execute($dataChild);
                 while ($rowChild = $resultChild->fetch()) {
-                    
+
                         $dataInClass = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $rowChild['gibbonPersonID']);
                         $sqlInClass = "SELECT * FROM gibbonCourseClassPerson WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID AND role='Student'";
                         $resultInClass = $connection2->prepare($sqlInClass);
@@ -136,7 +136,7 @@ function getCARole($guid, $connection2, $gibbonCourseClassID)
         }
     } else {
         //Check if in staff table as teacher
-        
+
             $dataTeacher = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
             $sqlTeacher = "SELECT * FROM gibbonStaff WHERE gibbonPersonID=:gibbonPersonID AND type='Teaching'";
             $resultTeacher = $connection2->prepare($sqlTeacher);
@@ -144,7 +144,7 @@ function getCARole($guid, $connection2, $gibbonCourseClassID)
 
         if ($resultTeacher->rowCount() == 1) {
             $role = 'Teacher';
-            
+
                 $dataRole = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
                 $sqlRole = "SELECT * FROM gibbonCourseClassPerson WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID AND role='Teacher'";
                 $resultRole = $connection2->prepare($sqlRole);
@@ -155,7 +155,7 @@ function getCARole($guid, $connection2, $gibbonCourseClassID)
         }
 
         //Check if student
-        
+
             $dataStudent = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
             $sqlStudent = 'SELECT * FROM gibbonStudentEnrolment WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID';
             $resultStudent = $connection2->prepare($sqlStudent);
@@ -163,7 +163,7 @@ function getCARole($guid, $connection2, $gibbonCourseClassID)
 
         if ($resultStudent->rowCount() == 1) {
             $role = 'Student';
-            
+
                 $dataRole = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
                 $sqlRole = "SELECT * FROM gibbonCourseClassPerson WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID AND role='Student'";
                 $resultRole = $connection2->prepare($sqlRole);
@@ -195,7 +195,7 @@ function getStudents($guid, $connection2, $role, $gibbonCourseClassID, $homework
         //Get array of children
         $count = 0;
         $children = array();
-        
+
             $dataParent = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
             $sqlParent = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
             $resultParent = $connection2->prepare($sqlParent);
@@ -204,7 +204,7 @@ function getStudents($guid, $connection2, $role, $gibbonCourseClassID, $homework
             //Get child list for family
             $childCount = 0;
             while ($rowParent = $resultParent->fetch()) {
-                
+
                     $dataChild = array('gibbonFamilyID' => $rowParent['gibbonFamilyID']);
                     $sqlChild = "SELECT gibbonPerson.gibbonPersonID, image_240, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName ";
                     $resultChild = $connection2->prepare($sqlChild);
@@ -274,7 +274,7 @@ function getThread($guid, $connection2, $gibbonPlannerEntryHomeworkID, $parent, 
     }
 
     if ($level == 0 and $resultDiscuss->rowCount() == 0) {
-        $output .= "<div class='error'>";
+        $output .= "<div class='message'>";
         $output .= __('This conversation has not yet begun!');
         $output .= '</div>';
     } else {
@@ -284,7 +284,7 @@ function getThread($guid, $connection2, $gibbonPlannerEntryHomeworkID, $parent, 
                 'name' => Format::name($rowDiscuss['title'], $rowDiscuss['preferredName'], $rowDiscuss['surname'], $rowDiscuss['category'])
             ]);
             $datetimePosted = __('Posted at {hourPosted} on {datePosted}', [
-                'hourPosted' => '<b>'.substr($rowDiscuss['timestamp'], 11, 5).'</b>', 
+                'hourPosted' => '<b>'.substr($rowDiscuss['timestamp'], 11, 5).'</b>',
                 'datePosted' => '<b>'.dateConvertBack($guid, substr($rowDiscuss['timestamp'], 0, 10)).'</b>'
             ]);
             if ($level == 0) {
@@ -295,7 +295,7 @@ function getThread($guid, $connection2, $gibbonPlannerEntryHomeworkID, $parent, 
             $output .= "<table class='noIntBorder chatBox $classExtra' cellspacing='0' style='width: ".(755 - ($level * 15)).'px; margin-left: '.($level * 15)."px'>";
             $output .= "<tr>";
             $output .= "<td><i>".$namePerson.'</i>:</td>';
-            $output .= "<td style='text-align: right'><i>".$datetimePosted."</i></td>";         
+            $output .= "<td style='text-align: right'><i>".$datetimePosted."</i></td>";
             $output .= "</tr>";
             $output .= "<tr>";
             $output .= "<td style='padding: 1px 4px' colspan=2><b>".$rowDiscuss['comment'].'</b></td>';
