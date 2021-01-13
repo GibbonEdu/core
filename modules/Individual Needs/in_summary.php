@@ -126,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
     // COLUMNS
     $table->addColumn('student', __('Student'))
         ->sortable(['surname', 'preferredName'])
-        ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true]));
+        ->format(Format::using('nameLinked', ['gibbonPersonID', '', 'preferredName', 'surname', 'Student', true, false, ['subpage' => 'Individual Needs']]));
     $table->addColumn('yearGroup', __('Year Group'));
     $table->addColumn('rollGroup', __('Roll Group'));
 
