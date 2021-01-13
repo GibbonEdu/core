@@ -166,7 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                                     
                                 $column->addColor('rowColor['.$count.']')
                                     ->setID('rowColor'.$count)
-                                    ->setValue($rubricRow['backgroundColor'] ?? '#ffffff')
+                                    ->setValue($rubricRow['backgroundColor'])
                                     ->setTitle(__('Background Colour'));
 
 							$form->toggleVisibilityByClass('rowTitle'.$count)->onRadio('type'.$count)->when('Standalone');
@@ -224,7 +224,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                             
                             $col->addColor('columnColor['.$count.']')
                                 ->setID('columnColor'.$count)
-                                ->setValue($rubricColumn['backgroundColor'] ?? '#ffffff')
+                                ->setValue($rubricColumn['backgroundColor'])
                                 ->setTitle(__('Background Colour'));
 
 							$form->addHiddenValue('gibbonRubricColumnID['.$count.']', $rubricColumn['gibbonRubricColumnID']);
