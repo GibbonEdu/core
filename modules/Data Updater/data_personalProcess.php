@@ -220,7 +220,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     //DEAL WITH CUSTOM FIELDS
                     //Prepare field values
                     $customRequireFail = false;
-                    $existingFields = unserialize($values['fields']);
+                    $existingFields = json_decode($values['fields'], true);
                     $resultFields = getCustomFields($connection2, $guid, $student, $staff, $parent, $other, null, true);
                     $fields = [];
                     if ($resultFields->rowCount() > 0) {
