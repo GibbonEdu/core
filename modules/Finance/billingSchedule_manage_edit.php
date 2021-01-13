@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
             $form->addHiddenValue("address", $_SESSION[$guid]['address']);
 
             $row = $form->addRow();
-                $row->addLabel("yearName", __("School Year"))->description(__("This value cannot be changed."));
+                $row->addLabel("yearName", __("School Year"));
                 $row->addTextField("yearName")->setValue($yearName)->readonly(true)->required();
 
             $row = $form->addRow();
