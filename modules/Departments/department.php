@@ -193,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
                         $row->addSelect('gibbonCourseID')
                             ->fromArray($courses)
                             ->placeholder()
-                            ->setClass('w-48 float-none');
+                            ->setClass('w-32 float-none');
                     $row->addSubmit(__('Go'));
 
                     $sidebarExtra .= '<div class="column-no-break">';
