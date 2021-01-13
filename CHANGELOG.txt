@@ -57,6 +57,7 @@ v21.0.00
         System: added a server-side hard limit for session durations
         System: adjusted robots meta tag to dissuade Google from indexing Gibbon installs
         Attendance: added an Offsite - Late option for attendance codes
+        Crowd Assessment: changed error to message in conversation view
         Departments: improved course/class naming in Class view
         Data Updater: data updates with no changes will be automatically accepted
         Data Updater: enabled address fields to be read only or hidden in Data Updater Settings
