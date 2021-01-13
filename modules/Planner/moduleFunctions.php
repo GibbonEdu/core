@@ -190,7 +190,7 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
     }
 
     if ($level == 0 and $resultDiscuss->rowCount() == 0) {
-        $output .= "<div class='error'>";
+        $output .= "<div class='message'>";
         $output .= __('There are no records to display.');
         $output .= '</div>';
     } else {
@@ -283,7 +283,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
         $days['Sat'] = 'Y';
         $days['Sun'] = 'Y';
 
-        
+
             $dataDays = array();
             $sqlDays = "SELECT * FROM gibbonDaysOfWeek WHERE schoolDay='N'";
             $resultDays = $connection2->prepare($sqlDays);
@@ -384,7 +384,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
             ++$count;
         }
         $calendar .= '</table>';
-        
+
 
         global $pdo;
 
@@ -755,7 +755,7 @@ function getResourcesTagCloud($guid, $connection2, $tagCount = 50) {
     $max_count = 0;
     $min_count = 0;
 
-    
+
         $sql = "SELECT * FROM gibbonResourceTag ORDER BY count DESC LIMIT $tagCount";
         $data = array();
         $result = $connection2->prepare($sql);
