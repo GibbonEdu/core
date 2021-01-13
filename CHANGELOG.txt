@@ -88,6 +88,7 @@ v21.0.00
         Planner: any staff can take attendance in the planner if they have Attendance by Class permission
         Planner: added a setting to customize what homework is called in the planner
         Planner: added the ability to set a time cap for homework
+        Planner: fixed empty My Class drop down in Deadlines for parents
         Reports: display the download link after a batch PDF has completed
         Reports: added full course name to the report writing page
         Reports: added a bulk delete action in the Edit Reporting Scopes page
