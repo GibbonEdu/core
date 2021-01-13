@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
             ->add(__('{homeworkName} + Due Dates', ['homeworkName' => __($homeworkNamePlural)]));
 
         //Test data access field for permission
-        
+
             $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
             $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
             $result = $connection2->prepare($sql);
@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
             $count = 0;
             $options = array();
             while ($row = $result->fetch()) {
-                
+
                     $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                     $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
                     $resultChild = $connection2->prepare($sqlChild);
@@ -171,7 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
 
             if ($gibbonPersonID != '' and $count > 0) {
                 //Confirm access to this student
-                
+
                     $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
                     $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
                     $resultChild = $connection2->prepare($sqlChild);
@@ -183,14 +183,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
                 } else {
                     $rowChild = $resultChild->fetch();
 
-                    
+
 
                     $proceed = true;
                     if ($viewBy == 'class') {
                         if ($gibbonCourseClassID == '') {
                             $proceed = false;
                         } else {
-                            
+
                                 $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'gibbonCourseClassID' => $gibbonCourseClassID);
                                 $sql = "SELECT gibbonCourse.gibbonCourseID, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID AND role='Teacher' ORDER BY course, class";
                                 $result = $connection2->prepare($sql);
@@ -220,7 +220,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
 
                         echo $table->getOutput();
                     }
-                    
+
                 }
             }
         }
@@ -288,5 +288,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
     }
 
     //Print sidebar
-    $_SESSION[$guid]['sidebarExtra'] = sidebarExtra($guid, $connection2, $todayStamp, $_SESSION[$guid]['gibbonPersonID'], $dateStamp, $gibbonCourseClassID);
+    $gibbonPersonID = empty($gibbonPersonID) ? $_SESSION[$guid]['gibbonPersonID'] : $gibbonPersonID ;
+    $_SESSION[$guid]['sidebarExtra'] = sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateStamp, $gibbonCourseClassID);
 }
