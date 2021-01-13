@@ -212,8 +212,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             }
 
             // CUSTOM FIELDS
-			$oldFields = !empty($oldValues['fields'])? unserialize($oldValues['fields']) : array();
-            $newFields = !empty($newValues['fields'])? unserialize($newValues['fields']) : array();
+			$oldFields = !empty($oldValues['fields'])? json_decode($oldValues['fields'], true) : [];
+            $newFields = !empty($newValues['fields'])? json_decode($newValues['fields'], true) : [];
             $resultFields = getCustomFields($connection2, $guid, $student, $staff, $parent, $other, null, true);
             if ($resultFields->rowCount() > 0) {
                 while ($rowFields = $resultFields->fetch()) {
