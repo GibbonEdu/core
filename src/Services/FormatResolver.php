@@ -78,7 +78,7 @@ trait FormatResolver
         return function ($data) use ($callable, $params) {
             if ($params) {
                 $args = array_map(function($key) use (&$data) {
-                    return array_key_exists(strval($key), $data)? $data[$key] : $key;
+                    return is_string($key) && array_key_exists(strval($key), $data)? $data[$key] : $key;
                 }, $params);
                 return call_user_func_array($callable, $args);
             } else {
