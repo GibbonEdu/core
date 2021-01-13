@@ -135,13 +135,13 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
         for ($i = 0; $i < $rowCount; ++$i) {
             $color = $rows[$i]['backgroundColor'] ?? '#ffffff';
             $colorValue = hexdec(substr($color, 1, 2)) + hexdec(substr($color, 3, 2)) + hexdec(substr($color, 5, 2));
-            $textColor = $colorValue > 580 ? '#5b5757' : '#ffffff';
+            $textColor = $colorValue > 580 ? '#5b5757' : '#5b5757';
             $output .= ".row".$rows[$i]['gibbonRubricRowID'].'{ background-color: '.$color.'; color: '.$textColor.'; } ';
         }
         for ($i = 0; $i < $columnCount; ++$i) {
             $color = $columns[$i]['backgroundColor'] ?? '#ffffff';
             $colorValue = hexdec(substr($color, 1, 2)) + hexdec(substr($color, 3, 2)) + hexdec(substr($color, 5, 2));
-            $textColor = $colorValue > 450 ? '#5b5757' : '#ffffff';
+            $textColor = empty($colorValue) || $colorValue > 450 ? '#5b5757' : '#ffffff';
             $output .= ".column".$columns[$i]['gibbonRubricColumnID'].'{ background-color: '.$color.'; color: '.$textColor.'; } ';
         }
         $output .= "</style>";
@@ -434,7 +434,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
             for ($i = 0; $i < $columnCount; ++$i) {
                 $color = $columns[$i]['backgroundColor'] ?? '#ffffff';
                 $colorValue = hexdec(substr($color, 1, 2)) + hexdec(substr($color, 3, 2)) + hexdec(substr($color, 5, 2));
-                $textColor = $colorValue > 450 ? '#5b5757' : '#ffffff';
+                $textColor = empty($colorValue) || $colorValue > 450 ? '#5b5757' : '#ffffff';
                 $output .= ".column".$columns[$i]['gibbonRubricColumnID'].'{ background-color: '.$color.'; color: '.$textColor.'; } ';
             }
             $output .= "</style>";
