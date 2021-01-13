@@ -781,7 +781,7 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
             $style4 = 'background-color: #f6f6f6; ';
         }
         //Invoice Details
-        $return .= "<table cellspacing='0' style='width: 100%'>";
+        $return .= "<table cellspacing='0' style='width: 100%; font-size: 12px;'>";
         $return .= '<tr>';
         $return .= "<td style='padding-top: 15px; padding-left: 10px; vertical-align: top; $style $style3' colspan=3>";
         $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Invoice To').' ('.__($row['invoiceTo']).')</span><br/>';
@@ -946,7 +946,7 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
             $return .= __('Fee Table');
             $return .= '</h3>';
 
-            $return .= "<table cellspacing='0' style='width: 100%; $style4'>";
+            $return .= "<table cellspacing='0' style='width: 100%; font-size: 12px; $style4'>";
             $return .= "<tr class='head'>";
             $return .= "<th style='text-align: left; padding-left: 10px'>";
             $return .= __('Name');
