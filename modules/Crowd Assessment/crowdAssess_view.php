@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
         } else {
             $row = $result->fetch();
 
-            echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
+            echo "<table class='smallIntBorder mb-4' cellspacing='0' style='width: 100%'>";
             echo '<tr>';
             echo "<td style='width: 34%; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__('Class').'</span><br/>';
