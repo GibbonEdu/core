@@ -2735,7 +2735,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             include './modules/Planner/src/Tables/HomeworkTable.php';
                             $page->scripts->add('planner', '/modules/Planner/js/module.js');
 
-                            $table = $container->get(HomeworkTable::class)->create($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, $role);
+                            $table = $container->get(HomeworkTable::class)->create($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, $role == 'Student' ? 'Student' : 'Parent');
 
                             echo $table->getOutput();
                         }
