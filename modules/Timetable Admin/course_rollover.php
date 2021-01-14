@@ -140,7 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
 
                 $form->addHiddenValue('nextYear', $nextYear);
 
-                $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth');
+                $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth mb-4');
                 $row = $table->addRow();
                     $row->addLabel('rollStudents', __('Include Students'));
                     $row->addCheckbox('rollStudents')->checked('on');
