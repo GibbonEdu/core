@@ -119,7 +119,7 @@ v21.0.00
         System Admin: added a flag to import types to enable updating non-unique rows
         System Admin: added a Purge Logs action to the View Logs page
         Timetable: improved role ordering in class tables
-        Timetable Admin: added a dateEnrolled and dateUnenrolled to class enrolments
+        Timetable Admin: added a dateEnrolled and dateUnenrolled to class enrollments
         Timetable Admin: hide teachers listed as non-reportable from teacher lists
         Timetable Admin: added color picker to Edit Timetable Day section
         Tests: Changed install suite admin username and password to be compliant with the default password requirements
@@ -162,6 +162,7 @@ v21.0.00
         System Admin: fixed PHP deprecation errors in CSV importer
         System Admin: fixed empty numeric values importing as 0 rather than null
         Timetable: fixed View Available Facilities not counting bookings on Friday
+        Timetable: fixed last week/next week links for facilities involved in multiple TTs
 	    Tests: added fallback environment variables if .env is not defining DB details
 	    Tests: changed HTTP to HTTPs, so SSL enabled environments don't fail
 	    Tests: added Users group and changed reference in acceptance.suite.yml so that the acceptance suite does not fail
