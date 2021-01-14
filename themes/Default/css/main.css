@@ -288,7 +288,7 @@ table.smallIntBorder {
 }
 table.smallIntBorder td {
     border-left: none !important ;
-    padding: 5px !important ;
+    padding: 0.5rem !important ;
 }
 table.smallIntBorder td:last-child {
     text-align: left;
@@ -298,7 +298,7 @@ tr.break td {
 }
 tr.break h3,
 tr.break h4 {
-    margin-top: 10px !important;
+    margin: 0.5rem 0 0.5rem 0 !important;
     padding: 0;
 }
 tr h3,
