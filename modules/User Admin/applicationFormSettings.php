@@ -113,15 +113,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
 
     $row = $form->addRow()->addHeading(__('References'));
 
-    $setting = getSettingByScope($connection2, 'Students', 'applicationFormRefereeLink', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addURL($setting['name'])->setValue($setting['value']);
-
     $setting = getSettingByScope($connection2, 'Students', 'applicationFormRefereeRequired', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
+
+    $form->toggleVisibilityByClass('referee')->onSelect($setting['name'])->when('Y');
+
+    $setting = getSettingByScope($connection2, 'Students', 'applicationFormRefereeLink', true);
+    $row = $form->addRow()->addClass('referee');
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addURL($setting['name'])->setValue($setting['value']);
 
     $row = $form->addRow()->addHeading(__('Required Documents Options'));
 
