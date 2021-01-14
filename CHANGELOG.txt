@@ -56,6 +56,7 @@ v21.0.00
         System: lengthened module Category field to 12 characters
         System: added a server-side hard limit for session durations
         System: adjusted robots meta tag to dissuade Google from indexing Gibbon installs
+        System: moved Public Registration link into a homepage tile
         Attendance: added an Offsite - Late option for attendance codes
         Crowd Assessment: changed error to message in conversation view
         Departments: improved course/class naming in Class view
@@ -130,6 +131,7 @@ v21.0.00
         System: fixed validation not working for paginated bulk action forms
         System: added a fallback to translateN for systems that don't have gettext
         System: fixed wrapping of long summaries in Today's Lessons
+        System: fixed public registration failing for non-unique email when uniqueEmailAddress is not active
         Attendance: fixed sortable Class column in Student Not In Class report
         Data Updater: fixed passport expiry fields not properly hiding
         Departments: fixed attendance link not prefilling the current date
