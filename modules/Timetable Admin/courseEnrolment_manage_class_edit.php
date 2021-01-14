@@ -128,6 +128,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             // FORM
             $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/courseEnrolment_manage_class_editProcessBulk.php');
+            $form->setTitle(__('Current Participants'));
+
             $form->addHiddenValue('gibbonCourseID', $gibbonCourseID);
             $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
             $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
@@ -156,7 +158,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             // DATA TABLE
             $table = $form->addRow()->addDataTable('enrolment', $criteria)->withData($enrolment);
-            $table->setTitle(__('Current Participants'));
 
             $table->modifyRows(function ($person, $row) {
                 if (!(empty($person['dateStart']) || $person['dateStart'] <= date('Y-m-d'))) $row->addClass('error');

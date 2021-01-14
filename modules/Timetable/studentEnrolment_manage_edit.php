@@ -124,6 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
             $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/studentEnrolment_manage_editProcessBulk.php');
             $form->addHiddenValue('gibbonCourseID', $gibbonCourseID);
             $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
+            $form->setTitle(__('Current Participants'));
 
             $bulkActions = array('Mark as left'  => __('Mark as left'));
 
@@ -132,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
 
             // DATA TABLE
             $table = $form->addRow()->addDataTable('enrolment', $criteria)->withData($enrolment);
-            $table->setTitle(__('Current Participants'));
+            
 
             $table->modifyRows(function ($person, $row) {
                 if (!(empty($person['dateStart']) || $person['dateStart'] <= date('Y-m-d'))) $row->addClass('error');
