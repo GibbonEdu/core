@@ -102,6 +102,37 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
         return $group;
     }, []);
 
+    // UNINSTALLED MODULES
+    if (!empty($uninstalledModules)) {
+
+        $table = DataTable::create('moduleInstall');
+        $table->setTitle(__('Not Installed'));
+
+        $table->modifyRows(function ($module, $row) {
+            $row->addClass($module['manifestOK'] == false ? 'error' : 'warning');
+            return $row;
+        });
+
+        $table->addColumn('name', __('Name'));
+        $table->addColumn('status', __('Status'))->notSortable();
+        $table->addColumn('description', __('Description'));
+        $table->addColumn('versionDisplay', __('Version'));
+        $table->addColumn('author', __('Author'))
+               ->format(Format::using('link', ['url', 'author']));
+
+        $table->addActionColumn()
+            ->addParam('name')
+            ->format(function ($row, $actions) {
+                if ($row['manifestOK']) {
+                    $actions->addAction('install', __('Install'))
+                            ->setIcon('page_new')
+                            ->directLink()
+                            ->setURL('/modules/System Admin/module_manage_installProcess.php');
+                }
+            });
+
+        echo $table->render(new DataSet($uninstalledModules));
+    }
 
     // INSTALLED MODULES
     $table = DataTable::createPaginated('moduleManage', $criteria);
@@ -159,38 +190,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
         });
 
     echo $table->render($modules);
-
-    // UNINSTALLED MODULES
-    if (!empty($uninstalledModules)) {
-
-        $table = DataTable::create('moduleInstall');
-        $table->setTitle(__('Not Installed'));
-
-        $table->modifyRows(function ($module, $row) {
-            $row->addClass($module['manifestOK'] == false ? 'error' : 'warning');
-            return $row;
-        });
-
-        $table->addColumn('name', __('Name'));
-        $table->addColumn('status', __('Status'))->notSortable();
-        $table->addColumn('description', __('Description'));
-        $table->addColumn('versionDisplay', __('Version'));
-        $table->addColumn('author', __('Author'))
-               ->format(Format::using('link', ['url', 'author']));
-
-        $table->addActionColumn()
-            ->addParam('name')
-            ->format(function ($row, $actions) {
-                if ($row['manifestOK']) {
-                    $actions->addAction('install', __('Install'))
-                            ->setIcon('page_new')
-                            ->directLink()
-                            ->setURL('/modules/System Admin/module_manage_installProcess.php');
-                }
-            });
-
-        echo $table->render(new DataSet($uninstalledModules));
-    }
 
     // ORPHANED MODULES
     if ($orphans) {
