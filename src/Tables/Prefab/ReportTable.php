@@ -55,7 +55,8 @@ class ReportTable extends DataTable
             ->setTarget('_blank')
             ->displayLabel()
             ->directLink()
-            ->addClass('mr-2 underline');
+            ->addClass('mr-2 underline')
+            ->append(' | ');
 
         $table->addHeaderAction('export', __('Export'))
             ->setURL('/export.php')
