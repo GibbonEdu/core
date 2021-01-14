@@ -124,6 +124,7 @@ v21.0.00
         Timetable Admin: added color picker to Edit Timetable Day section
         Tests: Changed install suite admin username and password to be compliant with the default password requirements
         User Admin: added Guardian and Grandmother/Grandfather to emergency relationships
+        User Admin: improved the layout of the Rollover form
 
     Bug Fixes
         System: fixed missing organization name on welcome page
