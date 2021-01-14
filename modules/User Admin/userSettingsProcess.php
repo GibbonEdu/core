@@ -36,8 +36,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
     $privacyOptions = (isset($_POST['privacyOptions'])) ? $_POST['privacyOptions'] : null;
     $uniqueEmailAddress = (isset($_POST['uniqueEmailAddress'])) ? $_POST['uniqueEmailAddress'] : 'N';
     $personalBackground = $_POST['personalBackground'];
-    $dayTypeOptions = $_POST['dayTypeOptions'];
-    $dayTypeText = $_POST['dayTypeText'];
 
     //Write to database
     $fail = false;
@@ -126,24 +124,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
     try {
         $data = array('value' => $personalBackground);
         $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='personalBackground'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $dayTypeOptions);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='dayTypeOptions'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $dayTypeText);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='dayTypeText'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {

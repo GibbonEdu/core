@@ -125,6 +125,7 @@ v21.0.00
         Tests: Changed install suite admin username and password to be compliant with the default password requirements
         User Admin: added Guardian and Grandmother/Grandfather to emergency relationships
         User Admin: improved the layout of the Rollover form
+        User Admin: moved Day Type Options from User Settings to Student Settings
 
     Bug Fixes
         System: fixed missing organization name on welcome page
