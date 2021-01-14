@@ -39,6 +39,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/cacheManager.
 
     $_POST['cachePath'] = '/'.trim($_POST['cachePath'], '/');
 
+    if (!is_dir($gibbon->session->get('absolutePath').'/'.$_POST['cachePath'])) {
+        mkdir($gibbon->session->get('absolutePath').'/'.$_POST['cachePath'], 0755);
+    }
+
     foreach ($settingsToUpdate as $scope => $settings) {
         foreach ($settings as $name) {
             $value = $_POST[$name] ?? '';
