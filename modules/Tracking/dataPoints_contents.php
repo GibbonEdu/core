@@ -58,7 +58,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
     $externalAssessmentDataPoints = unserialize(getSettingByScope($connection2, 'Tracking', 'externalAssessmentDataPoints'));
     $internalAssessmentDataPoints = unserialize(getSettingByScope($connection2, 'Tracking', 'internalAssessmentDataPoints'));
     $internalAssessmentTypes = explode(',', getSettingByScope($connection2, 'Formal Assessment', 'internalAssessmentTypes'));
-    if (count($externalAssessmentDataPoints) == 0 and count($internalAssessmentDataPoints) == 0) { //Seems like things are not configured, so show error
+
+    if (empty($externalAssessmentDataPoints) and count($internalAssessmentDataPoints)) { //Seems like things are not configured, so show error
         $excel->setActiveSheetIndex(0)->setCellValue('A1', __('An error has occurred.'));
     } else { //Seems like things are configured, so proceed
         //Get year groups and create sheets
@@ -128,7 +129,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 while ($row = $result->fetch()) {
+                    if (empty($externalAssessmentDataPoints)) break;
                     foreach ($externalAssessmentDataPoints as $point) {
+                        if (empty($point['gibbonYearGroupIDList'])) continue;
+
                         if ($point['gibbonExternalAssessmentID'] == $row['gibbonExternalAssessmentID'] and $point['category'] == $row['category']) {
                             if (!(strpos($point['gibbonYearGroupIDList'], $yearGroups[$i]) === false)) {
                                 //Output data
@@ -199,8 +203,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
                     $result->execute($data2);
 
                 while ($row = $result->fetch()) {
+                    if (empty($internalAssessmentDataPoints)) break;
+
                     foreach ($internalAssessmentTypes as $type) {
                         foreach ($internalAssessmentDataPoints as $point) {
+                            if (empty($point['gibbonYearGroupIDList'])) continue;
+                            
                             if ($point['type'] == $type && $row['type'] == $type) {
                                 if (!(strpos($point['gibbonYearGroupIDList'], $row['gibbonYearGroupID']) === false)) {
                                     //Output data
