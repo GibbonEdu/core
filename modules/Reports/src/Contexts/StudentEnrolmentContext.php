@@ -28,7 +28,7 @@ class StudentEnrolmentContext implements DataContext
     public function getFormatter()
     {
         return function ($values) {
-            return Format::name('', $values['preferredName'], $values['surname'], 'Student', true, false);
+            return Format::nameLinked($values['gibbonPersonID'], '', $values['preferredName'], $values['surname'], 'Student', true, false, ['subpage' => 'Reports']);
         };
     }
 
