@@ -54,9 +54,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/notification_send.
             __('Staff') => [
                 'proofReadingEdits' => __('Proof Reading Edits'),
             ],
-            __('Parents') => [
-                'reportsAvailable' => __('Reports Available'),
-            ],
         ];
         $row = $form->addRow();
             $row->addLabel('type', __('Notification'));
