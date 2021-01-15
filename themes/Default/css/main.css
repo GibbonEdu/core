@@ -483,7 +483,7 @@ textarea[disabled] {
 .linkTop {
     text-align: right;
     font-size: 12px;
-    margin: 15px 0px 5px 0px;
+    margin: 1.0rem 0px 0.5rem 0px;
 }
 
 /* IMAGES */
