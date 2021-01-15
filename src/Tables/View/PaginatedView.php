@@ -72,6 +72,7 @@ class PaginatedView extends DataTableView implements RendererInterface
             'rows'       => $this->getTableRows($table, $dataSet),
             'blankSlate' => $table->getMetaData('blankSlate'),
             'draggable'  => $table->getMetaData('draggable'),
+            'hidePagination' => $table->getMetaData('hidePagination'),
         ]);
 
         if (!empty($this->criteria)) {
@@ -86,7 +87,6 @@ class PaginatedView extends DataTableView implements RendererInterface
                 'filterOptions'  => $this->getSelectFilterOptions($dataSet, $filters),
                 'filterCriteria' => $this->getFilterCriteria($filters),
                 'bulkActions'    => $table->getMetaData('bulkActions'),
-                'hidePagination' => $table->getMetaData('hidePagination'),
                 'isFiltered'     => $dataSet->getTotalCount() > 0 && ($this->criteria->hasSearchText() || $this->criteria->hasFilter()),
             ]);
 
