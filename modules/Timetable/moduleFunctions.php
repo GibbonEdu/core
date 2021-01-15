@@ -351,7 +351,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
         //link to other TTs
         if ($result->rowcount() > 1) {
-            $output .= "<table class='noIntBorder' cellspacing='0' style='width: 100%'>";
+            $output .= "<table class='noIntBorder mt-2' cellspacing='0' style='width: 100%'>";
             $output .= '<tr>';
             $output .= '<td>';
             $output .= "<span style='font-size: 115%; font-weight: bold'>".__('Timetable Chooser').'</span>: ';
@@ -365,12 +365,9 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                 $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='".$row['name']."'>";
                 $output .= '</form>';
             }
-            try {
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $output .= "<div class='error'>".$e->getMessage().'</div>';
-            }
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+
             $output .= '</td>';
             $output .= '</tr>';
             $output .= '</table>';
@@ -383,12 +380,11 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonTTID' => $gibbonTTID);
                     $sql = "SELECT DISTINCT gibbonTT.gibbonTTID, gibbonTT.name, gibbonTT.nameShortDisplay FROM gibbonTT JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID) JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonPersonID=$gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonTT.gibbonTTID=:gibbonTTID";
                 }
-            }
-            try {
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $output .= "<div class='error'>".$e->getMessage().'</div>';
+                $ttResult = $connection2->prepare($sql);
+                $ttResult->execute($data);
+                if ($ttResult->rowCount() > 0) {
+                    $result = &$ttResult;
+                }
             }
         }
 
@@ -1585,7 +1581,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
 
     //link to other TTs
     if ($result->rowcount() > 1) {
-        $output .= "<table class='noIntBorder' style='width: 100%'>";
+        $output .= "<table class='noIntBorder mt-2' style='width: 100%'>";
         $output .= '<tr>';
         $output .= '<td>';
         $output .= "<span style='font-size: 115%; font-weight: bold'>".__('Timetable Chooser').'</span>: ';
