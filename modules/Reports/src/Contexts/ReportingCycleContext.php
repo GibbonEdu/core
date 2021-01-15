@@ -46,7 +46,8 @@ class ReportingCycleContext implements DataContext
                     gibbonPerson.dateStart,
                     gibbonPerson.dateEnd,
                     'Student' as roleCategory,
-                    gibbonYearGroup.nameShort as yearGroup
+                    gibbonYearGroup.nameShort as yearGroup,
+                    gibbonRollGroup.nameShort as rollGroup
                 FROM gibbonReport
                 JOIN gibbonReportingCycle ON (gibbonReportingCycle.gibbonReportingCycleID=gibbonReport.gibbonReportingCycleID)
                 JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonReportingCycle.gibbonSchoolYearID)
