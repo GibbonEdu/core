@@ -46,11 +46,12 @@ class ReportTemplateGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function selectActiveTemplates()
+    public function selectActiveTemplates($context)
     {
-        $sql = "SELECT gibbonReportTemplateID as value, name FROM gibbonReportTemplate ORDER BY name";
+        $data = ['context' => $context];
+        $sql = "SELECT gibbonReportTemplateID as value, name FROM gibbonReportTemplate WHERE context=:context ORDER BY name";
 
-        return $this->db()->select($sql);
+        return $this->db()->select($sql, $data);
     }
 
 }
