@@ -28,8 +28,7 @@ class ReportingCycleContext implements DataContext
     public function getFormatter()
     {
         return function ($values) {
-            return Format::name('', $values['preferredName'], $values['surname'], 'Student', true, false).
-                '<br/><small><i>'.Format::userStatusInfo($values).'</i></small>';
+            return Format::nameLinked($values['gibbonPersonID'], '', $values['preferredName'], $values['surname'], 'Student', true, false, ['subpage' => 'Reports']).'<br/><small><i>'.Format::userStatusInfo($values).'</i></small>';
 
         };
     }
