@@ -756,12 +756,6 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         //Let's go!
         $row = $result->fetch();
 
-        if ($email == true) {
-            $return .= "<div style='width: 100%; text-align: right'>";
-            $return .= "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL']."'><img height='100px' width='400px' class='School Logo' alt='Logo' src='".$_SESSION[$guid]['absoluteURL'].'/'.$_SESSION[$guid]['organisationLogo']."'/></a>";
-            $return .= '</div>';
-        }
-
         //Invoice Text
         $invoiceText = getSettingByScope($connection2, 'Finance', 'invoiceText');
         if ($invoiceText != '') {
