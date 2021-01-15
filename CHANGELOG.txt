@@ -153,6 +153,7 @@ v21.0.00
         Reports: fixed MpdfRenderer not resetting headers when generating batch single files
         Reports: fixed Reporting Cycle Duplicate copying criteria from year to year
         Reports: fixed AttendanceByCycle incorrectly calculating with countClassAsSchool turned on
+        Reports: fixed reporting cycle selection missing from Add Report
         Planner: fixed Outcomes by Course for courses with multiple year groups
         Planner: fixed alignment of birthday icon in attendance on Lesson page
         Staff: fixed alternate email address causing an error on Personal subpage

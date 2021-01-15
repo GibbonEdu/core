@@ -18,9 +18,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\School\SchoolYearGateway;
-use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
+use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
+use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage_add.php') == false) {
     // Access denied
@@ -42,7 +44,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage_add
         returnProcess($guid, $_GET['return'], $editLink, null);
     }
 
+    $reportingCycleGateway = $container->get(ReportingCycleGateway::class);
+
     $form = Form::create('reportsManage', $gibbon->session->get('absoluteURL').'/modules/Reports/reports_manage_addProcess.php');
+    $form->setFactory(DatabaseFormFactory::create($pdo));
     
     $form->addHiddenValue('address', $gibbon->session->get('address'));
     $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
@@ -62,11 +67,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage_add
         $row->addLabel('active', __('Active'));
         $row->addYesNo('active')->required();
 
-    $templates = $container->get(ReportTemplateGateway::class)->selectActiveTemplates()->fetchKeyPair();
+    $templatesCycles = $container->get(ReportTemplateGateway::class)->selectActiveTemplates('Reporting Cycle')->fetchKeyPair();
+    $templatesEnrolment = $container->get(ReportTemplateGateway::class)->selectActiveTemplates('Student Enrolment')->fetchKeyPair();
     $row = $form->addRow();
         $row->addLabel('gibbonReportTemplateID', __('Template'));
-        $row->addSelect('gibbonReportTemplateID')->fromArray($templates)->required()->placeholder();
+        $row->addSelect('gibbonReportTemplateID')->fromArray($templatesCycles + $templatesEnrolment)->required()->placeholder();
 
+    // Reporting Cycle Context
+    $form->toggleVisibilityByClass('reportingCycleContext')->onSelect('gibbonReportTemplateID')->when(array_keys($templatesCycles));
+
+    $reportingCycles = $reportingCycleGateway->selectReportingCyclesBySchoolYear($gibbonSchoolYearID)->fetchKeyPair();
+    $row = $form->addRow()->addClass('reportingCycleContext');
+        $row->addLabel('gibbonReportingCycleID', __('Reporting Cycle'));
+        $row->addSelect('gibbonReportingCycleID')->fromArray($reportingCycles)->required()->placeholder();
+
+    // Student Enrolment Context
+    $row = $form->addRow();
+        $row->addLabel('gibbonYearGroupIDList', __('Year Groups'));
+        $row->addCheckboxYearGroup('gibbonYearGroupIDList')->addCheckAllNone()->loadFromCSV($values);
+    
     $form->addRow()->addHeading(__('Access'));
 
     $archives = $container->get(ReportArchiveGateway::class)->selectWriteableArchives()->fetchKeyPair();
