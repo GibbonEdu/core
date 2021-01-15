@@ -78,8 +78,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.p
     $table->setTitle(__('View'));
 
     $table->addColumn('reportIdentifier', __('Report'));
-    $table->addColumn('timestamp', __('Date'))->format(Format::using('dateReadable', 'timestampModified'));
-    $table->addColumn('read', __('Read'))
+    $table->addColumn('timestampModified', __('Date'))->format(Format::using('dateReadable', 'timestampModified'));
+    $table->addColumn('readCount', __('Read'))
         ->width('30%')
         ->format(function ($report) use (&$page) {
             if ($report['totalCount'] == 0) return Format::small(__('N/A'));

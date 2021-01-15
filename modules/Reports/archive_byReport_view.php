@@ -101,14 +101,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_v
 
     if (!empty($gibbonRollGroupID)) {
         $table->addColumn('student', __('Student'))
-            ->sortable(['student.surname', 'student.preferredName'])
+            ->sortable(['surname', 'preferredName'])
             ->width('25%')
             ->format(function ($person) use ($guid) {
-                $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'].'&search=&allStudents=&sort=surname,preferredName';
-                return Format::link($url, Format::name('', $person['preferredName'], $person['surname'], 'Student', true));
+                return Format::nameLinked($person['gibbonPersonID'],'', $person['preferredName'], $person['surname'], 'Student', true, false, ['subpage' => 'Reports']);
             });
 
-        $table->addColumn('timestamp', __('Last Created'))
+        $table->addColumn('status', __('Last Created'))
+            ->notSortable()
             ->format(function ($report) use ($roleCategory, $canViewDraftReports, $canViewPastReports, &$reportArchiveEntryGateway) {
                 $output = '';
                 $archive = $reportArchiveEntryGateway->getRecentArchiveEntryByReport($report['gibbonReportID'] ?? $report['reportIdentifier'], 'Single', $report['gibbonPersonID'], $roleCategory, $canViewDraftReports, $canViewPastReports);
@@ -133,22 +133,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_v
         $table->addColumn('count', __('Reports'));
 
         $table->addColumn('read', __('Read'))
-        ->width('30%')
-        ->format(function ($report) use (&$page) {
-            if (empty($report['readCount'])) return Format::small(__('N/A'));
+            ->notSortable()
+            ->width('30%')
+            ->format(function ($report) use (&$page) {
+                if (empty($report['readCount'])) return Format::small(__('N/A'));
 
-            return $page->fetchFromTemplate('ui/writingProgress.twig.html', [
-                'progressName'   => __('Read'),
-                'progressColour' => 'green',
-                'progressCount' => $report['readCount'],
-                'totalCount'    => $report['count'],
-                'width'         => 'w-48',
-            ]);
-        });
+                return $page->fetchFromTemplate('ui/writingProgress.twig.html', [
+                    'progressName'   => __('Read'),
+                    'progressColour' => 'green',
+                    'progressCount' => $report['readCount'],
+                    'totalCount'    => $report['count'],
+                    'width'         => 'w-48',
+                ]);
+            });
     } else {
         $table->addColumn('name', __('Name'));
 
         $table->addColumn('timestamp', __('Last Created'))
+            ->notSortable()
             ->format(function ($report) use ($roleCategory, $canViewDraftReports, $canViewPastReports, &$reportArchiveEntryGateway, &$logs) {
                 $archive = $reportArchiveEntryGateway->getRecentArchiveEntryByReport($report['gibbonReportID'] ?? $report['reportIdentifier'], 'Batch', $report['gibbonYearGroupID'], $roleCategory, $canViewDraftReports, $canViewPastReports);
 
@@ -165,18 +167,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_v
         $table->addColumn('count', __('Reports'));
 
         $table->addColumn('read', __('Read'))
-        ->width('30%')
-        ->format(function ($report) use (&$page) {
-            if (empty($report['readCount'])) return Format::small(__('N/A'));
+            ->notSortable()
+            ->width('30%')
+            ->format(function ($report) use (&$page) {
+                if (empty($report['readCount'])) return Format::small(__('N/A'));
 
-            return $page->fetchFromTemplate('ui/writingProgress.twig.html', [
-                'progressName'   => __('Read'),
-                'progressColour' => 'green',
-                'progressCount'  => $report['readCount'],
-                'totalCount'     => $report['count'],
-                'width'          => 'w-48',
-            ]);
-        });
+                return $page->fetchFromTemplate('ui/writingProgress.twig.html', [
+                    'progressName'   => __('Read'),
+                    'progressColour' => 'green',
+                    'progressCount'  => $report['readCount'],
+                    'totalCount'     => $report['count'],
+                    'width'          => 'w-48',
+                ]);
+            });
     }
 
     $table->addActionColumn()
