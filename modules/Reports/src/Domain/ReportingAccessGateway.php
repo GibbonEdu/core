@@ -40,7 +40,7 @@ class ReportingAccessGateway extends QueryableGateway
         $query = $this
             ->newQuery()
             ->from($this->getTableName())
-            ->cols(['gibbonReportingAccess.gibbonReportingAccessID', 'gibbonReportingCycle.name as reportingCycle', "GROUP_CONCAT(DISTINCT gibbonRole.name ORDER BY gibbonRole.type, gibbonRole.name SEPARATOR '<br/>') as roleName", "GROUP_CONCAT(DISTINCT gibbonReportingScope.name ORDER BY gibbonReportingScope.sequenceNumber SEPARATOR '<br/>') as scopeName", 'gibbonReportingAccess.dateStart', 'gibbonReportingAccess.dateEnd'])
+            ->cols(['gibbonReportingAccess.gibbonReportingAccessID', 'gibbonReportingCycle.name as reportingCycle', "GROUP_CONCAT(DISTINCT gibbonRole.name ORDER BY gibbonRole.type, gibbonRole.name SEPARATOR '<br/>') as roleName", "GROUP_CONCAT(DISTINCT gibbonReportingScope.name ORDER BY gibbonReportingScope.sequenceNumber SEPARATOR '<br/>') as scopeName", 'gibbonReportingAccess.dateStart', 'gibbonReportingAccess.dateEnd', 'gibbonReportingCycle.dateStart as cycleDateStart', 'gibbonReportingCycle.dateEnd as cycleDateEnd'])
             ->innerJoin('gibbonReportingCycle', 'gibbonReportingCycle.gibbonReportingCycleID=gibbonReportingAccess.gibbonReportingCycleID')
             ->leftJoin('gibbonReportingScope', 'FIND_IN_SET(gibbonReportingScope.gibbonReportingScopeID, gibbonReportingAccess.gibbonReportingScopeIDList)')
             ->leftJoin('gibbonRole', 'FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonReportingAccess.gibbonRoleIDList)')
