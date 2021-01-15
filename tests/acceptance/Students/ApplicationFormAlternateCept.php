@@ -31,8 +31,7 @@ $newUserSettings = array_replace($originalUserSettings, array(
     'nationality'        => '',
     'residencyStatus'    => '',
     'privacy'            => 'N',
-    'dayTypeOptions'     => '',
-    'dayTypeText'        => '',
+
 ));
 
 $I->submitForm('#content form', $newUserSettings, 'Submit');

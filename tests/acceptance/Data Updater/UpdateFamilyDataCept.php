@@ -59,3 +59,19 @@ $I->amOnModulePage('Data Updater', 'data_family_manage_delete.php', array('gibbo
 
 $I->click('Yes');
 $I->seeSuccessMessage();
+
+// Reset Data ------------------------------------------------
+$I->amOnModulePage('User Admin', 'family_manage_edit.php', array('gibbonFamilyID' => $gibbonFamilyID));
+
+$editFormValues = array(
+    'name'                  => 'Testing Family',
+    'status'                => 'Other',
+    'languageHomePrimary'   => 'Mongolian',
+    'languageHomeSecondary' => 'Latin',
+    'nameAddress'           => 'Mr. & Mrs. Test Family Too',
+    'homeAddress'           => '123 Nowhere St.',
+    'homeAddressDistrict'   => 'Testland',
+    'homeAddressCountry'    => 'Antarctica',
+);
+
+$I->submitForm('#content form', $editFormValues, 'Submit');
