@@ -28,14 +28,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
+    $referer = $_REQUEST['referer'] ?? '';
     $gibbonReportingCycleID = $_REQUEST['gibbonReportingCycleID'] ?? '';
     $gibbonReportingScopeID = $_REQUEST['gibbonReportingScopeID'] ?? '';
     $scopeTypeIDs = $_REQUEST['scopeTypeID'] ?? [];
     if (!is_array($scopeTypeIDs)) $scopeTypeIDs = explode(',', $scopeTypeIDs);
 
-    $page->breadcrumbs
-        ->add(__('Manage Criteria'), 'reporting_criteria_manage.php', ['gibbonReportingCycleID' => $gibbonReportingCycleID, 'gibbonReportingScopeID' => $gibbonReportingScopeID])
-        ->add(__('Add Multiple Criteria'));
+    $urlParams = compact('gibbonReportingCycleID', 'gibbonReportingScopeID');
+    if ($referer == 'scopes') {
+        $page->breadcrumbs
+            ->add(__('Manage Reporting Cycles'), 'reporting_cycles_manage.php')
+            ->add(__('Reporting Scopes'), 'reporting_scopes_manage.php', $urlParams)
+            ->add(__('Edit Scope'), 'reporting_scopes_manage_edit.php', $urlParams)
+            ->add(__('Add Multiple Criteria'));
+    } else {
+        $page->breadcrumbs
+            ->add(__('Manage Criteria'), 'reporting_criteria_manage.php', $urlParams)
+            ->add(__('Add Multiple Criteria'));
+    }   
 
     if (empty($gibbonReportingCycleID) || empty($gibbonReportingScopeID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
@@ -60,6 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
     $form->addHiddenValue('gibbonReportingCycleID', $gibbonReportingCycleID);
     $form->addHiddenValue('gibbonReportingScopeID', $gibbonReportingScopeID);
     $form->addHiddenValue('scopeType', $reportingScope['scopeType']);
+    $form->addHiddenValue('referer', $referer);
 
     $row = $form->addRow();
         $row->addLabel('reportingCycle', __('Reporting Cycle'));
