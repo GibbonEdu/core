@@ -142,7 +142,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             console.log('reloaded');
             tb_init('a.thickbox');
             $('#'+tableSelector+' table[data-drag-url]').each(DraggableDataTable);
-            $('#'+tableSelector+' tbody').droppable(DroppableDataTable);
+            $('#'+tableSelector).droppable(DroppableDataTable);
         });
     };
 
