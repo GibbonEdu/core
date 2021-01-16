@@ -214,7 +214,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             $gibbonTTID = isset($_GET['gibbonTTID'])? $_GET['gibbonTTID'] : null;
             $ttDate = isset($_POST['ttDate'])? dateConvertToTimestamp(dateConvert($guid, $_POST['ttDate'])) : null;
 
-            $tt = renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, false, $ttDate, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php', "&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=$gibbonSchoolYearID&type=$type#tt", 'full', true);
+            $tt = renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, false, $ttDate, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php', "&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=$gibbonSchoolYearID&type=$type&allUsers=$allUsers#tt", 'full', true);
             if ($tt != false) {
                 echo $tt;
             } else {
@@ -232,7 +232,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             $table = DataTable::createPaginated('enrolmentLeft', $criteria);
 
-            $table->addColumn('courseClass', __('Class Code'))->format(Format::using('courseClassName', ['course', 'class']));
+            $table->addColumn('courseClass', __('Class Code'))
+                ->sortable(['course', 'class'])
+                ->format(Format::using('courseClassName', ['course', 'class']));
             $table->addColumn('courseName', __('Course'));
             $table->addColumn('role', __('Class Role'));
 

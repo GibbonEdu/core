@@ -119,12 +119,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
         ->context('primary')
         ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
         ->format(function ($student) {
-            return Format::name('', $student['preferredName'], $student['surname'], 'Student', true, true) 
+            return Format::name('', $student['preferredName'], $student['surname'], 'Student', true, true)
                  . '<br/><small><i>'.Format::userStatusInfo($student).'</i></small>';
         });
     $table->addColumn('rollGroup', __('Roll Group'))
         ->context('primary');
     $table->addColumn('username', __('Username'));
+    $table->addColumn('officialName', __('Official Name'));
     $table->addColumn('dateStart', __('Start Date'))
         ->context('secondary')
         ->format(Format::using('date', 'dateStart'));

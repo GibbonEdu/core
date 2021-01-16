@@ -41,6 +41,9 @@ v21.0.00
         Staff: removed roles-as-type in Manage Staff, reducing option to Teaching and Support and setting all non-Teaching users to Support
         System Admin: displaying a cookie consent message to users is enabled by default
 
+    Security
+        Updated TinyMCE Editor to version 5.6.2
+
     Tweaks & Additions
         System: added Romanian Leu as currency option
         System: update complete homework to display in green on the Parent Dashboard
@@ -53,7 +56,10 @@ v21.0.00
         System: added ability to set first day of week to Saturday
         System: lengthened module Category field to 12 characters
         System: added a server-side hard limit for session durations
+        System: adjusted robots meta tag to dissuade Google from indexing Gibbon installs
+        System: moved Public Registration link into a homepage tile
         Attendance: added an Offsite - Late option for attendance codes
+        Crowd Assessment: changed error to message in conversation view
         Departments: improved course/class naming in Class view
         Data Updater: data updates with no changes will be automatically accepted
         Data Updater: enabled address fields to be read only or hidden in Data Updater Settings
@@ -84,18 +90,23 @@ v21.0.00
         Planner: any staff can take attendance in the planner if they have Attendance by Class permission
         Planner: added a setting to customize what homework is called in the planner
         Planner: added the ability to set a time cap for homework
+        Planner: fixed empty My Class drop down in Deadlines for parents
+        Planner: changed error to message in chat view
         Reports: display the download link after a batch PDF has completed
         Reports: added full course name to the report writing page
         Reports: added a bulk delete action in the Edit Reporting Scopes page
         Reports: enabled plain text and numeric fields in Criteria Types
+        Reports: removed Reports Available notification, replaced by Send Reports action
         Rubrics: added an option to colour rubric column and row headings
         School Admin: added Manage Medical Conditions action
         School Admin: added optional introductory text setting for the Medical Conditions section
         School Admin: added color picker to Manage Alert Levels page
+        School Admin: updated library background colour selection to use colour picker
         Staff: removed the display of addresses in the Staff Profile
         Staff: restricted access to Emergency Contacts to users with Manage Staff_confidential
         Staff: added first aid information to Personal sub-page of staff profile
         Staff: added First Aid Qualification field
+        Staff: changed staff application email sender from System Administrator to HR Officer
         Students: updated application acceptance message to reflect automatically created medical record
         Students: added uniqueness checks for Student ID field
         Students: send notifications for student notes to the Head of Year, if available
@@ -105,26 +116,34 @@ v21.0.00
         Students: added notifications for High and Medium medical conditions
         Students: added notifications for accepted applications with SEN/Medical needs
         Students: application forms accepted to upcoming years will set students to Expected
+        Students: added Official Name to Left Students and New Students reports
         School Admin: added optional descriptions for medical conditions
         System Admin: adjusted View Log to show only current year's log entries
         System Admin: added a flag to import types to enable updating non-unique rows
         System Admin: added a Purge Logs action to the View Logs page
+        System Admin: moved Not Installed module list before Installed modules
         Timetable: improved role ordering in class tables
-        Timetable Admin: added a dateEnrolled and dateUnenrolled to class enrolments
+        Timetable Admin: added a dateEnrolled and dateUnenrolled to class enrollments
         Timetable Admin: hide teachers listed as non-reportable from teacher lists
         Timetable Admin: added color picker to Edit Timetable Day section
-        Testing: Changed install suite admin username and password to be compliant with the default password requirements
+        Tests: Changed install suite admin username and password to be compliant with the default password requirements
+        Tracking: fixed Data Points export when internal or external data points set, but not both
         User Admin: added Guardian and Grandmother/Grandfather to emergency relationships
+        User Admin: improved the layout of the Rollover form
+        User Admin: moved Day Type Options from User Settings to Student Settings
 
     Bug Fixes
         System: fixed missing organization name on welcome page
         System: fixed date picker not using the First Day of the Week setting
         System: fixed validation not working for paginated bulk action forms
         System: added a fallback to translateN for systems that don't have gettext
-        System Admin: fixed PHP deprecation errors in CSV importer
+        System: fixed wrapping of long summaries in Today's Lessons
+        System: fixed public registration failing for non-unique email when uniqueEmailAddress is not active
         Attendance: fixed sortable Class column in Student Not In Class report
         Data Updater: fixed passport expiry fields not properly hiding
         Departments: fixed attendance link not prefilling the current date
+        Finance: fixed invoicee ordering bug in Add Invoice
+        Finance: fixed table width in invoice email formatting
         Formal Assessment: removed Back link from delete modal
         Individual Needs: fixed description of Reason field in Manage Investigations
         Library: fixed broken delete function in Manage Catalog
@@ -136,6 +155,7 @@ v21.0.00
         Reports: fixed MpdfRenderer not resetting headers when generating batch single files
         Reports: fixed Reporting Cycle Duplicate copying criteria from year to year
         Reports: fixed AttendanceByCycle incorrectly calculating with countClassAsSchool turned on
+        Reports: fixed reporting cycle selection missing from Add Report
         Planner: fixed Outcomes by Course for courses with multiple year groups
         Planner: fixed alignment of birthday icon in attendance on Lesson page
         Staff: fixed alternate email address causing an error on Personal subpage
@@ -144,7 +164,10 @@ v21.0.00
         Students: fixed students able to see other students in class lists
         Students: fixed issue preventing timetable edit link from working with left students and allStudent flag
         Students: fixed missing alert bar in Markbook and Internal Assessment sub-pages in student profile
+        System Admin: fixed PHP deprecation errors in CSV importer
+        System Admin: fixed empty numeric values importing as 0 rather than null
         Timetable: fixed View Available Facilities not counting bookings on Friday
+        Timetable: fixed last week/next week links for facilities involved in multiple TTs
 	    Tests: added fallback environment variables if .env is not defining DB details
 	    Tests: changed HTTP to HTTPs, so SSL enabled environments don't fail
 	    Tests: added Users group and changed reference in acceptance.suite.yml so that the acceptance suite does not fail

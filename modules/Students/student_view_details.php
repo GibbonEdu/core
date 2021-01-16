@@ -72,7 +72,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
             //Test if View Student Profile_brief and View Student Profile_myChildren are both available and parent has access to this student...if so, skip brief, and go to full.
             if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief') and isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_myChildren')) {
-
                     $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID1' => $_GET['gibbonPersonID'], 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
                     $sql = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID1 AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
                     $result = $connection2->prepare($sql);
@@ -98,11 +97,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
             if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief') and $skipBrief == false) {
                 //Proceed!
-
-                    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
-                    $sql = "SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
+                $sql = "SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
 
                 if ($result->rowCount() != 1) {
                     echo "<div class='error'>";
@@ -121,10 +119,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     echo "<td style='width: 33%; vertical-align: top'>";
                     echo "<span style='font-size: 115%; font-weight: bold'>".__('Year Group').'</span><br/>';
 
-                        $dataDetail = array('gibbonYearGroupID' => $row['gibbonYearGroupID']);
-                        $sqlDetail = 'SELECT * FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID';
-                        $resultDetail = $connection2->prepare($sqlDetail);
-                        $resultDetail->execute($dataDetail);
+                    $dataDetail = array('gibbonYearGroupID' => $row['gibbonYearGroupID']);
+                    $sqlDetail = 'SELECT * FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID';
+                    $resultDetail = $connection2->prepare($sqlDetail);
+                    $resultDetail->execute($dataDetail);
                     if ($resultDetail->rowCount() == 1) {
                         $rowDetail = $resultDetail->fetch();
                         echo __($rowDetail['name']);
@@ -133,10 +131,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     echo "<td style='width: 34%; vertical-align: top'>";
                     echo "<span style='font-size: 115%; font-weight: bold'>".__('Roll Group').'</span><br/>';
 
-                        $dataDetail = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
-                        $sqlDetail = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
-                        $resultDetail = $connection2->prepare($sqlDetail);
-                        $resultDetail->execute($dataDetail);
+                    $dataDetail = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
+                    $sqlDetail = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
+                    $resultDetail = $connection2->prepare($sqlDetail);
+                    $resultDetail->execute($dataDetail);
                     if ($resultDetail->rowCount() == 1) {
                         $rowDetail = $resultDetail->fetch();
                         echo $rowDetail['name'];
@@ -145,10 +143,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     echo "<td style='width: 34%; vertical-align: top'>";
                     echo "<span style='font-size: 115%; font-weight: bold'>".__('House').'</span><br/>';
 
-                        $dataDetail = array('gibbonHouseID' => $row['gibbonHouseID']);
-                        $sqlDetail = 'SELECT * FROM gibbonHouse WHERE gibbonHouseID=:gibbonHouseID';
-                        $resultDetail = $connection2->prepare($sqlDetail);
-                        $resultDetail->execute($dataDetail);
+                    $dataDetail = array('gibbonHouseID' => $row['gibbonHouseID']);
+                    $sqlDetail = 'SELECT * FROM gibbonHouse WHERE gibbonHouseID=:gibbonHouseID';
+                    $resultDetail = $connection2->prepare($sqlDetail);
+                    $resultDetail->execute($dataDetail);
                     if ($resultDetail->rowCount() == 1) {
                         $rowDetail = $resultDetail->fetch();
                         echo $rowDetail['name'];
@@ -178,11 +176,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo __('Family Details');
                         echo '</h3>';
 
-
-                            $dataFamily = array('gibbonPersonID' => $gibbonPersonID);
-                            $sqlFamily = 'SELECT * FROM gibbonFamily JOIN gibbonFamilyChild ON (gibbonFamily.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID';
-                            $resultFamily = $connection2->prepare($sqlFamily);
-                            $resultFamily->execute($dataFamily);
+                        $dataFamily = array('gibbonPersonID' => $gibbonPersonID);
+                        $sqlFamily = 'SELECT * FROM gibbonFamily JOIN gibbonFamilyChild ON (gibbonFamily.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID';
+                        $resultFamily = $connection2->prepare($sqlFamily);
+                        $resultFamily->execute($dataFamily);
 
                         if ($resultFamily->rowCount() < 1) {
                             echo "<div class='error'>";
@@ -193,11 +190,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $count = 1;
 
                                 //Get adults
-
-                                    $dataMember = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
-                                    $sqlMember = 'SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status=\'Full\' ORDER BY contactPriority, surname, preferredName';
-                                    $resultMember = $connection2->prepare($sqlMember);
-                                    $resultMember->execute($dataMember);
+                                $dataMember = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
+                                $sqlMember = 'SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status=\'Full\' ORDER BY contactPriority, surname, preferredName';
+                                $resultMember = $connection2->prepare($sqlMember);
+                                $resultMember->execute($dataMember);
 
                                 while ($rowMember = $resultMember->fetch()) {
                                     echo '<h4>';
@@ -2147,7 +2143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                     }
                                                     $styleAttainment = "style='font-weight: bold'";
                                                     if ($rowEntry['attainmentConcern'] == 'Y' and $showParentAttainmentWarning == 'Y') {
-                                                        $styleAttainment = "style='color: #".$alert['color'].'; font-weight: bold; border: 2px solid #'.$alert['color'].'; padding: 2px 4px; background-color: #'.$alert['colorBG']."'";
+                                                        $styleAttainment = "style='color: ".$alert['color'].'; font-weight: bold; border: 2px solid '.$alert['color'].'; padding: 2px 4px; background-color: '.$alert['colorBG']."'";
                                                     } elseif ($rowEntry['attainmentConcern'] == 'P' and $showParentAttainmentWarning == 'Y') {
                                                         $styleAttainment = "style='color: #390; font-weight: bold; border: 2px solid #390; padding: 2px 4px; background-color: #D4F6DC'";
                                                     }
@@ -2181,7 +2177,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                         }
                                                         $styleEffort = "style='font-weight: bold'";
                                                         if ($rowEntry['effortConcern'] == 'Y' and $showParentEffortWarning == 'Y') {
-                                                            $styleEffort = "style='color: #".$alert['color'].'; font-weight: bold; border: 2px solid #'.$alert['color'].'; padding: 2px 4px; background-color: #'.$alert['colorBG']."'";
+                                                            $styleEffort = "style='color: ".$alert['color'].'; font-weight: bold; border: 2px solid '.$alert['color'].'; padding: 2px 4px; background-color: '.$alert['colorBG']."'";
                                                         }
                                                         echo "<div $styleEffort>".$rowEntry['effortValue'];
                                                         if ($rowEntry['gibbonRubricIDEffort'] != '' and $enableRubrics =='Y') {
@@ -2370,6 +2366,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             if ($highestActionReports == 'View by Student') {
                                 $student = $container->get(UserGateway::class)->getByID($gibbonPersonID);
                             } else if ($highestActionReports == 'View Reports_myChildren') {
+                                $studentGateway = $container->get(StudentGateway::class);
                                 $children = $studentGateway
                                     ->selectAnyStudentsByFamilyAdult($gibbonSchoolYearID, $gibbon->session->get('gibbonPersonID'))
                                     ->fetchGroupedUnique();
@@ -2738,7 +2735,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             include './modules/Planner/src/Tables/HomeworkTable.php';
                             $page->scripts->add('planner', '/modules/Planner/js/module.js');
 
-                            $table = $container->get(HomeworkTable::class)->create($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, $role);
+                            $table = $container->get(HomeworkTable::class)->create($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, $role == 'Student' ? 'Student' : 'Parent');
 
                             echo $table->getOutput();
                         }
@@ -2774,15 +2771,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                             //Check for permission to hook
                                 $dataHook = array('gibbonRoleIDCurrent' => $_SESSION[$guid]['gibbonRoleIDCurrent'], 'sourceModuleName' => $options['sourceModuleName'], 'sourceModuleAction' => $options['sourceModuleAction']);
-                                $sqlHook = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action 
-                                    FROM gibbonHook 
-                                    JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID) 
-                                    JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) 
-                                    JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) 
-                                    WHERE gibbonModule.name=:sourceModuleName 
-                                    AND FIND_IN_SET(gibbonAction.name, :sourceModuleAction) 
+                                $sqlHook = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action
+                                    FROM gibbonHook
+                                    JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID)
+                                    JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID)
+                                    JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
+                                    WHERE gibbonModule.name=:sourceModuleName
+                                    AND FIND_IN_SET(gibbonAction.name, :sourceModuleAction)
                                     AND gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent
-                                    AND gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:sourceModuleName) 
+                                    AND gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:sourceModuleName)
                                     AND gibbonHook.type='Student Profile' ORDER BY name";
                                 $resultHook = $connection2->prepare($sqlHook);
                                 $resultHook->execute($dataHook);
@@ -3006,16 +3003,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             //Check for permission to hook
 
                                 $dataHook = array('gibbonRoleIDCurrent' => $_SESSION[$guid]['gibbonRoleIDCurrent'], 'sourceModuleName' => $options['sourceModuleName'],  'sourceModuleAction' => $options['sourceModuleAction']);
-                                $sqlHook = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action 
-                                        FROM gibbonHook 
-                                        JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID) 
-                                        JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) 
-                                        JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) 
-                                        WHERE gibbonModule.name=:sourceModuleName 
+                                $sqlHook = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action
+                                        FROM gibbonHook
+                                        JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID)
+                                        JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID)
+                                        JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
+                                        WHERE gibbonModule.name=:sourceModuleName
                                         AND FIND_IN_SET(gibbonAction.name, :sourceModuleAction)
                                         AND gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent
-                                        AND gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:sourceModuleName) 
-                                        AND gibbonHook.type='Student Profile' 
+                                        AND gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:sourceModuleName)
+                                        AND gibbonHook.type='Student Profile'
                                         ORDER BY name";
                                 $resultHook = $connection2->prepare($sqlHook);
                                 $resultHook->execute($dataHook);

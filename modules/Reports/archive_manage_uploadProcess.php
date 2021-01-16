@@ -138,5 +138,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
         ? "&return=warning1"
         : "&return=success1";
 
-    header("Location: {$URL}&imported={$count}&total={$total}");
+    header("Location: {$URL}&imported={$count}");
 }

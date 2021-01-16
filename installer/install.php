@@ -408,7 +408,7 @@ if ($canInstall == false) {
                         $row->addEmail('email')->required();
 
                     $row = $form->addRow();
-                        $row->addLabel('support', '<b>'.__('Receive Support?').'</b>')->description(__('Join our mailing list and recieve a welcome email from the team.'));
+                        $row->addLabel('support', __('Receive Support?'))->description(__('Join our mailing list and recieve a welcome email from the team.'));
                         $row->addCheckbox('support')->description(__('Yes'))->setValue('on')->checked('on')->setID('support');
 
                     $row = $form->addRow();
@@ -484,6 +484,25 @@ if ($canInstall == false) {
                         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
                         $row->addSelect($setting['name'])->fromArray($installTypes)->selected('Testing')->required();
 
+                    // Expose version information and translation strings to installer.js functions
+                    // for check and set cutting edge code based on gibbonedu.org services value
+                    $js_version = json_encode($version);
+                    $js_i18n = json_encode([
+                        '__edge_code_check_success__' => __('Cutting Edge Code check successful.'),
+                        '__edge_code_check_failed__' => __('Cutting Edge Code check failed'),
+                    ]);
+                    echo "
+                    <script type='text/javascript'>
+                    window.gibboninstaller = {
+                        version: {$js_version},
+                        i18n: {$js_i18n},
+                        msg: function (msg) {
+                            return this.i18n[msg] || msg;
+                        },
+                    };
+                    </script>
+                    ";
+
                     $statusInitial = "<div id='status' class='warning'><div style='width: 100%; text-align: center'><img style='margin: 10px 0 5px 0' src='../themes/Default/img/loading.gif' alt='Loading'/><br/>".__('Checking for Cutting Edge Code.')."</div></div>";
                     $row = $form->addRow();
                         $row->addContent($statusInitial);
@@ -491,32 +510,6 @@ if ($canInstall == false) {
                     $row = $form->addRow();
                         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
                         $row->addTextField($setting['name'])->setValue('No')->readonly();
-
-                    //Check and set cutting edge code based on gibbonedu.org services value
-                    echo '<script type="text/javascript">';
-                    echo '$(document).ready(function(){';
-                    echo '$.ajax({';
-                    echo 'crossDomain: true, type:"GET", contentType: "application/json; charset=utf-8",async:false,';
-                    echo 'url: "https://gibbonedu.org/services/version/devCheck.php?version='.$version.'&callback=?",';
-                    echo "data: \"\",dataType: \"jsonp\", jsonpCallback: 'fnsuccesscallback',jsonpResult: 'jsonpResult',";
-                    echo 'success: function(data) {';
-                    echo '$("#status").attr("class","success");';
-                    echo "if (data['status']==='false') {";
-                    echo "$(\"#status\").html('".__('Cutting Edge Code check successful.')."') ;";
-                    echo '}';
-                    echo 'else {';
-                    echo "$(\"#status\").html('".__('Cutting Edge Code check successful.')."') ;";
-                    echo "$(\"#cuttingEdgeCode\").val('Yes');";
-                    echo "$(\"input[name=cuttingEdgeCodeHidden]\").val('Y');";
-                    echo '}';
-                    echo '},';
-                    echo 'error: function (data, textStatus, errorThrown) {';
-                    echo '$("#status").attr("class","error");';
-                    echo "$(\"#status\").html('".__('Cutting Edge Code check failed').".') ;";
-                    echo '}';
-                    echo '});';
-                    echo '});';
-                    echo '</script>';
 
                     $setting = getSettingByScope($connection2, 'System', 'statsCollection', true);
                     $row = $form->addRow();

@@ -383,25 +383,27 @@ class Importer
                     $relationalValue = [];
 
                     foreach ($values as $value) {
+                        $fieldNameKey = $this->escapeParameter($fieldName);
                         if (is_array($field) && count($field) > 0) {
                             // Multi-key relationships
                             $relationalField = $this->escapeIdentifier($field[0]);
-                            $relationalData = array($fieldName => $value);
-                            $relationalSQL = "SELECT {$table}.{$key} FROM {$table} {$tableJoin} WHERE {$relationalField}=:{$fieldName}";
+                            $relationalData = array($fieldNameKey => $value);
+                            $relationalSQL = "SELECT {$table}.{$key} FROM {$table} {$tableJoin} WHERE {$relationalField}=:{$fieldNameKey}";
 
                             for ($i=1; $i<count($field); $i++) {
                                 // Relational field from within current import data
                                 $relationalField = $field[$i];
                                 if (isset($fields[$relationalField])) {
-                                    $relationalData[$relationalField] = $fields[$relationalField];
-                                    $relationalSQL .= " AND ".$this->escapeIdentifier($relationalField)."=:{$relationalField}";
+                                    $relationalFieldKey = $this->escapeParameter($relationalField);
+                                    $relationalData[$relationalFieldKey] = $fields[$relationalField];
+                                    $relationalSQL .= " AND ".$this->escapeIdentifier($relationalField)."=:{$relationalFieldKey}";
                                 }
                             }
                         } else {
                             // Single key/value relationship
                             $relationalField = $this->escapeIdentifier($field);
-                            $relationalData = array($fieldName => $value);
-                            $relationalSQL = "SELECT {$table}.{$key} FROM {$table} {$tableJoin} WHERE {$relationalField}=:{$fieldName}";
+                            $relationalData = array($fieldNameKey => $value);
+                            $relationalSQL = "SELECT {$table}.{$key} FROM {$table} {$tableJoin} WHERE {$relationalField}=:{$fieldNameKey}";
                         }
 
                         $result = $this->pdo->executeQuery($relationalData, $relationalSQL);
@@ -440,7 +442,7 @@ class Importer
                 if (!empty($serialize)) {
                     if ($serialize == $fieldName) {
                         // Is this the field we're serializing? Grab the array
-                        $value = serialize($this->serializeData[$serialize]);
+                        $value = json_encode($this->serializeData[$serialize]);
                         $fields[$fieldName] = $value;
                     } else {
                         // Otherwise collect values in an array
@@ -565,8 +567,8 @@ class Importer
                 // Handle merging existing custom field data with partial custom field imports
                 if ($importType->isUsingCustomFields() && $fieldName == 'fields') {
                     if (isset($keyRow['fields']) && !empty($keyRow['fields'])) {
-                        $sqlData['fields'] = array_merge(unserialize($keyRow['fields']), unserialize($fieldData));
-                        $sqlData['fields'] = serialize($sqlData['fields']);
+                        $sqlData['fields'] = array_merge(json_decode($keyRow['fields'], true), json_decode($fieldData, true));
+                        $sqlData['fields'] = json_encode($sqlData['fields']);
                     }
                 }
             }

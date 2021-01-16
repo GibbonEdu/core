@@ -30,11 +30,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-
-        $data = array();
-        $sql = 'SELECT * FROM gibbonAlertLevel ORDER BY sequenceNumber';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $data = array();
+    $sql = 'SELECT * FROM gibbonAlertLevel ORDER BY sequenceNumber';
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
 
     //Let's go!
     $form = Form::create('alertLevelSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/alertLevelSettingsProcess.php' );
@@ -62,16 +61,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
             ->required();
 
         $row = $form->addRow();
-        	$row->addLabel('color'.$count, __('Font/Border Color'))->description(__('Click to select a color.'));
+        	$row->addLabel('color'.$count, __('Font/Border Colour'))->description(__('Click to select a colour.'));
     		$row->addColor("color$count")
-                ->addClass('pl-2')
                 ->setValue($rowSQL['color'])
                 ->required();
 
         $row = $form->addRow();
-        	$row->addLabel('colorBG'.$count, __('Background Color'))->description(__('Click to select a color.'));
+        	$row->addLabel('colorBG'.$count, __('Background Colour'))->description(__('Click to select a colour.'));
     		$row->addColor("colorBG$count")
-                ->addClass('pl-2')
                 ->setValue($rowSQL['colorBG'])
                 ->required();
 

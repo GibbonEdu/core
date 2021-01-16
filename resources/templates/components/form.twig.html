@@ -44,6 +44,10 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {% set rowClass = 'flex flex-col sm:flex-row justify-between sm:items-center content-center p-0' %}
             {% endif %}
 
+            {% if (row.getElements|first).isInstanceOf('Gibbon\\Forms\\Layout\\Heading') %}
+                {% set rowClass = "blank" not in form.getClass ? rowClass ~ ' bg-gray-300' : rowClass ~ ' my-2' %}
+            {% endif %}
+
             <div id="{{ row.getID }}" class="{{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }} {{ "noIntBorder" not in form.getClass and "blank" not in form.getClass and not loop.last ? 'border-b' }} ">
 
             {% for element in row.getElements %}

@@ -89,9 +89,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_s
 
     $table->addMetaData('bulkActions', $col);
 
-    $table->addColumn('name', __('Name'))->format($context->getFormatter());
+    if (!empty(array_filter(array_column($ids, 'rollGroup')))) {
+        $table->addColumn('rollGroup', __('Roll Group'))
+            ->notSortable()
+            ->width('10%')
+            ->format(function($values) {
+                return $values['rollGroup'] ?? __('Unknown');
+            });
+    }
+
+    $table->addColumn('name', __('Name'))->notSortable()->format($context->getFormatter());
 
     $table->addColumn('timestamp', __('Last Created'))
+        ->notSortable()
         ->format(function ($report) use ($gibbonReportID, &$reportArchiveEntryGateway) {
             if ($report['archive']) {
                 $tag = '<span class="tag ml-2 '.($report['archive']['status'] == 'Final' ? 'success' : 'dull').'">'.__($report['archive']['status']).'</span>';

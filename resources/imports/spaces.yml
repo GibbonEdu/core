@@ -26,35 +26,35 @@ table:
     computer: 
         name: "Teacher's Computer"
         desc: ""
-        args: { filter: yesno, required: true, custom: true }
+        args: { filter: yesno, custom: true }
     computerStudent: 
         name: "Student Computers"
         desc: "How many are there"
-        args: { filter: numeric, required: true, custom: true }
+        args: { filter: numeric, custom: true }
     projector: 
         name: "Projector"
         desc: ""
-        args: { filter: yesno, required: true, custom: true }
+        args: { filter: yesno, custom: true }
     tv: 
         name: "TV"
         desc: ""
-        args: { filter: yesno, required: true, custom: true }
+        args: { filter: yesno, custom: true }
     dvd: 
         name: "DVD Player"
         desc: ""
-        args: { filter: yesno, required: true, custom: true }
+        args: { filter: yesno, custom: true }
     hifi: 
         name: "Hifi"
         desc: ""
-        args: { filter: yesno, required: true, custom: true }
+        args: { filter: yesno, custom: true }
     speakers: 
         name: "Speakers"
         desc: ""
-        args: { filter: yesno, required: true, custom: true }
+        args: { filter: yesno, custom: true }
     iwb: 
         name: "Interactive White Board"
         desc: ""
-        args: { filter: yesno, required: true, custom: true }
+        args: { filter: yesno, custom: true }
     phoneInternal: 
         name: "Extension"
         desc: "Room's internal phone number."

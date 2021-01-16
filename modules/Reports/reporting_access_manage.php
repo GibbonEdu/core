@@ -81,20 +81,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_access_m
         ->setURL('/modules/Reports/reporting_access_manage_add.php')
         ->displayLabel();
 
-    $table->modifyRows(function ($values, $row) {
-        // if ($values['active'] == 'N') $row->addClass('error');
-        return $row;
-    });
-
     $table->addMetaData('filterOptions', [
         'reportingCycle' => __('Reporting Cycle')
     ]);
 
-    $table->addColumn('reportingCycle', __('Reporting Cycle'));
+    $table->addColumn('reportingCycle', __('Reporting Cycle'))
+        ->format(function ($values) {
+            $output = $values['reportingCycle'];
+            if (date('Y-m-d') < $values['cycleDateStart'] || date('Y-m-d') > $values['cycleDateEnd']) {
+                $output .= Format::tag(__('Closed'), 'dull ml-2');
+            }
+            return $output;
+        });
     $table->addColumn('roleName', __('Role'))->translatable();
     $table->addColumn('scopeName', __('Scope'));
-    $table->addColumn('dateStart', __('Start Date'))->format(Format::using('dateReadable', 'dateStart'))->width('15%');
-    $table->addColumn('dateEnd', __('End Date'))->format(Format::using('dateReadable', 'dateEnd'))->width('15%');
+    $table->addColumn('dateStart', __('Start Date'))->format(Format::using('dateReadable', 'dateStart'));
+    $table->addColumn('dateEnd', __('End Date'))->format(Format::using('dateReadable', 'dateEnd'))
+        ->format(function ($values) {
+            $output = Format::dateReadable($values['dateEnd']);
+            if (date('Y-m-d') > $values['dateEnd']) {
+                $output .= Format::tag(__('Ended'), 'dull ml-2');
+            }
+            return $output;
+        });
 
     // ACTIONS
     $table->addActionColumn()

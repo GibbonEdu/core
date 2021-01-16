@@ -17,42 +17,41 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\ModuleGateway;
+use Gibbon\Domain\System\ActionGateway;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Domain\System\HookGateway;
+
 include '../../gibbon.php';
 
-$orphaned = '';
-if (isset($_GET['orphaned'])) {
-    if ($_GET['orphaned'] == 'true') {
-        $orphaned = 'true';
-    }
-}
+$orphaned = $_GET['orphaned'] ?? '';
 
-$gibbonModuleID = $_GET['gibbonModuleID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/module_manage_uninstall.php&gibbonModuleID='.$gibbonModuleID;
-$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/module_manage.php';
+$gibbonModuleID = $_GET['gibbonModuleID'] ?? '';
+
+$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/module_manage_uninstall.php&gibbonModuleID='.$gibbonModuleID;
+$URLDelete = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/module_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage_uninstall.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    //Proceed!
-    //Check if role specified
-    if ($gibbonModuleID == '') {
+    // Check if role specified
+    if (empty($gibbonModuleID)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
-        $data = array('gibbonModuleID' => $gibbonModuleID);
-        $sql = 'SELECT * FROM gibbonModule WHERE gibbonModuleID=:gibbonModuleID';
-        $result = $pdo->select($sql, $data);
+        $moduleGateway = $container->get(ModuleGateway::class);
+        $module = $moduleGateway->getByID($gibbonModuleID);
 
-        if ($result->rowCount() != 1) {
+        if (empty($module)) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
-            $row = $result->fetch();
-            $module = $row['name'];
+            $moduleName = $module['name'];
             $partialFail = false;
 
-            //Check for tables and views to remove, and remove them
+            // Check for tables and views to remove, and remove them
             $tables = null;
             if (isset($_POST['remove'])) {
                 $tables = $_POST['remove'];
@@ -77,55 +76,40 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                 }
             }
 
-            //Get actions to remove permissions
-            $data = array('gibbonModuleID' => $gibbonModuleID);
-            $sql = 'SELECT * FROM gibbonAction WHERE gibbonModuleID=:gibbonModuleID';
-            $result = $pdo->select($sql, $data);
+            // Get actions to remove permissions
+            $actionGateway = $container->get(ActionGateway::class);
+            $actions = $actionGateway->selectBy(['gibbonModuleID' => $module['gibbonModuleID']]);
 
-            while ($row = $result->fetch()) {
-                //Remove permissions
-                $dataDelete = array('gibbonActionID' => $row['gibbonActionID']);
-                $sqlDelete = 'DELETE FROM gibbonPermission WHERE gibbonActionID=:gibbonActionID';
-                $partialFail &= !$pdo->delete($sqlDelete, $dataDelete);
+            foreach ($actions as $action) {
+                // Remove permissions
+                $actionGateway->deletePermissionByAction($action['gibbonActionID']);
             }
 
-            //Remove actions
-            $dataDelete = array('gibbonModuleID' => $gibbonModuleID);
-            $sqlDelete = 'DELETE FROM gibbonAction WHERE gibbonModuleID=:gibbonModuleID';
-            $partialFail &= !$pdo->delete($sqlDelete, $dataDelete);
+            // Remove actions
+            $actionGateway->deleteWhere(['gibbonModuleID' => $module['gibbonModuleID']]);
 
-            //Remove module
-            $dataDelete = array('gibbonModuleID' => $gibbonModuleID);
-            $sqlDelete = 'DELETE FROM gibbonModule WHERE gibbonModuleID=:gibbonModuleID';
-            $partialFail &= !$pdo->delete($sqlDelete, $dataDelete);
+            // Remove module
+            $moduleGateway->delete($module['gibbonModuleID']);
 
-            //Remove hooks
-            $dataDelete = array('gibbonModuleID' => $gibbonModuleID);
-            $sqlDelete = 'DELETE FROM gibbonHook WHERE gibbonModuleID=:gibbonModuleID';
-            $partialFail &= !$pdo->delete($sqlDelete, $dataDelete);
+            // Remove hooks
+            $hookGateway = $container->get(HookGateway::class);
+            $hookGateway->deleteWhere(['gibbonModuleID' => $module['gibbonModuleID']]);
 
-            //Remove settings
-            $dataDelete = array('scope' => $module);
-            $sqlDelete = 'DELETE FROM gibbonSetting WHERE scope=:scope';
-            $partialFail &= !$pdo->delete($sqlDelete, $dataDelete);
+            // Remove settings
+            $settingGateway = $container->get(SettingGateway::class);
+            $settingGateway->deleteWhere(['scope' => $moduleName]);
 
-            //Remove notification events
-            $dataDelete = array('module' => $module);
-            $sqlDelete = 'DELETE gibbonNotificationEvent, gibbonNotificationListener FROM gibbonNotificationEvent LEFT JOIN gibbonNotificationListener ON (gibbonNotificationEvent.gibbonNotificationEventID=gibbonNotificationListener.gibbonNotificationEventID) WHERE gibbonNotificationEvent.moduleName=:module';
-            $partialFail &= !$pdo->delete($sqlDelete, $dataDelete);
+            // Remove notification events
+            $notificationGateway = $container->get(NotificationGateway::class);
+            $notificationGateway->deleteCascadeNotificationByModuleName($moduleName);
 
-            if ($partialFail == true) {
-                $URL .= '&return=warning2';
-                header("Location: {$URL}");
-            } else {
-                // Clear the main menu from session cache
-                $gibbon->session->forget('menuMainItems');
+            // Clear the main menu from session cache
+            $gibbon->session->forget('menuMainItems');
 
-                $URLDelete .= $orphaned != 'true'
-                    ? '&return=warning0'
-                    : '&return=success0';
-                header("Location: {$URLDelete}");
-            }
+            $URLDelete .= $orphaned != 'true'
+                ? '&return=warning0'
+                : '&return=success0';
+            header("Location: {$URLDelete}");
         }
     }
 }

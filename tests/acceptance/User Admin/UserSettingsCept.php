@@ -21,8 +21,6 @@ $newFormValues = array(
     'privacyBlurb'       => 'Privacy Blurb Test',
     'privacyOptions'     => 'Privacy 1,Privacy 2,Privacy 3',
     'personalBackground' => 'Y',
-    'dayTypeOptions'     => 'Day,Type,Option,Test',
-    'dayTypeText'        => 'Day-Type Test',
 );
 
 $I->submitForm('#content form', $newFormValues, 'Submit');

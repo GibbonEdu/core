@@ -178,364 +178,316 @@ function setPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $typ
 //Checks log to see if approval is complete. Returns false (on error), none (if no completion), budget (if budget completion done or not required), school (if all complete)
 function checkLogForApprovalComplete($guid, $gibbonFinanceExpenseID, $connection2)
 {
-    //Lock tables
-    $lock = true;
     try {
-        $sqlLock = 'LOCK TABLE gibbonFinanceExpense WRITE, gibbonFinanceExpenseApprover WRITE, gibbonFinanceExpenseLog WRITE, gibbonFinanceBudget WRITE, gibbonFinanceBudgetPerson WRITE, gibbonSetting WRITE, gibbonNotification WRITE, gibbonPerson READ, gibbonModule READ';
-        $resultLock = $connection2->query($sqlLock);
+        $data = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
+        $sql = 'SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget FROM gibbonFinanceExpense JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) WHERE gibbonFinanceExpense.gibbonFinanceExpenseID=:gibbonFinanceExpenseID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
     } catch (PDOException $e) {
-        $lock = false;
         return false;
     }
 
-    if ($lock) {
-        try {
-            $data = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
-            $sql = 'SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget FROM gibbonFinanceExpense JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) WHERE gibbonFinanceExpense.gibbonFinanceExpenseID=:gibbonFinanceExpenseID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            return false;
-        }
+    if ($result->rowCount() != 1) {
+        return false;
+    } else {
+        $row = $result->fetch();
 
-        if ($result->rowCount() != 1) {
+        //Get settings for budget-level and school-level approval
+        $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
+        $budgetLevelExpenseApproval = getSettingByScope($connection2, 'Finance', 'budgetLevelExpenseApproval');
+
+        if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
             return false;
         } else {
-            $row = $result->fetch();
-
-            //Get settings for budget-level and school-level approval
-            $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
-            $budgetLevelExpenseApproval = getSettingByScope($connection2, 'Finance', 'budgetLevelExpenseApproval');
-
-            if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
+            if ($row['status'] != 'Requested') { //Finished? Return
                 return false;
-            } else {
-                if ($row['status'] != 'Requested') { //Finished? Return
-                    return false;
-                } else { //Not finished
-                    if ($row['statusApprovalBudgetCleared'] == 'N') { //Notify budget holders (e.g. access Full)
-                        return 'none';
-                    } else { //School-level approval, what type is it?
-                        if ($expenseApprovalType == 'One Of' or $expenseApprovalType == 'Two Of') { //One Of or Two Of, so alert all approvers
-                            if ($expenseApprovalType == 'One Of') {
-                                $expected = 1;
-                            } else {
-                                $expected = 2;
-                            }
-                            //Do we have correct number of approvals
-                            try {
-                                $dataTest = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
-                                $sqlTest = "SELECT DISTINCT * FROM gibbonFinanceExpenseLog WHERE gibbonFinanceExpenseID=:gibbonFinanceExpenseID AND action='Approval - Partial - School'";
-                                $resultTest = $connection2->prepare($sqlTest);
-                                $resultTest->execute($dataTest);
-                            } catch (PDOException $e) {
-                                return false;
-                            }
-                            if ($resultTest->rowCount() >= $expected) { //Yes - return "school"
-                                return 'school';
-                            } else { //No - return "budget"
-                                return 'budget';
-                            }
-                        } elseif ($expenseApprovalType == 'Chain Of All') { //Chain of all
-                            try {
-                                $dataApprovers = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
-                                $sqlApprovers = "SELECT gibbonPerson.gibbonPersonID AS g1, gibbonFinanceExpenseLog.gibbonPersonID AS g2 FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonFinanceExpenseLog ON (gibbonFinanceExpenseLog.gibbonPersonID=gibbonFinanceExpenseApprover.gibbonPersonID AND gibbonFinanceExpenseLog.action='Approval - Partial - School' AND gibbonFinanceExpenseLog.gibbonFinanceExpenseID=:gibbonFinanceExpenseID) WHERE gibbonPerson.status='Full' ORDER BY sequenceNumber, surname, preferredName";
-                                $resultApprovers = $connection2->prepare($sqlApprovers);
-                                $resultApprovers->execute($dataApprovers);
-                            } catch (PDOException $e) {
-                                return false;
-                            }
-                            $approvers = $resultApprovers->fetchAll();
-                            $countTotal = $resultApprovers->rowCount();
-                            $count = 0;
-                            foreach ($approvers as $approver) {
-                                if ($approver['g1'] == $approver['g2']) {
-                                    ++$count;
-                                }
-                            }
-
-                            if ($count >= $countTotal) { //Yes - return "school"
-                                return 'school';
-                            } else { //No - return "budget"
-                                return 'budget';
-                            }
+            } else { //Not finished
+                if ($row['statusApprovalBudgetCleared'] == 'N') { //Notify budget holders (e.g. access Full)
+                    return 'none';
+                } else { //School-level approval, what type is it?
+                    if ($expenseApprovalType == 'One Of' or $expenseApprovalType == 'Two Of') { //One Of or Two Of, so alert all approvers
+                        if ($expenseApprovalType == 'One Of') {
+                            $expected = 1;
                         } else {
+                            $expected = 2;
+                        }
+                        //Do we have correct number of approvals
+                        try {
+                            $dataTest = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
+                            $sqlTest = "SELECT DISTINCT * FROM gibbonFinanceExpenseLog WHERE gibbonFinanceExpenseID=:gibbonFinanceExpenseID AND action='Approval - Partial - School'";
+                            $resultTest = $connection2->prepare($sqlTest);
+                            $resultTest->execute($dataTest);
+                        } catch (PDOException $e) {
                             return false;
                         }
+                        if ($resultTest->rowCount() >= $expected) { //Yes - return "school"
+                            return 'school';
+                        } else { //No - return "budget"
+                            return 'budget';
+                        }
+                    } elseif ($expenseApprovalType == 'Chain Of All') { //Chain of all
+                        try {
+                            $dataApprovers = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
+                            $sqlApprovers = "SELECT gibbonPerson.gibbonPersonID AS g1, gibbonFinanceExpenseLog.gibbonPersonID AS g2 FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonFinanceExpenseLog ON (gibbonFinanceExpenseLog.gibbonPersonID=gibbonFinanceExpenseApprover.gibbonPersonID AND gibbonFinanceExpenseLog.action='Approval - Partial - School' AND gibbonFinanceExpenseLog.gibbonFinanceExpenseID=:gibbonFinanceExpenseID) WHERE gibbonPerson.status='Full' ORDER BY sequenceNumber, surname, preferredName";
+                            $resultApprovers = $connection2->prepare($sqlApprovers);
+                            $resultApprovers->execute($dataApprovers);
+                        } catch (PDOException $e) {
+                            return false;
+                        }
+                        $approvers = $resultApprovers->fetchAll();
+                        $countTotal = $resultApprovers->rowCount();
+                        $count = 0;
+                        foreach ($approvers as $approver) {
+                            if ($approver['g1'] == $approver['g2']) {
+                                ++$count;
+                            }
+                        }
+
+                        if ($count >= $countTotal) { //Yes - return "school"
+                            return 'school';
+                        } else { //No - return "budget"
+                            return 'budget';
+                        }
+                    } else {
+                        return false;
                     }
                 }
             }
         }
-
-        //Unlock tables
-        
-            $sql = 'UNLOCK TABLES';
-            $result = $connection2->query($sql);
     }
+
+
+    
 }
 
 //Checks a certain expense request, and returns FALSE on error, TRUE if specified person can approve it.
 function approvalRequired($guid, $gibbonPersonID, $gibbonFinanceExpenseID, $gibbonFinanceBudgetCycleID, $connection2, $locking = true)
 {
-    //Lock tables
-    $lock = true;
-    if ($locking) {
-        try {
-            $sqlLock = 'LOCK TABLE gibbonFinanceExpense WRITE, gibbonFinanceExpenseApprover WRITE, gibbonFinanceExpenseLog WRITE, gibbonFinanceBudget WRITE, gibbonFinanceBudgetPerson WRITE, gibbonSetting WRITE, gibbonNotification WRITE, gibbonPerson READ, gibbonModule READ, gibbonAction READ, gibbonPermission READ';
-            $resultLock = $connection2->query($sqlLock);
-        } catch (PDOException $e) {
-            $lock = false;
-            return false;
-        }
+    try {
+        $data = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
+        $sql = 'SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget FROM gibbonFinanceExpense JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) WHERE gibbonFinanceExpense.gibbonFinanceExpenseID=:gibbonFinanceExpenseID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        return false;
     }
 
-    if ($lock) {
-        try {
-            $data = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
-            $sql = 'SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget FROM gibbonFinanceExpense JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) WHERE gibbonFinanceExpense.gibbonFinanceExpenseID=:gibbonFinanceExpenseID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            return false;
-        }
+    if ($result->rowCount() != 1) {
+        echo $result->rowCount();
+        exit();
 
-        if ($result->rowCount() != 1) {
-            echo $result->rowCount();
-            exit();
+        return false;
+    } else {
+        $row = $result->fetch();
 
+        //Get settings for budget-level and school-level approval
+        $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
+        $budgetLevelExpenseApproval = getSettingByScope($connection2, 'Finance', 'budgetLevelExpenseApproval');
+
+        if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
             return false;
         } else {
-            $row = $result->fetch();
-
-            //Get settings for budget-level and school-level approval
-            $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
-            $budgetLevelExpenseApproval = getSettingByScope($connection2, 'Finance', 'budgetLevelExpenseApproval');
-
-            if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
+            if ($row['status'] != 'Requested') { //Finished? Return
                 return false;
-            } else {
-                if ($row['status'] != 'Requested') { //Finished? Return
-                    return false;
-                } else { //Not finished
-                    if ($row['statusApprovalBudgetCleared'] == 'N') {
-                        //Get Full budget people
+            } else { //Not finished
+                if ($row['statusApprovalBudgetCleared'] == 'N') {
+                    //Get Full budget people
+                    try {
+                        $dataBudget = array('gibbonFinanceBudgetID' => $row['gibbonFinanceBudgetID'], 'gibbonPersonID' => $gibbonPersonID);
+                        $sqlBudget = "SELECT gibbonPersonID FROM gibbonFinanceBudget JOIN gibbonFinanceBudgetPerson ON (gibbonFinanceBudgetPerson.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) WHERE access='Full' AND gibbonFinanceBudget.gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND gibbonFinanceBudgetPerson.gibbonPersonID=:gibbonPersonID";
+                        $resultBudget = $connection2->prepare($sqlBudget);
+                        $resultBudget->execute($dataBudget);
+                    } catch (PDOException $e) {
+                        return false;
+                    }
+
+                    if ($resultBudget->rowCount() != 1) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                } else { //School-level approval, what type is it?
+                    if ($expenseApprovalType == 'One Of' or $expenseApprovalType == 'Two Of') { //One Of or Two Of, so alert all approvers
                         try {
-                            $dataBudget = array('gibbonFinanceBudgetID' => $row['gibbonFinanceBudgetID'], 'gibbonPersonID' => $gibbonPersonID);
-                            $sqlBudget = "SELECT gibbonPersonID FROM gibbonFinanceBudget JOIN gibbonFinanceBudgetPerson ON (gibbonFinanceBudgetPerson.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) WHERE access='Full' AND gibbonFinanceBudget.gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND gibbonFinanceBudgetPerson.gibbonPersonID=:gibbonPersonID";
-                            $resultBudget = $connection2->prepare($sqlBudget);
-                            $resultBudget->execute($dataBudget);
+                            $dataApprovers = array('gibbonPersonID' => $gibbonPersonID);
+                            $sqlApprovers = "SELECT gibbonPerson.gibbonPersonID FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND gibbonFinanceExpenseApprover.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName";
+                            $resultApprovers = $connection2->prepare($sqlApprovers);
+                            $resultApprovers->execute($dataApprovers);
                         } catch (PDOException $e) {
                             return false;
                         }
 
-                        if ($resultBudget->rowCount() != 1) {
+                        if ($resultApprovers->rowCount() != 1) {
                             return false;
                         } else {
-                            return true;
-                        }
-                    } else { //School-level approval, what type is it?
-                        if ($expenseApprovalType == 'One Of' or $expenseApprovalType == 'Two Of') { //One Of or Two Of, so alert all approvers
+                            //Check of already approved at school-level
                             try {
-                                $dataApprovers = array('gibbonPersonID' => $gibbonPersonID);
-                                $sqlApprovers = "SELECT gibbonPerson.gibbonPersonID FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND gibbonFinanceExpenseApprover.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName";
-                                $resultApprovers = $connection2->prepare($sqlApprovers);
-                                $resultApprovers->execute($dataApprovers);
+                                $dataApproval = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID, 'gibbonPersonID' => $gibbonPersonID);
+                                $sqlApproval = "SELECT * FROM gibbonFinanceExpenseLog WHERE gibbonFinanceExpenseID=:gibbonFinanceExpenseID AND gibbonPersonID=:gibbonPersonID AND action='Approval - Partial - School'";
+                                $resultApproval = $connection2->prepare($sqlApproval);
+                                $resultApproval->execute($dataApproval);
                             } catch (PDOException $e) {
                                 return false;
                             }
-
-                            if ($resultApprovers->rowCount() != 1) {
+                            if ($resultApproval->rowCount() > 0) {
                                 return false;
                             } else {
-                                //Check of already approved at school-level
-                                try {
-                                    $dataApproval = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID, 'gibbonPersonID' => $gibbonPersonID);
-                                    $sqlApproval = "SELECT * FROM gibbonFinanceExpenseLog WHERE gibbonFinanceExpenseID=:gibbonFinanceExpenseID AND gibbonPersonID=:gibbonPersonID AND action='Approval - Partial - School'";
-                                    $resultApproval = $connection2->prepare($sqlApproval);
-                                    $resultApproval->execute($dataApproval);
-                                } catch (PDOException $e) {
-                                    return false;
+                                return true;
+                            }
+                        }
+                    } elseif ($expenseApprovalType == 'Chain Of All') { //Chain of all
+                        //Get notifiers in sequence
+                        try {
+                            $dataApprovers = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
+                            $sqlApprovers = "SELECT gibbonPerson.gibbonPersonID AS g1, gibbonFinanceExpenseLog.gibbonPersonID AS g2 FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonFinanceExpenseLog ON (gibbonFinanceExpenseLog.gibbonPersonID=gibbonFinanceExpenseApprover.gibbonPersonID AND gibbonFinanceExpenseLog.action='Approval - Partial - School' AND gibbonFinanceExpenseLog.gibbonFinanceExpenseID=:gibbonFinanceExpenseID) WHERE gibbonPerson.status='Full' ORDER BY sequenceNumber, surname, preferredName";
+                            $resultApprovers = $connection2->prepare($sqlApprovers);
+                            $resultApprovers->execute($dataApprovers);
+                        } catch (PDOException $e) {
+                            return false;
+                        }
+                        if ($resultApprovers->rowCount() < 1) {
+                            return false;
+                        } else {
+                            $approvers = $resultApprovers->fetchAll();
+                            $gibbonPersonIDNext = null;
+                            foreach ($approvers as $approver) {
+                                if ($approver['g1'] != $approver['g2']) {
+                                    if (is_null($gibbonPersonIDNext)) {
+                                        $gibbonPersonIDNext = $approver['g1'];
+                                    }
                                 }
-                                if ($resultApproval->rowCount() > 0) {
+                            }
+
+                            if (is_null($gibbonPersonIDNext)) {
+                                return false;
+                            } else {
+                                if ($gibbonPersonIDNext != $gibbonPersonID) {
                                     return false;
                                 } else {
                                     return true;
                                 }
                             }
-                        } elseif ($expenseApprovalType == 'Chain Of All') { //Chain of all
-                            //Get notifiers in sequence
-                            try {
-                                $dataApprovers = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
-                                $sqlApprovers = "SELECT gibbonPerson.gibbonPersonID AS g1, gibbonFinanceExpenseLog.gibbonPersonID AS g2 FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonFinanceExpenseLog ON (gibbonFinanceExpenseLog.gibbonPersonID=gibbonFinanceExpenseApprover.gibbonPersonID AND gibbonFinanceExpenseLog.action='Approval - Partial - School' AND gibbonFinanceExpenseLog.gibbonFinanceExpenseID=:gibbonFinanceExpenseID) WHERE gibbonPerson.status='Full' ORDER BY sequenceNumber, surname, preferredName";
-                                $resultApprovers = $connection2->prepare($sqlApprovers);
-                                $resultApprovers->execute($dataApprovers);
-                            } catch (PDOException $e) {
-                                return false;
-                            }
-                            if ($resultApprovers->rowCount() < 1) {
-                                return false;
-                            } else {
-                                $approvers = $resultApprovers->fetchAll();
-                                $gibbonPersonIDNext = null;
-                                foreach ($approvers as $approver) {
-                                    if ($approver['g1'] != $approver['g2']) {
-                                        if (is_null($gibbonPersonIDNext)) {
-                                            $gibbonPersonIDNext = $approver['g1'];
-                                        }
-                                    }
-                                }
-
-                                if (is_null($gibbonPersonIDNext)) {
-                                    return false;
-                                } else {
-                                    if ($gibbonPersonIDNext != $gibbonPersonID) {
-                                        return false;
-                                    } else {
-                                        return true;
-                                    }
-                                }
-                            }
-                        } else {
-                            return false;
                         }
+                    } else {
+                        return false;
                     }
                 }
             }
         }
-
-        //Unlock tables
-        
-            $sql = 'UNLOCK TABLES';
-            $result = $connection2->query($sql);
     }
+
 }
 
 //Issues correct notificaitons for give expense, depending on circumstances. Returns FALSE on error, TRUE if it did its job.
 //Tries to avoid issue duplicate notifications
 function setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBudgetCycleID, $connection2)
 {
-    //Lock tables
-    $lock = true;
     try {
-        $sqlLock = 'LOCK TABLE gibbonFinanceExpense WRITE, gibbonFinanceExpenseApprover WRITE, gibbonFinanceExpenseLog WRITE, gibbonFinanceBudget WRITE, gibbonFinanceBudgetPerson WRITE, gibbonSetting WRITE, gibbonNotification WRITE, gibbonPerson READ, gibbonModule READ';
-        $resultLock = $connection2->query($sqlLock);
+        $data = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
+        $sql = 'SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget FROM gibbonFinanceExpense JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) WHERE gibbonFinanceExpense.gibbonFinanceExpenseID=:gibbonFinanceExpenseID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
     } catch (PDOException $e) {
-        $lock = false;
-
         return false;
     }
 
-    if ($lock) {
-        try {
-            $data = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
-            $sql = 'SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget FROM gibbonFinanceExpense JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) WHERE gibbonFinanceExpense.gibbonFinanceExpenseID=:gibbonFinanceExpenseID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            return false;
-        }
+    if ($result->rowCount() != 1) {
+        return false;
+    } else {
+        $row = $result->fetch();
 
-        if ($result->rowCount() != 1) {
+        //Get settings for budget-level and school-level approval
+        $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
+        $budgetLevelExpenseApproval = getSettingByScope($connection2, 'Finance', 'budgetLevelExpenseApproval');
+
+        if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
             return false;
         } else {
-            $row = $result->fetch();
+            if ($row['status'] != 'Requested') { //Finished? Return
+                return true;
+            } else { //Not finished
+                $notificationText = sprintf(__('Someone has requested expense approval for "%1$s" in budget "%2$s".'), $row['title'], $row['budget']);
 
-            //Get settings for budget-level and school-level approval
-            $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
-            $budgetLevelExpenseApproval = getSettingByScope($connection2, 'Finance', 'budgetLevelExpenseApproval');
+                if ($row['statusApprovalBudgetCleared'] == 'N') { //Notify budget holders (e.g. access Full)
+                    //Get Full budget people, and notify them
+                    try {
+                        $dataBudget = array('gibbonFinanceBudgetID' => $row['gibbonFinanceBudgetID']);
+                        $sqlBudget = "SELECT gibbonPersonID FROM gibbonFinanceBudget JOIN gibbonFinanceBudgetPerson ON (gibbonFinanceBudgetPerson.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) WHERE access='Full' AND gibbonFinanceBudget.gibbonFinanceBudgetID=:gibbonFinanceBudgetID";
+                        $resultBudget = $connection2->prepare($sqlBudget);
+                        $resultBudget->execute($dataBudget);
+                    } catch (PDOException $e) {
+                        return false;
+                    }
+                    if ($resultBudget->rowCount() < 1) {
+                        return false;
+                    } else {
+                        while ($rowBudget = $resultBudget->fetch()) {
+                            setNotification($connection2, $guid, $rowBudget['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_approve.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
 
-            if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
-                return false;
-            } else {
-                if ($row['status'] != 'Requested') { //Finished? Return
-                    return true;
-                } else { //Not finished
-                    $notificationText = sprintf(__('Someone has requested expense approval for "%1$s" in budget "%2$s".'), $row['title'], $row['budget']);
-
-                    if ($row['statusApprovalBudgetCleared'] == 'N') { //Notify budget holders (e.g. access Full)
-                        //Get Full budget people, and notify them
+                            return true;
+                        }
+                    }
+                } else { //School-level approval, what type is it?
+                    if ($expenseApprovalType == 'One Of' or $expenseApprovalType == 'Two Of') { //One Of or Two Of, so alert all approvers
                         try {
-                            $dataBudget = array('gibbonFinanceBudgetID' => $row['gibbonFinanceBudgetID']);
-                            $sqlBudget = "SELECT gibbonPersonID FROM gibbonFinanceBudget JOIN gibbonFinanceBudgetPerson ON (gibbonFinanceBudgetPerson.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) WHERE access='Full' AND gibbonFinanceBudget.gibbonFinanceBudgetID=:gibbonFinanceBudgetID";
-                            $resultBudget = $connection2->prepare($sqlBudget);
-                            $resultBudget->execute($dataBudget);
+                            $dataApprovers = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
+                            $sqlApprovers = "SELECT gibbonPerson.gibbonPersonID, gibbonFinanceExpenseLog.gibbonFinanceExpenseLogID FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonFinanceExpenseLog ON (gibbonFinanceExpenseLog.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonFinanceExpenseLog.gibbonFinanceExpenseID=:gibbonFinanceExpenseID) WHERE gibbonPerson.status='Full' ORDER BY surname, preferredName";
+                            $resultApprovers = $connection2->prepare($sqlApprovers);
+                            $resultApprovers->execute($dataApprovers);
                         } catch (PDOException $e) {
                             return false;
                         }
-                        if ($resultBudget->rowCount() < 1) {
+                        if ($resultApprovers->rowCount() < 1) {
                             return false;
                         } else {
-                            while ($rowBudget = $resultBudget->fetch()) {
-                                setNotification($connection2, $guid, $rowBudget['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_approve.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
+                            while ($rowApprovers = $resultApprovers->fetch()) {
+                                if ($rowApprovers['gibbonFinanceExpenseLogID'] == '') {
+                                    setNotification($connection2, $guid, $rowApprovers['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_approve.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
+                                }
+                            }
+
+                            return true;
+                        }
+                    } elseif ($expenseApprovalType == 'Chain Of All') { //Chain of all
+                        //Get notifiers in sequence
+                        try {
+                            $dataApprovers = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
+                            $sqlApprovers = "SELECT gibbonPerson.gibbonPersonID AS g1, gibbonFinanceExpenseLog.gibbonPersonID AS g2 FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonFinanceExpenseLog ON (gibbonFinanceExpenseLog.gibbonPersonID=gibbonFinanceExpenseApprover.gibbonPersonID AND gibbonFinanceExpenseLog.action='Approval - Partial - School' AND gibbonFinanceExpenseLog.gibbonFinanceExpenseID=:gibbonFinanceExpenseID) WHERE gibbonPerson.status='Full' ORDER BY sequenceNumber, surname, preferredName";
+                            $resultApprovers = $connection2->prepare($sqlApprovers);
+                            $resultApprovers->execute($dataApprovers);
+                        } catch (PDOException $e) {
+                            return false;
+                        }
+                        if ($resultApprovers->rowCount() < 1) {
+                            return false;
+                        } else {
+                            $approvers = $resultApprovers->fetchAll();
+                            $gibbonPersonIDNext = null;
+                            foreach ($approvers as $approver) {
+                                if ($approver['g1'] != $approver['g2']) {
+                                    if (is_null($gibbonPersonIDNext)) {
+                                        $gibbonPersonIDNext = $approver['g1'];
+                                    }
+                                }
+                            }
+
+                            if (is_null($gibbonPersonIDNext)) {
+                                return false;
+                            } else {
+                                setNotification($connection2, $guid, $gibbonPersonIDNext, $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_approve.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
 
                                 return true;
                             }
                         }
-                    } else { //School-level approval, what type is it?
-                        if ($expenseApprovalType == 'One Of' or $expenseApprovalType == 'Two Of') { //One Of or Two Of, so alert all approvers
-                            try {
-                                $dataApprovers = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
-                                $sqlApprovers = "SELECT gibbonPerson.gibbonPersonID, gibbonFinanceExpenseLog.gibbonFinanceExpenseLogID FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonFinanceExpenseLog ON (gibbonFinanceExpenseLog.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonFinanceExpenseLog.gibbonFinanceExpenseID=:gibbonFinanceExpenseID) WHERE gibbonPerson.status='Full' ORDER BY surname, preferredName";
-                                $resultApprovers = $connection2->prepare($sqlApprovers);
-                                $resultApprovers->execute($dataApprovers);
-                            } catch (PDOException $e) {
-                                return false;
-                            }
-                            if ($resultApprovers->rowCount() < 1) {
-                                return false;
-                            } else {
-                                while ($rowApprovers = $resultApprovers->fetch()) {
-                                    if ($rowApprovers['gibbonFinanceExpenseLogID'] == '') {
-                                        setNotification($connection2, $guid, $rowApprovers['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_approve.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
-                                    }
-                                }
-
-                                return true;
-                            }
-                        } elseif ($expenseApprovalType == 'Chain Of All') { //Chain of all
-                            //Get notifiers in sequence
-                            try {
-                                $dataApprovers = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
-                                $sqlApprovers = "SELECT gibbonPerson.gibbonPersonID AS g1, gibbonFinanceExpenseLog.gibbonPersonID AS g2 FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonFinanceExpenseLog ON (gibbonFinanceExpenseLog.gibbonPersonID=gibbonFinanceExpenseApprover.gibbonPersonID AND gibbonFinanceExpenseLog.action='Approval - Partial - School' AND gibbonFinanceExpenseLog.gibbonFinanceExpenseID=:gibbonFinanceExpenseID) WHERE gibbonPerson.status='Full' ORDER BY sequenceNumber, surname, preferredName";
-                                $resultApprovers = $connection2->prepare($sqlApprovers);
-                                $resultApprovers->execute($dataApprovers);
-                            } catch (PDOException $e) {
-                                return false;
-                            }
-                            if ($resultApprovers->rowCount() < 1) {
-                                return false;
-                            } else {
-                                $approvers = $resultApprovers->fetchAll();
-                                $gibbonPersonIDNext = null;
-                                foreach ($approvers as $approver) {
-                                    if ($approver['g1'] != $approver['g2']) {
-                                        if (is_null($gibbonPersonIDNext)) {
-                                            $gibbonPersonIDNext = $approver['g1'];
-                                        }
-                                    }
-                                }
-
-                                if (is_null($gibbonPersonIDNext)) {
-                                    return false;
-                                } else {
-                                    setNotification($connection2, $guid, $gibbonPersonIDNext, $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_approve.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
-
-                                    return true;
-                                }
-                            }
-                        } else {
-                            return false;
-                        }
+                    } else {
+                        return false;
                     }
                 }
             }
         }
-
-        //Unlock tables
-        
-            $sql = 'UNLOCK TABLES';
-            $result = $connection2->query($sql);
     }
+
+    
 }
 
 //Returns all budgets a person is linked to, as well as their access rights to that budget
@@ -804,12 +756,6 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         //Let's go!
         $row = $result->fetch();
 
-        if ($email == true) {
-            $return .= "<div style='width: 100%; text-align: right'>";
-            $return .= "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL']."'><img height='100px' width='400px' class='School Logo' alt='Logo' src='".$_SESSION[$guid]['absoluteURL'].'/'.$_SESSION[$guid]['organisationLogo']."'/></a>";
-            $return .= '</div>';
-        }
-
         //Invoice Text
         $invoiceText = getSettingByScope($connection2, 'Finance', 'invoiceText');
         if ($invoiceText != '') {
@@ -829,7 +775,7 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
             $style4 = 'background-color: #f6f6f6; ';
         }
         //Invoice Details
-        $return .= "<table cellspacing='0' style='width: 100%'>";
+        $return .= "<table cellspacing='0' style='width: 100%; font-size: 12px;'>";
         $return .= '<tr>';
         $return .= "<td style='padding-top: 15px; padding-left: 10px; vertical-align: top; $style $style3' colspan=3>";
         $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Invoice To').' ('.__($row['invoiceTo']).')</span><br/>';
@@ -994,7 +940,7 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
             $return .= __('Fee Table');
             $return .= '</h3>';
 
-            $return .= "<table cellspacing='0' style='width: 100%; $style4'>";
+            $return .= "<table cellspacing='0' style='width: 100%; font-size: 12px; $style4'>";
             $return .= "<tr class='head'>";
             $return .= "<th style='text-align: left; padding-left: 10px'>";
             $return .= __('Name');

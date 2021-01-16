@@ -434,7 +434,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         $row->addLabel('studentID', __('Student ID'));
         $row->addTextField('studentID')
             ->maxLength(15)
-            ->uniqueField('./modules/User Admin/user_manage_studentIDAjax.php', ['gibbonPersonID' => $gibbonPersonID]);
+            ->uniqueField('./modules/User Admin/user_manage_studentIDAjax.php');
 
     $sql = "SELECT DISTINCT transport FROM gibbonPerson
             JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
@@ -482,7 +482,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     // STAFF
     $form->toggleVisibilityByClass('staffDetails')->onSelect('gibbonRoleIDPrimary')->when($staffRoles);
     $form->toggleVisibilityByClass('staffRecord')->onCheckbox('staffRecord')->when('Y');
-    $form->addRow()->addHeading(__('Staff'))->addClass('staffDetails');
+    $form->addRow()->addClass('staffDetails')->addHeading(__('Staff'))->addClass('staffDetails');
 
     $row = $form->addRow()->addClass('staffDetails');
         $row->addLabel('staffRecord', __('Add Staff'));
