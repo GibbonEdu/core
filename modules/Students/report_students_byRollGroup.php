@@ -144,7 +144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
 
                     foreach ($conditions as $index => $condition) {
                         $output .= '<b><i>'.__('Condition').' '.($index+1).'</i></b>: '.$condition['name'];
-                        $output .= ' <span style="color: #'.$condition['alertColor'].'; font-weight: bold">('.__($condition['risk']).' '.__('Risk').')</span>';
+                        $output .= ' <span style="color: '.$condition['alertColor'].'; font-weight: bold">('.__($condition['risk']).' '.__('Risk').')</span>';
                         $output .= '<br/>';
                     }
                 }
