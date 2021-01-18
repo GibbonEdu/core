@@ -22,11 +22,11 @@ all stylesheets and scripts with a 'head' context.
 
 {% for condition in medicalConditions %}
 
-<div style="border-left: 4px solid #{{ condition.alertColor }}; padding-left: 14px;">
+<div style="border-left: 4px solid {{ condition.alertColor }}; padding-left: 14px;">
 
     <b><i>{{ __('Condition') }} {{ loop.index }}:</i></b> {{ __(condition.name) }}<br/>
 
-    <u><i>{{ __('Risk') }}:</i></u> <span style="color: #{{ condition.alertColor }};font-weight: bold;">{{ __(condition.risk) }}</span><br/>
+    <u><i>{{ __('Risk') }}:</i></u> <span style="color: {{ condition.alertColor }};font-weight: bold;">{{ __(condition.risk) }}</span><br/>
 
     {% if condition.triggers %}
         <u><i>{{ __('Triggers') }}:</i></u> {{ condition.triggers }}<br/>

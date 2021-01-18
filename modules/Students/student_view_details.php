@@ -1662,7 +1662,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                         foreach ($conditions as $condition) {
                             $table = DataTable::createDetails('medicalConditions');
-                            $table->setTitle(__($condition['name'])." <span style='color: #".$condition['alertColor']."'>(".__($condition['risk']).' '.__('Risk').')</span>');
+                            $table->setTitle(__($condition['name'])." <span style='color: ".$condition['alertColor']."'>(".__($condition['risk']).' '.__('Risk').')</span>');
                             $table->setDescription($condition['description']);
                             $table->addMetaData('gridClass', 'grid-cols-1 md:grid-cols-2');
 
