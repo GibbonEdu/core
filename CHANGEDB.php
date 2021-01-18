@@ -756,4 +756,6 @@ UPDATE `gibbonSetting` SET description='Click to select a colour.' WHERE name='b
 UPDATE `gibbonSetting` SET value=CONCAT('#', value) WHERE name='browseBGColor' AND scope='Library' AND NOT value='';end
 UPDATE `gibbonSetting` SET nameDisplay='Browse Library BG Colour' WHERE name='browseBGColor' AND scope='Library';end
 UPDATE `gibbonSetting` SET nameDisplay='Message Bubble Background Colour', description='Message bubble background colour in RGBA (e.g. 100,100,100,0.50). If blank, theme default will be used.' WHERE name='messageBubbleBGColor' AND scope='Messenger';end
+UPDATE `gibbonAction` SET `URLList` = 'archive_byReport.php,archive_byStudent.php' WHERE `name`='View Past Reports' AND `gibbonModuleID`=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Reports');end
+UPDATE `gibbonAction` SET `URLList` = 'archive_byReport.php,archive_byStudent.php' WHERE `name`='View Draft Reports' AND `gibbonModuleID`=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Reports');end
 ";
