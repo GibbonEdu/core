@@ -87,7 +87,7 @@ if ($proceed == false) {
     if (isset($_POST['nameInCharacters'])) {
         $nameInCharacters = $_POST['nameInCharacters'];
     }
-    $gender = null;
+    $gender = 'Unspecified';
     if (isset($_POST['gender'])) {
         $gender = $_POST['gender'];
     }
