@@ -173,12 +173,9 @@ jQuery(function($){
     /**
     * Data Table: Expandable Rows
     */
-    // Expandable Rows
-    $('.dataTable .expander').each(function() {
-        $(this).click(function() {
-            $(this).toggleClass('expanded');
-            $(this).parents('tr').next('tr').toggle();
-        });
+    $(document).on('click', '.dataTable .expander', function () {
+        $(this).toggleClass('expanded');
+        $(this).parents('tr').next('tr').toggle();
     });
 });
 
