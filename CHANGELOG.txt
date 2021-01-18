@@ -159,6 +159,7 @@ v21.0.00
         Planner: fixed alignment of birthday icon in attendance on Lesson page
         Staff: fixed alternate email address causing an error on Personal subpage
         Staff: fixed pagination for Grid and Card views of Staff Directory
+        Staff: fixed SQL error submitting application form when logged in
         Students: fixed parent support link in application acceptance email
         Students: fixed students able to see other students in class lists
         Students: fixed issue preventing timetable edit link from working with left students and allStudent flag
