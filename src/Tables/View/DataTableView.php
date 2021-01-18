@@ -180,6 +180,7 @@ class DataTableView extends View implements RendererInterface
 
         foreach ($table->getRowModifiers() as $callable) {
             $row = $callable($data, $row, $table->getColumnCount());
+            if (!$row) break;
         }
 
         return $row;
