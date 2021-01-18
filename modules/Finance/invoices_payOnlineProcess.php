@@ -27,7 +27,7 @@ $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/invoices_p
 
 $paid = null;
 if (isset($_GET['paid'])) {
-    $paid = $_GET['paid'];
+    $paid = $_GET['paid'] ?? '';
 }
 
 if ($paid != 'Y') { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
@@ -127,29 +127,29 @@ if ($paid != 'Y') { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
     }
     $paymentToken = null;
     if (isset($_GET['token'])) {
-        $paymentToken = $_GET['token'];
+        $paymentToken = $_GET['token'] ?? '';
     }
     $paymentPayerID = null;
     if (isset($_GET['PayerID'])) {
-        $paymentPayerID = $_GET['PayerID'];
+        $paymentPayerID = $_GET['PayerID'] ?? '';
     }
     $feeTotal = null;
     if (isset($_GET['feeTotal'])) {
-        $feeTotal = $_GET['feeTotal'];
+        $feeTotal = $_GET['feeTotal'] ?? '';
     }
     $gibbonFinanceInvoiceID = '';
     if (isset($_GET['gibbonFinanceInvoiceID'])) {
-        $gibbonFinanceInvoiceID = $_GET['gibbonFinanceInvoiceID'];
+        $gibbonFinanceInvoiceID = $_GET['gibbonFinanceInvoiceID'] ?? '';
     }
     $key = '';
     if (isset($_GET['key'])) {
-        $key = $_GET['key'];
+        $key = $_GET['key'] ?? '';
     }
 
     $gibbonFinanceInvoiceeID = '';
     $invoiceTo = '';
     $gibbonSchoolYearID = '';
-    
+
         $dataKeyRead = array('gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID, 'key' => $key);
         $sqlKeyRead = 'SELECT * FROM gibbonFinanceInvoice WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID AND `key`=:key';
         $resultKeyRead = $connection2->prepare($sqlKeyRead);
@@ -209,7 +209,7 @@ if ($paid != 'Y') { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
             $emails = array();
             $emailsCount = 0;
             if ($invoiceTo == 'Company') {
-                
+
                     $dataCompany = array('gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID);
                     $sqlCompany = 'SELECT * FROM gibbonFinanceInvoicee WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID';
                     $resultCompany = $connection2->prepare($sqlCompany);
@@ -269,7 +269,7 @@ if ($paid != 'Y') { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
             //Send emails
             if (count($emails) > 0) {
                 //Get receipt number
-                
+
                     $dataPayments = array('foreignTable' => 'gibbonFinanceInvoice', 'foreignTableID' => $gibbonFinanceInvoiceID);
                     $sqlPayments = 'SELECT gibbonPayment.*, surname, preferredName FROM gibbonPayment JOIN gibbonPerson ON (gibbonPayment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID ORDER BY timestamp, gibbonPaymentID';
                     $resultPayments = $connection2->prepare($sqlPayments);

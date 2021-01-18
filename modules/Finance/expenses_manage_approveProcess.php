@@ -22,11 +22,11 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
-$gibbonFinanceBudgetCycleID = $_POST['gibbonFinanceBudgetCycleID'];
-$gibbonFinanceBudgetID = $_POST['gibbonFinanceBudgetID'];
-$gibbonFinanceExpenseID = $_POST['gibbonFinanceExpenseID'];
-$status2 = $_POST['status2'];
-$gibbonFinanceBudgetID2 = $_POST['gibbonFinanceBudgetID2'];
+$gibbonFinanceBudgetCycleID = $_POST['gibbonFinanceBudgetCycleID'] ?? '';
+$gibbonFinanceBudgetID = $_POST['gibbonFinanceBudgetID'] ?? '';
+$gibbonFinanceExpenseID = $_POST['gibbonFinanceExpenseID'] ?? '';
+$status2 = $_POST['status2'] ?? '';
+$gibbonFinanceBudgetID2 = $_POST['gibbonFinanceBudgetID2'] ?? '';
 
 if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'Fatal error loading this page!';
 } else {
@@ -128,7 +128,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                                         $approval = 'Approval - Partial - Budget';
                                     } else {
                                         //Check if school approver, if not, abort
-                                        
+
                                             $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
                                             $sql = "SELECT * FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND gibbonFinanceExpenseApprover.gibbonPersonID=:gibbonPersonID";
                                             $result = $connection2->prepare($sql);
@@ -143,7 +143,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                                         }
                                     }
                                 }
-                                $comment = $_POST['comment'];
+                                $comment = $_POST['comment'] ?? '';
 
                                 if ($approval == '') {
                                     $URL .= '&return=error7';
