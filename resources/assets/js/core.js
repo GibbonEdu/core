@@ -500,7 +500,6 @@ CustomBlocks.prototype.loadBlockInputData = function(block, data) {
 
     for (key in data) {
         $("[name='"+key+"']:not([type='file'])", block).val(data[key]);
-        $("label[for='"+key+"']", block).html(data[key]);
     }
 
     var readonly = data.readonly || [];
