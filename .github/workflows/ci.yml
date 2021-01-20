@@ -6,10 +6,11 @@ on:
 
 jobs:
   test:
+    name: CI Test (PHP ${{ matrix.php-version }})
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        php-version: ["7.4"]
+        php-version: ["7.0", "7.3", "7.4"]
     services:
       mysql:
         image: mysql:5.7
@@ -28,9 +29,9 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          extensions: gettext, gd, zip
+          extensions: gettext, gd, zip, pdo-mysql
           tools: composer:v2
-          ini-values: date.timezone="Etc/UTC"
+          ini-values: date.timezone="Etc/UTC", xdebug.max_nesting_level = -1
 
       - name: Checkout source code
         uses: actions/checkout@v2
@@ -56,7 +57,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/composer-cache
-          key: ${{ runner.os }}-${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
+          key: ${{ runner.os }}-php${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php${{ matrix.php-version }}-
 
       - name: Install PHP vendor libraries
         run: composer install --prefer-dist --no-interaction
@@ -70,3 +73,11 @@ jobs:
           DB_NAME: gibbon_test
           DB_USERNAME: root
           DB_PASSWORD: ""
+
+      - name: Save Test Artifacts
+        uses: actions/upload-artifact@v2
+        if: ${{ failure() }}
+        with:
+          name: Test Artifacts (PHP ${{ matrix.php-version }})
+          path: tests/log
+          retention-days: 5
