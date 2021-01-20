@@ -1813,6 +1813,7 @@ function returnProcessGetAlert($return, $editLink = null, $customReturns = null)
         $returnMessage = 'Unknown Return';
         $returns = array();
         $returns['success0'] = __('Your request was completed successfully.');
+        $returns['successa'] = __('Your account has been successfully updated. You can now continue to use the system as per normal.');
         $returns['success5'] = __('Your request has been successfully started as a background process. It will continue to run on the server until complete and you will be notified of any errors.');
         $returns['error0'] = __('Your request failed because you do not have access to this action.');
         $returns['error1'] = __('Your request failed because your inputs were invalid.');

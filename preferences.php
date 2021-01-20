@@ -39,7 +39,6 @@ if (!$gibbon->session->exists("username")) {
 
     $returns = array();
     $returns['errora'] = sprintf(__('Your account status could not be updated, and so you cannot continue to use the system. Please contact %1$s if you have any questions.'), "<a href='mailto:".$gibbon->session->get('organisationAdministratorEmail')."'>".$gibbon->session->get('organisationAdministratorName').'</a>');
-    $returns['successa'] = __('Your account has been successfully updated. You can now continue to use the system as per normal.');
     $returns['error4'] = __('Your request failed due to non-matching passwords.');
     $returns['error3'] = __('Your request failed due to incorrect current password.');
     $returns['error6'] = __('Your request failed because your password does not meet the minimum requirements for strength.');
