@@ -57,13 +57,11 @@ if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
 
                 // If we're deleting the first contact priority, move the second one to first
                 if ($row['contactPriority'] == 1) {
-                    try {
+                    
                         $dataCP = array('gibbonPersonID' => $gibbonPersonID, 'gibbonFamilyID' => $gibbonFamilyID);
                         $sqlCP = 'UPDATE gibbonFamilyAdult SET contactPriority=1 WHERE contactPriority=2 AND gibbonFamilyID=:gibbonFamilyID AND NOT gibbonPersonID=:gibbonPersonID LIMIT 1';
                         $resultCP = $connection2->prepare($sqlCP);
                         $resultCP->execute($dataCP);
-                    } catch (PDOException $e) {
-                    }
                 }
 
                 //Write to database

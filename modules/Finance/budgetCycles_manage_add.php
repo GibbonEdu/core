@@ -21,10 +21,8 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manage_add.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs
@@ -76,14 +74,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
     $row = $form->addRow();
         $row->addHeading(__("Budget Allocations"));
 
-    try {
+    
         $dataBudget = array();
         $sqlBudget = 'SELECT * FROM gibbonFinanceBudget ORDER BY name';
         $resultBudget = $connection2->prepare($sqlBudget);
         $resultBudget->execute($dataBudget);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
     
     if ($resultBudget->rowCount() < 1) {
         $row = $form->addRow();

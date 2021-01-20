@@ -19,22 +19,30 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\Students;
 
-use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
+use Gibbon\Domain\ScrubbableGateway;
+use Gibbon\Domain\Traits\Scrubbable;
+use Gibbon\Domain\Traits\TableAware;
+use Gibbon\Domain\Traits\ScrubByPerson;
 
 /**
  * @version v16
  * @since   v16
  */
-class StudentNoteGateway extends QueryableGateway
+class StudentNoteGateway extends QueryableGateway implements ScrubbableGateway
 {
     use TableAware;
+    use Scrubbable;
+    use ScrubByPerson;
 
     private static $tableName = 'gibbonStudentNote';
     private static $primaryKey = 'gibbonStudentNoteID';
 
     private static $searchableColumns = ['name'];
+
+    private static $scrubbableKey = 'gibbonPersonID';
+    private static $scrubbableColumns = ['note' => ''];
     
     /**
      * @param QueryCriteria $criteria

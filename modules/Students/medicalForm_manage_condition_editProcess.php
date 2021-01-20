@@ -17,6 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\FileUploader;
+use Gibbon\Services\Format;
+use Gibbon\Comms\NotificationEvent;
+use Gibbon\Domain\Students\MedicalGateway;
+use Gibbon\Domain\Students\StudentGateway;
+
 include '../../gibbon.php';
 
 $gibbonPersonMedicalID = $_GET['gibbonPersonMedicalID'];
@@ -36,18 +42,10 @@ if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') { ech
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
-            try {
-                $data = array('gibbonPersonMedicalConditionID' => $gibbonPersonMedicalConditionID);
-                $sql = 'SELECT * FROM gibbonPersonMedicalCondition WHERE gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
-
-            if ($result->rowCount() != 1) {
+            $medicalGateway = $container->get(MedicalGateway::class);
+            $values = $medicalGateway->getMedicalConditionByID($gibbonPersonMedicalConditionID);
+            
+            if (empty($values)) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
             } else {
@@ -66,20 +64,57 @@ if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') { ech
                 $lastEpisodeTreatment = $_POST['lastEpisodeTreatment'];
                 $comment = $_POST['comment'];
 
+                // File Upload
+                if (!empty($_FILES['attachment']['tmp_name'])) {
+                    // Upload the file, return the /uploads relative path
+                    $fileUploader = new FileUploader($pdo, $gibbon->session);
+                    $attachment = $fileUploader->uploadFromPost($_FILES['attachment']);
+
+                    if (empty($attachment)) {
+                        $URL .= '&return=error3';
+                        header("Location: {$URL}");
+                        exit;
+                    }
+                } else {
+                    $attachment = $_POST['attachment'] ?? null;
+                }
+
                 if ($name == '' or $gibbonAlertLevelID == '') {
                     $URL .= '&return=error3';
                     header("Location: {$URL}");
                 } else {
                     //Write to database
                     try {
-                        $data = array('gibbonPersonMedicalID' => $gibbonPersonMedicalID, 'name' => $name, 'gibbonAlertLevelID' => $gibbonAlertLevelID, 'triggers' => $triggers, 'reaction' => $reaction, 'response' => $response, 'medication' => $medication, 'lastEpisode' => $lastEpisode, 'lastEpisodeTreatment' => $lastEpisodeTreatment, 'comment' => $comment, 'gibbonPersonMedicalConditionID' => $gibbonPersonMedicalConditionID);
-                        $sql = 'UPDATE gibbonPersonMedicalCondition SET gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment WHERE gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID';
+                        $data = array('gibbonPersonMedicalID' => $gibbonPersonMedicalID, 'name' => $name, 'gibbonAlertLevelID' => $gibbonAlertLevelID, 'triggers' => $triggers, 'reaction' => $reaction, 'response' => $response, 'medication' => $medication, 'lastEpisode' => $lastEpisode, 'lastEpisodeTreatment' => $lastEpisodeTreatment, 'comment' => $comment, 'attachment' => $attachment, 'gibbonPersonMedicalConditionID' => $gibbonPersonMedicalConditionID);
+                        $sql = 'UPDATE gibbonPersonMedicalCondition SET gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment, attachment=:attachment WHERE gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
                         $URL .= '&return=error2';
                         header("Location: {$URL}");
                         exit();
+                    }
+
+                    $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
+
+                    // Has the medical condition risk changed?
+                    if ($values['gibbonAlertLevelID'] != $gibbonAlertLevelID && ($alert['name'] == 'High' || $alert['name'] == 'Medium')) {
+                        $student = $container->get(StudentGateway::class)->selectActiveStudentByPerson($gibbon->session->get('gibbonSchoolYearID'), $values['gibbonPersonID'])->fetch();
+
+                        // Raise a new notification event
+                        $event = new NotificationEvent('Students', 'Medical Condition');
+                        $event->addScope('gibbonPersonIDStudent', $student['gibbonPersonID']);
+                        $event->addScope('gibbonYearGroupID', $student['gibbonYearGroupID']);
+
+                        $event->setNotificationText(__('{name} has a new or updated medical condition ({condition}) with a {risk} risk level.', [
+                            'name' => Format::name('', $student['preferredName'], $student['surname'], 'Student', false, true),
+                            'condition' => $name,
+                            'risk' => $alert['name'],
+                        ]));
+                        $event->setActionLink('/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'].'&search=&allStudents=&subpage=Medical');
+
+                        // Send all notifications
+                        $sendReport = $event->sendNotifications($pdo, $gibbon->session);
                     }
 
                     $URL .= '&return=success0';

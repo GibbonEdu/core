@@ -123,7 +123,7 @@ if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $_SESSION[$guid]['gibbonPerson
     <?php
 
     //Get class list
-    try {
+    
         $dataList['gibbonPersonID'] = $_SESSION[$guid]['gibbonPersonID'];
         $dataList['gibbonPersonID2'] = $_SESSION[$guid]['gibbonPersonID'];
         $sqlList = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.name, gibbonCourseClass.gibbonCourseClassID, gibbonScaleGrade.value AS target, gibbonPerson.dateStart
@@ -135,31 +135,22 @@ if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $_SESSION[$guid]['gibbonPerson
         WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID $and ORDER BY course, class";
         $resultList = $connection2->prepare($sqlList);
         $resultList->execute($dataList);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
     if ($resultList->rowCount() > 0) {
         while ($rowList = $resultList->fetch()) {
-            try {
+            
                 $dataEntry['gibbonPersonIDStudent'] = $_SESSION[$guid]['gibbonPersonID'];
                 $dataEntry['gibbonCourseClassID'] = $rowList['gibbonCourseClassID'];
                 $sqlEntry = "SELECT *, gibbonMarkbookColumn.comment AS commentOn, gibbonMarkbookColumn.uploadedResponse AS uploadedResponseOn, gibbonMarkbookEntry.comment AS comment FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonCourseClassID=:gibbonCourseClassID AND gibbonMarkbookColumn.viewableStudents='Y' AND complete='Y' AND completeDate<='".date('Y-m-d')."' $and2  ORDER BY completeDate";
                 $resultEntry = $connection2->prepare($sqlEntry);
                 $resultEntry->execute($dataEntry);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
             if ($resultEntry->rowCount() > 0) {
                 echo '<h4>'.$rowList['course'].'.'.$rowList['class']." <span style='font-size:85%; font-style: italic'>(".$rowList['name'].')</span></h4>';
 
-                try {
+                
                     $dataTeachers = array('gibbonCourseClassID' => $rowList['gibbonCourseClassID']);
                     $sqlTeachers = "SELECT title, surname, preferredName FROM gibbonPerson JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName";
                     $resultTeachers = $connection2->prepare($sqlTeachers);
                     $resultTeachers->execute($dataTeachers);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 $teachers = '<p><b>'.__('Taught by:').'</b> ';
                 while ($rowTeachers = $resultTeachers->fetch()) {
@@ -253,14 +244,11 @@ if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $_SESSION[$guid]['gibbonPerson
                     } else {
                         echo "<td style='text-align: center'>";
                         $attainmentExtra = '';
-                        try {
+                        
                             $dataAttainment = array('gibbonScaleID' => $rowEntry['gibbonScaleIDAttainment']);
                             $sqlAttainment = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
                             $resultAttainment = $connection2->prepare($sqlAttainment);
                             $resultAttainment->execute($dataAttainment);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
                         if ($resultAttainment->rowCount() == 1) {
                             $rowAttainment = $resultAttainment->fetch();
                             $attainmentExtra = '<br/>'.__($rowAttainment['usage']);
@@ -287,14 +275,11 @@ if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $_SESSION[$guid]['gibbonPerson
 	                    } else {
 	                        echo "<td style='text-align: center'>";
 	                        $effortExtra = '';
-	                        try {
+	                        
 	                            $dataEffort = array('gibbonScaleID' => $rowEntry['gibbonScaleIDEffort']);
 	                            $sqlEffort = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
 	                            $resultEffort = $connection2->prepare($sqlEffort);
 	                            $resultEffort->execute($dataEffort);
-	                        } catch (PDOException $e) {
-	                            echo "<div class='error'>".$e->getMessage().'</div>';
-	                        }
 	                        if ($resultEffort->rowCount() == 1) {
 	                            $rowEffort = $resultEffort->fetch();
 	                            $effortExtra = '<br/>'.__($rowEffort['usage']);
@@ -353,14 +338,11 @@ if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $_SESSION[$guid]['gibbonPerson
                         echo __('N/A');
                         echo '</td>';
                     } else {
-                        try {
+                        
                             $dataSub = array('gibbonPlannerEntryID' => $rowEntry['gibbonPlannerEntryID']);
                             $sqlSub = "SELECT * FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND homeworkSubmission='Y'";
                             $resultSub = $connection2->prepare($sqlSub);
                             $resultSub->execute($dataSub);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
                         if ($resultSub->rowCount() != 1) {
                             echo "<td class='dull' style='color: #bbb; text-align: left'>";
                             echo __('N/A');
@@ -369,14 +351,11 @@ if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $_SESSION[$guid]['gibbonPerson
                             echo '<td>';
                             $rowSub = $resultSub->fetch();
 
-                            try {
+                            
                                 $dataWork = array('gibbonPlannerEntryID' => $rowEntry['gibbonPlannerEntryID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
                                 $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
                                 $resultWork = $connection2->prepare($sqlWork);
                                 $resultWork->execute($dataWork);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
                             if ($resultWork->rowCount() > 0) {
                                 $rowWork = $resultWork->fetch();
 
@@ -411,7 +390,7 @@ if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $_SESSION[$guid]['gibbonPerson
                                     if (!empty($rowList['dateStart']) && $rowList['dateStart'] > $rowSub['date']) {
                                         echo "<span title='".__('Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>".__('NA').'</span>';
                                     } else {
-                                        if ($rowSub['homeworkSubmissionRequired'] == 'Compulsory') {
+                                        if ($rowSub['homeworkSubmissionRequired'] == 'Required') {
                                             echo "<div style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px; margin: 2px 0px'>".__('Incomplete').'</div>';
                                         } else {
                                             echo __('Not submitted online');

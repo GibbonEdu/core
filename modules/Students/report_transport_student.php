@@ -28,10 +28,8 @@ use Gibbon\Domain\Students\StudentReportGateway;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_student.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $viewMode = $_REQUEST['format'] ?? '';
@@ -94,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
         ->format(function ($student) use ($view) {
             return $view->fetchFromTemplate(
                 'formats/familyContacts.twig.html',
-                ['familyAdults' => $student['familyAdults']]
+                ['familyAdults' => $student['familyAdults'], 'includePhoneNumbers' => true]
             );
         });
 

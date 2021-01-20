@@ -68,78 +68,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
                 $URL .= '&return=error1';
                 header("Location: {$URL}");
             } else {
-                //Lock table
+                //Write to database
                 try {
-                    $sql = 'LOCK TABLES gibbonRubric WRITE';
-                    $result = $connection2->query($sql);
+                    $data = array('scope' => $scope, 'gibbonDepartmentID' => $gibbonDepartmentID, 'name' => $name, 'active' => $active, 'category' => $category, 'description' => $description, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'gibbonScaleID' => $gibbonScaleID, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID']);
+                    $sql = 'INSERT INTO gibbonRubric SET scope=:scope, gibbonDepartmentID=:gibbonDepartmentID, name=:name, active=:active, category=:category, description=:description, gibbonYearGroupIDList=:gibbonYearGroupIDList, gibbonScaleID=:gibbonScaleID, gibbonPersonIDCreator=:gibbonPersonIDCreator';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
                 } catch (PDOException $e) {
                     $URL .= '&return=error2';
                     header("Location: {$URL}");
                     exit();
                 }
 
-                //Get next autoincrement
-                try {
-                    $sqlAI = "SHOW TABLE STATUS LIKE 'gibbonRubric'";
-                    $resultAI = $connection2->query($sqlAI);
-                } catch (PDOException $e) {
-                    $URL .= '&return=error2';
-                    header("Location: {$URL}");
-                    exit();
-                }
+                $AI = $connection2->lastInsertID();
 
-                $rowAI = $resultAI->fetch();
-                $AI = str_pad($rowAI['Auto_increment'], 8, '0', STR_PAD_LEFT);
-
-                if ($AI == '') {
-                    $URL .= '&return=error2';
-                    header("Location: {$URL}");
-                } else {
-                    //Write to database
-                    try {
-                        $data = array('scope' => $scope, 'gibbonDepartmentID' => $gibbonDepartmentID, 'name' => $name, 'active' => $active, 'category' => $category, 'description' => $description, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'gibbonScaleID' => $gibbonScaleID, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID']);
-                        $sql = 'INSERT INTO gibbonRubric SET scope=:scope, gibbonDepartmentID=:gibbonDepartmentID, name=:name, active=:active, category=:category, description=:description, gibbonYearGroupIDList=:gibbonYearGroupIDList, gibbonScaleID=:gibbonScaleID, gibbonPersonIDCreator=:gibbonPersonIDCreator';
+                //Create rows & columns
+                for ($i = 1; $i <= $_POST['rows']; ++$i) {
+                    
+                        $data = array('gibbonRubricID' => $AI, 'title' => "Row $i", 'sequenceNumber' => $i);
+                        $sql = 'INSERT INTO gibbonRubricRow SET gibbonRubricID=:gibbonRubricID, title=:title, sequenceNumber=:sequenceNumber';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
-                    } catch (PDOException $e) {
-                        $URL .= '&return=error2';
-                        header("Location: {$URL}");
-                        exit();
-                    }
-
-                    //Unlock module table
-                    try {
-                        $sql = 'UNLOCK TABLES';
-                        $result = $connection2->query($sql);
-                    } catch (PDOException $e) {
-                        $URL .= '&return=error2';
-                        header("Location: {$URL}");
-                        exit();
-                    }
-
-                    //Create rows & columns
-                    for ($i = 1; $i <= $_POST['rows']; ++$i) {
-                        try {
-                            $data = array('gibbonRubricID' => $AI, 'title' => "Row $i", 'sequenceNumber' => $i);
-                            $sql = 'INSERT INTO gibbonRubricRow SET gibbonRubricID=:gibbonRubricID, title=:title, sequenceNumber=:sequenceNumber';
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
-                        } catch (PDOException $e) {
-                        }
-                    }
-                    for ($i = 1; $i <= $_POST['columns']; ++$i) {
-                        try {
-                            $data = array('gibbonRubricID' => $AI, 'title' => "Column $i", 'sequenceNumber' => $i);
-                            $sql = 'INSERT INTO gibbonRubricColumn SET gibbonRubricID=:gibbonRubricID, title=:title, sequenceNumber=:sequenceNumber';
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
-                        } catch (PDOException $e) {
-                        }
-                    }
-
-                    $URL = $URLSuccess."&return=success0&gibbonRubricID=$AI";
-                    header("Location: {$URL}");
                 }
+                for ($i = 1; $i <= $_POST['columns']; ++$i) {
+                    
+                        $data = array('gibbonRubricID' => $AI, 'title' => "Column $i", 'sequenceNumber' => $i);
+                        $sql = 'INSERT INTO gibbonRubricColumn SET gibbonRubricID=:gibbonRubricID, title=:title, sequenceNumber=:sequenceNumber';
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                }
+
+                $URL = $URLSuccess."&return=success0&gibbonRubricID=$AI";
+                header("Location: {$URL}");
             }
         }
     }

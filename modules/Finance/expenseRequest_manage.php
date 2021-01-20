@@ -23,10 +23,8 @@ use Gibbon\Forms\Form;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('My Expense Requests'));
@@ -40,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
     echo '</p>';
 
     //Check if have Full or Write in any budgets
-    $budgets = getBudgetsByPerson($connection2, $_SESSION[$guid]['gibbonPersonID']);
+    $budgets = getBudgetsByPerson($connection2, $gibbon->session->get('gibbonPersonID'));
     $budgetsAccess = false;
     if (is_array($budgets) && count($budgets)>0) {
         foreach ($budgets as $budget) {
@@ -84,14 +82,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                     $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
                 }
                 if ($gibbonFinanceBudgetCycleID == '') {
-                    try {
+                    
                         $data = array();
                         $sql = "SELECT * FROM gibbonFinanceBudgetCycle WHERE status='Current'";
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
                     if ($result->rowcount() != 1) {
                         echo "<div class='error'>";
                         echo __('The Current budget cycle cannot be determined.');
@@ -103,14 +98,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                     }
                 }
                 if ($gibbonFinanceBudgetCycleID != '') {
-                    try {
+                    
                         $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
                         $sql = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
                     if ($result->rowcount() != 1) {
                         echo "<div class='error'>";
                         echo __('The specified budget cycle cannot be determined.');
@@ -128,14 +120,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                         //Print year picker
                         $previousCycle = getPreviousBudgetCycleID($gibbonFinanceBudgetCycleID, $connection2);
                         if ($previousCycle != false) {
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenseRequest_manage.php&gibbonFinanceBudgetCycleID='.$previousCycle."'>".__('Previous Cycle').'</a> ';
+                            echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/expenseRequest_manage.php&gibbonFinanceBudgetCycleID='.$previousCycle."'>".__('Previous Cycle').'</a> ';
                         } else {
                             echo __('Previous Cycle').' ';
                         }
                         echo ' | ';
                         $nextCycle = getNextBudgetCycleID($gibbonFinanceBudgetCycleID, $connection2);
                         if ($nextCycle != false) {
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenseRequest_manage.php&gibbonFinanceBudgetCycleID='.$nextCycle."'>".__('Next Cycle').'</a> ';
+                            echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/expenseRequest_manage.php&gibbonFinanceBudgetCycleID='.$nextCycle."'>".__('Next Cycle').'</a> ';
                         } else {
                             echo __('Next Cycle').' ';
                         }
@@ -154,12 +146,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                     echo __('Filters');
                     echo '</h3>';
 
-                    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+                    $form = Form::create('action', $gibbon->session->get('absoluteURL').'/index.php', 'get');
 
                     $form->setClass('noIntBorder fullWidth');
 
                     $form->addHiddenValue('gibbonFinanceBudgetCycleID', $gibbonFinanceBudgetCycleID);
-                    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/expenseRequest_manage.php");
+                    $form->addHiddenValue('q', "/modules/".$gibbon->session->get('module')."/expenseRequest_manage.php");
 
                     $statuses = array(
                         '' => __('All'),
@@ -190,7 +182,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 
                     try {
                         //Add in filter wheres
-                        $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID']);
+                        $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID, 'gibbonPersonIDCreator' => $gibbon->session->get('gibbonPersonID'));
                         $whereBudget = '';
                         if ($gibbonFinanceBudgetID2 != '') {
                             $data['gibbonFinanceBudgetID'] = $gibbonFinanceBudgetID2;
@@ -216,7 +208,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                         echo '</h3>';
 
                         echo "<div class='linkTop' style='text-align: right'>";
-                        echo "<a style='margin-right: 3px' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/expenseRequest_manage_add.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a><br/>";
+                        echo "<a style='margin-right: 3px' href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/expenseRequest_manage_add.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/page_new.png'/></a><br/>";
                         echo '</div>';
 
                         echo "<div class='error'>";
@@ -229,7 +221,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                         echo '</h3>';
 
                         echo "<div class='linkTop'>";
-                        echo "<a style='margin-right: 3px' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/expenseRequest_manage_add.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a><br/>";
+                        echo "<a style='margin-right: 3px' href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/expenseRequest_manage_add.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/page_new.png'/></a><br/>";
                         echo '</div>';
 
                         echo "<table cellspacing='0' style='width: 100%'>";
@@ -244,7 +236,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                         echo __('Status')."<br/><span style='font-style: italic; font-size: 75%'>".__('Reimbursement').'</span><br/>';
                         echo '</th>';
                         echo "<th style='width: 90px'>";
-                        echo __('Cost')."<br/><span style='font-style: italic; font-size: 75%'>(".$_SESSION[$guid]['currency'].')</span><br/>';
+                        echo __('Cost')."<br/><span style='font-style: italic; font-size: 75%'>(".$gibbon->session->get('currency').')</span><br/>';
                         echo '</th>';
                         echo "<th style='width: 120px'>";
                         echo __('Date');
@@ -292,14 +284,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                             echo dateConvertBack($guid, substr($row['timestampCreator'], 0, 10));
                             echo '</td>';
                             echo '<td>';
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenseRequest_manage_view.php&gibbonFinanceExpenseID='.$row['gibbonFinanceExpenseID']."&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'><img title='".__('View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
+                            echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/expenseRequest_manage_view.php&gibbonFinanceExpenseID='.$row['gibbonFinanceExpenseID']."&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'><img title='".__('View')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/plus.png'/></a> ";
                             if ($row['status'] == 'Approved' and $row['purchaseBy'] == 'Self') {
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenseRequest_manage_reimburse.php&gibbonFinanceExpenseID='.$row['gibbonFinanceExpenseID']."&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'><img title='".__('Request Reimbursement')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/gift.png'/></a> ";
+                                echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/expenseRequest_manage_reimburse.php&gibbonFinanceExpenseID='.$row['gibbonFinanceExpenseID']."&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'><img title='".__('Request Reimbursement')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/gift.png'/></a> ";
                             }
                             echo '</td>';
                             echo '</tr>';
                         }
-                        echo '<input type="hidden" name="address" value="'.$_SESSION[$guid]['address'].'">';
+                        echo '<input type="hidden" name="address" value="'.$gibbon->session->get('address').'">';
 
                         echo '</table>';
                     }

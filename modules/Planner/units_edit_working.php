@@ -17,358 +17,218 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//Module includes
+use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\Planner\UnitGateway;
+use Gibbon\Domain\Timetable\CourseGateway;
+use Gibbon\Domain\Planner\UnitBlockGateway;
+use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Domain\Planner\UnitClassBlockGateway;
+
+// Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-// common variables
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
 $gibbonUnitClassID = $_GET['gibbonUnitClassID'] ?? '';
 
+$urlParams = compact('gibbonSchoolYearID', 'gibbonCourseID', 'gibbonCourseClassID', 'gibbonUnitID', 'gibbonUnitClassID');
+
 $page->breadcrumbs
-    ->add(__('Unit Planner'), 'units.php', [
-        'gibbonSchoolYearID' => $gibbonSchoolYearID,
-        'gibbonCourseID' => $gibbonCourseID,
-    ])
-    ->add(__('Edit Unit'), 'units_edit.php', [
-        'gibbonSchoolYearID' => $gibbonSchoolYearID,
-        'gibbonCourseID' => $gibbonCourseID,
-        'gibbonUnitID' => $gibbonUnitID,
-    ])
+    ->add(__('Unit Planner'), 'units.php', $urlParams)
+    ->add(__('Edit Unit'), 'units_edit.php', $urlParams)
     ->add(__('Edit Working Copy'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
-    //Get action with highest precendence
+    // Get action with highest precedence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
-    } else {
-        //Proceed!
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
-        }
+        $page->addError(__('The highest grouped action cannot be determined.'));
+        return;
+    } 
 
-        //Check if courseschool year specified
-        if ($gibbonCourseID == '' or $gibbonSchoolYearID == '' or $gibbonCourseClassID == '' or $gibbonUnitClassID == '') {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
-        } else {
-            try {
-                if ($highestAction == 'Unit Planner_all') {
-                    $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID, 'gibbonCourseClassID' => $gibbonCourseClassID);
-                    $sql = 'SELECT *, gibbonSchoolYear.name AS year, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=:gibbonCourseID AND gibbonCourseClassID=:gibbonCourseClassID';
-                } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                    $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID, 'gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                    $sql = "SELECT gibbonCourse.gibbonCourseID, gibbonCourse.name, gibbonCourse.nameShort, gibbonSchoolYear.name AS year, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=:gibbonCourseID AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY gibbonCourse.nameShort";
-                }
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-
-            if ($result->rowCount() != 1) {
-                echo "<div class='error'>";
-                echo __('The selected record does not exist, or you do not have access to it.');
-                echo '</div>';
-            } else {
-                $row = $result->fetch();
-                $year = $row['year'];
-                $course = $row['course'];
-                $class = $row['class'];
-
-                //Check if unit specified
-                if ($gibbonUnitID == '') {
-                    echo "<div class='error'>";
-                    echo __('You have not specified one or more required parameters.');
-                    echo '</div>';
-                } else {
-                    try {
-                        $data = array('gibbonUnitID' => $gibbonUnitID, 'gibbonCourseID' => $gibbonCourseID);
-                        $sql = 'SELECT gibbonCourse.nameShort AS courseName, gibbonUnit.* FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonUnitID=:gibbonUnitID AND gibbonUnit.gibbonCourseID=:gibbonCourseID';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
-
-                    if ($result->rowCount() != 1) {
-                        echo "<div class='error'>";
-                        echo __('The specified record cannot be found.');
-                        echo '</div>';
-                    } else {
-                        //Let's go!
-                        $row = $result->fetch();
-
-                        echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                        echo '<tr>';
-                        echo "<td style='width: 34%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('School Year').'</span><br/>';
-                        echo '<i>'.$year.'</i>';
-                        echo '</td>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Class').'</span><br/>';
-                        echo '<i>'.$course.'.'.$class.'</i>';
-                        echo '</td>';
-                        echo "<td style='width: 34%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Unit').'</span><br/>';
-                        echo '<i>'.$row['name'].'</i>';
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '</table>';
-
-                        echo '<h3>';
-                        echo __('Lessons & Blocks');
-                        echo '</h3>';
-                        echo '<p>';
-                        echo __('You can now add your unit blocks using the dropdown menu in each lesson. Blocks can be dragged from one lesson to another.');
-                        echo '</p>';
-
-                        //Store UNIT BLOCKS in array
-                        $blocks = array();
-                        try {
-                            $dataBlocks = array('gibbonUnitID' => $gibbonUnitID);
-                            $sqlBlocks = 'SELECT * FROM gibbonUnitBlock WHERE gibbonUnitID=:gibbonUnitID ORDER BY sequenceNumber';
-                            $resultBlocks = $connection2->prepare($sqlBlocks);
-                            $resultBlocks->execute($dataBlocks);
-                            $resultLessonBlocks = $connection2->prepare($sqlBlocks);
-                            $resultLessonBlocks->execute($dataBlocks);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
-                        $blockCount = 0;
-                        while ($rowBlocks = $resultBlocks->fetch()) {
-                            $blocks[$blockCount][0] = $rowBlocks['gibbonUnitBlockID'];
-                            $blocks[$blockCount][1] = $rowBlocks['title'];
-                            $blocks[$blockCount][2] = $rowBlocks['type'];
-                            $blocks[$blockCount][3] = $rowBlocks['length'];
-                            $blocks[$blockCount][4] = $rowBlocks['contents'];
-                            $blocks[$blockCount][5] = $rowBlocks['teachersNotes'];
-                            $blocks[$blockCount][5] = $rowBlocks['teachersNotes'];
-                            ++$blockCount;
-                        }
-
-
-
-                        echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/units_edit_workingProcess.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&address=".$_GET['q']."&gibbonUnitClassID=$gibbonUnitClassID'>";
-                        //LESSONS (SORTABLES)
-                        echo "<div class='linkTop'>";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_edit_working_add.php&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitClassID=$gibbonUnitClassID'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-                        echo '</div>';
-                        echo "<div style='width: 100%; height: auto'>";
-                        try {
-                            $dataLessons = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonUnitID' => $gibbonUnitID);
-                            $sqlLessons = 'SELECT * FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID ORDER BY date, timeStart';
-                            $resultLessons = $connection2->prepare($sqlLessons);
-                            $resultLessons->execute($dataLessons);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
-
-                        if ($resultLessons->rowCount() < 1) {
-                            echo "<div class='error'>";
-                            echo __('There are no records to display.');
-                            echo '</div>';
-                        } else {
-                            $i = 0;
-                            $blockCount2 = $blockCount;
-                            while ($rowLessons = $resultLessons->fetch()) {
-                                echo "<div class='lessonInner' id='lessonInner$i' style='min-height: 60px; border: 1px solid #333; width: 100%; margin-bottom: 65px; float: left; padding: 2px; background-color: #F7F0E3'>";
-                                echo "<div class='sortable' id='sortable$i' style='height: auto!important; min-height: 60px; font-size: 120%; font-style: italic'>";
-                                echo "<div id='head$i' class='head' style='height: 54px; font-size: 85%; padding: 3px'>";
-
-                                echo "<a onclick='return confirm(\"Are you sure you want to jump to this lesson? Any unsaved changes will be lost.\")' style='font-weight: bold; font-style: normal; color: #333' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID='.$rowLessons['gibbonCourseClassID'].'&gibbonPlannerEntryID='.$rowLessons['gibbonPlannerEntryID']."'>".($i + 1).'. '.$rowLessons['name']."</a> <a onclick='return confirm(\"".__('Are you sure you want to delete this record? Any unsaved changes will be lost.')."\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/units_edit_working_lessonDelete.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitClassID=$gibbonUnitClassID&address=".$_GET['q'].'&gibbonPlannerEntryID='.$rowLessons['gibbonPlannerEntryID']."'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/ style='position: absolute; margin: -1px 0px 2px 10px'></a><br/>";
-
-                                try {
-                                    $dataTT = array('date' => $rowLessons['date'], 'timeStart' => $rowLessons['timeStart'], 'timeEnd' => $rowLessons['timeEnd'], 'gibbonCourseClassID' => $gibbonCourseClassID);
-                                    $sqlTT = 'SELECT timeStart, timeEnd, date, gibbonTTColumnRow.name AS period, gibbonTTDayRowClassID, gibbonTTDayDateID FROM gibbonTTDayRowClass JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTColumn ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY date, timestart';
-                                    $resultTT = $connection2->prepare($sqlTT);
-                                    $resultTT->execute($dataTT);
-                                } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
-
-                                if ($resultTT->rowCount() == 1) {
-                                    $rowTT = $resultTT->fetch();
-                                    echo "<span style='font-size: 80%'><i>".date('D jS M, Y', dateConvertToTimestamp($rowLessons['date'])).'<br/>'.$rowTT['period'].' ('.substr($rowLessons['timeStart'], 0, 5).' - '.substr($rowLessons['timeEnd'], 0, 5).')</i></span>';
-                                } else {
-                                    echo "<span style='font-size: 80%'><i>";
-                                    if ($rowLessons['date'] != '') {
-                                        echo date('D jS M, Y', dateConvertToTimestamp($rowLessons['date'])).'<br/>';
-                                        echo substr($rowLessons['timeStart'], 0, 5).' - '.substr($rowLessons['timeEnd'], 0, 5).'</i>';
-                                    } else {
-                                        echo 'Date not set<br/>';
-                                    }
-                                    echo '</i></span>';
-                                }
-
-                                echo "<input type='hidden' name='order[]' value='lessonHeader-$i' >";
-                                echo "<input type='hidden' name='date$i' value='".$rowLessons['date']."' >";
-                                echo "<input type='hidden' name='timeStart$i' value='".$rowLessons['timeStart']."' >";
-                                echo "<input type='hidden' name='timeEnd$i' value='".$rowLessons['timeEnd']."' >";
-                                echo "<input type='hidden' name='gibbonPlannerEntryID$i' value='".$rowLessons['gibbonPlannerEntryID']."' >";
-                                echo "<div style='text-align: right; float: right; margin-top: -33px; margin-right: 3px'>";
-                                echo "<span style='font-size: 80%'><i>".__('Add Block:').'</i></span><br/>';
-                                echo "<script type='text/javascript'>";
-                                echo '$(document).ready(function(){';
-                                echo "$(\"#blockAdd$i\").change(function(){";
-                                echo "if ($(\"#blockAdd$i\").val()!='') {";
-                                echo "$(\"#sortable$i\").append('<div id=\'blockOuter' + count + '\' class=\'blockOuter\'><div class=\'odd\' style=\'text-align: center; font-size: 75%; height: 60px; border: 1px solid #d8dcdf; margin: 0 0 5px\' id=\'block$i\' style=\'padding: 0px\'><img style=\'margin: 10px 0 5px 0\' src=\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div></div>');";
-                                echo '$("#blockOuter" + count).load("'.$_SESSION[$guid]['absoluteURL']."/modules/Planner/units_add_blockAjax.php?mode=workingDeploy&gibbonUnitID=$gibbonUnitID&gibbonUnitBlockID=\" + $(\"#blockAdd$i\").val(),\"id=\" + count) ;";
-                                echo 'count++ ;';
-                                echo '}';
-                                echo '}) ;';
-                                echo '}) ;';
-                                echo '</script>';
-                                echo "<select name='blockAdd$i' id='blockAdd$i' style='width: 150px'>";
-                                echo "<option value=''></option>";
-                                $blockSelectCount = 0;
-                                foreach ($blocks as $block) {
-                                    echo "<option value='".$block[0]."'>".($blockSelectCount + 1).') '.htmlPrep($block[1]).'</option>';
-                                    ++$blockSelectCount;
-                                }
-                                echo '</select>';
-                                echo '</div>';
-                                echo '</div>';
-
-								//Get blocks
-								try {
-									$dataLessonBlocks = array('gibbonPlannerEntryID' => $rowLessons['gibbonPlannerEntryID'], 'gibbonCourseClassID' => $gibbonCourseClassID);
-									$sqlLessonBlocks = 'SELECT * FROM gibbonUnitClassBlock JOIN gibbonUnitClass ON (gibbonUnitClassBlock.gibbonUnitClassID=gibbonUnitClass.gibbonUnitClassID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY sequenceNumber';
-									$resultLessonBlocks = $connection2->prepare($sqlLessonBlocks);
-									$resultLessonBlocks->execute($dataLessonBlocks);
-								} catch (PDOException $e) {
-									echo "<div class='error'>".$e->getMessage().'</div>';
-								}
-
-								//Get outcomes
-								try {
-									$dataOutcomes = array('gibbonUnitID' => $gibbonUnitID);
-									$sqlOutcomes = "SELECT gibbonOutcome.gibbonOutcomeID, gibbonOutcome.name, gibbonOutcome.category, scope, gibbonDepartment.name AS department FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) LEFT JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY gibbonUnitOutcome.sequenceNumber";
-									$resultOutcomes = $connection2->prepare($sqlOutcomes);
-									$resultOutcomes->execute($dataOutcomes);
-								} catch (PDOException $e) {
-									echo "<div class='error'>".$e->getMessage().'</div>';
-								}
-                                $unitOutcomes = $resultOutcomes->fetchall();
-
-                                while ($rowLessonBlocks = $resultLessonBlocks->fetch()) {
-                                    makeBlock($guid,  $connection2, $blockCount2, $mode = 'workingEdit', $rowLessonBlocks['title'], $rowLessonBlocks['type'], $rowLessonBlocks['length'], $rowLessonBlocks['contents'], $rowLessonBlocks['complete'], $rowLessonBlocks['gibbonUnitBlockID'], $rowLessonBlocks['gibbonUnitClassBlockID'], $rowLessonBlocks['teachersNotes'], true);
-                                    ++$blockCount2;
-                                }
-                                echo '</div>';
-                                echo '</div>';
-                                ++$i;
-                            }
-                            $cells = $i;
-                        }
-                        ?>
-						<div class='linkTop' style='margin-top: 0px!important'>
-							<?php
-							echo "<script type='text/javascript'>";
-							echo "var count=$blockCount2 ;";
-							echo '</script>';
-							echo "<input type='submit' value='Submit'>";
-							?>
-						</div>
-						<?php
-                        echo '</div>';
-                        echo '</form>';
-
-                        //Add drag/drop controls
-                        $sortableList = '';
-                        ?>
-						<style>
-							.default { border: none; background-color: #ffffff }
-							.drop { border: none; background-color: #eeeeee }
-							.hover { border: none; background-color: #D4F6DC }
-						</style>
-
-						<script type="text/javascript">
-							$(function() {
-								var receiveCount=0 ;
-
-								//Create list of lesson sortables
-								<?php for ($i = 0; $i < $cells; ++$i) { ?>
-									<?php $sortableList .= "#sortable$i, " ?>
-								<?php } ?>
-
-								//Create lesson sortables
-								<?php for ($i = 0; $i < $cells; ++$i) { ?>
-									$( "#sortable<?php echo $i ?>" ).sortable({
-										revert: false,
-										tolerance: 15,
-										connectWith: "<?php echo substr($sortableList, 0, -2) ?>",
-										items: "div.blockOuter",
-										receive: function(event,ui) {
-											var sortid=$(newItem).attr("id", 'receive'+receiveCount) ;
-											var receiveid='receive'+receiveCount ;
-											$('#' + receiveid + ' .delete').show() ;
-											$('#' + receiveid + ' .delete').click(function() {
-												$('#' + receiveid).fadeOut(600, function(){
-													$('#' + receiveid).remove();
-												});
-											});
-											$('#' + receiveid + ' .completeDiv').show() ;
-											$('#' + receiveid + ' .complete').show() ;
-											$('#' + receiveid + ' .complete').click(function() {
-												if ($('#' + receiveid + ' .complete').is(':checked')==true) {
-													$('#' + receiveid + ' .completeHide').val('on') ;
-												} else {
-													$('#' + receiveid + ' .completeHide').val('off') ;
-												}
-											});
-											receiveCount++ ;
-										},
-										beforeStop: function (event, ui) {
-										 newItem=ui.item;
-										}
-									});
-									<?php for ($j = $blockCount; $j < $blockCount2; ++$j) { ?>
-										$("#draggable<?php echo $j ?> .delete").show() ;
-										$("#draggable<?php echo $j ?> .delete").click(function() {
-											$("#draggable<?php echo $j ?>").fadeOut(600, function(){
-												$("#draggable<?php echo $j ?>").remove();
-											});
-										});
-										$("#draggable<?php echo $j ?> .completeDiv").show() ;
-										$("#draggable<?php echo $j ?> .complete").show() ;
-										$("#draggable<?php echo $j ?> .complete").click(function() {
-												if ($("#draggable<?php echo $j ?> .complete").is(':checked')==true) {
-													$("#draggable<?php echo $j ?> .completeHide").val('on') ;
-												} else {
-													$("#draggable<?php echo $j ?> .completeHide").val('off') ;
-												}
-											});
-									<?php }
-								} ?>
-
-								//Draggables
-								<?php for ($i = 0; $i < $blockCount; ++$i) { ?>
-									$( "#draggable<?php echo $i ?>" ).draggable({
-										connectToSortable: "<?php echo substr($sortableList, 0, -2) ?>",
-										helper: "clone"
-									});
-								<?php } ?>
-							});
-						</script>
-						<?php
-
-                    }
-                }
-            }
-        }
+    // Proceed!
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], null, null);
     }
-    //Print sidebar
-    $_SESSION[$guid]['sidebarExtra'] = sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYearID);
+
+    // Check if course & school year specified
+    if ($gibbonCourseID == '' or $gibbonSchoolYearID == '' or $gibbonCourseClassID == '' or $gibbonUnitClassID == '') {
+        $page->addError(__('You have not specified one or more required parameters.'));
+        return;
+    } 
+
+    $plannerEntryGateway = $container->get(PlannerEntryGateway::class);
+    $unitBlockGateway = $container->get(UnitBlockGateway::class);
+    $unitClassBlockGateway = $container->get(UnitClassBlockGateway::class);
+    $courseGateway = $container->get(CourseGateway::class);
+
+    // Check access to specified course
+    if ($highestAction == 'Unit Planner_all') {
+        $result = $courseGateway->selectCourseDetailsByClass($gibbonCourseClassID);
+    } elseif ($highestAction == 'Unit Planner_learningAreas') {
+        $result = $courseGateway->selectCourseDetailsByClassAndPerson($gibbonCourseClassID, $gibbon->session->get('gibbonPersonID'));
+    }
+
+    if ($result->rowCount() != 1) {
+        $page->addError(__('The selected record does not exist, or you do not have access to it.'));
+        return;
+    } 
+
+    $values = $result->fetch();
+
+    // Get the unit details
+    $unit = $container->get(UnitGateway::class)->getByID($urlParams['gibbonUnitID'], ['name']);
+    $values['unit'] = $unit['name'] ?? '';
+
+    if (empty($unit)) {
+        $page->addError(__('The specified record cannot be found.'));
+        return;
+    }
+
+    // DETAILS
+    $table = DataTable::createDetails('unit');
+
+    $table->addColumn('schoolYear', __('School Year'));
+    $table->addColumn('course', __('Class'))->format(Format::using('courseClassName', ['course', 'class']));
+    $table->addColumn('unit', __('Unit'));
+
+    echo $table->render([$values]);
+
+    // Get unit blocks
+    $blocks = $unitBlockGateway->selectBlocksByUnit($gibbonUnitID)->fetchAll();
+
+    $blockCount = 1;
+    $blockSelect = array_reduce($blocks, function ($group, $item) use (&$blockCount) {
+        $group[$item['gibbonUnitBlockID']] = $blockCount.') '.$item['title'];
+        $blockCount++;
+        return $group;
+    }, []);
+
+    // FORM
+    $form = Form::create('action', $gibbon->session->get('absoluteURL').'/modules/Planner/units_edit_workingProcess.php?'.http_build_query($urlParams));
+    
+    $form->setTitle(__('Lessons & Blocks'));
+    $form->setDescription(__('You can now add your unit blocks using the dropdown menu in each lesson. Blocks can be dragged from one lesson to another.').Format::alert(__('Deploying lessons only works for units with smart blocks. If you have duplicated a unit from a past year that does not have smart blocks, be sure to edit the lessons manually and assign a new date to them.'), 'message'));
+
+    $form->addHiddenValue('address', $gibbon->session->get('address'));
+
+    $form->addHeaderAction('add', __('Add'))
+        ->setURL('/modules/Planner/units_edit_working_add.php')
+        ->addParams($urlParams)
+        ->displayLabel();
+
+    // Display lessons and blocks
+    $lessons = $plannerEntryGateway->selectPlannerEntriesByUnitAndClass($gibbonUnitID, $gibbonCourseClassID)->fetchAll();
+    $blockCount = 0;
+
+    foreach ($lessons as $index => $lesson) {
+
+        // Setup header links for this lesson
+        $lessonLink = $form->getFactory()->createWebLink(($index+1).'. '.$lesson['name'])
+            ->setURL($gibbon->session->get('absoluteURL').'/index.php?q=/modules/Planner/planner_view_full.php')
+            ->addParam('gibbonCourseClassID', $lesson['gibbonCourseClassID'])
+            ->addParam('gibbonPlannerEntryID', $lesson['gibbonPlannerEntryID'])
+            ->addParam('viewBy', 'class')
+            ->addConfirmation(__('Are you sure you want to jump to this lesson? Any unsaved changes will be lost.'))
+            ->addClass('text-gray-800 underline')
+            ->getOutput();
+
+        $deleteLink = $form->getFactory()->createWebLink('<img title="'.__('Delete').'" src="./themes/'.$gibbon->session->get('gibbonThemeName').'/img/garbage.png">')
+            ->setURL($gibbon->session->get('absoluteURL').'/modules/Planner/units_edit_working_lessonDelete.php')
+            ->addParams($urlParams)
+            ->addParam('gibbonCourseClassID', $lesson['gibbonCourseClassID'])
+            ->addParam('gibbonPlannerEntryID', $lesson['gibbonPlannerEntryID'])
+            ->addParam('address', $_GET['q'])
+            ->addClass('float-right ml-2')
+            ->addConfirmation(__('Are you sure you want to delete this record? Any unsaved changes will be lost.'))
+            ->getOutput();
+
+        $times = $plannerEntryGateway->getPlannerTTByClassTimes($gibbonCourseClassID, $lesson['date'], $lesson['timeStart'], $lesson['timeEnd']);
+        $lessonTiming = !empty($times)
+            ? Format::small($times['period'].' ('.Format::timeRange($times['timeStart'], $times['timeEnd']).')')
+            : Format::small(Format::timeRange($lesson['timeStart'], $lesson['timeEnd']));
+
+        // Display the heading
+        $heading = $form->addRow()->addHeading($lessonLink . $deleteLink)
+            ->append(Format::small(Format::dateReadable($lesson['date'], '%a %e %b, %Y')).'<br/>')
+            ->append($lessonTiming);
+
+        $col = $form->addRow()->addClass('')->addColumn()->addClass('blockLesson');
+
+        $col->addContent('<input type="hidden" name="order[]" value="lessonHeader-'.$index.'">');
+        $form->addHiddenValue('gibbonPlannerEntryID'.$index, $lesson['gibbonPlannerEntryID']);
+        $form->addHiddenValue('date'.$index, $lesson['date']);
+        $form->addHiddenValue('timeStart'.$index, $lesson['timeStart']);
+        $form->addHiddenValue('timeEnd'.$index, $lesson['timeEnd']);
+        
+        $col->addColumn()
+            ->setClass('-mt-4')
+            ->addSelect('blockAdd')
+            ->fromArray($blockSelect)
+            ->placeholder()
+            ->setClass('blockAdd float-right w-48')
+            ->prepend(Format::small(__('Add Block').':'));
+
+        $content = '';
+        $classBlocks = $unitClassBlockGateway->selectBlocksByLessonAndClass($lesson['gibbonPlannerEntryID'], $gibbonCourseClassID);
+
+        foreach ($classBlocks as $block) {
+            ob_start();
+            makeBlock($guid,  $connection2, $blockCount, $mode = 'workingEdit', $block['title'], $block['type'], $block['length'], $block['contents'], $block['complete'], $block['gibbonUnitBlockID'], $block['gibbonUnitClassBlockID'], $block['teachersNotes'], true);
+            $blockContent = ob_get_clean();
+            $blockCount++;
+
+            $content .= '<div class="draggable z-100">'.$blockContent.'</div>';
+        }
+
+        $col->addContent('<div class="sortableArea py-2 mt-16">'.$content.'</div>');
+
+    }
+
+    $form->addRow()->addSubmit();
+
+    echo $form->getOutput();
+
+    // Print sidebar
+    $page->addSidebarExtra(sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYearID));
 }
+?>
+
+<script>
+var count = <?php echo $blockCount ?? 0; ?>;
+
+$('.sortableArea').sortable({
+    revert: false,
+    tolerance: 25,
+    connectWith: ".sortableArea",
+    items: "div.draggable",
+    receive: function(event,ui) {
+
+    },
+    beforeStop: function (event, ui) {
+        newItem=ui.item;
+    }
+});
+
+$( ".draggable" ).draggable({
+    connectToSortable: ".sortableArea",
+});
+
+$('.blockAdd').change(function () {
+    if ($(this).val() == '') return;
+
+    var parent = $(this).parents('.blockLesson');
+    var sortable = $('.sortableArea', parent);
+
+    $(sortable).append($('<div class="draggable z-100">').load("<?php echo $gibbon->session->get('absoluteURL'); ?>/modules/Planner/units_add_blockAjax.php?mode=workingEdit&gibbonUnitID=<?php echo $gibbonUnitID; ?>&gibbonUnitBlockID=" + $(this).val(), "id=" + count) );
+    count++;
+});
+    
+</script>

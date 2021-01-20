@@ -32,7 +32,7 @@ if (isset($_GET['filter2'])) {
 }
 
 $gibbonRubricID = $_GET['gibbonRubricID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rubrics_edit_editRowsColumns.php&gibbonRubricID=$gibbonRubricID&sidebar=false&search=$search&filter2=$filter2";
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rubrics_edit_editRowsColumns.php&gibbonRubricID=$gibbonRubricID&sidebar=true&search=$search&filter2=$filter2";
 $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rubrics_edit.php&gibbonRubricID=$gibbonRubricID&sidebar=false&search=$search&filter2=$filter2";
 
 if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php') == false) {
@@ -79,16 +79,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                     $partialFail = false;
 
                     //DEAL WITH ROWS
-                    $rowTitles = isset($_POST['rowTitle'])? $_POST['rowTitle'] : array();
-                    $rowOutcomes = isset($_POST['gibbonOutcomeID'])? $_POST['gibbonOutcomeID'] : array();
-                    $rowIDs = isset($_POST['gibbonRubricRowID'])? $_POST['gibbonRubricRowID'] : array();
+                    $rowTitles = $_POST['rowTitle'] ?? [];
+                    $rowColors = $_POST['rowColor'] ?? [];
+                    $rowOutcomes = $_POST['gibbonOutcomeID'] ?? [];
+                    $rowIDs = $_POST['gibbonRubricRowID'] ?? [];
                     $count = 0;
                     foreach ($rowIDs as $gibbonRubricRowID) {
                         $type = isset($_POST["type$count"])? $_POST["type$count"] : 'Standalone';
                         if ($type == 'Standalone' or $rowOutcomes[$count] == '') {
                             try {
-                                $data = array('title' => $rowTitles[$count], 'gibbonRubricRowID' => $gibbonRubricRowID);
-                                $sql = 'UPDATE gibbonRubricRow SET title=:title, gibbonOutcomeID=NULL WHERE gibbonRubricRowID=:gibbonRubricRowID';
+                                $data = array('title' => $rowTitles[$count], 'backgroundColor' => $rowColors[$count] ?? null, 'gibbonRubricRowID' => $gibbonRubricRowID);
+                                $sql = 'UPDATE gibbonRubricRow SET title=:title, backgroundColor=:backgroundColor, gibbonOutcomeID=NULL WHERE gibbonRubricRowID=:gibbonRubricRowID';
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             } catch (PDOException $e) {
@@ -96,8 +97,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                             }
                         } elseif ($type == 'Outcome Based') {
                             try {
-                                $data = array('gibbonOutcomeID' => $rowOutcomes[$count], 'gibbonRubricRowID' => $gibbonRubricRowID);
-                                $sql = "UPDATE gibbonRubricRow SET title='', gibbonOutcomeID=:gibbonOutcomeID WHERE gibbonRubricRowID=:gibbonRubricRowID";
+                                $data = array('gibbonOutcomeID' => $rowOutcomes[$count], 'backgroundColor' => $rowColors[$count] ?? null, 'gibbonRubricRowID' => $gibbonRubricRowID);
+                                $sql = "UPDATE gibbonRubricRow SET title='', backgroundColor=:backgroundColor, gibbonOutcomeID=:gibbonOutcomeID WHERE gibbonRubricRowID=:gibbonRubricRowID";
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             } catch (PDOException $e) {
@@ -113,15 +114,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                     //DEAL WITH COLUMNS
                     //If no grade scale specified
                     if ($row['gibbonScaleID'] == '') {
-                        $columnTitles = isset($_POST['columnTitle'])? $_POST['columnTitle'] : array();
-                        $columnIDs = isset($_POST['gibbonRubricColumnID'])? $_POST['gibbonRubricColumnID'] : array();
-                        $columnVisualises = isset($_POST['columnVisualise'])? $_POST['columnVisualise'] : array();
+                        $columnTitles = $_POST['columnTitle'] ?? [];
+                        $columnColors = $_POST['columnColor'] ?? [];
+                        $columnIDs = $_POST['gibbonRubricColumnID'] ?? [];
+                        $columnVisualises = $_POST['columnVisualise'] ?? [];
                         $count = 0;
                         foreach ($columnIDs as $gibbonRubricColumnID) {
                             $visualise = $columnVisualises[$count] ?? 'N';
                             try {
-                                $data = array('title' => $columnTitles[$count], 'visualise' => $visualise, 'gibbonRubricColumnID' => $gibbonRubricColumnID);
-                                $sql = 'UPDATE gibbonRubricColumn SET title=:title, gibbonScaleGradeID=NULL, visualise=:visualise WHERE gibbonRubricColumnID=:gibbonRubricColumnID';
+                                $data = array('title' => $columnTitles[$count], 'backgroundColor' => $columnColors[$count] ?? null, 'visualise' => $visualise, 'gibbonRubricColumnID' => $gibbonRubricColumnID);
+                                $sql = 'UPDATE gibbonRubricColumn SET title=:title, backgroundColor=:backgroundColor, gibbonScaleGradeID=NULL, visualise=:visualise WHERE gibbonRubricColumnID=:gibbonRubricColumnID';
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             } catch (PDOException $e) {
@@ -133,14 +135,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                     //If scale specified	
                     else {
                         $columnGrades = $_POST['gibbonScaleGradeID'];
+                        $columnColors = $_POST['columnColor'] ?? [];
                         $columnIDs = $_POST['gibbonRubricColumnID'];
                         $columnVisualises = isset($_POST['columnVisualise'])? $_POST['columnVisualise'] : array();
                         $count = 0;
                         foreach ($columnIDs as $gibbonRubricColumnID) {
                             $visualise = $columnVisualises[$count] ?? 'N';
                             try {
-                                $data = array('gibbonScaleGradeID' => $columnGrades[$count], 'visualise' => $visualise, 'gibbonRubricColumnID' => $gibbonRubricColumnID);
-                                $sql = "UPDATE gibbonRubricColumn SET title='', gibbonScaleGradeID=:gibbonScaleGradeID, visualise=:visualise WHERE gibbonRubricColumnID=:gibbonRubricColumnID";
+                                $data = array('gibbonScaleGradeID' => $columnGrades[$count], 'backgroundColor' => $columnColors[$count] ?? null, 'visualise' => $visualise, 'gibbonRubricColumnID' => $gibbonRubricColumnID);
+                                $sql = "UPDATE gibbonRubricColumn SET title='', backgroundColor=:backgroundColor, gibbonScaleGradeID=:gibbonScaleGradeID, visualise=:visualise WHERE gibbonRubricColumnID=:gibbonRubricColumnID";
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             } catch (PDOException $e) {

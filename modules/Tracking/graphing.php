@@ -24,10 +24,8 @@ use Gibbon\Forms\DatabaseFormFactory;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
@@ -299,7 +297,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
                         }
                     }
 
-                    if (count($grades) < 5) {
+                    if (count($grades) < 4) {
                         echo "<div class='error'>";
                         echo __('The are less than 4 data points, so no graph can be produced.');
                         echo '</div>';

@@ -19,22 +19,30 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\IndividualNeeds;
 
-use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
+use Gibbon\Domain\ScrubbableGateway;
+use Gibbon\Domain\Traits\Scrubbable;
+use Gibbon\Domain\Traits\TableAware;
+use Gibbon\Domain\Traits\ScrubByPerson;
 
 /**
  * @version v16
  * @since   v16
  */
-class INGateway extends QueryableGateway
+class INGateway extends QueryableGateway implements ScrubbableGateway
 {
     use TableAware;
+    use Scrubbable;
+    use ScrubByPerson;
 
     private static $tableName = 'gibbonIN';
     private static $primaryKey = 'gibbonINID';
 
     private static $searchableColumns = ['preferredName', 'surname', 'username'];
+
+    private static $scrubbableKey = 'gibbonPersonID';
+    private static $scrubbableColumns = ['strategies' => '','targets' => '','notes' => ''];
     
     /**
      * @param QueryCriteria $criteria
@@ -86,11 +94,38 @@ class INGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    public function queryIndividualNeedsPersonDescriptors(QueryCriteria $criteria)
+    {
+      $query = $this
+        ->newQuery()
+        ->from('gibbonINPersonDescriptor')
+        ->innerJoin('gibbonAlertLevel','gibbonAlertLevel.gibbonAlertLevelID = gibbonINPersonDescriptor.gibbonAlertLevelID')
+        ->cols([
+          'gibbonINPersonDescriptor.gibbonINPersonDescriptorID',
+          'gibbonINPersonDescriptor.gibbonPersonID',
+          'gibbonINPersonDescriptor.gibbonINDescriptorID',
+          'gibbonINPersonDescriptor.gibbonAlertLevelID',
+          'gibbonAlertLevel.gibbonAlertLevelID'
+        ]);
+
+      $criteria->addFilterRules([
+        'gibbonPersonID' => function($query,$gibbonPersonID)
+        {
+          return $query
+            ->where('gibbonINPersonDescriptor.gibbonPersonID = :gibbonPersonID')
+            ->bindValue('gibbonPersonID',$gibbonPersonID);
+        }
+      ]);
+
+      return $this->runQuery($query,$criteria);
+    }
+
     public function queryIndividualNeedsDescriptors(QueryCriteria $criteria)
     {
         $query = $this
             ->newQuery()
             ->from('gibbonINDescriptor')
+            ->orderBy(['gibbonINDescriptor.sequenceNumber'])
             ->cols([
                 'gibbonINDescriptorID', 'name', 'nameShort', 'description', 'sequenceNumber'
             ]);
@@ -143,5 +178,24 @@ class INGateway extends QueryableGateway
         }
 
         return $this->runQuery($query, $criteria);
+    }
+
+    public function queryAlertLevels(QueryCriteria $criteria)
+    {
+      $query = $this
+        ->newQuery()
+        ->distinct()
+        ->from('gibbonAlertLevel')
+        ->orderBy(['sequenceNumber'])
+        ->cols([
+          'gibbonAlertLevel.gibbonAlertLevelID',
+          'gibbonAlertLevel.name',
+          'gibbonAlertLevel.nameShort',
+          'gibbonAlertLevel.description',
+          'gibbonAlertLevel.color',
+          'gibbonAlertLevel.sequenceNumber'
+        ]);
+
+      return $this->runQuery($query,$criteria);
     }
 }

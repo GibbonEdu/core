@@ -70,7 +70,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
         $output .= "<a onclick='return confirm(\"".__('Are you sure you want to edit rows and columns? Any unsaved changes will be lost.')."\")' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/rubrics_edit_editRowsColumns.php&gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2'>".__('Edit Rows & Columns')."<img title='Edit' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/ style='margin: 0px 1px -4px 3px'></a>";
         $output .= '</div>';
 
-        $form = Form::create('editRubric', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/rubrics_edit_editCellProcess.php?gibbonRubricID='.$gibbonRubricID.'&search='.$search.'&filter2='.$filter2);
+        $form = Form::createTable('editRubric', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/rubrics_edit_editCellProcess.php?gibbonRubricID='.$gibbonRubricID.'&search='.$search.'&filter2='.$filter2);
 
         $form->setClass('rubricTable fullWidth');
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
@@ -80,7 +80,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
 
         // Column Headers
         for ($n = 0; $n < $columnCount; ++$n) {
-            $col = $row->addColumn()->addClass('rubricHeading');
+            $col = $row->addColumn()->addClass('rubricHeading column'.$columns[$n]['gibbonRubricColumnID']);
 
             // Display grade scale, otherwise column title
             if (!empty($gradeScales[$columns[$n]['gibbonScaleGradeID']])) {
@@ -99,7 +99,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
         $count = 0;
         for ($i = 0; $i < $rowCount; ++$i) {
             $row = $form->addRow();
-            $col = $row->addColumn()->addClass('rubricHeading');
+            $col = $row->addColumn()->addClass('rubricHeading row'.$rows[$i]['gibbonRubricRowID']);
 
             // Row Header
             if (!empty($outcomes[$rows[$i]['gibbonOutcomeID']])) {
@@ -130,6 +130,21 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
             $row->addSubmit();
 
         $output .= $form->getOutput();
+
+        $output .= "<style>";
+        for ($i = 0; $i < $rowCount; ++$i) {
+            $color = $rows[$i]['backgroundColor'] ?? '#ffffff';
+            $colorValue = hexdec(substr($color, 1, 2)) + hexdec(substr($color, 3, 2)) + hexdec(substr($color, 5, 2));
+            $textColor = $colorValue > 580 ? '#5b5757' : '#5b5757';
+            $output .= ".row".$rows[$i]['gibbonRubricRowID'].'{ background-color: '.$color.'; color: '.$textColor.'; } ';
+        }
+        for ($i = 0; $i < $columnCount; ++$i) {
+            $color = $columns[$i]['backgroundColor'] ?? '#ffffff';
+            $colorValue = hexdec(substr($color, 1, 2)) + hexdec(substr($color, 3, 2)) + hexdec(substr($color, 5, 2));
+            $textColor = empty($colorValue) || $colorValue > 450 ? '#5b5757' : '#ffffff';
+            $output .= ".column".$columns[$i]['gibbonRubricColumnID'].'{ background-color: '.$color.'; color: '.$textColor.'; } ';
+        }
+        $output .= "</style>";
     }
 
     return $output;
@@ -143,14 +158,11 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
     $output = false;
     $hasContexts = $contextDBTable != '' and $contextDBTableIDField != '' and $contextDBTableID != '' and $contextDBTableGibbonRubricIDField != '' and $contextDBTableNameField != '' and $contextDBTableDateField != '';
 
-    try {
+    
         $data = array('gibbonRubricID' => $gibbonRubricID);
         $sql = 'SELECT * FROM gibbonRubric WHERE gibbonRubricID=:gibbonRubricID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
 
     if ($result->rowCount() != 1) {
         echo "<div class='error'>";
@@ -276,7 +288,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                     $output .= '</p>';
                 }
 
-                $form = Form::create('viewRubric', $_SESSION[$guid]['absoluteURL'].'/index.php');
+                $form = Form::createTable('viewRubric', $_SESSION[$guid]['absoluteURL'].'/index.php');
                 $form->setClass('rubricTable fullWidth');
 
                 $row = $form->addRow()->addClass();
@@ -289,7 +301,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 
                     // Column Headers
                     for ($n = 0; $n < $columnCount; ++$n) {
-                        $column = $row->addColumn()->addClass('rubricHeading');
+                        $column = $row->addColumn()->addClass('rubricHeading column'.$columns[$n]['gibbonRubricColumnID']);
 
                         // Display grade scale, otherwise column title
                         if (!empty($gradeScales[$columns[$n]['gibbonScaleGradeID']])) {
@@ -306,7 +318,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                     $count = 0;
                     for ($i = 0; $i < $rowCount; ++$i) {
                         $row = $form->addRow();
-                        $col = $row->addColumn()->addClass('rubricHeading rubricRowHeading');
+                        $col = $row->addColumn()->addClass('rubricHeading rubricRowHeading row'.$rows[$i]['gibbonRubricRowID']);
 
                         // Row Header
                         if (!empty($outcomes[$rows[$i]['gibbonOutcomeID']])) {
@@ -410,6 +422,22 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                     });
                 });
             </script>";
+
+            $output .= "<style>";
+            for ($i = 0; $i < $rowCount; ++$i) {
+                $color = $rows[$i]['backgroundColor'] ?? '#666666';
+                $color = $color == '#ffffff' ? '#666666' : $color;
+                $colorValue = hexdec(substr($color, 1, 2)) + hexdec(substr($color, 3, 2)) + hexdec(substr($color, 5, 2));
+                $textColor = $colorValue > 580 ? '#5b5757' : '#ffffff';
+                $output .= ".row".$rows[$i]['gibbonRubricRowID'].'{ background-color: '.$color.'; color: '.$textColor.'; } ';
+            }
+            for ($i = 0; $i < $columnCount; ++$i) {
+                $color = $columns[$i]['backgroundColor'] ?? '#ffffff';
+                $colorValue = hexdec(substr($color, 1, 2)) + hexdec(substr($color, 3, 2)) + hexdec(substr($color, 5, 2));
+                $textColor = empty($colorValue) || $colorValue > 450 ? '#5b5757' : '#ffffff';
+                $output .= ".column".$columns[$i]['gibbonRubricColumnID'].'{ background-color: '.$color.'; color: '.$textColor.'; } ';
+            }
+            $output .= "</style>";
         }
 
         // Append the Rubric stylesheet to the current page - for Markbook view of Rubric (only if it's not already included)

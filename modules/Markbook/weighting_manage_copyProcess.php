@@ -37,14 +37,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
         header("Location: {$URL}");
     } else {
 
-        try {
+        
             $data2 = array('gibbonCourseClassID' => $gibbonWeightingCopyClassID);
             $sql2 = 'SELECT * FROM gibbonMarkbookWeight WHERE gibbonCourseClassID=:gibbonCourseClassID';
             $result2 = $connection2->prepare($sql2);
             $result2->execute($data2);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result2->rowCount() <= 0) {
             $URL .= '&return=warning1';

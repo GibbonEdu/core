@@ -20,28 +20,34 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Domain\Students\StudentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/externalAssessment.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $page->breadcrumbs->add(__('View All Assessments'));
+
+    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    if (empty($highestAction)) {
+        echo Format::alert(__('The highest grouped action cannot be determined.'));
+        return;
+    }
+
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], null, null);
+    }
 
     $search = $_GET['search'] ?? '';
     $allStudents = $_GET['allStudents'] ??  '';
     $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
 
-    echo '<h2>';
-    echo __('Search');
-    echo '</h2>';
-
     $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form->setTitle(__('Search'));
     $form->setClass('noIntBorder fullWidth standardForm');
     
     $form->addHiddenValue('q', '/modules/Formal Assessment/externalAssessment.php');
@@ -59,27 +65,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
         
     echo $form->getOutput();
 
-    echo '<h2>';
-    echo __('Choose A Student');
-    echo '</h2>';
-
     $studentGateway = $container->get(StudentGateway::class);
-
-    $searchColumns = $studentGateway->getSearchableColumns();
-
     $criteria = $studentGateway->newQueryCriteria(true)
-        ->searchBy($searchColumns, $search)
+        ->searchBy($studentGateway->getSearchableColumns(), $search)
         ->sortBy(['surname', 'preferredName'])
         ->filterBy('all',$allStudents)
         ->fromPOST();
     
     $students = $studentGateway->queryStudentsBySchoolYear($criteria, $gibbonSchoolYearID);
 
-    // DATA TABLE
-    $table = DataTable::createPaginated('students', $criteria);
+    // FORM
+    $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'].'/modules/Formal Assessment/externalAssessment_manage_processBulk.php');
+    $form->setTitle(__('Choose A Student'));
+    $form->addHiddenValue('search', $search);
     
-    $table->modifyRows($studentGateway->getSharedUserRowHighlighter());
 
+    // DATA TABLE
+    $table = $form->addRow()->addDataTable('students', $criteria)->withData($students);
+    $table->modifyRows($studentGateway->getSharedUserRowHighlighter());
             
     $table->addMetaData('filterOptions', [
         'all:on'        => __('All Students')
@@ -92,6 +95,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
             'date:starting'   => __('Before Start Date'),
             'date:ended'      => __('After End Date'),
         ]);
+    }
+
+    // BULK ACTION
+    if ($highestAction == 'External Assessment Data_manage') {
+        $bulkActions = array(
+            'Add' => __('Add'),
+        );
+
+        $col = $form->createBulkActionColumn($bulkActions);
+            $sql = "SELECT gibbonExternalAssessmentID as value, name FROM gibbonExternalAssessment WHERE active='Y' ORDER BY name";
+            $col->addSelect('gibbonExternalAssessmentID')
+                ->fromQuery($pdo, $sql)
+                ->required()
+                ->placeholder()
+                ->setClass('w-32');
+            $col->addDate('date')
+                ->placeholder(__('Date'))
+                ->setClass('w-32');
+            $col->addYesNo('copyToGCSECheck')
+                ->required()
+                ->placeholder(__('Copy Target Grades?'))
+                ->setClass('w-32 copyToGCSE');
+            $col->addSubmit(__('Go'));
+
+        $form->toggleVisibilityByClass('copyToGCSE')->onSelect('gibbonExternalAssessmentID')->when('0002');
+
+        $table->addMetaData('bulkActions', $col);
     }
             
     // COLUMNS
@@ -111,7 +141,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
             $actions->addAction('view', __('View Details'))
                 ->setURL('/modules/Formal Assessment/externalAssessment_details.php');
         });
+
+    if ($highestAction == 'External Assessment Data_manage') {
+        $table->addCheckboxColumn('gibbonPersonID');
+    }
     
-    echo $table->render($students);
+    echo $form->getOutput();
 }
-?>

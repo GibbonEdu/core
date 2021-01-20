@@ -29,10 +29,8 @@ use Gibbon\Domain\Students\StudentReportGateway;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_new') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $viewMode = $_REQUEST['format'] ?? '';
@@ -67,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
             $row->addDate('startDateTo')->setValue($startDateTo)->required();
 
         $row = $form->addRow()->addClass('dateRange');
-            $row->addLabel('ignoreEnrolment', __('Ignore Enrolment'))->description(__('This is useful for picking up students who are set to Full, have a start date but are not yet enroled.'));
+            $row->addLabel('ignoreEnrolment', __('Ignore Enrolment'))->description(__('This is useful for picking up students who are set to Full, have a start date but are not yet enrolled.'));
             $row->addCheckbox('ignoreEnrolment')->checked($ignoreEnrolment);
 
         $row = $form->addRow();
@@ -113,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
     if ($type == 'Date Range') {
         $table->setDescription(__('This report shows all students whose Start Date is on or between the indicated dates.'));
     } else {
-        $table->setDescription(__('This report shows all students who are newly arrived in the school during the current academic year (e.g. they were not enroled in the previous academic year).'));
+        $table->setDescription(__('This report shows all students who are newly arrived in the school during the current academic year (e.g. they were not enrolled in the previous academic year).'));
     }
 
     $table->addRowCountColumn($students->getPageFrom());
@@ -121,12 +119,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
         ->context('primary')
         ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
         ->format(function ($student) {
-            return Format::name('', $student['preferredName'], $student['surname'], 'Student', true, true) 
+            return Format::name('', $student['preferredName'], $student['surname'], 'Student', true, true)
                  . '<br/><small><i>'.Format::userStatusInfo($student).'</i></small>';
         });
     $table->addColumn('rollGroup', __('Roll Group'))
         ->context('primary');
     $table->addColumn('username', __('Username'));
+    $table->addColumn('officialName', __('Official Name'));
     $table->addColumn('dateStart', __('Start Date'))
         ->context('secondary')
         ->format(Format::using('date', 'dateStart'));

@@ -63,8 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
         } else {
             //Get variables
             $homework = $_POST['homework'];
-            if ($_POST['homework'] == 'Yes') {
-                $homework = 'Y';
+            if ($homework == 'Y') {
                 //Attempt to prevent XSS attack
                 $homeworkDetails = $_POST['homeworkDetails'];
                 $homeworkDetails = tinymceStyleStripTags($homeworkDetails, $connection2);

@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
         $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 
         if ($gibbonCourseClassID == '') {
-            $gibbonCourseClassID = (isset($_SESSION[$guid]['markbookClass']))? $_SESSION[$guid]['markbookClass'] : '';
+            $gibbonCourseClassID = $gibbon->session->get('markbookClass') ?? '';
         }
 
         if ($gibbonCourseClassID == '') {
@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
                     $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse, gibbonCourseClass WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class';
                 } else {
-                    $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonCourseClassID' => $gibbonCourseClassID);
+                    $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'), 'gibbonCourseClassID' => $gibbonCourseClassID);
                     $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class";
                 }
                 $result = $connection2->prepare($sql);
@@ -100,25 +100,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
 
                 //Get teacher list
                 $teacherList = getTeacherList($pdo, $gibbonCourseClassID);
-                $teaching = (isset($teacherList[ $_SESSION[$guid]['gibbonPersonID'] ]) );
+                $teaching = (isset($teacherList[ $gibbon->session->get('gibbonPersonID') ]) );
 
                 //Print mark
                 echo '<h3>';
                 echo __('Markbook Weightings');
                 echo '</h3>';
 
-                try {
+                
                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
                     $sql = 'SELECT * FROM gibbonMarkbookWeight WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY calculate, weighting DESC';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 if ($teaching || $highestAction == 'Manage Weightings_everything') {
                     echo "<div class='linkTop'>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/weighting_manage_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+                    echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/weighting_manage_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/page_new.png'/></a>";
                     echo '</div>';
                 }
 
@@ -179,8 +176,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
                         echo ($row['reportable'] == 'Y')? __('Yes') : __('No');
                         echo '</td>';
                         echo '<td>';
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/weighting_manage_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookWeightID=".$row['gibbonMarkbookWeightID']."'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                        echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module']."/weighting_manage_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookWeightID=".$row['gibbonMarkbookWeightID']."&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                        echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/weighting_manage_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookWeightID=".$row['gibbonMarkbookWeightID']."'><img title='".__('Edit')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/config.png'/></a> ";
+                        echo "<a class='thickbox' href='".$gibbon->session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$gibbon->session->get('module')."/weighting_manage_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookWeightID=".$row['gibbonMarkbookWeightID']."&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/garbage.png'/></a> ";
                         echo '</td>';
                         echo '</tr>';
 
@@ -272,13 +269,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
                 echo __('Copy Weightings');
                 echo '</h3>';
 
-                $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/weighting_manage_copyProcess.php?gibbonCourseClassID='.$gibbonCourseClassID);
+                $form = Form::create('searchForm', $gibbon->session->get('absoluteURL').'/modules/'.$gibbon->session->get('module').'/weighting_manage_copyProcess.php?gibbonCourseClassID='.$gibbonCourseClassID);
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->setClass('noIntBorder fullWidth');
 
                 $col = $form->addRow()->addColumn()->addClass('inline right');
                     $col->addContent(__('Copy from').' '.__('Class').':');
-                    $col->addSelectClass('gibbonWeightingCopyClassID', $_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID'])->setClass('mediumWidth');
+                    $col->addSelectClass('gibbonWeightingCopyClassID', $gibbon->session->get('gibbonSchoolYearID'), $gibbon->session->get('gibbonPersonID'))->setClass('mediumWidth');
                     $col->addSubmit(__('Go'));
 
                 echo $form->getOutput();
@@ -287,5 +284,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
     }
 
     // Print the sidebar
-    $_SESSION[$guid]['sidebarExtra'] = sidebarExtra($guid, $pdo, $_SESSION[$guid]['gibbonPersonID'], $gibbonCourseClassID, 'weighting_manage.php');
+    $gibbon->session->set('sidebarExtra',sidebarExtra($guid, $pdo, $gibbon->session->get('gibbonPersonID'), $gibbonCourseClassID, 'weighting_manage.php'));
 }

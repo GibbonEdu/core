@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Timetable\CourseGateway;
+
 include '../../gibbon.php';
 
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
@@ -26,13 +28,13 @@ $gibbonUnitID = $_GET['gibbonUnitID'];
 $gibbonUnitClassID = $_GET['gibbonUnitClassID'];
 $orders = $_POST['order'];
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/units_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID";
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/units_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $highestAction = getHighestGroupedAction($guid, $_GET['address'], $connection2);
+    $highestAction = getHighestGroupedAction($guid, $_POST['address'], $connection2);
     if ($highestAction == false) {
         $URL .= "&return=error0$params";
         header("Location: {$URL}");
@@ -43,21 +45,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
             $URL .= '&return=error3';
             header("Location: {$URL}");
         } else {
-            //Check access to specified course
-            try {
-                if ($highestAction == 'Unit Planner_all') {
-                    $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID);
-                    $sql = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID';
-                } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                    $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                    $sql = "SELECT gibbonCourseID, gibbonCourse.name, gibbonCourse.nameShort FROM gibbonCourse JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID ORDER BY gibbonCourse.nameShort";
-                }
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2a';
-                header("Location: {$URL}");
-                exit();
+            $courseGateway = $container->get(CourseGateway::class);
+
+            // Check access to specified course
+            if ($highestAction == 'Unit Planner_all') {
+                $result = $courseGateway->selectCourseDetailsByClass($gibbonCourseClassID);
+            } elseif ($highestAction == 'Unit Planner_learningAreas') {
+                $result = $courseGateway->selectCourseDetailsByClassAndPerson($gibbonCourseClassID, $gibbon->session->get('gibbonPersonID'));
             }
 
             if ($result->rowCount() != 1) {
@@ -84,54 +78,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
 
                     $partialFail = false;
 
-                    //CREATE LESSON PLANS
-                    try {
-                        $sql = 'LOCK TABLES gibbonPlannerEntry WRITE, gibbonUnitClassBlock WRITE';
-                        $result = $connection2->query($sql);
-                    } catch (PDOException $e) {
-                        $URL .= '&return=error2e';
-                        header("Location: {$URL}");
-                        exit();
-                    }
-
-                    //Get next autoincrement
-                    try {
-                        $sqlAI = "SHOW TABLE STATUS LIKE 'gibbonPlannerEntry'";
-                        $resultAI = $connection2->query($sqlAI);
-                    } catch (PDOException $e) {
-                        $URL .= '&return=error2f';
-                        header("Location: {$URL}");
-                        exit();
-                    }
-
-                    $rowAI = $resultAI->fetch();
-                    $AI = str_pad($rowAI['Auto_increment'], 14, '0', STR_PAD_LEFT);
-
                     $lessonCount = 0;
                     $sequenceNumber = 0;
                     $lessDescriptions = array();
                     foreach ($orders as $order) {
                         //It is a lesson, so add it
                         if (strpos($order, 'lessonHeader-') !== false) {
-                            if ($lessonCount != 0) {
-                                ++$AI;
-                                $AI = str_pad($AI, 14, '0', STR_PAD_LEFT);
-                            }
                             $summary = 'Part of the '.$row['name'].' unit.';
-                            $lessonDescriptions[$AI][0] = $AI;
-                            $lessonDescriptions[$AI][1] = '';
                             $teachersNotes = getSettingByScope($connection2, 'Planner', 'teachersNotesTemplate');
                             $viewableStudents = $_POST['viewableStudents'];
                             $viewableParents = $_POST['viewableParents'];
 
                             try {
-                                $data = array('gibbonPlannerEntryID' => $AI, 'gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $_POST["date$lessonCount"], 'timeStart' => $_POST["timeStart$lessonCount"], 'timeEnd' => $_POST["timeEnd$lessonCount"], 'gibbonUnitID' => $gibbonUnitID, 'name' => $row['name'].' '.($lessonCount + 1), 'summary' => $summary, 'teachersNotes' => $teachersNotes, 'viewableParents' => $viewableParents, 'viewableStudents' => $viewableStudents, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDLastEdit' => $_SESSION[$guid]['gibbonPersonID']);
-                                $sql = "INSERT INTO gibbonPlannerEntry SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonCourseClassID=:gibbonCourseClassID, date=:date, timeStart=:timeStart, timeEnd=:timeEnd, gibbonUnitID=:gibbonUnitID, name=:name, summary=:summary, description='', teachersNotes=:teachersNotes, homework='N', viewableParents=:viewableParents, viewableStudents=:viewableStudents, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit";
+                                $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $_POST["date$lessonCount"], 'timeStart' => $_POST["timeStart$lessonCount"], 'timeEnd' => $_POST["timeEnd$lessonCount"], 'gibbonUnitID' => $gibbonUnitID, 'name' => $row['name'].' '.($lessonCount + 1), 'summary' => $summary, 'teachersNotes' => $teachersNotes, 'viewableParents' => $viewableParents, 'viewableStudents' => $viewableStudents, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDLastEdit' => $_SESSION[$guid]['gibbonPersonID']);
+                                $sql = "INSERT INTO gibbonPlannerEntry SET gibbonCourseClassID=:gibbonCourseClassID, date=:date, timeStart=:timeStart, timeEnd=:timeEnd, gibbonUnitID=:gibbonUnitID, name=:name, summary=:summary, description='', teachersNotes=:teachersNotes, homework='N', viewableParents=:viewableParents, viewableStudents=:viewableStudents, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit";
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             } catch (PDOException $e) {
                                 $partialFail = true;
                             }
+
+                            $AI = $connection2->lastInsertID();
+
+                            $lessonDescriptions[$AI][0] = $AI;
+                            $lessonDescriptions[$AI][1] = '';
+
                             ++$lessonCount;
                         }
                         //It is a block, so add it to the last added lesson

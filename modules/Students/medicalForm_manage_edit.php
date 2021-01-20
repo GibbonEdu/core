@@ -24,10 +24,8 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\Students\MedicalGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage_edit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs
@@ -43,18 +41,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
     $search = isset($_GET['search'])? $_GET['search'] : '';
 
     if ($gibbonPersonMedicalID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
 
         $medicalGateway = $container->get(MedicalGateway::class);
         $values = $medicalGateway->getMedicalFormByID($gibbonPersonMedicalID);
 
         if (empty($values)) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             if ($search != '') {
@@ -105,13 +99,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 
             echo $form->getOutput();
 
-            echo '<h2>';
-            echo __('Medical Conditions');
-            echo '</h2>';
-
             $conditions = $medicalGateway->selectMedicalConditionsByID($gibbonPersonMedicalID);
 
             $table = DataTable::create('medicalConditions');
+            $table->setTitle(__('Medical Conditions'));
+            $table->setDescription(getSettingByScope($connection2, 'Students', 'medicalConditionIntro'));
 
             $table->addHeaderAction('add', __('Add'))
                 ->setURL('/modules/Students/medicalForm_manage_condition_add.php')

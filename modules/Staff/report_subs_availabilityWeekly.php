@@ -58,10 +58,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $thisWeek = (new DateTimeImmutable('Today'))->format($dateFormat);
     $nextWeek = $dateObject->modify('+1 week')->format($dateFormat);
 
-    $col = $row->addColumn()->addClass('flex items-center ');
-        $col->addButton(__('Last Week'))->addClass('')->onClick("window.location.href='{$link}&date={$lastWeek}'");
+    $col = $row->addColumn()->setClass('flex-1 flex items-center ');
+        $col->addButton(__('Last Week'))->addClass('rounded-l-sm')->onClick("window.location.href='{$link}&date={$lastWeek}'");
         $col->addButton(__('This Week'))->addClass('ml-px')->onClick("window.location.href='{$link}&date={$thisWeek}'");
-        $col->addButton(__('Next Week'))->addClass('ml-px')->onClick("window.location.href='{$link}&date={$nextWeek}'");
+        $col->addButton(__('Next Week'))->addClass('ml-px rounded-r-sm')->onClick("window.location.href='{$link}&date={$nextWeek}'");
 
     $col = $row->addColumn()->addClass('flex items-center justify-end');
         $col->addDate('date')->setValue($dateObject->format($dateFormat))->setClass('shortWidth');

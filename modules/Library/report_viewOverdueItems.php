@@ -28,10 +28,8 @@ use Gibbon\Domain\DataSet;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdueItems.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $viewMode = $_REQUEST['format'] ?? '';
@@ -79,6 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
         ->format(function ($item) {
             return '<b>'.$item['name'].'</b><br/>'.Format::small($item['producer']);
         });
+    $table->addColumn('id', __('ID'));
     $table->addColumn('returnExpected', __('Due Date'))->format(Format::using('date', 'returnExpected'));
     $table->addColumn('dueDate', __('Days Overdue'))
         ->sortable('returnExpected')

@@ -70,3 +70,31 @@ $I->amOnModulePage('Data Updater', 'data_finance_manage_delete.php', array('gibb
 
 $I->click('Yes');
 $I->seeSuccessMessage();
+
+
+// Reset Data ------------------------------------------------
+$I->amOnModulePage('Data Updater', 'data_finance.php', ['gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID]);
+
+$I->selectOption('invoiceTo', 'Family');
+
+$I->click('#content form[method="post"] input[type=submit]');
+$I->seeSuccessMessage();
+
+$gibbonFinanceInvoiceeUpdateID = $I->grabValueFrom("input[type='hidden'][name='existing']");
+
+// Accept ------------------------------------------------
+$I->amOnModulePage('Data Updater', 'data_finance_manage_edit.php', array('gibbonFinanceInvoiceeUpdateID' => $gibbonFinanceInvoiceeUpdateID));
+$I->seeBreadcrumb('Edit Request');
+
+$I->see('Family', 'td');
+
+$I->click('Submit');
+$I->seeSuccessMessage();
+
+$gibbonFinanceInvoiceeUpdateID = $I->grabValueFromURL('gibbonFinanceInvoiceeUpdateID');
+
+// Delete ------------------------------------------------
+$I->amOnModulePage('Data Updater', 'data_finance_manage_delete.php', array('gibbonFinanceInvoiceeUpdateID' => $gibbonFinanceInvoiceeUpdateID));
+
+$I->click('Yes');
+$I->seeSuccessMessage();

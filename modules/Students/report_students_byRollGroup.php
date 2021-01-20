@@ -29,10 +29,8 @@ use Gibbon\Domain\RollGroups\RollGroupGateway;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_byRollGroup.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
 
@@ -146,7 +144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
 
                     foreach ($conditions as $index => $condition) {
                         $output .= '<b><i>'.__('Condition').' '.($index+1).'</i></b>: '.$condition['name'];
-                        $output .= ' <span style="color: #'.$condition['alertColor'].'; font-weight: bold">('.__($condition['risk']).' '.__('Risk').')</span>';
+                        $output .= ' <span style="color: '.$condition['alertColor'].'; font-weight: bold">('.__($condition['risk']).' '.__('Risk').')</span>';
                         $output .= '<br/>';
                     }
                 }

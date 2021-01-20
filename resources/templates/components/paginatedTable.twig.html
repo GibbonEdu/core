@@ -12,12 +12,10 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     <div id="{{ table.getID }}">
         <div class="dataTable" data-results="{{ dataSet.getResultCount }}">
             {{ parent() }}
-
-            {{ block('bulkActions') }}
         </div>
     </div>
 
-    
+    {{ block('bulkActions') }}
 
     <script>
     $(function(){
@@ -28,8 +26,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 
 {% block header %}
-    <div class="flex items-end justify-between pb-2">
-        <div class="flex items-end {{ dataSet.getTotalCount > 0 ? 'h-10' : '' }}">
+    <div class="flex items-end justify-between">
+        <div class="flex items-end pb-2 {{ dataSet.getTotalCount > 0 ? 'h-10' : '' }}">
             {{ block('pageCount') }}
         </div>
 

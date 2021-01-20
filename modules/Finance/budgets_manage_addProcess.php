@@ -33,29 +33,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_add
     $active = $_POST['active'];
     $category = $_POST['category'];
 
-    //Lock table
-    try {
-        $sql = 'LOCK TABLES gibbonFinanceBudget WRITE, gibbonFinanceBudgetPerson WRITE';
-        $result = $connection2->query($sql);
-    } catch (PDOException $e) {
-        $URL .= '&return=error2';
-        header("Location: {$URL}");
-        exit();
-    }
-
-    //Get next autoincrement
-    try {
-        $sqlAI = "SHOW TABLE STATUS LIKE 'gibbonFinanceBudget'";
-        $resultAI = $connection2->query($sqlAI);
-    } catch (PDOException $e) {
-        $URL .= '&return=error2';
-        header("Location: {$URL}");
-        exit();
-    }
-
-    $rowAI = $resultAI->fetch();
-    $AI = str_pad($rowAI['Auto_increment'], 4, '0', STR_PAD_LEFT);
-
     if ($name == '' or $nameShort == '' or $active == '' or $category == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
@@ -87,6 +64,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_add
                 header("Location: {$URL}");
                 exit();
             }
+            
+            $AI = $connection2->lastInsertID();
 
             //Scan through staff
             $partialFail = false;
@@ -101,14 +80,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_add
             if (count($staff) > 0) {
                 foreach ($staff as $t) {
                     //Check to see if person is already registered in this budget
-                    try {
+                    
                         $dataGuest = array('gibbonPersonID' => $t, 'gibbonFinanceBudgetID' => $AI);
                         $sqlGuest = 'SELECT * FROM gibbonFinanceBudgetPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID';
                         $resultGuest = $connection2->prepare($sqlGuest);
                         $resultGuest->execute($dataGuest);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
 
                     if ($resultGuest->rowCount() == 0) {
                         try {
@@ -121,12 +97,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_add
                         }
                     }
                 }
-            }
-
-            try {
-                $sql = 'UNLOCK TABLES';
-                $result = $connection2->query($sql);
-            } catch (PDOException $e) {
             }
 
             if ($partialFail == true) {

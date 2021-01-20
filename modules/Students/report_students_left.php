@@ -29,10 +29,8 @@ use Gibbon\Domain\Students\StudentReportGateway;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_left.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $viewMode = $_REQUEST['format'] ?? '';
@@ -118,11 +116,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_l
     $table->addColumn('student', __('Student'))
         ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
         ->format(function ($student) {
-            return Format::name('', $student['preferredName'], $student['surname'], 'Student', true, true) 
+            return Format::name('', $student['preferredName'], $student['surname'], 'Student', true, true)
                  . '<br/><small><i>'.Format::userStatusInfo($student).'</i></small>';
         });
     $table->addColumn('rollGroup', __('Roll Group'));
     $table->addColumn('username', __('Username'));
+    $table->addColumn('officialName', __('Official Name'));
     $table->addColumn('dateEnd', __('End Date'))->format(function ($student) {
         return Format::date($student['dateEnd']).'<br/>'.Format::small($student['departureReason']);
     });

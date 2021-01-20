@@ -127,6 +127,11 @@ class FormFactory implements FormFactoryInterface
         return new Input\Range($name, $min, $max, $step);
     }
 
+    public function createColor($name)
+    {
+        return (new Input\Color($name));
+    }
+
     public function createFinder($name)
     {
         return new Input\Finder($name);
@@ -159,7 +164,7 @@ class FormFactory implements FormFactoryInterface
             ->placeholder('http://')
             ->addValidation(
                 'Validate.Format',
-                'pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://"'
+                'pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "'.__('Must start with http:// or https://').'"'
             );
     }
 
@@ -242,7 +247,7 @@ class FormFactory implements FormFactoryInterface
 
     public function createSubheading($content, $tag = 'h4')
     {
-        $content = sprintf('<%1$s>%2$s</%1$s>', $tag, $content);
+        $content = sprintf('<%1$s class="m-0 p-0">%2$s</%1$s>', $tag, $content);
         return $this->createContent($content);
     }
 
@@ -277,7 +282,7 @@ class FormFactory implements FormFactoryInterface
     {
         $content = '';
         if ($required) {
-            $content = '<span class="emphasis small">* '.__('denotes a required field').'</span>';
+            $content = '<span class="text-xs text-gray-600">* '.__('denotes a required field').'</span>';
         }
         return $this->createContent($content);
     }
@@ -344,6 +349,9 @@ class FormFactory implements FormFactoryInterface
             'Parent'         => __('Parent'),
             'Spouse'         => __('Spouse'),
             'Offspring'      => __('Offspring'),
+            'Guardian'       => __('Guardian'),
+            'Grandmother'    => __('Grandmother'),
+            'Grandfather'    => __('Grandfather'),
             'Friend'         => __('Friend'),
             'Other Relation' => __('Other Relation'),
             'Doctor'         => __('Doctor'),
@@ -378,6 +386,7 @@ class FormFactory implements FormFactoryInterface
     public function createSelectSystemLanguage($name)
     {
         $languages = array(
+            'af_ZA' => 'Afrikaans - Suid-Afrika',
             'nl_NL' => 'Dutch - Nederland',
             'en_GB' => 'English - United Kingdom',
             'en_US' => 'English - United States',
@@ -394,6 +403,7 @@ class FormFactory implements FormFactoryInterface
             'tr_TR' => 'Türkçe - Türkiye',
             'ar_SA' => 'العربية - المملكة العربية السعودية',
             'th_TH' => 'ภาษาไทย - ราชอาณาจักรไทย',
+            'uk_UA' => 'українська мова - Україна',
             'ur_PK' => 'پاکستان - اُردُو',
             'zh_CN' => '汉语 - 中国',
             'zh_HK' => '體字 - 香港',
@@ -458,6 +468,7 @@ class FormFactory implements FormFactoryInterface
                 'NGN ₦' => 'Nigerian Naira (₦)',
                 'OMR ر.ع.' => 'Omani Rial (ر.ع.)',
                 'PKR ₨' => 'Pakistani Rupee (₨)',
+                'RON L' => 'Romanian Leu (L)',
                 'RUB ₽' => 'Russian Ruble (₽)',
                 'SAR ﷼‎' => 'Saudi Riyal (﷼‎)',
                 'ZAR R‎' => 'South African Rand (R‎)',

@@ -23,8 +23,8 @@ include './gibbon.php';
 //Set up for i18n via gettext
 if (isset($_SESSION[$guid]['i18n']['code']) && function_exists('gettext')) {
     if ($_SESSION[$guid]['i18n']['code'] != null) {
-        putenv('LC_ALL='.$_SESSION[$guid]['i18n']['code']);
-        setlocale(LC_ALL, $_SESSION[$guid]['i18n']['code']);
+        putenv('LC_ALL='.$gibbon->session->get('i18n')['code']);
+        setlocale(LC_ALL, $gibbon->session->get('i18n')['code']);
         bindtextdomain('gibbon', './i18n');
         textdomain('gibbon');
         bind_textdomain_codeset('gibbon', 'UTF-8');
@@ -33,11 +33,7 @@ if (isset($_SESSION[$guid]['i18n']['code']) && function_exists('gettext')) {
 
 //Setup variables
 $output = '';
-if (isset($_POST['gibbonTTID'])) {
-    $id = $_POST['gibbonTTID'];
-} else {
-    $id = '';
-}
+$id = $_POST['gibbonTTID'] ?? '';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == false) {
     //Acess denied
@@ -47,30 +43,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
 } else {
     include './modules/Timetable/moduleFunctions.php';
     $ttDate = '';
-    if ($_POST['ttDate'] != '') {
+    if (!empty($_POST['ttDate'])) {
         $ttDate = dateConvertToTimestamp(dateConvert($guid, $_POST['ttDate']));
     }
 
-    if ($_POST['fromTT'] == 'Y') {
-        if ($_POST['schoolCalendar'] == 'on' or $_POST['schoolCalendar'] == 'Y') {
-            $_SESSION[$guid]['viewCalendarSchool'] = 'Y';
-        } else {
-            $_SESSION[$guid]['viewCalendarSchool'] = 'N';
-        }
-
-        if ($_POST['personalCalendar'] == 'on' or $_POST['personalCalendar'] == 'Y') {
-            $_SESSION[$guid]['viewCalendarPersonal'] = 'Y';
-        } else {
-            $_SESSION[$guid]['viewCalendarPersonal'] = 'N';
-        }
-
-        if ($_POST['spaceBookingCalendar'] == 'on' or $_POST['spaceBookingCalendar'] == 'Y') {
-            $_SESSION[$guid]['viewCalendarSpaceBooking'] = 'Y';
-        } else {
-            $_SESSION[$guid]['viewCalendarSpaceBooking'] = 'N';
-        }
-    }
-    $tt = renderTT($guid, $connection2, $_SESSION[$guid]['gibbonPersonID'], $id, false, $ttDate, '', '', 'trim');
+    $tt = renderTT($guid, $connection2, $gibbon->session->get('gibbonPersonID'), $id, false, $ttDate, '', '', 'trim');
     if ($tt != false) {
         $output .= $tt;
     } else {

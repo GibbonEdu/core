@@ -21,10 +21,8 @@ use Gibbon\Forms\Form;
 use Gibbon\Domain\User\RoleGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_add.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs
@@ -43,22 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_a
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-    $types = array(__('Basic') => array ('Teaching' => __('Teaching'), 'Support' => __('Support')));
-
-    $roleGateway = $container->get(RoleGateway::class);
-    // CRITERIA
-    $criteriaCategory = $roleGateway->newQueryCriteria()
-        ->sortBy(['gibbonRole.name'])
-        ->filterBy('category:Staff');
-
-    $rolesCategoriesStaff = $roleGateway->queryRoles($criteriaCategory);
-
-    $typesCategories = array();
-    foreach($rolesCategoriesStaff as $roleCategoriesStaff) {
-       $typesCategories[$roleCategoriesStaff['name']] = __($roleCategoriesStaff['name']);
-    }
-    $types[__('System Roles')] = $typesCategories;    
-    
+    $types = array('Teaching' => __('Teaching'), 'Support' => __('Support'));
     $row = $form->addRow();
         $row->addLabel('type', __('Type'));
         $row->addSelect('type')->fromArray($types)->placeholder()->required();

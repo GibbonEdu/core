@@ -142,11 +142,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             }
 
             //Unlock module table
-            try {
+            
                 $sql = 'UNLOCK TABLES';
                 $result = $connection2->query($sql);
-            } catch (PDOException $e) {
-            }
 
             if ($partialFail == true) {
                 $URL .= '&return=warning1';

@@ -60,38 +60,4 @@ class SendNotificationsProcess extends BackgroundProcess implements ContainerAwa
         
         return $notificationSender->sendNotifications();
     }
-
-    public function runSendReportsAvailable($gibbonReportingCycleIDList, $notificationText)
-    {
-        $mail = $this->container->get(Mailer::class);
-
-        $sendReport = ['emailSent' => 0, 'emailFailed' => 0];
-        $parents = $this->container->get(ReportArchiveEntryGateway::class)->selectParentArchiveAccessByReportingCycle($gibbonReportingCycleIDList)->fetchAll();
-
-        foreach ($parents as $parent) {
-            $mail->clearAllRecipients();
-            $mail->AddAddress($parent['email']);
-
-            $subject = __('Reports Available Online');
-            $body = __($notificationText);
-
-            $mail->setDefaultSender($subject);
-            $mail->renderBody('mail/email.twig.html', [
-                'title'  => $subject,
-                'body'   => $body,
-                'button' => [
-                    'url'  => 'index.php?q=/modules/Reports/archive_byFamily.php',
-                    'text' => __('View Reports'),
-                ],
-            ]);
-
-            if ($mail->Send()) {
-                $sendReport['emailSent']++;
-            } else {
-                $sendReport['emailFailed']++;
-            }
-        }
-
-        return $sendReport;
-    }
 }

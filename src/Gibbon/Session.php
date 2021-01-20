@@ -59,9 +59,9 @@ class Session implements SessionInterface
                 'cookie_secure'    => isset($_SERVER['HTTPS']),
             ];
 
-            if (version_compare(phpversion(), '7.3.0', '>=')) {
-                $options['cookie_samesite'] = 'Strict';
-            }
+            // if (version_compare(phpversion(), '7.3.0', '>=')) {
+            //     $options['cookie_samesite'] = 'Strict';
+            // }
 
             session_start($options);
 
@@ -266,6 +266,7 @@ class Session implements SessionInterface
         $this->set('gibboni18nIDPersonal', $userData['gibboni18nIDPersonal']);
         $this->set('googleAPIRefreshToken', $userData['googleAPIRefreshToken']);
         $this->set('receiveNotificationEmails', $userData['receiveNotificationEmails']);
+        $this->set('cookieConsent', $userData['cookieConsent'] ?? '');
         $this->set('gibbonHouseID', $userData['gibbonHouseID']);
 
         //Deal with themes

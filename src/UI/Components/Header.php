@@ -2,17 +2,14 @@
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
-
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
-
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
-
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
@@ -49,22 +46,22 @@ class Header
 
         $return .= '<div class="flex flex-row-reverse mb-1">';
 
-        if (isset($_SESSION[$guid]['username']) != false) {
+        if ($this->session->has('username')) {
             //MESSAGE WALL!
             if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
                 $return .= "<div id='messageWall' class='relative'>";
 
                 require_once './modules/Messenger/moduleFunctions.php';
 
-                $messages = $_SESSION[$guid]['messageWallArray'] ?? [];
+                $messages = $this->session->get('messageWallArray') ?? [];
 
-                $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Messenger/messageWall_view.php';
+                $URL = $this->session->get('absoluteURL').'/index.php?q=/modules/Messenger/messageWall_view.php';
                 if (count($messages) < 1) {
-                    $return .= "<a class='inactive inline-block relative mr-4' title='".__('Message Wall')."' href='$URL'><img class='minorLinkIcon' style='margin-left: 4px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
+                    $return .= "<a class='inactive inline-block relative mr-4' title='".__('Message Wall')."' href='$URL'><img class='minorLinkIcon' style='margin-left: 4px; opacity: 0.2; vertical-align: -75%' src='".$this->session->get('absoluteURL').'/themes/'.$this->session->get('gibbonThemeName')."/img/messageWall.png'></a>";
                 } else {
-                    $return .= "<a class='inline-block relative mr-4' title='".__('Message Wall')."' href='$URL'><span class='badge -mr-2 right-0'>".count($messages)."</span><img class='minorLinkIcon' style='margin-left: 4px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
+                    $return .= "<a class='inline-block relative mr-4' title='".__('Message Wall')."' href='$URL'><span class='badge -mr-2 right-0'>".count($messages)."</span><img class='minorLinkIcon' style='margin-left: 4px; vertical-align: -75%' src='".$this->session->get('absoluteURL').'/themes/'.$this->session->get('gibbonThemeName')."/img/messageWall.png'></a>";
 
-                    if (empty($_SESSION[$guid]['pageLoads']) and ($_SESSION[$guid]['messengerLastBubble'] == null or $_SESSION[$guid]['messengerLastBubble'] < date('Y-m-d'))) {
+                    if (!$this->session->has('pageLoads') and ($this->session->get('messengerLastBubble') == null or $this->session->get('messengerLastBubble') < date('Y-m-d'))) {
                         $messageBubbleBGColor = getSettingByScope($connection2, 'Messenger', 'messageBubbleBGColor');
                         $bubbleBG = '';
                         if ($messageBubbleBGColor != '') {
@@ -126,7 +123,7 @@ class Header
                         }
 
                         try {
-                            $data = array('messengerLastBubble' => date('Y-m-d'), 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                            $data = array('messengerLastBubble' => date('Y-m-d'), 'gibbonPersonID' => $this->session->get('gibbonPersonID'));
                             $sql = 'UPDATE gibbonPerson SET messengerLastBubble=:messengerLastBubble WHERE gibbonPersonID=:gibbonPersonID';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
@@ -139,7 +136,7 @@ class Header
 
             //GET & SHOW NOTIFICATIONS
             try {
-                $dataNotifications = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
+                $dataNotifications = array('gibbonPersonID' => $this->session->get('gibbonPersonID'), 'gibbonPersonID2' => $this->session->get('gibbonPersonID'));
                 $sqlNotifications = "(SELECT gibbonNotification.*, gibbonModule.name AS source FROM gibbonNotification JOIN gibbonModule ON (gibbonNotification.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonPersonID=:gibbonPersonID AND status='New')
                 UNION
                 (SELECT gibbonNotification.*, 'System' AS source FROM gibbonNotification WHERE gibbonModuleID IS NULL AND gibbonPersonID=:gibbonPersonID2 AND status='New')
@@ -150,7 +147,7 @@ class Header
 
             //Refresh notifications every 10 seconds for staff, 120 seconds for everyone else
             $interval = 120000;
-            if ($_SESSION[$guid]['gibbonRoleIDCurrentCategory'] == 'Staff') {
+            if ($this->session->get('gibbonRoleIDCurrentCategory') == 'Staff') {
                 $interval = 10000;
             }
             $return .= '<script type="text/javascript">
@@ -163,8 +160,8 @@ class Header
 
             $return .= "<div id='notifications'>";
                 //CHECK FOR SYSTEM ALARM
-                if (isset($_SESSION[$guid]['gibbonRoleIDCurrentCategory'])) {
-                    if ($_SESSION[$guid]['gibbonRoleIDCurrentCategory'] == 'Staff') {
+                if ($this->session->has('gibbonRoleIDCurrentCategory')) {
+                    if ($this->session->get('gibbonRoleIDCurrentCategory') == 'Staff') {
                         $alarm = getSettingByScope($connection2, 'System', 'alarm');
                         if ($alarm == 'General' or $alarm == 'Lockdown' or $alarm == 'Custom') {
                             $type = 'general';
@@ -182,9 +179,9 @@ class Header
                     }
                 }
             if ($resultNotifications->rowCount() > 0) {
-                $return .= "<a class='inline-block relative mr-4' title='".__('Notifications')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=notifications.php'><span class='badge -mr-2 right-0'>".$resultNotifications->rowCount()."</span><img class='minorLinkIcon' style='margin-left: 2px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications.png'></a>";
+                $return .= "<a class='inline-block relative mr-4' title='".__('Notifications')."' href='".$this->session->get('absoluteURL')."/index.php?q=notifications.php'><span class='badge -mr-2 right-0'>".$resultNotifications->rowCount()."</span><img class='minorLinkIcon' style='margin-left: 2px; vertical-align: -75%' src='".$this->session->get('absoluteURL').'/themes/'.$this->session->get('gibbonThemeName')."/img/notifications.png'></a>";
             } else {
-                $return .= "<a class='inactive inline-block relative mr-4' title='".__('Notifications')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=notifications.php'><img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications.png'></a>";
+                $return .= "<a class='inactive inline-block relative mr-4' title='".__('Notifications')."' href='".$this->session->get('absoluteURL')."/index.php?q=notifications.php'><img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='".$this->session->get('absoluteURL').'/themes/'.$this->session->get('gibbonThemeName')."/img/notifications.png'></a>";
             }
             $return .= '</div>';
         }
@@ -202,49 +199,47 @@ class Header
         $return = '';
 
         // Add a link to go back to the system/personal default language, if we're not using it
-        if (isset($_SESSION[$guid]['i18n']['default']['code']) && isset($_SESSION[$guid]['i18n']['code'])) {
-            if ($_SESSION[$guid]['i18n']['code'] != $_SESSION[$guid]['i18n']['default']['code']) {
-                $systemDefaultShortName = trim(strstr($_SESSION[$guid]['i18n']['default']['name'], '-', true));
-                $languageLink = "<a class='link-white' href='".$_SESSION[$guid]['absoluteURL']."?i18n=".$_SESSION[$guid]['i18n']['default']['code']."'>".$systemDefaultShortName.'</a>';
+        if (!empty($this->session->get('i18n')['default']['code']) && !empty($this->session->get('i18n')['code'])) {
+            if ($this->session->get('i18n')['code'] != $this->session->get('i18n')['default']['code']) {
+                $systemDefaultShortName = trim(strstr($this->session->get('i18n')['default']['name'], '-', true));
+                $languageLink = "<a class='link-white' href='".$this->session->get('absoluteURL')."?i18n=".$this->session->get('i18n')['default']['code']."'>".$systemDefaultShortName.'</a>';
             }
         }
 
-        if (isset($_SESSION[$guid]['username']) == false) {
+        if (!$this->session->has('username')) {
             $return .= !empty($languageLink) ? $languageLink : '';
 
-            if ($_SESSION[$guid]['webLink'] != '') {
+            if ($this->session->get('webLink') != '') {
                 $return .= !empty($languageLink) ? ' . ' : '';
-                $return .= __('Return to')." <a class='link-white' style='margin-right: 12px' target='_blank' href='".$_SESSION[$guid]['webLink']."'>".$_SESSION[$guid]['organisationNameShort'].' '.__('Website').'</a>';
+                $return .= __('Return to')." <a class='link-white' style='margin-right: 12px' target='_blank' href='".$this->session->get('webLink')."'>".$this->session->get('organisationNameShort').' '.__('Website').'</a>';
             }
         } else {
-            $name = $_SESSION[$guid]['preferredName'].' '.$_SESSION[$guid]['surname'];
-            if (isset($_SESSION[$guid]['gibbonRoleIDCurrentCategory'])) {
-                if ($_SESSION[$guid]['gibbonRoleIDCurrentCategory'] == 'Student') {
-                    $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
-                    if ($highestAction == 'View Student Profile_brief') {
-                        $name = "<a class='link-white' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$_SESSION[$guid]['gibbonPersonID']."'>".$name.'</a>';
-                    }
+            $name = $this->session->get('preferredName').' '.$this->session->get('surname');
+            if ($this->session->get('gibbonRoleIDCurrentCategory') == 'Student') {
+                $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
+                if ($highestAction == 'View Student Profile_brief') {
+                    $name = "<a class='link-white' href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$this->session->get('gibbonPersonID')."'>".$name.'</a>';
                 }
             }
 
             $return .= $name.' . ';
             $return .= "<a class='link-white' href='./logout.php'>".__('Logout')."</a> . <a class='link-white' href='./index.php?q=preferences.php'>".__('Preferences').'</a>';
-            if ($_SESSION[$guid]['emailLink'] != '') {
-                $return .= "<span class='hidden sm:inline'> . <a class='link-white' target='_blank' href='".$_SESSION[$guid]['emailLink']."'>".__('Email').'</a></span>';
+            if ($this->session->get('emailLink') != '') {
+                $return .= "<span class='hidden sm:inline'> . <a class='link-white' target='_blank' href='".$this->session->get('emailLink')."'>".__('Email').'</a></span>';
             }
-            if ($_SESSION[$guid]['webLink'] != '') {
-                $return .= "<span class='hidden sm:inline'>  . <a class='link-white' target='_blank' href='".$_SESSION[$guid]['webLink']."'>".$_SESSION[$guid]['organisationNameShort'].' '.__('Website').'</a></span>';
+            if ($this->session->get('webLink') != '') {
+                $return .= "<span class='hidden sm:inline'>  . <a class='link-white' target='_blank' href='".$this->session->get('webLink')."'>".$this->session->get('organisationNameShort').' '.__('Website').'</a></span>';
             }
-            if ($_SESSION[$guid]['website'] != '') {
-                $return .= "<span class='hidden sm:inline'>  . <a class='link-white' target='_blank' href='".$_SESSION[$guid]['website']."'>".__('My Website').'</a></span>';
+            if ($this->session->get('website') != '') {
+                $return .= "<span class='hidden sm:inline'>  . <a class='link-white' target='_blank' href='".$this->session->get('website')."'>".__('My Website').'</a></span>';
             }
 
             $return .= !empty($languageLink) ? ' . '.$languageLink : '';
 
             //Check for house logo (needed to get bubble, below, in right spot)
-            if (isset($_SESSION[$guid]['gibbonHouseIDLogo']) and isset($_SESSION[$guid]['gibbonHouseIDName'])) {
-                if ($_SESSION[$guid]['gibbonHouseIDLogo'] != '') {
-                    $return .= " . <img class='ml-1 w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16' title='".$_SESSION[$guid]['gibbonHouseIDName']."' style='vertical-align: -75%;' src='".$_SESSION[$guid]['absoluteURL'].'/'.$_SESSION[$guid]['gibbonHouseIDLogo']."'/>";
+            if ($this->session->has('gibbonHouseIDLogo') and $this->session->has('gibbonHouseIDName')) {
+                if ($this->session->get('gibbonHouseIDLogo') != '') {
+                    $return .= " . <img class='ml-1 w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16' title='".$this->session->get('gibbonHouseIDName')."' style='vertical-align: -75%;' src='".$this->session->get('absoluteURL').'/'.$this->session->get('gibbonHouseIDLogo')."'/>";
                 }
             }
         }

@@ -44,14 +44,11 @@ else if ($gibbonAttendanceLogPersonID == '' or $gibbonPersonID == '' or $current
     $comment = isset($_POST['comment'])? $_POST['comment'] : '';
 
     // Get attendance codes
-    try {
+    
         $dataCode = array( 'name' => $type );
         $sqlCode = "SELECT direction FROM gibbonAttendanceCode WHERE active = 'Y' AND name=:name LIMIT 1";
         $resultCode = $connection2->prepare($sqlCode);
         $resultCode->execute($dataCode);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
 
     if ($resultCode->rowCount() != 1) {
         $URL .= '&return=error1';

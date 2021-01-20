@@ -8,7 +8,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 {% import _self as homepage  %}
 
 <div class="flex flex-wrap mb-4 -mx-2 items-stretch ">
-    <div class="mx-2 my-2">
+    <div class="w-full mx-2 my-2">
         <h2>{{ __('Welcome') }}</h2>
         <p>
         {{ indexText | raw }}
@@ -20,6 +20,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             __('Student Applications'), 
             __('Parents of students interested in study at %1$s may use our %2$s online form%3$s to initiate the application process.'), 
             "/?q=/modules/Students/applicationForm.php",
+            organisationName,
             'first'
         ) }}
 
@@ -30,8 +31,18 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             __('Staff Applications'), 
             __('Individuals interested in working at %1$s may use our %2$s online form%3$s to view job openings and begin the recruitment process.'),
             "/?q=/modules/Staff/applicationForm_jobOpenings_view.php",
+            organisationName,
             'first'
         ) }}
+    {% endif %}
+
+    {% if publicRegistration %}
+        {{ homepage.card(
+            __('Register'), 
+            __('Join our learning community.') ~ ' ' ~ __("It's free!"), 
+            "/?q=/publicRegistration.php"
+        ) }}
+
     {% endif %}
 
     {% if makeDepartmentsPublic %}
@@ -39,6 +50,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             __('Departments'), 
             __('Please feel free to %1$sbrowse our departmental information%2$s, to learn more about %3$s.'),
             "/?q=/modules/Departments/departments.php",
+            organisationName,
             'second'
         ) }}
     {% endif %}
@@ -48,16 +60,27 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             __('Learn With Us'), 
             __('We are sharing some of our units of study with members of the public, so you can learn with us. Feel free to %1$sbrowse our public units%2$s.'),
             "/?q=/modules/Planner/units_public.php&sidebar=false",
+            organisationName,
             'second'
         ) }}
     {% endif %}
 
     {% for hook in indexHooks %}
-        {{ homepage.card(hook.title, hook.text, hook.url) }}
+        {{ homepage.card(hook.title, hook.text, hook.url, organisationName) }}
     {% endfor %}
-</div>
 
-{% macro card(name, content, url = '', orgname = 'first') %}
+    {% if privacyPolicy %}
+        {{ homepage.card(
+            __('Privacy Policy'), 
+            __('Read more about how personal data is used, stored and retained at %1$s.'),
+            "/?q=privacyPolicy.php",
+            organisationName,
+            'first'
+        ) }}
+    {% endif %}
+</div>
+{% macro card(name, content, url = '', organisationName, orgNamePos = 'first') %}
+
 
     <div class="w-full sm:w-1/2 px-2 pb-4">
         <a href="{{ absoluteURL ~ url }}" class="block border shadow-sm rounded bg-white h-full text-gray-800 hover:shadow-md hover:text-purple-700 hover:border-purple-600">
@@ -67,9 +90,9 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 <svg class="w-5 h-5 float-right -mt-px fill-current" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="angle-double-right" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-angle-double-right fa-w-14 fa-7x"><path fill="currentColor" d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34zm192-34l-136-136c-9.4-9.4-24.6-9.4-33.9 0l-22.6 22.6c-9.4 9.4-9.4 24.6 0 33.9l96.4 96.4-96.4 96.4c-9.4 9.4-9.4 24.6 0 33.9l22.6 22.6c9.4 9.4 24.6 9.4 33.9 0l136-136c9.4-9.2 9.4-24.4 0-33.8z" class=""></path></svg>
             </div>
             <p class="mb-1 p-4 text-gray-700 leading-tight">
-                {% if orgname == 'first' %}
+                {% if orgNamePos == 'first' %}
                     {{ content|format(organisationName, '', '')|raw }}
-                {% elseif orgname == 'second' %}
+                {% elseif orgNamePos == 'second' %}
                     {{ content|format('', '', organisationName)|raw }}
                 {% else %}
                     {{ content|raw }}

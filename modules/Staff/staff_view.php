@@ -184,7 +184,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
         $table->addMetaData('filterOptions', [
             'type:teaching' => __('Staff Type').': '.__('Teaching'),
             'type:support'  => __('Staff Type').': '.__('Support'),
-            'type:other'    => __('Staff Type').': '.__('Other'),
         ]);
 
         $table->addMetaData('listOptions', [

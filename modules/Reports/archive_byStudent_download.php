@@ -29,46 +29,76 @@ $_POST['address'] = '/modules/Reports/archive_byStudent_download.php';
 
 require_once '../../gibbon.php';
 
+$accessToken = $_GET['token'] ?? '';
+$gibbonPersonIDAccessed = $_GET['gibbonPersonIDAccessed'] ?? $gibbon->session->get('gibbonPersonID');
+
 $returnPath = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Reports/archive_byStudent_view.php&gibbonPersonID='.($_GET['gibbonPersonID'] ?? '');
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_download.php') == false) {
+if (empty($accessToken) && isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_download.php') == false) {
     // Access denied
     header("location:$returnPath&return=error0");
+    exit;
 } else {
     // Proceed!
     $gibbonReportArchiveEntryID = $_GET['gibbonReportArchiveEntryID'] ?? '';
     
-    // Check for access to this archive
-    $highestAction = getHighestGroupedAction($guid, '/modules/Reports/archive_byStudent_download.php', $connection2);
-    if ($highestAction == 'View by Student') {
-        $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
-    } else if ($highestAction == 'View Reports_myChildren') {
-        $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
-        $children = $container->get(StudentGateway::class)
-            ->selectActiveStudentsByFamilyAdult($gibbon->session->get('gibbonSchoolYearID'), $gibbon->session->get('gibbonPersonID'))
-            ->fetchGroupedUnique();
-
-        if (empty($children[$gibbonPersonID])) {
-            $gibbonPersonID = null;
-        }
-    } else if ($highestAction == 'View Reports_mine') {
-        $gibbonPersonID = $gibbon->session->get('gibbonPersonID');
-    }
-
-    // Archive ID must exist
-    if (empty($gibbonReportArchiveEntryID) || empty($gibbonPersonID)) {
-        header("location:$returnPath&return=error1");
-        exit;
-    }
-
     $reportArchiveGateway = $container->get(ReportArchiveGateway::class);
     $reportArchiveEntryGateway = $container->get(ReportArchiveEntryGateway::class);
 
-    // Check for a valid archive record
-    $archiveEntry = $reportArchiveEntryGateway->getByID($gibbonReportArchiveEntryID);
-    if (empty($archiveEntry)) {
-        header("location:$returnPath&return=error1");
-        exit;
+    // Check for access to this archive
+    if (!empty($accessToken)) {
+        $returnPath = $gibbon->session->get('absoluteURL').'/index.php?q=';
+        $roleCategory = 'Parent';
+
+        // Archive ID must exist
+        if (empty($gibbonReportArchiveEntryID)) {
+            header("location:$returnPath&return=error8");
+            exit;
+        }
+
+        // Check for a valid archive record
+        $archiveEntry = $reportArchiveEntryGateway->selectArchiveEntryByAccessToken($gibbonReportArchiveEntryID, $accessToken)->fetch();
+        if (empty($archiveEntry)) {
+            header("location:$returnPath&return=error8");
+            exit;
+        }
+
+    } else {
+        $roleCategory = getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'), $connection2);
+        $highestAction = getHighestGroupedAction($guid, '/modules/Reports/archive_byStudent_download.php', $connection2);
+        if ($highestAction == 'View by Student') {
+            $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+        } else if ($highestAction == 'View Reports_myChildren') {
+            $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+            $children = $container->get(StudentGateway::class)
+                ->selectActiveStudentsByFamilyAdult($gibbon->session->get('gibbonSchoolYearID'), $gibbon->session->get('gibbonPersonID'))
+                ->fetchGroupedUnique();
+
+            if (empty($children[$gibbonPersonID])) {
+                $gibbonPersonID = null;
+            }
+        } else if ($highestAction == 'View Reports_mine') {
+            $gibbonPersonID = $gibbon->session->get('gibbonPersonID');
+        }
+
+        // Archive ID must exist
+        if (empty($gibbonReportArchiveEntryID) || empty($gibbonPersonID)) {
+            header("location:$returnPath&return=error1");
+            exit;
+        }
+
+        // Check for a valid archive record
+        $archiveEntry = $reportArchiveEntryGateway->getByID($gibbonReportArchiveEntryID);
+        if (empty($archiveEntry)) {
+            header("location:$returnPath&return=error0");
+            exit;
+        }
+
+        // Archive person must match the incoming gibbonPersonID
+        if ($archiveEntry['gibbonPersonID'] != $gibbonPersonID) {
+            header("location:$returnPath&return=error0");
+            exit;
+        }
     }
 
     // Check for a valid archive base
@@ -78,14 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_
         exit;
     }
 
-    // Archive person must match the incoming gibbonPersonID
-    if ($archiveEntry['gibbonPersonID'] != $gibbonPersonID) {
-        header("location:$returnPath&return=error0");
-        exit;
-    }
-
     // Check access by role category
-    $roleCategory = getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'), $connection2);
     $roleAccess = false;
     if ($roleCategory == 'Staff' && $archive['viewableStaff'] == 'Y') {
         $roleAccess = true;
@@ -132,10 +155,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_
 
     // Stream the file
     if (file_exists($filepath)) {
-        if ($roleCategory == 'Parent') {
+        if ($roleCategory == 'Parent' && !empty($gibbonPersonIDAccessed)) {
             // Update the archive with the most recent parent access info
             $reportArchiveEntryGateway->update($archiveEntry['gibbonReportArchiveEntryID'], [
-                'gibbonPersonIDAccessed' => $gibbon->session->get('gibbonPersonID'),
+                'gibbonPersonIDAccessed' => $gibbonPersonIDAccessed,
                 'timestampAccessed' => date('Y-m-d H:i:s'),
             ]);
         }

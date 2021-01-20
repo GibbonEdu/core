@@ -481,7 +481,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
             }
 
             $executionTime = mb_substr(microtime(true) - $timeStart, 0, 6).' sec';
-            $memoryUsage = readableFileSize(max(0, memory_get_usage() - $memoryStart)); 
+            $memoryUsage = Format::filesize(max(0, memory_get_usage() - $memoryStart)); 
             
             $results = array(
                 'step'            => $step,

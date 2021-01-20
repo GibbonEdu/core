@@ -51,7 +51,7 @@ jQuery(function($){
      * Form Class: generic check All/None checkboxes
      */
     $(document).on('click', '.checkall', function () {
-        $(this).closest('table').find(':checkbox').attr('checked', $(this).prop('checked')).trigger('change');
+        $(this).closest('fieldset, .bulkActionForm').find(':checkbox').attr('checked', $(this).prop('checked')).trigger('change');
     });
 
     /**
@@ -150,9 +150,33 @@ jQuery(function($){
     });
 
     /**
+    * Color Picker. Chain the color select to the text field.
+    */
+    $('.colorPicker').each(function () {
+        var item = this;
+        var target = $(item).data('for');
+
+        $(item).change(function () {
+            $("#" + target).val($(this).val());
+        }); 
+
+        $("#" + target).on('input', function () {
+            $(item).val($(this).val());
+        }); 
+    });
+
+    /**
     * Data Table: Simple Drag-Drop
     */
     $('.dataTable table[data-drag-url]').each(DraggableDataTable);
+
+    /**
+    * Data Table: Expandable Rows
+    */
+    $(document).on('click', '.dataTable .expander', function () {
+        $(this).toggleClass('expanded');
+        $(this).parents('tr').next('tr').toggle();
+    });
 });
 
 var DraggableDataTable = function () {
@@ -476,7 +500,6 @@ CustomBlocks.prototype.loadBlockInputData = function(block, data) {
 
     for (key in data) {
         $("[name='"+key+"']:not([type='file'])", block).val(data[key]);
-        $("label[for='"+key+"']", block).html(data[key]);
     }
 
     var readonly = data.readonly || [];
@@ -656,12 +679,6 @@ DataTable.prototype.init = function() {
         _.filters.page = Math.min(_.filters.page, _.filters.pageMax);
         _.refresh();
     });
-
-    // Expandable Rows
-    $(_.table).on('click', '.expander', function() {
-        $(this).toggleClass('expanded');
-        $(this).parents('tr').next('tr').toggle();
-    });
 };
 
 DataTable.prototype.refresh = function() {
@@ -697,7 +714,7 @@ $.prototype.gibbonDataTable = function(basePath, filters, identifier) {
 function gibbonFormSubmitted(form) {
     var submitButton = $('input[type="submit"]', $(form));
     submitButton.prop('disabled', true);
-    if ($(form).hasClass('standardForm')) {
+    if ($(form).hasClass('standardForm') || $(form).hasClass('formTable')) {
         setTimeout(function() {
             submitButton.wrap('<span class="submitted"></span>');
         }, 500);

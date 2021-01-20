@@ -59,23 +59,23 @@ class FinanceFormFactory extends DatabaseFormFactory
 
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
         if ($params['allStudents'] != true) {
-            $sql = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonRollGroup.nameShort AS rollGroupName, dayType 
+            $sql = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonRollGroup.nameShort AS rollGroupName, dayType
                 FROM gibbonPerson
                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                 JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
                 JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                WHERE gibbonPerson.status='Full' 
+                WHERE gibbonPerson.status='Full'
                 AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                ORDER BY gibbonRollGroup.name, surname, preferredName";
+                ORDER BY gibbonRollGroup.nameShort, surname, preferredName";
         }
         else {
-            $sql = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonRollGroup.nameShort AS rollGroupName, dayType 
+            $sql = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonRollGroup.nameShort AS rollGroupName, dayType
                 FROM gibbonPerson
                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                 JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
                 JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                ORDER BY gibbonRollGroup.name, surname, preferredName";
+                ORDER BY gibbonRollGroup.nameShort, surname, preferredName";
         }
 
         $results = $this->pdo->executeQuery($data, $sql);
@@ -104,11 +104,11 @@ class FinanceFormFactory extends DatabaseFormFactory
 
                 $byDayType = $student['dayType'].' '.__('Students by Roll Groups');
                 $fullName = Format::name('', $student['preferredName'], $student['surname'], 'Student', true);
-    
+
                 $values[$byDayType][$student['gibbonFinanceInvoiceeID']] = $student['rollGroupName'].' - '.$fullName;
             }
         }
-                
+
         return $this->createSelect($name)->fromArray($values)->placeholder();
     }
 
@@ -157,7 +157,7 @@ class FinanceFormFactory extends DatabaseFormFactory
     public function createSelectBillingSchedule($name, $gibbonSchoolYearID)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-        $sql = "SELECT gibbonFinanceBillingScheduleID as value, name FROM gibbonFinanceBillingSchedule 
+        $sql = "SELECT gibbonFinanceBillingScheduleID as value, name FROM gibbonFinanceBillingSchedule
                 WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
 
         return $this->createSelect($name)->fromQuery($this->pdo, $sql, $data)->placeholder();
@@ -166,9 +166,9 @@ class FinanceFormFactory extends DatabaseFormFactory
     public function createSelectFee($name, $gibbonSchoolYearID)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-        $sql = "SELECT gibbonFinanceFeeCategory.name as groupBy, gibbonFinanceFee.gibbonFinanceFeeID as value, gibbonFinanceFee.name 
-                FROM gibbonFinanceFee 
-                JOIN gibbonFinanceFeeCategory ON (gibbonFinanceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) 
+        $sql = "SELECT gibbonFinanceFeeCategory.name as groupBy, gibbonFinanceFee.gibbonFinanceFeeID as value, gibbonFinanceFee.name
+                FROM gibbonFinanceFee
+                JOIN gibbonFinanceFeeCategory ON (gibbonFinanceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID)
                 WHERE gibbonFinanceFee.gibbonSchoolYearID=:gibbonSchoolYearID
                 AND gibbonFinanceFee.active='Y'
                 ORDER BY gibbonFinanceFeeCategory.name, gibbonFinanceFee.name";
@@ -188,14 +188,14 @@ class FinanceFormFactory extends DatabaseFormFactory
 
     public function createSelectPaymentMethod($name)
     {
-        $methods = array(
-            'Online'        => __('Online'),
-            'Bank Transfer' => __('Bank Transfer'),
-            'Cash'          => __('Cash'),
-            'Cheque'        => __('Cheque'),
-            'Credit Card'   => __('Credit Card'),
-            'Other'         => __('Other')
-        );
+        $sql = "SELECT value FROM gibbonSetting WHERE scope='Finance' AND name='paymentTypeOptions'";
+        $result = $this->pdo->selectOne($sql);
+
+        $methods = array_map('trim', explode(',', $result));
+        $methods = array_reduce($methods, function ($group, $item) {
+            $group[$item] = __($item);
+            return $group;
+        }, []);
 
         return $this->createSelect($name)->fromArray($methods)->placeholder();
     }
@@ -211,7 +211,7 @@ class FinanceFormFactory extends DatabaseFormFactory
         return $this->createSelect($name)->fromArray($months)->placeholder();
     }
 
-    public function createInvoiceEmailCheckboxes($checkboxName, $hiddenValueName, $values, $session) 
+    public function createInvoiceEmailCheckboxes($checkboxName, $hiddenValueName, $values, $session)
     {
         $table = $this->createTable()->setClass('fullWidth');
 
@@ -234,14 +234,14 @@ class FinanceFormFactory extends DatabaseFormFactory
         if ($values['invoiceTo'] == 'Family' || ($values['invoiceTo'] == 'Company' && $values['companyCCFamily'] == 'Y')) {
             $data = array('gibbonFinanceInvoiceeID' => $values['gibbonFinanceInvoiceeID']);
             $sql = "SELECT parent.title, parent.surname, parent.preferredName, parent.email, gibbonFamilyRelationship.relationship
-                    FROM gibbonFinanceInvoicee 
-                    JOIN gibbonPerson AS student ON (gibbonFinanceInvoicee.gibbonPersonID=student.gibbonPersonID) 
-                    JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=student.gibbonPersonID) 
-                    JOIN gibbonFamilyAdult ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID) 
-                    JOIN gibbonPerson AS parent ON (gibbonFamilyAdult.gibbonPersonID=parent.gibbonPersonID) 
+                    FROM gibbonFinanceInvoicee
+                    JOIN gibbonPerson AS student ON (gibbonFinanceInvoicee.gibbonPersonID=student.gibbonPersonID)
+                    JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=student.gibbonPersonID)
+                    JOIN gibbonFamilyAdult ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID)
+                    JOIN gibbonPerson AS parent ON (gibbonFamilyAdult.gibbonPersonID=parent.gibbonPersonID)
                     LEFT JOIN gibbonFamilyRelationship ON (gibbonFamilyRelationship.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID && gibbonFamilyRelationship.gibbonPersonID1=parent.gibbonPersonID && gibbonFamilyRelationship.gibbonPersonID2=student.gibbonPersonID)
-                    WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID 
-                    AND (contactPriority=1 OR (contactPriority=2 AND contactEmail='Y')) 
+                    WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID
+                    AND (contactPriority=1 OR (contactPriority=2 AND contactEmail='Y'))
                     AND parent.status='Full'
                     GROUP BY parent.gibbonPersonID
                     ORDER BY contactPriority, surname, preferredName";

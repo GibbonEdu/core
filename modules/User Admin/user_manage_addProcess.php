@@ -215,28 +215,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                     $URL .= '&return=error7';
                     header("Location: {$URL}");
                 } else {
-                    //Lock markbook column table
-                    try {
-                        $sql = 'LOCK TABLES gibbonPerson WRITE, gibbonFileExtension WRITE';
-                        $result = $connection2->query($sql);
-                    } catch (PDOException $e) {
-                        $URL .= '&return=error2';
-                        header("Location: {$URL}");
-                        exit();
-                    }
-
-                    //Get next autoincrement
-                    try {
-                        $sqlAI = "SHOW TABLE STATUS LIKE 'gibbonPerson'";
-                        $resultAI = $connection2->query($sqlAI);
-                    } catch (PDOException $e) {
-                        $URL .= '&return=error2';
-                        header("Location: {$URL}");
-                        exit();
-                    }
-
-                    $rowAI = $resultAI->fetch();
-                    $AI = str_pad($rowAI['Auto_increment'], 10, '0', STR_PAD_LEFT);
                     $attachment1 = null;
                     $birthCertificateScan = '';
                     $nationalIDCardScan = '';
@@ -362,11 +340,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                     $AI = str_pad($connection2->lastInsertID(), 10, '0', STR_PAD_LEFT);
 
                     //Unlock tables
-                    try {
+                    
                         $sql = 'UNLOCK TABLES';
                         $result = $connection2->query($sql);
-                    } catch (PDOException $e) {
-                    }
 
                     // Create a staff record for this new user
                     $staffRecord = $_POST['staffRecord'] ?? 'N';

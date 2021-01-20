@@ -16,15 +16,14 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+use Gibbon\Tables\DataTable;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_edit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
 
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
@@ -40,66 +39,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
     $dateStamp = $_GET['dateStamp'];
     if ($gibbonSchoolYearID == '' or $dateStamp == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
-            $data = array('date' => date('Y-m-d', $dateStamp));
-            $sql = 'SELECT gibbonTTDay.gibbonTTDayID, gibbonTTDay.name AS dayName, gibbonTT.name AS ttName FROM gibbonTTDayDate JOIN gibbonTTDay ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTT ON (gibbonTTDay.gibbonTTID=gibbonTT.gibbonTTID) WHERE date=:date';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
+        
+        $data = array('date' => date('Y-m-d', $dateStamp));
+        $sql = 'SELECT gibbonTTDay.gibbonTTDayID, gibbonTTDay.name AS dayName, gibbonTT.name AS ttName FROM gibbonTTDayDate JOIN gibbonTTDay ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTT ON (gibbonTTDay.gibbonTTID=gibbonTT.gibbonTTID) WHERE date=:date';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
 
-        echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/ttDates_edit_add.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."&dateStamp=$dateStamp'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-        echo '</div>';
+        $table = DataTable::create('ttDay');
+        $table->setTitle(__('ttDay'));
 
-        if ($result->rowCount() < 1) {
-            echo "<div class='error'>";
-            echo __('There are no records to display.');
-            echo '</div>';
-        } else {
-            echo "<table cellspacing='0' style='width: 100%'>";
-            echo "<tr class='head'>";
-            echo '<th>';
-            echo __('Timetable');
-            echo '</th>';
-            echo '<th>';
-            echo __('Day');
-            echo '</th>';
-            echo '<th>';
-            echo __('Actions');
-            echo '</th>';
-            echo '</tr>';
+        $table->addHeaderAction('add', __('Add'))
+                ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+                ->addParam('dateStamp', $dateStamp)
+                ->displayLabel()
+                ->setURL('/modules/' . $gibbon->session->get('module') . '/ttDates_edit_add.php');
 
-            $count = 0;
-            $rowNum = 'odd';
-            while ($row = $result->fetch()) {
-                if ($count % 2 == 0) {
-                    $rowNum = 'even';
-                } else {
-                    $rowNum = 'odd';
-                }
+        $table->addColumn('ttName', __('Timetable'));
+        $table->addColumn('dayName', __('Day'));
+        $table->addActionColumn()
+                ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+                ->addParam('dateStamp', $dateStamp)
+                ->addParam('gibbonTTDayID')
+                ->format(function ($subcategory, $actions) use ($gibbon) {
+                    $actions->addAction('delete', __('Delete'))
+                            ->setURL('/modules/' . $gibbon->session->get('module') . '/ttDates_edit_delete.php');
+                });
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
-                echo '<td>';
-                echo $row['ttName'];
-                echo '</td>';
-                echo '<td>';
-                echo $row['dayName'];
-                echo '</td>';
-                echo '<td>';
-                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/ttDates_edit_delete.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."&dateStamp=$dateStamp&gibbonTTDayID=".$row['gibbonTTDayID']."&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-                echo '</td>';
-                echo '</tr>';
-
-                ++$count;
-            }
-            echo '</table>';
-        }
+        echo $table->render($result->toDataSet());
     }
+    
 }

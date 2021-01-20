@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
+
 include '../../gibbon.php';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/plannerSettings.php';
@@ -25,128 +27,37 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    //Proceed!
-    $lessonDetailsTemplate = $_POST['lessonDetailsTemplate'];
-    $teachersNotesTemplate = $_POST['teachersNotesTemplate'];
-    $unitOutlineTemplate = $_POST['unitOutlineTemplate'];
-    $smartBlockTemplate = $_POST['smartBlockTemplate'];
-    $makeUnitsPublic = $_POST['makeUnitsPublic'];
-    $shareUnitOutline = $_POST['shareUnitOutline'];
-    $allowOutcomeEditing = $_POST['allowOutcomeEditing'];
-    $sharingDefaultParents = $_POST['sharingDefaultParents'];
-    $sharingDefaultStudents = $_POST['sharingDefaultStudents'];
-    $parentWeeklyEmailSummaryIncludeBehaviour = $_POST['parentWeeklyEmailSummaryIncludeBehaviour'];
-    $parentWeeklyEmailSummaryIncludeMarkbook = $_POST['parentWeeklyEmailSummaryIncludeMarkbook'];
+    // Proceed!
+    $partialFail = false;
 
-    //Write to database
-    $fail = false;
+    $settingGateway = $container->get(SettingGateway::class);
+    $settingsToUpdate = [
+        'Planner' => [
+            'lessonDetailsTemplate',
+            'teachersNotesTemplate',
+            'unitOutlineTemplate',
+            'smartBlockTemplate',
+            'makeUnitsPublic',
+            'shareUnitOutline',
+            'allowOutcomeEditing',
+            'sharingDefaultParents',
+            'sharingDefaultStudents',
+            'homeworkNameSingular',
+            'homeworkNamePlural',
+        ]
+    ];
 
-    try {
-        $data = array('value' => $lessonDetailsTemplate);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Planner' AND name='lessonDetailsTemplate'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
+    foreach ($settingsToUpdate as $scope => $settings) {
+        foreach ($settings as $name) {
+            $value = $_POST[$name] ?? '';
+
+            $updated = $settingGateway->updateSettingByScope($scope, $name, $value);
+            $partialFail &= !$updated;
+        }
     }
 
-    try {
-        $data = array('value' => $teachersNotesTemplate);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Planner' AND name='teachersNotesTemplate'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $unitOutlineTemplate);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Planner' AND name='unitOutlineTemplate'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $smartBlockTemplate);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Planner' AND name='smartBlockTemplate'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $makeUnitsPublic);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Planner' AND name='makeUnitsPublic'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $shareUnitOutline);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Planner' AND name='shareUnitOutline'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $allowOutcomeEditing);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Planner' AND name='allowOutcomeEditing'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $sharingDefaultParents);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Planner' AND name='sharingDefaultParents'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $sharingDefaultStudents);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Planner' AND name='sharingDefaultStudents'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $parentWeeklyEmailSummaryIncludeBehaviour);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Planner' AND name='parentWeeklyEmailSummaryIncludeBehaviour'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $parentWeeklyEmailSummaryIncludeMarkbook);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Planner' AND name='parentWeeklyEmailSummaryIncludeMarkbook'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    if ($fail == true) {
-        $URL .= '&return=error2';
-        header("Location: {$URL}");
-    } else {
-        //Success 0
-        getSystemSettings($guid, $connection2);
-        $URL .= '&return=success0';
-        header("Location: {$URL}");
-    }
+    $URL .= $partialFail
+        ? '&return=error2'
+        : '&return=success0';
+    header("Location: {$URL}");
 }

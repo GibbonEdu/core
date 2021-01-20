@@ -32,6 +32,7 @@ class Module
     protected $gibbonModuleID;
     protected $name;
     protected $version;
+    protected $type;
     protected $entryURL;
 
     protected $stylesheets;

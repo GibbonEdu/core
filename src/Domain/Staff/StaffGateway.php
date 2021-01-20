@@ -81,15 +81,9 @@ class StaffGateway extends QueryableGateway
 
         $criteria->addFilterRules([
             'type' => function ($query, $type) {
-                if ($type == 'other') {
-                    return $query
-                        ->where('gibbonStaff.type <> "Teaching"')
-                        ->where('gibbonStaff.type <> "Support"');
-                } else {
-                    return $query
-                        ->where('gibbonStaff.type = :type')
-                        ->bindValue('type', ucfirst($type));
-                }
+                return $query
+                    ->where('gibbonStaff.type = :type')
+                    ->bindValue('type', ucfirst($type));
             },
 
             'biographicalGrouping' => function ($query, $grouping) {

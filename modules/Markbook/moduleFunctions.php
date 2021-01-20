@@ -165,26 +165,20 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
 }
 
 function isDepartmentCoordinator( $pdo, $gibbonPersonID ) {
-    try {
+    
         $data = array('gibbonPersonID' => $gibbonPersonID );
         $sql = "SELECT count(*) FROM gibbonDepartmentStaff WHERE gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)')";
         $result = $pdo->executeQuery($data, $sql);
 
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
 
     return ($result->rowCount() > 0)? ($result->fetchColumn() >= 1) : false;
 }
 
 function getAnyTaughtClass( $pdo, $gibbonPersonID, $gibbonSchoolYearID ) {
-    try {
+    
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID);
         $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID ORDER BY course, class LIMIT 1';
         $result = $pdo->executeQuery($data, $sql);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
 
     return ($result->rowCount() > 0)? $result->fetch() : NULL;
 }
@@ -209,18 +203,17 @@ function getClass( $pdo, $gibbonPersonID, $gibbonCourseClassID, $highestAction )
 }
 
 function getTeacherList( $pdo, $gibbonCourseClassID ) {
-    try {
+    
         $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName";
+        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, gibbonCourseClassPerson.reportable FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName";
         $result = $pdo->executeQuery($data, $sql);
 
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
 
     $teacherList = array();
     if ($result->rowCount() > 0) {
         foreach ($result->fetchAll() as $teacher) {
+            if ($teacher['reportable'] != 'Y') continue;
+
             $teacherList[ $teacher['gibbonPersonID'] ] = Format::name($teacher['title'], $teacher['preferredName'], $teacher['surname'], 'Staff', false, false);
         }
     }
@@ -231,7 +224,7 @@ function getTeacherList( $pdo, $gibbonCourseClassID ) {
 function getAlertStyle( $alert, $concern ) {
 
     if ($concern == 'Y') {
-        return "style='color: #".$alert['color'].'; font-weight: bold; border: 2px solid #'.$alert['color'].'; padding: 2px 4px; background-color: #'.$alert['colorBG'].";margin:0 auto;'";
+        return "style='color: ".$alert['color'].'; font-weight: bold; border: 2px solid '.$alert['color'].'; padding: 2px 4px; background-color: '.$alert['colorBG'].";margin:0 auto;'";
     } else if ($concern == 'P') {
         return "style='color: #390; font-weight: bold; border: 2px solid #390; padding: 2px 4px; background-color: #D4F6DC;margin:0 auto;'";
     } else {
@@ -314,7 +307,7 @@ function renderStudentSubmission($student, $submission, $markbookColumn)
             if (!empty($student['dateStart']) && $student['dateStart'] > $markbookColumn['lessonDate']) {
                 $output .= "<span title='".__('Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>NA</span>";
             } else {
-                if ($markbookColumn['homeworkSubmissionRequired'] == 'Compulsory') {
+                if ($markbookColumn['homeworkSubmissionRequired'] == 'Required') {
                     $output .= "<span title='".__('Incomplete')."' style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'>".__('Inc').'</span>';
                 } else {
                     $output .= "<span title='".__('Not submitted online')."'>".__('NA').'</span>';

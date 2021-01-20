@@ -21,7 +21,10 @@ namespace Gibbon\Domain\Staff;
 
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
+use Gibbon\Domain\ScrubbableGateway;
+use Gibbon\Domain\Traits\Scrubbable;
 use Gibbon\Domain\Traits\TableAware;
+use Gibbon\Domain\Traits\ScrubByPerson;
 
 /**
  * Staff Absence Gateway
@@ -29,14 +32,19 @@ use Gibbon\Domain\Traits\TableAware;
  * @version v18
  * @since   v18
  */
-class StaffAbsenceGateway extends QueryableGateway
+class StaffAbsenceGateway extends QueryableGateway implements ScrubbableGateway
 {
     use TableAware;
+    use Scrubbable;
+    use ScrubByPerson;
     
     private static $tableName = 'gibbonStaffAbsence';
     private static $primaryKey = 'gibbonStaffAbsenceID';
 
     private static $searchableColumns = ['gibbonStaffAbsence.reason', 'gibbonStaffAbsence.comment', 'gibbonStaffAbsence.status', 'gibbonStaffAbsenceType.name', 'gibbonPerson.preferredName', 'gibbonPerson.surname'];
+
+    private static $scrubbableKey = 'gibbonPersonID';
+    private static $scrubbableColumns = ['commentConfidential' => ''];
 
     /**
      * @param QueryCriteria $criteria

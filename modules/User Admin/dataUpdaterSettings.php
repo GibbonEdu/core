@@ -20,10 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSettings.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Data Updater Settings'));
@@ -76,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
     echo '<h2>'.__('Required Fields for Personal Updates').'</h2>';
     echo '<p>'.__('These required field settings apply to all users, except those who hold the ability to submit a data update request for all users in the system (generally just admins).').'</p>';
 
-    $form = Form::create('dataUpdaterSettingsFields', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/dataUpdaterSettingsFieldsProcess.php');
+    $form = Form::createTable('dataUpdaterSettingsFields', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/dataUpdaterSettingsFieldsProcess.php');
     
     $form->setClass('fullWidth rowHighlight');
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
@@ -92,12 +90,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
         'dob'                    => ['label' => __('Date of Birth'), 'default' => ''],
         'email'                  => ['label' => __('Email'), 'default' => ''],
         'emailAlternate'         => ['label' => __('Alternate Email'), 'default' => ''],
-        'address1'               => ['label' => __('Address 1'), 'default' => 'fixed'],
-        'address1District'       => ['label' => __('Address 1 District'), 'default' => 'fixed'],
-        'address1Country'        => ['label' => __('Address 1 Country'), 'default' => 'fixed'],
-        'address2'               => ['label' => __('Address 2'), 'default' => 'fixed'],
-        'address2District'       => ['label' => __('Address 2 District'), 'default' => 'fixed'],
-        'address2Country'        => ['label' => __('Address 2 Country'), 'default' => 'fixed'],
+        'address1'               => ['label' => __('Address 1'), 'default' => 'non-required'],
+        'address1District'       => ['label' => __('Address 1 District'), 'default' => 'non-required'],
+        'address1Country'        => ['label' => __('Address 1 Country'), 'default' => 'non-required'],
+        'address2'               => ['label' => __('Address 2'), 'default' => 'non-required'],
+        'address2District'       => ['label' => __('Address 2 District'), 'default' => 'non-required'],
+        'address2Country'        => ['label' => __('Address 2 Country'), 'default' => 'non-required'],
         'phone1'                 => ['label' => __('Phone 1'), 'default' => ''],
         'phone2'                 => ['label' => __('Phone 2'), 'default' => ''],
         'phone3'                 => ['label' => __('Phone 3'), 'default' => ''],
@@ -143,12 +141,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
         }
     }
 
-    $options = [
+    $allOptions = [
         ''         => '',
         'required' => __('Required'),
         'readonly' => __('Read Only'),
         'hidden'   => __('Hidden'),
     ];
+
+    $nonRequiredOptions = $allOptions;
+    unset($nonRequiredOptions['required']);
 
     $row = $form->addRow()->setClass('break heading');
         $row->addContent(__('Field'));
@@ -159,16 +160,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
     
     foreach ($settingDefaults as $id => $field) {
         $row = $form->addRow();
-        $row->addLabel($id, $field['label']);
+        $row->addLabel($id, $field['label'])->description($field['default'] == 'non-required' ? __('This field cannot be required') : '');
 
-        if ($field['default'] == 'fixed') {
-            $row->addContent('<i>'.__('This field cannot be required').'</i>.');
-        } else {
-            $row->addSelect("settings[Staff][{$id}]")->fromArray($options)->selected($settings['Staff'][$id] ??  $field['default'])->setClass('w-24 float-none')->setTitle(__('Staff'));
-            $row->addSelect("settings[Student][{$id}]")->fromArray($options)->selected($settings['Student'][$id] ??  $field['default'])->setClass('w-24 float-none')->setTitle(__('Student'));
-            $row->addSelect("settings[Parent][{$id}]")->fromArray($options)->selected($settings['Parent'][$id] ??  $field['default'])->setClass('w-24 float-none')->setTitle(__('Parent'));
-            $row->addSelect("settings[Other][{$id}]")->fromArray($options)->selected($settings['Other'][$id] ??  $field['default'])->setClass('w-24 float-none')->setTitle(__('Other'));
-        }
+        $options = $field['default'] == 'non-required'
+            ? $nonRequiredOptions
+            : $allOptions;
+
+        $row->addSelect("settings[Staff][{$id}]")->fromArray($options)->selected($settings['Staff'][$id] ??  $field['default'])->setClass('w-24 float-none')->setTitle(__('Staff'));
+        $row->addSelect("settings[Student][{$id}]")->fromArray($options)->selected($settings['Student'][$id] ??  $field['default'])->setClass('w-24 float-none')->setTitle(__('Student'));
+        $row->addSelect("settings[Parent][{$id}]")->fromArray($options)->selected($settings['Parent'][$id] ??  $field['default'])->setClass('w-24 float-none')->setTitle(__('Parent'));
+        $row->addSelect("settings[Other][{$id}]")->fromArray($options)->selected($settings['Other'][$id] ??  $field['default'])->setClass('w-24 float-none')->setTitle(__('Other'));
+        
     }
 
     $row = $form->addRow();

@@ -23,28 +23,22 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\Timetable\TimetableDayGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_edit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Check if school year specified
     $gibbonTTDayID = $_GET['gibbonTTDayID'] ?? '';
     $gibbonTTID = $_GET['gibbonTTID'] ?? '';
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
     if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
 
         $timetableDayGateway = $container->get(TimetableDayGateway::class);
         $values = $timetableDayGateway->getTTDayByID($gibbonTTDayID);
 
         if (empty($values)) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             $page->breadcrumbs
@@ -80,12 +74,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 $row->addTextField('nameShort')->maxLength(4)->required();
 
             $row = $form->addRow();
-                $row->addLabel('color', __('Header Background Colour'))->description(__('RGB Hex value, without leading #.'));
-                $row->addTextField('color')->maxLength(6);
+                $row->addLabel('color', __('Header Background Colour'))->description(__('Click to select a colour.'));
+                $row->addColor("color");
 
             $row = $form->addRow();
-                $row->addLabel('fontColor', __('Header Font Colour'))->description(__('RGB Hex value, without leading #.'));
-                $row->addTextField('fontColor')->maxLength(6);
+                $row->addLabel('fontColor', __('Header Font Colour'))->description(__('Click to select a colour.'));
+                $row->addColor("fontColor");
 
             $row = $form->addRow();
                 $row->addLabel('columnName', __('Timetable Column'));

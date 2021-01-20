@@ -29,10 +29,8 @@ use Gibbon\Module\Attendance\StudentHistoryView;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentHistory.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Student History'));
@@ -82,14 +80,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                 echo __('Report Data');
                 echo '</h2>';
 
-                try {
+                
                     $data = array('gibbonPersonID' => $gibbonPersonID);
                     $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
                 if ($result->rowCount() != 1) {
                     echo "<div class='error'>";
                     echo __('The specified record does not exist.');
@@ -127,14 +122,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                 $gibbonPersonID = $_GET['gibbonPersonID'];
             }
             //Test data access field for permission
-            try {
+            
                 $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
                 $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
             if ($result->rowCount() < 1) {
                 echo "<div class='error'>";
                 echo __('Access denied.');
@@ -144,14 +136,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                 $countChild = 0;
                 $options = [];
                 while ($row = $result->fetch()) {
-                    try {
+                    
                         $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $gibbonSchoolYearID);
                         $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
                         $resultChild = $connection2->prepare($sqlChild);
                         $resultChild->execute($dataChild);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
                     if ($resultChild->rowCount() > 0) {
                         if ($resultChild->rowCount() == 1) {
                             $rowChild = $resultChild->fetch();
@@ -204,14 +193,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
 
                 if ($gibbonPersonID != '' and $countChild > 0) {
                     //Confirm access to this student
-                    try {
+                    
                         $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
                         $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
                         $resultChild = $connection2->prepare($sqlChild);
                         @$resultChild->execute($dataChild);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
 
                     if ($resultChild->rowCount() < 1) {
                         echo "<div class='error'>";
@@ -226,14 +212,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                             echo __('Report Data');
                             echo '</h2>';
 
-                            try {
+                            
                                 $data = array('gibbonPersonID' => $gibbonPersonID);
                                 $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
                             if ($result->rowCount() != 1) {
                                 echo "<div class='error'>";
                                 echo __('The specified record does not exist.');
@@ -262,14 +245,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
             echo __('Report Data');
             echo '</h2>';
 
-            try {
+            
                 $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
                 $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
             if ($result->rowCount() != 1) {
                 echo "<div class='error'>";
                 echo __('The specified record does not exist.');

@@ -12,7 +12,6 @@ $I->click('Login');
 // Logged In
 $I->see('Logout', 'a');
 $I->see('Preferences', 'a');
-$I->dontSee('Login');
 
 // Logged back out
 $I->click('Logout', 'a');

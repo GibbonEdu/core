@@ -26,10 +26,8 @@ use Gibbon\Domain\System\I18nGateway;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Manage Languages'));
@@ -44,17 +42,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
     // Update any existing languages that may have been installed manually
     i18nCheckAndUpdateVersion($container, $version);
 
-    echo '<h2>';
-    echo __('Installed');
-    echo '</h2>';
-    
     $i18nGateway = $container->get(I18nGateway::class);
 
     // CRITERIA
     $criteria = $i18nGateway->newQueryCriteria()
         ->sortBy('code')
-        ->fromArray($_POST);
-
+        ->fromPOST('i18n_installed');
 
     $languages = $i18nGateway->queryI18n($criteria, 'Y');
 
@@ -63,13 +56,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
     });
 
     $form = Form::create('i18n_manage', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/i18n_manageProcess.php');
-
+    $form->setTitle(__('Installed'));
     $form->setClass('fullWidth');
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
     $form->setClass('w-full blank');
 
     // DATA TABLE
-    $table = $form->addRow()->addDataTable('i18n', $criteria)->withData($languages);
+    $table = $form->addRow()->addDataTable('i18n_installed', $criteria)->withData($languages);
 
     $table->addMetaData('hidePagination', true);
 
@@ -128,14 +121,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
         echo $form->getOutput();
     }
 
-
-    echo '<h2>';
-    echo __('Not Installed');
-    echo '</h2>';
-
-    echo '<p>';
-    echo __('Inactive languages are not yet ready for use within the system as they are still under development. They cannot be set to default, nor selected by users.');
-    echo '</p>';
+    // CRITERIA
+    $criteria = $i18nGateway->newQueryCriteria()
+        ->sortBy('code')
+        ->fromPOST('i18n');
 
     $languages = $i18nGateway->queryI18n($criteria, 'N');
 
@@ -145,6 +134,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
 
     // DATA TABLE
     $table = DataTable::createPaginated('i18n', $criteria);
+    $table->setTitle(__('Not Installed'));
+    $table->setDescription(__('Inactive languages are not yet ready for use within the system as they are still under development. They cannot be set to default, nor selected by users.'));
 
     $table->addMetaData('hidePagination', true);
 

@@ -28,10 +28,8 @@ require_once __DIR__ . '/moduleFunctions.php';
 $page->breadcrumbs->add(__('Classes Not Registered'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseClassesNotRegistered_byDate.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     echo '<h2>';
@@ -101,44 +99,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
         echo '</h2>';
 
         //Produce array of attendance data
-        try {
+        
             $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0]);
             $sql = "SELECT date, gibbonCourseClassID FROM gibbonAttendanceLogCourseClass WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date";
 
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
         $log = array();
         while ($row = $result->fetch()) {
             $log[$row['gibbonCourseClassID']][$row['date']] = true;
         }
 
         // Produce an array of scheduled classes
-        try {
+        
             $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0] );
             $sql = "SELECT gibbonTTDayRowClass.gibbonCourseClassID, gibbonTTDayDate.date FROM gibbonTTDayRowClass JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) WHERE gibbonCourseClass.attendance = 'Y' AND gibbonTTDayDate.date>=:dateStart AND gibbonTTDayDate.date<=:dateEnd ORDER BY gibbonTTDayDate.date";
 
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
         $tt = array();
         while ($row = $result->fetch()) {
             $tt[$row['gibbonCourseClassID']][$row['date']] = true;
         }
 
 
-        try {
+        
             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'] );
             $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.name as class, gibbonCourse.name as course, gibbonCourse.nameShort as courseShort, (SELECT count(*) FROM gibbonCourseClassPerson WHERE role='Student' AND gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) as studentCount FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.attendance = 'Y' ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort";
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() < 1) {
             echo "<div class='error'>";
@@ -251,14 +240,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                     echo '</td>';
                     echo '<td>';
 
-                    try {
+                    
                         $dataTutor = array('gibbonCourseClassID' => $row['gibbonCourseClassID'] );
                         $sqlTutor = 'SELECT gibbonPerson.gibbonPersonID, surname, preferredName FROM gibbonPerson JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPerson.role = "Teacher"';
                         $resultTutor = $connection2->prepare($sqlTutor);
                         $resultTutor->execute($dataTutor);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
 
                     if ($resultTutor->rowCount() > 0) {
                         while ($rowTutor = $resultTutor->fetch()) {
@@ -272,7 +258,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
             }
 
             if ($count == 0) {
-                echo "<tr";
+                echo "<tr>";
                 echo '<td colspan=3>';
                 echo __('All classes have been registered.');
                 echo '</td>';

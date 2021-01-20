@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Timetable\CourseGateway;
+
 include '../../gibbon.php';
 
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
@@ -57,52 +59,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                 $URL .= '&return=error1';
                 header("Location: {$URL}");
             } else {
-                //Check access to specified course
-                try {
-                    if ($highestAction == 'Unit Planner_all') {
-                        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID);
-                        $sql = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID';
-                    } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                        $sql = "SELECT gibbonCourseID, gibbonCourse.name, gibbonCourse.nameShort FROM gibbonCourse JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID ORDER BY gibbonCourse.nameShort";
-                    }
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    $URL .= '&return=error2'.$e->getMessage();
-                    header("Location: {$URL}");
-                    exit();
+                $courseGateway = $container->get(CourseGateway::class);
+
+                // Check access to specified course
+                if ($highestAction == 'Unit Planner_all') {
+                    $result = $courseGateway->selectCourseDetailsByCourse($gibbonCourseID);
+                } elseif ($highestAction == 'Unit Planner_learningAreas') {
+                    $result = $courseGateway->selectCourseDetailsByCourseAndPerson($gibbonCourseID, $gibbon->session->get('gibbonPersonID'));
                 }
 
                 if ($result->rowCount() != 1) {
                     $URL .= '&return=error3';
                     header("Location: {$URL}");
                 } else {
-                    //Lock markbook column table
-                    try {
-                        $sql = 'LOCK TABLES gibbonUnit WRITE, gibbonUnitClass WRITE, gibbonUnitBlock WRITE,  gibbonUnitOutcome WRITE, gibbonFileExtension READ';
-                        $result = $connection2->query($sql);
-                    } catch (PDOException $e) {
-                        $URL .= '&return=error2';
-                        header("Location: {$URL}");
-                        exit();
-                    }
-
-                    //Get next autoincrement
-                    try {
-                        $sqlAI = "SHOW TABLE STATUS LIKE 'gibbonUnit'";
-                        $resultAI = $connection2->query($sqlAI);
-                    } catch (PDOException $e) {
-                        $URL .= '&return=error2';
-                        header("Location: {$URL}");
-                        exit();
-                    }
-
-                    $rowAI = $resultAI->fetch();
-                    $AI = str_pad($rowAI['Auto_increment'], 10, '0', STR_PAD_LEFT);
-
-                    $partialFail = false;
-
                     //Move attached file, if there is one
                     if (!empty($_FILES['file']['tmp_name'])) {
                         $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
@@ -118,6 +87,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                     } else {
                         $attachment = '';
                     }
+                    
+                    //Write to database
+                    try {
+                        $data = array('gibbonCourseID' => $gibbonCourseID, 'name' => $name, 'description' => $description, 'tags' => $tags, 'active' => $active, 'map' => $map, 'ordering' => $ordering, 'license' => $license, 'sharedPublic' => $sharedPublic, 'attachment' => $attachment, 'details' => $details, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDLastEdit' => $_SESSION[$guid]['gibbonPersonID']);
+                        $sql = 'INSERT INTO gibbonUnit SET gibbonCourseID=:gibbonCourseID, name=:name, description=:description, tags=:tags, active=:active, map=:map, ordering=:ordering, license=:license, sharedPublic=:sharedPublic, attachment=:attachment, details=:details, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit';
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        echo $e->getMessage();exit;
+                        $URL .= '&return=error2';
+                        header("Location: {$URL}");
+                        exit();
+                    }
+
+                    $AI = $connection2->lastInsertID();
+
+                    $partialFail = false;
 
                     //ADD CLASS RECORDS
                     if ($classCount > 0) {
@@ -196,25 +182,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                             }
                             ++$count;
                         }
-                    }
-
-                    //Write to database
-                    try {
-                        $data = array('gibbonCourseID' => $gibbonCourseID, 'name' => $name, 'description' => $description, 'tags' => $tags, 'active' => $active, 'map' => $map, 'ordering' => $ordering, 'license' => $license, 'sharedPublic' => $sharedPublic, 'attachment' => $attachment, 'details' => $details, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDLastEdit' => $_SESSION[$guid]['gibbonPersonID']);
-                        $sql = 'INSERT INTO gibbonUnit SET gibbonCourseID=:gibbonCourseID, name=:name, description=:description, tags=:tags, active=:active, map=:map, ordering=:ordering, license=:license, sharedPublic=:sharedPublic, attachment=:attachment, details=:details, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $URL .= '&return=error2';
-                        header("Location: {$URL}");
-                        exit();
-                    }
-
-                    //Unlock module table
-                    try {
-                        $sql = 'UNLOCK TABLES';
-                        $result = $connection2->query($sql);
-                    } catch (PDOException $e) {
                     }
 
                     if ($partialFail == true) {

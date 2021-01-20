@@ -188,7 +188,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
         'progressColour' => 'green',
     ]);
 
-    $form = Form::create('reportingProof', $gibbon->session->get('absoluteURL').'/modules/Reports/reporting_proofreadProcess.php');
+    $form = Form::createTable('reportingProof', $gibbon->session->get('absoluteURL').'/modules/Reports/reporting_proofreadProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setTitle(__('Comments'));
 
@@ -197,7 +197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
     $form->addHiddenValue('override', $override);
     $form->addHiddenValue('mode', $mode);
-    $form->addClass('blank');
+    $form->addClass(' blank');
 
     $differ = new TextDiff();
 
@@ -267,15 +267,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
             $col->addCommentEditor("comment[{$gibbonReportingValueID}]")
                 ->checkName($criteria['preferredName'])
                 ->checkPronouns($criteria['gender'])
-                ->addClass('flex reportCriteria text-base font-sans')
+                ->setClass('flex w-full reportCriteria text-base font-sans')
                 ->setID("comment{$gibbonReportingValueID}")
                 ->maxLength($criteria['characterLimit'])
                 ->setValue($proof['status'] == 'Edited' ? $proof['comment'] : $criteria['comment']);
 
-            $colRow = $section->addColumn()->addColumn()->setClass('flex mt-4 -mb-1 justify-between items-center');
+            $colRow = $section->addColumn()->addColumn()->setClass('flex mt-4 -mb-2 justify-between items-center');
                 $col = $colRow->addColumn()->setClass('flex h-10 border rounded items-center bg-gray-200');
                 $col->addRadio("status[{$gibbonReportingValueID}]")
-                    ->setClass('statusInput text-base leading-loose -mb-1 align-text-top')
+                    ->setClass('statusInput text-base leading-loose')
                     ->addData('id', $gibbonReportingValueID)
                     ->inline()
                     ->fromArray($actions);
@@ -301,17 +301,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
             $col->addCommentEditor("comment[{$gibbonReportingValueID}]")
                 ->checkName($criteria['preferredName'])
                 ->checkPronouns($criteria['gender'])
-                ->addClass('flex reportCriteria text-base font-sans')
+                ->setClass('flex reportCriteria text-base font-sans')
                 ->addClass('comment'.$gibbonReportingValueID)
                 ->setID("comment{$gibbonReportingValueID}")
                 ->maxLength($criteria['characterLimit'])
                 ->readonly($proof['status'] != 'Edited')
                 ->setValue($proof['status'] == 'Edited' ? $proof['comment'] : $criteria['comment']);
 
-            $colRow = $section->addColumn()->addColumn()->setClass('flex mt-4 -mb-1 justify-between items-center');
+            $colRow = $section->addColumn()->addColumn()->setClass('flex mt-4 -mb-2 justify-between items-center');
                 $col = $colRow->addColumn()->setClass('flex h-10 border rounded items-center bg-gray-200');
                 $col->addRadio("status[{$gibbonReportingValueID}]")
-                    ->setClass('statusInput text-base leading-loose -mb-1 align-text-top')
+                    ->setClass('statusInput text-base leading-loose')
                     ->addData('id', $gibbonReportingValueID)
                     ->inline()
                     ->checked($proof['status'])

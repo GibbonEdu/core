@@ -28,15 +28,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * Sets the database connection information.
  * You can supply an optional $databasePort if your server requires one.
  */
-$databaseServer = '{{ databaseServer|raw }}';
-$databaseUsername = '{{ databaseUsername|raw }}';
-$databasePassword = '{{ databasePassword|raw }}';
-$databaseName = '{{ databaseName|raw }}';
+$databaseServer = {{ databaseServer|raw }};
+$databaseUsername = {{ databaseUsername|raw }};
+$databasePassword = {{ databasePassword|raw }};
+$databaseName = {{ databaseName|raw }};
 
 /**
  * Sets a globally unique id, to allow multiple installs on a single server.
  */
-$guid = '{{ guid|raw }}';
+$guid = {{ guid|raw }};
 
 /**
  * Sets system-wide caching factor, used to balance performance and freshness.

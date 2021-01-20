@@ -19,9 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UI\Dashboard;
 
+use Gibbon\Forms\OutputableInterface;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
-use Gibbon\Forms\OutputableInterface;
+use Gibbon\Domain\Planner\PlannerEntryGateway;
+use League\Container\ContainerAwareTrait;
+use League\Container\ContainerAwareInterface;
 
 /**
  * Parent Dashboard View Composer
@@ -29,8 +32,10 @@ use Gibbon\Forms\OutputableInterface;
  * @version  v18
  * @since    v18
  */
-class ParentDashboard implements OutputableInterface
+class ParentDashboard implements OutputableInterface, ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
     protected $db;
     protected $session;
 
@@ -47,18 +52,17 @@ class ParentDashboard implements OutputableInterface
 
         $students = [];
 
-        try {
+        
             $data = ['gibbonPersonID' => $this->session->get('gibbonPersonID')];
             $sql = "SELECT * FROM gibbonFamilyAdult WHERE
                 gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {}
 
         if ($result->rowCount() > 0) {
             // Get child list
             while ($row = $result->fetch()) {
-                try {
+                
                     $dataChild = [
                         'gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'),
                         'gibbonFamilyID' => $row['gibbonFamilyID'],
@@ -83,7 +87,6 @@ class ParentDashboard implements OutputableInterface
                         ORDER BY surname, preferredName ";
                     $resultChild = $connection2->prepare($sqlChild);
                     $resultChild->execute($dataChild);
-                } catch (PDOException $e) {}
 
                 while ($rowChild = $resultChild->fetch()) {
                     $students[] = $rowChild;
@@ -140,6 +143,8 @@ class ParentDashboard implements OutputableInterface
         $guid = $this->session->get('guid');
         $connection2 = $this->db->getConnection();
 
+        $homeworkNameSingular = getSettingByScope($connection2, 'Planner', 'homeworkNameSingular');
+
         $return = false;
 
         $alert = getAlert($guid, $connection2, 002);
@@ -171,7 +176,7 @@ class ParentDashboard implements OutputableInterface
                 $plannerOutput .= "<span style='font-size: 85%; font-weight: normal; font-style: italic'>".__('Summary').'</span>';
                 $plannerOutput .= '</th>';
                 $plannerOutput .= '<th>';
-                $plannerOutput .= __('Homework');
+                $plannerOutput .= __($homeworkNameSingular);
                 $plannerOutput .= '</th>';
                 $plannerOutput .= '<th>';
                 $plannerOutput .= __('Action');
@@ -339,20 +344,18 @@ class ParentDashboard implements OutputableInterface
                 } else {
                     $gradesOutput .= "<td style='text-align: center'>";
                     $attainmentExtra = '';
-                    try {
+                    
                         $dataAttainment = array('gibbonScaleID' => $rowEntry['gibbonScaleIDAttainment']);
                         $sqlAttainment = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
                         $resultAttainment = $connection2->prepare($sqlAttainment);
                         $resultAttainment->execute($dataAttainment);
-                    } catch (PDOException $e) {
-                    }
                     if ($resultAttainment->rowCount() == 1) {
                         $rowAttainment = $resultAttainment->fetch();
                         $attainmentExtra = '<br/>'.__($rowAttainment['usage']);
                     }
                     $styleAttainment = "style='font-weight: bold'";
                     if ($rowEntry['attainmentConcern'] == 'Y' and $showParentAttainmentWarning == 'Y') {
-                        $styleAttainment = "style='color: #".$alert['color'].'; font-weight: bold; border: 2px solid #'.$alert['color'].'; padding: 2px 4px; background-color: #'.$alert['colorBG']."'";
+                        $styleAttainment = "style='color: ".$alert['color'].'; font-weight: bold; border: 2px solid '.$alert['color'].'; padding: 2px 4px; background-color: '.$alert['colorBG']."'";
                     } elseif ($rowEntry['attainmentConcern'] == 'P' and $showParentAttainmentWarning == 'Y') {
                         $styleAttainment = "style='color: #390; font-weight: bold; border: 2px solid #390; padding: 2px 4px; background-color: #D4F6DC'";
                     }
@@ -374,20 +377,18 @@ class ParentDashboard implements OutputableInterface
                     } else {
                         $gradesOutput .= "<td style='text-align: center'>";
                         $effortExtra = '';
-                        try {
+                        
                             $dataEffort = array('gibbonScaleID' => $rowEntry['gibbonScaleIDEffort']);
                             $sqlEffort = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
                             $resultEffort = $connection2->prepare($sqlEffort);
                             $resultEffort->execute($dataEffort);
-                        } catch (PDOException $e) {
-                        }
                         if ($resultEffort->rowCount() == 1) {
                             $rowEffort = $resultEffort->fetch();
                             $effortExtra = '<br/>'.__($rowEffort['usage']);
                         }
                         $styleEffort = "style='font-weight: bold'";
                         if ($rowEntry['effortConcern'] == 'Y' and $showParentEffortWarning == 'Y') {
-                            $styleEffort = "style='color: #".$alert['color'].'; font-weight: bold; border: 2px solid #'.$alert['color'].'; padding: 2px 4px; background-color: #'.$alert['colorBG']."'";
+                            $styleEffort = "style='color: ".$alert['color'].'; font-weight: bold; border: 2px solid '.$alert['color'].'; padding: 2px 4px; background-color: '.$alert['colorBG']."'";
                         }
                         $gradesOutput .= "<div $styleEffort>".$rowEntry['effortValue'];
                         if ($rowEntry['gibbonRubricIDEffort'] != '' AND $enableRubrics =='Y') {
@@ -492,7 +493,7 @@ class ParentDashboard implements OutputableInterface
                                 if (!empty($dateStart) && $dateStart > $rowSub['date']) {
                                     $gradesOutput .= "<span title='".__('Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>".__('NA').'</span>';
                                 } else {
-                                    if ($rowSub['homeworkSubmissionRequired'] == 'Compulsory') {
+                                    if ($rowSub['homeworkSubmissionRequired'] == 'Required') {
                                         $gradesOutput .= "<div style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px; margin: 2px 0px'>".__('Incomplete').'</div>';
                                     } else {
                                         $gradesOutput .= __('Not submitted online');
@@ -523,46 +524,18 @@ class ParentDashboard implements OutputableInterface
         }
 
         //PREPARE UPCOMING DEADLINES
-        $deadlinesOutput = "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__('Upcoming Deadlines')."</span> . <span style='font-size: 70%'><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_deadlines.php&search='.$gibbonPersonID."'>".__('View All Deadlines').'</a></span></div>';
+        $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
+        
+        $deadlinesOutput = "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__('Upcoming Due Dates')."</span> . <span style='font-size: 70%'><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_deadlines.php&search='.$gibbonPersonID."'>".__('View {homeworkName}', ['homeworkName' => __($homeworkNamePlural)]).'</a></span></div>';
         $deadlines = false;
 
-        try {
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
-            $sql = "
-            (SELECT 'teacherRecorded' AS type, gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkDueDateTime, role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND homework='Y' AND (role='Teacher' OR (role='Student' AND viewableStudents='Y')) AND homeworkDueDateTime>'".date('Y-m-d H:i:s')."' AND ((date<'".date('Y-m-d')."') OR (date='".date('Y-m-d')."' AND timeEnd<='".date('H:i:s')."')))
-            UNION
-            (SELECT 'studentRecorded' AS type, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, 'Y' AS viewableStudents, 'Y' AS viewableParents, 'Y' AS homework, gibbonPlannerEntryStudentHomework.homeworkDueDateTime, role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND (role='Teacher' OR (role='Student' AND viewableStudents='Y')) AND gibbonPlannerEntryStudentHomework.homeworkDueDateTime>'".date('Y-m-d H:i:s')."' AND ((date<'".date('Y-m-d')."') OR (date='".date('Y-m-d')."' AND timeEnd<='".date('H:i:s')."')))
-            ORDER BY homeworkDueDateTime, type";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $deadlinesOutput .= "<div class='error'>".$e->getMessage().'</div>';
-        }
+        $plannerGateway = $this->getContainer()->get(PlannerEntryGateway::class);
+        $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($_SESSION[$guid]['gibbonSchoolYearID'], $gibbonPersonID, 'viewableParents')->fetchAll();
 
-        if ($result->rowCount() > 0) {
-            $deadlines = true;
-            $deadlinesOutput .= "<ol style='margin-left: 15px'>";
-            while ($row = $result->fetch()) {
-                $diff = (strtotime(substr($row['homeworkDueDateTime'], 0, 10)) - strtotime(date('Y-m-d'))) / 86400;
-                $style = "style='padding-right: 3px;'";
-                if ($diff < 2) {
-                    $style = "style='padding-right: 3px; border-right: 10px solid #cc0000'";
-                } elseif ($diff < 4) {
-                    $style = "style='padding-right: 3px; border-right: 10px solid #D87718'";
-                }
-                $deadlinesOutput .= "<li $style>";
-                $deadlinesOutput .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&search='.$gibbonPersonID.'&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=date&date=$date&width=1000&height=550'>".$row['course'].'.'.$row['class'].'</a> ';
-                $deadlinesOutput .= "<span style='font-style: italic'>".sprintf(__('Due at %1$s on %2$s'), substr($row['homeworkDueDateTime'], 11, 5), dateConvertBack($guid, substr($row['homeworkDueDateTime'], 0, 10)));
-                $deadlinesOutput .= '</li>';
-            }
-            $deadlinesOutput .= '</ol>';
-        }
-
-        if ($deadlines == false) {
-            $deadlinesOutput .= "<div style='margin-top: 2px' class='warning'>";
-            $deadlinesOutput .= __('There are no records to display.');
-            $deadlinesOutput .= '</div>';
-        }
+        $deadlinesOutput .= $this->getContainer()->get('page')->fetchFromTemplate('ui/upcomingDeadlines.twig.html', [
+            'gibbonPersonID' => $gibbonPersonID,
+            'deadlines' => $deadlines,
+        ]);
 
         //PREPARE TIMETABLE
         $timetable = false;
@@ -754,13 +727,11 @@ class ParentDashboard implements OutputableInterface
             while ($rowHooks = $resultHooks->fetch()) {
                 $options = unserialize($rowHooks['options']);
                 //Check for permission to hook
-                try {
+                
                     $dataHook = array('gibbonRoleIDCurrent' => $_SESSION[$guid]['gibbonRoleIDCurrent'], 'sourceModuleName' => $options['sourceModuleName']);
                     $sqlHook = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action FROM gibbonHook JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent AND name=:sourceModuleName) AND gibbonHook.type='Parental Dashboard'  AND gibbonAction.name='".$options['sourceModuleAction']."' AND gibbonModule.name='".$options['sourceModuleName']."' ORDER BY name";
                     $resultHook = $connection2->prepare($sqlHook);
                     $resultHook->execute($dataHook);
-                } catch (PDOException $e) {
-                }
                 if ($resultHook->rowCount() == 1) {
                     $rowHook = $resultHook->fetch();
                     $hooks[$count]['name'] = $rowHooks['name'];

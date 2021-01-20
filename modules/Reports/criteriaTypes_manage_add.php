@@ -56,6 +56,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/criteriaTypes_mana
         'Comment'     => __('Comment'),
         'Remark'      => __('Remark'),
         'Yes/No'      => __('Yes/No'),
+        'Text'        => __('Text'),
+        'Number'      => __('Number'),
     ];
     $row = $form->addRow();
         $row->addLabel('valueType', __('Value Type'));

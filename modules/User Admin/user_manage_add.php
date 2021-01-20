@@ -21,10 +21,8 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs
@@ -124,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         if ($item['category'] == 'Staff') {
             $staffRoles[] = $item['gibbonRoleID'];
         }
-        $carry[$item['gibbonRoleID']] = $item['name'];
+        $carry[$item['gibbonRoleID']] = __($item['name']);
         return $carry;
     }, array());
 
@@ -433,8 +431,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         $row->addSelect('gibbonHouseID')->fromQuery($pdo, $sql)->placeholder();
 
     $row = $form->addRow();
-        $row->addLabel('studentID', __('Student ID'))->description(__('Must be unique if set.'));
-        $row->addTextField('studentID')->maxLength(15);
+        $row->addLabel('studentID', __('Student ID'));
+        $row->addTextField('studentID')
+            ->maxLength(15)
+            ->uniqueField('./modules/User Admin/user_manage_studentIDAjax.php');
 
     $sql = "SELECT DISTINCT transport FROM gibbonPerson
             JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
@@ -482,16 +482,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     // STAFF
     $form->toggleVisibilityByClass('staffDetails')->onSelect('gibbonRoleIDPrimary')->when($staffRoles);
     $form->toggleVisibilityByClass('staffRecord')->onCheckbox('staffRecord')->when('Y');
-    $form->addRow()->addHeading(__('Staff'))->addClass('staffDetails');
+    $form->addRow()->addClass('staffDetails')->addHeading(__('Staff'))->addClass('staffDetails');
 
     $row = $form->addRow()->addClass('staffDetails');
         $row->addLabel('staffRecord', __('Add Staff'));
         $row->addCheckbox('staffRecord')->setValue('Y')->description(__('Create a linked staff record?'));
 
-    $types = array(__('Basic') => array ('Teaching' => __('Teaching'), 'Support' => __('Support')));
-    $sql = "SELECT name as value, name FROM gibbonRole WHERE category='Staff' ORDER BY name";
-    $types[__('System Roles')] = $pdo->select($sql)->fetchKeyPair();
-
+    $types = array ('Teaching' => __('Teaching'), 'Support' => __('Support'));
     $row = $form->addRow()->addClass('staffRecord');
         $row->addLabel('staffType', __('Type'));
         $row->addSelect('staffType')->fromArray($types)->placeholder()->required();

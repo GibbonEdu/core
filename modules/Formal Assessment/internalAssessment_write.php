@@ -50,14 +50,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
         }
         if ($gibbonCourseClassID == '') {
-            try {
+            
                 $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
                 $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID ORDER BY course, class';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
             if ($result->rowCount() > 0) {
                 $row = $result->fetch();
                 $gibbonCourseClassID = $row['gibbonCourseClassID'];
@@ -101,14 +98,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
                 //Get teacher list
                 $teaching = false;
-                try {
+                
                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                    $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName";
+                    $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, gibbonCourseClassPerson.reportable FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 if ($result->rowCount() > 0) {
                     echo "<h3 style='margin-top: 0px'>";
@@ -116,6 +110,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     echo '</h3>';
                     echo '<ul>';
                     while ($row = $result->fetch()) {
+                        if ($row['reportable'] != 'Y') continue;
+
                         echo '<li>'.Format::name($row['title'], $row['preferredName'], $row['surname'], 'Staff').'</li>';
                         if ($row['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID']) {
                             $teaching = true;
@@ -130,14 +126,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 echo '</h3>';
 
                 //Count number of columns
-                try {
+                
                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
                     $sql = 'SELECT * FROM gibbonInternalAssessmentColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY complete, completeDate DESC';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
                 $columns = $result->rowCount();
                 if ($columns < 1) {
                     echo "<div class='warning'>";
@@ -165,14 +158,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         if ($columns - ($x * $columnsPerPage) < 3) {
                             $columnsThisPage = $columns - ($x * $columnsPerPage);
                         }
-                        try {
+                        
                             $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
                             $sql = 'SELECT * FROM gibbonInternalAssessmentColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY complete, completeDate DESC LIMIT '.($x * $columnsPerPage).', '.$columnsPerPage;
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
 
                         //Work out details for external assessment display
                         $externalAssessment = false;
@@ -340,14 +330,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                 if ($attainmentOn[$i] == 'Y' and $attainmentID[$i] != '') {
                                     $leftBorder = true;
                                     echo "<th style='border-left: 2px solid #666; text-align: center; width: 40px'>";
-                                    try {
+                                    
                                         $dataScale = array('gibbonScaleID' => $attainmentID[$i]);
                                         $sqlScale = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
                                         $resultScale = $connection2->prepare($sqlScale);
                                         $resultScale->execute($dataScale);
-                                    } catch (PDOException $e) {
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
-                                    }
                                     $scale = '';
                                     if ($resultScale->rowCount() == 1) {
                                         $rowScale = $resultScale->fetch();
@@ -371,14 +358,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                         $leftBorderStyle = 'border-left: 2px solid #666;';
                                     }
                                     echo "<th style='$leftBorderStyle text-align: center; width: 40px'>";
-                                    try {
+                                    
                                         $dataScale = array('gibbonScaleID' => $effortID[$i]);
                                         $sqlScale = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
                                         $resultScale = $connection2->prepare($sqlScale);
                                         $resultScale->execute($dataScale);
-                                    } catch (PDOException $e) {
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
-                                    }
                                     $scale = '';
                                     if ($resultScale->rowCount() == 1) {
                                         $rowScale = $resultScale->fetch();
@@ -422,14 +406,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         $count = 0;
                         $rowNum = 'odd';
 
-                        try {
+                        
                             $dataStudents = array('gibbonCourseClassID' => $gibbonCourseClassID);
                             $sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonCourseClassPerson.reportable='Y' ORDER BY surname, preferredName";
                             $resultStudents = $connection2->prepare($sqlStudents);
                             $resultStudents->execute($dataStudents);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
                         if ($resultStudents->rowCount() < 1) {
                             echo '<tr>';
                             echo '<td colspan='.($columns + 1).'>';
@@ -453,7 +434,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
                                 if ($externalAssessment == true) {
                                     echo "<td style='text-align: center'>";
-                                    try {
+                                    
                                         $dataEntry = array('gibbonPersonID' => $rowStudents['gibbonPersonID'], 'gibbonExternalAssessmentFieldID' => $externalAssessmentFields[0]);
                                         $sqlEntry = "SELECT gibbonScaleGrade.value, gibbonScaleGrade.descriptor, gibbonExternalAssessmentStudent.date
                                             FROM gibbonExternalAssessmentStudentEntry
@@ -465,9 +446,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                                 ORDER BY date DESC";
                                         $resultEntry = $connection2->prepare($sqlEntry);
                                         $resultEntry->execute($dataEntry);
-                                    } catch (PDOException $e) {
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
-                                    }
                                     if ($resultEntry->rowCount() >= 1) {
                                         $rowEntry = $resultEntry->fetch();
                                         echo "<a title='".__($rowEntry['descriptor']).' | '.__('Test taken on').' '.dateConvertBack($guid, $rowEntry['date'])."' href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowStudents['gibbonPersonID']."&subpage=External Assessment'>".__($rowEntry['value']).'</a>';
@@ -477,14 +455,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
                                 for ($i = 0; $i < $columnsThisPage; ++$i) {
                                     $row = $result->fetch();
-                                    try {
+                                    
                                         $dataEntry = array('gibbonInternalAssessmentColumnID' => $columnID[($i)], 'gibbonPersonIDStudent' => $rowStudents['gibbonPersonID']);
                                         $sqlEntry = 'SELECT * FROM gibbonInternalAssessmentEntry WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID AND gibbonPersonIDStudent=:gibbonPersonIDStudent';
                                         $resultEntry = $connection2->prepare($sqlEntry);
                                         $resultEntry->execute($dataEntry);
-                                    } catch (PDOException $e) {
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
-                                    }
                                     if ($resultEntry->rowCount() == 1) {
                                         $rowEntry = $resultEntry->fetch();
                                         $leftBorder = false;
@@ -591,14 +566,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                                 $leftBorderStyle = 'border-left: 2px solid #666;';
                                             }
                                             echo "<td style='$leftBorderStyle text-align: center;'>";
-                                            try {
+                                            
                                                 $dataWork = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID[$i], 'gibbonPersonID' => $rowStudents['gibbonPersonID']);
                                                 $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
                                                 $resultWork = $connection2->prepare($sqlWork);
                                                 $resultWork->execute($dataWork);
-                                            } catch (PDOException $e) {
-                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                            }
                                             if ($resultWork->rowCount() > 0) {
                                                 $rowWork = $resultWork->fetch();
 
@@ -633,7 +605,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                                     if ($rowStudents['dateStart'] > $lessonDate[$i]) {
                                                         echo "<span title='".__('Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>".__('NA').'</span>';
                                                     } else {
-                                                        if ($rowSub['homeworkSubmissionRequired'] == 'Compulsory') {
+                                                        if ($rowSub['homeworkSubmissionRequired'] == 'Required') {
                                                             echo "<span title='".__('Incomplete')."' style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'>".__('Inc').'</span>';
                                                         } else {
                                                             echo "<span title='".__('Not submitted online')."'>".__('NA').'</span>';

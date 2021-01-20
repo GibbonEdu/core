@@ -21,22 +21,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_ageGenderSummary.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Age & Gender Summary'));
 
     //Work out ages in school
-    try {
+    
         $dataList = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
         $sqlList = "SELECT gibbonStudentEnrolment.gibbonYearGroupID, dob, gender FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY dob DESC";
         $resultList = $connection2->prepare($sqlList);
         $resultList->execute($dataList);
-    } catch (PDOException $e) {
-    }
 
     $today = time();
     $ages = array();

@@ -100,13 +100,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_scopes_m
     $reportingCriteria = $reportingCriteriaGateway->queryReportingCriteriaGroupsByScope($criteria, $urlParams['gibbonReportingScopeID'], $reportingScope['scopeType']);
 
     // BULK ACTIONS
-    $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Reports/reporting_criteria_manage_addMultiple.php');
+    $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'].'/modules/Reports/reporting_scopes_manage_editProcessBulk.php');
     $form->setTitle(__('Criteria'));
     $form->addHiddenValue('gibbonReportingScopeID', $urlParams['gibbonReportingScopeID']);
     $form->addHiddenValue('gibbonReportingCycleID', $reportingScope['gibbonReportingCycleID']);
 
     $bulkActions = array(
         'Add Multiple' => __('Add Multiple'),
+        'Delete' => __('Delete'),
     );
 
     $col = $form->createBulkActionColumn($bulkActions);
@@ -125,11 +126,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_scopes_m
         ->setURL('/modules/Reports/reporting_criteria_manage_addMultiple.php')
         ->addParam('gibbonReportingCycleID', $urlParams['gibbonReportingCycleID'])
         ->addParam('gibbonReportingScopeID', $urlParams['gibbonReportingScopeID'])
+        ->addParam('referer', 'scopes')
         ->displayLabel();
 
     $table->addHeaderAction('criteria', __('Manage Criteria Types'))
         ->setIcon('markbook')
         ->setURL('/modules/Reports/criteriaTypes_manage.php')
+        ->addParam('referer', 'scopes')
         ->displayLabel()
         ->prepend(' | ');
 
@@ -140,6 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_scopes_m
         ->addParam('gibbonRollGroupID')
         ->addParam('gibbonCourseID')
         ->addParam('gibbonReportingCriteriaID')
+        ->addParam('referer', 'scopes')
         ->format(function ($reportingCriteria, $actions) {
             $actions->addAction('view', __('View'))
                     ->setURL('/modules/Reports/reporting_criteria_manage.php');

@@ -1,0 +1,50 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% set successStyle = "background-color: #c6f6d5;border-color: #2f855a;color: #2f855a;"%}
+{% set warningStyle = "background-color: #ffd2a8;border-color: #d45602;color: #d45602;"%}
+{% set errorStyle = "background-color: #fed7d7;border-color: #c53030;color: #c53030;"%}
+{% set blankStyle = "background-color: #eeeeee;border-color: #dfdfdf;color: #555555;"%}
+
+<a href="{{ absoluteURL }}/index.php?q=/modules/Attendance/report_studentHistory.php&gibbonPersonID={{ student.gibbonPersonID }}" style="font-size: 12px;">
+    <b>{{ formatUsing('name', student.title, student.preferredName, student.surname, 'Student', true, true) }}</b> {{ student.rollGroup }}
+</a>
+<br/>
+
+{% if schoolLog or classLogs %}
+<table style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; background: #ffffff; border-radius: 6px; border: 1px solid #ececec; font-size: 10px; margin-top:0.5rem;" cellspacing="0">
+    <tr>
+
+
+    <td style="{{ schoolLog.scope == 'Onsite - Late' or schoolLog.scope == 'Offsite - Late' ? warningStyle : schoolLog.direction == 'Out' ? errorStyle : schoolLog.direction == 'In' ? successStyle : blankStyle }};padding: 4px;width:84px;text-align:center;font-size: 10px !important;">
+        {{ __('School Attendance') }}<br/>
+        {{ student.rollGroup }}<br/>
+        <b>{{ schoolLog.type ? __(schoolLog.type) : __('N/A') }}</b>
+    </td>
+
+
+    {% for classLog in classLogs %}
+    
+        <td style="{{ classLog.scope == 'Onsite - Late' or classLog.scope == 'Offsite - Late' ? warningStyle : classLog.direction == 'Out' ? errorStyle : classLog.direction == 'In' ? successStyle : blankStyle }};padding: 4px;width:84px;text-align:center;font-size: 10px !important;">
+            {{ classLog.period }}<br/>
+            {{ formatUsing('courseClassName', classLog.courseName, classLog.className) }}<br/>
+            <b>{{ classLog.gibbonAttendanceLogPersonID ? __(classLog.type) : __('N/A') }}</b>
+        </td>    
+            
+    {% endfor %}
+
+    </tr>
+</table>
+
+{% else %}
+
+<i>{{ __('There is currently no attendance data today for the selected student.') }}</i><br/>
+
+{% endif %}
+
+<br/>

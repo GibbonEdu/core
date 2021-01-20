@@ -27,10 +27,8 @@ use Gibbon\Domain\IndividualNeeds\INGateway;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summary.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $page->breadcrumbs->add(__('Individual Needs Summary'));
 
@@ -128,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
     // COLUMNS
     $table->addColumn('student', __('Student'))
         ->sortable(['surname', 'preferredName'])
-        ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true]));
+        ->format(Format::using('nameLinked', ['gibbonPersonID', '', 'preferredName', 'surname', 'Student', true, false, ['subpage' => 'Individual Needs']]));
     $table->addColumn('yearGroup', __('Year Group'));
     $table->addColumn('rollGroup', __('Roll Group'));
 

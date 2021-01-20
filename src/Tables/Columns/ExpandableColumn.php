@@ -30,6 +30,8 @@ use Gibbon\Forms\Input\Checkbox;
  */
 class ExpandableColumn extends Column
 {
+    protected $expanded = false;
+
     /**
      * Creates a pre-defined column for expanding rows with extra data.
      */
@@ -39,13 +41,23 @@ class ExpandableColumn extends Column
         $this->sortable(false)->width('5%');
         $this->context('action');
 
-        $table->modifyRows(function($data, $row, $columnCount) {
+        $table->modifyRows(function ($data, $row, $columnCount) {
             return $row->append($this->getExpandedContent($data, $columnCount));
         });
 
-        $this->modifyCells(function($data, $cell) {
+        $this->modifyCells(function ($data, $cell) {
             return $cell->addClass('expandable');
         });
+    }
+
+    /**
+     * Set the default expanded state.
+     * @return self
+     */
+    public function setExpanded($expanded)
+    {
+        $this->expanded = $expanded;
+        return $this;
     }
 
     /**
@@ -84,7 +96,7 @@ class ExpandableColumn extends Column
         $output = '';
 
         if ($content = parent::getOutput($data)) {
-            $output .= '<tr style="display:none;"><td colspan="'.$columnCount.'">';
+            $output .= '<tr style="'.($this->expanded ? '' : 'display:none').';"><td colspan="'.$columnCount.'">';
             $output .= $content;
             $output .= '</td></tr>';
         }

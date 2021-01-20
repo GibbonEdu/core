@@ -1,3 +1,6 @@
 [submodule "i18n"]
 	path = i18n
 	url = https://github.com/GibbonEdu/i18n.git
+[submodule "resources/build"]
+	path = resources/build
+	url = https://github.com/GibbonEdu/build.git

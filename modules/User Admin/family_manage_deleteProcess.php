@@ -50,22 +50,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_d
             header("Location: {$URL}");
         } else {
             //Delete children
-            try {
+            
                 $dataDelete = array('gibbonFamilyID' => $gibbonFamilyID);
                 $sqlDelete = 'DELETE FROM gibbonFamilyChild WHERE gibbonFamilyID=:gibbonFamilyID';
                 $resultDelete = $connection2->prepare($sqlDelete);
                 $resultDelete->execute($dataDelete);
-            } catch (PDOException $e) {
-            }
 
             //Delete adults
-            try {
+            
                 $dataDelete = array('gibbonFamilyID' => $gibbonFamilyID);
                 $sqlDelete = 'DELETE FROM gibbonFamilyAdult WHERE gibbonFamilyID=:gibbonFamilyID';
                 $resultDelete = $connection2->prepare($sqlDelete);
                 $resultDelete->execute($dataDelete);
-            } catch (PDOException $e) {
-            }
 
             //Delete Family
             try {

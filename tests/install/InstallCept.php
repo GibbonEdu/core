@@ -17,13 +17,14 @@ try {
 
     // STEP 2 --------------------------------------
     $I->see('Installation - Step 2', 'h2');
+    
 
     $I->fillField('databaseServer', getenv('DB_HOST'));
     $I->fillField('databaseName', getenv('DB_NAME'));
     $I->fillField('databaseUsername', getenv('DB_USERNAME'));
     $I->fillField('databasePassword', getenv('DB_PASSWORD'));
-    $I->selectOption('demoData', 'Y');
 
+    $I->selectOption('demoData', 'Y');
     $I->click('Submit');
 
     // STEP 3 --------------------------------------
@@ -33,12 +34,12 @@ try {
 
     $formValues = array(
         'title'                 => 'Mr.',
-        'surname'               => 'CI',
-        'firstName'             => 'Travis',
+        'surname'               => 'Admin',
+        'firstName'             => 'Testing',
         'email'                 => 'testing@gibbon.test',
         'username'              => 'admin',
-        'passwordNew'           => 'travisci',
-        'passwordConfirm'       => 'travisci',
+        'passwordNew'           => '7SSbB9FZN24Q',
+        'passwordConfirm'       => '7SSbB9FZN24Q',
         'systemName'            => 'Gibbon',
         'installType'           => 'Testing',
         'cuttingEdgeCode'       => 'Y',

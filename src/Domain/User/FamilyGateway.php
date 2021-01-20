@@ -19,22 +19,30 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\User;
 
-use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
+use Gibbon\Domain\ScrubbableGateway;
+use Gibbon\Domain\Traits\Scrubbable;
+use Gibbon\Domain\Traits\TableAware;
+use Gibbon\Domain\Traits\ScrubByFamily;
 
 /**
  * @version v16
  * @since   v16
  */
-class FamilyGateway extends QueryableGateway
+class FamilyGateway extends QueryableGateway implements ScrubbableGateway
 {
     use TableAware;
+    use Scrubbable;
+    use ScrubByFamily;
 
     private static $tableName = 'gibbonFamily';
     private static $primaryKey = 'gibbonFamilyID';
 
     private static $searchableColumns = ['name'];
+
+    private static $scrubbableKey = 'gibbonFamilyID';
+    private static $scrubbableColumns = ['nameAddress' => '', 'homeAddress' => '', 'homeAddressDistrict' => '', 'homeAddressCountry' => '', 'status' => 'Other', 'languageHomePrimary' => '', 'languageHomeSecondary' => ''];
     
     /**
      * @param QueryCriteria $criteria
@@ -86,6 +94,30 @@ class FamilyGateway extends QueryableGateway
             ->groupBy(['gibbonFamily.gibbonFamilyID']);
 
         return $this->runQuery($query, $criteria);
+    }
+
+    public function selectFamiliesWithActiveStudents($gibbonSchoolYearID)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonFamily.gibbonFamilyID', 'gibbonFamily.name', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonRollGroup.nameShort as rollGroup', 'gibbonRollGroup.gibbonRollGroupID', 'gibbonYearGroup.gibbonYearGroupID'
+            ])
+            ->innerJoin('gibbonFamilyChild', 'gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID')
+            ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonFamilyChild.gibbonPersonID')
+            ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
+            ->innerJoin('gibbonRollGroup', 'gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID')
+            ->innerJoin('gibbonYearGroup', 'gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID')
+            ->where('gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where("gibbonPerson.status = 'Full'")
+            ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :today)')
+            ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :today)')
+            ->bindValue('today', date('Y-m-d'))
+            ->orderBy(['gibbonYearGroup.sequenceNumber', 'gibbonRollGroup.nameShort', 'gibbonPerson.surname', 'gibbonPerson.preferredName']);
+
+        return $this->runSelect($query);
     }
 
     public function selectAdultsByFamily($gibbonFamilyIDList, $allFields = false)

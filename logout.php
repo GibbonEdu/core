@@ -21,10 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 require_once './gibbon.php';
 
 $URL = './index.php';
-if (isset($_GET['timeout'])) {
-    if ($_GET['timeout'] == 'true') {
-        $URL = './index.php?timeout=true';
-    }
+if (isset($_GET['timeout']) and $_GET['timeout'] == 'true') {
+    $URL = './index.php?timeout=true';
 }
 
 unset($_SESSION[$guid]['googleAPIAccessToken']);

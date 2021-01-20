@@ -1,0 +1,117 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+{% import _self as homepage  %}
+
+<div class="flex w-full mb-6 bg-white shadow rounded font-sans">
+
+    <div class="w-1/3 flex flex-wrap font-sans items-start content-end justify-between py-5 px-6 border-r border-gray-300">
+        <div class="w-full text-sm font-light text-gray-600">
+            {{ __('Gibbon Version') }}
+        </div>
+        <div class="text-xl font-semibold text-gray-800 leading-normal">
+            v{{ gibbonVersion }}
+        </div>
+        <div id="gibbonCheck" class="mt-1">
+            <span class="tag rounded-full {{ gibbonCheck ? 'success' : 'dull' }}">
+                {{ gibbonCheck ? __('OK') : __('Checking') }}
+            </span>
+        </div>
+    </div>
+
+    <div class="w-1/3 flex flex-wrap font-sans items-start content-end justify-between py-5 px-6 border-r border-gray-300">
+        <div class="w-full text-sm font-light text-gray-600">
+            {{ __('PHP Version') }}
+        </div>
+        <div class="text-xl font-semibold text-gray-800 leading-normal">
+            {{ phpVersion }}
+        </div>
+        <div class="mt-1">
+            <span class="tag rounded-full {{ phpCheck ? 'success' : 'error' }}">
+                {{ phpCheck ? __('OK') : __('Error') }}
+            </span>
+        </div>
+    </div>
+
+    <div class="w-1/3 flex flex-wrap font-sans items-start content-end justify-between py-5 px-6 border-gray-300">
+        <div class="w-full text-sm font-light text-gray-600">
+            {{ __('MySQL Version') }}
+        </div>
+        <div class="text-xl font-semibold text-gray-800 leading-normal">
+            {{ mySqlVersion }}
+        </div>
+        <div class="mt-1">
+            <span class="tag rounded-full {{ mySqlCheck ? 'success' : 'error' }}">
+                {{ mySqlCheck ? __('OK') : __('Error') }}
+            </span>
+        </div>
+    </div>
+</div>
+
+{{ versionCheck|raw }}
+
+<div class="mt-6 mb-2 bg-white shadow rounded font-sans">
+
+    <div class="py-6 px-6 border-b border-gray-300">
+        <div class="text-lg text-gray-800 font-semibold leading-normal">
+            {{ __('Getting Started with Gibbon') }}
+        </div>
+
+        <p class="mt-2 mb-0 text-gray-600">{{ __('Our community offers documentation and support forums to help get you up and running with Gibbon. If you need additional assistance, members of the Gibbon team can provide expert support. Visit {link} to learn more.', {link: '<a href="http://gibbonedu.com" target="_blank" class="text-red-700 underline">gibbonedu.com</a>'})|raw }}</p>
+    </div>
+
+    <div class="py-4 px-3 flex flex-wrap items-stretch">
+
+        {{ homepage.card(__('Documentation'), __('Our docs provide technical information as well as user guides for Administrators, Developers, Teachers, and Parents.'), 'docs', 'https://docs.gibbonedu.org' ) }}
+
+        {{ homepage.card(__('Support Forums'), __('If you need help try asking members of the Gibbon community. Similarly, issues and bugs can be reported to the forum as well.'), 'forums', 'https://ask.gibbonedu.org' ) }}
+
+        <div class="w-full text-base text-gray-600 font-light mt-6 mb-2 ml-3">
+            {{ __('Extended Services') }}
+        </div>
+
+        {% if gibboneduComOrganisationKey is empty %}
+
+            {{ homepage.card(__('Expert Support'), __('Members of the Gibbon team are available to help with your Gibbon needs through Ad Hoc support or a Support Contract.'), 'support', 'http://gibbonedu.com' ) }}
+
+            {{ homepage.card(__('Value Added License'), __('Gibbon Value Added License, which, via the Query Builder module, gives access to over 90 useful queries.'), 'license', 'http://gibbonedu.com') }}
+
+        {% else %}
+
+            {{ homepage.card(__('Expert Support'), __('Members of the Gibbon team are available to help with your Gibbon needs through Ad Hoc support or a Support Contract.'), 'support', absoluteURL~'/index.php?q=/modules/System Admin/services_manage.php', '') }}
+
+            {{ homepage.card(__('Value Added License'), __('Gibbon Value Added License, which, via the Query Builder module, gives access to over 90 useful queries.'), 'license', absoluteURL~'/index.php?q=/modules/System Admin/services_manage.php', '') }}
+
+        {% endif %}
+    </div>
+
+    {% if gibboneduComOrganisationKey is empty %}
+    <div class="px-6 pt-3 pb-3 text-gray-600 border-t border-gray-300">
+        <p class="m-0">
+        {{ __('Do you have a Service Key? View and configure your licenses on the {link} page.', {link: '<a href="'~absoluteURL~'/index.php?q=/modules/System Admin/services_manage.php" class="text-red-700 underline">'~__('Manage Services')~'</a>'})|raw }}
+        </p>
+    </div>
+    {% endif %}
+</div>
+
+{% macro card(name, content, icon = '', url = '', target = '_blank') %}
+    <div class="w-full sm:w-1/2 pr-4">
+        <a href="{{ url }}" target="{{ target }}" class="flex bg-white rounded h-full text-gray-800 hover:bg-purple-100 hover:text-purple-700">
+            <div class="pl-4 pr-2 py-4">
+                {{ include('icons.twig.html', {'iconClass': 'w-10 h-10 opacity-75'}) }}
+            </div>
+            <div class="flex-1 p-4">
+                <p class="m-0 text-base font-semibold font-sans">
+                    {{ name }}
+                </p>
+                <p class="m-0 pt-3 text-gray-600 leading-tight">
+                    {{ content|raw }}
+                </p>
+            </div>
+        </a>
+    </div>
+{% endmacro card %}

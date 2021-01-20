@@ -20,10 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_manage_edit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     //Check if school year specified
@@ -42,23 +40,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
     $gibbonFinanceBillingScheduleID = $_GET['gibbonFinanceBillingScheduleID'];
     $search = $_GET['search'];
     if ($gibbonFinanceBillingScheduleID == '' or $gibbonSchoolYearID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceBillingScheduleID' => $gibbonFinanceBillingScheduleID);
             $sql = 'SELECT * FROM gibbonFinanceBillingSchedule WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceBillingScheduleID=:gibbonFinanceBillingScheduleID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             $resultRow = $result->fetch();
@@ -70,14 +61,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
             }
 
             $yearName = '';
-            try {
+            
                 $dataYear = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
                 $sqlYear = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
                 $resultYear = $connection2->prepare($sqlYear);
                 $resultYear->execute($dataYear);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
             if ($resultYear->rowCount() == 1) {
                 $rowYear = $resultYear->fetch();
                 $yearName = $rowYear['name'];
@@ -89,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
             $form->addHiddenValue("address", $_SESSION[$guid]['address']);
 
             $row = $form->addRow();
-                $row->addLabel("yearName", __("School Year"))->description(__("This value cannot be changed."));
+                $row->addLabel("yearName", __("School Year"));
                 $row->addTextField("yearName")->setValue($yearName)->readonly(true)->required();
 
             $row = $form->addRow();

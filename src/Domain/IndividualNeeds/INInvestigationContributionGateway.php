@@ -19,9 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\IndividualNeeds;
 
-use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
+use Gibbon\Domain\ScrubbableGateway;
+use Gibbon\Domain\Traits\Scrubbable;
+use Gibbon\Domain\Traits\TableAware;
+use Gibbon\Domain\Traits\ScrubByPerson;
 
 /**
  * Investigations Gateway
@@ -29,14 +32,19 @@ use Gibbon\Domain\QueryableGateway;
  * @version v19
  * @since   v19
  */
-class INInvestigationContributionGateway extends QueryableGateway
+class INInvestigationContributionGateway extends QueryableGateway implements ScrubbableGateway
 {
     use TableAware;
+    use Scrubbable;
+    use ScrubByPerson;
 
     private static $tableName = 'gibbonINInvestigationContribution';
     private static $primaryKey = 'gibbonINInvestigationContributionID';
 
     private static $searchableColumns = [];
+
+    private static $scrubbableKey = ['gibbonPersonIDStudent', 'gibbonINInvestigation', 'gibbonINInvestigationID'];
+    private static $scrubbableColumns = ['cognition'=> null,'memory'=> null,'selfManagement'=> null,'attention'=> null,'socialInteraction'=> null,'communication'=> null,'comment'=> null];
 
     /**
      * @param QueryCriteria $criteria

@@ -221,13 +221,13 @@ class Format
         $date = static::createDateTime($dateString, 'Y-m-d H:i:s');
 
         $timeDifference = time() - $date->format('U');
-        $seconds = abs($timeDifference);
+        $seconds = intval(abs($timeDifference));
 
         switch ($seconds) {
-            case ($seconds < 60 || empty($seconds)):
+            case ($seconds <= 60):
                 $time = __('Less than 1 min');
                 break;
-            case ($seconds >= 60 && $seconds < 3600):
+            case ($seconds > 60 && $seconds < 3600):
                 $minutes = floor($seconds / 60);
                 $time = __n('{count} min', '{count} mins', $minutes);
                 break;
@@ -251,7 +251,7 @@ class Format
         if ($timeDifference > 0) {
             $time = __('{time} ago', ['time' => $time]);
         } elseif ($timeDifference < 0) {
-            $time = __('{time} from now', ['time' => $time]);
+            $time = __('in {time}', ['time' => $time]);
         }
         
         return $tooltip
@@ -341,6 +341,20 @@ class Format
     }
 
     /**
+     * Formats a filesize in bytes to display in KB, MB, etc.
+     *
+     * @param int $bytes
+     * @return string
+     */
+    public static function filesize($bytes)
+    {
+        $unit = ['bytes','KB','MB','GB','TB','PB'];
+        return !empty($bytes)
+            ? @round($bytes/pow(1024, ($i=floor(log($bytes, 1024)))), 2).' '.$unit[$i]
+            : '0 KB';
+    }
+
+    /**
      * Formats a long string by truncating after $length characters
      * and displaying the full string on hover.
      *
@@ -363,7 +377,7 @@ class Format
      */
     public static function small($value)
     {
-        return '<span class="small emphasis">'.$value.'</span>';
+        return '<span class="text-xxs italic">'.$value.'</span>';
     }
 
     /**
@@ -375,6 +389,17 @@ class Format
     public static function bold($value)
     {
         return '<b>'.$value.'</b>';
+    }
+
+    /**
+     * Formats a string as a tag
+     *
+     * @param string $value
+     * @return string
+     */
+    public static function tag($value, $class, $title = '')
+    {
+        return '<span class="tag '.$class.'" title="'.$title.'">'.$value.'</span>';
     }
 
     /**
@@ -527,6 +552,17 @@ class Format
         return ($address? $address.'<br/>' : '') . ($addressDistrict? $addressDistrict.'<br/>' : '') . ($addressCountry? $addressCountry.'<br/>' : '');
     }
 
+    public static function list(array $items, $tag = 'ul', $listClass = '', $itemClass = 'leading-normal')
+    {
+        $output = "<$tag class='$listClass'>";
+        foreach ($items as $item) {
+            $output .= "<li class='$itemClass'>".$item.'</li>';
+        }
+        $output .= "</$tag>";
+
+        return $output;
+    }
+
     /**
      * Formats a name based on the provided Role Category. Optionally reverses the name (surname first) or uses an informal format (no title).
      *
@@ -573,7 +609,39 @@ class Format
 
         return trim($output, ' ');
     }
-
+    
+    /**
+     * Formats a linked name based on roleCategory
+     * @param string $gibbonPersonID
+     * @param string $title
+     * @param string $preferredName
+     * @param string $surname
+     * @param string $roleCategory
+     * @param bool $reverse
+     * @param bool $informal
+     * @return string
+     */
+    public static function nameLinked($gibbonPersonID, $title, $preferredName, $surname, $roleCategory = 'Other', $reverse = false, $informal = false, $params = [])
+    {
+        $name = self::name($title, $preferredName, $surname, $roleCategory, $reverse, $informal);
+        if ($roleCategory == 'Staff') {
+            $url = static::$settings['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$gibbonPersonID;
+            if (!empty($params)) {
+                $url .= '&'.http_build_query($params);
+            }
+            $output = self::link($url, $name);
+        } elseif ($roleCategory == 'Student') {
+            $url = static::$settings['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID;
+            if (!empty($params)) {
+                $url .= '&'.http_build_query($params);
+            }
+            $output = self::link($url, $name);
+        } else {
+            $output = $name;
+        }
+        return $output;
+    }
+    
     /**
      * Formats a list of names from an array containing standard title, preferredName & surname fields.
      *
@@ -590,6 +658,27 @@ class Format
         }, $list);
 
         return implode($separator, $listFormatted);
+    }
+
+    /**
+     * Formats a list of names from an array into a key-value array of id => name.
+     *
+     * @param array $list
+     * @param string $roleCategory
+     * @param bool $reverse
+     * @param bool $informal
+     * @param string $id
+     * @return array
+     */
+    public static function nameListArray($list, $roleCategory = 'Staff', $reverse = false, $informal = false, $id = 'gibbonPersonID')
+    {
+        $listFormatted = array_reduce($list, function ($group, $person) use ($roleCategory, $reverse, $informal, $id) {
+            $group[$person[$id]] = static::name($person['title'] ?? '', $person['preferredName'], $person['surname'], $roleCategory, $reverse, $informal);
+
+            return $group;
+        }, []);
+
+        return $listFormatted;
     }
 
     /**
@@ -720,7 +809,7 @@ class Format
                 return __('After End Date');
             }
             if (empty($person['yearGroup'])) {
-                return __('Not Enroled');
+                return __('Not Enrolled');
             }
         } else {
             if (!empty($person['staffType'])) {

@@ -51,14 +51,11 @@ echo "<link rel='stylesheet' type='text/css' href='".$_SESSION[$guid]['absoluteU
                 }
                 //Check existence of and access to this resource.
                 else {
-                    try {
+                    
                         $data = array('gibbonResourceID' => $gibbonResourceID);
                         $sql = 'SELECT * FROM gibbonResource WHERE gibbonResourceID=:gibbonResourceID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
 
                     if ($result->rowCount() != 1) {
                         echo "<div class='warning'>";

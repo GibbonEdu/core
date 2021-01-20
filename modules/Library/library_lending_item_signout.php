@@ -29,25 +29,18 @@ $page->breadcrumbs
     ->add(__('Sign Out'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_item_signOut.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     if (empty($gibbonLibraryItemID)) {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonLibraryItemID' => $gibbonLibraryItemID);
             $sql = 'SELECT * FROM gibbonLibraryItem WHERE gibbonLibraryItemID=:gibbonLibraryItemID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
@@ -62,14 +55,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 
             if ($values['returnAction'] != '') {
                 if ($values['gibbonPersonIDReturnAction'] != '') {
-                    try {
+                    
                         $dataPerson = array('gibbonPersonID' => $values['gibbonPersonIDReturnAction']);
                         $sqlPerson = 'SELECT surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
                         $resultPerson = $connection2->prepare($sqlPerson);
                         $resultPerson->execute($dataPerson);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
 
                     if ($resultPerson->rowCount() == 1) {
                         $rowPerson = $resultPerson->fetch();

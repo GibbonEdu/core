@@ -19,28 +19,28 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 //Gibbon system-wide includes
 include './gibbon.php';
-$_SESSION[$guid]['sidebarExtra'] = '';
+$gibbon->session->set('sidebarExtra', '');
 
 //Check to see if system settings are set from databases
-if (empty($_SESSION[$guid]['systemSettingsSet'])) {
+if (empty($gibbon->session->get('systemSettingsSet'))) {
     getSystemSettings($guid, $connection2);
 }
 
-if (empty($_SESSION[$guid]['systemSettingsSet']) || empty($_SESSION[$guid]['gibbonPersonID'])) {
+if (empty($gibbon->session->get('systemSettingsSet')) || empty($gibbon->session->get('gibbonPersonID'))) {
     header("HTTP/1.1 403 Forbidden");
     exit;
 }
 
-$_SESSION[$guid]['address'] = isset($_GET['q'])? $_GET['q'] : '';
-$_SESSION[$guid]['module'] = getModuleName($_SESSION[$guid]['address']);
-$_SESSION[$guid]['action'] = getActionName($_SESSION[$guid]['address']);
+$gibbon->session->set('address', $_GET['q'] ?? '');
+$gibbon->session->set('module', getModuleName($gibbon->session->get('address')));
+$gibbon->session->set('action', getActionName($gibbon->session->get('address')));
 
-if (empty($_SESSION[$guid]['address']) || strstr($_SESSION[$guid]['address'], '..') != false) {
+if (empty($gibbon->session->get('address')) || strstr($gibbon->session->get('address'), '..') != false) {
     header("HTTP/1.1 403 Forbidden");
     exit;
 } else {
-    if (is_file('./'.$_SESSION[$guid]['address'])) {
-        include './'.$_SESSION[$guid]['address'];
+    if (is_file('./'.$gibbon->session->get('address'))) {
+        include './'.$gibbon->session->get('address');
     } else {
         header("HTTP/1.1 404 Not Found");
         exit;

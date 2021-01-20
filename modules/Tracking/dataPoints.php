@@ -21,10 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $page->breadcrumbs->add(__('Data Points'));
@@ -50,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
         echo '<br/>';
         echo '</p>';
         echo "<div class='warning'>";
-        echo '<b>'.__('Warning, please note that this process is resource intensive, and may slow down access to the system for other users. Please be patient as the download might take a few minutes to prepare.').'</b>';
+        echo __('Warning, please note that this process is resource intensive, and may slow down access to the system for other users. Please be patient as the download might take a few minutes to prepare.');
         echo "<div class='linkTop'>";
         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/dataPoints_contents.php'>".__('Export to Excel')." <img title='".__('Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
         echo '</div>';

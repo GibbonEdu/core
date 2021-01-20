@@ -41,18 +41,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     $gibbonAttendanceCodeID = (isset($_GET['gibbonAttendanceCodeID']))? $_GET['gibbonAttendanceCodeID'] : NULL;
 
     if (empty($gibbonAttendanceCodeID)) {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-	    try {
+	    
 	        $data = array('gibbonAttendanceCodeID' => $gibbonAttendanceCodeID);
 	        $sql = 'SELECT * FROM gibbonAttendanceCode WHERE gibbonAttendanceCodeID=:gibbonAttendanceCodeID';
 	        $result = $connection2->prepare($sql);
 	        $result->execute($data);
-	    } catch (PDOException $e) {
-	        echo "<div class='error'>".$e->getMessage().'</div>';
-	    }
 
 	    if ($result->rowCount() != 1) {
 	        echo "<div class='error'>";
@@ -89,6 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
                 'Onsite - Late'  => __('Onsite - Late'),
                 'Offsite'        => __('Offsite'),
                 'Offsite - Left' => __('Offsite - Left'),
+                'Offsite - Late' => __('Offsite - Late'),
             );
             $row = $form->addRow();
                 $row->addLabel('scope', __('Scope'));

@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Input;
 
+use Gibbon\Services\Format;
+
 /**
  * TextField
  *
@@ -72,7 +74,7 @@ class FileUpload extends Input
      */
     public function setAttachment($name, $absoluteURL, $filePath = '')
     {
-        $this->absoluteURL = $absoluteURL;
+        $this->absoluteURL = !empty($absoluteURL)? $absoluteURL.'/' : '';
         $this->attachments[$name] = $filePath;
 
         return $this;
@@ -85,7 +87,7 @@ class FileUpload extends Input
      */
     public function setAttachments($absoluteURL, $attachments)
     {
-        $this->absoluteURL = $absoluteURL;
+        $this->absoluteURL = !empty($absoluteURL)? $absoluteURL.'/' : '';
         $this->attachments = array_replace($this->attachments, $attachments);
         return $this;
     }
@@ -142,12 +144,12 @@ class FileUpload extends Input
     }
 
     /**
-     * Returns true if the file upload has attachments (and an absoluteURL)
+     * Returns true if the file upload has attachments
      * @return bool
      */
     protected function hasAttachments()
     {
-        return !empty($this->absoluteURL) && !empty($this->attachments) && !empty(implode(array_values($this->attachments)));
+        return !empty($this->attachments) && !empty(implode(array_values($this->attachments)));
     }
 
     /**
@@ -193,23 +195,31 @@ class FileUpload extends Input
             foreach ($this->attachments as $attachmentName => $attachmentPath) {
 
                 if (!empty($attachmentPath)) {
-                    $output .= '<div class="input-box standardWidth">';
+                    $output .= '<div class="input-box rounded-sm standardWidth">';
 
                     $output .= '<div class="inline-label">';
                     $output .= __('Current attachment:').'<br/>';
-                    $output .= '<a target="_blank" href="'.$this->absoluteURL.'/'.$attachmentPath.'">'.basename($attachmentPath).'</a>';
+                    $output .= '<a target="_blank" href="'.$this->absoluteURL.$attachmentPath.'">'.basename($attachmentPath).'</a>';
+
+                    global $gibbon;
+                    $absolutePath = $gibbon->session->get('absolutePath');
+                    if (!empty($this->absoluteURL) && (!is_file($absolutePath.'/'.$attachmentPath) || filesize($absolutePath.'/'.$attachmentPath) == 0)) {
+                        $output .= Format::tag(__('Error'), 'error ml-2', __('This file is missing or empty. It may have failed to upload or is no longer on the server.'));
+                    }
+
                     $output .= '</div>';
 
-                    $output .=  "<a download class='inline-button' href='".$this->absoluteURL.'/'.$attachmentPath."'><img title='".__('Download')."' src='./themes/Default/img/download.png'/></a>";
+                    $output .=  "<a download class='inline-button' href='".$this->absoluteURL.$attachmentPath."'><img title='".__('Download')."' src='./themes/Default/img/download.png'/></a>";
 
                     if ($this->canDelete) {
                         $attachmentNameEscaped = str_replace(['[', ']'], ['\\\\[', '\\\\]'], $attachmentName);
                         if (!empty($this->deleteAction)) {
-                            $output .=  "<a class='inline-button' href='".$this->absoluteURL.'/'.$this->deleteAction."' onclick='return confirm(\"".__('Are you sure you want to delete this record?').' '.__('Unsaved changes will be lost.')."\")'><img title='".__('Delete')."' src='./themes/Default/img/garbage.png'/></a>";
+                            $output .=  "<a class='inline-button' href='".$this->absoluteURL.$this->deleteAction."' onclick='return confirm(\"".__('Are you sure you want to delete this record?').' '.__('Unsaved changes will be lost.')."\")'><img title='".__('Delete')."' src='./themes/Default/img/garbage.png'/></a>";
                         } else {
                             $output .= "<div class='inline-button' onclick='if(confirm(\"".__('Are you sure you want to delete this record?').' '.__('Changes will be saved when you submit this form.')."\")) { $(\"#".$attachmentNameEscaped."\").val(\"\"); $(\"#".$idEscaped."\").show(); $(\"#".$idEscaped." + .max-upload\").show(); $(\"#".$idEscaped."\").prop(\"disabled\", false); $(this).parent().detach().remove(); };'><img title='".__('Delete')."' src='./themes/Default/img/garbage.png'/></div>";
                         }
                     }
+
                     $output .= '</div>';
                 }
 

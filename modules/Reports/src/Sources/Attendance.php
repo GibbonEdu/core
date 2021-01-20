@@ -37,6 +37,8 @@ class Attendance extends DataSource
             'present' => ['numberBetween', 100, 150],
             'absent' => ['numberBetween', 1, 25],
             'partial'   => ['numberBetween', 1, 25],
+            'late'   => ['numberBetween', 1, 25],
+            'left'   => ['numberBetween', 1, 25],
         ];
     }
 
@@ -88,7 +90,7 @@ class Attendance extends DataSource
 
         $values = $this->db()->select($sql, $data)->fetchGrouped();
 
-        $attendance = ['total' => 0, 'present' => 0, 'absent' => 0, 'partial' => 0];
+        $attendance = ['total' => 0, 'present' => 0, 'absent' => 0, 'late' => 0, 'left' => 0];
 
         foreach (static::$schoolYearTerms as $term) {
             $dateRange = new DatePeriod(
@@ -113,13 +115,17 @@ class Attendance extends DataSource
 
                 if ($endOfDay['direction'] == 'Out' && $endOfDay['scope'] == 'Offsite') {
                     $attendance['absent']++;
-                } elseif ($endOfDay['scope'] == 'Onsite - Late' || $endOfDay['scope'] == 'Offsite - Left') {
-                    $attendance['partial']++;
+                } elseif ($endOfDay['scope'] == 'Onsite - Late' || $endOfDay['scope'] == 'Offsite - Late') {
+                    $attendance['late']++;
+                } elseif ($endOfDay['scope'] == 'Offsite - Left') {
+                    $attendance['left']++;
                 } elseif ($endOfDay['direction'] == 'In' || $endOfDay['scope'] == 'Onsite') {
                     $attendance['present']++;
                 }
             }
         }
+
+        $attendance['partial'] = $attendance['late'] + $attendance['left'];
         
         return $attendance;
     }

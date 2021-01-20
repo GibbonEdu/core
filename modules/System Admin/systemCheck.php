@@ -47,6 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
     $apacheVersion = function_exists('apache_get_version')? apache_get_version() : false;
     $mysqlVersion = $pdo->selectOne("SELECT VERSION()");
     $mysqlCollation = $pdo->selectOne("SELECT COLLATION('gibbon')");
+    $backgroundProcessing = @exec('echo EXEC') == 'EXEC';
 
     $phpRequirement = $gibbon->getSystemRequirement('php');
     $mysqlRequirement = $gibbon->getSystemRequirement('mysql');
@@ -65,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
         $fileCount++;
     }
 
-    $form = Form::create('systemCheck', "")->setClass('smallIntBorder w-full');
+    $form = Form::createTable('systemCheck', "")->setClass('smallIntBorder w-full');
 
     $form->addRow()->addHeading(__('System Requirements'));
 
@@ -87,6 +88,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
     $row = $form->addRow();
         $row->addLabel('pdoSupportLabel', __('MySQL PDO Support'));
         $row->addTextField('pdoSupport')->setValue((@extension_loaded('pdo_mysql'))? __('Installed') : __('Not Installed'))->readonly();
+        $row->addContent((@extension_loaded('pdo') && extension_loaded('pdo_mysql'))? $trueIcon : $falseIcon);
+
+    $row = $form->addRow();
+        $row->addLabel('backgroundProcessingLabel', __('Background Processing'))->description(__('Requires PHP exec() function access'));
+        $row->addTextField('backgroundProcessing')->setValue($backgroundProcessing ? __('Enabled') : __('Not Available'))->readonly();
         $row->addContent((@extension_loaded('pdo') && extension_loaded('pdo_mysql'))? $trueIcon : $falseIcon);
 
     // APACHE MODULES
@@ -129,6 +135,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
             list($setting, $operator, $compare) = $settingDetails;
             $value = @ini_get($setting);
 
+            if ($setting == 'session.gc_maxlifetime') $compare = $gibbon->session->get('sessionDuration');
+
             $isValid = ($operator == '==' && $value == $compare)
                 || ($operator == '>=' && $value >= $compare)
                 || ($operator == '<=' && $value <= $compare)
@@ -154,18 +162,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
         $row->addLabel('uploadsFolderLabel', __('Uploads folder server writeable'));
         $row->addTextField('uploadsFolder')->setValue($_SESSION[$guid]['absoluteURL'].'/uploads')->readonly();
         $row->addContent(is_writable($_SESSION[$guid]['absolutePath'].'/uploads')? $trueIcon : $falseIcon);
-
-
-    echo $form->getOutput();
-
-
-    // CLEAR CACHE
-    $form = Form::create('clearCache', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/systemCheck_clearCacheProcess.php');
-    $form->addClass('mt-10');
-
-    $form->addRow()->addHeading(__('System Data'));
-
-    $row = $form->addRow()->addSubmit(__('Clear Cache'));
 
     echo $form->getOutput();
 }

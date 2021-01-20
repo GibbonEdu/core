@@ -17,8 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Comms\NotificationEvent;
 use Gibbon\Services\Format;
+use Gibbon\Comms\NotificationEvent;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\School\YearGroupGateway;
 
 include '../../gibbon.php';
 
@@ -118,18 +120,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             } catch (PDOException $e) { print $e->getMessage(); }
-                            while ($row = $result->fetch()) {
-                                $event->addRecipient($row['gibbonPersonID']);
+                            while ($rowTutors = $result->fetch()) {
+                                $event->addRecipient($rowTutors['gibbonPersonID']);
+                            }
+
+                            // Add the HOY if there is one
+                            $yearGroup = $container->get(YearGroupGateway::class)->getByID($row['gibbonYearGroupID']);
+                            $yearGroupHOY = $container->get(UserGateway::class)->getByID($yearGroup['gibbonPersonIDHOY'] ?? '');
+                            if (!empty($yearGroupHOY)) {
+                                $event->addRecipient($yearGroupHOY['gibbonPersonID']);
                             }
 
                         }
                         if ($noteCreationNotification == 'Tutors & Teachers') {
-                            try {
+                            
                                 $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                                 $sql = "SELECT DISTINCT teacher.gibbonPersonID FROM gibbonPerson AS teacher JOIN gibbonCourseClassPerson AS teacherClass ON (teacherClass.gibbonPersonID=teacher.gibbonPersonID)  JOIN gibbonCourseClassPerson AS studentClass ON (studentClass.gibbonCourseClassID=teacherClass.gibbonCourseClassID) JOIN gibbonPerson AS student ON (studentClass.gibbonPersonID=student.gibbonPersonID) JOIN gibbonCourseClass ON (studentClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE teacher.status='Full' AND teacherClass.role='Teacher' AND studentClass.role='Student' AND student.gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY teacher.preferredName, teacher.surname, teacher.email ;";
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
-                            } catch (PDOException $e) { }
                             while ($row = $result->fetch()) {
                                 $event->addRecipient($row['gibbonPersonID']);
                             }

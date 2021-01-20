@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\View\Page;
+use Gibbon\View\View;
+
 // Setup the composer autoloader
 $autoloader = require_once __DIR__.'/vendor/autoload.php';
 
@@ -76,7 +79,13 @@ if ($gibbon->isInstalled() == true) {
         // We need to handle failed database connections after install. Display an error if no connection 
         // can be established. Needs a specific error page once header/footer is split out of index.
         if (!$gibbon->isInstalling()) {
-            include('./error.php');
+            $page = $container->get(Page::class)->setDefaults(__DIR__);
+            $page->writeFromTemplate('error.twig.html', [
+                'error' => sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), '', ''),
+                'message' => ' ',
+            ]);
+            
+            echo $page->render('index.twig.html');
             exit;
         }
     }

@@ -37,9 +37,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage_add
     $data = [
         'gibbonSchoolYearID'     => $_POST['gibbonSchoolYearID'] ?? '',
         'gibbonReportArchiveID'  => $_POST['gibbonReportArchiveID'] ?? '',
+        'gibbonReportingCycleID' => $_POST['gibbonReportingCycleID'] ?? null,
         'gibbonReportTemplateID' => $_POST['gibbonReportTemplateID'] ?? '',
         'name'                   => $_POST['name'] ?? '',
         'active'                 => $_POST['active'] ?? 'Y',
+        'gibbonYearGroupIDList'  => isset($_POST['gibbonYearGroupIDList'])? implode(',', $_POST['gibbonYearGroupIDList']) : null,
     ];
 
     if (!empty($_POST['accessDate'])) {

@@ -22,26 +22,19 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 $makeDepartmentsPublic = getSettingByScope($connection2, 'Departments', 'makeDepartmentsPublic');
 if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course.php') == false and $makeDepartmentsPublic != 'Y') {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $gibbonDepartmentID = $_GET['gibbonDepartmentID'];
     $gibbonCourseID = $_GET['gibbonCourseID'];
     if ($gibbonDepartmentID == '' or $gibbonCourseID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonDepartmentID' => $gibbonDepartmentID, 'gibbonCourseID' => $gibbonCourseID);
             $sql = 'SELECT gibbonDepartment.name AS department, gibbonCourse.name, gibbonCourse.description, gibbonSchoolYear.name AS year, gibbonCourse.gibbonSchoolYearID FROM gibbonDepartment JOIN gibbonCourse ON (gibbonDepartment.gibbonDepartmentID=gibbonCourse.gibbonDepartmentID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonDepartment.gibbonDepartmentID=:gibbonDepartmentID AND gibbonCourseID=:gibbonCourseID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
@@ -86,14 +79,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             echo __('Units');
             echo '</h2>';
 
-            try {
+            
                 $dataUnit = array('gibbonCourseID' => $gibbonCourseID);
                 $sqlUnit = 'SELECT gibbonUnitID, gibbonUnit.name, gibbonUnit.description, attachment FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonUnit.gibbonCourseID=:gibbonCourseID AND active=\'Y\' ORDER BY ordering, name';
                 $resultUnit = $connection2->prepare($sqlUnit);
                 $resultUnit->execute($dataUnit);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
 
             while ($rowUnit = $resultUnit->fetch()) {
                 echo '<h4>';
@@ -112,14 +102,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
 
             if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php')) {
                 //Print class list
-                try {
+                
                     $dataCourse = array('gibbonCourseID' => $gibbonCourseID);
                     $sqlCourse = 'SELECT gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourse.gibbonCourseID=:gibbonCourseID ORDER BY class';
                     $resultCourse = $connection2->prepare($sqlCourse);
                     $resultCourse->execute($dataCourse);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 if ($resultCourse->rowCount() > 0) {
                     $sidebarExtra .= '<div class="column-no-break">';

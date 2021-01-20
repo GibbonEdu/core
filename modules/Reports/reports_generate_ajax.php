@@ -19,11 +19,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 // Gibbon system-wide includes
 
+use Gibbon\Services\Format;
 use Gibbon\Domain\System\LogGateway;
+use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
+
+$_POST['address'] = '/modules/Reports/reports_generate.php';
 
 include '../../gibbon.php';
 
 $gibbonLogID = $_POST['gibbonLogID'] ?? '';
+$gibbonReportID = $_POST['gibbonReportID'] ?? '';
+$contextID = $_POST['contextID'] ?? '';
 
 if (empty($gibbonLogID)) return;
 if (empty($_SESSION[$guid]['username'])) return;
@@ -39,6 +45,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
         echo '<img class="align-middle w-56 -mt-px" src="./themes/Default/img/loading.gif">'
             .'<span class="tag ml-2 message">'.__('Running').'</span>';
     } else {
-        echo '<span class="tag success">'.__('Complete').'</span>';
+
+        if (!empty($gibbonReportID) && !empty($contextID)) {
+            $archive = $container->get(ReportArchiveEntryGateway::class)->getRecentArchiveEntryByReport($gibbonReportID, 'Batch', $contextID, 'Staff', true, true);
+
+            if ($archive) {
+                $tag = '<span class="tag success ml-2">'.__('Complete').'</span>';
+                $tag .= '<span class="tag ml-2 '.($archive['status'] == 'Final' ? 'success' : 'dull').'">'.__($archive['status']).'</span>';
+                $url = './modules/Reports/archive_byReport_download.php?gibbonReportArchiveEntryID='.$archive['gibbonReportArchiveEntryID'];
+                $title = Format::dateTimeReadable($archive['timestampModified']);
+                echo Format::link($url, $title).$tag;
+            }
+
+        } else {
+            echo '<span class="tag success">'.__('Complete').'</span>';
+        }
     }
 }

@@ -100,11 +100,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
                 }
 
                 //Unlock locked database tables
-                try {
+                
                     $sql = 'UNLOCK TABLES';
                     $result = $connection2->query($sql);
-                } catch (PDOException $e) {
-                }
 
                 $URL .= '&return=success0';
                 header("Location: {$URL}");

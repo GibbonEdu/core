@@ -13,55 +13,84 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% endif %}
     
     {% if form.getDescription %}
-        <p>{{ form.getDescription }}</p>
+        <p>{{ form.getDescription|raw }}</p>
     {% endif %}
+
+    
+    {% block header %}
+        <header class="relative">
+            {% if form.getHeader %}
+            <div class="linkTop">
+                {% for action in form.getHeader %}
+                    {{ action.getOutput|raw }}
+                {% endfor %}
+            </div>
+            {% endif %}
+        </header>
+    {% endblock header %}
 
     {% for values in form.getHiddenValues %}
         <input type="hidden" name="{{ values.name }}" value="{{ values.value }}">
     {% endfor %}
 
-    {% set renderStyle = "standardForm" in form.getClass or "noIntBorder" in form.getClass ? 'flex' : 'table' %}
+    {% set renderStyle = "standardForm" in form.getClass or "noIntBorder" in form.getClass and "blank" not in form.getClass ? 'flex' : 'table' %}
 
-    <table class="{{ form.getClass }} relative" cellspacing="0">
-    {% for row in form.getRows %}
-
-        {% if renderStyle == 'flex' %}
-            {% set rowClass = 'flex flex-col sm:flex-row justify-between content-center p-0' %}
-        {% endif %}
-
-        <tr id="{{ row.getID }}" class="{{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }}">
-
-        {% for element in row.getElements %}
-            {% set colspan = loop.last and loop.length < totalColumns ? (totalColumns + 1 - loop.length) : 0  %}
-            
-            {% if renderStyle == 'flex' %}
-                {% if element.isInstanceOf('Gibbon\\Forms\\Layout\\Label') %}
-                    {% set class = 'flex flex-col flex-grow justify-center -mb-1 sm:mb-0 ' %}
-                {% elseif element.isInstanceOf('Gibbon\\Forms\\Layout\\Column') %}
-                    {% set class = loop.last and loop.length == 2 ? 'w-full max-w-full sm:max-w-xs flex justify-end' : 'w-full ' %}
-                {% elseif loop.last and loop.length == 2 %}
-                    {% set class = 'w-full max-w-full sm:max-w-xs flex justify-end items-center' %}
-                {% else %}
-                    {% set class = 'flex-grow justify-center' %}
-                {% endif %}
-            {% else %}
-                {% set class = '' %}  
+    {% if form.getRows|length > 0 %}
+        <div class="{{ form.getClass }} font-sans text-xs text-gray-700 relative overflow-hidden {{ "blank" not in form.getClass ? 'bg-gray-100 rounded border mt-3' }}" style="{{ "noIntBorder" in form.getClass ? 'background:#edf7ff' }}" cellspacing="0">
+        {% for num, row in form.getRows %}
+        
+            {% set rowLoop = loop %}
+            {% if true or renderStyle == 'flex' %}
+                {% set rowClass = 'flex flex-col sm:flex-row justify-between sm:items-center content-center p-0' %}
             {% endif %}
 
-            <td class="{{ class }} px-2 border-b-0 sm:border-b border-t-0 {{ element.getClass|replace({'standardWidth': ''}) }}" {{ colspan ? 'colspan="%s"'|format(colspan)|raw }}>
-                {{ element.getOutput|replace({'standardWidth': renderStyle == 'flex' ? 'w-full' : '' })|raw }}
+            {% if (row.getElements|first).isInstanceOf('Gibbon\\Forms\\Layout\\Heading') %}
+                {% set rowClass = "blank" not in form.getClass ? rowClass ~ ' bg-gray-300' : rowClass ~ ' my-2' %}
+            {% endif %}
 
-                {% if element.instanceOf('Gibbon\\Forms\\ValidatableInterface') %}
-                <script type="text/javascript">
-                    {{ element.getValidationOutput|raw }}
-                </script>
+            <div id="{{ row.getID }}" class="{{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }} {{ "noIntBorder" not in form.getClass and "blank" not in form.getClass and not loop.last ? 'border-b' }} ">
+
+            {% for element in row.getElements %}
+                {% set colspan = loop.last and loop.length < totalColumns ? (totalColumns + 1 - loop.length) : 0  %}
+                
+                {% if element.isInstanceOf('Gibbon\\Forms\\Layout\\Heading') %}
+                    {% set class = 'flex-grow justify-center' %}
+                {% elseif element.isInstanceOf('Gibbon\\Forms\\Layout\\Label') %}
+                    {% set class = 'flex flex-col flex-grow justify-center -mb-1 sm:mb-0' %}
+                {% elseif element.isInstanceOf('Gibbon\\Forms\\Layout\\Column')  %}
+                    {% set class = loop.last and loop.length == 2 ? 'w-full max-w-full sm:max-w-sm flex justify-end' : 'w-full ' %}
+                {% elseif loop.last and loop.length == 2 and renderStyle == 'flex' %}
+                    {% set class = 'w-full max-w-full sm:max-w-sm flex justify-end items-center' %}
+                {% else %}
+                    {% set class = loop.last and loop.length > 2 ? '' : 'flex-1' %}
                 {% endif %}
-            </td>
-        {% endfor %}
 
-        </tr>
-    {% endfor %}
-    </table>
+                {% if renderStyle == 'table' and element.isInstanceOf('Gibbon\\Forms\\Layout\\Label') %}
+                    {% set class = class ~ " lg:w-2/5" %}
+                {% endif %}
+
+                {% if "standardForm" in form.getClass %}
+                    {% set class = class ~ " px-4 py-4" %}
+                {% elseif "blank" not in form.getClass %}
+                {% set class = class ~ " px-3 py-2" %}
+                {% endif %}
+
+
+                <div class="{{ class }} {{ element.getClass|replace({'standardWidth': ''}) }}" {{ colspan ? 'colspan="%s"'|format(colspan)|raw }}>
+                    {{ element.getOutput|replace({'standardWidth': renderStyle == 'flex' ? 'w-full' : '' })|raw }}
+
+                    {% if element.instanceOf('Gibbon\\Forms\\ValidatableInterface') %}
+                    <script type="text/javascript">
+                        {{ element.getValidationOutput|raw }}
+                    </script>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 
     <script type="text/javascript">
         {% for code in javascript %}

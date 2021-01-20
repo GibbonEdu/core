@@ -76,7 +76,7 @@ class DepartmentGateway extends QueryableGateway
                 FROM gibbonDepartment 
                 JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) 
                 WHERE gibbonDepartment.gibbonDepartmentID=:gibbonDepartmentID 
-                AND .gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID 
+                AND gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID 
                 AND FIND_IN_SET(gibbonDepartmentStaff.role, :roles)";
 
         return $this->db()->select($sql, $data);

@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
 
 //Helps builds report array for setting gibbonMessengerReceipt
 function reportAdd($report, $emailReceipt, $gibbonPersonID, $targetType, $targetID, $contactType, $contactDetail, $gibbonPersonIDListStudent = null, $nameStudent = null)
@@ -64,12 +65,11 @@ function getSignature($guid, $connection2, $gibbonPersonID)
 {
     $return = false;
 
-    try {
+    
         $data = array('gibbonPersonID' => $gibbonPersonID);
         $sql = 'SELECT gibbonStaff.*, surname, preferredName, initials FROM gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) { }
 
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
@@ -121,21 +121,17 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
     //If parent get a list of student IDs
     if ($parent) {
         $children = '(';
-        try {
+        
             $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
             $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-        }
         while ($row = $result->fetch()) {
-            try {
+            
                 $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                 $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
                 $resultChild = $connection2->prepare($sqlChild);
                 $resultChild->execute($dataChild);
-            } catch (PDOException $e) {
-            }
             while ($rowChild = $resultChild->fetch()) {
                 $children .= 'gibbonPersonID='.$rowChild['gibbonPersonID'].' OR ';
             }
@@ -247,13 +243,11 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
     //My roll groups
     if ($staff) {
         $sqlWhere = '(';
-        try {
+        
             $dataRollGroup = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonIDTutor' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor3' => $_SESSION[$guid]['gibbonPersonID']);
             $sqlRollGroup = 'SELECT * FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3)';
             $resultRollGroup = $connection2->prepare($sqlRollGroup);
             $resultRollGroup->execute($dataRollGroup);
-        } catch (PDOException $e) {
-        }
         if ($resultRollGroup->rowCount() > 0) {
             while ($rowRollGroup = $resultRollGroup->fetch()) {
                 $dataPosts['roll'.$rowRollGroup['gibbonRollGroupID']] = $rowRollGroup['gibbonRollGroupID'];
@@ -286,13 +280,11 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
 
     //My courses
     //First check for any course, then do specific parent check
-    try {
+    
         $dataClasses = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
         $sqlClasses = "SELECT DISTINCT gibbonCourseClass.gibbonCourseID FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND NOT role LIKE '%- Left'";
         $resultClasses = $connection2->prepare($sqlClasses);
         $resultClasses->execute($dataClasses);
-    } catch (PDOException $e) {
-    }
     $sqlWhere = '(';
     if ($resultClasses->rowCount() > 0) {
         while ($rowClasses = $resultClasses->fetch()) {
@@ -316,13 +308,11 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         }
     }
     if ($parent and $children != false) {
-        try {
+        
             $dataClasses = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
             $sqlClasses = 'SELECT DISTINCT gibbonCourseClass.gibbonCourseID FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND '.preg_replace('/gibbonPersonID/', 'gibbonCourseClassPerson.gibbonPersonID', $children)." AND NOT role LIKE '%- Left'";
             $resultClasses = $connection2->prepare($sqlClasses);
             $resultClasses->execute($dataClasses);
-        } catch (PDOException $e) {
-        }
         $sqlWhere = '(';
         if ($resultClasses->rowCount() > 0) {
             while ($rowClasses = $resultClasses->fetch()) {
@@ -341,13 +331,11 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
 
     //My classes
     //First check for any role, then do specific parent check
-    try {
+    
         $dataClasses = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
         $sqlClasses = "SELECT gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND NOT role LIKE '%- Left'";
         $resultClasses = $connection2->prepare($sqlClasses);
         $resultClasses->execute($dataClasses);
-    } catch (PDOException $e) {
-    }
     $sqlWhere = '(';
     if ($resultClasses->rowCount() > 0) {
         while ($rowClasses = $resultClasses->fetch()) {
@@ -371,13 +359,11 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         }
     }
     if ($parent and $children != false) {
-        try {
+        
             $dataClasses = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
             $sqlClasses = 'SELECT gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND '.preg_replace('/gibbonPersonID/', 'gibbonCourseClassPerson.gibbonPersonID', $children)." AND NOT role LIKE '%- Left'";
             $resultClasses = $connection2->prepare($sqlClasses);
             $resultClasses->execute($dataClasses);
-        } catch (PDOException $e) {
-        }
         $sqlWhere = '(';
         if ($resultClasses->rowCount() > 0) {
             while ($rowClasses = $resultClasses->fetch()) {
@@ -396,13 +382,11 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
 
     //My activities
     if ($staff) {
-        try {
+        
             $dataActivities = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
             $sqlActivities = 'SELECT gibbonActivity.gibbonActivityID FROM gibbonActivity JOIN gibbonActivityStaff ON (gibbonActivityStaff.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonActivityStaff.gibbonPersonID=:gibbonPersonID';
             $resultActivities = $connection2->prepare($sqlActivities);
             $resultActivities->execute($dataActivities);
-        } catch (PDOException $e) {
-        }
         $sqlWhere = '(';
         if ($resultActivities->rowCount() > 0) {
             while ($rowActivities = $resultActivities->fetch()) {
@@ -419,13 +403,11 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         }
     }
     if ($student) {
-        try {
+        
             $dataActivities = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
             $sqlActivities = "SELECT gibbonActivity.gibbonActivityID FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonActivityStudent.gibbonPersonID=:gibbonPersonID AND status='Accepted'";
             $resultActivities = $connection2->prepare($sqlActivities);
             $resultActivities->execute($dataActivities);
-        } catch (PDOException $e) {
-        }
         $sqlWhere = '(';
         if ($resultActivities->rowCount() > 0) {
             while ($rowActivities = $resultActivities->fetch()) {
@@ -442,13 +424,11 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         }
     }
     if ($parent and $children != false) {
-        try {
+        
             $dataActivities = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
             $sqlActivities = 'SELECT gibbonActivity.gibbonActivityID FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND '.preg_replace('/gibbonPersonID/', 'gibbonActivityStudent.gibbonPersonID', $children)." AND status='Accepted'";
             $resultActivities = $connection2->prepare($sqlActivities);
             $resultActivities->execute($dataActivities);
-        } catch (PDOException $e) {
-        }
         $sqlWhere = '(';
         if ($resultActivities->rowCount() > 0) {
             while ($rowActivities = $resultActivities->fetch()) {
@@ -666,54 +646,52 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
                 }
             }
 
-            $return .= "<table cellspacing='0' style='margin-top: 10px'>";
-            $return .= '<tr>';
-            $return .= "<th style='text-align: center'>";
-            $return .= __('Sharing');
-            $return .= '</th>';
-            $return .= '<th>';
-            $return .= __('Message');
-            $return .= '</th>';
-            $return .= '</tr>';
-            $rowCount = 0;
-            $rowNum = 'odd';
-            for ($i = 0; $i < count($output); ++$i) {
-                if ($output[$i]['messageWallPin'] == "Y") {
-                    $rowNum = 'selected';
+            $table = DataTable::create('messages');
+            $table->modifyRows(function($message, $row) {
+                if ($message['messageWallPin'] == "Y") {
+                    $row->addClass('selected');
                 }
-                else if ($rowCount % 2 == 0) {
-                    $rowNum = 'even';
-                } else {
-                    $rowNum = 'odd';
-                }
-                ++$rowCount;
-                $return .= "<tr class=$rowNum>";
-                $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 100px'>";
-                $return .= "<a name='".$output[$i]['gibbonMessengerID']."'></a>";
-                $return .= getUserPhoto($guid, $output[$i]['photo'], 75).'<br/>';
+                return $row;
+            });
 
-                $return .= '<b><u>'.__('Posted By').'</b></u><br/>';
-                $return .= $output[$i]['author'].'<br/><br/>';
+            $table->addColumn('sharing', __('Sharing'))
+                ->width('100px')
+                ->addClass('textCenter align-top')
+                ->format(function ($message) {
+                    $output = '<a name="' . $message['gibbonMessengerID'] . '"></a>';
 
-                $return .= '<b><u>'.__('Shared Via').'</b></u><br/>';
-                $return .= $output[$i]['source'].'<br/><br/>';
+                    $output .= Format::userPhoto($message['photo']);
+                    $output .= '<br/>';
 
-                if ($output[$i]['messageWallPin'] == "Y") {
-                    $return .= '<i>'.__('Pinned To Top').'</i><br/>';
-                }
+                    $output .= '<b><u>' . __('Posted By') . '</b></u><br/>';
+                    $output .= $message['author'] . '<br/><br/>';
 
-                $return .= '</td>';
-                $return .= "<td style='border-left: none; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 640px'>";
-                $return .= "<h3 style='margin-top: 3px'>";
-                $return .= $output[$i]['subject'];
-                $return .= '</h3>';
-                $return .= '</p>';
-                $return .= $output[$i]['details'];
-                $return .= '</p>';
-                $return .= '</td>';
-                $return .= '</tr>';
-            }
-            $return .= '</table>';
+                    $output .= '<b><u>' . __('Shared Via') . '</b></u><br/>';
+                    $output .= $message['source'] . '<br/><br/>';
+
+                    if ($message['messageWallPin'] == "Y") {
+                        $output .= '<i>' . __('Pinned To Top') . '</i><br/>';
+                    }
+
+                    return $output;
+                });
+
+            $table->addColumn('message', __('Message'))
+                ->width('640px')
+                ->addClass('align-top')
+                ->format(function ($message) {
+                    $output = '<h3 style="margin-top: 3px">';
+                    $output .= $message['subject'];
+                    $output .= '</h3>';
+
+                    $output .= '</p>';
+                    $output .= $message['details'];
+                    $output .= '</p>';
+
+                    return $output;
+                });
+
+            $return .= $table->render($output);
         }
         if ($mode == 'print') {
             return $return;

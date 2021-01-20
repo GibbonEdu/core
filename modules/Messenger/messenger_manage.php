@@ -58,10 +58,10 @@ else {
 
 		$search = isset($_GET['search'])? $_GET['search'] : '';
 
-		$form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+		$form = Form::create('searchForm', $gibbon->session->get('absoluteURL').'/index.php', 'get');
 		$form->setClass('noIntBorder fullWidth');
 
-		$form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/messenger_manage.php');
+		$form->addHiddenValue('q', '/modules/'.$gibbon->session->get('module').'/messenger_manage.php');
 
 		$row = $form->addRow();
 			$row->addLabel('search', __('Search In'))->description(__('Subject, body.'));
@@ -75,7 +75,7 @@ else {
 		print "<h2>" ;
 		print __("Messages") ;
         print "</h2>" ;
-        
+
         $messengerGateway = $container->get(MessengerGateway::class);
         $sendingMessages = $messengerGateway->getSendingMessages();
 
@@ -88,22 +88,22 @@ else {
 		try {
 			if ($highestAction=="Manage Messages_all") {
 				if ($search=="") {
-					$data=array();
-					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) ORDER BY timestamp DESC" ;
+					$data=array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'));
+					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY timestamp DESC" ;
 				}
 				else {
-					$data=array("search1"=>"%$search%", "search2"=>"%$search%");
-					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE (subject LIKE :search1 OR body LIKE :search2) ORDER BY timestamp DESC" ;
+					$data=array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), "search1"=>"%$search%", "search2"=>"%$search%");
+					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND (subject LIKE :search1 OR body LIKE :search2) ORDER BY timestamp DESC" ;
 				}
 			}
 			else {
 				if ($search=="") {
-					$data=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]);
-					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonMessenger.gibbonPersonID=:gibbonPersonID ORDER BY timestamp DESC" ;
+					$data=array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), "gibbonPersonID"=>$gibbon->session->get("gibbonPersonID"));
+					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonMessenger.gibbonPersonID=:gibbonPersonID ORDER BY timestamp DESC" ;
 				}
 				else {
-					$data=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "search1"=>"%$search%", "search2"=>"%$search%");
-					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonMessenger.gibbonPersonID=:gibbonPersonID AND (subject LIKE :search1 OR body LIKE :search2) ORDER BY timestamp DESC" ;
+					$data=array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), "gibbonPersonID"=>$gibbon->session->get("gibbonPersonID"), "search1"=>"%$search%", "search2"=>"%$search%");
+					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonMessenger.gibbonPersonID=:gibbonPersonID AND (subject LIKE :search1 OR body LIKE :search2) ORDER BY timestamp DESC" ;
 				}
 			}
 			$result=$connection2->prepare($sql);
@@ -113,18 +113,18 @@ else {
 			print "<div class='error'>" . $e->getMessage() . "</div>" ;
 		}
 
-		$sqlPage=$sql ." LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ;
+		$sqlPage=$sql ." LIMIT " . $gibbon->session->get("pagination") . " OFFSET " . (($page-1)*$gibbon->session->get("pagination")) ;
 
 		if (isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_post.php")==TRUE OR isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_postQuickWall.php")==TRUE) {
 			print "<div class='linkTop'>" ;
 				if (isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_post.php")==TRUE) {
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_post.php'>" .  __('New Message') . "<img style='margin-left: 5px' title='" . __('New Message') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+					print "<a href='" . $gibbon->session->get("absoluteURL") . "/index.php?q=/modules/" . $gibbon->session->get("module") . "/messenger_post.php'>" .  __('New Message') . "<img style='margin-left: 5px' title='" . __('New Message') . "' src='./themes/" . $gibbon->session->get("gibbonThemeName") . "/img/page_new.png'/></a>" ;
 				}
 				if (isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_postQuickWall.php")==TRUE) {
 					if (isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_post.php")==TRUE) {
 						print " | " ;
 					}
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_postQuickWall.php'>" .  __('New Quick Wall Message') . "<img style='margin-left: 5px' title='" . __('New Quick Wall Message') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+					print "<a href='" . $gibbon->session->get("absoluteURL") . "/index.php?q=/modules/" . $gibbon->session->get("module") . "/messenger_postQuickWall.php'>" .  __('New Quick Wall Message') . "<img style='margin-left: 5px' title='" . __('New Quick Wall Message') . "' src='./themes/" . $gibbon->session->get("gibbonThemeName") . "/img/page_new.png'/></a>" ;
 				}
 			print "</div>" ;
 		}
@@ -135,8 +135,8 @@ else {
 			print "</div>" ;
 		}
 		else {
-			if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "&search=$search") ;
+			if ($result->rowCount()>$gibbon->session->get("pagination")) {
+				printPagination($guid, $result->rowCount(), $page, $gibbon->session->get("pagination"), "top", "&search=$search") ;
 			}
 
 			print "<table cellspacing='0' style='width: 100%'>" ;
@@ -396,31 +396,31 @@ else {
 						print "</td>" ;
 						print "<td>" ;
 							if ($row["email"]=="Y") {
-								print "<img title='" . __('Sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
+								print "<img title='" . __('Sent by email.') . "' src='./themes/" . $gibbon->session->get("gibbonThemeName") . "/img/iconTick.png'/> " ;
 							}
 							else {
-								print "<img title='" . __('Not sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
+								print "<img title='" . __('Not sent by email.') . "' src='./themes/" . $gibbon->session->get("gibbonThemeName") . "/img/iconCross.png'/> " ;
 							}
 						print "</td>" ;
 						print "<td>" ;
 							if ($row["messageWall"]=="Y") {
-								print "<img title='" . __('Sent by message wall.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
+								print "<img title='" . __('Sent by message wall.') . "' src='./themes/" . $gibbon->session->get("gibbonThemeName") . "/img/iconTick.png'/> " ;
 							}
 							else {
-								print "<img title='" . __('Not sent by message wall.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
+								print "<img title='" . __('Not sent by message wall.') . "' src='./themes/" . $gibbon->session->get("gibbonThemeName") . "/img/iconCross.png'/> " ;
 							}
 						print "</td>" ;
 						print "<td>" ;
 							if ($row["sms"]=="Y") {
-								print "<img title='" . __('Sent by sms.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
+								print "<img title='" . __('Sent by sms.') . "' src='./themes/" . $gibbon->session->get("gibbonThemeName") . "/img/iconTick.png'/> " ;
 							}
 							else {
-								print "<img title='" . __('Not sent by sms.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
+								print "<img title='" . __('Not sent by sms.') . "' src='./themes/" . $gibbon->session->get("gibbonThemeName") . "/img/iconCross.png'/> " ;
 							}
 						print "</td>" ;
 						print "<td>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_edit.php&gibbonMessengerID=" . $row["gibbonMessengerID"] . "&sidebar=true&search=$search'><img title='" . __('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-							print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_delete.php&gibbonMessengerID=" . $row["gibbonMessengerID"] . "&sidebar=true&search=$search&width=650&height=135'><img title='" . __('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+							print "<a href='" . $gibbon->session->get("absoluteURL") . "/index.php?q=/modules/" . $gibbon->session->get("module") . "/messenger_manage_edit.php&gibbonMessengerID=" . $row["gibbonMessengerID"] . "&sidebar=true&search=$search'><img title='" . __('Edit') . "' src='./themes/" . $gibbon->session->get("gibbonThemeName") . "/img/config.png'/></a> " ;
+							print "<a class='thickbox' href='" . $gibbon->session->get("absoluteURL") . "/fullscreen.php?q=/modules/" . $gibbon->session->get("module") . "/messenger_manage_delete.php&gibbonMessengerID=" . $row["gibbonMessengerID"] . "&sidebar=true&search=$search&width=650&height=135'><img title='" . __('Delete') . "' src='./themes/" . $gibbon->session->get("gibbonThemeName") . "/img/garbage.png'/></a> " ;
 							print "<script type='text/javascript'>" ;
 								print "$(document).ready(function(){" ;
 									print "\$(\".comment-$count\").hide();" ;
@@ -431,10 +431,10 @@ else {
 								print "});" ;
 							print "</script>" ;
 							if (is_null($row["emailReceipt"]) == false) {
-								print "<a href='".$_SESSION[$guid]["absoluteURL"]."/index.php?q=/modules/Messenger/messenger_manage_report.php&gibbonMessengerID=".$row['gibbonMessengerID']."&sidebar=true&search=$search'><img title='" . __('View Send Report') . "' style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/target.png' /></a>" ;
+								print "<a href='".$gibbon->session->get("absoluteURL")."/index.php?q=/modules/Messenger/messenger_manage_report.php&gibbonMessengerID=".$row['gibbonMessengerID']."&sidebar=true&search=$search'><img title='" . __('View Send Report') . "' style='padding-right: 5px' src='" . $gibbon->session->get("absoluteURL") . "/themes/" . $gibbon->session->get("gibbonThemeName") . "/img/target.png' /></a>" ;
 							}
 							if ($row["smsReport"]!="" OR $row["emailReport"]!="") {
-								print "<a title='" . __('Show Comment') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_down.png' alt='" . __('Show Comment') . "' onclick='return false;' /></a>" ;
+								print "<a title='" . __('Show Comment') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $gibbon->session->get("absoluteURL") . "/themes/" . $gibbon->session->get("gibbonThemeName") . "/img/page_down.png' alt='" . __('Show Comment') . "' onclick='return false;' /></a>" ;
 							}
 						print "</td>" ;
 					print "</tr>" ;
@@ -467,8 +467,8 @@ else {
 				}
 			print "</table>" ;
 
-			if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom", "&search=$search") ;
+			if ($result->rowCount()>$gibbon->session->get("pagination")) {
+				printPagination($guid, $result->rowCount(), $page, $gibbon->session->get("pagination"), "bottom", "&search=$search") ;
 			}
 		}
 	}
@@ -477,7 +477,7 @@ else {
 <script>
 $('.statusBar').each(function(index, element) {
     var refresh = setInterval(function () {
-        var path = "<?php echo $_SESSION[$guid]['absoluteURL'] ?>/modules/Messenger/messenger_manage_ajax.php";
+        var path = "<?php echo $gibbon->session->get('absoluteURL') ?>/modules/Messenger/messenger_manage_ajax.php";
         var postData = { gibbonLogID: $(element).data('id') };
         $(element).load(path, postData, function(responseText, textStatus, jqXHR) {
             if (responseText.indexOf('Sent') >= 0) {

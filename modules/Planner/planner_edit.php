@@ -25,10 +25,8 @@ use Gibbon\Services\Format;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
@@ -38,6 +36,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
     } else {
         //Set variables
         $today = date('Y-m-d');
+
+        $homeworkNameSingular = getSettingByScope($connection2, 'Planner', 'homeworkNameSingular');
+        $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
 
         //Proceed!
         //Get viewBy, date and class variables
@@ -147,13 +148,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 //Get gibbonUnitClassID
                 $gibbonUnitID = $values['gibbonUnitID'];
                 $gibbonUnitClassID = null;
-                try {
+                
                     $dataUnitClass = array('gibbonCourseClassID' => $values['gibbonCourseClassID'], 'gibbonUnitID' => $gibbonUnitID);
                     $sqlUnitClass = 'SELECT gibbonUnitClassID FROM gibbonUnitClass WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID';
                     $resultUnitClass = $connection2->prepare($sqlUnitClass);
                     $resultUnitClass->execute($dataUnitClass);
-                } catch (PDOException $e) {
-                }
                 if ($resultUnitClass->rowCount() == 1) {
                     $rowUnitClass = $resultUnitClass->fetch();
                     $gibbonUnitClassID = $rowUnitClass['gibbonUnitClassID'];
@@ -235,7 +234,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 if (!empty($values['gibbonUnitID'])) {
                     $form->addRow()->addHeading(__('Smart Blocks'));
 
-                    $form->addRow()->addContent("<div class='float-right'><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_edit_working.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=".$values['gibbonCourseID'].'&gibbonUnitID='.$values['gibbonUnitID'].'&gibbonSchoolYearID='.$_SESSION[$guid]['gibbonSchoolYearID']."&gibbonUnitClassID=$gibbonUnitClassID'>".__('Edit Unit').'</a></span>');
+                    $form->addRow()->addContent("<div class='float-right'><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_edit_working.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=".$values['gibbonCourseID'].'&gibbonUnitID='.$values['gibbonUnitID'].'&gibbonSchoolYearID='.$_SESSION[$guid]['gibbonSchoolYearID']."&gibbonUnitClassID=$gibbonUnitClassID'>".__('Edit Unit').'</a></div>');
 
                     $row = $form->addRow();
                         $customBlocks = $row->addPlannerSmartBlocks('smart', $gibbon->session, $guid);
@@ -258,25 +257,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 }
 
                 //HOMEWORK
-                $form->addRow()->addHeading(__('Homework'));
+                $form->addRow()->addHeading(__($homeworkNameSingular));
 
                 $form->toggleVisibilityByClass('homework')->onRadio('homework')->when('Y');
                 $row = $form->addRow();
-                    $row->addLabel('homework', __('Homework?'));
+                    $row->addLabel('homework', __('Add {homeworkName}?', ['homeworkName' => __($homeworkNameSingular)]));
                     $row->addRadio('homework')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->required()->checked('N')->inline(true);
 
-                $row = $form->addRow()->addClass('homework');
-                    $row->addLabel('homeworkDueDate', __('Homework Due Date'));
-                    $row->addDate('homeworkDueDate')->required()->setValue(Format::date(substr($values['homeworkDueDateTime'], 0, 10)));
-
+                $values['homeworkDueDate'] = substr(Format::date($values['homeworkDueDateTime'], 'Y-m-d H:i:s'), 0, 10);
                 $values['homeworkDueDateTime'] = substr($values['homeworkDueDateTime'], 11, 5);
+
                 $row = $form->addRow()->addClass('homework');
-                    $row->addLabel('homeworkDueDateTime', __('Homework Due Date Time'))->description(__("Format: hh:mm (24hr)"));
-                    $row->addTime('homeworkDueDateTime');
+                    $row->addLabel('homeworkDueDate', __('Due Date'))->description(__('Date is required, time is optional.'));
+                    $col = $row->addColumn('homeworkDueDate')->addClass('homework');
+                    $col->addDate('homeworkDueDate')->addClass('mr-2')->required();
+                    $col->addTime('homeworkDueDateTime');
+
+                $row = $form->addRow()->addClass('homework');
+                $row->addLabel('homeworkTimeCap', __('Time Cap?'))->description(__('The maximum time, in minutes, for students to work on this.'));
+                    $row->addNumber('homeworkTimeCap');
 
                 $row = $form->addRow()->addClass('homework');
                     $column = $row->addColumn();
-                    $column->addLabel('homeworkDetails', __('Homework Details'));
+                    $column->addLabel('homeworkDetails', __('{homeworkName} Details', ['homeworkName' => __($homeworkNameSingular)]));
                     $column->addEditor('homeworkDetails', $guid)->setRows(15)->showMedia()->setValue($description)->required();
 
                 $form->toggleVisibilityByClass('homeworkSubmission')->onRadio('homeworkSubmission')->when('Y');
@@ -299,7 +302,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 
                 $row = $form->addRow()->setClass('homeworkSubmission');
                     $row->addLabel('homeworkSubmissionRequired', __('Submission Required'));
-                    $row->addSelect('homeworkSubmissionRequired')->fromArray(array('Optional' => __('Optional'), 'Compulsory' => __('Compulsory')))->required();
+                    $row->addSelect('homeworkSubmissionRequired')->fromArray(array('Optional' => __('Optional'), 'Required' => __('Required')))->required();
 
                 if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAssess.php')) {
                     $form->toggleVisibilityByClass('homeworkCrowdAssess')->onRadio('homeworkCrowdAssess')->when('Y');

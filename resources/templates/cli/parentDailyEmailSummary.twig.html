@@ -1,0 +1,59 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% set successStyle = "background-color: #c6f6d5;border-color: #2f855a;color: #2f855a;"%}
+{% set warningStyle = "background-color: #ffd2a8;border-color: #d45602;color: #d45602;"%}
+{% set errorStyle = "background-color: #fed7d7;border-color: #c53030;color: #c53030;"%}
+
+<b>{{ formatUsing('name', student.title, student.preferredName, student.surname, 'Student', false, true) }}</b> {{ student.rollGroup }}
+<br/><br/>
+
+{% if schoolLog or classLogs %}
+<table style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background: #ffffff; border-radius: 6px; border: 1px solid #ececec; font-size: 12px;" cellspacing="0">
+    
+    {% if schoolLog %}
+    <tr style="{{ schoolLog.scope == 'Onsite - Late' or schoolLog.scope == 'Offsite - Late' ? warningStyle : schoolLog.direction == 'Out' ? errorStyle : successStyle }}">
+
+        <td style="padding: 8px;font-size: 12px !important;">
+            {{ __('School Attendance') }}
+        </td>
+        <td style="padding: 8px;font-size: 12px !important;">
+            <b>{{ __(schoolLog.direction) }}</b> ({{ __(schoolLog.type) }})
+        </td>
+        <td style="padding: 8px;font-size: 12px !important;">
+            {{ __('By') }} {{ formatUsing('name', '', schoolLog.preferredName, schoolLog.surname, 'Staff', false, true) }}
+        </td>
+
+    </tr>
+    {% endif %}
+
+    {% for classLog in classLogs %}
+    
+        <tr style="{{ classLog.scope == 'Onsite - Late' or classLog.scope == 'Offsite - Late' ? warningStyle : classLog.direction == 'Out' ? errorStyle : successStyle }};">
+            <td style="padding: 8px;font-size: 12px !important;">
+                {{ classLog.period }} - {{ formatUsing('courseClassName', classLog.courseName, classLog.className) }}
+            </td>
+            <td style="padding: 8px;font-size: 12px !important;">
+                <b>{{ __(classLog.direction) }}</b> ({{ __(classLog.type) }})
+            </td>
+            <td style="padding: 8px;font-size: 12px !important;">
+                {{ __('By') }} {{ formatUsing('name', '', classLog.preferredName, classLog.surname, 'Staff', false, true) }}
+            </td>    
+        </tr>
+            
+    {% endfor %}
+
+</table>
+
+{% else %}
+
+<i>{{ __('There is currently no attendance data today for the selected student.') }}</i><br/>
+
+{% endif %}
+
+<br/>

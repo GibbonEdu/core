@@ -67,7 +67,7 @@ class CourseCriteria extends DataSource
     public function getData($ids = [])
     {
         $data = ['gibbonStudentEnrolmentID' => $ids['gibbonStudentEnrolmentID'], 'gibbonReportingCycleID' => $ids['gibbonReportingCycleID']];
-        $sql = "SELECT gibbonCourse.gibbonCourseID, gibbonCourseClass.gibbonCourseClassID,
+        $sql = "SELECT DISTINCT gibbonCourse.gibbonCourseID, gibbonCourseClass.gibbonCourseClassID,
                     (CASE WHEN gibbonReportingCriteria.target = 'Per Group' THEN 'perGroup' ELSE 'perStudent' END) AS groupBy, 
                     gibbonReportingScope.name as scopeName,
                     gibbonReportingCriteria.name as criteriaName,

@@ -17,12 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Format;
+use Gibbon\Domain\System\SettingGateway;
 
 include '../../gibbon.php';
 include '../../config.php';
 
-//Module includes
+// Module includes
 include './moduleFunctions.php';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/systemSettings.php';
@@ -32,429 +32,88 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     header("Location: {$URL}");
     exit;
 } else {
-    //Proceed!
-    $absoluteURL = $_POST['absoluteURL'];
-    $absolutePath = $_POST['absolutePath'];
-    $systemName = $_POST['systemName'];
-    $indexText = $_POST['indexText'];
-    $organisationName = $_POST['organisationName'];
-    $organisationNameShort = $_POST['organisationNameShort'];
-    $organisationEmail = $_POST['organisationEmail'];
-    $organisationLogo = $_POST['organisationLogo'];
-    $organisationBackground = $_POST['organisationBackground'];
-    $organisationAdministrator = $_POST['organisationAdministrator'];
-    $organisationDBA = $_POST['organisationDBA'];
-    $organisationHR = $_POST['organisationHR'];
-    $organisationAdmissions = $_POST['organisationAdmissions'];
-    $pagination = $_POST['pagination'];
-    $timezone = $_POST['timezone'];
-    $country = $_POST['country'];
-    $firstDayOfTheWeek = $_POST['firstDayOfTheWeek'];
-    $analytics = $_POST['analytics'];
-    $emailLink = $_POST['emailLink'];
-    $webLink = $_POST['webLink'];
-    $defaultAssessmentScale = $_POST['defaultAssessmentScale'];
-    $installType = $_POST['installType'];
-    $statsCollection = $_POST['statsCollection'];
-    $passwordPolicyMinLength = $_POST['passwordPolicyMinLength'];
-    $passwordPolicyAlpha = $_POST['passwordPolicyAlpha'];
-    $passwordPolicyNumeric = $_POST['passwordPolicyNumeric'];
-    $passwordPolicyNonAlphaNumeric = $_POST['passwordPolicyNonAlphaNumeric'];
-    $sessionDuration = $_POST['sessionDuration'];
-    $currency = $_POST['currency'];
-    $gibboneduComOrganisationName = $_POST['gibboneduComOrganisationName'];
-    $gibboneduComOrganisationKey = $_POST['gibboneduComOrganisationKey'];
-    $backgroundProcessing = $_POST['backgroundProcessing'] ?? 'Y';
+    // Proceed!
+    $partialFail = false;
+    $settingGateway = $container->get(SettingGateway::class);
 
-    //Validate Inputs
-    if ($absoluteURL == '' or $systemName == '' or $organisationLogo == '' or $indexText == '' or $organisationName == '' or $organisationNameShort == '' or $organisationEmail == '' or $organisationAdministrator == '' or $organisationDBA == '' or $organisationHR == '' or $organisationAdmissions == '' or $pagination == '' or (!(is_numeric($pagination))) or $timezone == '' or $installType == '' or $statsCollection == '' or $passwordPolicyMinLength == '' or $passwordPolicyAlpha == '' or $passwordPolicyNumeric == '' or $passwordPolicyNonAlphaNumeric == '' or $firstDayOfTheWeek == '' or ($firstDayOfTheWeek != 'Monday' and $firstDayOfTheWeek != 'Sunday') or $currency == '') {
-        $URL .= '&return=error3';
+    $settingsToUpdate = [
+        'System' => [
+            'absoluteURL' => 'required',
+            'absolutePath' => 'required',
+            'systemName' => 'required',
+            'indexText' => 'required',
+            'organisationName' => 'required',
+            'organisationNameShort' => 'required',
+            'organisationEmail' => 'required',
+            'organisationLogo' => 'required',
+            'organisationBackground' => '',
+            'organisationAdministrator' => 'required',
+            'organisationDBA' => 'required',
+            'organisationHR' => 'required',
+            'organisationAdmissions' => 'required',
+            'pagination' => 'required',
+            'timezone' => 'required',
+            'country' => '',
+            'firstDayOfTheWeek' => 'required',
+            'analytics' => '',
+            'emailLink' => '',
+            'webLink' => '',
+            'defaultAssessmentScale' => 'required',
+            'installType' => 'required',
+            'statsCollection' => 'required',
+            'currency' => 'required',
+            'backgroundProcessing' => 'required',
+        ],
+    ];
+
+    $_POST['absolutePath'] = rtrim($_POST['absolutePath'], '/');
+    $_POST['absoluteURL'] = trim($_POST['absoluteURL'], '/');
+
+    // Validate timezone before changing
+    try {
+        new DateTimeZone($_POST['timezone']);
+    } catch(Exception $e) {
+        $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
-    } else {
-        //Write to database
-        $fail = false;
-        $partialFail = false;
+    }
 
-        try {
-            $data = array('absoluteURL' => $absoluteURL);
-            $sql = "UPDATE gibbonSetting SET value=:absoluteURL WHERE scope='System' AND name='absoluteURL'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        try {
-            $data = array('absolutePath' => $absolutePath);
-            $sql = "UPDATE gibbonSetting SET value=:absolutePath WHERE scope='System' AND name='absolutePath'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        try {
-            $data = array('systemName' => $systemName);
-            $sql = "UPDATE gibbonSetting SET value=:systemName WHERE scope='System' AND name='systemName'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        try {
-            $data = array('indexText' => $indexText);
-            $sql = "UPDATE gibbonSetting SET value=:indexText WHERE scope='System' AND name='indexText'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        try {
-            $data = array('organisationName' => $organisationName);
-            $sql = "UPDATE gibbonSetting SET value=:organisationName WHERE scope='System' AND name='organisationName'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        try {
-            $data = array('organisationNameShort' => $organisationNameShort);
-            $sql = "UPDATE gibbonSetting SET value=:organisationNameShort WHERE scope='System' AND name='organisationNameShort'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        try {
-            $data = array('organisationLogo' => $organisationLogo);
-            $sql = "UPDATE gibbonSetting SET value=:organisationLogo WHERE scope='System' AND name='organisationLogo'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        try {
-            $data = array('organisationBackground' => $organisationBackground);
-            $sql = "UPDATE gibbonSetting SET value=:organisationBackground WHERE scope='System' AND name='organisationBackground'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        $gibbon->session->set('organisationBackground', $organisationBackground);
-
-        try {
-            $data = array('organisationEmail' => $organisationEmail);
-            $sql = "UPDATE gibbonSetting SET value=:organisationEmail WHERE scope='System' AND name='organisationEmail'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        //ADMINISTRATORS
-        try {
-            $data = array('organisationAdministrator' => $organisationAdministrator);
-            $sql = "UPDATE gibbonSetting SET value=:organisationAdministrator WHERE scope='System' AND name='organisationAdministrator'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-        //Update session variables
-        try {
-            $data = array('gibbonPersonID' => $organisationAdministrator);
-            $sql = 'SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-        if ($result->rowCount() != 1) {
-            $fail = true;
-        } else {
-            $row = $result->fetch();
-            $_SESSION[$guid]['organisationAdministratorName'] = Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
-            $_SESSION[$guid]['organisationAdministratorEmail'] = $row['email'];
-        }
-
-        try {
-            $data = array('organisationDBA' => $organisationDBA);
-            $sql = "UPDATE gibbonSetting SET value=:organisationDBA WHERE scope='System' AND name='organisationDBA'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-        //Update session variables
-        try {
-            $data = array('gibbonPersonID' => $organisationDBA);
-            $sql = 'SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-        if ($result->rowCount() != 1) {
-            $fail = true;
-        } else {
-            $row = $result->fetch();
-            $_SESSION[$guid]['organisationDBAName'] = Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
-            $_SESSION[$guid]['organisationDBAEmail'] = $row['email'];
-        }
-
-        try {
-            $data = array('organisationHR' => $organisationHR);
-            $sql = "UPDATE gibbonSetting SET value=:organisationHR WHERE scope='System' AND name='organisationHR'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-        //Update session variables
-        try {
-            $data = array('gibbonPersonID' => $organisationHR);
-            $sql = 'SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-        if ($result->rowCount() != 1) {
-            $fail = true;
-        } else {
-            $row = $result->fetch();
-            $_SESSION[$guid]['organisationHRName'] = Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
-            $_SESSION[$guid]['organisationHREmail'] = $row['email'];
-        }
-
-        try {
-            $data = array('organisationAdmissions' => $organisationAdmissions);
-            $sql = "UPDATE gibbonSetting SET value=:organisationAdmissions WHERE scope='System' AND name='organisationAdmissions'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-        //Update session variables
-        try {
-            $data = array('gibbonPersonID' => $organisationAdmissions);
-            $sql = 'SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-        if ($result->rowCount() != 1) {
-            $fail = true;
-        } else {
-            $row = $result->fetch();
-            $_SESSION[$guid]['organisationAdmissionsName'] = Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
-            $_SESSION[$guid]['organisationAdmissionsEmail'] = $row['email'];
-        }
-
-        try {
-            $data = array('pagination' => $pagination);
-            $sql = "UPDATE gibbonSetting SET value=:pagination WHERE scope='System' AND name='pagination'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        try {
-            $data = array('country' => $country);
-            $sql = "UPDATE gibbonSetting SET value=:country WHERE scope='System' AND name='country'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        try {
-            $data = array('firstDayOfTheWeek' => $firstDayOfTheWeek);
-            $sql = "UPDATE gibbonSetting SET value=:firstDayOfTheWeek WHERE scope='System' AND name='firstDayOfTheWeek'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        if (setFirstDayOfTheWeek($connection2, $firstDayOfTheWeek, $databaseName) != true) {
-            $fail = true;
-        }
-
-        try {
-            $data = array('currency' => $currency);
-            $sql = "UPDATE gibbonSetting SET value=:currency WHERE scope='System' AND name='currency'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        try {
-            $data = array('gibboneduComOrganisationName' => $gibboneduComOrganisationName);
-            $sql = "UPDATE gibbonSetting SET value=:gibboneduComOrganisationName WHERE scope='System' AND name='gibboneduComOrganisationName'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        try {
-            $data = array('gibboneduComOrganisationKey' => $gibboneduComOrganisationKey);
-            $sql = "UPDATE gibbonSetting SET value=:gibboneduComOrganisationKey WHERE scope='System' AND name='gibboneduComOrganisationKey'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        // Validate before changing
-        $validTimezone = true;
-        try {
-            new DateTimeZone($timezone);
-        } catch(Exception $e) {
-            $validTimezone = false;
-            $partialFail = true;
-        }
-
-        if ($validTimezone) {
-            try {
-                $data = array('timezone' => $timezone);
-                $sql = "UPDATE gibbonSetting SET value=:timezone WHERE scope='System' AND name='timezone'";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $fail = true;
+    // Validate required fields
+    foreach ($settingsToUpdate as $scope => $settings) {
+        foreach ($settings as $name => $property) {
+            if ($property == 'required' && empty($_POST[$name])) {
+                $URL .= '&return=error1';
+                header("Location: {$URL}");
+                exit;
             }
         }
+    }
 
-        try {
-            $data = array('analytics' => $analytics);
-            $sql = "UPDATE gibbonSetting SET value=:analytics WHERE scope='System' AND name='analytics'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
+    // Update fields
+    foreach ($settingsToUpdate as $scope => $settings) {
+        foreach ($settings as $name => $property) {
+            $value = $_POST[$name] ?? '';
+            if ($property == 'skip-empty' && empty($value)) continue;
 
-        try {
-            $data = array('emailLink' => $emailLink);
-            $sql = "UPDATE gibbonSetting SET value=:emailLink WHERE scope='System' AND name='emailLink'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        try {
-            $data = array('webLink' => $webLink);
-            $sql = "UPDATE gibbonSetting SET value=:webLink WHERE scope='System' AND name='webLink'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        try {
-            $data = array('defaultAssessmentScale' => $defaultAssessmentScale);
-            $sql = "UPDATE gibbonSetting SET value=:defaultAssessmentScale WHERE scope='System' AND name='defaultAssessmentScale'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        try {
-            $data = array('installType' => $installType);
-            $sql = "UPDATE gibbonSetting SET value=:installType WHERE scope='System' AND name='installType'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        try {
-            $data = array('statsCollection' => $statsCollection);
-            $sql = "UPDATE gibbonSetting SET value=:statsCollection WHERE scope='System' AND name='statsCollection'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        try {
-            $data = array('passwordPolicyMinLength' => $passwordPolicyMinLength);
-            $sql = "UPDATE gibbonSetting SET value=:passwordPolicyMinLength WHERE scope='System' AND name='passwordPolicyMinLength'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-        try {
-            $data = array('passwordPolicyAlpha' => $passwordPolicyAlpha);
-            $sql = "UPDATE gibbonSetting SET value=:passwordPolicyAlpha WHERE scope='System' AND name='passwordPolicyAlpha'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-        try {
-            $data = array('passwordPolicyNumeric' => $passwordPolicyNumeric);
-            $sql = "UPDATE gibbonSetting SET value=:passwordPolicyNumeric WHERE scope='System' AND name='passwordPolicyNumeric'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-        try {
-            $data = array('passwordPolicyNonAlphaNumeric' => $passwordPolicyNonAlphaNumeric);
-            $sql = "UPDATE gibbonSetting SET value=:passwordPolicyNonAlphaNumeric WHERE scope='System' AND name='passwordPolicyNonAlphaNumeric'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-        try {
-            $data = array('sessionDuration' => $sessionDuration);
-            $sql = "UPDATE gibbonSetting SET value=:sessionDuration WHERE scope='System' AND name='sessionDuration'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-        try {
-            $data = array('backgroundProcessing' => $backgroundProcessing);
-            $sql = "UPDATE gibbonSetting SET value=:backgroundProcessing WHERE scope='System' AND name='backgroundProcessing'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        if ($fail == true) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit;
-        } elseif ($partialFail == true) {
-            $URL .= '&return=warning1';
-            header("Location: {$URL}");
-            exit;
-        } else {
-            getSystemSettings($guid, $connection2);
-            $_SESSION[$guid]['pageLoads'] = null;
-            $URL .= '&return=success0';
-            header("Location: {$URL}");
-            exit;
+            $updated = $settingGateway->updateSettingByScope($scope, $name, $value);
+            $partialFail &= !$updated;
         }
     }
+
+    // Update and re-order the weekday table
+    if (setFirstDayOfTheWeek($connection2, $_POST['firstDayOfTheWeek'], $databaseName) != true) {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    // Update all the system settings that are stored in the session
+    getSystemSettings($guid, $connection2);
+    $_SESSION[$guid]['pageLoads'] = null;
+
+
+    $URL .= $partialFail
+        ? '&return=warning1'
+        : '&return=success0';
+    header("Location: {$URL}");
 }

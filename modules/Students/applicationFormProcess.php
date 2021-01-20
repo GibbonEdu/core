@@ -380,8 +380,8 @@ if ($proceed == false) {
         }
 
         //GET SIBLING FIELDS
-        $siblingName1 = $_POST['siblingName1'];
-        $siblingDOB1 = $_POST['siblingDOB1'];
+        $siblingName1 = $_POST['siblingName1'] ?? '';
+        $siblingDOB1 = $_POST['siblingDOB1'] ?? '';
         if ($siblingDOB1 == '') {
             $siblingDOB1 = null;
         } else {
@@ -394,8 +394,8 @@ if ($proceed == false) {
         } else {
             $siblingSchoolJoiningDate1 = dateConvert($guid, $siblingSchoolJoiningDate1);
         }
-        $siblingName2 = $_POST['siblingName2'];
-        $siblingDOB2 = $_POST['siblingDOB2'];
+        $siblingName2 = $_POST['siblingName2'] ?? '';
+        $siblingDOB2 = $_POST['siblingDOB2'] ?? '';
         if ($siblingDOB2 == '') {
             $siblingDOB2 = null;
         } else {
@@ -408,8 +408,8 @@ if ($proceed == false) {
         } else {
             $siblingSchoolJoiningDate2 = dateConvert($guid, $siblingSchoolJoiningDate2);
         }
-        $siblingName3 = $_POST['siblingName3'];
-        $siblingDOB3 = $_POST['siblingDOB3'];
+        $siblingName3 = $_POST['siblingName3'] ?? '';
+        $siblingDOB3 = $_POST['siblingDOB3'] ?? '';
         if ($siblingDOB3 == '') {
             $siblingDOB3 = null;
         } else {
@@ -615,14 +615,14 @@ if ($proceed == false) {
                 header("Location: {$URL}");
                 exit();
             } else {
-                $fields = serialize($fields);
+                $fields = json_encode($fields);
                 if (isset($parent1fields)) {
-                    $parent1fields = serialize($parent1fields);
+                    $parent1fields = json_encode($parent1fields);
                 } else {
                     $parent1fields = '';
                 }
                 if (isset($parent2fields)) {
-                    $parent2fields = serialize($parent2fields);
+                    $parent2fields = json_encode($parent2fields);
                 } else {
                     $parent2fields = '';
                 }
@@ -644,13 +644,11 @@ if ($proceed == false) {
                 $secureAI = sha1($AI.'X2J53ZGy'.$guid.$gibbonSchoolYearIDEntry);
 
                 // Update the Application Form with a hash for looking up this record in the future
-                try {
+                
                     $data = array('gibbonApplicationFormID' => $AI, 'gibbonApplicationFormHash' => $secureAI );
                     $sql = 'UPDATE gibbonApplicationForm SET gibbonApplicationFormHash=:gibbonApplicationFormHash WHERE gibbonApplicationFormID=:gibbonApplicationFormID';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
 
                 //Deal with family relationships
                 if ($gibbonFamily == 'TRUE') {
@@ -658,13 +656,11 @@ if ($proceed == false) {
                     $relationshipsGibbonPersonIDs = $_POST[$gibbonFamilyID.'-relationshipsGibbonPersonID'];
                     $count = 0;
                     foreach ($relationships as $relationship) {
-                        try {
+                        
                             $data = array('gibbonApplicationFormID' => $AI, 'gibbonPersonID' => $relationshipsGibbonPersonIDs[$count], 'relationship' => $relationship);
                             $sql = 'INSERT INTO gibbonApplicationFormRelationship SET gibbonApplicationFormID=:gibbonApplicationFormID, gibbonPersonID=:gibbonPersonID, relationship=:relationship';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
-                        } catch (PDOException $e) {
-                        }
                         ++$count;
                     }
                 }
@@ -690,13 +686,11 @@ if ($proceed == false) {
 
                         // Write files to database, if there is one
                         if (!empty($attachment)) {
-                            try {
+                            
                                 $dataFile = array('gibbonApplicationFormID' => $AI, 'name' => $fileName, 'path' => $attachment);
                                 $sqlFile = 'INSERT INTO gibbonApplicationFormFile SET gibbonApplicationFormID=:gibbonApplicationFormID, name=:name, path=:path';
                                 $resultFile = $connection2->prepare($sqlFile);
                                 $resultFile->execute($dataFile);
-                            } catch (PDOException $e) {
-                            }
                         }
                     }
                 }
@@ -717,17 +711,20 @@ if ($proceed == false) {
                     //Prep message
                     $subject = __('Request For Reference');
                     $body = sprintf(__('To whom it may concern,%4$sThis email is being sent in relation to the application of a current or former student of your school: %1$s.%4$sIn assessing their application for our school, we would like to enlist your help in completing the following reference form: %2$s.<br/><br/>Please feel free to contact me, should you have any questions in regard to this matter.%4$sRegards,%4$s%3$s'), $officialName, "<a href='$applicationFormRefereeLink' target='_blank'>$applicationFormRefereeLink</a>", $_SESSION[$guid]['organisationAdmissionsName'], '<br/><br/>');
-                    $body .= "<p style='font-style: italic;'>".sprintf(__('Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
-                    $bodyPlain = emailBodyConvert($body);
+
                     $mail = $container->get(Mailer::class);
+                    $mail->Subject = $subject;
                     $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
                     $mail->AddAddress($referenceEmail);
-                    $mail->CharSet = 'UTF-8';
-                    $mail->Encoding = 'base64';
-                    $mail->IsHTML(true);
-                    $mail->Subject = $subject;
-                    $mail->Body = $body;
-                    $mail->AltBody = $bodyPlain;
+                    $mail->renderBody('mail/email.twig.html', [
+                        'title'  => $subject,
+                        'body'   => $body,
+                        'button' => [
+                            'url'  => $applicationFormRefereeLink,
+                            'text' => __('Click Here'),
+                            'external' => true,
+                        ],
+                    ]);
                     $mail->Send();
                 }
 
@@ -735,22 +732,26 @@ if ($proceed == false) {
 
                 //Notify parent 1 of application status
                 if (!empty($parent1email) && !$skipEmailNotification) {
+                    $subject =  sprintf(__('%1$s Application Form Confirmation'), $_SESSION[$guid]['organisationName']);
                     $body = sprintf(__('Dear Parent%1$sThank you for applying for a student place at %2$s.'), '<br/><br/>', $_SESSION[$guid]['organisationName']).' ';
                     $body .= __('Your application was successfully submitted. Our admissions team will review your application and be in touch in due course.').'<br/><br/>';
                     $body .= __('You may continue submitting applications for siblings with the form below and they will be linked to your family data.').'<br/><br/>';
                     $body .= "<a href='{$URL}&id={$secureAI}'>{$URL}&id={$secureAI}</a><br/><br/>";
                     $body .= sprintf(__('In the meantime, should you have any questions please contact %1$s at %2$s.'), $_SESSION[$guid]['organisationAdmissionsName'], $_SESSION[$guid]['organisationAdmissionsEmail']).'<br/><br/>';
-                    $body .= "<p style='font-style: italic;'>".sprintf(__('Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
-                    $bodyPlain = emailBodyConvert($body);
+
                     $mail = $container->get(Mailer::class);
+                    $mail->Subject = $subject;
                     $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
                     $mail->AddAddress($parent1email);
-                    $mail->CharSet = 'UTF-8';
-                    $mail->Encoding = 'base64';
-                    $mail->IsHTML(true);
-                    $mail->Subject = sprintf(__('%1$s Application Form Confirmation'), $_SESSION[$guid]['organisationName']);
-                    $mail->Body = $body;
-                    $mail->AltBody = $bodyPlain;
+                    $mail->renderBody('mail/email.twig.html', [
+                        'title'  => $subject,
+                        'body'   => $body,
+                        'button' => [
+                            'url'  => "{$URL}&id={$secureAI}",
+                            'text' => __('Add Another Application'),
+                            'external' => true,
+                        ],
+                    ]);
                     $mail->Send();
                 }
 
@@ -830,18 +831,16 @@ if ($proceed == false) {
         //Check return values to see if we can proceed
         if ($paymentToken == '' or $gibbonApplicationFormID == '' or $applicationFee == '') {
             $body = __('Payment via PayPal may or may not have been successful, but has not been recorded either way due to a system error. Please check your PayPal account for details. The following may be useful:')."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$_SESSION[$guid]['systemName'].' '.__('Admissions Administrator');
-            $body .= "<p style='font-style: italic;'>".sprintf(__('Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
-            $bodyPlain = emailBodyConvert($body);
 
             $mail = $container->get(Mailer::class);
+            $mail->Subject = $subject;
             $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
             $mail->AddAddress($to);
-            $mail->CharSet = 'UTF-8';
-            $mail->Encoding = 'base64';
-            $mail->IsHTML(true);
-            $mail->Subject = $subject;
-            $mail->Body = $body;
-            $mail->AltBody = $bodyPlain;
+            $mail->renderBody('mail/email.twig.html', [
+                'title'  => $subject,
+                'body'   => $body,
+            ]);
+
             $mail->Send();
 
             //Success 2
@@ -856,8 +855,8 @@ if ($proceed == false) {
             $confirmPayment = confirmPayment($guid, $applicationFee, $paymentToken, $paymentPayerID);
 
             $ACK = $confirmPayment['ACK'];
-            $paymentTransactionID = $confirmPayment['PAYMENTINFO_0_TRANSACTIONID'];
-            $paymentReceiptID = $confirmPayment['PAYMENTINFO_0_RECEIPTID'];
+            $paymentTransactionID = $confirmPayment['PAYMENTINFO_0_TRANSACTIONID'] ?? '';
+            $paymentReceiptID = $confirmPayment['PAYMENTINFO_0_RECEIPTID'] ?? '';
 
             //Payment was successful. Yeah!
             if ($ACK == 'Success') {
@@ -882,18 +881,16 @@ if ($proceed == false) {
 
                 if ($updateFail == true) {
                     $body = __('Payment via PayPal was successful, but has not been recorded due to a system error. Please check your PayPal account for details. The following may be useful:')."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$_SESSION[$guid]['systemName'].' '.__('Admissions Administrator');
-                    $body .= "<p style='font-style: italic;'>".sprintf(__('Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
-                    $bodyPlain = emailBodyConvert($body);
 
                     $mail = $container->get(Mailer::class);
+                    $mail->Subject = $subject;
                     $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
                     $mail->AddAddress($to);
-                    $mail->CharSet = 'UTF-8';
-                    $mail->Encoding = 'base64';
-                    $mail->IsHTML(true);
-                    $mail->Subject = $subject;
-                    $mail->Body = $body;
-                    $mail->AltBody = $bodyPlain;
+                    $mail->renderBody('mail/email.twig.html', [
+                        'title'  => $subject,
+                        'body'   => $body,
+                    ]);
+
                     $mail->Send();
 
                     $URL .= '&return=success3&id='.$_GET['id'];
@@ -925,18 +922,16 @@ if ($proceed == false) {
 
                 if ($updateFail == true) {
                     $body = __('Payment via PayPal was unsuccessful, and has also not been recorded due to a system error. Please check your PayPal account for details. The following may be useful:')."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$_SESSION[$guid]['systemName'].' '.__('Admissions Administrator');
-                    $body .= "<p style='font-style: italic;'>".sprintf(__('Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
-                    $bodyPlain = emailBodyConvert($body);
 
                     $mail = $container->get(Mailer::class);
+                    $mail->Subject = $subject;
                     $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
                     $mail->AddAddress($to);
-                    $mail->CharSet = 'UTF-8';
-                    $mail->Encoding = 'base64';
-                    $mail->IsHTML(true);
-                    $mail->Subject = $subject;
-                    $mail->Body = $body;
-                    $mail->AltBody = $bodyPlain;
+                    $mail->renderBody('mail/email.twig.html', [
+                        'title'  => $subject,
+                        'body'   => $body,
+                    ]);
+
                     $mail->Send();
 
                     //Success 2

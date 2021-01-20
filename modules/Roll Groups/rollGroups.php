@@ -23,68 +23,76 @@ use Gibbon\Domain\RollGroups\RollGroupGateway;
 use Gibbon\Domain\School\YearGroupGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
-    //Proceed!
-    $page->breadcrumbs->add(__('View Roll Groups'));
+    //Get action with highest precendence
+    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    if ($highestAction == false) {
+        $page->addError(__('The highest grouped action cannot be determined.'));
+    } else {
+        //Proceed!
+        $page->breadcrumbs->add(__('View Roll Groups'));
 
-    $gateway = $container->get(RollGroupGateway::class);
-    $rollGroups = $gateway->selectRollGroupsBySchoolYear($_SESSION[$guid]['gibbonSchoolYearID']);
+        $gateway = $container->get(RollGroupGateway::class);
+        if ($highestAction == "View Roll Groups_all") {
+            $rollGroups = $gateway->selectRollGroupsBySchoolYear($gibbon->session->get('gibbonSchoolYearID'));
+        }
+        else {
+            $rollGroups = $gateway->selectRollGroupsBySchoolYearMyChildren($gibbon->session->get('gibbonSchoolYearID'), $gibbon->session->get('gibbonPersonID'));
+        }
 
-    $formatTutorsList = function($row) use ($gateway) {
-        $tutors = $gateway->selectTutorsByRollGroup($row['gibbonRollGroupID'])->fetchAll();
-        if (count($tutors) > 1) $tutors[0]['surname'] .= ' ('.__('Main Tutor').')';
+        $formatTutorsList = function($row) use ($gateway) {
+            $tutors = $gateway->selectTutorsByRollGroup($row['gibbonRollGroupID'])->fetchAll();
+            if (count($tutors) > 1) $tutors[0]['surname'] .= ' ('.__('Main Tutor').')';
 
-        return Format::nameList($tutors, 'Staff', false, true);
-    };
+            return Format::nameList($tutors, 'Staff', false, true);
+        };
 
-    $table = DataTable::create('rollGroups');
-    $table->setTitle(__('Roll Groups'));
-    $table->setDescription(__('This page shows all roll groups in the current school year.'));
-
-    $table->addColumn('name', __('Name'));
-    $table->addColumn('tutors', __('Form Tutors'))->format($formatTutorsList);
-    $table->addColumn('space', __('Room'));
-    if (getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2) == "Staff") {
-        $table->addColumn('students', __('Students'));
-    }
-    $table->addColumn('website', __('Website'))->format(Format::using('link', 'website'));
-
-    $actions = $table->addActionColumn()->addParam('gibbonRollGroupID');
-    $actions->addAction('view', __('View'))
-            ->setURL('/modules/Roll Groups/rollGroups_details.php');
-
-    echo $table->render($rollGroups->toDataSet());
-
-    //Display year group table for staff
-    $roleCategory = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
-    if ($roleCategory == 'Staff') {
-        $yearGroupGateway = $container->get(YearGroupGateway::class);
-
-        $criteria = $yearGroupGateway->newQueryCriteria(true)
-            ->sortBy(['gibbonYearGroup.sequenceNumber'])
-            ->fromPOST('clinics');
-
-        $yearGroups = $yearGroupGateway->queryYearGroups($criteria);
-
-        $table = DataTable::create('yearGroups');
-        $table->setTitle(__('Year Group Summary'));
+        $table = DataTable::create('rollGroups');
+        $table->setTitle(__('Roll Groups'));
 
         $table->addColumn('name', __('Name'));
-        $table->addColumn('gibbonPersonIDHOY', __('Head of Year'))
-            ->format(function ($values) {
-                if (!empty($values['preferredName']) && !empty($values['surname'])) {
-                    return Format::name('', $values['preferredName'], $values['surname'], 'Staff', false, true);
-                }
-            });
-        $table->addColumn('students', __('Students'))
-            ->format(function ($values) use ($yearGroupGateway) {
-                return $yearGroupGateway->studentCountByYearGroup($values['gibbonYearGroupID']);
-            });
+        $table->addColumn('tutors', __('Form Tutors'))->format($formatTutorsList);
+        $table->addColumn('space', __('Room'));
+        if (getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2) == "Staff") {
+            $table->addColumn('students', __('Students'));
+        }
+        $table->addColumn('website', __('Website'))->format(Format::using('link', 'website'));
 
-        echo $table->render($yearGroups);
+        $actions = $table->addActionColumn()->addParam('gibbonRollGroupID');
+        $actions->addAction('view', __('View'))
+                ->setURL('/modules/Roll Groups/rollGroups_details.php');
+
+        echo $table->render($rollGroups->toDataSet());
+
+        //Display year group table for staff
+        $roleCategory = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
+        if ($roleCategory == 'Staff') {
+            $yearGroupGateway = $container->get(YearGroupGateway::class);
+
+            $criteria = $yearGroupGateway->newQueryCriteria(true)
+                ->sortBy(['gibbonYearGroup.sequenceNumber'])
+                ->fromPOST('clinics');
+
+            $yearGroups = $yearGroupGateway->queryYearGroups($criteria);
+
+            $table = DataTable::create('yearGroups');
+            $table->setTitle(__('Year Group Summary'));
+
+            $table->addColumn('name', __('Name'));
+            $table->addColumn('gibbonPersonIDHOY', __('Head of Year'))
+                ->format(function ($values) {
+                    if (!empty($values['preferredName']) && !empty($values['surname'])) {
+                        return Format::name('', $values['preferredName'], $values['surname'], 'Staff', false, true);
+                    }
+                });
+            $table->addColumn('students', __('Students'))
+                ->format(function ($values) use ($yearGroupGateway) {
+                    return $yearGroupGateway->studentCountByYearGroup($values['gibbonYearGroupID']);
+                });
+
+            echo $table->render($yearGroups);
+        }
     }
 }

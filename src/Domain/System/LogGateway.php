@@ -44,7 +44,7 @@ class LogGateway extends QueryableGateway
      * @param QueryCriteria $criteria
      * @return DataSet
      */
-    public function queryLogs(QueryCriteria $criteria)
+    public function queryLogs(QueryCriteria $criteria, $gibbonSchoolYearID)
     {
         $query = $this
             ->newQuery()
@@ -54,7 +54,9 @@ class LogGateway extends QueryableGateway
             ])
             ->leftJoin('gibbonModule', 'gibbonLog.gibbonModuleID=gibbonModule.gibbonModuleID')
             ->leftJoin('gibbonPerson', 'gibbonLog.gibbonPersonID=gibbonPerson.gibbonPersonID')
-            ->leftJoin('gibbonSchoolYear', 'gibbonLog.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID');
+            ->leftJoin('gibbonSchoolYear', 'gibbonLog.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID')
+            ->where('gibbonLog.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
         $criteria->addFilterRules([
             'ip' => function ($query, $ip) {
@@ -100,5 +102,15 @@ class LogGateway extends QueryableGateway
                 WHERE gibbonLog.gibbonLogID=:gibbonLogID";
 
         return $this->db()->selectOne($sql, $data);
+    }
+
+    public function purgeLogs($title, $cutoffDate)
+    {
+        $titleList = is_array($title) ? implode(',', $title) : $title;
+
+        $data = ['titleList' => $titleList, 'cutoffDate' => $cutoffDate];
+        $sql = "DELETE FROM gibbonLog WHERE FIND_IN_SET(title, :titleList) AND timestamp <= :cutoffDate";
+
+        return $this->db()->delete($sql, $data);
     }
 }

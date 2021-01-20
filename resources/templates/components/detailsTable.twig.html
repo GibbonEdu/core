@@ -9,26 +9,50 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 {% extends "components/dataTable.twig.html" %}
 
 {% block title %}
-    <h4>{{ table.getTitle }}</h4>
+    <h4>{{ table.getTitle|raw }}</h4>
 {% endblock title %}
 
 {% block table %}
 
-{{ title }}
+    <header class="relative">
+        {% block header %}
     
-    {% for rowIndex, rowData in rows %}
-        <div class="flex flex-wrap rounded border bg-gray-100">
+            {% if table.getHeader %}
+            <div class="linkTop">
+                {% for action in table.getHeader %}
+                    {{ action.getOutput|raw }}
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+        {% endblock header %}
+    </header>
 
-        {% for columnIndex, column in columns %}
-            <div class="w-full p-2 border-b -mb-px {{ column.getWidth == 'auto' ? 'sm:w-1/2 lg:w-1/3' }}" 
-                 style="{{ column.getWidth != 'auto' ? 'width: ' ~ column.getWidth }}">
-                <span class="block text-sm text-gray-700 font-bold mb-1">{{ column.getLabel | raw }}</span>
-                <span class="block text-xs text-gray-700 ">{{ column.getOutput(rowData) | raw }}</span>
+    {{ title }}
+
+    {% if rows is empty %}
+        <div class="h-48 rounded-sm border bg-gray-100 shadow-inner overflow-hidden">
+            {% block blankslate %}
+            {{ include('components/blankSlate.twig.html') }}
+            {% endblock blankslate %}
+        </div>
+    {% else %}
+    
+        {% for rowIndex, rowData in rows %}
+            <div class="grid {{ gridClass|default('grid-cols-1 md:grid-cols-3') }} rounded border bg-gray-100 text-xs text-gray-700">
+
+            {% for columnIndex, column in columns %}
+                <div class="p-2 border-b -mb-px {{ column.getClass }}" 
+                    style="{{ column.getWidth != 'auto' ? 'width: ' ~ column.getWidth }}" >
+                    <span class="block text-sm font-bold mb-1">{{ column.getLabel | raw }}</span>
+                    <span class="block text-gray-700 ">{{ column.getOutput(rowData) | raw }}</span>
+                </div>
+            {% endfor %}
+
             </div>
         {% endfor %}
 
-        </div>
-    {% endfor %}
+    {% endif %}
 
 {% endblock table %}
 

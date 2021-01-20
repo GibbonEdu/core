@@ -19,9 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\Staff;
 
-use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
+use Gibbon\Domain\ScrubbableGateway;
+use Gibbon\Domain\Traits\Scrubbable;
+use Gibbon\Domain\Traits\TableAware;
+use Gibbon\Domain\Traits\ScrubByTimestamp;
 
 /**
  * StaffApplicationForm Gateway
@@ -29,14 +32,20 @@ use Gibbon\Domain\QueryableGateway;
  * @version v16
  * @since   v16
  */
-class StaffApplicationFormGateway extends QueryableGateway
+class StaffApplicationFormGateway extends QueryableGateway implements ScrubbableGateway
 {
     use TableAware;
+    use Scrubbable;
+    use ScrubByTimestamp;
 
     private static $tableName = 'gibbonStaffApplicationForm';
+    private static $primaryKey = 'gibbonStaffApplicationFormID';
 
     private static $searchableColumns = ['gibbonStaffApplicationFormID', 'gibbonStaffApplicationForm.preferredName', 'gibbonStaffApplicationForm.surname', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonStaffJobOpening.jobTitle'];
     
+    private static $scrubbableKey = 'timestamp';
+    private static $scrubbableColumns = ['gender' => null, 'dob' => null, 'email' => null, 'homeAddress' => null, 'homeAddressDistrict' => null, 'homeAddressCountry' => null, 'phone1Type' => null, 'phone1CountryCode' => null, 'phone1' => null, 'countryOfBirth' => null, 'citizenship1' => null, 'citizenship1Passport' => null, 'nationalIDCardNumber' => null, 'residencyStatus' => null, 'visaExpiryDate' => null, 'languageFirst' => null, 'languageSecond' => null, 'languageThird' => null, 'notes' => '', 'questions' => '', 'fields' => '', 'referenceEmail1' => '', 'referenceEmail2' => ''];
+
     /**
      * @param QueryCriteria $criteria
      * @return DataSet

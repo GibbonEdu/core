@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, $queryArr['q']) == false) {
     } else {
         //Write to database
         try {
-            $data = array('gibbonLibraryItemID' => $gibbonLibraryItemID);
+            $data = array('gibbonLibraryItemID' => $queryArr['gibbonLibraryItemID']);
             $sql = 'DELETE FROM gibbonLibraryItem WHERE gibbonLibraryItemID=:gibbonLibraryItemID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, $queryArr['q']) == false) {
 
         //Success 0
         $queryArr['q'] = "/modules/".getModuleName($_POST['address'])."/library_manage_catalog.php";
-        $queryArr['result'] = 0;
+        $queryArr['return'] = "success0";
         header("Location: " . $baseURL . http_build_query($queryArr));
         exit;
     }

@@ -142,6 +142,14 @@ class HtmlRenderer implements ReportRendererInterface
     protected function renderSectionToHTML(ReportSection &$section, ReportData &$reportData)
     {
         $data = $reportData->getData(array_keys($section->sources));
+
+        // Skip this section if any of the data sources are empty
+        if ($section->hasFlag(ReportSection::SKIP_IF_EMPTY)) {
+            if (count(array_filter($data)) != count($data)) {
+                return;
+            }
+        }
+        
         $data = array_merge($data, $this->template->getData(), $section->getData());
         
         // Render .twig templates using Twig

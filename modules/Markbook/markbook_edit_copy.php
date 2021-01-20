@@ -24,10 +24,8 @@ use Gibbon\Services\Format;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_copy.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
@@ -96,28 +94,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
                         )
                         ->add(__('Copy Columns'));
 
-		            try {
+		            
 			            $data = array('gibbonCourseClassID' => $gibbonMarkbookCopyClassID);
 			            $sql = "SELECT * FROM gibbonMarkbookColumn WHERE gibbonCourseClassID=:gibbonCourseClassID";
 			            $result = $connection2->prepare($sql);
 			            $result->execute($data);
-			        } catch (PDOException $e) {
-			            echo "<div class='error'>".$e->getMessage().'</div>';
-			        }
 
 			        if ($result->rowCount() < 1) {
 	                    echo "<div class='error'>";
 	                    echo __('There are no records to display.');
 	                    echo '</div>';
 	                } else {
-	                	try {
+	                	
 		                    $data2 = array('gibbonCourseClassID' => $gibbonMarkbookCopyClassID);
 		                    $sql2 = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourseClassID=:gibbonCourseClassID';
 		                    $result2 = $connection2->prepare($sql2);
 		                    $result2->execute($data2);
-		                } catch (PDOException $e) {
-		                    echo "<div class='error'>".$e->getMessage().'</div>';
-		                }
 
 		                $courseFrom = $result2->fetch();
 

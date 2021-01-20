@@ -1,0 +1,72 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+
+{% if title %}
+<h4>{{ title }}</h4>
+{% endif %}
+
+{% for item in discussion %}
+
+<div class="flex justify-between my-4 {{ item.comment is empty and html is empty and message is empty ? 'sm:items-center'}}">
+    
+    
+    <div class="w-12 sm:w-16 mr-4 flex flex-col items-center">
+        <div class="{{ item.image_240 ? 'flex-none' : 'flex items-center justify-center' }} overflow-hidden w-12 sm:w-16 h-12 sm:h-16 rounded-full bg-gray-200 border border-solid">
+            {% if item.image_240 %}
+                <img class="w-full" src="{{ absoluteURL }}/{{ item.image_240 }}" />
+            {% else %}
+                <img class="w-full" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/anonymous_125.jpg" />
+            {% endif %}
+        </div>
+    </div>
+    
+
+    <div class="flex-1">
+        
+        <div class="relative bg-gray-100 rounded text-gray-800 text-sm leading-snug border ">
+            
+            <div class="absolute top-0 left-0 border-transparent" style="margin: 15px 0 0 -18px; border-width: 9px; border-right-color: #d2d0d0;"></div>
+            <div class="absolute top-0 left-0 border-8 border-transparent" style="margin: 16px 0 0 -16px; border-width: 8px; border-right-color: #fafafa;"></div>
+
+            <div class="px-4 py-3 text-gray-700 text-sm font-sans leading-relaxed flex flex-col sm:flex-row justify-between">
+                <div>
+                <span class="inline-block font-semibold">
+                    {% if item.url %}<a href="{{ item.url }}" class="text-gray-800 underline">{% endif %}
+                    {{ formatUsing('name', item.title, item.preferredName, item.surname, 'Student', false, true) }}
+                    {% if item.url %}</a>{% endif %}
+                </span> 
+                
+                {% if item.timestamp %}
+                    {{ item.action ? item.action|lower : "&nbsp" }}
+
+                    <span class="whitespace-no-wrap">
+                        {{ formatUsing('relativeTime', item.timestamp) }}
+                    </span>
+                {% endif %}
+
+                {% if item.type %}
+                    <span class="sm:mx-2 mt-2 sm:mt-0 tag {{ item.tag ?? 'dull' }}">{{ __(item.type) }}</span>
+                {% endif %}
+                </div>
+                {% if item.attachmentLocation %}
+                    <a class="tag block px-0 break-all mt-2 sm:mt-0" target="_blank" href="{{ item.attachmentType == 'Link' ? item.attachmentLocation : absoluteURL ~ "/" ~ item.attachmentLocation }}">{{ __('View Attachment') }}</a>
+                {% endif %}
+            </div>
+
+            {% if item.comment %}
+            <div class="p-4 bg-white border-t rounded-b flex flex-col">
+                {{ item.comment|raw }}
+            </div>
+            {% endif %}
+            
+        </div>
+    </div>
+</div>
+
+{% endfor %}

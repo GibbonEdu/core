@@ -35,25 +35,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
     $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
     $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
     $gibbonDepartmentID = $_GET['gibbonDepartmentID'] ?? '';
-    $currentDate = $_GET['currentDate'] ?? '';
+    $currentDate = $_GET['currentDate'] ?? Format::date(date('Y-m-d'));
 
     if (empty($gibbonCourseClassID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         if (!empty($gibbonDepartmentID)) {
             $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-            $sql = "SELECT gibbonCourse.gibbonSchoolYearID,gibbonDepartment.name AS department, gibbonCourse.name AS courseLong, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonCourseID, gibbonSchoolYear.name AS year, gibbonCourseClass.attendance 
-                    FROM gibbonCourse 
-                    JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
-                    JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) 
-                    JOIN gibbonDepartment ON (gibbonDepartment.gibbonDepartmentID=gibbonCourse.gibbonDepartmentID) 
+            $sql = "SELECT gibbonCourse.gibbonSchoolYearID,gibbonDepartment.name AS department, gibbonCourse.name AS courseLong, gibbonCourse.nameShort AS course, gibbonCourseClass.name AS classLong, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonCourseID, gibbonSchoolYear.name AS year, gibbonCourseClass.attendance
+                    FROM gibbonCourse
+                    JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+                    JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+                    JOIN gibbonDepartment ON (gibbonDepartment.gibbonDepartmentID=gibbonCourse.gibbonDepartmentID)
                     WHERE gibbonCourseClassID=:gibbonCourseClassID";
         } else {
             $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-            $sql = "SELECT gibbonCourse.gibbonSchoolYearID, gibbonCourse.name AS courseLong, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonCourseID, gibbonSchoolYear.name AS year, gibbonCourseClass.attendance 
-                    FROM gibbonCourse 
-                    JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
-                    JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) 
+            $sql = "SELECT gibbonCourse.gibbonSchoolYearID, gibbonCourse.name AS courseLong, gibbonCourse.nameShort AS course, gibbonCourseClass.name AS classLong, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonCourseID, gibbonSchoolYear.name AS year, gibbonCourseClass.attendance
+                    FROM gibbonCourse
+                    JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+                    JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
                     WHERE gibbonCourseClassID=:gibbonCourseClassID";
         }
 
@@ -73,7 +73,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 $extra = ' '.$row['year'];
             }
             if ($gibbonDepartmentID != '') {
-                
                 $urlParams = ['gibbonDepartmentID' => $gibbonDepartmentID, 'gibbonCourseID' => $gibbonCourseID];
                 $page->breadcrumbs
                     ->add(__('View All'), 'departments.php')
@@ -115,8 +114,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             }
             // Homework
             if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.php')) {
+                $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
                 $menuItems[] = [
-                    'name' => __('Homework'),
+                    'name' => __($homeworkNamePlural),
                     'url'  => './index.php?q=/modules/Planner/planner_deadlines.php&gibbonCourseClassIDFilter='.$gibbonCourseClassID,
                     'icon' => 'homework_large.png',
                 ];
@@ -133,11 +133,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             // Menu Items Table
             $gridRenderer = new GridView($container->get('twig'));
             $table = $container->get(DataTable::class)->setRenderer($gridRenderer);
-            $table->setTitle(Format::courseClassName($row['course'], $row['class']));
-            $table->setDescription(__('Course').': '.$row['courseLong']);
+            $table->setTitle($row['courseLong']." - ".$row['classLong']);
+            $table->setDescription(Format::courseClassName($row['course'], $row['class']));
 
             $table->addMetaData('gridClass', 'rounded-sm bg-gray-100 border py-2');
             $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/3 p-4 text-center');
+            $table->addMetaData('hidePagination', true);
 
             $iconPath = $_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/';
             $table->addColumn('icon')
@@ -198,12 +199,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 $form->setClass('smallIntBorder w-full');
 
                 $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/department_course_class.php');
-                
+
                 $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                $sql = "SELECT gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name 
-                        FROM gibbonCourse 
-                        JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
-                        WHERE gibbonSchoolYearID=:gibbonSchoolYearID 
+                $sql = "SELECT gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name
+                        FROM gibbonCourse
+                        JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+                        WHERE gibbonSchoolYearID=:gibbonSchoolYearID
                         ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort";
 
                 $row = $form->addRow();
@@ -213,7 +214,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                         ->placeholder()
                         ->setClass('fullWidth');
                     $row->addSubmit(__('Go'));
-                
+
                 $sidebarExtra .= $form->getOutput();
                 $sidebarExtra .= '</div>';
 

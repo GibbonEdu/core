@@ -21,10 +21,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 require_once './gibbon.php';
 
 $URL = './index.php';
-$role = (isset($_GET['gibbonRoleID']))? $_GET['gibbonRoleID'] : '';
+$role = $_GET['gibbonRoleID'] ?? '';
 $role = str_pad(intval($role), 3, '0', STR_PAD_LEFT);
 
-$_SESSION[$guid]['pageLoads'] = null;
+$gibbon->session->set('pageLoads', null);
 
 //Check for parameter
 if (empty(intval($role))) {
@@ -34,7 +34,7 @@ if (empty(intval($role))) {
 } else {
     //Check for access to role
     try {
-        $data = array('username' => $_SESSION[$guid]['username'], 'gibbonRoleID' => $role);
+        $data = array('username' => $gibbon->session->get('username'), 'gibbonRoleID' => $role);
         $sql = 'SELECT gibbonPerson.gibbonPersonID
                 FROM gibbonPerson JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll))
                 WHERE (gibbonPerson.username=:username) AND gibbonRole.gibbonRoleID=:gibbonRoleID';

@@ -20,10 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
@@ -54,23 +52,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
     $gibbonTTID = $_GET['gibbonTTID'];
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
     if ($gibbonTTID == '' or $gibbonSchoolYearID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonTTID' => $gibbonTTID);
             $sql = 'SELECT * FROM gibbonTT WHERE gibbonTTID=:gibbonTTID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             $row = $result->fetch();
@@ -274,13 +265,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                             $staffs = array_unique($staffs);
                             $errorList = '';
                             foreach ($staffs as $staff) {
-                                try {
+                                
                                     $data = array('username' => $staff);
                                     $sql = 'SELECT * FROM gibbonPerson WHERE username=:username';
                                     $result = $connection2->prepare($sql);
                                     $result->execute($data);
-                                } catch (PDOException $e) {
-                                }
 
                                 if ($result->rowCount() != 1) {
                                     $staffCheckFail = true;
@@ -320,13 +309,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                         if ($spaceCheckFail == false) {
                             $errorList = '';
                             while ($row = $result->fetch()) {
-                                try {
+                                
                                     $dataSpace = array('name' => $row['spaceName']);
                                     $sqlSpace = 'SELECT * FROM gibbonSpace WHERE name=:name';
                                     $resultSpace = $connection2->prepare($sqlSpace);
                                     $resultSpace->execute($dataSpace);
-                                } catch (PDOException $e) {
-                                }
 
                                 if ($resultSpace->rowCount() != 1) {
                                     $spaceCheckFail = true;
@@ -366,13 +353,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                         if ($dayCheckFail == false) {
                             $errorList = '';
                             while ($row = $result->fetch()) {
-                                try {
+                                
                                     $dataSpace = array('name' => $row['dayName'], 'gibbonTTID' => $gibbonTTID);
                                     $sqlSpace = 'SELECT * FROM gibbonTTDay WHERE name=:name AND gibbonTTID=:gibbonTTID';
                                     $resultSpace = $connection2->prepare($sqlSpace);
                                     $resultSpace->execute($dataSpace);
-                                } catch (PDOException $e) {
-                                }
 
                                 if ($resultSpace->rowCount() != 1) {
                                     $dayCheckFail = true;
@@ -412,13 +397,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                         if ($rowCheckFail == false) {
                             $errorList = '';
                             while ($row = $result->fetch()) {
-                                try {
+                                
                                     $dataSpace = array('rowName' => $row['rowName'], 'dayName' => $row['dayName'], 'gibbonTTID' => $gibbonTTID);
                                     $sqlSpace = 'SELECT gibbonTTColumnRow.name, gibbonTTDay.name FROM gibbonTTDay JOIN gibbonTT ON (gibbonTTDay.gibbonTTID=gibbonTT.gibbonTTID) JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) WHERE gibbonTT.gibbonTTID=:gibbonTTID AND gibbonTTColumnRow.name=:rowName AND gibbonTTDay.name=:dayName';
                                     $resultSpace = $connection2->prepare($sqlSpace);
                                     $resultSpace->execute($dataSpace);
-                                } catch (PDOException $e) {
-                                }
 
                                 if ($resultSpace->rowCount() != 1) {
                                     $rowCheckFail = true;
@@ -460,13 +443,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                             $makeList = '';
                             while ($row = $result->fetch()) {
                                 $makeFail = false;
-                                try {
+                                
                                     $dataSpace = array('nameShort' => $row['courseNameShort'], 'gibbonSchoolYearID' => $gibbonSchoolYearID);
                                     $sqlSpace = 'SELECT nameShort FROM gibbonCourse WHERE nameShort=:nameShort AND gibbonSchoolYearID=:gibbonSchoolYearID';
                                     $resultSpace = $connection2->prepare($sqlSpace);
                                     $resultSpace->execute($dataSpace);
-                                } catch (PDOException $e) {
-                                }
 
                                 if ($resultSpace->rowCount() != 1) {
                                     //Make the course
@@ -523,13 +504,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                             $makeList = '';
                             while ($row = $result->fetch()) {
                                 $makeFail = false;
-                                try {
+                                
                                     $dataSpace = array('classNameShort' => $row['classNameShort'], 'courseNameShort' => $row['courseNameShort'], 'gibbonSchoolYearID' => $gibbonSchoolYearID);
                                     $sqlSpace = 'SELECT gibbonCourseClass.nameShort FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.nameShort=:courseNameShort AND gibbonCourseClass.nameShort=:classNameShort AND gibbonSchoolYearID=:gibbonSchoolYearID';
                                     $resultSpace = $connection2->prepare($sqlSpace);
                                     $resultSpace->execute($dataSpace);
-                                } catch (PDOException $e) {
-                                }
 
                                 if ($resultSpace->rowCount() != 1) {
                                     //Make the class
@@ -666,8 +645,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
 
                                                     //Write ID to gibbonCourseClassPerson
                                                     try {
-                                                        $dataMake = array('gibbonPersonID' => $rowConvert['gibbonPersonID'], 'gibbonCourseClassID' => $rowCheck['gibbonCourseClassID']);
-                                                        $sqlMake = "INSERT INTO gibbonCourseClassPerson SET gibbonPersonID=:gibbonPersonID, gibbonCourseClassID=:gibbonCourseClassID, role='Teacher'";
+                                                        $dataMake = array('gibbonPersonID' => $rowConvert['gibbonPersonID'], 'gibbonCourseClassID' => $rowCheck['gibbonCourseClassID'],'dateEnrolled' => date('Y-m-d'));
+                                                        $sqlMake = "INSERT INTO gibbonCourseClassPerson SET gibbonPersonID=:gibbonPersonID, gibbonCourseClassID=:gibbonCourseClassID, role='Teacher', dateEnrolled=:dateEnrolled";
                                                         $resultMake = $connection2->prepare($sqlMake);
                                                         $resultMake->execute($dataMake);
                                                     } catch (PDOException $e) {
@@ -693,11 +672,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                     }
 
                     //UNLOCK TABLES
-                    try {
+                    
                         $sql = 'UNLOCK TABLES';
                         $result = $connection2->query($sql);
-                    } catch (PDOException $e) {
-                    }
 
                     //SPIT OUT RESULT
                     echo '<h4>';

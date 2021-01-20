@@ -21,24 +21,15 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 if (!$gibbon->session->exists("username")) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $page->breadcrumbs->add(__('Preferences'));
 
-    $return = null;
-    if (isset($_GET['return'])) {
-        $return = $_GET['return'];
-    }
+    $return = $_GET['return'] ?? null;
 
     //Deal with force reset notification
-    if (isset($_GET['forceReset'])) {
-        $forceReset = $_GET['forceReset'];
-    } else {
-        $forceReset = null;
-    }
+    $forceReset = $_GET['forceReset'] ?? null;
     if ($forceReset == 'Y' AND $return != 'successa') {
         $forceResetReturnMessage = '<b><u>'.__('Your account has been flagged for a password reset. You cannot continue into the system until you change your password.').'</b></u>';
         echo "<div class='error'>";
@@ -48,7 +39,6 @@ if (!$gibbon->session->exists("username")) {
 
     $returns = array();
     $returns['errora'] = sprintf(__('Your account status could not be updated, and so you cannot continue to use the system. Please contact %1$s if you have any questions.'), "<a href='mailto:".$gibbon->session->get('organisationAdministratorEmail')."'>".$gibbon->session->get('organisationAdministratorName').'</a>');
-    $returns['successa'] = __('Your account has been successfully updated. You can now continue to use the system as per normal.');
     $returns['error4'] = __('Your request failed due to non-matching passwords.');
     $returns['error3'] = __('Your request failed due to incorrect current password.');
     $returns['error6'] = __('Your request failed because your password does not meet the minimum requirements for strength.');
@@ -57,14 +47,11 @@ if (!$gibbon->session->exists("username")) {
         returnProcess($guid, $_GET['return'], null, $returns);
     }
 
-    try {
+    
         $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
         $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
     if ($result->rowCount() == 1) {
         $values = $result->fetch();
     }

@@ -23,10 +23,8 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Students\StudentGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
@@ -76,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
         echo __('Choose A Student');
         echo '</h2>';
         echo '<p>';
-        echo __('This page displays all students enroled in the school, including those who have not yet met their start date. With the right permissions, you can set Individual Needs status and Individual Education Plan details for any student.');
+        echo __('This page displays all students enrolled in the school, including those who have not yet met their start date. With the right permissions, you can set Individual Needs status and Individual Education Plan details for any student.');
         echo '</p>';
 
         $students = $studentGateway->queryStudentsBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
@@ -93,8 +91,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
         // COLUMNS
         $table->addColumn('student', __('Student'))
             ->sortable(['surname', 'preferredName'])
-            ->format(function ($person) {
-                return Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
+            ->format(function ($person) use ($allStudents) {
+                return Format::nameLinked($person['gibbonPersonID'], '', $person['preferredName'], $person['surname'], 'Student', true, true, ['subpage' => 'Individual Needs', 'allStudents' => $allStudents]) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
             });
         $table->addColumn('yearGroup', __('Year Group'));
         $table->addColumn('rollGroup', __('Roll Group'));
@@ -102,7 +100,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
         $table->addActionColumn()
             ->addParam('gibbonPersonID')
             ->addParam('search', $criteria->getSearchText(true))
-            ->format(function ($row, $actions) use ($highestAction) {
+            ->format(function ($person, $actions) use ($highestAction) {
+                if ($person['status'] != 'Full') return;
+
                 if ($highestAction == 'Individual Needs Records_view') {
                     $actions->addAction('view', __('View Individual Needs Details'))
                             ->setURL('/modules/Individual Needs/in_edit.php');

@@ -215,14 +215,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
             $output .= substr($tagoutput, 0, -2);
             $output .= '</td>';
             $output .= '<td>';
-            try {
+            
                 $dataYears = array();
                 $sqlYears = 'SELECT gibbonYearGroupID, nameShort, sequenceNumber FROM gibbonYearGroup ORDER BY sequenceNumber';
                 $resultYears = $connection2->prepare($sqlYears);
                 $resultYears->execute($dataYears);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
 
             $years = explode(',', $row['gibbonYearGroupIDList']);
             $sqlWhere = '';

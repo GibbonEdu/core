@@ -135,6 +135,7 @@ class MessageSender
             if (empty($person['email']) || $person['receiveNotificationEmails'] == 'N') continue;
 
             $this->mail->clearAllRecipients();
+            $this->mail->clearReplyTos();
             $this->mail->AddAddress($person['email'], $person['preferredName'].' '.$person['surname']);
 
             if ($this->mail->Send()) {

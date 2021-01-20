@@ -15,14 +15,25 @@ $newUserSettings = array_replace($originalUserSettings, array(
     'privacy'         => 'Y',
     'privacyBlurb'    => 'Privacy Blurb Test',
     'privacyOptions'  => 'Privacy 1, Privacy 2, Privacy 3',
-    'dayTypeOptions'  => 'Day Type 1, Day Type 2',
-    'dayTypeText'     => 'Day-Type Test',
 ));
 
 $I->submitForm('#content form', $newUserSettings, 'Submit');
 $I->see('Your request was completed successfully.', '.success');
 $I->seeInFormFields('#content form', $newUserSettings);
 
+// Change Students Settings ---------------------------------
+
+$I->amOnModulePage('User Admin', 'studentsSettings.php');
+$originalStudentsSettings = $I->grabAllFormValues();
+
+$newStudentsSettings = array_replace($originalStudentsSettings, array(
+    'dayTypeOptions'     => 'Day Type 1, Day Type 2',
+    'dayTypeText'        => 'Day-Type Test',
+));
+
+$I->submitForm('#content form', $newStudentsSettings, 'Submit');
+$I->see('Your request was completed successfully.', '.success');
+$I->seeInFormFields('#content form', $newStudentsSettings);
 
 // Add ------------------------------------------------
 $I->amOnModulePage('User Admin', 'user_manage.php');
@@ -95,8 +106,8 @@ $formValues = array(
 
 // Non-editable Values
 $I->fillField('username', 'testmctest');
-$I->fillField('passwordNew', 'ZY6pfPBb');
-$I->fillField('passwordConfirm', 'ZY6pfPBb');
+$I->fillField('passwordNew', 'ZY6pfPBb!');
+$I->fillField('passwordConfirm', 'ZY6pfPBb!');
 
 // Drop-downs
 $I->selectOption('gibbonRoleIDPrimary', 'Student');
@@ -209,3 +220,8 @@ $I->amOnModulePage('User Admin', 'userSettings.php');
 $I->submitForm('#content form', $originalUserSettings, 'Submit');
 $I->see('Your request was completed successfully.', '.success');
 $I->seeInFormFields('#content form', $originalUserSettings);
+
+$I->amOnModulePage('User Admin', 'studentsSettings.php');
+$I->submitForm('#content form', $originalStudentsSettings, 'Submit');
+$I->see('Your request was completed successfully.', '.success');
+$I->seeInFormFields('#content form', $originalStudentsSettings);

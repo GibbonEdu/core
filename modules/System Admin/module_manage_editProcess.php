@@ -17,58 +17,44 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\ModuleGateway;
+
 include '../../gibbon.php';
 
-$gibbonModuleID = $_GET['gibbonModuleID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/module_manage_edit.php&gibbonModuleID='.$gibbonModuleID;
+$gibbonModuleID = $_GET['gibbonModuleID'] ?? '';
+
+$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/module_manage_edit.php&gibbonModuleID='.$gibbonModuleID;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    //Proceed!
-    //Check if role specified
-    if ($gibbonModuleID == '') {
+    // Check if module specified
+    if (empty($gibbonModuleID)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
-        try {
-            $data = array('gibbonModuleID' => $gibbonModuleID);
-            $sql = 'SELECT * FROM gibbonModule WHERE gibbonModuleID=:gibbonModuleID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
+        $moduleGateway = $container->get(ModuleGateway::class);
+        $module = $moduleGateway->getByID($gibbonModuleID);
 
-        if ($result->rowCount() != 1) {
+        if (empty($module)) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
-            //Validate Inputs
-            $category = $_POST['category'];
-            $active = $_POST['active'];
+            // Validate Inputs
+            $category = $_POST['category'] ?? '';
+            $active = $_POST['active'] ?? '';
 
-            if ($category == '' or $active == '') {
+            if (empty($category) or empty($active)) {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
             } else {
-                //Write to database
-                try {
-                    $data = array('category' => $category, 'active' => $active, 'gibbonModuleID' => $gibbonModuleID);
-                    $sql = 'UPDATE gibbonModule SET category=:category, active=:active WHERE gibbonModuleID=:gibbonModuleID';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    $URL .= '&return=error2';
-                    header("Location: {$URL}");
-                    exit();
-                }
+                // Write to database
+                $data = ['category' => $category, 'active' => $active];
+                $moduleGateway->update($module['gibbonModuleID'], $data);
 
-                //Reset cache to force top-menu reload
-                $_SESSION[$guid]['pageLoads'] = null;
+                // Reset cache to force top-menu reload
+                $gibbon->session->set('pageLoads', null);
 
                 $URL .= '&return=success0';
                 header("Location: {$URL}");

@@ -99,7 +99,6 @@ h6 {
     text-align: left;
     text-transform: uppercase;
     padding-bottom: 5px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.5);
 }
 h1 {
     font-size: 17pt;
@@ -285,12 +284,11 @@ table.noIntBorder td:last-child {
 }
 table.smallIntBorder {
     background-color: #fafafa;
-    margin: 5px 0px;
     position: relative;
 }
 table.smallIntBorder td {
     border-left: none !important ;
-    padding: 5px !important ;
+    padding: 0.5rem !important ;
 }
 table.smallIntBorder td:last-child {
     text-align: left;
@@ -300,7 +298,7 @@ tr.break td {
 }
 tr.break h3,
 tr.break h4 {
-    margin-top: 10px !important;
+    margin: 0.5rem 0 0.5rem 0 !important;
     padding: 0;
 }
 tr h3,
@@ -329,26 +327,19 @@ table.blank > tbody > tr > td {
 
 /* FORMS */
 input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-button,
 textarea {
     -webkit-appearance: none;
-    -webkit-border-radius: 0;
-    border-radius: 0;
+    -webkit-border-radius: 0.125rem;
+    border-radius: 0.125rem;
 }
 
 input[type="text"],
 input[type="password"],
 input[type="file"] {
     border-width: 1px;
-    background-color: #ffffff;
-    height: 28px;
-    font-size: 13px;
+    height: 36px;
+    font-size: 14px;
     box-sizing: border-box;
-}
-
-input[type="text"],
-input[type="password"] {
-    padding-left: 4px;
 }
 
 input[readonly],
@@ -365,19 +356,16 @@ textarea[readonly] {
 
 textarea {
     border-width: 1px;
-    background-color: #ffffff;
     float: right;
-    font-size: 13px;
+    font-size: 14px;
     box-sizing: border-box;
-    padding: 4px;
 }
 
 select {
     border-width: 1px;
-    background-color: #ffffff;
-    height: 28px;
+    height: 36px;
     float: right;
-    font-size: 13px;
+    font-size: 14px;
     box-sizing: border-box;
     -webkit-border-radius: 0;
     border-radius: 0;
@@ -386,20 +374,20 @@ select {
 input[type="button"] {
     border: 1px solid #222222;
     background-color: #eeeeee;
-    height: 28px;
+    height: 36px;
     min-width: 55px;
     color: #444444;
     font-weight: bold;
     margin: 2px;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 input[type="button"].buttonAsLink {
     border: none;
     background: none;
     color: #c00;
-    height: 28px;
-    font-size: 13px;
+    height: 36px;
+    font-size: 14px;
 }
 input[type="button"]:hover.buttonAsLink {
     border-bottom: 1px solid #c00;
@@ -408,23 +396,23 @@ input[type="button"]:hover.buttonAsLink {
 input[type="submit"] {
     border: 1px solid #222222;
     background-color: #444444;
-    height: 28px;
+    height: 36px;
     min-width: 55px;
     color: #ffffff;
     font-weight: bold;
     margin: 2px;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 input[type="reset"] {
     border: 1px solid #222222;
     background-color: #eeeeee;
-    height: 28px;
+    height: 36px;
     min-width: 55px;
     color: #444444;
     font-weight: bold;
     margin: 2px;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 input[type="submit"]:hover {
@@ -437,9 +425,10 @@ input[type="button"].buttonLink {
     color: #c00;
     border: none;
     font-weight: normal;
-    font-size: 13px;
+    font-size: 14px;
     text-decoration: underline;
-    height: 28px;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
 }
 
 input[type="submit"].buttonLink:hover,
@@ -449,7 +438,7 @@ input[type="button"].buttonLink:hover {
     color: #069;
     border: none;
     font-weight: normal;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 input[type="checkbox"][disabled] {
@@ -481,20 +470,20 @@ textarea[disabled] {
 }
 
 /* PAGINATION */
-div.paginationTop {
+.paginationTop {
     text-align: right;
     font-size: 12px;
     margin: 15px 0px 0px 0px;
 }
-div.paginationBottom {
+.paginationBottom {
     text-align: right;
     font-size: 12px;
     margin: 0px 0px 15px 0px;
 }
-div.linkTop {
+.linkTop {
     text-align: right;
     font-size: 12px;
-    margin: 15px 0px 5px 0px;
+    margin: 1.0rem 0px 0.5rem 0px;
 }
 
 /* IMAGES */
@@ -571,7 +560,7 @@ div#ui-datepicker-div {
 
 /* From WP for tinymce display */
 .editor-toolbar .active {
-    background-color: #f0f0f0;
+    background-color: #ffffff;
     color: #333;
     padding-bottom: 0.5rem;
     margin-bottom: -1px;
@@ -726,8 +715,8 @@ tr.hiddenReveal td {
 }
 
 /* Timetable styles */
-#tt *,
-#ttWrapper * {
+#tt *:not(input),
+#ttWrapper *:not(input) {
     box-sizing: content-box;
 }
 
@@ -950,7 +939,7 @@ table.columnHighlight .hover:not(:first-child) {
 
 .input-box .inline-label {
     display: table-cell;
-    padding: 5px;
+    padding: 0.5rem;
     text-align: left;
     vertical-align: middle;
     word-break: break-all;
@@ -1030,12 +1019,6 @@ tr.head td {
 
 td.standardWidth {
     position: relative;
-}
-
-input[type="button"],
-input[type="submit"],
-input[type="reset"] {
-    padding: 0px 6px;
 }
 
 .displayInlineBlock {
@@ -1213,6 +1196,10 @@ table.smallIntBorder td.noPadding {
 .dataTable .expander.expanded:before {
     transform: rotate(45deg);
     -webkit-transform: rotate(45deg);
+}
+
+.whitespace-nowrap {
+    white-space: nowrap;
 }
 
 

@@ -25,10 +25,8 @@ require_once __DIR__ . '/moduleFunctions.php';
 $page->breadcrumbs->add(__('Outcomes By Course'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_outcomesByCourse.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     echo '<p>';
@@ -71,14 +69,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
         echo '</h2>';
 
         //Check course exists
-        try {
+        
             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonCourseID' => $gibbonCourseID);
             $sql = "SELECT gibbonCourse.*, gibbonDepartment.name AS department FROM gibbonCourse LEFT JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonYearGroupIDList='' AND gibbonCourseID=:gibbonCourseID ORDER BY department, nameShort";
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
@@ -87,14 +82,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
         } else {
             $row = $result->fetch();
             //Get classes in this course
-            try {
+            
                 $dataClasses = array('gibbonCourseID' => $gibbonCourseID);
                 $sqlClasses = 'SELECT * FROM gibbonCourseClass WHERE gibbonCourseID=:gibbonCourseID ORDER BY name';
                 $resultClasses = $connection2->prepare($sqlClasses);
                 $resultClasses->execute($dataClasses);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
 
             if ($resultClasses->rowCount() < 1) {
                 echo "<div class='error'>";
@@ -105,16 +97,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
                 $classes = $resultClasses->fetchAll();
 
                 //GET ALL OUTCOMES MET IN THIS COURSE, AND STORE IN AN ARRAY FOR DB-EFFICIENT USE IN TABLE
-                try {
+                
                     $dataOutcomes = array('gibbonCourseID1' => $gibbonCourseID, 'gibbonCourseID2' => $gibbonCourseID);
                     $sqlOutcomes = "(SELECT 'Unit' AS type, gibbonCourseClass.gibbonCourseClassID, gibbonOutcome.* FROM gibbonOutcome JOIN gibbonUnitOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) JOIN gibbonUnit ON (gibbonUnitOutcome.gibbonUnitID=gibbonUnit.gibbonUnitID) JOIN gibbonUnitClass ON (gibbonUnitClass.gibbonUnitID=gibbonUnit.gibbonUnitID) JOIN gibbonCourseClass ON (gibbonUnitClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonCourseClass.gibbonCourseID=:gibbonCourseID1 AND gibbonOutcome.active='Y' AND running='Y')
 					UNION ALL
 					(SELECT 'Planner Entry' AS type, gibbonCourseClass.gibbonCourseClassID, gibbonOutcome.* FROM gibbonOutcome JOIN gibbonPlannerEntryOutcome ON (gibbonPlannerEntryOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) JOIN gibbonPlannerEntry ON (gibbonPlannerEntryOutcome.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonCourseClass.gibbonCourseID=:gibbonCourseID2 AND gibbonOutcome.active='Y')";
                     $resultOutcomes = $connection2->prepare($sqlOutcomes);
                     $resultOutcomes->execute($dataOutcomes);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
                 $allOutcomes = $resultOutcomes->fetchAll();
 
                 echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
@@ -148,13 +137,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
                 }
                 echo '</tr>';
 
-                    //Prep where for year group matching of outcomes to course
-					$where = '';
-					$yearGroups = explode(',', $row['gibbonYearGroupIDList']);
-					foreach ($yearGroups as $yearGroup) {
-						$where .= " AND gibbonYearGroupIDList LIKE concat('%', $yearGroup, '%')";
-					}
-
 				//SCHOOL OUTCOMES
 				echo "<tr class='break'>";
                 echo '<td colspan='.(($classCount * 2) + 2).'>';
@@ -162,8 +144,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
                 echo '</td>';
                 echo '</tr>';
                 try {
-                    $dataOutcomes = array();
-                    $sqlOutcomes = "SELECT * FROM gibbonOutcome WHERE scope='School' AND active='Y' $where ORDER BY category, name";
+                    $dataOutcomes = ['gibbonYearGroupIDList' => $row['gibbonYearGroupIDList']];
+                    $sqlOutcomes = "SELECT DISTINCT gibbonOutcome.* FROM gibbonOutcome JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonOutcome.gibbonYearGroupIDList)) WHERE scope='School' AND active='Y' AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList) ORDER BY gibbonOutcome.category, gibbonOutcome.name";
                     $resultOutcomes = $connection2->prepare($sqlOutcomes);
                     $resultOutcomes->execute($dataOutcomes);
                 } catch (PDOException $e) {

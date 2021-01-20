@@ -25,41 +25,37 @@ use Gibbon\Tables\DataTable;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_edit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
+    $search = $_GET['search'] ?? '';
+    $allUsers = $_GET['allUsers'] ?? '';
+    $gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'] ?? '';
+
     //Proceed!
     $page->breadcrumbs
         ->add(__('Manage Invoicees'), 'invoicees_manage.php')
-        ->add(__('Edit Invoicee'));        
+        ->add(__('Edit Invoicee'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    if ($_GET['search'] != '' or $_GET['allUsers'] == 'on') {
+    if ($search != '' or $allUsers == 'on') {
         echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/invoicees_manage.php&search='.$_GET['search'].'&allUsers='.$_GET['allUsers']."'>".__('Back to Search Results').'</a>';
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/invoicees_manage.php&search='.$search.'&allUsers='.$allUsers."'>".__('Back to Search Results').'</a>';
         echo '</div>';
     }
 
-    //Check if school year specified
-    $gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'];
+    //Check if invoicee is specified
     if ($gibbonFinanceInvoiceeID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID);
             $sql = 'SELECT surname, preferredName, status, gibbonFinanceInvoicee.* FROM gibbonFinanceInvoicee JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
@@ -74,9 +70,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
                 $table->addColumn('name', __('Name'))->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', 'true']));
                 $table->addColumn('status', __('Status'))->translatable();
             echo $table->render([$values]);
-;
 
-            $form = Form::create('updateFinance', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/invoicees_manage_editProcess.php?gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&search=".$_GET['search'].'&allUsers='.$_GET['allUsers']);
+            $form = Form::create('updateFinance', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/invoicees_manage_editProcess.php?gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&search=".$search.'&allUsers='.$allUsers);
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('existing', isset($values['gibbonFinanceInvoiceeUpdateID'])? $values['gibbonFinanceInvoiceeUpdateID'] : 'N');
@@ -149,8 +144,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
 
 
             echo $form->getOutput();
-
         }
     }
 }
-?>
