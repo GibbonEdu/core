@@ -27,7 +27,7 @@ v21.0.00
         MySQL 8 compatibility
 
     Significant Changes
-        System Admin: add Security & Privacy Settings and optional cookie consent banner
+        System Admin: added Security & Privacy Settings and optional cookie consent banner
         System Admin: added a Manage Services page to view gibbonedu.com licenses and services
         System Admin: added an Email Templates section to customize emails sent by Gibbon
         Data Updater: data updates with no changes will now be automatically accepted
