@@ -26,11 +26,8 @@ if (is_numeric($_POST['count'])) {
 $gibbonPersonID = $_POST['gibbonPersonID'];
 $gibbonExternalAssessmentID = $_POST['gibbonExternalAssessmentID'];
 $date = dateConvert($guid, $_POST['date']);
-$search = $_GET['search'];
-$allStudents = '';
-if (isset($_GET['allStudents'])) {
-    $allStudents = $_GET['allStudents'];
-}
+$search = $_GET['search'] ?? '';
+$allStudents = $_GET['allStudents'] ?? '';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/externalAssessment_manage_details_add.php&gibbonExternalAssessmentID=$gibbonExternalAssessmentID&gibbonPersonID=$gibbonPersonID&step=2&search=$search&allStudents=$allStudents";
 
@@ -58,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                 $partialFail = true;
             }
         }
-        
+
         //Write to database
         try {
             $data = array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID, 'gibbonPersonID' => $gibbonPersonID, 'date' => $date, 'attachment' => $attachment);
