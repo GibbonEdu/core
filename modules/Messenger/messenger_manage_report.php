@@ -51,14 +51,11 @@ else {
 		$noConfirm = 0;
 		$yesConfirm = 0;
 
-		try {
+		
 			$data = array('gibbonMessengerID' => $gibbonMessengerID);
 			$sql = "SELECT gibbonMessenger.* FROM gibbonMessenger WHERE gibbonMessengerID=:gibbonMessengerID";
 			$result = $connection2->prepare($sql);
 			$result->execute($data);
-		} catch (PDOException $e) {
-			echo "<div class='error'>".$e->getMessage().'</div>';
-		}
 
 		if ($result->rowCount() < 1) {
 			echo "<div class='error'>";
@@ -128,7 +125,7 @@ else {
 
 				//Tab content
 				echo "<div id='tabs1'>";
-					try {
+					
 						$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d'));
 						$sql = "SELECT gibbonRollGroup.nameShort AS rollGroup, gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonFamilyChild.gibbonFamilyID, parent1.email AS parent1email, parent1.surname AS parent1surname, parent1.preferredName AS parent1preferredName, parent1.gibbonPersonID AS parent1gibbonPersonID, parent2.email AS parent2email, parent2.surname AS parent2surname, parent2.preferredName AS parent2preferredName, parent2.gibbonPersonID AS parent2gibbonPersonID
 							FROM gibbonPerson
@@ -146,9 +143,6 @@ else {
 							ORDER BY rollGroup, gibbonPerson.surname, gibbonPerson.preferredName, gibbonFamilyChild.gibbonFamilyID";
 						$result = $connection2->prepare($sql);
 						$result->execute($data);
-					} catch (PDOException $e) {
-						echo "<div class='error'>".$e->getMessage().'</div>';
-					}
 
 					if ($result->rowCount() < 1) {
 						echo "<div class='error'>";
@@ -156,18 +150,17 @@ else {
 						echo '</div>';
 					} else {
 						//Store receipt for this message data in an array
-						try {
+						
 							$dataReceipts = array('gibbonMessengerID' => $gibbonMessengerID);
 							$sqlReceipts = "SELECT gibbonPersonID, gibbonMessengerReceiptID, confirmed, `key`, gibbonPersonIDListStudent FROM gibbonMessengerReceipt WHERE gibbonMessengerID=:gibbonMessengerID";
 							$resultReceipts = $connection2->prepare($sqlReceipts);
 							$resultReceipts->execute($dataReceipts);
-						} catch (PDOException $e) {}
 						$receipts = $resultReceipts->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE);
 
 						$form = BulkActionForm::create('resendByRecipient', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/messenger_manage_report_processBulk.php?gibbonMessengerID='.$gibbonMessengerID.'&search='.$search);
 						$form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-						$row = $form->addBulkActionRow(array('resend' => __('Resend')));
+						$row = $form->addBulkActionRow(array('resend' => __('Resend')))->addClass('flex justify-end');
 							$row->addSubmit(__('Go'));
 
 						$rollGroups = $result->fetchAll(\PDO::FETCH_GROUP);
@@ -267,7 +260,7 @@ else {
 										$col->addContent($confirmationIndicator($parent1Receipt));
 										$col->onlyIf($sender == true && !empty($parent1Receipt) && $parent1Receipt['confirmed'] == 'N')
 											->addCheckbox('gibbonMessengerReceiptIDs[]')
-											->setValue($parent1Receipt['gibbonMessengerReceiptID'])
+											->setValue($parent1Receipt['gibbonMessengerReceiptID'] ?? '')
                                             ->setClass('')
                                             ->alignLeft();
 
@@ -277,7 +270,7 @@ else {
 										$col->addContent($confirmationIndicator($parent2Receipt));
 										$col->onlyIf($sender == true && !empty($parent2Receipt) && $parent2Receipt['confirmed'] == 'N')
 											->addCheckbox('gibbonMessengerReceiptIDs[]')
-											->setValue($parent2Receipt['gibbonMessengerReceiptID'])
+											->setValue($parent2Receipt['gibbonMessengerReceiptID'] ?? '')
                                             ->setClass('')
                                             ->alignLeft();
 							}
@@ -293,7 +286,7 @@ else {
 				echo "</div>";
 				echo "<div id='tabs2'>";
 					if (!is_null($gibbonMessengerID)) {
-						try {
+						
 							$data = array('gibbonMessengerID' => $gibbonMessengerID);
 							$sql = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonMessenger.*, gibbonMessengerReceipt.*, gibbonRole.category as roleCategory
 								FROM gibbonMessengerReceipt
@@ -303,15 +296,12 @@ else {
 								WHERE gibbonMessengerReceipt.gibbonMessengerID=:gibbonMessengerID ORDER BY FIELD(confirmed, 'Y','N',NULL), confirmedTimestamp, surname, preferredName, contactType";
 							$result = $connection2->prepare($sql);
 							$result->execute($data);
-						} catch (PDOException $e) {
-							echo "<div class='error'>".$e->getMessage().'</div>';
-						}
 
 						$form = BulkActionForm::create('resendByRecipient', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/messenger_manage_report_processBulk.php?gibbonMessengerID='.$gibbonMessengerID.'&search='.$search);
 
 						$form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-						$row = $form->addBulkActionRow(array('resend' => __('Resend')));
+						$row = $form->addBulkActionRow(array('resend' => __('Resend')))->addClass('flex justify-end');;
 							$row->addSubmit(__('Go'));
 
 						$table = $form->addRow()->addTable()->setClass('colorOddEven fullWidth');

@@ -20,10 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySettings.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Library Settings'));
@@ -45,8 +43,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
 
     $setting = getSettingByScope($connection2, 'Library', 'browseBGColor', true);
 	$row = $form->addRow();
-    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-		$row->addTextField($setting['name'])->setValue($setting['value'])->maxLength(6);
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addColor($setting['name'])->setValue($setting['value']);
 
     $setting = getSettingByScope($connection2, 'Library', 'browseBGImage', true);
     $row = $form->addRow();

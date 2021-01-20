@@ -21,7 +21,6 @@ $newFormValues = array(
     'allowOutcomeEditing'                      => 'Y',
     'sharingDefaultParents'                    => 'Y',
     'sharingDefaultStudents'                   => 'Y',
-    'parentWeeklyEmailSummaryIncludeBehaviour' => 'Y',
 );
 
 $I->submitForm('#content form', $newFormValues, 'Submit');

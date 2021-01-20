@@ -48,7 +48,7 @@ $isLoggedIn = $session->has('username') && $session->has('gibbonRoleIDCurrent');
  */
 if ($isLoggedIn && $module = $page->getModule()) {
     $page->breadcrumbs->setBaseURL('index.php?q=/modules/'.$module->name.'/');
-    $page->breadcrumbs->add(__($module->name), $module->entryURL);
+    $page->breadcrumbs->add($module->type == 'Core' ? __($module->name) : __m($module->name), $module->entryURL);
 }
 
 /**
@@ -230,6 +230,17 @@ if ($isLoggedIn) {
     $sessionDuration = $session->get('sessionDuration');
     $sessionDuration = max(intval($sessionDuration), 1200);
     $sessionDuration *= 1000; // Seconds to miliseconds
+
+    // Set a hard limit for session durations, handled server-side.
+    // This helps catch cases where the client-side timeout does not kick in.
+    $sessionLastActive = $session->get('sessionLastActive', null);
+    $sessionHardLimit = $session->get('sessionDuration') + 600;
+    if (!empty($sessionLastActive) && time() - $sessionLastActive > $sessionHardLimit ) {
+        $URL = $session->get('absoluteURL').'/logout.php?timeout=true';
+        header("Location: {$URL}");
+        exit();
+    }
+    $session->set('sessionLastActive', time());
 }
 
 /**
@@ -274,6 +285,7 @@ $javascriptConfig = [
         'datepicker' => [
             'locale' => $datepickerLocale,
             'dateFormat' => str_replace('yyyy', 'yy', $session->get('i18n')['dateFormat']),
+            'firstDay' => $gibbon->session->get('firstDayOfTheWeek') == 'Monday'? 1 : ($gibbon->session->get('firstDayOfTheWeek') == 'Saturday' ? 6 : 0),
         ],
         'thickbox' => [
             'pathToImage' => $session->get('absoluteURL').'/lib/thickbox/loadingAnimation.gif',
@@ -369,7 +381,7 @@ if (getSettingByScope($connection2, 'User Admin', 'personalBackground') == 'Y' &
 
 $page->stylesheets->add(
     'personal-background',
-    'body { background: url('.$backgroundImage.') '.$backgroundScroll.' #626cd3!important; }',
+    'body { background: url("'.$backgroundImage.'") '.$backgroundScroll.' #626cd3!important; }',
     ['type' => 'inline']
 );
 
@@ -418,6 +430,24 @@ if ($session->get('pageLoads') == 0 and $session->has('username') and !$session-
 if ($isLoggedIn) {
     if ($session->get('gibbonSchoolYearID') != $session->get('gibbonSchoolYearIDCurrent')) {
         $page->addWarning('<b><u>'.sprintf(__('Warning: you are logged into the system in school year %1$s, which is not the current year.'), $session->get('gibbonSchoolYearName')).'</b></u>'.__('Your data may not look quite right (for example, students who have left the school will not appear in previous years), but you should be able to edit information from other years which is not available in the current year.'));
+    }
+}
+
+// Cookie Consent
+if ($isLoggedIn) {
+    if (!empty($_GET['cookieConsent'])) {
+        $container->get(UserGateway::class)->update($gibbon->session->get('gibbonPersonID'), ['cookieConsent' => 'Y']);
+        $gibbon->session->set('cookieConsent', 'Y');
+    }
+
+    $cookieConsentEnabled = getSettingByScope($connection2, 'System Admin', 'cookieConsentEnabled');
+    $privacyPolicy = getSettingByScope($connection2, 'System Admin', 'privacyPolicy');
+    if ($cookieConsentEnabled == 'Y' && $gibbon->session->get('cookieConsent') != 'Y') {
+        $page->addData([
+            'cookieConsentEnabled' => 'Y',
+            'cookieConsentText' => getSettingByScope($connection2, 'System Admin', 'cookieConsentText'),
+            'hasPrivacyPolicy' => !empty($privacyPolicy),
+        ]);
     }
 }
 
@@ -559,10 +589,12 @@ if (!$session->has('address')) {
         $templateData = [
             'indexText'                 => $session->get('indexText'),
             'organisationName'          => $session->get('organisationName'),
+            'publicRegistration'        => getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration') == 'Y',
             'publicStudentApplications' => getSettingByScope($connection2, 'Application Form', 'publicApplications') == 'Y',
             'publicStaffApplications'   => getSettingByScope($connection2, 'Staff Application Form', 'staffApplicationFormPublicApplications') == 'Y',
             'makeDepartmentsPublic'     => getSettingByScope($connection2, 'Departments', 'makeDepartmentsPublic') == 'Y',
             'makeUnitsPublic'           => getSettingByScope($connection2, 'Planner', 'makeUnitsPublic') == 'Y',
+            'privacyPolicy'           => getSettingByScope($connection2, 'System Admin', 'privacyPolicy'),
         ];
 
         // Get any elements hooked into public home page, checking if they are turned on

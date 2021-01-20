@@ -27,13 +27,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
         if (isset($_GET['gibbonMessengerCannedResponseID'])) {
             $gibbonMessengerCannedResponseID = $_GET['gibbonMessengerCannedResponseID'];
 
-            try {
+            
                 $data = array('gibbonMessengerCannedResponseID' => $gibbonMessengerCannedResponseID);
                 $sql = 'SELECT body FROM gibbonMessengerCannedResponse WHERE gibbonMessengerCannedResponseID=:gibbonMessengerCannedResponseID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) {
-            }
             if ($result->rowCount() == 1) {
                 $row = $result->fetch();
                 $output .= $row['body'];

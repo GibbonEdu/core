@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
     		//Reason
             $row = $form->addRow();
                 $column = $row->addColumn();
-                $column->addLabel('reason', __('Reason'))->description(__('Why should this student\'s individual needs should be investigated?'));;
+                $column->addLabel('reason', __('Reason'))->description(__('Why should this student\'s individual needs be investigated?'));;
             	$column->addTextArea('reason')->setRows(5)->setClass('fullWidth')->required()->readonly();
 
             //Strategies Tried

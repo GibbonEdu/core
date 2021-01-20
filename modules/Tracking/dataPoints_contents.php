@@ -32,10 +32,8 @@ include '../../version.php';
 include './moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     // Create new PHPExcel object
     $excel = new PHPExcel();
@@ -60,7 +58,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
     $externalAssessmentDataPoints = unserialize(getSettingByScope($connection2, 'Tracking', 'externalAssessmentDataPoints'));
     $internalAssessmentDataPoints = unserialize(getSettingByScope($connection2, 'Tracking', 'internalAssessmentDataPoints'));
     $internalAssessmentTypes = explode(',', getSettingByScope($connection2, 'Formal Assessment', 'internalAssessmentTypes'));
-    if (count($externalAssessmentDataPoints) == 0 and count($internalAssessmentDataPoints) == 0) { //Seems like things are not configured, so show error
+
+    if (empty($externalAssessmentDataPoints) and count($internalAssessmentDataPoints)) { //Seems like things are not configured, so show error
         $excel->setActiveSheetIndex(0)->setCellValue('A1', __('An error has occurred.'));
     } else { //Seems like things are configured, so proceed
         //Get year groups and create sheets
@@ -70,13 +69,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
         } else {
             //GET ALL INTERNAL ASSESSMENT RESULTS FOR ALL STUDENTS, AND CACHE THEM FOR USE LATER
             $internalResults = array();
-            try {
+            
                 $data = array();
                 $sql = 'SELECT gibbonStudentEnrolment.gibbonYearGroupID, gibbonCourse.name AS course, gibbonInternalAssessmentColumn.type, gibbonPersonIDStudent, attainmentValue, completeDate, gibbonInternalAssessmentColumn.name AS assessment FROM gibbonInternalAssessmentEntry JOIN gibbonPerson ON (gibbonInternalAssessmentEntry.gibbonPersonIDStudent=gibbonPerson.gibbonPersonID) JOIN gibbonInternalAssessmentColumn ON (gibbonInternalAssessmentEntry.gibbonInternalAssessmentColumnID=gibbonInternalAssessmentColumn.gibbonInternalAssessmentColumnID) JOIN gibbonCourseClass ON (gibbonInternalAssessmentColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonCourse.gibbonSchoolYearID) ORDER BY gibbonCourse.name, gibbonInternalAssessmentColumn.name, gibbonPersonIDStudent, completeDate DESC';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) {
-            }
             while ($row = $result->fetch()) {
                 $internalIndex = $row['gibbonYearGroupID'].'-'.$row['course'].'-'.$row['type'].'-'.$row['gibbonPersonIDStudent'].'-'.$row['assessment'];
                 $internalResults[$internalIndex] = $row['attainmentValue'];
@@ -123,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
                 $columns = array();
                 $activeColumn = 6;
                 //GET EXTERNAL ASSESSMENTS/CATEGORIES AND CREATE HEADERS
-                try {
+                
                     $data = array('gibbonYearGroupID' => $yearGroups[$i]);
                     $sql = 'SELECT gibbonExternalAssessment.gibbonExternalAssessmentID, gibbonExternalAssessment.nameShort AS assessment, gibbonExternalAssessmentField.category, gibbonExternalAssessmentField.name AS field
 						FROM gibbonExternalAssessment
@@ -131,10 +128,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
 						ORDER BY gibbonExternalAssessment.name, gibbonExternalAssessmentField.category, gibbonExternalAssessmentField.name';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
                 while ($row = $result->fetch()) {
+                    if (empty($externalAssessmentDataPoints)) break;
                     foreach ($externalAssessmentDataPoints as $point) {
+                        if (empty($point['gibbonYearGroupIDList'])) continue;
+
                         if ($point['gibbonExternalAssessmentID'] == $row['gibbonExternalAssessmentID'] and $point['category'] == $row['category']) {
                             if (!(strpos($point['gibbonYearGroupIDList'], $yearGroups[$i]) === false)) {
                                 //Output data
@@ -172,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
                 $sql2 = '';
                 $yearMatch = array();
                 $countYear = 1;
-                try {
+                
                     $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                     $sql = "SELECT gibbonSchoolYearID
                         FROM gibbonSchoolYear
@@ -180,7 +178,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
                         ORDER BY sequenceNumber DESC";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {}
                 while ($row = $result->fetch()) {
                     $yearGroupIndex = (count($yearGroups)-($countYear*2)) - (count($yearGroups)-2-$i);
                     if ($yearGroupIndex >= 0 && $yearGroups[$yearGroupIndex] != '') {
@@ -199,16 +196,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
                         $countYear ++;
                     }
                 }
-                try {
+                
                     $sql2 = substr($sql2, 0, -7);
                     $sql2 .= ' ORDER BY sequenceNumber, course';
                     $result = $connection2->prepare($sql2);
                     $result->execute($data2);
-                } catch (PDOException $e) {}
 
                 while ($row = $result->fetch()) {
+                    if (empty($internalAssessmentDataPoints)) break;
+
                     foreach ($internalAssessmentTypes as $type) {
                         foreach ($internalAssessmentDataPoints as $point) {
+                            if (empty($point['gibbonYearGroupIDList'])) continue;
+                            
                             if ($point['type'] == $type && $row['type'] == $type) {
                                 if (!(strpos($point['gibbonYearGroupIDList'], $row['gibbonYearGroupID']) === false)) {
                                     //Output data

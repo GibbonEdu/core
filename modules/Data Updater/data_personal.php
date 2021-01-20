@@ -26,10 +26,8 @@ require_once __DIR__ . '/moduleFunctions.php';
 include './modules/User Admin/moduleFunctions.php'; //for User Admin (for custom fields)
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
@@ -52,13 +50,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
         }
 
         $customResponces = array();
-        $error3 = __('Your request was successful, but some data was not properly saved. An administrator will process your request as soon as possible. <u>You will not see the updated data in the system until it has been processed and approved.</u>');
+        $error3 = __('Your request was successful, but some data was not properly saved. An administrator will process your request as soon as possible. You will not see the updated data in the system until it has been processed.');
         if ($_SESSION[$guid]['organisationDBAEmail'] != '' and $_SESSION[$guid]['organisationDBAName'] != '') {
             $error3 .= ' '.sprintf(__('Please contact %1$s if you have any questions.'), "<a href='mailto:".$_SESSION[$guid]['organisationDBAEmail']."'>".$_SESSION[$guid]['organisationDBAName'].'</a>');
         }
         $customResponces['error3'] = $error3;
 
-        $success0 = __('Your request was completed successfully. An administrator will process your request as soon as possible. You will not see the updated data in the system until it has been processed and approved.');
+        $success0 = __('Your request was completed successfully. An administrator will process your request as soon as possible. You will not see the updated data in the system until it has been processed.');
         if ($_SESSION[$guid]['organisationDBAEmail'] != '' and $_SESSION[$guid]['organisationDBAName'] != '') {
             $success0 .= ' '.sprintf(__('Please contact %1$s if you have any questions.'), "<a href='mailto:".$_SESSION[$guid]['organisationDBAEmail']."'>".$_SESSION[$guid]['organisationDBAName'].'</a>');
         }
@@ -137,31 +135,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             $checkCount = 0;
             $self = false;
             if ($highestAction == 'Update Personal Data_any') {
-                try {
+                
                     $dataSelect = array();
                     $sqlSelect = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE status='Full' ORDER BY surname, preferredName";
                     $resultSelect = $connection2->prepare($sqlSelect);
                     $resultSelect->execute($dataSelect);
-                } catch (PDOException $e) {
-                }
                 $checkCount = $resultSelect->rowCount();
                 $self = true;
             } else {
-                try {
+                
                     $dataCheck = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
                     $sqlCheck = "SELECT gibbonFamilyAdult.gibbonFamilyID, name FROM gibbonFamilyAdult JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y' ORDER BY name";
                     $resultCheck = $connection2->prepare($sqlCheck);
                     $resultCheck->execute($dataCheck);
-                } catch (PDOException $e) {
-                }
                 while ($rowCheck = $resultCheck->fetch()) {
-                    try {
+                    
                         $dataCheck2 = array('gibbonFamilyID1' => $rowCheck['gibbonFamilyID'], 'gibbonFamilyID2' => $rowCheck['gibbonFamilyID']);
                         $sqlCheck2 = "(SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFamilyID FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND gibbonFamilyID=:gibbonFamilyID1) UNION (SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFamilyID FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND gibbonFamilyID=:gibbonFamilyID2)";
                         $resultCheck2 = $connection2->prepare($sqlCheck2);
                         $resultCheck2->execute($dataCheck2);
-                    } catch (PDOException $e) {
-                    }
                     while ($rowCheck2 = $resultCheck2->fetch()) {
                         if ($gibbonPersonID == $rowCheck2['gibbonPersonID']) {
                             ++$checkCount;
@@ -184,13 +176,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 echo '</div>';
             } else {
                 //Get categories
-                try {
+                
                     $dataSelect = array('gibbonPersonID' => $gibbonPersonID);
                     $sqlSelect = 'SELECT gibbonRoleIDAll, gibbonRoleIDPrimary FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
                     $resultSelect = $connection2->prepare($sqlSelect);
                     $resultSelect->execute($dataSelect);
-                } catch (PDOException $e) {
-                }
                 if ($resultSelect->rowCount() == 1) {
                     $rowSelect = $resultSelect->fetch();
                     //Get categories
@@ -246,14 +236,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     }
                 }
 
-                try {
+                
                     $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID']);
                     $sql = "SELECT * FROM gibbonPersonUpdate WHERE gibbonPersonID=:gibbonPersonID AND gibbonPersonIDUpdater=:gibbonPersonIDUpdater AND status='Pending'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 if ($result->rowCount() > 1) {
                     echo "<div class='error'>";
@@ -262,7 +249,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 } elseif ($result->rowCount() == 1) {
                     $existing = true;
                     echo "<div class='warning'>";
-                    echo __('You have already submitted a form, which is pending approval by an administrator. If you wish to make changes, please edit the data below, but remember your data will not appear in the system until it has been approved.');
+                    echo __('You have already submitted a form, which is awaiting processing by an administrator. If you wish to make changes, please edit the data below, but remember your data will not appear in the system until it has been processed.');
                     echo '</div>';
 
                     if ($highestAction != 'Update Personal Data_any') {
@@ -272,14 +259,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     }
                 } else {
                     //Get user's data
-                    try {
+                    
                         $data = array('gibbonPersonID' => $gibbonPersonID);
                         $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
                     if ($result->rowCount() != 1) {
                         echo "<div class='error'>";
                         echo __('The specified record cannot be found.');
@@ -410,13 +394,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
                     $addressSet = ($values['address1'] != '' or $values['address1District'] != '' or $values['address1Country'] != '' or $values['address2'] != '' or $values['address2District'] != '' or $values['address2Country'] != '')? 'Yes' : '';
 
-                    $row = $form->addRow();
+                    $row = $form->addRow()->onlyIf($isVisible('address1'));
                         $row->addLabel('showAddresses', __('Enter Personal Address?'));
-                        $row->addCheckbox('showAddresses')->setValue('Yes')->checked($addressSet);
+                        $row->addCheckbox('showAddresses')
+                            ->setValue('Yes')
+                            ->checked($addressSet)
+                            ->setDisabled(isset($requiredFields['address1']) && $requiredFields['address1'] == 'readonly');
 
                     $form->toggleVisibilityByClass('address')->onCheckbox('showAddresses')->when('Yes');
 
-                    $row = $form->addRow()->addClass('address');
+                    $row = $form->addRow()->onlyIf($isVisible('address1'))->addClass('address');
                     $row->addAlert(__('Address information for an individual only needs to be set under the following conditions:'), 'warning')
                         ->append('<ol>')
                         ->append('<li>'.__('If the user is not in a family.').'</li>')
@@ -424,20 +411,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         ->append('<li>'.__('If the user needs an address in addition to their family\'s home address.').'</li>')
                         ->append('</ol>');
 
-                    $row = $form->addRow()->addClass('address');
+                    $row = $form->addRow()->onlyIf($isVisible('address1'))->addClass('address');
                         $row->addLabel('address1', __('Address 1'))->description(__('Unit, Building, Street'));
                         $row->addTextArea('address1')->maxLength(255)->setRows(2);
 
-                    $row = $form->addRow()->addClass('address');
+                    $row = $form->addRow()->onlyIf($isVisible('address1District'))->addClass('address');
                         $row->addLabel('address1District', __('Address 1 District'))->description(__('County, State, District'));
                         $row->addTextFieldDistrict('address1District');
 
-                    $row = $form->addRow()->addClass('address');
+                    $row = $form->addRow()->onlyIf($isVisible('address1Country'))->addClass('address');
                         $row->addLabel('address1Country', __('Address 1 Country'));
                         $row->addSelectCountry('address1Country');
 
-                    if ($values['address1'] != '') {
-                        try {
+                    if ($values['address1'] != '' && $isVisible('address1')) {
+                        
                             $dataAddress = array(
                                 'gibbonPersonID' => $values['gibbonPersonID'],
                                 'addressMatch' => '%'.strtolower(preg_replace('/ /', '%', preg_replace('/,/', '%', $values['address1']))).'%',
@@ -450,9 +437,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                                 ORDER BY surname, preferredName";
                             $resultAddress = $connection2->prepare($sqlAddress);
                             $resultAddress->execute($dataAddress);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
 
                         if ($resultAddress->rowCount() > 0) {
                             $addressCount = 0;
@@ -475,15 +459,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         }
                     }
 
-                    $row = $form->addRow()->addClass('address');
+                    $row = $form->addRow()->onlyIf($isVisible('address2'))->addClass('address');
                         $row->addLabel('address2', __('Address 2'))->description(__('Unit, Building, Street'));
                         $row->addTextArea('address2')->maxLength(255)->setRows(2);
 
-                    $row = $form->addRow()->addClass('address');
+                    $row = $form->addRow()->onlyIf($isVisible('address2District'))->addClass('address');
                         $row->addLabel('address2District', __('Address 2 District'))->description(__('County, State, District'));
                         $row->addTextFieldDistrict('address2District');
 
-                    $row = $form->addRow()->addClass('address');
+                    $row = $form->addRow()->onlyIf($isVisible('address2Country'))->addClass('address');
                         $row->addLabel('address2Country', __('Address 2 Country'));
                         $row->addSelectCountry('address2Country');
 
@@ -543,7 +527,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         $row->addLabel('citizenship1Passport', __('Citizenship 1 Passport Number'));
                         $row->addTextField('citizenship1Passport')->maxLength(30);
 
-                    $row = $form->addRow();
+                    $row = $form->addRow()->onlyIf($isVisible('citizenship1PassportExpiry'));
                         $row->addLabel('citizenship1PassportExpiry', __('Citizenship 1 Passport Expiry Date'));
                         $row->addDate('citizenship1PassportExpiry');
 
@@ -559,7 +543,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         $row->addLabel('citizenship2Passport', __('Citizenship 2 Passport Number'));
                         $row->addTextField('citizenship2Passport')->maxLength(30);
 
-                    $row = $form->addRow();
+                    $row = $form->addRow()->onlyIf($isVisible('citizenship2PassportExpiry'));
                         $row->addLabel('citizenship2PassportExpiry', __('Citizenship 2 Passport Expiry Date'));
                         $row->addDate('citizenship2PassportExpiry');
 
@@ -639,7 +623,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     }
 
                     // CUSTOM FIELDS
-                    $existingFields = (isset($values['fields']))? unserialize($values['fields']) : null;
+                    $existingFields = (isset($values['fields']))? json_decode($values['fields'], true) : null;
                     $resultFields = getCustomFields($connection2, $guid, $student, $staff, $parent, $other, false, true);
                     if ($resultFields->rowCount() > 0) {
                         $heading = $form->addRow()->addHeading(__('Custom Fields'));

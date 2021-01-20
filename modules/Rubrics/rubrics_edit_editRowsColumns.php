@@ -33,10 +33,8 @@ if (isset($_GET['filter2'])) {
 }
 
 if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editRowsColumns.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
@@ -73,14 +71,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                 echo __('You have not specified one or more required parameters.');
                 echo '</div>';
             } else {
-                try {
+                
                     $data = array('gibbonRubricID' => $gibbonRubricID);
                     $sql = 'SELECT * FROM gibbonRubric WHERE gibbonRubricID=:gibbonRubricID';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 if ($result->rowCount() != 1) {
                     echo "<div class='error'>";
@@ -139,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 					$typeOptions = array('Standalone' => __('Standalone'), 'Outcome Based' => __('Outcome Based'));
 					
 					$data = array('gibbonRubricID' => $gibbonRubricID);
-					$sql = "SELECT gibbonRubricRowID, title, gibbonOutcomeID FROM gibbonRubricRow WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber";
+					$sql = "SELECT gibbonRubricRowID, title, gibbonOutcomeID, backgroundColor FROM gibbonRubricRow WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber";
                     $result = $pdo->executeQuery($data, $sql);
 					
 					if ($result->rowCount() <= 0) {
@@ -151,21 +146,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 
 							$row = $form->addRow();
 								$row->addLabel('rowName'.$count, sprintf(__('Row %1$s Title'), ($count + 1)) );
-								$column = $row->addColumn()->addClass('flex-col');
-								$column->addRadio('type'.$count)->fromArray($typeOptions)->inline()->checked($type);
-								$column->addTextField('rowTitle['.$count.']')
+                                $column = $row->addColumn()->addClass('flex-col');
+                                
+                                $column->addRadio('type'.$count)->fromArray($typeOptions)->inline()->checked($type);
+                                $col = $column->addColumn()->addClass('flex');
+								$col->addTextField('rowTitle['.$count.']')
 									->setID('rowTitle'.$count)
-									->addClass('rowTitle'.$count)
+									->addClass('flex-1 rowTitle'.$count)
 									->maxLength(40)
 									->required()
 									->setValue($rubricRow['title']);
-								$column->addSelect('gibbonOutcomeID['.$count.']')
+								$col->addSelect('gibbonOutcomeID['.$count.']')
 									->setID('gibbonOutcomeID'.$count)
-									->addClass('gibbonOutcomeID'.$count)
+									->addClass('flex-1 gibbonOutcomeID'.$count)
 									->fromArray($outcomes)
 									->required()
 									->placeholder()
-									->selected($rubricRow['gibbonOutcomeID']);
+                                    ->selected($rubricRow['gibbonOutcomeID']);
+                                    
+                                $column->addColor('rowColor['.$count.']')
+                                    ->setID('rowColor'.$count)
+                                    ->setValue($rubricRow['backgroundColor'])
+                                    ->setTitle(__('Background Colour'));
 
 							$form->toggleVisibilityByClass('rowTitle'.$count)->onRadio('type'.$count)->when('Standalone');
 							$form->toggleVisibilityByClass('gibbonOutcomeID'.$count)->onRadio('type'.$count)->when('Outcome Based');
@@ -177,11 +179,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 
                     $row = $form->addRow();
                         $row->addHeading(__('Columns'));
-                        $row->addContent(__('Visualise?'))->setClass('textCenter')->wrap('<strong>', '</strong>');
-                        $row->addContent('')->setClass('w-64');
+                        $row->addContent(__('Visualise?'))->setClass('font-bold text-center');
+                        $row->addContent()->setClass('w-full sm:max-w-sm');
 
 					$data = array('gibbonRubricID' => $gibbonRubricID);
-					$sql = "SELECT gibbonRubricColumnID, title, gibbonScaleGradeID, visualise FROM gibbonRubricColumn WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber";
+					$sql = "SELECT gibbonRubricColumnID, title, gibbonScaleGradeID, visualise, backgroundColor FROM gibbonRubricColumn WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber";
                     $result = $pdo->executeQuery($data, $sql);
 					
 					if ($result->rowCount() <= 0) {
@@ -192,30 +194,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 							$row = $form->addRow();
                             $row->addLabel('columnName'.$count, sprintf(__('Column %1$s Title'), ($count + 1)));
                             
+                            
                             $row->addCheckbox('columnVisualise['.$count.']')
                                 ->setValue('Y')
                                 ->alignCenter()
                                 ->checked($rubricColumn['visualise'])
-                                ->setClass('textCenter');
+                                ->setClass('textCenter flex-1 self-center');
+                            $column = $row->addColumn()->setClass('sm:max-w-sm');
+                            $col = $column->addColumn()->setClass('flex flex-col -mb-1');
 
 							// Handle non-grade scale columns as a text field, otherwise a dropdown
 							if ($values['gibbonScaleID'] == '') {
-								$row->addTextField('columnTitle['.$count.']')
+								$col->addTextField('columnTitle['.$count.']')
 									->setID('columnTitle'.$count)
                                     ->maxLength(20)
 									->required()
-                                    ->setClass('w-64')
+                                    ->setClass('flex-1 w-full')
 									->setValue($rubricColumn['title']);
 							} else {
 								$data = array('gibbonScaleID' => $values['gibbonScaleID']);
 								$sql = "SELECT gibbonScaleGradeID as value, CONCAT(value, ' - ', descriptor) as name FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID AND NOT value='Incomplete' ORDER BY sequenceNumber";
-								$row->addSelect('gibbonScaleGradeID['.$count.']')
+								$col->addSelect('gibbonScaleGradeID['.$count.']')
 									->setID('gibbonScaleGradeID'.$count)
 									->fromQuery($pdo, $sql, $data)
                                     ->required()
-                                    ->setClass('w-64')
+                                    ->setClass('flex-1 w-full')
 									->selected($rubricColumn['gibbonScaleGradeID']);
-							}
+                            }
+                            
+                            $col->addColor('columnColor['.$count.']')
+                                ->setID('columnColor'.$count)
+                                ->setValue($rubricColumn['backgroundColor'])
+                                ->setTitle(__('Background Colour'));
+
 							$form->addHiddenValue('gibbonRubricColumnID['.$count.']', $rubricColumn['gibbonRubricColumnID']);
 
 							$count++;

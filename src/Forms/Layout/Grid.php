@@ -90,7 +90,7 @@ class Grid implements OutputableInterface, ValidatableInterface
      */
     public function getOutput()
     {
-        $this->addClass('w-full flex flex-wrap items-stretch');
+        $this->setClass('w-full flex flex-wrap items-stretch');
 
         $output = '<div '.$this->getAttributeString().'>';
         

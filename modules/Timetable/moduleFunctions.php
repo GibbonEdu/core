@@ -145,13 +145,11 @@ function getSpaceBookingEventsSpace($guid, $connection2, $startDayStamp, $gibbon
 {
     $return = false;
 
-    try {
+
         $dataSpaceBooking = array('gibbonSpaceID' => $gibbonSpaceID);
         $sqlSpaceBooking = "SELECT gibbonTTSpaceBooking.*, name, title, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonSpace ON (gibbonTTSpaceBooking.foreignKeyID=gibbonSpace.gibbonSpaceID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignKey='gibbonSpaceID' AND gibbonTTSpaceBooking.foreignKeyID=:gibbonSpaceID AND date>='".date('Y-m-d', $startDayStamp)."' AND  date<='".date('Y-m-d', ($startDayStamp + (7 * 24 * 60 * 60)))."' ORDER BY date, timeStart, name";
         $resultSpaceBooking = $connection2->prepare($sqlSpaceBooking);
         $resultSpaceBooking->execute($dataSpaceBooking);
-    } catch (PDOException $e) {
-    }
     if ($resultSpaceBooking->rowCount() > 0) {
         $return = array();
         $count = 0;
@@ -184,7 +182,7 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
 
         $service = $container->get('Google_Service_Calendar');
         $getFail = empty($service);
-        
+
         $calendarListEntry = array();
         try {
             $optParams = array('timeMin' => $start.'+00:00', 'timeMax' => $end.'+00:00', 'singleEvents' => true);
@@ -284,16 +282,13 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                 $proceed = true;
             }
         } else if ($highestAction == 'View Timetable by Person_myChildren') {
-            try {
+
                 $data = array('gibbonPersonID1' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonID2' => $gibbonPersonID);
                 $sql = "SELECT gibbonFamilyChild.gibbonPersonID FROM gibbonFamilyChild
                     JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID)
                     WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID1 AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID2 AND gibbonFamilyAdult.childDataAccess='Y'";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
 
             if ($result->rowCount() > 0) {
                 $proceed = true;
@@ -307,6 +302,13 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
         $self = false;
         if ($gibbonPersonID == $_SESSION[$guid]['gibbonPersonID'] and $edit == false) {
             $self = true;
+
+            if (!empty($_POST['fromTT']) && $_POST['fromTT'] == 'Y') {
+                $_SESSION[$guid]['viewCalendarSchool'] = !empty($_POST['schoolCalendar']) ? 'Y' : 'N';
+                $_SESSION[$guid]['viewCalendarPersonal'] = !empty($_POST['personalCalendar']) ? 'Y' : 'N';
+                $_SESSION[$guid]['viewCalendarSpaceBooking'] = !empty($_POST['spaceBookingCalendar']) ? 'Y' : 'N';
+            }
+
             //Update display choices
             if ($_SESSION[$guid]['viewCalendarSchool'] != false and $_SESSION[$guid]['viewCalendarPersonal'] != false and $_SESSION[$guid]['viewCalendarSpaceBooking'] != false) {
                 try {
@@ -349,7 +351,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
         //link to other TTs
         if ($result->rowcount() > 1) {
-            $output .= "<table class='noIntBorder' cellspacing='0' style='width: 100%'>";
+            $output .= "<table class='noIntBorder mt-2' cellspacing='0' style='width: 100%'>";
             $output .= '<tr>';
             $output .= '<td>';
             $output .= "<span style='font-size: 115%; font-weight: bold'>".__('Timetable Chooser').'</span>: ';
@@ -363,12 +365,9 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                 $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='".$row['name']."'>";
                 $output .= '</form>';
             }
-            try {
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $output .= "<div class='error'>".$e->getMessage().'</div>';
-            }
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+
             $output .= '</td>';
             $output .= '</tr>';
             $output .= '</table>';
@@ -381,12 +380,11 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonTTID' => $gibbonTTID);
                     $sql = "SELECT DISTINCT gibbonTT.gibbonTTID, gibbonTT.name, gibbonTT.nameShortDisplay FROM gibbonTT JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID) JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonPersonID=$gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonTT.gibbonTTID=:gibbonTTID";
                 }
-            }
-            try {
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $output .= "<div class='error'>".$e->getMessage().'</div>';
+                $ttResult = $connection2->prepare($sql);
+                $ttResult->execute($data);
+                if ($ttResult->rowCount() > 0) {
+                    $result = &$ttResult;
+                }
             }
         }
 
@@ -431,7 +429,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $output .= "<td style='vertical-align: top; text-align: right'>";
             $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=$q&gibbonTTID=".$row['gibbonTTID']."$params'>";
             $output .= '<span class="relative">';
-            $output .= "<input name='ttDate' id='ttDate' maxlength=10 value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], $startDayStamp)."' type='text' style='height: 28px; width:120px; margin-right: 0px; float: none'> ";
+            $output .= "<input name='ttDate' id='ttDate' maxlength=10 value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], $startDayStamp)."' type='text' style='width:120px; margin-right: 0px; float: none'> ";
             $output .= '</span>';
             $output .= '<script type="text/javascript">';
             $output .= "var ttDate=new LiveValidation('ttDate');";
@@ -452,7 +450,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $output .= '$("#ttDate").datepicker();';
             $output .= '</script>';
 
-            $output .= "<input style='margin-top: 0px; margin-right: -2px' type='submit' value='".__('Go')."'>";
+            $output .= "<input style='margin-top: 0px; margin-right: -1px; padding-left: 1rem; padding-right: 1rem;' type='submit' value='".__('Go')."'>";
             $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendarSchool']."' type='hidden'>";
             $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendarPersonal']."' type='hidden'>";
             $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendarSpaceBooking']."' type='hidden'>";
@@ -835,19 +833,18 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
                     unset($rowDay);
                     $color = '';
-                    try {
+
                         $dataDay = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))), 'gibbonTTID' => $gibbonTTID);
                         $sqlDay = 'SELECT nameShort, color, fontColor FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) WHERE date=:date AND gibbonTTID=:gibbonTTID';
                         $resultDay = $connection2->prepare($sqlDay);
                         $resultDay->execute($dataDay);
-                    } catch (PDOException $e) {}
                     if ($resultDay->rowCount() == 1) {
                         $rowDay = $resultDay->fetch();
                         if ($rowDay['color'] != '') {
-                            $color .= "; background-color: #".$rowDay['color']."; background-image: none";
+                            $color .= "; background-color: ".$rowDay['color']."; background-image: none";
                         }
                         if ($rowDay['fontColor'] != '') {
-                            $color .= "; color: #".$rowDay['fontColor'];
+                            $color .= "; color: ".$rowDay['fontColor'];
                         }
                     }
 
@@ -1020,13 +1017,11 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
     $allDay = 0;
 
     if ($schoolOpen == false) {
-        try {
+
             $dataSpecialDay = array('date' => $date);
             $sqlSpecialDay = "SELECT name, description FROM gibbonSchoolYearSpecialDay WHERE date=:date";
             $resultSpecialDay = $connection2->prepare($sqlSpecialDay);
             $resultSpecialDay->execute($dataSpecialDay);
-        } catch (PDOException $e) {
-        }
 
         $specialDay = $resultSpecialDay->rowCount() > 0? $resultSpecialDay->fetch() : array('name' => '', 'description' => '');
 
@@ -1133,13 +1128,11 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
     } else {
         //Make array of space changes
         $spaceChanges = array();
-        try {
+
             $dataSpaceChange = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))));
             $sqlSpaceChange = 'SELECT gibbonTTSpaceChange.*, gibbonSpace.name AS space, phoneInternal FROM gibbonTTSpaceChange LEFT JOIN gibbonSpace ON (gibbonTTSpaceChange.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE date=:date';
             $resultSpaceChange = $connection2->prepare($sqlSpaceChange);
             $resultSpaceChange->execute($dataSpaceChange);
-        } catch (PDOException $e) {
-        }
         while ($rowSpaceChange = $resultSpaceChange->fetch()) {
             $spaceChanges[$rowSpaceChange['gibbonTTDayRowClassID']][0] = $rowSpaceChange['space'];
             $spaceChanges[$rowSpaceChange['gibbonTTDayRowClassID']][1] = $rowSpaceChange['phoneInternal'];
@@ -1588,7 +1581,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
 
     //link to other TTs
     if ($result->rowcount() > 1) {
-        $output .= "<table class='noIntBorder' style='width: 100%'>";
+        $output .= "<table class='noIntBorder mt-2' style='width: 100%'>";
         $output .= '<tr>';
         $output .= '<td>';
         $output .= "<span style='font-size: 115%; font-weight: bold'>".__('Timetable Chooser').'</span>: ';
@@ -1602,26 +1595,26 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
             $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='".$row['name']."'>";
             $output .= '</form>';
         }
-        try {
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $output .= "<div class='error'>".$e->getMessage().'</div>';
-        }
+
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+
         $output .= '</td>';
         $output .= '</tr>';
         $output .= '</table>';
 
         if ($gibbonTTID != '') {
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonTTID' => $gibbonTTID);
-            $sql = "SELECT DISTINCT gibbonTT.gibbonTTID, gibbonTT.name, gibbonTT.nameShortDisplay FROM gibbonTT JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID) JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSpaceID=$gibbonSpaceID AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonTT.gibbonTTID=:gibbonTTID";
+            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonTTID' => $gibbonTTID, 'gibbonSpaceID' => $gibbonSpaceID);
+            $sql = "SELECT DISTINCT gibbonTT.gibbonTTID, gibbonTT.name, gibbonTT.nameShortDisplay FROM gibbonTT JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID) JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSpaceID=:gibbonSpaceID AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonTT.gibbonTTID=:gibbonTTID";
+
+            $ttResult = $connection2->prepare($sql);
+            $ttResult->execute($data);
+            if ($ttResult->rowCount() > 0) {
+                $result = &$ttResult;
+            }
+
         }
-        try {
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $output .= "<div class='error'>".$e->getMessage().'</div>';
-        }
+        
     }
 
     //Get space booking array
@@ -1662,7 +1655,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
         $output .= '</td>';
         $output .= "<td style='vertical-align: top; text-align: right'>";
         $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=$q".$params.'&gibbonTTID='.$row['gibbonTTID']."'>";
-        $output .= "<input name='ttDate' id='ttDate' maxlength=10 value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], $startDayStamp)."' type='text' style='height: 22px; width:100px; margin-right: 0px; float: none'>";
+        $output .= "<input name='ttDate' id='ttDate' maxlength=10 value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], $startDayStamp)."' type='text' style='height: 36px; width:120px; margin-right: 0px; float: none'>";
         $output .= '<script type="text/javascript">';
         $output .= "var ttDate=new LiveValidation('ttDate');";
         $output .= 'ttDate.add( Validate.Format, {pattern: ';
@@ -1685,7 +1678,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
         $output .= '$("#ttDate").datepicker();';
         $output .= '});';
         $output .= '</script>';
-        $output .= "<input style='margin-top: 0px; margin-right: -2px' type='submit' value='".__('Go')."'>";
+        $output .= "<input style='margin-top: 0px; margin-right: -1px;  padding-left: 1rem; padding-right: 1rem;' type='submit' value='".__('Go')."'>";
         $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendarSchool']."' type='hidden'>";
         $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendarPersonal']."' type='hidden'>";
         $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendarSpaceBooking']."' type='hidden'>";
@@ -1856,12 +1849,11 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                         $output .= __($day['nameShort']).'<br/>';
                     }
                     else {
-                        try {
+
                             $dataDay = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))), 'gibbonTTID' => $gibbonTTID);
                             $sqlDay = 'SELECT nameShort FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) WHERE date=:date AND gibbonTTID=:gibbonTTID';
                             $resultDay = $connection2->prepare($sqlDay);
                             $resultDay->execute($dataDay);
-                        } catch (PDOException $e) {}
                         if ($resultDay->rowCount() == 1) {
                             $rowDay = $resultDay->fetch();
                             $output .= $rowDay['nameShort'].'<br/>';
@@ -2024,13 +2016,11 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
 
     //Make array of space changes
     $spaceChanges = array();
-    try {
+
         $dataSpaceChange = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))));
         $sqlSpaceChange = 'SELECT gibbonTTSpaceChange.*, gibbonSpace.name AS space, phoneInternal FROM gibbonTTSpaceChange LEFT JOIN gibbonSpace ON (gibbonTTSpaceChange.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE date=:date';
         $resultSpaceChange = $connection2->prepare($sqlSpaceChange);
         $resultSpaceChange->execute($dataSpaceChange);
-    } catch (PDOException $e) {
-    }
     while ($rowSpaceChange = $resultSpaceChange->fetch()) {
         $spaceChanges[$rowSpaceChange['gibbonTTDayRowClassID']][0] = $rowSpaceChange['space'];
         $spaceChanges[$rowSpaceChange['gibbonTTDayRowClassID']][1] = $rowSpaceChange['phoneInternal'];
@@ -2143,10 +2133,10 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                     $output .= '<i>'.substr($effectiveStart, 0, 5).'-'.substr($effectiveEnd, 0, 5).'</i><br/>';
 
                     if ($_SESSION[$guid]['viewCalendarSpaceBooking'] == 'Y' && isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_manage_add.php') && $date >= date('Y-m-d')) {
-                        $overlappingBookings = array_filter(is_array($eventsSpaceBooking)? $eventsSpaceBooking : [], 
+                        $overlappingBookings = array_filter(is_array($eventsSpaceBooking)? $eventsSpaceBooking : [],
                             function ($event) use ($date, $effectiveStart, $effectiveEnd) {
                                 return ($event[3] == $date) && ( ($event[4] >= $effectiveStart && $event[4] < $effectiveEnd) || ($effectiveStart >= $event[4] && $effectiveStart < $event[5]) );
-                            }); 
+                            });
 
                         if (empty($overlappingBookings)) {
                             $output .= "<a style='pointer-events: auto; position: absolute; right: 5px; bottom: 5px;' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable/spaceBooking_manage_add.php&gibbonSpaceID='.$gibbonSpaceID.'&date='.$date.'&timeStart='.$effectiveStart.'&timeEnd='.$effectiveEnd."&source=tt'><img style='' title='".__('Add Facility Booking')."' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";

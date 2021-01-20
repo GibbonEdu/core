@@ -17,347 +17,231 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//Module includes
+use Gibbon\Services\Format;
+use Gibbon\Domain\Planner\UnitGateway;
+use Gibbon\Forms\Prefab\BulkActionForm;
+use Gibbon\Domain\Timetable\CourseGateway;
+use Gibbon\Domain\School\SchoolYearGateway;
+
+// Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
 $page->breadcrumbs->add(__('Unit Planner'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == false) {
     //Acess denied
-    echo "<div class='error'>";
-    echo __('Your request failed because you do not have access to this action.');
-    echo '</div>';
+    $page->addError(__('Your request failed because you do not have access to this action.'));
 } else {
-    //Get action with highest precendence
+    // Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
-    } else {
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
+        $page->addError(__('The highest grouped action cannot be determined.'));
+        return;
+    }
+
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], null, null);
+    }
+
+    $schoolYearGateway = $container->get(SchoolYearGateway::class);
+    $courseGateway = $container->get(CourseGateway::class);
+    $unitGateway = $container->get(UnitGateway::class);
+
+    // School Year Info
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? $_SESSION[$guid]['gibbonSchoolYearID'];
+    $gibbonSchoolYearName = $_SESSION[$guid]['gibbonSchoolYearName'];
+
+    if ($gibbonSchoolYearID != $_SESSION[$guid]['gibbonSchoolYearID']) {
+        $schoolYear = $schoolYearGateway->getByID($gibbonSchoolYearID);
+        $gibbonSchoolYearName = $schoolYear['name'];
+    }
+
+    if (empty($gibbonSchoolYearID)) {
+        $page->addError(__('Your request failed because your inputs were invalid.'));
+        return;
+    }
+
+    $gibbonCourseID = null;
+    if (isset($_GET['gibbonCourseID'])) {
+        $gibbonCourseID = $_GET['gibbonCourseID'];
+    }
+    if ($gibbonCourseID == '') {
+        try {
+            if ($highestAction == 'Unit Planner_all') {
+                $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+                $sql = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY nameShort';
+            } elseif ($highestAction == 'Unit Planner_learningAreas') {
+                        $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
+                $sql = "SELECT gibbonCourseID, gibbonCourse.name, gibbonCourse.nameShort FROM gibbonCourse JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY gibbonCourse.nameShort";
+            }
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            echo "<div class='error'>".$e->getMessage().'</div>';
         }
-
-        $gibbonSchoolYearID = '';
-        if (isset($_GET['gibbonSchoolYearID'])) {
-            $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-        }
-        if ($gibbonSchoolYearID == '' or $gibbonSchoolYearID == $_SESSION[$guid]['gibbonSchoolYearID']) {
-            $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
-            $gibbonSchoolYearName = $_SESSION[$guid]['gibbonSchoolYearName'];
-        }
-
-        if ($gibbonSchoolYearID != $_SESSION[$guid]['gibbonSchoolYearID']) {
-            try {
-                $data = array('gibbonSchoolYearID' => $_GET['gibbonSchoolYearID']);
-                $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-
-            if ($result->rowCount() != 1) {
-                echo "<div class='error'>";
-                echo __('The specified record does not exist.');
-                echo '</div>';
-            } else {
-                $row = $result->fetch();
-                $gibbonSchoolYearID = $row['gibbonSchoolYearID'];
-                $gibbonSchoolYearName = $row['name'];
-            }
-        }
-
-        if ($gibbonSchoolYearID != '') {
-            $gibbonCourseID = null;
-            if (isset($_GET['gibbonCourseID'])) {
-                $gibbonCourseID = $_GET['gibbonCourseID'];
-            }
-            if ($gibbonCourseID == '') {
-                try {
-                    if ($highestAction == 'Unit Planner_all') {
-                        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-                        $sql = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY nameShort';
-                    } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                        $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
-                        $sql = "SELECT gibbonCourseID, gibbonCourse.name, gibbonCourse.nameShort FROM gibbonCourse JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY gibbonCourse.nameShort";
-                    }
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                if ($result->rowCount() > 0) {
-                    $row = $result->fetch();
-                    $gibbonCourseID = $row['gibbonCourseID'];
-                }
-            }
-            if ($gibbonCourseID != '') {
-                try {
-                    $data = array('gibbonCourseID' => $gibbonCourseID);
-                    $sql = 'SELECT * FROM gibbonCourse WHERE gibbonCourseID=:gibbonCourseID';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                if ($result->rowCount() == 1) {
-                    $row = $result->fetch();
-                }
-            }
-
-            //Work out previous and next course with same name
-            $gibbonCourseIDPrevious = '';
-            $gibbonSchoolYearIDPrevious = getPreviousSchoolYearID($gibbonSchoolYearID, $connection2);
-            if ($gibbonSchoolYearIDPrevious != false and isset($row['nameShort'])) {
-                try {
-                    $dataPrevious = array('gibbonSchoolYearID' => $gibbonSchoolYearIDPrevious, 'nameShort' => $row['nameShort']);
-                    $sqlPrevious = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND nameShort=:nameShort';
-                    $resultPrevious = $connection2->prepare($sqlPrevious);
-                    $resultPrevious->execute($dataPrevious);
-                } catch (PDOException $e) {
-                }
-                if ($resultPrevious->rowCount() == 1) {
-                    $rowPrevious = $resultPrevious->fetch();
-                    $gibbonCourseIDPrevious = $rowPrevious['gibbonCourseID'];
-                }
-            }
-            $gibbonCourseIDNext = '';
-            $gibbonSchoolYearIDNext = getNextSchoolYearID($gibbonSchoolYearID, $connection2);
-            if ($gibbonSchoolYearIDNext != false and isset($row['nameShort'])) {
-                try {
-                    $dataNext = array('gibbonSchoolYearID' => $gibbonSchoolYearIDNext, 'nameShort' => $row['nameShort']);
-                    $sqlNext = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND nameShort=:nameShort';
-                    $resultNext = $connection2->prepare($sqlNext);
-                    $resultNext->execute($dataNext);
-                } catch (PDOException $e) {
-                }
-                if ($resultNext->rowCount() == 1) {
-                    $rowNext = $resultNext->fetch();
-                    $gibbonCourseIDNext = $rowNext['gibbonCourseID'];
-                }
-            }
-
-            echo '<h2>';
-            echo $gibbonSchoolYearName;
-            echo '</h2>';
-
-            echo "<div class='linkTop'>";
-                //Print year picker
-                if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."&gibbonCourseID=$gibbonCourseIDPrevious'>".__('Previous Year').'</a> ';
-                } else {
-                    echo __('Previous Year').' ';
-                }
-				echo ' | ';
-				if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-					echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."&gibbonCourseID=$gibbonCourseIDNext'>".__('Next Year').'</a> ';
-				} else {
-					echo __('Next Year').' ';
-				}
-            echo '</div>';
-
-
-            if ($gibbonCourseID == '') {
-                echo "<div class='error'>";
-                echo __('There are no records to display.');
-                echo '</div>';
-            }
-            else {
-                try {
-                    if ($highestAction == 'Unit Planner_all') {
-                        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID);
-                        $sql = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID';
-                    } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                        $sql = "SELECT gibbonCourseID, gibbonCourse.name, gibbonCourse.nameShort FROM gibbonCourse JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID ORDER BY gibbonCourse.nameShort";
-                    }
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-
-                if ($result->rowCount() < 1) {
-                    echo "<div class='error'>";
-                    echo __('The selected record does not exist, or you do not have access to it.');
-                    echo '</div>';
-                } else {
-                    $row = $result->fetch();
-
-                    echo '<h4>';
-                    echo $row['name'];
-                    echo '</h4>';
-
-                    //Fetch units
-                    try {
-                        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID);
-                        $sql = 'SELECT gibbonUnitID, gibbonUnit.gibbonCourseID, nameShort, gibbonUnit.name, gibbonUnit.description, active FROM gibbonUnit JOIN gibbonCourse ON gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonUnit.gibbonCourseID=:gibbonCourseID ORDER BY ordering, name';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
-
-                    echo "<div class='linkTop'>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-                    echo '</div>';
-
-                    if ($result->rowCount() < 1) {
-                        echo "<div class='error'>";
-                        echo __('There are no records to display.');
-                        echo '</div>';
-                    } else {
-                        echo "<form onsubmit='return confirm(\"".__('Are you sure you wish to process this action? It cannot be undone.')."\")' method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/unitsProcessBulk.php'>";
-                        echo "<fieldset style='border: none'>";
-                        echo "<div class='linkTop' style='height: 27px'>"; ?>
-        						<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __('Go') ?>'>
-
-                                <div class="inline-block relative">
-                                    <select name="action" id="action" class="w-48 float-right mr-px">
-                                        <option value="Select action"><?php echo __('Select action') ?></option>
-                                        <option value="Duplicate"><?php echo __('Duplicate') ?></option>
-                                    </select>
-                                </div>
-
-                                <div id="courseClassRow" class="hidden relative">
-                                    <select style="width: 182px" name="gibbonCourseIDCopyTo" id="gibbonCourseIDCopyTo">
-                                        <?php
-                                        print "<option value='Please select...'>" . __('Please select...') . "</option>" ;
-
-                                        try {
-                                            $dataSelect['gibbonSchoolYearID'] = $gibbonSchoolYearID;
-                                            $sqlWhere = '';
-                                            if ($gibbonSchoolYearIDNext != false) {
-                                                $dataSelect['gibbonSchoolYearIDNext'] = $gibbonSchoolYearIDNext;
-                                                $sqlWhere = ' OR gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearIDNext';
-                                            }
-                                            if ($highestAction == 'Unit Planner_all') {
-                                                $sqlSelect="SELECT gibbonCourse.gibbonCourseID, gibbonCourse.nameShort AS course, gibbonSchoolYear.name AS year FROM gibbonCourse JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE (gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID".$sqlWhere.") ORDER BY gibbonSchoolYear.sequenceNumber, gibbonCourse.nameShort" ;
-                                            }
-                                            else {
-                                                $dataSelect['gibbonPersonID'] = $_SESSION[$guid]["gibbonPersonID"];
-                                                $sqlSelect="SELECT gibbonCourse.gibbonCourseID, gibbonCourse.nameShort AS course, gibbonSchoolYear.name AS year FROM gibbonCourse JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND (gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID".$sqlWhere.") ORDER BY gibbonSchoolYear.sequenceNumber, gibbonCourse.nameShort" ;
-                                            }
-                                            $resultSelect=$connection2->prepare($sqlSelect);
-                                            $resultSelect->execute($dataSelect);
-                                        }
-                                        catch(PDOException $e) {}
-                                        $yearCurrent = '';
-                                        $yearLast = '';
-                                        while ($rowSelect=$resultSelect->fetch()) {
-                                            $yearCurrent = $rowSelect['year'];
-                                            if ($yearCurrent != $yearLast) {
-                                                echo '<optgroup label=\'--'.$rowSelect['year'].'--\'/>';
-                                            }
-                                            print "<option value='" . $rowSelect["gibbonCourseID"] . "'>" . htmlPrep($rowSelect["course"]) . "</option>" ;
-                                            $yearLast = $yearCurrent;
-                                        }
-                                        ?>
-                                    </select>
-                                    <script type="text/javascript">
-                                        var gibbonCourseIDCopyTo=new LiveValidation('gibbonCourseIDCopyTo');
-                                        gibbonCourseIDCopyTo.add(Validate.Exclusion, { within: ['<?php echo __('Please select...') ?>'], failureMessage: "<?php echo __('Select something!') ?>"});
-                                    </script>
-                                </div>
-                                
-        						<script type="text/javascript">
-        							var action=new LiveValidation('action');
-        							action.add(Validate.Exclusion, { within: ['<?php echo __('Select action') ?>'], failureMessage: "<?php echo __('Select something!') ?>"});
-
-                                    $(document).ready(function(){
-                                        $('#action').change(function () {
-                                            if ($(this).val() == 'Duplicate') {
-                                                $("#courseClassRow").slideDown("fast", $("#courseClassRow").css("display","inline-block"));
-                                            } else {
-                                                $("#courseClassRow").css("display","none");
-                                            }
-                                        });
-                                    });
-
-                                </script>
-        						<?php
-                        echo '</div>';
-
-                        echo "<table cellspacing='0' style='width: 100%'>";
-                        echo "<tr class='head'>";
-                        echo "<th style='width: 150px'>";
-                        echo __('Name');
-                        echo '</th>';
-                        echo "<th style='width: 400px'>";
-                        echo __('Description');
-                        echo '</th>';
-                        echo '<th>';
-                        echo __('Active');
-                        echo '</th>';
-                        echo "<th style='width: 140px'>";
-                        echo __('Actions');
-                        echo '</th>';
-                        echo '<th style=\'text-align: center\'>'; ?>
-        				<script type="text/javascript">
-        					$(function () {
-        						$('.checkall').click(function () {
-        							$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
-        						});
-        					});
-        				</script>
-        				<?php
-        				echo "<input type='checkbox' class='checkall'>";
-                        echo '</th>';
-                        echo '</tr>';
-
-                        $count = 0;
-                        $rowNum = 'odd';
-                        while ($row = $result->fetch()) {
-                            if ($count % 2 == 0) {
-                                $rowNum = 'even';
-                            } else {
-                                $rowNum = 'odd';
-                            }
-
-                            if ($row['active'] != 'Y') {
-                                $rowNum = 'error';
-                            }
-
-                            //COLOR ROW BY STATUS!
-                            echo "<tr class=$rowNum>";
-                            echo '<td>';
-                            echo $row['name'];
-                            echo '</td>';
-                            echo "<td style='max-width: 270px'>";
-                            echo $row['description'];
-                            echo '</td>';
-                            echo '<td>';
-                            echo ynExpander($guid, $row['active']);
-                            echo '</td>';
-                            echo '<td>';
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_edit.php&gibbonUnitID='.$row['gibbonUnitID']."&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_delete.php&gibbonUnitID='.$row['gibbonUnitID']."&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_duplicate.php&gibbonCourseID=$gibbonCourseID&gibbonUnitID=".$row['gibbonUnitID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='".__('Duplicate')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copy.png'/></a> ";
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_dump.php&gibbonCourseID=$gibbonCourseID&gibbonUnitID=".$row['gibbonUnitID']."&gibbonSchoolYearID=$gibbonSchoolYearID&sidebar=false'><img title='".__('Export')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
-                            echo '</td>';
-                            echo '<td>';
-                            echo "<input name='gibbonUnitID-$count' value='".$row['gibbonUnitID']."' type='hidden'>";
-                            echo "<input type='checkbox' name='check-$count' id='check-$count'>";
-                            echo '</td>';
-                            echo '</tr>';
-
-                            ++$count;
-                        }
-                        echo '</table>';
-                        echo '</fieldset>';
-
-                        echo "<input name='count' value='$count' type='hidden'>";
-                        echo "<input name='gibbonCourseID' value='$gibbonCourseID' type='hidden'>";
-                        echo "<input name='gibbonSchoolYearID' value='$gibbonSchoolYearID' type='hidden'>";
-                        echo "<input name='address' value='".$_GET['q']."' type='hidden'>";
-                        echo '</form>';
-                    }
-                }
-            }
+        if ($result->rowCount() > 0) {
+            $row = $result->fetch();
+            $gibbonCourseID = $row['gibbonCourseID'];
         }
     }
-    //Print sidebar
-    $_SESSION[$guid]['sidebarExtra'] = sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYearID);
+    if ($gibbonCourseID != '') {
+        
+            $data = array('gibbonCourseID' => $gibbonCourseID);
+            $sql = 'SELECT * FROM gibbonCourse WHERE gibbonCourseID=:gibbonCourseID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        if ($result->rowCount() == 1) {
+            $row = $result->fetch();
+        }
+    }
+
+    //Work out previous and next course with same name
+    $gibbonCourseIDPrevious = '';
+    $gibbonSchoolYearIDPrevious = getPreviousSchoolYearID($gibbonSchoolYearID, $connection2);
+    if ($gibbonSchoolYearIDPrevious != false and isset($row['nameShort'])) {
+        
+            $dataPrevious = array('gibbonSchoolYearID' => $gibbonSchoolYearIDPrevious, 'nameShort' => $row['nameShort']);
+            $sqlPrevious = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND nameShort=:nameShort';
+            $resultPrevious = $connection2->prepare($sqlPrevious);
+            $resultPrevious->execute($dataPrevious);
+        if ($resultPrevious->rowCount() == 1) {
+            $rowPrevious = $resultPrevious->fetch();
+            $gibbonCourseIDPrevious = $rowPrevious['gibbonCourseID'];
+        }
+    }
+    $gibbonCourseIDNext = '';
+    $gibbonSchoolYearIDNext = getNextSchoolYearID($gibbonSchoolYearID, $connection2);
+    if ($gibbonSchoolYearIDNext != false and isset($row['nameShort'])) {
+        
+            $dataNext = array('gibbonSchoolYearID' => $gibbonSchoolYearIDNext, 'nameShort' => $row['nameShort']);
+            $sqlNext = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND nameShort=:nameShort';
+            $resultNext = $connection2->prepare($sqlNext);
+            $resultNext->execute($dataNext);
+        if ($resultNext->rowCount() == 1) {
+            $rowNext = $resultNext->fetch();
+            $gibbonCourseIDNext = $rowNext['gibbonCourseID'];
+        }
+    }
+
+    echo '<h2>';
+    echo $gibbonSchoolYearName;
+    echo '</h2>';
+
+    echo "<div class='linkTop'>";
+        //Print year picker
+        if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
+                    echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/units.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."&gibbonCourseID=$gibbonCourseIDPrevious'>".__('Previous Year').'</a> ';
+        } else {
+            echo __('Previous Year').' ';
+        }
+        echo ' | ';
+        if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
+					echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/units.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."&gibbonCourseID=$gibbonCourseIDNext'>".__('Next Year').'</a> ';
+        } else {
+            echo __('Next Year').' ';
+        }
+    echo '</div>';
+
+    if (empty($gibbonCourseID)) {
+        $page->addError(__('Your request failed because your inputs were invalid.'));
+        return;
+    }
+
+    try {
+        if ($highestAction == 'Unit Planner_all') {
+            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID);
+            $sql = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID';
+        } elseif ($highestAction == 'Unit Planner_learningAreas') {
+                        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID, 'gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
+            $sql = "SELECT gibbonCourseID, gibbonCourse.name, gibbonCourse.nameShort FROM gibbonCourse JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID ORDER BY gibbonCourse.nameShort";
+        }
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        echo "<div class='error'>".$e->getMessage().'</div>';
+    }
+
+    if ($result->rowCount() < 1) {
+        $page->addError(__('The selected record does not exist, or you do not have access to it.'));
+        return;
+    }
+
+    // CRITERIA
+    $criteria = $unitGateway->newQueryCriteria(true)
+        ->sortBy(['ordering', 'name'])
+        ->fromPOST();
+
+    $course = $courseGateway->getByID($gibbonCourseID);
+    $units = $unitGateway->queryUnitsByCourse($criteria, $gibbonCourseID);
+
+    // FORM
+    $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'].'/modules/Planner/unitsProcessBulk.php');
+    $form->setTitle($course['name']);
+    $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+    $form->addHiddenValue('gibbonCourseID', $gibbonCourseID);
+
+    $bulkActions = array(
+        'Duplicate' => __('Duplicate'),
+    );
+
+    $courses = $courseGateway->selectActiveAndUpcomingCourses($gibbonSchoolYearID);
+    $col = $form->createBulkActionColumn($bulkActions);
+        $col->addSelect('gibbonCourseIDCopyTo')
+            ->fromResults($courses, 'groupBy')
+            ->required()
+            ->placeholder()
+            ->setClass('shortWidth copyTo');
+        $col->addSubmit(__('Go'));
+
+    $form->toggleVisibilityByClass('copyTo')->onSelect('action')->when('Duplicate');
+
+    // DATA TABLE
+    $table = $form->addRow()->addDataTable('units', $criteria)->withData($units);
+
+    $table->addHeaderAction('add', __('Add'))
+        ->setURL('/modules/Planner/units_add.php')
+        ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+        ->addParam('gibbonCourseID', $gibbonCourseID)
+        ->displayLabel();
+
+    $table->addMetaData('bulkActions', $col);
+    $table->addMetaData('filterOptions', [
+        'active:Y' => __('Active').': '.__('Yes'),
+        'active:N' => __('Active').': '.__('No'),
+    ]);
+
+    $table->addColumn('name', __('Name'))->context('Primary');
+    $table->addColumn('description', __('Description'))->context('Secondary');
+    $table->addColumn('active', __('Active'))
+        ->width('10%')
+        ->format(Format::using('yesNo', 'active'));
+
+    // ACTIONS
+    $table->addActionColumn()
+        ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+        ->addParam('gibbonCourseID', $gibbonCourseID)
+        ->addParam('gibbonUnitID')
+        ->format(function ($unit, $actions) {
+            $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/Planner/units_edit.php');
+
+            $actions->addAction('delete', __('Delete'))
+                    ->setURL('/modules/Planner/units_delete.php');
+
+            $actions->addAction('duplicate', __('Duplicate'))
+                    ->setIcon('copy')
+                    ->setURL('/modules/Planner/units_duplicate.php');
+
+            $actions->addAction('export', __('Export'))
+                    ->setIcon('download')
+                    ->addParam('sidebar', 'false')
+                    ->setURL('/modules/Planner/units_dump.php');
+        });
+
+    $table->addCheckboxColumn('gibbonUnitID');
+
+    echo $form->getOutput();
+    
+    // Print sidebar
+    $gibbon->session->set('sidebarExtra',sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYearID));
 }

@@ -18,9 +18,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 $(document).ready(function(){
 
+    $(document).trigger('gibbon-setup');
+
     // Initialize datepicker
     var dateDefaults = $.datepicker.regional[Gibbon.config.datepicker.locale];
     dateDefaults.dateFormat = Gibbon.config.datepicker.dateFormat;
+    dateDefaults.firstDay = Gibbon.config.datepicker.firstDay;
     
     $.datepicker.setDefaults(dateDefaults);
     
@@ -30,8 +33,12 @@ $(document).ready(function(){
         $(document).tooltip({
             show: 800,
             hide: false,
+            items: "*[title]:not(.tox-edit-area__iframe):not(.tox-collection__item):not(.tox-button):not(.tox-tbtn--select)",
             content: function () {
                 return $(this).prop('title');
+            },
+            open: function(event, ui) {
+                ui.tooltip.delay(3000).fadeTo(1000, 0);
             },
             position: {
                 my: "center bottom-20",
@@ -56,10 +63,14 @@ $(document).ready(function(){
         selector: "div#editorcontainer textarea",
         width: '100%',
         menubar : false,
-        toolbar: 'bold, italic, underline,forecolor,backcolor,|,alignleft, aligncenter, alignright, alignjustify, |, formatselect, |, fontselect, fontsizeselect, |, table, |, bullist, numlist,outdent, indent, |, link, unlink, image, media, hr, charmap, subscript, superscript, |, cut, copy, paste, undo, redo, fullscreen',
-        plugins: 'table, template, paste, visualchars, link, template, textcolor, hr, charmap, fullscreen',
-        statusbar: false,
+        resize: true,
+        toolbar_mode: 'sliding',
+        toolbar: 'bold italic underline  forecolor backcolor |  alignleft aligncenter alignright alignjustify | bullist numlist indent outdent | link unlink hr charmap | fullscreen | styleselect fontselect fontsizeselect | table | subscript superscript | cut copy paste undo redo ',
+        plugins: 'table lists paste link hr charmap fullscreen',
+        statusbar: true,
+        branding: false,
         valid_elements: Gibbon.config.tinymce.valid_elements,
+        extended_valid_elements : Gibbon.config.tinymce.extended_valid_elements,
         invalid_elements: '',
         apply_source_formatting : true,
         browser_spellcheck: true,

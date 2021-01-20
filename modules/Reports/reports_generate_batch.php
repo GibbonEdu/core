@@ -92,6 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
 
     $table->addColumn('count', __('Count'))
         ->width('8%')
+        ->notSortable()
         ->format(function ($report) use (&$pdo, &$context) {
             if (empty($report['gibbonYearGroupID']) || empty($report['gibbonSchoolYearID'])) {
                 return __('N/A');
@@ -102,10 +103,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
         });
 
     $table->addColumn('timestamp', __('Last Created'))
+        ->notSortable()
         ->format(function ($report) use ($gibbonReportID, &$reportArchiveEntryGateway, &$logs) {
             $reportLogs = $logs[$report['gibbonYearGroupID']] ?? [];
             if (count($reportLogs) > 0) {
-                return '<div class="statusBar" data-id="'.($reportLogs['processID'] ?? '').'">'
+                return '<div class="statusBar" data-id="'.($reportLogs['processID'] ?? '').'" data-context="'.($report['gibbonYearGroupID'] ?? '').'" data-report="'.$gibbonReportID.'">'
                       .'<img class="align-middle w-56 -mt-px" src="./themes/Default/img/loading.gif">'
                       .'<span class="tag ml-2 message">'.__('Running').'</span></div>';
             }
@@ -157,7 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
 $('.statusBar').each(function(index, element) {
     var refresh = setInterval(function () {
         var path = "<?php echo $_SESSION[$guid]['absoluteURL'] ?>/modules/Reports/reports_generate_ajax.php";
-        var postData = { gibbonLogID: $(element).data('id') };
+        var postData = { gibbonLogID: $(element).data('id'), gibbonReportID: $(element).data('report'), contextID: $(element).data('context') };
         $(element).load(path, postData, function(responseText, textStatus, jqXHR) {
             if (responseText.indexOf('Complete') >= 0) {
                 clearInterval(refresh);

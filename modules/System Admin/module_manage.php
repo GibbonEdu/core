@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
@@ -26,15 +25,13 @@ use Gibbon\Domain\System\ModuleGateway;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
-    //Proceed!
+    // Proceed!
     $page->breadcrumbs->add(__('Manage Modules'));
 
-    $returns = array();
+    $returns = [];
     $returns['warning0'] = __("Uninstall was successful. You will still need to remove the module's files yourself.");
     $returns['error5'] = __('Install failed because either the module name was not given or the manifest file was invalid.');
     $returns['error6'] = __('Install failed because a module with the same name is already installed.');
@@ -43,24 +40,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, $returns);
     }
-
-    if (!empty($_SESSION[$guid]['moduleInstallError'])) {
-        echo "<div class='error'>";
-        echo __('The following SQL statements caused errors:').' '.$_SESSION[$guid]['moduleInstallError'];
-        echo '</div>';
-        $_SESSION[$guid]['moduleInstallError'] = null;
+    if (!empty($gibbon->session->get('moduleInstallError'))) {
+        $page->addError(__('The following SQL statements caused errors:').' '.$gibbon->session->get('moduleInstallError'));
+        $gibbon->session->set('moduleInstallError', '');
     }
 
-    echo "<div class='message'>";
-    echo sprintf(__('To install a module, upload the module folder to %1$s on your server and then refresh this page. After refresh, the module should appear in the list below: use the install button in the Actions column to set it up.'), '<b><u>'.$_SESSION[$guid]['absolutePath'].'/modules/</u></b>');
-    echo '</div>';
+    $page->addMessage(sprintf(__('To install a module, upload the module folder to %1$s on your server and then refresh this page. After refresh, the module should appear in the list below: use the install button in the Actions column to set it up.'), '<b><u>'.$gibbon->session->get('absolutePath').'/modules/</u></b>'));
 
-    echo '<h2>';
-    echo __('Installed');
-    echo '</h2>';
-
-    //Get list of modules in /modules directory
-    $moduleFolders = glob($_SESSION[$guid]['absolutePath'].'/modules/*', GLOB_ONLYDIR);
+    // Get list of modules in /modules directory
+    $moduleFolders = glob($gibbon->session->get('absolutePath').'/modules/*', GLOB_ONLYDIR);
 
     // QUERY
     $moduleGateway = $container->get(ModuleGateway::class);
@@ -70,12 +58,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
 
     $modules = $moduleGateway->queryModules($criteria);
     $moduleNames = $moduleGateway->getAllModuleNames();
-    $orphans = array();
+    $orphans = [];
 
     // Build a set of module data, flagging orphaned modules that do not appear to be in the modules folder.
     // Also checks for available updates by comparing version numbers for Additional modules.
-    $modules->transform(function (&$module) use ($guid, $version, &$orphans, &$moduleFolders) {
-        if (array_search($_SESSION[$guid]['absolutePath'].'/modules/'.$module['name'], $moduleFolders) === false) {
+    $modules->transform(function (&$module) use ($guid, $version, &$orphans, &$moduleFolders, $gibbon) {
+        if (array_search($gibbon->session->get('absolutePath').'/modules/'.$module['name'], $moduleFolders) === false) {
             $module['orphaned'] = true;
             $orphans[] = $module;
             return;
@@ -88,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
         if ($module['type'] == 'Additional') {
             $versionFromFile = getModuleVersion($module['name'], $guid);
             if (version_compare($versionFromFile, $module['version'], '>')) {
-                $module['status'] = '<b>'.__('Update Available').'</b><br/>';
+                $module['status'] = Format::bold(__('Update Available')).'<br/>';
                 $module['update'] = true;
             }
         }
@@ -96,8 +84,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
 
     // Build a set of uninstalled modules by checking the $modules DataSet.
     // Validates the manifest file and grabs the module details from there.
-    $uninstalledModules = array_reduce($moduleFolders, function($group, $modulePath) use ($guid, &$moduleNames) {
-        $moduleName = substr($modulePath, strlen($_SESSION[$guid]['absolutePath'].'/modules/'));
+    $uninstalledModules = array_reduce($moduleFolders, function($group, $modulePath) use ($guid, &$moduleNames, $gibbon) {
+        $moduleName = substr($modulePath, strlen($gibbon->session->get('absolutePath').'/modules/'));
         if (!in_array($moduleName, $moduleNames)) {
             $module = getModuleManifest($moduleName, $guid);
             $module['status'] = __('Not Installed');
@@ -112,11 +100,44 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
         }
 
         return $group;
-    }, array());
+    }, []);
 
+    // UNINSTALLED MODULES
+    if (!empty($uninstalledModules)) {
+
+        $table = DataTable::create('moduleInstall');
+        $table->setTitle(__('Not Installed'));
+
+        $table->modifyRows(function ($module, $row) {
+            $row->addClass($module['manifestOK'] == false ? 'error' : 'warning');
+            return $row;
+        });
+
+        $table->addColumn('name', __('Name'));
+        $table->addColumn('status', __('Status'))->notSortable();
+        $table->addColumn('description', __('Description'));
+        $table->addColumn('versionDisplay', __('Version'));
+        $table->addColumn('author', __('Author'))
+               ->format(Format::using('link', ['url', 'author']));
+
+        $table->addActionColumn()
+            ->addParam('name')
+            ->format(function ($row, $actions) {
+                if ($row['manifestOK']) {
+                    $actions->addAction('install', __('Install'))
+                            ->setIcon('page_new')
+                            ->directLink()
+                            ->setURL('/modules/System Admin/module_manage_installProcess.php');
+                }
+            });
+
+        echo $table->render(new DataSet($uninstalledModules));
+    }
 
     // INSTALLED MODULES
     $table = DataTable::createPaginated('moduleManage', $criteria);
+
+    $table->setTitle( __('Installed'));
 
     $table->modifyRows(function ($module, $row) {
         if (!empty($module['orphaned'])) return '';
@@ -170,51 +191,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
 
     echo $table->render($modules);
 
-    // UNINSTALLED MODULES
-    if (!empty($uninstalledModules)) {
-        echo '<h2>';
-        echo __('Not Installed');
-        echo '</h2>';
-
-        $table = DataTable::create('moduleInstall');
-
-        $table->modifyRows(function ($module, $row) {
-            $row->addClass($module['manifestOK'] == false ? 'error' : 'warning');
-            return $row;
-        });
-
-        $table->addColumn('name', __('Name'));
-        $table->addColumn('status', __('Status'))->notSortable();
-        $table->addColumn('description', __('Description'));
-        $table->addColumn('versionDisplay', __('Version'));
-        $table->addColumn('author', __('Author'))
-               ->format(Format::using('link', ['url', 'author']));
-
-        $table->addActionColumn()
-            ->addParam('name')
-            ->format(function ($row, $actions) {
-                if ($row['manifestOK']) {
-                    $actions->addAction('install', __('Install'))
-                            ->setIcon('page_new')
-                            ->directLink()
-                            ->setURL('/modules/System Admin/module_manage_installProcess.php');
-                }
-            });
-
-        echo $table->render(new DataSet($uninstalledModules));
-    }
-
     // ORPHANED MODULES
     if ($orphans) {
-        echo '<h2>';
-        echo __('Orphaned Modules');
-        echo '</h2>';
-
-        echo '<p>';
-        echo __('These modules are installed in the database, but are missing from within the file system.');
-        echo '</p>';
 
         $table = DataTable::create('moduleOrphans');
+
+        $table->setTitle(__('Orphaned Modules'))
+            ->setDescription(__('These modules are installed in the database, but are missing from within the file system.'));
 
         $table->addColumn('name', __('Name'));
 

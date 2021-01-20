@@ -30,7 +30,7 @@ $_GET = $validator->sanitize($_GET);
 $_POST = $validator->sanitize($_POST);
 
 //Check email address is not blank
-$input = isset($_GET['input'])? $_GET['input'] : (isset($_POST['email'])? $_POST['email'] : '');
+$input = $_GET['input'] ?? ($_POST['email'] ?? '');
 $step = $_GET['step'];
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=passwordReset.php';
@@ -87,12 +87,11 @@ else {
             $key = randomPassword(40);
 
             //Try to delete other recors for this user
-            try {
+            
                 $data = array('gibbonPersonID' => $gibbonPersonID);
                 $sql = "DELETE FROM gibbonPersonReset WHERE gibbonPersonID=:gibbonPersonID";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) { }
 
             //Insert key record
             try {
@@ -202,12 +201,11 @@ else {
                                 }
 
                                 //Remove requests for this person
-                                try {
+                                
                                     $data = array('gibbonPersonID' => $gibbonPersonID);
                                     $sql = "DELETE FROM gibbonPersonReset WHERE gibbonPersonID=:gibbonPersonID";
                                     $result = $connection2->prepare($sql);
                                     $result->execute($data);
-                                } catch (PDOException $e) { }
 
                                 //Return
                                 $URL = $URLSuccess1.'?return=success1';

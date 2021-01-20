@@ -108,7 +108,7 @@ if ($proceed == false) {
             header("Location: {$URL}");
             exit();
         } else {
-            $fields = serialize($fields);
+            $fields = json_encode($fields);
         }
 
         //Check strength of password
@@ -118,19 +118,19 @@ if ($proceed == false) {
             $URL .= '&return=error7';
             header("Location: {$URL}");
         } else {
-            //Check uniqueness of username
-            try {
+            //Check uniqueness of username (and/or email, if required)
+            $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
+            if ($uniqueEmailAddress == 'Y') {
                 $data = array('username' => $username, 'email' => $email);
                 $sql = 'SELECT * FROM gibbonPerson WHERE username=:username OR email=:email';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
+                $result = $pdo->selectOne($sql, $data);
+            } else {
+                $data = array('username' => $username);
+                $sql = 'SELECT * FROM gibbonPerson WHERE username=:username';
+                $result = $pdo->selectOne($sql, $data);
             }
 
-            if ($result->rowCount() > 0) {
+            if (!empty($result)) {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
             } else {
@@ -164,11 +164,9 @@ if ($proceed == false) {
 
                     $gibbonPersonID = $connection2->lastInsertId();
 
-                    try {
+                    
                         $sqlLock = 'UNLOCK TABLES';
                         $result = $connection2->query($sqlLock);
-                    } catch (PDOException $e) {
-                    }
 
                     if ($status == 'Pending Approval') {
                         // Raise a new notification event

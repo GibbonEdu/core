@@ -172,11 +172,9 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                     }
 
                     //Unlock module table
-                    try {
+                    
                         $sql = 'UNLOCK TABLES';
                         $result = $connection2->query($sql);
-                    } catch (PDOException $e) {
-                    }
 
                     $from = $_POST['email'];
                     if ($partialFail == false and $from != '') {
@@ -214,6 +212,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                             $mail->renderBody('mail/email.twig.html', [
                                 'title'  => $mail->Subject,
                                 'body'   => $body,
+                                'maxWidth' => '900px',
                             ]);
 
                             if (!$mail->Send()) {

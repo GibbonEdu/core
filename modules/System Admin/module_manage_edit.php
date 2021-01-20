@@ -18,14 +18,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Domain\System\ModuleGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage_edit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
-    //Proceed!
+    // Proceed!
     $page->breadcrumbs
         ->add(__('Manage Modules'), 'module_manage.php')
         ->add(__('Edit Module'));
@@ -34,49 +33,38 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    //Check if school year specified
-    $gibbonModuleID = $_GET['gibbonModuleID'];
-    if ($gibbonModuleID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+    // Check if module specified
+    $gibbonModuleID = $_GET['gibbonModuleID'] ?? '';
+    
+    if (empty($gibbonModuleID)) {
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
-            $data = array('gibbonModuleID' => $gibbonModuleID);
-            $sql = 'SELECT * FROM gibbonModule WHERE gibbonModuleID=:gibbonModuleID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
-
-        if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+        $moduleGateway = $container->get(ModuleGateway::class);
+        $module = $moduleGateway->getByID($gibbonModuleID);
+        
+        if (empty($module)) {
+            $page->addError(__('The specified record cannot be found.'));
         } else {
-            //Let's go!
-            $values = $result->fetch();
+            // Let's go!
+            $form = Form::create('moduleEdit', $gibbon->session->get('absoluteURL').'/modules/'.$gibbon->session->get('module').'/module_manage_editProcess.php?gibbonModuleID='.$module['gibbonModuleID']);
 
-            $form = Form::create('moduleEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/module_manage_editProcess.php?gibbonModuleID='.$gibbonModuleID);
-
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $gibbon->session->get('address'));
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));
-                $row->addTextField('name')->setValue(__($values['name']))->readonly();
+                $row->addTextField('name')->setValue(__($module['name']))->readonly();
 
             $row = $form->addRow();
                 $row->addLabel('description', __('Description'));
-                $row->addTextArea('description')->setValue(__($values['description']))->readonly()->setRows(3);
+                $row->addTextArea('description')->setValue(__($module['description']))->readonly()->setRows(3);
 
             $row = $form->addRow();
                $row->addLabel('category', __('Category'))->description(__('Determines menu structure'));
-               $row->addTextField('category')->setValue(($values['category']))->required()->maxLength(10);
+               $row->addTextField('category')->setValue($module['category'])->required()->maxLength(12);
 
             $row = $form->addRow();
                 $row->addLabel('active', __('Active'));
-                $row->addYesNo('active')->selected($values['active']);
+                $row->addYesNo('active')->selected($module['active']);
 
             $row = $form->addRow();
                 $row->addFooter();

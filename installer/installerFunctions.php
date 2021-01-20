@@ -172,3 +172,27 @@ function split_sql_file($sql, $delimiter)
 
     return $output;
 }
+
+
+/**
+ * Process config variables into string literals stored in string.
+ *
+ * @param array variables
+ *      An array of config variables to be passed into config
+ *      file template.
+ *
+ * @return array
+ *      The variables forced to be string type and properly quoted.
+ */
+function process_config_vars(array $variables): array {
+    $variables += [
+        'databaseServer' => '',
+        'databaseUsername' => '',
+        'databasePassword' => '',
+        'databaseName' => '',
+        'guid' => '',
+    ];
+    return array_map(function ($value) {
+        return var_export((string) $value, true); // force render into string literals
+    }, $variables);
+}

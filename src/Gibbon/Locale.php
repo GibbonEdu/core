@@ -53,7 +53,7 @@ class Locale implements LocaleInterface
     {
         $this->absolutePath = $absolutePath;
         $this->session = $session;
-        $this->supportsGetText = function_exists('gettext');
+        $this->supportsGetText = function_exists('gettext') && function_exists('dgettext');
     }
 
     /**
@@ -248,6 +248,10 @@ class Locale implements LocaleInterface
             return $text;
         }
 
+        if (empty($this->i18ncode)) {
+            return $text;
+        }
+
         // get domain from options.
         $domain = $options['domain'] ?? '';
 
@@ -299,6 +303,8 @@ class Locale implements LocaleInterface
             $text = empty($domain) ?
                 ngettext($singular, $plural, $n) :
                 dngettext($domain, $singular, $plural, $n);
+        } else {
+            $text = $n > 1 ? $plural : $singular;
         }
 
         // apply named replacement parameters, if presents.

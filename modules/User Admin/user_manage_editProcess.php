@@ -101,14 +101,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             $currentUserRoles = (is_array($_SESSION[$guid]['gibbonRoleIDAll'])) ? array_column($_SESSION[$guid]['gibbonRoleIDAll'], 0) : array();
             $currentUserRoles[] = $_SESSION[$guid]['gibbonRoleIDPrimary'];
 
-            try {
+            
                 $dataRoles = array('gibbonRoleIDAll' => $row['gibbonRoleIDAll']);
                 $sqlRoles = 'SELECT gibbonRoleID, restriction, name FROM gibbonRole';
                 $resultRoles = $connection2->prepare($sqlRoles);
                 $resultRoles->execute($dataRoles);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
 
             $gibbonRoleIDAll = array();
             $gibbonRoleIDPrimary = $row['gibbonRoleIDPrimary'];
@@ -515,7 +512,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                         $URL .= '&return=error3';
                         header("Location: {$URL}");
                     } else {
-                        $fields = serialize($fields);
+                        $fields = json_encode($fields);
 
                         //Write to database
                         try {
@@ -534,13 +531,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                             if ($privacy_old != $privacy) {
 
                                 //Notify tutor
-                                try {
+                                
                                     $dataDetail = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
                                     $sqlDetail = 'SELECT gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonYearGroupID FROM gibbonRollGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID';
                                     $resultDetail = $connection2->prepare($sqlDetail);
                                     $resultDetail->execute($dataDetail);
-                                } catch (PDOException $e) {
-                                }
                                 if ($resultDetail->rowCount() == 1) {
 
                                     $rowDetail = $resultDetail->fetch();

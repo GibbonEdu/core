@@ -69,14 +69,24 @@ class ActivityReportGateway extends QueryableGateway
                     ->bindValue('registration', $registration);
             },
             'enrolment' => function ($query, $enrolment) {
-                if ($enrolment == 'less') $query->having('enrolment < gibbonActivity.maxParticipants AND gibbonActivity.maxParticipants > 0');
-                if ($enrolment == 'full') $query->having('enrolment = gibbonActivity.maxParticipants AND gibbonActivity.maxParticipants > 0');
-                if ($enrolment == 'greater') $query->having('enrolment > gibbonActivity.maxParticipants AND gibbonActivity.maxParticipants > 0');
+                if ($enrolment == 'less') {
+                    $query->having('enrolment < gibbonActivity.maxParticipants AND gibbonActivity.maxParticipants > 0');
+                }
+                if ($enrolment == 'full') {
+                    $query->having('enrolment = gibbonActivity.maxParticipants AND gibbonActivity.maxParticipants > 0');
+                }
+                if ($enrolment == 'greater') {
+                    $query->having('enrolment > gibbonActivity.maxParticipants AND gibbonActivity.maxParticipants > 0');
+                }
                 return $query;
             },
             'status' => function ($query, $status) {
-                if ($status == 'waiting') $query->having('waiting > 0');
-                if ($status == 'pending') $query->having('pending > 0');
+                if ($status == 'waiting') {
+                    $query->having('waiting > 0');
+                }
+                if ($status == 'pending') {
+                    $query->having('pending > 0');
+                }
                 return $query;
             },
         ]);
@@ -177,13 +187,13 @@ class ActivityReportGateway extends QueryableGateway
         $query = $this
             ->newQuery()
             ->from($this->getTableName())
-            ->cols($dateType == 'Term' 
+            ->cols($dateType == 'Term'
                 ? ["CONCAT(gibbonSchoolYearTerm.gibbonSchoolYearTermID, '-', gibbonActivitySlot.gibbonDaysOfWeekID) AS groupBy"]
-                : ['gibbonActivitySlot.gibbonDaysOfWeekID AS groupBy'] )
+                : ['gibbonActivitySlot.gibbonDaysOfWeekID AS groupBy'])
             ->cols([
-                'gibbonActivityStudent.gibbonPersonID', 
-                'COUNT(DISTINCT gibbonActivityStudent.gibbonActivityStudentID) AS count', 
-                "COUNT(DISTINCT CASE WHEN gibbonActivityStudent.status<>'Accepted' THEN gibbonActivityStudent.gibbonActivityStudentID END) AS notAccepted", 
+                'gibbonActivityStudent.gibbonPersonID',
+                'COUNT(DISTINCT gibbonActivityStudent.gibbonActivityStudentID) AS count',
+                "COUNT(DISTINCT CASE WHEN gibbonActivityStudent.status<>'Accepted' THEN gibbonActivityStudent.gibbonActivityStudentID END) AS notAccepted",
                 "GROUP_CONCAT(DISTINCT gibbonActivity.name SEPARATOR ', ') AS activityNames"
             ])
             ->innerJoin('gibbonActivityStudent', 'gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID')
@@ -236,5 +246,94 @@ class ActivityReportGateway extends QueryableGateway
                 ORDER BY gibbonSchoolYearTerm.sequenceNumber, gibbonDaysOfWeek.sequenceNumber";
 
         return $this->db()->select($sql, $data);
+    }
+
+    public function queryStudentActivities(QueryCriteria $criteria)
+    {
+        $query = $this
+        ->newQuery()
+        ->cols([
+          'gibbonActivity.gibbonActivityID',
+          'gibbonActivity.name as activityName',
+          'gibbonActivity.type as activityType',
+          'gibbonActivity.programStart',
+          'gibbonActivity.programEnd',
+          'gibbonActivityStudent.status',
+          'GROUP_CONCAT(term.nameShort) as terms',
+          'gibbonSchoolYear.name as yearName',
+          'gibbonSchoolYear.sequenceNumber as yearSequenceNumber',
+          'gibbonActivity.active',
+          'gibbonPerson.preferredName',
+          'gibbonPerson.surname',
+          'gibbonPerson.title'
+        ])
+        ->from('gibbonActivity')
+        ->innerJoin('gibbonActivityStudent', 'gibbonActivity.gibbonActivityID = gibbonActivityStudent.gibbonActivityID')
+        ->innerJoin('gibbonPerson', 'gibbonActivityStudent.gibbonPersonID = gibbonPerson.gibbonPersonID')
+        ->innerJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID = gibbonStudentEnrolment.gibbonPersonID')
+        ->innerJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID = gibbonRollGroup.gibbonRollGroupID')
+        ->innerJoin('gibbonSchoolYear', 'gibbonStudentEnrolment.gibbonSchoolYearID = gibbonSchoolYear.gibbonSchoolYearID')
+        ->leftJoin('gibbonSchoolYearTerm term', 'FIND_IN_SET(term.gibbonSchoolYearTermID, gibbonActivity.gibbonSchoolYearTermIDList) > 0')
+        ->where("gibbonPerson.status = 'Full'")
+        ->where("(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= CURRENT_TIMESTAMP)")
+        ->where("(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= CURRENT_TIMESTAMP)")
+        ->groupBy([
+            'gibbonActivity.gibbonActivityID',
+            'gibbonSchoolYear.name',
+            'gibbonRollGroup.name',
+            'gibbonActivity.programStart',
+            'gibbonActivity.programEnd',
+            'gibbonActivityStudent.status',
+            'gibbonActivity.name',
+            'gibbonActivity.type',
+            'gibbonPerson.title',
+            'gibbonPerson.preferredName',
+            'gibbonPerson.surname',
+            'gibbonSchoolYear.sequenceNumber'
+        ])
+        ->distinct();
+
+        $criteria->addFilterRules([
+        'gibbonPersonID' => function ($query, $gibbonPersonID) {
+            return $query
+            ->where('gibbonActivityStudent.gibbonPersonID = :gibbonPersonID')
+            ->bindValue('gibbonPersonID', $gibbonPersonID);
+        },
+        'gibbonSchoolYearID' => function ($query, $gibbonSchoolYearID) {
+            return $query
+            ->where('gibbonActivity.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+        },
+        'active' => function ($query, $active) {
+            return $query
+            ->where('gibbonActivity.active = :active')
+            ->bindValue('active', $active);
+        }
+        ]);
+
+        return $this->runQuery($query, $criteria);
+    }
+
+    public function queryStudentYears(QueryCriteria $criteria)
+    {
+        $query = $this
+        ->newQuery()
+        ->cols([
+          'gibbonSchoolYear.gibbonSchoolYearID',
+          'gibbonSchoolYear.name'
+        ])
+        ->from('gibbonStudentEnrolment')
+        ->innerJoin('gibbonSchoolYear', 'gibbonStudentEnrolment.gibbonSchoolYearID = gibbonSchoolYear.gibbonSchoolYearID')
+        ->orderBy(['gibbonSchoolYear.sequenceNumber'])
+        ->distinct();
+
+        $criteria->addFilterRules([
+        'gibbonPersonID' => function ($query, $gibbonPersonID) {
+            return $query
+            ->where('gibbonStudentEnrolment.gibbonPersonID = :gibbonPersonID')
+            ->bindValue('gibbonPersonID', $gibbonPersonID);
+        }
+        ]);
+        return $this->runQuery($query, $criteria);
     }
 }

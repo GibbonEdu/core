@@ -22,6 +22,8 @@ $newFormValues = array(
     'behaviourAlertHighThreshold'   => '8',
     'extendedBriefProfile'          => 'Y',
     'studentAgreementOptions'       => 'Option1,Option2,Option3',
+    'dayTypeOptions'                => 'Day,Type,Option,Test',
+    'dayTypeText'                   => 'Day-Type Test',
 );
 
 $I->submitForm('#content form', $newFormValues, 'Submit');

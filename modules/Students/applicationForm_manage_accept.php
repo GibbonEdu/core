@@ -27,10 +27,8 @@ use Gibbon\Comms\NotificationEvent;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage_accept.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $gibbonApplicationFormID = $_GET['gibbonApplicationFormID'] ?? '';
@@ -43,18 +41,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     //Check if school year specified
     if ($gibbonApplicationFormID == '' or $gibbonSchoolYearID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
             $sql = "SELECT * FROM gibbonApplicationForm WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND (status='Pending' OR status='Waiting List')";
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
@@ -110,6 +103,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                 $col = $form->addRow()->addColumn()->addClass('stacked');
 
+                $sqlSchoolYear = 'SELECT status FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+                $entryYearStatus = $pdo->selectOne($sqlSchoolYear, ['gibbonSchoolYearID' => $values['gibbonSchoolYearIDEntry']]);
+                if ($entryYearStatus == 'Upcoming') {
+                    $col->addContent(Format::alert(__('Students and parents accepted to an upcoming school year will have their status set to "Expected", unless you choose to send a welcome email to them, in which case their status will be "Full".'), 'message'));
+                }
+
                 $applicantName = Format::name('', $values['preferredName'], $values['surname'], 'Student');
                 $col->addContent(sprintf(__('Are you sure you want to accept the application for %1$s?'), $applicantName))->wrap('<b>', '</b>');
 
@@ -144,7 +143,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                          ->append('<li>'.__('Link student and parents to the family.').'</li>');
                 }
 
-                $list->append('<li>'.__('Save the student\'s payment preferences.').'</li>')
+                $list->append('<li>'.__('Create a medical record for the student.').'</li>')
+                     ->append('<li>'.__('Save the student\'s payment preferences.').'</li>')
                      ->append('<li>'.__('Set the status of the application to "Accepted".').'</li>');
 
                 $list->wrap('<ol>', '</ol>');
@@ -178,8 +178,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     $list->append('<li>'.__('Enrol the student in the selected school year (as the student has been assigned to a roll group).').'</li>');
                 }
 
-                $list->append('<li>'.__('Create a medical record for the student.').'</li>')
-                     ->append('<li>'.__('Create an individual needs record for the student.').'</li>')
+                $list->append('<li>'.__('Create an individual needs record for the student.').'</li>')
                      ->append('<li>'.__('Create a note of the student\'s scholarship information outside of Gibbon.').'</li>')
                      ->append('<li>'.__('Create a timetable for the student.').'</li>');
 
@@ -218,231 +217,194 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                 //CREATE STUDENT
                 $failStudent = true;
-                $lock = true;
-                try {
-                    $sql = 'LOCK TABLES gibbonPerson WRITE, gibbonSetting WRITE, gibbonSchoolYear WRITE, gibbonYearGroup WRITE, gibbonRollGroup WRITE, gibbonHouse WRITE, gibbonStudentEnrolment WRITE, gibbonUsernameFormat WRITE, gibbonRole WRITE';
-                    $result = $connection2->query($sql);
-                } catch (PDOException $e) {
-                    $lock = false;
-                    echo "<div class='error'>".$e->getMessage().'</div>';
+                
+                // Generate a unique username for the new student, or use the pre-defined one.
+                if (!empty($values['username'])) {
+                    $username = $values['username'];
+                } else {
+                    $generator = new UsernameGenerator($pdo);
+                    $generator->addToken('preferredName', $values['preferredName']);
+                    $generator->addToken('firstName', $values['firstName']);
+                    $generator->addToken('surname', $values['surname']);
+
+                    $username = $generator->generateByRole('003');
                 }
-                if ($lock == true) {
-                    $gotAI = true;
+
+                // Generate a random password
+                $password = randomPassword(8);
+                $salt = getSalt();
+                $passwordStrong = hash('sha256', $salt.$password);
+
+                $lastSchool = '';
+                if ($values['schoolDate1'] > $values['schoolDate2']) {
+                    $lastSchool = $values['schoolName1'];
+                } elseif ($values['schoolDate2'] > $values['schoolDate1']) {
+                    $lastSchool = $values['schoolName2'];
+                }
+
+                $continueLoop = !(!empty($username) && $username != 'usernamefailed' && !empty($password));
+
+                // Use the pre-defined student ID, otherwise set it to an empty string (not null).
+                $values['studentID'] = $values['studentID'] ?? '';
+
+                //Set default email address for student
+                $email = $values['email'];
+                $emailAlternate = '';
+                $studentDefaultEmail = getSettingByScope($connection2, 'Application Form', 'studentDefaultEmail');
+                if ($studentDefaultEmail != '') {
+                    $emailAlternate = $email;
+                    $email = str_replace('[username]', $username, $studentDefaultEmail);
+                }
+
+                //Set default website address for student
+                $website = '';
+                $studentDefaultWebsite = getSettingByScope($connection2, 'Application Form', 'studentDefaultWebsite');
+                if ($studentDefaultWebsite != '') {
+                    $website = str_replace('[username]', $username, $studentDefaultWebsite);
+                }
+
+                // Get student's school year at entry info
+                $dataSchoolYear = array('gibbonSchoolYearID' => $values['gibbonSchoolYearIDEntry']);
+                $sqlSchoolYear = 'SELECT name, status FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+                $resultSchoolYear = $connection2->prepare($sqlSchoolYear);
+                $resultSchoolYear->execute($dataSchoolYear);
+                $schoolYearEntry = $resultSchoolYear->fetch();
+                $schoolYearName = $schoolYearEntry['name'] ?? '';
+                $status = $schoolYearEntry['status'] == 'Upcoming' && $informStudent != 'Y' ? 'Expected' : 'Full'; 
+
+                // Get student's year group info
+                $dataYearGroup = array('gibbonYearGroupID' => $values['gibbonYearGroupIDEntry']);
+                $sqlYearGroup = 'SELECT name FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID';
+                $resultYearGroup = $connection2->prepare($sqlYearGroup);
+                $resultYearGroup->execute($dataYearGroup);
+                $yearGroupName = ($resultYearGroup->rowCount() == 1)? $resultYearGroup->fetchColumn(0) : '';
+
+                // Get student's roll group info (if any)
+                $dataRollGroup = array('gibbonRollGroupID' => $values['gibbonRollGroupID']);
+                $sqlRollGroup = 'SELECT name FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
+                $resultRollGroup = $connection2->prepare($sqlRollGroup);
+                $resultRollGroup->execute($dataRollGroup);
+                $rollGroupName = ($resultRollGroup->rowCount() == 1)? $resultRollGroup->fetchColumn(0) : '';
+
+                //Email website and email address to admin for creation
+                if ($studentDefaultEmail != '' or $studentDefaultWebsite != '') {
+                    echo '<h4>';
+                    echo __('Student Email & Website');
+                    echo '</h4>';
+                    $to = $_SESSION[$guid]['organisationAdministratorEmail'];
+                    $subject = sprintf(__('Create Student Email/Websites for %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
+                    $body = sprintf(__('Please create the following for new student %1$s.'), Format::name('', $values['preferredName'], $values['surname'], 'Student'))."<br/><br/>";
+                    if ($studentDefaultEmail != '') {
+                        $body .= __('Email').': '.$email."<br/>";
+                    }
+                    if ($studentDefaultWebsite != '') {
+                        $body .= __('Website').': '.$website."<br/>";
+                    }
+                    if ($values['gibbonSchoolYearIDEntry'] != '' && !empty($schoolYearName)) {
+                        $body .= __('School Year').': '.$schoolYearName."<br/>";
+                    }
+                    if ($values['gibbonYearGroupIDEntry'] != '' && !empty($yearGroupName)) {
+                        $body .= __('Year Group').': '.$yearGroupName."<br/>";
+                    }
+                    if ($values['gibbonRollGroupID'] != '' && !empty($rollGroupName)) {
+                        $body .= __('Roll Group').': '.$rollGroupName."<br/>";
+                    }
+                    if ($values['dateStart'] != '') {
+                        $body .= __('Start Date').': '.dateConvertBack($guid, $values['dateStart'])."<br/>";
+                    }
+
+                    $mail = $container->get(Mailer::class);
+                    $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
+                    $mail->AddAddress($to);
+                    $mail->Subject = $subject;
+                    $mail->renderBody('mail/email.twig.html', [
+                        'title'  => $subject,
+                        'body'   => $body,
+                    ]);
+
+                    if ($mail->Send()) {
+                        echo "<div class='success'>";
+                        echo sprintf(__('A request to create a student email address and/or website address was successfully sent to %1$s.'), $_SESSION[$guid]['organisationAdministratorName']);
+                        echo '</div>';
+                    } else {
+                        echo "<div class='error'>";
+                        echo sprintf(__('A request to create a student email address and/or website address failed. Please contact %1$s to request these manually.'), $_SESSION[$guid]['organisationAdministratorName']);
+                        echo '</div>';
+                    }
+                }
+
+                //ATTEMPT AUTOMATIC HOUSE ASSIGNMENT
+                $gibbonHouseID = null;
+                $house = '';
+                if (getSettingByScope($connection2, 'Application Form', 'autoHouseAssign') == 'Y') {
+                    $houseFail = false;
+                    if ($values['gibbonYearGroupIDEntry'] == '' or $values['gibbonSchoolYearIDEntry'] == '' and $values['gender'] == '') { //No year group or school year set, so return error
+                        $houseFail = true;
+                    } else {
+                        //Check boys and girls in each house in year group
+                        try {
+                            $dataHouse = array('gibbonYearGroupID' => $values['gibbonYearGroupIDEntry'], 'gibbonSchoolYearID' => $values['gibbonSchoolYearIDEntry'], 'gender' => $values['gender']);
+                            $sqlHouse = "SELECT gibbonHouse.name AS house, gibbonHouse.gibbonHouseID, count(DISTINCT gibbonPerson.gibbonPersonID) AS count
+                                FROM gibbonHouse
+                                    LEFT JOIN gibbonPerson ON (gibbonPerson.gibbonHouseID=gibbonHouse.gibbonHouseID AND gender=:gender AND status='Full')
+                                    LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID
+                                        AND gibbonSchoolYearID=:gibbonSchoolYearID
+                                        AND gibbonYearGroupID=:gibbonYearGroupID)
+                                WHERE gibbonHouse.gibbonHouseID IS NOT NULL
+                                GROUP BY house, gibbonHouse.gibbonHouseID
+                                ORDER BY count, RAND(), gibbonHouse.gibbonHouseID";
+                            $resultHouse = $connection2->prepare($sqlHouse);
+                            $resultHouse->execute($dataHouse);
+                        } catch (PDOException $e) {
+                            $houseFail = true;
+                        }
+                        if ($resultHouse->rowCount() > 0) {
+                            $rowHouse = $resultHouse->fetch();
+                            $gibbonHouseID = $rowHouse['gibbonHouseID'];
+                            $house = $rowHouse['house'];
+                        } else {
+                            $houseFail = true;
+                        }
+                    }
+
+                    if ($houseFail == true) {
+                        echo "<div class='warning'>";
+                        echo __('The student could not automatically be added to a house, you may wish to manually add them to a house.');
+                        echo '</div>';
+                    } else {
+                        echo "<div class='success'>";
+                        echo sprintf(__('The student has automatically been assigned to %1$s house.'), $house);
+                        echo '</div>';
+                    }
+                }
+
+                if ($continueLoop == false) {
+                    $insertOK = true;
                     try {
-                        $sqlAI = "SHOW TABLE STATUS LIKE 'gibbonPerson'";
-                        $resultAI = $connection2->query($sqlAI);
+                        $data = array('username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'status' => $status, 'surname' => $values['surname'], 'firstName' => $values['firstName'], 'preferredName' => $values['preferredName'], 'officialName' => $values['officialName'], 'nameInCharacters' => $values['nameInCharacters'], 'gender' => $values['gender'], 'dob' => $values['dob'], 'languageFirst' => $values['languageFirst'], 'languageSecond' => $values['languageSecond'], 'languageThird' => $values['languageThird'], 'countryOfBirth' => $values['countryOfBirth'], 'citizenship1' => $values['citizenship1'], 'citizenship1Passport' => $values['citizenship1Passport'], 'nationalIDCardNumber' => $values['nationalIDCardNumber'], 'residencyStatus' => $values['residencyStatus'], 'visaExpiryDate' => $values['visaExpiryDate'], 'email' => $email, 'emailAlternate' => $emailAlternate, 'website' => $website, 'phone1Type' => $values['phone1Type'], 'phone1CountryCode' => $values['phone1CountryCode'], 'phone1' => $values['phone1'], 'phone2Type' => $values['phone2Type'], 'phone2CountryCode' => $values['phone2CountryCode'], 'phone2' => $values['phone2'], 'lastSchool' => $lastSchool, 'dateStart' => $values['dateStart'], 'privacy' => $values['privacy'], 'dayType' => $values['dayType'], 'gibbonHouseID' => $gibbonHouseID, 'studentID' => $values['studentID'], 'fields' => $values['fields']);
+                        $sql = "INSERT INTO gibbonPerson SET username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, gibbonRoleIDPrimary='003', gibbonRoleIDAll='003', status=:status, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, email=:email, emailAlternate=:emailAlternate, website=:website, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, lastSchool=:lastSchool, dateStart=:dateStart, privacy=:privacy, dayType=:dayType, gibbonHouseID=:gibbonHouseID, studentID=:studentID, fields=:fields";
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
                     } catch (PDOException $e) {
-                        $gotAI = false;
+                        $insertOK = false;
                         echo "<div class='error'>".$e->getMessage().'</div>';
                     }
+                    if ($insertOK == true) {
+                        $gibbonPersonID = $connection2->lastInsertID();
+                    
+                        $failStudent = false;
 
-                    if ($gotAI == true) {
-                        $rowAI = $resultAI->fetch();
-                        $gibbonPersonID = str_pad($rowAI['Auto_increment'], 10, '0', STR_PAD_LEFT);
-
-                        // Generate a unique username for the new student, or use the pre-defined one.
-                        if (!empty($values['username'])) {
-                            $username = $values['username'];
-                        } else {
-                            $generator = new UsernameGenerator($pdo);
-                            $generator->addToken('preferredName', $values['preferredName']);
-                            $generator->addToken('firstName', $values['firstName']);
-                            $generator->addToken('surname', $values['surname']);
-
-                            $username = $generator->generateByRole('003');
-                        }
-
-                        // Generate a random password
-                        $password = randomPassword(8);
-                        $salt = getSalt();
-                        $passwordStrong = hash('sha256', $salt.$password);
-
-                        $lastSchool = '';
-                        if ($values['schoolDate1'] > $values['schoolDate2']) {
-                            $lastSchool = $values['schoolName1'];
-                        } elseif ($values['schoolDate2'] > $values['schoolDate1']) {
-                            $lastSchool = $values['schoolName2'];
-                        }
-
-                        $continueLoop = !(!empty($username) && $username != 'usernamefailed' && !empty($password));
-
-                        // Use the pre-defined student ID, otherwise set it to an empty string (not null).
-                        $values['studentID'] = $values['studentID'] ?? '';
-
-                        //Set default email address for student
-                        $email = $values['email'];
-                        $emailAlternate = '';
-                        $studentDefaultEmail = getSettingByScope($connection2, 'Application Form', 'studentDefaultEmail');
-                        if ($studentDefaultEmail != '') {
-                            $emailAlternate = $email;
-                            $email = str_replace('[username]', $username, $studentDefaultEmail);
-                        }
-
-                        //Set default website address for student
-                        $website = '';
-                        $studentDefaultWebsite = getSettingByScope($connection2, 'Application Form', 'studentDefaultWebsite');
-                        if ($studentDefaultWebsite != '') {
-                            $website = str_replace('[username]', $username, $studentDefaultWebsite);
-                        }
-
-                        // Get student's school year at entry info
-                        try {
-                            $dataSchoolYear = array('gibbonSchoolYearID' => $values['gibbonSchoolYearIDEntry']);
-                            $sqlSchoolYear = 'SELECT name FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-                            $resultSchoolYear = $connection2->prepare($sqlSchoolYear);
-                            $resultSchoolYear->execute($dataSchoolYear);
-                        } catch (PDOException $e) {
-                        }
-                        $schoolYearName = ($resultSchoolYear->rowCount() == 1)? $resultSchoolYear->fetchColumn(0) : '';
-
-                        // Get student's year group info
-                        try {
-                            $dataYearGroup = array('gibbonYearGroupID' => $values['gibbonYearGroupIDEntry']);
-                            $sqlYearGroup = 'SELECT name FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID';
-                            $resultYearGroup = $connection2->prepare($sqlYearGroup);
-                            $resultYearGroup->execute($dataYearGroup);
-                        } catch (PDOException $e) {
-                        }
-                        $yearGroupName = ($resultYearGroup->rowCount() == 1)? $resultYearGroup->fetchColumn(0) : '';
-
-                        // Get student's roll group info (if any)
-                        try {
-                            $dataRollGroup = array('gibbonRollGroupID' => $values['gibbonRollGroupID']);
-                            $sqlRollGroup = 'SELECT name FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
-                            $resultRollGroup = $connection2->prepare($sqlRollGroup);
-                            $resultRollGroup->execute($dataRollGroup);
-                        } catch (PDOException $e) {
-                        }
-                        $rollGroupName = ($resultRollGroup->rowCount() == 1)? $resultRollGroup->fetchColumn(0) : '';
-
-                        //Email website and email address to admin for creation
-                        if ($studentDefaultEmail != '' or $studentDefaultWebsite != '') {
-                            echo '<h4>';
-                            echo __('Student Email & Website');
-                            echo '</h4>';
-                            $to = $_SESSION[$guid]['organisationAdministratorEmail'];
-                            $subject = sprintf(__('Create Student Email/Websites for %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
-                            $body = sprintf(__('Please create the following for new student %1$s.'), Format::name('', $values['preferredName'], $values['surname'], 'Student'))."<br/><br/>";
-                            if ($studentDefaultEmail != '') {
-                                $body .= __('Email').': '.$email."<br/>";
-                            }
-                            if ($studentDefaultWebsite != '') {
-                                $body .= __('Website').': '.$website."<br/>";
-                            }
-                            if ($values['gibbonSchoolYearIDEntry'] != '' && !empty($schoolYearName)) {
-                                $body .= __('School Year').': '.$schoolYearName."<br/>";
-                            }
-                            if ($values['gibbonYearGroupIDEntry'] != '' && !empty($yearGroupName)) {
-                                $body .= __('Year Group').': '.$yearGroupName."<br/>";
-                            }
-                            if ($values['gibbonRollGroupID'] != '' && !empty($rollGroupName)) {
-                                $body .= __('Roll Group').': '.$rollGroupName."<br/>";
-                            }
-                            if ($values['dateStart'] != '') {
-                                $body .= __('Start Date').': '.dateConvertBack($guid, $values['dateStart'])."<br/>";
-                            }
-
-                            $body .= "<p style='font-style: italic;'>".sprintf(__('Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
-                            $bodyPlain = emailBodyConvert($body);
-
-                            $mail = $container->get(Mailer::class);
-                            $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
-                            $mail->AddAddress($to);
-                            $mail->CharSet = 'UTF-8';
-                            $mail->Encoding = 'base64';
-                            $mail->IsHTML(true);
-                            $mail->Subject = $subject;
-                            $mail->Body = $body;
-                            $mail->AltBody = $bodyPlain;
-
-                            if ($mail->Send()) {
-                                echo "<div class='success'>";
-                                echo sprintf(__('A request to create a student email address and/or website address was successfully sent to %1$s.'), $_SESSION[$guid]['organisationAdministratorName']);
-                                echo '</div>';
-                            } else {
-                                echo "<div class='error'>";
-                                echo sprintf(__('A request to create a student email address and/or website address failed. Please contact %1$s to request these manually.'), $_SESSION[$guid]['organisationAdministratorName']);
-                                echo '</div>';
-                            }
-                        }
-
-                        //ATTEMPT AUTOMATIC HOUSE ASSIGNMENT
-                        $gibbonHouseID = null;
-                        $house = '';
-                        if (getSettingByScope($connection2, 'Application Form', 'autoHouseAssign') == 'Y') {
-                            $houseFail = false;
-                            if ($values['gibbonYearGroupIDEntry'] == '' or $values['gibbonSchoolYearIDEntry'] == '' and $values['gender'] == '') { //No year group or school year set, so return error
-                                $houseFail = true;
-                            } else {
-                                //Check boys and girls in each house in year group
-                                try {
-                                    $dataHouse = array('gibbonYearGroupID' => $values['gibbonYearGroupIDEntry'], 'gibbonSchoolYearID' => $values['gibbonSchoolYearIDEntry'], 'gender' => $values['gender']);
-                                    $sqlHouse = "SELECT gibbonHouse.name AS house, gibbonHouse.gibbonHouseID, count(DISTINCT gibbonPerson.gibbonPersonID) AS count
-                                        FROM gibbonHouse
-                                            LEFT JOIN gibbonPerson ON (gibbonPerson.gibbonHouseID=gibbonHouse.gibbonHouseID AND gender=:gender AND status='Full')
-                                            LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID
-                                                AND gibbonSchoolYearID=:gibbonSchoolYearID
-                                                AND gibbonYearGroupID=:gibbonYearGroupID)
-                                        WHERE gibbonHouse.gibbonHouseID IS NOT NULL
-                                        GROUP BY house, gibbonHouse.gibbonHouseID
-                                        ORDER BY count, RAND(), gibbonHouse.gibbonHouseID";
-                                    $resultHouse = $connection2->prepare($sqlHouse);
-                                    $resultHouse->execute($dataHouse);
-                                } catch (PDOException $e) {
-                                    $houseFail = true;
-                                }
-                                if ($resultHouse->rowCount() > 0) {
-                                    $rowHouse = $resultHouse->fetch();
-                                    $gibbonHouseID = $rowHouse['gibbonHouseID'];
-                                    $house = $rowHouse['house'];
-                                } else {
-                                    $houseFail = true;
-                                }
-                            }
-
-                            if ($houseFail == true) {
-                                echo "<div class='warning'>";
-                                echo __('The student could not automatically be added to a house, you may wish to manually add them to a house.');
-                                echo '</div>';
-                            } else {
-                                echo "<div class='success'>";
-                                echo sprintf(__('The student has automatically been assigned to %1$s house.'), $house);
-                                echo '</div>';
-                            }
-                        }
-
-                        if ($continueLoop == false) {
-                            $insertOK = true;
-                            try {
-                                $data = array('username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'surname' => $values['surname'], 'firstName' => $values['firstName'], 'preferredName' => $values['preferredName'], 'officialName' => $values['officialName'], 'nameInCharacters' => $values['nameInCharacters'], 'gender' => $values['gender'], 'dob' => $values['dob'], 'languageFirst' => $values['languageFirst'], 'languageSecond' => $values['languageSecond'], 'languageThird' => $values['languageThird'], 'countryOfBirth' => $values['countryOfBirth'], 'citizenship1' => $values['citizenship1'], 'citizenship1Passport' => $values['citizenship1Passport'], 'nationalIDCardNumber' => $values['nationalIDCardNumber'], 'residencyStatus' => $values['residencyStatus'], 'visaExpiryDate' => $values['visaExpiryDate'], 'email' => $email, 'emailAlternate' => $emailAlternate, 'website' => $website, 'phone1Type' => $values['phone1Type'], 'phone1CountryCode' => $values['phone1CountryCode'], 'phone1' => $values['phone1'], 'phone2Type' => $values['phone2Type'], 'phone2CountryCode' => $values['phone2CountryCode'], 'phone2' => $values['phone2'], 'lastSchool' => $lastSchool, 'dateStart' => $values['dateStart'], 'privacy' => $values['privacy'], 'dayType' => $values['dayType'], 'gibbonHouseID' => $gibbonHouseID, 'studentID' => $values['studentID'], 'fields' => $values['fields']);
-                                $sql = "INSERT INTO gibbonPerson SET username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, gibbonRoleIDPrimary='003', gibbonRoleIDAll='003', status='Full', surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, email=:email, emailAlternate=:emailAlternate, website=:website, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, lastSchool=:lastSchool, dateStart=:dateStart, privacy=:privacy, dayType=:dayType, gibbonHouseID=:gibbonHouseID, studentID=:studentID, fields=:fields";
-                                $result = $connection2->prepare($sql);
-                                $result->execute($data);
-                            } catch (PDOException $e) {
-                                $insertOK = false;
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
-                            if ($insertOK == true) {
-                                $failStudent = false;
-
-                                //Populate informStudent array
-                                if ($informStudent == 'Y') {
-                                    $informStudentArray[0]['email'] = $values['email'];
-                                    $informStudentArray[0]['surname'] = $values['surname'];
-                                    $informStudentArray[0]['preferredName'] = $values['preferredName'];
-                                    $informStudentArray[0]['username'] = $username;
-                                    $informStudentArray[0]['password'] = $password;
-                                }
-                            }
+                        //Populate informStudent array
+                        if ($informStudent == 'Y') {
+                            $informStudentArray[0]['email'] = $values['email'];
+                            $informStudentArray[0]['surname'] = $values['surname'];
+                            $informStudentArray[0]['preferredName'] = $values['preferredName'];
+                            $informStudentArray[0]['username'] = $username;
+                            $informStudentArray[0]['password'] = $password;
                         }
                     }
                 }
-                try {
-                    $sql = 'UNLOCK TABLES';
-                    $result = $connection2->query($sql);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
+
 
                 if ($failStudent == true) {
                     echo "<div class='error'>";
@@ -462,39 +424,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     echo '</ul>';
 
                     //Move documents to student notes
-                    try {
+                    
                         $dataDoc = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
                         $sqlDoc = 'SELECT * FROM gibbonApplicationFormFile WHERE gibbonApplicationFormID=:gibbonApplicationFormID';
                         $resultDoc = $connection2->prepare($sqlDoc);
                         $resultDoc->execute($dataDoc);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
                     if ($resultDoc->rowCount() > 0) {
                         $note = '<p>';
                         while ($rowDoc = $resultDoc->fetch()) {
                             $note .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowDoc['path']."'>".$rowDoc['name'].'</a><br/>';
                         }
                         $note .= '</p>';
-                        try {
+                        
                             $data = array('gibbonPersonID' => $gibbonPersonID, 'title' => __('Application Documents'), 'note' => $note, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'timestamp' => date('Y-m-d H:i:s'));
                             $sql = 'INSERT INTO gibbonStudentNote SET gibbonPersonID=:gibbonPersonID, gibbonStudentNoteCategoryID=NULL, title=:title, note=:note, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestamp=:timestamp';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
                     }
 
                     //Create medical record if possible
-                    try {
-                        $data = array('gibbonPersonID' => $gibbonPersonID, 'comment' => $values['medicalInformation']);
-                        $sql = 'INSERT INTO gibbonPersonMedical SET gibbonPersonID=:gibbonPersonID, comment=:comment';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
+                    $data = array('gibbonPersonID' => $gibbonPersonID, 'comment' => $values['medicalInformation']);
+                    $sql = 'INSERT INTO gibbonPersonMedical SET gibbonPersonID=:gibbonPersonID, comment=:comment';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
 
                     //Enrol student
                     $enrolmentOK = true;
@@ -516,14 +468,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         //Report back
                         if ($enrolmentOK == false) {
                             echo "<div class='warning'>";
-                            echo __('Student could not be enroled, so this will have to be done manually at a later date.');
+                            echo __('Student could not be enrolled, so this will have to be done manually at a later date.');
                             echo '</div>';
                         } else {
                             echo '<h4>';
                             echo 'Student Enrolment';
                             echo '</h4>';
                             echo '<ul>';
-                            echo '<li>'.__('The student has successfully been enroled in the specified school year, year group and roll group.').'</li>';
+                            echo '<li>'.__('The student has successfully been enrolled in the specified school year, year group and roll group.').'</li>';
 
                             // Handle automatic course enrolment if enabled
                             $autoEnrolStudent = (isset($_POST['autoEnrolStudent']))? $_POST['autoEnrolStudent'] : 'N';
@@ -531,18 +483,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 $data = array(
                                     'gibbonRollGroupID' => $values['gibbonRollGroupID'],
                                     'gibbonPersonID' => $gibbonPersonID,
+                                    'gibbonSchoolYearIDEntry' => $values['gibbonSchoolYearIDEntry'],
                                 );
 
-                                $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `reportable`)
-                                        SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, 'Student', 'Y'
+                                $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `dateEnrolled`, `reportable`)
+                                        SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, 'Student', GREATEST((SELECT firstDay FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearIDEntry), CURRENT_DATE), 'Y'
                                         FROM gibbonCourseClassMap
                                         WHERE gibbonCourseClassMap.gibbonRollGroupID=:gibbonRollGroupID";
                                 $pdo->executeQuery($data, $sql);
 
                                 if (!$pdo->getQuerySuccess()) {
-                                    echo '<li class="warning">'.__('Student could not be automatically enroled in courses, so this will have to be done manually at a later date.').'</li>';
+                                    echo '<li class="warning">'.__('Student could not be automatically enrolled in courses, so this will have to be done manually at a later date.').'</li>';
                                 } else {
-                                    echo '<li>'.__('The student has automatically been enroled in courses for Roll Group.').'</li>';
+                                    echo '<li>'.__('The student has automatically been enrolled in courses for Roll Group.').'</li>';
                                 }
                             }
 
@@ -606,14 +559,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         }
 
                         //CONNECT STUDENT TO FAMILY
-                        try {
+                        
                             $dataFamily = array('gibbonFamilyID' => $values['gibbonFamilyID']);
                             $sqlFamily = 'SELECT * FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
                             $resultFamily = $connection2->prepare($sqlFamily);
                             $resultFamily->execute($dataFamily);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
                         if ($resultFamily->rowCount() == 1) {
                             $rowFamily = $resultFamily->fetch();
                             $familyName = $rowFamily['name'];
@@ -665,68 +615,50 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             }
                         }
 
-                        try {
+                        
                             $dataParents = array('gibbonFamilyID' => $values['gibbonFamilyID']);
                             $sqlParents = 'SELECT gibbonFamilyAdult.*, gibbonPerson.gibbonRoleIDAll FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID';
                             $resultParents = $connection2->prepare($sqlParents);
                             $resultParents->execute($dataParents);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
                         while ($rowParents = $resultParents->fetch()) {
                             //Update parent roles
                             if (strpos($rowParents['gibbonRoleIDAll'], '004') === false) {
-                                try {
+                                
                                     $dataRoleUpdate = array('gibbonPersonID' => $rowParents['gibbonPersonID']);
                                     $sqlRoleUpdate = "UPDATE gibbonPerson SET gibbonRoleIDAll=concat(gibbonRoleIDAll, ',004') WHERE gibbonPersonID=:gibbonPersonID";
                                     $resultRoleUpdate = $connection2->prepare($sqlRoleUpdate);
                                     $resultRoleUpdate->execute($dataRoleUpdate);
-                                } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
                             }
 
                             //Add relationship record for each parent
-                            try {
+                            
                                 $dataRelationship = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'gibbonPersonID' => $rowParents['gibbonPersonID']);
                                 $sqlRelationship = 'SELECT * FROM gibbonApplicationFormRelationship WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND gibbonPersonID=:gibbonPersonID';
                                 $resultRelationship = $connection2->prepare($sqlRelationship);
                                 $resultRelationship->execute($dataRelationship);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
                             if ($resultRelationship->rowCount() == 1) {
                                 $rowRelationship = $resultRelationship->fetch();
                                 $relationship = $rowRelationship['relationship'];
-                                try {
+                                
                                     $data = array('gibbonFamilyID' => $values['gibbonFamilyID'], 'gibbonPersonID1' => $rowParents['gibbonPersonID'], 'gibbonPersonID2' => $gibbonPersonID);
                                     $sql = 'SELECT * FROM gibbonFamilyRelationship WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPersonID1=:gibbonPersonID1 AND gibbonPersonID2=:gibbonPersonID2';
                                     $result = $connection2->prepare($sql);
                                     $result->execute($data);
-                                } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
                                 if ($result->rowCount() == 0) {
-                                    try {
+                                    
                                         $data = array('gibbonFamilyID' => $values['gibbonFamilyID'], 'gibbonPersonID1' => $rowParents['gibbonPersonID'], 'gibbonPersonID2' => $gibbonPersonID, 'relationship' => $relationship);
                                         $sql = 'INSERT INTO gibbonFamilyRelationship SET gibbonFamilyID=:gibbonFamilyID, gibbonPersonID1=:gibbonPersonID1, gibbonPersonID2=:gibbonPersonID2, relationship=:relationship';
                                         $result = $connection2->prepare($sql);
                                         $result->execute($data);
-                                    } catch (PDOException $e) {
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
-                                    }
                                 } elseif ($result->rowCount() == 1) {
                                     $existingRelationship = $result->fetch();
 
                                     if ($existingRelationship['relationship'] != $relationship) {
-                                        try {
+                                        
                                             $data = array('relationship' => $relationship, 'gibbonFamilyRelationshipID' => $existingRelationship['gibbonFamilyRelationshipID']);
                                             $sql = 'UPDATE gibbonFamilyRelationship SET relationship=:relationship WHERE gibbonFamilyRelationshipID=:gibbonFamilyRelationshipID';
                                             $result = $connection2->prepare($sql);
                                             $result->execute($data);
-                                        } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
-                                        }
                                     }
                                 } else {
                                     echo "<div class='error'>".$e->getMessage().'</div>';
@@ -751,68 +683,42 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     } else {
                         //CREATE A NEW FAMILY
                         $failFamily = true;
-                        $lock = true;
+                        
+                        $familyName = $values['parent1preferredName'].' '.$values['parent1surname'];
+                        if ($values['parent2preferredName'] != '' and $values['parent2surname'] != '') {
+                            $familyName .= ' & '.$values['parent2preferredName'].' '.$values['parent2surname'];
+                        }
+                        $nameAddress = '';
+                        //Parents share same surname and parent 2 has enough information to be added
+                        if ($values['parent1surname'] == $values['parent2surname'] and $values['parent2preferredName'] != '' and $values['parent2title'] != '') {
+                            $nameAddress = $values['parent1title'].' & '.$values['parent2title'].' '.$values['parent1surname'];
+                        }
+                        //Parents have different names, and parent2 is not blank and has enough information to be added
+                        elseif ($values['parent1surname'] != $values['parent2surname'] and $values['parent2surname'] != '' and $values['parent2preferredName'] != '' and $values['parent2title'] != '') {
+                            $nameAddress = $values['parent1title'].' '.$values['parent1surname'].' & '.$values['parent2title'].' '.$values['parent2surname'];
+                        }
+                        //Just use parent1's name
+                        else {
+                            $nameAddress = $values['parent1title'].' '.$values['parent1surname'];
+                        }
+                        $languageHomePrimary = $values['languageHomePrimary'];
+                        $languageHomeSecondary = $values['languageHomeSecondary'];
+
+                        $insertOK = true;
                         try {
-                            $sql = 'LOCK TABLES gibbonFamily WRITE';
-                            $result = $connection2->query($sql);
+                            $data = array('familyName' => $familyName, 'nameAddress' => $nameAddress, 'languageHomePrimary' => $languageHomePrimary, 'languageHomeSecondary' => $languageHomeSecondary, 'homeAddress' => $values['homeAddress'], 'homeAddressDistrict' => $values['homeAddressDistrict'], 'homeAddressCountry' => $values['homeAddressCountry']);
+                            $sql = 'INSERT INTO gibbonFamily SET name=:familyName, nameAddress=:nameAddress, languageHomePrimary=:languageHomePrimary, languageHomeSecondary=:languageHomeSecondary, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry';
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
                         } catch (PDOException $e) {
-                            $lock = false;
+                            $insertOK = false;
                             echo "<div class='error'>".$e->getMessage().'</div>';
                         }
-                        if ($lock == true) {
-                            $gotAI = true;
-                            try {
-                                $sqlAI = "SHOW TABLE STATUS LIKE 'gibbonFamily'";
-                                $resultAI = $connection2->query($sqlAI);
-                            } catch (PDOException $e) {
-                                $gotAI = false;
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
-                            if ($gotAI == true) {
-                                $rowAI = $resultAI->fetch();
-                                $gibbonFamilyID = str_pad($rowAI['Auto_increment'], 7, '0', STR_PAD_LEFT);
 
-                                $familyName = $values['parent1preferredName'].' '.$values['parent1surname'];
-                                if ($values['parent2preferredName'] != '' and $values['parent2surname'] != '') {
-                                    $familyName .= ' & '.$values['parent2preferredName'].' '.$values['parent2surname'];
-                                }
-                                $nameAddress = '';
-                                //Parents share same surname and parent 2 has enough information to be added
-                                if ($values['parent1surname'] == $values['parent2surname'] and $values['parent2preferredName'] != '' and $values['parent2title'] != '') {
-                                    $nameAddress = $values['parent1title'].' & '.$values['parent2title'].' '.$values['parent1surname'];
-                                }
-                                //Parents have different names, and parent2 is not blank and has enough information to be added
-                                elseif ($values['parent1surname'] != $values['parent2surname'] and $values['parent2surname'] != '' and $values['parent2preferredName'] != '' and $values['parent2title'] != '') {
-                                    $nameAddress = $values['parent1title'].' '.$values['parent1surname'].' & '.$values['parent2title'].' '.$values['parent2surname'];
-                                }
-                                //Just use parent1's name
-                                else {
-                                    $nameAddress = $values['parent1title'].' '.$values['parent1surname'];
-                                }
-                                $languageHomePrimary = $values['languageHomePrimary'];
-                                $languageHomeSecondary = $values['languageHomeSecondary'];
-
-                                $insertOK = true;
-                                try {
-                                    $data = array('familyName' => $familyName, 'nameAddress' => $nameAddress, 'languageHomePrimary' => $languageHomePrimary, 'languageHomeSecondary' => $languageHomeSecondary, 'homeAddress' => $values['homeAddress'], 'homeAddressDistrict' => $values['homeAddressDistrict'], 'homeAddressCountry' => $values['homeAddressCountry']);
-                                    $sql = 'INSERT INTO gibbonFamily SET name=:familyName, nameAddress=:nameAddress, languageHomePrimary=:languageHomePrimary, languageHomeSecondary=:languageHomeSecondary, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry';
-                                    $result = $connection2->prepare($sql);
-                                    $result->execute($data);
-                                } catch (PDOException $e) {
-                                    $insertOK = false;
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
-
-                                if ($insertOK == true) {
-                                    $failFamily = false;
-                                }
-                            }
-                        }
-                        try {
-                            $sql = 'UNLOCK TABLES';
-                            $result = $connection2->query($sql);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
+                        if ($insertOK == true) {
+                            $failFamily = false;
+                            
+                            $gibbonFamilyID = $connection2->lastInsertID();
                         }
 
                         if ($failFamily == true) {
@@ -832,14 +738,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             //LINK STUDENT INTO FAMILY
                             $failFamily = true;
                             if ($gibbonFamilyID != '') {
-                                try {
+                                
                                     $dataFamily = array('gibbonFamilyID' => $gibbonFamilyID);
                                     $sqlFamily = 'SELECT * FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
                                     $resultFamily = $connection2->prepare($sqlFamily);
                                     $resultFamily->execute($dataFamily);
-                                } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
 
                                 if ($resultFamily->rowCount() == 1) {
                                     $rowFamily = $resultFamily->fetch();
@@ -889,14 +792,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 //LINK PARENT 1 INTO FAMILY
                                 $failFamily = true;
                                 if ($gibbonFamilyID != '') {
-                                    try {
+                                    
                                         $dataFamily = array('gibbonFamilyID' => $gibbonFamilyID);
                                         $sqlFamily = 'SELECT * FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
                                         $resultFamily = $connection2->prepare($sqlFamily);
                                         $resultFamily->execute($dataFamily);
-                                    } catch (PDOException $e) {
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
-                                    }
                                     if ($resultFamily->rowCount() == 1) {
                                         $rowFamily = $resultFamily->fetch();
                                         $familyName = $rowFamily['name'];
@@ -925,83 +825,53 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 }
 
                                 //Set parent relationship
-                                try {
+                                
                                     $data = array('gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonID1' => $gibbonPersonIDParent1, 'gibbonPersonID2' => $gibbonPersonID, 'relationship' => $values['parent1relationship']);
                                     $sql = 'INSERT INTO gibbonFamilyRelationship SET gibbonFamilyID=:gibbonFamilyID, gibbonPersonID1=:gibbonPersonID1, gibbonPersonID2=:gibbonPersonID2, relationship=:relationship';
                                     $result = $connection2->prepare($sql);
                                     $result->execute($data);
-                                } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
                             } else {
-                                $lock = true;
-                                try {
-                                    $sql = 'LOCK TABLES gibbonPerson WRITE, gibbonUsernameFormat WRITE, gibbonRole WRITE';
-                                    $result = $connection2->query($sql);
-                                } catch (PDOException $e) {
-                                    $lock = false;
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
-                                if ($lock == true) {
-                                    $gotAI = true;
+                                // Generate a unique username for parent 1
+                                $generator = new UsernameGenerator($pdo);
+                                $generator->addToken('preferredName', $values['parent1preferredName']);
+                                $generator->addToken('firstName', $values['parent1firstName']);
+                                $generator->addToken('surname', $values['parent1surname']);
+
+                                $username = $generator->generateByRole('004');
+                                $status = $schoolYearEntry['status'] == 'Upcoming' && $informParents != 'Y' ? 'Expected' : 'Full'; 
+
+                                // Generate a random password
+                                $password = randomPassword(8);
+                                $salt = getSalt();
+                                $passwordStrong = hash('sha256', $salt.$password);
+
+                                $continueLoop = !(!empty($username) && $username != 'usernamefailed' && !empty($password));
+
+                                if ($continueLoop == false) {
+                                    $insertOK = true;
                                     try {
-                                        $sqlAI = "SHOW TABLE STATUS LIKE 'gibbonPerson'";
-                                        $resultAI = $connection2->query($sqlAI);
+                                        $data = array('username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'title' => $values['parent1title'], 'status' => $status, 'surname' => $values['parent1surname'], 'firstName' => $values['parent1firstName'], 'preferredName' => $values['parent1preferredName'], 'officialName' => $values['parent1officialName'], 'nameInCharacters' => $values['parent1nameInCharacters'], 'gender' => $values['parent1gender'], 'parent1languageFirst' => $values['parent1languageFirst'], 'parent1languageSecond' => $values['parent1languageSecond'], 'citizenship1' => $values['parent1citizenship1'], 'nationalIDCardNumber' => $values['parent1nationalIDCardNumber'], 'residencyStatus' => $values['parent1residencyStatus'], 'visaExpiryDate' => $values['parent1visaExpiryDate'], 'email' => $values['parent1email'], 'phone1Type' => $values['parent1phone1Type'], 'phone1CountryCode' => $values['parent1phone1CountryCode'], 'phone1' => $values['parent1phone1'], 'phone2Type' => $values['parent1phone2Type'], 'phone2CountryCode' => $values['parent1phone2CountryCode'], 'phone2' => $values['parent1phone2'], 'profession' => $values['parent1profession'], 'employer' => $values['parent1employer'], 'parent1fields' => $values['parent1fields']);
+                                        $sql = "INSERT INTO gibbonPerson SET username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, gibbonRoleIDPrimary='004', gibbonRoleIDAll='004', status=:status, title=:title, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, languageFirst=:parent1languageFirst, languageSecond=:parent1languageSecond, citizenship1=:citizenship1, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, email=:email, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, profession=:profession, employer=:employer, fields=:parent1fields";
+                                        $result = $connection2->prepare($sql);
+                                        $result->execute($data);
                                     } catch (PDOException $e) {
-                                        $gotAI = false;
+                                        $insertOK = false;
                                         echo "<div class='error'>".$e->getMessage().'</div>';
                                     }
+                                    if ($insertOK == true) {
+                                        $failParent1 = false;
+                                        
+                                        $gibbonPersonIDParent1 = $connection2->lastInsertID();
 
-                                    if ($gotAI == true) {
-                                        $rowAI = $resultAI->fetch();
-                                        $gibbonPersonIDParent1 = str_pad($rowAI['Auto_increment'], 10, '0', STR_PAD_LEFT);
-
-                                        // Generate a unique username for parent 1
-                                        $generator = new UsernameGenerator($pdo);
-                                        $generator->addToken('preferredName', $values['parent1preferredName']);
-                                        $generator->addToken('firstName', $values['parent1firstName']);
-                                        $generator->addToken('surname', $values['parent1surname']);
-
-                                        $username = $generator->generateByRole('004');
-
-                                        // Generate a random password
-                                        $password = randomPassword(8);
-                                        $salt = getSalt();
-                                        $passwordStrong = hash('sha256', $salt.$password);
-
-                                        $continueLoop = !(!empty($username) && $username != 'usernamefailed' && !empty($password));
-
-                                        if ($continueLoop == false) {
-                                            $insertOK = true;
-                                            try {
-                                                $data = array('username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'title' => $values['parent1title'], 'surname' => $values['parent1surname'], 'firstName' => $values['parent1firstName'], 'preferredName' => $values['parent1preferredName'], 'officialName' => $values['parent1officialName'], 'nameInCharacters' => $values['parent1nameInCharacters'], 'gender' => $values['parent1gender'], 'parent1languageFirst' => $values['parent1languageFirst'], 'parent1languageSecond' => $values['parent1languageSecond'], 'citizenship1' => $values['parent1citizenship1'], 'nationalIDCardNumber' => $values['parent1nationalIDCardNumber'], 'residencyStatus' => $values['parent1residencyStatus'], 'visaExpiryDate' => $values['parent1visaExpiryDate'], 'email' => $values['parent1email'], 'phone1Type' => $values['parent1phone1Type'], 'phone1CountryCode' => $values['parent1phone1CountryCode'], 'phone1' => $values['parent1phone1'], 'phone2Type' => $values['parent1phone2Type'], 'phone2CountryCode' => $values['parent1phone2CountryCode'], 'phone2' => $values['parent1phone2'], 'profession' => $values['parent1profession'], 'employer' => $values['parent1employer'], 'parent1fields' => $values['parent1fields']);
-                                                $sql = "INSERT INTO gibbonPerson SET username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, gibbonRoleIDPrimary='004', gibbonRoleIDAll='004', status='Full', title=:title, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, languageFirst=:parent1languageFirst, languageSecond=:parent1languageSecond, citizenship1=:citizenship1, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, email=:email, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, profession=:profession, employer=:employer, fields=:parent1fields";
-                                                $result = $connection2->prepare($sql);
-                                                $result->execute($data);
-                                            } catch (PDOException $e) {
-                                                $insertOK = false;
-                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                            }
-                                            if ($insertOK == true) {
-                                                $failParent1 = false;
-
-                                                //Populate parent1 in informParent array
-                                                if ($informParents == 'Y') {
-                                                    $informParentsArray[0]['email'] = $values['parent1email'];
-                                                    $informParentsArray[0]['surname'] = $values['parent1surname'];
-                                                    $informParentsArray[0]['preferredName'] = $values['parent1preferredName'];
-                                                    $informParentsArray[0]['username'] = $username;
-                                                    $informParentsArray[0]['password'] = $password;
-                                                }
-                                            }
+                                        //Populate parent1 in informParent array
+                                        if ($informParents == 'Y') {
+                                            $informParentsArray[0]['email'] = $values['parent1email'];
+                                            $informParentsArray[0]['surname'] = $values['parent1surname'];
+                                            $informParentsArray[0]['preferredName'] = $values['parent1preferredName'];
+                                            $informParentsArray[0]['username'] = $username;
+                                            $informParentsArray[0]['password'] = $password;
                                         }
                                     }
-                                }
-                                try {
-                                    $sql = 'UNLOCK TABLES';
-                                    $result = $connection2->query($sql);
-                                } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
 
                                 if ($failParent1 == true) {
@@ -1023,14 +893,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                     //LINK PARENT 1 INTO FAMILY
                                     $failFamily = true;
                                     if ($gibbonFamilyID != '') {
-                                        try {
+                                        
                                             $dataFamily = array('gibbonFamilyID' => $gibbonFamilyID);
                                             $sqlFamily = 'SELECT * FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
                                             $resultFamily = $connection2->prepare($sqlFamily);
                                             $resultFamily->execute($dataFamily);
-                                        } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
-                                        }
                                         if ($resultFamily->rowCount() == 1) {
                                             $rowFamily = $resultFamily->fetch();
                                             $familyName = $rowFamily['name'];
@@ -1058,14 +925,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         }
 
                                         //Set parent relationship
-                                        try {
+                                        
                                             $data = array('gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonID1' => $gibbonPersonIDParent1, 'gibbonPersonID2' => $gibbonPersonID, 'relationship' => $values['parent1relationship']);
                                             $sql = 'INSERT INTO gibbonFamilyRelationship SET gibbonFamilyID=:gibbonFamilyID, gibbonPersonID1=:gibbonPersonID1, gibbonPersonID2=:gibbonPersonID2, relationship=:relationship';
                                             $result = $connection2->prepare($sql);
                                             $result->execute($data);
-                                        } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
-                                        }
                                     }
                                 }
                             }
@@ -1073,74 +937,48 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             //CREATE PARENT 2
                             if ($values['parent2preferredName'] != '' and $values['parent2surname'] != '') {
                                 $failParent2 = true;
-                                $lock = true;
-                                try {
-                                    $sql = 'LOCK TABLES gibbonPerson WRITE, gibbonUsernameFormat WRITE, gibbonRole WRITE';
-                                    $result = $connection2->query($sql);
-                                } catch (PDOException $e) {
-                                    $lock = false;
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
-                                if ($lock == true) {
-                                    $gotAI = true;
+                               
+                                // Generate a unique username for parent 2
+                                $generator = new UsernameGenerator($pdo);
+                                $generator->addToken('preferredName', $values['parent2preferredName']);
+                                $generator->addToken('firstName', $values['parent2firstName']);
+                                $generator->addToken('surname', $values['parent2surname']);
+
+                                $username = $generator->generateByRole('004');
+                                $status = $schoolYearEntry['status'] == 'Upcoming' && $informParents != 'Y' ? 'Expected' : 'Full'; 
+
+                                // Generate a random password
+                                $password = randomPassword(8);
+                                $salt = getSalt();
+                                $passwordStrong = hash('sha256', $salt.$password);
+
+                                $continueLoop = !(!empty($username) && $username != 'usernamefailed' && !empty($password));
+
+                                if ($continueLoop == false) {
+                                    $insertOK = true;
                                     try {
-                                        $sqlAI = "SHOW TABLE STATUS LIKE 'gibbonPerson'";
-                                        $resultAI = $connection2->query($sqlAI);
+                                        $data = array('username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'title' => $values['parent2title'], 'status' => $status, 'surname' => $values['parent2surname'], 'firstName' => $values['parent2firstName'], 'preferredName' => $values['parent2preferredName'], 'officialName' => $values['parent2officialName'], 'nameInCharacters' => $values['parent2nameInCharacters'], 'gender' => $values['parent2gender'], 'parent2languageFirst' => $values['parent2languageFirst'], 'parent2languageSecond' => $values['parent2languageSecond'], 'citizenship1' => $values['parent2citizenship1'], 'nationalIDCardNumber' => $values['parent2nationalIDCardNumber'], 'residencyStatus' => $values['parent2residencyStatus'], 'visaExpiryDate' => $values['parent2visaExpiryDate'], 'email' => $values['parent2email'], 'phone1Type' => $values['parent2phone1Type'], 'phone1CountryCode' => $values['parent2phone1CountryCode'], 'phone1' => $values['parent2phone1'], 'phone2Type' => $values['parent2phone2Type'], 'phone2CountryCode' => $values['parent2phone2CountryCode'], 'phone2' => $values['parent2phone2'], 'profession' => $values['parent2profession'], 'employer' => $values['parent2employer'], 'parent2fields' => $values['parent2fields']);
+                                        $sql = "INSERT INTO gibbonPerson SET username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, gibbonRoleIDPrimary='004', gibbonRoleIDAll='004', status=:status, title=:title, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, languageFirst=:parent2languageFirst, languageSecond=:parent2languageSecond, citizenship1=:citizenship1, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, email=:email, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, profession=:profession, employer=:employer, fields=:parent2fields";
+                                        $result = $connection2->prepare($sql);
+                                        $result->execute($data);
                                     } catch (PDOException $e) {
-                                        $gotAI = false;
+                                        $insertOK = false;
                                         echo "<div class='error'>".$e->getMessage().'</div>';
                                     }
+                                    if ($insertOK == true) {
+                                        $failParent2 = false;
+                                        
+                                        $gibbonPersonIDParent2 = $connection2->lastInsertID();
 
-                                    if ($gotAI == true) {
-                                        $rowAI = $resultAI->fetch();
-                                        $gibbonPersonIDParent2 = str_pad($rowAI['Auto_increment'], 10, '0', STR_PAD_LEFT);
-
-                                        // Generate a unique username for parent 2
-                                        $generator = new UsernameGenerator($pdo);
-                                        $generator->addToken('preferredName', $values['parent2preferredName']);
-                                        $generator->addToken('firstName', $values['parent2firstName']);
-                                        $generator->addToken('surname', $values['parent2surname']);
-
-                                        $username = $generator->generateByRole('004');
-
-                                        // Generate a random password
-                                        $password = randomPassword(8);
-                                        $salt = getSalt();
-                                        $passwordStrong = hash('sha256', $salt.$password);
-
-                                        $continueLoop = !(!empty($username) && $username != 'usernamefailed' && !empty($password));
-
-                                        if ($continueLoop == false) {
-                                            $insertOK = true;
-                                            try {
-                                                $data = array('username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'title' => $values['parent2title'], 'surname' => $values['parent2surname'], 'firstName' => $values['parent2firstName'], 'preferredName' => $values['parent2preferredName'], 'officialName' => $values['parent2officialName'], 'nameInCharacters' => $values['parent2nameInCharacters'], 'gender' => $values['parent2gender'], 'parent2languageFirst' => $values['parent2languageFirst'], 'parent2languageSecond' => $values['parent2languageSecond'], 'citizenship1' => $values['parent2citizenship1'], 'nationalIDCardNumber' => $values['parent2nationalIDCardNumber'], 'residencyStatus' => $values['parent2residencyStatus'], 'visaExpiryDate' => $values['parent2visaExpiryDate'], 'email' => $values['parent2email'], 'phone1Type' => $values['parent2phone1Type'], 'phone1CountryCode' => $values['parent2phone1CountryCode'], 'phone1' => $values['parent2phone1'], 'phone2Type' => $values['parent2phone2Type'], 'phone2CountryCode' => $values['parent2phone2CountryCode'], 'phone2' => $values['parent2phone2'], 'profession' => $values['parent2profession'], 'employer' => $values['parent2employer'], 'parent2fields' => $values['parent2fields']);
-                                                $sql = "INSERT INTO gibbonPerson SET username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, gibbonRoleIDPrimary='004', gibbonRoleIDAll='004', status='Full', title=:title, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, languageFirst=:parent2languageFirst, languageSecond=:parent2languageSecond, citizenship1=:citizenship1, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, email=:email, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, profession=:profession, employer=:employer, fields=:parent2fields";
-                                                $result = $connection2->prepare($sql);
-                                                $result->execute($data);
-                                            } catch (PDOException $e) {
-                                                $insertOK = false;
-                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                            }
-                                            if ($insertOK == true) {
-                                                $failParent2 = false;
-
-                                                //Populate parent2 in informParents array
-                                                if ($informParents == 'Y') {
-                                                    $informParentsArray[1]['email'] = $values['parent2email'];
-                                                    $informParentsArray[1]['surname'] = $values['parent2surname'];
-                                                    $informParentsArray[1]['preferredName'] = $values['parent2preferredName'];
-                                                    $informParentsArray[1]['username'] = $username;
-                                                    $informParentsArray[1]['password'] = $password;
-                                                }
-                                            }
+                                        //Populate parent2 in informParents array
+                                        if ($informParents == 'Y') {
+                                            $informParentsArray[1]['email'] = $values['parent2email'];
+                                            $informParentsArray[1]['surname'] = $values['parent2surname'];
+                                            $informParentsArray[1]['preferredName'] = $values['parent2preferredName'];
+                                            $informParentsArray[1]['username'] = $username;
+                                            $informParentsArray[1]['password'] = $password;
                                         }
                                     }
-                                }
-                                try {
-                                    $sql = 'UNLOCK TABLES';
-                                    $result = $connection2->query($sql);
-                                } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
 
                                 if ($failParent2 == true) {
@@ -1162,14 +1000,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                     //LINK PARENT 2 INTO FAMILY
                                     $failFamily = true;
                                     if ($gibbonFamilyID != '') {
-                                        try {
+                                        
                                             $dataFamily = array('gibbonFamilyID' => $gibbonFamilyID);
                                             $sqlFamily = 'SELECT * FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
                                             $resultFamily = $connection2->prepare($sqlFamily);
                                             $resultFamily->execute($dataFamily);
-                                        } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
-                                        }
                                         if ($resultFamily->rowCount() == 1) {
                                             $rowFamily = $resultFamily->fetch();
                                             $familyName = $rowFamily['name'];
@@ -1197,14 +1032,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         }
 
                                         //Set parent relationship
-                                        try {
+                                        
                                             $data = array('gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonID1' => $gibbonPersonIDParent2, 'gibbonPersonID2' => $gibbonPersonID, 'relationship' => $values['parent2relationship']);
                                             $sql = 'INSERT INTO gibbonFamilyRelationship SET gibbonFamilyID=:gibbonFamilyID, gibbonPersonID1=:gibbonPersonID1, gibbonPersonID2=:gibbonPersonID2, relationship=:relationship';
                                             $result = $connection2->prepare($sql);
                                             $result->execute($data);
-                                        } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
-                                        }
                                     }
                                 }
                             }
@@ -1223,21 +1055,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 $to = $informStudentEntry['email'];
                                 $subject = sprintf(__('Welcome to %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
                                 if ($notificationStudentMessage != '') {
-                                    $body = sprintf(__('Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), Format::name('', $informStudentEntry['preferredName'], $informStudentEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informStudentEntry['username'], $informStudentEntry['password']).$notificationStudentMessage.sprintf(__('Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Admissions Administrator'), $_SESSION[$guid]['organisationAdmissionsName'], $_SESSION[$guid]['systemName']);
+                                    $body = sprintf(__('Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), Format::name('', $informStudentEntry['preferredName'], $informStudentEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informStudentEntry['username'], $informStudentEntry['password']).$notificationStudentMessage.'<br/><br/>'.sprintf(__('Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Admissions Administrator'), $_SESSION[$guid]['organisationAdmissionsName'], $_SESSION[$guid]['systemName']);
                                 } else {
                                     $body = 'Dear '.Format::name('', $informStudentEntry['preferredName'], $informStudentEntry['surname'], 'Student').",<br/><br/>Welcome to ".$_SESSION[$guid]['systemName'].', '.$_SESSION[$guid]['organisationNameShort']."'s system for managing school information. You can access the system by going to ".$_SESSION[$guid]['absoluteURL'].' and logging in with your new username ('.$informStudentEntry['username'].') and password ('.$informStudentEntry['password'].").<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>Please feel free to reply to this email should you have any questions.<br/><br/>".$_SESSION[$guid]['organisationAdmissionsName'].",<br/><br/>".$_SESSION[$guid]['systemName'].' Admissions Administrator';
                                 }
-                                $bodyPlain = emailBodyConvert($body);
 
                                 $mail = $container->get(Mailer::class);
                                 $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
                                 $mail->AddAddress($to);
-                                $mail->CharSet = 'UTF-8';
-                                $mail->Encoding = 'base64';
-                                $mail->IsHTML(true);
                                 $mail->Subject = $subject;
-                                $mail->Body = $body;
-                                $mail->AltBody = $bodyPlain;
+                                $mail->renderBody('mail/email.twig.html', [
+                                    'title'  => $subject,
+                                    'body'   => $body,
+                                ]);
 
                                 if ($mail->Send()) {
                                     echo "<div class='success'>";
@@ -1270,21 +1100,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 $to = $informParentsEntry['email'];
                                 $subject = sprintf(__('Welcome to %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
                                 if ($notificationParentsMessage != '') {
-                                    $body = sprintf(__('Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (https://gibbonedu.org/support/parents).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), Format::name('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informParentsEntry['username'], $informParentsEntry['password'], $_SESSION[$guid]['systemName']).$notificationParentsMessage.sprintf(__('Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Admissions Administrator'), $_SESSION[$guid]['organisationAdmissionsName'], $_SESSION[$guid]['systemName']);
+                                    $body = sprintf(__('Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (https://docs.gibbonedu.org/parents).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), Format::name('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informParentsEntry['username'], $informParentsEntry['password'], $_SESSION[$guid]['systemName']).$notificationParentsMessage.'<br/><br/>'.sprintf(__('Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Admissions Administrator'), $_SESSION[$guid]['organisationAdmissionsName'], $_SESSION[$guid]['systemName']);
                                 } else {
-                                    $body = sprintf(__('Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (https://gibbonedu.org/support/parents).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), Format::name('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informParentsEntry['username'], $informParentsEntry['password'], $_SESSION[$guid]['systemName']).sprintf(__('Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Admissions Administrator'), $_SESSION[$guid]['organisationAdmissionsName'], $_SESSION[$guid]['systemName']);
+                                    $body = sprintf(__('Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (https://docs.gibbonedu.org/parents).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), Format::name('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informParentsEntry['username'], $informParentsEntry['password'], $_SESSION[$guid]['systemName']).sprintf(__('Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Admissions Administrator'), $_SESSION[$guid]['organisationAdmissionsName'], $_SESSION[$guid]['systemName']);
                                 }
                                 $bodyPlain = emailBodyConvert($body);
 
                                 $mail = $container->get(Mailer::class);
                                 $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
                                 $mail->AddAddress($to);
-                                $mail->CharSet = 'UTF-8';
-                                $mail->Encoding = 'base64';
-                                $mail->IsHTML(true);
                                 $mail->Subject = $subject;
-                                $mail->Body = $body;
-                                $mail->AltBody = $bodyPlain;
+                                $mail->renderBody('mail/email.twig.html', [
+                                    'title'  => $subject,
+                                    'body'   => $body,
+                                ]);
 
                                 if ($mail->Send()) {
                                     echo "<div class='success'>";
@@ -1313,9 +1142,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                     $notificationText = sprintf(__('An application form for %1$s (%2$s) has been accepted for the %3$s school year.'), $studentName, $studentGroup, $schoolYearName );
                     if ($enrolmentOK && !empty($values['gibbonRollGroupID'])) {
-                        $notificationText .= ' '.__('The student has successfully been enroled in the specified school year, year group and roll group.');
+                        $notificationText .= ' '.__('The student has successfully been enrolled in the specified school year, year group and roll group.');
                     } else {
-                        $notificationText .= ' '.__('Student could not be enroled, so this will have to be done manually at a later date.');
+                        $notificationText .= ' '.__('Student could not be enrolled, so this will have to be done manually at a later date.');
                     }
 
                     $event->addScope('gibbonYearGroupID', $values['gibbonYearGroupIDEntry']);
@@ -1324,6 +1153,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     $event->setActionLink("/index.php?q=/modules/Students/applicationForm_manage_edit.php&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=".$values['gibbonSchoolYearIDEntry']."&search=");
 
                     $event->sendNotifications($pdo, $gibbon->session);
+
+
+                    // Raise a new notification event for SEN
+                    if (!empty($values['senDetails']) || !empty($values['medicalInformation'])) {
+                        $event = new NotificationEvent('Students', 'New Application with SEN/Medical');
+                        $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
+                        $event->addScope('gibbonYearGroupID', $values['gibbonYearGroupIDEntry']);
+
+                        $event->setNotificationText(__('An application form has been accepted for {name} ({group}) with SEN or Medical needs. Please visit the student profile to review these details.', [
+                            'name' => $studentName,
+                            'group' => $studentGroup,
+                        ]));
+                        $event->setActionLink('/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&search=&allStudents=on');
+
+                        // Send all notifications
+                        $event->sendNotifications($pdo, $gibbon->session);
+                    }
 
                     //SET STATUS TO ACCEPTED
                     $failStatus = false;

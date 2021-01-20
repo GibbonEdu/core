@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Domain\Finance\PaymentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -28,10 +29,8 @@ require_once __DIR__ . '/moduleFunctions.php';
 include './modules/User Admin/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage_edit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $gibbonApplicationFormID = $_GET['gibbonApplicationFormID'] ?? '';
@@ -44,20 +43,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     //Check if school year specified
     if ($gibbonApplicationFormID == '' or $gibbonSchoolYearID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
         return;
     }
 
-    try {
+    
         $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
         $sql = "SELECT *, gibbonApplicationForm.status AS 'applicationStatus', gibbonPayment.status AS 'paymentStatus' FROM gibbonApplicationForm LEFT JOIN gibbonPayment ON (gibbonApplicationForm.gibbonPaymentID=gibbonPayment.gibbonPaymentID AND foreignTable='gibbonApplicationForm') WHERE gibbonApplicationFormID=:gibbonApplicationFormID";
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
 
     if ($result->rowCount() != 1) {
         echo "<div class='error'>";
@@ -78,6 +72,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     if ($search != '') {
         echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Back to Search Results').'</a> | ';
     }
+
+    $applicationProcessFee = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee');
+    if ($application['paymentMade2'] == 'N' && !empty($applicationProcessFee) && is_numeric($applicationProcessFee)) {
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_edit_fee.php&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Send Payment Request')."<img style='margin-left: 5px' title='".__('Send Payment Request')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_right.png'/></a> &nbsp;|&nbsp; ";
+    }
+
     echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_edit_print.php&gibbonApplicationFormID=$gibbonApplicationFormID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
     echo '</div>';
 
@@ -158,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $rollGroupsOptions = array_combine(array_column($rollGroups, 'value'), array_column($rollGroups, 'name'));
 
     $row = $form->addRow();
-        $row->addLabel('gibbonRollGroupID', __('Roll Group at Entry'))->description(__('If set, the student will automatically be enroled on Accept.'));
+        $row->addLabel('gibbonRollGroupID', __('Roll Group at Entry'))->description(__('If set, the student will automatically be enrolled on Accept.'));
         $row->addSelect('gibbonRollGroupID')
             ->fromArray($rollGroupsOptions)
             ->chainedTo('gibbonSchoolYearIDEntry', $rollGroupsChained)
@@ -175,6 +175,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     // PAYMENT
     $currency = getSettingByScope($connection2, 'System', 'currency');
     $applicationFee = getSettingByScope($connection2, 'Application Form', 'applicationFee');
+    $applicationProcessFee = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee');
     $enablePayments = getSettingByScope($connection2, 'System', 'enablePayments');
     $paypalAPIUsername = getSettingByScope($connection2, 'System', 'paypalAPIUsername');
     $paypalAPIPassword = getSettingByScope($connection2, 'System', 'paypalAPIPassword');
@@ -182,16 +183,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
     $ccPayment = false;
 
-    if ($applicationFee > 0 and is_numeric($applicationFee)) {
-        $paymentMadeOptions = array(
-            'N'         => __('N'),
-            'Y'         => __('Y'),
-            'Exemption' => __('Exemption'),
-        );
+    $paymentMadeOptions = array(
+        'N'         => __('N'),
+        'Y'         => __('Y'),
+        'Exemption' => __('Exemption'),
+    );
 
+    if ($applicationFee > 0 and is_numeric($applicationFee)) {
         // PAYMENT MADE
         $row = $form->addRow();
-            $row->addLabel('paymentMade', __('Payment'))->description(sprintf(__('Has payment (%1$s %2$s) been made for this application.'), $currency, $applicationFee));
+            $row->addLabel('paymentMade', __('Payment on Submission'))->description(sprintf(__('Has payment (%1$s %2$s) been made for this application.'), $currency, $applicationFee));
             $row->addSelect('paymentMade')->fromArray($paymentMadeOptions)->required();
 
         // PAYMENT DETAILS
@@ -206,6 +207,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         }
     }
 
+    if ($applicationProcessFee > 0 and is_numeric($applicationProcessFee)) {
+        // PAYMENT MADE
+        $row = $form->addRow();
+            $row->addLabel('paymentMade2', __('Payment for Processing'))->description(sprintf(__('Has payment (%1$s %2$s) been made for this application.'), $currency, $applicationProcessFee));
+            $row->addSelect('paymentMade2')->fromArray($paymentMadeOptions)->required();
+
+        // PAYMENT DETAILS
+        $payment2 = $container->get(PaymentGateway::class)->getByID($application['gibbonPaymentID2']);
+        if (!empty($payment2)) {
+            $row = $form->addRow();
+                $column = $row->addColumn()->addClass('right');
+                $column->addContent(__('Payment Token:').' '.$payment2['paymentToken']);
+                $column->addContent(__('Payment Payer ID:').' '.$payment2['paymentPayerID']);
+                $column->addContent(__('Payment Transaction ID:').' '.$payment2['paymentTransactionID']);
+                $column->addContent(__('Payment Receipt ID:').' '.$payment2['paymentReceiptID']);
+        }
+    }
+
     // USERNAME & STUDENT ID
     $row = $form->addRow();
         $row->addLabel('username', __('Username'))->description(__('System login name.'));
@@ -214,9 +233,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             ->addGenerateUsernameButton($form);
 
     $row = $form->addRow();
-        $row->addLabel('studentID', __('Student ID'))->description(__('Must be unique if set.'));
+        $row->addLabel('studentID', __('Student ID'));
         $row->addTextField('studentID')
             ->maxLength(10)
+            ->uniqueField('./modules/Students/applicationForm_manage_studentIDAjax.php', ['gibbonApplicationFormID' => $gibbonApplicationFormID])
             ->readonly($application['applicationStatus'] == 'Accepted');
 
     // NOTES
@@ -260,8 +280,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
         }
         $row = $table->addRow();
-        $row->addContent();
-        $row->addContent();
         $row->addContent("<a href='#' onclick='if (confirm(\"".$messageDelete."\")) window.location = \"".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage_deleteLinkProcess.php?gibbonApplicationFormID='.$gibbonApplicationFormID."&gibbonSchoolYearID=".$gibbonSchoolYearID."\"; else return false;'><img style='margin-left: 4px' title='".__('Remove').' '.__('Sibling Applications')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>")->addClass('right');
 
     } else {
@@ -469,7 +487,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     }
 
     // CUSTOM FIELDS FOR STUDENT
-    $existingFields = (isset($application["fields"]))? unserialize($application["fields"]) : null;
+    $existingFields = (isset($application["fields"]))? json_decode($application["fields"], true) : null;
     $resultFields = getCustomFields($connection2, $guid, true, false, false, false, true, null);
     if ($resultFields->rowCount() > 0) {
         $heading = $form->addRow()->addSubheading(__('Other Information'));
@@ -526,7 +544,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $row->addSelectRelationship('parent1relationship')->required();
 
             // CUSTOM FIELDS FOR PARENT 1 WITH FAMILY
-            $existingFields = (isset($application["parent1fields"]))? unserialize($application["parent1fields"]) : null;
+            $existingFields = (isset($application["parent1fields"]))? json_decode($application["parent1fields"], true) : null;
             $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
             if ($resultFields->rowCount() > 0) {
                 $row = $form->addRow();
@@ -667,7 +685,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $row->addTextField("parent{$i}employer")->maxLength(90);
 
             // CUSTOM FIELDS FOR PARENTS
-            $existingFields = (isset($application["parent{$i}fields"]))? unserialize($application["parent{$i}fields"]) : null;
+            $existingFields = (isset($application["parent{$i}fields"]))? json_decode($application["parent{$i}fields"], true) : null;
             $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
             if ($resultFields->rowCount() > 0) {
                 $row = $form->addRow()->setClass("parentSection{$i}");
@@ -707,14 +725,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $header->addContent(__('Relationships'));
 
             // Get the family relationships
-            try {
+            
                 $dataRelationships = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
                 $sqlRelationships = 'SELECT surname, preferredName, title, gender, gibbonApplicationFormRelationship.gibbonPersonID, relationship FROM gibbonApplicationFormRelationship JOIN gibbonPerson ON (gibbonApplicationFormRelationship.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonApplicationFormRelationship.gibbonApplicationFormID=:gibbonApplicationFormID';
                 $resultRelationships = $connection2->prepare($sqlRelationships);
                 $resultRelationships->execute($dataRelationships);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
 
             $row = $table->addRow()->setClass('break');
             $row->addContent($rowFamily['name'])->wrap('<strong>','</strong>')->addClass('shortWidth');
@@ -910,7 +925,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $row->addFileUpload('file'.$i)
                     ->accepts($fileUploader->getFileExtensions())
                     ->setAttachments($_SESSION[$guid]['absoluteURL'], $attachments)
-                    ->setRequired($requiredDocumentsCompulsory == 'Y')
+                    ->setRequired($requiredDocumentsCompulsory == 'Y' && stripos($requiredDocumentsList[$i], $internalDocuments) === false)
                     ->uploadMultiple(true)
                     ->canDelete(true);
         }

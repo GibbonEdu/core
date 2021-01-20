@@ -48,13 +48,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
             header("Location: {$URL}");
         } else {
             //Try to delete fields
-            try {
+            
                 $data = array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID);
                 $sql = 'DELETE FROM gibbonExternalAssessmentField WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) {
-            }
 
             //Delete assessment
             try {

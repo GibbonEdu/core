@@ -23,10 +23,8 @@ use Gibbon\Forms\Form;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
@@ -36,6 +34,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
     } else {
         //Set variables
         $today = date('Y-m-d');
+
+        $homeworkNameSingular = getSettingByScope($connection2, 'Planner', 'homeworkNameSingular');
+        $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
 
         //Proceed!
         //Get viewBy, date and class variables
@@ -174,14 +175,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                         $row->addSelect('gibbonCourseClassID')->fromQueryChained($pdo, $sql, $data, 'gibbonSchoolYearID')->required()->placeholder();
 
                     //DUPLICATE MARKBOOK COLUMN?
-                    try {
+                    
                         $dataMarkbook = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
                         $sqlMarkbook = 'SELECT * FROM gibbonMarkbookColumn WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
                         $resultMarkbook = $connection2->prepare($sqlMarkbook);
                         $resultMarkbook->execute($dataMarkbook);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
                     if ($resultMarkbook->rowCount() >= 1) {
                         $row = $form->addRow();
                             $row->addLabel('duplicate', __('Duplicate Markbook Columns?'))->description(__('Will duplicate any columns linked to this lesson.'));
@@ -241,14 +239,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 
                         if ($values['gibbonUnitID'] != '' && $gibbonSchoolYearID == $_SESSION[$guid]['gibbonSchoolYearID']) {
                             //KEEP IN UNIT
-                            try {
+                            
                                 $dataMarkbook = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonUnitID' => $values['gibbonUnitID']);
                                 $sqlMarkbook = 'SELECT * FROM gibbonUnitClass WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID';
                                 $resultMarkbook = $connection2->prepare($sqlMarkbook);
                                 $resultMarkbook->execute($dataMarkbook);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
 
                             if ($resultMarkbook->rowCount() == 1) {
                                 $rowMarkbook = $resultMarkbook->fetch();
@@ -266,23 +261,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                             $row->addTextField('name')->setValue($values['name'])->maxLength(50)->required();
 
                         //Try and find the next unplanned slot for this class.
-                        try {
+                        
                             $dataNext = array('gibbonCourseClassID' => $gibbonCourseClassID, 'date' => date('Y-m-d'));
                             $sqlNext = 'SELECT timeStart, timeEnd, date FROM gibbonTTDayRowClass JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTColumn ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND date>=:date ORDER BY date, timestart LIMIT 0, 10';
                             $resultNext = $connection2->prepare($sqlNext);
                             $resultNext->execute($dataNext);
-                        } catch (PDOException $e) {
-                        }
                         $next = array('date' => null, 'start' => null, 'end' => null, 'date2' => null, 'start2' => null);
                         $nextSet = false;
                         while ($rowNext = $resultNext->fetch()) {
                             if ($nextSet == false) {
-                                try {
+                                
                                     $dataPlanner = array('date' => $rowNext['date'], 'timeStart' => $rowNext['timeStart'], 'timeEnd' => $rowNext['timeEnd'], 'gibbonCourseClassID' => $gibbonCourseClassID);
                                     $sqlPlanner = 'SELECT * FROM gibbonPlannerEntry WHERE date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd AND gibbonCourseClassID=:gibbonCourseClassID';
                                     $resultPlanner = $connection2->prepare($sqlPlanner);
                                     $resultPlanner->execute($dataPlanner);
-                                } catch (PDOException $e) {}
                                 if ($resultPlanner->rowCount() == 0) {
                                     $nextSet = true;
                                     $next['date'] = $rowNext['date'];
@@ -309,14 +301,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                             $row->addTime('timeEnd')->setValue(substr($next['end'], 0, 5))->required();
 
                         if ($values['homework'] == 'Y') {
-                            $form->addRow()->addHeading(__('Homework'));
+                            $form->addRow()->addHeading(__($homeworkNamePlural));
 
                             $row = $form->addRow();
-                                $row->addLabel('homeworkDueDate', __('Homework Due Date'));
+                                $row->addLabel('homeworkDueDate', __('{homeworkName} Due Date', ['homeworkName' => __($homeworkNameSingular)]));
                                 $row->addDate('homeworkDueDate')->setValue(dateConvertBack($guid, $next['date2']))->required();
 
                             $row = $form->addRow();
-                                $row->addLabel('homeworkDueDateTime', __('Homework Due Date Time'))->description("Format: hh:mm (24hr)");
+                                $row->addLabel('homeworkDueDateTime', __('{homeworkName} Due Date Time', ['homeworkName' => __($homeworkNameSingular)]))->description("Format: hh:mm (24hr)");
                                 $row->addTime('homeworkDueDateTime')->setValue(substr($next['start2'], 0, 5))->required();
 
                             if ($values['homeworkSubmission'] == 'Y') {

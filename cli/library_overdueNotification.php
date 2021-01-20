@@ -45,13 +45,11 @@ else {
     //SCAN THROUGH ALL OVERDUE LOANS
     $today = date('Y-m-d');
 
-    try {
+    
         $data = array('today' => $today);
         $sql = "SELECT gibbonLibraryItem.*, surname, preferredName, email FROM gibbonLibraryItem JOIN gibbonPerson ON (gibbonLibraryItem.gibbonPersonIDStatusResponsible=gibbonPerson.gibbonPersonID) WHERE gibbonLibraryItem.status='On Loan' AND borrowable='Y' AND returnExpected<:today AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-    }
 
     // Initialize the notification sender & gateway objects
     $notificationGateway = new NotificationGateway($pdo);

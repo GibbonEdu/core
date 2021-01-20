@@ -235,6 +235,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
                     ->selected($criteria['value'])
                     ->placeholder()
                     ->readonly(!$canWriteReport);
+            } elseif ($criteria['valueType'] == 'Number') {
+                $row->addNumber($fieldName)
+                    ->addClass('reportCriteria')
+                    ->setID($fieldID)
+                    ->setValue($criteria['value'])
+                    ->maxLength(20)
+                    ->onlyInteger(false)
+                    ->readonly(!$canWriteReport);
             } else {
                 $row->addTextField($fieldName)
                     ->addClass('reportCriteria')

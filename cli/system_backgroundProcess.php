@@ -31,6 +31,8 @@ if (!isCommandLineInterface()) {
 
 // Setup some of the globals
 Format::setupFromSession($container->get('session'));
+getSystemSettings($guid, $connection2);
+setCurrentSchoolYear($guid, $connection2);
 
 // Override the ini to keep this process alive
 ini_set('memory_limit', '2048M');

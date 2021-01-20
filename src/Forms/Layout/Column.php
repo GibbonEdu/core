@@ -111,6 +111,8 @@ class Column extends Row implements OutputableInterface, ValidatableInterface
      */
     protected function getContainerClass($element)
     {
+        if (!method_exists($element, 'getClass')) return '';
+
         return str_replace('standardWidth', '', $element->getClass());
     }
 }

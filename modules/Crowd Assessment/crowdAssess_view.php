@@ -23,10 +23,8 @@ use Gibbon\Services\Format;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAssess_view.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed
     $page->breadcrumbs
@@ -48,12 +46,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
     else {
         $and = " AND gibbonPlannerEntryID=$gibbonPlannerEntryID";
         $sql = getLessons($guid, $connection2, $and);
-        try {
+        
             $result = $connection2->prepare($sql[1]);
             $result->execute($sql[0]);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
@@ -62,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
         } else {
             $row = $result->fetch();
 
-            echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
+            echo "<table class='smallIntBorder mb-4' cellspacing='0' style='width: 100%'>";
             echo '<tr>';
             echo "<td style='width: 34%; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__('Class').'</span><br/>';
@@ -79,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
             echo '</tr>';
             echo '<tr>';
             echo "<td style='padding-top: 15px; width: 34%; vertical-align: top' colspan=3>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__('Homework Details').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Details').'</span><br/>';
             echo $row['homeworkDetails'];
             echo '</td>';
             echo '</tr>';
@@ -91,12 +86,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
 
             //Return $sqlList as table
             if ($sqlList[1] != '') {
-                try {
+                
                     $resultList = $connection2->prepare($sqlList[1]);
                     $resultList->execute($sqlList[0]);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 if ($resultList->rowCount() < 1) {
                     echo "<div class='error'>";
@@ -136,14 +128,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                         echo '</td>';
                         echo '<td>';
                         $rowWork = null;
-                        try {
+                        
                             $dataWork = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $rowList['gibbonPersonID']);
                             $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
                             $resultWork = $connection2->prepare($sqlWork);
                             $resultWork->execute($dataWork);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
                         if ($resultWork->rowCount() > 0) {
                             $rowWork = $resultWork->fetch();
 
@@ -165,14 +154,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                         }
                         echo '</td>';
                         echo '<td>';
-                        $dataDiscuss = array('gibbonPlannerEntryHomeworkID' => $rowWork['gibbonPlannerEntryHomeworkID']);
+                        $dataDiscuss = array('gibbonPlannerEntryHomeworkID' => $rowWork['gibbonPlannerEntryHomeworkID'] ?? '');
                         $sqlDiscuss = 'SELECT gibbonCrowdAssessDiscuss.*, title, surname, preferredName, category FROM gibbonCrowdAssessDiscuss JOIN gibbonPerson ON (gibbonCrowdAssessDiscuss.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonPlannerEntryHomeworkID=:gibbonPlannerEntryHomeworkID';
                         $resultDiscuss = $connection2->prepare($sqlDiscuss);
                         $resultDiscuss->execute($dataDiscuss);
                         echo $resultDiscuss->rowCount();
                         echo '</td>';
                         echo '<td>';
-                        if ($rowWork['gibbonPlannerEntryHomeworkID'] != '' and $rowWork['status'] != 'Exemption') {
+                        if (!empty($rowWork['gibbonPlannerEntryHomeworkID']) and $rowWork['status'] != 'Exemption') {
                             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/crowdAssess_view_discuss.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=".$rowWork['gibbonPlannerEntryHomeworkID'].'&gibbonPersonID='.$rowList['gibbonPersonID']."'><img title='".__('View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
                         }
                         echo '</td>';

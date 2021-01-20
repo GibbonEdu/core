@@ -124,12 +124,13 @@ class DataTableView extends View implements RendererInterface
     protected function getTableRows(DataTable $table, DataSet $dataSet)
     {
         $rows = [];
+        $count = 0;
 
-        foreach ($dataSet as $index => $data) {
+        foreach ($dataSet as $data) {
             $row = $this->createTableRow($data, $table);
             if (!$row) continue; // Can be removed by rowLogic
             
-            $row->addClass($index % 2 == 0? 'odd' : 'even');
+            $row->addClass($count % 2 == 0? 'odd' : 'even');
 
             $cells = [];
 
@@ -141,7 +142,8 @@ class DataTableView extends View implements RendererInterface
                 $cells[$columnIndex] = $cell;
             }
 
-            $rows[$index] = ['data' => $data, 'row' => $row, 'cells' => $cells];
+            $rows[$count] = ['data' => $data, 'row' => $row, 'cells' => $cells];
+            $count++;
         }
 
         return $rows;
@@ -158,7 +160,7 @@ class DataTableView extends View implements RendererInterface
         $th = new TableCell($column->getLabel());
 
         $th->setTitle($column->getTitle())
-           ->setClass('column sticky top-0 z-10')
+           ->setClass('column sticky top-0 z-10 '.$column->getClass())
            ->addData('description', $column->getDescription());
 
         $this->applyContexts($column, $th);
@@ -178,6 +180,7 @@ class DataTableView extends View implements RendererInterface
 
         foreach ($table->getRowModifiers() as $callable) {
             $row = $callable($data, $row, $table->getColumnCount());
+            if (!$row) break;
         }
 
         return $row;
@@ -193,7 +196,7 @@ class DataTableView extends View implements RendererInterface
     protected function createTableCell(array $data, DataTable $table, Column $column)
     {
         $cell = new Element();
-        $cell->addClass('p-2 sm:p-3');
+        $cell->addClass('p-2 sm:p-3 '.$column->getClass());
         $this->applyContexts($column, $cell);
 
         foreach ($column->getCellModifiers() as $callable) {
@@ -214,7 +217,7 @@ class DataTableView extends View implements RendererInterface
         if ($column->hasContext('secondary')) {
             $element->addClass('hidden sm:table-cell');
         } elseif (!$column->hasContext('primary') && !$column->hasContext('action')) {
-            $element->addClass('hidden md:table-cell');
+            $element->addClass('hidden lg:table-cell');
         }
     }
 }

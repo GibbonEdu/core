@@ -24,9 +24,11 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             <a class="{{ subpage == 'Family' ? 'font-bold' }} underline" href="{{ absoluteURL }}/index.php?q={{ q }}&gibbonPersonID={{ gibbonPersonID }}&search={{ search }}&allStaff={{ allStaff }}&subpage=Family">{{ __('Family') }}</a>
         </li>
 
-        <li>
-            <a class="{{ subpage == 'Emergency Contacts' ? 'font-bold' }} underline" href="{{ absoluteURL }}/index.php?q={{ q }}&gibbonPersonID={{ gibbonPersonID }}&search={{ search }}&allStaff={{ allStaff }}&subpage=Emergency Contacts">{{ __('Emergency Contacts') }}</a>
-        </li>
+        {% if canViewEmergency %}
+            <li>
+                <a class="{{ subpage == 'Emergency Contacts' ? 'font-bold' }} underline" href="{{ absoluteURL }}/index.php?q={{ q }}&gibbonPersonID={{ gibbonPersonID }}&search={{ search }}&allStaff={{ allStaff }}&subpage=Emergency Contacts">{{ __('Emergency Contacts') }}</a>
+            </li>
+        {% endif %}
     </ul>
 
     <h4>{{ __('School') }}</h4>

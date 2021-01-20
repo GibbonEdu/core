@@ -193,11 +193,9 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                 }
 
                 //Unlock tables
-                try {
+                
                     $sql = 'UNLOCK TABLES';
                     $result = $connection2->query($sql);
-                } catch (PDOException $e) {
-                }
                 
                 // Log the payment
                 if ($status == 'Paid' or $status == 'Paid - Partial') {
@@ -237,17 +235,15 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                             }
                             if (count($emails) > 0) {
                                 //Get receipt number
-                                try {
+                                
                                     $dataPayments = array('foreignTable' => 'gibbonFinanceInvoice', 'foreignTableID' => $gibbonFinanceInvoiceID);
                                     $sqlPayments = 'SELECT gibbonPayment.*, surname, preferredName FROM gibbonPayment JOIN gibbonPerson ON (gibbonPayment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID ORDER BY timestamp, gibbonPaymentID';
                                     $resultPayments = $connection2->prepare($sqlPayments);
                                     $resultPayments->execute($dataPayments);
-                                } catch (PDOException $e) {
-                                }
                                 $receiptCount = $resultPayments->rowCount();
 
                                 //Prep message
-                                $body = receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], true, $receiptCount-1)."<p style='font-style: italic;'>Email sent via ".$_SESSION[$guid]['systemName'].' at '.$_SESSION[$guid]['organisationName'].'.</p>';
+                                $body = receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], true, $receiptCount-1);
 
                                 $mail = $container->get(Mailer::class);
                                 $mail->SetFrom($from, sprintf(__('%1$s Finance'), $_SESSION[$guid]['organisationName']));
@@ -263,6 +259,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                                 $mail->renderBody('mail/email.twig.html', [
                                     'title'  => $mail->Subject,
                                     'body'   => $body,
+                                    'maxWidth' => '900px',
                                 ]);
 
                                 if (!$mail->Send()) {
@@ -317,13 +314,11 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
 
                                 //Update reminder count
                                 if ($row['reminderCount'] < 3) {
-                                    try {
+                                    
                                         $data = array('gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
                                         $sql = 'UPDATE gibbonFinanceInvoice SET reminderCount='.($row['reminderCount'] + 1).' WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
                                         $result = $connection2->prepare($sql);
                                         $result->execute($data);
-                                    } catch (PDOException $e) {
-                                    }
                                 }
 
                                 $mail = $container->get(Mailer::class);
@@ -340,6 +335,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                                 $mail->renderBody('mail/email.twig.html', [
                                     'title'  => $mail->Subject,
                                     'body'   => $body,
+                                    'maxWidth' => '900px',
                                 ]);
 
                                 if (!$mail->Send()) {
@@ -347,6 +343,13 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                                 }
                             } else {
                                 $emailFail = true;
+                            }
+
+                            if ($emailFail) {
+                                $gibbonModuleID = getModuleIDFromName($connection2, 'Finance');
+                                $logArray = [];
+                                $logArray['recipients'] = is_array($emails) ? implode(',', $emails) : $emails;
+                                setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearID"], $gibbonModuleID, $_SESSION[$guid]["gibbonPersonID"], 'Finance - Reminder Email Failure', $logArray);
                             }
                         }
                     }

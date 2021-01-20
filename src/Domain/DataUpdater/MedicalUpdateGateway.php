@@ -19,22 +19,30 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\DataUpdater;
 
-use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
+use Gibbon\Domain\ScrubbableGateway;
+use Gibbon\Domain\Traits\Scrubbable;
+use Gibbon\Domain\Traits\TableAware;
+use Gibbon\Domain\Traits\ScrubByPerson;
 
 /**
  * @version v16
  * @since   v16
  */
-class MedicalUpdateGateway extends QueryableGateway
+class MedicalUpdateGateway extends QueryableGateway implements ScrubbableGateway
 {
     use TableAware;
+    use Scrubbable;
+    use ScrubByPerson;
 
     private static $tableName = 'gibbonPersonMedicalUpdate';
     private static $primaryKey = 'gibbonPersonMedicalUpdateID';
 
     private static $searchableColumns = [''];
+
+    private static $scrubbableKey = 'gibbonPersonID';
+    private static $scrubbableColumns = ['bloodType' => '','longTermMedication' => '','longTermMedicationDetails' => '','tetanusWithin10Years' => '','comment' => ''];
     
     /**
      * @param QueryCriteria $criteria

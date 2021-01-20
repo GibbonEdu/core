@@ -23,10 +23,8 @@ use Gibbon\Forms\Form;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rollover.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $page->breadcrumbs->add(__('Course Enrolment Rollover'));
 
@@ -54,14 +52,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
             echo __('The next school year cannot be determined, so this action cannot be performed.');
             echo '</div>';
         } else {
-            try {
+            
                 $dataNext = array('gibbonSchoolYearID' => $nextYear);
                 $sqlNext = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
                 $resultNext = $connection2->prepare($sqlNext);
                 $resultNext->execute($dataNext);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
             if ($resultNext->rowCount() == 1) {
                 $rowNext = $resultNext->fetch();
             }
@@ -96,14 +91,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
             echo __('The next school year cannot be determined, so this action cannot be performed.');
             echo '</div>';
         } else {
-            try {
+            
                 $dataNext = array('gibbonSchoolYearID' => $nextYear);
                 $sqlNext = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
                 $resultNext = $connection2->prepare($sqlNext);
                 $resultNext->execute($dataNext);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
             if ($resultNext->rowCount() == 1) {
                 $rowNext = $resultNext->fetch();
             }
@@ -148,7 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
 
                 $form->addHiddenValue('nextYear', $nextYear);
 
-                $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth');
+                $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth mb-4');
                 $row = $table->addRow();
                     $row->addLabel('rollStudents', __('Include Students'));
                     $row->addCheckbox('rollStudents')->checked('on');
@@ -193,17 +185,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
             echo __('The next school year cannot be determined, so this action cannot be performed.');
             echo '</div>';
         } else {
-            try {
-                $dataNext = array('gibbonSchoolYearID' => $nextYear);
-                $sqlNext = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-                $resultNext = $connection2->prepare($sqlNext);
-                $resultNext->execute($dataNext);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            if ($resultNext->rowCount() == 1) {
-                $rowNext = $resultNext->fetch();
-            }
+            
+            $dataNext = array('gibbonSchoolYearID' => $nextYear);
+            $sqlNext = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+            $rowNext = $pdo->selectOne($sqlNext, $dataNext);
+
             $nameNext = $rowNext['name'];
             $sequenceNext = $rowNext['sequenceNumber'];
             if ($nameNext == '' or $sequenceNext == '') {
@@ -241,7 +227,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                         //Get current enrolment, exclude people already enrolled or their status is not Full
                         try {
                             $dataCurrent = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonCourseClassIDNext' => $gibbonCourseClassIDNext);
-                            $sqlCurrent = "SELECT gibbonCourseClassPerson.gibbonPersonID, gibbonCourseClassPerson.role, gibbonCourseClassPerson.reportable
+                            $sqlCurrent = "SELECT gibbonCourseClassPerson.gibbonCourseClassPersonID, gibbonCourseClassPerson.gibbonPersonID, gibbonCourseClassPerson.role, gibbonCourseClassPerson.reportable
                             FROM gibbonCourseClassPerson
                             JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                             LEFT JOIN gibbonCourseClassPerson as gibbonCourseClassPersonNext ON (gibbonCourseClassPersonNext.gibbonCourseClassID=:gibbonCourseClassIDNext AND gibbonCourseClassPersonNext.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
@@ -256,9 +242,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                         }
                         if ($resultCurrent->rowCount() > 0) {
                             while ($rowCurrent = $resultCurrent->fetch()) {
+
                                 try {
-                                    $dataInsert = array('gibbonCourseClassID' => $gibbonCourseClassIDNext, 'gibbonPersonID' => $rowCurrent['gibbonPersonID'], 'role' => $rowCurrent['role'], 'reportable' => $rowCurrent['reportable']);
-                                    $sqlInsert = 'INSERT INTO gibbonCourseClassPerson SET gibbonCourseClassID=:gibbonCourseClassID, gibbonPersonID=:gibbonPersonID, role=:role, reportable=:reportable';
+                                    $dataInsert = array('gibbonCourseClassID' => $gibbonCourseClassIDNext, 'gibbonPersonID' => $rowCurrent['gibbonPersonID'], 'role' => $rowCurrent['role'], 'reportable' => $rowCurrent['reportable'], 'dateEnrolled' => date('Y-m-d'));
+                                    $sqlInsert = 'INSERT INTO gibbonCourseClassPerson SET gibbonCourseClassID=:gibbonCourseClassID, gibbonPersonID=:gibbonPersonID, role=:role, dateEnrolled=:dateEnrolled, reportable=:reportable';
                                     $resultInsert = $connection2->prepare($sqlInsert);
                                     $resultInsert->execute($dataInsert);
                                 } catch (PDOException $e) {

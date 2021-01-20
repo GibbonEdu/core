@@ -22,7 +22,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% block header %}
     
             {% if table.getHeader %}
-            <div class="linkTop">
+            <div class="linkTop mt-0">
                 {% for action in table.getHeader %}
                     {{ action.getOutput|raw }}
                 {% endfor %}
@@ -32,7 +32,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% endblock header %}
     </header>
 
-    <div id="{{ table.getID }}" class="dataTable {{ not preventOverflow ? 'overflow-x-auto overflow-y-visible' }}">
+    <div id="{{ table.getID }}" class="dataTable {{ not preventOverflow ? 'overflow-x-auto overflow-y-visible' : 'overflow-x-auto xl:overflow-x-unset' }}">
 
    
     {% if not rows and not isFiltered and dataSet.getResultCount == 0 %}
@@ -45,7 +45,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
     {% block tableInner %}
     
-        <table class="{{ class }} w-full" cellspacing=0 {% if draggable %}data-drag-url="{{ draggable.url }}" data-drag-data="{{ draggable.data }}"{% endif %}>
+        <table class="{{ class }} w-full mb-2" cellspacing=0 {% if draggable %}data-drag-url="{{ draggable.url }}" data-drag-data="{{ draggable.data }}"{% endif %}>
             <thead>
             {% for rowIndex, headerRow in headers %}
 
@@ -78,8 +78,9 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             {% for rowIndex, rowData in rows %}
                 {% set row = rowData.row %}
 
+                {{ row.getPrepended|raw }}
+
                 <tr {{ row.getAttributeString|raw }}>
-                    {{ row.getPrepended|raw }}
 
                     {% for columnIndex, column in columns %}
                         {% set cell = rowData.cells[columnIndex] %}
@@ -113,9 +114,9 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                             {{ cell.getAppended|raw }}
                         </td>
                     {% endfor %}
-
-                    {{ row.getAppended|raw }}
                 </tr>
+
+                {{ row.getAppended|raw }}
             {% endfor %}
             </tbody>
         </table>

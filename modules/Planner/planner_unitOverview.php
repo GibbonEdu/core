@@ -57,10 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
             list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
             $dateStamp = mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);
         } elseif ($viewBy == 'class') {
-            $class = null;
-            if (isset($_GET['class'])) {
-                $class = $_GET['class'];
-            }
+            $class = $_GET['class'] ?? [];
             $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
         }
         $replyTo = null;
@@ -91,14 +88,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                     echo __('You have not specified one or more required parameters.');
                     echo '</div>';
                 } else {
-                    try {
+                    
                         $dataChild = array('gibbonPersonID1' => $gibbonPersonID, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
                         $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID1 AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
                         $resultChild = $connection2->prepare($sqlChild);
                         $resultChild->execute($dataChild);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
                     if ($resultChild->rowCount() != 1) {
                         echo "<div class='error'>";
                         echo __('The selected record does not exist, or you do not have access to it.');
@@ -117,12 +111,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                 $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
                 $sql = "SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, 'Teacher' AS role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY date, timeStart";
             }
-            try {
+            
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
 
             if ($result->rowCount() != 1) {
                 echo "<div class='error'>";
@@ -159,14 +150,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                     echo __('The selected record does not exist, or you do not have access to it.');
                 } else {
                     //Get unit contents
-                    try {
+                    
                         $dataUnit = array('gibbonUnitID' => $row['gibbonUnitID']);
                         $sqlUnit = 'SELECT * FROM gibbonUnit WHERE gibbonUnitID=:gibbonUnitID';
                         $resultUnit = $connection2->prepare($sqlUnit);
                         $resultUnit->execute($dataUnit);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
 
                     if ($resultUnit->rowCount() != 1) {
                         echo "<div class='error'>";
@@ -195,12 +183,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                             $dataPlanners = array('gibbonUnitID' => $row['gibbonUnitID'], 'gibbonCourseClassID' => $row['gibbonCourseClassID']);
                             $sqlPlanners = "SELECT * FROM gibbonPlannerEntry WHERE gibbonUnitID=:gibbonUnitID AND gibbonCourseClassID=:gibbonCourseClassID AND viewableParents='Y'";
                         }
-                        try {
+                        
                             $resultPlanners = $connection2->prepare($sqlPlanners);
                             $resultPlanners->execute($dataPlanners);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
 
                         if ($resultPlanners->rowCount() < 1) {
                             echo "<div class='error'>";
@@ -273,14 +258,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                             echo '</div>';
                             //SMART BLOCKS
                             echo "<div id='tabs2'>";
-                            try {
+                            
                                 $dataBlocks = array('gibbonUnitID' => $row['gibbonUnitID']);
                                 $sqlBlocks = 'SELECT * FROM gibbonUnitBlock WHERE gibbonUnitID=:gibbonUnitID ORDER BY sequenceNumber';
                                 $resultBlocks = $connection2->prepare($sqlBlocks);
                                 $resultBlocks->execute($dataBlocks);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
 
                             while ($rowBlocks = $resultBlocks->fetch()) {
                                 if ($rowBlocks['title'] != '' or $rowBlocks['type'] != '' or $rowBlocks['length'] != '') {
@@ -319,7 +301,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                             echo '</div>';
                             //OUTCOMES
 							echo "<div id='tabs3'>";
-                            try {
+                            
                                 $dataOutcomes = $dataMulti;
                                 $dataOutcomes['gibbonUnitID'] = $row['gibbonUnitID'];
                                 $sqlOutcomes = "(SELECT gibbonOutcome.*, gibbonPlannerEntryOutcome.content FROM gibbonPlannerEntryOutcome JOIN gibbonOutcome ON (gibbonPlannerEntryOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE $whereMulti AND active='Y')
@@ -328,9 +310,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
 									ORDER BY scope DESC, name";
                                 $resultOutcomes = $connection2->prepare($sqlOutcomes);
                                 $resultOutcomes->execute($dataOutcomes);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
                             if ($resultOutcomes->rowCount() < 1) {
                                 echo "<div class='error'>";
                                 echo __('There are no records to display.');
@@ -369,14 +348,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                     echo '<td>';
                                     echo '<b>'.$rowOutcomes['scope'].'</b><br/>';
                                     if ($rowOutcomes['scope'] == 'Learning Area' and $rowOutcomes['gibbonDepartmentID'] != '') {
-                                        try {
+                                        
                                             $dataLearningArea = array('gibbonDepartmentID' => $rowOutcomes['gibbonDepartmentID']);
                                             $sqlLearningArea = 'SELECT * FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID';
                                             $resultLearningArea = $connection2->prepare($sqlLearningArea);
                                             $resultLearningArea->execute($dataLearningArea);
-                                        } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
-                                        }
                                         if ($resultLearningArea->rowCount() == 1) {
                                             $rowLearningAreas = $resultLearningArea->fetch();
                                             echo "<span style='font-size: 75%; font-style: italic'>".$rowLearningAreas['name'].'</span>';
@@ -425,14 +401,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                             //LESSONS
                             echo "<div id='tabs4'>";
                             $resourceContents = '';
-                            try {
+                            
                                 $dataLessons = $dataMulti;
                                 $sqlLessons = "SELECT * FROM gibbonPlannerEntry WHERE $whereMulti";
                                 $resultLessons = $connection2->prepare($sqlLessons);
                                 $resultLessons->execute($dataLessons);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
 
                             if ($resultLessons->rowCount() < 1) {
                                 echo "<div class='warning'>";
@@ -448,14 +421,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                         $resourceContents .= $rowLessons['teachersNotes'];
                                     }
 
-                                    try {
+                                    
                                         $dataBlock = array('gibbonPlannerEntryID' => $rowLessons['gibbonPlannerEntryID']);
                                         $sqlBlock = 'SELECT * FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY sequenceNumber';
                                         $resultBlock = $connection2->prepare($sqlBlock);
                                         $resultBlock->execute($dataBlock);
-                                    } catch (PDOException $e) {
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
-                                    }
 
                                     while ($rowBlock = $resultBlock->fetch()) {
                                         echo "<h5 style='font-size: 85%'>".$rowBlock['title'].'</h5>';
@@ -484,7 +454,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                         echo '<style type="text/css">';
                                         echo 'table.chatbox { width: 90%!important }';
                                         echo '</style>';
-                                        echo getThread($guid, $connection2, $rowLessons['gibbonPlannerEntryID'], null, 0, null, null, null, null, null, $class[1], $_SESSION[$guid]['gibbonPersonID'], 'Teacher', false, true);
+                                        echo getThread($guid, $connection2, $rowLessons['gibbonPlannerEntryID'], null, 0, null, null, null, null, null, $class[1] ?? '', $_SESSION[$guid]['gibbonPersonID'], 'Teacher', false, true);
                                     }
                                 }
                             }
@@ -501,7 +471,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                 $linksArray = array();
                                 $linksCount = 0;
                                 $dom = new DOMDocument();
-                                $dom->loadHTML($resourceContents);
+                                @$dom->loadHTML($resourceContents);
                                 foreach ($dom->getElementsByTagName('a') as $node) {
                                     if ($node->nodeValue != '') {
                                         $linksArray[$linksCount] = "<li><a href='".$node->getAttribute('href')."'>".$node->nodeValue.'</a></li>';
@@ -531,7 +501,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                 $imagesArray = array();
                                 $imagesCount = 0;
                                 $dom2 = new DOMDocument();
-                                $dom2->loadHTML($resourceContents);
+                                @$dom2->loadHTML($resourceContents);
                                 foreach ($dom2->getElementsByTagName('img') as $node) {
                                     if ($node->getAttribute('src') != '') {
                                         $imagesArray[$imagesCount] = "<img class='resource' style='margin: 10px 0; max-width: 560px' src='".$node->getAttribute('src')."'/><br/>";
@@ -559,7 +529,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                 $embedsArray = array();
                                 $embedsCount = 0;
                                 $dom2 = new DOMDocument();
-                                $dom2->loadHTML($resourceContents);
+                                @$dom2->loadHTML($resourceContents);
                                 foreach ($dom2->getElementsByTagName('iframe') as $node) {
                                     if ($node->getAttribute('src') != '') {
                                         $embedsArray[$embedsCount] = "<iframe style='max-width: 560px' width='".$node->getAttribute('width')."' height='".$node->getAttribute('height')."' src='".$node->getAttribute('src')."' frameborder='".$node->getAttribute('frameborder')."'></iframe>";

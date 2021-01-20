@@ -40,18 +40,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
 } else {
     //Check if courseschool year specified
     if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
-            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID);
-            $sql = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
+
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID);
+        $sql = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
@@ -73,14 +68,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
                     echo __('You have not specified one or more required parameters.');
                     echo '</div>';
                 } else {
-                    try {
-                        $data = array('gibbonUnitID' => $gibbonUnitID, 'gibbonCourseID' => $gibbonCourseID);
-                        $sql = 'SELECT gibbonCourse.nameShort AS courseName, gibbonSchoolYearID, gibbonUnit.* FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonUnitID=:gibbonUnitID AND gibbonUnit.gibbonCourseID=:gibbonCourseID';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
+
+                    $data = array('gibbonUnitID' => $gibbonUnitID, 'gibbonCourseID' => $gibbonCourseID);
+                    $sql = 'SELECT gibbonCourse.nameShort AS courseName, gibbonSchoolYearID, gibbonUnit.* FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonUnitID=:gibbonUnitID AND gibbonUnit.gibbonCourseID=:gibbonCourseID';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
 
                     if ($result->rowCount() != 1) {
                         echo "<div class='error'>";
@@ -111,15 +103,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
                         <?php
 
                         echo "<div id='tabs' style='margin: 20px 0'>";
-                            //Prep classes in this unit
-                            try {
-                                $dataClass = array('gibbonUnitID' => $gibbonUnitID);
-                                $sqlClass = 'SELECT gibbonUnitClass.gibbonCourseClassID, gibbonCourseClass.nameShort FROM gibbonUnitClass JOIN gibbonCourseClass ON (gibbonUnitClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonUnitID=:gibbonUnitID ORDER BY nameShort';
-                                $resultClass = $connection2->prepare($sqlClass);
-                                $resultClass->execute($dataClass);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
+                        //Prep classes in this unit
+                        $dataClass = array('gibbonUnitID' => $gibbonUnitID);
+                        $sqlClass = 'SELECT gibbonUnitClass.gibbonCourseClassID, gibbonCourseClass.nameShort FROM gibbonUnitClass JOIN gibbonCourseClass ON (gibbonUnitClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonUnitID=:gibbonUnitID ORDER BY nameShort';
+                        $resultClass = $connection2->prepare($sqlClass);
+                        $resultClass->execute($dataClass);
 
                         //Tab links
                         echo '<ul>';
@@ -170,14 +158,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
                         }
                         echo '</div>';
                         echo "<div id='tabs2'>";
-                        try {
-                            $dataBlocks = array('gibbonUnitID' => $gibbonUnitID);
-                            $sqlBlocks = 'SELECT * FROM gibbonUnitBlock WHERE gibbonUnitID=:gibbonUnitID ORDER BY sequenceNumber';
-                            $resultBlocks = $connection2->prepare($sqlBlocks);
-                            $resultBlocks->execute($dataBlocks);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
+
+                        $dataBlocks = array('gibbonUnitID' => $gibbonUnitID);
+                        $sqlBlocks = 'SELECT * FROM gibbonUnitBlock WHERE gibbonUnitID=:gibbonUnitID ORDER BY sequenceNumber';
+                        $resultBlocks = $connection2->prepare($sqlBlocks);
+                        $resultBlocks->execute($dataBlocks);
 
                         $resourceContents = $row['details'];
 
@@ -325,14 +310,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
                         echo '</div>';
                         echo "<div id='tabs4'>";
                             //Spit out outcomes
-                            try {
-                                $dataBlocks = array('gibbonUnitID' => $gibbonUnitID);
-                                $sqlBlocks = "SELECT gibbonUnitOutcome.*, scope, name, nameShort, category, gibbonYearGroupIDList FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber";
-                                $resultBlocks = $connection2->prepare($sqlBlocks);
-                                $resultBlocks->execute($dataBlocks);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
+                            $dataBlocks = array('gibbonUnitID' => $gibbonUnitID);
+                            $sqlBlocks = "SELECT gibbonUnitOutcome.*, scope, name, nameShort, category, gibbonYearGroupIDList FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber";
+                            $resultBlocks = $connection2->prepare($sqlBlocks);
+                            $resultBlocks->execute($dataBlocks);
                             if ($resultBlocks->rowCount() > 0) {
                                 echo "<table cellspacing='0' style='width: 100%'>";
                                 echo "<tr class='head'>";
@@ -367,14 +348,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
                                     echo '<td>';
                                     echo '<b>'.$rowBlocks['scope'].'</b><br/>';
                                     if ($rowBlocks['scope'] == 'Learning Area' and $gibbonDepartmentID != '') {
-                                        try {
-                                            $dataLearningArea = array('gibbonDepartmentID' => $gibbonDepartmentID);
-                                            $sqlLearningArea = 'SELECT * FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID';
-                                            $resultLearningArea = $connection2->prepare($sqlLearningArea);
-                                            $resultLearningArea->execute($dataLearningArea);
-                                        } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
-                                        }
+                                        $dataLearningArea = array('gibbonDepartmentID' => $gibbonDepartmentID);
+                                        $sqlLearningArea = 'SELECT * FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID';
+                                        $resultLearningArea = $connection2->prepare($sqlLearningArea);
+                                        $resultLearningArea->execute($dataLearningArea);
                                         if ($resultLearningArea->rowCount() == 1) {
                                             $rowLearningAreas = $resultLearningArea->fetch();
                                             echo "<span style='font-size: 75%; font-style: italic'>".$rowLearningAreas['name'].'</span>';
@@ -427,14 +404,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
 
                                 //Print Lessons
                                 echo '<h2>'.__('Lessons').'</h2>';
-                                try {
-                                    $dataLessons = array('gibbonCourseClassID' => $class[1], 'gibbonUnitID' => $gibbonUnitID);
-                                    $sqlLessons = 'SELECT * FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID ORDER BY date';
-                                    $resultLessons = $connection2->prepare($sqlLessons);
-                                    $resultLessons->execute($dataLessons);
-                                } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
+
+                                $dataLessons = array('gibbonCourseClassID' => $class[1], 'gibbonUnitID' => $gibbonUnitID);
+                                $sqlLessons = 'SELECT * FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID ORDER BY date';
+                                $resultLessons = $connection2->prepare($sqlLessons);
+                                $resultLessons->execute($dataLessons);
 
                                 if ($resultLessons->rowCount() < 1) {
                                     echo "<div class='warning'>";
@@ -448,14 +422,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
                                             echo "<div style='background-color: #F6CECB; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><p style='margin-bottom: 0px'><b>".__("Teacher's Notes").':</b></p> '.$rowLessons['teachersNotes'].'</div>';
                                         }
 
-                                        try {
-                                            $dataBlock = array('gibbonPlannerEntryID' => $rowLessons['gibbonPlannerEntryID']);
-                                            $sqlBlock = 'SELECT * FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY sequenceNumber';
-                                            $resultBlock = $connection2->prepare($sqlBlock);
-                                            $resultBlock->execute($dataBlock);
-                                        } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
-                                        }
+                                        $dataBlock = array('gibbonPlannerEntryID' => $rowLessons['gibbonPlannerEntryID']);
+                                        $sqlBlock = 'SELECT * FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY sequenceNumber';
+                                        $resultBlock = $connection2->prepare($sqlBlock);
+                                        $resultBlock->execute($dataBlock);
 
                                         while ($rowBlock = $resultBlock->fetch()) {
                                             echo "<h5 style='font-size: 85%'>".$rowBlock['title'].'</h5>';
@@ -471,12 +441,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
 
                                         //Print chats
                                         echo "<h5 style='font-size: 85%'>".__('Chat').'</h5>';
-                                    echo getThread($guid, $connection2, $rowLessons['gibbonPlannerEntryID'], null, 0, null, null, null, null, null, $class[1], $_SESSION[$guid]['gibbonPersonID'], 'Teacher', false);
+                                        echo getThread($guid, $connection2, $rowLessons['gibbonPlannerEntryID'], null, 0, null, null, null, null, null, $class[1], $_SESSION[$guid]['gibbonPersonID'], 'Teacher', false);
+                                    }
                                 }
+                                echo '</div>';
+                                ++$classCount;
                             }
-                            echo '</div>';
-                            ++$classCount;
-                        }
                         echo '</div>';
                     }
                 }
