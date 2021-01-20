@@ -23,7 +23,7 @@ v21.0.00
         New Data Retention and Data Privacy functionality
         New System Overview page showcasing available support options
         Improved tools and information for System Administrators
-        Afrikaans is now available as an installable language
+        Afrikaans and Ukrainian are now available as installable languages
         MySQL 8 compatibility
 
     Significant Changes
