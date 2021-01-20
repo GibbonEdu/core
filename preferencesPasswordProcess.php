@@ -87,7 +87,7 @@ if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
-                            $URL .= '&return=errora';
+                            $URL = $gibbon->session->get('absoluteURL')."/index.php?q=preferences.php&return=errora";
                             header("Location: {$URL}");
                             exit();
                         }
