@@ -141,7 +141,7 @@ class Updater implements ContainerAwareInterface
                 $sqlTokens = explode(';end', $version[1]);
                 foreach ($sqlTokens as $sqlToken) {
                     // Only run lines that haven't already been run for cutting edge
-                    if ($cuttingEdge && version_compare($tokenCount, $this->cuttingEdgeCodeLine, '>=')) {
+                    if (!$cuttingEdge || ($cuttingEdge && version_compare($tokenCount, $this->cuttingEdgeCodeLine, '>='))) {
                         $this->executeSQL($sqlToken);
                     }
 
@@ -166,9 +166,10 @@ class Updater implements ContainerAwareInterface
 
             if (!empty($this->errors)) break;
 
-            if (version_compare($version[0], $this->versionDB, '>=') and version_compare($version[0], $this->versionCode, '<=')) {
+            if (version_compare($version[0], $this->versionDB, '>=') && version_compare($version[0], $this->versionCode, '<=')) {
                 $sqlTokens = explode(';end', $version[1]);
                 if ($version[0] == $this->versionDB) { 
+
                     // Finish current version
                     foreach ($sqlTokens as $sqlToken) {
                         if (version_compare($tokenCount, $this->cuttingEdgeCodeLine, '>=')) {
