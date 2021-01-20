@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         if ($item['category'] == 'Staff') {
             $staffRoles[] = $item['gibbonRoleID'];
         }
-        $carry[$item['gibbonRoleID']] = $item['name'];
+        $carry[$item['gibbonRoleID']] = __($item['name']);
         return $carry;
     }, array());
 
