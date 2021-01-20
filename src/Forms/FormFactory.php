@@ -386,6 +386,7 @@ class FormFactory implements FormFactoryInterface
     public function createSelectSystemLanguage($name)
     {
         $languages = array(
+            'af_ZA' => 'Afrikaans - Suid-Afrika',
             'nl_NL' => 'Dutch - Nederland',
             'en_GB' => 'English - United Kingdom',
             'en_US' => 'English - United States',
@@ -402,6 +403,7 @@ class FormFactory implements FormFactoryInterface
             'tr_TR' => 'Türkçe - Türkiye',
             'ar_SA' => 'العربية - المملكة العربية السعودية',
             'th_TH' => 'ภาษาไทย - ราชอาณาจักรไทย',
+            'uk_UA' => 'українська мова - Україна',
             'ur_PK' => 'پاکستان - اُردُو',
             'zh_CN' => '汉语 - 中国',
             'zh_HK' => '體字 - 香港',
