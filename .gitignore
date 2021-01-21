@@ -37,3 +37,6 @@ nbproject/
 # Var Folder
 var/*
 !var/.htaccess
+
+# Ignore node_modules folder
+node_modules
