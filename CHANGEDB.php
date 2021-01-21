@@ -765,4 +765,5 @@ INSERT INTO `gibboni18n` (`code`, `name`, `version`, `active`, `installed`, `sys
 ++$count;
 $sql[$count][0] = '22.0.00';
 $sql[$count][1] = "
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System', 'cacheString', 'Front End Cache', '', '1611200873');end
 ";

@@ -555,6 +555,8 @@ $page->addData([
     'gibbonHouseIDLogo' => $session->get('gibbonHouseIDLogo'),
     'organisationLogo'  => $session->get('organisationLogo'),
     'organisationName'  => $session->get('organisationName'),
+    'cacheString'       => $session->get('cacheString'),
+    'installType'       => $session->get('installType'),
     'minorLinks'        => $header->getMinorLinks($cacheLoad),
     'notificationTray'  => $header->getNotificationTray($cacheLoad),
     'sidebar'           => $showSidebar,
