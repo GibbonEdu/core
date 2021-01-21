@@ -81,4 +81,23 @@ class DepartmentGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    public function selectDepartmentsByPerson($gibbonPersonID, $role = '') {
+        $select = $this
+            ->newSelect()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonDepartment.gibbonDepartmentID', 'name',  'nameShort', 'type', 'subjectListing', 'blurb', 'logo'
+            ])
+            ->innerJoin('gibbonDepartmentStaff', 'gibbonDepartmentStaff.gibbonDepartmentID = gibbonDepartment.gibbonDepartmentID')
+            ->where('gibbonDepartmentStaff.gibbonPersonID = :gibbonPersonID')
+            ->bindValue('gibbonPersonID', $gibbonPersonID);
+
+        if (!empty($role)) {
+            $select->where('gibbonDepartmentStaff.role = :role')
+                   ->bindValue('role', $role);
+        }
+
+        return $this->runSelect($select);
+    }
 }
