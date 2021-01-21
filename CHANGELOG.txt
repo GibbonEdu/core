@@ -22,7 +22,7 @@ v22.0.00
     Significant Changes
     Changes With Important Notices
     Tweaks & Additions
-        System Admin: added option to manually invalidate front end cache in Development
+        System Admin: added option to manually invalidate front end cache for Cutting Edge installs
         Reports: clear report cache when editing template assets in Production
         
     Bug Fixes
