@@ -64,6 +64,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
         $updated = $prototypeGateway->update($gibbonReportPrototypeSectionID, $data);
         $partialFail &= !$updated;
     }
+
+    // Clear reports cache if this is not a development system (for ease of templating)
+    if ($gibbon->session->get('installType') != 'Development') {
+        include $gibbon->session->get('absolutePath').'/modules/System Admin/moduleFunctions.php';
+        removeDirectoryContents($gibbon->session->get('absolutePath').'/uploads/cache/reports');
+    }
     
     $URL .= !$updated
         ? "&return=error2"
