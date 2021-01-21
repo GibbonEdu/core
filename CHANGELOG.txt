@@ -23,6 +23,7 @@ v22.0.00
     Changes With Important Notices
     Tweaks & Additions
     Bug Fixes
+        Planner: fix smart block summary from replacing existing summary text in Edit Lesson
 
 v21.0.00
 --------
