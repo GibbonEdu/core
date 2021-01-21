@@ -883,17 +883,15 @@ if ($canInstall == false) {
                     } else {
                         echo "<div class='success'>";
                         echo sprintf(__('Congratulations, your installation is complete. Feel free to %1$sgo to your Gibbon homepage%2$s and login with the username and password you created.'), "<a href='$absoluteURL'>", '</a>');
-                        echo '<br/><br/>';
-                        echo sprintf(__('It is also advisable to follow the %1$sPost-Install and Server Config instructions%2$s.'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>", '</a>');
                         echo '</div>';
+
+                        echo $page->fetchFromTemplate('ui/gettingStarted.twig.html', ['postInstall' => true]);
                     }
                 }
             }
         }
     }
-}
-
-                        
+}                 
          
 $page->write(ob_get_clean());
 
