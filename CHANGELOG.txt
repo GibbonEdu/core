@@ -22,8 +22,11 @@ v22.0.00
     Significant Changes
     Changes With Important Notices
     Tweaks & Additions
+        Reports: clear report cache when editing template assets in Production
+        
     Bug Fixes
-        Planner: fix smart block summary from replacing existing summary text in Edit Lesson
+        Planner: fixed smart block summary from replacing existing summary text in Edit Lesson
+        System Admin: fixed clear cache button to use custom cache path
 
 v21.0.00
 --------
