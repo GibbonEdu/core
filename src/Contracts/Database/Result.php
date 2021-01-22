@@ -63,7 +63,7 @@ interface Result
      * @param array|null          $ctor_args
      * @return array
      */
-    public function fetchAll(int $fetch_style = \PDO::FETCH_BOTH, mixed $fetch_argument = null, array $ctor_args = []);
+    public function fetchAll(int $fetch_style = \PDO::FETCH_BOTH, $fetch_argument = null, array $ctor_args = []);
 
     /**
      * Returns a single column from the next row of a result set. 
@@ -103,7 +103,7 @@ interface Result
      * @param  mixed|null $params
      * @return boolean
      */
-    public function setFetchMode(int $mode, mixed ...$args);
+    public function setFetchMode(int $mode, $args = []);
 
     /**
      * Fetches all results and returns it as a DataSet object.
