@@ -102,33 +102,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 		$excel->getActiveSheet()->setCellValueByColumnAndRow(3, 1, __("Invoice To"));
         $excel->getActiveSheet()->getStyleByColumnAndRow(3, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(3, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(4, 1, __("DOB"));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(4, 1, __("Status"));
         $excel->getActiveSheet()->getStyleByColumnAndRow(4, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(4, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(5, 1, __("Gender"));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(5, 1, __("Schedule"));
         $excel->getActiveSheet()->getStyleByColumnAndRow(5, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(5, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(6, 1, __("Status"));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(6, 1, __("Total Value") . '(' . $_SESSION[$guid]["currency"] .')');
         $excel->getActiveSheet()->getStyleByColumnAndRow(6, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(6, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(7, 1, __("Schedule"));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(7, 1, __("Issue Date"));
         $excel->getActiveSheet()->getStyleByColumnAndRow(7, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(7, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(8, 1, __("Total Value") . '(' . $_SESSION[$guid]["currency"] .')');
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(8, 1, __("Due Date"));
         $excel->getActiveSheet()->getStyleByColumnAndRow(8, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(8, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(9, 1, __("Issue Date"));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(9, 1, __("Date Paid"));
         $excel->getActiveSheet()->getStyleByColumnAndRow(9, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(9, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(10, 1, __("Due Date"));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(10, 1, __("Amount Paid") . " (" . $_SESSION[$guid]["currency"] . ")" );
         $excel->getActiveSheet()->getStyleByColumnAndRow(10, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(10, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(11, 1, __("Date Paid"));
-        $excel->getActiveSheet()->getStyleByColumnAndRow(11, 1)->applyFromArray($style_border);
-        $excel->getActiveSheet()->getStyleByColumnAndRow(11, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(12, 1, __("Amount Paid") . " (" . $_SESSION[$guid]["currency"] . ")" );
-        $excel->getActiveSheet()->getStyleByColumnAndRow(12, 1)->applyFromArray($style_border);
-        $excel->getActiveSheet()->getStyleByColumnAndRow(12, 1)->applyFromArray($style_head_fill);
 		$excel->getActiveSheet()->getStyle("1:1")->getFont()->setBold(true);
 
 		$r = 2;
@@ -158,23 +152,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 			$excel->getActiveSheet()->setCellValueByColumnAndRow(3, $r, $row["invoiceTo"]);
             $excel->getActiveSheet()->getStyleByColumnAndRow(3, $r)->applyFromArray($style_border);
 			//Column E
-            $excel->getActiveSheet()->setCellValueByColumnAndRow(4, $r, dateConvertBack($guid, $row["dob"]));
+			$excel->getActiveSheet()->setCellValueByColumnAndRow(4, $r, $row["status"]);
             $excel->getActiveSheet()->getStyleByColumnAndRow(4, $r)->applyFromArray($style_border);
 			//Column F
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(5, $r, $row["gender"]);
-            $excel->getActiveSheet()->getStyleByColumnAndRow(5, $r)->applyFromArray($style_border);
-			//Column G
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(6, $r, $row["status"]);
-            $excel->getActiveSheet()->getStyleByColumnAndRow(6, $r)->applyFromArray($style_border);
-			//Column H
 			if ($row["billingScheduleExtra"]!="")  {
-				$excel->getActiveSheet()->setCellValueByColumnAndRow(7, $r, $row["billingScheduleExtra"]);
+				$excel->getActiveSheet()->setCellValueByColumnAndRow(5, $r, $row["billingScheduleExtra"]);
 			}
 			else {
-				$excel->getActiveSheet()->setCellValueByColumnAndRow(7, $r, $row["billingSchedule"]);
+				$excel->getActiveSheet()->setCellValueByColumnAndRow(5, $r, $row["billingSchedule"]);
 			}
-            $excel->getActiveSheet()->getStyleByColumnAndRow(7, $r)->applyFromArray($style_border);
-			//Column I
+            $excel->getActiveSheet()->getStyleByColumnAndRow(5, $r)->applyFromArray($style_border);
+			//Column G
 			//Calculate total value
 			$totalFee=0 ;
 			$feeError = false ;
@@ -192,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 			}
 			if (is_null($resultTotal=$pdo->executeQuery($dataTotal, $sqlTotal)))
 			{
-				$excel->getActiveSheet()->setCellValueByColumnAndRow(8, $r, 'Error calculating total');
+				$excel->getActiveSheet()->setCellValueByColumnAndRow(6, $r, 'Error calculating total');
 				$feeError = true;
 			}
 			while ($rowTotal = $resultTotal->fetch()) {
@@ -206,24 +194,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 			$x = '';
 			if (! $feeError) {
 				$x .= number_format($totalFee, 2, ".", "") ;
-				$excel->getActiveSheet()->setCellValueByColumnAndRow(8, $r, $x);
+				$excel->getActiveSheet()->setCellValueByColumnAndRow(6, $r, $x);
 			}
+            $excel->getActiveSheet()->getStyleByColumnAndRow(6, $r)->applyFromArray($style_border);
+			//Column H
+		    $excel->getActiveSheet()->setCellValueByColumnAndRow(7, $r, dateConvertBack($guid, $row["invoiceIssueDate"]));
+            $excel->getActiveSheet()->getStyleByColumnAndRow(7, $r)->applyFromArray($style_border);
+			//Column I
+			$excel->getActiveSheet()->setCellValueByColumnAndRow(8, $r, dateConvertBack($guid, $row["invoiceDueDate"]));
             $excel->getActiveSheet()->getStyleByColumnAndRow(8, $r)->applyFromArray($style_border);
 			//Column J
-		    $excel->getActiveSheet()->setCellValueByColumnAndRow(9, $r, dateConvertBack($guid, $row["invoiceIssueDate"]));
+            if ($row["paidDate"]!="")
+				$excel->getActiveSheet()->setCellValueByColumnAndRow(9, $r, dateConvertBack($guid, $row["paidDate"]));
+            else
+                $excel->getActiveSheet()->setCellValueByColumnAndRow(9, $r, '');
             $excel->getActiveSheet()->getStyleByColumnAndRow(9, $r)->applyFromArray($style_border);
 			//Column K
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(10, $r, dateConvertBack($guid, $row["invoiceDueDate"]));
+			$excel->getActiveSheet()->setCellValueByColumnAndRow(10, $r, number_format($row["paidAmount"], 2, ".", ""));
             $excel->getActiveSheet()->getStyleByColumnAndRow(10, $r)->applyFromArray($style_border);
-			//Column L
-            if ($row["paidDate"]!="")
-				$excel->getActiveSheet()->setCellValueByColumnAndRow(11, $r, dateConvertBack($guid, $row["paidDate"]));
-            else
-                $excel->getActiveSheet()->setCellValueByColumnAndRow(11, $r, '');
-            $excel->getActiveSheet()->getStyleByColumnAndRow(11, $r)->applyFromArray($style_border);
-			//Column M
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(12, $r, number_format($row["paidAmount"], 2, ".", ""));
-            $excel->getActiveSheet()->getStyleByColumnAndRow(12, $r)->applyFromArray($style_border);
 			$r++;
 		}
 
