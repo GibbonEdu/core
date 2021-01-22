@@ -23,7 +23,8 @@ v22.0.00
     Changes With Important Notices
     Tweaks & Additions
         System: added the Getting Started info to the post-install page
-        System: update text to use darker colours for printable report pages
+        System: added an Update All option to the Manage Languages page
+        System: updated text to use darker colours for printable report pages
         Reports: clear report cache when editing template assets in Production
         System Admin: added option to manually invalidate front end cache for Cutting Edge installs
         
