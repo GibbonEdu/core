@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        php-version: ["7.0", "7.4"]
+        php-version: ["7.3", "7.4"]
     services:
       mysql:
         image: mysql:5.7
