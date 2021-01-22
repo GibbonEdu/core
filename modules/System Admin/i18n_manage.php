@@ -68,10 +68,17 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
 
     $table->modifyRows(function ($i18n, $row){
         if (!$i18n['isInstalled']) return null;
+        if ($i18n['systemDefault'] == 'Y') $row->addClass('success');
         if ($i18n['active'] == 'N') $row->addClass('error');
 
         return $row;
     });
+
+    $table->addHeaderAction('updateAll', __('Update All'))
+        ->setURL('/modules/System Admin/i18n_manage_updateAll.php')
+        ->setIcon('delivery2')
+        ->modalWindow(650, 220)
+        ->displayLabel();
 
     $table->addColumn('name', __('Name'))->width('50%');
     $table->addColumn('code', __('Code'))->width('10%');
@@ -100,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
             if (version_compare($version, $i18n['version'], '>')) {
                 $actions->addAction('update', __('Update'))
                     ->setIcon('delivery2')
-                    ->modalWindow(650, 135)
+                    ->modalWindow(650, 220)
                     ->addParam('mode', 'update')
                     ->setURL('/modules/System Admin/i18n_manage_install.php');
             }
@@ -156,7 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
             if ($i18n['active'] == 'Y') {
                 $actions->addAction('install', __('Install'))
                     ->setIcon('page_new')
-                    ->modalWindow(650, 135)
+                    ->modalWindow(650, 220)
                     ->addParam('mode', 'install')
                     ->setURL('/modules/System Admin/i18n_manage_install.php');
             }
