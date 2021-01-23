@@ -92,12 +92,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/cacheManager.
         $row->addContent(Format::tag(Format::filesize($reportsSize), 'dull'));
         $row->addCheckbox('reportsCache')->setValue('Y')->checked('N');
 
-    if ($gibbon->session->get('cuttingEdgeCode') == 'Y') {
-        $row = $form->addRow();
-            $row->addLabel('frontEndCache', __('Front End Cache'));
-            $row->addContent(Format::tag('.css .js', 'dull'));
-            $row->addCheckbox('frontEndCache')->setValue('Y')->checked('N');
-    }
+    $row = $form->addRow();
+        $row->addLabel('frontEndCache', __('Front End Cache'));
+        $row->addContent(Format::tag('.css .js', 'dull'));
+        $row->addCheckbox('frontEndCache')->setValue('Y')->checked('N');
 
     $row = $form->addRow()->addSubmit(__('Clear Cache'));
 
