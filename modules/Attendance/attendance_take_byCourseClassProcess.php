@@ -30,7 +30,7 @@ $gibbonCourseClassID=$_POST["gibbonCourseClassID"] ?? '';
 $currentDate=$_POST["currentDate"] ?? '';
 $today=date("Y-m-d");
 
-$moduleName = getModuleName($_POST["address"]) ?? '';
+$moduleName = getModuleName($_POST["address"] ?? '');
 
 if ($moduleName == "Planner") {
     $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? '';
