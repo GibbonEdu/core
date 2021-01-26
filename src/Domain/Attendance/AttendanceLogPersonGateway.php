@@ -179,7 +179,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function queryStudentsNotPresent(QueryCriteria $criteria, $gibbonSchoolYearID, $date, $allStudents = null)
+    public function queryStudentsNotPresent(QueryCriteria $criteria, $gibbonSchoolYearID, $date, $allStudents = null, $countClassAsSchool = null)
     {
         $subSelect = $this
             ->newSelect()
@@ -187,6 +187,10 @@ class AttendanceLogPersonGateway extends QueryableGateway
             ->cols(['gibbonPersonID', 'date', 'MAX(timestampTaken) as maxTimestamp', 'context'])
             ->where("date=:date")
             ->groupBy(['gibbonPersonID', 'date']);
+
+        if ($countClassAsSchool == 'N') {
+            $subSelect->where("context<>'Class'");
+        }
 
         $query = $this
             ->newQuery()
@@ -231,18 +235,12 @@ class AttendanceLogPersonGateway extends QueryableGateway
                     ->where('FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupIDList)')
                     ->bindValue('gibbonYearGroupIDList', $gibbonYearGroupIDList);
             },
-            'contextNot' => function ($query, $contextNot) {
-                if (empty($contextNot)) return $query;
-                return $query
-                    ->where('(gibbonAttendanceLogPerson.gibbonAttendanceLogPersonID IS NULL OR gibbonAttendanceLogPerson.context <> :contextNot)')
-                    ->bindValue('contextNot', $contextNot);
-            }
         ]);
 
         return $this->runQuery($query, $criteria);
     }
 
-    public function queryStudentsNotOnsite(QueryCriteria $criteria, $gibbonSchoolYearID, $date, $allStudents = null)
+    public function queryStudentsNotOnsite(QueryCriteria $criteria, $gibbonSchoolYearID, $date, $allStudents = null, $countClassAsSchool = null)
     {
         $subSelect = $this
             ->newSelect()
@@ -250,6 +248,10 @@ class AttendanceLogPersonGateway extends QueryableGateway
             ->cols(['gibbonPersonID', 'date', 'MAX(timestampTaken) as maxTimestamp', 'context'])
             ->where("date=:date")
             ->groupBy(['gibbonPersonID', 'date']);
+
+        if ($countClassAsSchool == 'N') {
+            $subSelect->where("context<>'Class'");
+        }
 
         $query = $this
             ->newQuery()
@@ -295,12 +297,6 @@ class AttendanceLogPersonGateway extends QueryableGateway
                     ->where('FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupIDList)')
                     ->bindValue('gibbonYearGroupIDList', $gibbonYearGroupIDList);
             },
-            'contextNot' => function ($query, $contextNot) {
-                if (empty($contextNot)) return $query;
-                return $query
-                    ->where('(gibbonAttendanceLogPerson.gibbonAttendanceLogPersonID IS NULL OR gibbonAttendanceLogPerson.context <> :contextNot)')
-                    ->bindValue('contextNot', $contextNot);
-            }
         ]);
 
         return $this->runQuery($query, $criteria);
