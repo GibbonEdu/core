@@ -11,6 +11,11 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {{ include('head.twig.html') }}
     </head>
     <body class="print">
+        <style>
+            table, a, .subdued, .text-gray-100, .text-gray-200, .text-gray-300, .text-gray-400  {
+                color: #000000 !important;
+            }
+        </style>
         <div id="wrap-report" class="mx-auto {{ orientation == 'L' ? 'max-w-6xl' : 'max-w-3xl' }}">
             <div id="header-report" class="flex items-center w-full my-6">
                 

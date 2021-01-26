@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
+
 include '../../gibbon.php';
 include '../../config.php';
 
@@ -30,13 +32,22 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/cacheManager.
     header("Location: {$URL}");
     exit;
 } else {
+    $cachePath = $gibbon->session->has('cachePath') ? $gibbon->session->get('cachePath') : '/uploads/cache';
+
     // Clear the templates cache folder
     if (!empty($_POST['templateCache']) && $_POST['templateCache'] == 'Y') {
-        removeDirectoryContents($gibbon->session->get('absolutePath').'/uploads/cache/templates');
+        removeDirectoryContents($gibbon->session->get('absolutePath').$cachePath.'/templates');
     }
 
+    // Clear the reports cache folder
     if (!empty($_POST['reportsCache']) && $_POST['reportsCache'] == 'Y') {
-        removeDirectoryContents($gibbon->session->get('absolutePath').'/uploads/cache/reports');
+        removeDirectoryContents($gibbon->session->get('absolutePath').$cachePath.'/reports');
+    }
+
+    // Update the cache invalidation string, for development
+    if (!empty($_POST['frontEndCache']) && $_POST['frontEndCache'] == 'Y') {
+        $gibbon->session->set('cacheString', time());
+        $container->get(SettingGateway::class)->updateSettingByScope('System', 'cacheString', $gibbon->session->get('cacheString'));
     }
 
     $URL .= '&return=success0';

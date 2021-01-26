@@ -16,19 +16,37 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v22.0.00
+--------
+    Headlines
+    Significant Changes
+    Changes With Important Notices
+    Tweaks & Additions
+        System: added the Getting Started info to the post-install page
+        System: added an Update All option to the Manage Languages page
+        System: updated text to use darker colours for printable report pages
+        Finance: removed student DOB and Gender from Export Invoices
+        Reports: clear report cache when editing template assets in Production
+        System Admin: added option to manually invalidate front end cache for Cutting Edge installs
+        
+    Bug Fixes
+        Planner: fixed smart block summary from replacing existing summary text in Edit Lesson
+        Staff: fixed weekdays incorrect on Sundays in Weekly Absences report
+        System Admin: fixed clear cache button to use custom cache path
+
 v21.0.00
 --------
     Headlines
+        Visual improvements to forms and menus
         New Data Retention and Data Privacy functionality
-        New landing page in System Admin showcasing available support options
-        Afrikaans is now available as an installable language
+        New System Overview page showcasing available support options
+        Improved tools and information for System Administrators
+        Afrikaans and Ukrainian are now available as installable languages
         MySQL 8 compatibility
 
     Significant Changes
-        System Admin: add Security & Privacy Settings and optional cookie consent banner
+        System Admin: added Security & Privacy Settings and optional cookie consent banner
         System Admin: added a Manage Services page to view gibbonedu.com licenses and services
-        System Admin: added a Cache Manager page to configure and clear template cache
-        System Admin: added a Server Info page to view server configuration values
         System Admin: added an Email Templates section to customize emails sent by Gibbon
         Data Updater: data updates with no changes will now be automatically accepted
         Planner: added a setting to customize what homework is called throughout the planner
@@ -120,6 +138,8 @@ v21.0.00
         Students: added Official Name to Left Students and New Students reports
         Students: improved the layout of Student Application acceptance emails
         School Admin: added optional descriptions for medical conditions
+        System Admin: added a Cache Manager page to configure and clear template cache
+        System Admin: added a Server Info page to view server configuration values
         System Admin: adjusted View Log to show only current year's log entries
         System Admin: added a Purge Logs action to the View Logs page
         System Admin: added a flag to import types to enable updating non-unique rows
