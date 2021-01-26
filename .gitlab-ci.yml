@@ -52,18 +52,14 @@
   script:
     - composer test
 
-php:7.0:
-  image: php:7.0
-  extends: .tests
-
-php:7.1:
-  image: php:7.1
-  extends: .tests
-
-php:7.2:
-  image: php:7.2
-  extends: .tests
-
 php:7.3:
   image: php:7.3
+  extends: .tests
+
+php:7.4:
+  image: php:7.4
+  extends: .tests
+
+php:8.0:
+  image: php:8.0
   extends: .tests
