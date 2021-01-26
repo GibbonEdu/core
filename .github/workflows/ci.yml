@@ -6,11 +6,17 @@ on:
 
 jobs:
   test:
-    name: CI Test (PHP ${{ matrix.php-version }})
+    name: ${{ matrix.name }} (PHP ${{ matrix.php-version }})
     runs-on: ubuntu-20.04
     strategy:
       matrix:
         php-version: ["7.3", "7.4"]
+        experimental: [false]
+        name: ["CI Test"]
+        include:
+          - php-version: "8.0"
+            experimental: true
+            name: "CI Test, Experimental"
     services:
       mysql:
         image: mysql:5.7
@@ -74,6 +80,7 @@ jobs:
 
       - name: Run composer test
         run: composer test
+        continue-on-error: ${{ matrix.experimental }}
         env:
           TEST_ENV: codeception
           ABSOLUTE_URL: http://127.0.0.1:8888
@@ -84,7 +91,7 @@ jobs:
 
       - name: Save Test Artifacts
         uses: actions/upload-artifact@v2
-        if: ${{ failure() }}
+        if: ${{ failure() || matrix.experimental }}
         with:
           name: Test Artifacts (PHP ${{ matrix.php-version }})
           path: tests/log
