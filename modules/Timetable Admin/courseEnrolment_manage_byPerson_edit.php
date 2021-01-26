@@ -232,7 +232,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             $table = DataTable::createPaginated('enrolmentLeft', $criteria);
 
-            $table->addColumn('courseClass', __('Class Code'))->format(Format::using('courseClassName', ['course', 'class']));
+            $table->addColumn('courseClass', __('Class Code'))
+                ->sortable(['course', 'class'])
+                ->format(Format::using('courseClassName', ['course', 'class']));
             $table->addColumn('courseName', __('Course'));
             $table->addColumn('role', __('Class Role'));
 

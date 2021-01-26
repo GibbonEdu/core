@@ -160,7 +160,7 @@ else {
 						$form = BulkActionForm::create('resendByRecipient', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/messenger_manage_report_processBulk.php?gibbonMessengerID='.$gibbonMessengerID.'&search='.$search);
 						$form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-						$row = $form->addBulkActionRow(array('resend' => __('Resend')));
+						$row = $form->addBulkActionRow(array('resend' => __('Resend')))->addClass('flex justify-end');
 							$row->addSubmit(__('Go'));
 
 						$rollGroups = $result->fetchAll(\PDO::FETCH_GROUP);
@@ -301,7 +301,7 @@ else {
 
 						$form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-						$row = $form->addBulkActionRow(array('resend' => __('Resend')));
+						$row = $form->addBulkActionRow(array('resend' => __('Resend')))->addClass('flex justify-end');;
 							$row->addSubmit(__('Go'));
 
 						$table = $form->addRow()->addTable()->setClass('colorOddEven fullWidth');

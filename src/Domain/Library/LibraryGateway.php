@@ -182,9 +182,9 @@ class LibraryGateway extends QueryableGateway
             },
             'collection' => function ($query, $collection) {
                 return $query
-                    ->where("gibbonLibraryItem.fields LIKE '%s:10:\"Collection\";s::collectionlen:\":collection\";%")
+                    ->where("gibbonLibraryItem.fields LIKE CONCAT('%s:10:\"Collection\";s:', :collectionlen, ':\"', :collection, '\";%')")
                     ->bindValue('collection', $collection)
-                    ->bindvalue('collectionlen', strlen($collection));
+                    ->bindValue('collectionlen', strlen($collection));
             },
             'everything' => function ($query, $needle) {
                 $globalSearch = "(";

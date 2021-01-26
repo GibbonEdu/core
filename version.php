@@ -20,13 +20,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 /**
  * Sets version information.
  */
-$version = '21.0.00';
+$version = '22.0.00';
 
 /**
  * System Requirements
  */
 $systemRequirements = [
-    'php'        => '7.0.0',
+    'php'        => '7.3.0',
     'mysql'      => '5.6',
     'apache'     => ['mod_rewrite'],
     'extensions' => ['gettext', 'mbstring', 'curl', 'zip', 'xml', 'gd'],

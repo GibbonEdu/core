@@ -28,8 +28,7 @@ class ReportingCycleContext implements DataContext
     public function getFormatter()
     {
         return function ($values) {
-            return Format::name('', $values['preferredName'], $values['surname'], 'Student', true, false).
-                '<br/><small><i>'.Format::userStatusInfo($values).'</i></small>';
+            return Format::nameLinked($values['gibbonPersonID'], '', $values['preferredName'], $values['surname'], 'Student', true, false, ['subpage' => 'Reports']).'<br/><small><i>'.Format::userStatusInfo($values).'</i></small>';
 
         };
     }
@@ -46,7 +45,8 @@ class ReportingCycleContext implements DataContext
                     gibbonPerson.dateStart,
                     gibbonPerson.dateEnd,
                     'Student' as roleCategory,
-                    gibbonYearGroup.nameShort as yearGroup
+                    gibbonYearGroup.nameShort as yearGroup,
+                    gibbonRollGroup.nameShort as rollGroup
                 FROM gibbonReport
                 JOIN gibbonReportingCycle ON (gibbonReportingCycle.gibbonReportingCycleID=gibbonReport.gibbonReportingCycleID)
                 JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonReportingCycle.gibbonSchoolYearID)

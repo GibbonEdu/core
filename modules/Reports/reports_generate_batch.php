@@ -92,6 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
 
     $table->addColumn('count', __('Count'))
         ->width('8%')
+        ->notSortable()
         ->format(function ($report) use (&$pdo, &$context) {
             if (empty($report['gibbonYearGroupID']) || empty($report['gibbonSchoolYearID'])) {
                 return __('N/A');
@@ -102,6 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
         });
 
     $table->addColumn('timestamp', __('Last Created'))
+        ->notSortable()
         ->format(function ($report) use ($gibbonReportID, &$reportArchiveEntryGateway, &$logs) {
             $reportLogs = $logs[$report['gibbonYearGroupID']] ?? [];
             if (count($reportLogs) > 0) {

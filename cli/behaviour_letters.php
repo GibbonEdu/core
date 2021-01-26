@@ -45,6 +45,10 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
     $emailSendCount = 0;
     $emailFailCount = 0;
 
+    // Prep for email sending later
+    $mail = $container->get(Mailer::class);
+    $mail->SMTPKeepAlive = true;
+
     // Initialize the notification sender & gateway objects
     $notificationGateway = new NotificationGateway($pdo);
     $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
@@ -315,28 +319,26 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                                 } else {
                                     $recipientList .= $rowMember['email'].', ';
 
-                                    //Prep message
-                                    $body .= '<br/><br/><i>'.sprintf(__('Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</i>';
-                                    $bodyPlain = emailBodyConvert($body);
-
-                                    $mail = $container->get(Mailer::class);
-
+                                    // Send message
                                     $mail->AddAddress($rowMember['email'], $rowMember['surname'].', '.$rowMember['preferredName']);
                                     if ($_SESSION[$guid]['organisationEmail'] != '') {
                                         $mail->SetFrom($_SESSION[$guid]['organisationEmail'], $_SESSION[$guid]['organisationName']);
                                     } else {
                                         $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
                                     }
-                                    $mail->CharSet = 'UTF-8';
-                                    $mail->Encoding = 'base64';
-                                    $mail->IsHTML(true);
-                                    $mail->Subject = sprintf(__('Behaviour Letter for %1$s via %2$s at %3$s'), $row['surname'].', '.$row['preferredName'].' ('.$row['rollGroup'].')', $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']);
-                                    $mail->Body = $body;
-                                    $mail->AltBody = $bodyPlain;
+                                    $subject = sprintf(__('Behaviour Letter for %1$s via %2$s at %3$s'), $row['surname'].', '.$row['preferredName'].' ('.$row['rollGroup'].')', $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']);
+                                    $mail->Subject = $subject;
+                                    $mail->renderBody('mail/message.twig.html', [
+                                        'title'  => $subject,
+                                        'body'   => $body,
+                                    ]);
 
                                     if (!$mail->Send()) {
                                         ++$emailFailCount;
                                     }
+
+                                    // Clear addresses
+                                    $mail->ClearAllRecipients();
                                 }
                             }
 
@@ -356,6 +358,10 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
             }
         }
     }
+
+    // Close SMTP connection
+    $mail->smtpClose();
+
 
     // Raise a new notification event
     $event = new NotificationEvent('Behaviour', 'Behaviour Letters');

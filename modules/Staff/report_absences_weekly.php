@@ -54,10 +54,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
 	$thisWeek = (new DateTime('Today'))->format($dateFormat);
 	$nextWeek = $date->modify('+1 week')->format($dateFormat);
 
-	$col = $row->addColumn()->addClass('flex items-center ');
-		$col->addButton(__('Last Week'))->addClass('')->onClick("window.location.href='{$link}&dateStart={$lastWeek}'");
+	$col = $row->addColumn()->setClass('flex-1 flex items-center ');
+		$col->addButton(__('Last Week'))->addClass(' rounded-l-sm')->onClick("window.location.href='{$link}&dateStart={$lastWeek}'");
 		$col->addButton(__('This Week'))->addClass('ml-px')->onClick("window.location.href='{$link}&dateStart={$thisWeek}'");
-		$col->addButton(__('Next Week'))->addClass('ml-px')->onClick("window.location.href='{$link}&dateStart={$nextWeek}'");
+		$col->addButton(__('Next Week'))->addClass('ml-px rounded-r-sm')->onClick("window.location.href='{$link}&dateStart={$nextWeek}'");
 
 	$col = $row->addColumn()->addClass('flex items-center justify-end');
 		$col->addDate('dateStart')->setValue($date->format($dateFormat))->setClass('shortWidth');
@@ -69,8 +69,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
     $sql = "SELECT name, nameShort FROM gibbonDaysOfWeek WHERE schoolDay='Y' ORDER BY sequenceNumber";
     $result = $pdo->select($sql)->fetchAll();
     
-    $weekdays = array_map(function ($weekday) use ($date){
-        $weekday['date'] = $date->modify($weekday['name'].' this week');
+    $currentWeekday = $date->format('l');
+    $weekdays = array_map(function ($weekday) use ($date, $currentWeekday) {
+        $weekday['date'] = $currentWeekday == 'Sunday'
+            ? $date->modify('next '.$weekday['name'].' - 1 week')
+            : $date->modify($weekday['name'].' this week');
         return $weekday;
     }, $result);
 

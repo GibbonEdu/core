@@ -1,0 +1,5 @@
+{% for jobOpening in jobOpenings %}
+    <h3>{{ jobOpening.jobTitle }}</h3>
+    <p><b>{{ __('Job Type: %1$s')|format(jobOpening.type) }}</b></p>
+    {{ jobOpening.description|raw }}<br/>
+{% endfor %}

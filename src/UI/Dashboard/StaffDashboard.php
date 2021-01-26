@@ -195,8 +195,8 @@ class StaffDashboard implements OutputableInterface
                         }
                     }
                     $planner .= '</td>';
-                    $planner .= '<td id="wordWrap">';
-                    $planner .= $row['summary'];
+                    $planner .= '<td class="wordWrap break-words">';
+                    $planner .= Format::truncate($row['summary'], 360);
                     $planner .= '</td>';
                     $planner .= '<td>';
                     $planner .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."'><img title='".__('View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a>";
