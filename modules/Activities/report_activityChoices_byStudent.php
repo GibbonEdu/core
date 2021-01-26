@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
                     });
             }
 
-            $table->addColumn('status', __('Status'));
+            $table->addColumn('status', __('Status'))->translatable();
             $table->addActionColumn()
                 ->addParam('gibbonActivityID')
                 ->format(function ($item, $actions) {

@@ -138,6 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
 
             $table->addMetaData('gridClass', 'rounded-sm bg-gray-100 border py-2');
             $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/3 p-4 text-center');
+            $table->addMetaData('hidePagination', true);
 
             $iconPath = $_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/';
             $table->addColumn('icon')

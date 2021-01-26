@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
         echo '<br/>';
         echo '</p>';
         echo "<div class='warning'>";
-        echo '<b>'.__('Warning, please note that this process is resource intensive, and may slow down access to the system for other users. Please be patient as the download might take a few minutes to prepare.').'</b>';
+        echo __('Warning, please note that this process is resource intensive, and may slow down access to the system for other users. Please be patient as the download might take a few minutes to prepare.');
         echo "<div class='linkTop'>";
         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/dataPoints_contents.php'>".__('Export to Excel')." <img title='".__('Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
         echo '</div>';

@@ -129,5 +129,5 @@ interface Connection
      * @param  array   $bindings
      * @return bool
      */
-    public function executeQuery($bindings = [], $query);
+    public function executeQuery($bindings = [], $query = "");
 }

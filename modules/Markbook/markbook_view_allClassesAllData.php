@@ -30,6 +30,20 @@ if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $gibbon->session->get('gibbonP
 require_once __DIR__ . '/src/MarkbookView.php';
 require_once __DIR__ . '/src/MarkbookColumn.php';
 
+
+    //reset ordering
+    if(isset($_GET['reset'], $_GET['gibbonCourseClassID']) && $_GET['reset']==1){
+        $data = array('gibbonCourseClassID' => $_GET['gibbonCourseClassID']);
+        $sql = 'SET @count:=0;UPDATE gibbonMarkbookColumn SET `sequenceNumber`=@count:=@count+1 WHERE `gibbonCourseClassID` = :gibbonCourseClassID order by gibbonMarkbookColumnID ASC';
+        $result = $pdo->executeQuery($data, $sql);
+        $_GET['return'] = 'success0';
+    } elseif(isset($_GET['reset'], $_GET['gibbonCourseClassID']) && $_GET['reset']==2){
+        $data = array('gibbonCourseClassID' => $_GET['gibbonCourseClassID']);
+        $sql = 'SET @count:=0;UPDATE gibbonMarkbookColumn SET `sequenceNumber`=@count:=@count+1 WHERE `gibbonCourseClassID` = :gibbonCourseClassID order by `date` ASC';
+        $result = $pdo->executeQuery($data, $sql);
+        $_GET['return'] = 'success0';
+    }
+
    //Check for access to multiple column add
     $multiAdd = false;
     //Add multiple columns
@@ -137,16 +151,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
     $markbookGateway = $container->get(MarkbookColumnGateway::class);
     $plannerGateway = $container->get(PlannerEntryGateway::class);
 	
-	//reset ordering
-	if(isset($_GET['reset']) && $_GET['reset']==1){
-		$data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-		$sql = 'SET @count:=0;UPDATE gibbonMarkbookColumn SET `sequenceNumber`=@count:=@count+1 WHERE `gibbonCourseClassID` = :gibbonCourseClassID order by gibbonMarkbookColumnID ASC';
-		$result = $pdo->executeQuery($data, $sql);
-	}else if(isset($_GET['reset']) && $_GET['reset']==2){
-		$data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-		$sql = 'SET @count:=0;UPDATE gibbonMarkbookColumn SET `sequenceNumber`=@count:=@count+1 WHERE `gibbonCourseClassID` = :gibbonCourseClassID order by `date` ASC';
-		$result = $pdo->executeQuery($data, $sql);
-	}
+	
 
     // Build the markbook object for this class
     $markbook = new MarkbookView($gibbon, $pdo, $gibbonCourseClassID);
@@ -210,7 +215,12 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
             if (!empty($teacherList)) {
                 echo '<b>'.sprintf(__('Class taught by %1$s'), implode(', ', $teacherList) ).'</b>. ';
             }
-            echo __('To see more detail on an item (such as a comment or a grade), hover your mouse over it. To see more columns, using the Newer and Older links.');
+            if ($markbook->getColumnCountTotal() > $markbook->getColumnsPerPage()) {
+                echo __('To see more detail on an item (such as a comment or a grade), hover your mouse over it. To see more columns, use the Newer and Older links.');
+            } else {
+                echo __('To see more detail on an item (such as a comment or a grade), hover your mouse over it.');
+            }
+            
             if ($markbook->hasExternalAssessments() == true) {
                 echo ' '.__('The Baseline column is populated based on student performance in external assessments, and can be used as a reference point for the grades in the markbook.');
             }
@@ -255,9 +265,9 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 					}
 					function resetOrderAction(order){
 						if(order==1){
-							window.location.href = window.location.href.substr(0,window.location.href.length-1) + "&reset=1";
+							window.location.href = window.location.href.substr(0,window.location.href.length-1) + "&gibbonCourseClassID='.$gibbonCourseClassID.'&reset=1";
 						}else if(order==2){
-							window.location.href = window.location.href.substr(0,window.location.href.length-1) + "&reset=2";
+							window.location.href = window.location.href.substr(0,window.location.href.length-1) + "&gibbonCourseClassID='.$gibbonCourseClassID.'&reset=2";
 						}
 					}
 				</script>';

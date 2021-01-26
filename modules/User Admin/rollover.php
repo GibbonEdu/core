@@ -142,7 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                 );
 
                 //START FORM
-                $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/rollover.php&step=3");
+                $form = Form::createTable('rollover', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/rollover.php&step=3");
 
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->setClass('smallIntBorder fullWidth');
@@ -153,25 +153,30 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                 if (getNextSchoolYearID($nextYear, $connection2) == false) {
                     $form->addRow()->addHeading(sprintf(__('Add Year Following %1$s'), $nameNext));
 
-                    $row = $form->addRow();
+                    $subform = Form::create('rolloverYear', '');
+                    $subform->setFactory(DatabaseFormFactory::create($pdo));
+
+                    $row = $subform->addRow();
                         $row->addLabel('nextname', __('School Year Name'))->description(__('Must be unique.'));
                         $row->addTextField('nextname')->required()->maxLength(9)->addClass('w-64');
 
-                    $row = $form->addRow();
+                    $row = $subform->addRow();
                         $row->addLabel('nextstatus', __('Status'));
                         $row->addTextField('nextstatus')->setValue(__('Upcoming'))->required()->readonly();
 
-                    $row = $form->addRow();
+                    $row = $subform->addRow();
                         $row->addLabel('nextsequenceNumber', __('Sequence Number'))->description(__('Must be unique. Controls chronological ordering.'));
                         $row->addSequenceNumber('nextsequenceNumber', 'gibbonSchoolYear', '', 'sequenceNumber')->required()->maxLength(3)->readonly();
 
-                    $row = $form->addRow();
+                    $row = $subform->addRow();
                         $row->addLabel('nextfirstDay', __('First Day'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
                         $row->addDate('nextfirstDay')->required()->addClass('w-64');
 
-                    $row = $form->addRow();
+                    $row = $subform->addRow();
                         $row->addLabel('nextlastDay', __('Last Day'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
                         $row->addDate('nextlastDay')->required()->addClass('w-64');
+
+                    $form->addRow()->addContent($subform->getOutput());
                 }
 
                 //SET EXPECTED USERS TO FULL
@@ -243,7 +248,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                 $row->addColumn()->addContent(Format::name('', $rowEnrol['preferredName'], $rowEnrol['surname'], 'Student', true));
                                 $row->addColumn()->addContent(__($rowEnrol['name']));
                                 $column = $row->addColumn();
-                                    $column->addCheckbox($count."-enrol-enrol")->setValue('Y')->checked('Y');
+                                    $column->addCheckbox($count."-enrol-enrol")->setValue('Y')->checked('Y')->alignLeft();
                                 $column = $row->addColumn();
                                     $column->addSelect($count."-enrol-gibbonYearGroupID")->fromArray($yearGroups)->required()->setClass('shortWidth floatNone');
                                 $column = $row->addColumn();
@@ -335,7 +340,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                     $row->addColumn()->addContent(Format::name('', $student[2], $student[1], 'Student', true));
                                     $row->addColumn()->addContent(__($student[3]));
                                     $column = $row->addColumn();
-                                        $column->addCheckbox($count."-enrolFull-enrol")->setValue('Y')->checked('Y');
+                                        $column->addCheckbox($count."-enrolFull-enrol")->setValue('Y')->checked('Y')->alignLeft();
                                     $column = $row->addColumn();
                                         $column->addSelect($count."-enrolFull-gibbonYearGroupID")->fromArray($yearGroups)->required()->setClass('shortWidth floatNone')->selected($yearGroupSelect);
                                     $column = $row->addColumn();
@@ -404,7 +409,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                 $row->addColumn()->addContent(Format::name('', $rowReenrol['preferredName'], $rowReenrol['surname'], 'Student', true));
                                 $row->addColumn()->addContent(__($rowReenrol['name']));
                                 $column = $row->addColumn();
-                                    $column->addCheckbox($count."-reenrol-enrol")->setValue('Y')->checked('Y');
+                                    $column->addCheckbox($count."-reenrol-enrol")->setValue('Y')->checked('Y')->alignLeft();
                                 //If no enrolment, try and work out next year and roll group
                                 if (is_null($enrolmentCheckYearGroup)) {
                                     $enrolmentCheckYearGroup=getNextYearGroupID($rowReenrol['gibbonYearGroupID'], $connection2);
@@ -450,7 +455,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                             $row->addContent(__($rowFinal['name']));
                             $row->addContent(__('Full'));
                             $row->addSelect($count."-final-status")->fromArray($statuses)->required()->setClass('shortWidth floatNone')->selected('Left');
-                            $row->addTextField($count.'-departureReason')->setValue(__('Graduated'))->setSize(12);
+                            $row->addTextField($count.'-departureReason')->setValue(__('Graduated'))->setSize(12)->setClass('w-32');
                     }
                     $form->addHiddenValue("final-count", $count);
                 }
@@ -485,7 +490,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                             $row->addColumn()->addContent(Format::name('', $rowRegister['preferredName'], $rowRegister['surname'], 'Student', true));
                             $row->addColumn()->addContent(__($rowRegister['name']));
                             $column = $row->addColumn();
-                                $column->addCheckbox($count."-register-enrol")->setValue('Y')->checked('Y');
+                                $column->addCheckbox($count."-register-enrol")->setValue('Y')->checked('Y')->alignLeft();
                             $column = $row->addColumn();
                                 $column->addSelect($count."-register-type")->fromArray(array('Teaching' => __('Teaching'), 'Support' => __('Support')))->required()->setClass('shortWidth floatNone');
                             $column = $row->addColumn();
@@ -891,6 +896,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                             echo '</div>';
                         } else {
                             $success = 0;
+
                             for ($i = 1; $i <= $count; ++$i) {
                                 $gibbonPersonID = $_POST["$i-reenrol-gibbonPersonID"];
                                 $enrol = $_POST["$i-reenrol-enrol"];

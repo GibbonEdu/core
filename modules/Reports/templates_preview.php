@@ -51,6 +51,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_preview.
         return;
     }
 
+    // Set reports to cache in a separate location
+    $cachePath = $gibbon->session->has('cachePath') ? $gibbon->session->get('cachePath').'/reports' : '/uploads/cache';
+    $container->get('twig')->setCache($gibbon->session->get('absolutePath').$cachePath);
+
     $reportBuilder = $container->get(ReportBuilder::class);
 
     // Build Reports

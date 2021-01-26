@@ -320,6 +320,8 @@ class MpdfRenderer implements ReportRendererInterface
 
     protected function setHeader()
     {
+        if (empty($this->headers)) return;
+
         $pageNum = $this->lastPage && !$this->firstPage ? -1 : $this->pdf->getPageNumber() + 1;
         $defaultHeader = isset($this->headers[0])? 'header0' : false;
         $headerName = isset($this->headers[$pageNum])? 'header'.$pageNum : $defaultHeader;
@@ -333,6 +335,8 @@ class MpdfRenderer implements ReportRendererInterface
 
     protected function setFooter()
     {
+        if (empty($this->footers)) return;
+
         $pageNum = $this->lastPage && !$this->firstPage ? -1 : $this->pdf->getPageNumber();
         $defaultFooter = isset($this->footers[0])? 'footer0' : false;
         $footerName = isset($this->footers[$pageNum])? 'footer'.$pageNum : $defaultFooter;

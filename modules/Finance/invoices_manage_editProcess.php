@@ -335,6 +335,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                                 $mail->renderBody('mail/email.twig.html', [
                                     'title'  => $mail->Subject,
                                     'body'   => $body,
+                                    'maxWidth' => '900px',
                                 ]);
 
                                 if (!$mail->Send()) {

@@ -36,6 +36,15 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         ) }}
     {% endif %}
 
+    {% if publicRegistration %}
+        {{ homepage.card(
+            __('Register'), 
+            __('Join our learning community.') ~ ' ' ~ __("It's free!"), 
+            "/?q=/publicRegistration.php"
+        ) }}
+
+    {% endif %}
+
     {% if makeDepartmentsPublic %}
         {{ homepage.card(
             __('Departments'), 
