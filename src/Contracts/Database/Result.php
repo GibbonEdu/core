@@ -52,7 +52,7 @@ interface Result
      * @param integer|null $cursor_offset
      * @return mixed
      */
-    public function fetch($fetch_style = null, $cursor_orientation = null, $cursor_offset = null);
+    public function fetch(int $mode = \PDO::FETCH_BOTH, int $cursorOrientation = \PDO::FETCH_ORI_NEXT, int $cursorOffset = 0);
 
     /**
      * Returns an array containing all of the result set rows. 
@@ -63,16 +63,16 @@ interface Result
      * @param array|null          $ctor_args
      * @return array
      */
-    public function fetchAll($fetch_style = null, $fetch_argument = null, $ctor_args = null);
+    public function fetchAll(int $fetch_style = \PDO::FETCH_BOTH, $fetch_argument = null, array $ctor_args = []);
 
     /**
      * Returns a single column from the next row of a result set. 
      * PDOStatement method. 
      *
-     * @param integer $column_number
+     * @param integer $column
      * @return string
      */
-    public function fetchColumn($column_number = 0);
+    public function fetchColumn(int $column = 0);
     
     /**
      * Fetches all as an array, grouped by key using the first column in the result set.
@@ -103,7 +103,7 @@ interface Result
      * @param  mixed|null $params
      * @return boolean
      */
-    public function setFetchMode($mode, $params = null);
+    public function setFetchMode(int $mode, $args = []);
 
     /**
      * Fetches all results and returns it as a DataSet object.
