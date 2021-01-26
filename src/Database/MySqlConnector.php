@@ -34,10 +34,14 @@ class MySqlConnector
     /**
      * Establish a database connection.
      *
-     * @param  array  $config
-     * @return PDO
+     * @param  array  $config          The database configuration
+     * @param  bool   $throw_on_error  To throw error on connection issue or not. Default: false
+     *
+     * @return \Gibbon\Database\Connection|bool
+     *     The Connection instances, or false if failed to connect and
+     *     $throw_on_error is false.
      */
-    public function connect(array $config)
+    public function connect(array $config, bool $throw_on_error = false)
     {
         $dsn = $this->getDsn($config);
 
@@ -49,6 +53,9 @@ class MySqlConnector
 
             return new Connection($connection, $config);
         } catch (\PDOException $e) {
+            if ($throw_on_error) {
+                throw $e;
+            }
             return false;
         }
     }
@@ -56,7 +63,7 @@ class MySqlConnector
     public function useDatabase(Connection $connection, $databaseName)
     {
         $databaseName = "`" . str_replace("`", "``", $databaseName) . "`";
-        
+
         $querySuccess = $connection->statement("CREATE DATABASE IF NOT EXISTS {$databaseName} DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci");
 
         if ($querySuccess) {
