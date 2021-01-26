@@ -18,6 +18,6 @@ Useful for scripts that need to execute after the page has loaded.
     {% if asset.type == 'inline' %}
         <script type="text/javascript">{{ asset.src|raw }}</script>
     {% else %}
-        <script type="text/javascript" src="{{ absoluteURL }}/{{ asset.src }}?v={{ assetVersion }}"></script>
+        <script type="text/javascript" src="{{ absoluteURL }}/{{ asset.src }}?v={{ assetVersion }}.{{ cacheString }}"></script>
     {% endif %}
 {% endfor %}

@@ -280,8 +280,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
         }
         $row = $table->addRow();
-        $row->addContent();
-        $row->addContent();
         $row->addContent("<a href='#' onclick='if (confirm(\"".$messageDelete."\")) window.location = \"".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage_deleteLinkProcess.php?gibbonApplicationFormID='.$gibbonApplicationFormID."&gibbonSchoolYearID=".$gibbonSchoolYearID."\"; else return false;'><img style='margin-left: 4px' title='".__('Remove').' '.__('Sibling Applications')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>")->addClass('right');
 
     } else {
@@ -927,7 +925,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $row->addFileUpload('file'.$i)
                     ->accepts($fileUploader->getFileExtensions())
                     ->setAttachments($_SESSION[$guid]['absoluteURL'], $attachments)
-                    ->setRequired($requiredDocumentsCompulsory == 'Y')
+                    ->setRequired($requiredDocumentsCompulsory == 'Y' && stripos($requiredDocumentsList[$i], $internalDocuments) === false)
                     ->uploadMultiple(true)
                     ->canDelete(true);
         }

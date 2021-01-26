@@ -32,10 +32,11 @@ $forceReset = $gibbon->session->get('passwordForceReset');
 
 if ($forceReset != 'Y') {
     $forceReset = 'N';
-    $URL = $gibbon->session->get('absoluteURL')."/index.php?q=preferences.php&forceReset=N";
+    $URLSuccess = $gibbon->session->get('absoluteURL')."/index.php?q=preferences.php&forceReset=N";
 } else {
-    $URL = $gibbon->session->get('absoluteURL')."/index.php?forceReset=Y";
+    $URLSuccess = $gibbon->session->get('absoluteURL')."/index.php?forceReset=Y";
 }
+$URL = $gibbon->session->get('absoluteURL')."/index.php?q=preferences.php&forceReset=".$forceReset;
 
 //Check passwords are not blank
 if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
@@ -95,16 +96,16 @@ if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
                         $gibbon->session->set('passwordStrongSalt', $salt);
                         $gibbon->session->set('passwordStrong', $passwordStrong);
                         $gibbon->session->set('pageLoads', null);
-                        $URL .= '&return=successa';
-                        header("Location: {$URL}");
+                        $URLSuccess .= '&return=successa';
+                        header("Location: {$URLSuccess}");
                         exit() ;
                     }
 
                     $gibbon->session->set('passwordStrongSalt', $salt);
                     $gibbon->session->set('passwordStrong', $passwordStrong);
                     $gibbon->session->set('pageLoads', null);
-                    $URL .= '&return=success0';
-                    header("Location: {$URL}");
+                    $URLSuccess .= '&return=success0';
+                    header("Location: {$URLSuccess}");
                 }
             }
         }

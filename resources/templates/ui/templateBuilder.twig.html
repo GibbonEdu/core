@@ -106,7 +106,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         accept: '.prototypeItem',
         over: function(event, ui) {
             $(this).addClass('relative');
-            $(this).append('<div id="droppable-overlay" class="absolute top-0 left-0 w-full h-full opacity-50 bg-gray-800 flex  items-stretch"><div class="flex-1 flex justify-center items-center m-3 border-4 border-dashed border-white text-white text-xl font-bold uppercase">{{ __('Drop Here') }}</div></div>');
+            $(this).append('<div id="droppable-overlay" class="absolute top-0 left-0 w-full h-full rounded-sm opacity-75 bg-transparent-600 flex items-stretch z-10"><div class="flex-1 flex justify-center items-center m-3 border-4 border-dashed border-white text-white text-xl font-bold uppercase">{{ __('Drop Here') }}</div></div>');
         },
         out: function(event, ui) {
             $('#droppable-overlay').remove();
@@ -117,13 +117,9 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             $(this).removeClass('relative');
         },
         drop: function(event, ui) {
-            var table = $(this).hasClass('.blankslate') 
-                ? $(this).parent().parent()
-                : $(this).parents('.dataTable');
+            var table = $(this);
 
-            var tableSelector = $(this).hasClass('.blankslate') 
-                ? $(this).prop('id')
-                : $(table).prop('id');
+            var tableSelector = $(table).prop('id');
 
             $.ajax({
                 url: '{{ absoluteURL }}/modules/Reports/templates_manage_editDropAjax.php',
@@ -146,9 +142,9 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             console.log('reloaded');
             tb_init('a.thickbox');
             $('#'+tableSelector+' table[data-drag-url]').each(DraggableDataTable);
-            $('#'+tableSelector+' tbody').droppable(DroppableDataTable);
+            $('#'+tableSelector).droppable(DroppableDataTable);
         });
     };
 
-    $('.dataTable tbody, .blankslate').droppable(DroppableDataTable);
+    $('.dataTable').droppable(DroppableDataTable);
 </script>

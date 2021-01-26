@@ -1220,6 +1220,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     echo "<div class='linkTop'>";
                                     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID='.$rowFamily['gibbonFamilyID']."'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                                     echo '</div>';
+                                } else {
+                                    echo '<br/><br/>';
                                 }
 
                                 //Print family information
@@ -1662,7 +1664,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                         foreach ($conditions as $condition) {
                             $table = DataTable::createDetails('medicalConditions');
-                            $table->setTitle(__($condition['name'])." <span style='color: #".$condition['alertColor']."'>(".__($condition['risk']).' '.__('Risk').')</span>');
+                            $table->setTitle(__($condition['name'])." <span style='color: ".$condition['alertColor']."'>(".__($condition['risk']).' '.__('Risk').')</span>');
                             $table->setDescription($condition['description']);
                             $table->addMetaData('gridClass', 'grid-cols-1 md:grid-cols-2');
 
@@ -2395,8 +2397,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 ->fromPOST();
 
                             // QUERY
-                            $canViewDraftReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.php', 'View Draft Reports');
-                            $canViewPastReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.php', 'View Past Reports');
+                            $canViewDraftReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.php', 'View Draft Reports');
+                            $canViewPastReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.php', 'View Past Reports');
                             $roleCategory = getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'), $connection2);
 
                             $reports = $reportArchiveEntryGateway->queryArchiveByStudent($criteria, $gibbonPersonID, $roleCategory, $canViewDraftReports, $canViewPastReports);
