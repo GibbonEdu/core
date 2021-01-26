@@ -113,15 +113,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     }
                 }
 
-                //Scan through staff
-                $staff = null;
-                if (isset($_POST['staff'])) {
-                    $staff = $_POST['staff'];
+                // Scan through staff
+                $staff = $_POST['staff'] ?? [];
+                $role = $_POST['role'] ?? 'Other';
+
+                // make sure that staff is an array
+                if (!is_array($staff)) {
+                    $staff = [(string) $staff];
                 }
-                $role = $_POST['role'];
-                if ($role == '') {
-                    $role = 'Other';
-                }
+
                 if (count($staff) > 0) {
                     foreach ($staff as $t) {
                         //Check to see if person is already registered in this activity
