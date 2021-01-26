@@ -22,7 +22,7 @@ class FileUploaderTest extends TestCase
 
     private $fileUploader;
 
-    public function setUp()
+    public function setUp(): void
     {
         // Mock the database results for a gibbonFileExtensions query
         $mockResults = $this->createMock(\PDOStatement::class);

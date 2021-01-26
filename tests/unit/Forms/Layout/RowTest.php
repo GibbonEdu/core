@@ -21,7 +21,7 @@ class RowTest extends TestCase
     private $mockFactory;
     private $mockElement;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->mockFactory = $this->createMock('Gibbon\Forms\FormFactoryInterface');
         $this->mockElement = $this->createMock('Gibbon\Forms\OutputableInterface');
