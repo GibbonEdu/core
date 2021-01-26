@@ -288,7 +288,7 @@ table.smallIntBorder {
 }
 table.smallIntBorder td {
     border-left: none !important ;
-    padding: 5px !important ;
+    padding: 0.5rem !important ;
 }
 table.smallIntBorder td:last-child {
     text-align: left;
@@ -298,7 +298,7 @@ tr.break td {
 }
 tr.break h3,
 tr.break h4 {
-    margin-top: 10px !important;
+    margin: 0.5rem 0 0.5rem 0 !important;
     padding: 0;
 }
 tr h3,
@@ -470,20 +470,20 @@ textarea[disabled] {
 }
 
 /* PAGINATION */
-div.paginationTop {
+.paginationTop {
     text-align: right;
     font-size: 12px;
     margin: 15px 0px 0px 0px;
 }
-div.paginationBottom {
+.paginationBottom {
     text-align: right;
     font-size: 12px;
     margin: 0px 0px 15px 0px;
 }
-div.linkTop {
+.linkTop {
     text-align: right;
     font-size: 12px;
-    margin: 15px 0px 5px 0px;
+    margin: 1.0rem 0px 0.5rem 0px;
 }
 
 /* IMAGES */
@@ -1196,6 +1196,10 @@ table.smallIntBorder td.noPadding {
 .dataTable .expander.expanded:before {
     transform: rotate(45deg);
     -webkit-transform: rotate(45deg);
+}
+
+.whitespace-nowrap {
+    white-space: nowrap;
 }
 
 

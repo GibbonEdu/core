@@ -181,6 +181,13 @@ class AttendanceLogPersonGateway extends QueryableGateway
 
     public function queryStudentsNotPresent(QueryCriteria $criteria, $gibbonSchoolYearID, $date, $allStudents = null)
     {
+        $subSelect = $this
+            ->newSelect()
+            ->from('gibbonAttendanceLogPerson')
+            ->cols(['gibbonPersonID', 'date', 'MAX(timestampTaken) as maxTimestamp', 'context'])
+            ->where("date=:date")
+            ->groupBy(['gibbonPersonID', 'date']);
+
         $query = $this
             ->newQuery()
             ->cols([
@@ -198,12 +205,24 @@ class AttendanceLogPersonGateway extends QueryableGateway
             ->innerJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID = gibbonStudentEnrolment.gibbonPersonID')
             ->innerJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID = gibbonRollGroup.gibbonRollGroupID')
             ->leftJoin('gibbonAttendanceLogPerson', 'gibbonAttendanceLogPerson.gibbonPersonID = gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.date = :date')
+            ->joinSubSelect(
+                'LEFT',
+                $subSelect,
+                'log',
+                'gibbonAttendanceLogPerson.gibbonPersonID=log.gibbonPersonID AND gibbonAttendanceLogPerson.date=log.date'
+            )
             ->where("gibbonPerson.status = 'Full'")
             ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= CURRENT_TIMESTAMP)')
             ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= CURRENT_TIMESTAMP)')
             ->where('gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->bindValue('date', $date);
+
+        if ($allStudents == 'Y') {
+            $query->where("(gibbonAttendanceLogPerson.gibbonAttendanceLogPersonID IS NULL OR (gibbonAttendanceLogPerson.direction = 'Out' AND gibbonAttendanceLogPerson.timestampTaken=log.maxTimestamp))");
+        } else {
+            $query->where("(gibbonAttendanceLogPerson.direction = 'Out' AND gibbonAttendanceLogPerson.timestampTaken=log.maxTimestamp)");
+        }
 
         $criteria->addFilterRules([
             'yearGroup' => function ($query, $gibbonYearGroupIDList) {
@@ -212,10 +231,69 @@ class AttendanceLogPersonGateway extends QueryableGateway
                     ->where('FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupIDList)')
                     ->bindValue('gibbonYearGroupIDList', $gibbonYearGroupIDList);
             },
-            'allStudents' => function ($query, $allStudents) {
-                if ($allStudents == 'Y') return $query;
+            'contextNot' => function ($query, $contextNot) {
+                if (empty($contextNot)) return $query;
                 return $query
-                    ->where('gibbonAttendanceLogPerson.gibbonAttendanceLogPersonID IS NOT NULL');
+                    ->where('(gibbonAttendanceLogPerson.gibbonAttendanceLogPersonID IS NULL OR gibbonAttendanceLogPerson.context <> :contextNot)')
+                    ->bindValue('contextNot', $contextNot);
+            }
+        ]);
+
+        return $this->runQuery($query, $criteria);
+    }
+
+    public function queryStudentsNotOnsite(QueryCriteria $criteria, $gibbonSchoolYearID, $date, $allStudents = null)
+    {
+        $subSelect = $this
+            ->newSelect()
+            ->from('gibbonAttendanceLogPerson')
+            ->cols(['gibbonPersonID', 'date', 'MAX(timestampTaken) as maxTimestamp', 'context'])
+            ->where("date=:date")
+            ->groupBy(['gibbonPersonID', 'date']);
+
+        $query = $this
+            ->newQuery()
+            ->cols([
+                'gibbonPerson.gibbonPersonID',
+                'gibbonPerson.title',
+                'gibbonPerson.preferredName',
+                'gibbonPerson.surname',
+                'gibbonRollGroup.name as rollGroupName',
+                'gibbonRollGroup.nameShort as rollGroup',
+                'gibbonAttendanceLogPerson.type',
+                'gibbonAttendanceLogPerson.reason',
+                'gibbonAttendanceLogPerson.comment',
+            ])
+            ->from('gibbonPerson')
+            ->innerJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID = gibbonStudentEnrolment.gibbonPersonID')
+            ->innerJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID = gibbonRollGroup.gibbonRollGroupID')
+            ->leftJoin('gibbonAttendanceLogPerson', 'gibbonAttendanceLogPerson.gibbonPersonID = gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.date = :date')
+            ->leftJoin('gibbonAttendanceCode', 'gibbonAttendanceCode.gibbonAttendanceCodeID=gibbonAttendanceLogPerson.gibbonAttendanceCodeID')
+            ->joinSubSelect(
+                'LEFT',
+                $subSelect,
+                'log',
+                'gibbonAttendanceLogPerson.gibbonPersonID=log.gibbonPersonID AND gibbonAttendanceLogPerson.date=log.date'
+            )
+            ->where("gibbonPerson.status = 'Full'")
+            ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= CURRENT_TIMESTAMP)')
+            ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= CURRENT_TIMESTAMP)')
+            ->where('gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->bindValue('date', $date);
+
+        if ($allStudents == 'Y') {
+            $query->where("(gibbonAttendanceLogPerson.gibbonAttendanceLogPersonID IS NULL OR (gibbonAttendanceCode.scope LIKE 'Offsite%' AND gibbonAttendanceLogPerson.timestampTaken=log.maxTimestamp))");
+        } else {
+            $query->where("(gibbonAttendanceCode.scope LIKE 'Offsite%' AND gibbonAttendanceLogPerson.timestampTaken=log.maxTimestamp)");
+        }
+
+        $criteria->addFilterRules([
+            'yearGroup' => function ($query, $gibbonYearGroupIDList) {
+                if (empty($gibbonYearGroupIDList)) return $query;
+                return $query
+                    ->where('FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupIDList)')
+                    ->bindValue('gibbonYearGroupIDList', $gibbonYearGroupIDList);
             },
             'contextNot' => function ($query, $contextNot) {
                 if (empty($contextNot)) return $query;

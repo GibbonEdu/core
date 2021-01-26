@@ -173,12 +173,9 @@ jQuery(function($){
     /**
     * Data Table: Expandable Rows
     */
-    // Expandable Rows
-    $('.dataTable .expander').each(function() {
-        $(this).click(function() {
-            $(this).toggleClass('expanded');
-            $(this).parents('tr').next('tr').toggle();
-        });
+    $(document).on('click', '.dataTable .expander', function () {
+        $(this).toggleClass('expanded');
+        $(this).parents('tr').next('tr').toggle();
     });
 });
 
@@ -503,7 +500,6 @@ CustomBlocks.prototype.loadBlockInputData = function(block, data) {
 
     for (key in data) {
         $("[name='"+key+"']:not([type='file'])", block).val(data[key]);
-        $("label[for='"+key+"']", block).html(data[key]);
     }
 
     var readonly = data.readonly || [];
@@ -718,7 +714,7 @@ $.prototype.gibbonDataTable = function(basePath, filters, identifier) {
 function gibbonFormSubmitted(form) {
     var submitButton = $('input[type="submit"]', $(form));
     submitButton.prop('disabled', true);
-    if ($(form).hasClass('standardForm')) {
+    if ($(form).hasClass('standardForm') || $(form).hasClass('formTable')) {
         setTimeout(function() {
             submitButton.wrap('<span class="submitted"></span>');
         }, 500);

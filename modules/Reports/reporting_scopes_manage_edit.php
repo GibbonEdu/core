@@ -126,11 +126,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_scopes_m
         ->setURL('/modules/Reports/reporting_criteria_manage_addMultiple.php')
         ->addParam('gibbonReportingCycleID', $urlParams['gibbonReportingCycleID'])
         ->addParam('gibbonReportingScopeID', $urlParams['gibbonReportingScopeID'])
+        ->addParam('referer', 'scopes')
         ->displayLabel();
 
     $table->addHeaderAction('criteria', __('Manage Criteria Types'))
         ->setIcon('markbook')
         ->setURL('/modules/Reports/criteriaTypes_manage.php')
+        ->addParam('referer', 'scopes')
         ->displayLabel()
         ->prepend(' | ');
 
@@ -141,6 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_scopes_m
         ->addParam('gibbonRollGroupID')
         ->addParam('gibbonCourseID')
         ->addParam('gibbonReportingCriteriaID')
+        ->addParam('referer', 'scopes')
         ->format(function ($reportingCriteria, $actions) {
             $actions->addAction('view', __('View'))
                     ->setURL('/modules/Reports/reporting_criteria_manage.php');

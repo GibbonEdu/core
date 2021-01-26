@@ -166,7 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                                     
                                 $column->addColor('rowColor['.$count.']')
                                     ->setID('rowColor'.$count)
-                                    ->setValue($rubricRow['backgroundColor'] ?? '#ffffff')
+                                    ->setValue($rubricRow['backgroundColor'])
                                     ->setTitle(__('Background Colour'));
 
 							$form->toggleVisibilityByClass('rowTitle'.$count)->onRadio('type'.$count)->when('Standalone');
@@ -201,7 +201,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                                 ->checked($rubricColumn['visualise'])
                                 ->setClass('textCenter flex-1 self-center');
                             $column = $row->addColumn()->setClass('sm:max-w-sm');
-                            $col = $column->addColumn()->addClass('flex-col');
+                            $col = $column->addColumn()->setClass('flex flex-col -mb-1');
 
 							// Handle non-grade scale columns as a text field, otherwise a dropdown
 							if ($values['gibbonScaleID'] == '') {
@@ -224,7 +224,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                             
                             $col->addColor('columnColor['.$count.']')
                                 ->setID('columnColor'.$count)
-                                ->setValue($rubricColumn['backgroundColor'] ?? '#ffffff')
+                                ->setValue($rubricColumn['backgroundColor'])
                                 ->setTitle(__('Background Colour'));
 
 							$form->addHiddenValue('gibbonRubricColumnID['.$count.']', $rubricColumn['gibbonRubricColumnID']);

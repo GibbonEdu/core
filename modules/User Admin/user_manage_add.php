@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         if ($item['category'] == 'Staff') {
             $staffRoles[] = $item['gibbonRoleID'];
         }
-        $carry[$item['gibbonRoleID']] = $item['name'];
+        $carry[$item['gibbonRoleID']] = __($item['name']);
         return $carry;
     }, array());
 
@@ -482,7 +482,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     // STAFF
     $form->toggleVisibilityByClass('staffDetails')->onSelect('gibbonRoleIDPrimary')->when($staffRoles);
     $form->toggleVisibilityByClass('staffRecord')->onCheckbox('staffRecord')->when('Y');
-    $form->addRow()->addHeading(__('Staff'))->addClass('staffDetails');
+    $form->addRow()->addClass('staffDetails')->addHeading(__('Staff'))->addClass('staffDetails');
 
     $row = $form->addRow()->addClass('staffDetails');
         $row->addLabel('staffRecord', __('Add Staff'));

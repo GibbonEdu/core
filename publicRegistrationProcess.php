@@ -118,19 +118,19 @@ if ($proceed == false) {
             $URL .= '&return=error7';
             header("Location: {$URL}");
         } else {
-            //Check uniqueness of username
-            try {
+            //Check uniqueness of username (and/or email, if required)
+            $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
+            if ($uniqueEmailAddress == 'Y') {
                 $data = array('username' => $username, 'email' => $email);
                 $sql = 'SELECT * FROM gibbonPerson WHERE username=:username OR email=:email';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
+                $result = $pdo->selectOne($sql, $data);
+            } else {
+                $data = array('username' => $username);
+                $sql = 'SELECT * FROM gibbonPerson WHERE username=:username';
+                $result = $pdo->selectOne($sql, $data);
             }
 
-            if ($result->rowCount() > 0) {
+            if (!empty($result)) {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
             } else {
