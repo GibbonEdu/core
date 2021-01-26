@@ -42,10 +42,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         
-            $data = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID);
-            $sql = 'SELECT gibbonStaffApplicationForm.*, gibbonStaffJobOpening.jobTitle, gibbonStaffJobOpening.type FROM gibbonStaffApplicationForm JOIN gibbonStaffJobOpening ON (gibbonStaffApplicationForm.gibbonStaffJobOpeningID=gibbonStaffJobOpening.gibbonStaffJobOpeningID) LEFT JOIN gibbonPerson ON (gibbonStaffApplicationForm.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+        $data = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID);
+        $sql = 'SELECT gibbonStaffApplicationForm.*, gibbonStaffJobOpening.jobTitle, gibbonStaffJobOpening.type FROM gibbonStaffApplicationForm JOIN gibbonStaffJobOpening ON (gibbonStaffApplicationForm.gibbonStaffJobOpeningID=gibbonStaffJobOpening.gibbonStaffJobOpeningID) LEFT JOIN gibbonPerson ON (gibbonStaffApplicationForm.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
@@ -265,7 +265,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             }
 
             // CUSTOM FIELDS FOR STAFF
-            $existingFields = (isset($values["fields"]))? unserialize($values["fields"]) : null;
+            $existingFields = isset($values['fields'])? json_decode($values['fields'], true) : null;
             $resultFields = getCustomFields($connection2, $guid, false, true, false, false, true, null);
             if ($resultFields->rowCount() > 0) {
                 $form->addRow()->addHeading(__('Other Information'));

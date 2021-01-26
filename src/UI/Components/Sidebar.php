@@ -121,6 +121,8 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
                 if (!$this->session->has('gibbonSchoolYearID')) setCurrentSchoolYear($guid, $connection2);
                 unset($_GET['return']);
+
+                $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
                 
                 $form = Form::create('loginForm', $this->session->get('absoluteURL').'/login.php?'.http_build_query($_GET) );
 
@@ -174,7 +176,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                         ->setClass('right');
 
                 $row = $form->addRow();
-                    $row->addFooter(false);
+                    $row->onlyIf($enablePublicRegistration == 'Y')->addButton('Register')->addClass('rounded-sm w-24 bg-blue-100')->onClick('window.location="'.$this->session->get('absoluteURL').'/index.php?q=/publicRegistration.php"');
                     $row->addSubmit(__('Login'));
 
                 echo $form->getOutput();
@@ -187,19 +189,6 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     echo '$(".loginOptions").fadeToggle(1000);';
                     echo '});';
                 echo '</script>';
-
-                //Publc registration permitted?
-                $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
-                if ($enablePublicRegistration == 'Y') {
-                    echo '<div class="column-no-break">';
-                    echo "<h2>";
-                    echo __('Register');
-                    echo '</h2>';
-                    echo '<p>';
-                    echo "<a href='".$this->session->get('absoluteURL')."/index.php?q=/publicRegistration.php'>".__('Join our learning community.')."</a> ".__("It's free!");
-                    echo '</p>';
-                    echo '</div>';
-                }
             }
         }
 

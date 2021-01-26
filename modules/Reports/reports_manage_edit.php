@@ -100,12 +100,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage_edi
             $row->addSelect('queryBuilderQueryID')->fromQuery($pdo, $sql, [], 'category')->required()->placeholder();
     }
 
-    // School Enrolment Context
-    // if ($template['context'] == 'School Enrolment') {
-        $row = $form->addRow();
-            $row->addLabel('gibbonYearGroupIDList', __('Year Groups'));
-            $row->addCheckboxYearGroup('gibbonYearGroupIDList')->addCheckAllNone()->loadFromCSV($values);
-    // }
+    $row = $form->addRow();
+        $row->addLabel('gibbonYearGroupIDList', __('Year Groups'));
+        $row->addCheckboxYearGroup('gibbonYearGroupIDList')->addCheckAllNone()->loadFromCSV($values);
 
     $form->addRow()->addHeading(__('Access'));
 

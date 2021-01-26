@@ -6,6 +6,8 @@ This is a Gibbon template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
 
+{% do form.addClass('formTable')%}
+
 <form {{ form.getAttributeString|raw }} onsubmit="gibbonFormSubmitted(this)">
 
     {% if form.getTitle %}

@@ -223,7 +223,7 @@ class Connection implements ConnectionInterface
      *
      * @return	\PDOStatement
      */
-    public function executeQuery($data, $query, $error = null)
+    public function executeQuery($data = [], $query = "", $error = null)
     {
         return $this->run($query, $data);
     }

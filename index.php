@@ -555,6 +555,7 @@ $page->addData([
     'gibbonHouseIDLogo' => $session->get('gibbonHouseIDLogo'),
     'organisationLogo'  => $session->get('organisationLogo'),
     'organisationName'  => $session->get('organisationName'),
+    'cacheString'       => $session->get('cacheString'),
     'minorLinks'        => $header->getMinorLinks($cacheLoad),
     'notificationTray'  => $header->getNotificationTray($cacheLoad),
     'sidebar'           => $showSidebar,
@@ -589,6 +590,7 @@ if (!$session->has('address')) {
         $templateData = [
             'indexText'                 => $session->get('indexText'),
             'organisationName'          => $session->get('organisationName'),
+            'publicRegistration'        => getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration') == 'Y',
             'publicStudentApplications' => getSettingByScope($connection2, 'Application Form', 'publicApplications') == 'Y',
             'publicStaffApplications'   => getSettingByScope($connection2, 'Staff Application Form', 'staffApplicationFormPublicApplications') == 'Y',
             'makeDepartmentsPublic'     => getSettingByScope($connection2, 'Departments', 'makeDepartmentsPublic') == 'Y',
