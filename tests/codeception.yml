@@ -15,9 +15,6 @@ paths:
     # directory for environment configuration
     envs: config/envs
 settings:
-    # name of bootstrap that will be used
-    bootstrap: bootstrap.php
-
     # randomize test order
     shuffle: false
 
@@ -32,6 +29,7 @@ settings:
 
     # This value controls whether PHPUnit attempts to backup global variables
     backup_globals: false
+bootstrap: bootstrap.php
 params:
     - env
     - config/environment.php
