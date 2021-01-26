@@ -16,51 +16,73 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v22.0.00
+--------
+    Headlines
+    Significant Changes
+    Changes With Important Notices
+    Tweaks & Additions
+        System: added the Getting Started info to the post-install page
+        System: added an Update All option to the Manage Languages page
+        System: updated text to use darker colours for printable report pages
+        Finance: removed student DOB and Gender from Export Invoices
+        Reports: clear report cache when editing template assets in Production
+        System Admin: added option to manually invalidate front end cache for Cutting Edge installs
+        
+    Bug Fixes
+        Planner: fixed smart block summary from replacing existing summary text in Edit Lesson
+        Staff: fixed weekdays incorrect on Sundays in Weekly Absences report
+        System Admin: fixed clear cache button to use custom cache path
+
 v21.0.00
 --------
     Headlines
-        MySQL 8 compatibility
-        Added Afrikaans as an available language
+        Visual improvements to forms and menus
         New Data Retention and Data Privacy functionality
+        New System Overview page showcasing available support options
+        Improved tools and information for System Administrators
+        Afrikaans and Ukrainian are now available as installable languages
+        MySQL 8 compatibility
 
     Significant Changes
-        System Admin: added a landing page to showcase the available support options
-        System Admin: add Security & Privacy Settings and optional cookie consent banner
+        System Admin: added Security & Privacy Settings and optional cookie consent banner
+        System Admin: added a Manage Services page to view gibbonedu.com licenses and services
+        System Admin: added an Email Templates section to customize emails sent by Gibbon
+        Data Updater: data updates with no changes will now be automatically accepted
+        Planner: added a setting to customize what homework is called throughout the planner
+        Reports: added a Send Reports tool to bulk-send templated emails with download links
         Roll Groups: added new grouped action to restrict parent viewing to their own children's roll groups
+        School Admin: added Email Summary Settings to manage daily and weekly email CLI scripts
         Students: added an optional application processing fee that can be sent manually by staff
         Students: added My Student History, offering a visual overview of all students ever taught
-        Students: added Reports subpage to student profile
-        School Admin: added Email Summary Settings to manage daily and weekly email CLI scripts
-        System Admin: added an Email Templates section to customize emails sent by Gibbon
-        Reports: added a Send Reports tool to bulk-send templated emails with download links
-        Timetable Admin: added ability to duplicate Columns and Days
+        Students: added Reports subpage to student profile for users with View by Student permissions
+        Timetable Admin: added ability to duplicate Timetable Columns and Days
 
     Changes With Important Notices
-        System: renamed planner_parentWeeklyEmailSummary.php to schoolAdmin_parentWeeklyEmailSummary.php
+        System: the new cookie consent message is enabled by default and will display for all users
+        System: renamed CLI script planner_parentWeeklyEmailSummary.php to schoolAdmin_parentWeeklyEmailSummary.php
         Staff: removed roles-as-type in Manage Staff, reducing option to Teaching and Support and setting all non-Teaching users to Support
-        System Admin: displaying a cookie consent message to users is enabled by default
 
     Security
         Updated TinyMCE Editor to version 5.6.2
 
     Tweaks & Additions
         System: added Romanian Leu as currency option
-        System: update complete homework to display in green on the Parent Dashboard
-        System: added text labels to Print and Export options in ReportTable
-        System: prevented theme names with spaces from breaking background image
+        System: updated complete homework to display in green on the Parent Dashboard
+        System: added text labels to Print and Export options on report pages
         System: removed the unused gibbonPersonMedicalSymptoms table
         System: improved the error page when the database connection fails
         System: improved the update process and added a migration system to handle complex updates
         System: improved consistency in storage of colors in the database
         System: added ability to set first day of week to Saturday
         System: lengthened module Category field to 12 characters
+        System: added a fallback to translateN for systems that don't have gettext
         System: added a server-side hard limit for session durations
         System: adjusted robots meta tag to dissuade Google from indexing Gibbon installs
         System: moved Public Registration link into a homepage tile
         Attendance: added an Offsite - Late option for attendance codes
         Crowd Assessment: changed error to message in conversation view
         Departments: improved course/class naming in Class view
-        Data Updater: data updates with no changes will be automatically accepted
         Data Updater: enabled address fields to be read only or hidden in Data Updater Settings
         Data Updater: adjusted language in user messages to focus on process not approval
         Finance: added a setting to customize Payment Type options
@@ -70,28 +92,26 @@ v21.0.00
         Individual Needs: removed Notes & Review from parent view of individual needs information
         Library: added ID column to View Overdue Items report
         Library: enabled printing and exporting the Manage Catalog table
-        Library: replaced borrowable with responsible user in Manage Catalog
+        Library: replaced borrowable column with responsible user in Manage Catalog
         Markbook: added error logging for failed file uploads on Enter Data page
-        Markbook: allow users with Edit Markbook_multiple and Edit Markbook_everything to edit grouped columns
-        Messenger: tied messages to school year
-        Messenger: convert copy-pasted divs to paragraphs in New Quick Wall Message
+        Markbook: enabled users with Edit Markbook_multiple and Edit Markbook_everything to edit grouped columns
+        Messenger: tied messages to school year, added gibbonSchoolYearID for existing messages
+        Messenger: added code to convery copy-pasted divs to paragraphs in New Quick Wall Message
         Messenger: messages sent by role or role category will honour user start and end dates
-        Planner: update the attendance list to exclude students with a timetable exception
+        Planner: updated the attendance list to exclude students with a timetable exception
         Planner: added smart block clarification to the Edit Working Copy page
         Planner: added a common template for all Upcoming Deadlines sections
         Planner: refactored the All Homework tables and added row colouring
         Planner: refactored the Parent Weekly Email Summary to match homework colouring
         Planner: replaced "Compulsory" with "Required" in relation to homework
         Planner: removed lessons with timetable exceptions from Today's Lessons on the dashboard
-        Planner: adjust the display of homework lists to account for class enrolment dates
+        Planner: adjusted the display of homework lists to account for class enrolment dates
         Planner: enabled homework to be submitted for lessons that already exist during a school closure
         Planner: brought student birthday icon display into line with class and form group view
         Planner: any staff can take attendance in the planner if they have Attendance by Class permission
-        Planner: added a setting to customize what homework is called in the planner
         Planner: added the ability to set a time cap for homework
-        Planner: fixed empty My Class drop down in Deadlines for parents
-        Planner: changed error to message in chat view
-        Reports: display the download link after a batch PDF has completed
+        Planner: changed error alert to message alert colour in chat view
+        Reports: updated batch PDFs to display the download link once completed
         Reports: added full course name to the report writing page
         Reports: added a bulk delete action in the Edit Reporting Scopes page
         Reports: enabled plain text and numeric fields in Criteria Types
@@ -104,7 +124,7 @@ v21.0.00
         Staff: removed the display of addresses in the Staff Profile
         Staff: restricted access to Emergency Contacts to users with Manage Staff_confidential
         Staff: added first aid information to Personal sub-page of staff profile
-        Staff: added First Aid Qualification field
+        Staff: added an optional First Aid Qualification field
         Staff: changed staff application email sender from System Administrator to HR Officer
         Students: updated application acceptance message to reflect automatically created medical record
         Students: added uniqueness checks for Student ID field
@@ -116,17 +136,18 @@ v21.0.00
         Students: added notifications for accepted applications with SEN/Medical needs
         Students: application forms accepted to upcoming years will set students to Expected
         Students: added Official Name to Left Students and New Students reports
+        Students: improved the layout of Student Application acceptance emails
         School Admin: added optional descriptions for medical conditions
+        System Admin: added a Cache Manager page to configure and clear template cache
+        System Admin: added a Server Info page to view server configuration values
         System Admin: adjusted View Log to show only current year's log entries
-        System Admin: added a flag to import types to enable updating non-unique rows
         System Admin: added a Purge Logs action to the View Logs page
-        System Admin: moved Not Installed module list before Installed modules
+        System Admin: added a flag to import types to enable updating non-unique rows
+        System Admin: moved Not Installed modules list before Installed modules
         Timetable: improved role ordering in class tables
         Timetable Admin: added a dateEnrolled and dateUnenrolled to class enrollments
         Timetable Admin: hide teachers listed as non-reportable from teacher lists
         Timetable Admin: added color picker to Edit Timetable Day section
-        Tests: Changed install suite admin username and password to be compliant with the default password requirements
-        Tracking: fixed Data Points export when internal or external data points set, but not both
         User Admin: added Guardian and Grandmother/Grandfather to emergency relationships
         User Admin: improved the layout of the Rollover form
         User Admin: moved Day Type Options from User Settings to Student Settings
@@ -135,9 +156,9 @@ v21.0.00
         System: fixed missing organization name on welcome page
         System: fixed date picker not using the First Day of the Week setting
         System: fixed validation not working for paginated bulk action forms
-        System: added a fallback to translateN for systems that don't have gettext
         System: fixed wrapping of long summaries in Today's Lessons
         System: fixed public registration failing for non-unique email when uniqueEmailAddress is not active
+        System: fixed theme names with spaces from breaking background image
         Attendance: fixed sortable Class column in Student Not In Class report
         Data Updater: fixed passport expiry fields not properly hiding
         Departments: fixed attendance link not prefilling the current date
@@ -157,20 +178,22 @@ v21.0.00
         Reports: fixed reporting cycle selection missing from Add Report
         Planner: fixed Outcomes by Course for courses with multiple year groups
         Planner: fixed alignment of birthday icon in attendance on Lesson page
+        Planner: fixed empty My Class drop down in Deadlines for parents
         Staff: fixed alternate email address causing an error on Personal subpage
         Staff: fixed pagination for Grid and Card views of Staff Directory
+        Staff: fixed SQL error submitting application form when logged in
         Students: fixed parent support link in application acceptance email
         Students: fixed students able to see other students in class lists
-        Students: fixed issue preventing timetable edit link from working with left students and allStudent flag
+        Students: fixed issue preventing timetable edit link from working with Left students and allStudent flag
         Students: fixed missing alert bar in Markbook and Internal Assessment sub-pages in student profile
         System Admin: fixed PHP deprecation errors in CSV importer
         System Admin: fixed empty numeric values importing as 0 rather than null
-        Timetable: fixed View Available Facilities not counting bookings on Friday
+        Timetable: fixed View Available Facilities not counting bookings on Fridays
         Timetable: fixed last week/next week links for facilities involved in multiple TTs
+        Tracking: fixed Data Points export when internal or external data points set, but not both
 	    Tests: added fallback environment variables if .env is not defining DB details
-	    Tests: changed HTTP to HTTPs, so SSL enabled environments don't fail
-	    Tests: added Users group and changed reference in acceptance.suite.yml so that the acceptance suite does not fail
-
+	    Tests: fixed HTTP to HTTPs, so SSL enabled environments don't fail
+        Tests: fixed install suite admin username and password to be compliant with the default password requirements
 
 v20.0.00
 --------

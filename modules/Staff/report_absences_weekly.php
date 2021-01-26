@@ -69,8 +69,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
     $sql = "SELECT name, nameShort FROM gibbonDaysOfWeek WHERE schoolDay='Y' ORDER BY sequenceNumber";
     $result = $pdo->select($sql)->fetchAll();
     
-    $weekdays = array_map(function ($weekday) use ($date){
-        $weekday['date'] = $date->modify($weekday['name'].' this week');
+    $currentWeekday = $date->format('l');
+    $weekdays = array_map(function ($weekday) use ($date, $currentWeekday) {
+        $weekday['date'] = $currentWeekday == 'Sunday'
+            ? $date->modify('next '.$weekday['name'].' - 1 week')
+            : $date->modify($weekday['name'].' this week');
         return $weekday;
     }, $result);
 

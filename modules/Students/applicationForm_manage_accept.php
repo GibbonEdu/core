@@ -313,18 +313,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         $body .= __('Start Date').': '.dateConvertBack($guid, $values['dateStart'])."<br/>";
                     }
 
-                    $body .= "<p style='font-style: italic;'>".sprintf(__('Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
-                    $bodyPlain = emailBodyConvert($body);
-
                     $mail = $container->get(Mailer::class);
                     $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
                     $mail->AddAddress($to);
-                    $mail->CharSet = 'UTF-8';
-                    $mail->Encoding = 'base64';
-                    $mail->IsHTML(true);
                     $mail->Subject = $subject;
-                    $mail->Body = $body;
-                    $mail->AltBody = $bodyPlain;
+                    $mail->renderBody('mail/email.twig.html', [
+                        'title'  => $subject,
+                        'body'   => $body,
+                    ]);
 
                     if ($mail->Send()) {
                         echo "<div class='success'>";
@@ -1059,21 +1055,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 $to = $informStudentEntry['email'];
                                 $subject = sprintf(__('Welcome to %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
                                 if ($notificationStudentMessage != '') {
-                                    $body = sprintf(__('Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), Format::name('', $informStudentEntry['preferredName'], $informStudentEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informStudentEntry['username'], $informStudentEntry['password']).$notificationStudentMessage.sprintf(__('Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Admissions Administrator'), $_SESSION[$guid]['organisationAdmissionsName'], $_SESSION[$guid]['systemName']);
+                                    $body = sprintf(__('Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), Format::name('', $informStudentEntry['preferredName'], $informStudentEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informStudentEntry['username'], $informStudentEntry['password']).$notificationStudentMessage.'<br/><br/>'.sprintf(__('Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Admissions Administrator'), $_SESSION[$guid]['organisationAdmissionsName'], $_SESSION[$guid]['systemName']);
                                 } else {
                                     $body = 'Dear '.Format::name('', $informStudentEntry['preferredName'], $informStudentEntry['surname'], 'Student').",<br/><br/>Welcome to ".$_SESSION[$guid]['systemName'].', '.$_SESSION[$guid]['organisationNameShort']."'s system for managing school information. You can access the system by going to ".$_SESSION[$guid]['absoluteURL'].' and logging in with your new username ('.$informStudentEntry['username'].') and password ('.$informStudentEntry['password'].").<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>Please feel free to reply to this email should you have any questions.<br/><br/>".$_SESSION[$guid]['organisationAdmissionsName'].",<br/><br/>".$_SESSION[$guid]['systemName'].' Admissions Administrator';
                                 }
-                                $bodyPlain = emailBodyConvert($body);
 
                                 $mail = $container->get(Mailer::class);
                                 $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
                                 $mail->AddAddress($to);
-                                $mail->CharSet = 'UTF-8';
-                                $mail->Encoding = 'base64';
-                                $mail->IsHTML(true);
                                 $mail->Subject = $subject;
-                                $mail->Body = $body;
-                                $mail->AltBody = $bodyPlain;
+                                $mail->renderBody('mail/email.twig.html', [
+                                    'title'  => $subject,
+                                    'body'   => $body,
+                                ]);
 
                                 if ($mail->Send()) {
                                     echo "<div class='success'>";
@@ -1106,7 +1100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 $to = $informParentsEntry['email'];
                                 $subject = sprintf(__('Welcome to %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
                                 if ($notificationParentsMessage != '') {
-                                    $body = sprintf(__('Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (https://docs.gibbonedu.org/parents).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), Format::name('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informParentsEntry['username'], $informParentsEntry['password'], $_SESSION[$guid]['systemName']).$notificationParentsMessage.sprintf(__('Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Admissions Administrator'), $_SESSION[$guid]['organisationAdmissionsName'], $_SESSION[$guid]['systemName']);
+                                    $body = sprintf(__('Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (https://docs.gibbonedu.org/parents).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), Format::name('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informParentsEntry['username'], $informParentsEntry['password'], $_SESSION[$guid]['systemName']).$notificationParentsMessage.'<br/><br/>'.sprintf(__('Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Admissions Administrator'), $_SESSION[$guid]['organisationAdmissionsName'], $_SESSION[$guid]['systemName']);
                                 } else {
                                     $body = sprintf(__('Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (https://docs.gibbonedu.org/parents).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), Format::name('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informParentsEntry['username'], $informParentsEntry['password'], $_SESSION[$guid]['systemName']).sprintf(__('Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Admissions Administrator'), $_SESSION[$guid]['organisationAdmissionsName'], $_SESSION[$guid]['systemName']);
                                 }
@@ -1115,12 +1109,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 $mail = $container->get(Mailer::class);
                                 $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
                                 $mail->AddAddress($to);
-                                $mail->CharSet = 'UTF-8';
-                                $mail->Encoding = 'base64';
-                                $mail->IsHTML(true);
                                 $mail->Subject = $subject;
-                                $mail->Body = $body;
-                                $mail->AltBody = $bodyPlain;
+                                $mail->renderBody('mail/email.twig.html', [
+                                    'title'  => $subject,
+                                    'body'   => $body,
+                                ]);
 
                                 if ($mail->Send()) {
                                     echo "<div class='success'>";
