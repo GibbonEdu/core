@@ -51,7 +51,15 @@ jobs:
           sudo locale-gen
 
       - name: Run PHP server for tests to run
-        run: php -S 127.0.0.1:8888 -t ${{ github.workspace }} >/dev/null 2>&1 &
+        run: |
+          # Start a PHP test server for codeception to run against
+          [ -d ./tests/log ] || mkdir ./tests/log
+          php --server 127.0.0.1:8888 \
+            --docroot ${{ github.workspace }} \
+            --define display_startup_errors=1 \
+            --define display_errors=1 \
+            --define error_reporting=E_ALL \
+            >/dev/null 2>./tests/log/server_log &
 
       - name: Cache Composer dependencies
         uses: actions/cache@v2
