@@ -247,6 +247,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
 
                                 if ($log['prefill'] == 'N') {
                                     $log = $defaults;
+                                    $log['prefilled'] = 'Person';
                                 }
                             }
 
