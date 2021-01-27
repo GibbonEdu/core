@@ -70,9 +70,15 @@ class Row
                 $element->setRow($this);
             }
         } catch (\ReflectionException $e) {
-            $element = $this->factory->createContent(sprintf('Cannot %1$s. This form element does not exist in the current FormFactory', $function).': '.$e->getMessage());
+            $element = $this->factory->createContent(__('Cannot {function}. This form element does not exist in the current FormFactory: ', [
+                'function' => $function,
+                'message' => $e->getMessage(),
+            ]));
         } catch (\Exception $e) {
-            $element = $this->factory->createContent(sprintf('Cannot %1$s. Error creating form element.', $function).': '.$e->getMessage());
+            $element = $this->factory->createContent(__('Cannot {function}. Error creating form element: {message}', [
+                'function' => $function,
+                'message' => $e->getMessage(),
+            ]));
         } finally {
             if (!($element instanceof OutputableInterface)) {
                 if (($element_type = gettype($element)) === 'object') $element_type = get_class($element);
