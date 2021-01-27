@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$action = isset($_POST['action'])? $_POST['action'] : '';
+$action = $_POST['action'] ?? '';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/activities_payment.php';
 
@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
     header("Location: {$URL}");
 } else {
     $gibbonActivityStudentIDList = isset($_POST['gibbonActivityStudentID'])? $_POST['gibbonActivityStudentID'] : array();
-    $payment = isset($_POST['payment'])? $_POST['payment'] : array();
+    $payment = $_POST['payment'] ?? array();
 
     $students = array();
     foreach ($gibbonActivityStudentIDList as $id => $gibbonActivityStudentID) {
@@ -127,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
                                     $count = 0;
                                     while ($continue == false and $count < 100) {
                                         $key = randomPassword(40);
-                                        
+
                                             $dataUnique = array('key' => $key);
                                             $sqlUnique = 'SELECT * FROM gibbonFinanceInvoice WHERE gibbonFinanceInvoice.`key`=:key';
                                             $resultUnique = $connection2->prepare($sqlUnique);
@@ -229,7 +229,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
         }
 
         //Unlock module table
-        
+
             $sql = 'UNLOCK TABLES';
             $result = $connection2->query($sql);
 
@@ -242,4 +242,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
         }
     }
 }
-

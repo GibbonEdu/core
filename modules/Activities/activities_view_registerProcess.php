@@ -25,9 +25,9 @@ include '../../gibbon.php';
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$mode = $_POST['mode'];
-$gibbonActivityID = $_POST['gibbonActivityID'];
-$gibbonPersonID = $_POST['gibbonPersonID'];
+$mode = $_POST['mode'] ?? '';
+$gibbonActivityID = $_POST['gibbonActivityID'] ?? '';
+$gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_view_register.php&gibbonActivityID=$gibbonActivityID&gibbonPersonID=$gibbonPersonID&mode=$mode&search=".$_GET['search'];
 $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_view.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search'];
 
@@ -123,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             if ($backup == 'N') {
                                 $gibbonActivityIDBackup = null;
                             } elseif ($backup == 'Y') {
-                                $gibbonActivityIDBackup = $_POST['gibbonActivityIDBackup'];
+                                $gibbonActivityIDBackup = $_POST['gibbonActivityIDBackup'] ?? '';
                             }
 
                             if ($backup == 'Y' and $gibbonActivityIDBackup == '') {
@@ -147,7 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                     $status = 'Pending';
                                 } else {
                                     //Check number of people registered for this activity (if we ignore status it stops people jumping the queue when someone unregisters)
-                                    
+
                                         $dataNumberRegistered = array('gibbonActivityID' => $gibbonActivityID);
                                         $sqlNumberRegistered = "SELECT * FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonActivityID=:gibbonActivityID";
                                         $resultNumberRegistered = $connection2->prepare($sqlNumberRegistered);
@@ -177,7 +177,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], $gibbonModuleID, $_SESSION[$guid]['gibbonPersonID'], 'Activities - Student Registered', array('gibbonPersonIDStudent' => $gibbonPersonID));
 
                                 //Unlock locked database tables
-                                
+
                                     $sql = 'UNLOCK TABLES';
                                     $result = $connection2->query($sql);
 
@@ -269,7 +269,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 //Check to see who is registering in system
                                 $studentRegistration = false;
                                 $parentRegistration = false ;
-                                
+
                                     $dataAccess = array();
                                     $sqlAccess = "SELECT
                                             gibbonAction.name, gibbonRole.category
@@ -301,7 +301,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 }
 
                                 //Count spaces
-                                
+
                                     $dataNumberRegistered = array('gibbonActivityID' => $gibbonActivityID);
                                     $sqlNumberRegistered = "SELECT * FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonActivityID=:gibbonActivityID AND gibbonActivityStudent.status='Accepted'";
                                     $resultNumberRegistered = $connection2->prepare($sqlNumberRegistered);
@@ -311,7 +311,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 $spaces = $row['maxParticipants'] - $resultNumberRegistered->rowCount();
                                 if ($spaces > 0) {
                                     //Get top of waiting list
-                                    
+
                                         $dataBumps = array('gibbonActivityID' => $gibbonActivityID);
                                         $sqlBumps = "SELECT gibbonActivityStudentID, name, gibbonPerson.gibbonPersonID, surname, preferredName
                                             FROM gibbonActivityStudent
@@ -328,7 +328,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                                     //Bump students up
                                     while ($rowBumps = $resultBumps->fetch()) {
-                                        
+
                                             $dataBump = array('gibbonActivityStudentID' => $rowBumps['gibbonActivityStudentID']);
                                             $sqlBump = "UPDATE gibbonActivityStudent SET status='Accepted' WHERE gibbonActivityStudentID=:gibbonActivityStudentID";
                                             $resultBump = $connection2->prepare($sqlBump);
@@ -351,7 +351,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                             $event->addRecipient($rowBumps['gibbonPersonID']);
                                         }
                                         if ($parentRegistration) { //Notify contact priority 1 parents in associated families
-                                            
+
                                                 $dataAdult = array('gibbonPersonID' => $rowBumps['gibbonPersonID']);
                                                 $sqlAdult = "
                                                     SELECT
@@ -376,7 +376,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                     }
                                 }
                                 //Unlock locked database tables
-                                
+
                                     $sql = 'UNLOCK TABLES';
                                     $result = $connection2->query($sql);
                             }
