@@ -51,6 +51,52 @@
   script:
     - composer test
 
+  after_script:
+    - |
+      # dump database, if test failed
+      if [ "$CI_JOB_STATUS" = "failed" ]; then
+        [ -d ./tests/log ] || mkdir ./tests/log
+        mysqldump \
+          --protocol=tcp \
+          --host=$DB_HOST \
+          --user=$DB_USERNAME \
+          --password=$DB_PASSWORD \
+          $DB_NAME > ./tests/log/$DB_NAME.sql
+      else
+        echo "skipped"
+      fi
+    - |
+      # extract php.ini information if test failed
+      if [ "$CI_JOB_STATUS" = "failed" ]; then
+
+        # create folder to store configs
+        echo "Create ./tests/configs"
+        [ -d ./tests/configs ] || mkdir ./tests/configs
+
+        # get php --ini output
+        echo "Gather php --ini to php--ini.txt"
+        php --ini | tee ./tests/configs/php--ini.txt
+
+        # get the main php ini config
+        export PHP_INI=$(php --ini | grep 'Loaded Configuration File' | tr -s ' ' '\n' | tail -n1)
+        echo "Backup $PHP_INI"
+        cp -pdf $PHP_INI ./tests/configs/.
+
+        # get all files in the php.d folder
+        export PHP_D=$(php --ini | grep 'Scan for additional .ini files in' | tr -s ' ' '\n' | tail -n1)
+        echo "Backup $PHP_D"
+        cp -Rpdf $PHP_D ./tests/configs/.
+      else
+        echo "skipped"
+      fi
+
+  # store test logs when fail.
+  artifacts:
+    paths:
+      - tests/log
+    when: on_failure
+    expire_in: 1 week
+
 php:7.3:
   image: php:7.3
   extends: .tests
