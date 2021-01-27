@@ -19,7 +19,7 @@ class ThemeTest extends TestCase
 {
     protected $theme;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->theme = $this->getMockBuilder(Theme::class)
             ->setConstructorArgs([])

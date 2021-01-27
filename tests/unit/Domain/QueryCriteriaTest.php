@@ -23,7 +23,7 @@ class QueryCriteriaTest extends TestCase
      */
     private $criteria;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->criteria = new QueryCriteria();
     }
@@ -142,7 +142,13 @@ class QueryCriteriaTest extends TestCase
         $this->criteria->searchBy('columnName', 'foo bar active:Y');
 
         $this->assertTrue($this->criteria->hasFilter('active', 'Y'));
-        $this->assertNotContains('active:Y', $this->criteria->getSearchText());
+        if (method_exists($this, 'assertStringNotContainsString')) {
+            // for newer phpunit versions
+            $this->assertStringNotContainsString('active:Y', $this->criteria->getSearchText());
+        } else {
+            // for older phpunit versions
+            $this->assertNotContains('active:Y', $this->criteria->getSearchText());
+        }
     }
 
     public function testCanFilterByString()

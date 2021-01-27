@@ -116,9 +116,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             }
         }
 
-        //Scan through staff
-        $staff = $_POST['staff'] ?? null;
+        // Scan through staff
+        $staff = $_POST['staff'] ?? [];
         $role = $_POST['role'] ?? 'Other';
+
+        // make sure that staff is an array
+        if (!is_array($staff)) {
+            $staff = [(string) $staff];
+        }
 
         if (count($staff) > 0) {
             foreach ($staff as $t) {

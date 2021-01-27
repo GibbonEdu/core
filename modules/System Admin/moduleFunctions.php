@@ -259,7 +259,7 @@ function i18nFileExists($absolutePath, $code)
 function i18nFileInstall($absolutePath, $code)
 {
     // Grab the file contents from the GibbonEdu i18n repository
-    $gitHubURL = 'https://github.com/GibbonEdu/i18n/blob/master/'.$code.'/LC_MESSAGES/gibbon.mo?raw=true';
+    $gitHubURL = 'https://github.com/GibbonEdu/i18n/blob/main/'.$code.'/LC_MESSAGES/gibbon.mo?raw=true';
     $gitHubContents = file_get_contents($gitHubURL);
 
     if (empty($gitHubContents)) return false;

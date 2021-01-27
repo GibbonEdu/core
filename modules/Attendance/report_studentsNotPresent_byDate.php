@@ -88,8 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
     $attendanceGateway = $container->get(AttendanceLogPersonGateway::class);
     $criteria = $attendanceGateway->newQueryCriteria()
-        ->filterBy('yearGroup', implode(',', $gibbonYearGroupIDList))
-        ->filterBy('contextNot', $countClassAsSchool == 'N' ? 'Class' : '' );
+        ->filterBy('yearGroup', implode(',', $gibbonYearGroupIDList));
 
     switch ($sort) {
         case 'preferredName':
@@ -102,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
     }
     $criteria->fromPOST();
 
-    $attendance = $attendanceGateway->queryStudentsNotPresent($criteria, $gibbon->session->get('gibbonSchoolYearID'), $currentDate, $allStudents);
+    $attendance = $attendanceGateway->queryStudentsNotPresent($criteria, $gibbon->session->get('gibbonSchoolYearID'), $currentDate, $allStudents, $countClassAsSchool);
 
     $table = ReportTable::createPaginated('attendanceReport', $criteria)->setViewMode($viewMode, $gibbon->session);
     $table->setTitle(__('Report Data'));

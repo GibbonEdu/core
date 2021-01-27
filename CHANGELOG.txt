@@ -30,9 +30,20 @@ v22.0.00
         System Admin: added option to manually invalidate front end cache for Cutting Edge installs
         
     Bug Fixes
+        
+v21.0.01
+--------
+    Tweaks & Additions
+        System Admin: added post_max_size and upload_max_filesize PHP settings to System Check
+        System Admin: updated Manage Languages to use i18n main branch instead of master
+    
+    Bug Fixes
+        System: fixed import error for non-nullable numeric values
+        Attendance: fixed missing attendance in Not Present and Not Onside reports
+        Attendance: fixed non-prefillable class attendance overwriting First Class as School Attendance logs
         Planner: fixed smart block summary from replacing existing summary text in Edit Lesson
         Staff: fixed weekdays incorrect on Sundays in Weekly Absences report
-        System Admin: fixed clear cache button to use custom cache path
+        System Admin: fixed clear cache button in Cache Manager not using custom cache path
 
 v21.0.00
 --------
