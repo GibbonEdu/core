@@ -32,13 +32,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $registration = $_POST['registration'] ?? '';
     $dateType = $_POST['dateType'] ?? '';
     if ($dateType == 'Term') {
-        $gibbonSchoolYearTermIDList =  $_POST['gibbonSchoolYearTermIDList'] ?? array();
+        $gibbonSchoolYearTermIDList =  $_POST['gibbonSchoolYearTermIDList'] ?? [];
         $gibbonSchoolYearTermIDList = implode(',', $gibbonSchoolYearTermIDList);
     } elseif ($dateType == 'Date') {
-        $listingStart = dateConvert($guid, $_POST['listingStart']) ?? '';
-        $listingEnd = dateConvert($guid, $_POST['listingEnd']) ?? '';
-        $programStart = dateConvert($guid, $_POST['programStart']) ?? '';
-        $programEnd = dateConvert($guid, $_POST['programEnd']) ?? '';
+        $listingStart = dateConvert($guid, $_POST['listingStart'] ?? '');
+        $listingEnd = dateConvert($guid, $_POST['listingEnd'] ?? '');
+        $programStart = dateConvert($guid, $_POST['programStart'] ?? '');
+        $programEnd = dateConvert($guid, $_POST['programEnd'] ?? '');
     }
     $gibbonYearGroupIDList = $_POST['gibbonYearGroupIDList'] ?? array();
     $gibbonYearGroupIDList = implode(',', $gibbonYearGroupIDList);
