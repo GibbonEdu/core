@@ -760,3 +760,8 @@ UPDATE `gibbonAction` SET `URLList` = 'archive_byReport.php,archive_byStudent.ph
 UPDATE `gibbonAction` SET `URLList` = 'archive_byReport.php,archive_byStudent.php' WHERE `name`='View Draft Reports' AND `gibbonModuleID`=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Reports');end
 INSERT INTO `gibboni18n` (`code`, `name`, `version`, `active`, `installed`, `systemDefault`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`, `rtl`) VALUES ('uk_UA', 'українська мова - Україна', '21.0.00', 'Y', 'N', 'N', 'dd.mm.yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd.m.Y', 'N');end
 ";
+
+//v21.0.01
+++$count;
+$sql[$count][0] = '21.0.01';
+$sql[$count][1] = "";
