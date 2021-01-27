@@ -19,6 +19,7 @@ CHANGELOG
 v21.0.01
 --------
     Planner: fixed smart block summary from replacing existing summary text in Edit Lesson
+    System Admin: fixed clear cache button in Cache Manager not using custom cache path
 
 v21.0.00
 --------
