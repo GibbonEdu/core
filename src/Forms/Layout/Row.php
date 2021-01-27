@@ -74,6 +74,13 @@ class Row
         } catch (\Exception $e) {
             $element = $this->factory->createContent(sprintf('Cannot %1$s. Error creating form element.', $function).': '.$e->getMessage());
         } finally {
+            if (!($element instanceof OutputableInterface)) {
+                if (($element_type = gettype($element)) === 'object') $element_type = get_class($element);
+                $element = $this->factory->createContent(__('{function} returned {type} instead of an outputable form element.', [
+                    'type' => $element_type,
+                    'function' => $function,
+                ]));
+            }
             $this->addElement($element);
         }
 
@@ -83,7 +90,7 @@ class Row
     /**
      * Allows a conditional to be chained into the form row elements, rather than wrapping the whole section in an if statement.
      * @param bool $conditional
-     * @return object OutputableInterface   
+     * @return object OutputableInterface
      */
     public function onlyIf($conditional)
     {
@@ -188,11 +195,11 @@ class Row
         if (method_exists($element, 'getID') && !empty($element->getID())) {
             return $element->getID();
         }
-        
+
         if (method_exists($element, 'getName') && !empty($element->getName())) {
             return $element->getName();
         }
-        
+
         return 'element-'.$this->getElementCount();
     }
 }
