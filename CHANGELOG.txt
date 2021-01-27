@@ -26,6 +26,7 @@ v21.0.01
         Attendance: fixed missing attendance in Not Present and Not Onside reports
         Attendance: fixed non-prefillable class attendance overwriting First Class as School Attendance logs
         Planner: fixed smart block summary from replacing existing summary text in Edit Lesson
+        Staff: fixed weekdays incorrect on Sundays in Weekly Absences report
         System Admin: fixed clear cache button in Cache Manager not using custom cache path
 
 v21.0.00
