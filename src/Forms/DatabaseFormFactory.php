@@ -489,6 +489,10 @@ class DatabaseFormFactory extends FormFactory
             }
         }
 
+        //Clearn all values
+        $values = [];
+        $data = [];
+
         //Add students by name
         if ($params["byName"]) {
             if ($params["allStudents"]) {
