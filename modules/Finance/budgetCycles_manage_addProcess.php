@@ -30,8 +30,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
     $name = $_POST['name'] ?? '';
     $status = $_POST['status'] ?? '';
     $sequenceNumber = $_POST['sequenceNumber'] ?? '';
-    $dateStart = dateConvert($guid, $_POST['dateStart']) ?? '';
-    $dateEnd = dateConvert($guid, $_POST['dateEnd']) ?? '';
+    $dateStart = dateConvert($guid, $_POST['dateStart'] ?? '');
+    $dateEnd = dateConvert($guid, $_POST['dateEnd'] ?? '');
 
     if ($name == '' or $status == '' or $sequenceNumber == '' or is_numeric($sequenceNumber) == false or $dateStart == '' or $dateEnd == '') {
         $URL .= '&return=error1';

@@ -94,7 +94,7 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
 
                             //Check if params are specified
                             if ($status == 'Paid' and ($row['status'] == 'Approved' or $row['status'] == 'Ordered')) {
-                                $paymentDate = dateConvert($guid, $_POST['paymentDate']) ?? '';
+                                $paymentDate = dateConvert($guid, $_POST['paymentDate'] ?? '');
                                 $paymentAmount = $_POST['paymentAmount'] ?? '';
                                 $gibbonPersonIDPayment = $_POST['gibbonPersonIDPayment'] ?? '';
                                 $paymentMethod = $_POST['paymentMethod'] ?? '';

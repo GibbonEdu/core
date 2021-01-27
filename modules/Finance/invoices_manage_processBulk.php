@@ -502,7 +502,7 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
             // Mark as Paid
             elseif ($action == 'paid') {
                 $paymentType = $_POST['paymentType'] ?? '';
-                $paidDate = dateConvert($guid, $_POST['paidDate']) ?? '';
+                $paidDate = dateConvert($guid, $_POST['paidDate'] ?? '');
 
                 if (empty($paymentType) || empty($paidDate)) {
                     $URL .= '&return=error1';

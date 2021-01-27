@@ -32,14 +32,9 @@ if (isset($_GET['paid'])) {
 
 if ($paid != 'Y') { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
     //Get variables
-    $gibbonFinanceInvoiceID = '';
-    if (isset($_POST['gibbonFinanceInvoiceID'])) {
-        $gibbonFinanceInvoiceID = $_POST['gibbonFinanceInvoiceID'];
-    }
-    $key = '';
-    if (isset($_POST['key'])) {
-        $key = $_POST['key'];
-    }
+    $gibbonFinanceInvoiceID = $_POST['gibbonFinanceInvoiceID'] ?? '';
+    $key = $_POST['key'] ?? '';
+
 
     //Check variables
     if ($gibbonFinanceInvoiceID == '' or $key == '') {

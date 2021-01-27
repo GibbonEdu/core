@@ -48,7 +48,7 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
             $purchaseBy = $_POST['purchaseBy'] ?? '';
             $purchaseDetails = $_POST['purchaseDetails'] ?? '';
             if ($status == 'Paid') {
-                $paymentDate = dateConvert($guid, $_POST['paymentDate']) ?? '';
+                $paymentDate = dateConvert($guid, $_POST['paymentDate'] ?? '');
                 $paymentAmount = $_POST['paymentAmount'] ?? '';
                 $gibbonPersonIDPayment = $_POST['gibbonPersonIDPayment'] ?? '';
                 $paymentMethod = $_POST['paymentMethod'] ?? '';

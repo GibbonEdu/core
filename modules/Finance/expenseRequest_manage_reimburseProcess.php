@@ -95,7 +95,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                         $row = $result->fetch();
 
                         //Get relevant
-                        $paymentDate = dateConvert($guid, $_POST['paymentDate']);
+                        $paymentDate = dateConvert($guid, $_POST['paymentDate'] ?? '');
                         $paymentAmount = $_POST['paymentAmount'] ?? '';
                         $gibbonPersonIDPayment = $_POST['gibbonPersonIDPayment'] ?? '';
                         $paymentMethod = $_POST['paymentMethod'] ?? '';
