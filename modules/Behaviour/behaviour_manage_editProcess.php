@@ -28,7 +28,7 @@ include '../../gibbon.php';
 $enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
 $enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
 
-$gibbonBehaviourID = $_GET['gibbonBehaviourID'];
+$gibbonBehaviourID = $_GET['gibbonBehaviourID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/behaviour_manage_edit.php&gibbonBehaviourID=$gibbonBehaviourID&gibbonPersonID=".$_GET['gibbonPersonID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage_edit.php') == false) {
@@ -68,24 +68,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             } else {
                 $behaviourRecord = $result->fetch();
 
-                $gibbonPersonID = $_POST['gibbonPersonID'];
-                $date = $_POST['date'];
-                $type = $_POST['type'];
-                $descriptor = null;
-                if (isset($_POST['descriptor'])) {
-                    $descriptor = $_POST['descriptor'];
-                }
-                $level = null;
-                if (isset($_POST['level'])) {
-                    $level = $_POST['level'];
-                }
-                $comment = $_POST['comment'];
-                $followup = $_POST['followup'];
-                if ($_POST['gibbonPlannerEntryID'] == '') {
-                    $gibbonPlannerEntryID = null;
-                } else {
-                    $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'];
-                }
+                $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
+                $date = $_POST['date'] ?? '';
+                $type = $_POST['type'] ?? '';
+                $descriptor = $_POST['descriptor'] ?? null;
+                $level = $_POST['level'] ?? null;
+                $comment = $_POST['comment'] ?? '';
+                $followup = $_POST['followup'] ?? '';
+                $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? null;
+
 
                 if ($gibbonPersonID == '' or $date == '' or $type == '' or ($descriptor == '' and $enableDescriptors == 'Y')) {
                     $URL .= '&return=error1';
@@ -146,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                         $event->sendNotificationsAsBcc($pdo, $gibbon->session);
                     }
-                    
+
                     $URL .= '&return=success0';
                     header("Location: {$URL}");
                 }
