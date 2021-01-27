@@ -23,6 +23,7 @@ v21.0.01
         System Admin: updated Manage Languages to use i18n main branch instead of master
     
     Bug Fixes
+        System: fixed import error for non-nullable numeric values
         Attendance: fixed missing attendance in Not Present and Not Onside reports
         Attendance: fixed non-prefillable class attendance overwriting First Class as School Attendance logs
         Planner: fixed smart block summary from replacing existing summary text in Edit Lesson
