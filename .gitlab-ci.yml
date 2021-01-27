@@ -34,9 +34,8 @@
     - mkdir $HOME/bin
     - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
     - php -r "if (getenv('COMPOSER_CHECKSUM') === false) exit('No COMPOSER_CHECKSUM. Installer verification skipped.' . PHP_EOL); if (hash_file('SHA384', 'composer-setup.php') === getenv('COMPOSER_CHECKSUM')) { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); exit(1); } echo PHP_EOL;"
-    - php composer-setup.php --install-dir=$HOME/bin --filename=composer
+    - php composer-setup.php --install-dir=/usr/local/bin --filename=composer
     - php -r "unlink('composer-setup.php');"
-    - export PATH=$HOME/bin:$PATH
     # run test server for codeception tests
     - php -S 127.0.0.1:8888 -t $CI_PROJECT_DIR >/dev/null 2>&1 &
     # install dependencies for test
