@@ -43,14 +43,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     }
     $date = $_POST['date'] ?? '';
     $type = $_POST['type'] ?? '';
-    $descriptor = null;
-    if (isset($_POST['descriptor'])) {
-        $descriptor = $_POST['descriptor'];
-    }
-    $level = null;
-    if (isset($_POST['level'])) {
-        $level = $_POST['level'] ?? '';
-    }
+    $descriptor = $_POST['descriptor'] ?? null;
+    $level = $_POST['level'] ?? null;
     $comment = $_POST['comment'] ?? '';
     $followup = $_POST['followup'] ?? '';
     $copyToNotes = $_POST['copyToNotes'] ?? null;

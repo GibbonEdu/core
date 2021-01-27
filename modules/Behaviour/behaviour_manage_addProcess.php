@@ -40,17 +40,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $URL .= '&return=error0&step=1';
         header("Location: {$URL}");
     } else {
-        $step = null;
-        if (isset($_GET['step'])) {
-            $step = $_GET['step'] ?? '';
-        }
+
+        $step = $_GET['step'] ?? null;
+
         if ($step != 1 and $step != 2) {
             $step = 1;
         }
-        $gibbonBehaviourID = null;
-        if (isset($_POST['gibbonBehaviourID'])) {
-            $gibbonBehaviourID = $_POST['gibbonBehaviourID'] ?? '';
-        }
+        $gibbonBehaviourID = $_POST['gibbonBehaviourID'] ?? null;
+
 
         //Step 1
         if ($step == 1 or $gibbonBehaviourID == null) {
@@ -58,14 +55,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
             $date = $_POST['date'] ?? '';
             $type = $_POST['type'] ?? '';
-            $descriptor = null;
-            if (isset($_POST['descriptor'])) {
-                $descriptor = $_POST['descriptor'] ?? '';
-            }
-            $level = null;
-            if (isset($_POST['level'])) {
-                $level = $_POST['level'] ?? '';
-            }
+            $descriptor = $_POST['descriptor'] ?? null;
+            $level = $_POST['level'] ?? null;
+
             $comment = $_POST['comment'] ?? '';
             $followup = $_POST['followup'] ?? '';
             $copyToNotes = $_POST['copyToNotes'] ?? null;
@@ -177,15 +169,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         } elseif ($step == 2 and $gibbonBehaviourID != null) {
             //Proceed!
             $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
-            if ($_POST['gibbonPlannerEntryID'] == '') {
-                $gibbonPlannerEntryID = null;
-            } else {
-                $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? '';
-            }
-            $AI = '';
-            if (isset($_GET['editID'])) {
-                $AI = $_GET['editID'];
-            }
+            $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? null;
+            $AI = $_GET['editID'] ?? '';
+            
 
             if ($gibbonPersonID == '') {
                 $URL .= '&return=error1';
