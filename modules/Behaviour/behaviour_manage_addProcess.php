@@ -40,34 +40,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $URL .= '&return=error0&step=1';
         header("Location: {$URL}");
     } else {
-        $step = null;
-        if (isset($_GET['step'])) {
-            $step = $_GET['step'];
-        }
+
+        $step = $_GET['step'] ?? null;
+
         if ($step != 1 and $step != 2) {
             $step = 1;
         }
-        $gibbonBehaviourID = null;
-        if (isset($_POST['gibbonBehaviourID'])) {
-            $gibbonBehaviourID = $_POST['gibbonBehaviourID'];
-        }
+        $gibbonBehaviourID = $_POST['gibbonBehaviourID'] ?? null;
+
 
         //Step 1
         if ($step == 1 or $gibbonBehaviourID == null) {
             //Proceed!
-            $gibbonPersonID = $_POST['gibbonPersonID'];
-            $date = $_POST['date'];
-            $type = $_POST['type'];
-            $descriptor = null;
-            if (isset($_POST['descriptor'])) {
-                $descriptor = $_POST['descriptor'];
-            }
-            $level = null;
-            if (isset($_POST['level'])) {
-                $level = $_POST['level'];
-            }
-            $comment = $_POST['comment'];
-            $followup = $_POST['followup'];
+            $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
+            $date = $_POST['date'] ?? '';
+            $type = $_POST['type'] ?? '';
+            $descriptor = $_POST['descriptor'] ?? null;
+            $level = $_POST['level'] ?? null;
+
+            $comment = $_POST['comment'] ?? '';
+            $followup = $_POST['followup'] ?? '';
             $copyToNotes = $_POST['copyToNotes'] ?? null;
 
             if ($gibbonPersonID == '' or $date == '' or $type == '' or ($descriptor == '' and $enableDescriptors == 'Y')) {
@@ -93,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                 // Attempt to notify tutor(s) and EA(s) of negative behaviour
                 if ($type == 'Negative') {
-                    
+
                         $dataDetail = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
                         $sqlDetail = 'SELECT gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, surname, preferredName, gibbonStudentEnrolment.gibbonYearGroupID FROM gibbonRollGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID';
                         $resultDetail = $connection2->prepare($sqlDetail);
@@ -176,16 +168,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             }
         } elseif ($step == 2 and $gibbonBehaviourID != null) {
             //Proceed!
-            $gibbonPersonID = $_POST['gibbonPersonID'];
-            if ($_POST['gibbonPlannerEntryID'] == '') {
-                $gibbonPlannerEntryID = null;
-            } else {
-                $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'];
-            }
-            $AI = '';
-            if (isset($_GET['editID'])) {
-                $AI = $_GET['editID'];
-            }
+            $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
+            $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? null;
+            $AI = $_GET['editID'] ?? '';
+            
 
             if ($gibbonPersonID == '') {
                 $URL .= '&return=error1';
