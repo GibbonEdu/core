@@ -17,7 +17,7 @@ $newFormValues = array(
     'studentSelfRegistrationIPAddresses' => '127.0.0.1,192.168.0.1',
     'attendanceCLINotifyByRollGroup'     => 'Y',
     'attendanceCLINotifyByClass'         => 'Y',
-    'attendanceCLIAdditionalUsers[]'     => '1'
+    'attendanceCLIAdditionalUsers[]'     => '0000000001'
 );
 
 $I->selectFromDropdown('defaultRollGroupAttendanceType', 1);

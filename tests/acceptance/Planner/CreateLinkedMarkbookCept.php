@@ -22,7 +22,7 @@ $I->see('Planner was successfully added', '.success');
 $I->seeBreadcrumb('Add Column');
 
 $gibbonPlannerEntryID = $I->grabValueFromURL('gibbonPlannerEntryID');
-$I->seeInField('gibbonPlannerEntryID', $gibbonPlannerEntryID);
+$I->seeInField('gibbonPlannerEntryID', str_pad($gibbonPlannerEntryID, 14, '0', STR_PAD_LEFT));
 $I->seeInField('name', 'Testing Markbook');
 
 // Add Column ------------------------------------------------
