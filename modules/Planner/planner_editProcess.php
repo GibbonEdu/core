@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
+use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 
@@ -86,12 +87,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $timeEnd = $_POST['timeEnd'];
                     $gibbonUnitID = !empty($_POST['gibbonUnitID']) ? $_POST['gibbonUnitID'] : null;
                     $name = $_POST['name'];
-                    $summary = $_POST['summary'];
-                    if ($summary == '') {
-                        $summary = trim(strip_tags($_POST['description'])) ;
-                        if (strlen($summary) > 252) {
-                            $summary = substr($summary, 0, 252).'...' ;
-                        }
+                    $summary = $_POST['summary'] ?? '';
+                    if (empty($summary)) {
+                        $summary = trim(strip_tags($_POST['description'] ?? '')) ;
+                        $summary = Format::truncate($summary, 252);
                     }
                     $summaryBlocks = '';
                     $description = $_POST['description'];
@@ -315,7 +314,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                         if (strlen($summaryBlocks) > 75) {
                             $summaryBlocks = substr($summaryBlocks, 0, 72).'...';
                         }
-                        if ($summaryBlocks) {
+                        if (empty($summary) && $summaryBlocks) {
                             $summary = $summaryBlocks;
                         }
 
