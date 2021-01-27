@@ -19,7 +19,7 @@ class ModuleTest extends TestCase
 {
     protected $module;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->module = $this->getMockBuilder(Module::class)
             ->setConstructorArgs([])

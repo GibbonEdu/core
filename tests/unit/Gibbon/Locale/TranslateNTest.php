@@ -28,7 +28,7 @@ class TranslateNTest extends TestCase
     private $locale;
     private $gibbonToRestore;
 
-    public function setUp()
+    public function setUp(): void
     {
 
         // Setup the composer autoloader
@@ -57,7 +57,7 @@ class TranslateNTest extends TestCase
         ];
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         global $gibbon;
         unset($gibbon);

@@ -19,7 +19,7 @@ class QueryableGatewayTest extends TestCase
 {
     private $gateway;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->gateway = $this
             ->getMockBuilder(QueryableGateway::class)

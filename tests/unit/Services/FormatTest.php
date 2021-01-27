@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
  */
 class FormatTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $settings = [
             'code'                           => 'en_GB',

@@ -23,7 +23,7 @@ class QueryCriteriaTest extends TestCase
      */
     private $criteria;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->criteria = new QueryCriteria();
     }

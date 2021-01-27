@@ -29,7 +29,7 @@ class UsernameGeneratorTest extends TestCase
 {
     private $usernameGenerator;
 
-    public function setUp()
+    public function setUp(): void
     {
         // Create a stub for the Gibbon\Contracts\Database\Connection class
         $mockPDO = $this->createMock(Connection::class);

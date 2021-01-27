@@ -18,7 +18,7 @@ class TranslationTest extends TestCase
 {
     protected $guid;
 
-    public function setUp()
+    public function setUp(): void
     {
         global $guid, $gibbon;
 
@@ -28,7 +28,7 @@ class TranslationTest extends TestCase
         $this->guid = $guid;
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         global $gibbon;
 
