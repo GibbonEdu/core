@@ -21,7 +21,7 @@ class PageTest extends TestCase
     protected $mockModule;
     protected $mockTheme;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->prebuiltPage = new Page(null, [
             'module' => new Module(),

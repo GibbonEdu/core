@@ -17,7 +17,7 @@ class ProcessConfigVarsTest extends TestCase {
     /**
      * @inherit
      */
-    public function setUp() {
+    public function setUp(): void {
         $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/../../../resources/templates');
         $this->templateEngine = new \Twig\Environment($loader);
     }
