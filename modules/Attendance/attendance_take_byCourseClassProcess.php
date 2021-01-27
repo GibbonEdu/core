@@ -26,14 +26,14 @@ require __DIR__ . '/../../gibbon.php';
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php' ;
 
-$gibbonCourseClassID=$_POST["gibbonCourseClassID"] ;
-$currentDate=$_POST["currentDate"] ;
+$gibbonCourseClassID=$_POST["gibbonCourseClassID"] ?? '';
+$currentDate=$_POST["currentDate"] ?? '';
 $today=date("Y-m-d");
 
-$moduleName = getModuleName($_POST["address"]);
+$moduleName = getModuleName($_POST["address"] ?? '');
 
 if ($moduleName == "Planner") {
-    $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'];
+    $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? '';
     $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $moduleName . "/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=date&gibbonCourseClassID=$gibbonCourseClassID&date=" . $currentDate ;
 } else {
     $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $moduleName . "/attendance_take_byCourseClass.php&gibbonCourseClassID=$gibbonCourseClassID&currentDate=" . dateConvertBack($guid, $currentDate) ;
@@ -133,13 +133,13 @@ else {
                     $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
 
                     $recordSchoolAttendance = $_POST['recordSchoolAttendance'] ?? 'N';
-                    $count=$_POST["count"] ;
+                    $count=$_POST["count"] ?? '';
                     $partialFail=FALSE ;
 
                     for ($i=0; $i<$count; $i++) {
                         $gibbonPersonID=$_POST[$i . "-gibbonPersonID"] ;
 
-                        $type=$_POST[$i . "-type"] ;
+                        $type=$_POST[$i . "-type"] ?? '';
                         $reason=$_POST[$i . "-reason"] ?? '';
                         $comment=$_POST[$i . "-comment"] ?? '';
                         $prefilled=$_POST[$i . "-prefilled"] ?? '';
@@ -187,7 +187,7 @@ else {
                             'date'                   => $currentDate,
                             'timestampTaken'         => date('Y-m-d H:i:s'),
                         ];
-                        
+
                         if (!$existing) {
                             // If no records then create one
                             $inserted = $attendanceLogGateway->insert($data);
@@ -196,7 +196,7 @@ else {
                             $updated = $attendanceLogGateway->update($gibbonAttendanceLogPersonID, $data);
                             $partialFail &= !$updated;
                         }
-                        
+
                         if ($recordFirstClassAsSchool == 'Y' && empty($prefilled)) {
                             $data['context'] = 'Person';
                             $inserted = $attendanceLogGateway->insert($data);

@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
                         $inRange = true ;
                 }
 
-                $status = (isset($_POST['status']))? $_POST['status'] : null;
+                $status = $_POST['status'] ?? null;
 
                 if (!$inRange && $status == 'Absent') {
                     try {

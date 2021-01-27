@@ -23,9 +23,9 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
-$gibbonAttendanceLogPersonID = isset($_POST['gibbonAttendanceLogPersonID'])? $_POST['gibbonAttendanceLogPersonID'] : '';
-$gibbonPersonID = isset($_POST['gibbonPersonID'])? $_POST['gibbonPersonID'] : '';
-$currentDate = isset($_POST['currentDate'])? $_POST['currentDate'] : dateConvertBack($guid, date('Y-m-d'));
+$gibbonAttendanceLogPersonID = $_POST['gibbonAttendanceLogPersonID'] ?? '';
+$gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
+$currentDate = $_POST['currentDate'] ?? dateConvertBack($guid, date('Y-m-d'));
 
 $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Attendance/attendance_take_byPerson.php&gibbonPersonID=$gibbonPersonID&currentDate=$currentDate";
 
@@ -38,13 +38,13 @@ else if ($gibbonAttendanceLogPersonID == '' or $gibbonPersonID == '' or $current
     header("Location: {$URL}");
 } else {
     //Proceed!
-    
-    $type = isset($_POST['type'])? $_POST['type'] : '';
-    $reason = isset($_POST['reason'])? $_POST['reason'] : '';
-    $comment = isset($_POST['comment'])? $_POST['comment'] : '';
+
+    $type = $_POST['type'] ?? '';
+    $reason = $_POST['reason'] ?? '';
+    $comment = $_POST['comment'] ?? '';
 
     // Get attendance codes
-    
+
         $dataCode = array( 'name' => $type );
         $sqlCode = "SELECT direction FROM gibbonAttendanceCode WHERE active = 'Y' AND name=:name LIMIT 1";
         $resultCode = $connection2->prepare($sqlCode);
