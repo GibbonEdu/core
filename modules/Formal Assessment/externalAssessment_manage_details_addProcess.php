@@ -23,9 +23,9 @@ $count = 0;
 if (is_numeric($_POST['count'])) {
     $count = $_POST['count'];
 }
-$gibbonPersonID = $_POST['gibbonPersonID'];
-$gibbonExternalAssessmentID = $_POST['gibbonExternalAssessmentID'];
-$date = dateConvert($guid, $_POST['date']);
+$gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
+$gibbonExternalAssessmentID = $_POST['gibbonExternalAssessmentID'] ?? '';
+$date = dateConvert($guid, $_POST['date'] ?? '');
 $search = $_GET['search'] ?? '';
 $allStudents = $_GET['allStudents'] ?? '';
 

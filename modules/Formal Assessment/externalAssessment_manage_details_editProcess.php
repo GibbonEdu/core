@@ -60,7 +60,7 @@ if ($gibbonPersonID == '') { echo 'Fatal error loading this page!';
                 if (is_numeric($_POST['count'])) {
                     $count = $_POST['count'];
                 }
-                $date = dateConvert($guid, $_POST['date']) ?? '';
+                $date = dateConvert($guid, $_POST['date'] ?? '');
 
                 $attachment = $_POST['attachment'] ?? $row['attachment'];
                 //Move attached image  file, if there is one
