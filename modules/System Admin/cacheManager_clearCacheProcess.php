@@ -30,13 +30,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/cacheManager.
     header("Location: {$URL}");
     exit;
 } else {
+    $cachePath = $gibbon->session->has('cachePath') ? $gibbon->session->get('cachePath') : '/uploads/cache';
+
     // Clear the templates cache folder
     if (!empty($_POST['templateCache']) && $_POST['templateCache'] == 'Y') {
-        removeDirectoryContents($gibbon->session->get('absolutePath').'/uploads/cache/templates');
+        removeDirectoryContents($gibbon->session->get('absolutePath').$cachePath.'/templates');
     }
 
     if (!empty($_POST['reportsCache']) && $_POST['reportsCache'] == 'Y') {
-        removeDirectoryContents($gibbon->session->get('absolutePath').'/uploads/cache/reports');
+        removeDirectoryContents($gibbon->session->get('absolutePath').$cachePath.'/reports');
     }
 
     $URL .= '&return=success0';
