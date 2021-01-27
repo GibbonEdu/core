@@ -20,6 +20,7 @@ v21.0.01
 --------
     Tweaks & Additions
         System Admin: added post_max_size and upload_max_filesize PHP settings to System Check
+        System Admin: updated Manage Languages to use i18n main branch instead of master
     
     Bug Fixes
         Attendance: fixed missing attendance in Not Present and Not Onside reports
