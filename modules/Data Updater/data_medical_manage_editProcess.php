@@ -24,8 +24,8 @@ use Gibbon\Domain\Students\StudentGateway;
 
 include '../../gibbon.php';
 
-$gibbonPersonMedicalUpdateID = $_GET['gibbonPersonMedicalUpdateID'];
-$gibbonPersonID = $_POST['gibbonPersonID'];
+$gibbonPersonMedicalUpdateID = $_GET['gibbonPersonMedicalUpdateID'] ?? '';
+$gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_medical_manage_edit.php&gibbonPersonMedicalUpdateID=$gibbonPersonMedicalUpdateID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_manage_edit.php') == false) {
@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             $row = $result->fetch();
             $gibbonPersonMedicalID = $row['gibbonPersonMedicalID'];
             $conditions = [];
-            
+
             //Set values
             $data = array();
             $sqlSet = '';
@@ -339,9 +339,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                     header("Location: {$URL}");
                     exit();
                 }
-            
+
                 $gibbonPersonMedicalID = $connection2->lastInsertID();
-            
+
                 //Scan through new conditions
                 if (isset($_POST['count2'])) {
                     $count2 = $_POST['count2'];
@@ -355,7 +355,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                             if ($_POST["nameOn$i"] == 'on') {
                                 $dataCond['name'] = $_POST["name$i"];
                                 $sqlSetCond .= 'name=:name, ';
-                                
+
                             }
                         }
                         if (isset($_POST["gibbonAlertLevelIDOn$i"])) {

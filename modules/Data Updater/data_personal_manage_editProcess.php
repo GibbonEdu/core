@@ -27,8 +27,8 @@ include '../../gibbon.php';
 //Module includes
 include '../User Admin/moduleFunctions.php';
 
-$gibbonPersonUpdateID = $_GET['gibbonPersonUpdateID'];
-$gibbonPersonID = $_POST['gibbonPersonID'];
+$gibbonPersonUpdateID = $_GET['gibbonPersonUpdateID'] ?? '';
+$gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_personal_manage_edit.php&gibbonPersonUpdateID=$gibbonPersonUpdateID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal_manage_edit.php') == false) {
@@ -480,7 +480,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     //Notify tutors of change to privacy settings
                     if (isset($_POST['newprivacyOn'])) {
                         if ($_POST['newprivacyOn'] == 'on') {
-                            
+
                                 $dataDetail = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
                                 $sqlDetail = 'SELECT gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonYearGroupID FROM gibbonRollGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID';
                                 $resultDetail = $connection2->prepare($sqlDetail);

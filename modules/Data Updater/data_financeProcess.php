@@ -44,8 +44,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
             $checkCount = 0;
             if ($highestAction == 'Update Finance Data_any') {
                 $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_finance.php&gibbonFinanceInvoiceeID='.$gibbonFinanceInvoiceeID;
-                
-                
+
+
                     $dataSelect = array('gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID);
                     $sqlSelect = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFinanceInvoicee.* FROM gibbonFinanceInvoicee JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID ORDER BY surname, preferredName";
                     $resultSelect = $connection2->prepare($sqlSelect);
@@ -54,14 +54,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
                 $values = $resultSelect->fetch();
             } else {
                 $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_updates.php&gibbonFinanceInvoiceeID='.$gibbonFinanceInvoiceeID;
-                
-                
+
+
                     $dataCheck = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
                     $sqlCheck = "SELECT gibbonFamilyAdult.gibbonFamilyID, name FROM gibbonFamilyAdult JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y' ORDER BY name";
                     $resultCheck = $connection2->prepare($sqlCheck);
                     $resultCheck->execute($dataCheck);
                 while ($rowCheck = $resultCheck->fetch()) {
-                    
+
                         $dataCheck2 = array('gibbonFamilyID' => $rowCheck['gibbonFamilyID']);
                         $sqlCheck2 = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFamilyID, gibbonFinanceInvoicee.* FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND gibbonFamilyID=:gibbonFamilyID";
                         $resultCheck2 = $connection2->prepare($sqlCheck2);
@@ -130,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
                 $data['timestamp'] = date('Y-m-d H:i:s');
 
                 //Write to database
-                $existing = $_POST['existing'];
+                $existing = $_POST['existing'] ?? '';
 
                 if ($existing != 'N') {
                     $data['gibbonFinanceInvoiceeUpdateID'] = $existing;
