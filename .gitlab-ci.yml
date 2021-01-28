@@ -68,6 +68,15 @@
       EOF
       locale-gen
 
+    # configure php cli to only report severe errors
+    - |
+      # improve php cli error reporting manner
+      export PHP_D=$(php --ini | grep 'Scan for additional .ini files in' | tr -s ' ' '\n' | tail -n1)
+      cat <<- EOF | tee $PHP_D/custom-error-reporting.ini
+      [PHP]
+      error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT
+      EOF
+
   script:
     - composer test
 
