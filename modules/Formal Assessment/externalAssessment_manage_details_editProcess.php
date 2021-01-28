@@ -19,13 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonPersonID = $_POST['gibbonPersonID'];
-$gibbonExternalAssessmentStudentID = $_POST['gibbonExternalAssessmentStudentID'];
-$search = $_GET['search'];
-$allStudents = '';
-if (isset($_GET['allStudents'])) {
-    $allStudents = $_GET['allStudents'];
-}
+$gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
+$gibbonExternalAssessmentStudentID = $_POST['gibbonExternalAssessmentStudentID'] ?? '';
+$search = $_GET['search'] ?? '';
+$allStudents = $_GET['allStudents'] ?? '';
+
 
 if ($gibbonPersonID == '') { echo 'Fatal error loading this page!';
 } else {
@@ -62,9 +60,9 @@ if ($gibbonPersonID == '') { echo 'Fatal error loading this page!';
                 if (is_numeric($_POST['count'])) {
                     $count = $_POST['count'];
                 }
-                $date = dateConvert($guid, $_POST['date']);
+                $date = dateConvert($guid, $_POST['date'] ?? '');
 
-                $attachment = isset($_POST['attachment'])? $_POST['attachment'] : $row['attachment'];
+                $attachment = $_POST['attachment'] ?? $row['attachment'];
                 //Move attached image  file, if there is one
                 if (!empty($_FILES['file']['tmp_name'])) {
                     $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);

@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-$gibbonInternalAssessmentColumnID = $_GET['gibbonInternalAssessmentColumnID'];
+$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+$gibbonInternalAssessmentColumnID = $_GET['gibbonInternalAssessmentColumnID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/internalAssessment_manage_edit.php&gibbonInternalAssessmentColumnID=$gibbonInternalAssessmentColumnID&gibbonCourseClassID=$gibbonCourseClassID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_manage_edit.php') == false) {
@@ -54,13 +54,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             } else {
                 $row = $result->fetch();
                 $partialFail = false;
-                
+
                 //Validate Inputs
-                $name = $_POST['name'];
-                $description = $_POST['description'];
-                $type = $_POST['type'];
+                $name = $_POST['name'] ?? '';
+                $description = $_POST['description'] ?? '';
+                $type = $_POST['type'] ?? '';
                 //Sort out attainment
-                $attainment = $_POST['attainment'];
+                $attainment = $_POST['attainment'] ?? '';
                 if ($attainment == 'N') {
                     $gibbonScaleIDAttainment = null;
                 } else {
@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     }
                 }
                 //Sort out effort
-                $effort = $_POST['effort'];
+                $effort = $_POST['effort'] ?? '';
                 if ($effort == 'N') {
                     $gibbonScaleIDEffort = null;
                 } else {
@@ -81,9 +81,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         $gibbonScaleIDEffort = $_POST['gibbonScaleIDEffort'];
                     }
                 }
-                $comment = $_POST['comment'];
-                $uploadedResponse = $_POST['uploadedResponse'];
-                $completeDate = $_POST['completeDate'];
+                $comment = $_POST['comment'] ?? '';
+                $uploadedResponse = $_POST['uploadedResponse'] ?? '';
+                $completeDate = $_POST['completeDate'] ?? '';
                 if ($completeDate == '') {
                     $completeDate = null;
                     $complete = 'N';
@@ -91,15 +91,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     $completeDate = dateConvert($guid, $completeDate);
                     $complete = 'Y';
                 }
-                $viewableStudents = $_POST['viewableStudents'];
-                $viewableParents = $_POST['viewableParents'];
+                $viewableStudents = $_POST['viewableStudents'] ?? '';
+                $viewableParents = $_POST['viewableParents'] ?? '';
                 $gibbonPersonIDLastEdit = $_SESSION[$guid]['gibbonPersonID'];
 
                 $time = time();
                 //Move attached file, if there is one
                 if (!empty($_FILES['file']['tmp_name'])) {
                     $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
-                
+
                     $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 
                     // Upload the file, return the /uploads relative path
@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         $partialFail = true;
                     }
                 } else {
-                    $attachment = isset($_POST['attachment'])? $_POST['attachment'] : '';
+                    $attachment = $_POST['attachment'] ?? '';
                 }
 
                 if ($name == '' or $description == '' or $type == '' or $viewableStudents == '' or $viewableParents == '') {
