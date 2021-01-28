@@ -82,7 +82,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                         $status = 'Paid';
                     }
                 }
-                $order = $_POST['order'] ?? null;
+                $order = $_POST['order'] ?? [];
                 
                 if ($_POST['status'] == 'Paid' or $_POST['status'] == 'Paid - Partial' or $_POST['status'] == 'Paid - Complete') {
                     $paidDate = dateConvert($guid, $_POST['paidDate']);
