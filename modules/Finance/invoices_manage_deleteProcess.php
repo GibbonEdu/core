@@ -21,8 +21,8 @@ include '../../gibbon.php';
 
 include './moduleFunctions.php';
 
-$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-$gibbonFinanceInvoiceID = $_POST['gibbonFinanceInvoiceID'];
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$gibbonFinanceInvoiceID = $_POST['gibbonFinanceInvoiceID'] ?? '';
 $status = null;
 if (isset($_GET['status'])) {
     $status = $_GET['status'];

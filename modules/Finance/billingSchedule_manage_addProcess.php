@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-$search = $_GET['search'];
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$search = $_GET['search'] ?? '';
 
 if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 } else {
@@ -30,11 +30,11 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {
-        $name = $_POST['name'];
-        $active = $_POST['active'];
-        $description = $_POST['description'];
-        $invoiceIssueDate = $_POST['invoiceIssueDate'];
-        $invoiceDueDate = $_POST['invoiceDueDate'];
+        $name = $_POST['name'] ?? '';
+        $active = $_POST['active'] ?? '';
+        $description = $_POST['description'] ?? '';
+        $invoiceIssueDate = $_POST['invoiceIssueDate'] ?? '';
+        $invoiceDueDate = $_POST['invoiceDueDate'] ?? '';
 
         if ($name == '' or $active == '' or $invoiceIssueDate == '' or $invoiceDueDate == '') {
             $URL .= '&return=error1';

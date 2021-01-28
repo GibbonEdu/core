@@ -34,17 +34,17 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {
-        $gibbonFinanceInvoiceeIDs = $_POST['gibbonFinanceInvoiceeIDs'];
-        $scheduling = $_POST['scheduling'];
+        $gibbonFinanceInvoiceeIDs = $_POST['gibbonFinanceInvoiceeIDs'] ?? '';
+        $scheduling = $_POST['scheduling'] ?? '';
         if ($scheduling == 'Scheduled') {
-            $gibbonFinanceBillingScheduleID = $_POST['gibbonFinanceBillingScheduleID'];
+            $gibbonFinanceBillingScheduleID = $_POST['gibbonFinanceBillingScheduleID'] ?? '';
             $invoiceDueDate = null;
         } elseif ($scheduling == 'Ad Hoc') {
             $gibbonFinanceBillingScheduleID = null;
-            $invoiceDueDate = $_POST['invoiceDueDate'];
+            $invoiceDueDate = $_POST['invoiceDueDate'] ?? '';
         }
-        $notes = $_POST['notes'];
-        $order = isset($_POST['order'])? $_POST['order'] : array();
+        $notes = $_POST['notes'] ?? '';
+        $order = $_POST['order'] ?? array();
 
         if (count($gibbonFinanceInvoiceeIDs) == 0 or $scheduling == '' or ($scheduling == 'Scheduled' and $gibbonFinanceBillingScheduleID == '') or ($scheduling == 'Ad Hoc' and $invoiceDueDate == '') or count($order) == 0) {
             $URL .= '&return=error1';
@@ -58,12 +58,12 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
             //PROCESS FEES
             $fees = array();
             foreach ($order as $fee) {
-                $fees[$fee]['name'] = $_POST['name'.$fee];
-                $fees[$fee]['gibbonFinanceFeeCategoryID'] = $_POST['gibbonFinanceFeeCategoryID'.$fee];
-                $fees[$fee]['fee'] = $_POST['fee'.$fee];
-                $fees[$fee]['feeType'] = $_POST['feeType'.$fee];
-                $fees[$fee]['gibbonFinanceFeeID'] = $_POST['gibbonFinanceFeeID'.$fee];
-                $fees[$fee]['description'] = $_POST['description'.$fee];
+                $fees[$fee]['name'] = $_POST['name'.$fee] ?? '';
+                $fees[$fee]['gibbonFinanceFeeCategoryID'] = $_POST['gibbonFinanceFeeCategoryID'.$fee] ?? '';
+                $fees[$fee]['fee'] = $_POST['fee'.$fee] ?? '';
+                $fees[$fee]['feeType'] = $_POST['feeType'.$fee] ?? '';
+                $fees[$fee]['gibbonFinanceFeeID'] = $_POST['gibbonFinanceFeeID'.$fee] ?? '';
+                $fees[$fee]['description'] = $_POST['description'.$fee] ?? '';
 
                 if ($fees[$fee]['name'] == '' or $fees[$fee]['gibbonFinanceFeeCategoryID'] == '' or $fees[$fee]['fee'] == '' or is_numeric($fees[$fee]['fee']) == false or $fees[$fee]['feeType'] == '' or ($fees[$fee]['feeType'] == 'Standard' and $fees[$fee]['gibbonFinanceFeeID'] == '')) {
                     $feeFail = true;
@@ -161,7 +161,7 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                                 $count = 0;
                                 while ($continue == false and $count < 100) {
                                     $key = randomPassword(40);
-                                    
+
                                         $dataUnique = array('key' => $key);
                                         $sqlUnique = 'SELECT * FROM gibbonFinanceInvoice WHERE gibbonFinanceInvoice.`key`=:key';
                                         $resultUnique = $connection2->prepare($sqlUnique);
@@ -193,9 +193,9 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                                         ++$invoiceFailCount;
                                         $thisInvoiceFailed = true;
                                     }
-                                    
+
                                     $AI = $connection2->lastInsertID();
-                                    
+
                                     if ($thisInvoiceFailed == false) {
                                         //Add fees to invoice
                                         $count = 0;
@@ -293,7 +293,7 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                                 $count = 0;
                                 while ($continue == false and $count < 100) {
                                     $key = randomPassword(40);
-                                    
+
                                         $dataUnique = array('key' => $key);
                                         $sqlUnique = 'SELECT * FROM gibbonFinanceInvoice WHERE gibbonFinanceInvoice.`key`=:key';
                                         $resultUnique = $connection2->prepare($sqlUnique);
@@ -325,9 +325,9 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                                         ++$invoiceFailCount;
                                         $thisInvoiceFailed = true;
                                     }
-                                    
+
                                     $AI = $connection2->lastInsertID();
-                                    
+
                                     if ($thisInvoiceFailed == false) {
                                         //Add fees to invoice
                                         $count = 0;
@@ -407,7 +407,7 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                         $gibbonFinanceInvoiceID = $AI;
 
                     //SET gibbonFinanceFeeCategoryIDList WITH ALL FEES (doing this now due to the complex nature of adding fees above)
-                    
+
                         $dataTemp = array('gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
                         $sqlTemp = 'SELECT gibbonFinanceFeeCategoryID FROM gibbonFinanceInvoiceFee WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
                         $resultTemp = $connection2->prepare($sqlTemp);
@@ -420,7 +420,7 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 
                     $gibbonFinanceFeeCategoryIDList = substr($gibbonFinanceFeeCategoryIDList, 0, -1);
                     if ($gibbonFinanceFeeCategoryIDList != '') {
-                        
+
                             $dataTemp2 = array('gibbonFinanceFeeCategoryIDList' => $gibbonFinanceFeeCategoryIDList, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
                             $sqlTemp2 = 'UPDATE gibbonFinanceInvoice SET gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
                             $resultTemp2 = $connection2->prepare($sqlTemp2);

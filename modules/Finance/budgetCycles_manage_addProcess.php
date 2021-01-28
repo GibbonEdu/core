@@ -27,11 +27,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
 } else {
     //Proceed!
     //Validate Inputs
-    $name = $_POST['name'];
-    $status = $_POST['status'];
-    $sequenceNumber = $_POST['sequenceNumber'];
-    $dateStart = dateConvert($guid, $_POST['dateStart']);
-    $dateEnd = dateConvert($guid, $_POST['dateEnd']);
+    $name = $_POST['name'] ?? '';
+    $status = $_POST['status'] ?? '';
+    $sequenceNumber = $_POST['sequenceNumber'] ?? '';
+    $dateStart = dateConvert($guid, $_POST['dateStart'] ?? '');
+    $dateEnd = dateConvert($guid, $_POST['dateEnd'] ?? '');
 
     if ($name == '' or $status == '' or $sequenceNumber == '' or is_numeric($sequenceNumber) == false or $dateStart == '' or $dateEnd == '') {
         $URL .= '&return=error1';
@@ -71,8 +71,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
             //UPDATE CYCLE ALLOCATION VALUES
             $partialFail = false;
             if (isset($_POST['values'])) {
-                $values = $_POST['values'];
-                $gibbonFinanceBudgetIDs = $_POST['gibbonFinanceBudgetIDs'];
+                $values = $_POST['values'] ?? [];
+                $gibbonFinanceBudgetIDs = $_POST['gibbonFinanceBudgetIDs'] ?? [];
                 $count = 0;
                 foreach ($values as $value) {
                     try {

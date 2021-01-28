@@ -19,9 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-$gibbonFinanceFeeID = $_POST['gibbonFinanceFeeID'];
-$search = $_GET['search'];
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$gibbonFinanceFeeID = $_POST['gibbonFinanceFeeID'] ?? '';
+$search = $_GET['search'] ?? '';
 
 if ($gibbonFinanceFeeID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 } else {
@@ -52,12 +52,12 @@ if ($gibbonFinanceFeeID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error 
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
             } else {
-                $name = $_POST['name'];
-                $nameShort = $_POST['nameShort'];
-                $active = $_POST['active'];
-                $description = $_POST['description'];
-                $gibbonFinanceFeeCategoryID = $_POST['gibbonFinanceFeeCategoryID'];
-                $fee = $_POST['fee'];
+                $name = $_POST['name'] ?? '';
+                $nameShort = $_POST['nameShort'] ?? '';
+                $active = $_POST['active'] ?? '';
+                $description = $_POST['description'] ?? '';
+                $gibbonFinanceFeeCategoryID = $_POST['gibbonFinanceFeeCategoryID'] ?? '';
+                $fee = $_POST['fee'] ?? '';
 
                 if ($name == '' or $nameShort == '' or $active == '' or $gibbonFinanceFeeCategoryID == '' or $fee == '') {
                     $URL .= '&return=error1';

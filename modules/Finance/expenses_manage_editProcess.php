@@ -22,12 +22,12 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
-$gibbonFinanceBudgetCycleID = $_POST['gibbonFinanceBudgetCycleID'];
-$gibbonFinanceBudgetID2 = $_POST['gibbonFinanceBudgetID2'];
-$gibbonFinanceExpenseID = $_POST['gibbonFinanceExpenseID'];
-$status2 = $_POST['status2'];
-$countAgainstBudget = $_POST['countAgainstBudget'];
-$status = $_POST['status'];
+$gibbonFinanceBudgetCycleID = $_POST['gibbonFinanceBudgetCycleID'] ?? '';
+$gibbonFinanceBudgetID2 = $_POST['gibbonFinanceBudgetID2'] ?? '';
+$gibbonFinanceExpenseID = $_POST['gibbonFinanceExpenseID'] ?? '';
+$status2 = $_POST['status2'] ?? '';
+$countAgainstBudget = $_POST['countAgainstBudget'] ?? '';
+$status = $_POST['status'] ?? '';
 
 if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
 } else {
@@ -94,11 +94,11 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
 
                             //Check if params are specified
                             if ($status == 'Paid' and ($row['status'] == 'Approved' or $row['status'] == 'Ordered')) {
-                                $paymentDate = dateConvert($guid, $_POST['paymentDate']);
-                                $paymentAmount = $_POST['paymentAmount'];
-                                $gibbonPersonIDPayment = $_POST['gibbonPersonIDPayment'];
-                                $paymentMethod = $_POST['paymentMethod'];
-                                $paymentID = $_POST['paymentID'];
+                                $paymentDate = dateConvert($guid, $_POST['paymentDate'] ?? '');
+                                $paymentAmount = $_POST['paymentAmount'] ?? '';
+                                $gibbonPersonIDPayment = $_POST['gibbonPersonIDPayment'] ?? '';
+                                $paymentMethod = $_POST['paymentMethod'] ?? '';
+                                $paymentID = $_POST['paymentID'] ?? '';
                             } else {
                                 $paymentDate = $row['paymentDate'];
                                 $paymentAmount = $row['paymentAmount'];
@@ -116,8 +116,8 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
                                     $paymentReimbursementStatus = null;
                                 }
                                 if ($row['status'] == 'Paid' and $row['purchaseBy'] == 'Self' and $row['paymentReimbursementStatus'] == 'Requested' and $paymentReimbursementStatus == 'Complete') {
-                                    $paymentID = $_POST['paymentID'];
-                                    $reimbursementComment = $_POST['reimbursementComment'];
+                                    $paymentID = $_POST['paymentID'] ?? '';
+                                    $reimbursementComment = $_POST['reimbursementComment'] ?? '';
                                     $notificationText = sprintf(__('Your reimbursement expense request for "%1$s" in budget "%2$s" has been completed.'), $row['title'], $row['budget']);
                                     setNotification($connection2, $guid, $row['gibbonPersonIDCreator'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenseRequest_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=&gibbonFinanceBudgetID=".$row['gibbonFinanceBudgetID']);
                                     //Write change to log

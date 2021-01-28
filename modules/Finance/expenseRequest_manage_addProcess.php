@@ -22,11 +22,11 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
-$gibbonFinanceBudgetCycleID = $_POST['gibbonFinanceBudgetCycleID'];
-$gibbonFinanceBudgetID = $_POST['gibbonFinanceBudgetID'];
-$status = $_POST['status'];
-$gibbonFinanceBudgetID2 = $_POST['gibbonFinanceBudgetID2'];
-$status2 = $_POST['status2'];
+$gibbonFinanceBudgetCycleID = $_POST['gibbonFinanceBudgetCycleID'] ?? '';
+$gibbonFinanceBudgetID = $_POST['gibbonFinanceBudgetID'] ?? '';
+$status = $_POST['status'] ?? '';
+$gibbonFinanceBudgetID2 = $_POST['gibbonFinanceBudgetID2'] ?? '';
+$status2 = $_POST['status2'] ?? '';
 
 if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '' or $status == '' or $status != 'Requested') { echo 'Fatal error loading this page!';
 } else {
@@ -36,12 +36,12 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '' or $status
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {
-        $title = $_POST['title'];
-        $body = $_POST['body'];
-        $cost = $_POST['cost'];
-        $countAgainstBudget = $_POST['countAgainstBudget'];
-        $purchaseBy = $_POST['purchaseBy'];
-        $purchaseDetails = $_POST['purchaseDetails'];
+        $title = $_POST['title'] ?? '';
+        $body = $_POST['body'] ?? '';
+        $cost = $_POST['cost'] ?? '';
+        $countAgainstBudget = $_POST['countAgainstBudget'] ?? '';
+        $purchaseBy = $_POST['purchaseBy'] ?? '';
+        $purchaseDetails = $_POST['purchaseDetails'] ?? '';
 
         if ($title == '' or $cost == '' or $purchaseBy == '' or $countAgainstBudget == '') {
             $URL .= '&return=error1';

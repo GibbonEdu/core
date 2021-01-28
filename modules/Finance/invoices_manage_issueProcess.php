@@ -24,13 +24,13 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
-$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-$gibbonFinanceInvoiceID = $_POST['gibbonFinanceInvoiceID'];
-$status = $_GET['status'];
-$gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'];
-$monthOfIssue = $_GET['monthOfIssue'];
-$gibbonFinanceBillingScheduleID = $_GET['gibbonFinanceBillingScheduleID'];
-$gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'];
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$gibbonFinanceInvoiceID = $_POST['gibbonFinanceInvoiceID'] ?? '';
+$status = $_GET['status'] ?? '';
+$gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'] ?? '';
+$monthOfIssue = $_GET['monthOfIssue'] ?? '';
+$gibbonFinanceBillingScheduleID = $_GET['gibbonFinanceBillingScheduleID'] ?? '';
+$gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'] ?? '';
 
 if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 } else {
@@ -75,9 +75,9 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                 header("Location: {$URL}");
             } else {
                 $row = $result->fetch();
-                $notes = $_POST['notes'];
+                $notes = $_POST['notes'] ?? '';
                 $status = 'Issued';
-                $invoiceDueDate = $_POST['invoiceDueDate'];
+                $invoiceDueDate = $_POST['invoiceDueDate'] ?? '';
                 if ($row['billingScheduleType'] == 'Scheduled') {
                     $separated = 'Y';
                 } else {
@@ -103,7 +103,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
 
                     $partialFail = false;
                     $emailFail = false;
-                    
+
                     //Read & Organise Fees
                     $fees = array();
                     $count = 0;
@@ -172,16 +172,16 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                     }
 
                     //Unlock module table
-                    
+
                         $sql = 'UNLOCK TABLES';
                         $result = $connection2->query($sql);
 
-                    $from = $_POST['email'];
+                    $from = $_POST['email'] ?? '';
                     if ($partialFail == false and $from != '') {
                         //Send emails
                         $emails = array() ;
                         if (isset($_POST['emails'])) {
-                            $emails = $_POST['emails'];
+                            $emails = $_POST['emails'] ?? '';
                             for ($i = 0; $i < count($emails); ++$i) {
                                 $emailsInner = explode(',', $emails[$i]);
                                 for ($n = 0; $n < count($emailsInner); ++$n) {

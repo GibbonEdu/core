@@ -22,12 +22,12 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
-$gibbonFinanceBudgetCycleID = $_POST['gibbonFinanceBudgetCycleID'];
-$gibbonFinanceBudgetID = $_POST['gibbonFinanceBudgetID'];
-$gibbonFinanceExpenseID = $_POST['gibbonFinanceExpenseID'];
-$status = $_POST['status'];
-$gibbonFinanceBudgetID2 = $_POST['gibbonFinanceBudgetID2'];
-$status2 = $_POST['status2'];
+$gibbonFinanceBudgetCycleID = $_POST['gibbonFinanceBudgetCycleID'] ?? '';
+$gibbonFinanceBudgetID = $_POST['gibbonFinanceBudgetID'] ?? '';
+$gibbonFinanceExpenseID = $_POST['gibbonFinanceExpenseID'] ?? '';
+$status = $_POST['status'] ?? '';
+$gibbonFinanceBudgetID2 = $_POST['gibbonFinanceBudgetID2'] ?? '';
+$status2 = $_POST['status2'] ?? '';
 
 if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'Fatal error loading this page!';
 } else {
@@ -95,10 +95,10 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                         $row = $result->fetch();
 
                         //Get relevant
-                        $paymentDate = dateConvert($guid, $_POST['paymentDate']);
-                        $paymentAmount = $_POST['paymentAmount'];
-                        $gibbonPersonIDPayment = $_POST['gibbonPersonIDPayment'];
-                        $paymentMethod = $_POST['paymentMethod'];
+                        $paymentDate = dateConvert($guid, $_POST['paymentDate'] ?? '');
+                        $paymentAmount = $_POST['paymentAmount'] ?? '';
+                        $gibbonPersonIDPayment = $_POST['gibbonPersonIDPayment'] ?? '';
+                        $paymentMethod = $_POST['paymentMethod'] ?? '';
 
                         $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
 

@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonFinanceExpenseApproverID = $_GET['gibbonFinanceExpenseApproverID'];
+$gibbonFinanceExpenseApproverID = $_GET['gibbonFinanceExpenseApproverID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/expenseApprovers_manage_edit.php&gibbonFinanceExpenseApproverID='.$gibbonFinanceExpenseApproverID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_manage_edit.php') == false) {
@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
             header("Location: {$URL}");
         } else {
             //Validate Inputs
-            $gibbonPersonID = $_POST['gibbonPersonID'];
+            $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
             $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
             $sequenceNumber = null;
             if ($expenseApprovalType == 'Chain Of All') {
