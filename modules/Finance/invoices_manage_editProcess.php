@@ -24,13 +24,13 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
-$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-$gibbonFinanceInvoiceID = $_POST['gibbonFinanceInvoiceID'];
-$status = $_GET['status'];
-$gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'];
-$monthOfIssue = $_GET['monthOfIssue'];
-$gibbonFinanceBillingScheduleID = $_GET['gibbonFinanceBillingScheduleID'];
-$gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'];
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$gibbonFinanceInvoiceID = $_POST['gibbonFinanceInvoiceID'] ?? '';
+$status = $_GET['status'] ?? '';
+$gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'] ?? '';
+$monthOfIssue = $_GET['monthOfIssue'] ?? '';
+$gibbonFinanceBillingScheduleID = $_GET['gibbonFinanceBillingScheduleID'] ?? '';
+$gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'] ?? '';
 
 if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 } else {
@@ -74,18 +74,16 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                 header("Location: {$URL}");
             } else {
                 $row = $result->fetch();
-                $notes = $_POST['notes'];
-                $status = $row['status'];
+                $notes = $_POST['notes'] ?? '';
+                $status = $row['status'] ?? '';
                 if ($status != 'Pending') {
-                    $status = $_POST['status'];
+                    $status = $_POST['status'] ?? '';
                     if ($status == 'Paid - Complete') {
                         $status = 'Paid';
                     }
                 }
-                $order = null;
-                if (isset($_POST['order'])) {
-                    $order = $_POST['order'];
-                }
+                $order = $_POST['order'] ?? [];
+                
                 if ($_POST['status'] == 'Paid' or $_POST['status'] == 'Paid - Partial' or $_POST['status'] == 'Paid - Complete') {
                     $paidDate = dateConvert($guid, $_POST['paidDate']);
                 } else if ($_POST['status'] == 'Refunded') {
@@ -150,12 +148,12 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                         $fees = array();
                         $gibbonFinanceFeeCategoryIDList = '';
                         foreach ($order as $fee) {
-                            $fees[$fee]['name'] = $_POST['name'.$fee];
-                            $fees[$fee]['gibbonFinanceFeeCategoryID'] = $_POST['gibbonFinanceFeeCategoryID'.$fee];
-                            $fees[$fee]['fee'] = $_POST['fee'.$fee];
-                            $fees[$fee]['feeType'] = $_POST['feeType'.$fee];
-                            $fees[$fee]['gibbonFinanceFeeID'] = $_POST['gibbonFinanceFeeID'.$fee];
-                            $fees[$fee]['description'] = $_POST['description'.$fee];
+                            $fees[$fee]['name'] = $_POST['name'.$fee] ?? '';
+                            $fees[$fee]['gibbonFinanceFeeCategoryID'] = $_POST['gibbonFinanceFeeCategoryID'.$fee] ?? '';
+                            $fees[$fee]['fee'] = $_POST['fee'.$fee] ?? '';
+                            $fees[$fee]['feeType'] = $_POST['feeType'.$fee] ?? '';
+                            $fees[$fee]['gibbonFinanceFeeID'] = $_POST['gibbonFinanceFeeID'.$fee] ?? '';
+                            $fees[$fee]['description'] = $_POST['description'.$fee] ?? '';
 
                             $gibbonFinanceFeeCategoryIDList .= $_POST['gibbonFinanceFeeCategoryID'.$fee].",";
                         }
@@ -193,10 +191,10 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                 }
 
                 //Unlock tables
-                
+
                     $sql = 'UNLOCK TABLES';
                     $result = $connection2->query($sql);
-                
+
                 // Log the payment
                 if ($status == 'Paid' or $status == 'Paid - Partial') {
                     if ($_POST['status'] == 'Paid') {
@@ -216,12 +214,12 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                 //Email Receipt
                 if (isset($_POST['emailReceipt'])) {
                     if ($_POST['emailReceipt'] == 'Y') {
-                        $from = $_POST['email'];
+                        $from = $_POST['email'] ?? '';
                         if ($partialFail == false and $from != '') {
                             //Send emails
                             $emails = array() ;
                             if (isset($_POST['emails'])) {
-                                $emails = $_POST['emails'];
+                                $emails = $_POST['emails'] ?? '';
                                 for ($i = 0; $i < count($emails); ++$i) {
                                     $emailsInner = explode(',', $emails[$i]);
                                     for ($n = 0; $n < count($emailsInner); ++$n) {
@@ -235,7 +233,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                             }
                             if (count($emails) > 0) {
                                 //Get receipt number
-                                
+
                                     $dataPayments = array('foreignTable' => 'gibbonFinanceInvoice', 'foreignTableID' => $gibbonFinanceInvoiceID);
                                     $sqlPayments = 'SELECT gibbonPayment.*, surname, preferredName FROM gibbonPayment JOIN gibbonPerson ON (gibbonPayment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID ORDER BY timestamp, gibbonPaymentID';
                                     $resultPayments = $connection2->prepare($sqlPayments);
@@ -279,7 +277,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                             //Send emails
                             $emails = array() ;
                             if (isset($_POST['emails'])) {
-                                $emails = $_POST['emails'];
+                                $emails = $_POST['emails'] ?? '';
                                 for ($i = 0; $i < count($emails); ++$i) {
                                     $emailsInner = explode(',', $emails[$i]);
                                     for ($n = 0; $n < count($emailsInner); ++$n) {
@@ -314,7 +312,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
 
                                 //Update reminder count
                                 if ($row['reminderCount'] < 3) {
-                                    
+
                                         $data = array('gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
                                         $sql = 'UPDATE gibbonFinanceInvoice SET reminderCount='.($row['reminderCount'] + 1).' WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
                                         $result = $connection2->prepare($sql);
@@ -326,7 +324,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                                 foreach ($emails as $address) {
                                     $mail->AddBCC($address);
                                 }
-                               
+
                                 $mail->Subject = __('Reminder from {organisation} via {system}', [
                                     'organisation' => $_SESSION[$guid]['organisationNameShort'],
                                     'system' => $_SESSION[$guid]['systemName'],

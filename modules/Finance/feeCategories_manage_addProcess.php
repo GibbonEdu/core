@@ -28,10 +28,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $name = $_POST['name'];
-    $nameShort = $_POST['nameShort'];
-    $active = $_POST['active'];
-    $description = $_POST['description'];
+    $name = $_POST['name'] ?? '';
+    $nameShort = $_POST['nameShort'] ?? '';
+    $active = $_POST['active'] ?? '';
+    $description = $_POST['description'] ?? '';
 
     if ($name == '' or $nameShort == '' or $active == '') {
         $URL .= '&return=error1';

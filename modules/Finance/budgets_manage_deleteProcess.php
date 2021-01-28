@@ -21,7 +21,7 @@ include '../../gibbon.php';
 
 include './moduleFunctions.php';
 
-$gibbonFinanceBudgetID = $_POST['gibbonFinanceBudgetID'];
+$gibbonFinanceBudgetID = $_POST['gibbonFinanceBudgetID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/budgets_manage_delete.php&gibbonFinanceBudgetID=$gibbonFinanceBudgetID";
 $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/budgets_manage.php';
 

@@ -28,10 +28,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_add
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $name = $_POST['name'];
-    $nameShort = $_POST['nameShort'];
-    $active = $_POST['active'];
-    $category = $_POST['category'];
+    $name = $_POST['name'] ?? '';
+    $nameShort = $_POST['nameShort'] ?? '';
+    $active = $_POST['active'] ?? '';
+    $category = $_POST['category'] ?? '';
 
     if ($name == '' or $nameShort == '' or $active == '' or $category == '') {
         $URL .= '&return=error1';
@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_add
                 header("Location: {$URL}");
                 exit();
             }
-            
+
             $AI = $connection2->lastInsertID();
 
             //Scan through staff
@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_add
             if (count($staff) > 0) {
                 foreach ($staff as $t) {
                     //Check to see if person is already registered in this budget
-                    
+
                         $dataGuest = array('gibbonPersonID' => $t, 'gibbonFinanceBudgetID' => $AI);
                         $sqlGuest = 'SELECT * FROM gibbonFinanceBudgetPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID';
                         $resultGuest = $connection2->prepare($sqlGuest);
