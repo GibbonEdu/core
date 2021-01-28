@@ -26,7 +26,7 @@ include './moduleFunctions.php';
 
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $gibbonFinanceInvoiceID = $_POST['gibbonFinanceInvoiceID'] ?? '';
-$status = $_GET['status'];
+$status = $_GET['status'] ?? '';
 $gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'] ?? '';
 $monthOfIssue = $_GET['monthOfIssue'] ?? '';
 $gibbonFinanceBillingScheduleID = $_GET['gibbonFinanceBillingScheduleID'] ?? '';
