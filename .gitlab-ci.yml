@@ -56,7 +56,7 @@
         >/dev/null 2>./tests/log/server_log &
 
     # install dependencies for test
-    - composer install --prefer-dist --no-interaction --no-progress
+    - composer install --prefer-dist --ansi --no-interaction --no-progress
 
     # setup system locale for test
     - |
