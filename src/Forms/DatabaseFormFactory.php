@@ -370,12 +370,12 @@ class DatabaseFormFactory extends FormFactory
 
         if ($params['includeStaff'] == true) {
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'date' => date('Y-m-d'));
-            $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username 
+            $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username
                     FROM gibbonPerson
                     JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
                     WHERE gibbonPerson.status='Full'
                     ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
-            $result = $this->pdo->executeQuery($data, $sql);
+            $result = $this->pdo->select($sql);
             if ($result->rowCount() > 0) {
                 $users[__('Staff')] = array_reduce($result->fetchAll(), function ($group, $item) {
                     $group[$item['gibbonPersonID']] = Format::name('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Staff', true, true)." (".$item['username'].")";
@@ -488,6 +488,10 @@ class DatabaseFormFactory extends FormFactory
                 }
             }
         }
+
+        //Clearn all values
+        $values = [];
+        $data = [];
 
         //Add students by name
         if ($params["byName"]) {
