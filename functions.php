@@ -59,9 +59,11 @@ function emailBodyConvert($body)
 /**
  * Custom translation function to allow custom string replacement
  *
- * @param string        $text    Text to Translate.
+ * @param string        $text    Text to Translate. See documentation for
+ *                               Gibbon\Locale::translate for more info.
  * @param array         $params  Assoc array of key value pairs for named
- *                               string replacement.
+ *                               string replacement. See documentation for
+ *                               Gibbon\Locale::translate for more info.
  * @param array|string  $options Options for translations (e.g. domain).
  *                               Or string of domain (for backward
  *                               compatibility, deprecated).

@@ -103,7 +103,7 @@ class Locale implements LocaleInterface
      * @param   Gibbon\Contracts\Database\Connection  $pdo
      */
     public function setTextDomain(Connection $pdo) {
-        
+
         $this->setSystemTextDomain($this->absolutePath);
 
         // Parse additional modules, adding domains for those
@@ -141,7 +141,7 @@ class Locale implements LocaleInterface
     public function setModuleTextDomain($module, $absolutePath)
     {
         if (!$this->supportsGetText) return;
-        
+
         bindtextdomain($module, $absolutePath.'/modules/'.$module.'/i18n');
     }
 
@@ -236,8 +236,23 @@ class Locale implements LocaleInterface
      * Custom translation function to allow custom string replacement
      *
      * @param string $text    Text to Translate.
+     *                        Can contain:
+     *                        - positional placeholder
+     *                          (e.g. "Hello {0} from {1}");
+     *                        - named placeholder
+     *                          (e.g. "Hello {name} from {planet}"); or
+     *                        - both
+     *                          (e.g. "Hello {0}, today is {dayOfWeek}.").
      * @param array  $params  Assoc array of key value pairs for named
      *                        string replacement.
+     *
+     *                        Values associated to string keys (e.g.
+     *                        "dayOfWeek") will replace the relevant
+     *                        placeholder in message (e.g. "{dayOfWeek}).
+     *
+     *                        Values associated to numeric keys (e.g. 0, 1)
+     *                        will replace the relevant placeholder in
+     *                        message (e.g. "{0}" or "{1}").
      * @param array  $options Options for translations (e.g. domain).
      *
      * @return string Translated Text
