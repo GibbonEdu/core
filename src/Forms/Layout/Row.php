@@ -70,21 +70,21 @@ class Row
                 $element->setRow($this);
             }
         } catch (\ReflectionException $e) {
-            $element = $this->factory->createContent(__('Cannot {function}. This form element does not exist in the current FormFactory: ', [
-                'function' => $function,
-                'message' => $e->getMessage(),
+            $element = $this->factory->createContent(strtr('Cannot {function}. This form element does not exist in the current FormFactory: {message}', [
+                '{function}' => $function,
+                '{message}' => $e->getMessage(),
             ]));
         } catch (\Exception $e) {
-            $element = $this->factory->createContent(__('Cannot {function}. Error creating form element: {message}', [
-                'function' => $function,
-                'message' => $e->getMessage(),
+            $element = $this->factory->createContent(strtr('Cannot {function}. Error creating form element: {message}', [
+                '{function}' => $function,
+                '{message}' => $e->getMessage(),
             ]));
         } finally {
             if (!($element instanceof OutputableInterface)) {
                 if (($element_type = gettype($element)) === 'object') $element_type = get_class($element);
-                $element = $this->factory->createContent(__('{function} returned {type} instead of an outputable form element.', [
-                    'type' => $element_type,
-                    'function' => $function,
+                $element = $this->factory->createContent(strtr('{function} returned {type} instead of an outputable form element.', [
+                    '{type}' => $element_type,
+                    '{function}' => $function,
                 ]));
             }
             $this->addElement($element);
