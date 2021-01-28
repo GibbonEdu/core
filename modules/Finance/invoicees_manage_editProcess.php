@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
                 $gibbonFinanceFeeCategoryIDList = null;
                 if ($companyAll == 'N') {
                     $gibbonFinanceFeeCategoryIDList == '';
-                    $gibbonFinanceFeeCategoryIDArray = $_POST['gibbonFinanceFeeCategoryIDList'] ?? '';
+                    $gibbonFinanceFeeCategoryIDArray = $_POST['gibbonFinanceFeeCategoryIDList'] ?? [];
                     if (count($gibbonFinanceFeeCategoryIDArray) > 0) {
                         foreach ($gibbonFinanceFeeCategoryIDArray as $gibbonFinanceFeeCategoryID) {
                             $gibbonFinanceFeeCategoryIDList .= $gibbonFinanceFeeCategoryID.',';
