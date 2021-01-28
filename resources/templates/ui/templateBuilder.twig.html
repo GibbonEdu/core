@@ -124,7 +124,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             $.ajax({
                 url: '{{ absoluteURL }}/modules/Reports/templates_manage_editDropAjax.php',
                 data: {
-                    gibbonReportTemplateID: {{ gibbonReportTemplateID }},
+                    gibbonReportTemplateID: "{{ gibbonReportTemplateID }}",
                     gibbonReportPrototypeSectionID: ui.draggable.data('section'),
                     type: $(table).prop('id').replace('Table', '').toUpperCase(),
                 },
