@@ -64,7 +64,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
             require_once __DIR__ . '/src/AttendanceView.php';
             $attendance = new AttendanceView($gibbon, $pdo);
 
-            $fail = false;
+            $partialFail = false;
+            $partialFailSchoolClosed = false;
+            
             $type = $_POST['type'] ?? '';
             $reason = $_POST['reason'] ?? '';
             $comment = $_POST['comment'] ?? '';
@@ -90,8 +92,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                 header("Location: {$URL}");
             } else {
                 //Scroll through days
-                $partialFail = false;
-                $partialFailSchoolClosed = false;
 
                 $dateStartStamp = dateConvertToTimestamp($dateStart);
                 $dateEndStamp = dateConvertToTimestamp($dateEnd);
