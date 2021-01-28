@@ -375,7 +375,7 @@ class DatabaseFormFactory extends FormFactory
                     JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
                     WHERE gibbonPerson.status='Full'
                     ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
-            $result = $this->pdo->executeQuery([], $sql);
+            $result = $this->pdo->select($sql);
             if ($result->rowCount() > 0) {
                 $users[__('Staff')] = array_reduce($result->fetchAll(), function ($group, $item) {
                     $group[$item['gibbonPersonID']] = Format::name('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Staff', true, true)." (".$item['username'].")";
