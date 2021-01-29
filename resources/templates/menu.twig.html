@@ -30,8 +30,89 @@ Main Menu: Displays the top-level categories and active modules.
     {% endif %}
 
     <li class="notificationTray self-end flex-grow">
-        {{ notificationTray|raw }}
+        <div class="flex flex-row-reverse mb-1">
+
+            {% if statusTray.messageWall %}
+                <div id="messageWall" class="relative">
+                    {% if statusTray.messageWall.messages > 0 %}
+                        <a class="inactive inline-block relative mr-4" title="{{ __('Message Wall') }}" href="{{ statusTray.messageWall.url }}">
+                            <span class='badge -mr-2 right-0'>{{ statusTray.messageWall.messages }}</span>
+                            <img class="minorLinkIcon" style="margin-left: 4px; vertical-align: -75%" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/messageWall.png">
+                        </a>
+                    {% else %}
+                        <a class="inactive inline-block relative mr-4" title="{{ __('Message Wall') }}" href="{{ statusTray.messageWall.url }}">
+                            <img class="minorLinkIcon" style="margin-left: 4px; opacity: 0.2; vertical-align: -75%" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/messageWall.png">
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        
+            {% if statusTray.notifications %}
+                <div id='notifications'>
+                    {% if statusTray.notifications.count > 0 %}
+                        <a class="inactive inline-block relative mr-4" title="{{ __('Notifications') }}" href="{{ statusTray.notifications.url }}">
+                            <span class='notificationCounter badge -mr-2 right-0'>{{ statusTray.notifications.count }}</span>
+                            <img class="minorLinkIcon" style="margin-left: 4px; vertical-align: -75%" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/notifications.png">
+                        </a>
+                    {% else %}
+                        <a class="inactive inline-block relative mr-4" title="{{ __('Notifications') }}" href="{{ statusTray.notifications.url }}">
+                            <img class="minorLinkIcon" style="margin-left: 4px; opacity: 0.2; vertical-align: -75%" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/notifications.png">
+                        </a>
+                    {% endif %}
+        
+                    <script type="text/javascript">
+                        $(document).ready(function() {
+                            setInterval(function() {
+                                refreshNotifications();
+                            }, {{ statusTray.notifications.interval }});
+                        });
+                    </script>
+                </div>
+            {% endif %}
+        
+            {% if statusTray.alarm %}
+                <script>
+                    $(document).ready(function() {
+                        refreshNotifications();
+                    }) ;
+                </script>
+            {% endif %}
+        </div>
     </li>
+
+    <script>
+        function refreshNotifications() {
+            $.ajax({
+                url: "index_notification_ajax.php",
+                dataType: "json",
+                success: function(data) {
+                    if (data.count > 0) {
+                        $("#notifications .notificationCounter").removeClass('hidden').html(data.count);
+                        $("#notifications").removeClass('opacity-25');
+                    } else {
+                        $("#notifications .notificationCounter").html('').addClass('hidden');
+                        $("#notifications").addClass('opacity-25');
+                    }
+    
+                    if (data.alarm != false) {
+                        if ($('#TB_window').is(':visible') == true && $('#TB_window').hasClass('alarm') == false) {
+                            $("#TB_window").remove();
+                            $("body").append("<div id='TB_window'></div>");
+                        }
+                        if ($('#TB_window').is(':visible') == false) {
+                            var url = '{{ absoluteURL }}/index_notification_ajax_alarm.php?type='+ data.alarm +'&KeepThis=true&TB_iframe=true&width=1000&height=500';
+                            tb_show('', url);
+                            $('#TB_window').addClass('alarm') ;
+                        }
+                    } else {
+                        if ($('#TB_window').is(':visible')==true && $('#TB_window').hasClass('alarm') ) {
+                            tb_remove();
+                        }
+                    }
+                }
+            });
+        }
+    </script>
 </ul>
 
 
