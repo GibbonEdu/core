@@ -706,7 +706,7 @@ if ($showSidebar) {
     $session->set('sidebarExtra', '');
 
     $page->addData([
-        'sidebarContents' => $container->get(Gibbon\UI\Components\Sidebar::class)->getOutput(),
+        'sidebarContents' => [$container->get(Gibbon\UI\Components\Sidebar::class)->getOutput()],
         'sidebarPosition' => $session->get('sidebarExtraPosition'),
     ]);
 }
