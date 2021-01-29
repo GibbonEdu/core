@@ -1,0 +1,150 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+
+TODO: add template variable details.
+-->#}
+
+<!DOCTYPE html>
+<html lang="{{ lang }}" dir="{{ rightToLeft ? 'rtl' : 'ltr' }}">
+    <head>
+        {% block head %}
+        {{ include('head.twig.html') }}
+        {% endblock head %}
+    </head>
+    <body class="h-full flex flex-col font-sans" style="{{ bodyBackground }}; background: radial-gradient(80% 1000px at 20% 500px, #ef99c7 0%, #794d95 100%) !important; background-attachment: fixed !important; background-repeat: no-repeat !important;">
+
+        {% set sidebarPos = isLoggedIn ? 'left' : 'right' %}
+        
+        <div class="px-6 lg:px-12 pb-24">
+        
+            {% block header %}
+                <div id="header" class="relative flex justify-between items-center my-4">
+
+                    <a id="header-logo" class="block max-w-xs sm:max-w-full leading-none" href="{{ absoluteURL }}">
+                        <img class="block max-w-full {{ isLoggedIn ? 'h-10' : 'h-20 mt-4 mb-3' }}" alt="{{ organisationName }} Logo" src="{{ absoluteURL }}/{{ organisationLogo|default("/themes/Default/img/logo.png") }}" style="max-height:100px;" />
+                    </a>
+
+                    <div class="flex-grow flex justify-end">
+                        <div class="text-right text-white text-xs md:text-sm px-2 xl:px-0">
+
+                            <div class="mx-auto  text-right text-white text-xs md:text-sm px-2 xl:px-0 opacity-75 {{ gibbonHouseIDLogo ? 'mt-2' : 'mt-6' }}">
+                                {% for link in minorLinks %}
+                                    {{ link.prepend }}
+                                    {%if link.url %}<a href="{{ link.url }}" class="{{ link.class }}" target="{{ link.target }}">{% endif %}
+                                        {{- link.name|raw -}}
+                                    {%if link.url %}</a>{% endif %}
+                                    {{ link.append }}
+                
+                                    {% if not loop.last %} · {% endif %}
+                                {% endfor %}
+                            </div>
+
+                        </div>
+                    </div> 
+                </div>
+
+                {% if isLoggedIn %}
+                <nav id="header-menu" class="flex-1 justify-between">
+                    {{ include('menu.twig.html') }}
+                </nav>
+                {% endif %}
+
+            {% endblock %}
+        </div>
+        <div id="wrapOuter" class="flex-1 pt-24 bg-transparent-100">
+            <div id="wrap" class=" px-6 lg:px-12 -mt-48">
+                
+
+                <div id="content-wrap" class="relative w-full min-h-1/2 flex content-start {{ sidebar ? 'flex-wrap lg:flex-no-wrap' : 'flex-col' }} {{ sidebarPos == 'left' ? 'lg:flex-row' : 'lg:flex-row-reverse' }} clearfix">
+
+                    {% if sidebar %}
+                        <div id="sidebar" class="w-full lg:w-sidebar {{ sidebarPos == 'left' ? 'lg:mr-6' : 'lg:ml-6' }}">
+                            {% block sidebar %}
+                            {{ include('navigation.twig.html') }}
+                            {% endblock sidebar %}
+                        </div>
+
+                        <br style="clear: both">
+                    {% else %}
+                        {{ include('navigation.twig.html') }}
+                    {% endif %}
+
+                    <div id="content" class="w-full max-w-full shadow bg-white rounded lg:flex-1 px-8 {{ page.breadcrumbs ? 'py-6' : 'pb-6' }} {{ not preventOverflow ? 'overflow-x-scroll lg:overflow-x-auto' : 'overflow-x-auto xl:overflow-x-unset' }} ">
+
+                        {% block page %}
+
+                        <!-- <button id="sidebarToggle" class="hidden lg:block absolute top-0 left-0 -ml-8 mt-12 m-1 px-2 pb-1 text-white opacity-75 text-2xl bg-transparent font-sans rounded hover:bg-gray-600 hover:text-white leading-tight">»</button> -->
+
+                        {% if page.breadcrumbs %}
+                        <nav aria-label="breadcrumb" class="">
+                            <ol class="mb-6 mx-0 text-xs text-blue-700">
+                                {% for title, src in page.breadcrumbs %}
+                                    {% if loop.last %}
+                                        <li aria-current="page" class="list-none inline ml-0 trailEnd">{{ title }}</li>
+                                    {% elseif loop.revindex > 5 and loop.index != 1 %}
+                                        <li class="list-none inline ml-0 "><a class="text-blue-700 underline" href="{{ absoluteURL }}/{{ src }}">...</a> > </li>
+                                    {% else %}
+                                        <li class="list-none inline ml-0 "><a class="text-blue-700 underline" href="{{ absoluteURL }}/{{ src }}">{{ title }}</a> > </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ol>
+                        </nav>
+                        {% endif %}
+
+
+                        {% for type, alerts in page.alerts %}
+                            {% for text in alerts %}
+                                <div class="{{ type }}">{{ text|raw }}</div>
+                            {% endfor %}
+                        {% endfor %}
+
+                        {{ content|join("\n")|raw }}
+
+                        {% endblock %}
+                    </div>
+
+                    
+                </div>
+
+                
+            </div>
+
+            {% block footer %}
+                <div class="relative text-left text-sm text-gray-700 px-6 lg:px-12 mt-6 pt-6 pb-6 leading-normal rounded-b border-t border-gray-300">
+                    <span class="inline-block">
+                        {{ __('Powered by') }} <a class="text-purple-800" target='_blank' href='https://gibbonedu.org'>Gibbon</a> {{ versionName }}</span> 
+                    <span class="inline-block">|  &#169; <a class="text-purple-800" target='_blank' href='http://rossparker.org'>Ross Parker</a> 2010-{{ 'now'|date('Y') }}</span>
+                    <br/>
+
+                    <span class="text-xs">
+                        {{ __('Created under the') }} <a class="text-purple-800" target='_blank' href='https://www.gnu.org/licenses/gpl.html'>GNU GPL</a> 
+                        at <a class="text-purple-800" target='_blank' href='http://www.ichk.edu.hk'>ICHK</a> | 
+                        <a class="text-purple-800" target='_blank' href='https://gibbonedu.org/about/#ourTeam'>{{ __('Credits') }}</a> | 
+                        <a class="text-purple-800" target='_blank' href='https://gibbonedu.org/about/#translators'>{{ __('Translators') }}</a>
+                        <br/>
+                        {{ footerThemeAuthor }}<br/>
+                    </span>
+
+                    <img class="absolute right-0 top-0 -mt-1 sm:mr-0 md:mr-16 hidden sm:block w-32" alt="Logo Small" src="{{ absoluteURL }}/themes/{{ gibbonThemeName|default("Default") }}/img/gibbon-white.svg"/>
+                </div>
+            {% endblock %}
+            
+        </div>
+
+        <div></div>
+
+        
+
+        {% block privacy %}
+        {{ include('privacy.twig.html') }}
+        {% endblock privacy %}
+
+        {% block foot %}
+        {{ include('foot.twig.html') }}
+        {% endblock foot %}
+    </body>
+</html>
