@@ -40,7 +40,9 @@ collapsed drop-down list in 'mini' view-mode.
             {% endif %}
         {% endfor %}
     {% elseif sidebar and sidebarContents %}
-        {{ sidebarContents|raw }}
+        <div class="md:column-2 lg:column-1 {{ page.breadcrumbs ? 'pt-10 lg:pt-0' }} ">
+            {{ sidebarContents|raw }}
+        </div>
     {% endif %}
 
     {% if menuModule %}
