@@ -144,7 +144,7 @@ class Header
             // Check for and display house logo
             if ($this->session->has('gibbonHouseIDLogo') and $this->session->has('gibbonHouseIDName')) {
                 $links[] = [
-                    'name' => "<img class='ml-1 w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16' title='".$this->session->get('gibbonHouseIDName')."' style='vertical-align: -75%;' src='".$this->session->get('absoluteURL').'/'.$this->session->get('gibbonHouseIDLogo')."'/>",
+                    'name' => "<img class='ml-1 -mt-4 w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16' title='".$this->session->get('gibbonHouseIDName')."' style='vertical-align: -75%;' src='".$this->session->get('absoluteURL').'/'.$this->session->get('gibbonHouseIDLogo')."'/>",
                 ];
             }
         } else {
