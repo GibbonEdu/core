@@ -19,8 +19,13 @@ CHANGELOG
 v22.0.00
 --------
     Headlines
+        New 2021 core theme
+
     Significant Changes
+        System: improved support for custom themes
+
     Changes With Important Notices
+
     Tweaks & Additions
         System: added the Getting Started info to the post-install page
         System: added an Update All option to the Manage Languages page
@@ -31,6 +36,7 @@ v22.0.00
         Tests: migrated test suite to GitHub actions, updated testing libraries to recent versions
         
     Bug Fixes
+        System Admin: fixed cache not clearing when switching themes
         
 v21.0.01
 --------

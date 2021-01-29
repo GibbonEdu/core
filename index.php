@@ -38,6 +38,7 @@ require_once './gibbon.php';
 require_once './modules/Messenger/moduleFunctions.php';
 
 // Setup the Page and Session objects
+$theme = $container->get('theme');
 $page = $container->get('page');
 $session = $container->get('session');
 
