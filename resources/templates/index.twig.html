@@ -18,7 +18,15 @@ TODO: add template variable details.
     <body style="{{ bodyBackground }}">
         <div id="wrapOuter" class="sm:px-6">
             <div class="mx-auto max-w-6xl text-right text-white text-xs md:text-sm px-2 xl:px-0 {{ gibbonHouseIDLogo ? 'mt-2' : 'mt-6' }}">
-                {{ minorLinks|raw }}
+                {% for link in minorLinks %}
+                    {{ link.prepend }}
+                    {%if link.url %}<a href="{{ link.url }}" class="{{ link.class }}" target="{{ link.target }}">{% endif %}
+                        {{- link.name|raw -}}
+                    {%if link.url %}</a>{% endif %}
+                    {{ link.append }}
+
+                    {% if not loop.last %} · {% endif %}
+                {% endfor %}
             </div>
 
             <div id="wrap" class="mx-auto max-w-6xl m-2 shadow-container rounded">

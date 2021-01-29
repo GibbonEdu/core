@@ -229,58 +229,90 @@ class Header
 
     public function getMinorLinks($cacheLoad)
     {
+        $links = [];
 
-        $guid = $this->session->get('guid');
-        $connection2 = $this->db->getConnection();
+        // Links for logged in users
+        if ($this->session->has('username')) {
+            if ($this->session->get('gibbonRoleIDCurrentCategory') == 'Student' && isActionAccessible($this->session->get('guid'), $this->db->getConnection(), '/modules/Students/student_view_details.php')) {
+                $nameURL = $this->session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$this->session->get('gibbonPersonID');
+            }
 
-        $return = '';
+            $links[] = [
+                'name' => $this->session->get('preferredName').' '.$this->session->get('surname'),
+                'url' => $nameURL ?? '',
+                'class' => 'link-white',
+            ];
+            
+            $links[] = [
+                'name' => __('Logout'),
+                'url' => $this->session->get('absoluteURL').'/logout.php',
+                'class' => 'link-white',
+            ];
+
+            $links[] = [
+                'name' => __('Preferences'),
+                'url' => $this->session->get('absoluteURL').'/index.php?q=preferences.php',
+                'class' => 'link-white',
+            ];
+
+            if ($this->session->has('emailLink')) {
+                $links[] = [
+                    'name' => __('Email'),
+                    'url' => $this->session->get('emailLink'),
+                    'class' => 'link-white hidden sm:inline',
+                    'target' => '_blank',
+                ];
+            }
+
+            if ($this->session->has('webLink')) {
+                $links[] = [
+                    'name' => $this->session->get('organisationNameShort').' '.__('Website'),
+                    'url' => $this->session->get('webLink'),
+                    'class' => 'link-white hidden sm:inline',
+                    'target' => '_blank',
+                ];
+            }
+
+            if ($this->session->has('website')) {
+                $links[] = [
+                    'name' => __('My Website'),
+                    'url' => $this->session->get('website'),
+                    'class' => 'link-white hidden sm:inline',
+                    'target' => '_blank',
+                ];
+            }
+        }
 
         // Add a link to go back to the system/personal default language, if we're not using it
         if (!empty($this->session->get('i18n')['default']['code']) && !empty($this->session->get('i18n')['code'])) {
             if ($this->session->get('i18n')['code'] != $this->session->get('i18n')['default']['code']) {
-                $systemDefaultShortName = trim(strstr($this->session->get('i18n')['default']['name'], '-', true));
-                $languageLink = "<a class='link-white' href='".$this->session->get('absoluteURL')."?i18n=".$this->session->get('i18n')['default']['code']."'>".$systemDefaultShortName.'</a>';
+                $links[] = [
+                    'name' => trim(strstr($this->session->get('i18n')['default']['name'], '-', true)),
+                    'url' => $this->session->get('absoluteURL')."?i18n=".$this->session->get('i18n')['default']['code'],
+                ];
             }
         }
 
-        if (!$this->session->has('username')) {
-            $return .= !empty($languageLink) ? $languageLink : '';
-
-            if ($this->session->get('webLink') != '') {
-                $return .= !empty($languageLink) ? ' . ' : '';
-                $return .= __('Return to')." <a class='link-white' style='margin-right: 12px' target='_blank' href='".$this->session->get('webLink')."'>".$this->session->get('organisationNameShort').' '.__('Website').'</a>';
+        if ($this->session->has('username')) {
+            // Check for and display house logo
+            if ($this->session->has('gibbonHouseIDLogo') and $this->session->has('gibbonHouseIDName')) {
+                $links[] = [
+                    'name' => "<img class='ml-1 w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16' title='".$this->session->get('gibbonHouseIDName')."' style='vertical-align: -75%;' src='".$this->session->get('absoluteURL').'/'.$this->session->get('gibbonHouseIDLogo')."'/>",
+                ];
             }
         } else {
-            $name = $this->session->get('preferredName').' '.$this->session->get('surname');
-            if ($this->session->get('gibbonRoleIDCurrentCategory') == 'Student') {
-                $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
-                if ($highestAction == 'View Student Profile_brief') {
-                    $name = "<a class='link-white' href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$this->session->get('gibbonPersonID')."'>".$name.'</a>';
-                }
-            }
-
-            $return .= $name.' . ';
-            $return .= "<a class='link-white' href='./logout.php'>".__('Logout')."</a> . <a class='link-white' href='./index.php?q=preferences.php'>".__('Preferences').'</a>';
-            if ($this->session->get('emailLink') != '') {
-                $return .= "<span class='hidden sm:inline'> . <a class='link-white' target='_blank' href='".$this->session->get('emailLink')."'>".__('Email').'</a></span>';
-            }
-            if ($this->session->get('webLink') != '') {
-                $return .= "<span class='hidden sm:inline'>  . <a class='link-white' target='_blank' href='".$this->session->get('webLink')."'>".$this->session->get('organisationNameShort').' '.__('Website').'</a></span>';
-            }
-            if ($this->session->get('website') != '') {
-                $return .= "<span class='hidden sm:inline'>  . <a class='link-white' target='_blank' href='".$this->session->get('website')."'>".__('My Website').'</a></span>';
-            }
-
-            $return .= !empty($languageLink) ? ' . '.$languageLink : '';
-
-            //Check for house logo (needed to get bubble, below, in right spot)
-            if ($this->session->has('gibbonHouseIDLogo') and $this->session->has('gibbonHouseIDName')) {
-                if ($this->session->get('gibbonHouseIDLogo') != '') {
-                    $return .= " . <img class='ml-1 w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16' title='".$this->session->get('gibbonHouseIDName')."' style='vertical-align: -75%;' src='".$this->session->get('absoluteURL').'/'.$this->session->get('gibbonHouseIDLogo')."'/>";
-                }
+            // Display the school's web link for non-logged in visitors
+            if ($this->session->has('webLink')) {
+                $links[] = [
+                    'name' => $this->session->get('organisationNameShort').' '.__('Website'),
+                    'url' => $this->session->get('webLink'),
+                    'class' => 'link-white mr-2',
+                    'target' => '_blank',
+                    'prepend' => __('Return to'),
+                ];
             }
         }
 
-        return $return;
+        return $links;
     }
 }
