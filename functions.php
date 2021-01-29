@@ -771,7 +771,8 @@ function getHighestGroupedAction($guid, $address, $connection2)
 
     try {
         $data = array('actionName' => '%'.getActionName($address).'%', 'gibbonRoleID' => $_SESSION[$guid]['gibbonRoleIDCurrent'], 'moduleID' => $moduleID);
-        $sql = 'SELECT gibbonAction.name FROM gibbonAction, gibbonPermission, gibbonRole WHERE (gibbonAction.URLList LIKE :actionName) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=gibbonRole.gibbonRoleID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND (gibbonAction.gibbonModuleID=:moduleID) ORDER BY precedence DESC';
+        $sql = 'SELECT gibbonAction.name FROM gibbonAction, gibbonPermission, gibbonRole WHERE (gibbonAction.URLList LIKE :actionName) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=gibbonRole.gibbonRoleID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND (gibbonAction.gibbonModuleID=:moduleID) ORDER BY precedence DESC, gibbonAction.gibbonActionID';
+
         $result = $connection2->prepare($sql);
         $result->execute($data);
         if ($result->rowCount() > 0) {
