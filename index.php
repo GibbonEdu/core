@@ -38,6 +38,7 @@ require_once './gibbon.php';
 require_once './modules/Messenger/moduleFunctions.php';
 
 // Setup the Page and Session objects
+$theme = $container->get('theme');
 $page = $container->get('page');
 $session = $container->get('session');
 
@@ -557,7 +558,7 @@ $page->addData([
     'organisationName'  => $session->get('organisationName'),
     'cacheString'       => $session->get('cacheString'),
     'minorLinks'        => $header->getMinorLinks($cacheLoad),
-    'notificationTray'  => $header->getNotificationTray($cacheLoad),
+    'statusTray'        => $header->getStatusTray($cacheLoad),
     'sidebar'           => $showSidebar,
     'version'           => $gibbon->getVersion(),
     'versionName'       => 'v'.$gibbon->getVersion().($session->get('cuttingEdgeCode') == 'Y'? 'dev' : ''),
@@ -705,7 +706,7 @@ if ($showSidebar) {
     $session->set('sidebarExtra', '');
 
     $page->addData([
-        'sidebarContents' => $container->get(Gibbon\UI\Components\Sidebar::class)->getOutput(),
+        'sidebarContents' => [$container->get(Gibbon\UI\Components\Sidebar::class)->getOutput()],
         'sidebarPosition' => $session->get('sidebarExtraPosition'),
     ]);
 }

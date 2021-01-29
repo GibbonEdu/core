@@ -262,7 +262,6 @@ class Session implements SessionInterface
         $this->set('viewCalendarSpaceBooking', $userData['viewCalendarSpaceBooking']);
         $this->set('dateStart', $userData['dateStart']);
         $this->set('personalBackground', $userData['personalBackground']);
-        $this->set('messengerLastBubble', $userData['messengerLastBubble']);
         $this->set('gibboni18nIDPersonal', $userData['gibboni18nIDPersonal']);
         $this->set('googleAPIRefreshToken', $userData['googleAPIRefreshToken']);
         $this->set('receiveNotificationEmails', $userData['receiveNotificationEmails']);
