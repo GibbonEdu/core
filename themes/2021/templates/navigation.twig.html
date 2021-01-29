@@ -31,7 +31,7 @@ collapsed drop-down list in 'mini' view-mode.
         {% endfor %}
     {% endif %}
     
-    {% if sidebar and sidebarContents %}
+    {% if sidebar and sidebarContents is iterable %}
         {% for sidebarContent in sidebarContents %}
             {% if sidebarContent %}
             <div class="{{ sidebarClass }} md:column-2 lg:column-1 {{ page.breadcrumbs ? 'pt-10 lg:pt-0' }} pb-6 lg:pb-8">
@@ -39,6 +39,10 @@ collapsed drop-down list in 'mini' view-mode.
             </div>
             {% endif %}
         {% endfor %}
+    {% elseif sidebar and sidebarContents %}
+        <div class="{{ sidebarClass }} md:column-2 lg:column-1 {{ page.breadcrumbs ? 'pt-10 lg:pt-0' }} pb-6 lg:pb-8">
+            {{ sidebarContents|raw }}
+        </div>
     {% endif %}
     
     {% if menuModule %}
