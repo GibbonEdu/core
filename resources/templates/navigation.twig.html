@@ -5,8 +5,8 @@ Copyright (C) 2010, Ross Parker
 This is a Gibbon template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
 
-Module Menu: Displays a list of module actions available for the 
-current user. Outputs the sidebar in 'full' view-mode and as a 
+Module Menu: Displays a list of module actions available for the
+current user. Outputs the sidebar in 'full' view-mode and as a
 collapsed drop-down list in 'mini' view-mode.
 -->#}
 
@@ -20,26 +20,28 @@ collapsed drop-down list in 'mini' view-mode.
     </button>
     {% endif %}
 
-    {% for code in page.extraSidebar if sidebar and sidebarPosition != 'bottom' %}
-        {% if code is not empty %}
-        <div class="md:column-2 lg:column-1 pt-6 sm:pt-16 lg:pt-6">
-            {{ code|raw }}
-        </div>
-        {% endif %}
-    {% endfor %}
-    
+    {% if sidebar and sidebarPosition != 'bottom' %}
+        {% for code in page.extraSidebar %}
+            {% if code is not empty %}
+                <div class="md:column-2 lg:column-1 pt-6 sm:pt-16 lg:pt-6">
+                    {{ code|raw }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
 
     {% if sidebar and sidebarContents %}
     <div class="md:column-2 lg:column-1 {{ page.breadcrumbs ? 'pt-10 lg:pt-0' }} ">
         {{ sidebarContents|raw }}
     </div>
     {% endif %}
-    
+
     {% if menuModule %}
-    <nav id="navigation" class="w-full font-sans hidden absolute top-0 z-40 mt-24 sm:mt-12 -ml-6 px-6  
+    <nav id="navigation" class="w-full font-sans hidden absolute top-0 z-40 mt-24 sm:mt-12 -ml-6 px-6
         {{ sidebar ? 'lg:block lg:static lg:p-0 lg:my-6 lg:mx-0' }}">
 
-        <ul class="w-full bg-white border list-none column-1 sm:column-2 md:column-3 m-0 pt-4 px-6 shadow-lg 
+        <ul class="w-full bg-white border list-none column-1 sm:column-2 md:column-3 m-0 pt-4 px-6 shadow-lg
             {{ sidebar ? 'lg:bg-transparent lg:border-0 lg:column-1 lg:shadow-none lg:p-0' : 'lg:px-8' }}">
 
             {% for categoryName, items in menuModule %}
@@ -62,11 +64,13 @@ collapsed drop-down list in 'mini' view-mode.
         </ul>
     </nav>
     {% endif %}
-    
-    {% for code in page.extraSidebar if sidebar and sidebarPosition == 'bottom' %}
-    <div class="md:column-2 lg:column-1 pt-6 sm:pt-16 lg:pt-0">
-        {{ code|raw }}
-    </div>
-    {% endfor %}
+
+    {% if sidebar and sidebarPosition == 'bottom' %}
+        {% for code in page.extraSidebar  %}
+            <div class="md:column-2 lg:column-1 pt-6 sm:pt-16 lg:pt-0">
+                {{ code|raw }}
+            </div>
+        {% endfor %}
+    {% endif %}
 </div>
 
