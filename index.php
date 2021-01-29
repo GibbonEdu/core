@@ -558,7 +558,7 @@ $page->addData([
     'organisationName'  => $session->get('organisationName'),
     'cacheString'       => $session->get('cacheString'),
     'minorLinks'        => $header->getMinorLinks($cacheLoad),
-    'notificationTray'  => $header->getNotificationTray($cacheLoad),
+    'statusTray'        => $header->getStatusTray($cacheLoad),
     'sidebar'           => $showSidebar,
     'version'           => $gibbon->getVersion(),
     'versionName'       => 'v'.$gibbon->getVersion().($session->get('cuttingEdgeCode') == 'Y'? 'dev' : ''),

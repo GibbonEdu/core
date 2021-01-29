@@ -16,9 +16,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UI\Components;
 
+use Gibbon\Services\Format;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
-use Gibbon\Services\Format;
+use Gibbon\Domain\System\NotificationGateway;
 
 /**
  * Header View Composer
@@ -30,11 +31,47 @@ class Header
 {
     protected $db;
     protected $session;
+    protected $notificationGateway;
 
-    public function __construct(Connection $db, Session $session)
+    public function __construct(Connection $db, Session $session, NotificationGateway $notificationGateway)
     {
         $this->db = $db;
         $this->session = $session;
+        $this->notificationGateway = $notificationGateway;
+    }
+
+    public function getStatusTray()
+    {
+        if (!$this->session->has('username')) return [];
+
+        $tray = [];
+        $guid = $this->session->get('guid');
+        $connection2 = $this->db->getConnection();
+        
+        // Message Wall
+        if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
+            $tray['messageWall'] = [
+                'url'      => $this->session->get('absoluteURL').'/index.php?q=/modules/Messenger/messageWall_view.php',
+                'messages' => count($this->session->get('messageWallArray', [])),
+            ];
+        }
+
+        // Notifications
+        $criteria = $this->notificationGateway->newQueryCriteria();
+        $notifications = $this->notificationGateway->queryNotificationsByPerson($criteria, $this->session->get('gibbonPersonID'), 'New');
+
+        $tray['notifications'] = [
+            'url'      => $this->session->get('absoluteURL').'/index.php?q=/notifications.php',
+            'count'    => $notifications->count(),
+            'interval' => $this->session->get('gibbonRoleIDCurrentCategory') == 'Staff'? 10000 : 120000,
+        ];
+
+        // Alarm
+        $tray['alarm'] = $this->session->get('gibbonRoleIDCurrentCategory') == 'Staff'
+            ? getSettingByScope($connection2, 'System', 'alarm')
+            : false;
+
+        return $tray;
     }
 
     public function getNotificationTray($cacheLoad)
