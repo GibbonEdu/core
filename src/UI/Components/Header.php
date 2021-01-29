@@ -61,7 +61,7 @@ class Header
         $notifications = $this->notificationGateway->queryNotificationsByPerson($criteria, $this->session->get('gibbonPersonID'), 'New');
 
         $tray['notifications'] = [
-            'url'      => $this->session->get('absoluteURL').'/index.php?q=/notifications.php',
+            'url'      => $this->session->get('absoluteURL').'/index.php?q=/notifications.php&sidebar=false',
             'count'    => $notifications->count(),
             'interval' => $this->session->get('gibbonRoleIDCurrentCategory') == 'Staff'? 10000 : 120000,
         ];
