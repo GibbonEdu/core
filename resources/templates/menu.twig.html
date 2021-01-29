@@ -86,7 +86,6 @@ Main Menu: Displays the top-level categories and active modules.
                 url: "index_notification_ajax.php",
                 dataType: "json",
                 success: function(data) {
-                    console.log(data);
                     if (data.count > 0) {
                         $("#notifications .notificationCounter").removeClass('hidden').html(data.count);
                         $("#notifications").removeClass('opacity-25');
