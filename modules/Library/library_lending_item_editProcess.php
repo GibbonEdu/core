@@ -52,7 +52,7 @@ if ($gibbonLibraryItemID == '') { echo 'Fatal error loading this page!';
                 header("Location: {$URL}");
             } else {
                 //Validate Inputs
-                $status = $_POST['status'];
+                $status = $_POST['status'] ?? '';
                 $type = 'Other';
                 if ($status == 'Decommissioned') {
                     $type = 'Decommission';
@@ -69,7 +69,7 @@ if ($gibbonLibraryItemID == '') { echo 'Fatal error loading this page!';
                 if ($_POST['returnExpected'] != '') {
                     $returnExpected = dateConvert($guid, $_POST['returnExpected']);
                 }
-                $returnAction = $_POST['returnAction'];
+                $returnAction = $_POST['returnAction'] ?? '';
                 $gibbonPersonIDReturnAction = null;
                 if ($_POST['gibbonPersonIDReturnAction'] != '') {
                     $gibbonPersonIDReturnAction = $_POST['gibbonPersonIDReturnAction'];

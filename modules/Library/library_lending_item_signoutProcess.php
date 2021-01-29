@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$statusCurrent = $_POST['statusCurrent'];
+$statusCurrent = $_POST['statusCurrent'] ?? '';
 $status = $_POST['status'];
 $type = 'Other';
 if ($status == 'Decommissioned') {
@@ -33,17 +33,17 @@ if ($status == 'Decommissioned') {
 } elseif ($status == 'Reserved') {
     $type = 'Reserve';
 }
-$gibbonPersonIDStatusResponsible = $_POST['gibbonPersonIDStatusResponsible'];
+$gibbonPersonIDStatusResponsible = $_POST['gibbonPersonIDStatusResponsible'] ?? '';
 if ($_POST['returnExpected'] != '') {
     $returnExpected = dateConvert($guid, $_POST['returnExpected']);
 }
-$returnAction = $_POST['returnAction'];
+$returnAction = $_POST['returnAction'] ?? '';
 $gibbonPersonIDReturnAction = null;
 if ($_POST['gibbonPersonIDReturnAction'] != '') {
     $gibbonPersonIDReturnAction = $_POST['gibbonPersonIDReturnAction'];
 }
 
-$gibbonLibraryItemID = $_POST['gibbonLibraryItemID'];
+$gibbonLibraryItemID = $_POST['gibbonLibraryItemID'] ?? '';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/library_lending_item_signOut.php&gibbonLibraryItemID=$gibbonLibraryItemID&name=".$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'];
 $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/library_lending_item.php&gibbonLibraryItemID=$gibbonLibraryItemID&name=".$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'];
