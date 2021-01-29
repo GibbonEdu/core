@@ -19,7 +19,6 @@ CHANGELOG
 v22.0.00
 --------
     Headlines
-        New 2021 core theme
 
     Significant Changes
         System: improved support for custom themes
@@ -37,6 +36,9 @@ v22.0.00
         
     Bug Fixes
         System Admin: fixed cache not clearing when switching themes
+
+    Deprecations
+        Messenger: removed the pop-up Messenger bubbles
         
 v21.0.01
 --------
