@@ -17,16 +17,26 @@ TODO: add template variable details.
     </head>
     <body style="{{ bodyBackground }}">
         <div id="wrapOuter" class="sm:px-6">
-            <div class="mx-auto max-w-6xl text-right text-white text-xs md:text-sm px-2 xl:px-0 {{ gibbonHouseIDLogo ? 'mt-2' : 'mt-6' }}">
+            <div class="mx-auto max-w-6xl text-right text-white text-xs md:text-sm px-2 xl:px-0 {{ currentUser.houseLogo ? 'mt-2' : 'mt-6' }}">
+                {% if currentUser %}
+                    {% if currentUser.url %}<a href="{{ currentUser.url }}" class="link-white">{% endif %}
+                        {{- currentUser.name -}}
+                    {% if currentUser.url %}</a>{% endif %} · 
+                {% endif %}
+                
                 {% for link in minorLinks %}
                     {{ link.prepend }}
-                    {%if link.url %}<a href="{{ link.url }}" class="{{ link.class }}" target="{{ link.target }}">{% endif %}
+                    <a href="{{ link.url }}" class="link-white {{ loop.count > 3 ? 'hidden sm:block' }}" target="{{ link.target }}">
                         {{- link.name|raw -}}
-                    {%if link.url %}</a>{% endif %}
+                    </a>
                     {{ link.append }}
 
                     {% if not loop.last %} · {% endif %}
                 {% endfor %}
+
+                {% if currentUser.houseName and currentUser.houseLogo %}
+                    <img class="ml-1 -mt-4 w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16" title="{{ currentUser.houseName }}" style="vertical-align: -75%;" src="{{ absoluteURL }}/{{ currentUser.houseLogo }}"/>
+                {% endif %}
             </div>
 
             <div id="wrap" class="mx-auto max-w-6xl m-2 shadow-container rounded">

@@ -74,92 +74,95 @@ class Header
         return $tray;
     }
 
-    public function getMinorLinks($cacheLoad)
+    public function getMinorLinks()
     {
         $links = [];
 
         // Links for logged in users
         if ($this->session->has('username')) {
-            if ($this->session->get('gibbonRoleIDCurrentCategory') == 'Student' && isActionAccessible($this->session->get('guid'), $this->db->getConnection(), '/modules/Students/student_view_details.php')) {
-                $nameURL = $this->session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$this->session->get('gibbonPersonID');
-            }
-
-            $links[] = [
-                'name' => $this->session->get('preferredName').' '.$this->session->get('surname'),
-                'url' => $nameURL ?? '',
-                'class' => 'link-white',
-            ];
             
-            $links[] = [
+            $links['logout'] = [
                 'name' => __('Logout'),
-                'url' => $this->session->get('absoluteURL').'/logout.php',
-                'class' => 'link-white',
+                'url'  => $this->session->get('absoluteURL').'/logout.php',
             ];
 
-            $links[] = [
+            $links['preferences'] = [
                 'name' => __('Preferences'),
-                'url' => $this->session->get('absoluteURL').'/index.php?q=preferences.php',
-                'class' => 'link-white',
+                'url'  => $this->session->get('absoluteURL').'/index.php?q=preferences.php',
             ];
 
             if ($this->session->has('emailLink')) {
-                $links[] = [
-                    'name' => __('Email'),
-                    'url' => $this->session->get('emailLink'),
-                    'class' => 'link-white hidden sm:inline',
+                $links['email'] = [
+                    'name'   => __('Email'),
+                    'url'    => $this->session->get('emailLink'),
                     'target' => '_blank',
                 ];
             }
 
             if ($this->session->has('webLink')) {
-                $links[] = [
-                    'name' => $this->session->get('organisationNameShort').' '.__('Website'),
-                    'url' => $this->session->get('webLink'),
-                    'class' => 'link-white hidden sm:inline',
+                $links['webLink'] = [
+                    'name'   => $this->session->get('organisationNameShort').' '.__('Website'),
+                    'url'    => $this->session->get('webLink'),
                     'target' => '_blank',
                 ];
             }
 
             if ($this->session->has('website')) {
-                $links[] = [
-                    'name' => __('My Website'),
-                    'url' => $this->session->get('website'),
-                    'class' => 'link-white hidden sm:inline',
+                $links['website'] = [
+                    'name'   => __('My Website'),
+                    'url'    => $this->session->get('website'),
                     'target' => '_blank',
                 ];
             }
         }
 
         // Add a link to go back to the system/personal default language, if we're not using it
-        if (!empty($this->session->get('i18n')['default']['code']) && !empty($this->session->get('i18n')['code'])) {
+        if ($this->session->has('i18n')['default']['code'] && $this->session->has('i18n')['code']) {
             if ($this->session->get('i18n')['code'] != $this->session->get('i18n')['default']['code']) {
-                $links[] = [
+                $links['i18n'] = [
                     'name' => trim(strstr($this->session->get('i18n')['default']['name'], '-', true)),
                     'url' => $this->session->get('absoluteURL')."?i18n=".$this->session->get('i18n')['default']['code'],
                 ];
             }
         }
 
-        if ($this->session->has('username')) {
-            // Check for and display house logo
-            if ($this->session->has('gibbonHouseIDLogo') and $this->session->has('gibbonHouseIDName')) {
-                $links[] = [
-                    'name' => "<img class='ml-1 -mt-4 w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16' title='".$this->session->get('gibbonHouseIDName')."' style='vertical-align: -75%;' src='".$this->session->get('absoluteURL').'/'.$this->session->get('gibbonHouseIDLogo')."'/>",
-                ];
-            }
-        } else {
-            // Display the school's web link for non-logged in visitors
-            if ($this->session->has('webLink')) {
-                $links[] = [
-                    'name' => $this->session->get('organisationNameShort').' '.__('Website'),
-                    'url' => $this->session->get('webLink'),
-                    'class' => 'link-white mr-2',
-                    'target' => '_blank',
-                    'prepend' => __('Return to'),
-                ];
-            }
+        // Display the school's web link for non-logged in visitors
+        if (!$this->session->has('username') && $this->session->has('webLink')) {
+            $links['webLink'] = [
+                'name' => $this->session->get('organisationNameShort').' '.__('Website'),
+                'url' => $this->session->get('webLink'),
+                'target' => '_blank',
+                'prepend' => __('Return to'),
+            ];
         }
 
         return $links;
+    }
+
+    public function getUserDetails()
+    {
+        if (!$this->session->has('username')) return [];
+
+        $guid = $this->session->get('guid');
+        $connection2 = $this->db->getConnection();
+        $roleCategory = $this->session->get('gibbonRoleIDCurrentCategory');
+
+        if ($roleCategory == 'Student' && isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php')) {
+            $profileURL = $this->session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$this->session->get('gibbonPersonID');
+        }
+
+        if ($roleCategory == 'Staff' && isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php')) {
+            $profileURL = $this->session->get('absoluteURL').'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$this->session->get('gibbonPersonID');
+        }
+
+        return [
+            'url'          => $profileURL ?? '',
+            'name'         => $this->session->get('preferredName').' '.$this->session->get('surname'),
+            'username'     => $this->session->get('username'),
+            'roleCategory' => $this->session->get('gibbonRoleIDCurrentCategory'),
+            'image_240'    => $this->session->get('image_240'),
+            'houseName'    => $this->session->get('gibbonHouseIDName'),
+            'houseLogo'    => $this->session->get('gibbonHouseIDLogo'),
+        ];
     }
 }

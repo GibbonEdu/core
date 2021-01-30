@@ -19,31 +19,52 @@ TODO: add template variable details.
 
         {% set sidebarPos = isLoggedIn ? 'left' : 'right' %}
         
-        <div class="px-6 lg:px-12 pb-24">
+        <div class="px-4 sm:px-6 lg:px-12 pb-24">
         
             {% block header %}
-                <div id="header" class="relative flex justify-between items-center my-4">
+                <div id="header" class="relative flex justify-between items-center">
 
-                    <a id="header-logo" class="block max-w-xs sm:max-w-full leading-none" href="{{ absoluteURL }}">
-                        <img class="block max-w-full {{ isLoggedIn ? 'h-12' : 'h-20 mt-4 mb-3' }}" alt="{{ organisationName }} Logo" src="{{ absoluteURL }}/{{ organisationLogo|default("/themes/Default/img/logo.png") }}" style="max-height:100px;" />
+                    <a id="header-logo" class="block my-4 max-w-xs sm:max-w-full leading-none" href="{{ absoluteURL }}">
+                        <img class="block max-w-full {{ isLoggedIn ? 'h-12' : 'h-20 mt-4 mb-4' }}" alt="{{ organisationName }} Logo" src="{{ absoluteURL }}/{{ organisationLogo|default("/themes/Default/img/logo.png") }}" style="max-height:100px;" />
                     </a>
 
-                    <div class="flex-grow flex justify-end">
-                        <div class="text-right text-white text-xs md:text-sm px-2 xl:px-0">
+                    <div class="flex-grow flex items-center justify-end text-right text-sm text-purple-200">
+                        {% if isLoggedIn and currentUser %}
 
-                            <div class="mx-auto  text-right text-white text-xs md:text-sm px-2 xl:px-0 opacity-75 {{ gibbonHouseIDLogo ? 'mt-2' : 'mt-6' }}">
-                                {% for link in minorLinks %}
-                                    {{ link.prepend }}
-                                    {%if link.url %}<a href="{{ link.url }}" class="{{ link.class }}" target="{{ link.target }}">{% endif %}
+                        <a href="{{ currentUser.url ?? './index.php?q=/preferences.php' }}" class="hidden sm:block text-purple-200 hover:text-white">
+                            {{ currentUser.name }}
+                        </a>
+
+                        <div class="group relative px-4 py-4 -mr-3">
+
+                            <a href="{{ currentUser.url ?? '#' }}" class="{{ currentUser.image_240 ? 'flex-none' : 'flex items-center justify-center' }} block overflow-hidden w-10 h-10 rounded-full bg-gray-200 border-2 border-purple-600">
+                            {% if currentUser.image_240 %}
+                                <img class="w-full" src="{{ absoluteURL }}/{{ currentUser.image_240 }}" />
+                            {% else %}
+                                <img class="w-full" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/anonymous_125.jpg" />
+                            {% endif %}
+                            </a>
+
+                            <ul class="list-none m-0 bg-gray-800 hidden group-hover:block absolute right-0 w-48 mt-1 p-1 z-50">
+                                {% for link in minorLinks|reverse %}
+                                <li class="hover:bg-purple-700">
+                                    <a href="{{ link.url }}" class="block text-sm text-white focus:text-purple-200 text-left no-underline px-1 py-2 md:py-1 leading-normal" target="{{ link.target }}">
                                         {{- link.name|raw -}}
-                                    {%if link.url %}</a>{% endif %}
-                                    {{ link.append }}
-                
-                                    {% if not loop.last %} · {% endif %}
+                                    </a>
+                                </li>
                                 {% endfor %}
-                            </div>
-
+                            </ul>
+                            
                         </div>
+                        {% else %}
+                            {% for link in minorLinks %}
+                                {{ link.prepend }}&nbsp;
+                                <a href="{{ link.url }}" class="link-white {{ loop.count > 3 ? 'hidden sm:block' }}" target="{{ link.target }}">
+                                    {{- link.name|raw -}}
+                                </a>
+                                {{ link.append }}
+                            {% endfor %}
+                        {% endif %}
                     </div> 
                 </div>
 
@@ -56,13 +77,12 @@ TODO: add template variable details.
             {% endblock %}
         </div>
         <div id="wrapOuter" class="flex-1 pt-24 bg-transparent-100">
-            <div id="wrap" class=" px-6 lg:px-12 -mt-48">
-                
+            <div id="wrap" class="px-0 sm:px-6 lg:px-12 -mt-48">
 
                 <div id="content-wrap" class="relative w-full min-h-1/2 flex content-start {{ sidebar ? 'flex-wrap lg:flex-no-wrap' : 'flex-col' }} {{ sidebarPos == 'left' ? 'lg:flex-row' : 'lg:flex-row-reverse' }} clearfix">
 
-                    {% if sidebar %}
-                        <div id="sidebar" class="w-full lg:w-sidebar {{ sidebarPos == 'left' ? 'lg:mr-6' : 'lg:ml-6' }}">
+                    {% if sidebar and (sidebarContents or menuModule) %}
+                        <div id="sidebar" class="w-full lg:w-sidebar lg:max-w-xs {{ sidebarPos == 'left' ? 'lg:mr-6' : 'lg:ml-6' }}">
                             {% block sidebar %}
                             {{ include('navigation.twig.html') }}
                             {% endblock sidebar %}
@@ -73,11 +93,9 @@ TODO: add template variable details.
                         {{ include('navigation.twig.html') }}
                     {% endif %}
 
-                    <div id="content" class="w-full max-w-full shadow bg-white rounded lg:flex-1 px-8 {{ page.breadcrumbs ? 'py-6' : 'pb-6' }} {{ not preventOverflow ? 'overflow-x-scroll lg:overflow-x-auto' : 'overflow-x-auto xl:overflow-x-unset' }} ">
+                    <div id="content" class="w-full max-w-full shadow bg-white sm:rounded lg:flex-1 px-8 {{ page.breadcrumbs ? 'py-6' : 'pb-6' }} {{ not preventOverflow ? 'overflow-x-scroll lg:overflow-x-auto' : 'overflow-x-auto xl:overflow-x-unset' }} ">
 
                         {% block page %}
-
-                        <!-- <button id="sidebarToggle" class="hidden lg:block absolute top-0 left-0 -ml-8 mt-12 m-1 px-2 pb-1 text-white opacity-75 text-2xl bg-transparent font-sans rounded hover:bg-gray-600 hover:text-white leading-tight">»</button> -->
 
                         {% if page.breadcrumbs %}
                         <nav aria-label="breadcrumb" class="">

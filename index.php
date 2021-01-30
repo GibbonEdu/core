@@ -487,23 +487,6 @@ if ($isLoggedIn && !$upgrade) {
 
     $moduleGateway = $container->get(ModuleGateway::class);
 
-    if ($cacheLoad || !$session->has('menuMainItems')) {
-        $menuMainItems = $moduleGateway->selectModulesByRole($session->get('gibbonRoleIDCurrent'))->fetchGrouped();
-
-        foreach ($menuMainItems as $category => &$items) {
-            foreach ($items as &$item) {
-                $modulePath = '/modules/'.$item['name'];
-                $entryURL = ($item['entryURL'] == 'index.php' || isActionAccessible($guid, $connection2, $modulePath.'/'.$item['entryURL']))
-                    ? $item['entryURL']
-                    : $item['alternateEntryURL'];
-
-                $item['url'] = $session->get('absoluteURL').'/index.php?q='.$modulePath.'/'.$entryURL;
-            }
-        }
-
-        $session->set('menuMainItems', $menuMainItems);
-    }
-
     if ($page->getModule()) {
         $currentModule = $page->getModule()->getName();
         $menuModule = $session->get('menuModuleName');
@@ -530,6 +513,26 @@ if ($isLoggedIn && !$upgrade) {
         $session->forget(['menuModuleItems', 'menuModuleName']);
     }
 
+    if ($cacheLoad || !$session->has('menuMainItems')) {
+        $menuMainItems = $moduleGateway->selectModulesByRole($session->get('gibbonRoleIDCurrent'))->fetchGrouped();
+
+        foreach ($menuMainItems as $category => &$items) {
+            foreach ($items as &$item) {
+                $modulePath = '/modules/'.$item['name'];
+                $entryURL = ($item['entryURL'] == 'index.php' || isActionAccessible($guid, $connection2, $modulePath.'/'.$item['entryURL']))
+                    ? $item['entryURL']
+                    : $item['alternateEntryURL'];
+
+                $item['active'] = $session->get('menuModuleName') == $item['name'];
+                $item['url'] = $session->get('absoluteURL').'/index.php?q='.$modulePath.'/'.$entryURL;
+            }
+        }
+
+        $session->set('menuMainItems', $menuMainItems);
+    }
+
+    
+
     // Setup cached message array only if there are recent posts, or if more than one hour has elapsed
     $messageWallLatestPost = $container->get(MessengerGateway::class)->getRecentMessageWallTimestamp();
     $messageWallRefreshed = $gibbon->session->get('messageWallRefreshed', 0);
@@ -553,12 +556,12 @@ $header = $container->get(Gibbon\UI\Components\Header::class);
 $page->addData([
     'isLoggedIn'        => $isLoggedIn,
     'gibbonThemeName'   => $session->get('gibbonThemeName'),
-    'gibbonHouseIDLogo' => $session->get('gibbonHouseIDLogo'),
     'organisationLogo'  => $session->get('organisationLogo'),
     'organisationName'  => $session->get('organisationName'),
     'cacheString'       => $session->get('cacheString'),
-    'minorLinks'        => $header->getMinorLinks($cacheLoad),
-    'statusTray'        => $header->getStatusTray($cacheLoad),
+    'currentUser'       => $header->getUserDetails(),
+    'minorLinks'        => $header->getMinorLinks(),
+    'statusTray'        => $header->getStatusTray(),
     'sidebar'           => $showSidebar,
     'version'           => $gibbon->getVersion(),
     'versionName'       => 'v'.$gibbon->getVersion().($session->get('cuttingEdgeCode') == 'Y'? 'dev' : ''),
@@ -568,9 +571,9 @@ $page->addData([
 
 if ($isLoggedIn) {
     $page->addData([
-        'menuMain'   => $session->get('menuMainItems', []),
-        'menuModule' => $session->get('menuModuleItems', []),
-        'fastFinder' => $session->get('fastFinder'),
+        'menuMain'       => $session->get('menuMainItems', []),
+        'menuModule'     => $session->get('menuModuleItems', []),
+        'fastFinder'     => $session->get('fastFinder'),
     ]);
 }
 
