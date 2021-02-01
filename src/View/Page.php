@@ -53,8 +53,6 @@ class Page extends View
     protected $return;
     protected $alerts = ['error' => [], 'warning' => [], 'success' => [], 'message' => []];
     protected $extra = ['head' => [], 'foot' => [], 'sidebar' => []];
-    protected $editLink;
-    protected $returns;
 
     /**
      * Create a new page from a variable set of constructor params.
