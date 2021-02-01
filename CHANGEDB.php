@@ -773,5 +773,5 @@ $sql[$count][1] = "
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System', 'cacheString', 'Front End Cache', '', '1611200873');end
 ALTER TABLE `gibbonDiscussion` ADD `gibbonPersonIDTarget` INT(10) UNSIGNED ZEROFILL NULL AFTER `gibbonPersonID`;end
 DELETE FROM `gibbonSetting` WHERE scope='Messenger' AND name IN ('messengerLastBubble','messageBubbleBGColor','messageBubbleWidthType','messageBubbleAutoHide');end
-INSERT INTO 'gibbonCountry' VALUES ('South Sudan', '211');end
+INSERT INTO gibbonCountry VALUES ('South Sudan', '211');end
 ";
