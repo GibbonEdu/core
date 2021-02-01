@@ -8,6 +8,40 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 Fast Finder
 -->#}
 
+<style>
+    #fastFinder .token-input-list-facebook {
+        background-color: rgba(255,255,255,0.2) !important;
+        border: 1px transparent !important;
+        border-radius: .25rem 0 0 .25rem !important;
+        height: 34px !important;
+    }
+
+    #fastFinder .token-input-list-facebook:focus-within {
+        border: 1px solid rgba(255,255,255,0.5) !important;
+        border-radius: .25rem 0 0 0 !important;
+    }
+
+    #fastFinder .token-input-token-facebook {
+        margin: 0.25rem !important;
+    }
+
+    #fastFinderSearch {
+        background-color: rgba(255,255,255,0.2) !important;
+        border: 1px transparent !important;
+    }
+
+    #fastFinder input[type="submit"] {
+        background-color: rgba(255,255,255,0.2) !important;
+        border: 1px transparent !important;
+        border-radius: 0 .25rem .25rem 0 !important;
+        margin-left: 1px !important;
+    }
+
+    .token-input-dropdown-facebook li {
+        padding: 0.4rem 0.75rem !important;
+    }
+</style>
+
 <button data-toggle="#fastFinder" class="flex sm:hidden items-center rounded bg-gray-300 mr-2 px-4 py-3 text-base">
     <span class="hidden sm:inline text-gray-600 text-xs font-bold uppercase pr-2">{{ __('Fast Finder') }}</span>
     <img src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/search.png" width="20" height="20">
