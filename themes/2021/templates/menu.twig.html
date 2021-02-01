@@ -33,43 +33,9 @@ Main Menu: Displays the top-level categories and active modules.
     {% endif %}
 
     <li class=" notificationTray flex-grow">
-        <div class=" flex flex-row-reverse items-center">
+        <div class="flex flex-row-reverse items-center">
 
-            <div id="finderTray" class="mr-2 ml-4 w-auto lg:w-1/2">
-                <style>
-                    #fastFinder .token-input-list-facebook {
-                        background-color: rgba(255,255,255,0.2) !important;
-                        border: 1px transparent !important;
-                        border-radius: .25rem 0 0 .25rem !important;
-                        height: 34px !important;
-                    }
-
-                    #fastFinder .token-input-list-facebook:focus-within {
-                        border: 1px solid rgba(255,255,255,0.5) !important;
-                        border-radius: .25rem 0 0 0 !important;
-                    }
-
-                    #fastFinder .token-input-token-facebook {
-                        margin: 0.25rem !important;
-                    }
-
-                    #fastFinderSearch {
-                        background-color: rgba(255,255,255,0.2) !important;
-                        border: 1px transparent !important;
-                    }
-
-                    #fastFinder input[type="submit"] {
-                        background-color: rgba(255,255,255,0.2) !important;
-                        border: 1px transparent !important;
-                        border-radius: 0 .25rem .25rem 0 !important;
-                        margin-left: 1px !important;
-                    }
-
-                    .token-input-dropdown-facebook li {
-                        padding: 0.4rem 0.75rem !important;
-                    }
-                </style>
-
+            <div id="finderTray" class="mr-2 w-auto sm:w-full max-w-sm">
                 {{ fastFinder|raw }}
             </div>
 
