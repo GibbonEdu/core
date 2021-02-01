@@ -23,8 +23,8 @@ $enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
 $enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
 $enableModifiedAssessment = getSettingByScope($connection2, 'Markbook', 'enableModifiedAssessment');
 
-$gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-$gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'];
+$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+$gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/markbook_edit_data.php&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonCourseClassID=$gibbonCourseClassID";
 
 $personalisedWarnings = getSettingByScope($connection2, 'Markbook', 'personalisedWarnings');
@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
             } else {
                 $row = $result->fetch();
                 $name = $row['name' ];
-                $count = $_POST['count'];
+                $count = $_POST['count'] ?? '';
                 $partialFail = false;
                 $attachmentFail = false;
                 $attainment = $row['attainment'];
@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         }
                         else { //Checkbox does not exist
                             $modifiedAssessment = NULL;
-                        }                        
+                        }
                     }
                     //Attainment
                     if ($attainment == 'N') {
@@ -151,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             $rowTarget = $resultTarget->fetch();
 
                             //Get details of attainment grade (sequenceNumber)
-                            $scaleAttainment = $_POST['scaleAttainment'];
+                            $scaleAttainment = $_POST['scaleAttainment'] ?? '';
                             try {
                                 $dataScale = array('attainmentValue' => $attainmentValue, 'scaleAttainment' => $scaleAttainment);
                                 $sqlScale = 'SELECT * FROM gibbonScaleGrade JOIN gibbonScale ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE value=:attainmentValue AND gibbonScaleGrade.gibbonScaleID=:scaleAttainment';
@@ -185,8 +185,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             $attainmentConcern = 'N';
                             $attainmentDescriptor = '';
                             if ($attainmentValue != '') {
-                                $lowestAcceptableAttainment = $_POST['lowestAcceptableAttainment'];
-                                $scaleAttainment = $_POST['scaleAttainment'];
+                                $lowestAcceptableAttainment = $_POST['lowestAcceptableAttainment'] ?? '';
+                                $scaleAttainment = $_POST['scaleAttainment'] ?? '';
                                 try {
                                     $dataScale = array('attainmentValue' => $attainmentValue, 'scaleAttainment' => $scaleAttainment);
                                     $sqlScale = 'SELECT * FROM gibbonScaleGrade JOIN gibbonScale ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE value=:attainmentValue AND gibbonScaleGrade.gibbonScaleID=:scaleAttainment';
@@ -217,8 +217,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         $effortConcern = 'N';
                         $effortDescriptor = '';
                         if ($effortValue != '') {
-                            $lowestAcceptableEffort = $_POST['lowestAcceptableEffort'];
-                            $scaleEffort = $_POST['scaleEffort'];
+                            $lowestAcceptableEffort = $_POST['lowestAcceptableEffort'] ?? '';
+                            $scaleEffort = $_POST['scaleEffort'] ?? '';
                             try {
                                 $dataScale = array('effortValue' => $effortValue, 'scaleEffort' => $scaleEffort);
                                 $sqlScale = 'SELECT * FROM gibbonScaleGrade JOIN gibbonScale ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE value=:effortValue AND gibbonScaleGrade.gibbonScaleID=:scaleEffort';
@@ -317,7 +317,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                 }
 
                 //Update column
-                $completeDate = $_POST['completeDate'];
+                $completeDate = $_POST['completeDate'] ?? '';
                 if ($completeDate == '') {
                     $completeDate = null;
                     $complete = 'N';

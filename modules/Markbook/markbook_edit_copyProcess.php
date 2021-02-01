@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 
-$gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Markbook/markbook_edit.php&gibbonCourseClassID=$gibbonCourseClassID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_copy.php') == false) {
