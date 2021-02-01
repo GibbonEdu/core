@@ -23,6 +23,7 @@ use Twig\Environment;
 use Gibbon\View\View;
 use Gibbon\View\AssetBundle;
 use Gibbon\View\Components\Breadcrumbs;
+use Gibbon\View\Components\ReturnMessage;
 
 /**
  * Holds the details for rendering the current page.
@@ -49,8 +50,11 @@ class Page extends View
     protected $stylesheets;
     protected $scripts;
     protected $breadcrumbs;
+    protected $return;
     protected $alerts = ['error' => [], 'warning' => [], 'success' => [], 'message' => []];
     protected $extra = ['head' => [], 'foot' => [], 'sidebar' => []];
+    protected $editLink;
+    protected $returns;
 
     /**
      * Create a new page from a variable set of constructor params.
@@ -64,6 +68,7 @@ class Page extends View
         $this->breadcrumbs = new Breadcrumbs();
         $this->stylesheets = new AssetBundle();
         $this->scripts = new AssetBundle();
+        $this->return = new ReturnMessage();
 
         // Merge constructor params into class properties
         foreach ($params as $key => $value) {
