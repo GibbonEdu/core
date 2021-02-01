@@ -41,7 +41,7 @@
         "ext-gettext": "*",
         "ext-PDO": "*",
         "google/apiclient": "v2.2.0",
-        "league/container": "^2.4",
+        "league/container": "^3.3.3",
         "aura/sqlquery": "3.*-dev",
         "tecnickcom/tcpdf": "6.0.038",
         "twig/twig": "^2.0",
