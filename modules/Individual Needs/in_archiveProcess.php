@@ -25,9 +25,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archiv
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $deleteCurrentPlans = $_POST['deleteCurrentPlans'];
-    $title = $_POST['title'];
-    $gibbonPersonIDs = isset($_POST['gibbonPersonID'])? $_POST['gibbonPersonID'] : array();
+    $deleteCurrentPlans = $_POST['deleteCurrentPlans'] ?? '';
+    $title = $_POST['title'] ?? '';
+    $gibbonPersonIDs = $_POST['gibbonPersonID'] ?? array();
     if (!is_array($gibbonPersonIDs)) {
         $gibbonPersonIDs = array($gibbonPersonIDs);
     }

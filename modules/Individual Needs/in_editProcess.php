@@ -22,7 +22,7 @@ use Gibbon\Services\Format;
 
 include '../../gibbon.php';
 
-$gibbonPersonID = $_POST['gibbonPersonID'];
+$gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/in_edit.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search'].'&source='.$_GET['source'].'&gibbonINDescriptorID='.$_GET['gibbonINDescriptorID'].'&gibbonAlertLevelID='.$_GET['gibbonAlertLevelID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.php') == false) {
@@ -80,9 +80,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 }
 
                 //UPDATE IEP
-                $strategies = $_POST['strategies'];
-                $targets = $_POST['targets'];
-                $notes = $_POST['notes'];
+                $strategies = $_POST['strategies'] ?? '';
+                $targets = $_POST['targets'] ?? '';
+                $notes = $_POST['notes'] ?? '';
                 try {
                     $data = array('gibbonPersonID' => $gibbonPersonID);
                     $sql = 'SELECT * FROM gibbonIN WHERE gibbonPersonID=:gibbonPersonID';
@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 }
             } elseif ($highestAction == 'Individual Needs Records_viewContribute') {
                 //UPDATE IEP
-                $strategies = $_POST['strategies'];
+                $strategies = $_POST['strategies'] ?? '';
                 try {
                     $data = array('gibbonPersonID' => $gibbonPersonID);
                     $sql = 'SELECT * FROM gibbonIN WHERE gibbonPersonID=:gibbonPersonID';
