@@ -1783,5 +1783,5 @@ function returnProcess($guid, $return, $editLink = null, $customReturns = null)
 {
     global $page;
     $page->return->setEditLink($editLink ?? '');
-    $page->return->addCustomReturns($customReturns ?? []);
+    $page->return->addReturns($customReturns ?? []);
 }
