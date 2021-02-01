@@ -35,7 +35,7 @@ class ReturnMessage
      */
     public function __construct()
     {
-        $this->addCustomReturns([ 
+        $this->addReturns([ 
             //Successes
             'success0' => __('Your request was completed successfully.'),
             'success1' => __('Password reset was successful: you may now log in.'),
@@ -75,7 +75,7 @@ class ReturnMessage
      * @param string $return
      * @param string $message
      */
-    public function addCustomReturn(string $return, string $message)
+    public function addReturn(string $return, string $message)
     {
         $this->returns[$return] = $message;
     }
@@ -83,11 +83,11 @@ class ReturnMessage
     /**
      * Registers an array of new returns
      *
-     * @param array $customReturns
+     * @param array $returns
      */
-    public function addCustomReturns(array $customReturns)
+    public function addReturns(array $returns)
     {
-        $this->returns = array_replace($this->returns, $customReturns);
+        $this->returns = array_replace($this->returns, $returns);
     }
 
     /**
