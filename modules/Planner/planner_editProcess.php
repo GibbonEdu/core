@@ -91,6 +91,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     if (empty($summary)) {
                         $summary = trim(strip_tags($_POST['description'] ?? '')) ;
                         $summary = Format::truncate($summary, 252);
+                    } else {
+                        $summary = strip_tags($summary);
                     }
                     $summaryBlocks = '';
                     $description = $_POST['description'];
@@ -315,7 +317,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                             $summaryBlocks = substr($summaryBlocks, 0, 72).'...';
                         }
                         if (empty($summary) && $summaryBlocks) {
-                            $summary = $summaryBlocks;
+                            $summary = strip_tags($summaryBlocks);
                         }
 
                         //Write to database
