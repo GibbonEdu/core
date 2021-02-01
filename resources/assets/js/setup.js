@@ -68,6 +68,7 @@ $(document).ready(function(){
         toolbar: 'bold italic underline  forecolor backcolor |  alignleft aligncenter alignright alignjustify | bullist numlist indent outdent | link unlink hr charmap | fullscreen | styleselect fontselect fontsizeselect | table | subscript superscript | cut copy paste undo redo ',
         plugins: 'table lists paste link hr charmap fullscreen',
         statusbar: true,
+        contextmenu: false,
         branding: false,
         valid_elements: Gibbon.config.tinymce.valid_elements,
         extended_valid_elements : Gibbon.config.tinymce.extended_valid_elements,
