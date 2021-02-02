@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $summary = $_POST['summary'] ?? '';
                     if (empty($summary)) {
                         $summary = trim(strip_tags($_POST['description'] ?? '')) ;
-                        $summary = Format::truncate($summary, 252);
+                        $summary = mb_substr($summary, 0, 252);
                     } else {
                         $summary = strip_tags($summary);
                     }
