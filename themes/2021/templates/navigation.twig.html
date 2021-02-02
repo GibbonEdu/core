@@ -12,7 +12,7 @@ collapsed drop-down list in 'mini' view-mode.
 
 {% set sidebarClass = 'shadow bg-white rounded px-8 mb-6' %}
 
-<div class="px-4 sm:px-0">
+<div class="mx-4 sm:mx-0 relative sm:static">
 
     {% if menuModule %}
     <button data-toggle="#navigation" class="relative w-full flex rounded justify-center items-center sm:w-48 bg-white sm:border border-grey-600 border-solid p-2 mb-4 sm:mt-4 sm:absolute sm:top-0 sm:right-0 sm:mr-6 z-40 {{ sidebar ? 'lg:hidden' }}">
@@ -46,11 +46,11 @@ collapsed drop-down list in 'mini' view-mode.
     {% endif %}
     
     {% if menuModule %}
-    <nav id="navigation" class="{{ sidebarClass }} w-full font-sans hidden absolute top-0 z-30  sm:mt-0  px-6 pt-12 lg:pt-6
-        {{ sidebar ? 'lg:block lg:static lg:p-0 lg:py-6 lg:mx-0' : '' }}">
+    <nav id="navigation" class="{{ sidebarClass }} w-full font-sans hidden absolute top-0 z-30 sm:mt-16 pt-6 pt-12 sm:pt-6
+        {{ sidebar ? 'lg:block lg:static lg:p-0 lg:py-6 lg:mx-0 lg:mt-0' : '' }}">
 
         <ul class="w-full  list-none column-1 sm:column-2 md:column-3 m-0 px-0  
-            {{ sidebar ? 'lg:bg-transparent lg:border-0 lg:column-1 lg:shadow-none lg:px-8' : 'lg:px-8' }}">
+            {{ sidebar ? 'lg:bg-transparent lg:border-0 lg:column-1 lg:shadow-none lg:px-8' : '' }}">
 
             {% for categoryName, items in menuModule %}
                 <li class="w-full column-no-break p-0">
