@@ -19,11 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonMessengerID = $_GET['gibbonMessengerID'];
-$search = null;
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-}
+$gibbonMessengerID = $_GET['gibbonMessengerID'] ?? '';
+$search = $_GET['search'] ?? '';
+
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/messenger_manage_delete.php&search=$search&gibbonMessengerID=".$gibbonMessengerID;
 $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/messenger_manage.php&search=$search";
 
