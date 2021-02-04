@@ -52,10 +52,7 @@ if ($gibbonLibraryItemID == '') { echo 'Fatal error loading this page!';
                 header("Location: {$URL}");
             } else {
                 //Validate Inputs
-                $returnExpected = null;
-                if ($_POST['returnExpected'] != '') {
-                    $returnExpected = dateConvert($guid, $_POST['returnExpected']);
-                }
+                $returnExpected = dateConvert($guid, $_POST['returnExpected']) ?? '';
 
                 //Write to database
                 try {

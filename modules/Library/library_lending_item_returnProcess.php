@@ -62,10 +62,8 @@ if ($gibbonLibraryItemID == '') { echo 'Fatal error loading this page!';
                 } elseif ($returnAction == 'Repair') {
                     $status = 'Repair';
                 }
-                $gibbonPersonIDReturnAction = null;
-                if ($_POST['gibbonPersonIDReturnAction'] != '') {
-                    $gibbonPersonIDReturnAction = $_POST['gibbonPersonIDReturnAction'];
-                }
+                $gibbonPersonIDReturnAction = $_POST['gibbonPersonIDReturnAction'] ?? '';
+
 
                 //Write to database
                 try {

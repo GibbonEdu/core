@@ -38,10 +38,8 @@ if ($_POST['returnExpected'] != '') {
     $returnExpected = dateConvert($guid, $_POST['returnExpected']);
 }
 $returnAction = $_POST['returnAction'] ?? '';
-$gibbonPersonIDReturnAction = null;
-if ($_POST['gibbonPersonIDReturnAction'] != '') {
-    $gibbonPersonIDReturnAction = $_POST['gibbonPersonIDReturnAction'];
-}
+$gibbonPersonIDReturnAction = $_POST['gibbonPersonIDReturnAction'] ?? '';
+
 
 $gibbonLibraryItemID = $_POST['gibbonLibraryItemID'] ?? '';
 

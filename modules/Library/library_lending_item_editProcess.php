@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonLibraryItemEventID = $_GET['gibbonLibraryItemEventID'];
-$gibbonLibraryItemID = $_GET['gibbonLibraryItemID'];
+$gibbonLibraryItemEventID = $_GET['gibbonLibraryItemEventID'] ?? '';
+$gibbonLibraryItemID = $_GET['gibbonLibraryItemID'] ?? '';
 
 if ($gibbonLibraryItemID == '') { echo 'Fatal error loading this page!';
 } else {
@@ -65,15 +65,10 @@ if ($gibbonLibraryItemID == '') { echo 'Fatal error loading this page!';
                 } elseif ($status == 'Reserved') {
                     $type = 'Reserve';
                 }
-                $returnExpected = null;
-                if ($_POST['returnExpected'] != '') {
-                    $returnExpected = dateConvert($guid, $_POST['returnExpected']);
-                }
+                $returnExpected = dateConvert($guid, $_POST['returnExpected']) ?? '';
                 $returnAction = $_POST['returnAction'] ?? '';
-                $gibbonPersonIDReturnAction = null;
-                if ($_POST['gibbonPersonIDReturnAction'] != '') {
-                    $gibbonPersonIDReturnAction = $_POST['gibbonPersonIDReturnAction'];
-                }
+                $gibbonPersonIDReturnAction = $_POST['gibbonPersonIDReturnAction'] ?? '';
+
 
                 //Write to database
                 try {
