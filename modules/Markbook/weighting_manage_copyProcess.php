@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $gibbonWeightingCopyClassID = (isset($_POST['gibbonWeightingCopyClassID']))? $_POST['gibbonWeightingCopyClassID'] : null;
+    $gibbonWeightingCopyClassID = $_POST['gibbonWeightingCopyClassID'] ?? null;
 
     if (empty($_POST)) {
         $URL .= '&return=error1';

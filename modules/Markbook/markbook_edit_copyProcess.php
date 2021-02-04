@@ -27,8 +27,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $gibbonMarkbookCopyClassID = (isset($_GET['gibbonMarkbookCopyClassID']))? $_GET['gibbonMarkbookCopyClassID'] : null;
-    $copyColumnID = (isset($_POST['copyColumnID']))? $_POST['copyColumnID'] : null;
+    $gibbonMarkbookCopyClassID = $_GET['gibbonMarkbookCopyClassID'] ?? null;
+    $copyColumnID = $_POST['copyColumnID'] ?? null;
 
     if (empty($_POST)) {
         $URL .= '&return=error1';
@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
 
                     //Write to database
                     try {
-                        $date = (!empty($_POST['date']))? dateConvert($guid, $_POST['date']) : date('Y-m-d');
+                        $date = dateConvert($guid, $_POST['date']) ?? date('Y-m-d');
                         $data = array('gibbonUnitID' => $column['gibbonUnitID'], 'gibbonPlannerEntryID' => $column['gibbonPlannerEntryID'], 'gibbonCourseClassID' => $gibbonCourseClassID, 'name' => $column['name'], 'description' => $column['description'], 'type' => $column['type'], 'date' => $date, 'sequenceNumber' => $column['sequenceNumber'], 'attainment' => $column['attainment'], 'gibbonScaleIDAttainment' => $column['gibbonScaleIDAttainment'], 'attainmentWeighting' => $column['attainmentWeighting'], 'attainmentRaw' => $column['attainmentRaw'], 'attainmentRawMax' => $column['attainmentRawMax'], 'effort' => $column['effort'], 'gibbonScaleIDEffort' => $column['gibbonScaleIDEffort'], 'gibbonRubricIDAttainment' => $column['gibbonRubricIDAttainment'], 'gibbonRubricIDEffort' => $column['gibbonRubricIDEffort'], 'comment' => $column['comment'], 'uploadedResponse' => $column['uploadedResponse'], 'viewableStudents' => $column['viewableStudents'], 'viewableParents' => $column['viewableParents'], 'attachment' => $column['attachment'], 'gibbonPersonIDCreator' => $column['gibbonPersonIDCreator'], 'gibbonPersonIDLastEdit' => $column['gibbonPersonIDLastEdit'], 'gibbonSchoolYearTermID' => $column['gibbonSchoolYearTermID']);
                     $sql = 'INSERT INTO gibbonMarkbookColumn SET gibbonUnitID=:gibbonUnitID, gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonCourseClassID=:gibbonCourseClassID, name=:name, description=:description, type=:type, date=:date, sequenceNumber=:sequenceNumber, attainment=:attainment, gibbonScaleIDAttainment=:gibbonScaleIDAttainment, attainmentWeighting=:attainmentWeighting, attainmentRaw=:attainmentRaw, attainmentRawMax=:attainmentRawMax, effort=:effort, gibbonScaleIDEffort=:gibbonScaleIDEffort, gibbonRubricIDAttainment=:gibbonRubricIDAttainment, gibbonRubricIDEffort=:gibbonRubricIDEffort, comment=:comment, uploadedResponse=:uploadedResponse, viewableStudents=:viewableStudents, viewableParents=:viewableParents, attachment=:attachment, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit, gibbonSchoolYearTermID=:gibbonSchoolYearTermID';
                         $result = $connection2->prepare($sql);
