@@ -29,9 +29,9 @@ table:
         relationship: { table: gibbonRollGroup, key: gibbonRollGroupID, field: [ nameShort, gibbonSchoolYearID ]  }
     gibbonPersonID:
         name: "Student"
-        desc: "Username"
+        desc: "Username or Email (if unique)"
         args: { filter: nospaces, required: true }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
     rollOrder:
         name: "Roll Order"
         desc: ""

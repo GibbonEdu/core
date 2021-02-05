@@ -20,9 +20,9 @@ table:
         relationship: { table: gibbonFamily, key: gibbonFamilyID, field: familySync  }
     gibbonPersonID:
         name: "Adult"
-        desc: "Username"
+        desc: "Username or Email (if unique)"
         args: { filter: nospaces, required: true }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
     comment:
         name: "Comment"
         desc: "Data displayed in full Student Profile"

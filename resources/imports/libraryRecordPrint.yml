@@ -56,9 +56,9 @@ table:
         args: { filter: string, custom: true }
     gibbonPersonIDOwnership: 
         name: "Main User"
-        desc: "Username of person the device is assigned to."
+        desc: "Username or email of person the device is assigned to."
         args: { filter: string, custom: true }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
     gibbonDepartmentID:
         name: "Department"
         desc: "Short Name"

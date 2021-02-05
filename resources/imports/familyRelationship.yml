@@ -19,14 +19,14 @@ table:
         relationship: { table: gibbonFamily, key: gibbonFamilyID, field: familySync  }
     gibbonPersonID1: 
         name: "Adult"
-        desc: "Username"
+        desc: "Username or Email (if unique)"
         args: { filter: string, required: true }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
     gibbonPersonID2: 
         name: "Child"
-        desc: "Username"
+        desc: "Username or Email (if unique)"
         args: { filter: string, required: true }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
     relationship: 
         name: "Relationship"
         desc: ""

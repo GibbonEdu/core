@@ -14,9 +14,9 @@ uniqueKeys:
 table:
     gibbonPersonID:
         name: "Student"
-        desc: "Username"
+        desc: "Username or Email (if unique)"
         args: { filter: nospaces, required: true }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
     gibbonStudentNoteCategoryID:
         name: "Category"
         desc: ""
@@ -32,9 +32,9 @@ table:
         args: { filter: html, required: true }
     gibbonPersonIDCreator:
         name: "Created By"
-        desc: "Username"
+        desc: "Username or Email (if unique)"
         args: { filter: string, custom: true }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
     timestamp:
         name: "Timestamp"
         desc: ""

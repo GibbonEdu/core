@@ -14,9 +14,9 @@ uniqueKeys:
 table:
     gibbonPersonID:
         name: "Substitute User"
-        desc: "Username"
+        desc: "Username or Email (if unique)"
         args: { filter: nospaces, required: true }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
     active:
         name: "Active"
         desc: ""

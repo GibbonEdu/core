@@ -15,9 +15,9 @@ fields:
         relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
     gibbonPersonID:
         name: "Teacher"
-        desc: "Username"
+        desc: "Username or Email (if unique)"
         args: { filter: nospaces, required: true, readonly: true }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
     date: 
         name: "Date"
         desc: "Must be unique. Format: YYYY-MM-DD"
@@ -47,13 +47,13 @@ fields:
 
     gibbonPersonIDCoverage:
         name: "Substitute"
-        desc: "Username"
+        desc: "Username or Email (if unique)"
         args: { filter: nospaces, required: true, readonly: [gibbonStaffAbsenceDate] }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
 
     gibbonPersonIDStatus:
         name: "Created By"
-        desc: "Username"
+        desc: "Username or Email (if unique)"
         args: { filter: nospaces, required: true, linked: gibbonPersonID, readonly: [gibbonStaffAbsenceDate] }
     notesStatus:
         name: "Notes"

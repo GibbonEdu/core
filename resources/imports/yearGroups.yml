@@ -27,6 +27,6 @@ table:
         args: { filter: numeric }
     gibbonPersonIDHOY: 
         name: "Head of Year"
-        desc: "Username"
+        desc: "Username or Email (if unique)"
         args: { filter: string, custom: true }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email }

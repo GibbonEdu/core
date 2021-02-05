@@ -69,9 +69,9 @@ fields:
         relationship: { table: gibbonTTColumnRow, key: gibbonTTColumnRowID, field: [ name, gibbonTTColumnID ]  }
     gibbonPersonID:
         name: "Teacher"
-        desc: "Username"
+        desc: "Username or Email (if unique)"
         args: { filter: string, required: true, custom: true }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
     role:
         name: "Role"
         desc: ""

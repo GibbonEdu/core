@@ -24,9 +24,9 @@ fields:
         relationship: { table: gibbonCourseClass, key: gibbonCourseClassID, field: [ nameShort, gibbonCourseID ]  }
     gibbonPersonIDStudent: 
         name: "Student"
-        desc: "Username"
+        desc: "Username or Email (if unique)"
         args: { filter: string, required: true }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
     gibbonScaleIDTarget: 
         name: "Grade Scale"
         desc: "Short Name"
