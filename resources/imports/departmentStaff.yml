@@ -18,9 +18,9 @@ table:
         relationship: { table: gibbonDepartment, key: gibbonDepartmentID, field: nameShort  }
     gibbonPersonID:
         name: "Staff"
-        desc: "Username"
+        desc: "Username or Email (if unique)"
         args: { filter: nospaces, required: true }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
     role:
         name: "Role"
         desc: ""

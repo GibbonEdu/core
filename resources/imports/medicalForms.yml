@@ -13,9 +13,9 @@ uniqueKeys:
 table:
     gibbonPersonID:
         name: "Student"
-        desc: "Username"
+        desc: "Username or Email (if unique)"
         args: { filter: nospaces, required: true }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
     bloodType:
         name: "Blood Type"
         desc: ""
