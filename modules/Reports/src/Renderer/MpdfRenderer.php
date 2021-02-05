@@ -51,7 +51,8 @@ class MpdfRenderer implements ReportRendererInterface
 
     public function setMode(int $bitmask)
     {
-        $this->mode |= $bitmask;
+        if ($bitmask == 0) $this->mode = 0;
+        else $this->mode |= $bitmask;
     }
 
     public function hasMode(int $bitmask)
@@ -130,12 +131,20 @@ class MpdfRenderer implements ReportRendererInterface
 
         $this->lastPage = $section->lastPage || $this->lastPage;
 
-        $this->setHeader();
+        $this->setHeader($this->firstPage);
 
-        if ($section->hasFlag(ReportSection::PAGE_BREAK_BEFORE) || $this->firstPage) {
+        if ($this->firstPage) {
+            $this->setFooter(true);
+            $this->pdf->AddPageByArray([
+                'type' => 'ODD',
+                'resetpagenum' => 1,
+                'suppress' => 'off',
+            ]);
+        } elseif ($section->hasFlag(ReportSection::PAGE_BREAK_BEFORE)) {
             $this->pdf->AddPageByArray(['suppress' => 'off']);
         }
         
+        $this->setHeader();
         $this->setFooter();
 
         $html = $this->renderSectionToHTML($section, $reportData);
@@ -184,8 +193,6 @@ class MpdfRenderer implements ReportRendererInterface
             'mode' => 'utf-8',
             'format' => $this->template->getData('pageSize', 'A4') == 'letter' ? [215.9, 279.4] : [210, 297],
             'orientation' => $this->template->getData('orientation', 'P'),
-            // 'useOddEven' => $this->hasMode(self::OUTPUT_TWO_SIDED) ? '1' : '0',
-            // 'mirrorMargins' => $this->hasMode(self::OUTPUT_TWO_SIDED) ? '1' : '0',
             'useOddEven' => '0',
             'mirrorMargins' => '0',
             
@@ -286,28 +293,27 @@ class MpdfRenderer implements ReportRendererInterface
         $this->setHeader();
         $this->setFooter();
 
+        $this->pdf->writeHTML('<br/>');
+
         $this->runPostProcess($reportData);
 
         // Add a page with odd-numbered reports for two-sided printing
-        if ($this->hasMode(self::OUTPUT_TWO_SIDED & self::OUTPUT_CONTINUOUS)) {
-            // $this->pdf->AddPageByArray([
-            //     'type' => 'ODD',
-            //     'resetpagenum' => 1,
-            //     'suppress' => 'on',
-            //     'odd-header-name' => '',
-            //     'even-header-name' => '',
-            //     'odd-footer-name' => '',
-            //     'even-footer-name' => '',
-            // ]);
+        if ($this->hasMode(self::OUTPUT_TWO_SIDED)) {
+            if ($this->pdf->getPageNumber() % 2 != 0) {
+                $this->pdf->SetHTMLHeaderByName('header0', 'O');
+                $this->pdf->SetHTMLFooterByName('footer0', 'O');
+                $this->pdf->AddPageByArray([
+                    'type' => 'NEXT-ODD',
+                    'resetpagenum' => 1,
+                    'suppress' => 'on',
+                    'odd-header-name' => '',
+                    'even-header-name' => '',
+                    'odd-footer-name' => '',
+                    'even-footer-name' => '',
+                ]);
+            }
         }
         
-        $this->pdf->PageNumSubstitutions[] = [
-            'from' => 1,
-            'reset' => 1,
-            'type' => '1',
-            'suppress' => 'off'
-        ];
-
         // Continue the current document after a report for continuous output
         if ($this->hasMode(self::OUTPUT_CONTINUOUS)) {
             $this->firstPage = true;
@@ -318,34 +324,29 @@ class MpdfRenderer implements ReportRendererInterface
         }
     }
 
-    protected function setHeader()
+    protected function setHeader($forceFirst = false)
     {
         if (empty($this->headers)) return;
 
-        $pageNum = $this->lastPage && !$this->firstPage ? -1 : $this->pdf->getPageNumber() + 1;
+        $docPageNum = $forceFirst ? 0 : $this->pdf->getPageNumber();
+        $pageNum = $this->lastPage && !($docPageNum == 1) ? -1 : $docPageNum + 1;
+
         $defaultHeader = isset($this->headers[0])? 'header0' : false;
         $headerName = isset($this->headers[$pageNum])? 'header'.$pageNum : $defaultHeader;
 
-        // if ($this->hasMode(self::OUTPUT_TWO_SIDED)) {
-        //     $this->pdf->SetHTMLHeaderByName($headerName, $pageNum % 2 == 0 || $this->firstPage ? 'O' : 'E', $this->lastPage);
-        // } else {
-            $this->pdf->SetHTMLHeaderByName($headerName, 'O', $this->lastPage);
-        // }
+        $this->pdf->SetHTMLHeaderByName($headerName, 'O', $this->lastPage);
     }
 
-    protected function setFooter()
+    protected function setFooter($forceLast = false)
     {
         if (empty($this->footers)) return;
 
-        $pageNum = $this->lastPage && !$this->firstPage ? -1 : $this->pdf->getPageNumber();
+        $docPageNum = max($this->pdf->getPageNumber(), 1);
+        $pageNum = $this->lastPage || $forceLast ? -1 : $docPageNum;
         $defaultFooter = isset($this->footers[0])? 'footer0' : false;
         $footerName = isset($this->footers[$pageNum])? 'footer'.$pageNum : $defaultFooter;
 
-        // if ($this->hasMode(self::OUTPUT_TWO_SIDED)) {
-        //     $this->pdf->SetHTMLFooterByName($footerName, $pageNum % 2 == 0 ? 'E' : 'O');
-        // } else {
-            $this->pdf->SetHTMLFooterByName($footerName, 'O');
-        // }
+        $this->pdf->SetHTMLFooterByName($footerName, 'O');
     }
 
     protected function runPreProcess(ReportData &$reportData)
