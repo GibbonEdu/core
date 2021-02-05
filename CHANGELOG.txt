@@ -34,6 +34,8 @@ v22.0.00
         Finance: removed student DOB and Gender from Export Invoices
         Reports: clear report cache when editing template assets in Production
         System Admin: added option to manually invalidate front end cache for Cutting Edge installs
+        System Admin: added a Reporting Values by Roll Group import option
+        System Admin: updated user-related imports to enable importing by username or email address
         Tests: migrated test suite to GitHub actions, updated testing libraries to recent versions
 
     Bug Fixes
