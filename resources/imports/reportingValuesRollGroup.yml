@@ -1,7 +1,7 @@
 details:
-    type: reportingValuesCourse
+    type: reportingValuesRollGroup
     category: Reports
-    name: Reporting Values by Course
+    name: Reporting Values by Roll Group
     table: gibbonReportingValue
     modes: { update: true, insert: true, export: false }
 access:
@@ -27,16 +27,11 @@ fields:
         desc: "Reporting Scope name"
         args: { filter: string, required: true, custom: true, readonly: [gibbonReportingValue]  }
         relationship: { table: gibbonReportingScope, key: gibbonReportingScopeID, field: [name, gibbonReportingCycleID]  }
-    gibbonCourseID: 
-        name: "Course"
+    gibbonRollGroupID: 
+        name: "Roll Group"
         desc: "Short Name"
-        args: { filter: nospaces, required: true, custom: true, readonly: [gibbonReportingValue, gibbonReportingProgress]  }
-        relationship: { table: gibbonCourse, key: gibbonCourseID, field: [nameShort, gibbonSchoolYearID]  }
-    gibbonCourseClassID: 
-        name: "Class"
-        desc: "Short Name"
-        args: { filter: nospaces, required: true, custom: true, readonly: false  }
-        relationship: { table: gibbonCourseClass, key: gibbonCourseClassID, field: [nameShort, gibbonCourseID]  }
+        args: { filter: nospaces, required: true, custom: true, readonly: [gibbonReportingValue]  }
+        relationship: { table: gibbonRollGroup, key: gibbonRollGroupID, field: [nameShort, gibbonSchoolYearID]  }
     target: 
         name: "Criteria Target"
         desc: ""
@@ -46,10 +41,10 @@ fields:
         name: "Criteria Name"
         desc: ""
         args: { filter: string, required: true, custom: true, readonly: false  }
-        relationship: { table: gibbonReportingCriteria, key: gibbonReportingCriteriaID, field: [name, target, gibbonReportingScopeID, gibbonCourseID]  }
+        relationship: { table: gibbonReportingCriteria, key: gibbonReportingCriteriaID, field: [name, target, gibbonReportingScopeID, gibbonRollGroupID]  }
     gibbonPersonIDStudent:
         name: "Student"
-        desc: "username or email (if unique)"
+        desc: "Username or Email (if unique)"
         args: { filter: nospaces, required: true, readonly: false  }
         relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
     value:
@@ -96,13 +91,12 @@ tables:
         primaryKey:
             gibbonReportingValueID
         uniqueKeys:
-            - [gibbonReportingCriteriaID, gibbonPersonIDStudent, gibbonCourseClassID]
+            - [gibbonReportingCriteriaID, gibbonPersonIDStudent]
         fields:
             - gibbonSchoolYearID
             - gibbonReportingCycleID
             - gibbonReportingScopeID
-            - gibbonCourseID
-            - gibbonCourseClassID
+            - gibbonRollGroupID
             - target
             - gibbonReportingCriteriaID
             - gibbonPersonIDStudent
@@ -118,12 +112,11 @@ tables:
         primaryKey:
             gibbonReportingProgressID
         uniqueKeys:
-            - [gibbonReportingScopeID, gibbonCourseClassID, gibbonPersonIDStudent]
+            - [gibbonReportingScopeID, gibbonRollGroupID, gibbonPersonIDStudent]
         fields:
             - gibbonSchoolYearID
             - gibbonReportingCycleID
             - gibbonReportingScopeID
-            - gibbonCourseID
-            - gibbonCourseClassID
+            - gibbonRollGroupID
             - gibbonPersonIDStudent
             - status
