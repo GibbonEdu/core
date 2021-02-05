@@ -26,6 +26,7 @@ require_once '../../gibbon.php';
 $gibbonReportID = $_POST['gibbonReportID'] ?? '';
 $contextData = $_POST['contextData'] ?? '';
 $status = $_POST['status'] ?? 'Draft';
+$twoSided = $_POST['twoSided'] ?? 'N';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reports_generate_batch.php&gibbonReportID='.$gibbonReportID;
 
@@ -45,9 +46,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_b
     }
 
     $contexts = is_array($contextData)? $contextData : [$contextData];
+    $options = compact('status', 'twoSided');
     $process = $container->get(GenerateReportProcess::class);
 
-    $success = $process->startReportBatch($gibbonReportID, $contexts, $status, $gibbon->session->get('gibbonPersonID'));
+    $success = $process->startReportBatch($gibbonReportID, $contexts, $options, $gibbon->session->get('gibbonPersonID'));
     
     sleep(1.0);
 
