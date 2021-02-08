@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
         $name = $_POST['name'] ?? '';
         $description = $_POST['description'] ?? '';
         $type = $_POST['type'] ?? '';
-        $date = dateConvert($guid, $_POST['date']) ?? date('Y-m-d');
+        $date = (!empty($_POST['date']))? dateConvert($guid, $_POST['date']) : date('Y-m-d');
         $gibbonSchoolYearTermID = $_POST['gibbonSchoolYearTermID'] ?? null;
 
         // Grab the appropriate term ID if the date is provided and the term ID is not
