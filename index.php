@@ -686,7 +686,7 @@ if (!$session->has('address')) {
  *
  * TODO: Replace all returnProcess() from pages with respective $page->return calls.
  */
-if ($session->has('address') && !empty($_GET['return'])) {
+if (!empty($_GET['return'])) {
     if ($alert = $page->return->process($_GET['return'])){
         $page->addAlert($alert['context'], $alert['text']);
     }
