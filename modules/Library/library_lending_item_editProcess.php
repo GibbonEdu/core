@@ -65,7 +65,7 @@ if ($gibbonLibraryItemID == '') { echo 'Fatal error loading this page!';
                 } elseif ($status == 'Reserved') {
                     $type = 'Reserve';
                 }
-                $returnExpected = dateConvert($guid, $_POST['returnExpected']) ?? '';
+                $returnExpected = dateConvert($guid, $_POST['returnExpected'] ?? '');
                 $returnAction = $_POST['returnAction'] ?? '';
                 $gibbonPersonIDReturnAction = $_POST['gibbonPersonIDReturnAction'] ?? '';
 
