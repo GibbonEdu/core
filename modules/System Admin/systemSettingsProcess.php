@@ -81,18 +81,41 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     // Validate required fields
     foreach ($settingsToUpdate as $scope => $settings) {
         foreach ($settings as $name => $property) {
-            if ($property == 'required' && empty($_POST[$name])) {
-                $URL .= '&return=error1';
-                header("Location: {$URL}");
-                exit;
-            }
+          if (($name == 'organisationLogo' && empty($_FILES['organisationLogo']['tmp_name']) && empty($_POST[$name]) or ($name != 'organisationLogo' && $property == 'required' && empty($_POST[$name])))) {
+            $URL .= '&return=error1';
+            header("Location: {$URL}");
+            exit;
+          }
         }
+    }
+
+    // Move attached file, if there is one
+    $organisationLogo = null;
+    if (!empty($_FILES['organisationLogo']['tmp_name'])) {
+        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+        $fileUploader->getFileExtensions('Graphics/Design');
+
+        $file = $_FILES['organisationLogo'] ?? null;
+
+        // Upload the file, return the /uploads relative path
+        $organisationLogo = $fileUploader->uploadFromPost($file, $data, $data['name']);
+
+        if (empty($data['logo'])) {
+            $partialFail = true;
+        }
+
+    } else {
+      $organisationLogo = $_POST['logo'];
     }
 
     // Update fields
     foreach ($settingsToUpdate as $scope => $settings) {
         foreach ($settings as $name => $property) {
+          if ($name == 'organisationLogo') {
+            $value = $organisationLogo;
+          } else {
             $value = $_POST[$name] ?? '';
+          }
             if ($property == 'skip-empty' && empty($value)) continue;
 
             $updated = $settingGateway->updateSettingByScope($scope, $name, $value);

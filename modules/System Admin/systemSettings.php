@@ -108,9 +108,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $setting = getSettingByScope($connection2, 'System', 'organisationLogo', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addFileUpload('file')
+        $row->addFileUpload($setting['name'])
             ->accepts('.jpg,.jpeg,.gif,.png')
-            ->setAttachment('organisationLogo', $gibbon->session->get('absoluteURL'), $setting['organisationLogo']);
+            ->setAttachment('organisationLogo', $gibbon->session->get('absoluteURL'), $setting['value'])->required();
 
     $setting = getSettingByScope($connection2, 'System', 'organisationBackground', true);
     $row = $form->addRow();
