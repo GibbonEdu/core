@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             } else {
                 $status = $_POST['statusNotBorrowable'];
             }
-            $physicalCondition = $_POST['physicalCondition'];
+            $physicalCondition = $_POST['physicalCondition'] ?? '';
 
             //Get type-specific fields
 
