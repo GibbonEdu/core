@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 $statusCurrent = $_POST['statusCurrent'] ?? '';
-$status = $_POST['status'];
+$status = $_POST['status'] ?? '';
 $type = 'Other';
 if ($status == 'Decommissioned') {
     $type = 'Decommission';
