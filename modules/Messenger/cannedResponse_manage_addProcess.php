@@ -27,8 +27,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
 } else {
     //Proceed!
     //Validate Inputs
-    $subject = $_POST['subject'];
-    $body = $_POST['body'];
+    $subject = $_POST['subject'] ?? '';
+    $body = $_POST['body'] ?? '';
 
     if ($body == '' or $body == '') {
         $URL .= '&return=error1';

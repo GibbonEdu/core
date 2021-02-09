@@ -19,11 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonMessengerID=$_POST["gibbonMessengerID"] ;
-$search=NULL ;
-if (isset($_GET["search"])) {
-	$search=$_GET["search"] ;
-}
+$gibbonMessengerID=$_POST["gibbonMessengerID"] ?? '';
+$search=$_GET["search"] ?? '';
+
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/messenger_manage_edit.php&sidebar=true&search=$search&gibbonMessengerID=" . $gibbonMessengerID ;
 $time=time() ;
 

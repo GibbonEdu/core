@@ -30,8 +30,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
 } else {
     //Proceed!
     //Validate Inputs
-    $name = isset($_POST['name'])? $_POST['name'] : '';
-    $choices = isset($_POST['members'])? $_POST['members'] : array();
+    $name = $_POST['name'] ?? '';
+    $choices = $_POST['members'] ?? array();
 
     if (empty($name) || empty($choices)) {
         $URL .= '&return=error1';

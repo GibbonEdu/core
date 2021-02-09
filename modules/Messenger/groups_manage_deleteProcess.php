@@ -24,7 +24,7 @@ include '../../gibbon.php';
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$gibbonGroupID = isset($_GET['gibbonGroupID'])? $_GET['gibbonGroupID'] : '';
+$gibbonGroupID = $_GET['gibbonGroupID'] ?? '';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/groups_manage_delete.php&gibbonGroupID=$gibbonGroupID";
 $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/groups_manage.php&gibbonGroupID=$gibbonGroupID";
@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_de
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
-} else if (empty($gibbonGroupID)) { 
+} else if (empty($gibbonGroupID)) {
     $URL .= '&return=error2';
     header("Location: {$URL}");
     exit;

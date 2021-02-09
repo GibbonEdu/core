@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonMessengerCannedResponseID = $_GET['gibbonMessengerCannedResponseID'];
+$gibbonMessengerCannedResponseID = $_GET['gibbonMessengerCannedResponseID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/cannedResponse_manage_delete.php&gibbonMessengerCannedResponseID='.$gibbonMessengerCannedResponseID;
 $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/cannedResponse_manage.php';
 
