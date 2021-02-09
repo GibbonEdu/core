@@ -34,7 +34,7 @@ if ($status == 'Decommissioned') {
     $type = 'Reserve';
 }
 $gibbonPersonIDStatusResponsible = $_POST['gibbonPersonIDStatusResponsible'] ?? '';
-if ($_POST['returnExpected'] != '') {
+if (!empty($_POST['returnExpected'])) {
     $returnExpected = dateConvert($guid, $_POST['returnExpected']);
 }
 $returnAction = $_POST['returnAction'] ?? '';
