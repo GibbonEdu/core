@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
 
         $description = $_POST['description'] ?? null;
         $type = $_POST['type'] ?? null;
-        $weighting = floatval($_POST['weighting']) ?? 0;
+        $weighting = floatval($_POST['weighting'] ?? 0);
         $weighting = max(0, min(100, $weighting) );
         $reportable = $_POST['reportable'] ?? null;
         $calculate = $_POST['calculate'] ?? null;
