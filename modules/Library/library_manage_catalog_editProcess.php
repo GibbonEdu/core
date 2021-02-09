@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             $bookable = $_POST['bookable'] ?? '';
             $borrowable = $_POST['borrowable'] ?? '';
             if ($borrowable == 'Y') {
-                $status = $_POST['statusBorrowable'];
+                $status = $_POST['statusBorrowable'] ?? '';
             } else {
                 $status = $_POST['statusNotBorrowable'];
             }
