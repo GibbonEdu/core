@@ -126,15 +126,15 @@ trait MultipleOptionsTrait
             $options = array_filter($dataset->toArray(), function ($item) use ($valCol,$nameCol) {
                 return isset($item[$valCol]) && isset($item[$nameCol]);
             });
-        }
 
-        foreach ($options as $option) {
-            $option = array_map('trim', $option);
+            foreach ($options as $option) {
+                $option = array_map('trim', $option);
 
-            if ($groupBy !== false) {
-                $this->options[$option[$groupBy]][$option[$valCol]] = __($option[$nameCol]);
-            } else {
-                $this->options[$option[$valCol]]= __($option[$nameCol]);
+                if ($groupBy !== false) {
+                    $this->options[$option[$groupBy]][$option[$valCol]] = __($option[$nameCol]);
+                } else {
+                    $this->options[$option[$valCol]]= __($option[$nameCol]);
+                }
             }
         }
 
