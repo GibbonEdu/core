@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
     } else {
         //Proceed!
         //Setup return variables
-        $messageWall = $_POST['messageWall'];
+        $messageWall = $_POST['messageWall'] ?? '';
         if ($messageWall != 'Y') {
             $messageWall = 'N';
         }
@@ -58,8 +58,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
                 $date3 = dateConvert($guid, $_POST['date3']);
             }
         }
-        $subject = $_POST['subject'];
-        $body = stripslashes($_POST['body']);
+        $subject = $_POST['subject'] ?? '';
+        $body = stripslashes($_POST['body'] ?? '');
 
         // Turn copy-pasted div breaks into paragraph breaks
         $body = str_replace(['<div ', '<div>', '</div>'], ['<p ', '<p>', '</p>'], $body);
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
             $AI = str_pad($connection2->lastInsertID(), 12, '0', STR_PAD_LEFT);
 
             $partialFail = false;
-            $choices = $_POST['roleCategories'];
+            $choices = $_POST['roleCategories'] ?? '';
             if ($choices != '') {
                 foreach ($choices as $t) {
                     try {

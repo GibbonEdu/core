@@ -24,9 +24,9 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
-$action = isset($_POST['action']) ? $_POST['action'] : '';
-$search = $_GET['search'];
-$gibbonMessengerID = $_GET['gibbonMessengerID'];
+$action = $_POST['action'] ?? '';
+$search = $_GET['search'] ?? '';
+$gibbonMessengerID = $_GET['gibbonMessengerID'] ?? '';
 
 if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading this page!';
 } else {
@@ -57,7 +57,7 @@ if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading
             $partialFail = false;
 
             //Check message exists
-            
+
                 $data = array("gibbonMessengerID" => $gibbonMessengerID);
                 $sql = "SELECT * FROM gibbonMessenger WHERE gibbonMessengerID=:gibbonMessengerID";
                 $result = $connection2->prepare($sql);
@@ -90,7 +90,7 @@ if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading
                     //Scan through receipients
                     foreach ($gibbonMessengerReceiptIDs as $gibbonMessengerReceiptID) {
                         //Check recipient status
-                        
+
                             $dataRecipt = array("gibbonMessengerID" => $gibbonMessengerID, "gibbonMessengerReceiptID" => $gibbonMessengerReceiptID);
                             $sqlRecipt = "SELECT * FROM gibbonMessengerReceipt WHERE gibbonMessengerID=:gibbonMessengerID AND gibbonMessengerReceiptID=:gibbonMessengerReceiptID";
                             $resultRecipt = $connection2->prepare($sqlRecipt);
