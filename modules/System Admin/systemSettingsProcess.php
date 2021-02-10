@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\FileUploader;
 use Gibbon\Domain\System\SettingGateway;
 
 include '../../gibbon.php';
@@ -94,11 +95,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         }
     }
 
+    $fileUploader = new FileUploader($pdo, $gibbon->session);
+    $fileUploader->getFileExtensions('Graphics/Design');
+
     // Move attached logo file, if there is one
     if (!empty($_FILES['organisationLogoFile']['tmp_name'])) {
-        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
-        $fileUploader->getFileExtensions('Graphics/Design');
-
         $file = $_FILES['organisationLogoFile'] ?? null;
 
         // Upload the file, return the /uploads relative path
@@ -111,9 +112,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
 
     // Move attached background file, if there is one
     if (!empty($_FILES['organisationBackgroundFile']['tmp_name'])) {
-        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
-        $fileUploader->getFileExtensions('Graphics/Design');
-
         $file = $_FILES['organisationBackgroundFile'] ?? null;
 
         // Upload the file, return the /uploads relative path
