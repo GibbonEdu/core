@@ -21,7 +21,7 @@ class Acceptance extends \Codeception\Module
         foreach ($elements as $element) {
             $type = ($element->tagName == 'input')? $element->getAttribute('type') : $element->tagName;
             
-            if ($type == 'submit' || $type == 'button') continue;
+            if ($type == 'submit' || $type == 'button' || $type == 'file') continue;
 
             $name = $element->getAttribute('name');
             $value = ($element->hasAttribute('value'))? $element->getAttribute('value') : '';
