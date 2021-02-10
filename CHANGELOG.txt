@@ -36,6 +36,7 @@ v22.0.00
         System Admin: added option to manually invalidate front end cache for Cutting Edge installs
         System Admin: added a Reporting Values by Roll Group import option
         System Admin: updated user-related imports to enable importing by username or email address
+        System Admin: added file uploader for choosing logo and background images
         Tests: migrated test suite to GitHub actions, updated testing libraries to recent versions
 
     Bug Fixes
