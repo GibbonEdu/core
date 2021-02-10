@@ -109,11 +109,26 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         }
     }
 
+    // Move attached background file, if there is one
+    if (!empty($_FILES['organisationBackgroundFile']['tmp_name'])) {
+        $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
+        $fileUploader->getFileExtensions('Graphics/Design');
+
+        $file = $_FILES['organisationBackgroundFile'] ?? null;
+
+        // Upload the file, return the /uploads relative path
+        $_POST['organisationBackground'] = $fileUploader->uploadFromPost($file, 'background');
+
+        if (empty($_POST['organisationBackground'])) {
+            $partialFail = true;
+        }
+    }
+
     // Update fields
     foreach ($settingsToUpdate as $scope => $settings) {
         foreach ($settings as $name => $property) {
             $value = $_POST[$name] ?? '';
-          
+
             if ($property == 'skip-empty' && empty($value)) continue;
 
             $updated = $settingGateway->updateSettingByScope($scope, $name, $value);
