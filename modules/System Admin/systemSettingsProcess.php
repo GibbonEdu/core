@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
             'organisationName' => 'required',
             'organisationNameShort' => 'required',
             'organisationEmail' => 'required',
-            'organisationLogo' => 'required',
+            'organisationLogo' => 'requiredFile',
             'organisationBackground' => '',
             'organisationAdministrator' => 'required',
             'organisationDBA' => 'required',
@@ -81,41 +81,39 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     // Validate required fields
     foreach ($settingsToUpdate as $scope => $settings) {
         foreach ($settings as $name => $property) {
-          if (($name == 'organisationLogo' && empty($_FILES['organisationLogo']['tmp_name']) && empty($_POST[$name]) or ($name != 'organisationLogo' && $property == 'required' && empty($_POST[$name])))) {
-            $URL .= '&return=error1';
-            header("Location: {$URL}");
-            exit;
-          }
+            if ($property == 'requiredFile' && empty($_FILES[$name.'File']['tmp_name']) && empty($_POST[$name])) {
+                $URL .= '&return=error6';
+                header("Location: {$URL}");
+                exit;
+            }
+            if ($property == 'required' && empty($_POST[$name])) {
+                $URL .= '&return=error1';
+                header("Location: {$URL}");
+                exit;
+            }
         }
     }
 
-    // Move attached file, if there is one
-    $organisationLogo = null;
-    if (!empty($_FILES['organisationLogo']['tmp_name'])) {
+    // Move attached logo file, if there is one
+    if (!empty($_FILES['organisationLogoFile']['tmp_name'])) {
         $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
         $fileUploader->getFileExtensions('Graphics/Design');
 
-        $file = $_FILES['organisationLogo'] ?? null;
+        $file = $_FILES['organisationLogoFile'] ?? null;
 
         // Upload the file, return the /uploads relative path
-        $organisationLogo = $fileUploader->uploadFromPost($file, $data, $data['name']);
+        $_POST['organisationLogo'] = $fileUploader->uploadFromPost($file, 'logo');
 
-        if (empty($data['logo'])) {
+        if (empty($_POST['organisationLogo'])) {
             $partialFail = true;
         }
-
-    } else {
-      $organisationLogo = $_POST['logo'];
     }
 
     // Update fields
     foreach ($settingsToUpdate as $scope => $settings) {
         foreach ($settings as $name => $property) {
-          if ($name == 'organisationLogo') {
-            $value = $organisationLogo;
-          } else {
             $value = $_POST[$name] ?? '';
-          }
+          
             if ($property == 'skip-empty' && empty($value)) continue;
 
             $updated = $settingGateway->updateSettingByScope($scope, $name, $value);
