@@ -28,10 +28,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
     // Proceed!
     $page->breadcrumbs->add(__('Manage Reporting Cycles'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
     $reportingCycleGateway = $container->get(ReportingCycleGateway::class);
 

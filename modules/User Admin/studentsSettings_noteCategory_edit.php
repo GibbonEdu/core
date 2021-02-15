@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
     $page->breadcrumbs
         ->add(__('Students Settings'), 'studentsSettings.php')
         ->add(__('Edit Note Category'));
-
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
     //Check if school year specified
     $gibbonStudentNoteCategoryID = $_GET['gibbonStudentNoteCategoryID'];
     if ($gibbonStudentNoteCategoryID == '') {

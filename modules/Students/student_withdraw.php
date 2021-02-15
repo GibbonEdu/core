@@ -27,10 +27,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_withdraw.
     // Proceed!
     $page->breadcrumbs->add(__('Withdraw Student'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $form = Form::create('studentWithdraw', $_SESSION[$guid]['absoluteURL'].'/modules/Students/student_withdrawProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 

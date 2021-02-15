@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/fileExtension
         ->add(__('Manage File Extensions'), 'fileExtensions_manage.php')
         ->add(__('Edit File Extensions'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Check if school year specified
     $gibbonFileExtensionID = $_GET['gibbonFileExtensionID'];
     if ($gibbonFileExtensionID == '') {

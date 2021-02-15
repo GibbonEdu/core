@@ -34,10 +34,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
         ->add(__('Manage Grade Scales'), 'gradeScales_manage.php')
         ->add(__('Edit Grade Scale'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Check if school year specified
     $gibbonScaleID = (isset($_GET['gibbonScaleID']))? $_GET['gibbonScaleID'] : null;
     if (empty($gibbonScaleID)) {

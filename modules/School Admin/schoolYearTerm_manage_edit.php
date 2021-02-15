@@ -28,10 +28,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
         ->add(__('Manage Terms'), 'schoolYearTerm_manage.php')
         ->add(__('Edit Term'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Check if school year specified
     $gibbonSchoolYearTermID = $_GET['gibbonSchoolYearTermID'];
     if ($gibbonSchoolYearTermID == '') {

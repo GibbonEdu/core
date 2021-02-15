@@ -38,10 +38,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
         ->add(__('Template Builder'), 'templates_manage.php', ['search' => $search])
         ->add(__('Edit Template'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     if ($search != '') {
         echo "<div class='linkTop'>";
         echo "<a href='".$gibbon->session->get('absoluteURL')."/index.php?q=/modules/Reports/templates_manage.php&search=$search'>".__('Back to Search Results').'</a>';

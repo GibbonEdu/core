@@ -34,10 +34,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
     //Proceed!
     $page->breadcrumbs->add(__('Staff Settings'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $settingGateway = $container->get(SettingGateway::class);
     $staffAbsenceTypeGateway = $container->get(StaffAbsenceTypeGateway::class);
     $absoluteURL = $gibbon->session->get('absoluteURL');

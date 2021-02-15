@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
     //Proceed!
     $page->breadcrumbs->add(__('Finance Data Updates'));
     
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonSchoolYearID = isset($_REQUEST['gibbonSchoolYearID'])? $_REQUEST['gibbonSchoolYearID'] : $_SESSION[$guid]['gibbonSchoolYearID'];
 
     // School Year Picker

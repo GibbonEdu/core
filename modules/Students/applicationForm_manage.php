@@ -31,10 +31,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     //Proceed!
     $page->breadcrumbs->add(__('Manage Applications'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonSchoolYearID = '';
     if (isset($_GET['gibbonSchoolYearID'])) {
         $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];

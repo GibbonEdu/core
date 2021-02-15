@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage.
     //Proceed!
     $page->breadcrumbs->add(__('Manage Facilities'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $search = isset($_GET['search'])? $_GET['search'] : '';
 
     $facilityGateway = $container->get(FacilityGateway::class);

@@ -36,10 +36,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         ->add(__('Sync Course Enrolment'), 'courseEnrolment_sync.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
         ->add(__('Sync Now'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     if (empty($gibbonYearGroupIDList) || empty($gibbonSchoolYearID)) {
         echo "<div class='error'>";
         echo __('Your request failed because your inputs were invalid.');

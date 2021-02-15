@@ -32,10 +32,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_my.php')
     // Proceed!
     $page->breadcrumbs->add(__('My Reporting'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
 
     // Select Person, if able to

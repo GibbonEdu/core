@@ -35,10 +35,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
         ->add(__('Edit Staff'), 'staff_manage_edit.php', ['gibbonStaffID' => $gibbonStaffID])
         ->add(__('Edit Contract'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Check if school year specified
     if ($gibbonStaffID == '' or $gibbonStaffContractID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

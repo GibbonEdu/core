@@ -28,10 +28,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edi
         ->add(__('Manage Roles'),'role_manage.php')
         ->add(__('Edit Role'));     
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Check if school year specified
     $gibbonRoleID = $_GET['gibbonRoleID'];
     if ($gibbonRoleID == '') {

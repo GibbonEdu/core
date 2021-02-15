@@ -30,10 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
     //Proceed!
     $page->breadcrumbs->add(__('Manage Staff'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $search = (isset($_GET['search']) ? $_GET['search'] : '');
     $allStaff = (isset($_GET['allStaff']) ? $_GET['allStaff'] : '');
 

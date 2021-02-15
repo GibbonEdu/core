@@ -36,10 +36,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_fa
         $search = $_GET['search'];
     }
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Check if school year specified
     if ($gibbonSpacePersonID == '' or $gibbonStaffID =='') {
         $page->addError(__('You have not specified one or more required parameters.'));

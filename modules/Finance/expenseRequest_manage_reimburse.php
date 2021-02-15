@@ -37,10 +37,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
         ->add(__('My Expense Requests'), 'expenseRequest_manage.php',  $urlParams)
         ->add(__('Request Reimbursement'));    
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Check if params are specified
     $gibbonFinanceExpenseID = $_GET['gibbonFinanceExpenseID'];
     $status2 = $_GET['status2'];

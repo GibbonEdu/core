@@ -26,10 +26,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
     //Proceed!
     $page->breadcrumbs->add(__('Messenger Settings'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
 
     $form = Form::create('messengerSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/messengerSettingsProcess.php' );
 

@@ -32,10 +32,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
         ->add(__('Manage Medical Forms'), 'medicalForm_manage.php')
         ->add(__('Edit Medical Form'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Check if person medical specified
     $gibbonPersonMedicalID = isset($_GET['gibbonPersonMedicalID'])? $_GET['gibbonPersonMedicalID'] : '';
     $search = isset($_GET['search'])? $_GET['search'] : '';

@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
     //Proceed!
     $page->breadcrumbs->add(__('Manage String Replacements'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $search = isset($_GET['search'])? $_GET['search'] : '';
 
     $stringGateway = $container->get(StringGateway::class);

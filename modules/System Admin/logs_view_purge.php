@@ -31,10 +31,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
         ->add(__('View Logs'), 'logs_view.php')
         ->add(__('Purge Logs'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $form = Form::create('logs', $_SESSION[$guid]['absoluteURL'].'/modules/System Admin/logs_view_purgeProcess.php');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);

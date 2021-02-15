@@ -30,10 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
     //Proceed!
     $page->breadcrumbs->add(__('Manage Medical Forms'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $search = isset($_GET['search'])? $_GET['search'] : '';
 
     $medicalGateway = $container->get(MedicalGateway::class);

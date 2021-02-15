@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings_ed
         ->add(__('Individual Needs Settings'), 'inSettings.php')
         ->add(__('Edit Descriptor'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Check if school year specified
     $gibbonINDescriptorID = $_GET['gibbonINDescriptorID'];
     if ($gibbonINDescriptorID == '') {

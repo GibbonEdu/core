@@ -36,10 +36,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_e
         ->add(__('Manage Substitutes'), 'substitutes_manage.php', ['search' => $search])
         ->add(__('Edit Substitute'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonSubstituteID = $_GET['gibbonSubstituteID'] ?? '';
     $smsGateway = getSettingByScope($connection2, 'Messenger', 'smsGateway');
 

@@ -30,10 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/privacySettin
     //Proceed!
     $page->breadcrumbs->add(__('Security & Privacy Settings'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $form = Form::create('privacySettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/privacySettingsProcess.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));

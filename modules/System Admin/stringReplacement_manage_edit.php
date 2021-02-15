@@ -30,10 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
 
     $search = $_GET['search'] ?? '';
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Check if StringID specified
     $gibbonStringID = $_GET['gibbonStringID'] ?? '';
     

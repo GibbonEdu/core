@@ -28,10 +28,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
     $gibbonStudentEnrolmentID = $_GET['gibbonStudentEnrolmentID'] ?? '';
     $search = $_GET['search'] ?? '';
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Check if school year specified
     if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

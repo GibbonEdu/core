@@ -34,10 +34,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
         ->add(__('Run'));
 
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonReportID = $_GET['gibbonReportID'] ?? '';
     
     $reportGateway = $container->get(ReportGateway::class);

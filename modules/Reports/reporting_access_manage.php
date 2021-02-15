@@ -31,10 +31,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_access_m
     $page->breadcrumbs
         ->add(__('Manage Access'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
     $gibbonReportingCycleID = $_GET['gibbonReportingCycleID'] ?? '';
     $reportingAccessGateway = $container->get(ReportingAccessGateway::class);

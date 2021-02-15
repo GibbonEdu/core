@@ -60,10 +60,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         return;
     }
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Let's go!
     $application = $result->fetch();
     $proceed = true;

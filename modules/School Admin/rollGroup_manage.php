@@ -32,10 +32,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 
     $page->breadcrumbs->add(__('Manage Roll Groups'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonSchoolYearID = isset($_REQUEST['gibbonSchoolYearID'])? $_REQUEST['gibbonSchoolYearID'] : $_SESSION[$guid]['gibbonSchoolYearID'];
 
     // School Year Picker

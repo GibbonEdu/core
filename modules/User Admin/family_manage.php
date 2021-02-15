@@ -30,10 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage.p
     //Proceed!
     $page->breadcrumbs->add(__('Manage Families'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $search = isset($_GET['search'])? $_GET['search'] : '';
 
     $familyGateway = $container->get(FamilyGateway::class);

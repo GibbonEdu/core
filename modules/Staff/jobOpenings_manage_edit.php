@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_e
         ->add(__('Job Openings'), 'jobOpenings_manage.php')
         ->add(__('Edit Job Opening'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Check if school year specified
     $gibbonStaffJobOpeningID = $_GET['gibbonStaffJobOpeningID'];
     if ($gibbonStaffJobOpeningID == '') {

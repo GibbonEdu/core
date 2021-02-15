@@ -55,10 +55,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         ->add(__('Activity Enrolment'), 'activities_manage_enrolment.php',  $urlParams)
         ->add(__('Add Student'));   
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonActivityID = $_GET['gibbonActivityID'];
 
     if ($gibbonActivityID == '') {

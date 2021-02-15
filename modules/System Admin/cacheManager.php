@@ -28,10 +28,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/cacheManager.
     // Proceed!
     $page->breadcrumbs->add(__('Cache Manager'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $settingGateway = $container->get(SettingGateway::class);
     $setting = $settingGateway->getSettingByScope('System', 'cachePath', true);
 

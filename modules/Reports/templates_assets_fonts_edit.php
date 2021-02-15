@@ -32,10 +32,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_f
         ->add(__('Manage Assets'), 'templates_assets.php')
         ->add(__('Edit Font'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonReportTemplateFontID = $_GET['gibbonReportTemplateFontID'] ?? '';
     $fontGateway = $container->get(ReportTemplateFontGateway::class);
 

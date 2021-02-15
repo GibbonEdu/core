@@ -44,10 +44,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         }
     }
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Check if school year specified
     $gibbonActivityID = $_GET['gibbonActivityID'];
     $gibbonPersonID = $_GET['gibbonPersonID'];

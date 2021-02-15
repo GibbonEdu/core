@@ -28,10 +28,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/district_manage
     //Proceed!
     $page->breadcrumbs->add(__('Manage Districts'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $districtGateway = $container->get(DistrictGateway::class);
 
     // QUERY

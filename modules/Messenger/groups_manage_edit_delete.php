@@ -28,10 +28,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
     $gibbonGroupID = (isset($_GET['gibbonGroupID']))? $_GET['gibbonGroupID'] : null;
     $gibbonPersonID = (isset($_GET['gibbonPersonID']))? $_GET['gibbonPersonID'] : null;
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     if ($gibbonGroupID == '' || $gibbonPersonID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

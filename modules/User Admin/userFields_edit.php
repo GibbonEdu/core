@@ -28,10 +28,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
         ->add(__('Manage Custom Fields'), 'userFields.php')
         ->add(__('Edit Custom Field'));  
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Check if school year specified
     $gibbonPersonFieldID = $_GET['gibbonPersonFieldID'];
     if ($gibbonPersonFieldID == '') {

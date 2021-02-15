@@ -54,10 +54,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
     }
 
     // Proceed!
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     // Check if course & school year specified
     if ($gibbonCourseID == '' or $gibbonSchoolYearID == '' or $gibbonCourseClassID == '' or $gibbonUnitClassID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

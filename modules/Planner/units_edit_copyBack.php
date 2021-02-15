@@ -50,10 +50,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyBac
     }
 
     // Proceed!
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     // Check if course & school year specified
     if ($urlParams['gibbonCourseID'] == '' or $urlParams['gibbonSchoolYearID'] == '' or $urlParams['gibbonCourseClassID'] == '' or $urlParams['gibbonUnitID'] == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

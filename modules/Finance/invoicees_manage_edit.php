@@ -37,10 +37,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
         ->add(__('Manage Invoicees'), 'invoicees_manage.php')
         ->add(__('Edit Invoicee'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     if ($search != '' or $allUsers == 'on') {
         echo "<div class='linkTop'>";
         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/invoicees_manage.php&search='.$search.'&allUsers='.$allUsers."'>".__('Back to Search Results').'</a>';
