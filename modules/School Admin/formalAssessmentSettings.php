@@ -26,10 +26,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
     //Proceed!
     $page->breadcrumbs->add(__('Formal Assessment Settings'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $form = Form::create('formalAssessmentSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/formalAssessmentSettingsProcess.php');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);

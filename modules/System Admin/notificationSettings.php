@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
     //Proceed!
     $page->breadcrumbs->add(__('Notification Settings'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     echo '<h3>';
     echo __('Notification Events');
     echo '</h3>';

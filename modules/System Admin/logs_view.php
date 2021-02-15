@@ -33,10 +33,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
     //Proceed!
     $page->breadcrumbs->add(__('View Logs'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $ip = isset($_GET['ip'])? $_GET['ip'] : '';
     $title = isset($_GET['title'])? $_GET['title'] : '';
     $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';

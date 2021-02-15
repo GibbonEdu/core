@@ -30,10 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 } else {
     $page->breadcrumbs->add(__('Sync Course Enrolment'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonSchoolYearID = isset($_GET['gibbonSchoolYearID'])? $_GET['gibbonSchoolYearID'] : $_SESSION[$guid]['gibbonSchoolYearID'];
 
     if ($gibbonSchoolYearID == $_SESSION[$guid]['gibbonSchoolYearID']) {

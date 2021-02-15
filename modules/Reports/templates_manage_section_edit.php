@@ -35,10 +35,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_s
         ->add(__('Edit Template'), 'templates_manage_edit.php', ['gibbonReportTemplateID' => $gibbonReportTemplateID, 'search' => $search, 'sidebar' => 'false'])
         ->add(__('Edit Section'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     if (empty($gibbonReportTemplateID) || empty($gibbonReportTemplateSectionID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;

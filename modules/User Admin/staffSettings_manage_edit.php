@@ -30,10 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings_m
         ->add(__('Staff Settings'), 'staffSettings.php')
         ->add(__('Absence Type'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonStaffAbsenceTypeID = $_GET['gibbonStaffAbsenceTypeID'] ?? '';
     $staffAbsenceTypeGateway = $container->get(StaffAbsenceTypeGateway::class);
 

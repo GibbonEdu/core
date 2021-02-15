@@ -38,10 +38,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
         ->add(__('Discuss'),'crowdAssess_view_discuss.php', $urlParams)
         ->add(__('Add Post'));    
     
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     if ($gibbonPersonID == '' or $gibbonPlannerEntryID == '' or $gibbonPlannerEntryHomeworkID == '') {
         echo "<div class='warning'>";
         echo __('You have not specified one or more required parameters.');

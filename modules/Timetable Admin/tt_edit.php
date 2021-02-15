@@ -38,10 +38,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
         ->add(__('Manage Timetables'), 'tt.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
         ->add(__('Edit Timetable'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $timetableGateway = $container->get(TimetableGateway::class);
 
     //Check if school year specified

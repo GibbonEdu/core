@@ -26,10 +26,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/publicRegistrat
     //Proceed!
     $page->breadcrumbs->add(__('Public Registration Settings'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $form = Form::create('publicRegistrationSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/publicRegistrationSettingsProcess.php');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);

@@ -26,10 +26,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
     //Proceed!
     $page->breadcrumbs->add(__('Data Updater Settings'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $form = Form::create('dataUpdaterSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/dataUpdaterSettingsProcess.php');
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 

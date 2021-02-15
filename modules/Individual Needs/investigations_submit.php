@@ -30,10 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
 } else {
     $page->breadcrumbs->add(__('Submit Contributions'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $contributionsGateway = $container->get(INInvestigationContributionGateway::class);
 
     // CRITERIA

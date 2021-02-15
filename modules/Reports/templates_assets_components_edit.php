@@ -32,10 +32,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
         ->add(__('Manage Assets'), 'templates_assets.php')
         ->add(__('Edit Component'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonReportPrototypeSectionID = $_GET['gibbonReportPrototypeSectionID'] ?? '';
     $prototypeGateway = $container->get(ReportPrototypeSectionGateway::class);
 

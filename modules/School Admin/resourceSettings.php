@@ -26,10 +26,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/resourceSetti
     //Proceed!
     $page->breadcrumbs->add(__('Resource Settings'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $form = Form::create('resourceSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/resourceSettingsProcess.php');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);

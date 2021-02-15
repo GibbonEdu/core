@@ -51,10 +51,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_smartBl
     } 
 
     // Proceed!
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     // Check if course & school year specified
     if ($urlParams['gibbonCourseID'] == '' or $urlParams['gibbonSchoolYearID'] == '' or $urlParams['gibbonCourseClassID'] == '' or $urlParams['gibbonUnitClassID'] == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

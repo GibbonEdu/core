@@ -28,10 +28,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
     //Proceed!
     $page->breadcrumbs->add(__('Manage Terms'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $termGateway = $container->get(SchoolYearTermGateway::class);
 
     // QUERY

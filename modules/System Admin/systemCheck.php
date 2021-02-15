@@ -31,10 +31,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
     //Proceed!
     $page->breadcrumbs->add(__('System Check'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $versionDB = getSettingByScope($connection2, 'System', 'version');
 
     $trueIcon = "<img title='" . __('Yes'). "' src='".$_SESSION[$guid]["absoluteURL"]."/themes/".$_SESSION[$guid]["gibbonThemeName"]."/img/iconTick.png' style='width:20px;height:20px;margin-right:10px' />";

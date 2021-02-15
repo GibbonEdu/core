@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_approval.ph
     // Proceed!
     $page->breadcrumbs->add(__('Approve Staff Absences'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
     $gibbonStaffAbsenceTypeID = $_GET['gibbonStaffAbsenceTypeID'] ?? '';
     $search = $_GET['search'] ?? '';

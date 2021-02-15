@@ -28,10 +28,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields.php'
     //Proceed!
     $page->breadcrumbs->add(__('Manage Custom Fields'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $userFieldGateway = $container->get(UserFieldGateway::class);
     
     // QUERY

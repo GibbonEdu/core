@@ -32,10 +32,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage_
         ->add(__('Manage Themes'), 'theme_manage.php')
         ->add(__('Uninstall Theme'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Check if theme specified
     if ($gibbonThemeID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

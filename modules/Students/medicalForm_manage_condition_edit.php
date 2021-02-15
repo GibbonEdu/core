@@ -37,10 +37,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
         ->add(__('Edit Medical Form'), 'medicalForm_manage_edit.php', ['gibbonPersonMedicalID' => $gibbonPersonMedicalID])
         ->add(__('Edit Condition'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

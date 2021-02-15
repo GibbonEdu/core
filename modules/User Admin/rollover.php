@@ -31,10 +31,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
     //Proceed!
     $page->breadcrumbs->add(__('Rollover'));
     
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $step = null;
     if (isset($_GET['step'])) {
         $step = $_GET['step'];

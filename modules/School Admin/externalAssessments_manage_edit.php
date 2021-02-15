@@ -34,10 +34,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
         ->add(__('Manage External Assessments'), 'externalAssessments_manage.php')
         ->add(__('Edit External Assessment'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Check if school year specified
     $gibbonExternalAssessmentID = $_GET['gibbonExternalAssessmentID'];
     if ($gibbonExternalAssessmentID == '') {

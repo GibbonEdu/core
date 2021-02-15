@@ -31,10 +31,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     //Proceed!
     $page->breadcrumbs->add(__('Attendance Settings'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     echo '<h3>';
     echo __('Attendance Codes');
     echo '</h3>';

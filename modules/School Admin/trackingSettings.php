@@ -26,10 +26,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSetti
     //Proceed!
     $page->breadcrumbs->add(__('Tracking Settings'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $form = Form::create('trackingSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/trackingSettingsProcess.php');
 
     $form->removeClass('standardForm');

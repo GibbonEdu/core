@@ -31,10 +31,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
         ->add(__('Manage Fee Categories'),'feeCategories_manage.php')
         ->add(__('Edit Category'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Check if school year specified
     $gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'];
     if ($gibbonFinanceFeeCategoryID == '') {

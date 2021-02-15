@@ -27,10 +27,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
     //Proceed!
     $page->breadcrumbs->add(__('Finance Settings'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $form = Form::create('financeSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/financeSettingsProcess.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));

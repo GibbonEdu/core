@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
     //Proceed!
     $page->breadcrumbs->add(__('My Expense Requests'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     echo '<p>';
     echo __('This action allows you to create and manage expense requests, which will be submitted for approval to the relevant individuals. You will be notified when a request has been approved.').'<br/>';
     echo '</p>';

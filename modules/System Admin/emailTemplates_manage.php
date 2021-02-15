@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplate
     // Proceed!
     $page->breadcrumbs->add(__('Email Templates'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $emailTemplateGateway = new EmailTemplateGateway($pdo);
 
     $criteria = $emailTemplateGateway->newQueryCriteria()

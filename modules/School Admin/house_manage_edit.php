@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
         ->add(__('Manage Houses'), 'house_manage.php')
         ->add(__('Edit House'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Check if school year specified
     $gibbonHouseID = $_GET['gibbonHouseID'];
     if ($gibbonHouseID == '') {

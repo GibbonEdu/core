@@ -31,10 +31,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
         ->add(__('Manage Houses'), 'house_manage.php')
         ->add(__('Assign Houses'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $form = Form::create('houseAssignProcess', $_SESSION[$guid]['absoluteURL'].'/modules/School Admin/house_manage_assignProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 

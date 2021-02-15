@@ -34,10 +34,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn.p
     echo '</div>';
 } else {
     //Proceed!
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $timetableColumnGateway = $container->get(TimetableColumnGateway::class);
 
     $criteria = $timetableColumnGateway->newQueryCriteria(true)

@@ -42,10 +42,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_s
         ->add(__('Run'), 'reports_generate_batch.php', ['gibbonReportID' => $gibbonReportID])
         ->add(__('Single'));
 
-
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
     
     $reportGateway = $container->get(ReportGateway::class);
     $reportArchiveEntryGateway = $container->get(ReportArchiveEntryGateway::class);

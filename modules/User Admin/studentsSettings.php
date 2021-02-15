@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
     //Proceed!
     $page->breadcrumbs->add(__('Students Settings'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     echo '<h3>';
     echo __('Student Note Categories');
     echo '</h3>';

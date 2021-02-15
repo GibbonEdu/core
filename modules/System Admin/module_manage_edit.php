@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
         ->add(__('Manage Modules'), 'module_manage.php')
         ->add(__('Edit Module'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     // Check if module specified
     $gibbonModuleID = $_GET['gibbonModuleID'] ?? '';
     

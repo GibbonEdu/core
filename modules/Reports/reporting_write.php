@@ -44,10 +44,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.ph
         ->add(__('My Reporting'), 'reporting_my.php', ['gibbonPersonID' => $gibbonPersonID])
         ->add(__('Write Reports'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $urlParams = [
         'gibbonSchoolYearID' => $_REQUEST['gibbonSchoolYearID'] ?? $gibbon->session->get('gibbonSchoolYearID'),
         'gibbonReportingCycleID' => $_GET['gibbonReportingCycleID'] ?? '',

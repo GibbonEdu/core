@@ -32,10 +32,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonGroupID = (isset($_GET['gibbonGroupID']))? $_GET['gibbonGroupID'] : null;
 
     //Check if school year specified

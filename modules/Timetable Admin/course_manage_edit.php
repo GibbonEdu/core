@@ -37,10 +37,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         ->add(__('Manage Courses & Classes'), 'course_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
         ->add(__('Edit Course & Classes'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     if (isset($_GET['deleteReturn'])) {
         $deleteReturn = $_GET['deleteReturn'];
     } else {

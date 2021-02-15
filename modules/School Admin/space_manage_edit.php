@@ -28,10 +28,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
         ->add(__('Manage Facilities'), 'space_manage.php')
         ->add(__('Edit Facility'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Check if school year specified
     $gibbonSpaceID = $_GET['gibbonSpaceID'];
     if ($gibbonSpaceID == '') {

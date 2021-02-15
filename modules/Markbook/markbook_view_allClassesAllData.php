@@ -118,10 +118,6 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
         'courseClass' => Format::courseClassName($class['course'], $class['class']),
     ]));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Add multiple columns
     if ($multiAdd) {
         echo "<div class='linkTop'>";

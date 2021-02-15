@@ -30,10 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_mig
         ->add(__('Manage Archives'), 'archive_manage.php')
         ->add(__('Migrate Reports'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $reportingModule = $container->get(ModuleGateway::class)->selectBy(['name' => 'Reporting', 'author' => 'Andy Statham'])->fetch();
     $reportingArchiveTable = $pdo->selectOne("SHOW TABLES LIKE 'arrArchive'");
 

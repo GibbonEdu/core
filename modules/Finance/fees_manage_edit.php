@@ -33,10 +33,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_edit.p
         ->add(__('Manage Fees'),'fees_manage.php', $urlParams)
         ->add(__('Edit Fee'));         
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonFinanceFeeID = $_GET['gibbonFinanceFeeID'];
     $search = $_GET['search'];
     if ($gibbonFinanceFeeID == '' or $gibbonSchoolYearID == '') {

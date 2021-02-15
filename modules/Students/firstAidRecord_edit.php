@@ -35,10 +35,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
         ->add(__('First Aid Records'), 'firstAidRecord.php')
         ->add(__('Edit'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonFirstAidID = $_GET['gibbonFirstAidID'] ?? '';
     $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';

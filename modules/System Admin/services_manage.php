@@ -30,10 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/services_mana
     // Proceed!
     $page->breadcrumbs->add(__('Manage Services'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $form = Form::create('manageServices', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/services_manageProcess.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));

@@ -32,10 +32,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
         ->add(__('Template Builder'), 'templates_manage.php')
         ->add(__('Manage Assets'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $prototypeGateway = $container->get(ReportPrototypeSectionGateway::class);
     $fontGateway = $container->get(ReportTemplateFontGateway::class);
 

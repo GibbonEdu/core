@@ -35,10 +35,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplate
         ->add(__('Email Templates'), 'emailTemplates_manage.php')
         ->add(__('Edit Email Template'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonEmailTemplateID = $_GET['gibbonEmailTemplateID'] ?? '';
 
     if (empty($gibbonEmailTemplateID)) {

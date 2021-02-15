@@ -28,10 +28,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
 } else {
     $page->breadcrumbs->add(__('Course Enrolment Rollover'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $step = null;
     if (isset($_GET['step'])) {
         $step = $_GET['step'];

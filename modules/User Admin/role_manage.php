@@ -33,10 +33,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage.php
         return;
     }
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $roleGateway = $container->get(RoleGateway::class);
     
     // QUERY

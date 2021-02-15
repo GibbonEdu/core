@@ -28,10 +28,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
     //Proceed!
     $page->breadcrumbs->add(__('Manage School Years'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $schoolYearGateway = $container->get(SchoolYearGateway::class);
 
     // QUERY

@@ -33,10 +33,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         ->add(__('Sync Course Enrolment'), 'courseEnrolment_sync.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
         ->add(__('Map Classes'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     if (empty($gibbonSchoolYearID)) {
         echo '<div class="error">';
         echo __('You have not specified one or more required parameters.');

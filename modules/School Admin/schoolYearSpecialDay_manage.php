@@ -24,10 +24,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
     //Proceed!
     $page->breadcrumbs->add(__('Manage Special Days'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonSchoolYearID = '';
     if (isset($_GET['gibbonSchoolYearID'])) {
         $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];

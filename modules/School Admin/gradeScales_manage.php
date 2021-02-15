@@ -31,10 +31,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
     echo __('Grade scales are used through the Assess modules to control what grades can be entered into the system. Editing some of the inbuilt scales can impact other areas of the system: it is advised to take a backup of the entire system before doing this.');
     echo '</p>';
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gradeScaleGateway = $container->get(GradeScaleGateway::class);
 
     // QUERY

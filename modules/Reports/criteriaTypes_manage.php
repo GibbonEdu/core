@@ -30,10 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/criteriaTypes_mana
         ->add(__('Manage Criteria'), 'reporting_criteria_manage.php')
         ->add(__('Manage Criteria Types'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $criteriaTypeGateway = $container->get(ReportingCriteriaTypeGateway::class);
 
     // QUERY

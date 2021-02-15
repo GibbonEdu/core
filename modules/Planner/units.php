@@ -39,10 +39,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
         return;
     }
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $schoolYearGateway = $container->get(SchoolYearGateway::class);
     $courseGateway = $container->get(CourseGateway::class);
     $unitGateway = $container->get(UnitGateway::class);

@@ -33,10 +33,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
         ->add(__('Manage Departments'), 'department_manage.php')
         ->add(__('Edit Department'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Check if school year specified
     $gibbonDepartmentID = $_GET['gibbonDepartmentID'];
     if ($gibbonDepartmentID == 'Y') {

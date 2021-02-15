@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage.p
     // Proceed!
     $page->breadcrumbs->add(__('Manage Substitutes'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $search = $_GET['search'] ?? '';
 
     $subGateway = $container->get(SubstituteGateway::class);

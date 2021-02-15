@@ -34,10 +34,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
 } else {
     // Proceed!
     $page->breadcrumbs->add(__('My Coverage'));
-
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
     
     $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
     $displayCount = 0;

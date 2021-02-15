@@ -30,10 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
     //Proceed!
     $page->breadcrumbs->add(__('Manage Courses & Classes'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonSchoolYearID = '';
     if (isset($_GET['gibbonSchoolYearID'])) {
         $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];

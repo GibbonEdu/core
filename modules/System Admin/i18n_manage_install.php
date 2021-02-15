@@ -25,10 +25,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Check if school year specified
     $gibboni18nID = isset($_GET['gibboni18nID'])? $_GET['gibboni18nID'] : '';
     $mode = isset($_GET['mode'])? $_GET['mode'] : 'install';

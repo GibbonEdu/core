@@ -38,10 +38,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send_batch
         ->add(__('Send Reports'), 'reports_generate.php')
         ->add(__('Select Reports'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $roleCategory = getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'), $connection2);
     
     $familyGateway = $container->get(FamilyGateway::class);

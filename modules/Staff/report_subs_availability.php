@@ -35,10 +35,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
         ->add(__('Substitute Availability'), 'report_subs_availability.php')
         ->add(__('Daily'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $date = isset($_GET['date']) ? Format::dateConvert($_GET['date']) : date('Y-m-d');
     $dateObject = new DateTimeImmutable($date);
     $dateFormat = $_SESSION[$guid]['i18n']['dateFormatPHP'];

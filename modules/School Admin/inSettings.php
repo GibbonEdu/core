@@ -30,10 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings.ph
     //Proceed!
     $page->breadcrumbs->add(__('Individual Needs Settings'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     echo '<h3>';
     echo __('Individual Needs Descriptors');
     echo '</h3>';

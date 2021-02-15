@@ -30,10 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
     //Proceed!
     $page->breadcrumbs->add(__('Generate Invoices'));
     
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     echo '<h2>';
     echo __('Invoices Not Yet Generated');
     echo '</h2>';

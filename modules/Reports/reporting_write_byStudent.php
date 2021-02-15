@@ -69,10 +69,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
         ->add(__('Write Reports'), 'reporting_write.php', $urlParams)
         ->add(__('By Student'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $reportingAccessGateway = $container->get(ReportingAccessGateway::class);
 
     $reportingScope = $container->get(ReportingScopeGateway::class)->getByID($urlParams['gibbonReportingScopeID']);

@@ -28,10 +28,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
     //Proceed!
     $page->breadcrumbs->add(__('Manage External Assessments'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $externalAssessmentGateway = $container->get(ExternalAssessmentGateway::class);
 
     // QUERY

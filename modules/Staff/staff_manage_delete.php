@@ -27,10 +27,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_delete.
     $allStaff = $_GET['allStaff'] ?? '';
     $search = $_GET['search'] ?? '' ;
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Check if school year specified
     $gibbonStaffID = $_GET['gibbonStaffID'];
     if ($gibbonStaffID == '') {

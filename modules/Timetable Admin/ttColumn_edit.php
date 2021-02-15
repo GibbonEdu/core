@@ -34,10 +34,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
         ->add(__('Manage Columns'), 'ttColumn.php')
         ->add(__('Edit Column'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $ttColumnGateway = $container->get(TimetableColumnGateway::class);
 
     //Check if school year specified

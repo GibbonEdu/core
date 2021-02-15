@@ -25,10 +25,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $form = Form::create('update', $_SESSION[$guid]['absoluteURL'].'/modules/System Admin/i18n_manage_updateAllProcess.php');
     $form->addHiddenValue('address', $_GET['q']);
 

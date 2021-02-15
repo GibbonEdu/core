@@ -37,10 +37,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage.p
         $page->addError(__('The highest grouped action cannot be determined.'));
         return;
     }
-
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
     
     $search = $_GET['search'] ?? null;
     

@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     //Proceed!
     $page->breadcrumbs->add(__('Third Party Settings'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $form = Form::create('thirdPartySettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/thirdPartySettingsProcess.php');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);

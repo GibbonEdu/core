@@ -38,10 +38,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
         return;
     }
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $search = $_GET['search'] ?? '';
     $allStudents = $_GET['allStudents'] ??  '';
     $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];

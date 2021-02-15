@@ -34,10 +34,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     //Set returnTo point for upcoming pages
     $page->breadcrumbs->add(__('Manage Activities'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $search = $_GET['search'] ?? '';
     $gibbonSchoolYearTermID = $_GET['gibbonSchoolYearTermID'] ?? '';
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';

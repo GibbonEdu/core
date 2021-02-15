@@ -35,10 +35,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_edit
         ->add(__('Edit Coverage'), 'coverage_manage_edit.php', ['gibbonStaffCoverageID' => $gibbonStaffCoverageID])
         ->add(__('Edit'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     if (empty($gibbonStaffCoverageID) || empty($gibbonStaffCoverageDateID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;

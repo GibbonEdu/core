@@ -28,10 +28,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage.
     //Proceed!
     $page->breadcrumbs->add(__('Manage Houses'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $houseGateway = $container->get(HouseGateway::class);
 
     // QUERY

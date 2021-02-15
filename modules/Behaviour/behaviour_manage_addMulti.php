@@ -35,10 +35,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         ->add(__('Manage Behaviour Records'), 'behaviour_manage.php')
         ->add(__('Add Multiple'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     echo "<div class='linkTop'>";
     $policyLink = getSettingByScope($connection2, 'Behaviour', 'policyLink');
     if ($policyLink != '') {

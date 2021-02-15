@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send.php')
     // Proceed!
     $page->breadcrumbs->add(__('Send Reports'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $step = $_GET['step'] ?? 1;
     $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $gibbon->session->get('gibbonSchoolYearID');
     $gibbonReportID = $_GET['gibbonReportID'] ?? '';
