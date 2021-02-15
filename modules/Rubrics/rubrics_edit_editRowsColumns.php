@@ -60,10 +60,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                 echo '</div>';
             }
 
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, null);
-            }
-
             //Check if school year specified
             $gibbonRubricID = $_GET['gibbonRubricID'];
             if ($gibbonRubricID == '') {
@@ -201,7 +197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                                 ->checked($rubricColumn['visualise'])
                                 ->setClass('textCenter flex-1 self-center');
                             $column = $row->addColumn()->setClass('sm:max-w-sm');
-                            $col = $column->addColumn()->addClass('flex-col');
+                            $col = $column->addColumn()->setClass('flex flex-col -mb-1');
 
 							// Handle non-grade scale columns as a text field, otherwise a dropdown
 							if ($values['gibbonScaleID'] == '') {

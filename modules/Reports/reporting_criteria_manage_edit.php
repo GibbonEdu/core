@@ -53,10 +53,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
         return;
     }
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $reportingCriteriaGateway = $container->get(ReportingCriteriaGateway::class);
  
     $values = $reportingCriteriaGateway->getByID($gibbonReportingCriteriaID);

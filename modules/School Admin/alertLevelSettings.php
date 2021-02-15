@@ -26,10 +26,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
     //Proceed!
     $page->breadcrumbs->add(__('Manage Alert Levels'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $data = array();
     $sql = 'SELECT * FROM gibbonAlertLevel ORDER BY sequenceNumber';
     $result = $connection2->prepare($sql);

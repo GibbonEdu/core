@@ -26,13 +26,13 @@ $from = getSettingByScope($connection2, 'Finance', 'email');
 //Module includes
 include './moduleFunctions.php';
 
-$action = $_POST['action'];
-$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-$status = $_GET['status'];
-$gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'];
-$monthOfIssue = $_GET['monthOfIssue'];
-$gibbonFinanceBillingScheduleID = $_GET['gibbonFinanceBillingScheduleID'];
-$gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'];
+$action = $_POST['action'] ?? '';
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$status = $_GET['status'] ?? '';
+$gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'] ?? '';
+$monthOfIssue = $_GET['monthOfIssue'] ?? '';
+$gibbonFinanceBillingScheduleID = $_GET['gibbonFinanceBillingScheduleID'] ?? '';
+$gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'] ?? '';
 
 if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this page!';
 } else {
@@ -46,7 +46,7 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {
-        $gibbonFinanceInvoiceIDs = $_POST['gibbonFinanceInvoiceIDs'];
+        $gibbonFinanceInvoiceIDs = $_POST['gibbonFinanceInvoiceIDs'] ?? '';
         if (count($gibbonFinanceInvoiceIDs) < 1) {
             $URL .= '&return=error1';
             header("Location: {$URL}");
@@ -98,7 +98,7 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                 if ($thisLockFail == false) {
                     $emailFail = false;
                     foreach ($gibbonFinanceInvoiceIDs as $gibbonFinanceInvoiceID) {
-                        
+
                             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
                             $sql = "SELECT gibbonFinanceInvoice.*, gibbonFinanceBillingSchedule.invoiceDueDate AS invoiceDueDateScheduled FROM gibbonFinanceInvoice LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID AND status='Pending'";
                             $result = $connection2->prepare($sql);
@@ -205,14 +205,14 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                 }
 
                 //Unlock invoice table
-                
+
                     $sql = 'UNLOCK TABLES';
                     $result = $connection2->query($sql);
 
                 if ($action == 'issue') {
                     //Loop through invoices again, this time to send invoices....they can not be sent in first loop due to table locking issues.
                     foreach ($gibbonFinanceInvoiceIDs as $gibbonFinanceInvoiceID) {
-                        
+
                             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
                             $sql = 'SELECT gibbonFinanceInvoice.*, gibbonFinanceBillingSchedule.invoiceDueDate AS invoiceDueDateScheduled FROM gibbonFinanceInvoice LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
                             $result = $connection2->prepare($sql);
@@ -312,7 +312,7 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                                     'organisation' => $_SESSION[$guid]['organisationNameShort'],
                                     'system' => $_SESSION[$guid]['systemName'],
                                 ]);
-    
+
                                 $mail->renderBody('mail/email.twig.html', [
                                     'title'  => $mail->Subject,
                                     'body'   => $body,
@@ -346,7 +346,7 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
             //REMINDERS
             elseif ($action == 'reminders') {
                 foreach ($gibbonFinanceInvoiceIDs as $gibbonFinanceInvoiceID) {
-                    
+
                         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
                         $sql = "SELECT gibbonFinanceInvoice.*, gibbonFinanceBillingSchedule.invoiceDueDate AS invoiceDueDateScheduled FROM gibbonFinanceInvoice LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID AND (status='Issued' OR status='Paid - Partial')";
                         $result = $connection2->prepare($sql);
@@ -447,7 +447,7 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
 
                         //Update reminder count
                         if ($row['reminderCount'] < 3) {
-                            
+
                                 $data = array('gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
                                 $sql = 'UPDATE gibbonFinanceInvoice SET reminderCount='.($row['reminderCount'] + 1).' WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
                                 $result = $connection2->prepare($sql);
@@ -501,8 +501,8 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
             }
             // Mark as Paid
             elseif ($action == 'paid') {
-                $paymentType = isset($_POST['paymentType'])? $_POST['paymentType'] : '';
-                $paidDate = isset($_POST['paidDate'])?dateConvert($guid, $_POST['paidDate']) : '';
+                $paymentType = $_POST['paymentType'] ?? '';
+                $paidDate = dateConvert($guid, $_POST['paidDate'] ?? '');
 
                 if (empty($paymentType) || empty($paidDate)) {
                     $URL .= '&return=error1';

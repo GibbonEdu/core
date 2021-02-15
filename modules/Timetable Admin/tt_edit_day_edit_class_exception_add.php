@@ -60,10 +60,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
             //Let's go!
             $gibbonTTDayRowClassID = $values['gibbonTTDayRowClassID'];
 
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, null);
-            }
-
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/tt_edit_day_edit_class_exception_addProcess.php?gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID&gibbonTTDayRowClassID=$gibbonTTDayRowClassID");
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);

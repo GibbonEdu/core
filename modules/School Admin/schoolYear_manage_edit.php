@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
         ->add(__('Manage School Years'), 'schoolYear_manage.php')
         ->add(__('Edit School Year'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Check if school year specified
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
     if ($gibbonSchoolYearID == '') {

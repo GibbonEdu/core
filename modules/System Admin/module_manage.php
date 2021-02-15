@@ -37,9 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
     $returns['error6'] = __('Install failed because a module with the same name is already installed.');
     $returns['warning1'] = __('Install failed, but module was added to the system and set non-active.');
     $returns['warning2'] = __('Install was successful, but module could not be activated.');
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, $returns);
-    }
+    $page->return->addReturns($returns);
     if (!empty($gibbon->session->get('moduleInstallError'))) {
         $page->addError(__('The following SQL statements caused errors:').' '.$gibbon->session->get('moduleInstallError'));
         $gibbon->session->set('moduleInstallError', '');

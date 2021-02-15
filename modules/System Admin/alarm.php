@@ -31,10 +31,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
     //Proceed!
     $page->breadcrumbs->add(__('Sound Alarm'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Get list of acceptable file extensions
     $fileUploader = new FileUploader($pdo, $gibbon->session);
     $fileUploader->getFileExtensions('Audio');

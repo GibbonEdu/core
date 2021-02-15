@@ -54,10 +54,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyFor
         echo '</div>';
     } else {
         //Proceed!
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
-        }
-
         //Check if courseschool year specified
         if ($gibbonCourseID == '' or $gibbonSchoolYearID == '' or $gibbonCourseClassID == '') {
             echo "<div class='error'>";

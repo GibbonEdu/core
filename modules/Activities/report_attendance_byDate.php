@@ -38,10 +38,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('Activity Attendance by Date'));
 
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
-        }
-
         // Options & Filters
         $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
 
@@ -121,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     $table->addColumn('student', __('Student'))
         ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
         ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true]));
-    $table->addColumn('attendance', __('Attendance'));
+    $table->addColumn('attendance', __('Attendance'))->translatable();
     $table->addColumn('activity', __('Activity'));
     $table->addColumn('provider', __('Provider'))
         ->format(function($activity) use ($guid){

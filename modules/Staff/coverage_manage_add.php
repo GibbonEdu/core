@@ -31,13 +31,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
         ->add(__('Manage Staff Coverage'), 'coverage_manage.php')
         ->add(__('Add Coverage'));
 
-
-    if (isset($_GET['return'])) {
-        $editLink = isset($_GET['editID'])
-            ? $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/coverage_manage_edit.php&gibbonStaffCoverageID='.$_GET['editID']
-            : '';
-        returnProcess($guid, $_GET['return'], $editLink, null);
-    }
+    $editLink = isset($_GET['editID'])
+        ? $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/coverage_manage_edit.php&gibbonStaffCoverageID='.$_GET['editID']
+        : '';
+    $page->return->setEditLink($editLink);
 
     $substituteGateway = $container->get(SubstituteGateway::class);
 

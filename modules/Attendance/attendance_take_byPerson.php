@@ -36,9 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('error3' => __('Your request failed because the specified date is in the future, or is not a school day.')));
-    }
+    $page->return->addReturns(['error3' => __('Your request failed because the specified date is in the future, or is not a school day.')]);
 
     $attendance = new AttendanceView($gibbon, $pdo);
 
@@ -105,14 +103,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                 // DATA TABLE: Show attendance log for the current day
                 $table = DataTable::create('attendanceLogs');
-
-                $table->addHeaderAction('view', __('View All'))
-                    ->setURL('/modules/Students/student_view_details.php')
-                    ->addParam('gibbonPersonID', $gibbonPersonID)
-                    ->addParam('allStudents', 'N')
-                    ->addParam('search', '')
-                    ->addParam('subpage', 'Attendance')
-                    ->displayLabel();
 
                 $table->modifyRows(function ($log, $row) {
                     if ($log['scope'] == 'Onsite - Late' || $log['scope'] == 'Offsite - Late' || $log['scope'] == 'Offsite - Left') $row->addClass('warning');
@@ -182,6 +172,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 $schoolTable->setTitle(__('Attendance Log'));
                 $schoolTable->setDescription(count($logs) > 0 ? __('The following attendance log has been recorded for the selected student today:') : '');
                 $schoolTable->removeColumn('period');
+
+                $schoolTable->addHeaderAction('view', __('View All'))
+                    ->setURL('/modules/Students/student_view_details.php')
+                    ->addParam('gibbonPersonID', $gibbonPersonID)
+                    ->addParam('allStudents', 'N')
+                    ->addParam('search', '')
+                    ->addParam('subpage', 'Attendance')
+                    ->displayLabel();
 
                 if (count($logs) + $classLogCount == 0) {
                     $schoolTable->addMetaData('blankSlate', __('There is currently no attendance data today for the selected student.'));

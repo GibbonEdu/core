@@ -31,10 +31,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
         echo '</div>';
     } else {
         //Proceed!
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
-        }
-
         //Check if school year specified
         $gibbonTTSpaceBookingID = $_GET['gibbonTTSpaceBookingID'];
         if ($gibbonTTSpaceBookingID == '') {

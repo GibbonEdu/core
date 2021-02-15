@@ -31,10 +31,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
     //Proceed!
     $page->breadcrumbs->add(__('User Settings'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     echo '<h3>';
     echo __('Username Formats');
     echo '</h3>';

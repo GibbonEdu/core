@@ -15,9 +15,9 @@ uniqueKeys:
 table:
     gibbonPersonID:
         name: "Person"
-        desc: "Username"
+        desc: "Username or Email (if unique)"
         args: { filter: nospaces, required: true }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
     example1:
         name: "Example 1"
         desc: "An example of a required field."

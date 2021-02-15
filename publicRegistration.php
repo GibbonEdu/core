@@ -45,9 +45,7 @@ if ($proceed == false) {
     $returns['fail7'] = __('Your request failed because your password does not meet the minimum requirements for strength.');
     $returns['success1'] = __('Your registration was successfully submitted and is now pending approval. Our team will review your registration and be in touch in due course.');
     $returns['success0'] = __('Your registration was successfully submitted, and you may now log into the system using your new username and password.');
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, $returns);
-    }
+    $page->return->addReturns($returns);
 
     //Get intro
     $intro = getSettingByScope($connection2, 'User Admin', 'publicRegistrationIntro');

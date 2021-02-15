@@ -37,9 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
     if (isset($_GET['editID'])) {
         $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/System Admin/stringReplacement_manage_edit.php&gibbonStringID='.$_GET['editID'];
     }
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink, null);
-    }
+    $page->return->setEditLink($editLink);
 
     if ($search != '') {
         echo "<div class='linkTop'>";

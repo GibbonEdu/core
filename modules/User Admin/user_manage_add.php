@@ -38,9 +38,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     if (isset($_GET['editID'])) {
         $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID='.$_GET['editID'].'&search='.$_GET['search'];
     }
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink, $returns);
-    }
+    $page->return->setEditLink($editLink);
+    $page->return->addReturns($returns);
 
     $search = (isset($_GET['search']))? $_GET['search'] : '';
 
@@ -122,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         if ($item['category'] == 'Staff') {
             $staffRoles[] = $item['gibbonRoleID'];
         }
-        $carry[$item['gibbonRoleID']] = $item['name'];
+        $carry[$item['gibbonRoleID']] = __($item['name']);
         return $carry;
     }, array());
 

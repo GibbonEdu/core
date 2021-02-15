@@ -33,13 +33,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     //Proceed!
     $page->breadcrumbs->add(__('Update'));
 
-    $return = $_GET['return'] ?? null;
-    if ($return) {
-        returnProcess($guid, $return, null, [
-            'warning1' => __('Some aspects of your request failed, but others were successful. The elements that failed are shown below:'),
-            'error3' => __('Your request failed because your inputs were invalid, or no update was required.'),
-        ]);
-    }
+    $page->return->addReturns([
+        'warning1' => __('Some aspects of your request failed, but others were successful. The elements that failed are shown below:'),
+        'error3' => __('Your request failed because your inputs were invalid, or no update was required.'),
+    ]);
 
     // Get and display SQL errors
     if ($gibbon->session->has('systemUpdateError')) {

@@ -133,10 +133,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_delete.php
                     $extra = $row['course'].'.'.$row['class'];
                 }
 
-                if (isset($_GET['return'])) {
-                    returnProcess($guid, $_GET['return'], null, null);
-                }
-
                 $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/planner_deleteProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID");
                 echo $form->getOutput();
             }

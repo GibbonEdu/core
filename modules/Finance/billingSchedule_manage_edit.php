@@ -33,10 +33,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
         ->add(__('Manage Billing Schedule'), 'billingSchedule_manage.php', $urlParams)
         ->add(__('Edit Entry'));    
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonFinanceBillingScheduleID = $_GET['gibbonFinanceBillingScheduleID'];
     $search = $_GET['search'];
     if ($gibbonFinanceBillingScheduleID == '' or $gibbonSchoolYearID == '') {

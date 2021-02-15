@@ -43,9 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 		$page->addError(__('You have not specified one or more required parameters.'));
 	} else {
 	    //Proceed!
-	    if (isset($_GET['return'])) {
-	        returnProcess($guid, $_GET['return'], null, array('error3' => __('Your request failed because the specified date is in the future, or is not a school day.')));
-	    }
+	    $page->return->addReturns(['error3' => __('Your request failed because the specified date is in the future, or is not a school day.')]);
 
 	    $attendance = new AttendanceView($gibbon, $pdo);
 

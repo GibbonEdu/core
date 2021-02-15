@@ -31,10 +31,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
         ->add(__('View All Assessments'), 'crowdAssess.php')
         ->add(__('View Assessment'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Get class variable
     $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
     if ($gibbonPlannerEntryID == '') {

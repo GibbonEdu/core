@@ -41,18 +41,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     } else {
         $gibbonPersonIDMulti = null;
     }
-    $date = $_POST['date'];
-    $type = $_POST['type'];
-    $descriptor = null;
-    if (isset($_POST['descriptor'])) {
-        $descriptor = $_POST['descriptor'];
-    }
-    $level = null;
-    if (isset($_POST['level'])) {
-        $level = $_POST['level'];
-    }
-    $comment = $_POST['comment'];
-    $followup = $_POST['followup'];
+    $date = $_POST['date'] ?? '';
+    $type = $_POST['type'] ?? '';
+    $descriptor = $_POST['descriptor'] ?? null;
+    $level = $_POST['level'] ?? null;
+    $comment = $_POST['comment'] ?? '';
+    $followup = $_POST['followup'] ?? '';
     $copyToNotes = $_POST['copyToNotes'] ?? null;
 
     if (is_null($gibbonPersonIDMulti) == true or $date == '' or $type == '' or ($descriptor == '' and $enableDescriptors == 'Y')) {
@@ -80,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
             // Attempt to notify tutor(s) and EA(s) of negative behaviour
             if ($type == 'Negative') {
-                
+
                     $dataDetail = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
                     $sqlDetail = 'SELECT gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, surname, preferredName, gibbonStudentEnrolment.gibbonYearGroupID FROM gibbonRollGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID';
                     $resultDetail = $connection2->prepare($sqlDetail);
@@ -141,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     'gibbonStudentNoteCategoryID' => $noteGateway->getNoteCategoryIDByName('Behaviour') ?? null,
                     'timestamp'                   => date('Y-m-d H:i:s', time()),
                 ];
-                
+
                 $inserted = $noteGateway->insert($note);
 
                 if (!$inserted) $partialFail = true;

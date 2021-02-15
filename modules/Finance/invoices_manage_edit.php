@@ -44,9 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
         ->add(__('Manage Invoices'), 'invoices_manage.php', $urlParams)
         ->add(__('Edit Invoice'));    
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('success1' => __('Your request was completed successfully, but one or more requested emails could not be sent.'), 'error3' => __('Some elements of your request failed, but others were successful.')));
-    }
+    $page->return->addReturns(['success1' => __('Your request was completed successfully, but one or more requested emails could not be sent.'), 'error3' => __('Some elements of your request failed, but others were successful.')]);
 
     if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

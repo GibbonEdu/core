@@ -24,10 +24,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Check if school year specified
     $gibbonExternalAssessmentID = $_GET['gibbonExternalAssessmentID'];
     if ($gibbonExternalAssessmentID == '') {

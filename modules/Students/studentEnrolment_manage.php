@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
     //Proceed!
     $page->breadcrumbs->add(__('Student Enrolment'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonSchoolYearID = '';
     if (isset($_GET['gibbonSchoolYearID'])) {
         $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];

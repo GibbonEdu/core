@@ -28,10 +28,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
     // Proceed!
     $page->breadcrumbs->add(__('Generate Reports'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $reportGateway = $container->get(ReportGateway::class);
 
     // QUERY

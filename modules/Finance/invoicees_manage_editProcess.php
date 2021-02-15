@@ -21,7 +21,7 @@ include '../../gibbon.php';
 
 include './moduleFunctions.php';
 
-$gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'];
+$gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/invoicees_manage_edit.php&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&search=".$_GET['search'].'&allUsers='.$_GET['allUsers'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_edit.php') == false) {
@@ -50,19 +50,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
             header("Location: {$URL}");
         } else {
             //Proceed!
-            $invoiceTo = $_POST['invoiceTo'];
+            $invoiceTo = $_POST['invoiceTo'] ?? '';
             if ($invoiceTo == 'Company') {
-                $companyName = $_POST['companyName'];
-                $companyContact = $_POST['companyContact'];
-                $companyAddress = $_POST['companyAddress'];
-                $companyEmail = $_POST['companyEmail'];
-                $companyCCFamily = $_POST['companyCCFamily'];
-                $companyPhone = $_POST['companyPhone'];
-                $companyAll = $_POST['companyAll'];
+                $companyName = $_POST['companyName'] ?? '';
+                $companyContact = $_POST['companyContact'] ?? '';
+                $companyAddress = $_POST['companyAddress'] ?? '';
+                $companyEmail = $_POST['companyEmail'] ?? '';
+                $companyCCFamily = $_POST['companyCCFamily'] ?? '';
+                $companyPhone = $_POST['companyPhone'] ?? '';
+                $companyAll = $_POST['companyAll'] ?? '';
                 $gibbonFinanceFeeCategoryIDList = null;
                 if ($companyAll == 'N') {
                     $gibbonFinanceFeeCategoryIDList == '';
-                    $gibbonFinanceFeeCategoryIDArray = $_POST['gibbonFinanceFeeCategoryIDList'];
+                    $gibbonFinanceFeeCategoryIDArray = $_POST['gibbonFinanceFeeCategoryIDList'] ?? [];
                     if (count($gibbonFinanceFeeCategoryIDArray) > 0) {
                         foreach ($gibbonFinanceFeeCategoryIDArray as $gibbonFinanceFeeCategoryID) {
                             $gibbonFinanceFeeCategoryIDList .= $gibbonFinanceFeeCategoryID.',';

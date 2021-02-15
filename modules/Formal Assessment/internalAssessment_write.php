@@ -92,10 +92,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 $gibbonYearGroupIDList = $row['gibbonYearGroupIDList'] ?? '';
                 $page->breadcrumbs->add(__('Write {courseClass} Internal Assessments', ['courseClass' => $row['course'].'.'.$row['class']]));
 
-                if (isset($_GET['return'])) {
-                    returnProcess($guid, $_GET['return']);
-                }
-
                 //Get teacher list
                 $teaching = false;
                 

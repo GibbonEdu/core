@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\FileUploader;
 use Gibbon\Domain\System\SettingGateway;
 
 include '../../gibbon.php';
@@ -45,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
             'organisationName' => 'required',
             'organisationNameShort' => 'required',
             'organisationEmail' => 'required',
-            'organisationLogo' => 'required',
+            'organisationLogo' => 'requiredFile',
             'organisationBackground' => '',
             'organisationAdministrator' => 'required',
             'organisationDBA' => 'required',
@@ -81,6 +82,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     // Validate required fields
     foreach ($settingsToUpdate as $scope => $settings) {
         foreach ($settings as $name => $property) {
+            if ($property == 'requiredFile' && empty($_FILES[$name.'File']['tmp_name']) && empty($_POST[$name])) {
+                $URL .= '&return=error6';
+                header("Location: {$URL}");
+                exit;
+            }
             if ($property == 'required' && empty($_POST[$name])) {
                 $URL .= '&return=error1';
                 header("Location: {$URL}");
@@ -89,10 +95,38 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         }
     }
 
+    $fileUploader = new FileUploader($pdo, $gibbon->session);
+    $fileUploader->getFileExtensions('Graphics/Design');
+
+    // Move attached logo file, if there is one
+    if (!empty($_FILES['organisationLogoFile']['tmp_name'])) {
+        $file = $_FILES['organisationLogoFile'] ?? null;
+
+        // Upload the file, return the /uploads relative path
+        $_POST['organisationLogo'] = $fileUploader->uploadFromPost($file, 'logo');
+
+        if (empty($_POST['organisationLogo'])) {
+            $partialFail = true;
+        }
+    }
+
+    // Move attached background file, if there is one
+    if (!empty($_FILES['organisationBackgroundFile']['tmp_name'])) {
+        $file = $_FILES['organisationBackgroundFile'] ?? null;
+
+        // Upload the file, return the /uploads relative path
+        $_POST['organisationBackground'] = $fileUploader->uploadFromPost($file, 'background');
+
+        if (empty($_POST['organisationBackground'])) {
+            $partialFail = true;
+        }
+    }
+
     // Update fields
     foreach ($settingsToUpdate as $scope => $settings) {
         foreach ($settings as $name => $property) {
             $value = $_POST[$name] ?? '';
+
             if ($property == 'skip-empty' && empty($value)) continue;
 
             $updated = $settingGateway->updateSettingByScope($scope, $name, $value);

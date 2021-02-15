@@ -22,8 +22,8 @@ include '../../gibbon.php';
 $gibbonSchoolYearIDCopyTo = null ;
 if (isset($_POST['gibbonSchoolYearIDCopyTo']))
     $gibbonSchoolYearIDCopyTo = $_POST['gibbonSchoolYearIDCopyTo'];
-$action = $_POST['action'];
-$search = $_POST['search'];
+$action = $_POST['action'] ?? '';
+$search = $_POST['search'] ?? '';
 
 if (($gibbonSchoolYearIDCopyTo == '' and $action != 'Delete') or $action == '') { echo 'Fatal error loading this page!';
 } else {
@@ -33,7 +33,7 @@ if (($gibbonSchoolYearIDCopyTo == '' and $action != 'Delete') or $action == '') 
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {
-        $activities = isset($_POST['gibbonActivityID'])? $_POST['gibbonActivityID'] : array();
+        $activities = $_POST['gibbonActivityID'] ?? array();
 
         //Proceed!
         //Check if person specified

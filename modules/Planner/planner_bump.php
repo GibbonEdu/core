@@ -111,10 +111,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
                         ]), 'planner.php', $params)
                         ->add(__('Bump Lesson Plan'));
 
-                    if (isset($_GET['return'])) {
-                        returnProcess($guid, $_GET['return'], null, null);
-                    }
-
                     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/planner_bumpProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID");
 
                     $form->addHiddenValue('viewBy', $viewBy);

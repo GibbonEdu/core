@@ -32,10 +32,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
 } else {
     $page->breadcrumbs->add(__('Individual Needs Summary'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return']);
-    }
-
     $gibbonINDescriptorID = null;
     if (isset($_GET['gibbonINDescriptorID'])) {
         $gibbonINDescriptorID = $_GET['gibbonINDescriptorID'];

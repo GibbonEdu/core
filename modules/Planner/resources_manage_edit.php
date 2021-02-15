@@ -39,10 +39,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_e
         echo '</div>';
     } else {
         //Proceed!
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
-        }
-
         //Check if school year specified
         $gibbonResourceID = $_GET['gibbonResourceID'];
         if ($gibbonResourceID == 'Y') {

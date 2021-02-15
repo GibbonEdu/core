@@ -399,6 +399,15 @@ class Importer
                                     $relationalSQL .= " AND ".$this->escapeIdentifier($relationalField)."=:{$relationalFieldKey}";
                                 }
                             }
+                        } elseif (stripos($field, '|') !== false) {
+                            // Single key/value relationship, multiple optional fields as field1|field2|field3
+                            $relationalData = [$fieldNameKey => $value];
+                            $relationalFields = [];
+                            foreach (explode('|', $field) as $i => $relationalField)  {
+                                $relationalField = $this->escapeIdentifier($relationalField);
+                                $relationalFields[] = "{$relationalField}=:{$fieldNameKey}";
+                            }
+                            $relationalSQL = "SELECT {$table}.{$key} FROM {$table} {$tableJoin} WHERE ".implode(" OR ", $relationalFields);
                         } else {
                             // Single key/value relationship
                             $relationalField = $this->escapeIdentifier($field);

@@ -36,10 +36,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
             ->add(__('Manage Facility Changes'), 'spaceChange_manage.php')
             ->add(__('Add Facility Change'));
 
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
-        }
-
         $step = null;
         if (isset($_GET['step'])) {
             $step = $_GET['step'];

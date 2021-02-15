@@ -29,17 +29,17 @@ table:
         name: "Tutor 1"
         desc: "Up to 3 per roll group. The first-listed will be marked as \"Main Tutor\"."
         args: { filter: string }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
     gibbonPersonIDTutor2: 
         name: "Tutor 2"
         desc: ""
         args: { filter: string }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
     gibbonPersonIDTutor3: 
         name: "Tutor 3"
         desc: ""
         args: { filter: string }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
     gibbonSpaceID: 
         name: "Location"
         desc: "Name"

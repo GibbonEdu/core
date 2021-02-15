@@ -262,7 +262,6 @@ class Session implements SessionInterface
         $this->set('viewCalendarSpaceBooking', $userData['viewCalendarSpaceBooking']);
         $this->set('dateStart', $userData['dateStart']);
         $this->set('personalBackground', $userData['personalBackground']);
-        $this->set('messengerLastBubble', $userData['messengerLastBubble']);
         $this->set('gibboni18nIDPersonal', $userData['gibboni18nIDPersonal']);
         $this->set('googleAPIRefreshToken', $userData['googleAPIRefreshToken']);
         $this->set('receiveNotificationEmails', $userData['receiveNotificationEmails']);
@@ -273,8 +272,8 @@ class Session implements SessionInterface
         $this->set('gibbonThemeIDPersonal', null);
         if (!empty($userData['gibbonThemeIDPersonal'])) {
             $data = array( 'gibbonThemeID' => $userData['gibbonThemeIDPersonal']);
-            $sql = "SELECT gibbonThemeID FROM gibbonTheme WHERE active='Y' AND gibbonThemeID=:gibbonThemeID";
-            $result = $this->pdo->executeQuery($data, $sql);
+            $sql = "SELECT gibbonThemeID FROM gibbonTheme WHERE gibbonThemeID=:gibbonThemeID";
+            $result = $this->pdo->select($sql, $data);
 
             if ($result->rowCount() > 0) {
                 $this->set('gibbonThemeIDPersonal', $userData['gibbonThemeIDPersonal']);

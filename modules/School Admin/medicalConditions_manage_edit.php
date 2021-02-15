@@ -30,10 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/medicalCondit
         ->add(__('Manage Medical Conditions'), 'medicalConditions_manage.php')
         ->add(__('Edit Condition'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonMedicalConditionID = $_GET['gibbonMedicalConditionID'] ?? '';
 
     if (empty($gibbonMedicalConditionID)) {

@@ -33,10 +33,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
         //Proceed!
         $search = isset($_GET['search']) ? $_GET['search'] : null;
 
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
-        }
-
         //Check if school year specified
         $gibbonMessengerID = $_GET['gibbonMessengerID'];
         if ($gibbonMessengerID == '') {

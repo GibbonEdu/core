@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
     //Proceed!
     $page->breadcrumbs->add(__('Manage Applications'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $search = isset($_GET['search'])? $_GET['search'] : '';
 
     $applicationGateway = $container->get(StaffApplicationFormGateway::class);

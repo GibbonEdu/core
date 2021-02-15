@@ -27,10 +27,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_de
     //Proceed!
     $gibbonGroupID = (isset($_GET['gibbonGroupID']))? $_GET['gibbonGroupID'] : null;
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     if ($gibbonGroupID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

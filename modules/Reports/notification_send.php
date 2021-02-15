@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/notification_send.
     // Proceed!
     $page->breadcrumbs->add(__('Send Notifications'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $step = $_POST['step'] ?? 1;
     $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
     $reportingCycleGateway = $container->get(ReportingCycleGateway::class);

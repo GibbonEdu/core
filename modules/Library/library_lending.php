@@ -30,10 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return']);
-    }
-
     echo '<h3>';
     echo __('Search & Filter');
     echo '</h3>';

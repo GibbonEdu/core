@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/medicalCondit
     //Proceed!
     $page->breadcrumbs->add(__('Manage Medical Conditions'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $form = Form::create('medicalSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/medicalConditions_manageProcess.php' );
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);

@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
         $search = $_GET['search'];
     }
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Check if school year specified
     $gibbonStringID = $_GET['gibbonStringID'];
     if ($gibbonStringID == '') {

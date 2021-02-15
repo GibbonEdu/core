@@ -34,10 +34,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         ->add(__('Attendance Settings'), 'attendanceSettings.php')
         ->add(__('Edit Attendance Code'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonAttendanceCodeID = (isset($_GET['gibbonAttendanceCodeID']))? $_GET['gibbonAttendanceCodeID'] : NULL;
 
     if (empty($gibbonAttendanceCodeID)) {

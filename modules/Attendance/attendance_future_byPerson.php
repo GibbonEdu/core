@@ -34,13 +34,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null,
-        	array( 'warning2' => __('Your request was successful, but some data was not properly saved.') .' '. __('The specified date is not in the future, or is not a school day.'),
-        		   'error7' => __('Your request failed because the student has already been marked absent for the full day.'),
-        		   'error8' => __('Your request failed because the selected date is not in the future.'), )
-        );
-    }
+    $page->return->addReturns([
+        'warning2' => __('Your request was successful, but some data was not properly saved.') .' '. __('The specified date is not in the future, or is not a school day.'),
+        'error7' => __('Your request failed because the student has already been marked absent for the full day.'),
+        'error8' => __('Your request failed because the selected date is not in the future.'),
+    ]);
 
     $attendance = new AttendanceView($gibbon, $pdo);
 

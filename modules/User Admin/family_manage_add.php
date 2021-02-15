@@ -33,9 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_a
     if (isset($_GET['editID'])) {
         $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID='.$_GET['editID'].'&search='.$_GET['search'];
     }
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink, null);
-    }
+    $page->return->setEditLink($editLink);
 
     $search = $_GET['search'];
     if ($search != '') {

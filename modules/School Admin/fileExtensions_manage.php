@@ -28,10 +28,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/fileExtension
     //Proceed!
     $page->breadcrumbs->add(__('Manage File Extensions'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $fileExtensionGateway = $container->get(FileExtensionGateway::class);
 
     // QUERY

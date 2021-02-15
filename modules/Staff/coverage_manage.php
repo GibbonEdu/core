@@ -30,10 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php'
     // Proceed!
     $page->breadcrumbs->add(__('Manage Staff Coverage'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
     $search = $_GET['search'] ?? '';
 

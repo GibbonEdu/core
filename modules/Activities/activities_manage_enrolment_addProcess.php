@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 } else {
     //Proceed!
     //Validate Inputs
-    $status = $_POST['status'];
+    $status = $_POST['status'] ?? '';
 
     if ($gibbonActivityID == '' or $status == '') {
         $URL .= '&return=error1';
@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         } else {
             foreach ($choices as $t) {
                 //Check to see if student is already registered in this activity
-                
+
                     $data = array('gibbonPersonID' => $t, 'gibbonActivityID' => $gibbonActivityID);
                     $sql = 'SELECT * FROM gibbonActivityStudent WHERE gibbonPersonID=:gibbonPersonID AND gibbonActivityID=:gibbonActivityID';
                     $result = $connection2->prepare($sql);

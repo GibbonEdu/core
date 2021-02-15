@@ -36,9 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_access_m
         $editLink = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_access_manage_edit.php&gibbonReportingAccessID='.$_GET['editID'];
     }
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink, null);
-    }
+    $page->return->setEditLink($editLink);
 
     $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $gibbon->session->get('gibbonSchoolYearID');
     $reportingScopeGateway = $container->get(ReportingScopeGateway::class);

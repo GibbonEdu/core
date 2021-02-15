@@ -48,10 +48,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
                 ->add(__('Edit External Assessment'), 'externalAssessments_manage_edit.php', ['gibbonExternalAssessmentID' => $gibbonExternalAssessmentID])
                 ->add(__('Edit Field'));
 
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, null);
-            }
-
             $form = Form::create('externalAssessmentField', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/externalAssessments_manage_edit_field_editProcess.php?gibbonExternalAssessmentFieldID='.$gibbonExternalAssessmentFieldID.'&gibbonExternalAssessmentID='.$gibbonExternalAssessmentID);
             $form->setFactory(DatabaseFormFactory::create($pdo));
 

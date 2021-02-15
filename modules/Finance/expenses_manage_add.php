@@ -50,9 +50,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
         if (isset($_GET['editID'])) {
             $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/expenses_manage_edit.php&gibbonFinanceExpenseID='.$_GET['editID'].'&gibbonFinanceBudgetCycleID='.$_GET['gibbonFinanceBudgetCycleID'].'&status2='.$_GET['status2'].'&gibbonFinanceBudgetID2='.$_GET['gibbonFinanceBudgetID2'];
         }
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], $editLink, null);
-        }
+        $page->return->setEditLink($editLink);
+
 
         //Check if school year specified
         $status2 = $_GET['status2'];

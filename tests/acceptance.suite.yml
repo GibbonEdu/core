@@ -5,8 +5,6 @@
 # If you need both WebDriver and PHPBrowser tests - create a separate suite.
 
 class_name: AcceptanceTester
-settings:
-    bootstrap: acceptance/bootstrap.php
 params:
     - env
     - config/environment.php
@@ -30,5 +28,19 @@ modules:
             populate: true
             cleanup: false
             reconnect: true
+bootstrap: bootstrap.php
 groups:
-    users: [/Users]
+    users:
+      - acceptance/User Tests
+      - acceptance/User Admin
+    system:
+      - acceptance/System Admin
+    modules:
+      - acceptance/Activities
+      - acceptance/Data Updater
+      - acceptance/Finance
+      - acceptance/Markbook
+      - acceptance/Planner
+      - acceptance/School Admin
+      - acceptance/Students
+      - acceptance/Timetable Admin

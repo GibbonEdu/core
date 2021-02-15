@@ -31,10 +31,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     // Proceed!
     $page->breadcrumbs->add(__('Proof Read'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if (empty($highestAction)) {
         $page->addError(__('You do not have access to this action.'));

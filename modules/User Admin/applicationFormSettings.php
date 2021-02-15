@@ -27,10 +27,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
     //Proceed!
     $page->breadcrumbs->add(__('Application Form Settings'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $form = Form::create('applicationFormSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/applicationFormSettingsProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 

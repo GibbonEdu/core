@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
         ->add(__('Manage Expense Approvers'),'expenseApprovers_manage.php')
         ->add(__('Edit Expense Approver'));    
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return']);
-    }
-
     //Check if school year specified
     $gibbonFinanceExpenseApproverID = $_GET['gibbonFinanceExpenseApproverID'];
     if ($gibbonFinanceExpenseApproverID == '') {

@@ -31,10 +31,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 } else {
     $page->breadcrumbs->add(__('Manage Departments'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     echo '<h3>';
     echo __('Department Access');
     echo '</h3>';

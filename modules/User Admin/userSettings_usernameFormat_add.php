@@ -34,9 +34,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
     if (isset($_GET['editID'])) {
         $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/userSettings_usernameFormat_edit.php&gibbonUsernameFormatID='.$_GET['editID'];
     }
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink);
-    }
+    $page->return->setEditLink($editLink);
+
 
     $form = Form::create('usernameFormat', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/userSettings_usernameFormat_addProcess.php');
 

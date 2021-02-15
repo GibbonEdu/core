@@ -54,9 +54,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonBehaviourID='.$_GET['editID'].'&gibbonPersonID='.$gibbonPersonID.'&gibbonRollGroupID='.$gibbonRollGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&type='.$type;
             $editID = $_GET['editID'];
         }
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], $editLink, array('warning1' => __('Your request was successful, but some data was not properly saved.'), 'success1' => __('Your request was completed successfully. You can now add extra information below if you wish.')));
-        }
+
+        $page->return->setEditLink($editLink);
+        $page->return->addReturns(['warning1' => __('Your request was successful, but some data was not properly saved.'), 'success1' => __('Your request was completed successfully. You can now add extra information below if you wish.')]);
 
         $step = null;
         if (isset($_GET['step'])) {

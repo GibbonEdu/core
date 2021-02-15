@@ -49,22 +49,22 @@ fields:
         relationship: { table: gibbonReportingCriteria, key: gibbonReportingCriteriaID, field: [name, target, gibbonReportingScopeID, gibbonCourseID]  }
     gibbonPersonIDStudent:
         name: "Student"
-        desc: "email"
-        args: { filter: email, required: true, readonly: false  }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, field: email  }
+        desc: "username or email (if unique)"
+        args: { filter: nospaces, required: true, readonly: false  }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
     value:
         name: "Value"
         desc: ""
-        args: { filter: string, custom: false, readonly: false }
+        args: { filter: string, custom: true, readonly: false }
     comment:
         name: "Comment"
         desc: ""
-        args: { filter: string, custom: false, readonly: false }
+        args: { filter: string, custom: true, readonly: false }
     gibbonPersonIDCreated:
         name: "Teacher"
-        desc: "Email"
+        desc: "Username or Email (if unique)"
         args: { filter: email, custom: true, readonly: false  }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, field: email  }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
     timestampCreated:
         name: "Created On"
         desc: ""

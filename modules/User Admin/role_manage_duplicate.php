@@ -31,10 +31,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_dup
         ->add(__('Manage Roles'),'role_manage.php')
         ->add(__('Duplicate Role')); 
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Check if courseschool year specified
     $gibbonRoleID = $_GET['gibbonRoleID'];
     if ($gibbonRoleID == '') {

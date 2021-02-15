@@ -25,8 +25,8 @@ include __DIR__ . '/../../gibbon.php';
 //Module includes
 include __DIR__ . '/moduleFunctions.php';
 
-$gibbonPersonID = $_POST['gibbonPersonID'];
-$scope = $_POST['scope'];
+$gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
+$scope = $_POST['scope'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/attendance_future_byPerson.php&gibbonPersonID=$gibbonPersonID&scope=$scope";
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_future_byPerson.php') == false) {
@@ -64,15 +64,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
             require_once __DIR__ . '/src/AttendanceView.php';
             $attendance = new AttendanceView($gibbon, $pdo);
 
-            $fail = false;
-            $type = $_POST['type'];
-            $reason = $_POST['reason'];
-            $comment = $_POST['comment'];
+            $partialFail = false;
+            $partialFailSchoolClosed = false;
+            
+            $type = $_POST['type'] ?? '';
+            $reason = $_POST['reason'] ?? '';
+            $comment = $_POST['comment'] ?? '';
 
             $attendanceCode = $attendance->getAttendanceCodeByType($type);
             $direction = $attendanceCode['direction'];
 
-            $absenceType = (isset($_POST['absenceType']))? $_POST['absenceType'] : 'full';
+            $absenceType = $_POST['absenceType'] ?? 'full';
 
             $dateStart = '';
             if ($_POST['dateStart'] != '') {
@@ -90,8 +92,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                 header("Location: {$URL}");
             } else {
                 //Scroll through days
-                $partialFail = false;
-                $partialFailSchoolClosed = false;
 
                 $dateStartStamp = dateConvertToTimestamp($dateStart);
                 $dateEndStamp = dateConvertToTimestamp($dateEnd);
@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                                         header("Location: {$URL}");
                                         exit();
                                     } else {
-                                        $courses = (isset($_POST['courses']))? $_POST['courses'] : null;
+                                        $courses = $_POST['courses'] ?? null;
                                         if (!empty($courses) && is_array($courses)) {
                                             foreach ($courses as $course) {
                                                 try {
@@ -145,7 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                                                     $partialFail = true;
                                                 }
                                             }
-                                            $URL .= '&absenceType=partial&date=' . $_POST['dateStart']; //Redirect to exact state of submit form
+                                            $URL .= '&absenceType=partial&date=' . $_POST['dateStart'] ?? ''; //Redirect to exact state of submit form
                                         } else {
                                             // Return error if no courses selected for partial absence
                                             $URL .= '&return=error1';

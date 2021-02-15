@@ -35,9 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_a
     if (isset($_GET['editID'])) {
         $editLink = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_manage_edit.php&sidebar=false&gibbonReportTemplateID='.$_GET['editID'].'&search='.$_GET['search'];
     }
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink, null);
-    }
+    $page->return->setEditLink($editLink);
 
     if ($search != '') {
         echo "<div class='linkTop'>";

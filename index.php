@@ -38,6 +38,7 @@ require_once './gibbon.php';
 require_once './modules/Messenger/moduleFunctions.php';
 
 // Setup the Page and Session objects
+$theme = $container->get('theme');
 $page = $container->get('page');
 $session = $container->get('session');
 
@@ -452,25 +453,6 @@ if ($isLoggedIn) {
 }
 
 /**
- * RETURN PROCESS
- *
- * Adds an alert to the index based on the URL 'return' parameter.
- *
- * TODO: Remove all returnProcess() from pages. We could add a method to the
- * Page class to allow them to register custom messages, or use Session flash
- * to add the message directly from the Process pages.
- */
-if (!$session->has('address') && !empty($_GET['return'])) {
-    $customReturns = [
-        'success1' => __('Password reset was successful: you may now log in.')
-    ];
-
-    if ($alert = returnProcessGetAlert($_GET['return'], '', $customReturns)) {
-        $page->addAlert($alert['context'], $alert['text']);
-    }
-}
-
-/**
  * MENU ITEMS & FAST FINDER
  *
  * TODO: Move this somewhere more sensible.
@@ -485,23 +467,6 @@ if ($isLoggedIn && !$upgrade) {
     }
 
     $moduleGateway = $container->get(ModuleGateway::class);
-
-    if ($cacheLoad || !$session->has('menuMainItems')) {
-        $menuMainItems = $moduleGateway->selectModulesByRole($session->get('gibbonRoleIDCurrent'))->fetchGrouped();
-
-        foreach ($menuMainItems as $category => &$items) {
-            foreach ($items as &$item) {
-                $modulePath = '/modules/'.$item['name'];
-                $entryURL = ($item['entryURL'] == 'index.php' || isActionAccessible($guid, $connection2, $modulePath.'/'.$item['entryURL']))
-                    ? $item['entryURL']
-                    : $item['alternateEntryURL'];
-
-                $item['url'] = $session->get('absoluteURL').'/index.php?q='.$modulePath.'/'.$entryURL;
-            }
-        }
-
-        $session->set('menuMainItems', $menuMainItems);
-    }
 
     if ($page->getModule()) {
         $currentModule = $page->getModule()->getName();
@@ -529,6 +494,26 @@ if ($isLoggedIn && !$upgrade) {
         $session->forget(['menuModuleItems', 'menuModuleName']);
     }
 
+    if ($cacheLoad || !$session->has('menuMainItems')) {
+        $menuMainItems = $moduleGateway->selectModulesByRole($session->get('gibbonRoleIDCurrent'))->fetchGrouped();
+
+        foreach ($menuMainItems as $category => &$items) {
+            foreach ($items as &$item) {
+                $modulePath = '/modules/'.$item['name'];
+                $entryURL = ($item['entryURL'] == 'index.php' || isActionAccessible($guid, $connection2, $modulePath.'/'.$item['entryURL']))
+                    ? $item['entryURL']
+                    : $item['alternateEntryURL'];
+
+                $item['active'] = $session->get('menuModuleName') == $item['name'];
+                $item['url'] = $session->get('absoluteURL').'/index.php?q='.$modulePath.'/'.$entryURL;
+            }
+        }
+
+        $session->set('menuMainItems', $menuMainItems);
+    }
+
+    
+
     // Setup cached message array only if there are recent posts, or if more than one hour has elapsed
     $messageWallLatestPost = $container->get(MessengerGateway::class)->getRecentMessageWallTimestamp();
     $messageWallRefreshed = $gibbon->session->get('messageWallRefreshed', 0);
@@ -552,11 +537,12 @@ $header = $container->get(Gibbon\UI\Components\Header::class);
 $page->addData([
     'isLoggedIn'        => $isLoggedIn,
     'gibbonThemeName'   => $session->get('gibbonThemeName'),
-    'gibbonHouseIDLogo' => $session->get('gibbonHouseIDLogo'),
     'organisationLogo'  => $session->get('organisationLogo'),
     'organisationName'  => $session->get('organisationName'),
-    'minorLinks'        => $header->getMinorLinks($cacheLoad),
-    'notificationTray'  => $header->getNotificationTray($cacheLoad),
+    'cacheString'       => $session->get('cacheString'),
+    'currentUser'       => $header->getUserDetails(),
+    'minorLinks'        => $header->getMinorLinks(),
+    'statusTray'        => $header->getStatusTray(),
     'sidebar'           => $showSidebar,
     'version'           => $gibbon->getVersion(),
     'versionName'       => 'v'.$gibbon->getVersion().($session->get('cuttingEdgeCode') == 'Y'? 'dev' : ''),
@@ -566,9 +552,9 @@ $page->addData([
 
 if ($isLoggedIn) {
     $page->addData([
-        'menuMain'   => $session->get('menuMainItems', []),
-        'menuModule' => $session->get('menuModuleItems', []),
-        'fastFinder' => $session->get('fastFinder'),
+        'menuMain'       => $session->get('menuMainItems', []),
+        'menuModule'     => $session->get('menuModuleItems', []),
+        'fastFinder'     => $session->get('fastFinder'),
     ]);
 }
 
@@ -693,6 +679,16 @@ if (!$session->has('address')) {
     }
 }
 
+/**
+ * RETURN PROCESS
+ *
+ * Adds an alert to the index based on the URL 'return' parameter.
+ */
+if (!empty($_GET['return'])) {
+    if ($alert = $page->return->process($_GET['return'])){
+        $page->addAlert($alert['context'], $alert['text']);
+    }
+}
 /**
  * GET SIDEBAR CONTENT
  *

@@ -47,10 +47,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
         echo '</div>';
     } else {
         //Proceed!
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
-        }
-
         if ($gibbonSchoolYearID == '') {
             echo "<div class='error'>";
             echo __('You have not specified one or more required parameters.');

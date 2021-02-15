@@ -199,10 +199,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         )
                         ->add(__('Enter Marks'));
 
-                    if (isset($_GET['return'])) {
-                        returnProcess($guid, $_GET['return'], null, null);
-                    }
-
                     // Added an info message to let uers know about enter / automatic calculations
                     if ($values['attainment'] == 'Y' && $values['attainmentRaw'] == 'Y' && !empty($values['attainmentRawMax']) && $enableRawAttainment == 'Y') {
                         echo '<p>';

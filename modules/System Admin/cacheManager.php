@@ -28,10 +28,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/cacheManager.
     // Proceed!
     $page->breadcrumbs->add(__('Cache Manager'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $settingGateway = $container->get(SettingGateway::class);
     $setting = $settingGateway->getSettingByScope('System', 'cachePath', true);
 
@@ -85,12 +81,17 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/cacheManager.
     $row = $form->addRow();
         $row->addLabel('templateCache', __('Template Cache'));
         $row->addContent(Format::tag(Format::filesize($templatesSize), 'dull'));
-        $row->addCheckbox('templateCache')->setValue('Y')->checked('Y');
+        $row->addCheckbox('templateCache')->setValue('Y')->checked('N');
 
     $row = $form->addRow();
         $row->addLabel('reportsCache', __('Reports Cache'));
         $row->addContent(Format::tag(Format::filesize($reportsSize), 'dull'));
-        $row->addCheckbox('reportsCache')->setValue('Y')->checked('Y');
+        $row->addCheckbox('reportsCache')->setValue('Y')->checked('N');
+
+    $row = $form->addRow();
+        $row->addLabel('frontEndCache', __('Front End Cache'));
+        $row->addContent(Format::tag('.css .js', 'dull'));
+        $row->addCheckbox('frontEndCache')->setValue('Y')->checked('N');
 
     $row = $form->addRow()->addSubmit(__('Clear Cache'));
 

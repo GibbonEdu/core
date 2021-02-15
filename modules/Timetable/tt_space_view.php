@@ -52,10 +52,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
                 ->add(__('View Timetable by Facility'), 'tt_space.php')
                 ->add($row['name']);
 
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, null);
-            }
-
             if ($search != '') {
                 echo "<div class='linkTop'>";
                 echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable/tt_space.php&search=$search'>".__('Back to Search Results').'</a>';

@@ -30,9 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     //Proceed!
     $page->breadcrumbs->add(__('System Settings'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
+    $page->return->addReturns(['error6' => __('The uploaded file was missing or only partially uploaded.')]);
 
     $form = Form::create('systemSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/systemSettingsProcess.php');
 
@@ -107,13 +105,17 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
 
     $setting = getSettingByScope($connection2, 'System', 'organisationLogo', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextField($setting['name'])->setValue($setting['value'])->required();
+        $row->addLabel($setting['name'].'File', __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addFileUpload($setting['name'].'File')
+            ->accepts('.jpg,.jpeg,.gif,.png')
+            ->setAttachment('organisationLogo', $gibbon->session->get('absoluteURL'), $setting['value'])->required();
 
     $setting = getSettingByScope($connection2, 'System', 'organisationBackground', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextField($setting['name'])->setValue($setting['value']);
+        $row->addFileUpload($setting['name'].'File')
+            ->accepts('.jpg,.jpeg,.gif,.png')
+            ->setAttachment('organisationBackground', $gibbon->session->get('absoluteURL'), $setting['value']);
 
     $setting = getSettingByScope($connection2, 'System', 'organisationAdministrator', true);
     $row = $form->addRow();

@@ -33,10 +33,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
     // Proceed!
     $page->breadcrumbs->add(__('My Data Updates'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return']);
-    }
-
     $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
     $dataUpdaterGateway = $container->get(DataUpdaterGateway::class);
 

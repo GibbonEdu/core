@@ -31,10 +31,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     //Proceed!
     $page->breadcrumbs->add(__('Attendance History by Activity')); 
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     echo '<h2>';
     echo __('Choose Activity');
     echo '</h2>';

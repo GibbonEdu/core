@@ -118,10 +118,6 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
         'courseClass' => Format::courseClassName($class['course'], $class['class']),
     ]));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Add multiple columns
     if ($multiAdd) {
         echo "<div class='linkTop'>";
@@ -215,7 +211,12 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
             if (!empty($teacherList)) {
                 echo '<b>'.sprintf(__('Class taught by %1$s'), implode(', ', $teacherList) ).'</b>. ';
             }
-            echo __('To see more detail on an item (such as a comment or a grade), hover your mouse over it. To see more columns, using the Newer and Older links.');
+            if ($markbook->getColumnCountTotal() > $markbook->getColumnsPerPage()) {
+                echo __('To see more detail on an item (such as a comment or a grade), hover your mouse over it. To see more columns, use the Newer and Older links.');
+            } else {
+                echo __('To see more detail on an item (such as a comment or a grade), hover your mouse over it.');
+            }
+            
             if ($markbook->hasExternalAssessments() == true) {
                 echo ' '.__('The Baseline column is populated based on student performance in external assessments, and can be used as a reference point for the grades in the markbook.');
             }

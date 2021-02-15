@@ -29,18 +29,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
         ->add(__('Manage Modules'), 'module_manage.php')
         ->add(__('Update Module'));
 
-    $return = $_GET['return'] ?? '';
-    
-    $returns = array();
-    $returns['warning1'] = __('Some aspects of your request failed, but others were successful. The elements that failed are shown below:');
-    
-    if (!empty($return)) {
-        returnProcess($guid, $return, null, $returns);
-    }
+    $page->return->addReturns(['warning1' => __('Some aspects of your request failed, but others were successful. The elements that failed are shown below:')]);
     
     if (!empty($gibbon->session->get('moduleUpdateError'))) {
         $page->addError(__('The following SQL statements caused errors:').' '.$gibbon->session->get('moduleUpdateError'));
-        }
+    }
     $gibbon->session->set('moduleUpdateError', '');
 
     // Check if module specified

@@ -66,10 +66,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         return;
     }
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $applicationProcessFee = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee');
     $applicationProcessFeeText = getSettingByScope($connection2, 'Application Form', 'applicationProcessFeeText');
 

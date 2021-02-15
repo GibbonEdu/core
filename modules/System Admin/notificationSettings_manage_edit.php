@@ -32,10 +32,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
         ->add(__('Notification Settings'), 'notificationSettings.php')
         ->add(__('Edit Notification Event'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonNotificationEventID = (isset($_GET['gibbonNotificationEventID']))? $_GET['gibbonNotificationEventID'] : null;
 
     if (empty($gibbonNotificationEventID)) {

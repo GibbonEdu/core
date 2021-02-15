@@ -30,10 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     //Proceed!
     $page->breadcrumbs->add(__('Enter Activity Attendance'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     echo '<h2>';
     echo __('Choose Activity');
     echo '</h2>';

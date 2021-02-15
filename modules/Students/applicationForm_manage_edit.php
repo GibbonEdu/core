@@ -60,10 +60,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         return;
     }
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Let's go!
     $application = $result->fetch();
     $proceed = true;
@@ -925,7 +921,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $row->addFileUpload('file'.$i)
                     ->accepts($fileUploader->getFileExtensions())
                     ->setAttachments($_SESSION[$guid]['absoluteURL'], $attachments)
-                    ->setRequired($requiredDocumentsCompulsory == 'Y')
+                    ->setRequired($requiredDocumentsCompulsory == 'Y' && stripos($requiredDocumentsList[$i], $internalDocuments) === false)
                     ->uploadMultiple(true)
                     ->canDelete(true);
         }

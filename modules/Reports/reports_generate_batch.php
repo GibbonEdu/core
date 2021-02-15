@@ -34,10 +34,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
         ->add(__('Run'));
 
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonReportID = $_GET['gibbonReportID'] ?? '';
     
     $reportGateway = $container->get(ReportGateway::class);
@@ -132,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
             if (count($reportLogs) == 0) {
                 $actions->addAction('run', __('Run'))
                         ->setIcon('run')
-                        ->isModal(650, 135)
+                        ->isModal(650, 300)
                         ->addParam('contextData', $report['gibbonYearGroupID'])
                         ->setURL('/modules/Reports/reports_generate_batchConfirm.php');
             } else {

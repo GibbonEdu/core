@@ -24,10 +24,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed! 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return']);
-    }
-
     $gibbonUsernameFormatID = isset($_GET['gibbonUsernameFormatID'])? $_GET['gibbonUsernameFormatID'] : '';
 
     if ($gibbonUsernameFormatID == '') {

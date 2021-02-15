@@ -26,10 +26,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/displaySettin
     //Proceed!
     $page->breadcrumbs->add(__('Display Settings'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $form = Form::create('displaySettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/displaySettingsProcess.php');
     
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);

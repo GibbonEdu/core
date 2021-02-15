@@ -94,10 +94,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
                     'courseClass' => Format::courseClassName($row['course'], $row['class']),
                 ]));
 
-                if (isset($_GET['return'])) {
-                    returnProcess($guid, $_GET['return'], null, null);
-                }
-
                 //Get teacher list
                 $teacherList = getTeacherList($pdo, $gibbonCourseClassID);
                 $teaching = (isset($teacherList[ $gibbon->session->get('gibbonPersonID') ]) );

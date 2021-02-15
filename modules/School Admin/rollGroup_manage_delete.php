@@ -27,10 +27,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
     $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Check if school year specified
     if ($gibbonRollGroupID == '' and $gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

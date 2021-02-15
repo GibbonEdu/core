@@ -22,9 +22,9 @@ include '../../gibbon.php';
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
-$gibbonPlannerEntryHomeworkID = $_GET['gibbonPlannerEntryHomeworkID'];
-$gibbonPersonID = $_GET['gibbonPersonID'];
+$gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
+$gibbonPlannerEntryHomeworkID = $_GET['gibbonPlannerEntryHomeworkID'] ?? '';
+$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/crowdAssess_view_discuss.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&gibbonPersonID=$gibbonPersonID";
 
@@ -78,13 +78,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                         header("Location: {$URL}");
                     } else {
                         //INSERT
-                        $replyTo = null;
-                        if ($_GET['replyTo'] != '') {
-                            $replyTo = $_GET['replyTo'];
-                        }
+                        $replyTo = $_GET['replyTo'] ?? '';
+
 
                         //Attempt to prevent XSS attack
-                        $comment = $_POST['comment'];
+                        $comment = $_POST['comment'] ?? '';
                         $comment = tinymceStyleStripTags($comment, $connection2);
 
                         try {
@@ -97,10 +95,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                             header("Location: {$URL}");
                             exit();
                         }
-                        $hash = '';
-                        if ($_GET['replyTo'] != '') {
-                            $hash = '#'.$_GET['replyTo'];
-                        }
+                        $hash = '#'.($_GET['replyTo'] ?? '');
+
 
                         //Work out who we are replying too
                         $replyToID = null;

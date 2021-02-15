@@ -32,10 +32,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
     //Proceed!
     $page->breadcrumbs->add(__('Behaviour Settings'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $form = Form::create('behaviourSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/behaviourSettingsProcess.php');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);

@@ -17,8 +17,26 @@ TODO: add template variable details.
     </head>
     <body style="{{ bodyBackground }}">
         <div id="wrapOuter" class="sm:px-6">
-            <div class="mx-auto max-w-6xl text-right text-white text-xs md:text-sm px-2 xl:px-0 {{ gibbonHouseIDLogo ? 'mt-2' : 'mt-6' }}">
-                {{ minorLinks|raw }}
+            <div class="mx-auto max-w-6xl text-right text-white text-xs md:text-sm px-2 xl:px-0 {{ currentUser.houseLogo ? 'mt-2' : 'mt-6' }}">
+                {% if currentUser %}
+                    {% if currentUser.url %}<a href="{{ currentUser.url }}" class="link-white">{% endif %}
+                        {{- currentUser.name -}}
+                    {% if currentUser.url %}</a>{% endif %} · 
+                {% endif %}
+                
+                {% for link in minorLinks %}
+                    {{ link.prepend }}
+                    <a href="{{ link.url }}" class="link-white {{ loop.count > 3 ? 'hidden sm:block' }}" target="{{ link.target }}">
+                        {{- link.name|raw -}}
+                    </a>
+                    {{ link.append }}
+
+                    {% if not loop.last %} · {% endif %}
+                {% endfor %}
+
+                {% if currentUser.houseName and currentUser.houseLogo %}
+                    <img class="ml-1 -mt-4 w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16" title="{{ currentUser.houseName }}" style="vertical-align: -75%;" src="{{ absoluteURL }}/{{ currentUser.houseLogo }}"/>
+                {% endif %}
             </div>
 
             <div id="wrap" class="mx-auto max-w-6xl m-2 shadow-container rounded">
@@ -94,19 +112,7 @@ TODO: add template variable details.
 
                 {% block footer %}
                 <div class="relative bg-transparent-600 text-white text-center text-sm p-6 mb-10 leading-normal rounded-b">
-                    <span class="inline-block">
-                        {{ __('Powered by') }} <a class="link-white" target='_blank' href='https://gibbonedu.org'>Gibbon</a> {{ versionName }}</span> 
-                    <span class="inline-block">|  &#169; <a class="link-white" target='_blank' href='http://rossparker.org'>Ross Parker</a> 2010-{{ 'now'|date('Y') }}</span>
-                    <br/>
-
-                    <span class="text-xs">
-                        {{ __('Created under the') }} <a class="link-white" target='_blank' href='https://www.gnu.org/licenses/gpl.html'>GNU GPL</a> 
-                        at <a class="link-white" target='_blank' href='http://www.ichk.edu.hk'>ICHK</a> | 
-                        <a class="link-white" target='_blank' href='https://gibbonedu.org/about/#ourTeam'>{{ __('Credits') }}</a> | 
-                        <a class="link-white" target='_blank' href='https://gibbonedu.org/about/#translators'>{{ __('Translators') }}</a>
-                        <br/>
-                        {{ footerThemeAuthor }}<br/>
-                    </span>
+                    {{ include('footer.twig.html') }}
 
                     <img class="absolute right-0 top-0 -mt-2 sm:mr-0 md:mr-12 opacity-75 hidden sm:block" alt="Logo Small" src="{{ absoluteURL }}/themes/{{ gibbonThemeName|default("Default") }}/img/logoFooter.png"/>
                 </div>

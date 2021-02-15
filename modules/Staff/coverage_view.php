@@ -30,10 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view.php') 
 } else {
     $page->breadcrumbs->add(__('Open Requests'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $urgencyThreshold = getSettingByScope($connection2, 'Staff', 'urgencyThreshold');
 
     $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];

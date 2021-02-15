@@ -39,10 +39,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     //Proceed!
     $page->breadcrumbs->add(__('Manage Users'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $search = isset($_GET['search'])? $_GET['search'] : '';
 
     // CRITERIA

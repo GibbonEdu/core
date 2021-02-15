@@ -33,10 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_declin
         ->add(__('My Coverage'), 'coverage_my.php')
         ->add(__('Decline Coverage Request'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null);
-    }
-
+    
     $gibbonStaffCoverageID = $_GET['gibbonStaffCoverageID'] ?? '';
 
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);

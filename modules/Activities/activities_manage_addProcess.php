@@ -26,24 +26,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $name = $_POST['name'];
-    $provider = $_POST['provider'];
-    $active = $_POST['active'];
-    $registration = $_POST['registration'];
-    $dateType = $_POST['dateType'];
+    $name = $_POST['name'] ?? '';
+    $provider = $_POST['provider'] ?? '';
+    $active = $_POST['active'] ?? '';
+    $registration = $_POST['registration'] ?? '';
+    $dateType = $_POST['dateType'] ?? '';
     if ($dateType == 'Term') {
-        $gibbonSchoolYearTermIDList = isset($_POST['gibbonSchoolYearTermIDList'])? $_POST['gibbonSchoolYearTermIDList'] : array();
+        $gibbonSchoolYearTermIDList =  $_POST['gibbonSchoolYearTermIDList'] ?? [];
         $gibbonSchoolYearTermIDList = implode(',', $gibbonSchoolYearTermIDList);
     } elseif ($dateType == 'Date') {
-        $listingStart = dateConvert($guid, $_POST['listingStart']);
-        $listingEnd = dateConvert($guid, $_POST['listingEnd']);
-        $programStart = dateConvert($guid, $_POST['programStart']);
-        $programEnd = dateConvert($guid, $_POST['programEnd']);
+        $listingStart = dateConvert($guid, $_POST['listingStart'] ?? '');
+        $listingEnd = dateConvert($guid, $_POST['listingEnd'] ?? '');
+        $programStart = dateConvert($guid, $_POST['programStart'] ?? '');
+        $programEnd = dateConvert($guid, $_POST['programEnd'] ?? '');
     }
-    $gibbonYearGroupIDList = isset($_POST['gibbonYearGroupIDList'])? $_POST['gibbonYearGroupIDList'] : array();
+    $gibbonYearGroupIDList = $_POST['gibbonYearGroupIDList'] ?? array();
     $gibbonYearGroupIDList = implode(',', $gibbonYearGroupIDList);
 
-    $maxParticipants = $_POST['maxParticipants'];
+    $maxParticipants = $_POST['maxParticipants'] ?? '';
     if (getSettingByScope($connection2, 'Activities', 'payment') == 'None' or getSettingByScope($connection2, 'Activities', 'payment') == 'Single') {
         $paymentOn = false;
         $payment = null;
@@ -51,11 +51,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         $paymentFirmness = null;
     } else {
         $paymentOn = true;
-        $payment = $_POST['payment'];
-        $paymentType = $_POST['paymentType'];
-        $paymentFirmness = $_POST['paymentFirmness'];
+        $payment = $_POST['payment'] ?? '';
+        $paymentType = $_POST['paymentType'] ?? '';
+        $paymentFirmness = $_POST['paymentFirmness'] ?? '';
     }
-    $description = $_POST['description'];
+    $description = $_POST['description'] ?? '';
 
     if ($dateType == '' or $name == '' or $provider == '' or $active == '' or $registration == '' or $maxParticipants == '' or ($paymentOn and ($payment == '' or $paymentType == '' or $paymentFirmness == '')) or ($dateType == 'Date' and ($listingStart == '' or $listingEnd == '' or $programStart == '' or $programEnd == ''))) {
         $URL .= '&return=error1';
@@ -89,19 +89,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         //Scan through slots
         $partialFail = false;
         for ($i = 1; $i < 3; ++$i) {
-            $gibbonDaysOfWeekID = $_POST["gibbonDaysOfWeekID$i"];
-            $timeStart = $_POST["timeStart$i"];
-            $timeEnd = $_POST["timeEnd$i"];
+            $gibbonDaysOfWeekID = $_POST["gibbonDaysOfWeekID$i"] ?? '';
+            $timeStart = $_POST["timeStart$i"] ?? '';
+            $timeEnd = $_POST["timeEnd$i"] ?? '';
             $type = 'Internal';
             if (isset($_POST['slot'.$i.'Location'])) {
                 $type = $_POST['slot'.$i.'Location'];
             }
             $gibbonSpaceID = null;
             if ($type == 'Internal') {
-                $gibbonSpaceID = isset($_POST["gibbonSpaceID$i"])? $_POST["gibbonSpaceID$i"] : null;
+                $gibbonSpaceID = $_POST["gibbonSpaceID$i"] ?? null;
                 $locationExternal = '';
             } else {
-                $locationExternal = $_POST['location'.$i.'External'];
+                $locationExternal = $_POST['location'.$i.'External'] ?? '';
             }
 
             if ($gibbonDaysOfWeekID != '' and $timeStart != '' and $timeEnd != '') {
@@ -116,9 +116,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             }
         }
 
-        //Scan through staff
-        $staff = isset($_POST['staff'])? $_POST['staff'] : null;
-        $role = isset($_POST['role']) ? $_POST['role'] : 'Other';
+        // Scan through staff
+        $staff = $_POST['staff'] ?? [];
+        $role = $_POST['role'] ?? 'Other';
+
+        // make sure that staff is an array
+        if (!is_array($staff)) {
+            $staff = [(string) $staff];
+        }
 
         if (count($staff) > 0) {
             foreach ($staff as $t) {

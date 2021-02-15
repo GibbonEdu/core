@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
+$gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/budgetCycles_manage_edit.php&gibbonFinanceBudgetCycleID='.$gibbonFinanceBudgetCycleID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manage_edit.php') == false) {
@@ -48,11 +48,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
             header("Location: {$URL}");
         } else {
             //Validate Inputs
-            $name = $_POST['name'];
-            $status = $_POST['status'];
-            $sequenceNumber = $_POST['sequenceNumber'];
-            $dateStart = dateConvert($guid, $_POST['dateStart']);
-            $dateEnd = dateConvert($guid, $_POST['dateEnd']);
+            $name = $_POST['name'] ?? '';
+            $status = $_POST['status'] ?? '';
+            $sequenceNumber = $_POST['sequenceNumber'] ?? '';
+            $dateStart = dateConvert($guid, $_POST['dateStart'] ?? '');
+            $dateEnd = dateConvert($guid, $_POST['dateEnd'] ?? '');
 
             if ($name == '' or $status == '' or $sequenceNumber == '' or is_numeric($sequenceNumber) == false or $dateStart == '' or $dateEnd == '') {
                 $URL .= '&return=error1';

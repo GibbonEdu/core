@@ -30,10 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     if (isset($_GET['redirect']) && $_GET['redirect'] == 'true') {
         echo '<div class=\'warning\'>';
             echo __('Please self register!');

@@ -49,10 +49,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_delete.php
             echo '</div>';
         } else {
             //Proceed!
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, null);
-            }
-
             //Check if school year specified
             $gibbonRubricID = $_GET['gibbonRubricID'];
             if ($gibbonRubricID == '') {

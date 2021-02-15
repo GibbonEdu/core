@@ -48,9 +48,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
             if (isset($_GET['editID'])) {
                 $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/outcomes_edit.php&gibbonOutcomeID='.$_GET['editID'].'&filter2='.$_GET['filter2'];
             }
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], $editLink, null);
-            }
+            $page->return->setEditLink($editLink);
+
 
             $filter2 = '';
             if (isset($_GET['filter2'])) {

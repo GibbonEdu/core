@@ -40,9 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
         'error4'   => __('Your request failed because a theme with the same name is already installed.'),
     );
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, $returns);
-    }
+    $page->return->addReturns($returns);
 
     echo "<div class='message'>";
     echo sprintf(__('To install a theme, upload the theme folder to %1$s on your server and then refresh this page. After refresh, the theme should appear in the list below: use the install button in the Actions column to set it up.'), '<b><u>'.$_SESSION[$guid]['absolutePath'].'/themes/</u></b>');

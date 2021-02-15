@@ -32,10 +32,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage.php'
     // Proceed!
     $page->breadcrumbs->add(__('Manage Staff Absences'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
     $gibbonStaffAbsenceTypeID = $_GET['gibbonStaffAbsenceTypeID'] ?? '';
     $search = $_GET['search'] ?? '';

@@ -28,10 +28,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
     //Proceed!
     $page->breadcrumbs->add(__('Manage Year Groups'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $yearGroupGateway = $container->get(YearGroupGateway::class);
 
     // QUERY

@@ -35,10 +35,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         ->add(__('Submit Contributions'), 'investigations_submit.php')
         ->add(__('Edit'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonINInvestigationID = $_GET['gibbonINInvestigationID'] ?? '';
     $gibbonINInvestigationContributionID = $_GET['gibbonINInvestigationContributionID'] ?? '';
     if ($gibbonINInvestigationContributionID == '' || $gibbonINInvestigationID == '') {
