@@ -36,9 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_a
     if (isset($_GET['editID'])) {
         $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/substitutes_manage_edit.php&gibbonSubstituteID='.$_GET['editID'].'&search='.$_GET['search'];
     }
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink, null);
-    }
+    $page->return->setEditLink($editLink);
 
     if ($search != '') {
         echo "<div class='linkTop'>";

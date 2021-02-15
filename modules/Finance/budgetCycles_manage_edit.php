@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
         ->add(__('Manage Budget Cycles'), 'budgetCycles_manage.php')
         ->add(__('Edit Budget Cycle'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return']);
-    }
-
     //Check if school year specified
     $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
     if ($gibbonFinanceBudgetCycleID == '') {

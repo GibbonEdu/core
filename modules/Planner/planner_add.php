@@ -142,9 +142,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                     'gibbonPlannerEntryID' => $_GET['editID'] ?? '',
                 ]);
             }
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], $editLink, null);
-            }
+            $page->return->setEditLink($editLink);
+
 
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/planner_addProcess.php?viewBy=$viewBy&subView=$subView&address=".$_SESSION[$guid]['address']);
             $form->setFactory(PlannerFormFactory::create($pdo));

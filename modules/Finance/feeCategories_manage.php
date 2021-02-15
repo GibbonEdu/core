@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
     //Proceed!
     $page->breadcrumbs->add(__('Manage Fee Categories'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return']);
-    }
-
     $gateway = $container->get(InvoiceGateway::class);
     $criteria = $gateway->newQueryCriteria(true)->fromPOST();
     $feeCategories = $gateway->queryFeeCategories($criteria);

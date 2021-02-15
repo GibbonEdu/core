@@ -36,12 +36,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_edit
         ->add(__('Manage Staff Coverage'), 'coverage_manage.php')
         ->add(__('Edit Coverage'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, [
+    $page->return->addReturns([
             'success1' => __('Your request was completed successfully.'),
             'warning3' => __('This coverage request has already been accepted.'),
         ]);
-    }
 
     $gibbonStaffCoverageID = $_GET['gibbonStaffCoverageID'] ?? '';
 

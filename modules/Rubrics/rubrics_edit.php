@@ -54,10 +54,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                 ->add(__('Manage Rubrics'), 'rubrics.php', ['search' => $search, 'filter2' => $filter2])
                 ->add(__('Edit Rubric'));
 
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, null);
-            }
-
             if (isset($_GET['addReturn'])) {
                 $addReturn = $_GET['addReturn'];
             } else {

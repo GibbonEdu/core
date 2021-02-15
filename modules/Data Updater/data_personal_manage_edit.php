@@ -52,10 +52,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, null);
-            }
-
             $data = array('gibbonPersonUpdateID' => $gibbonPersonUpdateID);
             $sql = "SELECT gibbonPersonUpdate.* FROM gibbonPersonUpdate JOIN gibbonPerson ON (gibbonPersonUpdate.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPersonUpdateID=:gibbonPersonUpdateID";
             $newResult = $pdo->executeQuery($data, $sql);

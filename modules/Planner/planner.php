@@ -91,10 +91,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
             }
             $page->breadcrumbs->add(__('My Children\'s Classes'));
 
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, null);
-            }
-
             //Test data access field for permission
             
                 $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
@@ -482,10 +478,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                     'classDesc' => dateConvertBack($guid, $date),
                 ]));
 
-                if (isset($_GET['return'])) {
-                    returnProcess($guid, $_GET['return'], null, null);
-                }
-
                 if (isSchoolOpen($guid, date('Y-m-d', $dateStamp), $connection2) == false) {
                     echo "<div class='warning'>";
                     echo __('School is closed on the specified day.');
@@ -674,9 +666,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
 
                         $returns = array();
                         $returns['success1'] = __('Bump was successful. It is possible that some lessons have not been moved (if there was no space for them), but a reasonable effort has been made.');
-                        if (isset($_GET['return'])) {
-                            returnProcess($guid, $_GET['return'], null, $returns);
-                        }
+                        $page->return->addReturns($returns);
 
                         try {
                             if ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewOnly') {

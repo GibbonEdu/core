@@ -41,9 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     if (isset($_GET['editID'])) {
         $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Library/library_manage_catalog_edit.php&gibbonLibraryItemID='.$_GET['editID'].'&'.http_build_query($urlParams);
     }
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink, null);
-    }
+    $page->return->setEditLink($editLink);
 
     if (array_filter($urlParams)) {
         echo "<div class='linkTop'>";

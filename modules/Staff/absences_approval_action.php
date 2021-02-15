@@ -35,9 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_approval_ac
         ->add(__('Approve Staff Absences'), 'absences_approval.php')
         ->add(__('Approval'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink, null);
-    }
+    $page->return->setEditLink($editLink);
 
     $absence = $container->get(StaffAbsenceGateway::class)->getAbsenceDetailsByID($gibbonStaffAbsenceID);
 

@@ -33,9 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
     if (isset($_GET['editID'])) {
         $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/schoolYearTerm_manage_edit.php&gibbonSchoolYearTermID='.$_GET['editID'];
     }
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink, null);
-    }
+    $page->return->setEditLink($editLink);
 
     $form = Form::create('schoolYearTerm', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/schoolYearTerm_manage_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));

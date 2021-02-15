@@ -46,10 +46,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
             ->add(__('Manage Expenses'), 'expenses_manage.php',  $urlParams)
             ->add(__('Edit Expense'));        
 
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
-        }
-
         //Check if params are specified
         $gibbonFinanceExpenseID = isset($_GET['gibbonFinanceExpenseID'])? $_GET['gibbonFinanceExpenseID'] : '';
         $status2 = isset($_GET['status2'])? $_GET['status2'] : '';

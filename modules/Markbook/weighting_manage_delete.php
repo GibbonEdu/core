@@ -43,10 +43,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
             echo '</div>';
         }
 
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
-        }
-
         //Get class variable
         $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 

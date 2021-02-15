@@ -58,10 +58,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 $values = $result->fetch();
                 $values2 = $result2->fetch();
 
-                if (isset($_GET['return'])) {
-                    returnProcess($guid, $_GET['return'], null, null);
-                }
-
                 $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/internalAssessment_manage_deleteProcess.php?gibbonInternalAssessmentColumnID=$gibbonInternalAssessmentColumnID");
                 echo $form->getOutput();
             }

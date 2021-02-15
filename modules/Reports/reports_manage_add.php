@@ -40,9 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage_add
         $editLink = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reports_manage_edit.php&gibbonSchoolYearID='.$gibbonSchoolYearID.'&gibbonReportID='.$_GET['editID'];
     }
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink, null);
-    }
+    $page->return->setEditLink($editLink);
 
     $reportingCycleGateway = $container->get(ReportingCycleGateway::class);
 

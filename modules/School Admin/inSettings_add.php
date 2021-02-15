@@ -33,9 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings_ad
     if (isset($_GET['editID'])) {
         $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/inSettings_edit.php&gibbonINDescriptorID='.$_GET['editID'];
     }
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink, null);
-    }
+    $page->return->setEditLink($editLink);
 
     $form = Form::create('inDescriptor', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/inSettings_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));

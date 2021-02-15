@@ -45,6 +45,7 @@ v22.0.00
 
     Deprecations
         Messenger: removed the pop-up Messenger bubbles
+        System: deprecated the returnProcess function
 
 v21.0.01
 --------

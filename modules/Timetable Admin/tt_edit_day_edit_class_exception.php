@@ -60,10 +60,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 ->add(__('Classes in Period'), 'tt_edit_day_edit_class.php', $urlParams)
                 ->add(__('Class List Exception'));
 
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, null);
-            }
-
             $ttDayRowClassExceptions = $timetableDayGateway->selectTTDayRowClassExceptionsByID($gibbonTTDayRowClassID);
 
             // DATA TABLE

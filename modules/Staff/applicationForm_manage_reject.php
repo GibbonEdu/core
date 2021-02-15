@@ -49,10 +49,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             echo __('The specified record does not exist.');
             echo '</div>';
         } else {
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, null);
-            }
-
             //Let's go!
             $values = $result->fetch();
             $proceed = true;

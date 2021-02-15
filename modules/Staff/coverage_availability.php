@@ -64,11 +64,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availabilit
     $schoolYearGateway = $container->get(SchoolYearGateway::class);
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, [
+    $page->return->addReturns([
             'success1' => __('Your request was completed successfully.').' '.__('You may now continue by submitting a coverage request for this absence.')
         ]);
-    }
 
     $criteria = $staffCoverageGateway->newQueryCriteria();
 

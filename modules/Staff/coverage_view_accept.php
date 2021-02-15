@@ -34,11 +34,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_accept
         ->add(__('My Coverage'), 'coverage_my.php')
         ->add(__('Accept Coverage Request'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, [
+    $page->return->addReturns([
             'warning3' => __('This coverage request has already been accepted.'),
         ]);
-    }
 
     $gibbonStaffCoverageID = $_GET['gibbonStaffCoverageID'] ?? '';
 

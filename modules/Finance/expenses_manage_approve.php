@@ -42,10 +42,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
             ->add(__('My Expense Requests'), 'expenseRequest_manage.php',  $urlParams)
             ->add(__('Approve/Reject Expense'));          
 
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
-        }
-
         //Check if params are specified
         $gibbonFinanceExpenseID = isset($_GET['gibbonFinanceExpenseID'])? $_GET['gibbonFinanceExpenseID'] : '';
         $status = '';

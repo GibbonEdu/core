@@ -100,9 +100,7 @@ else {
 			</script>
 			<?php
 
-			if (isset($_GET['return'])) {
-				returnProcess($guid, $_GET['return'], null, array('error2' => 'Some elements of your request failed, but others were successful.'));
-			}
+			$page->return->addReturns(['error2' => 'Some elements of your request failed, but others were successful.']);
 
 			// Create a reusable confirmation closure
 			$icon = '<img src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/%1$s"/>';

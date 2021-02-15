@@ -51,10 +51,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             echo __('The selected application does not exist or has already been processed.');
             echo '</div>';
         } else {
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, null);
-            }
-
             //Let's go!
             $values = $result->fetch();
             $step = '';

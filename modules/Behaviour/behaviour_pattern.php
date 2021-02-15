@@ -36,10 +36,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 } else {
     $page->breadcrumbs->add(__('Find Behaviour Patterns'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return']);
-    }
-
     $descriptor = isset($_GET['descriptor'])? $_GET['descriptor'] : '';
     $level = isset($_GET['level'])? $_GET['level'] : '';
     $fromDate = isset($_GET['fromDate'])? $_GET['fromDate'] : '';

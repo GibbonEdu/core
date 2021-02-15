@@ -30,9 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     //Proceed!
     $page->breadcrumbs->add(__('System Settings'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, ['error6' => __('The uploaded file was missing or only partially uploaded.')]);
-    }
+    $page->return->addReturns(['error6' => __('The uploaded file was missing or only partially uploaded.')]);
 
     $form = Form::create('systemSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/systemSettingsProcess.php');
 

@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return']);
-    }
-
     //Get current filter values
     $viewMode = $_REQUEST['format'] ?? '';
     $name = $_REQUEST['name'] ?? '';

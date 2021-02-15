@@ -207,9 +207,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                     $returns = array();
                     $returns['error6'] = __('An error occured with your submission, most likely because a submitted file was too large.');
                     $returns['error7'] = __('The specified date is in the future: it must be today or earlier.');
-                    if (isset($_GET['return'])) {
-                        returnProcess($guid, $_GET['return'], null, $returns);
-                    }
+                    $page->return->addReturns($returns);
 
                     if ($gibbonCourseClassID == '') {
                         $gibbonCourseClassID = $values['gibbonCourseClassID'];

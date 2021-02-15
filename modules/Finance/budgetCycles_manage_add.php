@@ -33,9 +33,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
     if (isset($_GET['editID'])) {
         $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/budgetCycles_manage_edit.php&gibbonFinanceBudgetCycleID='.$_GET['editID'];
     }
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink);
-    }
+    $page->return->setEditLink($editLink);
+
 
     $form = Form::create('budgetCycle', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/budgetCycles_manage_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));

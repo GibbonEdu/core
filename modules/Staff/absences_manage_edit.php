@@ -35,9 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_edit
         ->add(__('Manage Staff Absences'), 'absences_manage.php')
         ->add(__('Edit Absence'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('error3' => __('School is closed on the specified day.')));
-    }
+    $page->return->addReturns(['error3' => __('School is closed on the specified day.')]);
 
     $gibbonStaffAbsenceID = $_GET['gibbonStaffAbsenceID'] ?? '';
 

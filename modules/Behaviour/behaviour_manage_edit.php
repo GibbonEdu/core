@@ -43,10 +43,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             ->add(__('Manage Behaviour Records'), 'behaviour_manage.php')
             ->add(__('Edit'));
         
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
-        }
-
         //Check if school year specified
         $gibbonBehaviourID = $_GET['gibbonBehaviourID'];
         if ($gibbonBehaviourID == '') {

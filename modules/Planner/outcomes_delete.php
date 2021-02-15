@@ -39,10 +39,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_delete.ph
             echo '</div>';
         } else {
             //Proceed!
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, null);
-            }
-
             $filter2 = '';
             if (isset($_GET['filter2'])) {
                 $filter2 = $_GET['filter2'];

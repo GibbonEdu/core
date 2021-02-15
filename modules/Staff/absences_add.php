@@ -39,14 +39,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
         return;
     }
 
-    if (isset($_GET['return'])) {
-        $editLink = isset($_GET['editID'])
-            ? $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/absences_manage_edit.php&gibbonStaffAbsenceID='.$_GET['editID']
-            : '';
-        returnProcess($guid, $_GET['return'], $editLink, [
-            'error8' => __('Your request failed.') .' '. __('The specified date is not in the future, or is not a school day.'),
-        ]);
-    }
+    $editLink = isset($_GET['editID'])
+        ? $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/absences_manage_edit.php&gibbonStaffAbsenceID='.$_GET['editID']
+        : '';
+    $page->return->setEditLink($editLink);
+    $page->return->addReturns([
+        'error8' => __('Your request failed.') .' '. __('The specified date is not in the future, or is not a school day.'),
+    ]);
 
     $absoluteURL = $gibbon->session->get('absoluteURL');
     $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);

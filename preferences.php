@@ -43,9 +43,7 @@ if (!$gibbon->session->exists("username")) {
     $returns['error3'] = __('Your request failed due to incorrect current password.');
     $returns['error6'] = __('Your request failed because your password does not meet the minimum requirements for strength.');
     $returns['error7'] = __('Your request failed because your new password is the same as your current password.');
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, $returns);
-    }
+    $page->return->addReturns($returns);
 
     
         $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));

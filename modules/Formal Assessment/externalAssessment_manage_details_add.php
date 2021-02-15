@@ -40,9 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
     if (isset($_GET['editID'])) {
         $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Formal Assessment/externalAssessment_manage_details_edit.php&gibbonExternalAssessmentStudentID='.$_GET['editID'].'&search='.$_GET['search'].'&allStudents='.$_GET['allStudents'].'&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonExternalAssessmentID='.$_GET['gibbonExternalAssessmentID'];
     }
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink, null);
-    }
+    $page->return->setEditLink($editLink);
 
     if ($gibbonPersonID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

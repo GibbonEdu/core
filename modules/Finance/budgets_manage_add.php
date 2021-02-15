@@ -36,9 +36,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_add
     if (isset($_GET['editID'])) {
         $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/budgets_manage_edit.php&gibbonFinanceBudgetID='.$_GET['editID'];
     }
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink);
-    }
+    $page->return->setEditLink($editLink);
+
 
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/budgets_manage_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));

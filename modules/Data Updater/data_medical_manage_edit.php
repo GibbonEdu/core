@@ -54,10 +54,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             echo __('The specified record does not exist.');
             echo '</div>';
         } else {
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, null);
-            }
-
             $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID);
             $sql = "SELECT gibbonPersonMedicalUpdate.* FROM gibbonPersonMedicalUpdate
                     LEFT JOIN gibbonPersonMedical ON (gibbonPersonMedical.gibbonPersonID=gibbonPersonMedicalUpdate.gibbonPersonID)

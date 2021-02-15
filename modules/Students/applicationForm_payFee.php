@@ -27,7 +27,7 @@ $gibbonApplicationFormID = $_GET['gibbonApplicationFormID'] ?? '';
 $page->breadcrumbs->add(__('Application Fee'));
 
 if (isset($_GET['return'])) {
-    returnProcess($guid, $_GET['return'], null, [
+    $page->return->addReturns([
         'error3' => __("Your payment could not be made as the payment gateway does not support the system's currency."),
         'error4' => __('Online payment options are not available at this time.'),
         'success1' => __('Your payment has been successfully made to your credit card. A receipt has been emailed to you.'), 'success2' => __('Your payment could not be made to your credit card. Please try an alternative payment method.'),

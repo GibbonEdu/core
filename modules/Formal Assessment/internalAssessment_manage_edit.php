@@ -72,9 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     echo __('This column is part of a set of columns, which you did not create, and so cannot be individually edited.');
                     echo '</div>';
                 } else {
-                    if (isset($_GET['return'])) {
-                        returnProcess($guid, $_GET['return'], null, array('error3' => __('Your request failed due to an attachment error.')));
-                    }
+                    $page->return->addReturns(['error3' => __('Your request failed due to an attachment error.')]);
 
                     $form = Form::create('internalAssessment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/internalAssessment_manage_editProcess.php?gibbonInternalAssessmentColumnID='.$gibbonInternalAssessmentColumnID.'&gibbonCourseClassID='.$gibbonCourseClassID.'&address='.$_SESSION[$guid]['address']);
                     $form->setFactory(DatabaseFormFactory::create($pdo));

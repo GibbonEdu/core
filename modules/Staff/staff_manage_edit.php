@@ -45,10 +45,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
             ->add(__('Manage Staff'), 'staff_manage.php', ['search' => $search, 'allStaff' => $allStaff])
             ->add(__('Edit Staff'), 'staff_manage_edit.php');
 
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
-        }
-
         //Check if school year specified
         $gibbonStaffID = $_GET['gibbonStaffID'];
         if ($gibbonStaffID == '') {

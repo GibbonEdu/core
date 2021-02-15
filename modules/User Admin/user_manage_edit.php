@@ -36,9 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
     $returns = array();
     $returns['warning1'] = __('Your request was completed successfully, but one or more images were the wrong size and so were not saved.');
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, $returns);
-    }
+    $page->return->addReturns($returns);
 
     //Check if school year specified
     $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';

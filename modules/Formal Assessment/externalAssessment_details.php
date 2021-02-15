@@ -44,10 +44,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
             ->add(__('View All Assessments'), 'externalAssessment.php')
             ->add(__('Student Details'));
 
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return']);
-        }
-
         try {
             if ($allStudents != 'on') {
                 $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);

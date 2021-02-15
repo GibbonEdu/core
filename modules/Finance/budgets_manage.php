@@ -27,10 +27,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage.php
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Manage Budgets'));
-
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return']);
-    }
     
     $gateway = $container->get(FinanceGateway::class);
     $criteria = $gateway

@@ -28,9 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
 
     $returns = array();
     $returns['error3'] = sprintf(__('Your PHP environment cannot handle all of the fields in this form (the current limit is %1$s). Ask your web host or system administrator to increase the value of the max_input_vars in php.ini.'), ini_get('max_input_vars'));
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, $returns);
-    }
+    $page->return->addReturns($returns);
 
     echo '<h2>';
     echo __('Filter');

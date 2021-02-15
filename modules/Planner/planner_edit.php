@@ -160,9 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 
                 $returns = array();
                 $returns['success1'] = __('Your request was completed successfully.').__('You can now edit more details of your newly duplicated entry.');
-                if (isset($_GET['return'])) {
-                    returnProcess($guid, $_GET['return'], null, $returns);
-                }
+                $page->return->addReturns($returns);
 
                 echo "<div class='linkTop' style='margin-bottom: 7px'>";
                 echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID$paramsVar'>".__('View')."<img style='margin: 0 0 -4px 3px' title='".__('View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a>";

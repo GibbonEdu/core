@@ -47,10 +47,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
-        }
-
         //Check if courseschool year specified
         if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') {
             echo "<div class='error'>";

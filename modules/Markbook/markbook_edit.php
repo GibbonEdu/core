@@ -92,10 +92,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                     'courseClass' => Format::courseClassName($row['course'], $row['class']),
                 ]));
 
-                if (isset($_GET['return'])) {
-                    returnProcess($guid, $_GET['return'], null, null);
-                }
-
                 //Add multiple columns
                 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php')) {
 

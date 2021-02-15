@@ -35,11 +35,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
         $editLink = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_cycles_manage_edit.php&gibbonReportingCycleID='.$_GET['editID'];
     }
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink, [
-            'warning3' => __('Duplication was successful, however {count} criteria did not match roll groups or courses in the target school year and could not be copied.', ['count' => $_GET['failedCriteria'] ?? 0]),
-        ]);
-    }
+    $page->return->setEditLink($editLink);
+    $page->return->addReturns([
+        'warning3' => __('Duplication was successful, however {count} criteria did not match roll groups or courses in the target school year and could not be copied.', ['count' => $_GET['failedCriteria'] ?? 0]),
+    ]);
 
     $gibbonReportingCycleID = $_GET['gibbonReportingCycleID'] ?? '';
     $reportingCycleGateway = $container->get(ReportingCycleGateway::class);

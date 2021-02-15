@@ -47,10 +47,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
         $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
-        }
-
         $gibbonINInvestigationID = $_GET['gibbonINInvestigationID'];
         if (empty($gibbonINInvestigationID)) {
             $page->addError(__('You have not specified one or more required parameters.'));

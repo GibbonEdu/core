@@ -50,9 +50,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
             if (isset($_GET['editID'])) {
                 $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable Admin/ttColumn_edit_row_edit.php&gibbonTTColumnRowID='.$_GET['editID'].'&gibbonTTColumnID='.$_GET['gibbonTTColumnID'];
             }
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], $editLink, null);
-            }
+            $page->return->setEditLink($editLink);
+
 
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/ttColumn_edit_row_addProcess.php');
 

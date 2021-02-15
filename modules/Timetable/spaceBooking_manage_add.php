@@ -39,10 +39,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
             ->add(__('Manage Facility Bookings'), 'spaceBooking_manage.php')
             ->add(__('Add Facility Booking'));
 
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
-        }
-
         $step = null;
         if (isset($_GET['step'])) {
             $step = $_GET['step'];

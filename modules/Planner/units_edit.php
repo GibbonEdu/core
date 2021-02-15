@@ -53,9 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
         $returns['success1'] = __('Smart Blockify was successful.');
         $returns['success2'] = __('Copy was successful. The blocks from the selected working unit have replaced those in the master unit (see below for the new block listing).');
         $returns['success3'] = __('Your unit was successfully created: you can now edit and deploy it using the form below.');
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, $returns);
-        }
+        $page->return->addReturns($returns);
 
         //Check if courseschool year specified
         if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') {

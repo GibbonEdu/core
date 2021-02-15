@@ -34,9 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
     //Proceed!
     $page->breadcrumbs->add(__('Manage Invoices'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('success1' => __('Your request was completed successfully, but one or more requested emails could not be sent.'), 'error3' => __('Some elements of your request failed, but others were successful.')));
-    }
+    $page->return->addReturns(['success1' => __('Your request was completed successfully, but one or more requested emails could not be sent.'), 'error3' => __('Some elements of your request failed, but others were successful.')]);
 
     echo '<p>';
     echo __('This section allows you to generate, view, edit and delete invoices, either for an individual or in bulk. You can use the filters below to pick up certain invoices types (e.g. those that are overdue) or view all invoices for a particular user. Invoices, reminders and receipts can be sent out using the Email function, shown in the right-hand side menu.').'<br/>';

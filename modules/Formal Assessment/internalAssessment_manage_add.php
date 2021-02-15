@@ -52,9 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 ->add(__('Manage {courseClass} Internal Assessments', ['courseClass' => $row['course'].'.'.$row['class']]), 'internalAssessment_manage.php', ['gibbonCourseClassID' => $gibbonCourseClassID])
                 ->add(__('Add Multiple Columns'));
 
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, array('error3' => __('Your request failed due to an attachment error.')));
-            }
+            $page->return->addReturns(['error3' => __('Your request failed due to an attachment error.')]);
 
             $form = Form::create('internalAssessment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/internalAssessment_manage_addProcess.php?gibbonCourseClassID='.$gibbonCourseClassID.'&address='.$_SESSION[$guid]['address']);
             $form->setFactory(DatabaseFormFactory::create($pdo));

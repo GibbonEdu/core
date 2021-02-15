@@ -39,9 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
     if (!empty($editID)) {
         $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_manage_edit_contract_edit.php&gibbonStaffContractID='.$editID.'&search='.$search.'&gibbonStaffID='.$gibbonStaffID;
     }
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink, null);
-    }
+    $page->return->setEditLink($editLink);
 
     //Check if school year specified
     if ($gibbonStaffID == '') {

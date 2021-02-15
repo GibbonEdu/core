@@ -28,10 +28,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
     //Proceed!
     $page->breadcrumbs->add(__('Manage Expense Approvers'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return']);
-    }
-
     $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
     $budgetLevelExpenseApproval = getSettingByScope($connection2, 'Finance', 'budgetLevelExpenseApproval');
     $description = '';

@@ -49,10 +49,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
         } else {
             $values = $result->fetch();
 
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, null);
-            }
-
             if ($values['returnAction'] != '') {
                 if ($values['gibbonPersonIDReturnAction'] != '') {
                     

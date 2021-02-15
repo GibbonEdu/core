@@ -62,10 +62,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 ->add($values['course'].$extra, 'department_course.php', $urlParams)
                 ->add(__('Edit Course'));
 
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, null);
-            }
-
             if ($role != 'Coordinator' and $role != 'Assistant Coordinator' and $role != 'Teacher (Curriculum)') {
                 echo "<div class='error'>";
                 echo __('The selected record does not exist, or you do not have access to it.');
