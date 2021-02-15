@@ -54,10 +54,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
                 ])
                 ->add(__('Edit Participant'));
 
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, null);
-            }
-
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/studentEnrolment_manage_edit_editProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID");
                 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);

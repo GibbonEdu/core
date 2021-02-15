@@ -172,9 +172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                     echo __('You are already registered for this activity and so cannot register again.');
                                     echo '</div>';
                                 } else {
-                                    if (isset($_GET['return'])) {
-                                        returnProcess($guid, $_GET['return'], null, array('error3' => __('Registration failed because you are already registered in this activity.')));
-                                    }
+                                    $page->return->addReturns(['error3' => __('Registration failed because you are already registered in this activity.')]);
 
                                     //Check registration limit...
                                     $proceed = true;
@@ -317,10 +315,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                     echo __('You are not currently registered for this activity and so cannot unregister.');
                                     echo '</div>';
                                 } else {
-                                    if (isset($_GET['return'])) {
-                                        returnProcess($guid, $_GET['return'], null, null);
-                                    }
-
                                     $form = Form::create('courseEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_view_registerProcess.php?search='.$search);
                                     $form->removeClass('smallIntBorder');
 

@@ -29,9 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.p
     // Proceed!
     $page->breadcrumbs->add(__('View by Report'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, ['error3' => __('The selected record does not exist, or you do not have access to it.')]);
-    }
+    $page->return->addReturns(['error3' => __('The selected record does not exist, or you do not have access to it.')]);
 
     $canViewDraftReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.php', 'View Draft Reports');
     $canViewPastReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.php', 'View Past Reports');

@@ -62,9 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
         }
         $customResponces['success0'] = $success0;
 
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, $customResponces);
-        }
+        $page->return->addReturns($customResponces);
 
         echo '<h2>';
         echo __('Choose User');

@@ -44,9 +44,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             $editID = $_GET['editID'];
             $editLink = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$editID&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID";
         }
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], $editLink);
-        }
+        $page->return->setEditLink($editLink);
+
 
         if ($gibbonPersonID != '' or $gibbonRollGroupID != '' or $gibbonYearGroupID != '') {
             echo "<div class='linkTop'>";

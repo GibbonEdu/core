@@ -51,10 +51,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 ->add(__('Edit Timetable Day'), 'tt_edit_day_edit.php', $urlParams)
                 ->add(__('Classes in Period'));
 
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, null);
-            }
-
 
             // DISPLAY TIMETABLE DATA
             $table = DataTable::createDetails('ttDay');

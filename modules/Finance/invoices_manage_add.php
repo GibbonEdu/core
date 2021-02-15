@@ -54,9 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
     }
     $error3 .= '</ul>'.__('It is recommended that you remove all pending invoices and try to recreate them.');
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('error3' => $error3));
-    }
+    $page->return->addReturns(['error3' => $error3]);
 
     echo '<p>';
     echo __('Here you can add fees to one or more students. These fees will be added to an existing invoice or used to form a new invoice, depending on the specified billing schedule and other details.');

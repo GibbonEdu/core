@@ -42,9 +42,7 @@ if ($step == 1) {
     $returns['fail2'] = __('You do not have sufficient privileges to login.');
     $returns['fail9'] = __('Your primary role does not support the ability to log into the specified year.');
     $returns['success0'] = __('Password reset request successfully initiated, please check your email.');
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, $returns);
-    }
+    $page->return->addReturns($returns);
 
     $form = Form::create('action', $gibbon->session->get('absoluteURL').'/passwordResetProcess.php?step=1');
 

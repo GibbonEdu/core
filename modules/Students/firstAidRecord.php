@@ -39,10 +39,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
     } else {
         $page->breadcrumbs->add(__('First Aid Records'));
 
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
-        }
-
         $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : null;
         $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : null;
         $gibbonYearGroupID = isset($_GET['gibbonYearGroupID'])? $_GET['gibbonYearGroupID'] : null;

@@ -46,9 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
                 'gibbonPersonMedicalID' => $gibbonPersonMedicalID,
             ]);
     }
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink, null);
-    }
+    $page->return->setEditLink($editLink);
 
     //Check if school year specified
     $gibbonPersonMedicalID = $_GET['gibbonPersonMedicalID'];

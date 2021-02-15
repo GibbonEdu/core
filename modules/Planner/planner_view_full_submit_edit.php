@@ -114,10 +114,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                     ->add(__('View Lesson Plan'), 'planner_view_full.php', $params + ['gibbonPlannerEntryID' => $gibbonPlannerEntryID])
                     ->add(__('Add Submission'));
 
-                if (isset($_GET['return'])) {
-                    returnProcess($guid, $_GET['return'], null, null);
-                }
-
                 if ($_GET['submission'] != 'true' and $_GET['submission'] != 'false') {
                     echo "<div class='warning'>";
                     echo __('You have not specified one or more required parameters.');

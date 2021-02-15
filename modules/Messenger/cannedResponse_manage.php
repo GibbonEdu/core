@@ -28,10 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }   
-
+       
     // QUERY
     $cannedResponseGateway = $container->get(CannedResponseGateway::class);
     $criteria = $cannedResponseGateway->newQueryCriteria(true)

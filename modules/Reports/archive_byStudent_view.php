@@ -38,10 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_
     $allStudents = $_GET['allStudents'] ?? '';
     $search = $_GET['search'] ?? '';
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, ['error3' => __('The selected record does not exist, or you do not have access to it.')]);
-    }
-
+    $page->return->addReturns(['error3' => __('The selected record does not exist, or you do not have access to it.')]);
     if ($highestAction == 'View by Student') {
         $student =  $container->get(StudentGateway::class)->selectActiveStudentByPerson($gibbonSchoolYearID, $gibbonPersonID)->fetch();
         

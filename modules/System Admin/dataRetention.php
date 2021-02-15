@@ -30,9 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/dataRetention
     //Proceed!
     $page->breadcrumbs->add(__('Data Retention'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, ['success0' => __('{count} records were successfully scrubbed. These records still exist in the database, but their personal data has now been removed.', ['count' => $_GET['count'] ?? 0])]);
-    }
+    $page->return->addReturns(['success0' => __('{count} records were successfully scrubbed. These records still exist in the database, but their personal data has now been removed.', ['count' => $_GET['count'] ?? 0])]);
 
     $form = Form::create('dataRetention', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/dataRetentionProcess.php');
     

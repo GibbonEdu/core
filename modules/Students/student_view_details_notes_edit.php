@@ -66,10 +66,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         ->add(Format::name('', $student['preferredName'], $student['surname'], 'Student'), 'student_view_details.php', ['gibbonPersonID' => $gibbonPersonID, 'subpage' => $subpage, 'allStudents' => $allStudents])
                         ->add(__('Edit Student Note'));
 
-                    if (isset($_GET['return'])) {
-                        returnProcess($guid, $_GET['return'], null, null);
-                    }
-
                     //Check if school year specified
                     $gibbonStudentNoteID = $_GET['gibbonStudentNoteID'];
                     if ($gibbonStudentNoteID == '') {

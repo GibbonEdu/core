@@ -121,9 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                         $returns = array();
                         $returns['error6'] = __('Your request failed because you already have one "End of Year" column for this class.');
                         $returns['success1'] = __('Planner was successfully added: you opted to add a linked Markbook column, and you can now do so below.');
-                        if (isset($_GET['return'])) {
-                            returnProcess($guid, $_GET['return'], null, $returns);
-                        }
+                        $page->return->addReturns($returns);
 
                         echo "<div class='linkTop'>";
                         if ($values['gibbonPlannerEntryID'] != '') {

@@ -53,10 +53,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_duplicate.
                 ->add(__('Manage Rubrics'), 'rubrics.php', ['search' => $search, 'filter2' => $filter2])
                 ->add(__('Duplicate Rubric'));
 
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, null);
-            }
-
             //Check if school year specified
             $gibbonRubricID = $_GET['gibbonRubricID'];
             if ($gibbonRubricID == '') {

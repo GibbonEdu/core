@@ -113,9 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                 //Deal with duplicate to other year
                 $returns = array();
                 $returns['success0'] = __('Your request was completed successfully, but the target class is in another year, so you cannot see the results here.');
-                if (isset($_GET['return'])) {
-                    returnProcess($guid, $_GET['return'], null, $returns);
-                }
+                $page->return->addReturns($returns);
                 if ($otherYearDuplicateSuccess != true) {
                     echo "<div class='error'>";
                     echo __('The selected record does not exist, or you do not have access to it.');
@@ -133,10 +131,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 						'classDesc' => $target,
 					]), 'planner.php', $params)
 					->add(__('Duplicate Lesson Plan'));
-
-                if (isset($_GET['return'])) {
-                    returnProcess($guid, $_GET['return'], null, null);
-                }
 
                 $step = null;
                 if (isset($_GET['step'])) {

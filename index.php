@@ -683,8 +683,6 @@ if (!$session->has('address')) {
  * RETURN PROCESS
  *
  * Adds an alert to the index based on the URL 'return' parameter.
- *
- * TODO: Replace all returnProcess() from pages with respective $page->return calls.
  */
 if (!empty($_GET['return'])) {
     if ($alert = $page->return->process($_GET['return'])){

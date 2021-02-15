@@ -36,9 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable Admin/course_manage_class_edit.php&gibbonCourseClassID='.$_GET['editID'].'&gibbonCourseID='.$gibbonCourseID.'&gibbonSchoolYearID='.$gibbonSchoolYearID;
     }
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink, null);
-    }
+    $page->return->setEditLink($editLink);
 
     if ($gibbonSchoolYearID == '' or $gibbonCourseID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

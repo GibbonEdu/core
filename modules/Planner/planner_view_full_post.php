@@ -143,10 +143,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                     ->add(__('View Lesson Plan'), 'planner_view_full.php', $params + ['gibbonPlannerEntryID' => $gibbonPlannerEntryID])
                     ->add(__('Add Comment'));
 
-                if (isset($_GET['return'])) {
-                    returnProcess($guid, $_GET['return'], null, null);
-                }
-
                 if (($row['role'] == 'Student' and $row['viewableStudents'] == 'N') and ($highestAction == 'Lesson Planner_viewMyChildrensClasses' and $row['viewableParents'] == 'N')) {
                     echo "<div class='warning'>";
                     echo __('The selected record does not exist, or you do not have access to it.');

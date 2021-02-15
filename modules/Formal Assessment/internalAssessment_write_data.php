@@ -99,9 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         ->add(__('Write {courseClass} Internal Assessments', ['courseClass' => $class['course'].'.'.$class['class']]), 'internalAssessment_write.php', ['gibbonCourseClassID' => $gibbonCourseClassID])
                         ->add(__('Enter Internal Assessment Results'));
 
-                    if (isset($_GET['return'])) {
-                        returnProcess($guid, $_GET['return'], null, array('error3' => __('Your request failed due to an attachment error.'), 'success0' => __('Your request was completed successfully.')));
-                    }
+                    $page->return->addReturns(['error3' => __('Your request failed due to an attachment error.'), 'success0' => __('Your request was completed successfully.')]);
 
                     $hasAttainment = $values['attainment'] == 'Y';
                     $hasEffort = $values['effort'] == 'Y';

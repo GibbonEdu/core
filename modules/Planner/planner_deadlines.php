@@ -233,10 +233,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
             ->add(__('{homeworkName} + Due Dates', ['homeworkName' => __($homeworkNamePlural)]));
 
         //Proceed!
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
-        }
-
         $proceed = true;
         if ($viewBy == 'class') {
             if ($gibbonCourseClassID == '') {

@@ -33,9 +33,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
     if (isset($_GET['editID'])) {
         $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/expenseApprovers_manage_edit.php&gibbonFinanceExpenseApproverID='.$_GET['editID'];
     }
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink);
-    }
+    $page->return->setEditLink($editLink);
+
 
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/expenseApprovers_manage_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));

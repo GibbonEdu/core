@@ -32,12 +32,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
     //Proceed!
     $page->breadcrumbs->add(__('Manage Languages'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array(
-            'error3' => __('Failed to download and install the required files.').' '.sprintf(__('To install a language manually, upload the language folder to %1$s on your server and then refresh this page. After refreshing, the language should appear in the list below.'), '<b><u>'.$_SESSION[$guid]['absolutePath'].'/i18n/</u></b>')
-            )
-        );
-    }
+    $page->return->addReturns([
+        'error3' => __('Failed to download and install the required files.').' '.sprintf(__('To install a language manually, upload the language folder to %1$s on your server and then refresh this page. After refreshing, the language should appear in the list below.'), '<b><u>'.$_SESSION[$guid]['absolutePath'].'/i18n/</u></b>')
+    ]);
 
     // Update any existing languages that may have been installed manually
     i18nCheckAndUpdateVersion($container, $version);

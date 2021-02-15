@@ -46,10 +46,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
                 ->add(__('Edit Grade Scale'), 'gradeScales_manage_edit.php', ['gibbonScaleID' => $gibbonScaleID])
                 ->add(__('Edit Grade'));
 
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, null);
-            }
-
             $form = Form::create('gradeScaleGradeEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/gradeScales_manage_edit_grade_editProcess.php?gibbonScaleGradeID='.$gibbonScaleGradeID.'&gibbonScaleID='.$gibbonScaleID);
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);

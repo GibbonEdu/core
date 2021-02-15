@@ -32,11 +32,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_edit.p
         ->add(__('My Coverage'), 'coverage_my.php')
         ->add(__('Edit Coverage'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, [
+    $page->return->addReturns([
             'error3' => __('Failed to write file to disk.'),
         ]);
-    }
 
     $gibbonStaffCoverageID = $_GET['gibbonStaffCoverageID'] ?? '';
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);

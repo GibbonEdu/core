@@ -28,10 +28,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archiv
     $page->addError(__('You do not have access to this action.'));
 } else {
     $page->breadcrumbs->add(__('Archive Records'));
-
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return']);
-    }
     
     $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
     $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.nameShort as rollGroup

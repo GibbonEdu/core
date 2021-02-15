@@ -33,10 +33,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes.php') == 
         echo '</div>';
     } else {
         //Proceed!
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
-        }
-
         //Set pagination variable
         $page = isset($_GET['page'])? $_GET['page'] : 1;
         if ((!is_numeric($page)) or $page < 1) {

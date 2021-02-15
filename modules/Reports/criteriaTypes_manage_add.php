@@ -35,9 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/criteriaTypes_mana
         $editLink = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/criteriaTypes_manage_edit.php&gibbonReportingCriteriaTypeID='.$_GET['editID'];
     }
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink, null);
-    }
+    $page->return->setEditLink($editLink);
 
     $form = Form::create('criteriaTypesManage', $gibbon->session->get('absoluteURL').'/modules/Reports/criteriaTypes_manage_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));

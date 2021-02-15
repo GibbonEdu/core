@@ -28,10 +28,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
     //Proceed!
     $page->breadcrumbs->add(__('Manage Budget Cycles'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return']);
-    }
-
     $gateway = $container->get(FinanceGateway::class);
     $criteria = $gateway->newQueryCriteria(true)
                         ->fromPOST();

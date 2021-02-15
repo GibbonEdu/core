@@ -1700,10 +1700,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 echo __('Your request failed because you do not have access to this action.');
                                 echo '</div>';
                             } else {
-                                if (isset($_GET['return'])) {
-                                    returnProcess($guid, $_GET['return'], null, null);
-                                }
-
                                 echo '<p>';
                                 echo __('Student Notes provide a way to store information on students which does not fit elsewhere in the system, or which you want to be able to see quickly in one place.').' <b>'.__('Please remember that notes are visible to other users who have access to full student profiles (this should not generally include parents).').'</b>';
                                 echo '</p>';

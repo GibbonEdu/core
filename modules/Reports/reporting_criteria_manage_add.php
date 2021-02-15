@@ -52,9 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
         $editLink = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_criteria_manage_edit.php&gibbonReportingCycleID='.$gibbonReportingCycleID.'&gibbonReportingScopeID='.$gibbonReportingScopeID.'&gibbonReportingCriteriaID='.$_GET['editID'];
     }
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink, null);
-    }
+    $page->return->setEditLink($editLink);
 
     $form = Form::create('reportCriteriaManage', $gibbon->session->get('absoluteURL').'/modules/Reports/reporting_criteria_manage_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));

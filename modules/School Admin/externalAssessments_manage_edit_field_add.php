@@ -52,9 +52,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
             if (isset($_GET['editID'])) {
                 $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/externalAssessments_manage_edit_field_edit.php&gibbonExternalAssessmentFieldID='.$_GET['editID'].'&gibbonExternalAssessmentID='.$_GET['gibbonExternalAssessmentID'];
             }
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], $editLink, null);
-            }
+            $page->return->setEditLink($editLink);
+
 
             $form = Form::create('externalAssessmentField', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/externalAssessments_manage_edit_field_addProcess.php');
             $form->setFactory(DatabaseFormFactory::create($pdo));

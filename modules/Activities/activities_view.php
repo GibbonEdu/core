@@ -36,9 +36,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
     } else {
         $page->breadcrumbs->add(__('View Activities'));
 
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, array('success0' => __('Registration was successful.'), 'success1' => __('Unregistration was successful.'), 'success2' => __('Registration was successful, but the activity is full, so you are on the waiting list.')));
-        }
+        $page->return->addReturns(['success0' => __('Registration was successful.'), 'success1' => __('Unregistration was successful.'), 'success2' => __('Registration was successful, but the activity is full, so you are on the waiting list.')]);
+
 
         //Get current role category
         $roleCategory = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);

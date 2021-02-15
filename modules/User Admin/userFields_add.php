@@ -32,9 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.
     if (isset($_GET['editID'])) {
         $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/userFields_edit.php&gibbonPersonFieldID='.$_GET['editID'];
     }
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink, null);
-    }
+    $page->return->setEditLink($editLink);
 
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/userFields_addProcess.php');
 

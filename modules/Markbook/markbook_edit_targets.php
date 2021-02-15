@@ -86,10 +86,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
                     )
                     ->add(__('Set Personalised Attainment Targets'));
 
-                if (isset($_GET['return'])) {
-                    returnProcess($guid, $_GET['return'], null, null);
-                }
-
                 $form = Form::create('markbookTargets', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/markbook_edit_targetsProcess.php?gibbonCourseClassID='.$gibbonCourseClassID);
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->addHiddenValue('address', $_SESSION[$guid]['address']);

@@ -33,9 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
         ->add(__('Manage Budgets'),'budgets_manage.php')
         ->add(__('Edit Budget'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('error4' => __('Your request failed due to an attachment error.')));
-    }
+    $page->return->addReturns(['error4' => __('Your request failed due to an attachment error.')]);
 
     //Check if school year specified
     $gibbonFinanceBudgetID = $_GET['gibbonFinanceBudgetID'];

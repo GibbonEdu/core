@@ -54,10 +54,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
                     '%2$s' => $values['name']
                 ]));
 
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, null);
-            }
-
             $courseEnrolmentGateway = $container->get(CourseEnrolmentGateway::class);
 
             $form = Form::create('manageEnrolment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/studentEnrolment_manage_edit_addProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID");

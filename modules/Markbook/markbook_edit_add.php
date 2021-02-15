@@ -108,9 +108,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                 if (isset($_GET['editID'])) {
                     $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Markbook/markbook_edit_edit.php&gibbonMarkbookColumnID='.$_GET['editID'].'&gibbonCourseClassID='.$gibbonCourseClassID;
                 }
-                if (isset($_GET['return'])) {
-                    returnProcess($guid, $_GET['return'], $editLink, $returns);
-                }
+                $page->return->setEditLink($editLink);
+                $page->return->addReturns($returns);
 
                 $form = Form::create('markbook', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/markbook_edit_addProcess.php?gibbonCourseClassID='.$gibbonCourseClassID.'&address='.$_SESSION[$guid]['address']);
                 $form->setFactory(DatabaseFormFactory::create($pdo));
