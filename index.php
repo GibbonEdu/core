@@ -453,25 +453,6 @@ if ($isLoggedIn) {
 }
 
 /**
- * RETURN PROCESS
- *
- * Adds an alert to the index based on the URL 'return' parameter.
- *
- * TODO: Remove all returnProcess() from pages. We could add a method to the
- * Page class to allow them to register custom messages, or use Session flash
- * to add the message directly from the Process pages.
- */
-if (!$session->has('address') && !empty($_GET['return'])) {
-    $customReturns = [
-        'success1' => __('Password reset was successful: you may now log in.')
-    ];
-
-    if ($alert = returnProcessGetAlert($_GET['return'], '', $customReturns)) {
-        $page->addAlert($alert['context'], $alert['text']);
-    }
-}
-
-/**
  * MENU ITEMS & FAST FINDER
  *
  * TODO: Move this somewhere more sensible.
@@ -698,6 +679,18 @@ if (!$session->has('address')) {
     }
 }
 
+/**
+ * RETURN PROCESS
+ *
+ * Adds an alert to the index based on the URL 'return' parameter.
+ *
+ * TODO: Replace all returnProcess() from pages with respective $page->return calls.
+ */
+if (!empty($_GET['return'])) {
+    if ($alert = $page->return->process($_GET['return'])){
+        $page->addAlert($alert['context'], $alert['text']);
+    }
+}
 /**
  * GET SIDEBAR CONTENT
  *
