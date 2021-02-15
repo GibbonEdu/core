@@ -114,7 +114,7 @@ class LogGateway extends QueryableGateway
         return $this->db()->delete($sql, $data);
     }
 
-    public function setLog($gibbonSchoolYearID, $module, $gibbonPersonID, $title, $array = null, $ip = null)
+    public function addLog($gibbonSchoolYearID, $module, $gibbonPersonID, $title, $array = null, $ip = null)
     {
         $serialisedArray = is_array($array) ? serialize($array) : null;
         $ip = (empty($ip) ? getIPAddress() : $ip);
