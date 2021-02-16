@@ -113,4 +113,29 @@ class LogGateway extends QueryableGateway
 
         return $this->db()->delete($sql, $data);
     }
+
+    public function addLog($gibbonSchoolYearID, $module, $gibbonPersonID, $title, $array = null, $ip = null)
+    {
+        $serialisedArray = is_array($array) ? serialize($array) : null;
+        $ip = (empty($ip) ? getIPAddress() : $ip);
+
+        $data = [
+            'gibbonSchoolYearID' => $gibbonSchoolYearID,
+            'module' => $module,
+            'gibbonPersonID' => $gibbonPersonID,
+            'title' => $title,
+            'serialisedArray' => $serialisedArray,
+            'ip' => $ip
+        ];
+
+        $sql = "INSERT INTO gibbonLog SET
+                gibbonSchoolYearID = :gibbonSchoolYearID,
+                gibbonModuleID = (SELECT gibbonModuleID FROM gibbonModule WHERE gibbonModule.name = :module),
+                gibbonPersonID = :gibbonPersonID,
+                title = :title,
+                serialisedArray = :serialisedArray,
+                ip = :ip";
+
+        return $this->db()->insert($sql, $data);
+    }
 }
