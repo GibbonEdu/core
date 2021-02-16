@@ -17,8 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\LogGateway;
+
 include '../../gibbon.php';
 
+$logGateway = $container->get(LogGateway::class);
 $gibbonPersonID = $_GET['gibbonPersonID'];
 $subpage = $_GET['subpage'];
 $gibbonStudentNoteID = $_GET['gibbonStudentNoteID'];
@@ -94,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
 
                         //Attempt to write logo
-                        setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], getModuleIDFromName($connection2, 'Students'), $_SESSION[$guid]['gibbonPersonID'], 'Student Profile - Note Edit', array('gibbonStudentNoteID' => $gibbonStudentNoteID, 'noteOriginal' => $row['note'], 'noteNew' => $note), $_SERVER['REMOTE_ADDR']);
+                        $logGateway->addLog($_SESSION[$guid]['gibbonSchoolYearIDCurrent'], getModuleIDFromName($connection2, 'Students'), $_SESSION[$guid]['gibbonPersonID'], 'Student Profile - Note Edit', array('gibbonStudentNoteID' => $gibbonStudentNoteID, 'noteOriginal' => $row['note'], 'noteNew' => $note), $_SERVER['REMOTE_ADDR']);
 
                         $URL .= '&return=success0';
                         header("Location: {$URL}");
