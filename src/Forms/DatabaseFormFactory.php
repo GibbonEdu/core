@@ -489,8 +489,7 @@ class DatabaseFormFactory extends FormFactory
             }
         }
 
-        //Clearn all values
-        $values = [];
+        //Clear all values
         $data = [];
 
         //Add students by name
