@@ -39,13 +39,16 @@ if ($proceed == false) {
     $page->breadcrumbs->add($gibbon->session->get('organisationNameShort').' '.__('Public Registration'));
 
     $publicRegistrationMinimumAge = getSettingByScope($connection2, 'User Admin', 'publicRegistrationMinimumAge');
+    $allowedDomains = getSettingByScope($connection2, 'User Admin', 'publicRegistrationAllowedDomains');
+    $allowedDomains = array_filter(array_map('trim', explode(',', $allowedDomains)));
 
-    $returns = array();
-    $returns['fail5'] = sprintf(__('Your request failed because you do not meet the minimum age for joining this site (%1$s years of age).'), $publicRegistrationMinimumAge);
-    $returns['fail7'] = __('Your request failed because your password does not meet the minimum requirements for strength.');
-    $returns['success1'] = __('Your registration was successfully submitted and is now pending approval. Our team will review your registration and be in touch in due course.');
-    $returns['success0'] = __('Your registration was successfully submitted, and you may now log into the system using your new username and password.');
-    $page->return->addReturns($returns);
+    $page->return->addReturns([
+        'error5'   => sprintf(__('Your request failed because you do not meet the minimum age for joining this site (%1$s years of age).'), $publicRegistrationMinimumAge),
+        'error6'   => __('Your request failed because your password does not meet the minimum requirements for strength.'),
+        'error8'   => __('Your request failed because your email is not part of the allowed domains.'),
+        'success1' => __('Your registration was successfully submitted and is now pending approval. Our team will review your registration and be in touch in due course.'),
+        'success0' => __('Your registration was successfully submitted, and you may now log into the system using your new username and password.'),
+    ]);
 
     //Get intro
     $intro = getSettingByScope($connection2, 'User Admin', 'publicRegistrationIntro');
@@ -73,12 +76,19 @@ if ($proceed == false) {
         $row->addTextField('firstName')->required()->maxLength(30);
 
     $row = $form->addRow();
-        $row->addLabel('email', __('Email'));
+        $emailLabel = $row->addLabel('email', __('Email'));
         $email = $row->addEmail('email')->required();
 
     $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
     if ($uniqueEmailAddress == 'Y') {
         $email->uniqueField('./publicRegistrationCheck.php');
+    }
+
+    if (!empty($allowedDomains)) {
+        $emailLabel->description(__('Email address must be part of the following domains: {list}', ['list' => implode(', ', $allowedDomains)]));
+
+        $within = implode(',', array_map(function ($str) { return sprintf("'%s'", $str); }, $allowedDomains));
+        $email->addValidation('Validate.Inclusion', 'within: ['.$within.'], failureMessage: "'.__('Invalid email!').'", partialMatch: true, caseSensitive: false');
     }
 
     $row = $form->addRow();
@@ -109,6 +119,13 @@ if ($proceed == false) {
             ->required()
             ->maxLength(30);
     
+    $row = $form->addRow();
+        $row->addLabel('passwordConfirm', __('Confirm Password'));
+        $row->addPassword('passwordConfirm')
+            ->addConfirmation('passwordNew')
+            ->required()
+            ->maxLength(30);
+
     // CUSTOM FIELDS
     $resultFields = getCustomFields($connection2, $guid, null, null, null, null, null, null, true);
     if ($resultFields->rowCount() > 0) {
