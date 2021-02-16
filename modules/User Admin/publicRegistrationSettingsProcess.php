@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
+
 include '../../gibbon.php';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/publicRegistrationSettings.php';
@@ -26,97 +28,55 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/publicRegistrat
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $enablePublicRegistration = $_POST['enablePublicRegistration'];
-    $publicRegistrationMinimumAge = $_POST['publicRegistrationMinimumAge'];
-    $publicRegistrationDefaultStatus = $_POST['publicRegistrationDefaultStatus'];
-    $publicRegistrationDefaultRole = $_POST['publicRegistrationDefaultRole'];
-    $publicRegistrationIntro = $_POST['publicRegistrationIntro'];
-    $publicRegistrationPrivacyStatement = $_POST['publicRegistrationPrivacyStatement'];
-    $publicRegistrationAgreement = $_POST['publicRegistrationAgreement'];
-    $publicRegistrationPostscript = $_POST['publicRegistrationPostscript'];
+    $settingGateway = $container->get(SettingGateway::class);
+    $partialFail = false;
 
-    //Write to database
-    $fail = false;
+    $settingsToUpdate = [
+        'User Admin' => [
+            'enablePublicRegistration' => 'required',
+            'publicRegistrationMinimumAge' => '',
+            'publicRegistrationDefaultStatus' => 'required',
+            'publicRegistrationDefaultRole' => 'required',
+            'publicRegistrationAllowedDomains' => '',
+            'publicRegistrationIntro' => '',
+            'publicRegistrationPrivacyStatement' => '',
+            'publicRegistrationAgreement' => '',
+            'publicRegistrationPostscript' => '',
+        ],
+    ];
 
-    try {
-        $data = array('value' => $enablePublicRegistration);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='enablePublicRegistration'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
+    // Validate required fields
+    foreach ($settingsToUpdate as $scope => $settings) {
+        foreach ($settings as $name => $property) {
+            if ($property == 'required' && empty($_POST[$name])) {
+                $URL .= '&return=error1';
+                header("Location: {$URL}");
+                exit;
+            }
+        }
     }
 
-    try {
-        $data = array('value' => $publicRegistrationMinimumAge);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='publicRegistrationMinimumAge'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
+    // Ensure allowed domains each begin with an @ sign
+    if (!empty($_POST['publicRegistrationAllowedDomains'])) {
+        $_POST['publicRegistrationAllowedDomains'] = implode(',', array_map(function($domain) {
+            return '@' . trim($domain, ' @');
+        }, explode(',', $_POST['publicRegistrationAllowedDomains'])));
     }
 
-    try {
-        $data = array('value' => $publicRegistrationDefaultStatus);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='publicRegistrationDefaultStatus'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
+    // Update fields
+    foreach ($settingsToUpdate as $scope => $settings) {
+        foreach ($settings as $name => $property) {
+            $value = $_POST[$name] ?? '';
+
+            if ($property == 'skip-empty' && empty($value)) continue;
+
+            $updated = $settingGateway->updateSettingByScope($scope, $name, $value);
+            $partialFail &= !$updated;
+        }
     }
 
-    try {
-        $data = array('value' => $publicRegistrationDefaultRole);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='publicRegistrationDefaultRole'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $publicRegistrationIntro);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='publicRegistrationIntro'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $publicRegistrationPrivacyStatement);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='publicRegistrationPrivacyStatement'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $publicRegistrationAgreement);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='publicRegistrationAgreement'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $publicRegistrationPostscript);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='publicRegistrationPostscript'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    if ($fail == true) {
-        $URL .= '&return=error2';
-        header("Location: {$URL}");
-    } else {
-        //Success 0
-        getSystemSettings($guid, $connection2);
-        $URL .= '&return=success0';
-        header("Location: {$URL}");
-    }
+    $URL .= $partialFail
+        ? '&return=warning1'
+        : '&return=success0';
+    header("Location: {$URL}");
 }
