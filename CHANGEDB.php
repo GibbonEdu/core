@@ -774,4 +774,5 @@ INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `val
 ALTER TABLE `gibbonDiscussion` ADD `gibbonPersonIDTarget` INT(10) UNSIGNED ZEROFILL NULL AFTER `gibbonPersonID`;end
 DELETE FROM `gibbonSetting` WHERE scope='Messenger' AND name IN ('messengerLastBubble','messageBubbleBGColor','messageBubbleWidthType','messageBubbleAutoHide');end
 INSERT INTO gibbonCountry VALUES ('South Sudan', '211');end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('User Admin', 'publicRegistrationAllowedDomains', 'Public Registration Allowed Domains', 'Comma-separated list of email address domains allowed when registering. Leave blank for no restriction.', '');end
 ";

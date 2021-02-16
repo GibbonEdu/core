@@ -56,6 +56,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/publicRegistrat
             ->selected($setting['value'])
             ->required();
 
+    $setting = getSettingByScope($connection2, 'User Admin', 'publicRegistrationAllowedDomains', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextField($setting['name'])->setValue($setting['value']);
+
     $row = $form->addRow()->addHeading(__('Interface Options'));
 
     $setting = getSettingByScope($connection2, 'User Admin', 'publicRegistrationIntro', true);
@@ -84,4 +89,3 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/publicRegistrat
 
     echo $form->getOutput();
 }
-?>
