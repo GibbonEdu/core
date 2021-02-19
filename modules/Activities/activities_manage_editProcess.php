@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Activities\ActivitySlotGateway;
+
 include '../../gibbon.php';
 
 $gibbonActivityID = $_GET['gibbonActivityID'];
@@ -83,36 +85,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 $URL .= '&return=error1';
                 header("Location: {$URL}");
             } else {
-                //Scan through slots
                 $partialFail = false;
-                for ($i = 1; $i < 3; ++$i) {
-                    $gibbonDaysOfWeekID = $_POST["gibbonDaysOfWeekID$i"] ?? '';
-                    $timeStart = $_POST["timeStart$i"] ?? '';
-                    $timeEnd = $_POST["timeEnd$i"] ?? '';
-                    $type = 'Internal';
-                    if (isset($_POST['slot'.$i.'Location'])) {
-                        $type = $_POST['slot'.$i.'Location'];
-                    }
-                    $gibbonSpaceID = null;
-                    if ($type == 'Internal') {
-                        $gibbonSpaceID = $_POST["gibbonSpaceID$i"] ?? null;
-                        $locationExternal = '';
-                    } else {
-                        $locationExternal = $_POST['location'.$i.'External'] ?? '';
+
+                $activitySlotGateway = $container->get(ActivitySlotGateway::class);
+                $activitySlotGateway->deleteWhere(['gibbonActivityID' => $gibbonActivityID]);
+
+                $timeSlotOrder = $_POST['order'] ?? [];
+                foreach ($timeSlotOrder as $order) {
+                    $slot = $_POST['timeSlots'][$order];
+
+                    if (empty($slot['gibbonDaysOfWeekID']) || empty($slot['timeStart']) || empty('timeEnd')) {
+                        continue;
                     }
 
-                    if ($gibbonDaysOfWeekID != '' and $timeStart != '' and $timeEnd != '') {
-                        try {
-                            $data = array('gibbonActivityID' => $gibbonActivityID, 'gibbonDaysOfWeekID' => $gibbonDaysOfWeekID, 'timeStart' => $timeStart, 'timeEnd' => $timeEnd, 'gibbonSpaceID' => $gibbonSpaceID, 'locationExternal' => $locationExternal);
-                            $sql = 'INSERT INTO gibbonActivitySlot SET gibbonActivityID=:gibbonActivityID, gibbonDaysOfWeekID=:gibbonDaysOfWeekID, timeStart=:timeStart, timeEnd=:timeEnd, gibbonSpaceID=:gibbonSpaceID, locationExternal=:locationExternal';
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
-                        } catch (PDOException $e) {
-                            $partialFail = true;
+                    $slot['gibbonActivityID'] = $gibbonActivityID;
+
+                    $type = $slot['location'] ?? 'Internal';
+                    if ($type == 'Internal') {
+                        $slot['locationExternal'] = '';
+                        if (empty($slot['gibbonSpaceID'])) {
+                            continue;
+                        }
+                    } else {
+                        $slot['gibbonSpaceID'] = null;
+                        if (empty($slot['locationExternal'])) {
+                            continue;
                         }
                     }
-                }
 
+                    unset($slot['location']);
+
+                    $activitySlotGateway->insert($slot);
+                }
 
                 // Scan through staff
                 $staff = $_POST['staff'] ?? [];
