@@ -38,6 +38,20 @@ class ActivityStaffGateway extends QueryableGateway
 
     private static $searchableColumns = [];
 
+    public function selectActivityStaff($gibbonActivityID) {
+    	$select = $this
+    		->newSelect()
+    		->cols(['preferredName, surname, gibbonActivityStaff.*'])
+    		->from($this->getTableName())
+    		->leftJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonActivityStaff.gibbonPersonID')
+    		->where('gibbonActivityStaff.gibbonActivityID = :gibbonActivityID')
+    		->bindValue('gibbonActivityID', $gibbonActivityID)
+    		->where('gibbonPerson.status="Full"')
+    		->orderBy(['surname', 'preferredName']);
+
+    	return $this->runSelect($select);
+    }
+
     public function selectActivityStaffByID($gibbonActivityID, $gibbonPersonID) {
     	return $this->selectBy([
     		'gibbonPersonID' 	=> $gibbonPersonID,
