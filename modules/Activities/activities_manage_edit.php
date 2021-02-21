@@ -347,7 +347,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     //This is to ensure that loaded blocks have timepickers
                     $(time).each(function() {
                         setTimepicker($(this));
-                    })
+                    });
+
+                    //This is needed to ensure that loaded timeEnds are properly chained to loaded timeStarts
+                    $('input[id^=timeEnd]').each(function() {
+                        var timeStart = $('#' + $(this).prop('id').replace('End', 'Start'));
+                        $(this).timepicker('option', {'minTime': timeStart.val(), 'timeFormat': 'H:i', 'showDuration': true});
+                    });
                 });
 
                 //This supplements triggers for the Internal and External Locations
