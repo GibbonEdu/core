@@ -97,6 +97,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     continue;
                 }
 
+                //If start is after end, swap times.
+                if ($slot['timeStart'] > $slot['timeEnd']) {
+                    $temp = $slot['timeStart'];
+                    $slot['timeStart'] = $slot['timeEnd'];
+                    $slot['timeEnd'] = $temp;
+                }
+
                 $slot['gibbonActivityID'] = $gibbonActivityID;
 
                 $type = $slot['location'] ?? 'Internal';
