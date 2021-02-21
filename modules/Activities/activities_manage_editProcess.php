@@ -109,14 +109,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 $type = $slot['location'] ?? 'Internal';
                 if ($type == 'Internal') {
                     $slot['locationExternal'] = '';
-                    if (empty($slot['gibbonSpaceID'])) {
-                        continue;
-                    }
                 } else {
                     $slot['gibbonSpaceID'] = null;
-                    if (empty($slot['locationExternal'])) {
-                        continue;
-                    }
                 }
 
                 unset($slot['location']);
