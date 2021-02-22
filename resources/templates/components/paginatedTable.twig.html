@@ -9,13 +9,15 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 {% extends "components/dataTable.twig.html" %}
 
 {% block table %}
-    <div id="{{ table.getID }}">
-        <div class="dataTable" data-results="{{ dataSet.getResultCount }}">
-            {{ parent() }}
+    <div class="relative">
+        <div id="{{ table.getID }}">
+            <div class="dataTable" data-results="{{ dataSet.getResultCount }}">
+                {{ parent() }}
+            </div>
         </div>
-    </div>
 
-    {{ block('bulkActions') }}
+        {{ block('bulkActions') }}
+    </div>
 
     <script>
     $(function(){
