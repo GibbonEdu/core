@@ -191,7 +191,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
             //Block template
             $sqlWeekdays = "SELECT gibbonDaysOfWeekID as value, name FROM gibbonDaysOfWeek ORDER BY sequenceNumber";
-            $sqlSpaces = "SELECT CAST(gibbonSpaceID AS INT) as value, name FROM gibbonSpace ORDER BY name"; //Must cast to int for select to work
 
             $slotBlock = $form->getFactory()->createTable()->setClass('blank');
                 $row = $slotBlock->addRow();
@@ -221,8 +220,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                         ]);
 
                 $row = $slotBlock->addRow()->addClass('hideShow');
-                    $row->addSelect('gibbonSpaceID')
-                        ->fromQuery($pdo, $sqlSpaces)
+                    $row->addSelectSpace('gibbonSpaceID')
                         ->placeholder()
                         ->addClass('sm:max-w-full w-full');
 
@@ -251,7 +249,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
             foreach ($timeSlots as $slot) {
                 //Must cast to int for select to work.
-                $slot['gibbonSpaceID'] = intval($slot['gibbonSpaceID']);                
                 $slot['location'] = empty($slot['gibbonSpaceID']) ? 'External' : 'Internal';
                 $slotBlocks->addBlock($slot['gibbonActivitySlotID'], $slot);
             }
