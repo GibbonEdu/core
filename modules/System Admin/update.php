@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         $form->addHiddenValue('address', $gibbon->session->get('address'));
         $form->addHiddenValue('type', 'regularRelease');
 
-        if ($return == 'success0') {
+        if (!empty($_GET['return']) && $_GET['return'] == 'success0') {
             $form->addRow()->addContent(__('You seem to be all up to date, good work buddy!'))->addClass('py-16 text-center text-gray-600 text-lg');
         } elseif ($updateRequired === -1) {
             // Error
