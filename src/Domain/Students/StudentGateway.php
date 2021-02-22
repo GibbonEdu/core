@@ -264,13 +264,14 @@ class StudentGateway extends QueryableGateway
                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                 JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
                 WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ";
-                
-        $sql .= !empty($date)
-            ? " AND (status='Full' OR status='Left') "
-            : " AND status='Full' ";
-
-        $sql .= "AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL OR dateEnd>=:date)";
-
+        
+        if (!empty($date)) {
+            $sql .= " AND ((status='Full' AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL OR dateEnd>=:date))
+                OR (status='Left' AND (dateStart IS NULL OR dateStart<=:date) AND dateEnd>=:date))";
+        } else {
+            $sql .= " AND status='Full'
+                AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL OR dateEnd>=:date)";
+        }
         return $this->db()->selectOne($sql, $data);
     }
 
