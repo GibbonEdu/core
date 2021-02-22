@@ -19,11 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UI\Dashboard;
 
+use Gibbon\Services\Format;
 use Gibbon\Forms\OutputableInterface;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Tables\Prefab\EnrolmentTable;
 use Gibbon\Tables\Prefab\RollGroupTable;
 use Gibbon\Contracts\Database\Connection;
-use Gibbon\Services\Format;
 
 /**
  * Staff Dashboard View Composer
@@ -37,11 +38,12 @@ class StaffDashboard implements OutputableInterface
     protected $session;
     protected $rollGroupTable;
 
-    public function __construct(Connection $db, Session $session, RollGroupTable $rollGroupTable)
+    public function __construct(Connection $db, Session $session, RollGroupTable $rollGroupTable, EnrolmentTable $enrolmentTable)
     {
         $this->db = $db;
         $this->session = $session;
         $this->rollGroupTable = $rollGroupTable;
+        $this->enrolmentTable = $enrolmentTable;
     }
 
     public function getOutput()
@@ -445,6 +447,14 @@ class StaffDashboard implements OutputableInterface
                 }
             }
 
+            if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php')) {
+                $return .= "<li><a href='#tabs".$tabCount."'>".__('Enrolment').'</a></li>';
+                if ($staffDashboardDefaultTab == 'Enrolment') {
+                    $staffDashboardDefaultTabCount = $tabCount;
+                }
+                ++$tabCount;
+            }
+
             foreach ($hooks as $hook) {
                 $return .= "<li><a href='#tabs".$tabCount."'>".__($hook['name']).'</a></li>';
                 if ($staffDashboardDefaultTab == $hook['name'])
@@ -461,6 +471,7 @@ class StaffDashboard implements OutputableInterface
                 $return .= '</div>';
                 ++$tabCount;
             }
+
             if (count($rollGroups) > 0) {
                 foreach ($rollGroups as $rollGroup) {
                     $return .= "<div id='tabs".$tabCount."'>";
@@ -476,6 +487,15 @@ class StaffDashboard implements OutputableInterface
                     }
                 }
             }
+
+            // Enrolment tab
+            if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php')) {
+                $return .= "<div id='tabs".$tabCount."'>";
+                $return .= $this->enrolmentTable->getOutput();
+                $return .= '</div>';
+                ++$tabCount;
+            }
+
             foreach ($hooks as $hook) {
                 $return .= "<div style='min-height: 100px' id='tabs".$tabCount."'>";
                 $include = $_SESSION[$guid]['absolutePath'].'/modules/'.$hook['sourceModuleName'].'/'.$hook['sourceModuleInclude'];

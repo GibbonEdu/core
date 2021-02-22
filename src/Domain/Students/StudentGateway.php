@@ -256,15 +256,20 @@ class StudentGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
-    public function getStudentEnrolmentCount($gibbonSchoolYearID)
+    public function getStudentEnrolmentCount($gibbonSchoolYearID, $date = null)
     {
-        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'today' => date('Y-m-d')];
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'date' => $date ?? date('Y-m-d')];
         $sql = "SELECT COUNT(gibbonPerson.gibbonPersonID)
                 FROM gibbonPerson
                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                 JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
-                WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID
-                AND status='FULL' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today)";
+                WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ";
+                
+        $sql .= !empty($date)
+            ? " AND (status='Full' OR status='Left') "
+            : " AND status='Full' ";
+
+        $sql .= "AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL OR dateEnd>=:date)";
 
         return $this->db()->selectOne($sql, $data);
     }
