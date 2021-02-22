@@ -55,7 +55,7 @@ trait SharedUserLogic
             $highlight = '';
             if (!empty($person['status']) && $person['status'] != 'Full') $highlight = 'error';
             if (!empty($person['roleCategory']) && $person['roleCategory'] == 'Student') {
-                if (!(empty($person['dateStart']) || $person['dateStart'] <= date('Y-m-d'))) $highlight = 'error';
+                if (!(empty($person['dateStart']) || $person['dateStart'] <= date('Y-m-d'))) $highlight = 'dull';
                 if (!(empty($person['dateEnd'] ) || $person['dateEnd'] >= date('Y-m-d'))) $highlight = 'error';
                 if (empty($person['gibbonStudentEnrolmentID'])) $highlight = 'error';
             }

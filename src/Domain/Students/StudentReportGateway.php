@@ -192,4 +192,22 @@ class StudentReportGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    public function selectStudentCountByYearGroup($gibbonSchoolYearID)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'today' => date('Y-m-d')];
+        $sql = "SELECT gibbonYearGroup.nameShort as yearGroup, count(DISTINCT gibbonStudentEnrolmentID) as studentCount
+                FROM gibbonStudentEnrolment
+                JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
+                JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+                WHERE gibbonPerson.status='Full'
+                AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID
+                AND (dateStart IS NULL OR dateStart<=:today)
+                AND (dateEnd IS NULL OR dateEnd>=:today)
+                GROUP BY gibbonYearGroup.gibbonYearGroupID
+                ORDER BY gibbonYearGroup.sequenceNumber";
+
+        return $this->db()->select($sql, $data);
+    }
 }

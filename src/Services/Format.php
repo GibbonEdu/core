@@ -808,6 +808,9 @@ class Format
             if (!(empty($person['dateEnd']) || $person['dateEnd'] >= date('Y-m-d'))) {
                 return __('After End Date');
             }
+            if (!empty($person['dateEnd']) && $person['dateEnd'] <= date('Y-m-d', strtotime('today + 60 days'))) {
+                return __('Leaving');
+            }
             if (empty($person['yearGroup'])) {
                 return __('Not Enrolled');
             }

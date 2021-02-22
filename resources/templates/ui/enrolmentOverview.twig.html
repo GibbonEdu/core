@@ -1,0 +1,49 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+<div class="flex w-full mt-4 mb-6 bg-white shadow rounded font-sans">
+
+    <div class="w-1/3 flex flex-wrap font-sans items-start content-end justify-between py-5 px-6 border-r border-gray-300">
+        <div class="w-full text-sm font-light text-gray-600">
+            {{ __('Current Enrolment') }}
+        </div>
+        <div class="text-xl font-semibold text-gray-800 leading-normal">
+            {{ currentEnrolment }}
+        </div>
+    </div>
+
+    <div class="w-1/3 flex flex-wrap font-sans items-start content-end justify-between py-5 px-6 border-r border-gray-300">
+        <div class="w-full text-sm font-light text-gray-600">
+            {{ __('60 Days Ago') }}
+        </div>
+        <div class="text-xl font-semibold text-gray-800 leading-normal">
+            {{ lastEnrolment }}
+        </div>
+        <div class="mt-1">
+            {% set change = currentEnrolment - lastEnrolment %}
+            <span class="tag rounded-full {{ change > 0 ? 'success' : ( change < 0 ? 'error' : 'dull' ) }}">
+                {{ change > 0 ? "+" ~ change : ( change < 0 ? change : __('No Change') ) }}
+            </span>
+        </div>
+    </div>
+
+    <div class="w-1/3 flex flex-wrap font-sans items-start content-end justify-between py-5 px-6 border-gray-300">
+        <div class="w-full text-sm font-light text-gray-600">
+            {{ __('In 60 Days') }}
+        </div>
+        <div class="text-xl font-semibold text-gray-800 leading-normal">
+            {{ nextEnrolment }}
+        </div>
+        <div class="mt-1">
+            {% set change = nextEnrolment - currentEnrolment  %}
+            <span class="tag rounded-full {{ change > 0 ? 'success' : ( change < 0 ? 'error' : 'dull' ) }}">
+                {{ change > 0 ? "+" ~ change : ( change < 0 ? change : __('No Change') ) }}
+            </span>
+        </div>
+    </div>
+</div>
