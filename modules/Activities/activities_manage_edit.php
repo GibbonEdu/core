@@ -255,11 +255,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
             $form->addRow()->addHeading(__('Current Staff'));
 
-            $data = array('gibbonActivityID' => $gibbonActivityID);
-            $sql = "SELECT preferredName, surname, gibbonActivityStaff.* FROM gibbonActivityStaff JOIN gibbonPerson ON (gibbonActivityStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
-
-            $results = $pdo->executeQuery($data, $sql);
-
             $form->addRow()->addContent('<b>'.__('Warning').'</b>: '.__('If you delete a member of staff, any unsaved changes to this record will be lost!'))->wrap('<i>', '</i>');
 
             $staffTable = $form->addRow()->addDataTable('staffTable');
