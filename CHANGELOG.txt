@@ -43,6 +43,7 @@ v22.0.00
     Bug Fixes
         System: disabled context menu in TinyMCE which interferes with right clicking
         System Admin: fixed cache not clearing when switching themes
+        Timetable: fixed error adding class enrolment when one exists already
 
     Deprecations
         Messenger: removed the pop-up Messenger bubbles
