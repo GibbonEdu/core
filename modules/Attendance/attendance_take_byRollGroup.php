@@ -40,8 +40,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
         echo '</div>';
     } else {
         //Proceed!
-        $page->return->addReturns(['error3' => __('Your request failed because the specified date is in the future, or is not a school day.')]);
-
+        if (isset($_GET['return'])) {
+            returnProcess($guid, $_GET['return'], null, array('error3' => __('Your request failed because the specified date is in the future, or is not a school day.')));
+        }
 
         $attendance = new AttendanceView($gibbon, $pdo);
 
@@ -179,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                                 $log = ($result->rowCount() > 0)? $result->fetch() : $defaults;
 
-                                if ($log['prefill'] == 'N' && $log['gibbonRollGroupID'] != $gibbonRollGroupID) {
+                                if ($log['prefill'] == 'N' && (($log['context'] == 'Roll Group' && $log['gibbonRollGroupID'] != $gibbonRollGroupID) || $log['context'] == 'Class') ) {
                                     $log = $defaults;
                                 }
 
