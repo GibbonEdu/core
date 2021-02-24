@@ -532,7 +532,6 @@ if ($isLoggedIn && !$upgrade) {
  * into the template engine for rendering. They're a work in progress, but once
  * they're more finalized we can document them for theme developers.
  */
-$header = $container->get(Gibbon\UI\Components\Header::class);
 
 $page->addData([
     'isLoggedIn'        => $isLoggedIn,
@@ -540,10 +539,6 @@ $page->addData([
     'organisationLogo'  => $session->get('organisationLogo'),
     'organisationName'  => $session->get('organisationName'),
     'cacheString'       => $session->get('cacheString'),
-    'currentUser'       => $header->getUserDetails(),
-    'minorLinks'        => $header->getMinorLinks(),
-    'statusTray'        => $header->getStatusTray(),
-    'sidebar'           => $showSidebar,
     'version'           => $gibbon->getVersion(),
     'versionName'       => 'v'.$gibbon->getVersion().($session->get('cuttingEdgeCode') == 'Y'? 'dev' : ''),
     'rightToLeft'       => $session->get('i18n')['rtl'] == 'Y',
@@ -680,6 +675,21 @@ if (!$session->has('address')) {
 }
 
 /**
+ * HEADER DATA
+ *
+ * Add this after loading page content, so it can update based on page changes.
+ */
+if ($isLoggedIn) {
+    $header = $container->get(Gibbon\UI\Components\Header::class);
+
+    $page->addData([
+        'currentUser'       => $header->getUserDetails(),
+        'minorLinks'        => $header->getMinorLinks(),
+        'statusTray'        => $header->getStatusTray(),
+    ]);
+}
+
+/**
  * RETURN PROCESS
  *
  * Adds an alert to the index based on the URL 'return' parameter.
@@ -700,6 +710,7 @@ if ($showSidebar) {
     $session->set('sidebarExtra', '');
 
     $page->addData([
+        'sidebar'         => $showSidebar,
         'sidebarContents' => $container->get(Gibbon\UI\Components\Sidebar::class)->getOutput(),
         'sidebarPosition' => $session->get('sidebarExtraPosition'),
     ]);

@@ -256,6 +256,7 @@ class Session implements SessionInterface
         $this->set('gibbonRoleIDAll', getRoleList($userData['gibbonRoleIDAll'], $this->pdo->getConnection()) );
         $this->set('image_240', $userData['image_240']);
         $this->set('lastTimestamp', $userData['lastTimestamp']);
+        $this->set('messengerLastRead', $userData['messengerLastRead']);
         $this->set('calendarFeedPersonal', filter_var($userData['calendarFeedPersonal'], FILTER_VALIDATE_EMAIL));
         $this->set('viewCalendarSchool', $userData['viewCalendarSchool']);
         $this->set('viewCalendarPersonal', $userData['viewCalendarPersonal']);
