@@ -204,7 +204,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     $row->addLabel('timeStart', __('Slot Start Time'));
                     $row->addTime('timeStart');
                 
-                $row = $slotBlock->addRow();
                     $row->addLabel('timeEnd', __('Slot End Time'));
                     $row->addTime('timeEnd')
                         ->chainedTo('timeStart');
