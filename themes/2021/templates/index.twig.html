@@ -31,8 +31,6 @@ TODO: add template variable details.
                     <div class="flex-grow flex items-center justify-end text-right text-sm text-purple-200">
                         {% if isLoggedIn and currentUser %}
 
-                        
-                        
                         <a href="{{ currentUser.url ?? './index.php?q=/preferences.php' }}" class="hidden sm:block text-purple-200 hover:text-white">
                             {{ currentUser.name }}
                         </a>
@@ -43,7 +41,7 @@ TODO: add template variable details.
                             {% if currentUser.image_240 %}
                                 <img class="w-full -mt-1" src="{{ absoluteURL }}/{{ currentUser.image_240 }}" />
                             {% else %}
-                                <img class="w-full -mt-1" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/anonymous_125.jpg" />
+                                <img class="w-full" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/anonymous_75.jpg" />
                             {% endif %}
                             </a>
 
