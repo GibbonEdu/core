@@ -35,9 +35,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.ph
 
     $departmentGateway = $container->get(DepartmentGateway::class);
     
+    // QUERY
+    $criteria = $departmentGateway->newQueryCriteria(true)
+        ->sortBy(['sequenceNumber', 'name']);
+    
     // Data Table
     $gridRenderer = new GridView($container->get('twig'));
     $table = $container->get(DataTable::class)->setRenderer($gridRenderer);
+    $table->getRenderer()->setCriteria($criteria);
     $table->setTitle(__('Departments'));
 
     $table->addColumn('logo')
@@ -52,15 +57,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.ph
             return Format::link($url, $department['name']);
         });
 
-    // QUERY
-    $criteria = $departmentGateway->newQueryCriteria(true)
-        ->sortBy(['sequenceNumber', 'name']);
-
     // Learning Areas
     $learningAreas = $departmentGateway->queryDepartments($criteria, 'Learning Area');
 
     if (count($learningAreas) > 0) {
         $tableLA = clone $table;
+        $tableLA->setId('learningAreas');
         $tableLA->setTitle(__('Learning Areas'));
         
         echo $tableLA->render($learningAreas);
@@ -71,6 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.ph
 
     if (count($administration) > 0) {
         $tableAdmin = clone $table;
+        $tableAdmin->setId('administration');
         $tableAdmin->setTitle(__('Administration'));
 
         echo $tableAdmin->render($administration);
