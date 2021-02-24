@@ -33,6 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     //Proceed!
     $page->breadcrumbs->add(__('Update'));
 
+    $return = $_GET['return'] ?? '';
     $page->return->addReturns([
         'warning1' => __('Some aspects of your request failed, but others were successful. The elements that failed are shown below:'),
         'error3' => __('Your request failed because your inputs were invalid, or no update was required.'),

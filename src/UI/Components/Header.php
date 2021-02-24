@@ -156,13 +156,14 @@ class Header
         }
 
         return [
-            'url'          => $profileURL ?? '',
-            'name'         => $this->session->get('preferredName').' '.$this->session->get('surname'),
-            'username'     => $this->session->get('username'),
-            'roleCategory' => $this->session->get('gibbonRoleIDCurrentCategory'),
-            'image_240'    => $this->session->get('image_240'),
-            'houseName'    => $this->session->get('gibbonHouseIDName'),
-            'houseLogo'    => $this->session->get('gibbonHouseIDLogo'),
+            'url'           => $profileURL ?? '',
+            'name'          => $this->session->get('preferredName').' '.$this->session->get('surname'),
+            'username'      => $this->session->get('username'),
+            'roleCategory'  => $this->session->get('gibbonRoleIDCurrentCategory'),
+            'image_240'     => $this->session->get('image_240'),
+            'houseName'     => $this->session->get('gibbonHouseIDName'),
+            'houseLogo'     => $this->session->get('gibbonHouseIDLogo'),
+            'messengerRead' => strtotime($this->session->get('messengerLastRead')) >= $this->session->get('messageWallRefreshed', 0),
         ];
     }
 }

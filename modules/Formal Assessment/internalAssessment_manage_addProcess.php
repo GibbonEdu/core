@@ -32,7 +32,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
     } else {
         //Proceed!
         //Validate Inputs
-        $gibbonCourseClassIDMulti = $_POST['gibbonCourseClassIDMulti'] ?? '';
+        $gibbonCourseClassIDMulti = $_POST['gibbonCourseClassIDMulti'] ?? [];
+
         $name = $_POST['name'] ?? '';
         $description = $_POST['description'] ?? '';
         $type = $_POST['type'] ?? '';
@@ -123,6 +124,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             header("Location: {$URL}");
         } else {
             $partialFail = false;
+
+            // Prevent duplicate classes selected if courses span multiple year groups
+            $gibbonCourseClassIDMulti = array_unique($gibbonCourseClassIDMulti);
 
             foreach ($gibbonCourseClassIDMulti as $gibbonCourseClassIDSingle) {
                 //Write to database

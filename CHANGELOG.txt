@@ -23,6 +23,7 @@ v22.0.00
 
     Significant Changes
         System: improved support for custom themes
+        System: added an Enrolment tab to the Staff Dashboard
 
     Changes With Important Notices
 
@@ -42,7 +43,10 @@ v22.0.00
 
     Bug Fixes
         System: disabled context menu in TinyMCE which interferes with right clicking
+        Attendance: fixed non-prefillable logic for Take Attendance by Roll Group
+        Formal Assessment: fixed courses with multiple year groups causing duplicate Internal Assessment columns
         System Admin: fixed cache not clearing when switching themes
+        Timetable: fixed error adding class enrolment when one exists already
 
     Deprecations
         Messenger: removed the pop-up Messenger bubbles

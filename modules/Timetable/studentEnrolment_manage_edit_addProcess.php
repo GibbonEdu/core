@@ -78,7 +78,7 @@ if ($gibbonCourseID == '' or $gibbonCourseClassID == '') { echo 'Fatal error loa
                         $dateEnrolled = $values['role'] != $role || empty($values['dateEnrolled']) ? date('Y-m-d') : $values['dateEnrolled'];
                         try {
                             $data = array('gibbonPersonID' => $t, 'gibbonCourseClassID' => $gibbonCourseClassID, 'role' => $role, 'dateEnrolled' => $dateEnrolled);
-                            $sql = "UPDATE gibbonCourseClassPerson SET role=:role, dateEnrolled=:dateEnrolled, dateEnd=NULL, reportable='Y' WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID";
+                            $sql = "UPDATE gibbonCourseClassPerson SET role=:role, dateEnrolled=:dateEnrolled, dateUnenrolled=NULL, reportable='Y' WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID";
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {

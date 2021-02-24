@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes from User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -85,7 +86,7 @@ if ($proceed == false) {
     }
 
     if (!empty($allowedDomains)) {
-        $emailLabel->description(__('Email address must be part of the following domains: {list}', ['list' => implode(', ', $allowedDomains)]));
+        $emailLabel->description(__('Email address must be part of the allowed domains.',).'<details><summary class="my-2 hover:text-blue-500">'.__('Click to view details').'</summary>'.implode(', ', $allowedDomains).'</details>');
 
         $within = implode(',', array_map(function ($str) { return sprintf("'%s'", $str); }, $allowedDomains));
         $email->addValidation('Validate.Inclusion', 'within: ['.$within.'], failureMessage: "'.__('Invalid email!').'", partialMatch: true, caseSensitive: false');
