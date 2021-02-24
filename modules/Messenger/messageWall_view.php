@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php') == false) {
@@ -32,6 +33,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
         __('Today\'s Messages').' ('.$date.')' :
         __('View Messages').' ('.$date.')');
 
+    // Update messenger last read timestamp
+    $gibbon->session->set('messengerLastRead', date('Y-m-d H:i:s'));
+    $container->get(UserGateway::class)->update($gibbon->session->get('gibbonPersonID'), ['messengerLastRead' => date('Y-m-d H:i:s')]);
+
+    // Handle attendance student registration message
     if (isset($_GET['return'])) {
         $status = (!empty($_GET['status'])) ? $_GET['status'] : __('Unknown');
         $emailLink = getSettingByScope($connection2, 'System', 'emailLink');
