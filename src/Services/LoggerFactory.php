@@ -23,6 +23,7 @@
 namespace Gibbon\Services;
 
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\System\LogHandler;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
 
@@ -47,9 +48,12 @@ class LoggerFactory
         if (isset($this->loggerStack[$channel]))
             return $this->loggerStack[$channel];
 
-        $stream = new RotatingFileHandler($this->getFilePath().$channel.'.log', $this->getKeepDays(), $this->getLoggerLevel());
+        $fileHandler = new RotatingFileHandler($this->getFilePath().$channel.'.log', $this->getKeepDays(), $this->getLoggerLevel());
 
-        $logger = new Logger($channel, [$stream]);
+        $logger = new Logger($channel, [
+            $fileHandler,
+            $this->dbHandler,
+        ]);
 
         $this->loggerStack[$channel] = $logger;
 
@@ -72,14 +76,23 @@ class LoggerFactory
     private $loggerLevel = 100;
 
     /**
-     * LoggerFactory constructor.
-     * @param SettingGateway $settingGateway
+     * @var \Gibbon\Domain\System\LogHandler
+     *
+     * A log handler based on \Gibbon\Domain\System\LogGateway
      */
-    public function __construct(SettingGateway $settingGateway)
+    private $dbHandler;
+
+    /**
+     * LoggerFactory constructor.
+     * @param \Gibbon\Domain\System\SettingGateway $settingGateway
+     * @param \Gibbon\Domain\System\LogHandler     $logHandler
+     */
+    public function __construct(SettingGateway $settingGateway, LogHandler $logHandler)
     {
         $this->settingGateway = $settingGateway;
         $this->filePath = $settingGateway->getSettingByScope('System', 'absolutePath') . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR;
         $this->loggerLevel = $settingGateway->getSettingByScope('System', 'installType') === 'Production' ? Logger::WARNING : Logger::DEBUG;
+        $this->dbHandler = $logHandler;
     }
 
     /**
