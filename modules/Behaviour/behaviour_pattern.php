@@ -31,16 +31,10 @@ $enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescrip
 $enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
 
 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $page->breadcrumbs->add(__('Find Behaviour Patterns'));
-
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return']);
-    }
 
     $descriptor = isset($_GET['descriptor'])? $_GET['descriptor'] : '';
     $level = isset($_GET['level'])? $_GET['level'] : '';
@@ -77,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
     $row = $form->addRow();
         $row->addLabel('date', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-        $row->addDate('fromDate')->setValue(dateConvertBack($guid, $fromDate));
+        $row->addDate('fromDate')->setValue($fromDate);
 
     $row = $form->addRow();
         $row->addLabel('gibbonRollGroupID', __('Roll Group'));
@@ -114,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         ->sortBy(['surname', 'preferredName'])
         ->filterBy('descriptor', $descriptor)
         ->filterBy('level', $level)
-        ->filterBy('fromDate', dateConvert($guid, $fromDate))
+        ->filterBy('fromDate', Format::dateConvert($fromDate))
         ->filterBy('rollGroup', $gibbonRollGroupID)
         ->filterBy('yearGroup', $gibbonYearGroupID)
         ->filterBy('minimumCount', $minimumCount)

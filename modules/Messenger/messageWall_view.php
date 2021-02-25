@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php') == false) {
@@ -32,6 +33,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
         __('Today\'s Messages').' ('.$date.')' :
         __('View Messages').' ('.$date.')');
 
+    // Update messenger last read timestamp
+    $gibbon->session->set('messengerLastRead', date('Y-m-d H:i:s'));
+    $container->get(UserGateway::class)->update($gibbon->session->get('gibbonPersonID'), ['messengerLastRead' => date('Y-m-d H:i:s')]);
+
+    // Handle attendance student registration message
     if (isset($_GET['return'])) {
         $status = (!empty($_GET['status'])) ? $_GET['status'] : __('Unknown');
         $emailLink = getSettingByScope($connection2, 'System', 'emailLink');
@@ -42,7 +48,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
             $suggest = sprintf(__('Why not read the messages below, or %1$scheck your email%2$s?'), "<a target='_blank' href='$emailLink'>", '</a>');
         }
         $suggest = '<b>'.$suggest.'</b>';
-        returnProcess($guid, $_GET['return'], null, array('message0' => sprintf(__('Attendance has been taken for you today. Your current status is: %1$s.'), "<b>".$status."</b>").'<br/><br/>'.$suggest));
+        $page->return->addReturns(['message0' => sprintf(__('Attendance has been taken for you today. Your current status is: %1$s.'), "<b>".$status."</b>").'<br/><br/>'.$suggest]);
+
     }
 
 	$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/messageWall_view.php');
@@ -56,9 +63,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
 	$prevDay = DateTime::createFromFormat($dateFormat, $date)->modify('-1 day')->format($dateFormat);
 	$nextDay = DateTime::createFromFormat($dateFormat, $date)->modify('+1 day')->format($dateFormat);
 
-	$col = $row->addColumn()->addClass('flex items-center');
-		$col->addButton(__('Previous Day'))->addClass('buttonLink mr-px')->onClick("window.location.href='{$link}&date={$prevDay}'");
-		$col->addButton(__('Next Day'))->addClass('buttonLink')->onClick("window.location.href='{$link}&date={$nextDay}'");
+	$col = $row->addColumn()->addClass('flex-1 flex items-center');
+		$col->addButton(__('Previous Day'))->addClass('buttonLink mr-px rounded-l-sm hover:bg-gray-400')->onClick("window.location.href='{$link}&date={$prevDay}'");
+		$col->addButton(__('Next Day'))->addClass('buttonLink rounded-r-sm hover:bg-gray-400')->onClick("window.location.href='{$link}&date={$nextDay}'");
 
 	$col = $row->addColumn()->addClass('flex items-center justify-end');
 		$col->addDate('date')->setValue($date)->setClass('shortWidth');

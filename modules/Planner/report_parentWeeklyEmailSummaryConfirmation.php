@@ -18,8 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Domain\User\FamilyGateway;
+use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -27,10 +28,8 @@ require_once __DIR__ . '/moduleFunctions.php';
 $page->breadcrumbs->add(__('Parent Weekly Email Summary'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/report_parentWeeklyEmailSummaryConfirmation.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     echo '<p>';
@@ -41,6 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_parentWeekl
     echo __('Choose Roll Group & Week');
     echo '</h2>';
 
+    $familyGateway = $container->get(FamilyGateway::class);
     $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : null;
     $weekOfYear = isset($_GET['weekOfYear'])? $_GET['weekOfYear'] : null;
 
@@ -77,14 +77,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_parentWeekl
         echo __('Report Data');
         echo '</h2>';
 
-        try {
+        
             $data = array('gibbonRollGroupID' => $gibbonRollGroupID);
             $sql = "SELECT student.surname AS studentSurname, student.preferredName AS studentPreferredName, parent.surname AS parentSurname, parent.preferredName AS parentPreferredName, parent.title AS parentTitle, gibbonRollGroup.name, student.gibbonPersonID AS gibbonPersonIDStudent, parent.gibbonPersonID AS gibbonPersonIDParent FROM gibbonPerson AS student JOIN gibbonStudentEnrolment ON (student.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) LEFT JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=student.gibbonPersonID) LEFT JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) LEFT JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) LEFT JOIN gibbonPerson AS parent ON (gibbonFamilyAdult.gibbonPersonID=parent.gibbonPersonID) WHERE (gibbonFamilyAdult.contactPriority=1 OR gibbonFamilyAdult.contactPriority IS NULL) AND student.status='Full' AND parent.status='Full' AND (student.dateStart IS NULL OR student.dateStart<='".date('Y-m-d')."') AND (student.dateEnd IS NULL OR student.dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonRollGroupID=:gibbonRollGroupID ORDER BY student.surname, student.preferredName, parent.surname, parent.preferredName";
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         echo "<table cellspacing='0' style='width: 100%'>";
         echo "<tr class='head'>";
@@ -92,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_parentWeekl
         echo __('Student');
         echo '</th>';
         echo '<th>';
-        echo __('Parent');
+        echo __('Parents');
         echo '</th>';
         echo '<th>';
         echo __('Sent');
@@ -117,29 +114,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_parentWeekl
             echo '<td>';
             echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$row['gibbonPersonIDStudent']."&subpage=Homework'>".Format::name('', $row['studentPreferredName'], $row['studentSurname'], 'Student', true).'</a>';
             echo '</td>';
-            echo '<td>';
-            echo Format::name($row['parentTitle'], $row['parentPreferredName'], $row['parentSurname'], 'Parent', true);
-            echo '</td>';
-            echo "<td style='width:15%'>";
-            try {
-                $dataData = array('gibbonPersonIDStudent' => $row['gibbonPersonIDStudent'], 'gibbonPersonIDParent' => $row['gibbonPersonIDParent'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'weekOfYear' => $weekOfYear);
-                $sqlData = 'SELECT * FROM gibbonPlannerParentWeeklyEmailSummary WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonPersonIDParent=:gibbonPersonIDParent AND gibbonSchoolYearID=:gibbonSchoolYearID AND weekOfYear=:weekOfYear';
-                $resultData = $connection2->prepare($sqlData);
-                $resultData->execute($dataData);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
 
-            if ($resultData->rowCount() == 1) {
-                $rowData = $resultData->fetch();
+            $dataData = array('gibbonPersonIDStudent' => $row['gibbonPersonIDStudent'],  'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'weekOfYear' => $weekOfYear);
+            $sqlData = 'SELECT gibbonPlannerParentWeeklyEmailSummary.*, gibbonPerson.gibbonPersonID, gibbonPerson.title, gibbonPerson.preferredName, gibbonPerson.surname FROM gibbonPlannerParentWeeklyEmailSummary LEFT JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonPlannerParentWeeklyEmailSummary.gibbonPersonIDParent) WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonSchoolYearID=:gibbonSchoolYearID AND weekOfYear=:weekOfYear';
+
+            $rowData = $pdo->selectOne($sqlData, $dataData);
+
+            $familyAdults = $familyGateway->selectFamilyAdultsByStudent($row['gibbonPersonIDStudent'])->fetchAll();
+            $familyAdults = array_filter($familyAdults, function ($parent) {
+                return $parent['contactEmail'] == 'Y';
+            });
+
+            echo '<td>';
+            foreach ($familyAdults as $parent) {
+                echo Format::name($parent['title'], $parent['preferredName'], $parent['surname'], 'Parent', true);
+
+                echo !empty($rowData) && $parent['gibbonPersonID'] == $rowData['gibbonPersonID'] && $rowData['confirmed'] == 'Y'
+                    ? ' ('.__('Confirmed') . ')<br/>'
+                    : '<br/>';
+            }
+            echo '</td>';
+            
+            echo "<td style='width:15%'>";
+            
+            if (!empty($rowData)) {
                 echo "<img title='".__('Sent')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
             } else {
-                $rowData = null;
                 echo "<img title='".__('Not Sent')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
             }
             echo '</td>';
             echo "<td style='width:15%'>";
-            if (is_null($rowData)) {
+            if (empty($rowData)) {
                 echo __('NA');
             } else {
                 if ($rowData['confirmed'] == 'Y') {

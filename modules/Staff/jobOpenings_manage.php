@@ -22,17 +22,11 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\Staff\StaffJobOpeningGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Job Openings'));
-
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
 
     $jobGateway = $container->get(StaffJobOpeningGateway::class);
 

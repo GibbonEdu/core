@@ -50,13 +50,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             if ($highestAction == 'Update Personal Data_any') {
                 $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_personal.php&gibbonPersonID='.$gibbonPersonID;
                 
-                try {
+                
                     $dataSelect = array('gibbonPersonID' => $gibbonPersonID);
                     $sqlSelect = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonRoleIDAll FROM gibbonPerson WHERE status='Full' AND gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName";
                     $resultSelect = $connection2->prepare($sqlSelect);
                     $resultSelect->execute($dataSelect);
-                } catch (PDOException $e) {
-                }
                 $checkCount = $resultSelect->rowCount();
                 $self = true;
             } else {
@@ -71,13 +69,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     echo $e->getMessage();
                 }
                 while ($rowCheck = $resultCheck->fetch()) {
-                    try {
+                    
                         $dataCheck2 = array('gibbonFamilyID1' => $rowCheck['gibbonFamilyID'], 'gibbonFamilyID2' => $rowCheck['gibbonFamilyID']);
                         $sqlCheck2 = "(SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFamilyID, gibbonRoleIDAll FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND gibbonFamilyID=:gibbonFamilyID1) UNION (SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFamilyID, gibbonRoleIDAll FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND gibbonFamilyID=:gibbonFamilyID2)";
                         $resultCheck2 = $connection2->prepare($sqlCheck2);
                         $resultCheck2->execute($dataCheck2);
-                    } catch (PDOException $e) {
-                    }
                     while ($rowCheck2 = $resultCheck2->fetch()) {
                         if ($gibbonPersonID == $rowCheck2['gibbonPersonID']) {
                             ++$checkCount;
@@ -115,11 +111,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     header("Location: {$URL}");
                     exit();
                 } else {
-                    $row = $result->fetch();
+                    $values = $result->fetch();
 
                     //Get categories
                     $staff = $student = $parent = $other = false;
-                    $roles = explode(',', $row['gibbonRoleIDAll']);
+                    $roles = explode(',', $values['gibbonRoleIDAll']);
                     foreach ($roles as $role) {
                         $roleCategory = getRoleCategory($role, $connection2);
                         $staff = $staff || ($roleCategory == 'Staff');
@@ -130,62 +126,61 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
                     //Proceed!
                     $data = [
-                        'gibbonSchoolYearID'     => $_SESSION[$guid]['gibbonSchoolYearID'],
-                        'gibbonPersonID'         => $_POST['gibbonPersonID'] ?? $row['gibbonPersonID'],
-                        'title'                  => $_POST['title'] ?? $row['title'],
-                        'surname'                => $_POST['surname'] ?? $row['surname'],
-                        'firstName'              => $_POST['firstName'] ?? $row['firstName'],
-                        'preferredName'          => $_POST['preferredName'] ?? $row['preferredName'],
-                        'officialName'           => $_POST['officialName'] ?? $row['officialName'],
-                        'nameInCharacters'       => $_POST['nameInCharacters'] ?? $row['nameInCharacters'],
-                        'dob'                    => isset($_POST['dob']) ? Format::dateConvert($_POST['dob']) : $row['dob'],
-                        'email'                  => $_POST['email'] ?? $row['email'],
-                        'emailAlternate'         => $_POST['emailAlternate'] ?? $row['emailAlternate'],
-                        'address1'               => $_POST['address1'] ?? $row['address1'],
-                        'address1District'       => $_POST['address1District'] ?? $row['address1District'],
-                        'address1Country'        => $_POST['address1Country'] ?? $row['address1Country'],
-                        'address2'               => $_POST['address2'] ?? $row['address2'],
-                        'address2District'       => $_POST['address2District'] ?? $row['address2District'],
-                        'address2Country'        => $_POST['address2Country'] ?? $row['address2Country'],
-                        'phone1Type'             => $_POST['phone1Type'] ?? $row['phone1Type'],
-                        'phone1CountryCode'      => $_POST['phone1CountryCode'] ?? $row['phone1CountryCode'],
-                        'phone1'                 => $_POST['phone1'] ?? $row['phone1'],
-                        'phone2Type'             => $_POST['phone2Type'] ?? $row['phone2Type'],
-                        'phone2CountryCode'      => $_POST['phone2CountryCode'] ?? $row['phone2CountryCode'],
-                        'phone2'                 => $_POST['phone2'] ?? $row['phone2'],
-                        'phone3Type'             => $_POST['phone3Type'] ?? $row['phone3Type'],
-                        'phone3CountryCode'      => $_POST['phone3CountryCode'] ?? $row['phone3CountryCode'],
-                        'phone3'                 => $_POST['phone3'] ?? $row['phone3'],
-                        'phone4Type'             => $_POST['phone4Type'] ?? $row['phone4Type'],
-                        'phone4CountryCode'      => $_POST['phone4CountryCode'] ?? $row['phone4CountryCode'],
-                        'phone4'                 => $_POST['phone4'] ?? $row['phone4'],
-                        'languageFirst'          => $_POST['languageFirst'] ?? $row['languageFirst'],
-                        'languageSecond'         => $_POST['languageSecond'] ?? $row['languageSecond'],
-                        'languageThird'          => $_POST['languageThird'] ?? $row['languageThird'],
-                        'countryOfBirth'         => $_POST['countryOfBirth'] ?? $row['countryOfBirth'],
-                        'ethnicity'              => $_POST['ethnicity'] ?? $row['ethnicity'],
-                        'citizenship1'           => $_POST['citizenship1'] ?? $row['citizenship1'],
-                        'citizenship1Passport'   => $_POST['citizenship1Passport'] ?? $row['citizenship1Passport'],
-                        'citizenship1PassportExpiry'   => !empty($_POST['citizenship1PassportExpiry']) ? Format::dateConvert($_POST['citizenship1PassportExpiry']) : $row['citizenship1PassportExpiry'],
-                        'citizenship2'           => $_POST['citizenship2'] ?? $row['citizenship2'],
-                        'citizenship2Passport'   => $_POST['citizenship2Passport'] ?? $row['citizenship2Passport'],
-                        'citizenship2PassportExpiry'   => !empty($_POST['citizenship2PassportExpiry']) ? Format::dateConvert($_POST['citizenship2PassportExpiry']) : $row['citizenship2PassportExpiry'],
-                        'religion'               => $_POST['religion'] ?? $row['religion'],
-                        'nationalIDCardNumber'   => $_POST['nationalIDCardNumber'] ?? $row['nationalIDCardNumber'],
-                        'residencyStatus'        => $_POST['residencyStatus'] ?? $row['residencyStatus'],
-                        'visaExpiryDate'         => isset($_POST['visaExpiryDate']) ? Format::dateConvert($_POST['visaExpiryDate']) : $row['visaExpiryDate'],
-                        'emergency1Name'         => $_POST['emergency1Name'] ?? $row['emergency1Name'],
-                        'emergency1Number1'      => $_POST['emergency1Number1'] ?? $row['emergency1Number1'],
-                        'emergency1Number2'      => $_POST['emergency1Number2'] ?? $row['emergency1Number2'],
-                        'emergency1Relationship' => $_POST['emergency1Relationship'] ?? $row['emergency1Relationship'],
-                        'emergency2Name'         => $_POST['emergency2Name'] ?? $row['emergency2Name'],
-                        'emergency2Number1'      => $_POST['emergency2Number1'] ?? $row['emergency2Number1'],
-                        'emergency2Number2'      => $_POST['emergency2Number2'] ?? $row['emergency2Number2'],
-                        'emergency2Relationship' => $_POST['emergency2Relationship'] ?? $row['emergency2Relationship'],
-                        'profession'             => $_POST['profession'] ?? $row['profession'],
-                        'employer'               => $_POST['employer'] ?? $row['employer'],
-                        'jobTitle'               => $_POST['jobTitle'] ?? $row['jobTitle'],
-                        'vehicleRegistration'    => $_POST['vehicleRegistration'] ?? $row['vehicleRegistration'],
+                        'gibbonPersonID'             => $gibbonPersonID,
+                        'title'                      => $_POST['title'] ?? $values['title'],
+                        'surname'                    => $_POST['surname'] ?? $values['surname'],
+                        'firstName'                  => $_POST['firstName'] ?? $values['firstName'],
+                        'preferredName'              => $_POST['preferredName'] ?? $values['preferredName'],
+                        'officialName'               => $_POST['officialName'] ?? $values['officialName'],
+                        'nameInCharacters'           => $_POST['nameInCharacters'] ?? $values['nameInCharacters'],
+                        'dob'                        => isset($_POST['dob']) ? Format::dateConvert($_POST['dob']) : $values['dob'],
+                        'email'                      => $_POST['email'] ?? $values['email'],
+                        'emailAlternate'             => $_POST['emailAlternate'] ?? $values['emailAlternate'],
+                        'address1'                   => $_POST['address1'] ?? $values['address1'],
+                        'address1District'           => $_POST['address1District'] ?? $values['address1District'],
+                        'address1Country'            => $_POST['address1Country'] ?? $values['address1Country'],
+                        'address2'                   => $_POST['address2'] ?? $values['address2'],
+                        'address2District'           => $_POST['address2District'] ?? $values['address2District'],
+                        'address2Country'            => $_POST['address2Country'] ?? $values['address2Country'],
+                        'phone1Type'                 => $_POST['phone1Type'] ?? $values['phone1Type'],
+                        'phone1CountryCode'          => $_POST['phone1CountryCode'] ?? $values['phone1CountryCode'],
+                        'phone1'                     => $_POST['phone1'] ?? $values['phone1'],
+                        'phone2Type'                 => $_POST['phone2Type'] ?? $values['phone2Type'],
+                        'phone2CountryCode'          => $_POST['phone2CountryCode'] ?? $values['phone2CountryCode'],
+                        'phone2'                     => $_POST['phone2'] ?? $values['phone2'],
+                        'phone3Type'                 => $_POST['phone3Type'] ?? $values['phone3Type'],
+                        'phone3CountryCode'          => $_POST['phone3CountryCode'] ?? $values['phone3CountryCode'],
+                        'phone3'                     => $_POST['phone3'] ?? $values['phone3'],
+                        'phone4Type'                 => $_POST['phone4Type'] ?? $values['phone4Type'],
+                        'phone4CountryCode'          => $_POST['phone4CountryCode'] ?? $values['phone4CountryCode'],
+                        'phone4'                     => $_POST['phone4'] ?? $values['phone4'],
+                        'languageFirst'              => $_POST['languageFirst'] ?? $values['languageFirst'],
+                        'languageSecond'             => $_POST['languageSecond'] ?? $values['languageSecond'],
+                        'languageThird'              => $_POST['languageThird'] ?? $values['languageThird'],
+                        'countryOfBirth'             => $_POST['countryOfBirth'] ?? $values['countryOfBirth'],
+                        'ethnicity'                  => $_POST['ethnicity'] ?? $values['ethnicity'],
+                        'citizenship1'               => $_POST['citizenship1'] ?? $values['citizenship1'],
+                        'citizenship1Passport'       => $_POST['citizenship1Passport'] ?? $values['citizenship1Passport'],
+                        'citizenship1PassportExpiry' => !empty($_POST['citizenship1PassportExpiry']) ? Format::dateConvert($_POST['citizenship1PassportExpiry']) : $values['citizenship1PassportExpiry'],
+                        'citizenship2'               => $_POST['citizenship2'] ?? $values['citizenship2'],
+                        'citizenship2Passport'       => $_POST['citizenship2Passport'] ?? $values['citizenship2Passport'],
+                        'citizenship2PassportExpiry' => !empty($_POST['citizenship2PassportExpiry']) ? Format::dateConvert($_POST['citizenship2PassportExpiry']) : $values['citizenship2PassportExpiry'],
+                        'religion'                   => $_POST['religion'] ?? $values['religion'],
+                        'nationalIDCardNumber'       => $_POST['nationalIDCardNumber'] ?? $values['nationalIDCardNumber'],
+                        'residencyStatus'            => $_POST['residencyStatus'] ?? $values['residencyStatus'],
+                        'visaExpiryDate'             => isset($_POST['visaExpiryDate']) ? Format::dateConvert($_POST['visaExpiryDate']) : $values['visaExpiryDate'],
+                        'emergency1Name'             => $_POST['emergency1Name'] ?? $values['emergency1Name'],
+                        'emergency1Number1'          => $_POST['emergency1Number1'] ?? $values['emergency1Number1'],
+                        'emergency1Number2'          => $_POST['emergency1Number2'] ?? $values['emergency1Number2'],
+                        'emergency1Relationship'     => $_POST['emergency1Relationship'] ?? $values['emergency1Relationship'],
+                        'emergency2Name'             => $_POST['emergency2Name'] ?? $values['emergency2Name'],
+                        'emergency2Number1'          => $_POST['emergency2Number1'] ?? $values['emergency2Number1'],
+                        'emergency2Number2'          => $_POST['emergency2Number2'] ?? $values['emergency2Number2'],
+                        'emergency2Relationship'     => $_POST['emergency2Relationship'] ?? $values['emergency2Relationship'],
+                        'profession'                 => $_POST['profession'] ?? $values['profession'],
+                        'employer'                   => $_POST['employer'] ?? $values['employer'],
+                        'jobTitle'                   => $_POST['jobTitle'] ?? $values['jobTitle'],
+                        'vehicleRegistration'        => $_POST['vehicleRegistration'] ?? $values['vehicleRegistration'],
                     ];
  
                     $data = array_map('trim', $data);
@@ -195,6 +190,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     if (empty($data['visaExpiryDate'])) $data['visaExpiryDate'] = null;
                     if (empty($data['citizenship1PassportExpiry']) || $data['citizenship1PassportExpiry'] == '0000-00-00') $data['citizenship1PassportExpiry'] = null;
                     if (empty($data['citizenship2PassportExpiry']) || $data['citizenship2PassportExpiry'] == '0000-00-00') $data['citizenship2PassportExpiry'] = null;
+
+                    // Matching addresses
+                    $matchAddressCount = $_POST['matchAddressCount'] ?? 0;
 
                     // Phone number filtering
                     for ($i = 1; $i <= 4; $i++) {
@@ -208,17 +206,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     $data['privacy'] = isset($_POST['privacyOptions']) && is_array($_POST['privacyOptions'])
                         ? implode(', ', $_POST['privacyOptions'])
                         : null;
-                        
+
+                    // COMPARE VALUES: Has the data changed?
+                    $dataChanged = $matchAddressCount > 0 ? true : false;
+                    foreach ($values as $key => $value) {
+                        if (!isset($data[$key])) continue; // Skip fields we don't plan to update
+
+                        if ($data[$key] != $value) {
+                            $dataChanged = true;
+                        }
+                    }
 
                     //DEAL WITH CUSTOM FIELDS
                     //Prepare field values
                     $customRequireFail = false;
+                    $existingFields = json_decode($values['fields'], true);
                     $resultFields = getCustomFields($connection2, $guid, $student, $staff, $parent, $other, null, true);
                     $fields = [];
                     if ($resultFields->rowCount() > 0) {
                         while ($rowFields = $resultFields->fetch()) {
                             $fieldID = $rowFields['gibbonPersonFieldID'];
                             $fieldValue = $_POST['custom'.$fieldID] ?? null;
+                            $existingValue = $existingFields[$fieldID] ?? null;
+
+                            if ($existingValue != $fieldValue) {
+                                $dataChanged = true;
+                            }
 
                             if (!is_null($fieldValue)) {
                                 $fields[$fieldID] = ($rowFields['type'] == 'date')
@@ -236,33 +249,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         $URL .= '&return=error1';
                         header("Location: {$URL}");
                     } else {
-                        $data['fields'] = serialize($fields);
+                        $data['fields'] = json_encode($fields);
 
                         //Write to database
                         $existing = $_POST['existing'] ?? 'N';
 
-                        try {
-                            $data['gibbonPersonIDUpdater'] = $_SESSION[$guid]['gibbonPersonID'];
-                            if ($existing != 'N') {
-                                $data['gibbonPersonUpdateID'] = $existing;
-                                $sql = 'UPDATE gibbonPersonUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonID=:gibbonPersonID, title=:title, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, dob=:dob, email=:email, emailAlternate=:emailAlternate, address1=:address1, address1District=:address1District, address1Country=:address1Country, address2=:address2, address2District=:address2District, address2Country=:address2Country, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, phone3Type=:phone3Type, phone3CountryCode=:phone3CountryCode, phone3=:phone3, phone4Type=:phone4Type, phone4CountryCode=:phone4CountryCode, phone4=:phone4, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, ethnicity=:ethnicity, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, citizenship1PassportExpiry=:citizenship1PassportExpiry, citizenship2=:citizenship2, citizenship2Passport=:citizenship2Passport, citizenship2PassportExpiry=:citizenship2PassportExpiry, religion=:religion, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, emergency1Name=:emergency1Name, emergency1Number1=:emergency1Number1, emergency1Number2=:emergency1Number2, emergency1Relationship=:emergency1Relationship, emergency2Name=:emergency2Name, emergency2Number1=:emergency2Number1, emergency2Number2=:emergency2Number2, emergency2Relationship=:emergency2Relationship, profession=:profession, employer=:employer, jobTitle=:jobTitle, vehicleRegistration=:vehicleRegistration, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, privacy=:privacy, fields=:fields, timestamp=NOW() WHERE gibbonPersonUpdateID=:gibbonPersonUpdateID';
-                            } else {
-                                $sql = 'INSERT INTO gibbonPersonUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonID=:gibbonPersonID, title=:title, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, dob=:dob, email=:email, emailAlternate=:emailAlternate, address1=:address1, address1District=:address1District, address1Country=:address1Country, address2=:address2, address2District=:address2District, address2Country=:address2Country, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, phone3Type=:phone3Type, phone3CountryCode=:phone3CountryCode, phone3=:phone3, phone4Type=:phone4Type, phone4CountryCode=:phone4CountryCode, phone4=:phone4, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, ethnicity=:ethnicity, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, citizenship1PassportExpiry=:citizenship1PassportExpiry, citizenship2=:citizenship2, citizenship2Passport=:citizenship2Passport, citizenship2PassportExpiry=:citizenship2PassportExpiry, religion=:religion, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, emergency1Name=:emergency1Name, emergency1Number1=:emergency1Number1, emergency1Number2=:emergency1Number2, emergency1Relationship=:emergency1Relationship, emergency2Name=:emergency2Name, emergency2Number1=:emergency2Number1, emergency2Number2=:emergency2Number2, emergency2Relationship=:emergency2Relationship, profession=:profession, employer=:employer, jobTitle=:jobTitle, vehicleRegistration=:vehicleRegistration, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, privacy=:privacy, fields=:fields';
-                            }
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
-                        } catch (PDOException $e) {
-                            $URL .= '&return=error2';
-                            header("Location: {$URL}");
-                            exit();
+                        // Auto-accept updates where no data had changed
+                        $data['status'] = $dataChanged ? 'Pending' : 'Complete';
+                        $data['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
+                        $data['gibbonPersonIDUpdater'] = $_SESSION[$guid]['gibbonPersonID'];
+                        $data['timestamp'] = date('Y-m-d H:i:s');
+
+
+                        if ($existing != 'N') {
+                            $data['gibbonPersonUpdateID'] = $existing;
+                            $sql = 'UPDATE gibbonPersonUpdate SET `status`=:status, gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonID=:gibbonPersonID, title=:title, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, dob=:dob, email=:email, emailAlternate=:emailAlternate, address1=:address1, address1District=:address1District, address1Country=:address1Country, address2=:address2, address2District=:address2District, address2Country=:address2Country, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, phone3Type=:phone3Type, phone3CountryCode=:phone3CountryCode, phone3=:phone3, phone4Type=:phone4Type, phone4CountryCode=:phone4CountryCode, phone4=:phone4, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, ethnicity=:ethnicity, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, citizenship1PassportExpiry=:citizenship1PassportExpiry, citizenship2=:citizenship2, citizenship2Passport=:citizenship2Passport, citizenship2PassportExpiry=:citizenship2PassportExpiry, religion=:religion, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, emergency1Name=:emergency1Name, emergency1Number1=:emergency1Number1, emergency1Number2=:emergency1Number2, emergency1Relationship=:emergency1Relationship, emergency2Name=:emergency2Name, emergency2Number1=:emergency2Number1, emergency2Number2=:emergency2Number2, emergency2Relationship=:emergency2Relationship, profession=:profession, employer=:employer, jobTitle=:jobTitle, vehicleRegistration=:vehicleRegistration, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, privacy=:privacy, fields=:fields, timestamp=:timestamp WHERE gibbonPersonUpdateID=:gibbonPersonUpdateID';
+                        } else {
+                            $sql = 'INSERT INTO gibbonPersonUpdate SET `status`=:status, gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonID=:gibbonPersonID, title=:title, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, dob=:dob, email=:email, emailAlternate=:emailAlternate, address1=:address1, address1District=:address1District, address1Country=:address1Country, address2=:address2, address2District=:address2District, address2Country=:address2Country, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, phone3Type=:phone3Type, phone3CountryCode=:phone3CountryCode, phone3=:phone3, phone4Type=:phone4Type, phone4CountryCode=:phone4CountryCode, phone4=:phone4, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, ethnicity=:ethnicity, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, citizenship1PassportExpiry=:citizenship1PassportExpiry, citizenship2=:citizenship2, citizenship2Passport=:citizenship2Passport, citizenship2PassportExpiry=:citizenship2PassportExpiry, religion=:religion, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, emergency1Name=:emergency1Name, emergency1Number1=:emergency1Number1, emergency1Number2=:emergency1Number2, emergency1Relationship=:emergency1Relationship, emergency2Name=:emergency2Name, emergency2Number1=:emergency2Number1, emergency2Number2=:emergency2Number2, emergency2Relationship=:emergency2Relationship, profession=:profession, employer=:employer, jobTitle=:jobTitle, vehicleRegistration=:vehicleRegistration, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, privacy=:privacy, fields=:fields, timestamp=:timestamp';
                         }
+                        $pdo->statement($sql, $data);
+
 
                         //Update matching addresses
                         $partialFail = false;
-                        $matchAddressCount = 0;
-                        if (isset($_POST['matchAddressCount'])) {
-                            $matchAddressCount = $_POST['matchAddressCount'];
-                        }
+
                         if ($matchAddressCount > 0) {
                             for ($i = 0; $i < $matchAddressCount; ++$i) {
                                 if (!empty($_POST[$i.'-matchAddress'])) {
@@ -298,14 +308,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                             }
                         }
 
-                        // Raise a new notification event
-                        $event = new NotificationEvent('Data Updater', 'Personal Data Updates');
+                        if ($dataChanged) {
+                            // Raise a new notification event
+                            $event = new NotificationEvent('Data Updater', 'Personal Data Updates');
 
-                        $event->addRecipient($_SESSION[$guid]['organisationDBA']);
-                        $event->setNotificationText(__('A personal data update request has been submitted.'));
-                        $event->setActionLink('/index.php?q=/modules/Data Updater/data_personal_manage.php');
+                            $event->addRecipient($_SESSION[$guid]['organisationDBA']);
+                            $event->setNotificationText(__('A personal data update request has been submitted.'));
+                            $event->setActionLink('/index.php?q=/modules/Data Updater/data_personal_manage.php');
 
-                        $event->sendNotifications($pdo, $gibbon->session);
+                            $event->sendNotifications($pdo, $gibbon->session);
+                        }
 
 
                         if ($partialFail == true) {

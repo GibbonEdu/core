@@ -27,12 +27,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
 } else {
     //Proceed!
     //Validate Inputs
-    $gibbonPersonID = $_POST['gibbonPersonID'];
+    $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
     $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
-    $sequenceNumber = null;
-    if ($expenseApprovalType == 'Chain Of All') {
-        $sequenceNumber = abs($_POST['sequenceNumber']);
-    }
+    $sequenceNumber = $expenseApprovalType == 'Chain Of All'
+          ? abs($_POST['sequenceNumber']?? null)
+          : null;
+    
 
     if ($gibbonPersonID == '' or ($expenseApprovalType == 'Y' and $sequenceNumber == '')) {
         $URL .= '&return=error1';

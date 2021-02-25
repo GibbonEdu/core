@@ -51,7 +51,8 @@ class MpdfRenderer implements ReportRendererInterface
 
     public function setMode(int $bitmask)
     {
-        $this->mode |= $bitmask;
+        if ($bitmask == 0) $this->mode = 0;
+        else $this->mode |= $bitmask;
     }
 
     public function hasMode(int $bitmask)
@@ -78,6 +79,8 @@ class MpdfRenderer implements ReportRendererInterface
         $this->template = $template;
         $this->absolutePath = $template->getData('absolutePath');
         $this->customAssetPath = $template->getData('customAssetPath');
+        $this->firstPage = true;
+        $this->lastPage = false;
 
         $customTemplatePath = $this->absolutePath.$this->customAssetPath.'/templates';
         if (is_dir($customTemplatePath)) {
@@ -117,22 +120,31 @@ class MpdfRenderer implements ReportRendererInterface
 
     protected function renderSection(ReportSection &$section, ReportData &$reportData)
     {
-        if ($section->hasFlag(ReportSection::SKIP_IF_EMPTY)) {
-            $data = array_filter($reportData->getData(array_keys($section->sources)));
+        $data = $reportData->getData(array_keys($section->sources));
 
-            if (empty($data)) {
+        // Skip this section if any of the data sources are empty
+        if ($section->hasFlag(ReportSection::SKIP_IF_EMPTY)) {
+            if (count(array_filter($data)) != count($data)) {
                 return;
             }
         }
 
         $this->lastPage = $section->lastPage || $this->lastPage;
 
-        $this->setHeader();
+        $this->setHeader($this->firstPage);
 
-        if ($section->hasFlag(ReportSection::PAGE_BREAK_BEFORE) || $this->firstPage) {
+        if ($this->firstPage) {
+            $this->setFooter(true);
+            $this->pdf->AddPageByArray([
+                'type' => 'ODD',
+                'resetpagenum' => 1,
+                'suppress' => 'off',
+            ]);
+        } elseif ($section->hasFlag(ReportSection::PAGE_BREAK_BEFORE)) {
             $this->pdf->AddPageByArray(['suppress' => 'off']);
         }
         
+        $this->setHeader();
         $this->setFooter();
 
         $html = $this->renderSectionToHTML($section, $reportData);
@@ -140,7 +152,7 @@ class MpdfRenderer implements ReportRendererInterface
         if ($section->x != null && $section->y != null) {
             $this->pdf->WriteFixedPosHTML($html, floatval($section->x), floatval($section->y), !empty($section->width) ? $section->width : '100%', !empty($section->height) ? $section->height : '100%', 'visible');
         } else {
-            $this->pdf->writeHTML($html.'<br/>');
+            $this->pdf->writeHTML($html);
         }
 
         $this->firstPage = false;
@@ -181,8 +193,6 @@ class MpdfRenderer implements ReportRendererInterface
             'mode' => 'utf-8',
             'format' => $this->template->getData('pageSize', 'A4') == 'letter' ? [215.9, 279.4] : [210, 297],
             'orientation' => $this->template->getData('orientation', 'P'),
-            // 'useOddEven' => $this->hasMode(self::OUTPUT_TWO_SIDED) ? '1' : '0',
-            // 'mirrorMargins' => $this->hasMode(self::OUTPUT_TWO_SIDED) ? '1' : '0',
             'useOddEven' => '0',
             'mirrorMargins' => '0',
             
@@ -241,7 +251,7 @@ class MpdfRenderer implements ReportRendererInterface
             $data = $reportData->getData(array_keys($header->sources));
             $data = array_merge($data, $this->template->getData(), $header->getData(), ['stylesheet' => '']);
 
-            $this->pdf->DefHTMLHeaderByName('html_header'.$index, $this->twig->render($header->template, $data));
+            $this->pdf->DefHTMLHeaderByName('header'.$index, $this->twig->render($header->template, $data));
         }
 
         // Define Footers
@@ -251,7 +261,7 @@ class MpdfRenderer implements ReportRendererInterface
             $data = $reportData->getData(array_keys($footer->sources));
             $data = array_merge($data, $this->template->getData(), $footer->getData(), ['stylesheet' => '']);
 
-            $this->pdf->DefHTMLFooterByName('html_footer'.$index, $this->twig->render($footer->template, $data));
+            $this->pdf->DefHTMLFooterByName('footer'.$index, $this->twig->render($footer->template, $data));
         }
 
         // Watermark
@@ -260,7 +270,7 @@ class MpdfRenderer implements ReportRendererInterface
             $this->pdf->showWatermarkText = true;
         }
 
-        
+        $this->setFooter();
     }
 
     protected function finishDocument($outputPath)
@@ -283,62 +293,60 @@ class MpdfRenderer implements ReportRendererInterface
         $this->setHeader();
         $this->setFooter();
 
+        $this->pdf->writeHTML('<br/>');
+
         $this->runPostProcess($reportData);
 
         // Add a page with odd-numbered reports for two-sided printing
-        if ($this->hasMode(self::OUTPUT_TWO_SIDED & self::OUTPUT_CONTINUOUS)) {
-            // $this->pdf->AddPageByArray([
-            //     'type' => 'ODD',
-            //     'resetpagenum' => 1,
-            //     'suppress' => 'on',
-            //     'odd-header-name' => '',
-            //     'even-header-name' => '',
-            //     'odd-footer-name' => '',
-            //     'even-footer-name' => '',
-            // ]);
+        if ($this->hasMode(self::OUTPUT_TWO_SIDED)) {
+            if ($this->pdf->getPageNumber() % 2 != 0) {
+                $this->pdf->SetHTMLHeaderByName('header0', 'O');
+                $this->pdf->SetHTMLFooterByName('footer0', 'O');
+                $this->pdf->AddPageByArray([
+                    'type' => 'NEXT-ODD',
+                    'resetpagenum' => 1,
+                    'suppress' => 'on',
+                    'odd-header-name' => '',
+                    'even-header-name' => '',
+                    'odd-footer-name' => '',
+                    'even-footer-name' => '',
+                ]);
+            }
         }
         
         // Continue the current document after a report for continuous output
         if ($this->hasMode(self::OUTPUT_CONTINUOUS)) {
             $this->firstPage = true;
             $this->lastPage = false;
-
-            $this->pdf->PageNumSubstitutions[] = [
-                'from' => 1,
-                'reset' => 1,
-                'type' => '1',
-                'suppress' => 'off'
-            ];
         } else {
             $outputPath = $this->getFilePath($reportData);
             $this->finishDocument($outputPath);
         }
     }
 
-    protected function setHeader()
+    protected function setHeader($forceFirst = false)
     {
-        $pageNum = $this->lastPage ? -1 : $this->pdf->getPageNumber() + 1;
-        $defaultHeader = isset($this->headers[0])? 'html_header0' : false;
-        $headerName = isset($this->headers[$pageNum])? 'html_header'.$pageNum : $defaultHeader;
+        if (empty($this->headers)) return;
 
-        // if ($this->hasMode(self::OUTPUT_TWO_SIDED)) {
-        //     $this->pdf->SetHTMLHeaderByName($headerName, $pageNum % 2 == 0 || $this->firstPage ? 'O' : 'E', $this->lastPage);
-        // } else {
-            $this->pdf->SetHTMLHeaderByName($headerName, 'O', $this->lastPage);
-        // }
+        $docPageNum = $forceFirst ? 0 : $this->pdf->getPageNumber();
+        $pageNum = $this->lastPage && !($docPageNum == 1) ? -1 : $docPageNum + 1;
+
+        $defaultHeader = isset($this->headers[0])? 'header0' : false;
+        $headerName = isset($this->headers[$pageNum])? 'header'.$pageNum : $defaultHeader;
+
+        $this->pdf->SetHTMLHeaderByName($headerName, 'O', $this->lastPage);
     }
 
-    protected function setFooter()
+    protected function setFooter($forceLast = false)
     {
-        $pageNum = $this->lastPage ? -1 : $this->pdf->getPageNumber();
-        $defaultFooter = isset($this->footers[0])? 'html_footer0' : false;
-        $footerName = isset($this->footers[$pageNum])? 'html_footer'.$pageNum : $defaultFooter;
+        if (empty($this->footers)) return;
 
-        // if ($this->hasMode(self::OUTPUT_TWO_SIDED)) {
-        //     $this->pdf->SetHTMLFooterByName($footerName, $pageNum % 2 == 0 ? 'E' : 'O');
-        // } else {
-            $this->pdf->SetHTMLFooterByName($footerName);
-        // }
+        $docPageNum = max($this->pdf->getPageNumber(), 1);
+        $pageNum = $this->lastPage || $forceLast ? -1 : $docPageNum;
+        $defaultFooter = isset($this->footers[0])? 'footer0' : false;
+        $footerName = isset($this->footers[$pageNum])? 'footer'.$pageNum : $defaultFooter;
+
+        $this->pdf->SetHTMLFooterByName($footerName, 'O');
     }
 
     protected function runPreProcess(ReportData &$reportData)

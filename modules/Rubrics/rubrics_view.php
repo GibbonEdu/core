@@ -24,20 +24,14 @@ use Gibbon\Domain\Rubrics\RubricGateway;
 use Gibbon\Domain\Students\StudentGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('View Rubrics'));
 
     // Register scripts available to the core, but not included by default
     $page->scripts->add('chart');
-
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
 
     $search = isset($_REQUEST['search'])? $_REQUEST['search'] : '';
     $department = isset($_POST['filter2'])? $_POST['filter2'] : '';

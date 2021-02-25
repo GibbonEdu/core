@@ -14,9 +14,9 @@ uniqueKeys:
 table:
     gibbonPersonID:
         name: "Person"
-        desc: "Username"
+        desc: "Username or Email (if unique)"
         args: { filter: nospaces, required: true }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
     initials:
         name: "Initials"
         desc: "Must be unique if set."
@@ -33,6 +33,10 @@ table:
         name: "First Aid Qualified?"
         desc: ""
         args: {filter: yesno, custom: true }
+    firstAidQualification:
+        name: "First Aid Qualification"
+        desc: ""
+        args: {filter: string, custom: true }
     firstAidExpiry:
         name: "First Aid Expiry"
         desc: ""

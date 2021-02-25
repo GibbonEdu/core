@@ -24,10 +24,8 @@ use Gibbon\Services\Format;
 include './modules/User Admin/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal_manage_edit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $gibbonSchoolYearID = isset($_REQUEST['gibbonSchoolYearID'])? $_REQUEST['gibbonSchoolYearID'] : $_SESSION[$guid]['gibbonSchoolYearID'];
@@ -41,28 +39,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
     //Check if school year specified
     $gibbonPersonUpdateID = $_GET['gibbonPersonUpdateID'];
     if ($gibbonPersonUpdateID == 'Y') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonPersonUpdateID' => $gibbonPersonUpdateID);
             $sql = 'SELECT gibbonPerson.* FROM gibbonPersonUpdate JOIN gibbonPerson ON (gibbonPersonUpdate.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPersonUpdateID=:gibbonPersonUpdateID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
             echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, null);
-            }
-
             $data = array('gibbonPersonUpdateID' => $gibbonPersonUpdateID);
             $sql = "SELECT gibbonPersonUpdate.* FROM gibbonPersonUpdate JOIN gibbonPerson ON (gibbonPersonUpdate.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPersonUpdateID=:gibbonPersonUpdateID";
             $newResult = $pdo->executeQuery($data, $sql);
@@ -170,7 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 $compare['jobTitle']   = __('Job Title');
             }
 
-            $form = Form::create('updatePerson', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_personal_manage_editProcess.php?gibbonPersonUpdateID='.$gibbonPersonUpdateID);
+            $form = Form::createTable('updatePerson', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_personal_manage_editProcess.php?gibbonPersonUpdateID='.$gibbonPersonUpdateID);
             
             $form->setClass('fullWidth colorOddEven');
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
@@ -219,8 +208,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             }
 
             // CUSTOM FIELDS
-			$oldFields = !empty($oldValues['fields'])? unserialize($oldValues['fields']) : array();
-            $newFields = !empty($newValues['fields'])? unserialize($newValues['fields']) : array();
+			$oldFields = !empty($oldValues['fields'])? json_decode($oldValues['fields'], true) : [];
+            $newFields = !empty($newValues['fields'])? json_decode($newValues['fields'], true) : [];
             $resultFields = getCustomFields($connection2, $guid, $student, $staff, $parent, $other, null, true);
             if ($resultFields->rowCount() > 0) {
                 while ($rowFields = $resultFields->fetch()) {

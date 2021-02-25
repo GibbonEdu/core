@@ -23,26 +23,19 @@ use Gibbon\Forms\Form;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Check if courseschool year specified
     $gibbonDepartmentID = $_GET['gibbonDepartmentID'];
     if ($gibbonDepartmentID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonDepartmentID' => $gibbonDepartmentID);
             $sql = 'SELECT * FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
@@ -58,9 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
                 ->add($values['name'], 'department.php', $urlParams)
                 ->add(__('Edit Department'));            
 
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, array('error3' => __('Your request failed due to an attachment error.')));
-            }
+            $page->return->addReturns(['error3' => __('Your request failed due to an attachment error.')]);
 
             //Get role within learning area
             $role = getRole($_SESSION[$guid]['gibbonPersonID'], $gibbonDepartmentID, $connection2);

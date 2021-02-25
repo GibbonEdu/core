@@ -1,0 +1,54 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% if heading %}
+<{{ heading }}>
+    {{ __('Upcoming Due Dates') }}
+</{{ heading }}>
+{% endif %}
+
+{% if deadlines %}
+
+    <ol class="ml-6">
+    {% for deadline in deadlines %}
+        {% set difference = date(deadline.homeworkDueDateTime).diff(date()) %}
+
+        {% if deadline.homeworkComplete == 'Y' or deadline.onlineSubmission == 'Y' %}
+            {% set class = "success border-r-8" %}
+            {% set tag = "<span class='tag success border border-green-300 ml-2'>" ~  __('Complete')  ~ "</span>" %}
+        {% elseif difference.days <= 0 %}
+            {% set class = "error border-r-8" %}
+            {% set tag = "<span class='tag error border border-red-300 ml-2'>" ~  __('Due Soon')  ~ "</span>" %}
+        {% elseif difference.days <= 2 %}
+            {% set class = "warning border-r-8" %}
+            {% set tag = "<span class='tag warning border border-red-300 ml-2'>" ~  __('Due Soon')  ~ "</span>" %}
+        {% else %}
+            {% set class = "text-gray-800" %}
+            {% set tag = "" %}
+        {% endif %}
+
+        <li>
+            <a class="{{ class }} block p-2" href="{{ absoluteURL}}/index.php?q=/modules/Planner/planner_view_full.php&search={{ gibbonPersonID }}&gibbonPlannerEntryID={{ deadline.gibbonPlannerEntryID }}&viewBy={{ viewBy ?? 'date' }}&gibbonCourseClassID={{  deadline.gibbonCourseClassID }}&date={{ deadline.date }}">
+                <span class="font-bold">
+                    {{ formatUsing('courseClassName', deadline.course, deadline.class) }}
+                    {{ not hideLessonName ? ' - ' ~ deadline.name : '' }}
+                </span><br/>
+
+                <span class="text-xs italic opacity-75">
+                    {{ __('Due at {time} on {date}', {'time': formatUsing('time', deadline.homeworkDueDateTime), 'date': formatUsing('date', deadline.homeworkDueDateTime) })|raw }} 
+
+                    {{ tag|raw }}
+                </span>
+            </a>
+        </li>
+    {% endfor %}
+    </ol>
+
+{% else %}
+    {{ formatUsing('alert', __('No upcoming due dates!'), 'success') }}
+{% endif %}

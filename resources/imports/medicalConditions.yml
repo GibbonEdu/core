@@ -13,9 +13,9 @@ uniqueKeys:
 table:
     gibbonPersonMedicalID: 
         name: "Student"
-        desc: "Username"
+        desc: "Username or Email (if unique)"
         args: { filter: string, required: true }
-        relationship: { table: gibbonPersonMedical, key: gibbonPersonMedicalID, join: gibbonPerson, on: [gibbonPersonID,gibbonPersonID], field: username  }
+        relationship: { table: gibbonPersonMedical, key: gibbonPersonMedicalID, join: gibbonPerson, on: [gibbonPersonID,gibbonPersonID], field: username|email  }
     name: 
         name: "Condition Name"
         desc: ""

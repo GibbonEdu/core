@@ -23,17 +23,11 @@ use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\DataUpdater\PersonUpdateGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Personal Data Updates'));
-
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
 
     $gibbonSchoolYearID = isset($_REQUEST['gibbonSchoolYearID'])? $_REQUEST['gibbonSchoolYearID'] : $_SESSION[$guid]['gibbonSchoolYearID'];
 
@@ -83,6 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
     $table->addColumn('target', __('Target User'))
         ->sortable(['target.surname', 'target.preferredName'])
         ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student']));
+    $table->addColumn('roleCategory', __('Role Category'));
     $table->addColumn('updater', __('Requesting User'))
         ->sortable(['updater.surname', 'updater.preferredName'])
         ->format(Format::using('name', ['updaterTitle', 'updaterPreferredName', 'updaterSurname', 'Parent']));

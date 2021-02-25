@@ -7,6 +7,11 @@
 uploads/*
 !uploads/.htaccess
 
+# Themes Folder
+themes/*
+!themes/Default
+!themes/2021
+
 # Tests Folder
 tests/log/*
 tests/config/support/_generated/*
@@ -37,3 +42,6 @@ nbproject/
 # Var Folder
 var/*
 !var/.htaccess
+
+# Ignore node_modules folder
+node_modules

@@ -72,6 +72,7 @@ class PaginatedView extends DataTableView implements RendererInterface
             'rows'       => $this->getTableRows($table, $dataSet),
             'blankSlate' => $table->getMetaData('blankSlate'),
             'draggable'  => $table->getMetaData('draggable'),
+            'hidePagination' => $table->getMetaData('hidePagination'),
         ]);
 
         if (!empty($this->criteria)) {
@@ -86,7 +87,6 @@ class PaginatedView extends DataTableView implements RendererInterface
                 'filterOptions'  => $this->getSelectFilterOptions($dataSet, $filters),
                 'filterCriteria' => $this->getFilterCriteria($filters),
                 'bulkActions'    => $table->getMetaData('bulkActions'),
-                'hidePagination' => $table->getMetaData('hidePagination'),
                 'isFiltered'     => $dataSet->getTotalCount() > 0 && ($this->criteria->hasSearchText() || $this->criteria->hasFilter()),
             ]);
 
@@ -153,7 +153,7 @@ class PaginatedView extends DataTableView implements RendererInterface
         
         return $this->factory->createSelect('filter')
             ->fromArray($filters)
-            ->setClass('filters float-none w-24 pl-2 border leading-loose h-full sm:h-8 ')
+            ->setClass('filters float-none w-24 pl-2 border leading-none h-full sm:h-8 ')
             ->addClass($dataSet->getTotalCount() > 25 ?: 'rounded-l')
             ->addClass($this->criteria->hasFilter() ?: 'rounded-r')
             ->placeholder(__('Filters'))
@@ -184,7 +184,7 @@ class PaginatedView extends DataTableView implements RendererInterface
 
         return $this->factory->createSelect('limit')
             ->fromArray($options)
-            ->setClass('limit float-none w-16 pl-2 rounded-l border leading-loose h-full sm:h-8 ')
+            ->setClass('limit float-none w-16 pl-2 rounded-l border leading-none h-full sm:h-8 ')
             ->addClass(!empty($filters) ?: 'rounded-r')
             ->selected($dataSet->getPageSize())
             ->getOutput();

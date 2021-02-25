@@ -17,35 +17,37 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\ModuleGateway;
+use Gibbon\Domain\System\ActionGateway;
+
 include '../../gibbon.php';
 
 //Get URL from calling page, and set returning URL
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/System Admin/module_manage.php';
-$_SESSION[$guid]['moduleInstallError'] = '';
+$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/System Admin/module_manage.php';
+$gibbon->session->set('moduleInstallError', '');
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $moduleName = null;
-    if (isset($_GET['name'])) {
-        $moduleName = $_GET['name'];
-    }
+    $moduleName = $_GET['name'] ?? '';
 
-    if ($moduleName == null or $moduleName == '') {
+    if (empty($moduleName)) {
         $URL .= '&return=error5';
         header("Location: {$URL}");
     } else {
-        if (!(include $_SESSION[$guid]['absolutePath']."/modules/$moduleName/manifest.php")) {
+        if (!(include $gibbon->session->get('absolutePath')."/modules/$moduleName/manifest.php")) {
             $URL .= '&return=error5';
             header("Location: {$URL}");
         } else {
-            //Validate Inputs
-            if ($name == '' or $description == '' or $type == '' or $type != 'Additional' or $version == '') {
+            // Validate manifest
+            if (empty($name) or empty($description) or empty($type) or $type != 'Additional' or empty($version)) {
                 $URL .= '&return=error1';
                 header("Location: {$URL}");
             } else {
-                //Lock module table
+                $moduleGateway = $container->get(ModuleGateway::class);
+                
+                // Lock module table
                 try {
                     $sql = 'LOCK TABLES gibbonModule WRITE';
                     $result = $connection2->query($sql);
@@ -55,37 +57,18 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                     exit();
                 }
 
-                //Check for existence of module
-                try {
-                    $dataModule = array('name' => $name);
-                    $sqlModule = 'SELECT * FROM gibbonModule WHERE name=:name';
-                    $resultModule = $connection2->prepare($sqlModule);
-                    $resultModule->execute($dataModule);
-                } catch (PDOException $e) {
-                    $URL .= '&return=error2';
-                    header("Location: {$URL}");
-                    exit();
-                }
+                // Check for existence of module
+                $module = $moduleGateway->selectBy(['name' => $name])->fetch();
 
-                if ($resultModule->rowCount() > 0) {
+                if (!empty($module)) {
                     $URL .= '&return=error6';
                     header("Location: {$URL}");
                 } else {
-                    //Insert new module row
-                    try {
-                        $dataModule = array('name' => $name, 'description' => $description, 'entryURL' => $entryURL, 'type' => $type, 'category' => $category, 'version' => $version, 'author' => $author, 'url' => $url);
-                        $sqlModule = "INSERT INTO gibbonModule SET name=:name, description=:description, entryURL=:entryURL, type=:type, category=:category, active='N', version=:version, author=:author, url=:url";
-                        $resultModule = $connection2->prepare($sqlModule);
-                        $resultModule->execute($dataModule);
-                    } catch (PDOException $e) {
-                        $URL .= '&return=error2';
-                        header("Location: {$URL}");
-                        exit();
-                    }
+                    // Insert new module row
+                    $dataModule = ['name' => $name, 'description' => $description, 'entryURL' => $entryURL, 'type' => $type, 'category' => $category, 'version' => $version, 'author' => $author, 'url' => $url];
+                    $gibbonModuleID = $moduleGateway->insertAndUpdate($dataModule, $dataModule);
 
-                    $gibbonModuleID = $connection2->lastInsertID();
-
-                    //Unlock module table
+                    // Unlock module table
                     try {
                         $sql = 'UNLOCK TABLES';
                         $result = $connection2->query($sql);
@@ -95,8 +78,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                         exit();
                     }
 
-                    //Create module tables
-                    //Whilst this area is intended for use setting up module tables, arbitrary sql can be run at the wish of the module developer. However, such actions are not cleaned up by the uninstaller.
+                    // Create module tables
+                    // Whilst this area is intended for use setting up module tables, arbitrary sql can be run at the wish of the module developer. However, such actions are not cleaned up by the uninstaller.
                     $partialFail = false;
                     if (isset($moduleTables)) {
                         for ($i = 0;$i < count($moduleTables);++$i) {
@@ -104,13 +87,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                                 $sql = $moduleTables[$i];
                                 $result = $connection2->query($sql);
                             } catch (PDOException $e) {
-                                $_SESSION[$guid]['moduleInstallError'] .= htmlPrep($sql).'<br/><b>'.$e->getMessage().'</b><br/><br/>';
+                                $gibbon->session->set('moduleInstallError', $gibbon->session->get('moduleInstallError').htmlPrep($sql).'<br/><b>'.$e->getMessage().'</b><br/><br/>');
                                 $partialFail = true;
                             }
                         }
                     }
-                    //Create gibbonSetting entries
-                    //Whilst this area is intended for use setting up gibbonSetting entries, arbitrary sql can be run at the wish of the module developer. However, such actions are not cleaned up by the uninstaller.
+                    // Create gibbonSetting entries
+                    // Whilst this area is intended for use setting up gibbonSetting entries, arbitrary sql can be run at the wish of the module developer. However, such actions are not cleaned up by the uninstaller.
                     $partialFail = false;
                     if (isset($gibbonSetting)) {
                         for ($i = 0;$i < count($gibbonSetting);++$i) {
@@ -118,13 +101,17 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                                 $sql = $gibbonSetting[$i];
                                 $result = $connection2->query($sql);
                             } catch (PDOException $e) {
-                                $_SESSION[$guid]['moduleInstallError'] .= htmlPrep($sql).'<br/><b>'.$e->getMessage().'</b><br/><br/>';
+                                $gibbon->session->set('moduleInstallError', "Y".$gibbon->session->get('moduleInstallError').htmlPrep($sql).'<br/><b>'.$e->getMessage().'</b><br/><br/>');
                                 $partialFail = true;
                             }
                         }
                     }
-                    //Create module actions
-                    if (is_null(@$actionRows) == false) {
+
+                    $actionGateway = $container->get(ActionGateway::class);
+
+                    // Create module actions
+                    if (!empty($actionRows)) {
+  
                         for ($i = 0;$i < count($actionRows);++$i) {
                             $categoryPermissionStaff = 'Y';
                             $categoryPermissionStudent = 'Y';
@@ -163,121 +150,56 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                                 }
                             }
 
-                            try {
-                                $dataModule = array('gibbonModuleID' => $gibbonModuleID, 'name' => $actionRows[$i]['name'], 'precedence' => $actionRows[$i]['precedence'], 'category' => $actionRows[$i]['category'], 'description' => $actionRows[$i]['description'], 'URLList' => $actionRows[$i]['URLList'], 'entryURL' => $actionRows[$i]['entryURL'], 'entrySidebar' => $entrySidebar, 'menuShow' => $menuShow, 'defaultPermissionAdmin' => $actionRows[$i]['defaultPermissionAdmin'], 'defaultPermissionTeacher' => $actionRows[$i]['defaultPermissionTeacher'], 'defaultPermissionStudent' => $actionRows[$i]['defaultPermissionStudent'], 'defaultPermissionParent' => $actionRows[$i]['defaultPermissionParent'], 'defaultPermissionSupport' => $actionRows[$i]['defaultPermissionSupport'], 'categoryPermissionStaff' => $categoryPermissionStaff, 'categoryPermissionStudent' => $categoryPermissionStudent, 'categoryPermissionParent' => $categoryPermissionParent, 'categoryPermissionOther' => $categoryPermissionOther);
-                                $sqlModule = 'INSERT INTO gibbonAction SET gibbonModuleID=:gibbonModuleID, name=:name, precedence=:precedence, category=:category, description=:description, URLList=:URLList, entryURL=:entryURL, entrySidebar=:entrySidebar, menuShow=:menuShow, defaultPermissionAdmin=:defaultPermissionAdmin, defaultPermissionTeacher=:defaultPermissionTeacher, defaultPermissionStudent=:defaultPermissionStudent, defaultPermissionParent=:defaultPermissionParent, defaultPermissionSupport=:defaultPermissionSupport, categoryPermissionStaff=:categoryPermissionStaff, categoryPermissionStudent=:categoryPermissionStudent, categoryPermissionParent=:categoryPermissionParent, categoryPermissionOther=:categoryPermissionOther';
-                                $resultModule = $connection2->prepare($sqlModule);
-                                $resultModule->execute($dataModule);
-                            } catch (PDOException $e) {
-                                $_SESSION[$guid]['moduleInstallError'] .= $sqlModule.'<br/><b>'.$e->getMessage().'</b></br><br/>';
-                                $partialFail = true;
+                            $dataModule = ['gibbonModuleID' => $gibbonModuleID, 'name' => $actionRows[$i]['name'], 'precedence' => $actionRows[$i]['precedence'], 'category' => $actionRows[$i]['category'], 'description' => $actionRows[$i]['description'], 'URLList' => $actionRows[$i]['URLList'], 'entryURL' => $actionRows[$i]['entryURL'], 'entrySidebar' => $entrySidebar, 'menuShow' => $menuShow, 'defaultPermissionAdmin' => $actionRows[$i]['defaultPermissionAdmin'], 'defaultPermissionTeacher' => $actionRows[$i]['defaultPermissionTeacher'], 'defaultPermissionStudent' => $actionRows[$i]['defaultPermissionStudent'], 'defaultPermissionParent' => $actionRows[$i]['defaultPermissionParent'], 'defaultPermissionSupport' => $actionRows[$i]['defaultPermissionSupport'], 'categoryPermissionStaff' => $categoryPermissionStaff, 'categoryPermissionStudent' => $categoryPermissionStudent, 'categoryPermissionParent' => $categoryPermissionParent, 'categoryPermissionOther' => $categoryPermissionOther];
+                            $actionGateway->insert($dataModule);
                             }
                         }
-                    }
 
-                    try {
-                        $dataActions = array('gibbonModuleID' => $gibbonModuleID);
-                        $sqlActions = 'SELECT * FROM gibbonAction WHERE gibbonModuleID=:gibbonModuleID';
-                        $resultActions = $connection2->prepare($sqlActions);
-                        $resultActions->execute($dataActions);
-                    } catch (PDOException $e) {
-                        $URL .= '&return=warning1';
-                        header("Location: {$URL}");
-                        exit();
-                    }
+                    $dataActions = $actionGateway->selectBy(['gibbonModuleID' => $gibbonModuleID]);
 
-                    while ($rowActions = $resultActions->fetch()) {
+                    while ($rowActions = $dataActions->fetch()) {
                         if ($rowActions['defaultPermissionAdmin'] == 'Y') {
-                            try {
-                                $dataPermissions = array('gibbonActionID' => $rowActions['gibbonActionID']);
-                                $sqlPermissions = 'INSERT INTO gibbonPermission SET gibbonActionID=:gibbonActionID, gibbonRoleID=001';
-                                $resultPermissions = $connection2->prepare($sqlPermissions);
-                                $resultPermissions->execute($dataPermissions);
-                            } catch (PDOException $e) {
-                                $_SESSION[$guid]['moduleInstallError'] .= $sqlPermissions.'<br/><b>'.$e->getMessage().'</b></br><br/>';
-                                $partialFail = true;
+                            $actionGateway->insertPermissionByAction($rowActions['gibbonActionID'], '001');
                             }
-                        }
                         if ($rowActions['defaultPermissionTeacher'] == 'Y') {
-                            try {
-                                $dataPermissions = array('gibbonActionID' => $rowActions['gibbonActionID']);
-                                $sqlPermissions = 'INSERT INTO gibbonPermission SET gibbonActionID=:gibbonActionID, gibbonRoleID=002';
-                                $resultPermissions = $connection2->prepare($sqlPermissions);
-                                $resultPermissions->execute($dataPermissions);
-                            } catch (PDOException $e) {
-                                $_SESSION[$guid]['moduleInstallError'] .= $sqlPermissions.'<br/><b>'.$e->getMessage().'</b></br><br/>';
-                                $partialFail = true;
+                            $actionGateway->insertPermissionByAction($rowActions['gibbonActionID'], '002');
                             }
-                        }
                         if ($rowActions['defaultPermissionStudent'] == 'Y') {
-                            try {
-                                $dataPermissions = array('gibbonActionID' => $rowActions['gibbonActionID']);
-                                $sqlPermissions = 'INSERT INTO gibbonPermission SET gibbonActionID=:gibbonActionID, gibbonRoleID=003';
-                                $resultPermissions = $connection2->prepare($sqlPermissions);
-                                $resultPermissions->execute($dataPermissions);
-                            } catch (PDOException $e) {
-                                $_SESSION[$guid]['moduleInstallError'] .= $sqlPermissions.'<br/><b>'.$e->getMessage().'</b></br><br/>';
-                                $partialFail = true;
+                            $actionGateway->insertPermissionByAction($rowActions['gibbonActionID'], '003');
                             }
-                        }
                         if ($rowActions['defaultPermissionParent'] == 'Y') {
-                            try {
-                                $dataPermissions = array('gibbonActionID' => $rowActions['gibbonActionID']);
-                                $sqlPermissions = 'INSERT INTO gibbonPermission SET gibbonActionID=:gibbonActionID, gibbonRoleID=004';
-                                $resultPermissions = $connection2->prepare($sqlPermissions);
-                                $resultPermissions->execute($dataPermissions);
-                            } catch (PDOException $e) {
-                                $_SESSION[$guid]['moduleInstallError'] .= $sqlPermissions.'<br/><b>'.$e->getMessage().'</b></br><br/>';
-                                $partialFail = true;
+                            $actionGateway->insertPermissionByAction($rowActions['gibbonActionID'], '004');
                             }
-                        }
                         if ($rowActions['defaultPermissionSupport'] == 'Y') {
-                            try {
-                                $dataPermissions = array('gibbonActionID' => $rowActions['gibbonActionID']);
-                                $sqlPermissions = 'INSERT INTO gibbonPermission SET gibbonActionID=:gibbonActionID, gibbonRoleID=006';
-                                $resultPermissions = $connection2->prepare($sqlPermissions);
-                                $resultPermissions->execute($dataPermissions);
-                            } catch (PDOException $e) {
-                                $_SESSION[$guid]['moduleInstallError'] .= $sqlPermissions.'<br/><b>'.$e->getMessage().'</b></br><br/>';
-                                $partialFail = true;
+                            $actionGateway->insertPermissionByAction($rowActions['gibbonActionID'], '006');
                             }
                         }
-                    }
 
-                    //Create hook entries
+                    // Create hook entries
                     if (isset($hooks)) {
                         for ($i = 0;$i < count($hooks);++$i) {
                             try {
                                 $sql = $hooks[$i];
                                 $result = $connection2->query($sql);
                             } catch (PDOException $e) {
-                                $_SESSION[$guid]['moduleInstallError'] .= htmlPrep($sql).'<br/><b>'.$e->getMessage().'</b><br/><br/>';
+                                $gibbon->session->set('moduleInstallError', $gibbon->session->get('moduleInstallError').htmlPrep($sql).'<br/><b>'.$e->getMessage().'</b><br/><br/>');
                                 $partialFail = true;
                             }
                         }
                     }
 
-                    //The reckoning!
+                    // The reckoning!
                     if ($partialFail == true) {
                         $URL .= '&return=warning1';
                         header("Location: {$URL}");
                     } else {
-                        //Set module to active
-                        try {
-                            $data = array('gibbonModuleID' => $gibbonModuleID);
-                            $sql = "UPDATE gibbonModule SET active='Y' WHERE gibbonModuleID=:gibbonModuleID";
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
-                        } catch (PDOException $e) {
-                            $URL .= '&return=warning2';
-                            header("Location: {$URL}");
-                            exit();
-                        }
+                        // Set module to active
+                        $moduleGateway->update($gibbonModuleID, ['active' => 'Y']);
 
                         // Clear the main menu from session cache
                         $gibbon->session->forget('menuMainItems');
 
-                        //We made it!
+                        // We made it!
                         $URL .= '&return=success0';
                         header("Location: {$URL}");
                     }

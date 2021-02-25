@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage.p
     // Proceed!
     $page->breadcrumbs->add(__('Template Builder'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $templateGateway = $container->get(ReportTemplateGateway::class);
 
     // QUERY

@@ -32,10 +32,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_byProofRe
     // Proceed!
     $page->breadcrumbs->add(__('Proof Reading Progress'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
     $gibbonReportingCycleID = $_GET['gibbonReportingCycleID'] ?? '';
     $reportingProgressGateway = $container->get(ReportingProgressGateway::class);

@@ -27,10 +27,8 @@ use Gibbon\Domain\Staff\StaffGateway;
 use Gibbon\Domain\User\RoleGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
@@ -46,10 +44,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
         $page->breadcrumbs
             ->add(__('Manage Staff'), 'staff_manage.php', ['search' => $search, 'allStaff' => $allStaff])
             ->add(__('Edit Staff'), 'staff_manage_edit.php');
-
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
-        }
 
         //Check if school year specified
         $gibbonStaffID = $_GET['gibbonStaffID'];
@@ -84,6 +78,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                 $form->addHiddenValue('address', $_SESSION[$guid]['address']);
                 $form->addHiddenValue('gibbonPersonID', $values['gibbonPersonID']);
 
+                $form->addHeaderAction('view', __('View'))
+                    ->setURL('/modules/Staff/staff_view_details.php')
+                    ->addParam('gibbonStaffID', $values['gibbonStaffID'])
+                    ->addParam('gibbonPersonID', $gibbonPersonID)
+                    ->addParam('search', $search)
+                    ->addParam('allStaff', $allStaff)
+                    ->displayLabel();
+
                 $form->addRow()->addHeading(__('Basic Information'));
 
                 $row = $form->addRow();
@@ -94,22 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     $row->addLabel('initials', __('Initials'))->description(__('Must be unique if set.'));
                     $row->addTextField('initials')->maxlength(4);
 
-                $types = array(__('Basic') => array ('Teaching' => __('Teaching'), 'Support' => __('Support')));
-                $roleGateway = $container->get(RoleGateway::class);
-                // CRITERIA
-                $criteriaCategory = $roleGateway->newQueryCriteria()
-                    ->sortBy(['gibbonRole.name'])
-                    ->filterBy('category:Staff')
-                    ->fromPOST();
-                
-                $rolesCategoriesStaff = $roleGateway->queryRoles($criteriaCategory);
-                
-                $typesCategories = array();
-                foreach($rolesCategoriesStaff as $roleCategoriesStaff) {
-                   $typesCategories[$roleCategoriesStaff['name']] = __($roleCategoriesStaff['name']);
-                }
-                $types[__('System Roles')] = $typesCategories;
-
+                $types = array('Teaching' => __('Teaching'), 'Support' => __('Support'));
                 $row = $form->addRow();
                     $row->addLabel('type', __('Type'));
                     $row->addSelect('type')->fromArray($types)->placeholder()->required();
@@ -133,6 +120,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     $row->addYesNo('firstAidQualified')->placeHolder();
 
                 $form->toggleVisibilityByClass('firstAid')->onSelect('firstAidQualified')->when('Y');
+
+                $row = $form->addRow()->addClass('firstAid');
+                    $row->addLabel('firstAidQualification', __('First Aid Qualification'));
+                    $row->addTextField('firstAidQualification')->maxlength(100);
 
                 $row = $form->addRow()->addClass('firstAid');
                     $row->addLabel('firstAidExpiry', __('First Aid Expiry'));
@@ -182,7 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     ->displayLabel();
 
                 $table->addColumn('name', __('Name'));
-                $table->addColumn('usageType', __('Usage'))->translatable();    
+                $table->addColumn('usageType', __('Usage'))->translatable();
 
                 $table->addActionColumn()
                     ->addParam('gibbonSpacePersonID')

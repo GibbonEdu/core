@@ -24,10 +24,8 @@ use Gibbon\Services\Format;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_submit_edit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
@@ -116,10 +114,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                     ->add(__('View Lesson Plan'), 'planner_view_full.php', $params + ['gibbonPlannerEntryID' => $gibbonPlannerEntryID])
                     ->add(__('Add Submission'));
 
-                if (isset($_GET['return'])) {
-                    returnProcess($guid, $_GET['return'], null, null);
-                }
-
                 if ($_GET['submission'] != 'true' and $_GET['submission'] != 'false') {
                     echo "<div class='warning'>";
                     echo __('You have not specified one or more required parameters.');
@@ -143,14 +137,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                             echo __('Update Submission');
                             echo '</h2>';
 
-                            try {
+                            
                                 $dataSubmission = array('gibbonPlannerEntryHomeworkID' => $gibbonPlannerEntryHomeworkID);
                                 $sqlSubmission = 'SELECT gibbonPlannerEntryHomework.*, surname, preferredName FROM gibbonPlannerEntryHomework JOIN gibbonPerson ON (gibbonPlannerEntryHomework.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPlannerEntryHomeworkID=:gibbonPlannerEntryHomeworkID';
                                 $resultSubmission = $connection2->prepare($sqlSubmission);
                                 $resultSubmission->execute($dataSubmission);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
 
                             if ($resultSubmission->rowCount() != 1) {
                                 echo "<div class='warning'>";
@@ -193,14 +184,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                             echo __('Add Submission');
                             echo '</h2>';
 
-                            try {
+                            
                                 $dataSubmission = array('gibbonPersonID' => $gibbonPersonID);
                                 $sqlSubmission = 'SELECT surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
                                 $resultSubmission = $connection2->prepare($sqlSubmission);
                                 $resultSubmission->execute($dataSubmission);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
 
                             if ($resultSubmission->rowCount() != 1) {
                                 echo "<div class='warning'>";
@@ -210,14 +198,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                                 $rowSubmission = $resultSubmission->fetch();
 
                                 $count = 0;
-                                try {
+                                
                                     $dataVersion = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
                                     $sqlVersion = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPersonID=:gibbonPersonID AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
                                     $resultVersion = $connection2->prepare($sqlVersion);
                                     $resultVersion->execute($dataVersion);
-                                } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
                                 if ($resultVersion->rowCount() < 1) {
                                     $count = $resultVersion->rowCount();
                                 }

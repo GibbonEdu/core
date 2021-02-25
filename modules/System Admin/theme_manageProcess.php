@@ -18,8 +18,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\ThemeGateway;
+use Gibbon\Domain\System\SettingGateway;
 
 include '../../gibbon.php';
+
+//Module includes
+include './moduleFunctions.php';
 
 $gibbonThemeID = $_POST['gibbonThemeID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/theme_manage.php';
@@ -28,24 +32,35 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    //Proceed!
-    //Check if theme specified
+    // Proceed!
+    // Check if theme specified
     if ($gibbonThemeID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
         $themeGateway = $container->get(ThemeGateway::class);
+        $theme = $themeGateway->getByID($gibbonThemeID);
+
         //Check for existence of theme
-        if (!$themeGateway->exists($gibbonThemeID)) {
+        if (empty($theme)) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {    
-            //Deactivate theme current
-            $themeGateway->updateWhere(array('active' => 'Y'), array('active' => 'N'));
+            // Deactivate theme current
+            $themeGateway->updateWhere(['active' => 'Y'], ['active' => 'N']);
             
-            //Activate selected theme
-            $themeGateway->update($gibbonThemeID, array('active' => 'Y'));
+            // Activate selected theme
+            $themeGateway->update($gibbonThemeID, ['active' => 'Y']);
+
+            // Clear template cache, invalidate front-end cache
+            $cachePath = $gibbon->session->has('cachePath') ? $gibbon->session->get('cachePath') : '/uploads/cache';
+            removeDirectoryContents($gibbon->session->get('absolutePath').$cachePath.'/templates', true);
+            $container->get(SettingGateway::class)->updateSettingByScope('System', 'cacheString', $gibbon->session->get('cacheString'));
            
+            // Update the theme name in the session
+            $gibbon->session->set('gibbonThemeName', $theme['name']);
+
+
             $URL .= '&return=success0';
             header("Location: {$URL}");
         }

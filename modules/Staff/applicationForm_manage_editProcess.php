@@ -216,7 +216,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     $URL .= '&return=error3';
                     header("Location: {$URL}");
                 } else {
-                    $fields = serialize($fields);
+                    $fields = json_encode($fields);
 
                     //Write to database
                     try {
@@ -253,13 +253,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
                             // Write files to database, if there is one
                             if (!empty($attachment)) {
-                                try {
+                                
                                     $dataFile = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID, 'name' => $fileName, 'path' => $attachment);
                                     $sqlFile = 'INSERT INTO gibbonStaffApplicationFormFile SET gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID, name=:name, path=:path';
                                     $resultFile = $connection2->prepare($sqlFile);
                                     $resultFile->execute($dataFile);
-                                } catch (PDOException $e) {
-                                }
                             } else {
                                 $partialFail = true;
                             }

@@ -24,10 +24,8 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Domain\User\UserGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
@@ -40,10 +38,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
 
     //Proceed!
     $page->breadcrumbs->add(__('Manage Users'));
-
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
 
     $search = isset($_GET['search'])? $_GET['search'] : '';
 

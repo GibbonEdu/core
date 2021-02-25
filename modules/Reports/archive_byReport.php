@@ -29,9 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.p
     // Proceed!
     $page->breadcrumbs->add(__('View by Report'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, ['error3' => __('The selected record does not exist, or you do not have access to it.')]);
-    }
+    $page->return->addReturns(['error3' => __('The selected record does not exist, or you do not have access to it.')]);
 
     $canViewDraftReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.php', 'View Draft Reports');
     $canViewPastReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.php', 'View Past Reports');
@@ -78,8 +76,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.p
     $table->setTitle(__('View'));
 
     $table->addColumn('reportIdentifier', __('Report'));
-    $table->addColumn('timestamp', __('Date'))->format(Format::using('dateReadable', 'timestampModified'));
-    $table->addColumn('read', __('Read'))
+    $table->addColumn('timestampModified', __('Date'))->format(Format::using('dateReadable', 'timestampModified'));
+    $table->addColumn('readCount', __('Read'))
         ->width('30%')
         ->format(function ($report) use (&$page) {
             if ($report['totalCount'] == 0) return Format::small(__('N/A'));

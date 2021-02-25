@@ -251,7 +251,7 @@ class ImportType
             if (isset($fileData['details']) && isset($fileData['details']['type'])) {
                 $fileData['details']['grouping'] = '* Custom Imports';
                 $fileData['details']['custom'] = true;
-                $importTypes[ $fileData['details']['type'] ] = new importType($fileData, $pdo, $validateStructure);
+                $importTypes[ $fileData['details']['type'] ] = new ImportType($fileData, $pdo, $validateStructure);
             }
         }
 
@@ -746,7 +746,8 @@ class ImportType
     public function filterFieldValue($fieldName, $value)
     {
         $value = trim($value);
-
+        $defaultValue = $this->getField($fieldName, 'null') == 'YES' ? null : '';
+        
         $filter = $this->getField($fieldName, 'filter');
         $strvalue = mb_strtoupper($value);
 
@@ -831,16 +832,15 @@ class ImportType
                 break;
 
             case 'numeric':
-                $value = preg_replace("/[^0-9]/u", '', $value);
+                $value = !empty($value) ? preg_replace("/[^0-9]/u", '', $value) : $defaultValue;
                 break;
 
             case 'phone':   // Handle phone numbers - strip all non-numeric chars
-                $value = preg_replace("/[^0-9,\/]/u", '', $value);
+                $value = !empty($value) ? preg_replace("/[^0-9,\/]/u", '', $value) : $defaultValue;
 
                 if (mb_strpos($value, ',') !== false || mb_strpos($value, '/') !== false || mb_strpos($value, ' ') !== false) {
-                    //$value = preg_replace("/[^0-9,\/]/u", '', $value);
                     $numbers = preg_split("/[,\/]*/u", $value);
-                    $value = (isset($numbers[0]))? $numbers[0] : '';
+                    $value = isset($numbers[0])? $numbers[0] : $defaultValue;
                 }
                 break;
 
@@ -948,9 +948,9 @@ class ImportType
         $kind = $this->getField($fieldName, 'kind');
 
         switch ($kind) {
-            case 'integer': $value = intval($value); break;
-            case 'decimal': $value = floatval($value); break;
-            case 'boolean': $value = boolval($value); break;
+            case 'integer': $value = !empty($value) ? intval($value) : $defaultValue; break;
+            case 'decimal': $value = !empty($value) ? floatval($value) : $defaultValue; break;
+            case 'boolean': $value = !empty($value) ? boolval($value) : $defaultValue; break;
         }
 
         if ($strvalue == 'NOT REQUIRED' || $value == 'N/A') {
@@ -1065,10 +1065,6 @@ class ImportType
                             }
                             break;
         }
-
-        // TODO: More value validation
-        // TODO: Handle relational table data
-        // TODO: Sanitize
 
         return $value;
     }

@@ -22,9 +22,9 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
-$gibbonFinanceBudgetCycleID = $_POST['gibbonFinanceBudgetCycleID'];
-$gibbonFinanceBudgetID2 = $_POST['gibbonFinanceBudgetID2'];
-$status2 = $_POST['status2'];
+$gibbonFinanceBudgetCycleID = $_POST['gibbonFinanceBudgetCycleID'] ?? '';
+$gibbonFinanceBudgetID2 = $_POST['gibbonFinanceBudgetID2'] ?? '';
+$status2 = $_POST['status2'] ?? '';
 
 if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
 } else {
@@ -39,20 +39,20 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
             $URL .= '&return=error0';
             header("Location: {$URL}");
         } else {
-            $gibbonFinanceBudgetID = $_POST['gibbonFinanceBudgetID'];
-            $status = $_POST['status'];
-            $title = $_POST['title'];
-            $body = $_POST['body'];
-            $cost = $_POST['cost'];
-            $countAgainstBudget = $_POST['countAgainstBudget'];
-            $purchaseBy = $_POST['purchaseBy'];
-            $purchaseDetails = $_POST['purchaseDetails'];
+            $gibbonFinanceBudgetID = $_POST['gibbonFinanceBudgetID'] ?? '';
+            $status = $_POST['status'] ?? '';
+            $title = $_POST['title'] ?? '';
+            $body = $_POST['body'] ?? '';
+            $cost = $_POST['cost'] ?? '';
+            $countAgainstBudget = $_POST['countAgainstBudget'] ?? '';
+            $purchaseBy = $_POST['purchaseBy'] ?? '';
+            $purchaseDetails = $_POST['purchaseDetails'] ?? '';
             if ($status == 'Paid') {
-                $paymentDate = dateConvert($guid, $_POST['paymentDate']);
-                $paymentAmount = $_POST['paymentAmount'];
-                $gibbonPersonIDPayment = $_POST['gibbonPersonIDPayment'];
-                $paymentMethod = $_POST['paymentMethod'];
-                $paymentID = $_POST['paymentID'];
+                $paymentDate = dateConvert($guid, $_POST['paymentDate'] ?? '');
+                $paymentAmount = $_POST['paymentAmount'] ?? '';
+                $gibbonPersonIDPayment = $_POST['gibbonPersonIDPayment'] ?? '';
+                $paymentMethod = $_POST['paymentMethod'] ?? '';
+                $paymentID = $_POST['paymentID'] ?? '';
             } else {
                 $paymentDate = null;
                 $paymentAmount = null;

@@ -24,10 +24,8 @@ use Gibbon\Module\Finance\Forms\FinanceFormFactory;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_add.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Check if school year specified
     $gibbonSchoolYearID = isset($_GET['gibbonSchoolYearID'])? $_GET['gibbonSchoolYearID'] : '';
@@ -56,18 +54,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
     }
     $error3 .= '</ul>'.__('It is recommended that you remove all pending invoices and try to recreate them.');
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('error3' => $error3));
-    }
+    $page->return->addReturns(['error3' => $error3]);
 
     echo '<p>';
     echo __('Here you can add fees to one or more students. These fees will be added to an existing invoice or used to form a new invoice, depending on the specified billing schedule and other details.');
     echo '</p>';
 
     if ($gibbonSchoolYearID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         $data= array('gibbonSchoolYearID' => $gibbonSchoolYearID);
         $sql = "SELECT name AS schoolYear FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID";

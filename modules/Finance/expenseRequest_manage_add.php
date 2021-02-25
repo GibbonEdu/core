@@ -23,10 +23,8 @@ use Gibbon\Forms\Form;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_manage_add.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
@@ -38,17 +36,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
         ->add(__('Add Expense Request'));      
     
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('success1' => __('Your request was completed successfully, but notifications could not be sent out.')));
-    }
+    $page->return->addReturns(['success1' => __('Your request was completed successfully, but notifications could not be sent out.')]);
 
     //Check if school year specified
     $status2 = $_GET['status2'];
     $gibbonFinanceBudgetID2 = $_GET['gibbonFinanceBudgetID2'];
     if ($gibbonFinanceBudgetCycleID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         //Check if have Full or Write in any budgets
         $budgets = getBudgetsByPerson($connection2, $_SESSION[$guid]['gibbonPersonID']);

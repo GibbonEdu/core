@@ -20,19 +20,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Manage Permissions'));
 
     $returns = array();
     $returns['error3'] = sprintf(__('Your PHP environment cannot handle all of the fields in this form (the current limit is %1$s). Ask your web host or system administrator to increase the value of the max_input_vars in php.ini.'), ini_get('max_input_vars'));
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, $returns);
-    }
+    $page->return->addReturns($returns);
 
     echo '<h2>';
     echo __('Filter');
@@ -90,14 +86,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
         echo "<div class='error'>".$e->getMessage().'</div>';
     }
 
-    try {
+    
         $dataPermissions = array();
         $sqlPermissions = 'SELECT gibbonRoleID, gibbonActionID FROM gibbonPermission';
         $resultPermissions = $connection2->prepare($sqlPermissions);
         $resultPermissions->execute($dataPermissions);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
 
     if ($resultRoles->rowCount() < 1 or $resultModules->rowCount() < 1) {
         echo "<div class='error'>";
@@ -110,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
         $totalCount = 0;
 
         $form = Form::create('permissions', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/permission_manageProcess.php');
-        $form->setClass('w-full blank');
+        $form->setClass('w-full blank overflow-x-auto');
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
         $form->addHiddenValue('gibbonModuleID', $gibbonModuleID);
         $form->addHiddenValue('gibbonRoleID', $gibbonRoleID);
@@ -119,14 +112,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
             $form->addRow()->addHeading(__($rowModules['name']));
             $table = $form->addRow()->addTable()->setClass('mini rowHighlight columnHighlight fullWidth');
 
-            try {
+            
                 $dataActions = array('gibbonModuleID' => $rowModules['gibbonModuleID']);
                 $sqlActions = 'SELECT * FROM gibbonAction WHERE gibbonModuleID=:gibbonModuleID ORDER BY name';
                 $resultActions = $connection2->prepare($sqlActions);
                 $resultActions->execute($dataActions);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
 
             if ($resultActions->rowCount() > 0) {
                 $row = $table->addHeaderRow();

@@ -30,10 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_edi
         ->add(__('Manage Archives'), 'archive_manage.php')
         ->add(__('Edit Archive'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonReportArchiveID = $_GET['gibbonReportArchiveID'] ?? '';
     $reportArchiveGateway = $container->get(ReportArchiveGateway::class);
 

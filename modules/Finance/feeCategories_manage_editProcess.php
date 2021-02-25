@@ -21,7 +21,7 @@ include '../../gibbon.php';
 
 include './moduleFunctions.php';
 
-$gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'];
+$gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/feeCategories_manage_edit.php&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_manage_edit.php') == false) {
@@ -50,10 +50,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
             header("Location: {$URL}");
         } else {
             //Proceed!
-            $name = $_POST['name'];
-            $nameShort = $_POST['nameShort'];
-            $active = $_POST['active'];
-            $description = $_POST['description'];
+            $name = $_POST['name'] ?? '';
+            $nameShort = $_POST['nameShort'] ?? '';
+            $active = $_POST['active'] ?? '';
+            $description = $_POST['description'] ?? '';
             if ($name == '' or $nameShort == '' or $active == '') {
                 $URL .= '&return=error1';
                 header("Location: {$URL}");

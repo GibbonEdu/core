@@ -22,10 +22,10 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
-$gibbonFinanceBudgetCycleID = $_POST['gibbonFinanceBudgetCycleID'];
-$gibbonFinanceExpenseID = $_POST['gibbonFinanceExpenseID'];
-$status2 = $_POST['status2'];
-$gibbonFinanceBudgetID2 = $_POST['gibbonFinanceBudgetID2'];
+$gibbonFinanceBudgetCycleID = $_POST['gibbonFinanceBudgetCycleID'] ?? '';
+$gibbonFinanceExpenseID = $_POST['gibbonFinanceExpenseID'] ?? '';
+$status2 = $_POST['status2'] ?? '';
+$gibbonFinanceBudgetID2 = $_POST['gibbonFinanceBudgetID2'] ?? '';
 
 if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
 } else {
@@ -123,7 +123,7 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
                                 $row = $result->fetch();
 
                                 $gibbonFinanceBudgetID = $row['gibbonFinanceBudgetID'];
-                                $comment = $_POST['comment'];
+                                $comment = $_POST['comment'] ?? '';
 
                                 //Write comment to log
                                 try {
@@ -139,13 +139,11 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
 
                                 //Notify budget holders
                                 if ($budgetLevelExpenseApproval == 'Y') {
-                                    try {
+
                                         $dataHolder = array('gibbonFinanceBudgetID' => $gibbonFinanceBudgetID);
                                         $sqlHolder = "SELECT * FROM gibbonFinanceBudgetPerson WHERE access='Full' AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID";
                                         $resultHolder = $connection2->prepare($sqlHolder);
                                         $resultHolder->execute($dataHolder);
-                                    } catch (PDOException $e) {
-                                    }
                                     while ($rowHolder = $resultHolder->fetch()) {
                                         $notificationText = sprintf(__('Someone has commented on the expense request for "%1$s" in budget "%2$s".'), $row['title'], $row['budget']);
                                         setNotification($connection2, $guid, $rowHolder['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);

@@ -49,7 +49,10 @@ class Heading extends Element implements OutputableInterface, RowDependancyInter
     {
         $this->row = $row;
 
-        $this->row->setClass('break');
+        $this->row->addClass('break top-0 z-10');
+
+        $headingID = preg_replace('/[^a-zA-Z0-9]/', '', substr(strip_tags($this->content), 0, 60)); 
+        $this->row->setID($headingID);
     }
 
     /**
@@ -58,6 +61,6 @@ class Heading extends Element implements OutputableInterface, RowDependancyInter
      */
     protected function getElement()
     {
-        return '<h3>'.$this->content.'</h3>';
+        return '<h3 class="m-0 py-0">'.$this->content.'</h3>';
     }
 }

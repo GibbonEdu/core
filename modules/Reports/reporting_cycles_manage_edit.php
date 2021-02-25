@@ -31,10 +31,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
         ->add(__('Manage Reporting Cycles'), 'reporting_cycles_manage.php')
         ->add(__('Edit Reporting Cycle'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonReportingCycleID = $_GET['gibbonReportingCycleID'] ?? '';
     $reportingCycleGateway = $container->get(ReportingCycleGateway::class);
 

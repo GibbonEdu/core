@@ -1,0 +1,94 @@
+name: test
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  test:
+    name: ${{ matrix.name }} (PHP ${{ matrix.php-version }})
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        php-version: ["7.3", "7.4", "8.0"]
+        experimental: [false]
+        name: ["CI Test"]
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: gibbon_test
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    env:
+      CI_PLATFORM: travis_ci
+
+    steps:
+
+      - name: Setup PHP ${{ matrix.php-version }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: gettext, gd, zip, pdo-mysql
+          tools: composer:v2
+          ini-values: date.timezone="Etc/UTC", xdebug.max_nesting_level = -1
+
+      - name: Checkout source code
+        uses: actions/checkout@v2
+        with:
+          submodules: "recursive"
+          fetch-depth: 0
+
+      - name: Setup System Locale
+        run: |
+          cat <<- EOF |
+          en_US.UTF-8 UTF-8
+          es_ES.UTF-8 UTF-8
+          fr_FR.UTF-8 UTF-8
+          zh_TW.UTF-8 UTF-8
+          EOF
+          sudo tee -a /etc/locale.gen >/dev/null
+          sudo locale-gen
+
+      - name: Run PHP server for tests to run
+        run: |
+          # Start a PHP test server for codeception to run against
+          [ -d ./tests/log ] || mkdir ./tests/log
+          php --server 127.0.0.1:8888 \
+            --docroot ${{ github.workspace }} \
+            --define display_startup_errors=1 \
+            --define display_errors=1 \
+            --define error_reporting=E_ALL \
+            >/dev/null 2>./tests/log/server_log &
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: /tmp/composer-cache
+          key: ${{ runner.os }}-php${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php${{ matrix.php-version }}-
+
+      - name: Install PHP vendor libraries
+        run: composer install --prefer-dist --no-interaction
+
+      - name: Run composer test
+        run: composer test
+        continue-on-error: ${{ matrix.experimental }}
+        env:
+          TEST_ENV: codeception
+          ABSOLUTE_URL: http://127.0.0.1:8888
+          DB_HOST: 127.0.0.1
+          DB_NAME: gibbon_test
+          DB_USERNAME: root
+          DB_PASSWORD: ""
+
+      - name: Save Test Artifacts
+        uses: actions/upload-artifact@v2
+        if: ${{ failure() || matrix.experimental }}
+        with:
+          name: Test Artifacts (PHP ${{ matrix.php-version }})
+          path: tests/log
+          retention-days: 5

@@ -36,9 +36,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
     echo "</div>";
 } else {
     //Proceed!
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array('error3' => __('Your request failed because the specified date is in the future, or is not a school day.')));
-    }
+    $page->return->addReturns(['error3' => __('Your request failed because the specified date is in the future, or is not a school day.')]);
 
     $attendance = new AttendanceView($gibbon, $pdo);
 
@@ -247,6 +245,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
 
                                 if ($log['prefill'] == 'N') {
                                     $log = $defaults;
+                                    $log['prefilled'] = 'Person';
                                 }
                             }
 
@@ -255,6 +254,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                                 $students[$key]['cellHighlight'] = 'dayAbsent';
                             } elseif ($attendance->isTypeOffsite($log['type'])) {
                                 $students[$key]['cellHighlight'] = 'dayMessage';
+                            } elseif ($attendance->isTypeLate($log['type'])) {
+                                $students[$key]['cellHighlight'] = 'dayPartial';
                             }
 
                             $students[$key]['absenceCount'] = '';

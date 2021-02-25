@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
+use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 
@@ -86,12 +87,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $timeEnd = $_POST['timeEnd'];
                     $gibbonUnitID = !empty($_POST['gibbonUnitID']) ? $_POST['gibbonUnitID'] : null;
                     $name = $_POST['name'];
-                    $summary = $_POST['summary'];
-                    if ($summary == '') {
-                        $summary = trim(strip_tags($_POST['description'])) ;
-                        if (strlen($summary) > 252) {
-                            $summary = substr($summary, 0, 252).'...' ;
-                        }
+                    $summary = $_POST['summary'] ?? '';
+                    if (empty($summary)) {
+                        $summary = trim(strip_tags($_POST['description'] ?? '')) ;
+                        $summary = mb_substr($summary, 0, 252);
+                    } else {
+                        $summary = strip_tags($summary);
                     }
                     $summaryBlocks = '';
                     $description = $_POST['description'];
@@ -107,10 +108,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $homeworkCrowdAssessSubmitterParentsRead = null;
                     $homeworkCrowdAssessClassmatesParentsRead = null;
                     $homeworkCrowdAssessOtherParentsRead = null;
+                    $homeworkTimeCap = null;
+                    $homeworkLocation = null;
+
                     $homework = $_POST['homework'];
                     if ($_POST['homework'] == 'Y') {
                         $homework = 'Y';
                         $homeworkDetails = $_POST['homeworkDetails'];
+                        $homeworkTimeCap = !empty($_POST['homeworkTimeCap'])? $_POST['homeworkTimeCap'] : null;
+                        $homeworkLocation = $_POST['homeworkLocation'] ?? 'Out of Class';
                         if ($_POST['homeworkDueDateTime'] != '') {
                             $homeworkDueDateTime = $_POST['homeworkDueDateTime'].':59';
                         } else {
@@ -118,6 +124,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                         }
                         if ($_POST['homeworkDueDate'] != '') {
                             $homeworkDueDate = dateConvert($guid, $_POST['homeworkDueDate']).' '.$homeworkDueDateTime;
+                        }
+
+                        // Check if the homework due date is within this class
+                        $homeworkTimestamp = strtotime($homeworkDueDate);
+                        if ($homeworkTimestamp >= strtotime($date.' '.$timeStart.':00') && $homeworkTimestamp <= strtotime($date.' '.$timeEnd.':59')) {
+                            $homeworkLocation = 'In Class';
                         }
 
                         if ($_POST['homeworkSubmission'] == 'Y') {
@@ -190,14 +202,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                         header("Location: {$URL}");
                     } else {
                         //Scan through guests
-                        $guests = null;
-                        if (isset($_POST['guests'])) {
-                            $guests = $_POST['guests'];
-                        }
-                        $role = $_POST['role'];
-                        if ($role == '') {
-                            $role = 'Student';
-                        }
+                        $guests = $_POST['guests'] ?? [];
+                        $role = $_POST['role'] ?? 'Student';
+
                         if (count($guests) > 0) {
                             foreach ($guests as $t) {
                                 //Check to see if person is already registered in this class
@@ -309,14 +316,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                         if (strlen($summaryBlocks) > 75) {
                             $summaryBlocks = substr($summaryBlocks, 0, 72).'...';
                         }
-                        if ($summaryBlocks) {
-                            $summary = $summaryBlocks;
+                        if (empty($summary) && $summaryBlocks) {
+                            $summary = strip_tags($summaryBlocks);
                         }
 
                         //Write to database
                         try {
-                            $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $date, 'timeStart' => $timeStart, 'timeEnd' => $timeEnd, 'gibbonUnitID' => $gibbonUnitID, 'name' => $name, 'summary' => $summary, 'description' => $description, 'teachersNotes' => $teachersNotes, 'homework' => $homework, 'homeworkDueDate' => $homeworkDueDate, 'homeworkDetails' => $homeworkDetails, 'homeworkSubmission' => $homeworkSubmission, 'homeworkSubmissionDateOpen' => $homeworkSubmissionDateOpen, 'homeworkSubmissionDrafts' => $homeworkSubmissionDrafts, 'homeworkSubmissionType' => $homeworkSubmissionType, 'homeworkSubmissionRequired' => $homeworkSubmissionRequired, 'homeworkCrowdAssess' => $homeworkCrowdAssess, 'homeworkCrowdAssessOtherTeachersRead' => $homeworkCrowdAssessOtherTeachersRead, 'homeworkCrowdAssessClassmatesRead' => $homeworkCrowdAssessClassmatesRead, 'homeworkCrowdAssessOtherStudentsRead' => $homeworkCrowdAssessOtherStudentsRead, 'homeworkCrowdAssessSubmitterParentsRead' => $homeworkCrowdAssessSubmitterParentsRead, 'homeworkCrowdAssessClassmatesParentsRead' => $homeworkCrowdAssessClassmatesParentsRead, 'homeworkCrowdAssessOtherParentsRead' => $homeworkCrowdAssessOtherParentsRead, 'viewableParents' => $viewableParents, 'viewableStudents' => $viewableStudents, 'gibbonPersonIDLastEdit' => $gibbonPersonIDLastEdit, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                            $sql = 'UPDATE gibbonPlannerEntry SET gibbonCourseClassID=:gibbonCourseClassID, date=:date, timeStart=:timeStart, timeEnd=:timeEnd, gibbonUnitID=:gibbonUnitID, name=:name, summary=:summary, description=:description, teachersNotes=:teachersNotes, homework=:homework, homeworkDueDateTime=:homeworkDueDate, homeworkDetails=:homeworkDetails, homeworkSubmission=:homeworkSubmission, homeworkSubmissionDateOpen=:homeworkSubmissionDateOpen, homeworkSubmissionDrafts=:homeworkSubmissionDrafts, homeworkSubmissionType=:homeworkSubmissionType, homeworkSubmissionRequired=:homeworkSubmissionRequired, homeworkCrowdAssess=:homeworkCrowdAssess, homeworkCrowdAssessOtherTeachersRead=:homeworkCrowdAssessOtherTeachersRead, homeworkCrowdAssessClassmatesRead=:homeworkCrowdAssessClassmatesRead, homeworkCrowdAssessOtherStudentsRead=:homeworkCrowdAssessOtherStudentsRead, homeworkCrowdAssessSubmitterParentsRead=:homeworkCrowdAssessSubmitterParentsRead, homeworkCrowdAssessClassmatesParentsRead=:homeworkCrowdAssessClassmatesParentsRead, homeworkCrowdAssessOtherParentsRead=:homeworkCrowdAssessOtherParentsRead, viewableParents=:viewableParents, viewableStudents=:viewableStudents, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID';
+                            $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $date, 'timeStart' => $timeStart, 'timeEnd' => $timeEnd, 'gibbonUnitID' => $gibbonUnitID, 'name' => $name, 'summary' => $summary, 'description' => $description, 'teachersNotes' => $teachersNotes, 'homework' => $homework, 'homeworkDueDate' => $homeworkDueDate, 'homeworkDetails' => $homeworkDetails, 'homeworkTimeCap' => $homeworkTimeCap, 'homeworkLocation' => $homeworkLocation, 'homeworkSubmission' => $homeworkSubmission, 'homeworkSubmissionDateOpen' => $homeworkSubmissionDateOpen, 'homeworkSubmissionDrafts' => $homeworkSubmissionDrafts, 'homeworkSubmissionType' => $homeworkSubmissionType, 'homeworkSubmissionRequired' => $homeworkSubmissionRequired, 'homeworkCrowdAssess' => $homeworkCrowdAssess, 'homeworkCrowdAssessOtherTeachersRead' => $homeworkCrowdAssessOtherTeachersRead, 'homeworkCrowdAssessClassmatesRead' => $homeworkCrowdAssessClassmatesRead, 'homeworkCrowdAssessOtherStudentsRead' => $homeworkCrowdAssessOtherStudentsRead, 'homeworkCrowdAssessSubmitterParentsRead' => $homeworkCrowdAssessSubmitterParentsRead, 'homeworkCrowdAssessClassmatesParentsRead' => $homeworkCrowdAssessClassmatesParentsRead, 'homeworkCrowdAssessOtherParentsRead' => $homeworkCrowdAssessOtherParentsRead, 'viewableParents' => $viewableParents, 'viewableStudents' => $viewableStudents, 'gibbonPersonIDLastEdit' => $gibbonPersonIDLastEdit, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
+                            $sql = 'UPDATE gibbonPlannerEntry SET gibbonCourseClassID=:gibbonCourseClassID, date=:date, timeStart=:timeStart, timeEnd=:timeEnd, gibbonUnitID=:gibbonUnitID, name=:name, summary=:summary, description=:description, teachersNotes=:teachersNotes, homework=:homework, homeworkDueDateTime=:homeworkDueDate, homeworkDetails=:homeworkDetails, homeworkTimeCap=:homeworkTimeCap, homeworkLocation=:homeworkLocation, homeworkSubmission=:homeworkSubmission, homeworkSubmissionDateOpen=:homeworkSubmissionDateOpen, homeworkSubmissionDrafts=:homeworkSubmissionDrafts, homeworkSubmissionType=:homeworkSubmissionType, homeworkSubmissionRequired=:homeworkSubmissionRequired, homeworkCrowdAssess=:homeworkCrowdAssess, homeworkCrowdAssessOtherTeachersRead=:homeworkCrowdAssessOtherTeachersRead, homeworkCrowdAssessClassmatesRead=:homeworkCrowdAssessClassmatesRead, homeworkCrowdAssessOtherStudentsRead=:homeworkCrowdAssessOtherStudentsRead, homeworkCrowdAssessSubmitterParentsRead=:homeworkCrowdAssessSubmitterParentsRead, homeworkCrowdAssessClassmatesParentsRead=:homeworkCrowdAssessClassmatesParentsRead, homeworkCrowdAssessOtherParentsRead=:homeworkCrowdAssessOtherParentsRead, viewableParents=:viewableParents, viewableStudents=:viewableStudents, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {

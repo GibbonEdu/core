@@ -36,10 +36,8 @@ if (isset($_SESSION[$guid]['username']) == false) {
 }
 
 if ($proceed == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('{organisationName} Application Form', [
@@ -69,10 +67,10 @@ if ($proceed == false) {
         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm.php'>".__('Submit Application Form')."<img style='margin-left: 5px' title='".__('Submit Application Form')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a>";
         echo '</div>';
 
-        foreach ($jobOpenings as $jobOpening) {
-            echo '<h3>'.$jobOpening['jobTitle'].'</h3>';
-            echo '<p><b>'.sprintf(__('Job Type: %1$s'), $jobOpening['type']).'</b></p>';
-            echo $jobOpening['description'].'<br/>';
-        }
+
+        echo $page->fetchFromTemplate('jobOpenings.twig.html', [
+            'jobOpenings' => $jobOpenings,
+        ]);
+
     }
 }

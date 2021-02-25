@@ -22,9 +22,9 @@ include '../../gibbon.php';
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
-$gibbonPlannerEntryHomeworkID = $_GET['gibbonPlannerEntryHomeworkID'];
-$gibbonPersonID = $_GET['gibbonPersonID'];
+$gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
+$gibbonPlannerEntryHomeworkID = $_GET['gibbonPlannerEntryHomeworkID'] ?? '';
+$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/crowdAssess_view_discuss.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&gibbonPersonID=$gibbonPersonID";
 
@@ -78,13 +78,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                         header("Location: {$URL}");
                     } else {
                         //INSERT
-                        $replyTo = null;
-                        if ($_GET['replyTo'] != '') {
-                            $replyTo = $_GET['replyTo'];
-                        }
+                        $replyTo = $_GET['replyTo'] ?? '';
+
 
                         //Attempt to prevent XSS attack
-                        $comment = $_POST['comment'];
+                        $comment = $_POST['comment'] ?? '';
                         $comment = tinymceStyleStripTags($comment, $connection2);
 
                         try {
@@ -97,10 +95,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                             header("Location: {$URL}");
                             exit();
                         }
-                        $hash = '';
-                        if ($_GET['replyTo'] != '') {
-                            $hash = '#'.$_GET['replyTo'];
-                        }
+                        $hash = '#'.($_GET['replyTo'] ?? '');
+
 
                         //Work out who we are replying too
                         $replyToID = null;
@@ -123,15 +119,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                             $name = $rowLesson['name'];
                         }
 
+                        $homeworkNameSingular = getSettingByScope($connection2, 'Planner', 'homeworkNameSingular');
+
                         //Create notification for homework owner, as long as it is not me.
                         if ($gibbonPersonID != $_SESSION[$guid]['gibbonPersonID'] and $gibbonPersonID != $replyToID) {
-                            $notificationText = sprintf(__('Someone has commented on your homework for lesson plan "%1$s".'), $name);
+                            $notificationText = __('Someone has commented on your {homeworkName} for lesson plan "{lessonName}".', ['lessonName' => $name, 'homeworkName' => mb_strtolower(__($homeworkNameSingular))]);
                             setNotification($connection2, $guid, $gibbonPersonID, $notificationText, 'Crowd Assessment', "/index.php?q=/modules/Crowd Assessment/crowdAssess_view_discuss.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&gibbonPersonID=$gibbonPersonID");
                         }
 
                         //Create notification to person I am replying to
                         if (is_null($replyToID) == false) {
-                            $notificationText = sprintf(__('Someone has replied to a comment on homework for lesson plan "%1$s".'), $name);
+                            $notificationText = sprintf(__('Someone has replied to a comment on the {homeworkName} for lesson plan "{lessonName}".', ['lessonName' => $name, 'homeworkName' => mb_strtolower(__($homeworkNameSingular))]), $name);
                             setNotification($connection2, $guid, $replyToID, $notificationText, 'Crowd Assessment', "/index.php?q=/modules/Crowd Assessment/crowdAssess_view_discuss.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&gibbonPersonID=$gibbonPersonID");
                         }
 

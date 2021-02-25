@@ -27,10 +27,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/settings.php') == 
     //Proceed!
     $page->breadcrumbs->add(__('Manage Settings'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $settingGateway = $container->get(SettingGateway::class);
 
     // FORM

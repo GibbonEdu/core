@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage.php
     // Proceed!
     $page->breadcrumbs->add(__('Manage Reports'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $gibbon->session->get('gibbonSchoolYearID');
 
     // School Year Picker

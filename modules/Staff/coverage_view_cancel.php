@@ -33,11 +33,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_cancel
         ->add(__('My Coverage'), 'coverage_my.php')
         ->add(__('Cancel Coverage Request'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, [
+    $page->return->addReturns([
             'success1' => __('Your request was completed successfully.')
         ]);
-    }
 
     $gibbonStaffCoverageID = $_GET['gibbonStaffCoverageID'] ?? '';
 

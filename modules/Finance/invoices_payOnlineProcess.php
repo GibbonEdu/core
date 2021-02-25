@@ -27,19 +27,14 @@ $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/invoices_p
 
 $paid = null;
 if (isset($_GET['paid'])) {
-    $paid = $_GET['paid'];
+    $paid = $_GET['paid'] ?? '';
 }
 
 if ($paid != 'Y') { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
     //Get variables
-    $gibbonFinanceInvoiceID = '';
-    if (isset($_POST['gibbonFinanceInvoiceID'])) {
-        $gibbonFinanceInvoiceID = $_POST['gibbonFinanceInvoiceID'];
-    }
-    $key = '';
-    if (isset($_POST['key'])) {
-        $key = $_POST['key'];
-    }
+    $gibbonFinanceInvoiceID = $_POST['gibbonFinanceInvoiceID'] ?? '';
+    $key = $_POST['key'] ?? '';
+
 
     //Check variables
     if ($gibbonFinanceInvoiceID == '' or $key == '') {
@@ -127,35 +122,33 @@ if ($paid != 'Y') { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
     }
     $paymentToken = null;
     if (isset($_GET['token'])) {
-        $paymentToken = $_GET['token'];
+        $paymentToken = $_GET['token'] ?? '';
     }
     $paymentPayerID = null;
     if (isset($_GET['PayerID'])) {
-        $paymentPayerID = $_GET['PayerID'];
+        $paymentPayerID = $_GET['PayerID'] ?? '';
     }
     $feeTotal = null;
     if (isset($_GET['feeTotal'])) {
-        $feeTotal = $_GET['feeTotal'];
+        $feeTotal = $_GET['feeTotal'] ?? '';
     }
     $gibbonFinanceInvoiceID = '';
     if (isset($_GET['gibbonFinanceInvoiceID'])) {
-        $gibbonFinanceInvoiceID = $_GET['gibbonFinanceInvoiceID'];
+        $gibbonFinanceInvoiceID = $_GET['gibbonFinanceInvoiceID'] ?? '';
     }
     $key = '';
     if (isset($_GET['key'])) {
-        $key = $_GET['key'];
+        $key = $_GET['key'] ?? '';
     }
 
     $gibbonFinanceInvoiceeID = '';
     $invoiceTo = '';
     $gibbonSchoolYearID = '';
-    try {
+
         $dataKeyRead = array('gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID, 'key' => $key);
         $sqlKeyRead = 'SELECT * FROM gibbonFinanceInvoice WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID AND `key`=:key';
         $resultKeyRead = $connection2->prepare($sqlKeyRead);
         $resultKeyRead->execute($dataKeyRead);
-    } catch (PDOException $e) {
-    }
     if ($resultKeyRead->rowCount() == 1) {
         $rowKeyRead = $resultKeyRead->fetch();
         $gibbonFinanceInvoiceeID = $rowKeyRead['gibbonFinanceInvoiceeID'];
@@ -211,13 +204,11 @@ if ($paid != 'Y') { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
             $emails = array();
             $emailsCount = 0;
             if ($invoiceTo == 'Company') {
-                try {
+
                     $dataCompany = array('gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID);
                     $sqlCompany = 'SELECT * FROM gibbonFinanceInvoicee WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID';
                     $resultCompany = $connection2->prepare($sqlCompany);
                     $resultCompany->execute($dataCompany);
-                } catch (PDOException $e) {
-                }
                 if ($resultCompany->rowCount() != 1) {
                 } else {
                     $rowCompany = $resultCompany->fetch();
@@ -273,13 +264,11 @@ if ($paid != 'Y') { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
             //Send emails
             if (count($emails) > 0) {
                 //Get receipt number
-                try {
+
                     $dataPayments = array('foreignTable' => 'gibbonFinanceInvoice', 'foreignTableID' => $gibbonFinanceInvoiceID);
                     $sqlPayments = 'SELECT gibbonPayment.*, surname, preferredName FROM gibbonPayment JOIN gibbonPerson ON (gibbonPayment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID ORDER BY timestamp, gibbonPaymentID';
                     $resultPayments = $connection2->prepare($sqlPayments);
                     $resultPayments->execute($dataPayments);
-                } catch (PDOException $e) {
-                }
                 $receiptCount = $resultPayments->rowCount();
 
                 //Prep message
@@ -299,6 +288,7 @@ if ($paid != 'Y') { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
                 $mail->renderBody('mail/email.twig.html', [
                     'title'  => $mail->Subject,
                     'body'   => $body,
+                    'maxWidth' => '900px',
                 ]);
 
                 $mail->Send();

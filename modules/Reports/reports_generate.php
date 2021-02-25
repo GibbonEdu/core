@@ -28,10 +28,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
     // Proceed!
     $page->breadcrumbs->add(__('Generate Reports'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $reportGateway = $container->get(ReportGateway::class);
 
     // QUERY
@@ -50,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
 
     $table->addColumn('name', __('Name'));
 
-    $table->addColumn('timestamp', __('Last Created'))
+    $table->addColumn('timestampGenerated', __('Last Created'))
         ->format(function ($report) {
             if (is_array($report['logs']) && count($report['logs']) > 0) {
                 $firstLog = current($report['logs']);

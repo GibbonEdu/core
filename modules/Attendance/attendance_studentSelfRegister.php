@@ -27,15 +27,9 @@ require_once __DIR__ . '/moduleFunctions.php';
 $page->breadcrumbs->add(__('Student Self Registration'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_studentSelfRegister.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     if (isset($_GET['redirect']) && $_GET['redirect'] == 'true') {
         echo '<div class=\'warning\'>';
             echo __('Please self register!');
@@ -59,14 +53,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
         }
         else {
             //Check for existence of records today
-            try {
+            
                 $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'date' => $currentDate);
                 $sql = "SELECT type FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date=:date ORDER BY timestampTaken DESC";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
 
             if ($result->rowCount() > 0) { //Records! Output current status
                 $row = $result->fetch();

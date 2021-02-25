@@ -23,10 +23,8 @@ use Gibbon\Forms\Prefab\DeleteForm;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_delete.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
@@ -133,10 +131,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_delete.php
                     $extra = dateConvertBack($guid, $date);
                 } else {
                     $extra = $row['course'].'.'.$row['class'];
-                }
-
-                if (isset($_GET['return'])) {
-                    returnProcess($guid, $_GET['return'], null, null);
                 }
 
                 $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/planner_deleteProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID");

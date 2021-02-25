@@ -49,6 +49,11 @@ class Connection implements ConnectionInterface
     protected $result = null;
 
     /**
+     * @var int
+     */
+    protected $transactions = 0;
+
+    /**
      * @var LoggerInterface|null
      */
     private $logger;
@@ -66,7 +71,6 @@ class Connection implements ConnectionInterface
     public function __construct(PDO $pdo, array $config = [])
     {
         $this->pdo = $pdo;
-        $this->config = $config;
     }
 
     /**
@@ -219,7 +223,7 @@ class Connection implements ConnectionInterface
      *
      * @return	\PDOStatement
      */
-    public function executeQuery($data, $query, $error = null)
+    public function executeQuery($data = [], $query = "", $error = null)
     {
         return $this->run($query, $data);
     }
@@ -244,6 +248,53 @@ class Connection implements ConnectionInterface
     public function getResult()
     {
         return $this->result;
+    }
+    
+    /**
+     * Start a new database transaction.
+     *
+     * @return void
+     */
+    public function beginTransaction()
+    {
+        if ($this->transactions == 0) {
+            try {
+                $this->pdo->beginTransaction();
+            } catch (\Exception $e) {
+                $this->handleQueryException($e);
+                return;
+            }
+
+            $this->transactions++;
+        }
+    }
+
+    /**
+     * Commit the active database transaction.
+     *
+     * @return void
+     */
+    public function commit()
+    {
+        if ($this->transactions == 1) {
+            $this->pdo->commit();
+        }
+
+        $this->transactions = 0;
+    }
+
+    /**
+     * Rollback the active database transaction.
+     *
+     * @return void
+     */
+    public function rollBack()
+    {
+        if ($this->transactions == 1) {
+            $this->pdo->rollBack();
+        }
+
+        $this->transactions = 0;
     }
 
     /**

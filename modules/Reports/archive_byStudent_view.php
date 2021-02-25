@@ -38,10 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_
     $allStudents = $_GET['allStudents'] ?? '';
     $search = $_GET['search'] ?? '';
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, ['error3' => __('The selected record does not exist, or you do not have access to it.')]);
-    }
-
+    $page->return->addReturns(['error3' => __('The selected record does not exist, or you do not have access to it.')]);
     if ($highestAction == 'View by Student') {
         $student =  $container->get(StudentGateway::class)->selectActiveStudentByPerson($gibbonSchoolYearID, $gibbonPersonID)->fetch();
         
@@ -56,11 +53,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_
         $studentGateway = $container->get(StudentGateway::class);
 
         $children = $studentGateway
-            ->selectActiveStudentsByFamilyAdult($gibbonSchoolYearID, $gibbon->session->get('gibbonPersonID'))
+            ->selectAnyStudentsByFamilyAdult($gibbonSchoolYearID, $gibbon->session->get('gibbonPersonID'))
             ->fetchGroupedUnique();
 
         if (!empty($children[$gibbonPersonID])) {
-            $student =  $container->get(StudentGateway::class)->selectActiveStudentByPerson($gibbonSchoolYearID, $gibbonPersonID)->fetch();
+            $student = $container->get(UserGateway::class)->getByID($gibbonPersonID);
 
             $page->breadcrumbs
                 ->add(__('View Reports'), 'archive_byFamily.php')
@@ -101,8 +98,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_
         ->fromPOST();
 
     // QUERY
-    $canViewDraftReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.php', 'View Draft Reports');
-    $canViewPastReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.php', 'View Past Reports');
+    $canViewDraftReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.php', 'View Draft Reports');
+    $canViewPastReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.php', 'View Past Reports');
     $roleCategory = getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'), $connection2);
 
     $reports = $reportArchiveEntryGateway->queryArchiveByStudent($criteria, $gibbonPersonID, $roleCategory, $canViewDraftReports, $canViewPastReports);

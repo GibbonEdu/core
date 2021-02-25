@@ -31,9 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
         ->add(__('Upload Reports'), 'archive_manage_upload.php')
         ->add(__('Step {number}', ['number' => 1]));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, ['success1' => __('Import successful. {count} records were imported.', ['count' => '<b>'.($_GET['imported'] ?? '0').'</b>'])]);
-    }
+    $page->return->addReturns(['success1' => __('Import successful. {count} records were imported.', ['count' => '<b>'.($_GET['imported'] ?? '0').'</b>'])]);
 
     $form = Form::create('archiveImport', $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_manage_uploadPreview.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));

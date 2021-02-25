@@ -54,41 +54,33 @@ if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error load
                 header("Location: {$URL}");
             } else {
                 //Try to delete entries in gibbonTTDayRowClass
-                try {
+                
                     $dataSelect = array('gibbonCourseClassID' => $gibbonCourseClassID);
                     $sqlSelect = 'SELECT * FROM gibbonTTDayRowClass WHERE gibbonCourseClassID=:gibbonCourseClassID';
                     $resultSelect = $connection2->prepare($sqlSelect);
                     $resultSelect->execute($dataSelect);
-                } catch (PDOException $e) {
-                }
                 if ($resultSelect->rowCount() > 0) {
                     while ($rowSelect = $resultSelect->fetch()) {
-                        try {
+                        
                             $dataDelete = array('gibbonTTDayRowClassID' => $rowSelect['gibbonTTDayRowClassID']);
                             $sqlDelete = 'DELETE FROM gibbonTTDayRowClassException WHERE gibbonTTDayRowClassID=:gibbonTTDayRowClassID';
                             $resultDelete = $connection2->prepare($sqlDelete);
                             $resultDelete->execute($dataDelete);
-                        } catch (PDOException $e) {
-                        }
                     }
                 }
 
-                try {
+                
                     $dataDelete = array('gibbonCourseClassID' => $gibbonCourseClassID);
                     $sqlDelete = 'DELETE FROM gibbonTTDayRowClass WHERE gibbonCourseClassID=:gibbonCourseClassID';
                     $resultDelete = $connection2->prepare($sqlDelete);
                     $resultDelete->execute($dataDelete);
-                } catch (PDOException $e) {
-                }
 
                 //Delete students and other participants
-                try {
+                
                     $dataDelete = array('gibbonCourseClassID' => $gibbonCourseClassID);
                     $sqlDelete = 'DELETE FROM gibbonCourseClassPerson WHERE gibbonCourseClassID=:gibbonCourseClassID';
                     $resultDelete = $connection2->prepare($sqlDelete);
                     $resultDelete->execute($dataDelete);
-                } catch (PDOException $e) {
-                }
 
                 //Write to database
                 try {

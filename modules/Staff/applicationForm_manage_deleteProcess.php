@@ -60,13 +60,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             }
 
             //Delete files, but don't return error if it fails
-            try {
+            
                 $data = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID);
                 $sql = 'DELETE FROM gibbonStaffApplicationFormFile WHERE gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) {
-            }
 
             $URLDelete = $URLDelete.'&return=success0';
             header("Location: {$URLDelete}");

@@ -22,10 +22,8 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\Timetable\FacilityChangeGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
@@ -36,10 +34,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
     } else {
         //Proceed!
         $page->breadcrumbs->add(__('Manage Facility Changes'));
-
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
-        }
 
         if ($highestAction == 'Manage Facility Changes_allClasses') {
             echo '<p>'.__('This page allows you to create and manage one-off location changes within any class in the timetable. Only current and future changes are shown: past changes are hidden.').'</p>';

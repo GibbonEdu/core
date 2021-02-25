@@ -24,10 +24,8 @@ use Gibbon\Forms\DatabaseFormFactory;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_add.php', 'Manage Expenses_all') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $allowExpenseAdd = getSettingByScope($connection2, 'Finance', 'allowExpenseAdd');
     if ($allowExpenseAdd != 'Y') {
@@ -52,9 +50,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
         if (isset($_GET['editID'])) {
             $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/expenses_manage_edit.php&gibbonFinanceExpenseID='.$_GET['editID'].'&gibbonFinanceBudgetCycleID='.$_GET['gibbonFinanceBudgetCycleID'].'&status2='.$_GET['status2'].'&gibbonFinanceBudgetID2='.$_GET['gibbonFinanceBudgetID2'];
         }
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], $editLink, null);
-        }
+        $page->return->setEditLink($editLink);
+
 
         //Check if school year specified
         $status2 = $_GET['status2'];

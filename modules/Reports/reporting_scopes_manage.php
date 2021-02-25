@@ -43,10 +43,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_scopes_m
         return;
     }
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $reportingScopeGateway = $container->get(ReportingScopeGateway::class);
 
     // QUERY

@@ -28,10 +28,8 @@ $page->breadcrumbs
     ->add(__('Edit Outcome'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
@@ -46,10 +44,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php'
             echo '</div>';
         } else {
             //Proceed!
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, null);
-            }
-
             $filter2 = '';
             if (isset($_GET['filter2'])) {
                 $filter2 = $_GET['filter2'];

@@ -23,10 +23,8 @@ use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage_condition_edit.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $gibbonPersonMedicalID = $_GET['gibbonPersonMedicalID'] ?? '';
@@ -39,22 +37,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
         ->add(__('Edit Medical Form'), 'medicalForm_manage_edit.php', ['gibbonPersonMedicalID' => $gibbonPersonMedicalID])
         ->add(__('Edit Condition'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         $medicalGateway = $container->get(MedicalGateway::class);
         $values = $medicalGateway->getMedicalConditionByID($gibbonPersonMedicalConditionID);
 
         if (empty($values)) {
-            echo "<div class='error'>";
-            echo __('The specified record cannot be found.');
-            echo '</div>';
+            $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
             if ($search != '') {
@@ -112,6 +102,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
             $row = $form->addRow();
                 $row->addLabel('comment', __('Comment'));
                 $row->addTextArea('comment');
+
+            $row = $form->addRow();
+                $row->addLabel('attachment', __('Attachment'))
+                    ->description(__('Additional details about this medical condition. Attachments are only visible to users who manage medical data.'));
+                $row->addFileUpload('attachment')
+                    ->setAttachment('attachment', $gibbon->session->get('absoluteURL'), $values['attachment'] ?? '');
 
             $row = $form->addRow();
                 $row->addFooter();

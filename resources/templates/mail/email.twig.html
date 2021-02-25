@@ -116,9 +116,11 @@ SOFTWARE.
         text-decoration: none !important;
       }
       .btn-primary table td:hover {
+        color: #ffffff !important;
         background-color: {{ buttonHover }} !important;
       }
       .btn-primary a:hover {
+        color: #ffffff !important;
         background-color: {{ buttonHover }} !important;
         border-color: {{ buttonHover }} !important;
       }
@@ -129,13 +131,13 @@ SOFTWARE.
     <table border="0" cellpadding="0" cellspacing="0" class="body" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background-color: #f6f6f6;">
       <tr>
         <td style="font-family: {{ fontFamily }}; font-size: 14px; vertical-align: top;">&nbsp;</td>
-        <td class="container" style="font-family: {{ fontFamily }}; font-size: 14px; vertical-align: top; display: block; Margin: 0 auto; max-width: 600px; padding: 10px 0px; width: 600px;">
-          <div class="header" style="box-sizing: border-box; display: block; Margin: 0 auto; max-width: 600px; padding:20px 16px 12px;text-align:center;">
+        <td class="container" style="font-family: {{ fontFamily }}; font-size: 14px; vertical-align: top; display: block; Margin: 0 auto; max-width: {{ maxWidth|default('600px') }}; padding: 10px 0px; width: 90%;">
+          <div class="header" style="box-sizing: border-box; display: block; Margin: 0 auto; max-width: {{ maxWidth|default('600px') }}; padding:20px 16px 12px;text-align:center;">
             <a href="{{ absoluteURL }}" style="{{ linkStyle }}" target="_blank">
                 <img src="{{ absoluteURL }}/{{ organisationLogo|replace({'svg':'png'})|default("/themes/Default/img/logo.png") }}" style="outline:none;text-decoration:none;border:none" width="200" height="50">
             </a>
           </div>
-          <div class="content" style="box-sizing: border-box; display: block; Margin: 0 auto; max-width: 600px; padding: 0px 0px 40px;">
+          <div class="content" style="box-sizing: border-box; display: block; Margin: 0 auto; max-width: {{ maxWidth|default('600px') }}; padding: 0px 0px 40px;">
 
             <!-- START CENTERED WHITE CONTAINER -->
             <span class="preheader" style="color: transparent; display: none; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; mso-hide: all; visibility: hidden; width: 0;">
@@ -154,11 +156,12 @@ SOFTWARE.
                                 <h2 style="margin-top: 0px;">{{ title }}</h2>
                             {% endblock %}
                         </div>
-                        <p style="font-family: {{ fontFamily }}; font-size: 16px; line-height: 22px; font-weight: normal; margin: 0; Margin-bottom: 15px; color: #555549;">
+                        <div style="font-family: {{ fontFamily }}; font-size: 16px; line-height: 22px; font-weight: normal; margin: 0; Margin-bottom: 15px; color: #555549;">
                             {% block body %}{{ body|raw }}{% endblock %}
-                        </p>
+                        </div>
+
                         {% if button  %}
-                        <table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; box-sizing: border-box;">
+                        <table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt;  box-sizing: border-box;">
                           <tbody>
                             <tr>
                               <td align="left" style="font-family: {{ fontFamily }}; font-size: 14px; vertical-align: top; padding: 15px 0px 25px;">
@@ -166,13 +169,28 @@ SOFTWARE.
                                   <tbody>
                                     <tr>
                                       <td style="font-family: {{ fontFamily }}; font-size: 18px; vertical-align: top; background-color: {{ buttonColor }}; border-radius: 5px; text-align: center;"> 
-                                        <a href="{{ absoluteURL }}/{{ button.url }}" target="_blank" style="display: inline-block; color: #ffffff; background-color: {{ buttonColor }}; border: solid 1px {{ buttonColor }}; border-radius: 5px; box-sizing: border-box; cursor: pointer; text-decoration: none; font-size: 18px; font-weight: bold; margin: 0; padding: 12px 25px; text-transform: capitalize; border-color: {{ buttonColor }};">
+                                        <a href="{{ button.external ? button.url : absoluteURL ~ '/' ~ button.url }}" target="_blank" style="display: inline-block; color: #ffffff; background-color: {{ buttonColor }}; border: solid 1px {{ buttonColor }}; border-radius: 5px; box-sizing: border-box; cursor: pointer; text-decoration: none; font-size: 18px; font-weight: bold; margin: 0; padding: 12px 25px; text-transform: capitalize; border-color: {{ buttonColor }};">
                                             {{ button.text }}
                                         </a> </td>
                                     </tr>
                                   </tbody>
                                 </table>
                               </td>
+
+                              {% if button2  %}
+                                <td align="left" style="font-family: {{ fontFamily }}; font-size: 14px; vertical-align: top; padding: 15px 15px 25px;">
+                                    <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: auto;">
+                                    <tbody>
+                                        <tr>
+                                        <td style="font-family: {{ fontFamily }}; font-size: 18px; vertical-align: top; background-color: {{ buttonColor }}; border-radius: 5px; text-align: center;"> 
+                                            <a href="{{ button2.external ? button2.url : absoluteURL ~ '/' ~ button2.url }}" target="_blank" style="display: inline-block; color: {{ buttonColor }}; background-color: #ffffff; border: solid 1px {{ buttonColor }}; border-radius: 5px; box-sizing: border-box; cursor: pointer; text-decoration: none; font-size: 18px; font-weight: normal; margin: 0; padding: 12px 25px; text-transform: capitalize; border-color: {{ buttonColor }};">
+                                                {{ button2.text }}
+                                            </a> </td>
+                                        </tr>
+                                    </tbody>
+                                    </table>
+                                </td>
+                              {% endif %}
                             </tr>
                           </tbody>
                         </table>

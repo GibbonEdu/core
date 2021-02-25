@@ -28,25 +28,18 @@ $attainmentAlternativeName = getSettingByScope($connection2, 'Markbook', 'attain
 $effortAlternativeName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
 
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_manage_add.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
     if ($gibbonCourseClassID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
+        
             $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
             $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse, gibbonCourseClass WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
@@ -59,9 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 ->add(__('Manage {courseClass} Internal Assessments', ['courseClass' => $row['course'].'.'.$row['class']]), 'internalAssessment_manage.php', ['gibbonCourseClassID' => $gibbonCourseClassID])
                 ->add(__('Add Multiple Columns'));
 
-            if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, array('error3' => __('Your request failed due to an attachment error.')));
-            }
+            $page->return->addReturns(['error3' => __('Your request failed due to an attachment error.')]);
 
             $form = Form::create('internalAssessment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/internalAssessment_manage_addProcess.php?gibbonCourseClassID='.$gibbonCourseClassID.'&address='.$_SESSION[$guid]['address']);
             $form->setFactory(DatabaseFormFactory::create($pdo));

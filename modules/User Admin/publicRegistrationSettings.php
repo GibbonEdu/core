@@ -20,17 +20,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/publicRegistrationSettings.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Public Registration Settings'));
-
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
 
     $form = Form::create('publicRegistrationSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/publicRegistrationSettingsProcess.php');
 
@@ -62,6 +56,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/publicRegistrat
             ->selected($setting['value'])
             ->required();
 
+    $setting = getSettingByScope($connection2, 'User Admin', 'publicRegistrationAllowedDomains', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextField($setting['name'])->setValue($setting['value']);
+
     $row = $form->addRow()->addHeading(__('Interface Options'));
 
     $setting = getSettingByScope($connection2, 'User Admin', 'publicRegistrationIntro', true);
@@ -90,4 +89,3 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/publicRegistrat
 
     echo $form->getOutput();
 }
-?>

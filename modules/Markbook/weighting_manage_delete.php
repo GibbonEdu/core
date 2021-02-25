@@ -43,10 +43,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
             echo '</div>';
         }
 
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
-        }
-
         //Get class variable
         $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 
@@ -85,14 +81,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
                 echo '</div>';
             } else {
                 $gibbonMarkbookWeightID = (isset($_GET['gibbonMarkbookWeightID']))? $_GET['gibbonMarkbookWeightID'] : null;
-                try {
+                
                     $data2 = array('gibbonMarkbookWeightID' => $gibbonMarkbookWeightID);
                     $sql2 = 'SELECT * FROM gibbonMarkbookWeight WHERE gibbonMarkbookWeightID=:gibbonMarkbookWeightID';
                     $result2 = $connection2->prepare($sql2);
                     $result2->execute($data2);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
 
                 if ($result2->rowCount() != 1) {
                     echo '<h1>';

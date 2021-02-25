@@ -23,17 +23,11 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\System\NotificationGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationSettings.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Notification Settings'));
-
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
 
     echo '<h3>';
     echo __('Notification Events');

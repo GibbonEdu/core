@@ -33,9 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_add
         $editLink = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_manage_edit.php&gibbonReportArchiveID='.$_GET['editID'];
     }
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink, null);
-    }
+    $page->return->setEditLink($editLink);
 
     $form = Form::create('archiveManage', $gibbon->session->get('absoluteURL').'/modules/Reports/archive_manage_addProcess.php');
     $form->addHiddenValue('address', $gibbon->session->get('address'));

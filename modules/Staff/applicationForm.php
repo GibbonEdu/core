@@ -45,10 +45,8 @@ if (isset($_SESSION[$guid]['gibbonPersonID'])) {
 }
 
 if ($proceed == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Staff Application Form'));
@@ -78,9 +76,7 @@ if ($proceed == false) {
     $returns = array();
     $returns['success0'] = __('Your application was successfully submitted. Our Human Resources team will review your application and be in touch in due course.').$returnExtra;
     $returns['warning1'] = __('Your application was submitted, but some errors occured. We recommend you contact our Human Resources team to review your application.').$returnExtra;
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, $returns);
-    }
+    $page->return->addReturns($returns);
 
     //Check for job openings
     try {

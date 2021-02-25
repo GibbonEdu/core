@@ -19,11 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonMessengerID=$_POST["gibbonMessengerID"] ;
-$search=NULL ;
-if (isset($_GET["search"])) {
-	$search=$_GET["search"] ;
-}
+$gibbonMessengerID=$_POST["gibbonMessengerID"] ?? '';
+$search=$_GET["search"] ?? '';
+
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/messenger_manage_edit.php&sidebar=true&search=$search&gibbonMessengerID=" . $gibbonMessengerID ;
 $time=time() ;
 
@@ -126,8 +124,8 @@ else {
 
 				//Role Categories
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_role") || isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_postQuickWall.php")) {
-					if ($_POST["roleCategory"]=="Y") {
-						$choices=$_POST["roleCategories"] ;
+					if (!empty($_POST['roleCategory']) && $_POST['roleCategory'] == 'Y') {
+						$choices=$_POST['roleCategories'] ?? '';
 						if ($choices!="") {
 							foreach ($choices as $t) {
 								try {

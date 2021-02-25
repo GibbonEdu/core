@@ -22,20 +22,14 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\School\GradeScaleGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Manage Grade Scales'));
     echo '<p>';
     echo __('Grade scales are used through the Assess modules to control what grades can be entered into the system. Editing some of the inbuilt scales can impact other areas of the system: it is advised to take a backup of the entire system before doing this.');
     echo '</p>';
-
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
 
     $gradeScaleGateway = $container->get(GradeScaleGateway::class);
 

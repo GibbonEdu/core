@@ -22,10 +22,8 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\User\RoleGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $search = $_GET['search'] ?? '';
@@ -39,9 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
     if (isset($_GET['editID'])) {
         $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_manage_edit.php&gibbonStaffID='.$_GET['editID'].'&search='.$_GET['search'].'&allStaff='.$_GET['allStaff'];
     }
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink, null);
-    }
+    $page->return->setEditLink($editLink);
 
     if ($search != '' or $allStaff != '') {
         echo "<div class='linkTop'>";
@@ -64,22 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
         $row->addLabel('initials', __('Initials'))->description(__('Must be unique if set.'));
         $row->addTextField('initials')->maxlength(4);
 
-    $types = array(__('Basic') => array ('Teaching' => __('Teaching'), 'Support' => __('Support')));
-
-    $roleGateway = $container->get(RoleGateway::class);
-    // CRITERIA
-    $criteriaCategory = $roleGateway->newQueryCriteria()
-        ->sortBy(['gibbonRole.name'])
-        ->filterBy('category:Staff');
-
-    $rolesCategoriesStaff = $roleGateway->queryRoles($criteriaCategory);
-
-    $typesCategories = array();
-    foreach($rolesCategoriesStaff as $roleCategoriesStaff) {
-       $typesCategories[$roleCategoriesStaff['name']] = __($roleCategoriesStaff['name']);
-    }
-    $types[__('System Roles')] = $typesCategories;    
-    
+    $types = array('Teaching' => __('Teaching'), 'Support' => __('Support'));
     $row = $form->addRow();
         $row->addLabel('type', __('Type'));
         $row->addSelect('type')->fromArray($types)->placeholder()->required();
@@ -95,6 +76,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
         $row->addYesNo('firstAidQualified')->placeHolder();
 
     $form->toggleVisibilityByClass('firstAid')->onSelect('firstAidQualified')->when('Y');
+
+    $row = $form->addRow()->addClass('firstAid');
+        $row->addLabel('firstAidQualification', __('First Aid Qualification'));
+        $row->addTextField('firstAidQualification')->maxlength(100);
 
     $row = $form->addRow()->addClass('firstAid');
         $row->addLabel('firstAidExpiry', __('First Aid Expiry'));

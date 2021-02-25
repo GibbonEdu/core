@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\View\Page;
 use Gibbon\Forms\Form;
 use Gibbon\Data\Validator;
+use Gibbon\Database\Connection;
 use Gibbon\Database\MySqlConnector;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -52,13 +53,13 @@ if (empty($step)) {
         }
     }
 } else {
-    $guid = isset($_POST['guid'])? $_POST['guid'] : '';
+    $guid = $_POST['guid'] ?? '';
     $guid = preg_replace('/[^a-z0-9-]/', '', substr($guid, 0, 36));
 }
-// Use the POSTed GUID in place of "undefined". 
-// Later steps have the guid in the config file but without 
+// Use the POSTed GUID in place of "undefined".
+// Later steps have the guid in the config file but without
 // a way to store variables relibly prior to that, installation can fail
-$gibbon->session->setGuid($guid); 
+$gibbon->session->setGuid($guid);
 $gibbon->session->set('absolutePath', realpath('../'));
 
 // Generate and save a nonce for forms on this page to use
@@ -83,17 +84,17 @@ $page = new Page($container->get('twig'), [
 ob_start();
 
 //Get and set database variables (not set until step 1)
-$databaseServer = (isset($_POST['databaseServer']))? $_POST['databaseServer'] : '';
-$databaseName = (isset($_POST['databaseName']))? $_POST['databaseName'] : '';
-$databaseUsername = (isset($_POST['databaseUsername']))? $_POST['databaseUsername'] : '';
+$databaseServer = $_POST['databaseServer'] ?? '';
+$databaseName = $_POST['databaseName'] ?? '';
+$databaseUsername = $_POST['databaseUsername'] ?? '';
 $databasePassword = $databasePasswordRaw;
-$demoData = (isset($_POST['demoData']))? $_POST['demoData'] : '';
-$code = (isset($_POST['code']))? $_POST['code'] : 'en_GB';
+$demoData = $_POST['demoData'] ?? '';
+$code = $_POST['code'] ?? 'en_GB';
 
 // Attempt to download & install the required language files
 if ($step >= 1) {
-    $languageInstalled = !i18nFileExists($gibbon->session->get('absolutePath'), $code) 
-        ? i18nFileInstall($gibbon->session->get('absolutePath'), $code) 
+    $languageInstalled = !i18nFileExists($gibbon->session->get('absolutePath'), $code)
+        ? i18nFileInstall($gibbon->session->get('absolutePath'), $code)
         : true;
 }
 
@@ -112,7 +113,7 @@ $canInstall = true;
 
 // Check session for the presence of a valid nonce; if found, remove it so it's used only once.
 if ($step >= 1) {
-    $checkNonce = isset($_POST['nonce'])? $_POST['nonce'] : '';
+    $checkNonce = $_POST['nonce'] ?? '';
     if (!empty($sessionNonce[$step]) && $sessionNonce[$step] == $checkNonce) {
         unset($sessionNonce[$step]);
     } else {
@@ -123,7 +124,7 @@ if ($step >= 1) {
 // Check config values for ' " \ / chars which will cause errors in config.php
 $pattern = '/[\'"\/\\\\]/';
 if (preg_match($pattern, $databaseServer) == true || preg_match($pattern, $databaseName) == true ||
-    preg_match($pattern, $databaseUsername) == true || preg_match($pattern, $databasePassword) == true) {
+    preg_match($pattern, $databaseUsername) == true) {
     $isConfigValid = false;
 }
 
@@ -190,7 +191,7 @@ if ($canInstall == false) {
 
     if ($apacheVersion !== false) {
         $apacheModules = @apache_get_modules();
-        
+
         foreach ($apacheRequirement as $moduleName) {
             $active = @in_array($moduleName, $apacheModules);
             $row = $form->addRow();
@@ -278,21 +279,24 @@ if ($canInstall == false) {
         $config = compact('databaseServer', 'databaseUsername', 'databasePassword');
         $mysqlConnector = new MySqlConnector();
 
-        if ($pdo = $mysqlConnector->connect($config)) {
+        try {
+            $pdo = $mysqlConnector->connect($config, true);
             $mysqlConnector->useDatabase($pdo, $databaseName);
             $connection2 = $pdo->getConnection();
             $container->share(Gibbon\Contracts\Database\Connection::class, $pdo);
+        } catch (\Exception $e) {
+            echo "<div class='error'>";
+            echo '<div>' . sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", '</a>') . '</div>';
+            echo '<div>' . sprintf(__('Error details: {error_message}', $e->getMessage())) . '</div>';
+            echo '</div>';
         }
     }
 
-    if (empty($pdo)) {
-        echo "<div class='error'>";
-        echo sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", '</a>');
-        echo '</div>';
-    } else {
+    if ($pdo instanceof Connection) {
         //Set up config.php
+        include './installerFunctions.php';
         $configData = compact('databaseServer', 'databaseUsername', 'databasePassword', 'databaseName', 'guid');
-        $config = $page->fetchFromTemplate('installer/config.twig.html', $configData);
+        $config = $page->fetchFromTemplate('installer/config.twig.html', process_config_vars($configData));
 
         //Write config
         $fp = fopen('../config.php', 'wb');
@@ -310,8 +314,6 @@ if ($canInstall == false) {
                 echo __('../gibbon.sql does not exist, and so the installer cannot proceed.');
                 echo '</div>';
             } else {
-                include './installerFunctions.php';
-
                 $query = @fread(@fopen('../gibbon.sql', 'r'), @filesize('../gibbon.sql')) or die('Encountered a problem.');
                 $query = remove_remarks($query);
                 $query = split_sql_file($query, ';');
@@ -409,7 +411,7 @@ if ($canInstall == false) {
                         $row->addEmail('email')->required();
 
                     $row = $form->addRow();
-                        $row->addLabel('support', '<b>'.__('Receive Support?').'</b>')->description(__('Join our mailing list and recieve a welcome email from the team.'));
+                        $row->addLabel('support', __('Receive Support?'))->description(__('Join our mailing list and recieve a welcome email from the team.'));
                         $row->addCheckbox('support')->description(__('Yes'))->setValue('on')->checked('on')->setID('support');
 
                     $row = $form->addRow();
@@ -485,6 +487,25 @@ if ($canInstall == false) {
                         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
                         $row->addSelect($setting['name'])->fromArray($installTypes)->selected('Testing')->required();
 
+                    // Expose version information and translation strings to installer.js functions
+                    // for check and set cutting edge code based on gibbonedu.org services value
+                    $js_version = json_encode($version);
+                    $js_i18n = json_encode([
+                        '__edge_code_check_success__' => __('Cutting Edge Code check successful.'),
+                        '__edge_code_check_failed__' => __('Cutting Edge Code check failed'),
+                    ]);
+                    echo "
+                    <script type='text/javascript'>
+                    window.gibboninstaller = {
+                        version: {$js_version},
+                        i18n: {$js_i18n},
+                        msg: function (msg) {
+                            return this.i18n[msg] || msg;
+                        },
+                    };
+                    </script>
+                    ";
+
                     $statusInitial = "<div id='status' class='warning'><div style='width: 100%; text-align: center'><img style='margin: 10px 0 5px 0' src='../themes/Default/img/loading.gif' alt='Loading'/><br/>".__('Checking for Cutting Edge Code.')."</div></div>";
                     $row = $form->addRow();
                         $row->addContent($statusInitial);
@@ -492,32 +513,6 @@ if ($canInstall == false) {
                     $row = $form->addRow();
                         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
                         $row->addTextField($setting['name'])->setValue('No')->readonly();
-
-                    //Check and set cutting edge code based on gibbonedu.org services value
-                    echo '<script type="text/javascript">';
-                    echo '$(document).ready(function(){';
-                    echo '$.ajax({';
-                    echo 'crossDomain: true, type:"GET", contentType: "application/json; charset=utf-8",async:false,';
-                    echo 'url: "https://gibbonedu.org/services/version/devCheck.php?version='.$version.'&callback=?",';
-                    echo "data: \"\",dataType: \"jsonp\", jsonpCallback: 'fnsuccesscallback',jsonpResult: 'jsonpResult',";
-                    echo 'success: function(data) {';
-                    echo '$("#status").attr("class","success");';
-                    echo "if (data['status']==='false') {";
-                    echo "$(\"#status\").html('".__('Cutting Edge Code check successful.')."') ;";
-                    echo '}';
-                    echo 'else {';
-                    echo "$(\"#status\").html('".__('Cutting Edge Code check successful.')."') ;";
-                    echo "$(\"#cuttingEdgeCode\").val('Yes');";
-                    echo "$(\"input[name=cuttingEdgeCodeHidden]\").val('Y');";
-                    echo '}';
-                    echo '},';
-                    echo 'error: function (data, textStatus, errorThrown) {';
-                    echo '$("#status").attr("class","error");';
-                    echo "$(\"#status\").html('".__('Cutting Edge Code check failed').".') ;";
-                    echo '}';
-                    echo '});';
-                    echo '});';
-                    echo '</script>';
 
                     $setting = getSettingByScope($connection2, 'System', 'statsCollection', true);
                     $row = $form->addRow();
@@ -582,15 +577,18 @@ if ($canInstall == false) {
     //New PDO DB connection
     $mysqlConnector = new MySqlConnector();
 
-    if ($pdo = $mysqlConnector->connect($gibbon->getConfig())) {
+    try {
+        $pdo = $mysqlConnector->connect($gibbon->getConfig(), true);
         $connection2 = $pdo->getConnection();
+    } catch (Exception $e) {
+        echo "<div class='error'>";
+        echo '<div>' . sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", '</a>') . '</div>';
+        echo '<div>' . sprintf(__('Error details: {error_message}', $e->getMessage())) . '</div>';
+        echo '</div>';
     }
 
-    if (empty($pdo)) {
-        echo "<div class='error'>";
-        echo sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", '</a>');
-        echo '</div>';
-    } else {
+    // check if correctly created the PDO object.
+    if ($pdo instanceof Connection) {
         //Get user account details
         $title = $_POST['title'];
         $surname = $_POST['surname'];
@@ -600,12 +598,7 @@ if ($canInstall == false) {
         $password = $_POST['passwordNew'];
         $passwordConfirm = $_POST['passwordConfirm'];
         $email = $_POST['email'];
-        $support = false;
-        if (isset($_POST['support'])) {
-            if ($_POST['support'] == 'true') {
-                $support = true;
-            }
-        }
+        $support = isset($_POST['support']) and $_POST['support'] == 'true';
 
         //Get system settings
         $absoluteURL = $_POST['absoluteURL'];
@@ -896,9 +889,9 @@ if ($canInstall == false) {
                     } else {
                         echo "<div class='success'>";
                         echo sprintf(__('Congratulations, your installation is complete. Feel free to %1$sgo to your Gibbon homepage%2$s and login with the username and password you created.'), "<a href='$absoluteURL'>", '</a>');
-                        echo '<br/><br/>';
-                        echo sprintf(__('It is also advisable to follow the %1$sPost-Install and Server Config instructions%2$s.'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>", '</a>');
                         echo '</div>';
+
+                        echo $page->fetchFromTemplate('ui/gettingStarted.twig.html', ['postInstall' => true]);
                     }
                 }
             }
@@ -906,8 +899,6 @@ if ($canInstall == false) {
     }
 }
 
-                        
-         
 $page->write(ob_get_clean());
 
 $page->addData([

@@ -61,13 +61,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
                 exit();
             }
 
-            try {
+            
                 $data = array('gibbonRollGroupID' => $gibbonRollGroupID);
                 $sql = 'DELETE FROM gibbonStudentEnrolment WHERE gibbonRollGroupID=:gibbonRollGroupID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) {
-            }
 
             $URLDelete = $URLDelete.'&return=success0';
             header("Location: {$URLDelete}");

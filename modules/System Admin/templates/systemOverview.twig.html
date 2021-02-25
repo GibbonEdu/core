@@ -1,0 +1,57 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+<div class="flex w-full mb-6 bg-white shadow rounded font-sans">
+
+    <div class="w-1/3 flex flex-wrap font-sans items-start content-end justify-between py-5 px-6 border-r border-gray-300">
+        <div class="w-full text-sm font-light text-gray-600">
+            {{ __('Gibbon Version') }}
+        </div>
+        <div class="text-xl font-semibold text-gray-800 leading-normal">
+            v{{ gibbonVersion }}
+        </div>
+        <div id="gibbonCheck" class="mt-1">
+            <span class="tag rounded-full {{ gibbonCheck ? 'success' : 'dull' }}">
+                {{ gibbonCheck ? __('OK') : __('Checking') }}
+            </span>
+        </div>
+    </div>
+
+    <div class="w-1/3 flex flex-wrap font-sans items-start content-end justify-between py-5 px-6 border-r border-gray-300">
+        <div class="w-full text-sm font-light text-gray-600">
+            {{ __('PHP Version') }}
+        </div>
+        <div class="text-xl font-semibold text-gray-800 leading-normal">
+            {{ phpVersion }}
+        </div>
+        <div class="mt-1">
+            <span class="tag rounded-full {{ phpCheck ? 'success' : 'error' }}">
+                {{ phpCheck ? __('OK') : __('Error') }}
+            </span>
+        </div>
+    </div>
+
+    <div class="w-1/3 flex flex-wrap font-sans items-start content-end justify-between py-5 px-6 border-gray-300">
+        <div class="w-full text-sm font-light text-gray-600">
+            {{ __('MySQL Version') }}
+        </div>
+        <div class="text-xl font-semibold text-gray-800 leading-normal">
+            {{ mySqlVersion }}
+        </div>
+        <div class="mt-1">
+            <span class="tag rounded-full {{ mySqlCheck ? 'success' : 'error' }}">
+                {{ mySqlCheck ? __('OK') : __('Error') }}
+            </span>
+        </div>
+    </div>
+</div>
+
+{{ versionCheck|raw }}
+
+
+{{ include('ui/gettingStarted.twig.html') }}

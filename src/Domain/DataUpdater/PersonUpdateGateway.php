@@ -19,22 +19,30 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\DataUpdater;
 
-use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
+use Gibbon\Domain\ScrubbableGateway;
+use Gibbon\Domain\Traits\Scrubbable;
+use Gibbon\Domain\Traits\TableAware;
+use Gibbon\Domain\Traits\ScrubByPerson;
 
 /**
  * @version v16
  * @since   v16
  */
-class PersonUpdateGateway extends QueryableGateway
+class PersonUpdateGateway extends QueryableGateway implements ScrubbableGateway
 {
     use TableAware;
+    use Scrubbable;
+    use ScrubByPerson;
 
     private static $tableName = 'gibbonPersonUpdate';
     private static $primaryKey = 'gibbonPersonUpdateID';
 
     private static $searchableColumns = [''];
+
+    private static $scrubbableKey = 'gibbonPersonID';
+    private static $scrubbableColumns = ['address1' => '','address1District' => '','address1Country' => '','address2' => '','address2District' => '','address2Country' => '','phone1Type' => '','phone1CountryCode' => '','phone1' => '','phone3Type' => '','phone3CountryCode' => '','phone3' => '','phone2Type' => '','phone2CountryCode' => '','phone2' => '','phone4Type' => '','phone4CountryCode' => '','phone4' => '','languageFirst' => '','languageSecond' => '','languageThird' => '','countryOfBirth' => '','ethnicity' => '','citizenship1' => '','citizenship1Passport' => '','citizenship1PassportExpiry'=> null,'citizenship2' => '','citizenship2Passport' => '','citizenship2PassportExpiry'=> null,'religion' => '','nationalIDCardCountry' => '','nationalIDCardNumber' => '','residencyStatus' => '','visaExpiryDate'=> null,'profession'=> null,'employer'=> null,'jobTitle'=> null,'emergency1Name'=> null,'emergency1Number1'=> null,'emergency1Number2'=> null,'emergency1Relationship'=> null,'emergency2Name'=> null,'emergency2Number1'=> null,'emergency2Number2'=> null,'emergency2Relationship'=> null,'vehicleRegistration' => '','fields' => ''];
     
     /**
      * @param QueryCriteria $criteria
@@ -46,10 +54,11 @@ class PersonUpdateGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonPersonUpdateID', 'gibbonPersonUpdate.status', 'gibbonPersonUpdate.timestamp', 'target.preferredName', 'target.surname', 'updater.title as updaterTitle', 'updater.preferredName as updaterPreferredName', 'updater.surname as updaterSurname'
+                'gibbonPersonUpdateID', 'gibbonPersonUpdate.status', 'gibbonPersonUpdate.timestamp', 'target.preferredName', 'target.surname', 'updater.title as updaterTitle', 'updater.preferredName as updaterPreferredName', 'updater.surname as updaterSurname', 'gibbonRole.category as roleCategory'
             ])
             ->leftJoin('gibbonPerson AS target', 'target.gibbonPersonID=gibbonPersonUpdate.gibbonPersonID')
             ->leftJoin('gibbonPerson AS updater', 'updater.gibbonPersonID=gibbonPersonUpdate.gibbonPersonIDUpdater')
+            ->leftJoin('gibbonRole', 'gibbonRole.gibbonRoleID=target.gibbonRoleIDPrimary')
             ->where('gibbonPersonUpdate.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 

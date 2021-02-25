@@ -87,7 +87,7 @@ if ($proceed == false) {
     if (isset($_POST['nameInCharacters'])) {
         $nameInCharacters = $_POST['nameInCharacters'];
     }
-    $gender = null;
+    $gender = 'Unspecified';
     if (isset($_POST['gender'])) {
         $gender = $_POST['gender'];
     }
@@ -212,7 +212,7 @@ if ($proceed == false) {
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
-            $fields = serialize($fields);
+            $fields = json_encode($fields);
             $partialFail = false;
             $ids = '';
 
@@ -284,13 +284,11 @@ if ($proceed == false) {
                         if ($requiredDocuments != false && !empty($uploadedDocuments) && is_array($uploadedDocuments)) {
                             foreach ($uploadedDocuments as $fileName => $attachment) {
                                 //Write files to database, one for each attachment
-                                try {
+                                
                                     $dataFile = array('gibbonStaffApplicationFormID' => $AI, 'name' => $fileName, 'path' => $attachment);
                                     $sqlFile = 'INSERT INTO gibbonStaffApplicationFormFile SET gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID, name=:name, path=:path';
                                     $resultFile = $connection2->prepare($sqlFile);
                                     $resultFile->execute($dataFile);
-                                } catch (PDOException $e) {
-                                }
                             }
                         }
 
@@ -309,8 +307,6 @@ if ($proceed == false) {
                             //Prep message
                             $subject = __('Request For Reference');
                             $body = sprintf(__('To whom it may concern,%4$sThis email is being sent in relation to the job application of an individual who has nominated you as a referee: %1$s.%4$sIn assessing their application for the post of %5$s at our school, we would like to enlist your help in completing the following reference form: %2$s.<br/><br/>Please feel free to contact me, should you have any questions in regard to this matter.%4$sRegards,%4$s%3$s'), Format::name('', $preferredName, $surname, 'Staff', false, true), "<a href='" . $applicationFormRefereeLink[$type] . "' target='_blank'>" . $applicationFormRefereeLink[$type] . "</a>", $_SESSION[$guid]['organisationHRName'], '<br/><br/>', $jobTitle);
-                            $body .= "<p style='font-style: italic;'>".sprintf(__('Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
-                            $bodyPlain = emailBodyConvert($body);
 
                             $mail = $container->get(Mailer::class);
                             $mail->SetFrom($_SESSION[$guid]['organisationHREmail'], $_SESSION[$guid]['organisationHRName']);
@@ -320,12 +316,16 @@ if ($proceed == false) {
                             if ($referenceEmail2 != '') {
                                 $mail->AddBCC($referenceEmail2);
                             }
-                            $mail->CharSet = 'UTF-8';
-                            $mail->Encoding = 'base64';
-                            $mail->IsHTML(true);
                             $mail->Subject = $subject;
-                            $mail->Body = $body;
-                            $mail->AltBody = $bodyPlain;
+                            $mail->renderBody('mail/email.twig.html', [
+                                'title'  => $subject,
+                                'body'   => $body,
+                                'button' => [
+                                    'url'  => $applicationFormRefereeLink[$type],
+                                    'text' => __('Click Here'),
+                                    'external' => true,
+                                ],
+                            ]);
 
                             $mail->Send();
                         }

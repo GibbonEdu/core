@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
     } else {
         //Proceed!
         //Setup return variables
-        $messageWall = $_POST['messageWall'];
+        $messageWall = $_POST['messageWall'] ?? '';
         if ($messageWall != 'Y') {
             $messageWall = 'N';
         }
@@ -58,40 +58,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
                 $date3 = dateConvert($guid, $_POST['date3']);
             }
         }
-        $subject = $_POST['subject'];
-        $body = stripslashes($_POST['body']);
+        $subject = $_POST['subject'] ?? '';
+        $body = stripslashes($_POST['body'] ?? '');
+
+        // Turn copy-pasted div breaks into paragraph breaks
+        $body = str_replace(['<div ', '<div>', '</div>'], ['<p ', '<p>', '</p>'], $body);
 
         if ($subject == '' or $body == '') {
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
-            //Lock table
-            try {
-                $sql = 'LOCK TABLES gibbonMessenger WRITE';
-                $result = $connection2->query($sql);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
-
-            //Get next autoincrement
-            try {
-                $sqlAI = "SHOW TABLE STATUS LIKE 'gibbonMessenger'";
-                $resultAI = $connection2->query($sqlAI);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
-
-            $rowAI = $resultAI->fetch();
-            $AI = str_pad($rowAI['Auto_increment'], 12, '0', STR_PAD_LEFT);
-
             //Write to database
             try {
-                $data = array('email' => '', 'messageWall' => $messageWall, "messageWallPin" => $messageWallPin, 'messageWall_date1' => $date1, 'messageWall_date2' => $date2, 'messageWall_date3' => $date3, 'sms' => '', 'subject' => $subject, 'body' => $body, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'timestamp' => date('Y-m-d H:i:s'));
-                $sql = 'INSERT INTO gibbonMessenger SET email=:email, messageWall=:messageWall, messageWallPin=:messageWallPin, messageWall_date1=:messageWall_date1, messageWall_date2=:messageWall_date2, messageWall_date3=:messageWall_date3, sms=:sms, subject=:subject, body=:body, gibbonPersonID=:gibbonPersonID, timestamp=:timestamp';
+                $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), 'email' => '', 'messageWall' => $messageWall, "messageWallPin" => $messageWallPin, 'messageWall_date1' => $date1, 'messageWall_date2' => $date2, 'messageWall_date3' => $date3, 'sms' => '', 'subject' => $subject, 'body' => $body, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'timestamp' => date('Y-m-d H:i:s'));
+                $sql = 'INSERT INTO gibbonMessenger SET gibbonSchoolYearID=:gibbonSchoolYearID, email=:email, messageWall=:messageWall, messageWallPin=:messageWallPin, messageWall_date1=:messageWall_date1, messageWall_date2=:messageWall_date2, messageWall_date3=:messageWall_date3, sms=:sms, subject=:subject, body=:body, gibbonPersonID=:gibbonPersonID, timestamp=:timestamp';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
@@ -105,17 +85,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
             //Last insert ID
             $AI = str_pad($connection2->lastInsertID(), 12, '0', STR_PAD_LEFT);
 
-            try {
-                $sql = 'UNLOCK TABLES';
-                $result = $connection2->query($sql);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
-
             $partialFail = false;
-            $choices = $_POST['roleCategories'];
+            $choices = $_POST['roleCategories'] ?? '';
             if ($choices != '') {
                 foreach ($choices as $t) {
                     try {

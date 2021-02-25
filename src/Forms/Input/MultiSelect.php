@@ -57,20 +57,24 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
 
         $this->sortBySelect = $factory->createSelect($name . "Sort")
             ->placeholder(__("Sort by Name"))
-            ->setClass("w-48 mt-1")
-            ->addClass("floatNone");
+            ->setClass("w-9/12 mt-1")
+            ->addClass("floatNone")
+            ->wrap('<div class="w-full">', '</div>');
 
         $this->addButton = $factory->createButton(__("Add"))
             ->onClick('optionTransfer(\'' . $this->name . '\', true)')
-            ->addClass("w-48");
+            ->addClass("w-9/12")
+            ->wrap('<div class="w-full">', '</div>');
         $this->removeButton = $factory->createButton(__("Remove"))
             ->onClick('optionTransfer(\'' . $this->name . '\', false)')
-            ->addClass("w-48 mt-1");
+            ->addClass("w-9/12 mt-1")
+            ->wrap('<div class="w-full">', '</div>');
 
         $this->searchBox = $factory->createTextField($name . "Search")
             ->placeholder(__("Search"))
-            ->setClass("w-48 mt-1")
-            ->addClass("floatNone");
+            ->setClass("w-9/12 mt-1")
+            ->addClass("floatNone")
+            ->wrap('<div class="w-full">', '</div>');
     }
 
     public function getID()

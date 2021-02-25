@@ -17,8 +17,26 @@ TODO: add template variable details.
     </head>
     <body style="{{ bodyBackground }}">
         <div id="wrapOuter" class="sm:px-6">
-            <div class="mx-auto max-w-6xl text-right text-white text-xs md:text-sm px-2 xl:px-0 {{ gibbonHouseIDLogo ? 'mt-2' : 'mt-6' }}">
-                {{ minorLinks|raw }}
+            <div class="mx-auto max-w-6xl text-right text-white text-xs md:text-sm px-2 xl:px-0 {{ currentUser.houseLogo ? 'mt-2' : 'mt-6' }}">
+                {% if currentUser %}
+                    {% if currentUser.url %}<a href="{{ currentUser.url }}" class="link-white">{% endif %}
+                        {{- currentUser.name -}}
+                    {% if currentUser.url %}</a>{% endif %} · 
+                {% endif %}
+                
+                {% for link in minorLinks %}
+                    {{ link.prepend }}
+                    <a href="{{ link.url }}" class="link-white {{ loop.count > 3 ? 'hidden sm:block' }}" target="{{ link.target }}">
+                        {{- link.name|raw -}}
+                    </a>
+                    {{ link.append }}
+
+                    {% if not loop.last %} · {% endif %}
+                {% endfor %}
+
+                {% if currentUser.houseName and currentUser.houseLogo %}
+                    <img class="ml-1 -mt-4 w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16" title="{{ currentUser.houseName }}" style="vertical-align: -75%;" src="{{ absoluteURL }}/{{ currentUser.houseLogo }}"/>
+                {% endif %}
             </div>
 
             <div id="wrap" class="mx-auto max-w-6xl m-2 shadow-container rounded">
@@ -51,7 +69,7 @@ TODO: add template variable details.
                         <br style="clear: both">
                     {% endif %}
 
-                    <div id="content" class="w-full max-w-full {{ not sidebar ?'pt-0 sm:pt-6' }} lg:flex-1  p-6 lg:pt-0 {{ not preventOverflow ? 'overflow-x-scroll sm:overflow-x-auto' }}">
+                    <div id="content" class="w-full max-w-full {{ not sidebar ?'pt-0 sm:pt-6' }} lg:flex-1  p-6 lg:pt-0 {{ not preventOverflow ? 'overflow-x-scroll lg:overflow-x-auto' : 'overflow-x-auto xl:overflow-x-unset' }} ">
 
                         {% block page %}
 
@@ -62,19 +80,19 @@ TODO: add template variable details.
                         {% endif %}
 
                         {% if page.breadcrumbs %}
-                        <div class="sm:pt-10 lg:pt-0">
-                            <div class="absolute lg:static top-0 my-6 text-xs text-blue-700">
+                        <nav aria-label="breadcrumb" class="sm:pt-10 lg:pt-0">
+                            <ol class="absolute lg:static top-0 my-6 mx-0 text-xs text-blue-700">
                                 {% for title, src in page.breadcrumbs %}
                                     {% if loop.last %}
-                                        <span class="trailEnd">{{ title }}</span>
+                                        <li aria-current="page" class="list-none inline ml-0 trailEnd">{{ title }}</li>
                                     {% elseif loop.revindex > 5 and loop.index != 1 %}
-                                        <a class="text-blue-700 underline" href="{{ absoluteURL }}/{{ src }}">...</a> > 
+                                        <li class="list-none inline ml-0 "><a class="text-blue-700 underline" href="{{ absoluteURL }}/{{ src }}">...</a> > </li>
                                     {% else %}
-                                        <a class="text-blue-700 underline" href="{{ absoluteURL }}/{{ src }}">{{ title }}</a> > 
+                                        <li class="list-none inline ml-0 "><a class="text-blue-700 underline" href="{{ absoluteURL }}/{{ src }}">{{ title }}</a> > </li>
                                     {% endif %}
                                 {% endfor %}
-                            </div>
-                        </div>
+                            </ol>
+                        </nav>
                         {% endif %}
 
 
@@ -94,25 +112,17 @@ TODO: add template variable details.
 
                 {% block footer %}
                 <div class="relative bg-transparent-600 text-white text-center text-sm p-6 mb-10 leading-normal rounded-b">
-                    <span class="inline-block">
-                        {{ __('Powered by') }} <a class="link-white" target='_blank' href='https://gibbonedu.org'>Gibbon</a> {{ versionName }}</span> 
-                    <span class="inline-block">|  &#169; <a class="link-white" target='_blank' href='http://rossparker.org'>Ross Parker</a> 2010-{{ 'now'|date('Y') }}</span>
-                    <br/>
-
-                    <span class="text-xs">
-                        {{ __('Created under the') }} <a class="link-white" target='_blank' href='https://www.gnu.org/licenses/gpl.html'>GNU GPL</a> 
-                        at <a class="link-white" target='_blank' href='http://www.ichk.edu.hk'>ICHK</a> | 
-                        <a class="link-white" target='_blank' href='https://gibbonedu.org/about/#ourTeam'>{{ __('Credits') }}</a> | 
-                        <a class="link-white" target='_blank' href='https://gibbonedu.org/about/#translators'>{{ __('Translators') }}</a>
-                        <br/>
-                        {{ footerThemeAuthor }}<br/>
-                    </span>
+                    {{ include('footer.twig.html') }}
 
                     <img class="absolute right-0 top-0 -mt-2 sm:mr-0 md:mr-12 opacity-75 hidden sm:block" alt="Logo Small" src="{{ absoluteURL }}/themes/{{ gibbonThemeName|default("Default") }}/img/logoFooter.png"/>
                 </div>
                 {% endblock %}
             </div>
         </div>
+
+        {% block privacy %}
+        {{ include('privacy.twig.html') }}
+        {% endblock privacy %}
 
         {% block foot %}
         {{ include('foot.twig.html') }}

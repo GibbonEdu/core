@@ -32,10 +32,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/criteriaTypes_mana
         ->add(__('Manage Criteria Types'), 'criteriaTypes_manage.php')
         ->add(__('Edit Criteria Type'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonReportingCriteriaTypeID = $_GET['gibbonReportingCriteriaTypeID'] ?? '';
     $criteriaTypeGateway = $container->get(ReportingCriteriaTypeGateway::class);
 

@@ -22,17 +22,11 @@ use Gibbon\Domain\Finance\FinanceGateway;
 use Gibbon\Tables\DataTable;
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Manage Expense Approvers'));
-
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return']);
-    }
 
     $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
     $budgetLevelExpenseApproval = getSettingByScope($connection2, 'Finance', 'budgetLevelExpenseApproval');

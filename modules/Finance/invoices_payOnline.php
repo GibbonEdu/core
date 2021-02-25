@@ -29,16 +29,12 @@ if (isset($_GET['key'])) {
     $key = $_GET['key'];
 }
 
-if (isset($_GET['return'])) {
-    returnProcess($guid, $_GET['return'], null, array('error3' => __("Your payment could not be made as the payment gateway does not support the system's currency."), 'success1' => __('Your payment has been successfully made to your credit card. A receipt has been emailed to you.'), 'success2' => __('Your payment could not be made to your credit card. Please try an alternative payment method.'), 'success3' => sprintf(__('Your payment has been successfully made to your credit card, but there has been an error recording your payment in %1$s. Please print this screen and contact the school ASAP, quoting code %2$s.'), $_SESSION[$guid]['systemName'], $gibbonFinanceInvoiceID)));
-}
+    $page->return->addReturns(['error3' => __("Your payment could not be made as the payment gateway does not support the system's currency."), 'success1' => __('Your payment has been successfully made to your credit card. A receipt has been emailed to you.'), 'success2' => __('Your payment could not be made to your credit card. Please try an alternative payment method.'), 'success3' => sprintf(__('Your payment has been successfully made to your credit card, but there has been an error recording your payment in %1$s. Please print this screen and contact the school ASAP, quoting code %2$s.'), $_SESSION[$guid]['systemName'], $gibbonFinanceInvoiceID)]);
 
 if (!isset($_GET['return'])) { //No return message, so must just be landing to make payment
     //Check variables
     if ($gibbonFinanceInvoiceID == '' or $key == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         //Check for record
         $keyReadFail = false;

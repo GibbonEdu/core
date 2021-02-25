@@ -38,10 +38,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
     } else {
         $page->breadcrumbs->add(__('Manage Investigations'));
 
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
-        }
-
         $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
         $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
         $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';

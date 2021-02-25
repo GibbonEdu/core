@@ -179,6 +179,129 @@ class AttendanceLogPersonGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    public function queryStudentsNotPresent(QueryCriteria $criteria, $gibbonSchoolYearID, $date, $allStudents = null, $countClassAsSchool = null)
+    {
+        $subSelect = $this
+            ->newSelect()
+            ->from('gibbonAttendanceLogPerson')
+            ->cols(['gibbonPersonID', 'date', 'MAX(timestampTaken) as maxTimestamp', 'context'])
+            ->where("date=:date")
+            ->groupBy(['gibbonPersonID', 'date']);
+
+        if ($countClassAsSchool == 'N') {
+            $subSelect->where("context<>'Class'");
+        }
+
+        $query = $this
+            ->newQuery()
+            ->cols([
+                'gibbonPerson.gibbonPersonID',
+                'gibbonPerson.title',
+                'gibbonPerson.preferredName',
+                'gibbonPerson.surname',
+                'gibbonRollGroup.name as rollGroupName',
+                'gibbonRollGroup.nameShort as rollGroup',
+                'gibbonAttendanceLogPerson.type',
+                'gibbonAttendanceLogPerson.reason',
+                'gibbonAttendanceLogPerson.comment',
+            ])
+            ->from('gibbonPerson')
+            ->innerJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID = gibbonStudentEnrolment.gibbonPersonID')
+            ->innerJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID = gibbonRollGroup.gibbonRollGroupID')
+            ->leftJoin('gibbonAttendanceLogPerson', 'gibbonAttendanceLogPerson.gibbonPersonID = gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.date = :date')
+            ->joinSubSelect(
+                'LEFT',
+                $subSelect,
+                'log',
+                'gibbonAttendanceLogPerson.gibbonPersonID=log.gibbonPersonID AND gibbonAttendanceLogPerson.date=log.date'
+            )
+            ->where("gibbonPerson.status = 'Full'")
+            ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= CURRENT_TIMESTAMP)')
+            ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= CURRENT_TIMESTAMP)')
+            ->where('gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->bindValue('date', $date);
+
+        if ($allStudents == 'Y') {
+            $query->where("(gibbonAttendanceLogPerson.gibbonAttendanceLogPersonID IS NULL OR (gibbonAttendanceLogPerson.direction = 'Out' AND gibbonAttendanceLogPerson.timestampTaken=log.maxTimestamp))");
+        } else {
+            $query->where("(gibbonAttendanceLogPerson.direction = 'Out' AND gibbonAttendanceLogPerson.timestampTaken=log.maxTimestamp)");
+        }
+
+        $criteria->addFilterRules([
+            'yearGroup' => function ($query, $gibbonYearGroupIDList) {
+                if (empty($gibbonYearGroupIDList)) return $query;
+                return $query
+                    ->where('FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupIDList)')
+                    ->bindValue('gibbonYearGroupIDList', $gibbonYearGroupIDList);
+            },
+        ]);
+
+        return $this->runQuery($query, $criteria);
+    }
+
+    public function queryStudentsNotOnsite(QueryCriteria $criteria, $gibbonSchoolYearID, $date, $allStudents = null, $countClassAsSchool = null)
+    {
+        $subSelect = $this
+            ->newSelect()
+            ->from('gibbonAttendanceLogPerson')
+            ->cols(['gibbonPersonID', 'date', 'MAX(timestampTaken) as maxTimestamp', 'context'])
+            ->where("date=:date")
+            ->groupBy(['gibbonPersonID', 'date']);
+
+        if ($countClassAsSchool == 'N') {
+            $subSelect->where("context<>'Class'");
+        }
+
+        $query = $this
+            ->newQuery()
+            ->cols([
+                'gibbonPerson.gibbonPersonID',
+                'gibbonPerson.title',
+                'gibbonPerson.preferredName',
+                'gibbonPerson.surname',
+                'gibbonRollGroup.name as rollGroupName',
+                'gibbonRollGroup.nameShort as rollGroup',
+                'gibbonAttendanceLogPerson.type',
+                'gibbonAttendanceLogPerson.reason',
+                'gibbonAttendanceLogPerson.comment',
+            ])
+            ->from('gibbonPerson')
+            ->innerJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID = gibbonStudentEnrolment.gibbonPersonID')
+            ->innerJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID = gibbonRollGroup.gibbonRollGroupID')
+            ->leftJoin('gibbonAttendanceLogPerson', 'gibbonAttendanceLogPerson.gibbonPersonID = gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.date = :date')
+            ->leftJoin('gibbonAttendanceCode', 'gibbonAttendanceCode.gibbonAttendanceCodeID=gibbonAttendanceLogPerson.gibbonAttendanceCodeID')
+            ->joinSubSelect(
+                'LEFT',
+                $subSelect,
+                'log',
+                'gibbonAttendanceLogPerson.gibbonPersonID=log.gibbonPersonID AND gibbonAttendanceLogPerson.date=log.date'
+            )
+            ->where("gibbonPerson.status = 'Full'")
+            ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= CURRENT_TIMESTAMP)')
+            ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= CURRENT_TIMESTAMP)')
+            ->where('gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->bindValue('date', $date);
+
+        if ($allStudents == 'Y') {
+            $query->where("(gibbonAttendanceLogPerson.gibbonAttendanceLogPersonID IS NULL OR (gibbonAttendanceCode.scope LIKE 'Offsite%' AND gibbonAttendanceLogPerson.timestampTaken=log.maxTimestamp))");
+        } else {
+            $query->where("(gibbonAttendanceCode.scope LIKE 'Offsite%' AND gibbonAttendanceLogPerson.timestampTaken=log.maxTimestamp)");
+        }
+
+        $criteria->addFilterRules([
+            'yearGroup' => function ($query, $gibbonYearGroupIDList) {
+                if (empty($gibbonYearGroupIDList)) return $query;
+                return $query
+                    ->where('FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupIDList)')
+                    ->bindValue('gibbonYearGroupIDList', $gibbonYearGroupIDList);
+            },
+        ]);
+
+        return $this->runQuery($query, $criteria);
+    }
+
     public function queryStudentsNotInClass($criteria, $gibbonSchoolYearID, $date, $allStudents = null)
     {
         $query = $this
@@ -221,5 +344,35 @@ class AttendanceLogPersonGateway extends QueryableGateway
         ]);
 
         return $this->runQuery($query, $criteria);
+    }
+
+    function selectClassAttendanceLogsByPersonAndDate($gibbonCourseClassID, $gibbonPersonID, $date)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID, 'date' => $date, 'gibbonCourseClassID' => $gibbonCourseClassID];
+        $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, context, timestampTaken FROM gibbonAttendanceLogPerson
+                JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
+                AND date=:date
+                AND context='Class' AND gibbonCourseClassID=:gibbonCourseClassID
+                ORDER BY timestampTaken DESC";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    function selectAttendanceLogsByPersonAndDate($gibbonPersonID, $date, $crossFillClasses)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID, 'date' => $date];
+        $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, context, timestampTaken, gibbonAttendanceCode.prefill
+                FROM gibbonAttendanceLogPerson
+                JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                JOIN gibbonAttendanceCode ON (gibbonAttendanceCode.gibbonAttendanceCodeID=gibbonAttendanceLogPerson.gibbonAttendanceCodeID)
+                WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
+                AND date=:date";
+        if ($crossFillClasses == "N") {
+            $sql .= " AND NOT context='Class'";
+        }
+        $sql .= " ORDER BY timestampTaken DESC";
+
+        return $this->db()->select($sql, $data);
     }
 }

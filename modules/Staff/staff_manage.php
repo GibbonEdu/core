@@ -24,17 +24,11 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\Staff\StaffGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Manage Staff'));
-
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
 
     $search = (isset($_GET['search']) ? $_GET['search'] : '');
     $allStaff = (isset($_GET['allStaff']) ? $_GET['allStaff'] : '');
@@ -114,7 +108,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
         'all:on'          => __('All Staff'),
         'type:teaching'   => __('Staff Type').': '.__('Teaching'),
         'type:support'    => __('Staff Type').': '.__('Support'),
-        'type:other'      => __('Staff Type').': '.__('Other'),
         'status:full'     => __('Status').': '.__('Full'),
         'status:left'     => __('Status').': '.__('Left'),
         'status:expected' => __('Status').': '.__('Expected'),

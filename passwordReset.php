@@ -22,10 +22,8 @@ use Gibbon\Forms\Form;
 $page->breadcrumbs->add(__('Password Reset'));
 
 $step = 1;
-if (isset($_GET['step'])) {
-    if ($_GET['step'] == 2) {
-        $step = 2;
-    }
+if (isset($_GET['step']) and $_GET['step'] == 2) {
+    $step = 2;
 }
 
 if ($step == 1) {
@@ -44,9 +42,7 @@ if ($step == 1) {
     $returns['fail2'] = __('You do not have sufficient privileges to login.');
     $returns['fail9'] = __('Your primary role does not support the ability to log into the specified year.');
     $returns['success0'] = __('Password reset request successfully initiated, please check your email.');
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, $returns);
-    }
+    $page->return->addReturns($returns);
 
     $form = Form::create('action', $gibbon->session->get('absoluteURL').'/passwordResetProcess.php?step=1');
 
@@ -73,14 +69,11 @@ else {
     $gibbonPersonResetID = (!empty($_GET['gibbonPersonResetID']) ? $_GET['gibbonPersonResetID'] : null);
 
     //Verify authenticity of this request and check it is fresh (within 48 hours)
-    try {
+    
         $data = array('key' => $key, 'gibbonPersonResetID' => $gibbonPersonResetID);
         $sql = "SELECT * FROM gibbonPersonReset WHERE `key`=:key AND gibbonPersonResetID=:gibbonPersonResetID AND (timestamp > DATE_SUB(now(), INTERVAL 2 DAY))";
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
 
     if ($result->rowCount() != 1) {
         echo "<div class='error'>";

@@ -44,8 +44,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_b
 
     $options = ['Draft' => __('Draft'), 'Final' => __('Final')];
     $row = $form->addRow();
-        $row->addLabel('status', __('Status'));
+        $row->addLabel('status', __('Status'))->description(__('Draft reports are not accessible by parents or students.'));
         $row->addSelect('status')->fromArray($options)->required();
+
+    $row = $form->addRow();
+        $row->addLabel('twoSided', __('Two-sided'))->description(__('Adds blank pages as required between individual reports.'));
+        $row->addYesNo('twoSided')->required()->selected('Y');
 
     $row = $form->addRow();
         $row->addSubmit(__('Run'));

@@ -21,10 +21,8 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_manage_add.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
@@ -38,15 +36,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
     if (isset($_GET['editID'])) {
         $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/studentEnrolment_manage_edit.php&gibbonStudentEnrolmentID='.$_GET['editID'].'&search='.$_GET['search'].'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'];
     }
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], $editLink, null);
-    }
+    $page->return->setEditLink($editLink);
 
     //Check if school year specified
     if ($gibbonSchoolYearID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         if ($search != '') {
             echo "<div class='linkTop'>";
@@ -94,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
             $autoEnrolDefault = getSettingByScope($connection2, 'Timetable Admin', 'autoEnrolCourses');
             $row = $form->addRow();
                 $row->addLabel('autoEnrolStudent', __('Auto-Enrol Courses?'))
-                    ->description(__('Should this student be automatically enroled in courses for their Roll Group?'));
+                    ->description(__('Should this student be automatically enrolled in courses for their Roll Group?'));
                 $row->addYesNo('autoEnrolStudent')->selected($autoEnrolDefault);
         }
 

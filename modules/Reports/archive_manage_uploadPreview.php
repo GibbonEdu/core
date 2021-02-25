@@ -37,10 +37,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
         ->add(__('Upload Reports'), 'archive_manage_upload.php')
         ->add(__('Step {number}', ['number' => 2]));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonReportArchiveID = $_POST['gibbonReportArchiveID'] ?? '';
     $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
     $reportIdentifier = $_POST['reportIdentifier'] ?? '';

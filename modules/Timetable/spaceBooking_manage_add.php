@@ -24,10 +24,8 @@ use Gibbon\Forms\DatabaseFormFactory;
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_manage_add.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
@@ -40,10 +38,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
         $page->breadcrumbs
             ->add(__('Manage Facility Bookings'), 'spaceBooking_manage.php')
             ->add(__('Add Facility Booking'));
-
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
-        }
 
         $step = null;
         if (isset($_GET['step'])) {

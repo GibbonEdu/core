@@ -23,20 +23,14 @@ use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\RollGroups\RollGroupGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
     $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
 
     $page->breadcrumbs->add(__('Manage Roll Groups'));
-
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
 
     $gibbonSchoolYearID = isset($_REQUEST['gibbonSchoolYearID'])? $_REQUEST['gibbonSchoolYearID'] : $_SESSION[$guid]['gibbonSchoolYearID'];
 

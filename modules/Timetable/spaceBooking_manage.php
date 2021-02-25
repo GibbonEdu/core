@@ -22,10 +22,8 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\Timetable\FacilityBookingGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
@@ -36,10 +34,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
     } else {
         //Proceed!
         $page->breadcrumbs->add(__('Manage Facility Bookings'));
-
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
-        }
 
         if ($highestAction == 'Manage Facility Bookings_allBookings') {
             echo '<p>'.__('This page allows you to create facility and library bookings, whilst managing bookings created by all users. Only current and future bookings are shown: past bookings are hidden.').'</p>';

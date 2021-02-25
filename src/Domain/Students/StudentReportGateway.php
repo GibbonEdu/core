@@ -36,7 +36,7 @@ class StudentReportGateway extends QueryableGateway
     private static $tableName = 'gibbonStudentEnrolment';
     private static $searchableColumns = [];
 
-    
+
     /**
      * @param QueryCriteria $criteria
      * @return DataSet
@@ -60,7 +60,7 @@ class StudentReportGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
-    
+
     public function queryStudentTransport(QueryCriteria $criteria, $gibbonSchoolYearID)
     {
         $query = $this
@@ -153,7 +153,7 @@ class StudentReportGateway extends QueryableGateway
             ->distinct()
             ->from('gibbonPerson')
             ->cols([
-                'gibbonPerson.gibbonPersonID', 'gibbonStudentEnrolmentID', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.username', 'gibbonYearGroup.nameShort AS yearGroup', 'gibbonRollGroup.nameShort AS rollGroup', 'gibbonStudentEnrolment.rollOrder', 'gibbonPerson.dateStart', 'gibbonPerson.dateEnd', 'gibbonPerson.status', 'gibbonPerson.lastSchool', 'gibbonPerson.departureReason', 'gibbonPerson.nextSchool', "'Student' as roleCategory"
+                'gibbonPerson.gibbonPersonID', 'gibbonStudentEnrolmentID', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.username', 'officialName', 'gibbonYearGroup.nameShort AS yearGroup', 'gibbonRollGroup.nameShort AS rollGroup', 'gibbonStudentEnrolment.rollOrder', 'gibbonPerson.dateStart', 'gibbonPerson.dateEnd', 'gibbonPerson.status', 'gibbonPerson.lastSchool', 'gibbonPerson.departureReason', 'gibbonPerson.nextSchool', "'Student' as roleCategory"
             ])
             ->leftJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->leftJoin('gibbonSchoolYear AS currentSchoolYear', 'currentSchoolYear.gibbonSchoolYearID = gibbonStudentEnrolment.gibbonSchoolYearID')
@@ -191,5 +191,23 @@ class StudentReportGateway extends QueryableGateway
         }
 
         return $this->runQuery($query, $criteria);
+    }
+
+    public function selectStudentCountByYearGroup($gibbonSchoolYearID)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'today' => date('Y-m-d')];
+        $sql = "SELECT gibbonYearGroup.nameShort as yearGroup, count(DISTINCT gibbonStudentEnrolmentID) as studentCount
+                FROM gibbonStudentEnrolment
+                JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
+                JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+                WHERE gibbonPerson.status='Full'
+                AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID
+                AND (dateStart IS NULL OR dateStart<=:today)
+                AND (dateEnd IS NULL OR dateEnd>=:today)
+                GROUP BY gibbonYearGroup.gibbonYearGroupID
+                ORDER BY gibbonYearGroup.sequenceNumber";
+
+        return $this->db()->select($sql, $data);
     }
 }

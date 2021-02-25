@@ -11,7 +11,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     <div class="p-4 flex flex-wrap items-center">
         <div class="w-full text-center sm:text-left flex items-center justify-center">
             <div class="text-sm text-gray-700 text-center leading-tight">
-                <strong>{{ scopeDetails.scopeName }}</strong> - {{ scopeDetails.nameShort }}
+                <strong>{{ scopeDetails.scopeName }}</strong> - {{ scopeDetails.nameShort }} {{ scopeDetails.name != scopeDetails.nameShort ? "- "~scopeDetails.name : "" }}
             </div>
         </div>
     </div>

@@ -44,10 +44,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.ph
         ->add(__('My Reporting'), 'reporting_my.php', ['gibbonPersonID' => $gibbonPersonID])
         ->add(__('Write Reports'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $urlParams = [
         'gibbonSchoolYearID' => $_REQUEST['gibbonSchoolYearID'] ?? $gibbon->session->get('gibbonSchoolYearID'),
         'gibbonReportingCycleID' => $_GET['gibbonReportingCycleID'] ?? '',
@@ -162,6 +158,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.ph
                     $row->addYesNo($fieldName)
                         ->setID($fieldID)
                         ->setValue($criteria['value'])
+                        ->readonly(!$canWriteReport);
+                } elseif ($criteria['valueType'] == 'Number') {
+                    $row->addNumber($fieldName)
+                        ->addClass('reportCriteria')
+                        ->setID($fieldID)
+                        ->setValue($criteria['value'])
+                        ->maxLength(20)
+                        ->onlyInteger(false)
                         ->readonly(!$canWriteReport);
                 } else {
                     $row->addTextField($fieldName)

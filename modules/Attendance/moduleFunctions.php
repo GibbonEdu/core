@@ -123,7 +123,7 @@ function getLatenessCount($guid, $gibbonPersonID, $connection2, $dateStart, $dat
         $data = array('gibbonPersonID' => $gibbonPersonID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd);
         $sql = "SELECT count(*) AS count
                 FROM gibbonAttendanceLogPerson p, gibbonAttendanceCode c
-                WHERE c.scope='Onsite - Late'
+                WHERE (c.scope='Onsite - Late' OR c.scope='Offsite - Late')
                 AND p.gibbonPersonID=:gibbonPersonID
                 AND p.date>=:dateStart
                 AND p.date<=:dateEnd

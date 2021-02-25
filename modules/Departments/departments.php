@@ -28,18 +28,21 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 $makeDepartmentsPublic = getSettingByScope($connection2, 'Departments', 'makeDepartmentsPublic');
 if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.php') == false and $makeDepartmentsPublic != 'Y') {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $page->breadcrumbs->add(__('View All'));
 
     $departmentGateway = $container->get(DepartmentGateway::class);
     
+    // QUERY
+    $criteria = $departmentGateway->newQueryCriteria(true)
+        ->sortBy(['sequenceNumber', 'name']);
+    
     // Data Table
     $gridRenderer = new GridView($container->get('twig'));
     $table = $container->get(DataTable::class)->setRenderer($gridRenderer);
+    $table->getRenderer()->setCriteria($criteria);
     $table->setTitle(__('Departments'));
 
     $table->addColumn('logo')
@@ -54,15 +57,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.ph
             return Format::link($url, $department['name']);
         });
 
-    // QUERY
-    $criteria = $departmentGateway->newQueryCriteria(true)
-        ->sortBy(['sequenceNumber', 'name']);
-
     // Learning Areas
     $learningAreas = $departmentGateway->queryDepartments($criteria, 'Learning Area');
 
     if (count($learningAreas) > 0) {
         $tableLA = clone $table;
+        $tableLA->setId('learningAreas');
         $tableLA->setTitle(__('Learning Areas'));
         
         echo $tableLA->render($learningAreas);
@@ -73,6 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.ph
 
     if (count($administration) > 0) {
         $tableAdmin = clone $table;
+        $tableAdmin->setId('administration');
         $tableAdmin->setTitle(__('Administration'));
 
         echo $tableAdmin->render($administration);
@@ -86,14 +87,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.ph
         //Print sidebar
         $sidebarExtra = '';
 
-        try {
+        
             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
             $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role LIKE \'% - Left%\' ORDER BY course, class';
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($result->rowCount() > 0) {
             $sidebarExtra .= '<div class="column-no-break">';

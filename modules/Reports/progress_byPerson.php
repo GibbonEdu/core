@@ -32,10 +32,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_byPerson.
     // Proceed!
     $page->breadcrumbs->add(__('Progress by Person'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
     $gibbonReportingCycleID = $_GET['gibbonReportingCycleID'] ?? '';
     $gibbonReportingScopeID = $_GET['gibbonReportingScopeID'] ?? '';

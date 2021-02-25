@@ -18,77 +18,62 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Prefab\DeleteForm;
+use Gibbon\Domain\System\ModuleGateway;
+use Gibbon\Services\Format;
 
-$orphaned = '';
-if (isset($_GET['orphaned'])) {
-    if ($_GET['orphaned'] == 'true') {
-        $orphaned = 'true';
-    }
-}
+$orphaned = $_GET['orphaned'] ?? '';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage_uninstall.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
-    //Proceed!
+    // Proceed!
     $page->breadcrumbs
         ->add(__('Manage Modules'), 'module_manage.php')
         ->add(__('Uninstall Module'));
 
-    if (isset($_GET['deleteReturn'])) {
-        $deleteReturn = $_GET['deleteReturn'];
-    } else {
-        $deleteReturn = '';
-    }
+    $deleteReturn = $_GET['deleteReturn'] ?? '';
+
     $deleteReturnMessage = '';
-    $class = 'error';
-    if (!($deleteReturn == '')) {
-        if ($deleteReturn == 'fail0') {
-            $deleteReturnMessage = __('Your request failed because you do not have access to this action.');
-        } elseif ($deleteReturn == 'fail1') {
-            $deleteReturnMessage = __('Your request failed because your inputs were invalid.');
-        } elseif ($deleteReturn == 'fail2') {
-            $deleteReturnMessage = __('Your request failed because your inputs were invalid.');
-        } elseif ($deleteReturn == 'fail3') {
-            $deleteReturnMessage = __('Uninstall encountered a partial fail: the module may or may not still work.');
+    
+    if (!empty($deleteReturn)) {
+        
+        switch ($deleteReturn){
+            case 'fail0':
+                $deleteReturnMessage = __('Your request failed because you do not have access to this action.');
+                break;
+            case 'fail1':
+                $deleteReturnMessage = __('Your request failed because your inputs were invalid.');
+                break;
+            case 'fail2':
+                $deleteReturnMessage = __('Your request failed because your inputs were invalid.');
+                break;
+            case 'fail3':
+                $deleteReturnMessage = __('Uninstall encountered a partial fail: the module may or may not still work.');
+                break;
         }
-        echo "<div class='$class'>";
-        echo $deleteReturnMessage;
-        echo '</div>';
+        $page->addError($deleteReturnMessage);
     }
 
-    //Check if school year specified
-    $gibbonModuleID = $_GET['gibbonModuleID'];
-    if ($gibbonModuleID == '') {
-        echo "<div class='error'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+    // Check if module specified
+    $gibbonModuleID = $_GET['gibbonModuleID'] ?? '';
+    
+    if (empty($gibbonModuleID)) {
+        $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        try {
-            $data = array('gibbonModuleID' => $gibbonModuleID);
-            $sql = 'SELECT * FROM gibbonModule WHERE gibbonModuleID=:gibbonModuleID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
-
-        if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('You have not specified one or more required parameters.');
-            echo '</div>';
+        $moduleGateway = $container->get(ModuleGateway::class);
+        $module = $moduleGateway->getByID($gibbonModuleID);
+        
+        if (empty($module)) {
+            $page->addError(__('You have not specified one or more required parameters.'));
         } else {
-            //Let's go!
-            $values = $result->fetch(); 
+            // Let's go!
+            $form = DeleteForm::createForm($gibbon->session->get('absoluteURL').'/modules/'.$gibbon->session->get('module')."/module_manage_uninstallProcess.php?gibbonModuleID=$gibbonModuleID&orphaned=$orphaned", false, false);
             
-            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/module_manage_uninstallProcess.php?gibbonModuleID=$gibbonModuleID&orphaned=$orphaned", false, false);
-
-            $manifestFile = $_SESSION[$guid]['absolutePath'].'/modules/'.$values['name'].'/manifest.php';
+            $manifestFile = $gibbon->session->get('absolutePath').'/modules/'.$module['name'].'/manifest.php';
             if (file_exists($manifestFile)) {
                 include $manifestFile;
-            } else if (!$orphaned) {
+            } else if (empty($orphaned)) {
                 $form->addRow()->addAlert(__('An error has occurred.').' '.__('Module error due to incorrect manifest file or folder name.'), 'error');
             }
 
@@ -101,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                     if (strtoupper($tokens[0]) == 'CREATE' && (strtoupper($tokens[1]) == 'TABLE' || strtoupper($tokens[1]) == 'VIEW')) {
                         $type = ucfirst(strtolower($tokens[1]));
                         $name = str_replace('`', '', $tokens[2]);
-                        $group[$type.'-'.$name] = '<b>'.__($type).'</b>: '.$name;
+                        $group[$type.'-'.$name] = Format::bold(__($type)).': '.$name;
                     }
         
                     return $group;

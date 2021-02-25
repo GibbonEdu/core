@@ -19,5 +19,5 @@ return [
     'DB_PASSWORD' => (isset($testDatabasePassword))? $testDatabasePassword: $databasePassword,
     'DB_NAME' => (isset($testDatabaseName))? $testDatabaseName: $databaseName,
     'ABSOLUTE_PATH' => (isset($testPath))? rtrim($testPath, '/') : 'localhost',
-    'ABSOLUTE_URL' => (isset($testURL))? rtrim($testURL, '/') : 'http://127.0.0.1:8888',
+    'ABSOLUTE_URL' => (isset($testURL))? rtrim($testURL, '/') : 'https://127.0.0.1:8888',
 ];

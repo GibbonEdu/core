@@ -22,17 +22,11 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage.php') == false) {
-    //Acess denied
-    echo "<div class='error'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Manage Budgets'));
-
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return']);
-    }
     
     $gateway = $container->get(FinanceGateway::class);
     $criteria = $gateway

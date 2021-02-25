@@ -23,14 +23,11 @@ $count = 0;
 if (is_numeric($_POST['count'])) {
     $count = $_POST['count'];
 }
-$gibbonPersonID = $_POST['gibbonPersonID'];
-$gibbonExternalAssessmentID = $_POST['gibbonExternalAssessmentID'];
-$date = dateConvert($guid, $_POST['date']);
-$search = $_GET['search'];
-$allStudents = '';
-if (isset($_GET['allStudents'])) {
-    $allStudents = $_GET['allStudents'];
-}
+$gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
+$gibbonExternalAssessmentID = $_POST['gibbonExternalAssessmentID'] ?? '';
+$date = dateConvert($guid, $_POST['date'] ?? '');
+$search = $_GET['search'] ?? '';
+$allStudents = $_GET['allStudents'] ?? '';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/externalAssessment_manage_details_add.php&gibbonExternalAssessmentID=$gibbonExternalAssessmentID&gibbonPersonID=$gibbonPersonID&step=2&search=$search&allStudents=$allStudents";
 
@@ -44,29 +41,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
-        //Lock markbook column table
-        try {
-            $sqlLock = 'LOCK TABLES gibbonExternalAssessmentStudent WRITE, gibbonExternalAssessmentStudentEntry WRITE, gibbonFileExtension READ';
-            $resultLock = $connection2->query($sqlLock);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
-
-        //Get next autoincrement
-        try {
-            $sqlAI = "SHOW TABLE STATUS LIKE 'gibbonExternalAssessmentStudent'";
-            $resultAI = $connection2->query($sqlAI);
-        } catch (PDOException $e) {
-            $URL .= '&return=error3';
-            header("Location: {$URL}");
-            exit();
-        }
-
-        $rowAI = $resultAI->fetch();
-        $AI = str_pad($rowAI['Auto_increment'], 14, '0', STR_PAD_LEFT);
-
         $attachment = '';
         //Move attached image  file, if there is one
         if (!empty($_FILES['file']['tmp_name'])) {
@@ -81,6 +55,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                 $partialFail = true;
             }
         }
+
+        //Write to database
+        try {
+            $data = array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID, 'gibbonPersonID' => $gibbonPersonID, 'date' => $date, 'attachment' => $attachment);
+            $sql = 'INSERT INTO gibbonExternalAssessmentStudent SET gibbonExternalAssessmentID=:gibbonExternalAssessmentID, gibbonPersonID=:gibbonPersonID, date=:date, attachment=:attachment';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
+
+        $AI = str_pad($connection2->lastInsertID(), 12, '0', STR_PAD_LEFT);
 
         //Scan through fields
         $partialFail = false;
@@ -106,28 +94,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                     $partialFail = true;
                 }
             }
-        }
-
-        //Write to database
-        try {
-            $data = array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID, 'gibbonPersonID' => $gibbonPersonID, 'date' => $date, 'attachment' => $attachment);
-            $sql = 'INSERT INTO gibbonExternalAssessmentStudent SET gibbonExternalAssessmentID=:gibbonExternalAssessmentID, gibbonPersonID=:gibbonPersonID, date=:date, attachment=:attachment';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
-
-        //Last insert ID
-        $AI = str_pad($connection2->lastInsertID(), 12, '0', STR_PAD_LEFT);
-
-        //Unlock module table
-        try {
-            $sql = 'UNLOCK TABLES';
-            $result = $connection2->query($sql);
-        } catch (PDOException $e) {
         }
 
         if ($partialFail == true) {

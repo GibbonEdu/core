@@ -1,0 +1,63 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% do form.addClass('formTable')%}
+
+<form {{ form.getAttributeString|raw }} onsubmit="gibbonFormSubmitted(this)">
+
+    {% if form.getTitle %}
+        <h2>{{ form.getTitle }}</h2>
+    {% endif %}
+    
+    {% if form.getDescription %}
+        <p>{{ form.getDescription|raw }}</p>
+    {% endif %}
+
+    {% for values in form.getHiddenValues %}
+        <input type="hidden" name="{{ values.name }}" value="{{ values.value }}">
+    {% endfor %}
+
+    {% set renderStyle = "blank" not in form.getClass ? 'blank' : 'table' %}
+
+    <table class="{{ form.getClass }} font-sans text-xs text-gray-700 relative overflow-hidden {{ "blank" not in form.getClass ? 'bg-gray-100 rounded border mt-3' }}" cellspacing="0">
+        
+    {% for row in form.getRows %}
+        {% set rowLoop = loop %}
+
+        <tr id="{{ row.getID }}" class="{{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }} {{ "noIntBorder" not in form.getClass and not loop.last? 'border-b' }} ">
+
+        {% for element in row.getElements %}
+            {% set colspan = loop.last and loop.length < totalColumns ? (totalColumns + 1 - loop.length) : 0  %}
+            
+            {% if element.isInstanceOf('Gibbon\\Forms\\Layout\\Heading') %}
+                {% set class = ' bg-gray-300' %}
+            {% elseif element.isInstanceOf('Gibbon\\Forms\\Layout\\Label') %}
+                {% set class = '-mb-1 sm:mb-0' %}
+            {% endif %}
+
+            <td class="{{ class }} {{ element.getClass|replace({'standardWidth': ''}) }}" {{ colspan ? 'colspan="%s"'|format(colspan)|raw }}>
+                {{ element.getOutput|raw }}
+
+                {% if element.instanceOf('Gibbon\\Forms\\ValidatableInterface') %}
+                <script type="text/javascript">
+                    {{ element.getValidationOutput|raw }}
+                </script>
+                {% endif %}
+            </td>
+        {% endfor %}
+
+        </tr>
+    {% endfor %}
+    </table>
+
+    <script type="text/javascript">
+        {% for code in javascript %}
+            {{ code|raw }}
+        {% endfor %}
+    </script>
+</form>

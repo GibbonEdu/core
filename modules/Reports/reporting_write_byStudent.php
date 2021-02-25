@@ -69,10 +69,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
         ->add(__('Write Reports'), 'reporting_write.php', $urlParams)
         ->add(__('By Student'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $reportingAccessGateway = $container->get(ReportingAccessGateway::class);
 
     $reportingScope = $container->get(ReportingScopeGateway::class)->getByID($urlParams['gibbonReportingScopeID']);
@@ -234,6 +230,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
                     ->setID($fieldID)
                     ->selected($criteria['value'])
                     ->placeholder()
+                    ->readonly(!$canWriteReport);
+            } elseif ($criteria['valueType'] == 'Number') {
+                $row->addNumber($fieldName)
+                    ->addClass('reportCriteria')
+                    ->setID($fieldID)
+                    ->setValue($criteria['value'])
+                    ->maxLength(20)
+                    ->onlyInteger(false)
                     ->readonly(!$canWriteReport);
             } else {
                 $row->addTextField($fieldName)
