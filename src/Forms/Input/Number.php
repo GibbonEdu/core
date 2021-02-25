@@ -31,6 +31,7 @@ class Number extends TextField
     protected $max;
     protected $decimalPlaces = 0;
     protected $onlyInteger = true;
+    protected $spinner = false;
 
     /**
      * Define a minimum for this numeric value.
@@ -71,6 +72,12 @@ class Number extends TextField
         $this->onlyInteger = $value;
         return $this;
     }
+    
+    public function spinner($value)
+    {
+        $this->spinner = $value;
+        return $this;
+    }
 
     /**
      * Gets the HTML output for this form element.
@@ -90,15 +97,35 @@ class Number extends TextField
         if ($this->onlyInteger) {
             $validateParams[] = 'onlyInteger: true';
         }
+        
+        
 
         $this->addValidation('Validate.Numericality', implode(', ', $validateParams));
 
         if (!empty($this->decimalPlaces) && $this->decimalPlaces > 0) {
             $this->addValidation('Validate.Format', 'pattern: /^[0-9\-]+(\.[0-9]{1,'.$this->decimalPlaces.'})?$/, failureMessage: "'.sprintf(__('Must be in format %1$s'), str_pad('0.', $this->decimalPlaces+2, '0')).'"');
         }
-
-        $output = '<input type="text" '.$this->getAttributeString().'>';
-
+        if ($this->spinner) {
+            $output = '<div class="input-box rounded-sm standardWidth">';
+            $output .= '<div class="inline-button" onclick="decrement()"><img src="./themes/Default/img/page_left.png"/></div>';
+            $output .='<input type="text" class="number inline-block standardWidth w-9/12 mt-2"'.$this->getAttributeString().'>';
+            $output .= '<div class="inline-button" onclick="increment()"><img src="./themes/Default/img/page_right.png"/></div>';
+            $output .= '</div>';
+            $output .= '<script type="text/javascript">
+                function increment() {
+                    $(".number").val( function(i, oldval) {
+                        return ++oldval;
+                    });
+                }
+                function decrement() {
+                    $(".number").val( function(i, oldval) {
+                        return --oldval;
+                    });
+                }
+            </script>';
+        } else {
+            $output = '<input type="text" '.$this->getAttributeString().'>';
+        }
         return $output;
     }
 }
