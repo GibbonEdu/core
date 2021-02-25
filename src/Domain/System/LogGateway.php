@@ -101,6 +101,8 @@ class LogGateway extends QueryableGateway
                             ->where('serialisedArray LIKE CONCAT("%", :'.$bindKey.', "%;%", :'.$bindValue.', "%")')
                             ->bindValue($bindKey, $key)
                             ->bindValue($bindValue, $value);
+                        
+                        $count++;
                     }
                     return $query;
                 }
