@@ -3,6 +3,8 @@ modules:
     enabled:
         - PhpBrowser:
             url: "http://127.0.0.1:8888"
+            curl:
+                CURLOPT_TIMEOUT: 180
     config:
         Db:
             dsn: "mysql:host=127.0.0.1;dbname=gibbon_test"
