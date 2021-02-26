@@ -19,36 +19,46 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_add.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Manage Custom Fields'), 'userFields.php')
+        ->add(__('Custom Fields'), 'customFields.php')
         ->add(__('Add Custom Field'));
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/userFields_edit.php&gibbonPersonFieldID='.$_GET['editID'];
+        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/System Admin/customFields_edit.php&gibbonCustomFieldID='.$_GET['editID'];
     }
     $page->return->setEditLink($editLink);
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/userFields_addProcess.php');
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/customFields_addProcess.php');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
+    $contexts = [
+        __('User Admin') => [
+            'Person' => __('Person'),
+        ],
+    ];
+
     $row = $form->addRow();
-        $row->addLabel('name', __('Name'));
+        $row->addLabel('context', __('Context'));
+        $row->addSelect('context')->fromArray($contexts)->required()->placeholder();
+
+    $row = $form->addRow();
+        $row->addLabel('name', __('Name'))->description(__('Must be unique for this context.'));
         $row->addTextField('name')->maxLength(50)->required();
+
+    $row = $form->addRow();
+        $row->addLabel('description', __('Description'));
+        $row->addTextField('description')->maxLength(255);
 
     $row = $form->addRow();
         $row->addLabel('active', __('Active'));
         $row->addYesNo('active')->required();
-
-    $row = $form->addRow();
-        $row->addLabel('description', __('Description'));
-        $row->addTextField('description')->maxLength(255)->required();
 
     $types = array(
         'varchar' => __('Short Text (max 255 characters)'),
@@ -74,27 +84,28 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.
         $row->addLabel('required', __('Required'))->description(__('Is this field compulsory?'));
         $row->addYesNo('required')->required();
 
+    $form->toggleVisibilityByClass('contextPerson')->onSelect('context')->when('Person');
     $activePersonOptions = array(
         'activePersonStudent' => __('Student'),
         'activePersonStaff'   => __('Staff'),
         'activePersonParent'  => __('Parent'),
         'activePersonOther'   => __('Other'),
     );
-    $row = $form->addRow();
+    $row = $form->addRow()->addClass('contextPerson');
         $row->addLabel('roleCategories', __('Role Categories'));
         $row->addCheckbox('roleCategories')->fromArray($activePersonOptions)->checked('activePersonStudent');
 
-    $row = $form->addRow();
+    $row = $form->addRow()->addClass('contextPerson');
         $row->addLabel('activeDataUpdater', __('Include In Data Updater?'));
         $row->addSelect('activeDataUpdater')->fromArray(array('1' => __('Yes'), '0' => __('No')))->selected('1')->required();
 
-    $row = $form->addRow();
+    $row = $form->addRow()->addClass('contextPerson');
         $row->addLabel('activeApplicationForm', __('Include In Application Form?'));
         $row->addSelect('activeApplicationForm')->fromArray(array('1' => __('Yes'), '0' => __('No')))->selected('0')->required();
     
     $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
     if ($enablePublicRegistration == 'Y') {
-        $row = $form->addRow();
+        $row = $form->addRow()->addClass('contextPerson');
             $row->addLabel('activePublicRegistration', __('Include In Public Registration Form?'));
             $row->addSelect('activePublicRegistration')->fromArray(array('1' => __('Yes'), '0' => __('No')))->selected('0')->required();
     }
@@ -105,4 +116,3 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.
 
     echo $form->getOutput();
 }
-?>

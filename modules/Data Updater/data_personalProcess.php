@@ -225,7 +225,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     $fields = [];
                     if ($resultFields->rowCount() > 0) {
                         while ($rowFields = $resultFields->fetch()) {
-                            $fieldID = $rowFields['gibbonPersonFieldID'];
+                            $fieldID = $rowFields['gibbonCustomFieldID'];
                             $fieldValue = $_POST['custom'.$fieldID] ?? null;
                             $existingValue = $existingFields[$fieldID] ?? null;
 

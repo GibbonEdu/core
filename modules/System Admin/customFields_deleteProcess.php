@@ -19,24 +19,24 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonPersonFieldID = $_GET['gibbonPersonFieldID'];
+$gibbonCustomFieldID = $_GET['gibbonCustomFieldID'];
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/userFields_delete.php&gibbonPersonFieldID=$gibbonPersonFieldID";
-$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/userFields.php';
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/customFields_delete.php&gibbonCustomFieldID=$gibbonCustomFieldID";
+$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/customFields.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_delete.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
     //Proceed!
     //Check if school year specified
-    if ($gibbonPersonFieldID == '') {
+    if ($gibbonCustomFieldID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
         try {
-            $data = array('gibbonPersonFieldID' => $gibbonPersonFieldID);
-            $sql = 'SELECT * FROM gibbonPersonField WHERE gibbonPersonFieldID=:gibbonPersonFieldID';
+            $data = array('gibbonCustomFieldID' => $gibbonCustomFieldID);
+            $sql = 'SELECT * FROM gibbonCustomField WHERE gibbonCustomFieldID=:gibbonCustomFieldID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -51,8 +51,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_dele
         } else {
             //Write to database
             try {
-                $data = array('gibbonPersonFieldID' => $gibbonPersonFieldID);
-                $sql = 'DELETE FROM gibbonPersonField WHERE gibbonPersonFieldID=:gibbonPersonFieldID';
+                $data = array('gibbonCustomFieldID' => $gibbonCustomFieldID);
+                $sql = 'DELETE FROM gibbonCustomField WHERE gibbonCustomFieldID=:gibbonCustomFieldID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {

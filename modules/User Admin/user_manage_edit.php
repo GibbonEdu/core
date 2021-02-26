@@ -623,8 +623,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 				$heading = $form->addRow()->addHeading(__('Custom Fields'));
 
 				while ($rowFields = $resultFields->fetch()) {
-					$name = 'custom'.$rowFields['gibbonPersonFieldID'];
-					$value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
+					$name = 'custom'.$rowFields['gibbonCustomFieldID'];
+					$value = (isset($existingFields[$rowFields['gibbonCustomFieldID']]))? $existingFields[$rowFields['gibbonCustomFieldID']] : '';
 
 					$row = $form->addRow();
 						$row->addLabel($name, $rowFields['name'])->description($rowFields['description']);

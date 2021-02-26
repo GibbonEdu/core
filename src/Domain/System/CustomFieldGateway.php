@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Domain\User;
+namespace Gibbon\Domain\System;
 
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
@@ -27,12 +27,12 @@ use Gibbon\Domain\QueryableGateway;
  * @version v16
  * @since   v16
  */
-class UserFieldGateway extends QueryableGateway
+class CustomFieldGateway extends QueryableGateway
 {
     use TableAware;
 
-    private static $tableName = 'gibbonPersonField';
-    private static $primaryKey = 'gibbonPersonFieldID';
+    private static $tableName = 'gibbonCustomField';
+    private static $primaryKey = 'gibbonCustomFieldID';
 
     private static $searchableColumns = ['name'];
     
@@ -40,22 +40,26 @@ class UserFieldGateway extends QueryableGateway
      * @param QueryCriteria $criteria
      * @return DataSet
      */
-    public function queryUserFields(QueryCriteria $criteria)
+    public function queryCustomFields(QueryCriteria $criteria)
     {
         $query = $this
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonPersonFieldID', 'name', 'type', 'active', 'activePersonStudent', 'activePersonParent', 'activePersonStaff', 'activePersonOther'
+                'gibbonCustomFieldID', 'context', 'name', 'type', 'active', 'activePersonStudent', 'activePersonParent', 'activePersonStaff', 'activePersonOther'
             ]);
         
         $criteria->addFilterRules([
+            'context' => function ($query, $context) {
+                return $query
+                    ->where('gibbonCustomField.context = :context')
+                    ->bindValue('context', ucwords($context));
+            },
             'active' => function ($query, $active) {
                 return $query
-                    ->where('gibbonPersonField.active = :active')
+                    ->where('gibbonCustomField.active = :active')
                     ->bindValue('active', ucfirst($active));
             },
-
             'role' => function ($query, $roleCategory) {
                 $field = 'activePersonStudent';
                 switch ($roleCategory) {
@@ -64,7 +68,7 @@ class UserFieldGateway extends QueryableGateway
                     case 'staff':   $field = 'activePersonStaff'; break;
                     case 'other':   $field = 'activePersonOther'; break;
                 }
-                return $query->where('gibbonPersonField.`'.$field.'` = 1');
+                return $query->where('gibbonCustomField.`'.$field.'` = 1');
             },
         ]);
 

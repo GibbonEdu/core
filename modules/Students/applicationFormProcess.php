@@ -547,17 +547,17 @@ if ($proceed == false) {
             $fields = array();
             if ($resultFields->rowCount() > 0) {
                 while ($rowFields = $resultFields->fetch()) {
-                    if (isset($_POST['custom'.$rowFields['gibbonPersonFieldID']])) {
+                    if (isset($_POST['custom'.$rowFields['gibbonCustomFieldID']])) {
                         if ($rowFields['type'] == 'date') {
-                            $fields[$rowFields['gibbonPersonFieldID']] = dateConvert($guid, $_POST['custom'.$rowFields['gibbonPersonFieldID']]);
+                            $fields[$rowFields['gibbonCustomFieldID']] = dateConvert($guid, $_POST['custom'.$rowFields['gibbonCustomFieldID']]);
                         } else {
-                            $fields[$rowFields['gibbonPersonFieldID']] = $_POST['custom'.$rowFields['gibbonPersonFieldID']];
+                            $fields[$rowFields['gibbonCustomFieldID']] = $_POST['custom'.$rowFields['gibbonCustomFieldID']];
                         }
                     }
                     if ($rowFields['required'] == 'Y') {
-                        if (isset($_POST['custom'.$rowFields['gibbonPersonFieldID']]) == false) {
+                        if (isset($_POST['custom'.$rowFields['gibbonCustomFieldID']]) == false) {
                             $customRequireFail = true;
-                        } elseif ($_POST['custom'.$rowFields['gibbonPersonFieldID']] == '') {
+                        } elseif ($_POST['custom'.$rowFields['gibbonCustomFieldID']] == '') {
                             $customRequireFail = true;
                         }
                     }
@@ -569,17 +569,17 @@ if ($proceed == false) {
                 $parent1fields = array();
                 if ($resultFields->rowCount() > 0) {
                     while ($rowFields = $resultFields->fetch()) {
-                        if (isset($_POST['parent1custom'.$rowFields['gibbonPersonFieldID']])) {
+                        if (isset($_POST['parent1custom'.$rowFields['gibbonCustomFieldID']])) {
                             if ($rowFields['type'] == 'date') {
-                                $parent1fields[$rowFields['gibbonPersonFieldID']] = dateConvert($guid, $_POST['parent1custom'.$rowFields['gibbonPersonFieldID']]);
+                                $parent1fields[$rowFields['gibbonCustomFieldID']] = dateConvert($guid, $_POST['parent1custom'.$rowFields['gibbonCustomFieldID']]);
                             } else {
-                                $parent1fields[$rowFields['gibbonPersonFieldID']] = $_POST['parent1custom'.$rowFields['gibbonPersonFieldID']];
+                                $parent1fields[$rowFields['gibbonCustomFieldID']] = $_POST['parent1custom'.$rowFields['gibbonCustomFieldID']];
                             }
                         }
                         if ($rowFields['required'] == 'Y') {
-                            if (isset($_POST['parent1custom'.$rowFields['gibbonPersonFieldID']]) == false) {
+                            if (isset($_POST['parent1custom'.$rowFields['gibbonCustomFieldID']]) == false) {
                                 $customRequireFail = true;
-                            } elseif ($_POST['parent1custom'.$rowFields['gibbonPersonFieldID']] == '') {
+                            } elseif ($_POST['parent1custom'.$rowFields['gibbonCustomFieldID']] == '') {
                                 $customRequireFail = true;
                             }
                         }
@@ -591,17 +591,17 @@ if ($proceed == false) {
                     $parent2fields = array();
                     if ($resultFields->rowCount() > 0) {
                         while ($rowFields = $resultFields->fetch()) {
-                            if (isset($_POST['parent2custom'.$rowFields['gibbonPersonFieldID']])) {
+                            if (isset($_POST['parent2custom'.$rowFields['gibbonCustomFieldID']])) {
                                 if ($rowFields['type'] == 'date') {
-                                    $parent2fields[$rowFields['gibbonPersonFieldID']] = dateConvert($guid, $_POST['parent2custom'.$rowFields['gibbonPersonFieldID']]);
+                                    $parent2fields[$rowFields['gibbonCustomFieldID']] = dateConvert($guid, $_POST['parent2custom'.$rowFields['gibbonCustomFieldID']]);
                                 } else {
-                                    $parent2fields[$rowFields['gibbonPersonFieldID']] = $_POST['parent2custom'.$rowFields['gibbonPersonFieldID']];
+                                    $parent2fields[$rowFields['gibbonCustomFieldID']] = $_POST['parent2custom'.$rowFields['gibbonCustomFieldID']];
                                 }
                             }
                             if ($rowFields['required'] == 'Y') {
-                                if (isset($_POST['parent2custom'.$rowFields['gibbonPersonFieldID']]) == false) {
+                                if (isset($_POST['parent2custom'.$rowFields['gibbonCustomFieldID']]) == false) {
                                     $customRequireFail = true;
-                                } elseif ($_POST['parent2custom'.$rowFields['gibbonPersonFieldID']] == '') {
+                                } elseif ($_POST['parent2custom'.$rowFields['gibbonCustomFieldID']] == '') {
                                     $customRequireFail = true;
                                 }
                             }

@@ -437,12 +437,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 $fields = isset($row2['fields']) ? json_decode($row2['fields'], true) : [];
                 if ($resultFields->rowCount() > 0) {
                     while ($rowFields = $resultFields->fetch()) {
-                        if (isset($_POST['newcustom'.$rowFields['gibbonPersonFieldID'].'On'])) {
-                            if (isset($_POST['newcustom'.$rowFields['gibbonPersonFieldID']])) {
+                        if (isset($_POST['newcustom'.$rowFields['gibbonCustomFieldID'].'On'])) {
+                            if (isset($_POST['newcustom'.$rowFields['gibbonCustomFieldID']])) {
                                 if ($rowFields['type'] == 'date') {
-                                    $fields[$rowFields['gibbonPersonFieldID']] = dateConvert($guid, $_POST['newcustom'.$rowFields['gibbonPersonFieldID']]);
+                                    $fields[$rowFields['gibbonCustomFieldID']] = dateConvert($guid, $_POST['newcustom'.$rowFields['gibbonCustomFieldID']]);
                                 } else {
-                                    $fields[$rowFields['gibbonPersonFieldID']] = $_POST['newcustom'.$rowFields['gibbonPersonFieldID']];
+                                    $fields[$rowFields['gibbonCustomFieldID']] = $_POST['newcustom'.$rowFields['gibbonCustomFieldID']];
                                 }
                             }
                         }

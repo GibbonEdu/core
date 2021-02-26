@@ -213,7 +213,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             $resultFields = getCustomFields($connection2, $guid, $student, $staff, $parent, $other, null, true);
             if ($resultFields->rowCount() > 0) {
                 while ($rowFields = $resultFields->fetch()) {
-                    $fieldName = $rowFields['gibbonPersonFieldID'];
+                    $fieldName = $rowFields['gibbonCustomFieldID'];
                     $label = __($rowFields['name']);
 
                     $oldValue = isset($oldFields[$fieldName])? $oldFields[$fieldName] : '';

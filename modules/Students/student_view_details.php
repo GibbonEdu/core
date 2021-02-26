@@ -1175,13 +1175,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 }
                                 echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
                                 echo "<span style='font-size: 115%; font-weight: bold'>".__($rowFields['name']).'</span><br/>';
-                                if (isset($fields[$rowFields['gibbonPersonFieldID']])) {
+                                if (isset($fields[$rowFields['gibbonCustomFieldID']])) {
                                     if ($rowFields['type'] == 'date') {
-                                        echo dateConvertBack($guid, $fields[$rowFields['gibbonPersonFieldID']]);
+                                        echo dateConvertBack($guid, $fields[$rowFields['gibbonCustomFieldID']]);
                                     } elseif ($rowFields['type'] == 'url') {
-                                        echo "<a target='_blank' href='".$fields[$rowFields['gibbonPersonFieldID']]."'>".$fields[$rowFields['gibbonPersonFieldID']].'</a>';
+                                        echo "<a target='_blank' href='".$fields[$rowFields['gibbonCustomFieldID']]."'>".$fields[$rowFields['gibbonCustomFieldID']].'</a>';
                                     } else {
-                                        echo $fields[$rowFields['gibbonPersonFieldID']];
+                                        echo $fields[$rowFields['gibbonCustomFieldID']];
                                     }
                                 }
                                 echo '</td>';
