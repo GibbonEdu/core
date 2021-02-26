@@ -8,7 +8,7 @@ access:
     module: User Admin
     action: Manage User Custom Fields
 primaryKey:
-    gibbonPersonFieldID
+    gibbonCustomFieldID
 uniqueKeys:
     - name
 table:

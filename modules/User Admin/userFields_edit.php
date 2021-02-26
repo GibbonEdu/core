@@ -29,13 +29,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
         ->add(__('Edit Custom Field'));  
 
     //Check if school year specified
-    $gibbonPersonFieldID = $_GET['gibbonPersonFieldID'];
-    if ($gibbonPersonFieldID == '') {
+    $gibbonCustomFieldID = $_GET['gibbonCustomFieldID'];
+    if ($gibbonCustomFieldID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         
-            $data = array('gibbonPersonFieldID' => $gibbonPersonFieldID);
-            $sql = 'SELECT * FROM gibbonPersonField WHERE gibbonPersonFieldID=:gibbonPersonFieldID';
+            $data = array('gibbonCustomFieldID' => $gibbonCustomFieldID);
+            $sql = 'SELECT * FROM gibbonPersonField WHERE gibbonCustomFieldID=:gibbonCustomFieldID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
 
@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
             //Let's go!
             $values = $result->fetch();
 
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/userFields_editProcess.php?gibbonPersonFieldID='.$gibbonPersonFieldID);
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/userFields_editProcess.php?gibbonCustomFieldID='.$gibbonCustomFieldID);
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 

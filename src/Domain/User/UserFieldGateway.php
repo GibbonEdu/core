@@ -32,7 +32,7 @@ class UserFieldGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonPersonField';
-    private static $primaryKey = 'gibbonPersonFieldID';
+    private static $primaryKey = 'gibbonCustomFieldID';
 
     private static $searchableColumns = ['name'];
     
@@ -46,7 +46,7 @@ class UserFieldGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonPersonFieldID', 'name', 'type', 'active', 'activePersonStudent', 'activePersonParent', 'activePersonStaff', 'activePersonOther'
+                'gibbonCustomFieldID', 'name', 'type', 'active', 'activePersonStudent', 'activePersonParent', 'activePersonStaff', 'activePersonOther'
             ]);
         
         $criteria->addFilterRules([

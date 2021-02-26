@@ -491,17 +491,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                     $fields = array();
                     if ($resultFields->rowCount() > 0) {
                         while ($rowFields = $resultFields->fetch()) {
-                            if (isset($_POST['custom'.$rowFields['gibbonPersonFieldID']])) {
+                            if (isset($_POST['custom'.$rowFields['gibbonCustomFieldID']])) {
                                 if ($rowFields['type'] == 'date') {
-                                    $fields[$rowFields['gibbonPersonFieldID']] = dateConvert($guid, $_POST['custom'.$rowFields['gibbonPersonFieldID']]);
+                                    $fields[$rowFields['gibbonCustomFieldID']] = dateConvert($guid, $_POST['custom'.$rowFields['gibbonCustomFieldID']]);
                                 } else {
-                                    $fields[$rowFields['gibbonPersonFieldID']] = $_POST['custom'.$rowFields['gibbonPersonFieldID']];
+                                    $fields[$rowFields['gibbonCustomFieldID']] = $_POST['custom'.$rowFields['gibbonCustomFieldID']];
                                 }
                             }
                             if ($rowFields['required'] == 'Y') {
-                                if (isset($_POST['custom'.$rowFields['gibbonPersonFieldID']]) == false) {
+                                if (isset($_POST['custom'.$rowFields['gibbonCustomFieldID']]) == false) {
                                     $customRequireFail = true;
-                                } elseif ($_POST['custom'.$rowFields['gibbonPersonFieldID']] == '') {
+                                } elseif ($_POST['custom'.$rowFields['gibbonCustomFieldID']] == '') {
                                     $customRequireFail = true;
                                 }
                             }

@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields.php'
         });
 
     $table->addActionColumn()
-        ->addParam('gibbonPersonFieldID')
+        ->addParam('gibbonCustomFieldID')
         ->format(function ($row, $actions) {
             $actions->addAction('edit', __('Edit'))
                 ->setURL('/modules/User Admin/userFields_edit.php');

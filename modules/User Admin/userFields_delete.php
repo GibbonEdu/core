@@ -25,20 +25,20 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_dele
 } else {
     //Proceed!
     //Check if school year specified
-    $gibbonPersonFieldID = $_GET['gibbonPersonFieldID'];
-    if ($gibbonPersonFieldID == '') {
+    $gibbonCustomFieldID = $_GET['gibbonCustomFieldID'];
+    if ($gibbonCustomFieldID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         
-            $data = array('gibbonPersonFieldID' => $gibbonPersonFieldID);
-            $sql = 'SELECT gibbonPersonField.* FROM gibbonPersonField WHERE gibbonPersonFieldID=:gibbonPersonFieldID';
+            $data = array('gibbonCustomFieldID' => $gibbonCustomFieldID);
+            $sql = 'SELECT gibbonPersonField.* FROM gibbonPersonField WHERE gibbonCustomFieldID=:gibbonCustomFieldID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
 
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
-            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/userFields_deleteProcess.php?gibbonPersonFieldID=$gibbonPersonFieldID");
+            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/userFields_deleteProcess.php?gibbonCustomFieldID=$gibbonCustomFieldID");
             echo $form->getOutput();
         }
     }

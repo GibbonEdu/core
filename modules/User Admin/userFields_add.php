@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/userFields_edit.php&gibbonPersonFieldID='.$_GET['editID'];
+        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/userFields_edit.php&gibbonCustomFieldID='.$_GET['editID'];
     }
     $page->return->setEditLink($editLink);
 

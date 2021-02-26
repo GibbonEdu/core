@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonPersonFieldID = $_GET['gibbonPersonFieldID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/userFields_edit.php&gibbonPersonFieldID=$gibbonPersonFieldID";
+$gibbonCustomFieldID = $_GET['gibbonCustomFieldID'];
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/userFields_edit.php&gibbonCustomFieldID=$gibbonCustomFieldID";
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit.php') == false) {
     $URL .= '&return=error0';
@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
 } else {
     //Proceed!
     //Check if school year specified
-    if ($gibbonPersonFieldID == '') {
+    if ($gibbonCustomFieldID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
@@ -61,8 +61,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
         } else {
             //Write to database
             try {
-                $data = array('name' => $name, 'active' => $active, 'description' => $description, 'type' => $type, 'options' => $options, 'required' => $required, 'activePersonStudent' => $activePersonStudent, 'activePersonStaff' => $activePersonStaff, 'activePersonParent' => $activePersonParent, 'activePersonOther' => $activePersonOther, 'activeDataUpdater' => $activeDataUpdater, 'activeApplicationForm' => $activeApplicationForm, 'activePublicRegistration' => $activePublicRegistration, 'gibbonPersonFieldID' => $gibbonPersonFieldID);
-                $sql = 'UPDATE gibbonPersonField SET name=:name, active=:active, description=:description, type=:type, options=:options, required=:required, activePersonStudent=:activePersonStudent, activePersonStaff=:activePersonStaff, activePersonParent=:activePersonParent, activePersonOther=:activePersonOther, activeDataUpdater=:activeDataUpdater, activeApplicationForm=:activeApplicationForm, activePublicRegistration=:activePublicRegistration WHERE gibbonPersonFieldID=:gibbonPersonFieldID';
+                $data = array('name' => $name, 'active' => $active, 'description' => $description, 'type' => $type, 'options' => $options, 'required' => $required, 'activePersonStudent' => $activePersonStudent, 'activePersonStaff' => $activePersonStaff, 'activePersonParent' => $activePersonParent, 'activePersonOther' => $activePersonOther, 'activeDataUpdater' => $activeDataUpdater, 'activeApplicationForm' => $activeApplicationForm, 'activePublicRegistration' => $activePublicRegistration, 'gibbonCustomFieldID' => $gibbonCustomFieldID);
+                $sql = 'UPDATE gibbonPersonField SET name=:name, active=:active, description=:description, type=:type, options=:options, required=:required, activePersonStudent=:activePersonStudent, activePersonStaff=:activePersonStaff, activePersonParent=:activePersonParent, activePersonOther=:activePersonOther, activeDataUpdater=:activeDataUpdater, activeApplicationForm=:activeApplicationForm, activePublicRegistration=:activePublicRegistration WHERE gibbonCustomFieldID=:gibbonCustomFieldID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
