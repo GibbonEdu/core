@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Domain\User;
+namespace Gibbon\Domain\System;
 
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
@@ -27,7 +27,7 @@ use Gibbon\Domain\QueryableGateway;
  * @version v16
  * @since   v16
  */
-class UserFieldGateway extends QueryableGateway
+class CustomFieldGateway extends QueryableGateway
 {
     use TableAware;
 
