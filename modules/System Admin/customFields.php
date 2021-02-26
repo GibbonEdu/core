@@ -28,14 +28,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields.
     //Proceed!
     $page->breadcrumbs->add(__('Custom Fields'));
 
-    $userFieldGateway = $container->get(CustomFieldGateway::class);
+    $customFieldGateway = $container->get(CustomFieldGateway::class);
     
     // QUERY
-    $criteria = $userFieldGateway->newQueryCriteria(true)
-        ->sortBy('name')
+    $criteria = $customFieldGateway->newQueryCriteria(true)
+        ->sortBy(['context', 'name'])
         ->fromPOST();
 
-    $userFields = $userFieldGateway->queryUserFields($criteria);
+    $userFields = $customFieldGateway->queryCustomFields($criteria);
 
     // DATA TABLE
     $table = DataTable::createPaginated('userFieldManage', $criteria);
@@ -66,6 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields.
         'select'  => __('Dropdown')
     );
 
+    $table->addColumn('context', __('Context'))->translatable();
     $table->addColumn('name', __('Name'));
     $table->addColumn('type', __('Type'))->format(function ($row) use ($customFieldTypes) {
         return isset($customFieldTypes[$row['type']])? $customFieldTypes[$row['type']] : '';

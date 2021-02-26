@@ -782,4 +782,5 @@ UPDATE `gibbonAction` SET `category`='Customise', name='Custom Fields', URLList=
 UPDATE `gibbonAction` SET `category`='Customise', name='Notification Events' WHERE `name`='Notification Settings' AND `gibbonModuleID`=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin');end
 UPDATE `gibbonAction` SET `category`='Customise' WHERE `name`='String Replacement' AND `gibbonModuleID`=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin');end
 UPDATE `gibbonAction` SET `category`='Customise' WHERE `name`='Email Templates' AND `gibbonModuleID`=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin');end
+ALTER TABLE `gibbonCustomField` ADD `context` VARCHAR(60) NOT NULL DEFAULT 'Person' AFTER `gibbonCustomFieldID`;end
 ";

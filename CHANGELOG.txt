@@ -20,6 +20,7 @@ v22.0.00
 --------
     Headlines
         New 2021 core theme
+        Improved custom field system
 
     Significant Changes
         System: improved support for custom themes

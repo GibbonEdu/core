@@ -40,22 +40,26 @@ class CustomFieldGateway extends QueryableGateway
      * @param QueryCriteria $criteria
      * @return DataSet
      */
-    public function queryUserFields(QueryCriteria $criteria)
+    public function queryCustomFields(QueryCriteria $criteria)
     {
         $query = $this
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonCustomFieldID', 'name', 'type', 'active', 'activePersonStudent', 'activePersonParent', 'activePersonStaff', 'activePersonOther'
+                'gibbonCustomFieldID', 'context', 'name', 'type', 'active', 'activePersonStudent', 'activePersonParent', 'activePersonStaff', 'activePersonOther'
             ]);
         
         $criteria->addFilterRules([
+            'context' => function ($query, $context) {
+                return $query
+                    ->where('gibbonCustomField.context = :context')
+                    ->bindValue('context', ucwords($context));
+            },
             'active' => function ($query, $active) {
                 return $query
                     ->where('gibbonCustomField.active = :active')
                     ->bindValue('active', ucfirst($active));
             },
-
             'role' => function ($query, $roleCategory) {
                 $field = 'activePersonStudent';
                 switch ($roleCategory) {
