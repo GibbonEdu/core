@@ -778,4 +778,8 @@ INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `val
 ALTER TABLE `gibbonPerson` CHANGE `messengerLastBubble` `messengerLastRead` DATETIME NULL DEFAULT NULL;end
 RENAME TABLE `gibbonPersonField` TO `gibbonCustomField`;end
 ALTER TABLE `gibbonCustomField` CHANGE `gibbonPersonFieldID` `gibbonCustomFieldID` INT(4) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;end
+UPDATE `gibbonAction` SET `category`='Customise', name='Custom Fields', URLList='customFields.php,customFields_add.php,customFields_edit.php,customFields_delete.php', entryURL='customFields.php', gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin') WHERE `name`='Manage Custom Fields' AND `gibbonModuleID`=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin');end
+UPDATE `gibbonAction` SET `category`='Customise', name='Notification Events' WHERE `name`='Notification Settings' AND `gibbonModuleID`=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin');end
+UPDATE `gibbonAction` SET `category`='Customise' WHERE `name`='String Replacement' AND `gibbonModuleID`=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin');end
+UPDATE `gibbonAction` SET `category`='Customise' WHERE `name`='Email Templates' AND `gibbonModuleID`=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin');end
 ";

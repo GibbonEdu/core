@@ -19,9 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/userFields_add.php';
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/customFields_add.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_add.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

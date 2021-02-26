@@ -21,10 +21,10 @@ include '../../gibbon.php';
 
 $gibbonCustomFieldID = $_GET['gibbonCustomFieldID'];
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/userFields_delete.php&gibbonCustomFieldID=$gibbonCustomFieldID";
-$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/userFields.php';
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/customFields_delete.php&gibbonCustomFieldID=$gibbonCustomFieldID";
+$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/customFields.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_delete.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

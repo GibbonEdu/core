@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Prefab\DeleteForm;
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_delete.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_dele
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
-            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/userFields_deleteProcess.php?gibbonCustomFieldID=$gibbonCustomFieldID");
+            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/customFields_deleteProcess.php?gibbonCustomFieldID=$gibbonCustomFieldID");
             echo $form->getOutput();
         }
     }

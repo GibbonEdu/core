@@ -2,7 +2,7 @@
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete custom fields');
 $I->loginAsAdmin();
-$I->amOnModulePage('User Admin', 'userFields.php');
+$I->amOnModulePage('User Admin', 'customFields.php');
 
 // Add ------------------------------------------------
 $I->clickNavigation('Add');
@@ -28,7 +28,7 @@ $I->seeSuccessMessage();
 $gibbonCustomFieldID = $I->grabEditIDFromURL();
 
 // Edit ------------------------------------------------
-$I->amOnModulePage('User Admin', 'userFields_edit.php', array('gibbonCustomFieldID' => $gibbonCustomFieldID));
+$I->amOnModulePage('User Admin', 'customFields_edit.php', array('gibbonCustomFieldID' => $gibbonCustomFieldID));
 $I->seeBreadcrumb('Edit Custom Field');
 
 $I->seeInFormFields('#content form', $addFormValues);
@@ -50,7 +50,7 @@ $I->submitForm('#content form', $editFormValues, 'Submit');
 $I->seeSuccessMessage();
 
 // Delete ------------------------------------------------
-$I->amOnModulePage('User Admin', 'userFields_delete.php', array('gibbonCustomFieldID' => $gibbonCustomFieldID));
+$I->amOnModulePage('User Admin', 'customFields_delete.php', array('gibbonCustomFieldID' => $gibbonCustomFieldID));
 
 $I->click('Yes');
 $I->seeSuccessMessage();

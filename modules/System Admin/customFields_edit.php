@@ -19,13 +19,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_edit.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Manage Custom Fields'), 'userFields.php')
+        ->add(__('Custom Fields'), 'customFields.php')
         ->add(__('Edit Custom Field'));  
 
     //Check if school year specified
@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
             //Let's go!
             $values = $result->fetch();
 
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/userFields_editProcess.php?gibbonCustomFieldID='.$gibbonCustomFieldID);
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/customFields_editProcess.php?gibbonCustomFieldID='.$gibbonCustomFieldID);
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 

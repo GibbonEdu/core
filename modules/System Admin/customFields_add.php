@@ -19,22 +19,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_add.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Manage Custom Fields'), 'userFields.php')
+        ->add(__('Custom Fields'), 'customFields.php')
         ->add(__('Add Custom Field'));
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/userFields_edit.php&gibbonCustomFieldID='.$_GET['editID'];
+        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/System Admin/customFields_edit.php&gibbonCustomFieldID='.$_GET['editID'];
     }
     $page->return->setEditLink($editLink);
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/userFields_addProcess.php');
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/customFields_addProcess.php');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 

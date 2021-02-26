@@ -21,12 +21,12 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\CustomFieldGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Custom Fields'));
+    $page->breadcrumbs->add(__('Custom Fields'));
 
     $userFieldGateway = $container->get(CustomFieldGateway::class);
     
@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields.php'
     });
 
     $table->addHeaderAction('add', __('Add'))
-        ->setURL('/modules/User Admin/userFields_add.php')
+        ->setURL('/modules/System Admin/customFields_add.php')
         ->displayLabel();
 
     $table->addMetaData('filterOptions', [
@@ -86,9 +86,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields.php'
         ->addParam('gibbonCustomFieldID')
         ->format(function ($row, $actions) {
             $actions->addAction('edit', __('Edit'))
-                ->setURL('/modules/User Admin/userFields_edit.php');
+                ->setURL('/modules/System Admin/customFields_edit.php');
             $actions->addAction('delete', __('Delete'))
-                ->setURL('/modules/User Admin/userFields_delete.php');
+                ->setURL('/modules/System Admin/customFields_delete.php');
             
         });
         
