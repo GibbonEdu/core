@@ -776,4 +776,6 @@ DELETE FROM `gibbonSetting` WHERE scope='Messenger' AND name IN ('messengerLastB
 INSERT INTO gibbonCountry VALUES ('South Sudan', '211');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('User Admin', 'publicRegistrationAllowedDomains', 'Public Registration Allowed Domains', 'Comma-separated list of email address domains allowed when registering. Leave blank for no restriction.', '');end
 ALTER TABLE `gibbonPerson` CHANGE `messengerLastBubble` `messengerLastRead` DATETIME NULL DEFAULT NULL;end
+RENAME TABLE `gibbonPersonField` TO `gibbonCustomField`;end
+ALTER TABLE `gibbonCustomField` CHANGE `gibbonPersonFieldID` `gibbonCustomFieldID` INT(4) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;end
 ";
