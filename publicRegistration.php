@@ -133,7 +133,7 @@ if ($proceed == false) {
         $heading = $form->addRow()->addHeading(__('Other Information'));
 
         while ($rowFields = $resultFields->fetch()) {
-            $name = 'custom'.$rowFields['gibbonPersonFieldID'];
+            $name = 'custom'.$rowFields['gibbonCustomFieldID'];
             $row = $form->addRow();
                 $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
                 $row->addCustomField($name, $rowFields);

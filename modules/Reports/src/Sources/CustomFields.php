@@ -41,7 +41,7 @@ class CustomFields extends DataSource
         $fieldData = $this->db()->selectOne($sql, $data);
         $personFields = unserialize($fieldData ?? '');
 
-        $sql = "SELECT name, gibbonPersonFieldID FROM gibbonPersonField WHERE active='Y' AND activePersonStudent=1";
+        $sql = "SELECT name, gibbonCustomFieldID FROM gibbonCustomField WHERE active='Y' AND activePersonStudent=1";
         $fields = $this->db()->select($sql)->fetchKeyPair();
         
         $personFields = array_map(function ($id) use ($personFields) {

@@ -2,7 +2,7 @@
 $I = new AcceptanceTester($scenario);
 $I->wantTo('add, edit and delete custom fields');
 $I->loginAsAdmin();
-$I->amOnModulePage('User Admin', 'userFields.php');
+$I->amOnModulePage('User Admin', 'customFields.php');
 
 // Add ------------------------------------------------
 $I->clickNavigation('Add');
@@ -25,10 +25,10 @@ $I->checkOption('input[type=checkbox][value=activePersonOther]');
 $I->submitForm('#content form', $addFormValues, 'Submit');
 $I->seeSuccessMessage();
 
-$gibbonPersonFieldID = $I->grabEditIDFromURL();
+$gibbonCustomFieldID = $I->grabEditIDFromURL();
 
 // Edit ------------------------------------------------
-$I->amOnModulePage('User Admin', 'userFields_edit.php', array('gibbonPersonFieldID' => $gibbonPersonFieldID));
+$I->amOnModulePage('User Admin', 'customFields_edit.php', array('gibbonCustomFieldID' => $gibbonCustomFieldID));
 $I->seeBreadcrumb('Edit Custom Field');
 
 $I->seeInFormFields('#content form', $addFormValues);
@@ -50,7 +50,7 @@ $I->submitForm('#content form', $editFormValues, 'Submit');
 $I->seeSuccessMessage();
 
 // Delete ------------------------------------------------
-$I->amOnModulePage('User Admin', 'userFields_delete.php', array('gibbonPersonFieldID' => $gibbonPersonFieldID));
+$I->amOnModulePage('User Admin', 'customFields_delete.php', array('gibbonCustomFieldID' => $gibbonCustomFieldID));
 
 $I->click('Yes');
 $I->seeSuccessMessage();
