@@ -31,7 +31,7 @@ class UserFieldGateway extends QueryableGateway
 {
     use TableAware;
 
-    private static $tableName = 'gibbonPersonField';
+    private static $tableName = 'gibbonCustomField';
     private static $primaryKey = 'gibbonCustomFieldID';
 
     private static $searchableColumns = ['name'];
@@ -52,7 +52,7 @@ class UserFieldGateway extends QueryableGateway
         $criteria->addFilterRules([
             'active' => function ($query, $active) {
                 return $query
-                    ->where('gibbonPersonField.active = :active')
+                    ->where('gibbonCustomField.active = :active')
                     ->bindValue('active', ucfirst($active));
             },
 
@@ -64,7 +64,7 @@ class UserFieldGateway extends QueryableGateway
                     case 'staff':   $field = 'activePersonStaff'; break;
                     case 'other':   $field = 'activePersonOther'; break;
                 }
-                return $query->where('gibbonPersonField.`'.$field.'` = 1');
+                return $query->where('gibbonCustomField.`'.$field.'` = 1');
             },
         ]);
 

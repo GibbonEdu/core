@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
     } else {
         
             $data = array('gibbonCustomFieldID' => $gibbonCustomFieldID);
-            $sql = 'SELECT * FROM gibbonPersonField WHERE gibbonCustomFieldID=:gibbonCustomFieldID';
+            $sql = 'SELECT * FROM gibbonCustomField WHERE gibbonCustomFieldID=:gibbonCustomFieldID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
 

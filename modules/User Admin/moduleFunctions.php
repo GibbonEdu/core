@@ -59,7 +59,7 @@ function getCustomFields($connection2, $guid, $student = null, $staff = null, $p
             $whereInner = ' AND ('.substr($whereInner, 0, -4).') ';
         }
 
-        $sql = "SELECT * FROM gibbonPersonField WHERE active='Y' $whereInner $where";
+        $sql = "SELECT * FROM gibbonCustomField WHERE active='Y' $whereInner $where";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -72,7 +72,7 @@ function getCustomFields($connection2, $guid, $student = null, $staff = null, $p
     return $return;
 }
 
-//$row is the database row draw from gibbonPersonField, $value is the current value of that field
+//$row is the database row draw from gibbonCustomField, $value is the current value of that field
 function renderCustomFieldRow($connection2, $guid, $row, $value = null, $fieldNameSuffix = '', $rowClass = '', $ignoreRequired = false)
 {
     $return = '';

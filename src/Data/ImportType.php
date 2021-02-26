@@ -465,7 +465,7 @@ class ImportType
         // Grab the user-defined Custom Fields
         if ($this->useCustomFields) {
             try {
-                $sql="SELECT gibbonCustomFieldID, name, type, options, required FROM gibbonPersonField where active = 'Y'";
+                $sql="SELECT gibbonCustomFieldID, name, type, options, required FROM gibbonCustomField where active = 'Y'";
                 $resultCustomFields = $pdo->executeQuery([], $sql);
             } catch (\PDOException $e) {
             }

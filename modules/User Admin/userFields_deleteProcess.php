@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_dele
     } else {
         try {
             $data = array('gibbonCustomFieldID' => $gibbonCustomFieldID);
-            $sql = 'SELECT * FROM gibbonPersonField WHERE gibbonCustomFieldID=:gibbonCustomFieldID';
+            $sql = 'SELECT * FROM gibbonCustomField WHERE gibbonCustomFieldID=:gibbonCustomFieldID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_dele
             //Write to database
             try {
                 $data = array('gibbonCustomFieldID' => $gibbonCustomFieldID);
-                $sql = 'DELETE FROM gibbonPersonField WHERE gibbonCustomFieldID=:gibbonCustomFieldID';
+                $sql = 'DELETE FROM gibbonCustomField WHERE gibbonCustomFieldID=:gibbonCustomFieldID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {

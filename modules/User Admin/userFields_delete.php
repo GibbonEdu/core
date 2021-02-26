@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_dele
     } else {
         
             $data = array('gibbonCustomFieldID' => $gibbonCustomFieldID);
-            $sql = 'SELECT gibbonPersonField.* FROM gibbonPersonField WHERE gibbonCustomFieldID=:gibbonCustomFieldID';
+            $sql = 'SELECT gibbonCustomField.* FROM gibbonCustomField WHERE gibbonCustomFieldID=:gibbonCustomFieldID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
 

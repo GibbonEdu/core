@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.
         //Write to database
         try {
             $data = array('name' => $name, 'active' => $active, 'description' => $description, 'type' => $type, 'options' => $options, 'required' => $required, 'activePersonStudent' => $activePersonStudent, 'activePersonStaff' => $activePersonStaff, 'activePersonParent' => $activePersonParent, 'activePersonOther' => $activePersonOther, 'activeDataUpdater' => $activeDataUpdater, 'activeApplicationForm' => $activeApplicationForm, 'activePublicRegistration' => $activePublicRegistration);
-            $sql = 'INSERT INTO gibbonPersonField SET name=:name, active=:active, description=:description, type=:type, options=:options, required=:required, activePersonStudent=:activePersonStudent, activePersonStaff=:activePersonStaff, activePersonParent=:activePersonParent, activePersonOther=:activePersonOther, activeDataUpdater=:activeDataUpdater, activeApplicationForm=:activeApplicationForm, activePublicRegistration=:activePublicRegistration';
+            $sql = 'INSERT INTO gibbonCustomField SET name=:name, active=:active, description=:description, type=:type, options=:options, required=:required, activePersonStudent=:activePersonStudent, activePersonStaff=:activePersonStaff, activePersonParent=:activePersonParent, activePersonOther=:activePersonOther, activeDataUpdater=:activeDataUpdater, activeApplicationForm=:activeApplicationForm, activePublicRegistration=:activePublicRegistration';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
