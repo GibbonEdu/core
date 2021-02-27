@@ -34,6 +34,7 @@ v22.0.00
         System: added an Update All option to the Manage Languages page
         System: updated text to use darker colours for printable report pages
         System: added South Sudan as a country option
+        System: added Mozambique Metical as currency option
         Finance: removed student DOB and Gender from Export Invoices
         Reports: clear report cache when editing template assets in Production
         System Admin: added option to manually invalidate front end cache for Cutting Edge installs
