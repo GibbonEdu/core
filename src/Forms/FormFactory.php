@@ -462,6 +462,7 @@ class FormFactory implements FormFactoryInterface
                 'MGA' => 'Malagasy Ariary (Ar)',
                 'MVR Rf' => 'Maldivian Rufiyaa (Rf)',
                 'MMK K' => 'Myanmar Kyat (K)',
+                'MZN MT' => 'Mozambique Metical (MT)',
                 'MAD' => 'Moroccan Dirham (MAD)',
                 'NAD N$' => 'Namibian Dollar (N$)',
                 'NPR ₨' => 'Nepalese Rupee (₨)',
