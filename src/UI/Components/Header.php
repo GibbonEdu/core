@@ -19,6 +19,7 @@ namespace Gibbon\UI\Components;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Domain\Messenger\MessengerGateway;
 use Gibbon\Domain\System\NotificationGateway;
 
 /**
@@ -32,12 +33,14 @@ class Header
     protected $db;
     protected $session;
     protected $notificationGateway;
+    protected $messengerGateway;
 
-    public function __construct(Connection $db, Session $session, NotificationGateway $notificationGateway)
+    public function __construct(Connection $db, Session $session, NotificationGateway $notificationGateway, MessengerGateway $messengerGateway)
     {
         $this->db = $db;
         $this->session = $session;
         $this->notificationGateway = $notificationGateway;
+        $this->messengerGateway = $messengerGateway;
     }
 
     public function getStatusTray()
@@ -155,6 +158,8 @@ class Header
             $profileURL = $this->session->get('absoluteURL').'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$this->session->get('gibbonPersonID');
         }
 
+        $messageWallLatestPost = $this->messengerGateway->getRecentMessageWallTimestamp();
+
         return [
             'url'           => $profileURL ?? '',
             'name'          => $this->session->get('preferredName').' '.$this->session->get('surname'),
@@ -163,7 +168,7 @@ class Header
             'image_240'     => $this->session->get('image_240'),
             'houseName'     => $this->session->get('gibbonHouseIDName'),
             'houseLogo'     => $this->session->get('gibbonHouseIDLogo'),
-            'messengerRead' => strtotime($this->session->get('messengerLastRead')) >= $this->session->get('messageWallRefreshed', 0),
+            'messengerRead' => strtotime($this->session->get('messengerLastRead')) >= $messageWallLatestPost,
         ];
     }
 }

@@ -2,13 +2,13 @@ details:
     type: usersCustomFields
     name: Custom Fields
     category: Custom Fields
-    table: gibbonPersonField
+    table: gibbonCustomField
     modes: { update: true, insert: true, export: true }
 access:
     module: User Admin
     action: Manage User Custom Fields
 primaryKey:
-    gibbonPersonFieldID
+    gibbonCustomFieldID
 uniqueKeys:
     - name
 table:

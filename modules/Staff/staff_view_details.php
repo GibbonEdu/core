@@ -305,13 +305,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             while ($rowFields = $resultFields->fetch()) {
                                 $table->addColumn($rowFields['name'], __($rowFields['name']))
                                     ->format(function($row) use ($fields, $rowFields) {
-                                        if (isset($fields[$rowFields['gibbonPersonFieldID']])) {
+                                        if (isset($fields[$rowFields['gibbonCustomFieldID']])) {
                                             if ($rowFields['type'] == 'date') {
-                                                return Format::date($fields[$rowFields['gibbonPersonFieldID']]);
+                                                return Format::date($fields[$rowFields['gibbonCustomFieldID']]);
                                             } elseif ($rowFields['type'] == 'url') {
-                                                return "<a target='_blank' href='".$fields[$rowFields['gibbonPersonFieldID']]."'>".$fields[$rowFields['gibbonPersonFieldID']].'</a>';
+                                                return "<a target='_blank' href='".$fields[$rowFields['gibbonCustomFieldID']]."'>".$fields[$rowFields['gibbonCustomFieldID']].'</a>';
                                             } else {
-                                                return $fields[$rowFields['gibbonPersonFieldID']];
+                                                return $fields[$rowFields['gibbonCustomFieldID']];
                                             }
                                         }
                                         return '';

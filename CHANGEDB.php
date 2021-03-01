@@ -776,4 +776,11 @@ DELETE FROM `gibbonSetting` WHERE scope='Messenger' AND name IN ('messengerLastB
 INSERT INTO gibbonCountry VALUES ('South Sudan', '211');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('User Admin', 'publicRegistrationAllowedDomains', 'Public Registration Allowed Domains', 'Comma-separated list of email address domains allowed when registering. Leave blank for no restriction.', '');end
 ALTER TABLE `gibbonPerson` CHANGE `messengerLastBubble` `messengerLastRead` DATETIME NULL DEFAULT NULL;end
+RENAME TABLE `gibbonPersonField` TO `gibbonCustomField`;end
+ALTER TABLE `gibbonCustomField` CHANGE `gibbonPersonFieldID` `gibbonCustomFieldID` INT(4) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;end
+UPDATE `gibbonAction` SET `category`='Customise', name='Custom Fields', URLList='customFields.php,customFields_add.php,customFields_edit.php,customFields_delete.php', entryURL='customFields.php', gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin') WHERE `name`='Manage Custom Fields' AND `gibbonModuleID`=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin');end
+UPDATE `gibbonAction` SET `category`='Customise', name='Notification Events' WHERE `name`='Notification Settings' AND `gibbonModuleID`=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin');end
+UPDATE `gibbonAction` SET `category`='Customise' WHERE `name`='String Replacement' AND `gibbonModuleID`=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin');end
+UPDATE `gibbonAction` SET `category`='Customise' WHERE `name`='Email Templates' AND `gibbonModuleID`=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin');end
+ALTER TABLE `gibbonCustomField` ADD `context` VARCHAR(60) NOT NULL DEFAULT 'Person' AFTER `gibbonCustomFieldID`;end
 ";

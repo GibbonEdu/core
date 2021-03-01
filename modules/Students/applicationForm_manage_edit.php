@@ -489,8 +489,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $heading = $form->addRow()->addSubheading(__('Other Information'));
 
         while ($rowFields = $resultFields->fetch()) {
-            $name = 'custom'.$rowFields['gibbonPersonFieldID'];
-            $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
+            $name = 'custom'.$rowFields['gibbonCustomFieldID'];
+            $value = (isset($existingFields[$rowFields['gibbonCustomFieldID']]))? $existingFields[$rowFields['gibbonCustomFieldID']] : '';
 
             $row = $form->addRow();
                 $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
@@ -547,8 +547,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $row->addSubheading(__('Parent/Guardian').' 1 '.__('Other Information'));
 
                 while ($rowFields = $resultFields->fetch()) {
-                    $name = "parent1custom".$rowFields['gibbonPersonFieldID'];
-                    $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
+                    $name = "parent1custom".$rowFields['gibbonCustomFieldID'];
+                    $value = (isset($existingFields[$rowFields['gibbonCustomFieldID']]))? $existingFields[$rowFields['gibbonCustomFieldID']] : '';
 
                     $row = $form->addRow();
                         $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
@@ -688,8 +688,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $row->addSubheading(__('Parent/Guardian')." $i ".__('Other Information'));
 
                 while ($rowFields = $resultFields->fetch()) {
-                    $name = "parent{$i}custom".$rowFields['gibbonPersonFieldID'];
-                    $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
+                    $name = "parent{$i}custom".$rowFields['gibbonCustomFieldID'];
+                    $value = (isset($existingFields[$rowFields['gibbonCustomFieldID']]))? $existingFields[$rowFields['gibbonCustomFieldID']] : '';
 
                     $row = $form->addRow()->setClass("parentSection{$i}");
                         $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);

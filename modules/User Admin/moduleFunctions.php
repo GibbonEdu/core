@@ -59,7 +59,7 @@ function getCustomFields($connection2, $guid, $student = null, $staff = null, $p
             $whereInner = ' AND ('.substr($whereInner, 0, -4).') ';
         }
 
-        $sql = "SELECT * FROM gibbonPersonField WHERE active='Y' $whereInner $where";
+        $sql = "SELECT * FROM gibbonCustomField WHERE active='Y' $whereInner $where";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -72,7 +72,7 @@ function getCustomFields($connection2, $guid, $student = null, $staff = null, $p
     return $return;
 }
 
-//$row is the database row draw from gibbonPersonField, $value is the current value of that field
+//$row is the database row draw from gibbonCustomField, $value is the current value of that field
 function renderCustomFieldRow($connection2, $guid, $row, $value = null, $fieldNameSuffix = '', $rowClass = '', $ignoreRequired = false)
 {
     $return = '';
@@ -91,26 +91,26 @@ function renderCustomFieldRow($connection2, $guid, $row, $value = null, $fieldNa
     $return .= '</td>';
     $return .= '<td class="right">';
     if ($row['type'] == 'varchar') {
-        $return .= '<input name="'.$fieldNameSuffix.'custom'.$row['gibbonPersonFieldID'].'" id="'.$fieldNameSuffix.'custom'.$row['gibbonPersonFieldID']."\" maxlength='".$row['options']."' value=\"$value\" type=\"text\" style=\"width: 300px\">";
+        $return .= '<input name="'.$fieldNameSuffix.'custom'.$row['gibbonCustomFieldID'].'" id="'.$fieldNameSuffix.'custom'.$row['gibbonCustomFieldID']."\" maxlength='".$row['options']."' value=\"$value\" type=\"text\" style=\"width: 300px\">";
         if ($row['required'] == 'Y' and $ignoreRequired == false) { //is required
                     $return .= '<script type="text/javascript">';
-            $return .= 'var '.$fieldNameSuffix.'custom'.$row['gibbonPersonFieldID']."=new LiveValidation('".$fieldNameSuffix.'custom'.$row['gibbonPersonFieldID']."');";
-            $return .= $fieldNameSuffix.'custom'.$row['gibbonPersonFieldID'].'.add(Validate.Presence);';
+            $return .= 'var '.$fieldNameSuffix.'custom'.$row['gibbonCustomFieldID']."=new LiveValidation('".$fieldNameSuffix.'custom'.$row['gibbonCustomFieldID']."');";
+            $return .= $fieldNameSuffix.'custom'.$row['gibbonCustomFieldID'].'.add(Validate.Presence);';
             $return .= '</script>';
         }
     } elseif ($row['type'] == 'text') {
-        $return .= '<textarea name="'.$fieldNameSuffix.'custom'.$row['gibbonPersonFieldID'].'" id="'.$fieldNameSuffix.'custom'.$row['gibbonPersonFieldID']."\" rows='".$row['options']."' style=\"width: 300px\">$value</textarea>";
+        $return .= '<textarea name="'.$fieldNameSuffix.'custom'.$row['gibbonCustomFieldID'].'" id="'.$fieldNameSuffix.'custom'.$row['gibbonCustomFieldID']."\" rows='".$row['options']."' style=\"width: 300px\">$value</textarea>";
         if ($row['required'] == 'Y' and $ignoreRequired == false) { //is required
                     $return .= '<script type="text/javascript">';
-            $return .= 'var '.$fieldNameSuffix.'custom'.$row['gibbonPersonFieldID']."=new LiveValidation('".$fieldNameSuffix.'custom'.$row['gibbonPersonFieldID']."');";
-            $return .= $fieldNameSuffix.'custom'.$row['gibbonPersonFieldID'].'.add(Validate.Presence);';
+            $return .= 'var '.$fieldNameSuffix.'custom'.$row['gibbonCustomFieldID']."=new LiveValidation('".$fieldNameSuffix.'custom'.$row['gibbonCustomFieldID']."');";
+            $return .= $fieldNameSuffix.'custom'.$row['gibbonCustomFieldID'].'.add(Validate.Presence);';
             $return .= '</script>';
         }
     } elseif ($row['type'] == 'date') {
-        $return .= '<input name="'.$fieldNameSuffix.'custom'.$row['gibbonPersonFieldID'].'" id="'.$fieldNameSuffix.'custom'.$row['gibbonPersonFieldID']."\" maxlength='10' value=\"".dateConvertBack($guid, $value).'" type="text" style="width: 300px">';
+        $return .= '<input name="'.$fieldNameSuffix.'custom'.$row['gibbonCustomFieldID'].'" id="'.$fieldNameSuffix.'custom'.$row['gibbonCustomFieldID']."\" maxlength='10' value=\"".dateConvertBack($guid, $value).'" type="text" style="width: 300px">';
         $return .= '<script type="text/javascript">';
-        $return .= 'var custom'.$row['gibbonPersonFieldID']."=new LiveValidation('custom".$row['gibbonPersonFieldID']."');";
-        $return .= 'custom'.$row['gibbonPersonFieldID'].'.add( Validate.Format, {pattern: ';
+        $return .= 'var custom'.$row['gibbonCustomFieldID']."=new LiveValidation('custom".$row['gibbonCustomFieldID']."');";
+        $return .= 'custom'.$row['gibbonCustomFieldID'].'.add( Validate.Format, {pattern: ';
         if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
             $return .= "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
         } else {
@@ -126,26 +126,26 @@ function renderCustomFieldRow($connection2, $guid, $row, $value = null, $fieldNa
         $return .= '</script>';
         $return .= '<script type="text/javascript">';
         $return .= '$(function() {';
-        $return .= '$( "#custom'.$row['gibbonPersonFieldID'].'" ).datepicker();';
+        $return .= '$( "#custom'.$row['gibbonCustomFieldID'].'" ).datepicker();';
         $return .= '});';
         $return .= '</script>';
         if ($row['required'] == 'Y' and $ignoreRequired == false) { //is required
                     $return .= '<script type="text/javascript">';
-            $return .= 'var '.$fieldNameSuffix.'custom'.$row['gibbonPersonFieldID']."=new LiveValidation('".$fieldNameSuffix.'custom'.$row['gibbonPersonFieldID']."');";
-            $return .= $fieldNameSuffix.'custom'.$row['gibbonPersonFieldID'].'.add(Validate.Presence);';
+            $return .= 'var '.$fieldNameSuffix.'custom'.$row['gibbonCustomFieldID']."=new LiveValidation('".$fieldNameSuffix.'custom'.$row['gibbonCustomFieldID']."');";
+            $return .= $fieldNameSuffix.'custom'.$row['gibbonCustomFieldID'].'.add(Validate.Presence);';
             $return .= '</script>';
         }
     } elseif ($row['type'] == 'url') {
-        $return .= '<input name="'.$fieldNameSuffix.'custom'.$row['gibbonPersonFieldID'].'" id="'.$fieldNameSuffix.'custom'.$row['gibbonPersonFieldID']."\" maxlength='255' value=\"$value\" type=\"text\" style=\"width: 300px\">";
+        $return .= '<input name="'.$fieldNameSuffix.'custom'.$row['gibbonCustomFieldID'].'" id="'.$fieldNameSuffix.'custom'.$row['gibbonCustomFieldID']."\" maxlength='255' value=\"$value\" type=\"text\" style=\"width: 300px\">";
         if ($row['required'] == 'Y' and $ignoreRequired == false) { //is required
                     $return .= '<script type="text/javascript">';
-            $return .= 'var '.$fieldNameSuffix.'custom'.$row['gibbonPersonFieldID']."=new LiveValidation('".$fieldNameSuffix.'custom'.$row['gibbonPersonFieldID']."');";
-            $return .= $fieldNameSuffix.'custom'.$row['gibbonPersonFieldID'].".add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: \"Must start with http:// or https://\" } );";
-            $return .= $fieldNameSuffix.'custom'.$row['gibbonPersonFieldID'].'.add(Validate.Presence);';
+            $return .= 'var '.$fieldNameSuffix.'custom'.$row['gibbonCustomFieldID']."=new LiveValidation('".$fieldNameSuffix.'custom'.$row['gibbonCustomFieldID']."');";
+            $return .= $fieldNameSuffix.'custom'.$row['gibbonCustomFieldID'].".add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: \"Must start with http:// or https://\" } );";
+            $return .= $fieldNameSuffix.'custom'.$row['gibbonCustomFieldID'].'.add(Validate.Presence);';
             $return .= '</script>';
         }
     } elseif ($row['type'] == 'select') {
-        $return .= '<select style="width: 302px" name="'.$fieldNameSuffix.'custom'.$row['gibbonPersonFieldID'].'" id="'.$fieldNameSuffix.'custom'.$row['gibbonPersonFieldID'].'">';
+        $return .= '<select style="width: 302px" name="'.$fieldNameSuffix.'custom'.$row['gibbonCustomFieldID'].'" id="'.$fieldNameSuffix.'custom'.$row['gibbonCustomFieldID'].'">';
         if ($row['required'] == 'Y' and $ignoreRequired == false) { //is required
                         $return .= '<option value="Please select...">'.__('Please select...').'</option>';
         } else {
@@ -163,8 +163,8 @@ function renderCustomFieldRow($connection2, $guid, $row, $value = null, $fieldNa
         $return .= '</select>';
         if ($row['required'] == 'Y' and $ignoreRequired == false) { //is required
                     $return .= '<script type="text/javascript">';
-            $return .= 'var '.$fieldNameSuffix.'custom'.$row['gibbonPersonFieldID']."=new LiveValidation('".$fieldNameSuffix.'custom'.$row['gibbonPersonFieldID']."');";
-            $return .= $fieldNameSuffix.'custom'.$row['gibbonPersonFieldID'].".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"".__('Select something!').'"});';
+            $return .= 'var '.$fieldNameSuffix.'custom'.$row['gibbonCustomFieldID']."=new LiveValidation('".$fieldNameSuffix.'custom'.$row['gibbonCustomFieldID']."');";
+            $return .= $fieldNameSuffix.'custom'.$row['gibbonCustomFieldID'].".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"".__('Select something!').'"});';
             $return .= '</script>';
         }
     }
