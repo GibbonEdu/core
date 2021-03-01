@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
@@ -261,19 +262,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             }
 
             // CUSTOM FIELDS FOR STAFF
-            $existingFields = isset($values['fields'])? json_decode($values['fields'], true) : null;
-            $resultFields = getCustomFields($connection2, $guid, false, true, false, false, true, null);
-            if ($resultFields->rowCount() > 0) {
-                $form->addRow()->addHeading(__('Other Information'));
-
-                while ($rowFields = $resultFields->fetch()) {
-                    $name = 'custom'.$rowFields['gibbonCustomFieldID'];
-                    $value = (isset($existingFields[$rowFields['gibbonCustomFieldID']]))? $existingFields[$rowFields['gibbonCustomFieldID']] : '';
-                    $row = $form->addRow();
-                        $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
-                        $row->addCustomField($name, $rowFields)->setValue($value);
-                }
-            }
+            $params = ['staff' => 1, 'applicationForm' => 1, 'heading' => __('Other Information')];
+            $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Person', $params, $values['fields']);
 
             // REQURIED DOCUMENTS
             $staffApplicationFormRequiredDocuments = getSettingByScope($connection2, 'Staff', 'staffApplicationFormRequiredDocuments');

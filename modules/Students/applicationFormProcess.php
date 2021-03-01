@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Forms\CustomFieldHandler;
 
 include '../../gibbon.php';
 
@@ -541,72 +542,19 @@ if ($proceed == false) {
         } else {
             //DEAL WITH CUSTOM FIELDS
             $customRequireFail = false;
-            //Prepare field values
-            //CHILD
-            $resultFields = getCustomFields($connection2, $guid, true, false, false, false, true, null);
-            $fields = array();
-            if ($resultFields->rowCount() > 0) {
-                while ($rowFields = $resultFields->fetch()) {
-                    if (isset($_POST['custom'.$rowFields['gibbonCustomFieldID']])) {
-                        if ($rowFields['type'] == 'date') {
-                            $fields[$rowFields['gibbonCustomFieldID']] = dateConvert($guid, $_POST['custom'.$rowFields['gibbonCustomFieldID']]);
-                        } else {
-                            $fields[$rowFields['gibbonCustomFieldID']] = $_POST['custom'.$rowFields['gibbonCustomFieldID']];
-                        }
-                    }
-                    if ($rowFields['required'] == 'Y') {
-                        if (isset($_POST['custom'.$rowFields['gibbonCustomFieldID']]) == false) {
-                            $customRequireFail = true;
-                        } elseif ($_POST['custom'.$rowFields['gibbonCustomFieldID']] == '') {
-                            $customRequireFail = true;
-                        }
-                    }
-                }
-            }
+            $customFieldHandler = $container->get(CustomFieldHandler::class);
+
+            $params = ['student' => 1, 'applicationForm' => 1];
+            $fields = $customFieldHandler->getFieldDataFromPOST('Person', $params, $customRequireFail);
+
+            $parent1fields = $parent2fields = '';
             if ($gibbonFamily == 'FALSE') { //Only if there is no family
-                //PARENT 1
-                $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
-                $parent1fields = array();
-                if ($resultFields->rowCount() > 0) {
-                    while ($rowFields = $resultFields->fetch()) {
-                        if (isset($_POST['parent1custom'.$rowFields['gibbonCustomFieldID']])) {
-                            if ($rowFields['type'] == 'date') {
-                                $parent1fields[$rowFields['gibbonCustomFieldID']] = dateConvert($guid, $_POST['parent1custom'.$rowFields['gibbonCustomFieldID']]);
-                            } else {
-                                $parent1fields[$rowFields['gibbonCustomFieldID']] = $_POST['parent1custom'.$rowFields['gibbonCustomFieldID']];
-                            }
-                        }
-                        if ($rowFields['required'] == 'Y') {
-                            if (isset($_POST['parent1custom'.$rowFields['gibbonCustomFieldID']]) == false) {
-                                $customRequireFail = true;
-                            } elseif ($_POST['parent1custom'.$rowFields['gibbonCustomFieldID']] == '') {
-                                $customRequireFail = true;
-                            }
-                        }
-                    }
-                }
-                if (isset($_POST['secondParent']) == false) {
-                    //PARENT 2
-                    $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
-                    $parent2fields = array();
-                    if ($resultFields->rowCount() > 0) {
-                        while ($rowFields = $resultFields->fetch()) {
-                            if (isset($_POST['parent2custom'.$rowFields['gibbonCustomFieldID']])) {
-                                if ($rowFields['type'] == 'date') {
-                                    $parent2fields[$rowFields['gibbonCustomFieldID']] = dateConvert($guid, $_POST['parent2custom'.$rowFields['gibbonCustomFieldID']]);
-                                } else {
-                                    $parent2fields[$rowFields['gibbonCustomFieldID']] = $_POST['parent2custom'.$rowFields['gibbonCustomFieldID']];
-                                }
-                            }
-                            if ($rowFields['required'] == 'Y') {
-                                if (isset($_POST['parent2custom'.$rowFields['gibbonCustomFieldID']]) == false) {
-                                    $customRequireFail = true;
-                                } elseif ($_POST['parent2custom'.$rowFields['gibbonCustomFieldID']] == '') {
-                                    $customRequireFail = true;
-                                }
-                            }
-                        }
-                    }
+                $params = ['parent' => 1, 'applicationForm' => 1, 'prefix' => 'parent1custom'];
+                $parent1fields = $customFieldHandler->getFieldDataFromPOST('Person', $params, $customRequireFail);
+                
+                if (empty($_POST['secondParent'])) {
+                    $params = ['parent' => 1, 'applicationForm' => 1, 'prefix' => 'parent2custom'];
+                    $parent2fields = $customFieldHandler->getFieldDataFromPOST('Person', $params, $customRequireFail);
                 }
             }
 
@@ -615,18 +563,6 @@ if ($proceed == false) {
                 header("Location: {$URL}");
                 exit();
             } else {
-                $fields = json_encode($fields);
-                if (isset($parent1fields)) {
-                    $parent1fields = json_encode($parent1fields);
-                } else {
-                    $parent1fields = '';
-                }
-                if (isset($parent2fields)) {
-                    $parent2fields = json_encode($parent2fields);
-                } else {
-                    $parent2fields = '';
-                }
-
                 //Write to database
                 try {
                     $data = array('surname' => $surname, 'firstName' => $firstName, 'preferredName' => $preferredName, 'officialName' => $officialName, 'nameInCharacters' => $nameInCharacters, 'gender' => $gender, 'dob' => $dob, 'languageHomePrimary' => $languageHomePrimary, 'languageHomeSecondary' => $languageHomeSecondary, 'languageFirst' => $languageFirst, 'languageSecond' => $languageSecond, 'languageThird' => $languageThird, 'countryOfBirth' => $countryOfBirth, 'citizenship1' => $citizenship1, 'citizenship1Passport' => $citizenship1Passport, 'citizenship1PassportExpiry' => $citizenship1PassportExpiry, 'nationalIDCardNumber' => $nationalIDCardNumber, 'residencyStatus' => $residencyStatus, 'visaExpiryDate' => $visaExpiryDate, 'email' => $email, 'homeAddress' => $homeAddress, 'homeAddressDistrict' => $homeAddressDistrict, 'homeAddressCountry' => $homeAddressCountry, 'phone1Type' => $phone1Type, 'phone1CountryCode' => $phone1CountryCode, 'phone1' => $phone1, 'phone2Type' => $phone2Type, 'phone2CountryCode' => $phone2CountryCode, 'phone2' => $phone2, 'medicalInformation' => $medicalInformation, 'sen' => $sen, 'senDetails' => $senDetails, 'gibbonSchoolYearIDEntry' => $gibbonSchoolYearIDEntry, 'dayType' => $dayType, 'dateStart' => $dateStart, 'gibbonYearGroupIDEntry' => $gibbonYearGroupIDEntry, 'referenceEmail' => $referenceEmail, 'schoolName1' => $schoolName1, 'schoolAddress1' => $schoolAddress1, 'schoolGrades1' => $schoolGrades1, 'schoolLanguage1' => $schoolLanguage1, 'schoolDate1' => $schoolDate1, 'schoolName2' => $schoolName2, 'schoolAddress2' => $schoolAddress2, 'schoolGrades2' => $schoolGrades2, 'schoolLanguage2' => $schoolLanguage2, 'schoolDate2' => $schoolDate2, 'gibbonFamilyID' => $gibbonFamilyID, 'parent1gibbonPersonID' => $parent1gibbonPersonID, 'parent1title' => $parent1title, 'parent1surname' => $parent1surname, 'parent1firstName' => $parent1firstName, 'parent1preferredName' => $parent1preferredName, 'parent1officialName' => $parent1officialName, 'parent1nameInCharacters' => $parent1nameInCharacters, 'parent1gender' => $parent1gender, 'parent1relationship' => $parent1relationship, 'parent1languageFirst' => $parent1languageFirst, 'parent1languageSecond' => $parent1languageSecond, 'parent1citizenship1' => $parent1citizenship1, 'parent1nationalIDCardNumber' => $parent1nationalIDCardNumber, 'parent1residencyStatus' => $parent1residencyStatus, 'parent1visaExpiryDate' => $parent1visaExpiryDate, 'parent1email' => $parent1email, 'parent1phone1Type' => $parent1phone1Type, 'parent1phone1CountryCode' => $parent1phone1CountryCode, 'parent1phone1' => $parent1phone1, 'parent1phone2Type' => $parent1phone2Type, 'parent1phone2CountryCode' => $parent1phone2CountryCode, 'parent1phone2' => $parent1phone2, 'parent1profession' => $parent1profession, 'parent1employer' => $parent1employer, 'parent2title' => $parent2title, 'parent2surname' => $parent2surname, 'parent2firstName' => $parent2firstName, 'parent2preferredName' => $parent2preferredName, 'parent2officialName' => $parent2officialName, 'parent2nameInCharacters' => $parent2nameInCharacters, 'parent2gender' => $parent2gender, 'parent2relationship' => $parent2relationship, 'parent2languageFirst' => $parent2languageFirst, 'parent2languageSecond' => $parent2languageSecond, 'parent2citizenship1' => $parent2citizenship1, 'parent2nationalIDCardNumber' => $parent2nationalIDCardNumber, 'parent2residencyStatus' => $parent2residencyStatus, 'parent2visaExpiryDate' => $parent2visaExpiryDate, 'parent2email' => $parent2email, 'parent2phone1Type' => $parent2phone1Type, 'parent2phone1CountryCode' => $parent2phone1CountryCode, 'parent2phone1' => $parent2phone1, 'parent2phone2Type' => $parent2phone2Type, 'parent2phone2CountryCode' => $parent2phone2CountryCode, 'parent2phone2' => $parent2phone2, 'parent2profession' => $parent2profession, 'parent2employer' => $parent2employer, 'siblingName1' => $siblingName1, 'siblingDOB1' => $siblingDOB1, 'siblingSchool1' => $siblingSchool1, 'siblingSchoolJoiningDate1' => $siblingSchoolJoiningDate1, 'siblingName2' => $siblingName2, 'siblingDOB2' => $siblingDOB2, 'siblingSchool2' => $siblingSchool2, 'siblingSchoolJoiningDate2' => $siblingSchoolJoiningDate2, 'siblingName3' => $siblingName3, 'siblingDOB3' => $siblingDOB3, 'siblingSchool3' => $siblingSchool3, 'siblingSchoolJoiningDate3' => $siblingSchoolJoiningDate3, 'languageChoice' => $languageChoice, 'languageChoiceExperience' => $languageChoiceExperience, 'scholarshipInterest' => $scholarshipInterest, 'scholarshipRequired' => $scholarshipRequired, 'payment' => $payment, 'companyName' => $companyName, 'companyContact' => $companyContact, 'companyAddress' => $companyAddress, 'companyEmail' => $companyEmail, 'companyCCFamily' => $companyCCFamily, 'companyPhone' => $companyPhone, 'companyAll' => $companyAll, 'gibbonFinanceFeeCategoryIDList' => $gibbonFinanceFeeCategoryIDList, 'howDidYouHear' => $howDidYouHear, 'howDidYouHearMore' => $howDidYouHearMore, 'agreement' => $agreement, 'privacy' => $privacy, 'fields' => $fields, 'parent1fields' => $parent1fields, 'parent2fields' => $parent2fields, 'timestamp' => date('Y-m-d H:i:s'));

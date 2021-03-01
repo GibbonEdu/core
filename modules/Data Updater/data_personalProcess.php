@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Comms\NotificationEvent;
 use Gibbon\Services\Format;
+use Gibbon\Comms\NotificationEvent;
+use Gibbon\Forms\CustomFieldHandler;
 
 include '../../gibbon.php';
 
@@ -217,39 +218,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         }
                     }
 
-                    //DEAL WITH CUSTOM FIELDS
-                    //Prepare field values
+                    // CUSTOM FIELDS
                     $customRequireFail = false;
+                    $params = compact('student', 'staff', 'parent', 'other');
+                    $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Person', $params + ['dataUpdater' => 1], $customRequireFail);
+
+                    // Check for data changed
                     $existingFields = json_decode($values['fields'], true);
-                    $resultFields = getCustomFields($connection2, $guid, $student, $staff, $parent, $other, null, true);
-                    $fields = [];
-                    if ($resultFields->rowCount() > 0) {
-                        while ($rowFields = $resultFields->fetch()) {
-                            $fieldID = $rowFields['gibbonCustomFieldID'];
-                            $fieldValue = $_POST['custom'.$fieldID] ?? null;
-                            $existingValue = $existingFields[$fieldID] ?? null;
-
-                            if ($existingValue != $fieldValue) {
-                                $dataChanged = true;
-                            }
-
-                            if (!is_null($fieldValue)) {
-                                $fields[$fieldID] = ($rowFields['type'] == 'date')
-                                    ? Format::dateConvert($fieldValue)
-                                    : $fieldValue;
-                            }
-                            if ($highestAction != 'Update Personal Data_any') {
-                                if ($rowFields['required'] == 'Y' && empty($fieldValue)) {
-                                    $customRequireFail = true;
-                                }
-                            }
+                    $newFields = json_decode($fields, true);
+                    foreach ($newFields as $key => $fieldValue) {
+                        if ($existingFields[$key] != $fieldValue) {
+                            $dataChanged = true;
                         }
                     }
+
+                    // Don't require fields for users with _any permission
+                    if ($highestAction == 'Update Personal Data_any') {
+                        $customRequireFail = false;
+                    }
+
                     if ($customRequireFail) {
                         $URL .= '&return=error1';
                         header("Location: {$URL}");
                     } else {
-                        $data['fields'] = json_encode($fields);
+                        $data['fields'] = $fields;
 
                         //Write to database
                         $existing = $_POST['existing'] ?? 'N';
