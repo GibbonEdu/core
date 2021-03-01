@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\CustomFieldGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_edit.php') == false) {
@@ -47,6 +48,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
+    $form->addRow()->addHeading(__('Basic Details'));
+
     $row = $form->addRow();
         $row->addLabel('context', __('Context'));
         $row->addTextField('context')->readonly();
@@ -63,31 +66,50 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
         $row->addLabel('active', __('Active'));
         $row->addYesNo('active')->required();
 
-    $types = array(
-        'varchar' => __('Short Text (max 255 characters)'),
-        'text'    => __('Long Text'),
-        'date'    => __('Date'),
-        'url'     => __('Link'),
-        'select'  => __('Dropdown')
-    );
+    $form->addRow()->addHeading(__('Configure'));
+
+    $types = $container->get(CustomFieldHandler::class)->getTypes();
     $row = $form->addRow();
         $row->addLabel('type', __('Type'));
-        $row->addSelect('type')->fromArray($types)->required()->placeholder();
+        $row->addSelect('type')->fromArray($types)->readOnly()->required()->placeholder();
 
-    $form->toggleVisibilityByClass('optionsRow')->onSelect('type')->when(array('varchar', 'text', 'select'));
+    if ($values['type'] == 'varchar' || $values['type'] == 'number') {
+        $row = $form->addRow()->addClass('optionsLength');
+            $row->addLabel('options', __('Max Length'))->description(__('Number of characters, up to 255.'));
+            $row->addNumber('options')->minimum(1)->maximum(255)->onlyInteger(true);
+    }
 
-    $row = $form->addRow()->addClass('optionsRow');
-        $row->addLabel('options', __('Options'))
-            ->description(__('Short Text: number of characters, up to 255.'))
-            ->description(__('Long Text: number of rows for field.'))
-            ->description(__('Dropdown: comma separated list of options.'));
-        $row->addTextArea('options')->setRows(3)->required();
+    if ($values['type'] == 'text' || $values['type'] == 'editor') {
+        $row = $form->addRow()->addClass('optionsRows');
+            $row->addLabel('options', __('Rows'))->description(__('Number of rows for field.'));
+            $row->addNumber('options')->minimum(1)->maximum(20)->onlyInteger(true);
+    }
+
+    if ($values['type'] == 'select' || $values['type'] == 'checkboxes' || $values['type'] == 'radio') {
+        $row = $form->addRow()->addClass('optionsOptions');
+            $row->addLabel('options', __('Options'))
+                ->description(__('Comma separated list of options.'))
+                ->description(__('Dropdown: use [] to create option groups.'));
+            $row->addTextArea('options')->setRows(3)->required();
+    }
+
+    if ($values['type'] == 'file') {
+        $row = $form->addRow()->addClass('optionsFile');
+            $row->addLabel('options', __('File Type'))->description(__('Comma separated list of acceptable file extensions (with dot). Leave blank to accept any file type.'));
+            $row->addTextField('options');
+    }
 
     $row = $form->addRow();
         $row->addLabel('required', __('Required'))->description(__('Is this field compulsory?'));
         $row->addYesNo('required')->required();
 
+    $row = $form->addRow();
+        $row->addLabel('heading', __('Heading'))->description(__('Optionally list this field under a heading.'));
+        $row->addTextField('heading')->maxLength(90);
+
     if ($values['context'] == 'Person') {
+        $form->addRow()->addHeading(__('Visibility'));
+
         $activePersonOptions = array(
             'activePersonStudent' => __('Student'),
             'activePersonStaff'   => __('Staff'),
