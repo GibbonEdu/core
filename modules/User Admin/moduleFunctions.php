@@ -16,18 +16,3 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-
-use Gibbon\Domain\System\CustomFieldGateway;
-
-/**
- * Deprecated. Gets a list of custom fields for a user based on params.
- */
-function getCustomFields($connection2, $guid, $student = null, $staff = null, $parent = null, $other = null, $applicationForm = null, $dataUpdater = null, $publicRegistration = null)
-{
-    global $container;
-
-    $params = compact('student', 'staff', 'parent', 'other', 'applicationForm', 'dataUpdater', 'publicRegistration');
-    $result = $container->get(CustomFieldGateway::class)->selectCustomFields('Person', $params);
-
-    return $result;
-}
