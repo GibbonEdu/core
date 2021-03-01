@@ -22,7 +22,7 @@ include '../../gibbon.php';
 $enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
 $enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
 
-$gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/markbook_edit_addMulti.php&gibbonCourseClassID=$gibbonCourseClassID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_addMulti.php') == false) {
