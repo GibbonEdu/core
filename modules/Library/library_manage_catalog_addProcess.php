@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $invoiceNumber = $_POST['invoiceNumber'] ?? '';
     $imageType = $_POST['imageType'] ?? '';
     if ($imageType == 'Link') {
-        $imageLocation = $_POST['imageLink'];
+        $imageLocation = $_POST['imageLink'] ?? '';
     } else {
         $imageLocation = '';
     }

@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             $invoiceNumber = $_POST['invoiceNumber'] ?? '';
             $imageType = $_POST['imageType'] ?? '';
             if ($imageType == 'Link') {
-                $imageLocation = $_POST['imageLink'];
+                $imageLocation = $_POST['imageLink'] ?? '';
             } elseif ($imageType == 'File') {
                 $imageLocation = $row['imageLocation'];
             } else {
@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             if ($borrowable == 'Y') {
                 $status = $_POST['statusBorrowable'] ?? '';
             } else {
-                $status = $_POST['statusNotBorrowable'];
+                $status = $_POST['statusNotBorrowable'] ?? '';
             }
             $physicalCondition = $_POST['physicalCondition'] ?? '';
 
