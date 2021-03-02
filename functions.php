@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Domain\System\LogGateway;
 
 require_once dirname(__FILE__).'/gibbon.php';
 
@@ -1586,30 +1587,26 @@ function formatPhone($num)
     return Format::phone($num);
 }
 
+/**
+ * @deprecated in v22.
+ *
+ * Use $container->get(\Gibbon\Domain\System\LogGateway::class)->addLog() instead.
+ * See \Gibbon\Domain\System\LogGateway::addLog() for details.
+ */
 function setLog($connection2, $gibbonSchoolYearID, $gibbonModuleID, $gibbonPersonID, $title, $array = null, $ip = null)
 {
-    if ((!is_array($array) && $array != null) || $title == null || $gibbonSchoolYearID == null) {
-        return;
+    static $logGateway;
+    if (!isset($logGateway)) {
+        global $container;
+        if (!isset($container)) {
+            throw new \Exception('Unable to find $container object in global namespace.');
+        }
+        $logGateway = $container->get(LogGateway::class);
+        if (!$logGateway instanceof LogGateway) {
+            throw new \Exception('LogGateway not found in container.');
+        }
     }
-
-    $ip = (empty($ip) ? getIPAddress() : $ip);
-
-    if ($array != null) {
-        $serialisedArray = serialize($array);
-    } else {
-        $serialisedArray = null;
-    }
-    try {
-        $dataLog = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonModuleID' => $gibbonModuleID, 'gibbonPersonID' => $gibbonPersonID, 'title' => $title, 'serialisedArray' => $serialisedArray, 'ip' => $ip);
-        $sqlLog = 'INSERT INTO gibbonLog SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonModuleID=:gibbonModuleID, gibbonPersonID=:gibbonPersonID, title=:title, serialisedArray=:serialisedArray, ip=:ip';
-        $resultLog = $connection2->prepare($sqlLog);
-        $resultLog->execute($dataLog);
-    } catch (PDOException $e) {
-        return;
-    }
-    $gibbonLogID = $connection2->lastInsertId();
-
-    return $gibbonLogID;
+    return $logGateway->addLog($gibbonSchoolYearID, $gibbonModuleID, $gibbonPersonID, $title, $array, $ip);
 }
 
 function getModuleID($connection2, $address)

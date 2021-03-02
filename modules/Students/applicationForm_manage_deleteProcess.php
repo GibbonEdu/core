@@ -17,8 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\LogGateway;
+
 include '../../gibbon.php';
 
+$logGateway = $container->get(LogGateway::class);
 $gibbonApplicationFormID = $_POST['gibbonApplicationFormID'];
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
 $search = $_GET['search'];
@@ -63,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             }
 
             //Attempt to write logo
-            setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], getModuleIDFromName($connection2, 'Students'), $_SESSION[$guid]['gibbonPersonID'], 'Application Form - Delete', array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'applicationFormContents' => serialize($row)), $_SERVER['REMOTE_ADDR']);
+            $logGateway->addLog($_SESSION[$guid]['gibbonSchoolYearIDCurrent'], getModuleIDFromName($connection2, 'Students'), $_SESSION[$guid]['gibbonPersonID'], 'Application Form - Delete', array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'applicationFormContents' => serialize($row)), $_SERVER['REMOTE_ADDR']);
 
 
             // Clean up the application form relationships

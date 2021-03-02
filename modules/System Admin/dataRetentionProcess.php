@@ -21,9 +21,11 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\ScrubbableGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\System\DataRetentionGateway;
+use Gibbon\Domain\System\LogGateway;
 
 include '../../gibbon.php';
 
+$logGateway = $container->get(LogGateway::class);
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/dataRetention.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/dataRetention.php') == false) {
@@ -106,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/dataRetention
     }
 
     // Write to log
-    setLog($connection2, $gibbon->session->get('gibbonSchoolYearID'), getModuleID($connection2, $_POST["address"]), $gibbon->session->get('gibbonPersonID'), 'Data Retention', array('Status' => (!$partialFail) ? "Success" : "Partial Failure", 'Count' => count($scrubbedList, COUNT_RECURSIVE)));
+    $logGateway->addLog($gibbon->session->get('gibbonSchoolYearID'), getModuleID($connection2, $_POST["address"]), $gibbon->session->get('gibbonPersonID'), 'Data Retention', array('Status' => (!$partialFail) ? "Success" : "Partial Failure", 'Count' => count($scrubbedList, COUNT_RECURSIVE)));
 
     $URL .= $partialFail
         ?'&return=warning2'

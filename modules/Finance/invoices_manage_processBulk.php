@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Domain\System\LogGateway;
 
 include '../../gibbon.php';
 
@@ -26,6 +27,7 @@ $from = getSettingByScope($connection2, 'Finance', 'email');
 //Module includes
 include './moduleFunctions.php';
 
+$logGateway = $container->get(LogGateway::class);
 $action = $_POST['action'] ?? '';
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $status = $_GET['status'] ?? '';
@@ -325,7 +327,7 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                                     $gibbonModuleID=getModuleIDFromName($connection2, 'Finance') ;
                                     $logArray=array() ;
                                     $logArray['recipients'] = is_array($emails) ? implode(',', $emails) : '' ;
-                                    setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearID"], $gibbonModuleID, $_SESSION[$guid]["gibbonPersonID"], 'Finance - Bulk Invoice Issue Email Failure', $logArray) ;
+                                    $logGateway->addLog($_SESSION[$guid]["gibbonSchoolYearID"], $gibbonModuleID, $_SESSION[$guid]["gibbonPersonID"], 'Finance - Bulk Invoice Issue Email Failure', $logArray) ;
                                 }
                             }
                         }
@@ -477,7 +479,7 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                             $gibbonModuleID=getModuleIDFromName($connection2, 'Finance') ;
                             $logArray=array() ;
                             $logArray['recipients'] = is_array($emails) ? implode(',', $emails) : '' ;
-                            setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearID"], $gibbonModuleID, $_SESSION[$guid]["gibbonPersonID"], 'Finance - Bulk Invoice Reminder Email Failure', $logArray) ;
+                            $logGateway->addLog($_SESSION[$guid]["gibbonSchoolYearID"], $gibbonModuleID, $_SESSION[$guid]["gibbonPersonID"], 'Finance - Bulk Invoice Reminder Email Failure', $logArray) ;
                         }
                     }
                 }

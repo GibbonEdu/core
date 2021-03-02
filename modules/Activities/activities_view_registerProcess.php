@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Domain\System\LogGateway;
 use Gibbon\Services\Format;
 
 include '../../gibbon.php';
@@ -25,6 +26,7 @@ include '../../gibbon.php';
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
+$logGateway = $container->get(LogGateway::class);
 $mode = $_POST['mode'] ?? '';
 $gibbonActivityID = $_POST['gibbonActivityID'] ?? '';
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
@@ -174,7 +176,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 }
 
                                 //Set log
-                                setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], $gibbonModuleID, $_SESSION[$guid]['gibbonPersonID'], 'Activities - Student Registered', array('gibbonPersonIDStudent' => $gibbonPersonID));
+                                $logGateway->addLog($_SESSION[$guid]['gibbonSchoolYearIDCurrent'], $gibbonModuleID, $_SESSION[$guid]['gibbonPersonID'], 'Activities - Student Registered', array('gibbonPersonIDStudent' => $gibbonPersonID));
 
                                 //Unlock locked database tables
 
@@ -233,7 +235,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             }
 
                             //Set log
-                            setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], $gibbonModuleID, $_SESSION[$guid]['gibbonPersonID'], 'Activities - Student Withdrawn', array('gibbonPersonIDStudent' => $gibbonPersonID));
+                            $logGateway->addLog($_SESSION[$guid]['gibbonSchoolYearIDCurrent'], $gibbonModuleID, $_SESSION[$guid]['gibbonPersonID'], 'Activities - Student Withdrawn', array('gibbonPersonIDStudent' => $gibbonPersonID));
 
                             $reg = $resultReg->fetch();
 
@@ -335,7 +337,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                             $resultBump->execute($dataBump);
 
                                         //Set log
-                                        setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], $gibbonModuleID, $_SESSION[$guid]['gibbonPersonID'], 'Activities - Student Bump', array('gibbonPersonIDStudent' => $rowBumps['gibbonPersonID']));
+                                        $logGateway->addLog($_SESSION[$guid]['gibbonSchoolYearIDCurrent'], $gibbonModuleID, $_SESSION[$guid]['gibbonPersonID'], 'Activities - Student Bump', array('gibbonPersonIDStudent' => $rowBumps['gibbonPersonID']));
 
                                         //Raise notifications
                                         $event = new NotificationEvent('Activities', 'Student Bumped');

@@ -17,8 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\LogGateway;
+
 include '../../gibbon.php';
 
+$logGateway = $container->get(LogGateway::class);
 $enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
 $enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
 $enableModifiedAssessment = getSettingByScope($connection2, 'Markbook', 'enableModifiedAssessment');
@@ -262,7 +265,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             $errorMessage = $fileUploader->getLastError();
                             if (!empty($errorMessage) || filesize($attachment) == 0) {
                                 $gibbonModuleID = getModuleIDFromName($connection2, 'Markbook');
-                                setLog($connection2, $gibbon->session->get('gibbonSchoolYearID'), $gibbonModuleID, $gibbon->session->get('gibbonPersonID'), 'Uploaded Response Failed', [
+                                $logGateway->addLog($gibbon->session->get('gibbonSchoolYearID'), $gibbonModuleID, $gibbon->session->get('gibbonPersonID'), 'Uploaded Response Failed', [
                                     'gibbonMarkbookColumnID' => $gibbonMarkbookColumnID,
                                     'gibbonPersonIDStudent' => $gibbonPersonIDStudent,
                                     'name' => $row['name'],

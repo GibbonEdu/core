@@ -21,11 +21,13 @@ use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Contracts\Comms\SMS;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationSender;
+use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\System\NotificationGateway;
 
 //Module includes
 include "./moduleFunctions.php" ;
 
+$logGateway = $container->get(LogGateway::class);
 $time=time() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php")==FALSE) {
@@ -2055,7 +2057,7 @@ else {
 						]);
 						if(!$mail->Send()) {
                             $partialFail = TRUE ;
-							setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], getModuleID($connection2, $_POST["address"]), $_SESSION[$guid]['gibbonPersonID'], 'Email Send Status', array('Status' => 'Not OK', 'Result' => $mail->ErrorInfo, 'Recipients' => $reportEntry[4]));
+							$logGateway->addLog($_SESSION[$guid]['gibbonSchoolYearIDCurrent'], getModuleID($connection2, $_POST["address"]), $_SESSION[$guid]['gibbonPersonID'], 'Email Send Status', array('Status' => 'Not OK', 'Result' => $mail->ErrorInfo, 'Recipients' => $reportEntry[4]));
 						}
 					}
                 }
@@ -2108,7 +2110,7 @@ else {
                     $partialFail &= !empty($result);
 
 					//Set log
-					setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], getModuleID($connection2, $_POST["address"]), $_SESSION[$guid]['gibbonPersonID'], 'SMS Send Status', array('Status' => $smsStatus, 'Result' => count($result), 'Recipients' => $recipients));
+					$logGateway->addLog($_SESSION[$guid]['gibbonSchoolYearIDCurrent'], getModuleID($connection2, $_POST["address"]), $_SESSION[$guid]['gibbonPersonID'], 'SMS Send Status', array('Status' => $smsStatus, 'Result' => count($result), 'Recipients' => $recipients));
 				}
 			}
 
