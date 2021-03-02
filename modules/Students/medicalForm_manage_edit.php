@@ -18,9 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Students\MedicalGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage_edit.php') == false) {
@@ -82,6 +83,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
             $row = $form->addRow();
                 $row->addLabel('tetanusWithin10Years', __('Tetanus Within Last 10 Years?'));
                 $row->addYesNo('tetanusWithin10Years')->placeholder();
+
+            // CUSTOM FIELDS
+            $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Medical Form', [], $values['fields']);
 
             $row = $form->addRow();
                 $row->addLabel('comment', __('Comment'));
