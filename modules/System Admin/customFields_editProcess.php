@@ -40,6 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
         'type'                     => $_POST['type'] ?? '',
         'options'                  => $_POST['options'] ?? '',
         'required'                 => $_POST['required'] ?? '',
+        'heading'                  => $_POST['heading'] ?? '',
         'activeDataUpdater'        => $_POST['activeDataUpdater'] ?? '0',
         'activeApplicationForm'    => $_POST['activeApplicationForm'] ?? '0',
         'activePublicRegistration' => $enablePublicRegistration == 'Y' ? ($_POST['activePublicRegistration'] ?? '0') : '0',
