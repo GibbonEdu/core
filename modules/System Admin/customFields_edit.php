@@ -137,6 +137,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
                 $row->addLabel('activePublicRegistration', __('Include In Public Registration Form?'));
                 $row->addSelect('activePublicRegistration')->fromArray(array('1' => __('Yes'), '0' => __('No')))->selected('0')->required();
         }
+    } elseif ($values['context'] == 'Medical Form') {
+        $form->addRow()->addHeading(__('Visibility'));
+
+        $row = $form->addRow();
+            $row->addLabel('activeDataUpdater', __('Include In Data Updater?'));
+            $row->addSelect('activeDataUpdater')->fromArray(array('1' => __('Yes'), '0' => __('No')))->required();
     }
 
     $row = $form->addRow();
