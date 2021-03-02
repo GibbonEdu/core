@@ -18,8 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Finance\PaymentGateway;
 
 //Module includes
@@ -483,20 +484,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     }
 
     // CUSTOM FIELDS FOR STUDENT
-    $existingFields = (isset($application["fields"]))? json_decode($application["fields"], true) : null;
-    $resultFields = getCustomFields($connection2, $guid, true, false, false, false, true, null);
-    if ($resultFields->rowCount() > 0) {
-        $heading = $form->addRow()->addSubheading(__('Other Information'));
-
-        while ($rowFields = $resultFields->fetch()) {
-            $name = 'custom'.$rowFields['gibbonCustomFieldID'];
-            $value = (isset($existingFields[$rowFields['gibbonCustomFieldID']]))? $existingFields[$rowFields['gibbonCustomFieldID']] : '';
-
-            $row = $form->addRow();
-                $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
-                $row->addCustomField($name, $rowFields)->setValue($value);
-        }
-    }
+    $params = ['student' => 1, 'applicationForm' => 1, 'subheading' => __('Other Information')];
+    $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Person', $params, $application['fields']);
 
     // FAMILY
     if (empty($application['gibbonFamilyID'])) {
@@ -540,21 +529,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $row->addSelectRelationship('parent1relationship')->required();
 
             // CUSTOM FIELDS FOR PARENT 1 WITH FAMILY
-            $existingFields = (isset($application["parent1fields"]))? json_decode($application["parent1fields"], true) : null;
-            $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
-            if ($resultFields->rowCount() > 0) {
-                $row = $form->addRow();
-                $row->addSubheading(__('Parent/Guardian').' 1 '.__('Other Information'));
-
-                while ($rowFields = $resultFields->fetch()) {
-                    $name = "parent1custom".$rowFields['gibbonCustomFieldID'];
-                    $value = (isset($existingFields[$rowFields['gibbonCustomFieldID']]))? $existingFields[$rowFields['gibbonCustomFieldID']] : '';
-
-                    $row = $form->addRow();
-                        $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
-                        $row->addCustomField($name, $rowFields)->setValue($value);
-                }
-            }
+            $params = ['parent' => 1, 'applicationForm' => 1, 'prefix' => 'parent1custom', 'subheading' => __('Parent/Guardian').' 1 '.__('Other Information')];
+            $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Person', $params, $application['parent1fields']);
 
             $start = 2;
         } else {
@@ -681,21 +657,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $row->addTextField("parent{$i}employer")->maxLength(90);
 
             // CUSTOM FIELDS FOR PARENTS
-            $existingFields = (isset($application["parent{$i}fields"]))? json_decode($application["parent{$i}fields"], true) : null;
-            $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
-            if ($resultFields->rowCount() > 0) {
-                $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addSubheading(__('Parent/Guardian')." $i ".__('Other Information'));
-
-                while ($rowFields = $resultFields->fetch()) {
-                    $name = "parent{$i}custom".$rowFields['gibbonCustomFieldID'];
-                    $value = (isset($existingFields[$rowFields['gibbonCustomFieldID']]))? $existingFields[$rowFields['gibbonCustomFieldID']] : '';
-
-                    $row = $form->addRow()->setClass("parentSection{$i}");
-                        $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
-                        $row->addCustomField($name, $rowFields)->setValue($value);
-                }
-            }
+            $params = ['parent' => 1, 'applicationForm' => 1, 'prefix' => "parent{$i}custom", 'subheading' => __('Parent/Guardian')." $i ".__('Other Information')];
+            $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Person', $params, $application["parent{$i}fields"]);
         }
     } else {
         // EXISTING FAMILY

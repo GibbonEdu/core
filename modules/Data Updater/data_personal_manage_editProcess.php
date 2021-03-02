@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
+use Gibbon\Domain\System\CustomFieldGateway;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\System\NotificationGateway;
 
@@ -433,22 +434,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     }
                 }
 
-                //DEAL WITH CUSTOM FIELDS
-                //Prepare field values
-                $resultFields = getCustomFields($connection2, $guid, $student, $staff, $parent, $other, null, true);
-                $fields = isset($row2['fields']) ? json_decode($row2['fields'], true) : [];
-                if ($resultFields->rowCount() > 0) {
-                    while ($rowFields = $resultFields->fetch()) {
-                        if (isset($_POST['newcustom'.$rowFields['gibbonCustomFieldID'].'On'])) {
-                            if (isset($_POST['newcustom'.$rowFields['gibbonCustomFieldID']])) {
-                                if ($rowFields['type'] == 'date') {
-                                    $fields[$rowFields['gibbonCustomFieldID']] = dateConvert($guid, $_POST['newcustom'.$rowFields['gibbonCustomFieldID']]);
-                                } else {
-                                    $fields[$rowFields['gibbonCustomFieldID']] = $_POST['newcustom'.$rowFields['gibbonCustomFieldID']];
-                                }
-                            }
-                        }
-                    }
+                // CUSTOM FIELDS
+                $params = compact('student', 'staff', 'parent', 'other');
+                $customFields = $container->get(CustomFieldGateway::class)->selectCustomFields('Person', $params + ['dataUpdater' => 1])->fetchAll();
+
+                $fields = !empty($row2['fields']) ? json_decode($row2['fields'], true) : [];
+                foreach ($customFields as $field) {
+                    if (!isset($_POST['newcustom'.$field['gibbonCustomFieldID'].'On'])) continue;
+                    if (!isset($_POST['newcustom'.$field['gibbonCustomFieldID']])) continue;
+
+                    $fields[$field['gibbonCustomFieldID']] = $field['type'] == 'date'
+                        ? Format::dateConvert($_POST['newcustom'.$field['gibbonCustomFieldID']])
+                        : $_POST['newcustom'.$field['gibbonCustomFieldID']];
                 }
 
                 $fields = json_encode($fields);

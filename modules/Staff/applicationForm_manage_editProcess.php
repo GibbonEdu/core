@@ -1,4 +1,6 @@
 <?php
+
+use Gibbon\Forms\CustomFieldHandler;
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -188,36 +190,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
             } else {
-                //DEAL WITH CUSTOM FIELDS
+                // CUSTOM FIELDS
                 $customRequireFail = false;
-                //Prepare field values
-                $resultFields = getCustomFields($connection2, $guid, false, true, false, false, true, null);
-                $fields = array();
-                if ($resultFields->rowCount() > 0) {
-                    while ($rowFields = $resultFields->fetch()) {
-                        if (isset($_POST['custom'.$rowFields['gibbonCustomFieldID']])) {
-                            if ($rowFields['type'] == 'date') {
-                                $fields[$rowFields['gibbonCustomFieldID']] = dateConvert($guid, $_POST['custom'.$rowFields['gibbonCustomFieldID']]);
-                            } else {
-                                $fields[$rowFields['gibbonCustomFieldID']] = $_POST['custom'.$rowFields['gibbonCustomFieldID']];
-                            }
-                        }
-                        if ($rowFields['required'] == 'Y') {
-                            if (isset($_POST['custom'.$rowFields['gibbonCustomFieldID']]) == false) {
-                                $customRequireFail = true;
-                            } elseif ($_POST['custom'.$rowFields['gibbonCustomFieldID']] == '') {
-                                $customRequireFail = true;
-                            }
-                        }
-                    }
-                }
+                $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Person', ['staff' => 1, 'applicationForm' => 1], $customRequireFail);
 
                 if ($customRequireFail) {
                     $URL .= '&return=error3';
                     header("Location: {$URL}");
                 } else {
-                    $fields = json_encode($fields);
-
                     //Write to database
                     try {
                         $data = array('priority' => $priority, 'status' => $status, 'milestones' => $milestones, 'dateStart' => $dateStart, 'notes' => $notes, 'surname' => $surname, 'firstName' => $firstName, 'preferredName' => $preferredName, 'officialName' => $officialName, 'nameInCharacters' => $nameInCharacters, 'gender' => $gender, 'dob' => $dob, 'languageFirst' => $languageFirst, 'languageSecond' => $languageSecond, 'languageThird' => $languageThird, 'countryOfBirth' => $countryOfBirth, 'citizenship1' => $citizenship1, 'citizenship1Passport' => $citizenship1Passport, 'nationalIDCardNumber' => $nationalIDCardNumber, 'residencyStatus' => $residencyStatus, 'visaExpiryDate' => $visaExpiryDate, 'email' => $email, 'homeAddress' => $homeAddress, 'homeAddressDistrict' => $homeAddressDistrict, 'homeAddressCountry' => $homeAddressCountry, 'phone1Type' => $phone1Type, 'phone1CountryCode' => $phone1CountryCode, 'phone1' => $phone1, 'referenceEmail1' => $referenceEmail1, 'referenceEmail2' => $referenceEmail2, 'fields' => $fields, 'gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID);

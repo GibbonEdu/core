@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\System\DataRetentionGateway;
 
@@ -36,7 +37,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
     $returns = array();
     $returns['warning1'] = __('Your request was completed successfully, but one or more images were the wrong size and so were not saved.');
-    $page->return->addReturns($returns);
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], null, $returns);
+    }
 
     //Check if school year specified
     $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
@@ -617,20 +620,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 			}
 
 			// CUSTOM FIELDS
-			$existingFields = (isset($values['fields']))? json_decode($values['fields'], true) : null;
-			$resultFields = getCustomFields($connection2, $guid, $student, $staff, $parent, $other);
-			if ($resultFields->rowCount() > 0) {
-				$heading = $form->addRow()->addHeading(__('Custom Fields'));
-
-				while ($rowFields = $resultFields->fetch()) {
-					$name = 'custom'.$rowFields['gibbonCustomFieldID'];
-					$value = (isset($existingFields[$rowFields['gibbonCustomFieldID']]))? $existingFields[$rowFields['gibbonCustomFieldID']] : '';
-
-					$row = $form->addRow();
-						$row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
-						$row->addCustomField($name, $rowFields)->setValue($value);
-				}
-			}
+            $params = compact('student', 'staff', 'parent', 'other');
+            $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Person', $params, $values['fields']);
 
 			$row = $form->addRow();
 				$row->addFooter()->append('<small>'.getMaxUpload($guid, true).'</small>');
