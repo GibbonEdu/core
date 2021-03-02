@@ -57,7 +57,7 @@ class Format
     public static function setupFromSession(Session $session)
     {
         $settings = $session->get('i18n');
-        
+
         $settings['absolutePath'] = $session->get('absolutePath');
         $settings['absoluteURL'] = $session->get('absoluteURL');
         $settings['gibbonThemeName'] = $session->get('gibbonThemeName');
@@ -68,7 +68,7 @@ class Format
         $settings['nameFormatStaffInformalReversed'] = $session->get('nameFormatStaffInformalReversed');
         $settings['nameFormatStaffFormal'] = $session->get('nameFormatStaffFormal');
         $settings['nameFormatStaffFormalReversed'] = $session->get('nameFormatStaffFormalReversed');
-        
+
         static::setup($settings);
     }
 
@@ -115,7 +115,7 @@ class Format
         $date = static::createDateTime($dateString, 'Y-m-d H:i:s');
         return $date ? $date->format($format ? $format : static::$settings['dateTimeFormatPHP']) : $dateString;
     }
-    
+
     /**
      * Formats a YYYY-MM-DD date as a readable string with month names.
      *
@@ -253,7 +253,7 @@ class Format
         } elseif ($timeDifference < 0) {
             $time = __('in {time}', ['time' => $time]);
         }
-        
+
         return $tooltip
             ? self::tooltip($time, static::dateTime($dateString))
             : $time;
@@ -336,7 +336,7 @@ class Format
     public static function yesNo($value, $translate = true)
     {
         $value = ($value == 'Y' || $value == 'Yes') ? 'Yes' : 'No';
-        
+
         return $translate ? __($value) : $value;
     }
 
@@ -446,6 +446,18 @@ class Format
     }
 
     /**
+     * Replaces all URLs with active hyperlinks
+     *
+     * @param string $value
+     * @return string
+     */
+    public static function hyperlinkAll(string $value)
+    {
+        $pattern = "~[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]~";
+        return $output = preg_replace($pattern, '<a target="_blank" href="$0">$0</a>', $value);
+    }
+
+    /**
      * Formats a key => value array of HTML attributes into a string of key="value".
      *
      * @param array $attributes
@@ -482,7 +494,7 @@ class Format
         }
 
         $date = $date->diff(new DateTime());
-        
+
         return $short
             ? $date->y . __('y') .', '. $date->m . __('m')
             : $date->y .' '. __('years') .', '. $date->m .' '. __('months');
@@ -609,7 +621,7 @@ class Format
 
         return trim($output, ' ');
     }
-    
+
     /**
      * Formats a linked name based on roleCategory
      * @param string $gibbonPersonID
@@ -641,7 +653,7 @@ class Format
         }
         return $output;
     }
-    
+
     /**
      * Formats a list of names from an array containing standard title, preferredName & surname fields.
      *
@@ -775,7 +787,7 @@ class Format
     {
         // HEY SHORTY IT'S YOUR BIRTHDAY!
         $daysUntilNextBirthday = daysUntilNextBirthday($dob);
-        
+
         if (empty($dob) || $daysUntilNextBirthday >= 8) {
             return '';
         }
