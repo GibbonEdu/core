@@ -21,7 +21,7 @@ include '../../gibbon.php';
 
 include './moduleFunctions.php';
 
-$gibbonLibraryItemID = $_POST['gibbonLibraryItemID'];
+$gibbonLibraryItemID = $_POST['gibbonLibraryItemID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/library_manage_catalog_duplicate.php&gibbonLibraryItemID=$gibbonLibraryItemID&name=".$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'].'&gibbonPersonIDOwnership='.$_GET['gibbonPersonIDOwnership'].'&typeSpecificFields='.$_GET['typeSpecificFields'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_catalog_edit.php') == false) {
@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             $borrowable = $row['borrowable'];
             $bookable = $row['bookable'];
             $fields = $row['fields'];
-            $count = $_POST['count'];
+            $count = $_POST['count'] ?? '';
 
             if ($gibbonLibraryTypeID == '' or $name == '' or $producer == '' or $borrowable == '' or $count == '') {
                 $URL .= '&return=error1';
