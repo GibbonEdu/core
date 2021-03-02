@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonCourseClassID = $_POST['gibbonCourseClassID'];
-$gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'];
+$gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
+$gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/markbook_edit_delete.php&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonCourseClassID=$gibbonCourseClassID";
 $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/markbook_view.php&gibbonCourseClassID=$gibbonCourseClassID";
 

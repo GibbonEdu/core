@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/markbook_edit_targets.php&gibbonCourseClassID=$gibbonCourseClassID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_targets.php') == false) {
@@ -32,8 +32,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
-        $count = $_POST['count'];
-        $gibbonScaleIDTarget = $_POST['gibbonScaleIDTarget'];
+        $count = $_POST['count'] ?? '';
+        $gibbonScaleIDTarget = $_POST['gibbonScaleIDTarget'] ?? '';
         if ($gibbonScaleIDTarget == '')
             $gibbonScaleIDTarget = null;
         $partialFail = false;
@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
         }
 
         for ($i = 1;$i <= $count;++$i) {
-            $gibbonPersonIDStudent = $_POST["$i-gibbonPersonID"];
+            $gibbonPersonIDStudent = $_POST["$i-gibbonPersonID"] ?? '';
             $gibbonScaleGradeID = null;
             if (!empty($_POST["$i-gibbonScaleGradeID"])) {
                 $gibbonScaleGradeID = $_POST["$i-gibbonScaleGradeID"];
