@@ -28,23 +28,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     header("Location: {$URL}");
 } else {
     //Get general fields
-    $gibbonLibraryTypeID = $_POST['gibbonLibraryTypeID'];
-    $id = $_POST['idCheck'];
-    $name = $_POST['name'];
-    $producer = $_POST['producer'];
-    $vendor = $_POST['vendor'];
-    $purchaseDate = null;
-    if ($_POST['purchaseDate'] != '') {
-        $purchaseDate = dateConvert($guid, $_POST['purchaseDate']);
-    }
-    $invoiceNumber = $_POST['invoiceNumber'];
-    $imageType = $_POST['imageType'];
+    $gibbonLibraryTypeID = $_POST['gibbonLibraryTypeID'] ?? '';
+    $id = $_POST['idCheck'] ?? '';
+    $name = $_POST['name'] ?? '';
+    $producer = $_POST['producer'] ?? '';
+    $vendor = $_POST['vendor'] ?? '';
+    $purchaseDate = dateConvert($guid, $_POST['purchaseDate'] ?? null);
+
+    $invoiceNumber = $_POST['invoiceNumber'] ?? '';
+    $imageType = $_POST['imageType'] ?? '';
     if ($imageType == 'Link') {
-        $imageLocation = $_POST['imageLink'];
+        $imageLocation = $_POST['imageLink'] ?? '';
     } else {
         $imageLocation = '';
     }
-    $replacement = $_POST['replacement'];
+    $replacement = $_POST['replacement'] ?? '';
     $gibbonSchoolYearIDReplacement = null;
     $replacementCost = null;
     if ($replacement == 'Y') {
@@ -57,30 +55,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     } else {
         $replacement == 'N';
     }
-    $comment = $_POST['comment'];
-    $gibbonSpaceID = null;
-    if ($_POST['gibbonSpaceID'] != '') {
-        $gibbonSpaceID = $_POST['gibbonSpaceID'];
-    }
-    $locationDetail = $_POST['locationDetail'];
-    $ownershipType = $_POST['ownershipType'];
+    $comment = $_POST['comment'] ?? '';
+    $gibbonSpaceID = $_POST['gibbonSpaceID'] ?? null;
+
+    $locationDetail = $_POST['locationDetail'] ?? '';
+    $ownershipType = $_POST['ownershipType'] ?? '';
     $gibbonPersonIDOwnership = null;
     if ($ownershipType == 'School' and $_POST['gibbonPersonIDOwnershipSchool'] != '') {
-        $gibbonPersonIDOwnership = $_POST['gibbonPersonIDOwnershipSchool'];
+        $gibbonPersonIDOwnership = $_POST['gibbonPersonIDOwnershipSchool'] ?? '';
     } elseif ($ownershipType == 'Individual' and $_POST['gibbonPersonIDOwnershipIndividual'] != '') {
-        $gibbonPersonIDOwnership = $_POST['gibbonPersonIDOwnershipIndividual'];
+        $gibbonPersonIDOwnership = $_POST['gibbonPersonIDOwnershipIndividual'] ?? '';
     }
-    $gibbonDepartmentID = null;
-    if ($_POST['gibbonDepartmentID'] != '') {
-        $gibbonDepartmentID = $_POST['gibbonDepartmentID'];
-    }
-    $bookable = $_POST['bookable'];
-    $borrowable = $_POST['borrowable'];
-    $status = $_POST['status'];
-    $physicalCondition = $_POST['physicalCondition'];
+    $gibbonDepartmentID = $_POST['gibbonDepartmentID'] ?? null;
+
+    $bookable = $_POST['bookable'] ?? '';
+    $borrowable = $_POST['borrowable'] ?? '';
+    $status = $_POST['status'] ?? '';
+    $physicalCondition = $_POST['physicalCondition'] ?? '';
 
     //Get type-specific fields
-    
+
         $data = array('gibbonLibraryTypeID' => $gibbonLibraryTypeID);
         $sql = "SELECT * FROM gibbonLibraryType WHERE gibbonLibraryTypeID=:gibbonLibraryTypeID AND active='Y' ORDER BY name";
         $result = $connection2->prepare($sql);

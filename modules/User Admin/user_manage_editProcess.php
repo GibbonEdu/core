@@ -21,6 +21,7 @@ use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\System\NotificationGateway;
 
 include '../../gibbon.php';
@@ -28,6 +29,7 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
+$logGateway = $container->get(LogGateway::class);
 $gibbonPersonID = $_GET['gibbonPersonID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/user_manage_edit.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search'];
 
@@ -571,7 +573,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                 $privacyValues=array() ;
                                 $privacyValues['oldValue'] = $privacy_old ;
                                 $privacyValues['newValue'] = $privacy ;
-                                setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearID"], $gibbonModuleID, $_SESSION[$guid]["gibbonPersonID"], 'Privacy - Value Changed', $privacyValues, $_SERVER['REMOTE_ADDR']) ;
+                                $logGateway->addLog($_SESSION[$guid]["gibbonSchoolYearID"], $gibbonModuleID, $_SESSION[$guid]["gibbonPersonID"], 'Privacy - Value Changed', $privacyValues, $_SERVER['REMOTE_ADDR']) ;
                             }
                         }
 
