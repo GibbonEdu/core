@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes from User Admin (for custom fields)
@@ -238,17 +239,8 @@ if ($proceed == false) {
         }
 
         // CUSTOM FIELDS FOR STAFF
-        $resultFields = getCustomFields($connection2, $guid, false, true, false, false, true, null);
-        if ($resultFields->rowCount() > 0) {
-            $form->addRow()->addHeading(__('Other Information'));
-
-            while ($rowFields = $resultFields->fetch()) {
-                $name = 'custom'.$rowFields['gibbonCustomFieldID'];
-                $row = $form->addRow();
-                    $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
-                    $row->addCustomField($name, $rowFields);
-            }
-        }
+        $params = ['staff' => 1, 'applicationForm' => 1, 'heading' => __('Other Information')];
+        $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Person', $params);
 
         // REQURIED DOCUMENTS
         $staffApplicationFormRequiredDocuments = getSettingByScope($connection2, 'Staff', 'staffApplicationFormRequiredDocuments');

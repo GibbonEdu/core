@@ -17,14 +17,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Format;
-use Gibbon\Domain\Staff\StaffAbsenceGateway;
-use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
-use Gibbon\Domain\Staff\StaffFacilityGateway;
-use Gibbon\Domain\Activities\ActivityGateway;
-use Gibbon\Tables\DataTable;
-use Gibbon\Domain\User\FamilyGateway;
 use Gibbon\Domain\DataSet;
+use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Domain\User\FamilyGateway;
+use Gibbon\Domain\Staff\StaffAbsenceGateway;
+use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Domain\Staff\StaffFacilityGateway;
+use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -292,34 +293,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                         echo $table->render([$row]);
 
-                        //Custom Fields
-                        $fields = json_decode($row['fields'], true);
-                        $resultFields = getCustomFields($connection2, $guid, false, true);
-                        if ($resultFields->rowCount() > 0) {
-                            echo '<h4>';
-                            echo __('Custom Fields');
-                            echo '</h4>';
-
-                            $table = DataTable::createDetails('custom');
-
-                            while ($rowFields = $resultFields->fetch()) {
-                                $table->addColumn($rowFields['name'], __($rowFields['name']))
-                                    ->format(function($row) use ($fields, $rowFields) {
-                                        if (isset($fields[$rowFields['gibbonCustomFieldID']])) {
-                                            if ($rowFields['type'] == 'date') {
-                                                return Format::date($fields[$rowFields['gibbonCustomFieldID']]);
-                                            } elseif ($rowFields['type'] == 'url') {
-                                                return "<a target='_blank' href='".$fields[$rowFields['gibbonCustomFieldID']]."'>".$fields[$rowFields['gibbonCustomFieldID']].'</a>';
-                                            } else {
-                                                return $fields[$rowFields['gibbonCustomFieldID']];
-                                            }
-                                        }
-                                        return '';
-                                    });
-                            }
-
-                            echo $table->render([$row]);
-                        }
+                        // Custom Fields
+                        $table = $container->get(CustomFieldHandler::class)->createCustomFieldsTable('Person', ['staff' => 1], $row['fields']);
+                        $table->setTitle(__('Custom Fields'));
+                        echo $table->getOutput();
                     } elseif ($subpage == 'Family') {
                         $familyGateway = $container->get(FamilyGateway::class);
 

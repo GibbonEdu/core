@@ -18,8 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -621,20 +622,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     }
 
                     // CUSTOM FIELDS
-                    $existingFields = (isset($values['fields']))? json_decode($values['fields'], true) : null;
-                    $resultFields = getCustomFields($connection2, $guid, $student, $staff, $parent, $other, false, true);
-                    if ($resultFields->rowCount() > 0) {
-                        $heading = $form->addRow()->addHeading(__('Custom Fields'));
+                    $heading = $form->addRow()->addHeading(__('Custom Fields'));
 
-                        while ($rowFields = $resultFields->fetch()) {
-                            $name = 'custom'.$rowFields['gibbonCustomFieldID'];
-                            $value = (isset($existingFields[$rowFields['gibbonCustomFieldID']]))? $existingFields[$rowFields['gibbonCustomFieldID']] : '';
-
-                            $row = $form->addRow();
-                            $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
-                            $row->addCustomField($name, $rowFields)->setValue($value);
-                        }
-                    }
+                    $params = compact('student', 'staff', 'parent', 'other');
+                    $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Person', $params + ['dataUpdater' => 1], $values['fields']);
 
                     $row = $form->addRow();
                         $row->addFooter();
