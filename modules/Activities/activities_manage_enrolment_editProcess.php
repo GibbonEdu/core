@@ -17,8 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\LogGateway;
+
 include '../../gibbon.php';
 
+$logGateway = $container->get(LogGateway::class);
 $gibbonActivityID = $_GET['gibbonActivityID'];
 $gibbonPersonID = $_GET['gibbonPersonID'];
 
@@ -70,7 +73,7 @@ if ($gibbonActivityID == '' or $gibbonPersonID == '') { echo 'Fatal error loadin
                 //Set log
                 if ($statusOld != $status) {
                     $gibbonModuleID = getModuleIDFromName($connection2, 'Activities') ;
-                    setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], $gibbonModuleID, $_SESSION[$guid]['gibbonPersonID'], 'Activities - Student Status Changed', array('gibbonPersonIDStudent' => $gibbonPersonID, 'statusOld' => $statusOld, 'statusNew' => $status));
+                    $logGateway->addLog($_SESSION[$guid]['gibbonSchoolYearIDCurrent'], $gibbonModuleID, $_SESSION[$guid]['gibbonPersonID'], 'Activities - Student Status Changed', array('gibbonPersonIDStudent' => $gibbonPersonID, 'statusOld' => $statusOld, 'statusNew' => $status));
                 }
 
                 $URL .= '&return=success0';
