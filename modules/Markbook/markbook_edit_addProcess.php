@@ -37,8 +37,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
         //Validate Inputs
         $gibbonUnitID = $_POST['gibbonUnitID'] ?? '';
         $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? '';
-            }
-        }
         $name = $_POST['name'] ?? '';
         $description = $_POST['description'] ?? '';
         $type = $_POST['type'] ?? '';
