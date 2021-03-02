@@ -20,7 +20,8 @@ v22.0.00
 --------
     Headlines
         New 2021 core theme
-        Improved custom field system
+        Improved custom fields system
+        Added custom fields to Medical Forms
 
     Significant Changes
         System: improved support for custom themes
