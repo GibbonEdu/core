@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields.
 } else {
     // Proceed!
     $data = $_POST['data'] ?? [];
-    $order = json_decode($_POST['order']);
+    $order = json_decode($_POST['order'] ?? '');
 
     if (empty($order)) {
         exit;
