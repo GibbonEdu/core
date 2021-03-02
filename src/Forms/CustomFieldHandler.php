@@ -149,8 +149,14 @@ class CustomFieldHandler
 
     public function createCustomFieldsTable($context, $params = [], $fields = [])
     {
-        $existingFields = isset($fields) && is_string($fields)? json_decode($fields, true) : $fields;
+        $fields = isset($fields) && is_string($fields)? json_decode($fields, true) : $fields;
         $customFields = $this->customFieldGateway->selectCustomFields($context, $params)->fetchAll();
+
+        $existingFields = [];
+        foreach ($fields as $key => $value) {
+            $key = str_pad($key, 4, "0", STR_PAD_LEFT);
+            $existingFields[$key] = $value;
+        }
 
         $table = DataTable::createDetails('customFields')->withData([$existingFields]);
 
