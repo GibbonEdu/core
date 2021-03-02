@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
-use Gibbon\Domain\System\CustomFieldGateway;
+use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\System\NotificationGateway;
 
@@ -436,19 +436,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
                 // CUSTOM FIELDS
                 $params = compact('student', 'staff', 'parent', 'other');
-                $customFields = $container->get(CustomFieldGateway::class)->selectCustomFields('Person', $params + ['dataUpdater' => 1])->fetchAll();
-
-                $fields = !empty($row2['fields']) ? json_decode($row2['fields'], true) : [];
-                foreach ($customFields as $field) {
-                    if (!isset($_POST['newcustom'.$field['gibbonCustomFieldID'].'On'])) continue;
-                    if (!isset($_POST['newcustom'.$field['gibbonCustomFieldID']])) continue;
-
-                    $fields[$field['gibbonCustomFieldID']] = $field['type'] == 'date'
-                        ? Format::dateConvert($_POST['newcustom'.$field['gibbonCustomFieldID']])
-                        : $_POST['newcustom'.$field['gibbonCustomFieldID']];
-                }
-
-                $fields = json_encode($fields);
+                $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromDataUpdate('Person', $params, $row2['fields']);
 
                 if (strlen($set) > 1) {
                     //Write to database
