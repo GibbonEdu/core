@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-$gibbonMarkbookWeightID = (isset($_POST['gibbonMarkbookWeightID']))? $_POST['gibbonMarkbookWeightID'] : null;
+$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+$gibbonMarkbookWeightID = $_POST['gibbonMarkbookWeightID'] ?? null;
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/weighting_manage_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookWeightID=$gibbonMarkbookWeightID";
 $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/weighting_manage.php&gibbonCourseClassID=$gibbonCourseClassID";
 
@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
         header("Location: {$URL}");
     } else {
 
-        
+
             $data2 = array('gibbonMarkbookWeightID' => $gibbonMarkbookWeightID);
             $sql2 = 'SELECT type FROM gibbonMarkbookWeight WHERE gibbonMarkbookWeightID=:gibbonMarkbookWeightID';
             $result2 = $connection2->prepare($sql2);

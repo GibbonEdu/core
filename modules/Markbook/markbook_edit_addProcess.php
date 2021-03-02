@@ -22,7 +22,7 @@ include '../../gibbon.php';
 $enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
 $enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
 
-$gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add.php') == false) {
@@ -35,18 +35,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
     } else {
         //Proceed!
         //Validate Inputs
-        $gibbonUnitID = $_POST['gibbonUnitID'];
-        $gibbonPlannerEntryID = null;
-        if (isset($_POST['gibbonPlannerEntryID'])) {
-            if ($_POST['gibbonPlannerEntryID'] != '') {
-                $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'];
-            }
-        }
-        $name = $_POST['name'];
-        $description = $_POST['description'];
-        $type = $_POST['type'];
+        $gibbonUnitID = $_POST['gibbonUnitID'] ?? '';
+        $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? '';
+        $name = $_POST['name'] ?? '';
+        $description = $_POST['description'] ?? '';
+        $type = $_POST['type'] ?? '';
         $date = (!empty($_POST['date']))? dateConvert($guid, $_POST['date']) : date('Y-m-d');
-        $gibbonSchoolYearTermID = (!empty($_POST['gibbonSchoolYearTermID']))? $_POST['gibbonSchoolYearTermID'] : null;
+        $gibbonSchoolYearTermID = $_POST['gibbonSchoolYearTermID'] ?? null;
 
         // Grab the appropriate term ID if the date is provided and the term ID is not
         if (empty($gibbonSchoolYearTermID) && !empty($date)) {
@@ -66,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
         }
 
         //Sort out attainment
-        $attainment = $_POST['attainment'];
+        $attainment = $_POST['attainment'] ?? '';
         $attainmentWeighting = 1;
         $attainmentRaw = 'N';
         $attainmentRawMax = null;
@@ -97,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                 if ($_POST['gibbonRubricIDAttainment'] == '') {
                     $gibbonRubricIDAttainment = null;
                 } else {
-                    $gibbonRubricIDAttainment = $_POST['gibbonRubricIDAttainment'];
+                    $gibbonRubricIDAttainment = $_POST['gibbonRubricIDAttainment'] ?? '';
                 }
             }
         }
@@ -106,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
             $effort = 'N';
         }
         else {
-            $effort = $_POST['effort'];
+            $effort = $_POST['effort'] ?? '';
         }
         if ($effort == 'N') {
             $gibbonScaleIDEffort = null;
@@ -115,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
             if ($_POST['gibbonScaleIDEffort'] == '') {
                 $gibbonScaleIDEffort = null;
             } else {
-                $gibbonScaleIDEffort = $_POST['gibbonScaleIDEffort'];
+                $gibbonScaleIDEffort = $_POST['gibbonScaleIDEffort'] ?? '';
             }
             if ($enableRubrics != 'Y') {
                 $gibbonRubricIDEffort = null;
@@ -124,13 +119,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                 if ($_POST['gibbonRubricIDEffort'] == '') {
                     $gibbonRubricIDEffort = null;
                 } else {
-                    $gibbonRubricIDEffort = $_POST['gibbonRubricIDEffort'];
+                    $gibbonRubricIDEffort = $_POST['gibbonRubricIDEffort'] ?? '';
                 }
             }
         }
-        $comment = $_POST['comment'];
-        $uploadedResponse = $_POST['uploadedResponse'];
-        $completeDate = $_POST['completeDate'];
+        $comment = $_POST['comment'] ?? '';
+        $uploadedResponse = $_POST['uploadedResponse'] ?? '';
+        $completeDate = $_POST['completeDate'] ?? '';
         if ($completeDate == '') {
             $completeDate = null;
             $complete = 'N';
@@ -138,8 +133,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
             $completeDate = dateConvert($guid, $completeDate);
             $complete = 'Y';
         }
-        $viewableStudents = $_POST['viewableStudents'];
-        $viewableParents = $_POST['viewableParents'];
+        $viewableStudents = $_POST['viewableStudents'] ?? '';
+        $viewableParents = $_POST['viewableParents'] ?? '';
         $attachment = '';
         $gibbonPersonIDCreator = $_SESSION[$guid]['gibbonPersonID'];
         $gibbonPersonIDLastEdit = $_SESSION[$guid]['gibbonPersonID'];
@@ -198,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
             $AI = str_pad($connection2->lastInsertID(), 10, '0', STR_PAD_LEFT);
 
             //Unlock module table
-            
+
                 $sql = 'UNLOCK TABLES';
                 $result = $connection2->query($sql);
 

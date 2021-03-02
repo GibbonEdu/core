@@ -20,14 +20,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 
-$gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Markbook/weighting_manage.php&gibbonCourseClassID=$gibbonCourseClassID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $gibbonWeightingCopyClassID = (isset($_POST['gibbonWeightingCopyClassID']))? $_POST['gibbonWeightingCopyClassID'] : null;
+    $gibbonWeightingCopyClassID = $_POST['gibbonWeightingCopyClassID'] ?? null;
 
     if (empty($_POST)) {
         $URL .= '&return=error1';
@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
         header("Location: {$URL}");
     } else {
 
-        
+
             $data2 = array('gibbonCourseClassID' => $gibbonWeightingCopyClassID);
             $sql2 = 'SELECT * FROM gibbonMarkbookWeight WHERE gibbonCourseClassID=:gibbonCourseClassID';
             $result2 = $connection2->prepare($sql2);
@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
                     header("Location: {$URL}");
                 }
             }
-            
+
         }
     }
 }

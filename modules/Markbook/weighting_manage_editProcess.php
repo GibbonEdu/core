@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/weighting_manage.php&gibbonCourseClassID=$gibbonCourseClassID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_edit.php') == false) {
@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
     } else {
 
         $gibbonMarkbookWeightID = (isset($_GET['gibbonMarkbookWeightID']))? $_GET['gibbonMarkbookWeightID'] : null;
-        
+
             $data2 = array('gibbonMarkbookWeightID' => $gibbonMarkbookWeightID);
             $sql2 = 'SELECT type FROM gibbonMarkbookWeight WHERE gibbonMarkbookWeightID=:gibbonMarkbookWeightID';
             $result2 = $connection2->prepare($sql2);
@@ -46,12 +46,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
             header("Location: {$URL}");
         } else {
 
-            $description = (isset($_POST['description']))? $_POST['description'] : null;
-            $type = (isset($_POST['type']))? $_POST['type'] : null;
-            $weighting = (isset($_POST['weighting']))? floatval($_POST['weighting']) : 0;
+            $description = $_POST['description'] ?? null;
+            $type = $_POST['type'] ?? null;
+            $weighting = floatval($_POST['weighting'] ?? 0);
             $weighting = max(0, min(100, $weighting) );
-            $reportable = (isset($_POST['reportable']))? $_POST['reportable'] : null;
-            $calculate = (isset($_POST['calculate']))? $_POST['calculate'] : null;
+            $reportable = $_POST['reportable'] ?? null;
+            $calculate = $_POST['calculate'] ?? null;
 
             if ( empty($description) || empty($type) || empty($reportable) || empty($calculate) || $weighting === '' ) {
                 $URL .= '&return=error1';

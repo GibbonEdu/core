@@ -20,15 +20,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 
-$gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Markbook/markbook_edit.php&gibbonCourseClassID=$gibbonCourseClassID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_copy.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $gibbonMarkbookCopyClassID = (isset($_GET['gibbonMarkbookCopyClassID']))? $_GET['gibbonMarkbookCopyClassID'] : null;
-    $copyColumnID = (isset($_POST['copyColumnID']))? $_POST['copyColumnID'] : null;
+    $gibbonMarkbookCopyClassID = $_GET['gibbonMarkbookCopyClassID'] ?? null;
+    $copyColumnID = $_POST['copyColumnID'] ?? null;
 
     if (empty($_POST)) {
         $URL .= '&return=error1';
