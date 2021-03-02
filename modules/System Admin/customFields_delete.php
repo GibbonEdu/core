@@ -18,29 +18,27 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Prefab\DeleteForm;
+use Gibbon\Domain\System\CustomFieldGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_delete.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    //Check if school year specified
-    $gibbonCustomFieldID = $_GET['gibbonCustomFieldID'];
-    if ($gibbonCustomFieldID == '') {
-        $page->addError(__('You have not specified one or more required parameters.'));
-    } else {
-        
-            $data = array('gibbonCustomFieldID' => $gibbonCustomFieldID);
-            $sql = 'SELECT gibbonCustomField.* FROM gibbonCustomField WHERE gibbonCustomFieldID=:gibbonCustomFieldID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+    $customFieldGateway = $container->get(CustomFieldGateway::class);
 
-        if ($result->rowCount() != 1) {
-            $page->addError(__('The specified record cannot be found.'));
-        } else {
-            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/customFields_deleteProcess.php?gibbonCustomFieldID=$gibbonCustomFieldID");
-            echo $form->getOutput();
-        }
+    $gibbonCustomFieldID = $_GET['gibbonCustomFieldID'] ?? '';
+    if (empty($gibbonCustomFieldID)) {
+        $page->addError(__('You have not specified one or more required parameters.'));
+        return;
     }
+
+    $values = $customFieldGateway->getByID($gibbonCustomFieldID);
+    if (empty($values)) {
+        $page->addError(__('The specified record cannot be found.'));
+        return;
+    }
+
+    $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/customFields_deleteProcess.php?gibbonCustomFieldID=$gibbonCustomFieldID");
+    echo $form->getOutput();
 }
-?>

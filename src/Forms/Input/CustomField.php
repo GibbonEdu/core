@@ -34,6 +34,7 @@ class CustomField extends Input
     protected $factory;
     protected $fields;
     protected $type;
+    protected $name;
 
     protected $customField;
 
@@ -47,6 +48,7 @@ class CustomField extends Input
     {
         $this->factory = $factory;
         $this->fields = $fields;
+        $this->name = $name;
 
         //From Enum: 'varchar','text','date','url','select', ('checkboxes' unimplemented?)
         $this->type = $fields['type'] ?? 'varchar';
@@ -57,10 +59,14 @@ class CustomField extends Input
                 $this->customField = $this->factory->createDate($name);
                 break;
 
+            case 'time':
+                $this->customField = $this->factory->createTime($name);
+                break;
+
             case 'number':
                 $this->customField = $this->factory->createNumber($name)->onlyInteger(false);
                 if (!empty($options)) {
-                    $this->customField->decimalPlaces($options);
+                    $this->customField->maxLength($options);
                 }
                 break;
 
@@ -68,20 +74,69 @@ class CustomField extends Input
                 $this->customField = $this->factory->createURL($name);
                 break;
 
+            case 'editor':
+                global $guid;
+                $this->customField = $this->factory->createEditor($name, $guid)->allowUpload(false)->showMedia(false);
+                if (!empty($options) && intval($options) > 0) {
+                    $this->customField->setRows($options);
+                }
+                break;
+
+            case 'color':
+                $this->customField = $this->factory->createColor($name);
+                break;
+
             case 'image':
-                $this->customField = $this->factory->createFileUpload($name)->accepts('.jpg,.jpeg,.gif,.png');
+                $this->customField = $this->factory->createFileUpload($name.'File')->accepts('.jpg,.jpeg,.gif,.png,.svg');
                 break;
 
             case 'file':
-                $this->customField = $this->factory->createFileUpload($name);
+                $this->customField = $this->factory->createFileUpload($name.'File');
+                if (!empty($options)) {
+                    $this->customField->accepts($options);
+                }
                 break;
 
             case 'select':
                 $this->customField = $this->factory->createSelect($name);
-                if (!empty($options) && is_string($options)) {
-                    $this->customField->fromString($options)->placeholder();
-                } elseif (!empty($options) && is_array($options)) {
+                if (is_string($options)) {
+                    $optionArray = array_map('trim', explode(',', $options));
+                    $options = [];
+                    
+                    // Enable [] around an option to create optgroups
+                    for ($i = 0; $i < count($optionArray); $i++) {
+                        $option = $optionArray[$i];
+                        if (substr($option, 0, 1 ) == '[') {
+                            $optGroup = trim($option, '[]');
+                            continue;
+                        }
+                        if (!empty($optGroup)) {
+                            $options[$optGroup][$option] = $option;
+                        } else {
+                            $options[$option] = $option;
+                        }
+                    }
+                }
+                if (!empty($options)) {
                     $this->customField->fromArray($options)->placeholder();
+                }
+                break;
+
+            case 'checkboxes': 
+                $this->customField = $this->factory->createCheckbox($name);
+                if (!empty($options) && is_string($options)) {
+                    $this->customField->fromString($options)->alignRight();
+                } else if (!empty($options) && is_array($options)) {
+                    $this->customField->fromArray($options)->alignRight();
+                }
+                break;
+
+            case 'radio': 
+                $this->customField = $this->factory->createRadio($name);
+                if (!empty($options) && is_string($options)) {
+                    $this->customField->fromString($options);
+                } else if (!empty($options) && is_array($options)) {
+                    $this->customField->fromArray($options);
                 }
                 break;
 
@@ -116,8 +171,8 @@ class CustomField extends Input
             $this->customField->setValue($fields['default']);
         }
 
-        $this->customField->setClass('w-full');
-        $this->customField->setID(preg_replace('/[^a-zA-Z0-9]/', '', $name));
+        $this->customField->setClass($this->type != 'checkboxes' && $this->type != 'radio' ? 'w-full' : '');
+        $this->customField->setID(preg_replace('/[^a-zA-Z0-9]/', '', $this->customField->getName()));
 
         parent::__construct($name);
     }
@@ -137,13 +192,18 @@ class CustomField extends Input
                 $this->customField->selected($value);
                 break;
 
+            case 'radio':
+            case 'checkboxes':
+                $this->customField->checked($value);
+                break;
+
             case 'date':
                 $this->customField->setDateFromValue($value);
                 break;
 
             case 'image':
             case 'file':
-                $this->customField->setAttachment($this->customField->getName(), $_SESSION[$guid]['absoluteURL'], $value);
+                $this->customField->setAttachment($this->name, $_SESSION[$guid]['absoluteURL'], $value);
                 break;
 
             default:

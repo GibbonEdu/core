@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\CustomFieldGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields.php') == false) {
@@ -31,17 +32,18 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields.
     $customFieldGateway = $container->get(CustomFieldGateway::class);
     
     // QUERY
-    $criteria = $customFieldGateway->newQueryCriteria(true)
-        ->sortBy(['context', 'name'])
+    $criteria = $customFieldGateway->newQueryCriteria()
+        ->sortBy(['context', 'sequenceNumber', 'name'])
+        ->pageSize(0)
         ->fromPOST();
 
-    $userFields = $customFieldGateway->queryCustomFields($criteria);
+    $customFields = $customFieldGateway->queryCustomFields($criteria);
 
     // DATA TABLE
-    $table = DataTable::createPaginated('userFieldManage', $criteria);
+    $table = DataTable::createPaginated('customFieldManage', $criteria);
 
-    $table->modifyRows(function ($userField, $row) {
-        if ($userField['active'] == 'N') $row->addClass('error');
+    $table->modifyRows(function ($customField, $row) {
+        if ($customField['active'] == 'N') $row->addClass('error');
         return $row;
     });
 
@@ -66,12 +68,19 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields.
         'select'  => __('Dropdown')
     );
 
-    $table->addColumn('context', __('Context'))->translatable();
-    $table->addColumn('name', __('Name'));
-    $table->addColumn('type', __('Type'))->format(function ($row) use ($customFieldTypes) {
+    // Get a flattened array of the custom field types for listing in the table
+    $customFieldTypes = [];
+    $types = $container->get(CustomFieldHandler::class)->getTypes();
+    array_walk_recursive($types, function($item, $key) use (&$customFieldTypes) { $customFieldTypes[$key] = $item; });
+
+    $table->addDraggableColumn('gibbonCustomFieldID', $gibbon->session->get('absoluteURL').'/modules/System Admin/customFields_editOrderAjax.php');
+
+    $table->addColumn('context', __('Context'))->notSortable()->translatable();
+    $table->addColumn('name', __('Name'))->notSortable();
+    $table->addColumn('type', __('Type'))->notSortable()->format(function ($row) use ($customFieldTypes) {
         return isset($customFieldTypes[$row['type']])? $customFieldTypes[$row['type']] : '';
     });
-    $table->addColumn('active', __('Active'))->format(Format::using('yesNo', 'active'));
+    $table->addColumn('active', __('Active'))->notSortable()->format(Format::using('yesNo', 'active'));
     $table->addColumn('roles', __('Role Categories'))
         ->notSortable()
         ->format(function ($row) {
@@ -93,5 +102,5 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields.
             
         });
         
-    echo $table->render($userFields);
+    echo $table->render($customFields);
 }

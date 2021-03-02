@@ -784,4 +784,6 @@ UPDATE `gibbonAction` SET `category`='Customise' WHERE `name`='String Replacemen
 UPDATE `gibbonAction` SET `category`='Customise' WHERE `name`='Email Templates' AND `gibbonModuleID`=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin');end
 ALTER TABLE `gibbonCustomField` ADD `context` VARCHAR(60) NOT NULL DEFAULT 'Person' AFTER `gibbonCustomFieldID`;end
 ALTER TABLE `gibbonCustomField` ADD `sequenceNumber` INT(4) NOT NULL AFTER `required`;end
+ALTER TABLE `gibbonCustomField` ADD `heading` VARCHAR(90) NOT NULL AFTER `required`;end
+ALTER TABLE `gibbonCustomField` CHANGE `type` `type` ENUM('varchar','text','date','time','url','select','checkboxes','radio','yesno','editor','color','number','image','file') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 ";
