@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\Students\StudentGateway;
 
@@ -57,6 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
         } else {
             $row = $result->fetch();
             $gibbonPersonMedicalID = $row['gibbonPersonMedicalID'];
+            $row2 = $medicalGateway->getByID($gibbonPersonMedicalID);
             $conditions = [];
 
             //Set values
@@ -92,6 +94,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                     $sqlSet .= 'comment=:comment, ';
                 }
             }
+
+            // CUSTOM FIELDS
+            $data['fields'] = $container->get(CustomFieldHandler::class)->getFieldDataFromDataUpdate('Medical Form', [], $row2['fields']);
+            $sqlSet .= 'fields=:fields, ';
 
             $partialFail = false;
 

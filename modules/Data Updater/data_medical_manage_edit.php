@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Forms\CustomFieldHandler;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -158,6 +159,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             foreach ($compare as $fieldName => $label) {
                 $comparisonFields($form, $oldValues, $newValues, $fieldName, $label);
             }
+
+            // CUSTOM FIELDS
+            $container->get(CustomFieldHandler::class)->addCustomFieldsToDataUpdate($form, 'Medical Form', ['dataUpdater' => 1], $oldValues, $newValues);
 
             // Existing Conditions
             $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID);
