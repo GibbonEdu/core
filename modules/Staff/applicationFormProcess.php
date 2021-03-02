@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Forms\CustomFieldHandler;
 
 include '../../gibbon.php';
 
@@ -186,33 +187,12 @@ if ($proceed == false) {
     } else {
         //DEAL WITH CUSTOM FIELDS
         $customRequireFail = false;
-        //Prepare field values
-        $resultFields = getCustomFields($connection2, $guid, false, true, false, false, true, null);
-        $fields = array();
-        if ($resultFields->rowCount() > 0) {
-            while ($rowFields = $resultFields->fetch()) {
-                if (isset($_POST['custom'.$rowFields['gibbonPersonFieldID']])) {
-                    if ($rowFields['type'] == 'date') {
-                        $fields[$rowFields['gibbonPersonFieldID']] = dateConvert($guid, $_POST['custom'.$rowFields['gibbonPersonFieldID']]);
-                    } else {
-                        $fields[$rowFields['gibbonPersonFieldID']] = $_POST['custom'.$rowFields['gibbonPersonFieldID']];
-                    }
-                }
-                if ($rowFields['required'] == 'Y') {
-                    if (isset($_POST['custom'.$rowFields['gibbonPersonFieldID']]) == false) {
-                        $customRequireFail = true;
-                    } elseif ($_POST['custom'.$rowFields['gibbonPersonFieldID']] == '') {
-                        $customRequireFail = true;
-                    }
-                }
-            }
-        }
+        $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Person', ['staff' => 1, 'applicationForm' => 1], $customRequireFail);
 
         if ($customRequireFail) {
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
-            $fields = json_encode($fields);
             $partialFail = false;
             $ids = '';
 

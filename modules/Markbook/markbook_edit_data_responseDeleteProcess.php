@@ -23,9 +23,9 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
-$gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-$gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'];
-$gibbonPersonID = $_GET['gibbonPersonID'];
+$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+$gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'] ?? '';
+$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Markbook/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_data.php') == false) {

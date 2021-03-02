@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\System\DataRetentionGateway;
 
@@ -617,20 +618,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 			}
 
 			// CUSTOM FIELDS
-			$existingFields = (isset($values['fields']))? json_decode($values['fields'], true) : null;
-			$resultFields = getCustomFields($connection2, $guid, $student, $staff, $parent, $other);
-			if ($resultFields->rowCount() > 0) {
-				$heading = $form->addRow()->addHeading(__('Custom Fields'));
-
-				while ($rowFields = $resultFields->fetch()) {
-					$name = 'custom'.$rowFields['gibbonPersonFieldID'];
-					$value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
-
-					$row = $form->addRow();
-						$row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
-						$row->addCustomField($name, $rowFields)->setValue($value);
-				}
-			}
+            $params = compact('student', 'staff', 'parent', 'other');
+            $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Person', $params, $values['fields']);
 
 			$row = $form->addRow();
 				$row->addFooter()->append('<small>'.getMaxUpload($guid, true).'</small>');

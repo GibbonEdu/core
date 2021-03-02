@@ -17,36 +17,38 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
-use Gibbon\Domain\User\UserFieldGateway;
+use Gibbon\Tables\DataTable;
+use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Domain\System\CustomFieldGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Custom Fields'));
+    $page->breadcrumbs->add(__('Custom Fields'));
 
-    $userFieldGateway = $container->get(UserFieldGateway::class);
+    $customFieldGateway = $container->get(CustomFieldGateway::class);
     
     // QUERY
-    $criteria = $userFieldGateway->newQueryCriteria(true)
-        ->sortBy('name')
+    $criteria = $customFieldGateway->newQueryCriteria()
+        ->sortBy(['context', 'sequenceNumber', 'name'])
+        ->pageSize(0)
         ->fromPOST();
 
-    $userFields = $userFieldGateway->queryUserFields($criteria);
+    $customFields = $customFieldGateway->queryCustomFields($criteria);
 
     // DATA TABLE
-    $table = DataTable::createPaginated('userFieldManage', $criteria);
+    $table = DataTable::createPaginated('customFieldManage', $criteria);
 
-    $table->modifyRows(function ($userField, $row) {
-        if ($userField['active'] == 'N') $row->addClass('error');
+    $table->modifyRows(function ($customField, $row) {
+        if ($customField['active'] == 'N') $row->addClass('error');
         return $row;
     });
 
     $table->addHeaderAction('add', __('Add'))
-        ->setURL('/modules/User Admin/userFields_add.php')
+        ->setURL('/modules/System Admin/customFields_add.php')
         ->displayLabel();
 
     $table->addMetaData('filterOptions', [
@@ -66,11 +68,19 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields.php'
         'select'  => __('Dropdown')
     );
 
-    $table->addColumn('name', __('Name'));
-    $table->addColumn('type', __('Type'))->format(function ($row) use ($customFieldTypes) {
+    // Get a flattened array of the custom field types for listing in the table
+    $customFieldTypes = [];
+    $types = $container->get(CustomFieldHandler::class)->getTypes();
+    array_walk_recursive($types, function($item, $key) use (&$customFieldTypes) { $customFieldTypes[$key] = $item; });
+
+    $table->addDraggableColumn('gibbonCustomFieldID', $gibbon->session->get('absoluteURL').'/modules/System Admin/customFields_editOrderAjax.php');
+
+    $table->addColumn('context', __('Context'))->notSortable()->translatable();
+    $table->addColumn('name', __('Name'))->notSortable();
+    $table->addColumn('type', __('Type'))->notSortable()->format(function ($row) use ($customFieldTypes) {
         return isset($customFieldTypes[$row['type']])? $customFieldTypes[$row['type']] : '';
     });
-    $table->addColumn('active', __('Active'))->format(Format::using('yesNo', 'active'));
+    $table->addColumn('active', __('Active'))->notSortable()->format(Format::using('yesNo', 'active'));
     $table->addColumn('roles', __('Role Categories'))
         ->notSortable()
         ->format(function ($row) {
@@ -83,14 +93,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields.php'
         });
 
     $table->addActionColumn()
-        ->addParam('gibbonPersonFieldID')
+        ->addParam('gibbonCustomFieldID')
         ->format(function ($row, $actions) {
             $actions->addAction('edit', __('Edit'))
-                ->setURL('/modules/User Admin/userFields_edit.php');
+                ->setURL('/modules/System Admin/customFields_edit.php');
             $actions->addAction('delete', __('Delete'))
-                ->setURL('/modules/User Admin/userFields_delete.php');
+                ->setURL('/modules/System Admin/customFields_delete.php');
             
         });
         
-    echo $table->render($userFields);
+    echo $table->render($customFields);
 }

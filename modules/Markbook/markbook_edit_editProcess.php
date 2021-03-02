@@ -22,8 +22,8 @@ include '../../gibbon.php';
 $enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
 $enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
 
-$gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-$gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'];
+$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+$gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/markbook_edit_edit.php&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonCourseClassID=$gibbonCourseClassID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edit.php') == false) {
@@ -62,20 +62,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                 } else {
                     $row = $result->fetch();
                     //Validate Inputs
-                    $gibbonUnitID = $_POST['gibbonUnitID'];
-                    $gibbonPlannerEntryID = null;
-                    if (isset($_POST['gibbonPlannerEntryID'])) {
-                        if ($_POST['gibbonPlannerEntryID'] != '') {
-                            $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'];
-                        }
-                    }
-                    $name = $_POST['name'];
-                    $description = $_POST['description'];
-                    $type = $_POST['type'];
+                    $gibbonUnitID = $_POST['gibbonUnitID'] ?? '';
+                    $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? null;
+                    $name = $_POST['name'] ?? '';
+                    $description = $_POST['description'] ?? '';
+                    $type = $_POST['type'] ?? '';
                     $date = (!empty($_POST['date']))? dateConvert($guid, $_POST['date']) : date('Y-m-d');
                     $gibbonSchoolYearTermID = (!empty($_POST['gibbonSchoolYearTermID']))? $_POST['gibbonSchoolYearTermID'] : null;
                     //Sort out attainment
-                    $attainment = $_POST['attainment'];
+                    $attainment = $_POST['attainment'] ?? '';
                     $attainmentWeighting = 1;
                     $attainmentRaw = 'N';
                     $attainmentRawMax = null;
@@ -86,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                         if ($_POST['gibbonScaleIDAttainment'] == '') {
                             $gibbonScaleIDAttainment = null;
                         } else {
-                            $gibbonScaleIDAttainment = $_POST['gibbonScaleIDAttainment'];
+                            $gibbonScaleIDAttainment = $_POST['gibbonScaleIDAttainment'] ?? '';
                             if (isset($_POST['attainmentWeighting'])) {
                                 if (is_numeric($_POST['attainmentWeighting']) && $_POST['attainmentWeighting'] > 0) {
                                     $attainmentWeighting = $_POST['attainmentWeighting'];
@@ -137,9 +132,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                             }
                         }
                     }
-                    $comment = $_POST['comment'];
-                    $uploadedResponse = $_POST['uploadedResponse'];
-                    $completeDate = $_POST['completeDate'];
+                    $comment = $_POST['comment'] ?? '';
+                    $uploadedResponse = $_POST['uploadedResponse'] ?? '';
+                    $completeDate = $_POST['completeDate'] ?? '';
                     if ($completeDate == '') {
                         $completeDate = null;
                         $complete = 'N';
@@ -147,10 +142,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                         $completeDate = dateConvert($guid, $completeDate);
                         $complete = 'Y';
                     }
-                    $viewableStudents = $_POST['viewableStudents'];
-                    $viewableParents = $_POST['viewableParents'];
-                    $attachment = $_POST['attachment'];
-                    $gibbonPersonIDLastEdit = $_SESSION[$guid]['gibbonPersonID'];
+                    $viewableStudents = $_POST['viewableStudents'] ?? '';
+                    $viewableParents = $_POST['viewableParents'] ?? '';
+                    $attachment = $_POST['attachment'] ?? '';
+                    $gibbonPersonIDLastEdit = $_SESSION[$guid]['gibbonPersonID'] ?? '';
 
                     $partialFail = false;
 

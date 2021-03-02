@@ -29,6 +29,7 @@ use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
 use Gibbon\Domain\Library\LibraryReportGateway;
+use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Module\Planner\Tables\HomeworkTable;
 use Gibbon\Module\Attendance\StudentHistoryData;
 use Gibbon\Module\Attendance\StudentHistoryView;
@@ -1157,50 +1158,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                         echo '</table>';
 
-                        //Custom Fields
-                        $fields = json_decode($row['fields'], true);
-                        $resultFields = getCustomFields($connection2, $guid, true);
-                        if ($resultFields->rowCount() > 0) {
-                            echo '<h4>';
-                            echo __('Custom Fields');
-                            echo '</h4>';
+                        // Custom Fields
+                        $table = $container->get(CustomFieldHandler::class)->createCustomFieldsTable('Person', ['student' => 1], $row['fields']);
+                        $table->setTitle(__('Custom Fields'));
+                        echo $table->getOutput();
 
-                            echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                            $count = 0;
-                            $columns = 3;
-
-                            while ($rowFields = $resultFields->fetch()) {
-                                if ($count % $columns == 0) {
-                                    echo '<tr>';
-                                }
-                                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                                echo "<span style='font-size: 115%; font-weight: bold'>".__($rowFields['name']).'</span><br/>';
-                                if (isset($fields[$rowFields['gibbonPersonFieldID']])) {
-                                    if ($rowFields['type'] == 'date') {
-                                        echo dateConvertBack($guid, $fields[$rowFields['gibbonPersonFieldID']]);
-                                    } elseif ($rowFields['type'] == 'url') {
-                                        echo "<a target='_blank' href='".$fields[$rowFields['gibbonPersonFieldID']]."'>".$fields[$rowFields['gibbonPersonFieldID']].'</a>';
-                                    } else {
-                                        echo $fields[$rowFields['gibbonPersonFieldID']];
-                                    }
-                                }
-                                echo '</td>';
-
-                                if ($count % $columns == ($columns - 1)) {
-                                    echo '</tr>';
-                                }
-                                ++$count;
-                            }
-
-                            if ($count % $columns != 0) {
-                                for ($i = 0; $i < $columns - ($count % $columns); ++$i) {
-                                    echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'></td>";
-                                }
-                                echo '</tr>';
-                            }
-
-                            echo '</table>';
-                        }
                     } elseif ($subpage == 'Family') {
 
                             $dataFamily = array('gibbonPersonID' => $gibbonPersonID);

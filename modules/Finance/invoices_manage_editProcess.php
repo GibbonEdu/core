@@ -18,12 +18,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Domain\System\LogGateway;
 
 include '../../gibbon.php';
 
 //Module includes
 include './moduleFunctions.php';
 
+$logGateway = $container->get(LogGateway::class);
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $gibbonFinanceInvoiceID = $_POST['gibbonFinanceInvoiceID'] ?? '';
 $status = $_GET['status'] ?? '';
@@ -347,7 +349,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                                 $gibbonModuleID = getModuleIDFromName($connection2, 'Finance');
                                 $logArray = [];
                                 $logArray['recipients'] = is_array($emails) ? implode(',', $emails) : $emails;
-                                setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearID"], $gibbonModuleID, $_SESSION[$guid]["gibbonPersonID"], 'Finance - Reminder Email Failure', $logArray);
+                                $logGateway->addLog($_SESSION[$guid]["gibbonSchoolYearID"], $gibbonModuleID, $_SESSION[$guid]["gibbonPersonID"], 'Finance - Reminder Email Failure', $logArray);
                             }
                         }
                     }

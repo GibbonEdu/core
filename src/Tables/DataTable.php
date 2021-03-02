@@ -189,12 +189,14 @@ class DataTable implements OutputableInterface
     /**
      * Set the table data internally.
      *
-     * @param DataSet $data
+     * @param DataSet|array $data
      * @return self
      */
-    public function withData(DataSet $data)
+    public function withData($dataSet)
     {
-        $this->data = $data;
+        $dataSet = is_array($dataSet) ? new DataSet($dataSet) : $dataSet;
+
+        $this->data = $dataSet;
 
         return $this;
     }
