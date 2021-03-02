@@ -46,7 +46,7 @@ class CustomFieldGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonCustomFieldID', 'context', 'name', 'type', 'active', 'activePersonStudent', 'activePersonParent', 'activePersonStaff', 'activePersonOther'
+                'gibbonCustomFieldID', 'context', 'heading', 'name', 'type', 'active', 'activePersonStudent', 'activePersonParent', 'activePersonStaff', 'activePersonOther'
             ]);
         
         $criteria->addFilterRules([
@@ -79,7 +79,7 @@ class CustomFieldGateway extends QueryableGateway
     {
         $query = $this
             ->newSelect()
-            ->cols(['*'])
+            ->cols(['heading as groupBy', 'gibbonCustomField.*'])
             ->from('gibbonCustomField')
             ->where("active='Y'")
             ->where('context=:context')

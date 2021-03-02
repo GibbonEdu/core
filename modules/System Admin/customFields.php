@@ -75,12 +75,26 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields.
 
     $table->addDraggableColumn('gibbonCustomFieldID', $gibbon->session->get('absoluteURL').'/modules/System Admin/customFields_editOrderAjax.php');
 
-    $table->addColumn('context', __('Context'))->notSortable()->translatable();
-    $table->addColumn('name', __('Name'))->notSortable();
-    $table->addColumn('type', __('Type'))->notSortable()->format(function ($row) use ($customFieldTypes) {
-        return isset($customFieldTypes[$row['type']])? $customFieldTypes[$row['type']] : '';
-    });
-    $table->addColumn('active', __('Active'))->notSortable()->format(Format::using('yesNo', 'active'));
+    $table->addColumn('context', __('Context'))
+        ->notSortable()
+        ->translatable();
+
+    $table->addColumn('name', __('Name'))
+        ->description(__('Heading'))
+        ->notSortable()
+        ->format(function($values) {
+            return $values['name'].'<br/>'.Format::small($values['heading']);
+        });
+
+    $table->addColumn('type', __('Type'))->notSortable()
+        ->format(function ($row) use ($customFieldTypes) {
+            return isset($customFieldTypes[$row['type']])? $customFieldTypes[$row['type']] : '';
+        });
+
+    $table->addColumn('active', __('Active'))
+        ->notSortable()
+        ->format(Format::using('yesNo', 'active'));
+
     $table->addColumn('roles', __('Role Categories'))
         ->notSortable()
         ->format(function ($row) {
