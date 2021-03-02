@@ -23,16 +23,13 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
-$gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
-$gibbonPlannerEntryHomeworkID = $_GET['gibbonPlannerEntryHomeworkID'];
-$date = $_GET['date'];
-$gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-$viewBy = $_GET['viewBy'];
-$subView = $_GET['subView'];
-$search = null;
-if (isset($_POST['search'])) {
-    $search = $_POST['search'];
-}
+$gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
+$gibbonPlannerEntryHomeworkID = $_GET['gibbonPlannerEntryHomeworkID'] ?? '';
+$date = $_GET['date'] ?? '';
+$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+$viewBy = $_GET['viewBy'] ?? '';
+$subView = $_GET['subView'] ?? '';
+$search = $_POST['search'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full.php&date=$date&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&gibbonPlannerEntryID=$gibbonPlannerEntryID&search=$search";
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.php') == false) {

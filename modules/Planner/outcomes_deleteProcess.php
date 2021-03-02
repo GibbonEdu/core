@@ -21,12 +21,10 @@ include '../../gibbon.php';
 
 include './moduleFunctions.php';
 
-$filter2 = '';
-if (isset($_GET['filter2'])) {
-    $filter2 = $_GET['filter2'];
-}
+$filter2 = $_GET['filter2'] ?? '';
 
-$gibbonOutcomeID = $_POST['gibbonOutcomeID'];
+
+$gibbonOutcomeID = $_POST['gibbonOutcomeID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/outcomes_delete.php&gibbonOutcomeID=$gibbonOutcomeID&filter2=$filter2";
 $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/outcomes.php&filter2=$filter2";
 

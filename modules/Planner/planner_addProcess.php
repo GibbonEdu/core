@@ -49,12 +49,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             if ($viewBy != 'date' and $viewBy != 'class') {
                 $viewBy = 'date';
             }
-            $gibbonCourseClassID = $_POST['gibbonCourseClassID'];
-            $date = dateConvert($guid, $_POST['date']);
-            $timeStart = $_POST['timeStart'];
-            $timeEnd = $_POST['timeEnd'];
+            $gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
+            $date = dateConvert($guid, $_POST['date'] ?? '');
+            $timeStart = $_POST['timeStart'] ?? '';
+            $timeEnd = $_POST['timeEnd'] ?? '';
             $gibbonUnitID = !empty($_POST['gibbonUnitID']) ? $_POST['gibbonUnitID'] : null;
-            $name = $_POST['name'];
+            $name = $_POST['name'] ?? '';
             $summary = $_POST['summary'] ?? '';
             if (empty($summary)) {
                 $summary = trim(strip_tags($_POST['description'] ?? '')) ;
@@ -62,9 +62,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             } else {
                 $summary = strip_tags($summary);
             }
-            $description = $_POST['description'];
-            $teachersNotes = $_POST['teachersNotes'];
-            $homework = $_POST['homework'];
+            $description = $_POST['description'] ?? '';
+            $teachersNotes = $_POST['teachersNotes'] ?? '';
+            $homework = $_POST['homework'] ?? '';
             if ($_POST['homework'] == 'Y') {
                 $homework = 'Y';
                 $homeworkDetails = $_POST['homeworkDetails'] ?? '';
@@ -92,9 +92,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                     } else {
                         $homeworkSubmissionDateOpen = dateConvert($guid, $_POST['date']);
                     }
-                    $homeworkSubmissionDrafts = $_POST['homeworkSubmissionDrafts'];
-                    $homeworkSubmissionType = $_POST['homeworkSubmissionType'];
-                    $homeworkSubmissionRequired = $_POST['homeworkSubmissionRequired'];
+                    $homeworkSubmissionDrafts = $_POST['homeworkSubmissionDrafts'] ?? '';
+                    $homeworkSubmissionType = $_POST['homeworkSubmissionType'] ?? '';
+                    $homeworkSubmissionRequired = $_POST['homeworkSubmissionRequired'] ?? '';
                     if (!empty($_POST['homeworkCrowdAssess']) && $_POST['homeworkCrowdAssess'] == 'Y') {
                         $homeworkCrowdAssess = 'Y';
                         if (isset($_POST['homeworkCrowdAssessOtherTeachersRead'])) {
@@ -188,7 +188,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 exit();
             } else {
                 $partialFail = false;
-                
+
                 //Write to database
                 try {
                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $date, 'timeStart' => $timeStart, 'timeEnd' => $timeEnd, 'gibbonUnitID' => $gibbonUnitID, 'name' => $name, 'summary' => $summary, 'description' => $description, 'teachersNotes' => $teachersNotes, 'homework' => $homework, 'homeworkDueDate' => $homeworkDueDate, 'homeworkDetails' => $homeworkDetails, 'homeworkTimeCap' => $homeworkTimeCap, 'homeworkLocation' => $homeworkLocation, 'homeworkSubmission' => $homeworkSubmission, 'homeworkSubmissionDateOpen' => $homeworkSubmissionDateOpen, 'homeworkSubmissionDrafts' => $homeworkSubmissionDrafts, 'homeworkSubmissionType' => $homeworkSubmissionType, 'homeworkSubmissionRequired' => $homeworkSubmissionRequired, 'homeworkCrowdAssess' => $homeworkCrowdAssess, 'homeworkCrowdAssessOtherTeachersRead' => $homeworkCrowdAssessOtherTeachersRead, 'homeworkCrowdAssessClassmatesRead' => $homeworkCrowdAssessClassmatesRead, 'homeworkCrowdAssessOtherStudentsRead' => $homeworkCrowdAssessOtherStudentsRead, 'homeworkCrowdAssessSubmitterParentsRead' => $homeworkCrowdAssessSubmitterParentsRead, 'homeworkCrowdAssessClassmatesParentsRead' => $homeworkCrowdAssessClassmatesParentsRead, 'homeworkCrowdAssessOtherParentsRead' => $homeworkCrowdAssessOtherParentsRead, 'viewableParents' => $viewableParents, 'viewableStudents' => $viewableStudents, 'gibbonPersonIDCreator' => $gibbonPersonIDCreator, 'gibbonPersonIDLastEdit' => $gibbonPersonIDLastEdit);
@@ -200,12 +200,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                     header("Location: {$URL}");
                     exit();
                 }
-                
+
                 $AI = $connection2->lastInsertID();
 
                 //Scan through guests
                 $guests = $_POST['guests'] ?? [];
-                
+
                 $role = $_POST['role'] ?? 'Student';
 
                 if (count($guests) > 0) {
@@ -259,7 +259,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                     exit();
                 } else {
                     //Jump to Markbook?
-                    $markbook = $_POST['markbook'];
+                    $markbook = $_POST['markbook'] ?? '';
                     if ($markbook == 'Y') {
                         $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Markbook/markbook_edit_add.php&gibbonPlannerEntryID=$AI&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitID=".$_POST['gibbonUnitID']."&date=$date&viewableParents=$viewableParents&viewableStudents=$viewableStudents&name=$name&summary=$summary&return=success1";
                         header("Location: {$URL}");
