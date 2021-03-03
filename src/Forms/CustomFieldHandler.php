@@ -126,12 +126,18 @@ class CustomFieldHandler
 
     public function addCustomFieldsToForm(&$form, $context, $params = [], $fields = [])
     {
-        $existingFields = isset($fields) && is_string($fields)? json_decode($fields, true) : $fields;
-        $customFields = $this->customFieldGateway->selectCustomFields($context, $params)->fetchAll();
+        $fields = isset($fields) && is_string($fields)? json_decode($fields, true) : $fields;
+        $customFieldsGrouped = $this->customFieldGateway->selectCustomFields($context, $params)->fetchGrouped();
         $prefix = $params['prefix'] ?? 'custom';
 
-        if (empty($customFields)) {
+        if (empty($customFieldsGrouped)) {
             return;
+        }
+
+        $existingFields = [];
+        foreach ($fields as $key => $value) {
+            $key = str_pad($key, 4, "0", STR_PAD_LEFT);
+            $existingFields[$key] = $value;
         }
 
         if (!empty($params['heading'])) {
@@ -141,36 +147,44 @@ class CustomFieldHandler
             $form->addRow()->addSubheading($params['subheading']);
         }
 
-        foreach ($customFields as $field) {
-            if (!empty($field['heading'])) {
-                $form->addRow()->addHeading($field['heading']);
+        foreach ($customFieldsGrouped as $heading => $customFields) {
+            if (!empty($heading)) {
+                $form->addRow()->addSubheading($heading);
             }
 
-            $fieldValue = $existingFields[$field['gibbonCustomFieldID']] ?? '';
-            if (!empty($fieldValue) && $field['type'] == 'date') {
-                $fieldValue = Format::date($fieldValue);
-            } elseif (!empty($fieldValue) && $field['type'] == 'checkboxes') {
-                $fieldValue = explode(',', $fieldValue);
+            foreach ($customFields as $field) {
+                $fieldValue = $existingFields[$field['gibbonCustomFieldID']] ?? '';
+                if (!empty($fieldValue) && $field['type'] == 'date') {
+                    $fieldValue = Format::date($fieldValue);
+                } elseif (!empty($fieldValue) && $field['type'] == 'checkboxes') {
+                    $fieldValue = explode(',', $fieldValue);
+                }
+                
+                $name = $prefix.$field['gibbonCustomFieldID'];
+                $row = $field['type'] == 'editor' ? $form->addRow()->addColumn() : $form->addRow();
+                    $row->addLabel($name, $field['name'])->description($field['description']);
+                    $row->addCustomField($name, $field)->setValue($fieldValue);
             }
-            
-            $name = $prefix.$field['gibbonCustomFieldID'];
-            $row = $field['type'] == 'editor' ? $form->addRow()->addColumn() : $form->addRow();
-                $row->addLabel($name, $field['name'])->description($field['description']);
-                $row->addCustomField($name, $field)->setValue($fieldValue);
         }
     }
 
     public function createCustomFieldsTable($context, $params = [], $fields = [], $table = null)
     {
-        $existingFields = isset($fields) && is_string($fields)? json_decode($fields, true) : $fields;
+        $fields = isset($fields) && is_string($fields)? json_decode($fields, true) : $fields;
         $customFields = $this->customFieldGateway->selectCustomFields($context, $params)->fetchAll();
+
+        $existingFields = [];
+        foreach ($fields as $key => $value) {
+            $key = str_pad($key, 4, "0", STR_PAD_LEFT);
+            $existingFields[$key] = $value;
+        }
 
         if (!empty($table)) {
             $table->withData([$existingFields]);
         } else {
             $table = DataTable::createDetails('customFields')->withData([$existingFields]);
         }
-
+        
         foreach ($customFields as $field) {
             $col = $table->addColumn($field['gibbonCustomFieldID'], __($field['name']));
 
