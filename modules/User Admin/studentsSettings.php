@@ -180,11 +180,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
         
     $form->addRow()->addHeading(__('Miscellaneous'));
 
-    $setting = getSettingByScope($connection2, 'Students', 'extendedBriefProfile', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
-
     $setting = getSettingByScope($connection2, 'School Admin', 'studentAgreementOptions', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
