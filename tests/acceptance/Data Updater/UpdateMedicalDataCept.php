@@ -34,10 +34,8 @@ $gibbonPersonMedicalUpdateID = $I->grabValueFrom("input[type='hidden'][name='exi
 $I->amOnModulePage('Data Updater', 'data_medical_manage_edit.php', array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID));
 $I->seeBreadcrumb('Edit Request');
 
-$I->see('AB+', 'td');
 $I->see('Y', 'td');
 $I->see('Test', 'td');
-$I->see('Y', 'td');
 
 $I->click('Submit');
 $I->seeSuccessMessage();
@@ -82,10 +80,8 @@ $gibbonPersonMedicalUpdateID = $I->grabValueFrom("input[type='hidden'][name='exi
 $I->amOnModulePage('Data Updater', 'data_medical_manage_edit.php', array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID));
 $I->seeBreadcrumb('Edit Request');
 
-$I->see('O+', 'td');
 $I->see('N', 'td');
 $I->see('Test2', 'td');
-$I->see('N', 'td');
 
 $I->click('Submit');
 $I->seeSuccessMessage();
