@@ -1604,7 +1604,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     : Format::small(__('Unknown'));
                             });
 
+                        $table = $container->get(CustomFieldHandler::class)->createCustomFieldsTable('Medical Form', [], $medical['fields'], $table);
+
                         $table->addColumn('medicalConditions', __('Medical Conditions?'))
+                            ->addClass('col-span-3')
                             ->format(function ($medical) use ($conditions) {
                                 return count($conditions) > 0
                                     ? __('Yes').'. '.__('Details below.')

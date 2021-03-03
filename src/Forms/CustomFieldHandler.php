@@ -160,12 +160,14 @@ class CustomFieldHandler
         }
     }
 
-    public function createCustomFieldsTable($context, $params = [], $fields = [])
+    public function createCustomFieldsTable($context, $params = [], $fields = [], $table = null)
     {
         $existingFields = isset($fields) && is_string($fields)? json_decode($fields, true) : $fields;
         $customFields = $this->customFieldGateway->selectCustomFields($context, $params)->fetchAll();
 
-        $table = DataTable::createDetails('customFields')->withData([$existingFields]);
+        if (empty($table)) {
+            $table = DataTable::createDetails('customFields')->withData([$existingFields]);
+        }
 
         foreach ($customFields as $field) {
             $col = $table->addColumn($field['gibbonCustomFieldID'], __($field['name']));
