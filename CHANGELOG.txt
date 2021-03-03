@@ -28,7 +28,8 @@ v22.0.00
         System: added an Enrolment tab to the Staff Dashboard
 
     Changes With Important Notices
-        System: the gibbonPersonField table has been renamed to gibbonCustomField
+        System: renamed the gibbonPersonField table to gibbonCustomField
+        Students: migrated Blood Type and Tetanus fields from Medical Form into Custom Fields
 
     Tweaks & Additions
         System: added the Getting Started info to the post-install page
@@ -38,6 +39,8 @@ v22.0.00
         System: added Mozambique Metical as currency option
         Finance: removed student DOB and Gender from Export Invoices
         Reports: clear report cache when editing template assets in Production
+        Students: added Medical Form custom fields to student profile
+        Students: updated Medical Data Summary to include medical custom fields
         System Admin: added option to manually invalidate front end cache for Cutting Edge installs
         System Admin: added a Reporting Values by Roll Group import option
         System Admin: updated user-related imports to enable importing by username or email address
