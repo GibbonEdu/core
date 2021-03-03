@@ -789,4 +789,5 @@ ALTER TABLE `gibbonCustomField` CHANGE `type` `type` ENUM('varchar','text','date
 INSERT INTO gibbonLanguage (name) SELECT * FROM (SELECT 'Somali') AS tmp WHERE NOT EXISTS (SELECT name FROM gibbonLanguage WHERE (name='Somali')) LIMIT 1;end
 ALTER TABLE `gibbonPersonMedical` ADD `fields` TEXT NULL AFTER `comment`;end
 ALTER TABLE `gibbonPersonMedicalUpdate` ADD `fields` TEXT NULL AFTER `timestamp`;end
+DELETE FROM `gibbonSetting` WHERE scope='Students' AND name='extendedBriefProfile';end
 ";
