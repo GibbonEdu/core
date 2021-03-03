@@ -30,10 +30,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 } else {
     //Proceed!
     $gibbonPersonID = $_POST['gibbonPersonID'];
-    $bloodType = $_POST['bloodType'];
     $longTermMedication = $_POST['longTermMedication'];
     $longTermMedicationDetails = (isset($_POST['longTermMedicationDetails']) ? $_POST['longTermMedicationDetails'] : '');
-    $tetanusWithin10Years = $_POST['tetanusWithin10Years'];
     $comment = $_POST['comment'];
 
     //Validate Inputs
@@ -68,8 +66,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
         } else {
             //Write to database
             try {
-                $data = array('gibbonPersonID' => $gibbonPersonID, 'bloodType' => $bloodType, 'longTermMedication' => $longTermMedication, 'longTermMedicationDetails' => $longTermMedicationDetails, 'tetanusWithin10Years' => $tetanusWithin10Years, 'fields' => $fields, 'comment' => $comment);
-                $sql = 'INSERT INTO gibbonPersonMedical SET gibbonPersonID=:gibbonPersonID, bloodType=:bloodType, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, tetanusWithin10Years=:tetanusWithin10Years, fields=:fields, comment=:comment';
+                $data = array('gibbonPersonID' => $gibbonPersonID, 'longTermMedication' => $longTermMedication, 'longTermMedicationDetails' => $longTermMedicationDetails, 'fields' => $fields, 'comment' => $comment);
+                $sql = 'INSERT INTO gibbonPersonMedical SET gibbonPersonID=:gibbonPersonID, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, fields=:fields, comment=:comment';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {

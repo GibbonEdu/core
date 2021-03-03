@@ -1604,10 +1604,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     : Format::small(__('Unknown'));
                             });
 
-                        $table->addColumn('tetanusWithin10Years', __('Tetanus Last 10 Years?'))
-                            ->format(Format::using('yesno', 'longTermMedication'));
-
-                        $table->addColumn('bloodType', __('Blood Type'));
                         $table->addColumn('medicalConditions', __('Medical Conditions?'))
                             ->format(function ($medical) use ($conditions) {
                                 return count($conditions) > 0

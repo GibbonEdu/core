@@ -14,10 +14,8 @@ $I->click('Submit');
 $I->see('Update Data');
 
 $editFormValues = array(
-    'bloodType'                 => 'AB+',
     'longTermMedication'        => 'Y',
     'longTermMedicationDetails' => 'Test',
-    'tetanusWithin10Years'      => 'Y',
 );
 
 $I->submitForm('#content form[method="post"]', $editFormValues, 'Submit');
@@ -64,10 +62,8 @@ $I->click('Submit');
 $I->see('Update Data');
 
 $editFormValues = array(
-    'bloodType'                 => 'O+',
     'longTermMedication'        => 'N',
     'longTermMedicationDetails' => 'Test2',
-    'tetanusWithin10Years'      => 'N',
 );
 
 $I->submitForm('#content form[method="post"]', $editFormValues, 'Submit');

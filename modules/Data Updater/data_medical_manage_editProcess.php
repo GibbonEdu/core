@@ -64,12 +64,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             //Set values
             $data = array();
             $sqlSet = '';
-            if (isset($_POST['bloodTypeOn'])) {
-                if ($_POST['bloodTypeOn'] == 'on') {
-                    $data['bloodType'] = $_POST['bloodType'];
-                    $sqlSet .= 'bloodType=:bloodType, ';
-                }
-            }
             if (isset($_POST['longTermMedicationOn'])) {
                 if ($_POST['longTermMedicationOn'] == 'on') {
                     $data['longTermMedication'] = $_POST['longTermMedication'];
@@ -80,12 +74,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                 if ($_POST['longTermMedicationDetailsOn'] == 'on') {
                     $data['longTermMedicationDetails'] = $_POST['longTermMedicationDetails'];
                     $sqlSet .= 'longTermMedicationDetails=:longTermMedicationDetails, ';
-                }
-            }
-            if (isset($_POST['tetanusWithin10YearsOn'])) {
-                if ($_POST['tetanusWithin10YearsOn'] == 'on') {
-                    $data['tetanusWithin10Years'] = $_POST['tetanusWithin10Years'];
-                    $sqlSet .= 'tetanusWithin10Years=:tetanusWithin10Years, ';
                 }
             }
             if (isset($_POST['commentOn'])) {

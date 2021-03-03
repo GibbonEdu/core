@@ -73,10 +73,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             }
 
             $compare = array(
-                'bloodType'                 => __('Blood Type'),
                 'longTermMedication'        => __('Long-Term Medication?'),
                 'longTermMedicationDetails' => __('Medication Details'),
-                'tetanusWithin10Years'      => __('Tetanus Within Last 10 Years?'),
                 'comment'      => __('Comment'),
             );
 

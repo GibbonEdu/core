@@ -11,10 +11,6 @@ all stylesheets and scripts with a 'head' context.
 
 {% if gibbonPersonMedicalID %}
 
-    <i>{{ __('Blood Type') }}:</i> {{ bloodType }}<br/>
-
-    <i>{{ __('Tetanus') }}:</i> {{ formatUsing('yesNo', tetanusWithin10Years) }}<br/>
-
     <i>{{ __('Medication') }}:</i> {{ formatUsing('yesNo', longTermMedication) }}<br/>
 
 {% else %}

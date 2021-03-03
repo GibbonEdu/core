@@ -67,10 +67,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
                 $row->addTextField('name')->setValue(Format::name('', $values['preferredName'], $values['surname'], 'Student'))->required()->readonly();
 
             $row = $form->addRow();
-                $row->addLabel('bloodType', __('Blood Type'));
-                $row->addSelectBloodType('bloodType')->placeholder();
-
-            $row = $form->addRow();
                 $row->addLabel('longTermMedication', __('Long-Term Medication?'));
                 $row->addYesNo('longTermMedication')->placeholder();
 
@@ -79,10 +75,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
             $row = $form->addRow()->addClass('longTermMedicationDetails');
                 $row->addLabel('longTermMedicationDetails', __('Medication Details'));
                 $row->addTextArea('longTermMedicationDetails')->setRows(5);
-
-            $row = $form->addRow();
-                $row->addLabel('tetanusWithin10Years', __('Tetanus Within Last 10 Years?'));
-                $row->addYesNo('tetanusWithin10Years')->placeholder();
 
             // CUSTOM FIELDS
             $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Medical Form', [], $values['fields']);

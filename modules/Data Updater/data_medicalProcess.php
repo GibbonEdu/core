@@ -100,10 +100,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                 $data = [
                     'gibbonPersonMedicalID'     => $gibbonPersonMedicalID,
                     'gibbonPersonID'            => $gibbonPersonID,
-                    'bloodType'                 => $_POST['bloodType'] ?? '',
                     'longTermMedication'        => $_POST['longTermMedication'] ?? 'N',
                     'longTermMedicationDetails' => $_POST['longTermMedicationDetails'] ?? '',
-                    'tetanusWithin10Years'      => $_POST['tetanusWithin10Years'] ?? '',
                     'comment'                   => $_POST['comment'] ?? '',
                 ];
 
@@ -144,10 +142,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                 if ($existing != 'N') {
                     $gibbonPersonMedicalUpdateID = $existing;
                     $data['gibbonPersonMedicalUpdateID'] = $gibbonPersonMedicalUpdateID;
-                    $sql = 'UPDATE gibbonPersonMedicalUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonMedicalID=:gibbonPersonMedicalID, gibbonPersonID=:gibbonPersonID, bloodType=:bloodType, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, tetanusWithin10Years=:tetanusWithin10Years, fields=:fields, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID';
+                    $sql = 'UPDATE gibbonPersonMedicalUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonMedicalID=:gibbonPersonMedicalID, gibbonPersonID=:gibbonPersonID, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, fields=:fields, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID';
                     $pdo->update($sql, $data);
                 } else {
-                    $sql = 'INSERT INTO gibbonPersonMedicalUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonMedicalID=:gibbonPersonMedicalID, gibbonPersonID=:gibbonPersonID, bloodType=:bloodType, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, tetanusWithin10Years=:tetanusWithin10Years, fields=:fields, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp';
+                    $sql = 'INSERT INTO gibbonPersonMedicalUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonMedicalID=:gibbonPersonMedicalID, gibbonPersonID=:gibbonPersonID, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, fields=:fields, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp';
                     $gibbonPersonMedicalUpdateID = $pdo->insert($sql, $data);
                 }
 
