@@ -35,21 +35,16 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
     }
     $page->return->setEditLink($editLink);
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/customFields_addProcess.php');
+    $customFieldHandler = $container->get(CustomFieldHandler::class);
 
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/customFields_addProcess.php');
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
     $form->addRow()->addHeading(__('Basic Details'));
 
-    $contexts = [
-        __('User Admin') => [
-            'Person' => __('Person'),
-        ],
-    ];
-
     $row = $form->addRow();
         $row->addLabel('context', __('Context'));
-        $row->addSelect('context')->fromArray($contexts)->required()->placeholder();
+        $row->addSelect('context')->fromArray($customFieldHandler->getContexts())->required()->placeholder();
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'))->description(__('Must be unique for this context.'));
@@ -65,10 +60,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
 
     $form->addRow()->addHeading(__('Configure'));
 
-    $types = $container->get(CustomFieldHandler::class)->getTypes();
     $row = $form->addRow();
         $row->addLabel('type', __('Type'));
-        $row->addSelect('type')->fromArray($types)->required()->placeholder();
+        $row->addSelect('type')->fromArray($customFieldHandler->getTypes())->required()->placeholder();
 
     $form->toggleVisibilityByClass('optionsLength')->onSelect('type')->when(['varchar', 'number']);
     $row = $form->addRow()->addClass('optionsLength');
@@ -103,29 +97,31 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
     $form->addRow()->addClass('contextPerson')->addHeading(__('Visibility'));
 
     $form->toggleVisibilityByClass('contextPerson')->onSelect('context')->when('Person');
-    $activePersonOptions = array(
+    $form->toggleVisibilityByClass('contextDataUpdate')->onSelect('context')->when(['Person', 'Medical Form']);
+
+    $activePersonOptions = [
         'activePersonStudent' => __('Student'),
         'activePersonStaff'   => __('Staff'),
         'activePersonParent'  => __('Parent'),
         'activePersonOther'   => __('Other'),
-    );
+    ];
     $row = $form->addRow()->addClass('contextPerson');
         $row->addLabel('roleCategories', __('Role Categories'));
         $row->addCheckbox('roleCategories')->fromArray($activePersonOptions)->checked('activePersonStudent');
 
-    $row = $form->addRow()->addClass('contextPerson');
+    $row = $form->addRow()->addClass('contextDataUpdate');
         $row->addLabel('activeDataUpdater', __('Include In Data Updater?'));
-        $row->addSelect('activeDataUpdater')->fromArray(array('1' => __('Yes'), '0' => __('No')))->selected('1')->required();
+        $row->addSelect('activeDataUpdater')->fromArray(['1' => __('Yes'), '0' => __('No')])->selected('1')->required();
 
     $row = $form->addRow()->addClass('contextPerson');
         $row->addLabel('activeApplicationForm', __('Include In Application Form?'));
-        $row->addSelect('activeApplicationForm')->fromArray(array('1' => __('Yes'), '0' => __('No')))->selected('0')->required();
+        $row->addSelect('activeApplicationForm')->fromArray(['1' => __('Yes'), '0' => __('No')])->selected('0')->required();
     
     $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
     if ($enablePublicRegistration == 'Y') {
         $row = $form->addRow()->addClass('contextPerson');
             $row->addLabel('activePublicRegistration', __('Include In Public Registration Form?'));
-            $row->addSelect('activePublicRegistration')->fromArray(array('1' => __('Yes'), '0' => __('No')))->selected('0')->required();
+            $row->addSelect('activePublicRegistration')->fromArray(['1' => __('Yes'), '0' => __('No')])->selected('0')->required();
     }
 
     $row = $form->addRow();

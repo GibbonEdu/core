@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
-use Gibbon\Domain\System\CustomFieldGateway;
+use Gibbon\Forms\CustomFieldHandler;
 
 //Module includes
 include './modules/User Admin/moduleFunctions.php';
@@ -209,38 +209,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             }
 
             // CUSTOM FIELDS
-			$oldFields = !empty($oldValues['fields'])? json_decode($oldValues['fields'], true) : [];
-            $newFields = !empty($newValues['fields'])? json_decode($newValues['fields'], true) : [];
-
             $params = compact('student', 'staff', 'parent', 'other');
-            $customFields = $container->get(CustomFieldGateway::class)->selectCustomFields('Person', $params + ['dataUpdater' => 1])->fetchAll();
-
-            foreach ($customFields as $field) {
-                $fieldName = $field['gibbonCustomFieldID'];
-                $label = __($field['name']);
-
-                $oldValue = isset($oldFields[$fieldName])? $oldFields[$fieldName] : '';
-                $newValue = isset($newFields[$fieldName])? $newFields[$fieldName] : '';
-
-                if ($field['type'] == 'date') {
-                    $oldValue = Format::date($oldValue);
-                    $newValue = Format::date($newValue);
-                }
-
-                $isMatching = ($oldValue != $newValue);
-
-                $row = $form->addRow();
-                $row->addLabel('new'.$fieldName.'On', $label);
-                $row->addContent($oldValue);
-                $row->addContent($newValue)->addClass($isMatching ? 'matchHighlightText' : '');
-
-                if ($isMatching) {
-                    $row->addCheckbox('newcustom'.$fieldName.'On')->checked(true)->setClass('textCenter');
-                    $form->addHiddenValue('newcustom'.$fieldName, $newValue);
-                } else {
-                    $row->addContent();
-                }
-            }
+            $container->get(CustomFieldHandler::class)->addCustomFieldsToDataUpdate($form, 'Person', $params + ['dataUpdater' => 1], $oldValues, $newValues);
             
             $row = $form->addRow();
                 $row->addSubmit();

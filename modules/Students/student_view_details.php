@@ -1523,11 +1523,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     : Format::small(__('Unknown'));
                             });
 
-                        $table->addColumn('tetanusWithin10Years', __('Tetanus Last 10 Years?'))
-                            ->format(Format::using('yesno', 'longTermMedication'));
+                        $table = $container->get(CustomFieldHandler::class)->createCustomFieldsTable('Medical Form', [], $medical['fields'], $table);
 
-                        $table->addColumn('bloodType', __('Blood Type'));
                         $table->addColumn('medicalConditions', __('Medical Conditions?'))
+                            ->addClass('col-span-3')
                             ->format(function ($medical) use ($conditions) {
                                 return count($conditions) > 0
                                     ? __('Yes').'. '.__('Details below.')
@@ -1538,7 +1537,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $table->addColumn('comment', __('Comment'))->addClass('col-span-3');
                         }
 
-                        echo $table->render(!empty($medical) ? [$medical] : []);
+                        $fields = is_string($medical['fields']) ? json_decode($medical['fields'], true) : [];
+                        echo $table->render(!empty($medical) ? [$medical + $fields] : []);
 
                         // MEDICAL CONDITIONS
                         $canManageMedical = isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage.php');

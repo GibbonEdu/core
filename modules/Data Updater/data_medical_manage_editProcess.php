@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\Students\StudentGateway;
 
@@ -57,17 +58,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
         } else {
             $row = $result->fetch();
             $gibbonPersonMedicalID = $row['gibbonPersonMedicalID'];
+            $row2 = $medicalGateway->getByID($gibbonPersonMedicalID);
             $conditions = [];
 
             //Set values
             $data = array();
             $sqlSet = '';
-            if (isset($_POST['bloodTypeOn'])) {
-                if ($_POST['bloodTypeOn'] == 'on') {
-                    $data['bloodType'] = $_POST['bloodType'];
-                    $sqlSet .= 'bloodType=:bloodType, ';
-                }
-            }
             if (isset($_POST['longTermMedicationOn'])) {
                 if ($_POST['longTermMedicationOn'] == 'on') {
                     $data['longTermMedication'] = $_POST['longTermMedication'];
@@ -80,18 +76,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                     $sqlSet .= 'longTermMedicationDetails=:longTermMedicationDetails, ';
                 }
             }
-            if (isset($_POST['tetanusWithin10YearsOn'])) {
-                if ($_POST['tetanusWithin10YearsOn'] == 'on') {
-                    $data['tetanusWithin10Years'] = $_POST['tetanusWithin10Years'];
-                    $sqlSet .= 'tetanusWithin10Years=:tetanusWithin10Years, ';
-                }
-            }
             if (isset($_POST['commentOn'])) {
                 if ($_POST['commentOn'] == 'on') {
                     $data['comment'] = $_POST['comment'];
                     $sqlSet .= 'comment=:comment, ';
                 }
             }
+
+            // CUSTOM FIELDS
+            $data['fields'] = $container->get(CustomFieldHandler::class)->getFieldDataFromDataUpdate('Medical Form', [], $row2['fields']);
+            $sqlSet .= 'fields=:fields, ';
 
             $partialFail = false;
 

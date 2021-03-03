@@ -101,17 +101,17 @@ class CustomFieldGateway extends QueryableGateway
                     $query->orWhere('activePersonOther=:other', ['other' => $params['other']]);
                 }
             });
+        }
 
-            // Handle additional flags as ANDs
-            if ($params['applicationForm'] ?? false) {
-                $query->where('activeApplicationForm=:applicationForm', ['applicationForm' => $params['applicationForm']]);
-            }
-            if ($params['dataUpdater'] ?? false) {
-                $query->where('activeDataUpdater=:dataUpdater', ['dataUpdater' => $params['dataUpdater']]);
-            }
-            if ($params['publicRegistration'] ?? false) {
-                $query->where('activePublicRegistration=:publicRegistration', ['publicRegistration' => $params['publicRegistration']]);
-            }
+        // Handle additional flags as ANDs
+        if ($params['applicationForm'] ?? false) {
+            $query->where('activeApplicationForm=:applicationForm', ['applicationForm' => $params['applicationForm']]);
+        }
+        if ($params['dataUpdater'] ?? false) {
+            $query->where('activeDataUpdater=:dataUpdater', ['dataUpdater' => $params['dataUpdater']]);
+        }
+        if ($params['publicRegistration'] ?? false) {
+            $query->where('activePublicRegistration=:publicRegistration', ['publicRegistration' => $params['publicRegistration']]);
         }
 
         $query->orderBy(['sequenceNumber', 'name']);

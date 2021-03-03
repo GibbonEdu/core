@@ -14,10 +14,8 @@ $I->click('Submit');
 $I->see('Update Data');
 
 $editFormValues = array(
-    'bloodType'                 => 'AB+',
     'longTermMedication'        => 'Y',
     'longTermMedicationDetails' => 'Test',
-    'tetanusWithin10Years'      => 'Y',
 );
 
 $I->submitForm('#content form[method="post"]', $editFormValues, 'Submit');
@@ -36,10 +34,8 @@ $gibbonPersonMedicalUpdateID = $I->grabValueFrom("input[type='hidden'][name='exi
 $I->amOnModulePage('Data Updater', 'data_medical_manage_edit.php', array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID));
 $I->seeBreadcrumb('Edit Request');
 
-$I->see('AB+', 'td');
 $I->see('Y', 'td');
 $I->see('Test', 'td');
-$I->see('Y', 'td');
 
 $I->click('Submit');
 $I->seeSuccessMessage();
@@ -64,10 +60,8 @@ $I->click('Submit');
 $I->see('Update Data');
 
 $editFormValues = array(
-    'bloodType'                 => 'O+',
     'longTermMedication'        => 'N',
     'longTermMedicationDetails' => 'Test2',
-    'tetanusWithin10Years'      => 'N',
 );
 
 $I->submitForm('#content form[method="post"]', $editFormValues, 'Submit');
@@ -86,10 +80,8 @@ $gibbonPersonMedicalUpdateID = $I->grabValueFrom("input[type='hidden'][name='exi
 $I->amOnModulePage('Data Updater', 'data_medical_manage_edit.php', array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID));
 $I->seeBreadcrumb('Edit Request');
 
-$I->see('O+', 'td');
 $I->see('N', 'td');
 $I->see('Test2', 'td');
-$I->see('N', 'td');
 
 $I->click('Submit');
 $I->seeSuccessMessage();

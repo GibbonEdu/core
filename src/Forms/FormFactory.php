@@ -369,19 +369,6 @@ class FormFactory implements FormFactoryInterface
             'Other'          => __('Other')
         ))->placeholder();
     }
-    public function createSelectBloodType($name)
-    {
-        return $this->createSelect($name)->fromArray(array(
-            'O+' => 'O+',
-            'A+' => 'A+',
-            'B+' => 'B+',
-            'AB+' => 'AB+',
-            'O-' => 'O-',
-            'A-' => 'A-',
-            'B-' => 'B-',
-            'AB-' => 'AB-'
-        ))->placeholder();
-    }
 
     public function createSelectSystemLanguage($name)
     {
