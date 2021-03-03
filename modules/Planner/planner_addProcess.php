@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $date = dateConvert($guid, $_POST['date'] ?? '');
             $timeStart = $_POST['timeStart'] ?? '';
             $timeEnd = $_POST['timeEnd'] ?? '';
-            $gibbonUnitID = !empty($_POST['gibbonUnitID']) ? $_POST['gibbonUnitID'] : null;
+            $gibbonUnitID = $_POST['gibbonUnitID'] ?? null;
             $name = $_POST['name'] ?? '';
             $summary = $_POST['summary'] ?? '';
             if (empty($summary)) {

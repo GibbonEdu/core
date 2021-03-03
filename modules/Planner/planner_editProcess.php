@@ -24,7 +24,7 @@ use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 
 
-$gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
+$gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
 $viewBy = $_GET['viewBy'] ?? '';
 $subView = $_GET['subView'] ?? '';
 if ($viewBy != 'date' and $viewBy != 'class') {
