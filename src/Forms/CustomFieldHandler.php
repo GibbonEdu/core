@@ -165,7 +165,9 @@ class CustomFieldHandler
         $existingFields = isset($fields) && is_string($fields)? json_decode($fields, true) : $fields;
         $customFields = $this->customFieldGateway->selectCustomFields($context, $params)->fetchAll();
 
-        if (empty($table)) {
+        if (!empty($table)) {
+            $table->withData([$existingFields]);
+        } else {
             $table = DataTable::createDetails('customFields')->withData([$existingFields]);
         }
 

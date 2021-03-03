@@ -1618,7 +1618,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $table->addColumn('comment', __('Comment'))->addClass('col-span-3');
                         }
 
-                        echo $table->render(!empty($medical) ? [$medical] : []);
+                        $fields = is_string($medical['fields']) ? json_decode($medical['fields'], true) : [];
+                        echo $table->render(!empty($medical) ? [$medical + $fields] : []);
 
                         // MEDICAL CONDITIONS
                         $canManageMedical = isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage.php');
