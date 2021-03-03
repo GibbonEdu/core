@@ -18,10 +18,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
+use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\DataUpdater\MedicalUpdateGateway;
-use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -206,10 +207,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 						$form->addHiddenValue('existing', $values['gibbonPersonMedicalUpdateID'] ?? 'N');
 
 						$row = $form->addRow();
-							$row->addLabel('bloodType', __('Blood Type'));
-							$row->addSelectBloodType('bloodType')->placeholder();
-
-						$row = $form->addRow();
 							$row->addLabel('longTermMedication', __('Long-Term Medication?'));
 							$row->addYesNo('longTermMedication')->placeholder();
 
@@ -219,9 +216,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 							$row->addLabel('longTermMedicationDetails', __('Medication Details'));
 							$row->addTextArea('longTermMedicationDetails')->setRows(5);
 
-						$row = $form->addRow();
-							$row->addLabel('tetanusWithin10Years', __('Tetanus Within Last 10 Years?'));
-							$row->addYesNo('tetanusWithin10Years')->placeholder();
+                        // CUSTOM FIELDS
+                        $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Medical Form', ['dataUpdater' => 1], $values['fields']);
 
                         $row = $form->addRow();
 							$row->addLabel('comment', __('Comment'));

@@ -11,11 +11,14 @@ all stylesheets and scripts with a 'head' context.
 
 {% if gibbonPersonMedicalID %}
 
-    <i>{{ __('Blood Type') }}:</i> {{ bloodType }}<br/>
-
-    <i>{{ __('Tetanus') }}:</i> {{ formatUsing('yesNo', tetanusWithin10Years) }}<br/>
-
     <i>{{ __('Medication') }}:</i> {{ formatUsing('yesNo', longTermMedication) }}<br/>
+
+    {% for field in customFields %}
+        {% if fields[field.gibbonCustomFieldID] %}
+        <i>{{ __(field.name) }}:</i> {{ fields[field.gibbonCustomFieldID] ?? '' }}<br/>
+        {% endif %}
+    {% endfor %}
+
 
 {% else %}
 
