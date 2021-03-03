@@ -111,12 +111,18 @@ class CustomFieldHandler
 
     public function addCustomFieldsToForm(&$form, $context, $params = [], $fields = [])
     {
-        $existingFields = isset($fields) && is_string($fields)? json_decode($fields, true) : $fields;
+        $fields = isset($fields) && is_string($fields)? json_decode($fields, true) : $fields;
         $customFieldsGrouped = $this->customFieldGateway->selectCustomFields($context, $params)->fetchGrouped();
         $prefix = $params['prefix'] ?? 'custom';
 
         if (empty($customFieldsGrouped)) {
             return;
+        }
+
+        $existingFields = [];
+        foreach ($fields as $key => $value) {
+            $key = str_pad($key, 4, "0", STR_PAD_LEFT);
+            $existingFields[$key] = $value;
         }
 
         if (!empty($params['heading'])) {
