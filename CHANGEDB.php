@@ -786,4 +786,5 @@ ALTER TABLE `gibbonCustomField` ADD `context` VARCHAR(60) NOT NULL DEFAULT 'Pers
 ALTER TABLE `gibbonCustomField` ADD `sequenceNumber` INT(4) NOT NULL AFTER `required`;end
 ALTER TABLE `gibbonCustomField` ADD `heading` VARCHAR(90) NOT NULL AFTER `required`;end
 ALTER TABLE `gibbonCustomField` CHANGE `type` `type` ENUM('varchar','text','date','time','url','select','checkboxes','radio','yesno','editor','color','number','image','file') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
+INSERT INTO gibbonLanguage (name) SELECT * FROM (SELECT 'Somali') AS tmp WHERE NOT EXISTS (SELECT name FROM gibbonLanguage WHERE (name='Somali')) LIMIT 1;end
 ";
