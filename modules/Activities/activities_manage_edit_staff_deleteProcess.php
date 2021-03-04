@@ -17,52 +17,35 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Activities\ActivityStaffGateway;
+
 include '../../gibbon.php';
 
-$gibbonActivityID = $_GET['gibbonActivityID'];
-$gibbonActivityStaffID = $_GET['gibbonActivityStaffID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/activities_manage_edit.php&gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID'];
+$gibbonActivityID = $_POST['gibbonActivityID'] ?? '';
+$gibbonActivityStaffID = $_POST['gibbonActivityStaffID'] ?? '';
+$search = $_POST['search'] ?? '';
+$gibbonSchoolYearTermID = $_POST['gibbonSchoolYearTermID'] ?? '';
+
+$URL = $gibbon->session->get('absoluteURL') . '/index.php?q=/modules/' . $gibbon->session->get('module') . "/activities_manage_edit.php&gibbonActivityID=$gibbonActivityID&search=$search&gibbonSchoolYearTermID=$gibbonSchoolYearTermID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
     //Proceed!
+    $activityStaffGateway = $container->get(ActivityStaffGateway::class);
 
-    //Check if school year specified
-    if ($gibbonActivityID == '' or $gibbonActivityStaffID == '') {
+    if (!$activityStaffGateway->exists($gibbonActivityStaffID)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
-        try {
-            $data = array('gibbonActivityStaffID' => $gibbonActivityStaffID, 'gibbonActivityID' => $gibbonActivityID);
-            $sql = 'SELECT * FROM gibbonActivityStaff WHERE gibbonActivityStaffID=:gibbonActivityStaffID AND gibbonActivityID=:gibbonActivityID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
+        if (!$activityStaffGateway->delete($gibbonActivityStaffID)) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
             exit();
         }
 
-        if ($result->rowCount() != 1) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-        } else {
-            //Write to database
-            try {
-                $data = array('gibbonActivityStaffID' => $gibbonActivityStaffID);
-                $sql = 'DELETE FROM gibbonActivityStaff WHERE gibbonActivityStaffID=:gibbonActivityStaffID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
-
-            $URL .= '&return=success0';
-            header("Location: {$URL}");
-        }
+        $URL .= '&return=success0';
+        header("Location: {$URL}");
     }
 }
