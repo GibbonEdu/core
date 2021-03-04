@@ -790,5 +790,6 @@ INSERT INTO gibbonLanguage (name) SELECT * FROM (SELECT 'Somali') AS tmp WHERE N
 ALTER TABLE `gibbonPersonMedical` ADD `fields` TEXT NULL AFTER `comment`;end
 ALTER TABLE `gibbonPersonMedicalUpdate` ADD `fields` TEXT NULL AFTER `timestamp`;end
 DELETE FROM `gibbonSetting` WHERE scope='Students' AND name='extendedBriefProfile';end
+ALTER TABLE `gibbonActivitySlot` CHANGE `gibbonSpaceID` `gibbonSpaceID` int(10) UNSIGNED ZEROFILL DEFAULT NULL;end
 ALTER TABLE `gibbonCustomField` ADD `hidden` ENUM('Y','N') NULL DEFAULT 'N' AFTER `required`;end
 ";
