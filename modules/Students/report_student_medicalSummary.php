@@ -24,6 +24,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\Prefab\ReportTable;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\Students\StudentReportGateway;
+use Gibbon\Domain\System\CustomFieldGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -119,16 +120,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_me
         });
 
     $view = new View($container->get('twig'));
+    $customFieldGateway = $container->get(CustomFieldGateway::class);
 
     $table->addColumn('medicalForm', __('Medical Form?'))
-        ->width('16%')
+        ->width('26%')
         ->sortable('gibbonPersonMedicalID')
-        ->format(function ($student) use ($view) {
+        ->format(function ($student) use ($view, $customFieldGateway) {
+            $student['customFields'] = $customFieldGateway->selectCustomFields('Medical Form')->fetchAll();
+            $student['fields'] = !empty($student['fields']) ? json_decode($student['fields'], true) : [];
             return $view->fetchFromTemplate('formats/medicalForm.twig.html', $student);
         });
 
     $table->addColumn('conditions', __('Medical Conditions'))
-        ->width('60%')
+        ->width('50%')
         ->notSortable()
         ->format(function ($student) use ($view) {
             return $view->fetchFromTemplate('formats/medicalConditions.twig.html', $student);

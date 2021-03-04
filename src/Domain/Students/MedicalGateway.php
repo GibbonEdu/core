@@ -42,7 +42,7 @@ class MedicalGateway extends QueryableGateway implements ScrubbableGateway
     private static $searchableColumns = ['preferredName', 'surname', 'username'];
 
     private static $scrubbableKey = 'gibbonPersonID';
-    private static $scrubbableColumns = ['bloodType' => '','longTermMedication' => '','longTermMedicationDetails' => '','tetanusWithin10Years' => '','comment' => ''];
+    private static $scrubbableColumns = ['longTermMedication' => '','longTermMedicationDetails' => '','comment' => '', 'fields' => ''];
     
     /**
      * @param QueryCriteria $criteria
@@ -54,7 +54,7 @@ class MedicalGateway extends QueryableGateway implements ScrubbableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonPersonMedicalID', 'bloodType', 'longTermMedication', 'longTermMedicationDetails', 'tetanusWithin10Years', 'comment', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonRollGroup.name as rollGroup', '(SELECT COUNT(*) FROM gibbonPersonMedicalCondition WHERE gibbonPersonMedicalCondition.gibbonPersonMedicalID=gibbonPersonMedical.gibbonPersonMedicalID) as conditionCount'
+                'gibbonPersonMedicalID', 'longTermMedication', 'longTermMedicationDetails', 'comment', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonRollGroup.name as rollGroup', '(SELECT COUNT(*) FROM gibbonPersonMedicalCondition WHERE gibbonPersonMedicalCondition.gibbonPersonMedicalID=gibbonPersonMedical.gibbonPersonMedicalID) as conditionCount'
             ])
             ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonPersonMedical.gibbonPersonID')
             ->innerJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')

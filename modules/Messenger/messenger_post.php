@@ -495,7 +495,7 @@ else {
         // Applicants
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_applicants")) {
             $row = $form->addRow();
-				$row->addLabel('applicants', __('Applicants'))->description(__('Applicants from a given year.'))->description(__('Does not apply to the message wall.'));
+				$row->addLabel('applicants', __('Applicants'))->description(__('Accepted applicants from a given year.'))->description(__('Does not apply to the message wall.'));
 				$row->addYesNoRadio('applicants')->checked('N')->required();
 
 			$form->toggleVisibilityByClass('applicants')->onRadio('applicants')->when('Y');

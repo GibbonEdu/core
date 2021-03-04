@@ -46,7 +46,7 @@ class CustomFieldGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonCustomFieldID', 'context', 'name', 'type', 'active', 'activePersonStudent', 'activePersonParent', 'activePersonStaff', 'activePersonOther'
+                'gibbonCustomFieldID', 'context', 'heading', 'name', 'type', 'active', 'activePersonStudent', 'activePersonParent', 'activePersonStaff', 'activePersonOther'
             ]);
         
         $criteria->addFilterRules([
@@ -79,7 +79,7 @@ class CustomFieldGateway extends QueryableGateway
     {
         $query = $this
             ->newSelect()
-            ->cols(['*'])
+            ->cols(['heading as groupBy', 'gibbonCustomField.*'])
             ->from('gibbonCustomField')
             ->where("active='Y'")
             ->where('context=:context')
@@ -101,17 +101,17 @@ class CustomFieldGateway extends QueryableGateway
                     $query->orWhere('activePersonOther=:other', ['other' => $params['other']]);
                 }
             });
+        }
 
-            // Handle additional flags as ANDs
-            if ($params['applicationForm'] ?? false) {
-                $query->where('activeApplicationForm=:applicationForm', ['applicationForm' => $params['applicationForm']]);
-            }
-            if ($params['dataUpdater'] ?? false) {
-                $query->where('activeDataUpdater=:dataUpdater', ['dataUpdater' => $params['dataUpdater']]);
-            }
-            if ($params['publicRegistration'] ?? false) {
-                $query->where('activePublicRegistration=:publicRegistration', ['publicRegistration' => $params['publicRegistration']]);
-            }
+        // Handle additional flags as ANDs
+        if ($params['applicationForm'] ?? false) {
+            $query->where('activeApplicationForm=:applicationForm', ['applicationForm' => $params['applicationForm']]);
+        }
+        if ($params['dataUpdater'] ?? false) {
+            $query->where('activeDataUpdater=:dataUpdater', ['dataUpdater' => $params['dataUpdater']]);
+        }
+        if ($params['publicRegistration'] ?? false) {
+            $query->where('activePublicRegistration=:publicRegistration', ['publicRegistration' => $params['publicRegistration']]);
         }
 
         $query->orderBy(['sequenceNumber', 'name']);

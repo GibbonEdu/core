@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\FileUploader;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\DataUpdater\MedicalUpdateGateway;
 
@@ -99,10 +100,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                 $data = [
                     'gibbonPersonMedicalID'     => $gibbonPersonMedicalID,
                     'gibbonPersonID'            => $gibbonPersonID,
-                    'bloodType'                 => $_POST['bloodType'] ?? '',
                     'longTermMedication'        => $_POST['longTermMedication'] ?? 'N',
                     'longTermMedicationDetails' => $_POST['longTermMedicationDetails'] ?? '',
-                    'tetanusWithin10Years'      => $_POST['tetanusWithin10Years'] ?? '',
                     'comment'                   => $_POST['comment'] ?? '',
                 ];
 
@@ -120,19 +119,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                     }
                 }
 
+                // CUSTOM FIELDS
+                $customRequireFail = false;
+                $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Medical Form', ['dataUpdater' => 1], $customRequireFail);
+
+                // Check for data changed
+                $existingFields = json_decode($values['fields'], true);
+                $newFields = json_decode($fields, true);
+                foreach ($newFields as $key => $fieldValue) {
+                    if ($existingFields[$key] != $fieldValue) {
+                        $dataChanged = true;
+                    }
+                }
+
                 // Write to database
                 $existing = $_POST['existing'] ?? 'N';
                 $data['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
                 $data['gibbonPersonIDUpdater'] = $_SESSION[$guid]['gibbonPersonID'];
                 $data['timestamp'] = date('Y-m-d H:i:s');
+                $data['fields'] = $fields;
                 
                 if ($existing != 'N') {
                     $gibbonPersonMedicalUpdateID = $existing;
                     $data['gibbonPersonMedicalUpdateID'] = $gibbonPersonMedicalUpdateID;
-                    $sql = 'UPDATE gibbonPersonMedicalUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonMedicalID=:gibbonPersonMedicalID, gibbonPersonID=:gibbonPersonID, bloodType=:bloodType, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, tetanusWithin10Years=:tetanusWithin10Years, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID';
+                    $sql = 'UPDATE gibbonPersonMedicalUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonMedicalID=:gibbonPersonMedicalID, gibbonPersonID=:gibbonPersonID, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, fields=:fields, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID';
                     $pdo->update($sql, $data);
                 } else {
-                    $sql = 'INSERT INTO gibbonPersonMedicalUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonMedicalID=:gibbonPersonMedicalID, gibbonPersonID=:gibbonPersonID, bloodType=:bloodType, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, tetanusWithin10Years=:tetanusWithin10Years, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp';
+                    $sql = 'INSERT INTO gibbonPersonMedicalUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonMedicalID=:gibbonPersonMedicalID, gibbonPersonID=:gibbonPersonID, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, fields=:fields, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=:timestamp';
                     $gibbonPersonMedicalUpdateID = $pdo->insert($sql, $data);
                 }
 

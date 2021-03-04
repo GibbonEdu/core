@@ -28,12 +28,22 @@ class CustomFieldHandler
 {
     protected $customFieldGateway;
 
+    protected $contexts;
     protected $types;
 
     public function __construct(CustomFieldGateway $customFieldGateway, FileUploader $fileUploader)
     {
         $this->customFieldGateway = $customFieldGateway;
         $this->fileUploader = $fileUploader;
+
+        $this->contexts = [
+            __('User Admin') => [
+                'Person' => __('Person'),
+            ],
+            __('Students') => [
+                'Medical Form' => __('Medical Form'),
+            ],
+        ];
 
         $this->types = [
             __('Text') => [
@@ -61,6 +71,11 @@ class CustomFieldHandler
                 'color'      => __('Colour'),
             ]
         ];
+    }
+
+    public function getContexts()
+    {
+        return $this->contexts;
     }
 
     public function getTypes()
@@ -111,12 +126,18 @@ class CustomFieldHandler
 
     public function addCustomFieldsToForm(&$form, $context, $params = [], $fields = [])
     {
-        $existingFields = isset($fields) && is_string($fields)? json_decode($fields, true) : $fields;
-        $customFields = $this->customFieldGateway->selectCustomFields($context, $params)->fetchAll();
+        $fields = isset($fields) && is_string($fields)? json_decode($fields, true) : $fields;
+        $customFieldsGrouped = $this->customFieldGateway->selectCustomFields($context, $params)->fetchGrouped();
         $prefix = $params['prefix'] ?? 'custom';
 
-        if (empty($customFields)) {
+        if (empty($customFieldsGrouped)) {
             return;
+        }
+
+        $existingFields = [];
+        foreach ($fields as $key => $value) {
+            $key = str_pad($key, 4, "0", STR_PAD_LEFT);
+            $existingFields[$key] = $value;
         }
 
         if (!empty($params['heading'])) {
@@ -126,32 +147,44 @@ class CustomFieldHandler
             $form->addRow()->addSubheading($params['subheading']);
         }
 
-        foreach ($customFields as $field) {
-            if (!empty($field['heading'])) {
-                $form->addRow()->addHeading($field['heading']);
+        foreach ($customFieldsGrouped as $heading => $customFields) {
+            if (!empty($heading)) {
+                $form->addRow()->addSubheading($heading);
             }
 
-            $fieldValue = $existingFields[$field['gibbonCustomFieldID']] ?? '';
-            if (!empty($fieldValue) && $field['type'] == 'date') {
-                $fieldValue = Format::date($fieldValue);
-            } elseif (!empty($fieldValue) && $field['type'] == 'checkboxes') {
-                $fieldValue = explode(',', $fieldValue);
+            foreach ($customFields as $field) {
+                $fieldValue = $existingFields[$field['gibbonCustomFieldID']] ?? '';
+                if (!empty($fieldValue) && $field['type'] == 'date') {
+                    $fieldValue = Format::date($fieldValue);
+                } elseif (!empty($fieldValue) && $field['type'] == 'checkboxes') {
+                    $fieldValue = explode(',', $fieldValue);
+                }
+                
+                $name = $prefix.$field['gibbonCustomFieldID'];
+                $row = $field['type'] == 'editor' ? $form->addRow()->addColumn() : $form->addRow();
+                    $row->addLabel($name, $field['name'])->description($field['description']);
+                    $row->addCustomField($name, $field)->setValue($fieldValue);
             }
-            
-            $name = $prefix.$field['gibbonCustomFieldID'];
-            $row = $field['type'] == 'editor' ? $form->addRow()->addColumn() : $form->addRow();
-                $row->addLabel($name, $field['name'])->description($field['description']);
-                $row->addCustomField($name, $field)->setValue($fieldValue);
         }
     }
 
-    public function createCustomFieldsTable($context, $params = [], $fields = [])
+    public function createCustomFieldsTable($context, $params = [], $fields = [], $table = null)
     {
-        $existingFields = isset($fields) && is_string($fields)? json_decode($fields, true) : $fields;
+        $fields = isset($fields) && is_string($fields)? json_decode($fields, true) : $fields;
         $customFields = $this->customFieldGateway->selectCustomFields($context, $params)->fetchAll();
 
-        $table = DataTable::createDetails('customFields')->withData([$existingFields]);
+        $existingFields = [];
+        foreach ($fields as $key => $value) {
+            $key = str_pad($key, 4, "0", STR_PAD_LEFT);
+            $existingFields[$key] = $value;
+        }
 
+        if (!empty($table)) {
+            $table->withData([$existingFields]);
+        } else {
+            $table = DataTable::createDetails('customFields')->withData([$existingFields]);
+        }
+        
         foreach ($customFields as $field) {
             $col = $table->addColumn($field['gibbonCustomFieldID'], __($field['name']));
 
@@ -183,5 +216,57 @@ class CustomFieldHandler
         }
 
         return $table;
+    }
+
+    public function addCustomFieldsToDataUpdate(&$form, $context, $params = [], $oldValues, $newValues)
+    {
+        $oldFields = !empty($oldValues['fields'])? json_decode($oldValues['fields'], true) : [];
+        $newFields = !empty($newValues['fields'])? json_decode($newValues['fields'], true) : [];
+
+        $customFields = $this->customFieldGateway->selectCustomFields($context, $params)->fetchAll();
+
+        foreach ($customFields as $field) {
+            $fieldName = $field['gibbonCustomFieldID'];
+            $label = __($field['name']);
+
+            $oldValue = isset($oldFields[$fieldName])? $oldFields[$fieldName] : '';
+            $newValue = isset($newFields[$fieldName])? $newFields[$fieldName] : '';
+
+            if ($field['type'] == 'date') {
+                $oldValue = Format::date($oldValue);
+                $newValue = Format::date($newValue);
+            }
+
+            $isMatching = ($oldValue != $newValue);
+
+            $row = $form->addRow();
+            $row->addLabel('new'.$fieldName.'On', $label);
+            $row->addContent($oldValue);
+            $row->addContent($newValue)->addClass($isMatching ? 'matchHighlightText' : '');
+
+            if ($isMatching) {
+                $row->addCheckbox('newcustom'.$fieldName.'On')->checked(true)->setClass('textCenter');
+                $form->addHiddenValue('newcustom'.$fieldName, $newValue);
+            } else {
+                $row->addContent();
+            }
+        }
+    }
+
+    public function getFieldDataFromDataUpdate($context, $params = [], $fields = [])
+    {
+        $customFields = $this->customFieldGateway->selectCustomFields($context, $params)->fetchAll();
+
+        $fields = !empty($fields) && is_string($fields) ? json_decode($fields, true) : $fields;
+        foreach ($customFields as $field) {
+            if (!isset($_POST['newcustom'.$field['gibbonCustomFieldID'].'On'])) continue;
+            if (!isset($_POST['newcustom'.$field['gibbonCustomFieldID']])) continue;
+
+            $fields[$field['gibbonCustomFieldID']] = $field['type'] == 'date'
+                ? Format::dateConvert($_POST['newcustom'.$field['gibbonCustomFieldID']])
+                : $_POST['newcustom'.$field['gibbonCustomFieldID']];
+        }
+
+        return json_encode($fields);
     }
 }

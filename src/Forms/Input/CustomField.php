@@ -141,7 +141,7 @@ class CustomField extends Input
                 break;
 
             case 'yesno':
-                $this->customField = $this->factory->createYesNo($name);
+                $this->customField = $this->factory->createYesNo($name)->placeholder();
                 break;
 
             case 'text':
