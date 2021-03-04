@@ -108,6 +108,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         $form->addHiddenValue('address', $gibbon->session->get('address'));
         $form->addHiddenValue('type', 'cuttingEdge');
 
+        if ($updater->isComposerUpdateRequired()) {
+            echo Format::alert('<b>'.__('Composer Update Required').'</b>: '.__('The updater has detected a change in the composer.lock file. In the command line, navigate to your Gibbon base path and run the {composer} command. Visit the {docsLink} page in the docs for more information about using composer.<br/><br/>Once you have updated composer, click {updateLink} to dismiss this message. ', [
+                'composer' => '<code class="bg-gray-800 text-white rounded px-1 py-px">composer install</code>',
+                'docsLink' => Format::link('https://docs.gibbonedu.org/developers/getting-started/developer-workflow/', __('Developer Workflow')),
+                'updateLink' => Format::link('./modules/System Admin/updateComposerProcess.php', __('Update')),
+            ]), 'error');
+        }
+
         if ($return == 'success0') {
             $form->addRow()->addContent(__('You seem to be all up to date, good work buddy!'))->addClass('py-16 text-center text-gray-600 text-lg');
         } elseif (!$updateRequired) {

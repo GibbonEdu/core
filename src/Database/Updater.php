@@ -101,6 +101,14 @@ class Updater implements ContainerAwareInterface
         return false;
     }
 
+    public function isComposerUpdateRequired()
+    {
+        $currentHash = $this->settingGateway->getSettingByScope('System Admin', 'composerLockHash');
+        $autoloadFile = $this->absolutePath.'/vendor/autoload.php';
+
+        return $currentHash != $this->getComposerHash() || !is_file($autoloadFile);
+    }
+
     public function update() : array
     {
         if (!$this->isUpdateRequired()) {
@@ -252,6 +260,14 @@ class Updater implements ContainerAwareInterface
                 $this->db->insert($sql, $data);
             }
         }
+    }
+
+    public function getComposerHash()
+    {
+        $composerLock = file_get_contents($this->absolutePath.'/composer.lock');
+        $composerLock = json_decode($composerLock, true);
+
+        return $composerLock['content-hash'] ?? '';
     }
 
     protected function loadChangeDB()
