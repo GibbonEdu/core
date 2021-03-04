@@ -499,7 +499,8 @@ CustomBlocks.prototype.loadBlockInputData = function(block, data) {
     $(':input', block).prop('disabled', false);
 
     for (key in data) {
-        $("[name='"+key+"']:not([type='file'])", block).val(data[key]);
+        $("[name='"+key+"']:not([type='file']):not([type='radio'])", block).val(data[key]);
+        $("input:radio[name='"+key+"']", block).filter("[value='"+data[key]+"']").attr("checked", true);
     }
 
     var readonly = data.readonly || [];
