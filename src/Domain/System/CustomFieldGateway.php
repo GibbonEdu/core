@@ -113,6 +113,9 @@ class CustomFieldGateway extends QueryableGateway
         if ($params['publicRegistration'] ?? false) {
             $query->where('activePublicRegistration=:publicRegistration', ['publicRegistration' => $params['publicRegistration']]);
         }
+        if ($params['hideHidden'] ?? false) {
+            $query->where('hidden=:hidden', ['hidden' => 'N']);
+        }
 
         $query->orderBy(['sequenceNumber', 'name']);
 

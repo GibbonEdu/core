@@ -91,6 +91,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
         $row->addYesNo('required')->required()->selected('N');
 
     $row = $form->addRow();
+        $row->addLabel('hidden', __('Hidden'))->description(__('Is this field hidden from profiles and user-facing pages?'));
+        $row->addYesNo('hidden')->required()->selected('N');
+
+    $row = $form->addRow();
         $row->addLabel('heading', __('Heading'))->description(__('Optionally list this field under a heading.'));
         $row->addTextField('heading')->maxLength(90);
 
