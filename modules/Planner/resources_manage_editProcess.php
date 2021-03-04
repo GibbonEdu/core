@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_e
 
                     $type = $_POST['type'] ?? '';
                     if ($type == 'File') {
-                        $content = $row['content'];
+                        $content = $row['content'] ?? '';
                     } elseif ($type == 'HTML') {
                         $content = $_POST['html'] ?? '';
                     } elseif ($type == 'Link') {
@@ -80,8 +80,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_e
                     $name = $_POST['name'] ?? '';
                     $category = $_POST['category'] ?? '';
                     $purpose = $_POST['purpose'] ?? '';
-                    $tags = strtolower($_POST['tags']);
-                    $gibbonYearGroupIDList = implode(',', $_POST['gibbonYearGroupID']) ?? '';
+                    $tags = strtolower($_POST['tags'] ?? '');
+                    $gibbonYearGroupIDList = implode(',', $_POST['gibbonYearGroupID'] ?? '');
                     $description = $_POST['description'] ?? '';
 
                     if (($type != 'File' and $type != 'HTML' and $type != 'Link') or (is_null($content) and $type != 'File') or $name == '' or $category == '' or $tags == '') {

@@ -37,15 +37,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
         $id = $_POST['id'] ?? '';
         $type = $_POST[$id.'type'] ?? '';
         if ($type == 'File') {
-            $content = $_FILES[$id.'file'];
+            $content = $_FILES[$id.'file'] ?? '';
         } elseif ($type == 'Link') {
-            $content = $_POST[$id.'link'];
+            $content = $_POST[$id.'link'] ?? '';
         }
         $name = $_POST[$id.'name'] ?? '';
         $category = $_POST[$id.'category'] ?? '';
         $purpose = $_POST[$id.'purpose'] ?? '';
-        $tags = strtolower($_POST[$id.'tags']);
-        $gibbonYearGroupIDList = (!empty($_POST[$id.'gibbonYearGroupID']))? implode(',', $_POST[$id.'gibbonYearGroupID']) : '';
+        $tags = strtolower($_POST[$id.'tags'] ?? '');
+        $gibbonYearGroupIDList = implode(',', $_POST[$id.'gibbonYearGroupID']) ?? '';
         $description = $_POST[$id.'description'] ?? '';
 
         if (($type != 'File' and $type != 'Link') or is_null($content) or $name == '' or $category == '' or $tags == '' or $id == '') {

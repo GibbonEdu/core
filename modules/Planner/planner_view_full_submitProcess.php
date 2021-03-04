@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
             if ($result->rowCount() != 1) {
                 $URL .= '&return=error2';
-                header("Location: {$URL}"); ?? ''
+                header("Location: {$URL}");
             } else {
                 $row = $result->fetch();
                 //Check that date is not in the future

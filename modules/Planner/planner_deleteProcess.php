@@ -25,7 +25,7 @@ $subView = $_POST['subView'] ?? '';
 if ($viewBy != 'date' and $viewBy != 'class') {
     $viewBy = 'date';
 }
-$gibbonCourseClassID = isset($_POST['gibbonCourseClassID'])? $_POST['gibbonCourseClassID'] : '';
+$gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
 $date = $_POST['date'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/planner_delete.php&gibbonPlannerEntryID=$gibbonPlannerEntryID";
 $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/planner.php';

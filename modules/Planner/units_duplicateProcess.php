@@ -125,10 +125,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                 //Copy Lessons & resources
                 if ($copyLessons == 'Y') {
                     $gibbonCourseClassIDSource = $_POST['gibbonCourseClassIDSource'] ?? '';
-                    $gibbonCourseClassIDTarget = null;
-                    if (isset($_POST['gibbonCourseClassIDTarget'])) {
-                        $gibbonCourseClassIDTarget = $_POST['gibbonCourseClassIDTarget'];
-                    }
+                    $gibbonCourseClassIDTarget = $_POST['gibbonCourseClassIDTarget'] ?? '';
+
 
                     if ($gibbonCourseClassIDSource == '' or count($gibbonCourseClassIDTarget) < 1 or $AI == '') {
                         $URL .= '&return=error1';

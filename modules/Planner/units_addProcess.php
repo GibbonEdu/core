@@ -123,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                     }
 
                     //ADD BLOCKS
-                    $blockCount = ($_POST['blockCount'] - 1) ?? '';
+                    $blockCount = ($_POST['blockCount'] - 1 ?? 0);
                     $sequenceNumber = 0;
                     if ($blockCount > 0) {
                         $order = array();
