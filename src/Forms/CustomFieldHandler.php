@@ -126,7 +126,7 @@ class CustomFieldHandler
 
     public function addCustomFieldsToForm(&$form, $context, $params = [], $fields = [])
     {
-        $fields = isset($fields) && is_string($fields)? json_decode($fields, true) : $fields;
+        $fields = !empty($fields) && is_string($fields)? json_decode($fields, true) : (is_array($fields) ? $fields : []);
         $customFieldsGrouped = $this->customFieldGateway->selectCustomFields($context, $params)->fetchGrouped();
         $prefix = $params['prefix'] ?? 'custom';
 
@@ -170,8 +170,8 @@ class CustomFieldHandler
 
     public function createCustomFieldsTable($context, $params = [], $fields = [], $table = null)
     {
-        $fields = isset($fields) && is_string($fields)? json_decode($fields, true) : $fields;
-        $customFields = $this->customFieldGateway->selectCustomFields($context, $params)->fetchAll();
+        $fields = !empty($fields) && is_string($fields)? json_decode($fields, true) : (is_array($fields) ? $fields : []);
+        $customFields = $this->customFieldGateway->selectCustomFields($context, $params + ['hideHidden' => '1'])->fetchAll();
 
         $existingFields = [];
         foreach ($fields as $key => $value) {
