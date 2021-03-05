@@ -107,9 +107,9 @@ class Number extends TextField
         }
         if ($this->spinner) {
             $output = '<div class="input-box rounded-sm standardWidth">';
-            $output .= '<div class="inline-button" onclick="decrement()"><img src="./themes/Default/img/stop.png"/></div>';
+            $output .= '<div class="inline-button" style="border-left: 0px;" onclick="decrement()">-</div>';
             $output .='<input type="text" class="number inline-block standardWidth w-9/12 mt-2"'.$this->getAttributeString().'>';
-            $output .= '<div class="inline-button" onclick="increment()"><img src="./themes/Default/img/page_new.png"/></div>';
+            $output .= '<div class="inline-button" style="border-left: 0px;" onclick="increment()">+</div>';
             $output .= '</div>';
             $output .= '<script type="text/javascript">
                 function increment() {
