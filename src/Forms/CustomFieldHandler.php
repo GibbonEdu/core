@@ -96,16 +96,16 @@ class CustomFieldHandler
                 if ($field['type'] == 'image') {
                     $this->fileUploader->getFileExtensions('Graphics/Design');
                 }
-            
+
                 // Move attached file, if there is one
                 if (!empty($_FILES[$prefix.$field['gibbonCustomFieldID'].'File']['tmp_name'])) {
                     $file = $_FILES[$prefix.$field['gibbonCustomFieldID'].'File'] ?? null;
-            
+
                     // Upload the file, return the /uploads relative path
                     $fieldValue = $this->fileUploader->uploadFromPost($file, $field['name']);
                 }
             }
-            
+
             if (!is_null($fieldValue)) {
                 if ($field['type'] == 'date') {
                     $fieldValue = Format::dateConvert($fieldValue);
@@ -159,7 +159,7 @@ class CustomFieldHandler
                 } elseif (!empty($fieldValue) && $field['type'] == 'checkboxes') {
                     $fieldValue = explode(',', $fieldValue);
                 }
-                
+
                 $name = $prefix.$field['gibbonCustomFieldID'];
                 $row = $field['type'] == 'editor' ? $form->addRow()->addColumn() : $form->addRow();
                     $row->addLabel($name, $field['name'])->description($field['description']);
@@ -184,7 +184,7 @@ class CustomFieldHandler
         } else {
             $table = DataTable::createDetails('customFields')->withData([$existingFields]);
         }
-        
+
         foreach ($customFields as $field) {
             $col = $table->addColumn($field['gibbonCustomFieldID'], __($field['name']));
 
@@ -229,8 +229,8 @@ class CustomFieldHandler
             $fieldName = $field['gibbonCustomFieldID'];
             $label = __($field['name']);
 
-            $oldValue = isset($oldFields[$fieldName])? $oldFields[$fieldName] : '';
-            $newValue = isset($newFields[$fieldName])? $newFields[$fieldName] : '';
+            $oldValue = isset($oldFields[$fieldName])? $oldFields[$fieldName] : isset($oldFields[substr($fieldName, 1, 3)])? $oldFields[substr($fieldName, 1, 3)] : '';
+            $newValue = isset($newFields[$fieldName])? $newFields[$fieldName] : isset($newFields[substr($fieldName, 1, 3)])? $newFields[substr($fieldName, 1, 3)] : '';
 
             if ($field['type'] == 'date') {
                 $oldValue = Format::date($oldValue);
