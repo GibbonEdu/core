@@ -53,6 +53,7 @@ v22.0.00
     Bug Fixes
         System: disabled context menu in TinyMCE which interferes with right clicking
         System: fixed personal language in Preferences not resetting to system default when blank
+        System: fixed double error message when viewing Notifications page and not logged in
         Attendance: fixed non-prefillable logic for Take Attendance by Roll Group
         Formal Assessment: fixed courses with multiple year groups causing duplicate Internal Assessment columns
         Students: fixed pre-existing comments visible on student profile Markbook page after turning off comments
