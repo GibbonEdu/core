@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $timeStart = $_POST['timeStart'];
             $timeEnd = $_POST['timeEnd'];
             $gibbonUnitID = !empty($_POST['gibbonUnitID']) ? $_POST['gibbonUnitID'] : null;
-            $name = $_POST['name'];
+            $name = $_POST['name'] ?? 'Lesson';
             $summary = $_POST['summary'] ?? '';
             if (empty($summary)) {
                 $summary = trim(strip_tags($_POST['description'] ?? '')) ;
