@@ -229,8 +229,12 @@ class CustomFieldHandler
             $fieldName = $field['gibbonCustomFieldID'];
             $label = __($field['name']);
 
-            $oldValue = isset($oldFields[$fieldName])? $oldFields[$fieldName] : isset($oldFields[substr($fieldName, 1, 3)])? $oldFields[substr($fieldName, 1, 3)] : '';
-            $newValue = isset($newFields[$fieldName])? $newFields[$fieldName] : isset($newFields[substr($fieldName, 1, 3)])? $newFields[substr($fieldName, 1, 3)] : '';
+            $oldValue = isset($oldFields[$fieldName])
+                ? $oldFields[$fieldName]
+                : (isset($oldFields[substr($fieldName, 1, 3)])? $oldFields[substr($fieldName, 1, 3)] : '');
+            $newValue = isset($newFields[$fieldName])
+                ? $newFields[$fieldName]
+                : (isset($newFields[substr($fieldName, 1, 3)])? $newFields[substr($fieldName, 1, 3)] : '');
 
             if ($field['type'] == 'date') {
                 $oldValue = Format::date($oldValue);
