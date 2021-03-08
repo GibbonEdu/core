@@ -218,7 +218,7 @@ class CustomFieldHandler
         return $table;
     }
 
-    public function addCustomFieldsToDataUpdate(&$form, $context, $params = [], $oldValues, $newValues)
+    public function addCustomFieldsToDataUpdate(&$form, $context, array $params = [], $oldValues = '', $newValues = '')
     {
         $oldFields = !empty($oldValues['fields'])? json_decode($oldValues['fields'], true) : [];
         $newFields = !empty($newValues['fields'])? json_decode($newValues['fields'], true) : [];
