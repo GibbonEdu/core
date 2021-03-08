@@ -225,6 +225,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
                     // Check for data changed
                     $existingFields = json_decode($values['fields'], true);
+                    foreach ($existingFields as $key => $value) {
+                        $existingFields[str_pad($key, 4, "0", STR_PAD_LEFT)] = $value;
+                    }
+
                     $newFields = json_decode($fields, true);
                     foreach ($newFields as $key => $fieldValue) {
                         if ($existingFields[$key] != $fieldValue) {
