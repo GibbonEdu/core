@@ -187,7 +187,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Lesson Name'));
-                $row->addTextField('name')->setValue()->maxLength(50)->required();
+                $row->addTextField('name')->setValue()->maxLength(50);
 
             $row = $form->addRow();
                 $row->addLabel('summary', __('Summary'));
