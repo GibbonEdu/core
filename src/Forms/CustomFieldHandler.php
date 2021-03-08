@@ -224,8 +224,10 @@ class CustomFieldHandler
         $newFields = !empty($newValues['fields'])? json_decode($newValues['fields'], true) : [];
 
         foreach ($oldFields as $key => $value) {
-            $key = str_pad($key, 4, "0", STR_PAD_LEFT);
-            $oldFields[$key] = $value;
+            $oldFields[str_pad($key, 4, "0", STR_PAD_LEFT)] = $value;
+        }
+        foreach ($newFields as $key => $value) {
+            $newFields[str_pad($key, 4, "0", STR_PAD_LEFT)] = $value;
         }
 
         $customFields = $this->customFieldGateway->selectCustomFields($context, $params)->fetchAll();
