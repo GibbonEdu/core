@@ -21,12 +21,12 @@ use Gibbon\Domain\Timetable\CourseGateway;
 
 include '../../gibbon.php';
 
-$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-$gibbonCourseID = $_GET['gibbonCourseID'];
-$gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-$gibbonUnitID = $_GET['gibbonUnitID'];
-$gibbonUnitClassID = $_GET['gibbonUnitClassID'];
-$orders = $_POST['order'];
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
+$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+$gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
+$gibbonUnitClassID = $_GET['gibbonUnitClassID'] ?? '';
+$orders = $_POST['order'] ?? '';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/units_edit_working.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitClassID=$gibbonUnitClassID";
 
@@ -103,22 +103,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                         }
                         //It is a block, so add it to the last added lesson
                         else {
-                            $titles = $_POST['title'.$order];
+                            $titles = $_POST['title'.$order] ?? '';
                             $lessonDescriptions[$_POST['gibbonPlannerEntryID'.($lessonCount - 1)]][1] .= $_POST['title'.$order].', ';
-                            $types = $_POST['type'.$order];
-                            $lengths = $_POST['length'.$order];
-                            $completes = null;
-                            if (isset($_POST['complete'.$order])) {
-                                $completes = $_POST['complete'.$order];
-                            }
+                            $types = $_POST['type'.$order] ?? '';
+                            $lengths = $_POST['length'.$order] ?? '';
+                            $completes = $_POST['complete'.$order] ?? '';
                             if ($completes == 'on') {
                                 $completes = 'Y';
                             } else {
                                 $completes = 'N';
                             }
-                            $contents = $_POST['contents'.$order];
-                            $teachersNotes = $_POST['teachersNotes'.$order];
-                            $gibbonUnitBlockID = $_POST['gibbonUnitBlockID'.$order];
+                            $contents = $_POST['contents'.$order] ?? '';
+                            $teachersNotes = $_POST['teachersNotes'.$order] ?? '';
+                            $gibbonUnitBlockID = $_POST['gibbonUnitBlockID'.$order] ?? '';
 
                             try {
                                 $data = array('gibbonUnitClassID' => $gibbonUnitClassID, 'gibbonPlannerEntryID' => $AI, 'gibbonUnitBlockID' => $gibbonUnitBlockID, 'title' => $titles, 'type' => $types, 'length' => $lengths, 'complete' => $completes, 'contents' => $contents, 'teachersNotes' => $teachersNotes, 'sequenceNumber' => $sequenceNumber);

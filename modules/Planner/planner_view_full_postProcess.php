@@ -26,7 +26,7 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
-$gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'];
+$gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&search=".$_POST['search'].$_POST['params'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.php') == false) {

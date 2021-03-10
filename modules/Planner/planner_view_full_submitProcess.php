@@ -70,18 +70,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                     header("Location: {$URL}");
                 } else {
                     //Get variables
-                    $type = $_POST['type'];
-                    $version = $_POST['version'];
-                    $link = $_POST['link'];
-                    $status = $_POST['status'];
-                    $timestamp = date('Y-m-d H:i:s');
+                    $type = $_POST['type'] ?? '';
+                    $version = $_POST['version'] ?? '';
+                    $link = $_POST['link'] ?? '';
+                    $status = $_POST['status'] ?? '';
+                    $timestamp = date('Y-m-d H:i:s') ?? '';
                     //Recheck status in case page held open during the deadline
                     if ($timestamp > $row['homeworkDueDateTime']) {
                         $status = 'Late';
                     }
-                    $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'];
-                    $count = $_POST['count'];
-                    $lesson = $_POST['lesson'];
+                    $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? '';
+                    $count = $_POST['count'] ?? '';
+                    $lesson = $_POST['lesson'] ?? '';
 
                     //Validation
                     if ($type == '' or $version == '' or ($_FILES['file']['name'] == '' and $link == '') or $status == '' or $count == '' or $lesson == '') {
@@ -129,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             header("Location: {$URL}");
                         }
                     }
-                    
+
                 }
             }
         }

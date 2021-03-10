@@ -21,12 +21,12 @@ use Gibbon\Domain\Timetable\CourseGateway;
 
 include '../../gibbon.php';
 
-$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-$gibbonCourseID = $_GET['gibbonCourseID'];
-$gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-$gibbonUnitID = $_GET['gibbonUnitID'];
-$gibbonUnitClassID = $_GET['gibbonUnitClassID'];
-$orders = $_POST['order'];
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
+$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+$gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
+$gibbonUnitClassID = $_GET['gibbonUnitClassID'] ?? '';
+$orders = $_POST['order'] ?? '';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/units_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID";
 
@@ -107,13 +107,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                         }
                         //It is a block, so add it to the last added lesson
                         else {
-                            $titles = $_POST['title'.$order];
+                            $titles = $_POST['title'.$order] ?? '';
                             $lessonDescriptions[$AI][1] .= $titles.', ';
-                            $types = $_POST['type'.$order];
-                            $lengths = $_POST['length'.$order];
-                            $contents = $_POST['contents'.$order];
-                            $teachersNotes = $_POST['teachersNotes'.$order];
-                            $gibbonUnitBlockID = $_POST['gibbonUnitBlockID'.$order];
+                            $types = $_POST['type'.$order] ?? '';
+                            $lengths = $_POST['length'.$order] ?? '';
+                            $contents = $_POST['contents'.$order] ?? '';
+                            $teachersNotes = $_POST['teachersNotes'.$order] ?? '';
+                            $gibbonUnitBlockID = $_POST['gibbonUnitBlockID'.$order] ?? '';
 
                             try {
                                 $data = array('gibbonUnitClassID' => $gibbonUnitClassID, 'gibbonPlannerEntryID' => $AI, 'gibbonUnitBlockID' => $gibbonUnitBlockID, 'title' => $titles, 'type' => $types, 'length' => $lengths, 'contents' => $contents, 'teachersNotes' => $teachersNotes, 'sequenceNumber' => $sequenceNumber);

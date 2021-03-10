@@ -21,11 +21,11 @@ use Gibbon\Domain\Timetable\CourseGateway;
 
 include '../../gibbon.php';
 
-$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
-$gibbonCourseClassID = $_POST['gibbonCourseClassID'];
-$gibbonCourseID = $_POST['gibbonCourseID'];
-$gibbonUnitID = $_POST['gibbonUnitID'];
-$gibbonUnitClassID = $_POST['gibbonUnitClassID'];
+$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
+$gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
+$gibbonCourseID = $_POST['gibbonCourseID'] ?? '';
+$gibbonUnitID = $_POST['gibbonUnitID'] ?? '';
+$gibbonUnitClassID = $_POST['gibbonUnitClassID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/units_edit_smartBlockify.php&gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonSchoolYearID=$gibbonSchoolYearID";
 $URLCopy = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/units_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID";
 
@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_smartBl
             } elseif ($highestAction == 'Unit Planner_learningAreas') {
                 $result = $courseGateway->selectCourseDetailsByClassAndPerson($gibbonCourseClassID, $gibbon->session->get('gibbonPersonID'));
             }
-            
+
             if ($result->rowCount() != 1) {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");

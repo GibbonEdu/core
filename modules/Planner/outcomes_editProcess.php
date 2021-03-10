@@ -21,10 +21,7 @@ include '../../gibbon.php';
 
 include './moduleFunctions.php';
 
-$filter2 = '';
-if (isset($_GET['filter2'])) {
-    $filter2 = $_GET['filter2'];
-}
+$filter2 = $_GET['filter2'] ?? '';
 
 $gibbonOutcomeID = $_GET['gibbonOutcomeID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/outcomes_edit.php&gibbonOutcomeID=$gibbonOutcomeID&filter2=$filter2";
@@ -69,18 +66,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php'
                     header("Location: {$URL}");
                 } else {
                     //Proceed!
-                    $scope = $_POST['scope'];
+                    $scope = $_POST['scope'] ?? '';
                     if ($scope == 'Learning Area') {
                         $gibbonDepartmentID = $_POST['gibbonDepartmentID'];
                     } else {
                         $gibbonDepartmentID = null;
                     }
-                    $name = $_POST['name'];
-                    $nameShort = $_POST['nameShort'];
-                    $active = $_POST['active'];
-                    $category = $_POST['category'];
-                    $description = $_POST['description'];
-                    $gibbonYearGroupIDList = isset($_POST['gibbonYearGroupIDList'])? $_POST['gibbonYearGroupIDList'] : array();
+                    $name = $_POST['name'] ?? '';
+                    $nameShort = $_POST['nameShort'] ?? '';
+                    $active = $_POST['active'] ?? '';
+                    $category = $_POST['category'] ?? '';
+                    $description = $_POST['description'] ?? '';
+                    $gibbonYearGroupIDList = $_POST['gibbonYearGroupIDList'] ?? array();
                     $gibbonYearGroupIDList = implode(',', $gibbonYearGroupIDList);
 
                     if ($scope == '' or ($scope == 'Learning Area' and $gibbonDepartmentID == '') or $name == '' or $nameShort == '' or $active == '') {

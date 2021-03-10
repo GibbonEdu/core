@@ -21,9 +21,9 @@ use Gibbon\Domain\Timetable\CourseGateway;
 
 include '../../gibbon.php';
 
-$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
-$gibbonCourseID = $_POST['gibbonCourseID'];
-$gibbonUnitID = $_POST['gibbonUnitID'];
+$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
+$gibbonCourseID = $_POST['gibbonCourseID'] ?? '';
+$gibbonUnitID = $_POST['gibbonUnitID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/units_delete.php&gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID";
 $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/units.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID";
 
@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_delete.php')
                 header("Location: {$URL}");
             } else {
                 //Check existence of specified unit
-                
+
                     $data = array('gibbonUnitID' => $gibbonUnitID, 'gibbonCourseID' => $gibbonCourseID);
                     $sql = 'SELECT * FROM gibbonUnit WHERE gibbonUnitID=:gibbonUnitID AND gibbonCourseID=:gibbonCourseID';
                     $result = $connection2->prepare($sql);

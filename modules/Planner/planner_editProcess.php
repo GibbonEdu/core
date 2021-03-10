@@ -24,14 +24,14 @@ use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 
 
-$gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
-$viewBy = $_GET['viewBy'];
-$subView = $_GET['subView'];
+$gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
+$viewBy = $_GET['viewBy'] ?? '';
+$subView = $_GET['subView'] ?? '';
 if ($viewBy != 'date' and $viewBy != 'class') {
     $viewBy = 'date';
 }
-$gibbonCourseClassID = $_POST['gibbonCourseClassID'];
-$date = dateConvert($guid, $_POST['date']);
+$gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
+$date = dateConvert($guid, $_POST['date'] ?? '');
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/planner_edit.php&gibbonPlannerEntryID=$gibbonPlannerEntryID";
 
 //Params to pass back (viewBy + date or classID)
@@ -83,10 +83,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $row = $result->fetch();
 
                     //Validate Inputs
-                    $timeStart = $_POST['timeStart'];
-                    $timeEnd = $_POST['timeEnd'];
-                    $gibbonUnitID = !empty($_POST['gibbonUnitID']) ? $_POST['gibbonUnitID'] : null;
-                    $name = $_POST['name'];
+                    $timeStart = $_POST['timeStart'] ?? '';
+                    $timeEnd = $_POST['timeEnd'] ?? '';
+                    $gibbonUnitID = $_POST['gibbonUnitID'] ?? null;
+                    $name = $_POST['name'] ?? '';
                     $summary = $_POST['summary'] ?? '';
                     if (empty($summary)) {
                         $summary = trim(strip_tags($_POST['description'] ?? '')) ;
@@ -95,8 +95,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                         $summary = strip_tags($summary);
                     }
                     $summaryBlocks = '';
-                    $description = $_POST['description'];
-                    $teachersNotes = $_POST['teachersNotes'];
+                    $description = $_POST['description'] ?? '';
+                    $teachersNotes = $_POST['teachersNotes'] ?? '';
                     $homeworkSubmissionDateOpen = null;
                     $homeworkSubmissionDrafts = null;
                     $homeworkSubmissionType = null;
@@ -111,11 +111,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $homeworkTimeCap = null;
                     $homeworkLocation = null;
 
-                    $homework = $_POST['homework'];
+                    $homework = $_POST['homework'] ?? '';
                     if ($_POST['homework'] == 'Y') {
                         $homework = 'Y';
-                        $homeworkDetails = $_POST['homeworkDetails'];
-                        $homeworkTimeCap = !empty($_POST['homeworkTimeCap'])? $_POST['homeworkTimeCap'] : null;
+                        $homeworkDetails = $_POST['homeworkDetails'] ?? '';
+                        $homeworkTimeCap = $_POST['homeworkTimeCap'] ?? null;
                         $homeworkLocation = $_POST['homeworkLocation'] ?? 'Out of Class';
                         if ($_POST['homeworkDueDateTime'] != '') {
                             $homeworkDueDateTime = $_POST['homeworkDueDateTime'].':59';
@@ -192,8 +192,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                         $homeworkCrowdAssess = 'N';
                     }
 
-                    $viewableParents = $_POST['viewableParents'];
-                    $viewableStudents = $_POST['viewableStudents'];
+                    $viewableParents = $_POST['viewableParents'] ?? '';
+                    $viewableStudents = $_POST['viewableStudents'] ?? '';
                     $gibbonPersonIDCreator = $_SESSION[$guid]['gibbonPersonID'];
                     $gibbonPersonIDLastEdit = $_SESSION[$guid]['gibbonPersonID'];
 
@@ -242,24 +242,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 
                         //Deal with smart unit
                         $partialFail = false;
-                        $order = null;
-                        if (isset($_POST['order'])) {
-                            $order = $_POST['order'];
-                        }
-                        $seq = null;
-                        if (isset($_POST['minSeq'])) {
-                            $seq = $_POST['minSeq'];
-                        }
+                        $order = $_POST['order'] ?? '';
+
+                        $seq = $_POST['minSeq'] ?? '';
+
 
                         if (is_array($order)) {
                             foreach ($order as $i) {
-                                $id = $_POST["gibbonUnitClassBlockID$i"];
-                                $title = $_POST["title$i"];
+                                $id = $_POST["gibbonUnitClassBlockID$i"] ?? '';
+                                $title = $_POST["title$i"] ?? '';
                                 $summaryBlocks .= $title.', ';
-                                $type = $_POST["type$i"];
-                                $length = $_POST["length$i"];
-                                $contents = $_POST["contents$i"];
-                                $teachersNotesBlock = $_POST["teachersNotes$i"];
+                                $type = $_POST["type$i"] ?? '';
+                                $length = $_POST["length$i"] ?? '';
+                                $contents = $_POST["contents$i"] ?? '';
+                                $teachersNotesBlock = $_POST["teachersNotes$i"] ?? '';
                                 $complete = 'N';
                                 if (isset($_POST["complete$i"])) {
                                     if ($_POST["complete$i"] == 'on') {
