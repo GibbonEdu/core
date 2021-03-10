@@ -44,8 +44,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
         $name = $_POST[$id.'name'] ?? '';
         $category = $_POST[$id.'category'] ?? '';
         $purpose = $_POST[$id.'purpose'] ?? '';
-        $tags = strtolower($_POST[$id.'tags' ?? '']);
-        $gibbonYearGroupIDList = implode(',', $_POST[$id.'gibbonYearGroupID' ?? '']);
+        $tags = strtolower($_POST[$id.'tags'] ?? '');
+        $gibbonYearGroupIDList = implode(',', $_POST[$id.'gibbonYearGroupID'] ?? []);
         $description = $_POST[$id.'description'] ?? '';
 
         if (($type != 'File' and $type != 'Link') or is_null($content) or $name == '' or $category == '' or $tags == '' or $id == '') {
@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
 
             //Update tag counts
             $partialFail = false;
-            $tags = explode(',', $_POST[$id.'tags']);
+            $tags = explode(',', $_POST[$id.'tags'] ?? '');
             $tagList = '';
             foreach ($tags as $tag) {
                 if (trim($tag) != '') {
