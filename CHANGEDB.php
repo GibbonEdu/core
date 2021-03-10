@@ -793,4 +793,6 @@ DELETE FROM `gibbonSetting` WHERE scope='Students' AND name='extendedBriefProfil
 ALTER TABLE `gibbonActivitySlot` CHANGE `gibbonSpaceID` `gibbonSpaceID` int(10) UNSIGNED ZEROFILL DEFAULT NULL;end
 ALTER TABLE `gibbonCustomField` ADD `hidden` ENUM('Y','N') NULL DEFAULT 'N' AFTER `required`;end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'composerLockHash', 'Composer Update Required', '', '742368e59c40f1eb9b7d8f116f7af49d');end
+UPDATE `gibbonAction` SET categoryPermissionParent='N' WHERE `name`='View Markbook_myMarks' AND `gibbonModuleID`=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Markbook');end
+DELETE `gibbonPermission` FROM `gibbonPermission` JOIN `gibbonAction` ON (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPermission.gibbonRoleID) WHERE gibbonAction.name='View Markbook_myMarks' AND gibbonRole.category='Parent';end
 ";
