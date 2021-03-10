@@ -24,9 +24,9 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
-$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-$gibbonCourseID = $_GET['gibbonCourseID'];
-$gibbonUnitID = $_GET['gibbonUnitID'];
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
+$gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/units_duplicate.php&gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.php') == false) {
@@ -40,8 +40,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
     } else {
         //Proceed!
         //Validate Inputs
-        $gibbonCourseIDTarget = $_POST['gibbonCourseIDTarget'];
-        $copyLessons = $_POST['copyLessons'];
+        $gibbonCourseIDTarget = $_POST['gibbonCourseIDTarget'] ?? '';
+        $copyLessons = $_POST['copyLessons'] ?? '';
 
         $courseGateway = $container->get(CourseGateway::class);
 
@@ -124,11 +124,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 
                 //Copy Lessons & resources
                 if ($copyLessons == 'Y') {
-                    $gibbonCourseClassIDSource = $_POST['gibbonCourseClassIDSource'];
-                    $gibbonCourseClassIDTarget = null;
-                    if (isset($_POST['gibbonCourseClassIDTarget'])) {
-                        $gibbonCourseClassIDTarget = $_POST['gibbonCourseClassIDTarget'];
-                    }
+                    $gibbonCourseClassIDSource = $_POST['gibbonCourseClassIDSource'] ?? '';
+                    $gibbonCourseClassIDTarget = $_POST['gibbonCourseClassIDTarget'] ?? '';
+
 
                     if ($gibbonCourseClassIDSource == '' or count($gibbonCourseClassIDTarget) < 1 or $AI == '') {
                         $URL .= '&return=error1';

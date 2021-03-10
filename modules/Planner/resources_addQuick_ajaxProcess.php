@@ -28,7 +28,7 @@ if (empty($_POST) or empty($_FILES)) {
     exit();
 } else {
     //Proceed!
-    $id = $_POST['id'];
+    $id = $_POST['id'] ?? '';
     $imagesAsLinks = false;
     if ($_POST['imagesAsLinks'] == 'Y') {
         $imagesAsLinks = true;
