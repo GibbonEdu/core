@@ -243,6 +243,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     ])
                     ->addToolInput($addBlockButton);
 
+            $slotBlocks->addPredefinedBlock("Add Time Slot", ['location' => 'Internal']);
             $activitySlotGateway = $container->get(ActivitySlotGateway::class);
             $timeSlots = $activitySlotGateway->selectBy(['gibbonActivityID' => $gibbonActivityID]);
 
