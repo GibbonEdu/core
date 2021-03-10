@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage_edi
         'gibbonReportArchiveID'  => $_POST['gibbonReportArchiveID'] ?? null,
         'gibbonReportingCycleID' => $_POST['gibbonReportingCycleID'] ?? null,
         'queryBuilderQueryID'    => $_POST['queryBuilderQueryID'] ?? null,
-        'gibbonYearGroupIDList'  => isset($_POST['gibbonYearGroupIDList'])? implode(',', $_POST['gibbonYearGroupIDList']) : null,
+        'gibbonYearGroupIDList'  => implode(',', $_POST['gibbonYearGroupIDList']) ?? null,
     ];
 
     if (!empty($_POST['accessDate'])) {

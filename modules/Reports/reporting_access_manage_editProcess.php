@@ -35,9 +35,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_access_m
     $reportingAccessGateway = $container->get(ReportingAccessGateway::class);
 
     $data = [
-        'gibbonRoleIDList' => isset($_POST['gibbonRoleIDList']) ? implode(',', $_POST['gibbonRoleIDList']) : '',
-        'dateStart'        => isset($_POST['dateStart'])? Format::dateConvert($_POST['dateStart']) : null,
-        'dateEnd'          => isset($_POST['dateEnd'])? Format::dateConvert($_POST['dateEnd']) : null,
+        'gibbonRoleIDList' => implode(',', $_POST['gibbonRoleIDList']) ?? '',
+        'dateStart'        => Format::dateConvert($_POST['dateStart']) ?? null,
+        'dateEnd'          => Format::dateConvert($_POST['dateEnd']) ?? null,
         'canWrite'         => $_POST['canWrite'] ?? '',
         'canProofRead'     => $_POST['canProofRead'] ?? '',
     ];

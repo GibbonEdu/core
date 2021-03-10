@@ -34,15 +34,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_access_m
 
     $data = [
         'gibbonReportingCycleID' => $_POST['gibbonReportingCycleID'] ?? '',
-        'gibbonRoleIDList'       => isset($_POST['gibbonRoleIDList']) ? implode(',', $_POST['gibbonRoleIDList']) : '',
-        'dateStart'              => isset($_POST['dateStart'])? Format::dateConvert($_POST['dateStart']) : null,
-        'dateEnd'                => isset($_POST['dateEnd'])? Format::dateConvert($_POST['dateEnd']) : null,
+        'gibbonRoleIDList'       => implode(',', $_POST['gibbonRoleIDList']) ?? '',
+        'dateStart'              => Format::dateConvert($_POST['dateStart']) ?? null,
+        'dateEnd'                => Format::dateConvert($_POST['dateEnd']) ?? null,
         'canWrite'               => $_POST['canWrite'] ?? '',
         'canProofRead'           => $_POST['canProofRead'] ?? '',
         'accessType'             => 'Role',
     ];
 
-    $data['gibbonReportingScopeIDList'] = is_array($_POST['gibbonReportingScopeID'])? implode(',', $_POST['gibbonReportingScopeID']) : '';
+    $data['gibbonReportingScopeIDList'] =implode(',', $_POST['gibbonReportingScopeID']) ?? '';
 
     // Validate the required values are present
     if (empty($data['gibbonReportingCycleID']) || empty($data['gibbonReportingScopeIDList']) || empty($data['gibbonRoleIDList'])) {

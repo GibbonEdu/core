@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
 
     $data = [
         'gibbonSchoolYearID'    => $gibbon->session->get('gibbonSchoolYearID'),
-        'gibbonYearGroupIDList' => isset($_POST['gibbonYearGroupIDList'])? implode(',', $_POST['gibbonYearGroupIDList']) : null,
+        'gibbonYearGroupIDList' => implode(',', $_POST['gibbonYearGroupIDList']) ?? null,
         'name'                  => $_POST['name'] ?? '',
         'nameShort'             => $_POST['nameShort'] ?? '',
         'dateStart'             => $_POST['dateStart'] ?? '',
