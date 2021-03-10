@@ -500,7 +500,11 @@ CustomBlocks.prototype.loadBlockInputData = function(block, data) {
 
     for (key in data) {
         $("[name='"+key+"']:not([type='file']):not([type='radio'])", block).val(data[key]);
-        $("input:radio[name='"+key+"']", block).filter("[value='"+data[key]+"']").attr("checked", true);
+        $("input:radio[name='"+key+"']", block).each(function () {
+            if ($(this).val() == data[key]) {
+                $(this).attr("checked", true);
+            }
+        });
     }
 
     var readonly = data.readonly || [];
