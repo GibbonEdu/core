@@ -308,27 +308,27 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 
         $count = 1;
 
-        $calendar = "<table class='mini' cellspacing='0' style='width: 250px; margin-bottom: 0px'>";
+        $calendar = "<table class='mini w-full' cellspacing='0'>";
         $calendar .= "<tr class='head'>";
-        $calendar .= "<th style='width: 35px; text-align: center'>";
+        $calendar .= "<th class='text-center text-xxs'>";
         $calendar .= __('Mon');
         $calendar .= '</th>';
-        $calendar .= "<th style='width: 35px; text-align: center'>";
+        $calendar .= "<th class='text-center text-xxs'>";
         $calendar .= __('Tue');
         $calendar .= '</th>';
-        $calendar .= "<th style='width: 35px; text-align: center'>";
+        $calendar .= "<th class='text-center text-xxs'>";
         $calendar .= __('Wed');
         $calendar .= '</th>';
-        $calendar .= "<th style='width: 35px; text-align: center'>";
+        $calendar .= "<th class='text-center text-xxs'>";
         $calendar .= __('Thu');
         $calendar .= '</th>';
-        $calendar .= "<th style='width: 35px; text-align: center'>";
+        $calendar .= "<th class='text-center text-xxs'>";
         $calendar .= __('Fri');
         $calendar .= '</th>';
-        $calendar .= "<th style='width: 35px; text-align: center'>";
+        $calendar .= "<th class='text-center text-xxs'>";
         $calendar .= __('Sat');
         $calendar .= '</th>';
-        $calendar .= "<th style='width: 35px; text-align: center'>";
+        $calendar .= "<th class='text-center text-xxs'>";
         $calendar .= __('Sun');
         $calendar .= '</th>';
         $calendar .= '</tr>';
@@ -341,11 +341,11 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
             if ($days[date('D', $i)] == 'N' or isSchoolOpen($guid, date('Y-m-d', $i), $connection2) == false) {
                 $calendar .= "<td style='text-align: center; background-color: #bbbbbb; font-size: 10px; color: #858586'>";
                 if ($i == $dateStamp) {
-                    $calendar .= "<span style='border: 1px solid #ffffff; padding: 0px 2px 0px 1px'>".date('d', $i).'</span><br/>';
-                    $calendar .= "<span style='font-size: 65%'>".date('M', $i).'</span>';
+                    $calendar .= "<span style='border: 1px solid #ffffff; padding: 0px 2px 0px 1px'>".Format::dateReadable(Format::dateFromTimestamp($i, 'Y-m-d'), '%d').'</span><br/>';
+                    $calendar .= "<span style='font-size: 65%'>".Format::dateReadable(Format::dateFromTimestamp($i, 'Y-m-d'), '%b').'</span>';
                 } else {
-                    $calendar .= date('d', $i).'<br/>';
-                    $calendar .= "<span style='font-size: 65%'>".date('M', $i).'</span>';
+                    $calendar .= Format::dateReadable(Format::dateFromTimestamp($i, 'Y-m-d'), '%d').'<br/>';
+                    $calendar .= "<span style='font-size: 65%'>".Format::dateReadable(Format::dateFromTimestamp($i, 'Y-m-d'), '%b').'</span>';
                 }
                 $calendar .= '</td>';
             } else {
@@ -353,25 +353,25 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
                 if ($i == $dateStamp) {
                     if ($i == $todayStamp) {
                         $calendar .= "<a style='color: #6B99CE; font-weight: bold; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php&search=$gibbonPersonID&date=".date('Y-m-d', $i)."'>";
-                        $calendar .= "<span style='border: 1px solid #cc0000; padding: 0px 2px 0px 1px'>".date('d', $i).'</span><br/>';
-                        $calendar .= "<span style='font-size: 65%'>".date('M', $i).'</span>';
+                        $calendar .= "<span style='border: 1px solid #cc0000; padding: 0px 2px 0px 1px'>".Format::dateReadable(Format::dateFromTimestamp($i, 'Y-m-d'), '%d').'</span><br/>';
+                        $calendar .= "<span style='font-size: 65%'>".Format::dateReadable(Format::dateFromTimestamp($i, 'Y-m-d'), '%b').'</span>';
                         $calendar .= '</a>';
                     } else {
                         $calendar .= "<a style='text-decoration: none' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php&search=$gibbonPersonID&date=".date('Y-m-d', $i)."'>";
-                        $calendar .= "<span style='border: 1px solid #cc0000; padding: 0px 2px 0px 1px'>".date('d', $i).'</span><br/>';
-                        $calendar .= "<span style='font-size: 65%'>".date('M', $i).'</span>';
+                        $calendar .= "<span style='border: 1px solid #cc0000; padding: 0px 2px 0px 1px'>".Format::dateReadable(Format::dateFromTimestamp($i, 'Y-m-d'), '%d').'</span><br/>';
+                        $calendar .= "<span style='font-size: 65%'>".Format::dateReadable(Format::dateFromTimestamp($i, 'Y-m-d'), '%b').'</span>';
                         $calendar .= '</a>';
                     }
                 } else {
                     if ($i == $todayStamp) {
                         $calendar .= "<a style='color: #6B99CE; font-weight: bold; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php&search=$gibbonPersonID&date=".date('Y-m-d', $i)."'>";
-                        $calendar .= date('d', $i).'<br/>';
-                        $calendar .= "<span style='font-size: 65%'>".date('M', $i).'</span>';
+                        $calendar .= Format::dateReadable(Format::dateFromTimestamp($i, 'Y-m-d'), '%d').'<br/>';
+                        $calendar .= "<span style='font-size: 65%'>".Format::dateReadable(Format::dateFromTimestamp($i, 'Y-m-d'), '%b').'</span>';
                         $calendar .= '</a>';
                     } else {
                         $calendar .= "<a style='text-decoration: none' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php&search=$gibbonPersonID&date=".date('Y-m-d', $i)."'>";
-                        $calendar .= date('d', $i).'<br/>';
-                        $calendar .= "<span style='font-size: 65%'>".date('M', $i).'</span>';
+                        $calendar .= Format::dateReadable(Format::dateFromTimestamp($i, 'Y-m-d'), '%d').'<br/>';
+                        $calendar .= "<span style='font-size: 65%'>".Format::dateReadable(Format::dateFromTimestamp($i, 'Y-m-d'), '%b').'</span>';
                         $calendar .= '</a>';
                     }
                 }
