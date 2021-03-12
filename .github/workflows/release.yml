@@ -1,0 +1,102 @@
+name: Release
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  release:
+    name: Build Install Bundle for Release (PHP ${{ matrix.php-version }})
+    runs-on: ubuntu-20.04
+    if: ${{ github.event_name == 'release' }}
+    strategy:
+      matrix:
+        # Use the lowest supported version to build release.
+        php-version: ["7.0"]
+
+    steps:
+
+      # Setup PHP extensions to properly run composer
+      - name: Setup PHP ${{ matrix.php-version }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: gd, zip
+          tools: composer:v2
+
+      # Recursively checkout the source code with submodules
+      # but only shallow clone.
+      - name: Checkout source code
+        uses: actions/checkout@v2
+        with:
+          submodules: "recursive"
+          fetch-depth: 1
+
+      # Reuse composer cache from test
+      - name: Cache Composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: /tmp/composer-cache
+          key: ${{ runner.os }}-php${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php${{ matrix.php-version }}-
+
+      # Retrieve the release upload url for attaching the install bundles
+      - name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.2.2
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      # Shall remove this step in the future when
+      # the vendor folder is no longer in the repo.
+      - name: Clean PHP vendor folder
+        run: rm -rf vendor
+
+      # Install PHP libraries with composer
+      - name: Setup PHP vendor folder for release
+        run: composer install --prefer-dist --no-interaction  --no-dev --optimize-autoloader
+
+      # Create the zip and tar.gz bundle
+      - name: Create Install Bundles
+        id: create-bundle
+        run: |
+          # Create Install Bundles
+
+          if [ ! -d ./dist ]; then mkdir dist; fi
+
+          echo "::group::Create Bundle (tar.gz)"
+          tar -cz --exclude="./dist" --exclude="./.git" -f "./dist/GibbonEduCore-InstallBundle.tar.gz" .
+          echo "::endgroup::"
+
+          echo "::group::Create Bundle (zip)"
+          zip --quiet -r "./dist/GibbonEduCore-InstallBundle.zip" . -x "dist/**/*" -x ".git/**/*"
+          echo "::endgroup::"
+
+          echo "::group::Examine Bundle"
+          ls -l ./dist
+          echo "::endgroup::"
+
+      - name: Upload Release Asset (tar.gz)
+        id: upload-release-asset-tar-gz
+        uses: yookoala/upload-release-asset@asset-label
+        env:
+          GITHUB_TOKEN:  ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ./dist/GibbonEduCore-InstallBundle.tar.gz
+          asset_name: GibbonEduCore-InstallBundle.tar.gz
+          asset_label: Install Bundle (tar.gz)
+          asset_content_type: application/tar+gzip
+
+      - name: Upload Release Asset (zip)
+        id: upload-release-asset-zip
+        uses: yookoala/upload-release-asset@asset-label
+        env:
+          GITHUB_TOKEN:  ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ./dist/GibbonEduCore-InstallBundle.zip
+          asset_name: GibbonEduCore-InstallBundle.zip
+          asset_label: Install Bundle (zip)
+          asset_content_type: application/zip
