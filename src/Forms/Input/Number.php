@@ -106,19 +106,21 @@ class Number extends TextField
             $this->addValidation('Validate.Format', 'pattern: /^[0-9\-]+(\.[0-9]{1,'.$this->decimalPlaces.'})?$/, failureMessage: "'.sprintf(__('Must be in format %1$s'), str_pad('0.', $this->decimalPlaces+2, '0')).'"');
         }
         if ($this->spinner) {
-            $output = '<div class="input-box rounded-sm standardWidth">';
-            $output .= '<div class="inline-button" style="border-left: 0px;" onclick="decrement()">-</div>';
-            $output .='<input type="text" class="number inline-block standardWidth w-9/12 mt-2"'.$this->getAttributeString().'>';
-            $output .= '<div class="inline-button" style="border-left: 0px;" onclick="increment()">+</div>';
+            $output = '<div class="input-box border-0 standardWidth">';
+            $output .= '<div class="inline-button border border-r-0 rounded-l-sm text-base text-gray-600" style="height: 36px;" onclick="decrement(this)">-</div>';
+            $output .='<input type="text" class="number inline-block standardWidth w-9/12 " '.$this->getAttributeString().' style="border-width: 1px !important; border-radius: 0 !important;">';
+            $output .= '<div class="inline-button border border-l-0 rounded-r-sm text-base text-gray-600" style="border-left: 0px; height: 36px;" onclick="increment(this)">+</div>';
             $output .= '</div>';
             $output .= '<script type="text/javascript">
-                function increment() {
-                    $(".number").val( function(i, oldval) {
+                function increment(self) {
+                    $(".number", $(self).parent()).val( function(i, oldval) {
+                        $(this).trigger("keyup");
                         return ++oldval;
                     });
                 }
-                function decrement() {
-                    $(".number").val( function(i, oldval) {
+                function decrement(self) {
+                    $(".number", $(self).parent()).val( function(i, oldval) {
+                        $(this).trigger("keyup");
                         return --oldval;
                     });
                 }
