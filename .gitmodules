@@ -4,4 +4,3 @@
 [submodule "resources/build"]
 	path = resources/build
 	url = https://github.com/GibbonEdu/build.git
-	
