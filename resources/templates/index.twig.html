@@ -69,7 +69,7 @@ TODO: add template variable details.
                         <br style="clear: both">
                     {% endif %}
 
-                    <div id="content" class="w-full max-w-full {{ not sidebar ?'pt-0 sm:pt-6' }} lg:flex-1  p-6 lg:pt-0 {{ not preventOverflow ? 'overflow-x-scroll lg:overflow-x-auto' : 'overflow-x-auto xl:overflow-x-unset' }} ">
+                    <div id="content" class="w-full max-w-full {{ not sidebar ?'pt-0 sm:pt-6' }} lg:flex-1  p-6 lg:pt-0 {{ not menuModule or not preventOverflow ? 'overflow-x-scroll lg:overflow-x-auto' : 'overflow-x-auto xl:overflow-x-unset' }} ">
 
                         {% block page %}
 
