@@ -453,8 +453,8 @@ class Format
      */
     public static function hyperlinkAll(string $value)
     {
-        $pattern = "~[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]~";
-        return $output = preg_replace($pattern, '<a target="_blank" href="$0">$0</a>', $value);
+        $pattern = '/([^">]|^)(https?:\/\/[^"<>\s]+)/';
+        return preg_replace($pattern, '$1<a target="_blank" href="$2">$2</a>', $value);
     }
 
     /**
