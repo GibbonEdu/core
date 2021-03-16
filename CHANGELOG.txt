@@ -43,6 +43,7 @@ v22.0.00
         Reports: clear report cache when editing template assets in Production
         Students: added Medical Form custom fields to student profile
         Students: updated Medical Data Summary to include medical custom fields
+        Students: adjusted student select in Student Enrolment Add to only show unenrolled students
         System Admin: added option to manually invalidate front end cache for Cutting Edge installs
         System Admin: added a Reporting Values by Roll Group import option
         System Admin: updated user-related imports to enable importing by username or email address

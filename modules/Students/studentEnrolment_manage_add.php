@@ -63,9 +63,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
             $row->addLabel('yearName', __('School Year'));
             $row->addTextField('yearName')->readOnly()->maxLength(20)->setValue($schoolYearName);
 
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+        $sql = "SELECT gibbonPerson.gibbonPersonID AS value, CONCAT(surname, \", \", preferredName, \" (\", username, \")\") AS name
+                    FROM gibbonPerson
+                    	JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)
+                        LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
+                        LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                    WHERE
+                    	status='Full'
+                    	AND gibbonRollGroup.name IS NULL
+                    	AND gibbonRole.category='Student'
+                    ORDER BY name, surname, preferredName";
         $row = $form->addRow();
-            $row->addLabel('gibbonPersonID', __('Student'));
-            $row->addSelectStudent('gibbonPersonID', $gibbonSchoolYearID, ['activeStudents' => true, 'showRoll' => false])->required()->placeholder();
+           $row->addLabel('gibbonPersonID', __('Student'))->description(__('Only includes students not enrolled in specified year.'));
+           $row->addSelect('gibbonPersonID')->fromQuery($pdo, $sql, $data)->required()->placeholder();
 
         $row = $form->addRow();
             $row->addLabel('gibbonYearGroupID', __('Year Group'));
