@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
             return;
         }
 
-        $values = $container->get(StudentGateway::class)->selectActiveStudentByPerson($gibbonSchoolYearID, $enrollment['gibbonPersonID'])->fetch();
+        $values = $container->get(StudentGateway::class)->selectActiveStudentByPerson($gibbonSchoolYearID, $enrollment['gibbonPersonID'], false)->fetch();
         if (empty($values)) {
             $page->addError(__('The specified record cannot be found.'));
             return;
