@@ -60,6 +60,7 @@ v22.0.00
         Students: fixed pre-existing comments visible on student profile Markbook page after turning off comments
         System Admin: fixed cache not clearing when switching themes
         Timetable: fixed error adding class enrolment when one exists already
+        Timetable: fixed View Available Spaces not working when room conflicts exist
 
     Deprecations
         Messenger: removed the pop-up Messenger bubbles

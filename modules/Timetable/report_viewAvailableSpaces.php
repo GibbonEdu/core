@@ -407,7 +407,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 													$sqlUnique = 'SELECT gibbonTTDayRowClass.*, gibbonSpace.name AS roomName FROM gibbonTTDayRowClass JOIN gibbonSpace ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonTTColumnRowID=:gibbonTTColumnRowID AND gibbonTTDayRowClass.gibbonSpaceID=:gibbonSpaceID';
 													$resultUnique = $connection2->prepare($sqlUnique);
 													$resultUnique->execute($dataUnique);
-												if ($resultUnique->rowCount() != 1) {
+												if ($resultUnique->rowCount() == 0) {
 													$vacancies .= $rowSelect['name'].', ';
 												} else {
 													//Check if space freed up here
