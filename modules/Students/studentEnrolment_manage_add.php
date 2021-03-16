@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\School\SchoolYearGateway;
+use Gibbon\Domain\Timetable\CourseSyncGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_manage_add.php') == false) {
     // Access denied
@@ -53,30 +56,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
 
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-        $sql = 'SELECT name FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-        $result = $pdo->executeQuery($data, $sql);
-
-        $schoolYearName = ($result->rowCount() == 1)? $result->fetchColumn(0) : $_SESSION[$guid]['gibbonSchoolYearName'];
+        $schoolYear = $container->get(SchoolYearGateway::class)->getByID($gibbonSchoolYearID, ['name']);
+        $schoolYearName = $schoolYear['name'] ?? $_SESSION[$guid]['gibbonSchoolYearName'];
 
         $row = $form->addRow();
             $row->addLabel('yearName', __('School Year'));
             $row->addTextField('yearName')->readOnly()->maxLength(20)->setValue($schoolYearName);
 
-        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-        $sql = "SELECT gibbonPerson.gibbonPersonID AS value, CONCAT(surname, \", \", preferredName, \" (\", username, \")\") AS name
-                    FROM gibbonPerson
-                    	JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)
-                        LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
-                        LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
-                    WHERE
-                    	status='Full'
-                    	AND gibbonRollGroup.name IS NULL
-                    	AND gibbonRole.category='Student'
-                    ORDER BY name, surname, preferredName";
+        $students = $container->get(StudentGateway::class)->selectUnenrolledStudentsBySchoolYear($gibbonSchoolYearID);
         $row = $form->addRow();
            $row->addLabel('gibbonPersonID', __('Student'))->description(__('Only includes students not enrolled in specified year.'));
-           $row->addSelect('gibbonPersonID')->fromQuery($pdo, $sql, $data)->required()->placeholder();
+           $row->addSelect('gibbonPersonID')->fromResults($students)->required()->placeholder();
 
         $row = $form->addRow();
             $row->addLabel('gibbonYearGroupID', __('Year Group'));
@@ -91,10 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
             $row->addNumber('rollOrder')->maxLength(2);
 
         // Check to see if any class mappings exists -- otherwise this feature is inactive, hide it
-        $sql = "SELECT COUNT(*) FROM gibbonCourseClassMap";
-        $resultClassMap = $pdo->executeQuery(array(), $sql);
-        $classMapCount = ($resultClassMap->rowCount() > 0)? $resultClassMap->fetchColumn(0) : 0;
-
+        $classMapCount = $container->get(CourseSyncGateway::class)->countAll();
         if ($classMapCount > 0) {
             $autoEnrolDefault = getSettingByScope($connection2, 'Timetable Admin', 'autoEnrolCourses');
             $row = $form->addRow();
