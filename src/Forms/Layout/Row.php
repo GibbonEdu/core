@@ -35,7 +35,8 @@ class Row
     use BasicAttributesTrait;
 
     protected $factory;
-    protected $formElements = array();
+    protected $heading = '';
+    protected $formElements = [];
 
     /**
      * Construct a row with access to a specific factory.
@@ -91,6 +92,17 @@ class Row
         }
 
         return $element;
+    }
+
+    public function getHeading()
+    {
+        return $this->heading;
+    }
+
+    public function setHeading($heading)
+    {
+        $this->heading = $heading;
+        return $this;
     }
 
     /**

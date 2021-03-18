@@ -212,7 +212,9 @@ class Form implements OutputableInterface
      */
     public function addRow($id = '')
     {
-        $row = $this->factory->createRow($id);
+        $section = !empty($this->rows) ? end($this->rows)->getHeading() : '';
+        $row = $this->factory->createRow($id)->setHeading($section);
+        
         $this->rows[] = $row;
 
         return $row;
@@ -236,6 +238,21 @@ class Form implements OutputableInterface
         return array_filter($this->rows, function ($item) {
             return !empty($item->getElements());
         });
+    }
+
+    public function getRowsByHeading()
+    {
+        return array_reduce($this->rows, function ($group, $row) {
+            $group[$row->getHeading()][] = $row;
+            return $group;
+        }, []);
+    }
+
+    public function hasHeading($heading)
+    {
+        return count(array_filter($this->rows, function ($row) use ($heading) {
+            return $row->getHeading() == $heading;
+        }));
     }
 
     /**
