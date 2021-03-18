@@ -42,6 +42,7 @@ class CustomFieldHandler
                 'User' => __('User'),
             ],
             __('Students') => [
+                'First Aid'    => __('First Aid'),
                 'Medical Form' => __('Medical Form'),
             ],
         ];
