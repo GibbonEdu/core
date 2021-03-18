@@ -94,9 +94,29 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
         $row->addLabel('hidden', __('Hidden'))->description(__('Is this field hidden from profiles and user-facing pages?'));
         $row->addYesNo('hidden')->required()->selected('N');
 
+    $headings = $customFieldHandler->getHeadings();
+    $contextHeadings = [];
+    $contextChained = array_reduce(array_keys($headings), function($group, $context) use (&$headings, &$contextHeadings) {
+        foreach ($headings[$context] as $key => $value) {
+            $contextHeadings['Existing Heading'][$key] = $value;
+            $group[$value] = $context;
+        }
+        $contextHeadings['New Heading'][$context] = __('Custom');
+        $group[$context] = $context;
+        return $group;
+    }, []);
+    
     $row = $form->addRow();
         $row->addLabel('heading', __('Heading'))->description(__('Optionally list this field under a heading.'));
-        $row->addTextField('heading')->maxLength(90);
+        $row->addSelect('heading')
+            ->fromArray($contextHeadings)
+            ->chainedTo('context', $contextChained);
+
+    $form->toggleVisibilityByClass('headingCustom')->onSelect('heading')->when('Custom');
+    
+    $row = $form->addRow()->addClass('headingCustom');
+        $row->addLabel('headingCustom', __('Heading'))->description(__('Optionally list this field under a heading.'));
+        $row->addTextField('headingCustom')->maxLength(90);
 
     $form->addRow()->addClass('contextPerson')->addHeading(__('Visibility'));
 
