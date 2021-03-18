@@ -126,18 +126,12 @@ class CustomFieldHandler
 
     public function addCustomFieldsToForm(&$form, $context, $params = [], $fields = [])
     {
-        $fields = !empty($fields) && is_string($fields)? json_decode($fields, true) : (is_array($fields) ? $fields : []);
+        $existingFields = !empty($fields) && is_string($fields)? json_decode($fields, true) : (is_array($fields) ? $fields : []);
         $customFieldsGrouped = $this->customFieldGateway->selectCustomFields($context, $params)->fetchGrouped();
         $prefix = $params['prefix'] ?? 'custom';
 
         if (empty($customFieldsGrouped)) {
             return;
-        }
-
-        $existingFields = [];
-        foreach ($fields as $key => $value) {
-            $key = str_pad($key, 4, "0", STR_PAD_LEFT);
-            $existingFields[$key] = $value;
         }
 
         if (!empty($params['heading'])) {
@@ -170,14 +164,8 @@ class CustomFieldHandler
 
     public function createCustomFieldsTable($context, $params = [], $fields = [], $table = null)
     {
-        $fields = !empty($fields) && is_string($fields)? json_decode($fields, true) : (is_array($fields) ? $fields : []);
+        $existingFields = !empty($fields) && is_string($fields)? json_decode($fields, true) : (is_array($fields) ? $fields : []);
         $customFields = $this->customFieldGateway->selectCustomFields($context, $params + ['hideHidden' => '1'])->fetchAll();
-
-        $existingFields = [];
-        foreach ($fields as $key => $value) {
-            $key = str_pad($key, 4, "0", STR_PAD_LEFT);
-            $existingFields[$key] = $value;
-        }
 
         if (!empty($table)) {
             $table->withData([$existingFields]);
@@ -223,17 +211,10 @@ class CustomFieldHandler
         $oldFields = !empty($oldValues['fields'])? json_decode($oldValues['fields'], true) : [];
         $newFields = !empty($newValues['fields'])? json_decode($newValues['fields'], true) : [];
 
-        foreach ($oldFields as $key => $value) {
-            $oldFields[str_pad($key, 4, "0", STR_PAD_LEFT)] = $value;
-        }
-        foreach ($newFields as $key => $value) {
-            $newFields[str_pad($key, 4, "0", STR_PAD_LEFT)] = $value;
-        }
-
         $customFields = $this->customFieldGateway->selectCustomFields($context, $params)->fetchAll();
 
         foreach ($customFields as $field) {
-            $fieldID = str_pad($field['gibbonCustomFieldID'], 4, "0", STR_PAD_LEFT);
+            $fieldID = $field['gibbonCustomFieldID'];
             $label = __($field['name']);
 
             $oldValue = $oldFields[$fieldID] ?? '';
