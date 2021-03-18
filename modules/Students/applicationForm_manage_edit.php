@@ -484,7 +484,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     }
 
     // CUSTOM FIELDS FOR STUDENT
-    $params = ['student' => 1, 'applicationForm' => 1, 'subheading' => __('Other Information')];
+    $params = ['student' => 1, 'applicationForm' => 1];
     $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Person', $params, $application['fields']);
 
     // FAMILY

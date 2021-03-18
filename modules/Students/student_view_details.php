@@ -1077,10 +1077,60 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                         echo '</table>';
 
-                        // Custom Fields
-                        $table = $container->get(CustomFieldHandler::class)->createCustomFieldsTable('Person', ['student' => 1], $row['fields']);
-                        $table->setTitle(__('Custom Fields'));
-                        echo $table->getOutput();
+                        $table = DataTable::createDetails('overview');
+
+                        if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php')) {
+                            $table->addHeaderAction('edit', __m('Edit User'))
+                                ->setURL('/modules/User Admin/user_manage.php')
+                                ->addParam('gibbonPersonID', $gibbonPersonID)
+                                ->displayLabel();
+                        }
+
+                        $col = $table->addColumn('Basic Information', __('Basic Information'));
+
+                        $col->addColumn('surname', __('Surname'));
+                        $col->addColumn('firstName', __('First Name'))->addClass('col-span-2');
+                        $col->addColumn('preferredName', __('Preferred Name'));
+                        $col->addColumn('officialName', __('Official Name'));
+                        $col->addColumn('nameInCharacters', __('Name in Characters'));
+                        $col->addColumn('gender', __('Gender'));
+                        $col->addColumn('dob', __('Date of Birth'))->format(Format::using('date', 'dob'));
+                        $col->addColumn('age', __('Age'))->format(Format::using('age', 'dob'));
+
+                        $col = $table->addColumn('contacts', __('Contacts'));
+
+                        $col->addColumn('email', __('Email'))->format(Format::using('link', 'email'));
+                        $col->addColumn('emailAlternate', __('Alternate Email'))->format(Format::using('link', 'emailAlternate'));
+                        $col->addColumn('website', __('Website'))->format(Format::using('link', 'website'));
+
+                        $col = $table->addColumn('School Information', __('School Information'));
+
+                        $col->addColumn('lastSchool', __('Last School'));
+                        $col->addColumn('dateStart', __('Start Date'))->format(Format::using('date', 'dateStart'));
+                        $col->addColumn('classOf', __('Class Of'));
+                        $col->addColumn('nextSchool', __('Next School'));
+                        $col->addColumn('dateEnd', __('End Date'))->format(Format::using('date', 'dateEnd'));
+                        $col->addColumn('departureReason', __('Departure Reason'));
+
+                        $col = $table->addColumn('Background', __('Background'));
+
+                        $col->addColumn('email', __('Email'));
+
+                        $col = $table->addColumn('School Data', __('School Data'));
+
+                        $col->addColumn('email', __('Email'));
+
+                        $col = $table->addColumn('System Data', __('System Data'));
+
+                        $col->addColumn('email', __('Email'));
+
+                        $col = $table->addColumn('Miscellaneous', __('Miscellaneous'));
+
+                        $col->addColumn('email', __('Email'));
+
+                        $container->get(CustomFieldHandler::class)->addCustomFieldsToTable($table, 'Person', ['student' => 1, 'heading' => 'Other Information'], $row['fields']);
+
+                        echo $table->render([$row]);
 
                     } elseif ($subpage == 'Family') {
 
@@ -1523,7 +1573,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     : Format::small(__('Unknown'));
                             });
 
-                        $table = $container->get(CustomFieldHandler::class)->createCustomFieldsTable('Medical Form', [], $medical['fields'], $table);
+                        $container->get(CustomFieldHandler::class)->addCustomFieldsToTable($table, 'Medical Form', [], $medical['fields'], $table);
 
                         $table->addColumn('medicalConditions', __('Medical Conditions?'))
                             ->addClass('col-span-3')
