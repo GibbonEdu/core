@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonDepartmentID = $_GET['gibbonDepartmentID'];
+$gibbonDepartmentID = $_GET['gibbonDepartmentID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/department_manage_edit.php&gibbonDepartmentID=$gibbonDepartmentID";
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_manage_edit.php') == false) {
@@ -52,10 +52,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
         } else {
             $row = $result->fetch();
             //Validate Inputs
-            $name = $_POST['name'];
-            $nameShort = $_POST['nameShort'];
-            $subjectListing = $_POST['subjectListing'];
-            $blurb = $_POST['blurb'];
+            $name = $_POST['name'] ?? '';
+            $nameShort = $_POST['nameShort'] ?? '';
+            $subjectListing = $_POST['subjectListing'] ?? '';
+            $blurb = $_POST['blurb'] ?? '';
 
             if ($name == '' or $nameShort == '') {
                 $URL .= '&return=error3';
@@ -63,11 +63,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
                 exit();
             } else {
                 $partialFail = false;
-                
+
                 //Move attached file, if there is one
                 if (!empty($_FILES['file']['tmp_name'])) {
                     $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
-            
+
                     $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 
                     // Upload the file, return the /uploads relative path
@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
                         $partialFail = true;
                     }
                 } else {
-                    $attachment = $_POST['logo'];
+                    $attachment = $_POST['logo'] ?? '';
                 }
 
                 //Scan through staff

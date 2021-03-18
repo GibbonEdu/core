@@ -19,12 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$name = $_POST['name'];
-$nameShort = $_POST['nameShort'];
-$gibbonExternalAssessmentID = $_POST['gibbonExternalAssessmentID'];
-$description = $_POST['description'];
-$active = $_POST['active'];
-$allowFileUpload = $_POST['allowFileUpload'];
+$name = $_POST['name'] ?? '';
+$nameShort = $_POST['nameShort'] ?? '';
+$gibbonExternalAssessmentID = $_POST['gibbonExternalAssessmentID'] ?? '';
+$description = $_POST['description'] ?? '';
+$active = $_POST['active'] ?? '';
+$allowFileUpload = $_POST['allowFileUpload'] ?? '';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/externalAssessments_manage_edit.php&gibbonExternalAssessmentID='.$gibbonExternalAssessmentID;
 

@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $makeDepartmentsPublic = $_POST['makeDepartmentsPublic'];
+    $makeDepartmentsPublic = $_POST['makeDepartmentsPublic'] ?? '';
 
     //Write to database
     $fail = false;

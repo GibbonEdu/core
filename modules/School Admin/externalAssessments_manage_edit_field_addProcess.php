@@ -28,10 +28,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
 } else {
     //Proceed!
     //Validate Inputs
-    $name = $_POST['name'];
-    $category = $_POST['category'];
-    $order = $_POST['order'];
-    $gibbonScaleID = $_POST['gibbonScaleID'];
+    $name = $_POST['name'] ?? '';
+    $category = $_POST['category'] ?? '';
+    $order = $_POST['order'] ?? '';
+    $gibbonScaleID = $_POST['gibbonScaleID'] ?? '';
     $gibbonYearGroupIDList = '';
     if (!empty($_POST['gibbonYearGroupIDList']) && is_array($_POST['gibbonYearGroupIDList'])) {
         $gibbonYearGroupIDList = implode(',', $_POST['gibbonYearGroupIDList']);

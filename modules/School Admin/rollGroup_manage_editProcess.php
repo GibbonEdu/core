@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
-$gibbonRollGroupID = $_GET['gibbonRollGroupID'];
+$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
+$gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rollGroup_manage_edit.php&gibbonRollGroupID=$gibbonRollGroupID&gibbonSchoolYearID=$gibbonSchoolYearID";
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_manage_edit.php') == false) {
@@ -49,46 +49,19 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
             header("Location: {$URL}");
         } else {
             //Validate Inputs
-            $name = $_POST['name'];
-            $nameShort = $_POST['nameShort'];
-            $gibbonPersonIDTutor = null;
-            if ($_POST['gibbonPersonIDTutor'] != '') {
-                $gibbonPersonIDTutor = $_POST['gibbonPersonIDTutor'];
-            }
-            $gibbonPersonIDTutor2 = null;
-            if ($_POST['gibbonPersonIDTutor2'] != '') {
-                $gibbonPersonIDTutor2 = $_POST['gibbonPersonIDTutor2'];
-            }
-            $gibbonPersonIDTutor3 = null;
-            if ($_POST['gibbonPersonIDTutor3'] != '') {
-                $gibbonPersonIDTutor3 = $_POST['gibbonPersonIDTutor3'];
-            }
-            $gibbonPersonIDEA = null;
-            if ($_POST['gibbonPersonIDEA'] != '') {
-                $gibbonPersonIDEA = $_POST['gibbonPersonIDEA'];
-            }
-            $gibbonPersonIDEA2 = null;
-            if ($_POST['gibbonPersonIDEA2'] != '') {
-                $gibbonPersonIDEA2 = $_POST['gibbonPersonIDEA2'];
-            }
-            $gibbonPersonIDEA3 = null;
-            if ($_POST['gibbonPersonIDEA3'] != '') {
-                $gibbonPersonIDEA3 = $_POST['gibbonPersonIDEA3'];
-            }
-            $gibbonSpaceID = null;
-            if ($_POST['gibbonSpaceID'] != '') {
-                $gibbonSpaceID = $_POST['gibbonSpaceID'];
-            }
-            $gibbonRollGroupIDNext = null;
-            if (isset($_POST['gibbonRollGroupIDNext'])) {
-                $gibbonRollGroupIDNext = $_POST['gibbonRollGroupIDNext'];
-            }
-            $website = null;
-            if (isset($_POST['website'])) {
-                $website = $_POST['website'];
-            }
+            $name = $_POST['name'] ?? '';
+            $nameShort = $_POST['nameShort'] ?? '';
+            $gibbonPersonIDTutor = $_POST['gibbonPersonIDTutor'] ?? '';
+            $gibbonPersonIDTutor2 = $_POST['gibbonPersonIDTutor2'] ?? '';
+            $gibbonPersonIDTutor3 = $_POST['gibbonPersonIDTutor3'] ?? '';
+            $gibbonPersonIDEA = $_POST['gibbonPersonIDEA'] ?? '';
+            $gibbonPersonIDEA2 = $_POST['gibbonPersonIDEA2'] ?? '';
+            $gibbonPersonIDEA3 = $_POST['gibbonPersonIDEA3'] ?? '';
+            $gibbonSpaceID = $_POST['gibbonSpaceID'] ?? '';
+            $gibbonRollGroupIDNext = $_POST['gibbonRollGroupIDNext'] ?? '';
+            $website = $_POST['website'] ?? '';
 
-            $attendance = (isset($_POST['attendance']))? $_POST['attendance'] : NULL;
+            $attendance = $_POST['attendance'] ?? NULL;
 
             if ($gibbonSchoolYearID == '' or $name == '' or $nameShort == '') {
                 $URL .= '&return=error3';
