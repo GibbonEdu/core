@@ -41,6 +41,9 @@ class CustomFieldHandler
             __('User Admin') => [
                 'User' => __('User'),
             ],
+            __('Staff') => [
+                'Staff' => __('Staff'),
+            ],
             __('Students') => [
                 'First Aid'    => __('First Aid'),
                 'Medical Form' => __('Medical Form'),
@@ -93,7 +96,6 @@ class CustomFieldHandler
             'First Aid' => [
                 'Basic Information' => __('Basic Information'),
                 'Follow Up'         => __('Follow Up'),
-                'Biography'         => __('Biography'),
             ],
             'Medical Form' => [
                 'General Information' => __('General Information'),
