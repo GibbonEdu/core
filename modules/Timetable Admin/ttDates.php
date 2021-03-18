@@ -124,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
                 // Get the TT day names
 
                     $dataDay = array();
-                    $sqlDay = 'SELECT date, gibbonTTDay.nameShort AS dayName, gibbonTT.nameShort AS ttName FROM gibbonTTDayDate JOIN gibbonTTDay ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTT ON (gibbonTTDay.gibbonTTID=gibbonTT.gibbonTTID)';
+                    $sqlDay = 'SELECT date, gibbonTTDay.nameShort AS dayName, gibbonTT.nameShort AS ttName, color, fontColor FROM gibbonTTDayDate JOIN gibbonTTDay ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTT ON (gibbonTTDay.gibbonTTID=gibbonTT.gibbonTTID)';
                     $resultDay = $connection2->prepare($sqlDay);
                     $resultDay->execute($dataDay);
 
@@ -193,7 +193,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
 
                             if (isset($ttDays[$date])) {
                                 foreach ($ttDays[$date] as $day) {
-                                    $column->addContent($day['ttName'].' '.$day['dayName'])->wrap('<b>', '</b>');
+                                    if (empty($day['color'])) {
+                                        $column->addContent($day['ttName'].' '.$day['dayName'])->wrap('<b>', '</b>');
+                                    }
+                                    else {
+                                        $column->addContent($day['ttName'].' '.$day['dayName'])->wrap('<div class=\'h-8\'style=\'background-color: '.$day['color'].'; color: '.$day['fontColor'].'\'><b>', '</b></div>');
+                                    }
+
                                 }
                                 $column->addClass('success');
                             }
