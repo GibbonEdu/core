@@ -622,8 +622,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     }
 
                     // CUSTOM FIELDS
-                    $heading = $form->addRow()->addHeading(__('Custom Fields'));
-
                     $params = compact('student', 'staff', 'parent', 'other');
                     $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Person', $params + ['dataUpdater' => 1], $values['fields']);
 
