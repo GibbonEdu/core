@@ -79,7 +79,7 @@ class CustomFieldGateway extends QueryableGateway
     {
         $query = $this
             ->newSelect()
-            ->cols(['heading as groupBy', 'gibbonCustomField.*'])
+            ->cols(["(CASE WHEN heading <> '' THEN heading ELSE 'Other Information' END) as groupBy", 'gibbonCustomField.*'])
             ->from('gibbonCustomField')
             ->where("active='Y'")
             ->where('context=:context')
@@ -115,6 +115,16 @@ class CustomFieldGateway extends QueryableGateway
         }
         if ($params['hideHidden'] ?? false) {
             $query->where('hidden=:hidden', ['hidden' => 'N']);
+        }
+
+        // Handle getting fields that match or do not match specific headings
+        if ($params['withHeading'] ?? false) {
+            $headings = is_array($params['withHeading']) ? implode(',', $params['withHeading']) : $params['withHeading'];
+            $query->where('FIND_IN_SET(heading, :headings)', ['headings' => $headings]);
+        }
+        if ($params['withoutHeading'] ?? false) {
+            $headings = is_array($params['withoutHeading']) ? implode(',', $params['withoutHeading']) : $params['withoutHeading'];
+            $query->where('NOT FIND_IN_SET(heading, :headings)', ['headings' => $headings]);
         }
 
         $query->orderBy(['sequenceNumber', 'name']);
