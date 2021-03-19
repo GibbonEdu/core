@@ -36,6 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
     $page->return->setEditLink($editLink);
 
     $customFieldHandler = $container->get(CustomFieldHandler::class);
+    $context = $_GET['context'] ?? '';
 
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/customFields_addProcess.php');
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
@@ -44,15 +45,42 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
 
     $row = $form->addRow();
         $row->addLabel('context', __('Context'));
-        $row->addSelect('context')->fromArray($customFieldHandler->getContexts())->required()->placeholder();
+        $row->addSelect('context')->fromArray($customFieldHandler->getContexts())->required()->placeholder()->selected($context);
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'))->description(__('Must be unique for this context.'));
         $row->addTextField('name')->maxLength(50)->required();
 
     $row = $form->addRow();
-        $row->addLabel('description', __('Description'));
+        $row->addLabel('description', __('Description'))->description(__('Displayed as smaller text next to the field name.'));
         $row->addTextField('description')->maxLength(255);
+
+    $headings = $customFieldHandler->getHeadings();
+    $contextHeadings = $contextCustom = [];
+    $contextChained = array_reduce(array_keys($headings), function($group, $context) use (&$headings, &$contextHeadings, &$contextCustom) {
+        foreach ($headings[$context] as $key => $value) {
+            $contextHeadings[$key.'_'.$context] = $value;
+            $group[$value.'_'.$context] = $context;
+        }
+        $contextHeadings['Custom_'.$context] = '['.__('Custom').']';
+        $contextCustom[] = 'Custom_'.$context;
+        $group['Custom_'.$context] = $context;
+        return $group;
+    }, []);
+    
+    $row = $form->addRow();
+        $row->addLabel('heading', __('Heading'))->description(__('Optionally list this field under a heading.'));
+        $row->addSelect('heading')
+            ->fromArray($contextHeadings)
+            ->chainedTo('context', $contextChained)
+            ->placeholder();
+
+    $form->toggleVisibilityByClass('headingCustom')->onSelect('heading')->when($contextCustom);
+    
+    $row = $form->addRow()->addClass('headingCustom');
+        $row->addLabel('headingCustom', __('Custom Heading'));
+        $row->addTextField('headingCustom')->maxLength(90);
+
 
     $row = $form->addRow();
         $row->addLabel('active', __('Active'));
@@ -93,30 +121,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
     $row = $form->addRow();
         $row->addLabel('hidden', __('Hidden'))->description(__('Is this field hidden from profiles and user-facing pages?'));
         $row->addYesNo('hidden')->required()->selected('N');
-
-    $headings = $customFieldHandler->getHeadings();
-    $contextHeadings = [];
-    $contextChained = array_reduce(array_keys($headings), function($group, $context) use (&$headings, &$contextHeadings) {
-        foreach ($headings[$context] as $key => $value) {
-            $contextHeadings['Existing Heading'][$key] = $value;
-            $group[$value] = $context;
-        }
-        $contextHeadings['New Heading'][$context] = __('Custom');
-        $group[$context] = $context;
-        return $group;
-    }, []);
-    
-    $row = $form->addRow();
-        $row->addLabel('heading', __('Heading'))->description(__('Optionally list this field under a heading.'));
-        $row->addSelect('heading')
-            ->fromArray($contextHeadings)
-            ->chainedTo('context', $contextChained);
-
-    $form->toggleVisibilityByClass('headingCustom')->onSelect('heading')->when('Custom');
-    
-    $row = $form->addRow()->addClass('headingCustom');
-        $row->addLabel('headingCustom', __('Heading'))->description(__('Optionally list this field under a heading.'));
-        $row->addTextField('headingCustom')->maxLength(90);
 
     $form->addRow()->addClass('contextPerson')->addHeading(__('Visibility'));
 

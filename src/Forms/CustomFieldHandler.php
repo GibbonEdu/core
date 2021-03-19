@@ -39,7 +39,7 @@ class CustomFieldHandler
 
         $this->contexts = [
             __('User Admin') => [
-                'Person' => __('Person'),
+                'Person' => __('User'),
             ],
             __('Students') => [
                 'Medical Form' => __('Medical Form'),
@@ -223,9 +223,9 @@ class CustomFieldHandler
 
             // If no heading column exists, add one
             if (empty($headingCol) && !empty($heading)) {
-                $headingCol = $table->addColumn($heading, $heading);
+                $headingCol = $table->addColumn($heading, __($heading));
             } elseif (empty($headingCol) && !empty($params['heading'])) {
-                $headingCol = $table->addColumn($params['heading'], $params['heading']);
+                $headingCol = $table->addColumn($params['heading'], __($params['heading']));
             }
 
             foreach ($customFields as $field) {
@@ -234,6 +234,9 @@ class CustomFieldHandler
                     : $table->addColumn($field['gibbonCustomFieldID'], __($field['name']));
 
                 switch ($field['type']) {
+                    case 'editor':
+                        $col->addClass('col-span-3');
+                        break;
                     case 'date':
                         $col->format(Format::using('date', $field['gibbonCustomFieldID']));
                         break;

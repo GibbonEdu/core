@@ -30,7 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
     //Proceed!
     $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
     $customFieldGateway = $container->get(CustomFieldGateway::class);
-
     
     $data = [
         'context'                  => $_POST['context'] ?? 'Person',
@@ -46,6 +45,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
         'activeApplicationForm'    => $_POST['activeApplicationForm'] ?? '0',
         'activePublicRegistration' => $enablePublicRegistration == 'Y' ? ($_POST['activePublicRegistration'] ?? '0') : '0',
     ];
+
+    if (!empty($data['heading'])) {
+        $data['heading'] = strchr($data['heading'], '_', true);
+        $data['heading'] = $data['heading'] == 'Custom' ? $data['headingCustom'] : $data['heading'];
+    }
 
     // Add this field to the bottom of the current sequenceNumber for this context
     $sequenceCheck = $customFieldGateway->selectBy(['context' => $data['context']], ['sequenceNumber'])->fetch();
