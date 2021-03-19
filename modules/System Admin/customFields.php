@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields.
         // QUERY
         $criteria = $customFieldGateway->newQueryCriteria()
             ->sortBy(['sequenceNumber', 'name'])
-            ->filterBy('context', $context != 'User' ? $context : '')
+            ->filterBy('context', $context)
             ->pageSize(0)
             ->fromPOST();
 
@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields.
 
         $table->addHeaderAction('add', __('Add'))
             ->setURL('/modules/System Admin/customFields_add.php')
-            ->addParam('context', $context)
+            ->addParam('context', $context != 'User' ? $context : '')
             ->displayLabel();
 
         $table->addDraggableColumn('gibbonCustomFieldID', $gibbon->session->get('absoluteURL').'/modules/System Admin/customFields_editOrderAjax.php');
