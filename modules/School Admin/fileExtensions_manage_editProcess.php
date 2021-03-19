@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/fileExtension
         } else {
             //Validate Inputs
             $extension = strtolower($_POST['extension']);
-            $name = $_POST['name'] ?? ''
+            $name = $_POST['name'] ?? '';
             $type = $_POST['type'] ?? '';
 
             $illegalFileExtensions = Gibbon\FileUploader::getIllegalFileExtensions();
