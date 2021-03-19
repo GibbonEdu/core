@@ -85,7 +85,7 @@ class CustomFieldGateway extends QueryableGateway
             ->where('context=:context')
             ->bindValue('context', $context);
 
-        if ($context == 'Person') {
+        if ($context == 'User') {
             // Handle role category flags as ORs
             $query->where(function ($query) use (&$params) {
                 if ($params['student'] ?? false) {

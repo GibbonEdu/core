@@ -38,8 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields.
     array_walk_recursive($types, function($item, $key) use (&$customFieldTypes) { $customFieldTypes[$key] = $item; });
 
     $contexts = [];
-    $contextGroups = $customFieldHandler->getContexts();
-    foreach ($contextGroups as $group => $groupContexts) {
+    foreach ($customFieldHandler->getContexts() as $group => $groupContexts) {
         $contexts += $groupContexts;
     }
 
@@ -47,13 +46,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields.
         // QUERY
         $criteria = $customFieldGateway->newQueryCriteria()
             ->sortBy(['sequenceNumber', 'name'])
-            ->filterBy('context', $context)
+            ->filterBy('context', $context != 'User' ? $context : '')
             ->pageSize(0)
             ->fromPOST();
 
         $customFields = $customFieldGateway->queryCustomFields($criteria);
 
-        if (count($customFields) == 0 && $context != 'Person') continue;
+        if (count($customFields) == 0 && $context != 'User') continue;
 
         // DATA TABLE
         $table = DataTable::create('customFields'.$context);
@@ -68,14 +67,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields.
             ->setURL('/modules/System Admin/customFields_add.php')
             ->addParam('context', $context)
             ->displayLabel();
-
-        $customFieldTypes = array(
-            'varchar' => __('Short Text'),
-            'text'    => __('Long Text'),
-            'date'    => __('Date'),
-            'url'     => __('Link'),
-            'select'  => __('Dropdown')
-        );
 
         $table->addDraggableColumn('gibbonCustomFieldID', $gibbon->session->get('absoluteURL').'/modules/System Admin/customFields_editOrderAjax.php');
 
@@ -94,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields.
 
         $table->addColumn('required', __('Required'))->width('10%')->format(Format::using('yesNo', 'required'));
 
-        if ($context == 'Person') {
+        if ($context == 'User') {
             $table->addColumn('roles', __('Role Categories'))
                 ->format(function ($values) {
                     $output = '';

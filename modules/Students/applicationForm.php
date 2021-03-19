@@ -416,7 +416,7 @@ if ($proceed == false) {
 
     // CUSTOM FIELDS FOR STUDENT
     $params = ['student' => 1, 'applicationForm' => 1];
-    $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Person', $params);
+    $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'User', $params);
 
     // FAMILY
     if (!empty($gibbonFamilyID)) {
@@ -500,7 +500,7 @@ if ($proceed == false) {
 
             // CUSTOM FIELDS FOR PARENT 1 WITH FAMILY
             $params = ['parent' => 1, 'applicationForm' => 1, 'prefix' => 'parent1custom', 'subheading' => __('Parent/Guardian').' 1 '.__('Other Information')];
-            $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Person', $params, $parent1fields);
+            $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'User', $params, $parent1fields);
 
             $start = 2;
         } else {
@@ -627,7 +627,7 @@ if ($proceed == false) {
 
             // CUSTOM FIELDS FOR PARENTS
             $params = ['parent' => 1, 'applicationForm' => 1, 'prefix' => "parent{$i}custom", 'subheading' => __('Parent/Guardian')." $i ".__('Other Information')];
-            $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Person', $params, $application["parent{$i}fields"] ?? '');
+            $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'User', $params, $application["parent{$i}fields"] ?? '');
         }
     } else {
         // LOGGED IN PARENT WITH FAMILY

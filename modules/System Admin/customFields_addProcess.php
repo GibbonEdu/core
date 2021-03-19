@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
     $customFieldGateway = $container->get(CustomFieldGateway::class);
     
     $data = [
-        'context'                  => $_POST['context'] ?? 'Person',
+        'context'                  => $_POST['context'] ?? '',
         'name'                     => $_POST['name'] ?? '',
         'active'                   => $_POST['active'] ?? '',
         'description'              => $_POST['description'] ?? '',

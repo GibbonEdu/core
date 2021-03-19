@@ -554,13 +554,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $customFieldHandler = $container->get(CustomFieldHandler::class);
 
                 $params = ['student' => 1, 'applicationForm' => 1];
-                $fields = $customFieldHandler->getFieldDataFromPOST('Person', $params, $customRequireFail);
+                $fields = $customFieldHandler->getFieldDataFromPOST('User', $params, $customRequireFail);
 
                 $parent1fields = $parent2fields = '';
                 if ($gibbonFamily != 'TRUE') { //Only if there is no family
                     $params = ['parent' => 1, 'applicationForm' => 1];
-                    $parent1fields = $customFieldHandler->getFieldDataFromPOST('Person', $params, $customRequireFail, 'parent1custom');
-                    $parent2fields = $customFieldHandler->getFieldDataFromPOST('Person', $params, $customRequireFail, 'parent2custom'); 
+                    $parent1fields = $customFieldHandler->getFieldDataFromPOST('User', $params, $customRequireFail, 'parent1custom');
+                    $parent2fields = $customFieldHandler->getFieldDataFromPOST('User', $params, $customRequireFail, 'parent2custom'); 
                 }
 
                 if ($customRequireFail) {

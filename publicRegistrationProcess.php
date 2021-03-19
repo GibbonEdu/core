@@ -88,7 +88,7 @@ if ($proceed == false) {
     }
 
     $customRequireFail = false;
-    $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Person', ['publicRegistration' => 1], $customRequireFail);
+    $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('User', ['publicRegistration' => 1], $customRequireFail);
 
     if ($customRequireFail) {
         $URL .= '&return=error1';

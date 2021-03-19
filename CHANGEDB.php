@@ -797,4 +797,5 @@ UPDATE `gibbonAction` SET categoryPermissionParent='N' WHERE `name`='View Markbo
 DELETE `gibbonPermission` FROM `gibbonPermission` JOIN `gibbonAction` ON (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPermission.gibbonRoleID) WHERE gibbonAction.name='View Markbook_myMarks' AND gibbonRole.category='Parent';end
 SELECT NULL;end
 UPDATE `gibbonCustomField` SET `heading`='General Information' WHERE `context`='Medical Form' AND (`name`='Blood Type' OR `name`='Tetanus Within Last 10 Years?');end
+UPDATE `gibbonCustomField` SET `context`='User' WHERE `context`='Person';end
 ";

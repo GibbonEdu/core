@@ -221,7 +221,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     // CUSTOM FIELDS
                     $customRequireFail = false;
                     $params = compact('student', 'staff', 'parent', 'other');
-                    $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Person', $params + ['dataUpdater' => 1], $customRequireFail);
+                    $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('User', $params + ['dataUpdater' => 1], $customRequireFail);
 
                     // Check for data changed
                     $existingFields = json_decode($values['fields'], true);

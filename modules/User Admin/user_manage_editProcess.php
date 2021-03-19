@@ -490,7 +490,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                     // CUSTOM FIELDS
                     $customRequireFail = false;
                     $params = compact('student', 'staff', 'parent', 'other');
-                    $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Person', $params, $customRequireFail);
+                    $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('User', $params, $customRequireFail);
                 
                     if ($customRequireFail) {
                         $URL .= '&return=error3';

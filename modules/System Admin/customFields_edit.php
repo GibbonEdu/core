@@ -127,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
         $row->addLabel('hidden', __('Hidden'))->description(__('Is this field hidden from profiles and user-facing pages?'));
         $row->addYesNo('hidden')->required();
 
-    if ($values['context'] == 'Person') {
+    if ($values['context'] == 'User') {
         $form->addRow()->addHeading(__('Visibility'));
 
         $activePersonOptions = array(

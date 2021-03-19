@@ -39,7 +39,7 @@ class CustomFieldHandler
 
         $this->contexts = [
             __('User Admin') => [
-                'Person' => __('User'),
+                'User' => __('User'),
             ],
             __('Students') => [
                 'Medical Form' => __('Medical Form'),
@@ -74,7 +74,7 @@ class CustomFieldHandler
         ];
 
         $this->headings = [
-            'Person' => [
+            'User' => [
                 'Basic Information'      => __('Basic Information'),
                 'System Access'          => __('System Access'),
                 'Contact Information'    => __('Contact Information'),

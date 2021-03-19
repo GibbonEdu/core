@@ -777,7 +777,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             });
                         }
 
-                        $container->get(CustomFieldHandler::class)->addCustomFieldsToTable($table, 'Person', ['student' => 1], $row['fields']);
+                        $container->get(CustomFieldHandler::class)->addCustomFieldsToTable($table, 'User', ['student' => 1], $row['fields']);
 
                         echo $table->render([$row]);
 
