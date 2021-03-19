@@ -419,7 +419,7 @@ class Format
      *
      * @param string $url
      * @param string $text
-     * @param string $title
+     * @param array $attr
      * @return string
      */
     public static function link($url, $text = '', $attr = [])
@@ -434,6 +434,9 @@ class Format
             $attr = ['title' => $attr];
         }
 
+        if (stripos($url, '@') !== false) {
+            $url = 'mailto:'.$url;
+        }
         if (substr($url, 0, 2) == './') {
             $url = static::$settings['absoluteURL'].substr($url, 1);
         }
