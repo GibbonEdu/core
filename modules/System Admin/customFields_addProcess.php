@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
 
     if (!empty($data['heading'])) {
         $data['heading'] = strchr($data['heading'], '_', true);
-        $data['heading'] = $data['heading'] == 'Custom' ? $data['headingCustom'] : $data['heading'];
+        $data['heading'] = $data['heading'] == 'Custom' ? ($_POST['headingCustom'] ?? '') : $data['heading'];
     }
 
     // Add this field to the bottom of the current sequenceNumber for this context
