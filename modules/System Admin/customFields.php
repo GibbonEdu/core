@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields.
         // QUERY
         $criteria = $customFieldGateway->newQueryCriteria()
             ->sortBy(['sequenceNumber', 'name'])
-            ->filterBy('context', $context != 'User' ? $context : '')
+            ->filterBy('context', $context)
             ->pageSize(0)
             ->fromPOST();
 
