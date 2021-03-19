@@ -70,6 +70,10 @@ class Row
             if ($element instanceof RowDependancyInterface) {
                 $element->setRow($this);
             }
+
+            if ($function == 'createSubmit') {
+                $this->setHeading('');
+            }
         } catch (\ReflectionException $e) {
             $element = $this->factory->createContent(strtr('Cannot {function}. This form element does not exist in the current FormFactory: {message}', [
                 '{function}' => $function,
