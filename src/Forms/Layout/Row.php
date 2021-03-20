@@ -35,7 +35,8 @@ class Row
     use BasicAttributesTrait;
 
     protected $factory;
-    protected $formElements = array();
+    protected $heading = '';
+    protected $formElements = [];
 
     /**
      * Construct a row with access to a specific factory.
@@ -69,6 +70,10 @@ class Row
             if ($element instanceof RowDependancyInterface) {
                 $element->setRow($this);
             }
+
+            if ($function == 'createSubmit') {
+                $this->setHeading('');
+            }
         } catch (\ReflectionException $e) {
             $element = $this->factory->createContent(strtr('Cannot {function}. This form element does not exist in the current FormFactory: {message}', [
                 '{function}' => $function,
@@ -91,6 +96,17 @@ class Row
         }
 
         return $element;
+    }
+
+    public function getHeading()
+    {
+        return $this->heading;
+    }
+
+    public function setHeading($heading)
+    {
+        $this->heading = $heading;
+        return $this;
     }
 
     /**

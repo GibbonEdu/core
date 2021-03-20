@@ -187,7 +187,7 @@ if ($proceed == false) {
     } else {
         //DEAL WITH CUSTOM FIELDS
         $customRequireFail = false;
-        $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Person', ['staff' => 1, 'applicationForm' => 1], $customRequireFail);
+        $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('User', ['staff' => 1, 'applicationForm' => 1], $customRequireFail);
 
         if ($customRequireFail) {
             $URL .= '&return=error1';

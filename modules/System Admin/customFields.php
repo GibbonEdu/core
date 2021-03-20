@@ -30,91 +30,83 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields.
     $page->breadcrumbs->add(__('Custom Fields'));
 
     $customFieldGateway = $container->get(CustomFieldGateway::class);
+    $customFieldHandler = $container->get(CustomFieldHandler::class);
     
-    // QUERY
-    $criteria = $customFieldGateway->newQueryCriteria()
-        ->sortBy(['context', 'sequenceNumber', 'name'])
-        ->pageSize(0)
-        ->fromPOST();
-
-    $customFields = $customFieldGateway->queryCustomFields($criteria);
-
-    // DATA TABLE
-    $table = DataTable::createPaginated('customFieldManage', $criteria);
-
-    $table->modifyRows(function ($customField, $row) {
-        if ($customField['active'] == 'N') $row->addClass('error');
-        return $row;
-    });
-
-    $table->addHeaderAction('add', __('Add'))
-        ->setURL('/modules/System Admin/customFields_add.php')
-        ->displayLabel();
-
-    $table->addMetaData('filterOptions', [
-        'active:Y'     => __('Active').': '.__('Yes'),
-        'active:N'     => __('Active').': '.__('No'),
-        'role:student' => __('Role').': '.__('Student'),
-        'role:parent'  => __('Role').': '.__('Parent'),
-        'role:staff'   => __('Role').': '.__('Staff'),
-        'role:other'   => __('Role').': '.__('Other'),
-    ]);
-
-    $customFieldTypes = array(
-        'varchar' => __('Short Text'),
-        'text'    => __('Long Text'),
-        'date'    => __('Date'),
-        'url'     => __('Link'),
-        'select'  => __('Dropdown')
-    );
-
     // Get a flattened array of the custom field types for listing in the table
     $customFieldTypes = [];
     $types = $container->get(CustomFieldHandler::class)->getTypes();
     array_walk_recursive($types, function($item, $key) use (&$customFieldTypes) { $customFieldTypes[$key] = $item; });
 
-    $table->addDraggableColumn('gibbonCustomFieldID', $gibbon->session->get('absoluteURL').'/modules/System Admin/customFields_editOrderAjax.php');
+    $contexts = [];
+    foreach ($customFieldHandler->getContexts() as $group => $groupContexts) {
+        $contexts += $groupContexts;
+    }
 
-    $table->addColumn('context', __('Context'))
-        ->notSortable()
-        ->translatable();
+    foreach ($contexts as $context => $contextName) {
+        // QUERY
+        $criteria = $customFieldGateway->newQueryCriteria()
+            ->sortBy(['sequenceNumber', 'name'])
+            ->filterBy('context', $context)
+            ->pageSize(0)
+            ->fromPOST();
 
-    $table->addColumn('name', __('Name'))
-        ->description(__('Heading'))
-        ->notSortable()
-        ->format(function($values) {
-            return $values['name'].'<br/>'.Format::small($values['heading']);
+        $customFields = $customFieldGateway->queryCustomFields($criteria);
+
+        if (count($customFields) == 0 && $context != 'User') continue;
+
+        // DATA TABLE
+        $table = DataTable::create('customFields'.$context);
+        $table->setTitle(__('{context} Fields', ['context' => $contextName]));
+
+        $table->modifyRows(function ($customField, $row) {
+            if ($customField['active'] == 'N') $row->addClass('error');
+            return $row;
         });
 
-    $table->addColumn('type', __('Type'))->notSortable()
-        ->format(function ($row) use ($customFieldTypes) {
-            return isset($customFieldTypes[$row['type']])? $customFieldTypes[$row['type']] : '';
-        });
+        $table->addHeaderAction('add', __('Add'))
+            ->setURL('/modules/System Admin/customFields_add.php')
+            ->addParam('context', $context != 'User' ? $context : '')
+            ->displayLabel();
 
-    $table->addColumn('active', __('Active'))
-        ->notSortable()
-        ->format(Format::using('yesNo', 'active'));
+        $table->addDraggableColumn('gibbonCustomFieldID', $gibbon->session->get('absoluteURL').'/modules/System Admin/customFields_editOrderAjax.php');
 
-    $table->addColumn('roles', __('Role Categories'))
-        ->notSortable()
-        ->format(function ($row) {
-            $output = '';
-            if ($row['activePersonStudent']) $output .= __('Student').'<br/>';
-            if ($row['activePersonParent']) $output .= __('Parent').'<br/>';
-            if ($row['activePersonStaff']) $output .= __('Staff').'<br/>';
-            if ($row['activePersonOther']) $output .= __('Other').'<br/>';
-            return $output;
-        });
+        $table->addColumn('name', __('Name'))
+            ->description(__('Heading'))
+            ->format(function($values) {
+                return $values['name'].'<br/>'.Format::small($values['heading']);
+            });
 
-    $table->addActionColumn()
-        ->addParam('gibbonCustomFieldID')
-        ->format(function ($row, $actions) {
-            $actions->addAction('edit', __('Edit'))
-                ->setURL('/modules/System Admin/customFields_edit.php');
-            $actions->addAction('delete', __('Delete'))
-                ->setURL('/modules/System Admin/customFields_delete.php');
+        $table->addColumn('type', __('Type'))
+            ->format(function ($values) use ($customFieldTypes) {
+                return isset($customFieldTypes[$values['type']])? $customFieldTypes[$values['type']] : '';
+            });
+
+        $table->addColumn('active', __('Active'))->width('10%')->format(Format::using('yesNo', 'active'));
+
+        $table->addColumn('required', __('Required'))->width('10%')->format(Format::using('yesNo', 'required'));
+
+        if ($context == 'User') {
+            $table->addColumn('roles', __('Role Categories'))
+                ->format(function ($values) {
+                    $output = '';
+                    if ($values['activePersonStudent']) $output .= __('Student').'<br/>';
+                    if ($values['activePersonParent']) $output .= __('Parent').'<br/>';
+                    if ($values['activePersonStaff']) $output .= __('Staff').'<br/>';
+                    if ($values['activePersonOther']) $output .= __('Other').'<br/>';
+                    return $output;
+                });
+        }
+
+        $table->addActionColumn()
+            ->addParam('gibbonCustomFieldID')
+            ->format(function ($values, $actions) {
+                $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/System Admin/customFields_edit.php');
+                $actions->addAction('delete', __('Delete'))
+                    ->setURL('/modules/System Admin/customFields_delete.php');
+                
+            });
             
-        });
-        
-    echo $table->render($customFields);
+        echo $table->render($customFields);
+    }
 }

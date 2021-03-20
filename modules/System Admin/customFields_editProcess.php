@@ -41,12 +41,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
         'options'                  => $_POST['options'] ?? '',
         'required'                 => $_POST['required'] ?? '',
         'hidden'                   => $_POST['hidden'] ?? 'N',
-        'heading'                  => $_POST['heading'] ?? '',
+        'heading'                  => $_POST['headingCustom'] ?? $_POST['heading'] ?? '',
         'activeDataUpdater'        => $_POST['activeDataUpdater'] ?? '0',
         'activeApplicationForm'    => $_POST['activeApplicationForm'] ?? '0',
         'activePublicRegistration' => $enablePublicRegistration == 'Y' ? ($_POST['activePublicRegistration'] ?? '0') : '0',
     ];
-
+    
     if ($data['type'] == 'varchar') $data['options'] = min(max(0, intval($data['options'])), 255);
     if ($data['type'] == 'text') $data['options'] = max(0, intval($data['options']));
 

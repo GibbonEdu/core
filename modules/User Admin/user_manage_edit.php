@@ -619,7 +619,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 			// CUSTOM FIELDS
             $params = compact('student', 'staff', 'parent', 'other');
-            $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Person', $params, $values['fields']);
+            $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'User', $params, $values['fields']);
 
 			$row = $form->addRow();
 				$row->addFooter()->append('<small>'.getMaxUpload($guid, true).'</small>');

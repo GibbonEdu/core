@@ -302,4 +302,17 @@ class DataSet implements \Countable, \IteratorAggregate
     {
         array_walk($this->data, $callable);
     }
+
+    /**
+     * Merge another data set into this data set by row index.
+     *
+     * @param DataSet $data
+     */
+    public function merge(DataSet $newData)
+    {
+        foreach ($this->data as $index => $row) {
+            $rowData = $newData->getRow($index);
+            $this->data[$index] = array_merge($row, $rowData);
+        }
+    }
 }

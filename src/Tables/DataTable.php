@@ -196,7 +196,11 @@ class DataTable implements OutputableInterface
     {
         $dataSet = is_array($dataSet) ? new DataSet($dataSet) : $dataSet;
 
-        $this->data = $dataSet;
+        if (!empty($this->data)) {
+            $this->data->merge($dataSet);
+        } else {
+            $this->data = $dataSet;
+        }
 
         return $this;
     }
@@ -323,6 +327,11 @@ class DataTable implements OutputableInterface
         };
 
         return $getNestedColumns($this->columns);
+    }
+
+    public function getColumn($key)
+    {
+        return $this->columns[$key] ?? null;
     }
 
     public function getColumnByIndex($index)
@@ -461,10 +470,10 @@ class DataTable implements OutputableInterface
      */
     public function render($dataSet, RendererInterface $renderer = null)
     {
-        $dataSet = is_array($dataSet) ? new DataSet($dataSet) : $dataSet;
         $renderer = isset($renderer)? $renderer : $this->renderer;
+        $this->withData($dataSet);
 
-        return $renderer->renderTable($this, $dataSet);
+        return $renderer->renderTable($this, $this->data);
     }
 
     /**
