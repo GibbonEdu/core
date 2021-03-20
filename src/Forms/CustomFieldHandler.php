@@ -30,6 +30,7 @@ class CustomFieldHandler
 
     protected $contexts;
     protected $types;
+    protected $headings;
 
     public function __construct(CustomFieldGateway $customFieldGateway, FileUploader $fileUploader)
     {
@@ -38,7 +39,7 @@ class CustomFieldHandler
 
         $this->contexts = [
             __('User Admin') => [
-                'Person' => __('Person'),
+                'User' => __('User'),
             ],
             __('Students') => [
                 'Medical Form' => __('Medical Form'),
@@ -71,6 +72,32 @@ class CustomFieldHandler
                 'color'      => __('Colour'),
             ]
         ];
+
+        $this->headings = [
+            'User' => [
+                'Basic Information'      => __('Basic Information'),
+                'System Access'          => __('System Access'),
+                'Contact Information'    => __('Contact Information'),
+                'School Information'     => __('School Information'),
+                'Background Information' => __('Background Information'),
+                'Employment'             => __('Employment'),
+                'Emergency Contacts'     => __('Emergency Contacts'),
+                'Miscellaneous'          => __('Miscellaneous'),
+            ],
+            'Staff' => [
+                'Basic Information' => __('Basic Information'),
+                'First Aid'         => __('First Aid'),
+                'Biography'         => __('Biography'),
+            ],
+            'First Aid' => [
+                'Basic Information' => __('Basic Information'),
+                'Follow Up'         => __('Follow Up'),
+                'Biography'         => __('Biography'),
+            ],
+            'Medical Form' => [
+                'General Information' => __('General Information'),
+            ],
+        ];
     }
 
     public function getContexts()
@@ -81,6 +108,11 @@ class CustomFieldHandler
     public function getTypes()
     {
         return $this->types;
+    }
+
+    public function getHeadings()
+    {
+        return $this->headings;
     }
 
     public function getFieldDataFromPOST($context, $params = [], &$customRequireFail = false)
@@ -135,15 +167,21 @@ class CustomFieldHandler
         }
 
         if (!empty($params['heading'])) {
-            $form->addRow()->addHeading($params['heading']);
-        }
-        if (!empty($params['subheading'])) {
-            $form->addRow()->addSubheading($params['subheading']);
+            $form->addRow()->addHeading(__($params['heading']));
+        } else if (!empty($params['subheading'])) {
+            $form->addRow()->addSubheading(__($params['subheading']));
         }
 
         foreach ($customFieldsGrouped as $heading => $customFields) {
-            if (!empty($heading)) {
-                $form->addRow()->addSubheading($heading);
+            if (!empty($heading) && !$form->hasHeading($heading)) {
+                $form->addRow()->addHeading(__($heading));
+            }
+            
+            if (empty($heading) && !empty($params['heading'])) {
+                if (!$form->hasHeading($params['heading'])) {
+                    $form->addRow()->addHeading(__($params['heading']));
+                }
+                $heading = $params['heading'];
             }
 
             foreach ($customFields as $field) {
@@ -155,51 +193,74 @@ class CustomFieldHandler
                 }
 
                 $name = $prefix.$field['gibbonCustomFieldID'];
-                $row = $field['type'] == 'editor' ? $form->addRow()->addColumn() : $form->addRow();
+                $row = $field['type'] == 'editor' ? $form->addRow()->setHeading($heading)->addColumn() : $form->addRow()->setHeading($heading);
                     $row->addLabel($name, $field['name'])->description($field['description']);
                     $row->addCustomField($name, $field)->setValue($fieldValue);
+
             }
         }
     }
 
-    public function createCustomFieldsTable($context, $params = [], $fields = [], $table = null)
+    public function addCustomFieldsToTable(&$table, $context, $params = [], $fields = [])
     {
         $existingFields = !empty($fields) && is_string($fields)? json_decode($fields, true) : (is_array($fields) ? $fields : []);
-        $customFields = $this->customFieldGateway->selectCustomFields($context, $params + ['hideHidden' => '1'])->fetchAll();
+        $customFieldsGrouped = $this->customFieldGateway->selectCustomFields($context, $params + ['hideHidden' => '1'])->fetchGrouped();
 
-        if (!empty($table)) {
-            $table->withData([$existingFields]);
-        } else {
-            $table = DataTable::createDetails('customFields')->withData([$existingFields]);
+        if (empty($table)) {
+            $table = DataTable::createDetails('customFields');
         }
 
-        foreach ($customFields as $field) {
-            $col = $table->addColumn($field['gibbonCustomFieldID'], __($field['name']));
+        if (!empty($existingFields)) {
+            $table->withData([$existingFields]);
+        }
 
-            switch ($field['type']) {
-                case 'date':
-                    $col->format(Format::using('date', $field['gibbonCustomFieldID']));
-                    break;
-                case 'url':
-                    $col->format(Format::using('link', [$field['gibbonCustomFieldID'], $field['gibbonCustomFieldID']]));
-                    break;
-                case 'file':
-                case 'image':
-                    $col->format(function ($values) use ($field) {
-                        return !empty($values[$field['gibbonCustomFieldID']])
-                            ? Format::link($values[$field['gibbonCustomFieldID']], __('Attachment'), '', ['target' => '_blank'])
-                            : '';
-                    });
-                    break;
-                case 'yesno':
-                    $col->format(Format::using('yesno', $field['gibbonCustomFieldID']));
-                    break;
-                case 'color':
-                    $col->format(function ($values) use ($field) {
-                        $value = $values[$field['gibbonCustomFieldID']] ?? '';
-                        return "<span class='tag text-xxs w-12' title='$value' style='background-color: $value'>&nbsp;</span>";
-                    });
-                    break;
+        foreach ($customFieldsGrouped as $heading => $customFields) {
+            // Try to get existing columns by custom field heading or parameter heading.
+            $headingCol = $table->getColumn($heading);
+            if (empty($headingCol) && empty($heading) && !empty($params['heading'])) {
+                $headingCol = $table->getColumn($params['heading']);
+            }
+
+            // If no heading column exists, add one
+            if (empty($headingCol) && !empty($heading)) {
+                $headingCol = $table->addColumn($heading, __($heading));
+            } elseif (empty($headingCol) && !empty($params['heading'])) {
+                $headingCol = $table->addColumn($params['heading'], __($params['heading']));
+            }
+
+            foreach ($customFields as $field) {
+                $col = !empty($headingCol)
+                    ? $headingCol->addColumn($field['gibbonCustomFieldID'], __($field['name']))
+                    : $table->addColumn($field['gibbonCustomFieldID'], __($field['name']));
+
+                switch ($field['type']) {
+                    case 'editor':
+                        $col->addClass('col-span-3');
+                        break;
+                    case 'date':
+                        $col->format(Format::using('date', $field['gibbonCustomFieldID']));
+                        break;
+                    case 'url':
+                        $col->format(Format::using('link', [$field['gibbonCustomFieldID'], $field['gibbonCustomFieldID']]));
+                        break;
+                    case 'file':
+                    case 'image':
+                        $col->format(function ($values) use ($field) {
+                            return !empty($values[$field['gibbonCustomFieldID']])
+                                ? Format::link($values[$field['gibbonCustomFieldID']], __('Attachment'), '', ['target' => '_blank'])
+                                : '';
+                        });
+                        break;
+                    case 'yesno':
+                        $col->format(Format::using('yesno', $field['gibbonCustomFieldID']));
+                        break;
+                    case 'color':
+                        $col->format(function ($values) use ($field) {
+                            $value = $values[$field['gibbonCustomFieldID']] ?? '';
+                            return "<span class='tag text-xxs w-12' title='$value' style='background-color: $value'>&nbsp;</span>";
+                        });
+                        break;
+                }
             }
         }
 

@@ -484,8 +484,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     }
 
     // CUSTOM FIELDS FOR STUDENT
-    $params = ['student' => 1, 'applicationForm' => 1, 'subheading' => __('Other Information')];
-    $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Person', $params, $application['fields']);
+    $params = ['student' => 1, 'applicationForm' => 1];
+    $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'User', $params, $application['fields']);
 
     // FAMILY
     if (empty($application['gibbonFamilyID'])) {
@@ -530,7 +530,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
             // CUSTOM FIELDS FOR PARENT 1 WITH FAMILY
             $params = ['parent' => 1, 'applicationForm' => 1, 'prefix' => 'parent1custom', 'subheading' => __('Parent/Guardian').' 1 '.__('Other Information')];
-            $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Person', $params, $application['parent1fields']);
+            $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'User', $params, $application['parent1fields']);
 
             $start = 2;
         } else {
@@ -658,7 +658,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
             // CUSTOM FIELDS FOR PARENTS
             $params = ['parent' => 1, 'applicationForm' => 1, 'prefix' => "parent{$i}custom", 'subheading' => __('Parent/Guardian')." $i ".__('Other Information')];
-            $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Person', $params, $application["parent{$i}fields"]);
+            $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'User', $params, $application["parent{$i}fields"]);
         }
     } else {
         // EXISTING FAMILY

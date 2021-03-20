@@ -53,6 +53,8 @@ class Heading extends Element implements OutputableInterface, RowDependancyInter
 
         $headingID = preg_replace('/[^a-zA-Z0-9]/', '', substr(strip_tags($this->content), 0, 60)); 
         $this->row->setID($headingID);
+
+        $this->row->setHeading(preg_replace('/[^a-zA-Z0-9 -_]/', '', strip_tags($this->content)));
     }
 
     /**

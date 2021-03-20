@@ -240,7 +240,7 @@ if ($proceed == false) {
 
         // CUSTOM FIELDS FOR STAFF
         $params = ['staff' => 1, 'applicationForm' => 1, 'heading' => __('Other Information')];
-        $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Person', $params);
+        $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'User', $params);
 
         // REQURIED DOCUMENTS
         $staffApplicationFormRequiredDocuments = getSettingByScope($connection2, 'Staff', 'staffApplicationFormRequiredDocuments');

@@ -129,7 +129,7 @@ if ($proceed == false) {
             ->maxLength(30);
 
     // CUSTOM FIELDS
-    $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Person', ['publicRegistration' => 1]);
+    $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'User', ['publicRegistration' => 1]);
 
     $privacyStatement = getSettingByScope($connection2, 'User Admin', 'publicRegistrationPrivacyStatement');
     if ($privacyStatement != '') {

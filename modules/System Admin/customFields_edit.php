@@ -43,6 +43,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
         $page->addError(__('The specified record cannot be found.'));
         return;
     }
+
+    $customFieldHandler = $container->get(CustomFieldHandler::class);
         
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/customFields_editProcess.php?gibbonCustomFieldID='.$gibbonCustomFieldID);
 
@@ -59,8 +61,26 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
         $row->addTextField('name')->maxLength(50)->required();
 
     $row = $form->addRow();
-        $row->addLabel('description', __('Description'));
+        $row->addLabel('description', __('Description'))->description(__('Displayed as smaller text next to the field name.'));
         $row->addTextField('description')->maxLength(255);
+
+    $headings = $customFieldHandler->getHeadings();
+    $headings = $headings[$values['context']] ?? [];
+    $isHeadingCustom = !empty($values['heading']) && !in_array($values['heading'], $headings);
+    $row = $form->addRow();
+        $row->addLabel('heading', __('Heading'))->description(__('Optionally list this field under a heading.'));
+        $row->addSelect('heading')
+            ->fromArray($headings)
+            ->fromArray(['Custom' => '['.__('Custom').']'])
+            ->placeholder()
+            ->selected($isHeadingCustom ? 'Custom' : $values['heading']);
+    
+    $form->toggleVisibilityByClass('headingCustom')->onSelect('heading')->when('Custom');
+    
+    $row = $form->addRow()->addClass('headingCustom');
+        $row->addLabel('headingCustom', __('Custom Heading'));
+        $row->addTextField('headingCustom')->maxLength(90)->setValue($isHeadingCustom ? $values['heading'] : '');
+        unset($values['heading']);
 
     $row = $form->addRow();
         $row->addLabel('active', __('Active'));
@@ -68,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
 
     $form->addRow()->addHeading(__('Configure'));
 
-    $types = $container->get(CustomFieldHandler::class)->getTypes();
+    $types = $customFieldHandler->getTypes();
     $row = $form->addRow();
         $row->addLabel('type', __('Type'));
         $row->addSelect('type')->fromArray($types)->readOnly()->required()->placeholder();
@@ -107,11 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
         $row->addLabel('hidden', __('Hidden'))->description(__('Is this field hidden from profiles and user-facing pages?'));
         $row->addYesNo('hidden')->required();
 
-    $row = $form->addRow();
-        $row->addLabel('heading', __('Heading'))->description(__('Optionally list this field under a heading.'));
-        $row->addTextField('heading')->maxLength(90);
-
-    if ($values['context'] == 'Person') {
+    if ($values['context'] == 'User') {
         $form->addRow()->addHeading(__('Visibility'));
 
         $activePersonOptions = array(

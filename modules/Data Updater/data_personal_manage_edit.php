@@ -210,7 +210,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
             // CUSTOM FIELDS
             $params = compact('student', 'staff', 'parent', 'other');
-            $container->get(CustomFieldHandler::class)->addCustomFieldsToDataUpdate($form, 'Person', $params + ['dataUpdater' => 1], $oldValues, $newValues);
+            $container->get(CustomFieldHandler::class)->addCustomFieldsToDataUpdate($form, 'User', $params + ['dataUpdater' => 1], $oldValues, $newValues);
             
             $row = $form->addRow();
                 $row->addSubmit();

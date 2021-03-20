@@ -294,7 +294,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         echo $table->render([$row]);
 
                         // Custom Fields
-                        $table = $container->get(CustomFieldHandler::class)->createCustomFieldsTable('Person', ['staff' => 1], $row['fields']);
+                        $table = DataTable::createDetails('custom');
+                        $container->get(CustomFieldHandler::class)->addCustomFieldsToTable($table, 'User', ['staff' => 1], $row['fields']);
                         $table->setTitle(__('Custom Fields'));
                         echo $table->getOutput();
                     } elseif ($subpage == 'Family') {

@@ -545,16 +545,16 @@ if ($proceed == false) {
             $customFieldHandler = $container->get(CustomFieldHandler::class);
 
             $params = ['student' => 1, 'applicationForm' => 1];
-            $fields = $customFieldHandler->getFieldDataFromPOST('Person', $params, $customRequireFail);
+            $fields = $customFieldHandler->getFieldDataFromPOST('User', $params, $customRequireFail);
 
             $parent1fields = $parent2fields = '';
             if ($gibbonFamily == 'FALSE') { //Only if there is no family
                 $params = ['parent' => 1, 'applicationForm' => 1, 'prefix' => 'parent1custom'];
-                $parent1fields = $customFieldHandler->getFieldDataFromPOST('Person', $params, $customRequireFail);
+                $parent1fields = $customFieldHandler->getFieldDataFromPOST('User', $params, $customRequireFail);
                 
                 if (empty($_POST['secondParent'])) {
                     $params = ['parent' => 1, 'applicationForm' => 1, 'prefix' => 'parent2custom'];
-                    $parent2fields = $customFieldHandler->getFieldDataFromPOST('Person', $params, $customRequireFail);
+                    $parent2fields = $customFieldHandler->getFieldDataFromPOST('User', $params, $customRequireFail);
                 }
             }
 

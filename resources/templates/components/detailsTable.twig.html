@@ -39,17 +39,27 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% else %}
     
         {% for rowIndex, rowData in rows %}
-            <div class="grid {{ gridClass|default('grid-cols-1 md:grid-cols-3') }} rounded border bg-gray-100 text-xs text-gray-700">
+        
+            {% for heading, headingColumns in groups %}
+                {% if heading %}
+                    <h4>{{ __(heading) }}</h4>
+                {% endif %}
 
-            {% for columnIndex, column in columns %}
-                <div class="p-2 border-b -mb-px {{ column.getClass }}" 
-                    style="{{ column.getWidth != 'auto' ? 'width: ' ~ column.getWidth }}" >
-                    <span class="block text-sm font-bold mb-1">{{ column.getLabel | raw }}</span>
-                    <span class="block text-gray-700 ">{{ column.getOutput(rowData) | raw }}</span>
+                <div class="grid {{ gridClass|default('grid-cols-1 md:grid-cols-3') }} rounded border bg-gray-100 text-xs text-gray-700">
+            
+                {% for columnIndex, column in headingColumns %}
+
+                    <div class="p-2 border-b -mb-px {{ column.getClass }}" 
+                        style="{{ column.getWidth != 'auto' ? 'width: ' ~ column.getWidth }}" >
+                        <span class="block text-sm font-bold mb-1">{{ column.getLabel | raw }}</span>
+                        <span class="block text-gray-700 ">{{ column.getOutput(rowData) | raw }}</span>
+                    </div>
+
+                {% endfor %}
                 </div>
             {% endfor %}
 
-            </div>
+
         {% endfor %}
 
     {% endif %}

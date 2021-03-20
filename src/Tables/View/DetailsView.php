@@ -45,13 +45,38 @@ class DetailsView extends View implements RendererInterface
 
         if ($dataSet->count() > 0) {
             $this->addData([
+                'groups'     => $this->getColumnGroups($table),
                 'columns'    => $table->getColumns(),
                 'rows'       => $dataSet,
                 'blankSlate' => $table->getMetaData('blankSlate'),
-                'gridClass' => $table->getMetaData('gridClass'),
+                'gridClass'  => $table->getMetaData('gridClass'),
             ]);
         }
 
         return $this->render('components/detailsTable.twig.html');
+    }
+
+    /**
+     * 
+     *
+     * @param DataTable $table
+     * @return array
+     */
+    protected function getColumnGroups(DataTable $table)
+    {
+        $groups = [];
+
+        foreach ($table->getColumns(0) as $columnIndex => $column) {
+            if ($column->hasNestedColumns()) {
+                foreach ($column->getColumns() as $subColumnIndex => $subColumn) {
+                    $groups[$column->getLabel()][$subColumnIndex] = $subColumn;
+                }
+            } else {
+                $groups[''][$columnIndex] = $column;
+            }
+            
+        }
+        
+        return $groups;
     }
 }

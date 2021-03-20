@@ -436,7 +436,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
                 // CUSTOM FIELDS
                 $params = compact('student', 'staff', 'parent', 'other');
-                $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromDataUpdate('Person', $params, $row2['fields']);
+                $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromDataUpdate('User', $params, $row2['fields']);
 
                 if (strlen($set) > 1) {
                     //Write to database
