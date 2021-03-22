@@ -25,7 +25,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/alertLevelSet
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $count = $_POST['count'];
+    $count = $_POST['count'] ?? '';
     $partialFail = false;
     //Proceed!
     if ($count < 1) {
@@ -33,12 +33,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/alertLevelSet
         header("Location: {$URL}");
     } else {
         for ($i = 0; $i < $count; ++$i) {
-            $gibbonAlertLevelID = $_POST['gibbonAlertLevelID'.$i];
-            $name = $_POST['name'.$i];
-            $nameShort = $_POST['nameShort'.$i];
-            $color = $_POST['color'.$i];
-            $colorBG = $_POST['colorBG'.$i];
-            $description = $_POST['description'.$i];
+            $gibbonAlertLevelID = $_POST['gibbonAlertLevelID'.$i] ?? '';
+            $name = $_POST['name'.$i] ?? '';
+            $nameShort = $_POST['nameShort'.$i] ?? '';
+            $color = $_POST['color'.$i] ?? '';
+            $colorBG = $_POST['colorBG'.$i] ?? '';
+            $description = $_POST['description'.$i] ?? '';
 
             //Validate Inputs
             if ($gibbonAlertLevelID == '' or $name == '' or $nameShort == '' or $color == '' or $colorBG == '') {

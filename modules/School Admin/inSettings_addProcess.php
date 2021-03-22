@@ -26,10 +26,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings_ad
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $name = $_POST['name'];
-    $nameShort = $_POST['nameShort'];
-    $sequenceNumber = $_POST['sequenceNumber'];
-    $description = $_POST['description'];
+    $name = $_POST['name'] ?? '';
+    $nameShort = $_POST['nameShort'] ?? '';
+    $sequenceNumber = $_POST['sequenceNumber'] ?? '';
+    $description = $_POST['description'] ?? '';
 
     //Validate Inputs
     if ($name == '' or $nameShort == '' or $sequenceNumber == '') {

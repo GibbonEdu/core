@@ -23,7 +23,7 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
-$gibbonHouseID = $_GET['gibbonHouseID'];
+$gibbonHouseID = $_GET['gibbonHouseID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/School Admin/house_manage_edit.php&gibbonHouseID=$gibbonHouseID";
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_edit.php') == false) {

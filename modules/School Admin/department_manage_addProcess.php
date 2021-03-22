@@ -27,12 +27,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
     exit();
 } else {
     //Proceed!
-    $type = $_POST['type'];
-    $name = $_POST['name'];
-    $nameShort = $_POST['nameShort'];
-    $subjectListing = $_POST['subjectListing'];
-    $blurb = $_POST['blurb'];
-    
+    $type = $_POST['type'] ?? '';
+    $name = $_POST['name'] ?? '';
+    $nameShort = $_POST['nameShort'] ?? '';
+    $subjectListing = $_POST['subjectListing'] ?? '';
+    $blurb = $_POST['blurb'] ?? '';
+
     $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
     $fileUploader->getFileExtensions();
 
@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
         exit();
     } else {
         $partialFail = false;
-        
+
         //Move attached file, if there is one
         if (!empty($_FILES['file']['tmp_name'])) {
             $file = (isset($_FILES['file']))? $_FILES['file'] : null;
@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
         } else {
             $attachment = '';
         }
-        
+
         //Write to database
         try {
             $data = array('type' => $type, 'name' => $name, 'nameShort' => $nameShort, 'subjectListing' => $subjectListing, 'blurb' => $blurb, 'logo' => $attachment);
@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
             header("Location: {$URL}");
             exit();
         }
-        
+
         $AI = $connection2->lastInsertID();
 
         //Scan through staff
@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
         if (count($staff) > 0) {
             foreach ($staff as $t) {
                 //Check to see if person is already registered in this activity
-                
+
                     $dataGuest = array('gibbonPersonID' => $t, 'gibbonDepartmentID' => $AI);
                     $sqlGuest = 'SELECT * FROM gibbonDepartmentStaff WHERE gibbonPersonID=:gibbonPersonID AND gibbonDepartmentID=:gibbonDepartmentID';
                     $resultGuest = $connection2->prepare($sqlGuest);
