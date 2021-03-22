@@ -48,7 +48,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     {% set rowClass = 'flex flex-col sm:flex-row justify-between sm:items-center content-center p-0' %}
                 {% endif %}
 
-                {% if (row.getElements|first).isInstanceOf('Gibbon\\Forms\\Layout\\Heading') %}
+                {% set firstElement = (row.getElements|first) %}
+                {% if firstElement.isInstanceOf('Gibbon\\Forms\\Layout\\Heading') and firstElement.getTag == 'h3' %}
                     {% set rowClass = "blank" not in form.getClass ? rowClass ~ ' bg-gray-300' : rowClass ~ ' my-2' %}
                 {% endif %}
 
