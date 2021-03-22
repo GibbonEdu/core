@@ -22,14 +22,10 @@ include '../../gibbon.php';
 include './moduleFunctions.php';
 
 //Search & Filters
-$search = null;
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-}
-$filter2 = null;
-if (isset($_GET['filter2'])) {
-    $filter2 = $_GET['filter2'];
-}
+$search = $_GET['search'] ?? '';
+
+$filter2 = $_GET['filter2'] ?? '';
+
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rubrics_add.php&search=$search&filter2=$filter2";
 $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rubrics_edit.php&sidebar=false&search=$search&filter2=$filter2";
@@ -54,15 +50,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
             } else {
                 $gibbonDepartmentID = null;
             }
-            $name = $_POST['name'];
-            $active = $_POST['active'];
-            $category = $_POST['category'];
-            $description = $_POST['description'];
-            $gibbonYearGroupIDList = isset($_POST['gibbonYearGroupIDList']) ? implode(',', $_POST['gibbonYearGroupIDList']) : '';
-            $gibbonScaleID = null;
-            if ($_POST['gibbonScaleID'] != '') {
-                $gibbonScaleID = $_POST['gibbonScaleID'];
-            }
+            $name = $_POST['name'] ?? '';
+            $active = $_POST['active'] ?? '';
+            $category = $_POST['category'] ?? '';
+            $description = $_POST['description'] ?? '';
+            $gibbonYearGroupIDList = implode(',', $_POST['gibbonYearGroupIDList'] ?? []);
+            $gibbonScaleID = $_POST['gibbonScaleID'] ?? '';
+
 
             if ($scope == '' or ($scope == 'Learning Area' and $gibbonDepartmentID == '') or $name == '' or $active == '') {
                 $URL .= '&return=error1';
@@ -84,14 +78,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
 
                 //Create rows & columns
                 for ($i = 1; $i <= $_POST['rows']; ++$i) {
-                    
+
                         $data = array('gibbonRubricID' => $AI, 'title' => "Row $i", 'sequenceNumber' => $i);
                         $sql = 'INSERT INTO gibbonRubricRow SET gibbonRubricID=:gibbonRubricID, title=:title, sequenceNumber=:sequenceNumber';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                 }
                 for ($i = 1; $i <= $_POST['columns']; ++$i) {
-                    
+
                         $data = array('gibbonRubricID' => $AI, 'title' => "Column $i", 'sequenceNumber' => $i);
                         $sql = 'INSERT INTO gibbonRubricColumn SET gibbonRubricID=:gibbonRubricID, title=:title, sequenceNumber=:sequenceNumber';
                         $result = $connection2->prepare($sql);

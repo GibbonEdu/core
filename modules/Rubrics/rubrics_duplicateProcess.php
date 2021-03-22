@@ -22,16 +22,12 @@ include '../../gibbon.php';
 include './moduleFunctions.php';
 
 //Search & Filters
-$search = null;
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-}
-$filter2 = null;
-if (isset($_GET['filter2'])) {
-    $filter2 = $_GET['filter2'];
-}
+$search = $_GET['search'] ?? '';
 
-$gibbonRubricID = $_GET['gibbonRubricID'];
+$filter2 = $_GET['filter2'] ?? '';
+
+
+$gibbonRubricID = $_GET['gibbonRubricID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rubrics_duplicate.php&gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2";
 
 if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_duplicate.php') == false) {
