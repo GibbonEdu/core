@@ -559,8 +559,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $parent1fields = $parent2fields = '';
                 if ($gibbonFamily != 'TRUE') { //Only if there is no family
                     $params = ['parent' => 1, 'applicationForm' => 1];
-                    $parent1fields = $customFieldHandler->getFieldDataFromPOST('User', $params, $customRequireFail, 'parent1custom');
-                    $parent2fields = $customFieldHandler->getFieldDataFromPOST('User', $params, $customRequireFail, 'parent2custom'); 
+                    $parent1fields = $customFieldHandler->getFieldDataFromPOST('User', $params + ['prefix' => 'parent1custom'], $customRequireFail);
+                    $parent2fields = $customFieldHandler->getFieldDataFromPOST('User', $params + ['prefix' => 'parent2custom'], $customRequireFail); 
                 }
 
                 if ($customRequireFail) {

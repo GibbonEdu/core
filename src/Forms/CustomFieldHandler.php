@@ -149,7 +149,7 @@ class CustomFieldHandler
             }
 
             if ($field['required'] == 'Y' && (is_null($fieldValue) || $fieldValue == '')) {
-                $customRequireFail = true;
+                $customRequireFail &= true;
             }
         }
 
@@ -167,21 +167,25 @@ class CustomFieldHandler
         }
 
         if (!empty($params['heading'])) {
-            $form->addRow()->addHeading(__($params['heading']));
-        } else if (!empty($params['subheading'])) {
-            $form->addRow()->addSubheading(__($params['subheading']));
+            $form->addRow()->addHeading(__($params['heading']), $params['headingLevel'] ?? 'h3');
         }
 
         foreach ($customFieldsGrouped as $heading => $customFields) {
-            if (!empty($heading) && !$form->hasHeading($heading)) {
-                $form->addRow()->addHeading(__($heading));
+            if (empty($customFields)) continue;
+
+            // Enable adding a prefix to all headings (eg: application form parents)
+            if (!empty($params['headingPrefix'])) {
+                $heading = $params['headingPrefix'].' '.$heading;
+            }
+
+            // Handle adding a default heading for fields if a heading has been manually set
+            if ((empty($heading) || $heading == 'Other Information') && !empty($params['heading'])) {
+                $heading = $params['heading'];
             }
             
-            if (empty($heading) && !empty($params['heading'])) {
-                if (!$form->hasHeading($params['heading'])) {
-                    $form->addRow()->addHeading(__($params['heading']));
-                }
-                $heading = $params['heading'];
+            // Handle creating a new heading if the form doesn't already have one
+            if (!empty($heading) && !$form->hasHeading($heading)) {
+                $form->addRow()->addHeading(__($heading), $params['headingLevel'] ?? 'h3');
             }
 
             foreach ($customFields as $field) {
