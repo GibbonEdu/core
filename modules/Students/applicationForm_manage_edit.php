@@ -78,6 +78,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_edit_print.php&gibbonApplicationFormID=$gibbonApplicationFormID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
     echo '</div>';
 
+    $customFieldHandler = $container->get(CustomFieldHandler::class);
+
     $form = Form::create('applicationFormEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage_editProcess.php?search='.$search);
     $form->setAutocomplete('on');
     $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -484,8 +486,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     }
 
     // CUSTOM FIELDS FOR STUDENT
-    $params = ['student' => 1, 'applicationForm' => 1];
-    $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'User', $params, $application['fields']);
+    $params = ['student' => 1, 'applicationForm' => 1, 'headingLevel' => 'h4'];
+    $customFieldHandler->addCustomFieldsToForm($form, 'User', $params, $application['fields']);
 
     // FAMILY
     if (empty($application['gibbonFamilyID'])) {
@@ -529,8 +531,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $row->addSelectRelationship('parent1relationship')->required();
 
             // CUSTOM FIELDS FOR PARENT 1 WITH FAMILY
-            $params = ['parent' => 1, 'applicationForm' => 1, 'prefix' => 'parent1custom', 'subheading' => __('Parent/Guardian').' 1 '.__('Other Information')];
-            $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'User', $params, $application['parent1fields']);
+            $params = ['parent' => 1, 'applicationForm' => 1, 'prefix' => 'parent1custom', 'headingPrefix' => __('Parent/Guardian').' 1', 'headingLevel' => 'h4'];
+            $customFieldHandler->addCustomFieldsToForm($form, 'User', $params, $application['parent1fields'] ?? '');
 
             $start = 2;
         } else {
@@ -657,8 +659,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $row->addTextField("parent{$i}employer")->maxLength(90);
 
             // CUSTOM FIELDS FOR PARENTS
-            $params = ['parent' => 1, 'applicationForm' => 1, 'prefix' => "parent{$i}custom", 'subheading' => __('Parent/Guardian')." $i ".__('Other Information')];
-            $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'User', $params, $application["parent{$i}fields"]);
+            $params = ['parent' => 1, 'applicationForm' => 1, 'prefix' => "parent{$i}custom", 'headingPrefix' => __('Parent/Guardian')." $i", 'headingLevel' => 'h4'];
+            $customFieldHandler->addCustomFieldsToForm($form, 'User', $params, $application["parent{$i}fields"] ?? '');
         }
     } else {
         // EXISTING FAMILY
