@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
-$gibbonRollGroupID = $_GET['gibbonRollGroupID'];
+$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
+$gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rollGroup_manage_delete.php&gibbonRollGroupID=$gibbonRollGroupID&gibbonSchoolYearID=$gibbonSchoolYearID";
 $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rollGroup_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID";
 
@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
                 exit();
             }
 
-            
+
                 $data = array('gibbonRollGroupID' => $gibbonRollGroupID);
                 $sql = 'DELETE FROM gibbonStudentEnrolment WHERE gibbonRollGroupID=:gibbonRollGroupID';
                 $result = $connection2->prepare($sql);

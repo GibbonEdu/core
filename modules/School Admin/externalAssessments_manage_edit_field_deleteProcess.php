@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonExternalAssessmentFieldID = $_GET['gibbonExternalAssessmentFieldID'];
-$gibbonExternalAssessmentID = $_GET['gibbonExternalAssessmentID'];
+$gibbonExternalAssessmentFieldID = $_GET['gibbonExternalAssessmentFieldID'] ?? '';
+$gibbonExternalAssessmentID = $_GET['gibbonExternalAssessmentID'] ?? '';
 
 if ($gibbonExternalAssessmentID == '') { echo 'Fatal error loading this page!';
 } else {

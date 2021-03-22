@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonScaleGradeID = $_GET['gibbonScaleGradeID'];
-$gibbonScaleID = $_GET['gibbonScaleID'];
+$gibbonScaleGradeID = $_GET['gibbonScaleGradeID'] ?? '';
+$gibbonScaleID = $_GET['gibbonScaleID'] ?? '';
 
 if ($gibbonScaleID == '') { echo 'Fatal error loading this page!';
 } else {
@@ -52,10 +52,10 @@ if ($gibbonScaleID == '') { echo 'Fatal error loading this page!';
                 header("Location: {$URL}");
             } else {
                 //Validate Inputs
-                $value = $_POST['value'];
-                $descriptor = $_POST['descriptor'];
-                $sequenceNumber = $_POST['sequenceNumber'];
-                $isDefault = $_POST['isDefault'];
+                $value = $_POST['value'] ?? '';
+                $descriptor = $_POST['descriptor'] ?? '';
+                $sequenceNumber = $_POST['sequenceNumber'] ?? '';
+                $isDefault = $_POST['isDefault'] ?? '';
 
                 if ($value == '' or $descriptor == '' or $sequenceNumber == '' or $isDefault == '') {
                     $URL .= '&return=error3';

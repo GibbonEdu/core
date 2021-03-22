@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonINDescriptorID = $_GET['gibbonINDescriptorID'];
+$gibbonINDescriptorID = $_GET['gibbonINDescriptorID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/inSettings_edit.php&gibbonINDescriptorID=$gibbonINDescriptorID";
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings_edit.php') == false) {
@@ -47,10 +47,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings_ed
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
-            $name = $_POST['name'];
-            $nameShort = $_POST['nameShort'];
-            $sequenceNumber = $_POST['sequenceNumber'];
-            $description = $_POST['description'];
+            $name = $_POST['name'] ?? '';
+            $nameShort = $_POST['nameShort'] ?? '';
+            $sequenceNumber = $_POST['sequenceNumber'] ?? '';
+            $description = $_POST['description'] ?? '';
 
             //Validate Inputs
             if ($name == '' or $nameShort == '' or $sequenceNumber == '') {

@@ -26,9 +26,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/dashboardSett
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $staffDashboardDefaultTab = $_POST['staffDashboardDefaultTab'];
-    $studentDashboardDefaultTab = $_POST['studentDashboardDefaultTab'];
-    $parentDashboardDefaultTab = $_POST['parentDashboardDefaultTab'];
+    $staffDashboardDefaultTab = $_POST['staffDashboardDefaultTab'] ?? '';
+    $studentDashboardDefaultTab = $_POST['studentDashboardDefaultTab'] ?? '';
+    $parentDashboardDefaultTab = $_POST['parentDashboardDefaultTab'] ?? '';
 
     //Write to database
     $fail = false;

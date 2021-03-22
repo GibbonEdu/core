@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-$gibbonSchoolYearIDNext = $_GET['gibbonSchoolYearIDNext'];
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$gibbonSchoolYearIDNext = $_GET['gibbonSchoolYearIDNext'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/School Admin/rollGroup_manage.php&gibbonSchoolYearID=$gibbonSchoolYearIDNext";
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_manage_edit.php') == false) {

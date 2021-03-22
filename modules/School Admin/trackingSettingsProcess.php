@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSetti
     $fail = false;
 
    //DEAL WITH EXTERNAL ASSESSMENT DATA POINTS
-   $externalAssessmentDataPoints = (isset($_POST['externalDP']))? $_POST['externalDP'] : null;
+   $externalAssessmentDataPoints = $_POST['externalDP'] ?? null;
 
     if (!empty($externalAssessmentDataPoints) && is_array($externalAssessmentDataPoints)) {
       foreach ($externalAssessmentDataPoints as &$dp) {
@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSetti
    }
 
    //DEAL WITH INTERNAL ASSESSMENT DATA POINTS
-   $internalAssessmentDataPoints = (isset($_POST['internalDP']))? $_POST['internalDP'] : null;
+   $internalAssessmentDataPoints = $_POST['internalDP'] ?? null;
 
     if (!empty($internalAssessmentDataPoints) && is_array($internalAssessmentDataPoints)) {
       foreach ($internalAssessmentDataPoints as &$dp) {

@@ -31,22 +31,22 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
         $markbookType .= trim($type).',';
     }
     $markbookType = substr($markbookType, 0, -1);
-    $enableEffort = $_POST['enableEffort'];
-    $enableRubrics = $_POST['enableRubrics'];
-    $enableColumnWeighting = $_POST['enableColumnWeighting'];
-    $enableDisplayCumulativeMarks = (isset($_POST['enableDisplayCumulativeMarks']))? $_POST['enableDisplayCumulativeMarks'] : 'N';
-    $enableRawAttainment = $_POST['enableRawAttainment'];
-    $enableModifiedAssessment = $_POST['enableModifiedAssessment'];
-    $enableGroupByTerm = $_POST['enableGroupByTerm'];
-    $attainmentAlternativeName = $_POST['attainmentAlternativeName'];
-    $attainmentAlternativeNameAbrev = $_POST['attainmentAlternativeNameAbrev'];
-    $effortAlternativeName = $_POST['effortAlternativeName'];
-    $effortAlternativeNameAbrev = $_POST['effortAlternativeNameAbrev'];
-    $showStudentAttainmentWarning = $_POST['showStudentAttainmentWarning'];
-    $showStudentEffortWarning = $_POST['showStudentEffortWarning'];
-    $showParentAttainmentWarning = $_POST['showParentAttainmentWarning'];
-    $showParentEffortWarning = $_POST['showParentEffortWarning'];
-    $personalisedWarnings = $_POST['personalisedWarnings'];
+    $enableEffort = $_POST['enableEffort'] ?? '';
+    $enableRubrics = $_POST['enableRubrics'] ?? '';
+    $enableColumnWeighting = $_POST['enableColumnWeighting'] ?? '';
+    $enableDisplayCumulativeMarks = $_POST['enableDisplayCumulativeMarks'] ?? 'N';
+    $enableRawAttainment = $_POST['enableRawAttainment'] ?? '';
+    $enableModifiedAssessment = $_POST['enableModifiedAssessment'] ?? '';
+    $enableGroupByTerm = $_POST['enableGroupByTerm'] ?? '';
+    $attainmentAlternativeName = $_POST['attainmentAlternativeName'] ?? '';
+    $attainmentAlternativeNameAbrev = $_POST['attainmentAlternativeNameAbrev'] ?? '';
+    $effortAlternativeName = $_POST['effortAlternativeName'] ?? '';
+    $effortAlternativeNameAbrev = $_POST['effortAlternativeNameAbrev'] ?? '';
+    $showStudentAttainmentWarning = $_POST['showStudentAttainmentWarning'] ?? '';
+    $showStudentEffortWarning = $_POST['showStudentEffortWarning'] ?? '';
+    $showParentAttainmentWarning = $_POST['showParentAttainmentWarning'] ?? '';
+    $showParentEffortWarning = $_POST['showParentEffortWarning'] ?? '';
+    $personalisedWarnings = $_POST['personalisedWarnings'] ?? '';
 
     //Validate Inputs
     if ($markbookType == '' or $enableRubrics == '' or $enableRubrics == '' or $enableColumnWeighting == '' or $enableRawAttainment == '' or $enableModifiedAssessment == '' or $enableGroupByTerm == '') {
