@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
             $active = $_POST['active'] ?? '';
             $category = $_POST['category'] ?? '';
             $description = $_POST['description'] ?? '';
-            $gibbonYearGroupIDList = implode(',', $_POST['gibbonYearGroupIDList']) ?? '';
+            $gibbonYearGroupIDList = implode(',', $_POST['gibbonYearGroupIDList'] ?? []);
             $gibbonScaleID = $_POST['gibbonScaleID'] ?? '';
 
 
