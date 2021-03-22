@@ -22,16 +22,12 @@ include '../../gibbon.php';
 include './moduleFunctions.php';
 
 //Search & Filters
-$search = null;
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-}
-$filter2 = null;
-if (isset($_GET['filter2'])) {
-    $filter2 = $_GET['filter2'];
-}
+$search = $_GET['search'] ?? '';
 
-$gibbonRubricID = $_GET['gibbonRubricID'];
+$filter2 = $_GET['filter2'] ?? '';
+
+
+$gibbonRubricID = $_GET['gibbonRubricID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rubrics_edit_editRowsColumns.php&gibbonRubricID=$gibbonRubricID&sidebar=true&search=$search&filter2=$filter2";
 $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rubrics_edit.php&gibbonRubricID=$gibbonRubricID&sidebar=false&search=$search&filter2=$filter2";
 
@@ -132,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                             ++$count;
                         }
                     }
-                    //If scale specified	
+                    //If scale specified
                     else {
                         $columnGrades = $_POST['gibbonScaleGradeID'];
                         $columnColors = $_POST['columnColor'] ?? [];
