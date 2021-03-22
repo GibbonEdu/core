@@ -84,7 +84,7 @@ class Format
         if (empty($dateString)) {
             return '';
         }
-        $date = static::createDateTime($dateString);
+        $date = static::createDateTime($dateString, strlen($dateString) == 10 ? 'Y-m-d' : null);
         return $date ? $date->format($format ? $format : static::$settings['dateFormatPHP']) : $dateString;
     }
 

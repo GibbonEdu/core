@@ -437,13 +437,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 // CUSTOM FIELDS
                 $params = compact('student', 'staff', 'parent', 'other');
                 $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromDataUpdate('User', $params, $row2['fields']);
+                if (!empty($fields)) {
+                    $data['fields'] = $fields;
+                    $set .= 'gibbonPerson.fields=:fields, ';
+                }
 
                 if (strlen($set) > 1) {
                     //Write to database
                     try {
                         $data['gibbonPersonID'] = $gibbonPersonID;
-                        $data['fields'] = $fields;
-                        $sql = 'UPDATE gibbonPerson SET '.substr($set, 0, (strlen($set) - 2)).', fields=:fields WHERE gibbonPersonID=:gibbonPersonID';
+                        $sql = 'UPDATE gibbonPerson SET '.substr($set, 0, (strlen($set) - 2)).' WHERE gibbonPersonID=:gibbonPersonID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
@@ -537,19 +540,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     $URL .= '&return=success0';
                     header("Location: {$URL}");
                 } else {
-                    //Write to database
-                    try {
-                        $data['gibbonPersonID'] = $gibbonPersonID;
-                        $data['fields'] = $fields;
-                        $sql = 'UPDATE gibbonPerson SET fields=:fields WHERE gibbonPersonID=:gibbonPersonID';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $URL .= '&return=error2';
-                        header("Location: {$URL}");
-                        exit();
-                    }
-
                     //Write to database
                     try {
                         $data = array('gibbonPersonUpdateID' => $gibbonPersonUpdateID);
