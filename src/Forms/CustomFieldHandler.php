@@ -310,14 +310,18 @@ class CustomFieldHandler
     {
         $customFields = $this->customFieldGateway->selectCustomFields($context, $params)->fetchAll();
 
-        $fields = !empty($fields) && is_string($fields) ? json_decode($fields, true) : $fields;
+        $fields = is_string($fields) ? json_decode($fields, true) : $fields;
         foreach ($customFields as $field) {
             if (!isset($_POST['newcustom'.$field['gibbonCustomFieldID'].'On'])) continue;
             if (!isset($_POST['newcustom'.$field['gibbonCustomFieldID']])) continue;
 
-            $fields[$field['gibbonCustomFieldID']] = $field['type'] == 'date'
-                ? Format::dateConvert($_POST['newcustom'.$field['gibbonCustomFieldID']])
-                : $_POST['newcustom'.$field['gibbonCustomFieldID']];
+            $value = $_POST['newcustom'.$field['gibbonCustomFieldID']] ?? '';
+
+            if ($field['type'] == 'date' && !empty($value)) {
+                $value = Format::dateConvert($value);
+            }
+
+            $fields[$field['gibbonCustomFieldID']] = $value;
         }
 
         return json_encode($fields);
