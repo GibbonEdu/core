@@ -100,14 +100,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
     $form->toggleVisibilityByClass('optionsRows')->onSelect('type')->when(['text', 'editor']);
     $row = $form->addRow()->addClass('optionsRows');
         $row->addLabel('options', __('Rows'))->description(__('Number of rows for field.'));
-        $row->addNumber('options')->minimum(1)->maximum(20)->onlyInteger(true);
+        $row->addNumber('options')->minimum(1)->maximum(255)->onlyInteger(true);
 
     $form->toggleVisibilityByClass('optionsOptions')->onSelect('type')->when(['select', 'checkboxes', 'radio']);
     $row = $form->addRow()->addClass('optionsOptions');
         $row->addLabel('options', __('Options'))
             ->description(__('Comma separated list of options.'))
             ->description(__('Dropdown: use [] to create option groups.'));
-        $row->addTextArea('options')->setRows(3)->required();
+        $row->addTextArea('options')->setRows(3);
 
     $form->toggleVisibilityByClass('optionsFile')->onSelect('type')->when(['file']);
     $row = $form->addRow()->addClass('optionsFile');
