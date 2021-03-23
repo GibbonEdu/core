@@ -799,4 +799,6 @@ SELECT NULL;end
 UPDATE `gibbonCustomField` SET `heading`='General Information' WHERE `context`='Medical Form' AND (`name`='Blood Type' OR `name`='Tetanus Within Last 10 Years?');end
 UPDATE `gibbonCustomField` SET `context`='User' WHERE `context`='Person';end
 UPDATE `gibbonPlannerEntry` SET `gibbonUnitID`=NULL WHERE `gibbonUnitID`='0000000000';end
+ALTER TABLE `gibbonFirstAid` ADD `fields` TEXT NULL AFTER `timestamp`;end
+ALTER TABLE `gibbonStaff` ADD `fields` TEXT NULL AFTER `biographicalGroupingPriority`;end
 ";

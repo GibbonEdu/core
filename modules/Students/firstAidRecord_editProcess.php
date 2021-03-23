@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\CustomFieldHandler;
+
 include '../../gibbon.php';
 
 $gibbonFirstAidID = $_GET['gibbonFirstAidID'];
@@ -59,9 +61,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
             $timeOut = (!empty($_POST['timeOut'])) ? $_POST['timeOut'] : null;
             $followUp = $_POST['followUp'];
 
+            $customRequireFail = false;
+            $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('First Aid', [], $customRequireFail);
+
+            if ($customRequireFail) {
+                $URL .= '&return=error1';
+                header("Location: {$URL}");
+                exit;
+            }
+
             try {
-                $data = array('timeOut' => $timeOut, 'gibbonFirstAidID' => $gibbonFirstAidID);
-                $sql = 'UPDATE gibbonFirstAid SET timeOut=:timeOut WHERE gibbonFirstAidID=:gibbonFirstAidID';
+                $data = array('timeOut' => $timeOut, 'gibbonFirstAidID' => $gibbonFirstAidID, 'fields' => $fields);
+                $sql = 'UPDATE gibbonFirstAid SET timeOut=:timeOut, fields=:fields WHERE gibbonFirstAidID=:gibbonFirstAidID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
