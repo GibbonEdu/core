@@ -25,6 +25,7 @@ use Gibbon\Database\Updater;
 use Gibbon\Database\Connection;
 use Gibbon\Database\MySqlConnector;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Install\Config;
 
 include '../version.php';
 include '../gibbon.php';
@@ -32,7 +33,8 @@ include '../gibbon.php';
 //Module includes
 require_once '../modules/System Admin/moduleFunctions.php';
 
-$databasePasswordRaw = $_POST['databasePassword'] ?? '';
+// autoload the installer namespace
+$autoloader->addPsr4('Gibbon\\Install\\', realpath(__DIR__).'/Installer');
 
 // Sanitize the whole $_POST array
 $validator = $container->get(Validator::class);
@@ -85,24 +87,28 @@ $page = new Page($container->get('twig'), [
 
 ob_start();
 
+$config = new Config;
+
 //Get and set database variables (not set until step 1)
-$databaseServer = $_POST['databaseServer'] ?? '';
-$databaseName = $_POST['databaseName'] ?? '';
-$databaseUsername = $_POST['databaseUsername'] ?? '';
-$databasePassword = $databasePasswordRaw;
-$demoData = $_POST['demoData'] ?? '';
-$code = $_POST['code'] ?? 'en_GB';
+$config->setDatabaseInfo(
+    $_POST['databaseServer'] ?? '',
+    $_POST['databaseName'] ?? '',
+    $_POST['databaseUsername'] ?? '',
+    $_POST['databasePassword'] ?? ''
+);
+$config->setFlagDemoData(($_POST['demoData'] ?? '') === 'Y');
+$config->setLocale($_POST['code'] ?? 'en_GB');
 
 // Attempt to download & install the required language files
 if ($step >= 1) {
-    $languageInstalled = !i18nFileExists($gibbon->session->get('absolutePath'), $code)
-        ? i18nFileInstall($gibbon->session->get('absolutePath'), $code)
+    $languageInstalled = !i18nFileExists($gibbon->session->get('absolutePath'), $config->getLocale())
+        ? i18nFileInstall($gibbon->session->get('absolutePath'), $config->getLocale())
         : true;
 }
 
 //Set language pre-install
 if (function_exists('gettext')) {
-    $gibbon->locale->setLocale($code);
+    $gibbon->locale->setLocale($config->getLocale());
     bindtextdomain('gibbon', '../i18n');
     textdomain('gibbon');
 }
@@ -129,11 +135,7 @@ if ($step >= 1) {
 }
 
 // Check config values for ' " \ / chars which will cause errors in config.php
-$pattern = '/[\'"\/\\\\]/';
-if (preg_match($pattern, $databaseServer) == true || preg_match($pattern, $databaseName) == true ||
-    preg_match($pattern, $databaseUsername) == true) {
-    $isConfigValid = false;
-}
+$isConfigValid = $config->validateDatbaseInfo();
 
 // Check for the presence of a config file (if it hasn't been created yet)
 if ($step < 3) {
@@ -221,7 +223,7 @@ if ($canInstall == false) {
 
     $row = $form->addRow();
         $row->addLabel('code', __('System Language'));
-        $row->addSelectSystemLanguage('code')->addClass('w-64')->selected($code)->required();
+        $row->addSelectSystemLanguage('code')->addClass('w-64')->selected($config->getLocale())->required();
 
     $row = $form->addRow();
         $row->addFooter();
@@ -243,7 +245,7 @@ if ($canInstall == false) {
 
     $form->addHiddenValue('guid', $guid);
     $form->addHiddenValue('nonce', $nonce);
-    $form->addHiddenValue('code', $code);
+    $form->addHiddenValue('code', $config->getLocale());
 
     $form->addRow()->addHeading(__('Database Settings'));
 
@@ -281,15 +283,13 @@ if ($canInstall == false) {
 } elseif ($step == 2) {
 
     //Check for db values
-    if (!empty($databaseServer) && !empty($databaseName) && !empty($databaseUsername) && !empty($demoData)) {
+    if ($config->hasDatabaseInfo() && $config->hasFlagDemoData()) {
         //Establish db connection without database name
-
-        $config = compact('databaseServer', 'databaseUsername', 'databasePassword');
         $mysqlConnector = new MySqlConnector();
 
         try {
-            $pdo = $mysqlConnector->connect($config, true);
-            $mysqlConnector->useDatabase($pdo, $databaseName);
+            $pdo = $mysqlConnector->connect($config->getDatabaseInfo(), true);
+            $mysqlConnector->useDatabase($pdo, $config->getDatabaseName());
             $connection2 = $pdo->getConnection();
             $container->share(Gibbon\Contracts\Database\Connection::class, $pdo);
         } catch (\Exception $e) {
@@ -303,12 +303,12 @@ if ($canInstall == false) {
     if ($pdo instanceof Connection) {
         //Set up config.php
         include './installerFunctions.php';
-        $configData = compact('databaseServer', 'databaseUsername', 'databasePassword', 'databaseName', 'guid');
-        $config = $page->fetchFromTemplate('installer/config.twig.html', process_config_vars($configData));
+        $configData = $config->getDatabaseInfo() + ['guid' => $guid];
+        $configFileContents = $page->fetchFromTemplate('installer/config.twig.html', process_config_vars($configData));
 
         //Write config
         $fp = fopen('../config.php', 'wb');
-        fwrite($fp, $config);
+        fwrite($fp, $configFileContents);
         fclose($fp);
 
         if (file_exists('../config.php') == false) { //Something went wrong, config.php could not be created.
@@ -343,7 +343,7 @@ if ($canInstall == false) {
                     echo '</div>';
                 } else {
                     //Try to install the demo data, report error but don't stop if any issues
-                    if ($demoData == 'Y') {
+                    if ($config->getFlagDemoData()) {
                         if (file_exists('../gibbon_demo.sql') == false) {
                             echo "<div class='error'>";
                             echo __('../gibbon_demo.sql does not exist, so we will continue without demo data.');
@@ -376,14 +376,14 @@ if ($canInstall == false) {
 
                     //Set default language
                     try {
-                        $data = array('code' => $code);
+                        $data = array('code' => $config->getLocale());
                         $sql = "UPDATE gibboni18n SET systemDefault='Y' WHERE code=:code";
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
                     }
                     try {
-                        $data = array('code' => $code);
+                        $data = array('code' => $config->getLocale());
                         $sql = "UPDATE gibboni18n SET systemDefault='N' WHERE NOT code=:code";
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
@@ -399,7 +399,7 @@ if ($canInstall == false) {
 
                     $form->addHiddenValue('guid', $guid);
                     $form->addHiddenValue('nonce', $nonce);
-                    $form->addHiddenValue('code', $code);
+                    $form->addHiddenValue('code', $config->getLocale());
                     $form->addHiddenValue('cuttingEdgeCodeHidden', 'N');
 
                     $form->addRow()->addHeading(__('User Account'));
