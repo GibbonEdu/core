@@ -1,0 +1,67 @@
+details:
+    type: freeLearningMentorGroup
+    name: School Mentorship
+    desc: Enabled bulk uploading mentors for specific students
+    table: freeLearningMentorGroup
+    category: Additional
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Free Learning
+    action: Manage Mentorship
+primaryKey:
+    freeLearningMentorGroupID
+uniqueKeys:
+    - [name]
+fields:
+    name:
+        name: "Mentor Group Name"
+        desc: ""
+        args: { filter: string, required: true }
+    assignment:
+        name: "Assignment"
+        desc: ""
+        args: { filter: string, required: true, custom: true, readonly: [ freeLearningMentorGroupPerson ] }
+    gibbonCustomFieldID:
+        name: "Custom Field"
+        desc: "Name"
+        args: { filter: string, custom: true, readonly: [ freeLearningMentorGroupPerson ] }
+        relationship: { table: gibbonCustomField, key: gibbonCustomFieldID, field: name }
+    fieldValue:
+        name: "Field Value"
+        desc: ""
+        args: { filter: string, readonly: [ freeLearningMentorGroupPerson ] }
+    freeLearningMentorGroupID:
+        name: "Mentor Group ID"
+        desc: ""
+        args: { filter: string, linked: name, readonly: [ freeLearningMentorGroup ] }
+        relationship: { table: freeLearningMentorGroup, key: freeLearningMentorGroupID, field: name }
+    gibbonPersonID:
+        name: "School Mentor"
+        desc: "Username or Email (if unique)"
+        args: { filter: nospaces, required: true, readonly: [ freeLearningMentorGroup ] }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
+    role:
+        name: "Role"
+        desc: ""
+        value: "Mentor"
+        args: { filter: string, custom: true, required: true, readonly: [ freeLearningMentorGroup ] }
+tables:
+    freeLearningMentorGroup:
+        primaryKey:
+            freeLearningMentorGroupID
+        uniqueKeys:
+            - [ name ]
+        fields:
+            - name
+            - assignment
+            - gibbonCustomFieldID
+            - fieldValue
+    freeLearningMentorGroupPerson:
+        primaryKey:
+            freeLearningMentorGroupPersonID
+        uniqueKeys:
+            - [ freeLearningMentorGroupID, gibbonPersonID ]
+        fields:
+            - freeLearningMentorGroupID
+            - gibbonPersonID
+            - role
