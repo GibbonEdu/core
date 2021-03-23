@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonStaffJobOpeningID = $_GET['gibbonStaffJobOpeningID'];
+$gibbonStaffJobOpeningID = $_GET['gibbonStaffJobOpeningID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/jobOpenings_manage_edit.php&gibbonStaffJobOpeningID='.$gibbonStaffJobOpeningID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_edit.php') == false) {
@@ -48,11 +48,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_e
             header("Location: {$URL}");
         } else {
             //Validate Inputs
-            $type = $_POST['type'];
-            $jobTitle = $_POST['jobTitle'];
+            $type = $_POST['type'] ?? '';
+            $jobTitle = $_POST['jobTitle'] ?? '';
             $dateOpen = dateConvert($guid, $_POST['dateOpen']);
-            $active = $_POST['active'];
-            $description = $_POST['description'];
+            $active = $_POST['active'] ?? '';
+            $description = $_POST['description'] ?? '';
 
             if ($type == '' or $jobTitle == '' or $dateOpen == '' or $active == '' or $description == '') {
                 $URL .= '&return=error3';

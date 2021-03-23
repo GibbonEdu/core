@@ -19,15 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonStaffID = $_GET['gibbonStaffID'];
-$allStaff = '';
-if (isset($_GET['allStaff'])) {
-    $allStaff = $_GET['allStaff'];
-}
-$search = '';
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-}
+$gibbonStaffID = $_GET['gibbonStaffID'] ?? '';
+$allStaff = $_GET['allStaff'] ?? '';
+$search = $_GET['search'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/staff_manage_edit.php&gibbonStaffID=$gibbonStaffID&search=$search&allStaff=$allStaff";
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.php') == false) {
@@ -60,9 +54,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
             if ($initials == '') {
                 $initials = null;
             }
-            $type = $_POST['type'];
-            $jobTitle = $_POST['jobTitle'];
-            $dateStart = $_POST['dateStart'];
+            $type = $_POST['type'] ?? '';
+            $jobTitle = $_POST['jobTitle'] ?? '';
+            $dateStart = $_POST['dateStart'] ?? '';
             if ($dateStart == '') {
                 $dateStart = null;
             } else {
@@ -74,17 +68,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
             } else {
                 $dateEnd = dateConvert($guid, $dateEnd);
             }
-            $firstAidQualified = $_POST['firstAidQualified'];
+            $firstAidQualified = $_POST['firstAidQualified'] ?? '';
             $firstAidQualification = $_POST['firstAidQualification'] ?? null;
             $firstAidExpiry = null;
             if ($firstAidQualified == 'Y' and $_POST['firstAidExpiry'] != '') {
                 $firstAidExpiry = dateConvert($guid, $_POST['firstAidExpiry']);
             }
-            $countryOfOrigin = $_POST['countryOfOrigin'];
-            $qualifications = $_POST['qualifications'];
-            $biographicalGrouping = $_POST['biographicalGrouping'];
-            $biographicalGroupingPriority = $_POST['biographicalGroupingPriority'];
-            $biography = $_POST['biography'];
+            $countryOfOrigin = $_POST['countryOfOrigin'] ?? '';
+            $qualifications = $_POST['qualifications'] ?? '';
+            $biographicalGrouping = $_POST['biographicalGrouping'] ?? '';
+            $biographicalGroupingPriority = $_POST['biographicalGroupingPriority'] ?? '';
+            $biography = $_POST['biography'] ?? '';
 
             if ($type == '') {
                 $URL .= '&return=error3';

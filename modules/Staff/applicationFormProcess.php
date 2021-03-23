@@ -59,83 +59,30 @@ if ($proceed == false) {
     $validator = new \Gibbon\Data\Validator();
     $_POST = $validator->sanitize($_POST);
 
-    $gibbonStaffJobOpeningIDs = $_POST['gibbonStaffJobOpeningID'];
-    $questions = '';
-    if (isset($_POST['questions'])) {
-        $questions = $_POST['questions'];
-    }
-    $gibbonPersonID = null;
-    if (isset($_POST['gibbonPersonID'])) {
-        $gibbonPersonID = $_POST['gibbonPersonID'];
-    }
-    $surname = null;
-    if (isset($_POST['surname'])) {
-        $surname = $_POST['surname'];
-    }
-    $firstName = null;
-    if (isset($_POST['firstName'])) {
-        $firstName = $_POST['firstName'];
-    }
-    $preferredName = null;
-    if (isset($_POST['preferredName'])) {
-        $preferredName = $_POST['preferredName'];
-    }
-    $officialName = null;
-    if (isset($_POST['officialName'])) {
-        $officialName = $_POST['officialName'];
-    }
-    $nameInCharacters = null;
-    if (isset($_POST['nameInCharacters'])) {
-        $nameInCharacters = $_POST['nameInCharacters'];
-    }
-    $gender = 'Unspecified';
-    if (isset($_POST['gender'])) {
-        $gender = $_POST['gender'];
-    }
-    $dob = null;
-    if (isset($_POST['dob'])) {
-        $dob = dateConvert($guid, $_POST['dob']);
-    }
-    $languageFirst = null;
-    if (isset($_POST['languageFirst'])) {
-        $languageFirst = $_POST['languageFirst'];
-    }
-    $languageSecond = null;
-    if (isset($_POST['languageSecond'])) {
-        $languageSecond = $_POST['languageSecond'];
-    }
-    $languageThird = null;
-    if (isset($_POST['languageThird'])) {
-        $languageThird = $_POST['languageThird'];
-    }
-    $countryOfBirth = null;
-    if (isset($_POST['countryOfBirth'])) {
-        $countryOfBirth = $_POST['countryOfBirth'];
-    }
-    $citizenship1 = null;
-    if (isset($_POST['citizenship1'])) {
-        $citizenship1 = $_POST['citizenship1'];
-    }
-    $citizenship1Passport = null;
-    if (isset($_POST['citizenship1Passport'])) {
-        $citizenship1Passport = $_POST['citizenship1Passport'];
-    }
-    $nationalIDCardNumber = null;
-    if (isset($_POST['nationalIDCardNumber'])) {
-        $nationalIDCardNumber = $_POST['nationalIDCardNumber'];
-    }
-    $residencyStatus = null;
-    if (isset($_POST['residencyStatus'])) {
-        $residencyStatus = $_POST['residencyStatus'];
+    $gibbonStaffJobOpeningIDs = $_POST['gibbonStaffJobOpeningID'] ?? '';
+    $questions = $_POST['questions'] ?? '';
+    $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
+    $surname = $_POST['surname'] ?? '';
+    $firstName = $_POST['firstName'] ?? '';
+    $preferredName = $_POST['preferredName'] ?? '';
+    $officialName = $_POST['officialName'] ?? '';
+    $nameInCharacters = $_POST['nameInCharacters'] ?? '';
+    $gender = $_POST['gender'] ?? 'Unspecified';
+    $dob = dateConvert($guid, $_POST['dob'] ?? '');
+    $languageFirst = $_POST['languageFirst'] ?? '';
+    $languageSecond = $_POST['languageSecond'] ?? '';
+    $languageThird = $_POST['languageThird'] ?? '';
+    $countryOfBirth = $_POST['countryOfBirth'] ?? '';
+    $citizenship1 = $_POST['citizenship1'] ?? '';
+    $citizenship1Passport = $_POST['citizenship1Passport'] ?? '';
+    $nationalIDCardNumber = $_POST['nationalIDCardNumber'] ?? '';
+    $residencyStatus = $_POST['residencyStatus'] ?? '';
     }
     $visaExpiryDate = null;
     if (isset($_POST['visaExpiryDate']) and $_POST['visaExpiryDate'] != '') {
         $visaExpiryDate = dateConvert($guid, $visaExpiryDate);
     }
-    $email = null;
-    if (isset($_POST['email'])) {
-        $email = $_POST['email'];
-    }
+    $email = $_POST['email'] ?? '';
     $phone1Type = null;
     if (isset($_POST['phone1Type'])) {
         $phone1Type = $_POST['phone1Type'];
@@ -146,31 +93,15 @@ if ($proceed == false) {
     $phone1CountryCode = null;
     if (isset($_POST['phone1CountryCode'])) {
         $phone1CountryCode = $_POST['phone1CountryCode'];
-    }
     $phone1 = null;
     if (isset($_POST['phone1'])) {
         $phone1 = preg_replace('/[^0-9+]/', '', $_POST['phone1']);
     }
-    $homeAddress = null;
-    if (isset($_POST['homeAddress'])) {
-        $homeAddress = $_POST['homeAddress'];
-    }
-    $homeAddressDistrict = null;
-    if (isset($_POST['homeAddressDistrict'])) {
-        $homeAddressDistrict = $_POST['homeAddressDistrict'];
-    }
-    $homeAddressCountry = null;
-    if (isset($_POST['homeAddressCountry'])) {
-        $homeAddressCountry = $_POST['homeAddressCountry'];
-    }
-    $referenceEmail1 = '';
-    if (isset($_POST['referenceEmail1'])) {
-        $referenceEmail1 = $_POST['referenceEmail1'];
-    }
-    $referenceEmail2 = '';
-    if (isset($_POST['referenceEmail2'])) {
-        $referenceEmail2 = $_POST['referenceEmail2'];
-    }
+    $homeAddress = $_POST['homeAddress'] ?? '';
+    $homeAddressDistrict = $_POST['homeAddressDistrict'] ?? '';
+    $homeAddressCountry = $_POST['homeAddressCountry'] ?? '';
+    $referenceEmail1 = $_POST['referenceEmail1'] ?? '';
+    $referenceEmail2 = $_POST['referenceEmail2'] ?? '';
     $agreement = null;
     if (isset($_POST['agreement'])) {
         if ($_POST['agreement'] == 'on') {
@@ -264,7 +195,7 @@ if ($proceed == false) {
                         if ($requiredDocuments != false && !empty($uploadedDocuments) && is_array($uploadedDocuments)) {
                             foreach ($uploadedDocuments as $fileName => $attachment) {
                                 //Write files to database, one for each attachment
-                                
+
                                     $dataFile = array('gibbonStaffApplicationFormID' => $AI, 'name' => $fileName, 'path' => $attachment);
                                     $sqlFile = 'INSERT INTO gibbonStaffApplicationFormFile SET gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID, name=:name, path=:path';
                                     $resultFile = $connection2->prepare($sqlFile);
