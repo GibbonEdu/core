@@ -18,9 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Timetable\CourseGateway;
 
 //Module includes
@@ -61,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
     } else {
         
             $data = array('gibbonCourseID' => $gibbonCourseID);
-            $sql = 'SELECT gibbonCourseID, gibbonDepartmentID, gibbonCourse.name AS name, gibbonCourse.nameShort as nameShort, orderBy, gibbonCourse.description, gibbonCourse.map, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName, gibbonYearGroupIDList FROM gibbonCourse, gibbonSchoolYear WHERE gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID';
+            $sql = 'SELECT gibbonCourseID, gibbonDepartmentID, gibbonCourse.name AS name, gibbonCourse.nameShort as nameShort, orderBy, gibbonCourse.description, gibbonCourse.map, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName, gibbonYearGroupIDList, gibbonCourse.fields FROM gibbonCourse, gibbonSchoolYear WHERE gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
 
@@ -76,6 +77,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 
 			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
 			$form->addHiddenValue('gibbonSchoolYearID', $values['gibbonSchoolYearID']);
+
+            $row = $form->addRow()->addHeading(__('Basic Details'));
 
 			$row = $form->addRow();
 				$row->addLabel('schoolYearName', __('School Year'));
@@ -94,6 +97,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 				$row->addLabel('nameShort', __('Short Name'));
 				$row->addTextField('nameShort')->required()->maxLength(12);
 
+            $row = $form->addRow()->addHeading(__('Display Information'));
+
 			$row = $form->addRow();
 				$row->addLabel('orderBy', __('Order'))->description(__('May be used to adjust arrangement of courses in reports.'));
 				$row->addNumber('orderBy')->maxLength(3);
@@ -101,15 +106,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 			$row = $form->addRow();
 				$column = $row->addColumn('blurb');
 				$column->addLabel('description', __('Blurb'));
-				$column->addEditor('description', $guid)->setRows(20);
+				$column->addEditor('description', $guid)->setRows(10);
 
 			$row = $form->addRow();
 				$row->addLabel('map', __('Include In Curriculum Map'));
                 $row->addYesNo('map')->required();
 
+            $row = $form->addRow()->addHeading(__('Configure'));
+
 			$row = $form->addRow();
 				$row->addLabel('gibbonYearGroupIDList', __('Year Groups'))->description(__('Enrolable year groups.'));
 				$row->addCheckboxYearGroup('gibbonYearGroupIDList')->loadFromCSV($values);
+
+            // Custom Fields
+            $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Course', [], $values['fields']);
 
 			$row = $form->addRow();
 				$row->addFooter();
