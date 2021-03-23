@@ -26,6 +26,7 @@ use Gibbon\Database\Connection;
 use Gibbon\Database\MySqlConnector;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Install\Config;
+use Gibbon\Install\Context;
 
 include '../version.php';
 include '../gibbon.php';
@@ -174,8 +175,9 @@ if ($canInstall == false) {
     $phpVersion = phpversion();
     $apacheVersion = function_exists('apache_get_version')? apache_get_version() : false;
     $phpRequirement = $gibbon->getSystemRequirement('php');
-    $apacheRequirement = $gibbon->getSystemRequirement('apache');
-    $extensions = $gibbon->getSystemRequirement('extensions');
+
+    // Generate installation context from the environment.
+    $context = Context::fromEnvironment();
 
     $form = Form::create('installer', "./install.php?step=1");
     $form->setTitle(__('Installation - Step {count}', ['count' => $step + 1]));
@@ -198,10 +200,9 @@ if ($canInstall == false) {
         $row->addContent((@extension_loaded('pdo') && extension_loaded('pdo_mysql'))? $trueIcon : $falseIcon);
 
     if ($apacheVersion !== false) {
-        $apacheModules = @apache_get_modules();
-
-        foreach ($apacheRequirement as $moduleName) {
-            $active = @in_array($moduleName, $apacheModules);
+        // Check Gibbon required Apache modules.
+        $apacheRequirement = $gibbon->getSystemRequirement('apache');
+        foreach ($context->checkApacheModules($apacheRequirement) as $moduleName => $active) {
             $row = $form->addRow();
                 $row->addLabel('moduleLabel', 'Apache '.__('Module').' '.$moduleName);
                 $row->addTextField('module')->setValue(($active)? __('Enabled') : __('N/A'))->readonly();
@@ -209,9 +210,10 @@ if ($canInstall == false) {
         }
     }
 
+    // Check Gibbon required extensions.
+    $extensions = $gibbon->getSystemRequirement('extensions');
     if (!empty($extensions) && is_array($extensions)) {
-        foreach ($extensions as $extension) {
-            $installed = @extension_loaded($extension);
+        foreach ($context->checkPhpExtensions($extensions) as $extension => $installed) {
             $row = $form->addRow();
                 $row->addLabel('extensionLabel', 'PHP ' .__('Extension').' '. $extension);
                 $row->addTextField('extension')->setValue(($installed)? __('Installed') : __('Not Installed'))->readonly();
