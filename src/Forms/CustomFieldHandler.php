@@ -48,6 +48,10 @@ class CustomFieldHandler
                 'First Aid'    => __('First Aid'),
                 'Medical Form' => __('Medical Form'),
             ],
+            __('Timetable Admin') => [
+                'Course' => __('Course'),
+                'Class' => __('Class'),
+            ]
         ];
 
         $this->types = [
@@ -99,6 +103,14 @@ class CustomFieldHandler
             ],
             'Medical Form' => [
                 'General Information' => __('General Information'),
+            ],
+            'Course' => [
+                'Basic Details' => __('Basic Details'),
+                'Display Information' => __('Display Information'),
+                'Configure' => __('Configure'),
+            ],
+            'Class' => [
+                'Basic Details' => __('Basic Details'),
             ],
         ];
     }

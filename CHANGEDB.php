@@ -801,4 +801,6 @@ UPDATE `gibbonCustomField` SET `context`='User' WHERE `context`='Person';end
 UPDATE `gibbonPlannerEntry` SET `gibbonUnitID`=NULL WHERE `gibbonUnitID`='0000000000';end
 ALTER TABLE `gibbonFirstAid` ADD `fields` TEXT NULL AFTER `timestamp`;end
 ALTER TABLE `gibbonStaff` ADD `fields` TEXT NULL AFTER `biographicalGroupingPriority`;end
+ALTER TABLE `gibbonCourse` ADD `fields` TEXT NULL AFTER `orderBy`;end
+ALTER TABLE `gibbonCourseClass` ADD `fields` TEXT NULL AFTER `gibbonScaleIDTarget`;end
 ";

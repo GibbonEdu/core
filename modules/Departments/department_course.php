@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Tables\DataTable;
+use Gibbon\Forms\CustomFieldHandler;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -32,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
     } else {
         
             $data = array('gibbonDepartmentID' => $gibbonDepartmentID, 'gibbonCourseID' => $gibbonCourseID);
-            $sql = 'SELECT gibbonDepartment.name AS department, gibbonCourse.name, gibbonCourse.description, gibbonSchoolYear.name AS year, gibbonCourse.gibbonSchoolYearID FROM gibbonDepartment JOIN gibbonCourse ON (gibbonDepartment.gibbonDepartmentID=gibbonCourse.gibbonDepartmentID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonDepartment.gibbonDepartmentID=:gibbonDepartmentID AND gibbonCourseID=:gibbonCourseID';
+            $sql = 'SELECT gibbonDepartment.name AS department, gibbonCourse.name, gibbonCourse.description, gibbonSchoolYear.name AS year, gibbonCourse.gibbonSchoolYearID, gibbonCourse.fields FROM gibbonDepartment JOIN gibbonCourse ON (gibbonDepartment.gibbonDepartmentID=gibbonCourse.gibbonDepartmentID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonDepartment.gibbonDepartmentID=:gibbonDepartmentID AND gibbonCourseID=:gibbonCourseID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
 
@@ -73,6 +76,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 echo $row['description'];
                 echo '</p>';
             }
+
+            // Custom fields
+            $table = DataTable::createDetails('fields');
+            $container->get(CustomFieldHandler::class)->addCustomFieldsToTable($table, 'Course', [], $row['fields']);
+            echo $table->render([$row]);
 
             //Print Units
             echo '<h2>';
