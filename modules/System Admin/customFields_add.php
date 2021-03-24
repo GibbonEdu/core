@@ -95,19 +95,19 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
     $form->toggleVisibilityByClass('optionsLength')->onSelect('type')->when(['varchar', 'number']);
     $row = $form->addRow()->addClass('optionsLength');
         $row->addLabel('options', __('Max Length'))->description(__('Number of characters, up to 255.'));
-        $row->addNumber('options')->minimum(1)->maximum(255)->onlyInteger(true);
+        $row->addNumber('options')->setID('optionsLength')->minimum(1)->maximum(255)->onlyInteger(true);
 
     $form->toggleVisibilityByClass('optionsRows')->onSelect('type')->when(['text', 'editor']);
     $row = $form->addRow()->addClass('optionsRows');
         $row->addLabel('options', __('Rows'))->description(__('Number of rows for field.'));
-        $row->addNumber('options')->minimum(1)->maximum(255)->onlyInteger(true);
+        $row->addNumber('options')->setID('optionsRows')->minimum(1)->maximum(20)->onlyInteger(true);
 
     $form->toggleVisibilityByClass('optionsOptions')->onSelect('type')->when(['select', 'checkboxes', 'radio']);
     $row = $form->addRow()->addClass('optionsOptions');
         $row->addLabel('options', __('Options'))
             ->description(__('Comma separated list of options.'))
             ->description(__('Dropdown: use [] to create option groups.'));
-        $row->addTextArea('options')->setRows(3);
+        $row->addTextArea('options')->setID('optionsOptions')->required()->setRows(3);
 
     $form->toggleVisibilityByClass('optionsFile')->onSelect('type')->when(['file']);
     $row = $form->addRow()->addClass('optionsFile');
@@ -126,6 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
 
     $form->toggleVisibilityByClass('contextPerson')->onSelect('context')->when('User');
     $form->toggleVisibilityByClass('contextDataUpdate')->onSelect('context')->when(['User', 'Medical Form']);
+    $form->toggleVisibilityByClass('contextApplication')->onSelect('context')->when(['User', 'Staff']);
 
     $activePersonOptions = [
         'activePersonStudent' => __('Student'),
@@ -141,7 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
         $row->addLabel('activeDataUpdater', __('Include In Data Updater?'));
         $row->addSelect('activeDataUpdater')->fromArray(['1' => __('Yes'), '0' => __('No')])->selected('1')->required();
 
-    $row = $form->addRow()->addClass('contextPerson');
+    $row = $form->addRow()->addClass('contextApplication');
         $row->addLabel('activeApplicationForm', __('Include In Application Form?'));
         $row->addSelect('activeApplicationForm')->fromArray(['1' => __('Yes'), '0' => __('No')])->selected('0')->required();
     
