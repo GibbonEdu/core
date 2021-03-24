@@ -28,6 +28,7 @@ v22.0.00
         System: added an Enrolment tab to the Staff Dashboard
 
     Changes With Important Notices
+        System: removed the vendor folder for Cutting Edge Code installations
         System: renamed the gibbonPersonField table to gibbonCustomField
         Students: migrated Blood Type and Tetanus fields from Medical Form into Custom Fields
 
