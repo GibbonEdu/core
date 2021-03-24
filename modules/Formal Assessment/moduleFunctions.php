@@ -143,7 +143,8 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                             $attainmentExtra = __($rowAttainment['usage']);
                         }
                         $styleAttainment = "style='font-weight: bold'";
-                        $output .= "<div $styleAttainment>".$rowInternalAssessment['attainmentValue'].'</div>';
+                        $title = ($rowInternalAssessment['attainmentValue']!=$rowInternalAssessment['attainmentDescriptor']) ? $title="title='".$rowInternalAssessment['attainmentDescriptor']."'" : '';
+                        $output .= "<div $styleAttainment".$title.">".$rowInternalAssessment['attainmentValue'].'</div>';
                         if ($rowInternalAssessment['attainmentValue'] != '') {
                             $output .= "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'>".__($attainmentExtra).'</div>';
                         }
@@ -169,7 +170,8 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                             $effortExtra = __($rowEffort['usage']);
                         }
                         $styleEffort = "style='font-weight: bold'";
-                        $output .= "<div $styleEffort>".$rowInternalAssessment['effortValue'];
+                        $title = ($rowInternalAssessment['effortValue']!=$rowInternalAssessment['effortDescriptor']) ? $title="title='".$rowInternalAssessment['effortDescriptor']."'" : '';
+                        $output .= "<div $styleEffort".$title.">".$rowInternalAssessment['effortValue'];
                         $output .= '</div>';
                         if ($rowInternalAssessment['effortValue'] != '') {
                             $output .= "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'>";
@@ -217,7 +219,7 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID, $mode = 'manage
     $output .= '<div class="column-no-break">';
 
     $classes = array();
-    
+
     $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
     $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonCourseClass.reportable='Y' ORDER BY course, class";
     $result = $connection2->prepare($sql);
@@ -266,7 +268,7 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID, $mode = 'manage
 
 function externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbonYearGroupID = null, $manage = false, $search = '', $allStudents = '')
 {
-    
+
         $dataAssessments = array('gibbonPersonID' => $gibbonPersonID);
         $sqlAssessments = 'SELECT * FROM gibbonExternalAssessmentStudent JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentStudent.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY date';
         $resultAssessments = $connection2->prepare($sqlAssessments);
@@ -296,7 +298,7 @@ function externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbon
             }
 
             //Get results
-            
+
                 $dataResults = array('gibbonPersonID' => $gibbonPersonID, 'gibbonExternalAssessmentStudentID' => $rowAssessments['gibbonExternalAssessmentStudentID']);
                 $sqlResults = "SELECT gibbonExternalAssessmentField.name, gibbonExternalAssessmentField.category, resultGrade.value, resultGrade.descriptor, result.usage, result.lowestAcceptable, resultGrade.sequenceNumber
                     FROM gibbonExternalAssessmentStudentEntry
