@@ -803,4 +803,5 @@ ALTER TABLE `gibbonFirstAid` ADD `fields` TEXT NULL AFTER `timestamp`;end
 ALTER TABLE `gibbonStaff` ADD `fields` TEXT NULL AFTER `biographicalGroupingPriority`;end
 ALTER TABLE `gibbonCourse` ADD `fields` TEXT NULL AFTER `orderBy`;end
 ALTER TABLE `gibbonCourseClass` ADD `fields` TEXT NULL AFTER `gibbonScaleIDTarget`;end
+ALTER TABLE `gibbonStaffApplicationForm` ADD `staffFields` TEXT NULL AFTER `fields`;end
 ";
