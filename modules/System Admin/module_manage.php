@@ -70,10 +70,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
         $module['status'] = __('Installed');
         $module['name'] = $module['type'] == 'Core' ? __($module['name']) : $module['name'];
         $module['versionDisplay'] = $module['type'] == 'Core' ? 'v'.$version : 'v'.$module['version'];
+        $module['update'] = false;
 
         if ($module['type'] == 'Additional') {
             $versionFromFile = getModuleVersion($module['name'], $guid);
-            if (version_compare($versionFromFile, $module['version'], '>')) {
+            
+            if (!empty($versionFromFile['coreVersion']) && version_compare($versionFromFile['coreVersion'], $version, '>')) {
+                $module['status'] = Format::bold(__('Requires {version}', ['version' => 'v'.$versionFromFile['coreVersion']])).'<br/>';
+                $module['warning'] = true;
+            } else if (version_compare($versionFromFile['moduleVersion'], $module['version'], '>')) {
                 $module['status'] = Format::bold(__('Update Available')).'<br/>';
                 $module['update'] = true;
             }
@@ -82,10 +87,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
 
     // Build a set of uninstalled modules by checking the $modules DataSet.
     // Validates the manifest file and grabs the module details from there.
-    $uninstalledModules = array_reduce($moduleFolders, function($group, $modulePath) use ($guid, &$moduleNames, $gibbon) {
+    $uninstalledModules = array_reduce($moduleFolders, function($group, $modulePath) use ($guid, &$moduleNames, $gibbon, $version) {
         $moduleName = substr($modulePath, strlen($gibbon->session->get('absolutePath').'/modules/'));
         if (!in_array($moduleName, $moduleNames)) {
             $module = getModuleManifest($moduleName, $guid);
+            $versionFromFile = getModuleVersion($module['name'], $guid);
+
             $module['status'] = __('Not Installed');
             $module['versionDisplay'] = !empty($module['version']) ? 'v'.$module['version'] : '';
 
@@ -94,6 +101,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                 $module['status'] = __('Error');
                 $module['description'] = __('Module error due to incorrect manifest file or folder name.');
             }
+
+            if (!empty($versionFromFile['coreVersion']) && version_compare($versionFromFile['coreVersion'], $version, '>')) {
+                $module['status'] = Format::bold(__('Requires {version}', ['version' => 'v'.$versionFromFile['coreVersion']])).'<br/>';
+                $module['manifestOK'] = false;
+            }
+
             $group[] = $module;
         }
 
@@ -140,6 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
     $table->modifyRows(function ($module, $row) {
         if (!empty($module['orphaned'])) return '';
         if (!empty($module['update'])) $row->addClass('current');
+        if (!empty($module['warning'])) $row->addClass('warning');
         if ($module['active'] == 'N') $row->addClass('error');
         return $row;
     });
@@ -180,7 +194,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                 $actions->addAction('uninstall', __('Uninstall'))
                         ->setIcon('garbage')
                         ->setURL('/modules/System Admin/module_manage_uninstall.php');
-
+            }
+            if ($row['type'] != 'Core' && $row['update']) {
                 $actions->addAction('update', __('Update'))
                         ->setIcon('delivery2')
                         ->setURL('/modules/System Admin/module_manage_update.php');

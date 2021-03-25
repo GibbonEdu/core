@@ -50,6 +50,7 @@ v22.0.00
         System Admin: added a Reporting Values by Roll Group import option
         System Admin: updated user-related imports to enable importing by username or email address
         System Admin: added file uploader for choosing logo and background images in System Settings
+        System Admin: prevent installing or updating a module that requires a newer core version
         User Admin: added an option to restrict Public Registration to a list of allowed domains
         Tests: migrated test suite to GitHub actions, updated testing libraries to recent versions
         Timetable: added green cell background, and day colour highlight, to dates with days tied in Tie Days to Dates
