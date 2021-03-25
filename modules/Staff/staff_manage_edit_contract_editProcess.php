@@ -62,7 +62,7 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
                 $salaryAmount = $_POST['salaryAmount'] ?? '';
                 $salaryPeriod = $_POST['salaryPeriod'] ?? '';
                 $responsibility = $_POST['responsibility'] ?? '';
-                $responsibilityAmount = $_POST['responsibilityAmount'] ?? 'null';
+                $responsibilityAmount = $_POST['responsibilityAmount'] ?? null;
                 $responsibilityPeriod = $_POST['responsibilityPeriod'] ?? '';
                 $housingAmount = $_POST['housingAmount'] ?? '';
                 $housingPeriod = $_POST['housingPeriod'] ?? '';
