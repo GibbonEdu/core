@@ -52,6 +52,7 @@ v22.0.00
         System Admin: added file uploader for choosing logo and background images in System Settings
         User Admin: added an option to restrict Public Registration to a list of allowed domains
         Tests: migrated test suite to GitHub actions, updated testing libraries to recent versions
+        Timetable Admin: added an option to overwrite existing TT dates in Tie Days to Dates
         Timetable: added green cell background, and day colour highlight, to dates with days tied in Tie Days to Dates
 
     Bug Fixes

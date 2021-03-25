@@ -17,87 +17,72 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\Timetable\TimetableDayGateway;
+use Gibbon\Domain\Timetable\TimetableDayDateGateway;
 
 include '../../gibbon.php';
 
-$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-$dates = 0;
-if (isset($_POST['dates'])) {
-    $dates = $_POST['dates'];
-}
-$gibbonTTDayID = $_POST['gibbonTTDayID'];
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$dates = $_POST['dates'] ?? [];
+$gibbonTTDayID = $_POST['gibbonTTDayID'] ?? '';
+$overwrite = $_POST['overwrite'] ?? 'N';
+
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['q'])."/ttDates.php&gibbonSchoolYearID=$gibbonSchoolYearID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_edit_add.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    //Proceed!
-    //Validate Inputs
-    if ($gibbonSchoolYearID == '' or $dates == '' or count($dates) < 1 or $gibbonTTDayID == '') {
+    // Proceed!
+    $partialFail = false;
+
+    // Validate Inputs
+    if (empty($gibbonSchoolYearID) or empty($dates) or empty($gibbonTTDayID)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
-    } else {
-        try {
-            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-            $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
-
-        if ($result->rowCount() != 1) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-        } else {
-            //Get gibbonTTID for current day
-            $timetableDayGateway = $container->get(TimetableDayGateway::class);
-            $gibbonTTDay = $timetableDayGateway->getTTDayByID($gibbonTTDayID);
-            if (!is_array($gibbonTTDay) && !empty($gibbonTTDay['gibbonTTID'])) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-            }
-            else {
-                $gibbonTTID = $gibbonTTDay['gibbonTTID'];
-
-                $partialFail = false;
-                foreach ($dates as $date) {
-                    if (isSchoolOpen($guid, date('Y-m-d', $date), $connection2, true) == false) {
-                        $partialFail = true;
-                    } else {
-                        //Check if a day from the TT is already set
-                        $days = $timetableDayGateway->selectDaysByDate(date('Y-m-d', $date), $gibbonTTID);
-
-                        if ($days->rowCount() > 0) {
-                            $partialFail = true;
-                        }
-                        else {
-                            //Write to database
-                            try {
-                                $data = array('gibbonTTDayID' => $gibbonTTDayID, 'date' => date('Y-m-d', $date));
-                                $sql = 'INSERT INTO gibbonTTDayDate SET gibbonTTDayID=:gibbonTTDayID, date=:date';
-                                $result = $connection2->prepare($sql);
-                                $result->execute($data);
-                            } catch (PDOException $e) {
-                                $partialFail = true;
-                            }
-                        }
-                    }
-                }
-
-                //Report result
-                if ($partialFail == true) {
-                    $URL .= '&return=warning1';
-                    header("Location: {$URL}");
-                } else {
-                    $URL .= '&return=success0';
-                    header("Location: {$URL}");
-                }
-            }
-        }
+        exit;
     }
+
+    $timetableDayGateway = $container->get(TimetableDayGateway::class);
+    $timetableDayDateGateway = $container->get(TimetableDayDateGateway::class);
+
+    // Validate records exist
+    $schoolYear = $container->get(SchoolYearGateway::class)->getByID($gibbonSchoolYearID);
+    $gibbonTTDay = $timetableDayGateway->getTTDayByID($gibbonTTDayID);
+    if (empty($schoolYear) || empty($gibbonTTDay)) {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+        exit();
+    }
+    
+    foreach ($dates as $date) {
+        if (!isSchoolOpen($guid, date('Y-m-d', $date), $connection2, true)) {
+            $partialFail = true;
+            continue;
+        } 
+
+        // Remove existing TT Day Dates if overwriting
+        if ($overwrite == 'Y') {
+            $timetableDayDateGateway->deleteWhere(['date' => date('Y-m-d', $date)]);
+        }
+
+        // Check if a day from the TT is already set
+        $days = $timetableDayGateway->selectDaysByDate(date('Y-m-d', $date), $gibbonTTDay['gibbonTTID']);
+
+        if ($days->rowCount() > 0) {
+            $partialFail = true;
+        } else {
+            $data = ['gibbonTTDayID' => $gibbonTTDayID, 'date' => date('Y-m-d', $date)];
+            $inserted = $timetableDayDateGateway->insert($data);
+            $partialFail &= !$inserted;
+        }
+        
+    }
+
+    $URL .= $partialFail
+        ? '&return=warning1'
+        : '&return=success0';
+    header("Location: {$URL}");
+
 }
