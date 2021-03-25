@@ -19,9 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonStaffID = $_GET['gibbonStaffID'];
-$gibbonStaffContractID = $_GET['gibbonStaffContractID'];
-$search = $_GET['search'];
+$gibbonStaffID = $_GET['gibbonStaffID'] ?? '';
+$gibbonStaffContractID = $_GET['gibbonStaffContractID'] ?? '';
+$search = $_GET['search'] ?? '';
 if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/staff_manage_edit_contract_edit.php&gibbonStaffContractID=$gibbonStaffContractID&gibbonStaffID=$gibbonStaffID&search=$search";
@@ -54,83 +54,27 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
                 $row = $result->fetch();
                 $username = $row['username'];
 
-                $title = $_POST['title'];
-                $status = $_POST['status'];
-                $dateStart = null;
-                if (isset($_POST['dateStart'])) {
-                    $dateStart = dateConvert($guid, $_POST['dateStart']);
-                }
-                $dateEnd = null;
-                if (isset($_POST['dateEnd'])) {
-                    if ($_POST['dateEnd'] != '') {
-                        $dateEnd = dateConvert($guid, $_POST['dateEnd']);
-                    }
-                }
-                $salaryScale = null;
-                if (isset($_POST['salaryScale'])) {
-                    $salaryScale = $_POST['salaryScale'];
-                }
-                $salaryAmount = null;
-                if (isset($_POST['salaryAmount']) && $_POST['salaryAmount'] != '') {
-                    $salaryAmount = $_POST['salaryAmount'];
-                }
-                $salaryPeriod = null;
-                if (isset($_POST['salaryPeriod'])) {
-                    $salaryPeriod = $_POST['salaryPeriod'];
-                }
-                $responsibility = null;
-                if (isset($_POST['responsibility'])) {
-                    $responsibility = $_POST['responsibility'];
-                }
-                $responsibilityAmount = null;
-                if (isset($_POST['responsibilityAmount']) && $_POST['responsibilityAmount'] != '') {
-                    $responsibilityAmount = $_POST['responsibilityAmount'];
-                }
-                $responsibilityPeriod = null;
-                if (isset($_POST['responsibilityPeriod'])) {
-                    $responsibilityPeriod = $_POST['responsibilityPeriod'];
-                }
-                $housingAmount = null;
-                if (isset($_POST['housingAmount']) && $_POST['housingAmount'] != '') {
-                    $housingAmount = $_POST['housingAmount'];
-                }
-                $housingPeriod = null;
-                if (isset($_POST['housingPeriod'])) {
-                    $housingPeriod = $_POST['housingPeriod'];
-                }
-                $travelAmount = null;
-                if (isset($_POST['travelAmount']) && $_POST['travelAmount'] != '') {
-                    $travelAmount = $_POST['travelAmount'];
-                }
-                $travelPeriod = null;
-                if (isset($_POST['travelPeriod'])) {
-                    $travelPeriod = $_POST['travelPeriod'];
-                }
-                $retirementAmount = null;
-                if (isset($_POST['retirementAmount']) && $_POST['retirementAmount'] != '') {
-                    $retirementAmount = $_POST['retirementAmount'];
-                }
-                $retirementPeriod = null;
-                if (isset($_POST['retirementPeriod'])) {
-                    $retirementPeriod = $_POST['retirementPeriod'];
-                }
-                $bonusAmount = null;
-                if (isset($_POST['bonusAmount']) && $_POST['bonusAmount'] != '') {
-                    $bonusAmount = $_POST['bonusAmount'];
-                }
-                $bonusPeriod = null;
-                if (isset($_POST['bonusPeriod'])) {
-                    $bonusPeriod = $_POST['bonusPeriod'];
-                }
-                $education = null;
-                if (isset($_POST['education'])) {
-                    $education = $_POST['education'];
-                }
-                $notes = null;
-                if (isset($_POST['notes'])) {
-                    $notes = $_POST['notes'];
-                }
-                $contractUpload = isset($_POST['contractUpload'])? $_POST['contractUpload'] : $row['contractUpload'];
+                $title = $_POST['title'] ?? '';
+                $status = $_POST['status'] ?? '';
+                $dateStart = dateConvert($guid, $_POST['dateStart'] ?? '');
+                $dateEnd = (!empty($_POST['dateEnd'])) ? dateConvert($guid, $_POST['dateEnd']) : null;
+                $salaryScale = $_POST['salaryScale'] ?? '';
+                $salaryAmount = $_POST['salaryAmount'] ?? '';
+                $salaryPeriod = $_POST['salaryPeriod'] ?? '';
+                $responsibility = $_POST['responsibility'] ?? '';
+                $responsibilityAmount = $_POST['responsibilityAmount'] ?? null;
+                $responsibilityPeriod = $_POST['responsibilityPeriod'] ?? '';
+                $housingAmount = $_POST['housingAmount'] ?? '';
+                $housingPeriod = $_POST['housingPeriod'] ?? '';
+                $travelAmount = $_POST['travelAmount'] ?? '';
+                $travelPeriod = $_POST['travelPeriod'] ?? '';
+                $retirementAmount = $_POST['retirementAmount'] ?? '';
+                $retirementPeriod = $_POST['retirementPeriod'] ?? '';
+                $bonusAmount = $_POST['bonusAmount'] ?? '';
+                $bonusPeriod = $_POST['bonusPeriod'] ?? '';
+                $education = $_POST['education'] ?? '';
+                $notes = $_POST['notes'] ?? '';
+                $contractUpload = $_POST['contractUpload'] ?? $row['contractUpload'];
 
                 $partialFail = false;
                 if (!empty($_FILES['file1']['tmp_name'])) {

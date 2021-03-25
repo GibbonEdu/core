@@ -27,11 +27,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_a
 } else {
     //Proceed!
     //Validate Inputs
-    $type = $_POST['type'];
-    $jobTitle = $_POST['jobTitle'];
-    $dateOpen = dateConvert($guid, $_POST['dateOpen']);
-    $active = $_POST['active'];
-    $description = $_POST['description'];
+    $type = $_POST['type'] ?? '';
+    $jobTitle = $_POST['jobTitle'] ?? '';
+    $dateOpen = dateConvert($guid, $_POST['dateOpen'] ?? '');
+    $active = $_POST['active'] ?? '';
+    $description = $_POST['description'] ?? '';
 
     if ($type == '' or $jobTitle == '' or $dateOpen == '' or $active == '' or $description == '') {
         $URL .= '&return=error1';

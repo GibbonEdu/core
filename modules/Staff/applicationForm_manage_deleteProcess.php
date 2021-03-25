@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonStaffApplicationFormID = $_POST['gibbonStaffApplicationFormID'];
-$search = $_GET['search'];
+$gibbonStaffApplicationFormID = $_POST['gibbonStaffApplicationFormID'] ?? '';
+$search = $_GET['search'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/applicationForm_manage_delete.php&gibbonStaffApplicationFormID=$gibbonStaffApplicationFormID&search=$search";
 $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/applicationForm_manage.php&search=$search";
 
@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             }
 
             //Delete files, but don't return error if it fails
-            
+
                 $data = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID);
                 $sql = 'DELETE FROM gibbonStaffApplicationFormFile WHERE gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID';
                 $result = $connection2->prepare($sql);

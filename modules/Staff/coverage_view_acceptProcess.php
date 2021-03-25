@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_accept
     $data = [
         'gibbonPersonIDCoverage' => $_SESSION[$guid]['gibbonPersonID'],
         'timestampCoverage'      => date('Y-m-d H:i:s'),
-        'notesCoverage'          => $_POST['notesCoverage'],
+        'notesCoverage'          => $_POST['notesCoverage'] ?? '',
         'status'                 => 'Accepted',
     ];
 
