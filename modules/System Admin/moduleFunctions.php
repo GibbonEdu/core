@@ -140,7 +140,7 @@ function getModuleVersion($moduleName, $guid)
     $versionFile = $_SESSION[$guid]['absolutePath'].'/modules/'.$moduleName.'/version.php';
     if (is_file($versionFile)) {
         include $versionFile;
-       return $moduleVersion;
+       return ['moduleVersion' => $moduleVersion, 'coreVersion' => ($coreVersion ?? '')];
     } else {
         return false;
     }
