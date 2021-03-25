@@ -1953,6 +1953,7 @@ else {
 			if ($email=="Y") {
 				//Set up email
 				$emailCount=0 ;
+                $emailErrors = [];
 				$mail= $container->get(Mailer::class);
                 $mail->SMTPKeepAlive = true;
                 $mail->SMTPDebug = 1;
@@ -2058,6 +2059,7 @@ else {
 						if(!$mail->Send()) {
                             $partialFail = TRUE ;
 							$logGateway->addLog($_SESSION[$guid]['gibbonSchoolYearIDCurrent'], getModuleID($connection2, $_POST["address"]), $_SESSION[$guid]['gibbonPersonID'], 'Email Send Status', array('Status' => 'Not OK', 'Result' => $mail->ErrorInfo, 'Recipients' => $reportEntry[4]));
+                            $emailErrors[] = $reportEntry[4];
 						}
 					}
                 }
@@ -2114,19 +2116,13 @@ else {
 				}
 			}
 
-			if ($partialFail == TRUE) {
-				//Fail 4
-                return ['return' => 'fail4'];
-			}
-			else {
-                return [
-                    'return' => 'success0',
-                    'emailCount' => $emailCount,
-                    'smsCount' => $smsCount,
-                    'smsBatchCount' => $smsBatchCount,
-                ];
-			}
+            return [
+                'return'        => $partialFail ? 'fail4' : 'success0',
+                'emailCount'    => $emailCount ?? 0,
+                'emailErrors'   => $emailErrors ?? [],
+                'smsCount'      => $smsCount ?? 0,
+                'smsBatchCount' => $smsBatchCount ?? 0,
+            ];
 		}
 	}
 }
-?>

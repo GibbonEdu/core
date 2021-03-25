@@ -42,6 +42,7 @@ v22.0.00
         System: added Somali as language option in dropdown menus
         Finance: removed student DOB and Gender from Export Invoices
         Formal Assessment: added attainment and effort descriptor as title to Internal Assessment view
+        Messenger: updated the send report to list any emails that failed to send
         Reports: clear report cache when editing template assets in Production
         Reports: added an option to delete report files from Generate Reports page
         Students: added Medical Form custom fields to student profile
