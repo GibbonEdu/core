@@ -1169,7 +1169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $attendance = new Gibbon\Module\Attendance\AttendanceView($gibbon, $pdo);
                         $attendanceGateway = $container->get(AttendanceLogPersonGateway::class);
 
-                        $participants = $container->get(CourseEnrolmentGateway::class)->selectClassParticipantsByDate($gibbonCourseClassID, $values['date'])->fetchAll();
+                        $participants = $container->get(CourseEnrolmentGateway::class)->selectClassParticipantsByDate($gibbonCourseClassID, $values['date'], $values['timeStart'], $values['timeEnd'])->fetchAll();
                         $defaults = ['type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '', 'prefill' => 'Y'];
 
                         // Build attendance data

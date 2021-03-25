@@ -191,14 +191,18 @@ class CourseEnrolmentGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
-    public function selectClassParticipantsByDate($gibbonCourseClassID, $date)
+    public function selectClassParticipantsByDate($gibbonCourseClassID, $date, $timeStart, $timeEnd)
     {
-        $data =['gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $date, 'today' => date('Y-m-d')];
+        $data =['gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $date, 'timeStart' => $timeStart, 'timeEnd' => $timeEnd, 'today' => date('Y-m-d')];
         $sql = "SELECT gibbonCourseClassPerson.*, gibbonPerson.*
             FROM gibbonCourseClassPerson
             INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID
             LEFT JOIN (
-                SELECT gibbonTTDayRowClass.gibbonCourseClassID, gibbonTTDayRowClass.gibbonTTDayRowClassID FROM gibbonTTDayDate JOIN gibbonTTDayRowClass ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) WHERE gibbonTTDayDate.date=:date) AS gibbonTTDayRowClassSubset ON (gibbonTTDayRowClassSubset.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
+                SELECT gibbonTTDayRowClass.gibbonCourseClassID, gibbonTTDayRowClass.gibbonTTDayRowClassID 
+                FROM gibbonTTDayDate 
+                JOIN gibbonTTDayRowClass ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) 
+                JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID)
+                WHERE gibbonTTDayDate.date=:date AND gibbonTTColumnRow.timeStart>=:timeStart AND gibbonTTColumnRow.timeEnd<=:timeEnd) AS gibbonTTDayRowClassSubset ON (gibbonTTDayRowClassSubset.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
             LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClassSubset.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
             WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID
             AND status='Full'
