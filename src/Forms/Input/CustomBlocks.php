@@ -77,7 +77,7 @@ class CustomBlocks implements OutputableInterface
      */
     public function fromTemplate(OutputableInterface $block)
     {
-        $this->blockTemplate = $block->addClass('blank w-full max-w-2xl');
+        $this->blockTemplate = $block->addClass('blank w-full');
         return $this;
     }
 
