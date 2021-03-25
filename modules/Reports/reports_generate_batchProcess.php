@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Module\Reports\Domain\ReportGateway;
 use Gibbon\Module\Reports\GenerateReportProcess;
+use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
+use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 
 require_once '../../gibbon.php';
 
@@ -27,6 +29,7 @@ $gibbonReportID = $_POST['gibbonReportID'] ?? '';
 $contextData = $_POST['contextData'] ?? '';
 $status = $_POST['status'] ?? 'Draft';
 $twoSided = $_POST['twoSided'] ?? 'N';
+$action = $_POST['action'] ?? '';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reports_generate_batch.php&gibbonReportID='.$gibbonReportID;
 
@@ -36,24 +39,60 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_b
     exit;
 } else {
     // Proceed!
+    $partialFail = false;
     $reportGateway = $container->get(ReportGateway::class);
 
+    $report = $reportGateway->getByID($gibbonReportID);
+
     // Validate the database relationships exist
-    if (!$reportGateway->exists($gibbonReportID)) {
+    if (empty($report)) {
         $URL .= '&return=error2';
         header("Location: {$URL}");
         exit;
     }
 
     $contexts = is_array($contextData)? $contextData : [$contextData];
-    $options = compact('status', 'twoSided');
-    $process = $container->get(GenerateReportProcess::class);
 
-    $success = $process->startReportBatch($gibbonReportID, $contexts, $options, $gibbon->session->get('gibbonPersonID'));
-    
-    sleep(1.0);
+    if ($action == 'Generate') {
+        $options = compact('status', 'twoSided');
+        $process = $container->get(GenerateReportProcess::class);
 
-    $URL .= !$success
+        $success = $process->startReportBatch($gibbonReportID, $contexts, $options, $gibbon->session->get('gibbonPersonID'));
+        $partialFail &= !$success;
+        
+        sleep(1.0);
+    } else if ($action == 'Delete') {
+        $reportArchiveEntryGateway = $container->get(ReportArchiveEntryGateway::class);
+        $archive = $container->get(ReportArchiveGateway::class)->getByID($report['gibbonReportArchiveID']);
+
+        foreach ($contexts as $gibbonYearGroupID) {
+            $entry = $reportArchiveEntryGateway->selectBy([
+                // 'reportIdentifier'      => $report['name'],
+                'gibbonReportID'        => $gibbonReportID,
+                'gibbonReportArchiveID' => $report['gibbonReportArchiveID'],
+                'gibbonSchoolYearID'    => $report['gibbonSchoolYearID'],
+                'gibbonYearGroupID'     => $gibbonYearGroupID,
+                'type'                  => 'Batch',
+            ])->fetch();
+
+            if (!empty($entry)) {
+                // Remove the file itself
+                $path = $gibbon->session->get('absolutePath').$archive['path'].'/'.$entry['filePath'];
+                if (!empty($archive) && file_exists($path)) {
+                    unlink($path);
+                }
+                
+                // Then remove the archive entry
+                $deleted = $reportArchiveEntryGateway->delete($entry['gibbonReportArchiveEntryID']);
+                $partialFail &= !$deleted;
+            }
+        }
+
+    } else {
+        $partialFail = true;
+    }
+
+    $URL .= $partialFail
         ? "&return=error2"
         : "&return=success0";
 
