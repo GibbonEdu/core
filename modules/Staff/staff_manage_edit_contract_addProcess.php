@@ -57,12 +57,7 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
                 $title = $_POST['title'] ?? '';
                 $status = $_POST['status'] ?? '';
                 $dateStart = dateConvert($guid, $_POST['dateStart'] ?? '');
-                $dateEnd = null;
-                if (isset($_POST['dateEnd'])) {
-                    if ($_POST['dateEnd'] != '') {
-                        $dateEnd = dateConvert($guid, $_POST['dateEnd']);
-                    }
-                }
+                $dateEnd = (!empty($_POST['dateEnd'])) ? dateConvert($guid, $_POST['dateEnd']) : null;
                 $salaryScale = $_POST['salaryScale'] ?? '';
                 $salaryAmount = $_POST['salaryAmount'] ?? '';
                 $salaryPeriod = $_POST['salaryPeriod'] ?? '';
@@ -79,7 +74,7 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
                 $bonusPeriod = $_POST['bonusPeriod'] ?? '';
                 $education = $_POST['education'] ?? '';
                 $notes = $_POST['notes'] ?? '';
-                
+
 
                 $partialFail = false;
 

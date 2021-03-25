@@ -70,10 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
             }
             $firstAidQualified = $_POST['firstAidQualified'] ?? '';
             $firstAidQualification = $_POST['firstAidQualification'] ?? null;
-            $firstAidExpiry = null;
-            if ($firstAidQualified == 'Y' and $_POST['firstAidExpiry'] != '') {
-                $firstAidExpiry = dateConvert($guid, $_POST['firstAidExpiry']);
-            }
+            $firstAidExpiry = ($firstAidQualified == 'Y' and !empty($_POST['firstAidExpiry'])) ? dateConvert($guid, $_POST['firstAidExpiry']) : null;
             $countryOfOrigin = $_POST['countryOfOrigin'] ?? '';
             $qualifications = $_POST['qualifications'] ?? '';
             $biographicalGrouping = $_POST['biographicalGrouping'] ?? '';

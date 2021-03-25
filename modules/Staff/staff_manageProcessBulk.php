@@ -26,7 +26,7 @@ include '../../gibbon.php';
 
 $action =  $_POST['action'] ?? '';
 $gibbonStaffID =  $_POST['gibbonStaffID'] ?? array();
-$dateEnd = dateConvert($guid, $_POST['dateEnd']) ?? date('Y-m-d');
+$dateEnd = dateConvert($guid, $_POST['dateEnd'] ?? '');
 
 $allStaff = $_GET['allStaff'] ?? '';
 $search = $_GET['search'] ?? '';

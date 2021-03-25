@@ -56,25 +56,13 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
 
                 $title = $_POST['title'] ?? '';
                 $status = $_POST['status'] ?? '';
-                $dateStart = null;
-                if (isset($_POST['dateStart'])) {
-                    $dateStart = dateConvert($guid, $_POST['dateStart']);
-                }
-                $dateEnd = null;
-                if (isset($_POST['dateEnd'])) {
-                    if ($_POST['dateEnd'] != '') {
-                        $dateEnd = dateConvert($guid, $_POST['dateEnd']);
-                    }
-                }
+                $dateStart = dateConvert($guid, $_POST['dateStart'] ?? '');
+                $dateEnd = (!empty($_POST['dateEnd'])) ? dateConvert($guid, $_POST['dateEnd']) : null;
                 $salaryScale = $_POST['salaryScale'] ?? '';
                 $salaryAmount = $_POST['salaryAmount'] ?? '';
                 $salaryPeriod = $_POST['salaryPeriod'] ?? '';
                 $responsibility = $_POST['responsibility'] ?? '';
-
-                $responsibilityAmount = null;
-                if (isset($_POST['responsibilityAmount']) && $_POST['responsibilityAmount'] != '') {
-                    $responsibilityAmount = $_POST['responsibilityAmount'];
-                }
+                $responsibilityAmount = $_POST['responsibilityAmount'] ?? 'null';
                 $responsibilityPeriod = $_POST['responsibilityPeriod'] ?? '';
                 $housingAmount = $_POST['housingAmount'] ?? '';
                 $housingPeriod = $_POST['housingPeriod'] ?? '';

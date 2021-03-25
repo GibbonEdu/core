@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_e
             //Validate Inputs
             $type = $_POST['type'] ?? '';
             $jobTitle = $_POST['jobTitle'] ?? '';
-            $dateOpen = dateConvert($guid, $_POST['dateOpen']);
+            $dateOpen = dateConvert($guid, $_POST['dateOpen'] ?? '');
             $active = $_POST['active'] ?? '';
             $description = $_POST['description'] ?? '';
 
