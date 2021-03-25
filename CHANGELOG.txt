@@ -61,6 +61,7 @@ v22.0.00
         Attendance: fixed non-prefillable logic for Take Attendance by Roll Group
         Formal Assessment: fixed courses with multiple year groups causing duplicate Internal Assessment columns
         Planner: fixed teachers not showing up in attendance with timetable exceptions in multiple classes on the same day
+        Reports: fixed error in mPdfRenderer due to missing getPageNumber method
         Students: fixed pre-existing comments visible on student profile Markbook page after turning off comments
         System Admin: fixed cache not clearing when switching themes
         Timetable: fixed error adding class enrolment when one exists already
