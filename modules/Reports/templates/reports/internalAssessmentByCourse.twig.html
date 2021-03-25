@@ -1,0 +1,100 @@
+{#<!--
+name: Internal Assessment by Course
+category: Student Data
+types: Body
+sources:
+    student: Student
+    internalAssessmentByCourse: InternalAssessmentByCourse
+config:
+    includeAverage:
+        label: Include Average Attainment?
+        type: yesno
+        default: N
+-->#}
+{{- stylesheet ? include(stylesheet) -}}
+
+{% set totalArray = [] %}
+
+<table class="w-full table" cellspacing="0" cellpadding="10" nobr="true">
+    <tr>
+        <td class="header bg-primary border-top border-bottom border-left" rowspan="2">
+            {{ __('Courses') }}
+        </td>
+        {% for assessment in internalAssessmentByCourse.assessments %}
+            {% set colspan = assessment.attainmentActive == 'Y' and assessment.effortActive == 'Y' ? 2 : 1 %}
+            <td class="header bg-primary border-top border-bottom {{ loop.last ? 'border-right' }}" colspan="{{ colspan }}">
+                {{- assessment.name -}}
+            </td>
+        {% endfor %}
+    </tr>
+
+    <tr>
+        {% for assessment in internalAssessmentByCourse.assessments %}
+            {% set colspan = assessment.attainmentActive == 'Y' and assessment.effortActive == 'Y' ? 2 : 1 %}
+
+            {% if assessment.attainmentActive == 'Y' %}
+                <td class="border-top border-bottom border-left {{ loop.last and colspan == 1 ? 'border-right' }}">
+                    {{- __('Attainment') }}
+                </td>
+            {% endif %}
+
+            {% if assessment.effortActive == 'Y' %}
+                <td class="border-top border-bottom {{ colspan == 1 ? 'border-left' }} {{ loop.last ? 'border-right' }}">
+                    {{- __('Effort') }}
+                </td>
+            {% endif %}
+        {% endfor %}
+    </tr>
+    
+
+    {% for course, assessments in internalAssessmentByCourse.courses %}
+    <tr>
+        <td class="border-top border-bottom border-left">
+            {{ course }}
+        </td>
+        {% for key, assessment in internalAssessmentByCourse.assessments %}
+            {% set colspan = assessment.attainmentActive == 'Y' and assessment.effortActive == 'Y' ? 2 : 1 %}
+
+            {% if assessment.attainmentActive == 'Y' %}
+                <td class="border-top border-bottom border-left {{ loop.last and colspan == 1 ? 'border-right' }}">
+                    {{- assessments[assessment.name].attainmentDescriptor ?? assessments[assessment.name].attainmentValue }}
+                </td>
+
+                {% set total = totalArray[assessment.name] %}
+                {% set totalArray = totalArray|merge({ (assessment.name) : total + assessments[assessment.name].attainmentValue|number_format}) %}
+            {% endif %}
+
+            {% if assessment.effortActive == 'Y' %}
+                <td class="border-top border-bottom {{ colspan == 1 ? 'border-left' }} {{ loop.last ? 'border-right' }}">
+                    {{- assessments[assessment.name].effortDescriptor ?? assessments[assessment.name].effortValue }}
+                </td>
+            {% endif %}
+        {% endfor %}
+    </tr> 
+    {% endfor %}
+
+    {% if config.includeAverage == 'Y' %}
+    <tr>
+        <td class="border-top border-bottom border-left">
+            <b>{{ __('Average') }}</b>
+        </td>
+        {% for assessment in internalAssessmentByCourse.assessments %}
+            {% set colspan = assessment.attainmentActive == 'Y' and assessment.effortActive == 'Y' ? 2 : 1 %}
+
+            {% if assessment.attainmentActive == 'Y' %}
+                <td class="border-top border-bottom border-left {{ loop.last and colspan == 1 ? 'border-right' }}">
+                {{- (totalArray[assessment.name] / internalAssessmentByCourse.courses|length)|round(1) }}
+                </td>
+            {% endif %}
+
+            {% if assessment.effortActive == 'Y' %}
+                <td class="border-top border-bottom {{ colspan == 1 ? 'border-left' }} {{ loop.last ? 'border-right' }}">
+                    &nbsp;
+                </td>
+            {% endif %}
+        {% endfor %}
+    </tr>
+    {% endif %}
+</table>
+
+<br/>
