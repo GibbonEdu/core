@@ -65,7 +65,7 @@ class AttendanceByCycle extends DataSource
                 JOIN gibbonAttendanceCode ON (gibbonAttendanceCode.gibbonAttendanceCodeID=gibbonAttendanceLogPerson.gibbonAttendanceCodeID)
                 WHERE gibbonReport.gibbonReportID=:gibbonReportID
                 AND gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID
-                AND FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, gibbonReportingCycle.gibbonYearGroupIDList)
+                AND FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, gibbonReport.gibbonYearGroupIDList)
                 AND gibbonAttendanceLogPerson.date>=gibbonSchoolYear.firstDay
                 AND gibbonAttendanceLogPerson.date<=CURDATE()
                 GROUP BY gibbonAttendanceLogPerson.gibbonAttendanceLogPersonID
@@ -104,8 +104,8 @@ class AttendanceByCycle extends DataSource
                 }, $endOfClasses);
 
                 // Grab the the absent and late count (school-wide)
-                $absent = ($endOfDay['direction'] == 'Out' && $endOfDay['scope'] == 'Offsite')? 1 : 0;
-                $late = ($endOfDay['scope'] == 'Onsite - Late' || $endOfDay['scope'] == 'Offsite - Late')? 1 : 0;
+                $absent = !empty($endOfDay) && ($endOfDay['direction'] == 'Out' && $endOfDay['scope'] == 'Offsite')? 1 : 0;
+                $late = !empty($endOfDay) && ($endOfDay['scope'] == 'Onsite - Late' || $endOfDay['scope'] == 'Offsite - Late')? 1 : 0;
 
                 // Optionally grab the class absent and late counts too
                 if ($this->countClassAsSchool == 'Y') {
