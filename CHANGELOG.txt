@@ -43,8 +43,9 @@ v22.0.00
         Finance: removed student DOB and Gender from Export Invoices
         Formal Assessment: added attainment and effort descriptor as title to Internal Assessment view
         Messenger: updated the send report to list any emails that failed to send
-        Reports: clear report cache when editing template assets in Production
+        Reports: added a help tool with Data Source information to Edit Component page
         Reports: added an option to delete report files from Generate Reports page
+        Reports: clear report cache when editing template assets in Production
         Students: added Medical Form custom fields to student profile
         Students: updated Medical Data Summary to include medical custom fields
         Students: adjusted student select in Student Enrolment Add to only show unenrolled students

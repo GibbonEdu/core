@@ -19,9 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Faker\Factory;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Module\Reports\DataFactory;
-use Gibbon\Module\Reports\ReportRenderer;
-use Gibbon\Module\Reports\ReportTemplate;
 use Gibbon\Module\Reports\ReportBuilder;
 use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
@@ -40,8 +37,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
         $page->getModule()->stylesheets->remove('module');
     }
 
+    $debugMode = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'debugMode');
     $prototypeGateway = $container->get(ReportPrototypeSectionGateway::class);
-    $settingGateway = $container->get(SettingGateway::class);
     $twig = $container->get('twig');
 
     $gibbonReportTemplateID = $_GET['gibbonReportTemplateID'] ?? '';
@@ -80,6 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
             'prototype' => true,
             'marginX' => '10',
             'marginY' => '5',
+            'debugData' => $debugMode ? print_r($reports[0], true) : null,
         ]);
     } else {
         $filename = preg_replace('/[^a-zA-Z0-9-_]/', '', $prototypeSection['name']).__('Preview').'.pdf';
