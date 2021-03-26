@@ -54,6 +54,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
     $form->addHiddenValue('address', $gibbon->session->get('address'));
     $form->addHiddenValue('gibbonReportPrototypeSectionID', $gibbonReportPrototypeSectionID);
 
+    $form->addHeaderAction('help', __('Help'))
+        ->setURL('/modules/Reports/templates_assets_components_help.php')
+        ->setIcon('help')
+        ->addClass('underline')
+        ->displayLabel()
+        ->modalWindow()
+        ->append(' | ');
+
+    $form->addHeaderAction('view', __('Preview'))
+        ->setURL('/modules/Reports/templates_assets_components_preview.php')
+        ->addParam('gibbonReportPrototypeSectionID', $gibbonReportPrototypeSectionID)
+        ->addParam('TB_iframe', 'true')
+        ->modalWindow(1100, 550)
+        ->displayLabel();
+
     $row = $form->addRow();
         $row->addLabel('name', __('Name'));
         $row->addTextField('name')->readonly();
@@ -66,11 +81,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
 
     $col = $form->addRow()->addColumn();
         $col->addLabel('templateContent', __('Template Code'));
-        $col->addWebLink('<img title="'.__('Preview').'" src="./themes/'.$gibbon->session->get('gibbonThemeName').'/img/plus.png" style="margin-bottom:5px"/>')
-                ->setURL($gibbon->session->get('absoluteURL').'/fullscreen.php?q=/modules/Reports/templates_assets_components_preview.php&width=1100&height=550')
-                ->addParam('gibbonReportPrototypeSectionID', $gibbonReportPrototypeSectionID)
-                ->addParam('TB_iframe', 'true')
-                ->addClass('thickbox float-right -mt-3');
         $col->addCodeEditor('templateContent')->setMode('twig')->setValue($templateContent);
 
     $row = $form->addRow();
