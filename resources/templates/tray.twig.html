@@ -14,7 +14,7 @@ Main Menu: Displays the top-level categories and active modules.
             {%if statusTray.messageWall.messages %}
                 <span class='badge -mr-2 right-0'>{{ statusTray.messageWall.messages }}</span>
             {% endif %}
-            <img class="minorLinkIcon {{ statusTray.messageWall.messages ? 'opacity-75' : 'opacity-25' }}" style="margin-left: 4px; vertical-align: -75%" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/messageWall.png">
+            <img class="minorLinkIcon {{ statusTray.messageWall.messages ? 'opacity-75' : 'opacity-25' }} align-middle" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/messageWall.png" alt="{{ __('Message Wall') }}">
         </a>
     </div>
 {% endif %}
@@ -25,7 +25,7 @@ Main Menu: Displays the top-level categories and active modules.
                 <span class="notificationCounter badge -mr-2 right-0 {{ statusTray.notifications.count == 0 ? 'hidden' }}">
                     {{ statusTray.notifications.count > 0 ? statusTray.notifications.count : '' }}
                 </span>
-                <img class="notificationIcon {{ statusTray.notifications.count ? 'opacity-75' : 'opacity-25' }}" style="margin-left: 4px; vertical-align: -75%" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/notifications.png">
+                <img class="notificationIcon {{ statusTray.notifications.count ? 'opacity-75' : 'opacity-25' }} align-middle" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/notifications.png" alt="{{ __('Notifications') }}">
             </a>
 
         <script type="text/javascript">
