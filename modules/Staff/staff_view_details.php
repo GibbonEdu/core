@@ -174,7 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         $table = DataTable::createDetails('overview');
 
                         if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php')) {
-                            $table->addHeaderAction('edit', __m('Edit User'))
+                            $table->addHeaderAction('edit', __('Edit User'))
                                 ->setURL('/modules/User Admin/user_manage_edit.php')
                                 ->addParam('gibbonPersonID', $gibbonPersonID)
                                 ->displayLabel()
@@ -182,7 +182,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         }
 
                         if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php')) {
-                            $table->addHeaderAction('edit2', __m('Edit Staff'))
+                            $table->addHeaderAction('edit2', __('Edit Staff'))
                                 ->setIcon('config')
                                 ->setURL('/modules/Staff/staff_manage_edit.php')
                                 ->addParam('gibbonStaffID', $row['gibbonStaffID'])
@@ -193,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                         $col->addColumn('preferredName', __('Name'))
                             ->format(Format::using('name', ['title', 'preferredName', 'surname', 'Parent']));
-                        $col->addColumn('type', __('Staff Type'));
+                        $col->addColumn('type', __('Staff Type'))->translatable();
                         $col->addColumn('jobTitle', __('Job Title'));
                         $col->addColumn('username', __('Username'));
                         $col->addColumn('email', __('Email'))->format(Format::using('link', 'email'));
@@ -244,7 +244,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         $table = DataTable::createDetails('personal');
 
                         if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php')) {
-                            $table->addHeaderAction('edit', __m('Edit User'))
+                            $table->addHeaderAction('edit', __('Edit User'))
                                 ->setURL('/modules/User Admin/user_manage_edit.php')
                                 ->addParam('gibbonPersonID', $gibbonPersonID)
                                 ->displayLabel()
@@ -252,7 +252,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         }
 
                         if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php')) {
-                            $table->addHeaderAction('edit2', __m('Edit Staff'))
+                            $table->addHeaderAction('edit2', __('Edit Staff'))
                                 ->setIcon('config')
                                 ->setURL('/modules/Staff/staff_manage_edit.php')
                                 ->addParam('gibbonStaffID', $row['gibbonStaffID'])
@@ -263,7 +263,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                         $col->addColumn('preferredName', __('Name'))
                             ->format(Format::using('name', ['title', 'preferredName', 'surname', 'Parent']));
-                        $col->addColumn('type', __('Staff Type'));
+                        $col->addColumn('type', __('Staff Type'))->translatable();
                         $col->addColumn('jobTitle', __('Job Title'));
                         $col->addColumn('initials', __('Initials'));
                         $col->addColumn('gender', __('Gender'));
@@ -430,10 +430,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                                                 } elseif ($rowMember['gender'] == 'F') {
                                                     echo __('Mother');
                                                 } else {
-                                                    echo $rowMember['role'];
+                                                    echo __($rowMember['role']);
                                                 }
                                             } else {
-                                                echo $rowMember['role'];
+                                                echo __($rowMember['role']);
                                             }
                                         });
 
@@ -464,7 +464,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                                 $table->addColumn($emergency . 'Name', __('Contact ' . $i))
                                     ->format(function($row) use ($emergency) {
                                         if ($row[$emergency . 'Relationship'] != '') {
-                                            return $row[$emergency . 'Name'] . ' (' . $row[$emergency . 'Relationship'] . ')';
+                                            return $row[$emergency . 'Name'] . ' (' . __($row[$emergency . 'Relationship']) . ')';
                                         }
                                         return $row[$emergency . 'Name'];
                                     });
@@ -498,12 +498,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             });
                         $table->addColumn('role', __('Role'))
                             ->format(function ($activity) {
-                                return !empty($activity['role']) ? $activity['role'] : __('Student');
+                                return !empty($activity['role']) ? __($activity['role']) : __('Student');
                             });
 
                         $table->addColumn('status', __('Status'))
                             ->format(function ($activity) {
-                                return !empty($activity['status']) ? $activity['status'] : '<i>'.__('N/A').'</i>';
+                                return !empty($activity['status']) ? __($activity['status']) : '<i>'.__('N/A').'</i>';
                             });
 
                         $table->addActionColumn()
