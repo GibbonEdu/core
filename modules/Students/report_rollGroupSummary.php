@@ -108,6 +108,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
     $table->addColumn('meanAge', __('Mean Age'));
     $table->addColumn('totalMale', __('Male'));
     $table->addColumn('totalFemale', __('Female'));
+    $table->addColumn('totalOther', __('Other'));
+    $table->addColumn('totalUnspecified', __('Unspecified'));
     $table->addColumn('total', __('Total'));
 
     $rollGroupsData = $rollGroups->toArray();
@@ -118,6 +120,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
         'meanAge'     => !empty($filteredAges) ? number_format(array_sum($filteredAges) / count($filteredAges), 1) : 0,
         'totalMale'   => array_sum(array_column($rollGroupsData, 'totalMale')),
         'totalFemale' => array_sum(array_column($rollGroupsData, 'totalFemale')),
+        'totalOther' => array_sum(array_column($rollGroupsData, 'totalOther')),
+        'totalUnspecified' => array_sum(array_column($rollGroupsData, 'totalUnspecified')),
         'total'       => array_sum(array_column($rollGroupsData, 'total')),
     ];
 
