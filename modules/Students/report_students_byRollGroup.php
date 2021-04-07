@@ -110,7 +110,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
         });
 
     if ($criteria->hasFilter('view', 'extended')) {
-        $table->addColumn('gender', __('Gender'));
+        $table->addColumn('gender', __('Gender'))
+                ->format(Format::using('genderName', 'gender'));
         $table->addColumn('dob', __('Age').'<br/>'.Format::small('DOB'))
             ->format(function ($values) {
                 return !empty($values['dob'])

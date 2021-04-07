@@ -266,7 +266,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         $col->addColumn('type', __('Staff Type'));
                         $col->addColumn('jobTitle', __('Job Title'));
                         $col->addColumn('initials', __('Initials'));
-                        $col->addColumn('gender', __('Gender'));
+                        $col->addColumn('gender', __('Gender'))
+                            ->format(Format::using('genderName', 'gender'));
                         $col->addColumn('initials', __('Initials'));
 
                         $col = $table->addColumn('Contacts', __('Contacts'));

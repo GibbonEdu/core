@@ -95,6 +95,8 @@ class StudentReportGateway extends QueryableGateway
                 "count(DISTINCT gibbonPerson.gibbonPersonID) AS total",
                 "count(CASE WHEN gibbonPerson.gender='M' THEN gibbonPerson.gibbonPersonID END) as totalMale",
                 "count(CASE WHEN gibbonPerson.gender='F' THEN gibbonPerson.gibbonPersonID END) as totalFemale",
+                "count(CASE WHEN gibbonPerson.gender='Other' THEN gibbonPerson.gibbonPersonID END) as totalOther",
+                "count(CASE WHEN gibbonPerson.gender='Unspecified' THEN gibbonPerson.gibbonPersonID END) as totalUnspecified",
             ])
             ->leftJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
             ->leftJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
