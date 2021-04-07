@@ -155,7 +155,7 @@ class StudentHistoryData
 
                 $dayData = [
                     'date'            => $dateYmd,
-                    'dateDisplay'     => Format::date($date),
+                    'dateDisplay'     => Format::date($dateYmd),
                     'logs'            => $logs[$dateYmd] ?? [],
                     'classLogs'       => $classLogs[$dateYmd] ?? [],
                     'endOfDay'        => $endOfDay,
