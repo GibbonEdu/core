@@ -526,6 +526,7 @@ ul.ui-tabs-nav li.ui-state-default {
 }
 ul.ui-tabs-nav li.ui-state-default a {
     color: rgba(0, 0, 0, 1);
+    outline: none;
 }
 
 div.ui-widget-overlay {
