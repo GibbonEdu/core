@@ -341,6 +341,25 @@ class Format
     }
 
     /**
+     * Formats a F/M/Other/Unspecified value as Female/Male/Other/Unspecified in the current language.
+     *
+     * @param string $value
+     * @param bool   $translate
+     * @return string
+     */
+    public static function genderName($value, $translate = true)
+    {
+        $genderNames = [
+            'F'           => __('Female'),
+            'M'           => __('Male'),
+            'Other'       => __('Other'),
+            'Unspecified' => __('Unspecified')
+            ];
+        
+        return $translate ? __($genderNames[$value]) : $genderNames[$value];
+    }    
+    
+    /**
      * Formats a filesize in bytes to display in KB, MB, etc.
      *
      * @param int $bytes
