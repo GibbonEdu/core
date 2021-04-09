@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
 
     $form->setClass('noIntBorder fullWidth');
 
-    $form->setTitle('Filter');
+    $form->setTitle(__('Filter'));
 
     $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_consecutiveAbsences.php");
 
