@@ -649,7 +649,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $col->addColumn('preferredName', __('Preferred Name'));
                         $col->addColumn('officialName', __('Official Name'));
                         $col->addColumn('nameInCharacters', __('Name In Characters'));
-                        $col->addColumn('gender', __('Gender'));
+                        $col->addColumn('gender', __('Gender'))
+                                ->format(Format::using('genderName', 'gender'));
                         $col->addColumn('dob', __('Date of Birth'))->format(Format::using('date', 'dob'));
                         $col->addColumn('age', __('Age'))->format(Format::using('age', 'dob'));
 
