@@ -210,20 +210,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 }
 
                 if ($nextDate == '') {
-                    
-                        $dataNext = array('gibbonCourseClassID' => $gibbonCourseClassID, 'date' => date('Y-m-d'));
-                        $sqlNext = 'SELECT timeStart, timeEnd, date FROM gibbonTTDayRowClass JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTColumn ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND date>=:date ORDER BY date, timestart LIMIT 0, 10';
-                        $resultNext = $connection2->prepare($sqlNext);
-                        $resultNext->execute($dataNext);
+                    $dataNext = array('gibbonCourseClassID' => $gibbonCourseClassID, 'date' => date('Y-m-d'));
+                    $sqlNext = "SELECT gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonTTDayDate.date 
+                    FROM gibbonTTDayRowClass 
+                    JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) 
+                    JOIN gibbonTTColumn ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) 
+                    JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) 
+                    JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) 
+                    LEFT JOIN gibbonSchoolYearSpecialDay ON (gibbonSchoolYearSpecialDay.date=gibbonTTDayDate.date AND gibbonSchoolYearSpecialDay.type='School Closure')
+                    WHERE gibbonTTDayRowClass.gibbonCourseClassID=:gibbonCourseClassID 
+                    AND gibbonTTDayDate.date>=:date 
+                    AND gibbonSchoolYearSpecialDayID IS NULL
+                    ORDER BY gibbonTTDayDate.date, gibbonTTColumnRow.timestart 
+                    LIMIT 0, 10";
+                    $resultNext = $connection2->prepare($sqlNext);
+                    $resultNext->execute($dataNext);
                     $nextDate = '';
                     $nextTimeStart = '';
                     $nextTimeEnd = '';
                     while ($rowNext = $resultNext->fetch()) {
-                        
-                            $dataPlanner = array('date' => $rowNext['date'], 'timeStart' => $rowNext['timeStart'], 'timeEnd' => $rowNext['timeEnd'], 'gibbonCourseClassID' => $gibbonCourseClassID);
-                            $sqlPlanner = 'SELECT * FROM gibbonPlannerEntry WHERE date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd AND gibbonCourseClassID=:gibbonCourseClassID';
-                            $resultPlanner = $connection2->prepare($sqlPlanner);
-                            $resultPlanner->execute($dataPlanner);
+                        $dataPlanner = array('date' => $rowNext['date'], 'timeStart' => $rowNext['timeStart'], 'timeEnd' => $rowNext['timeEnd'], 'gibbonCourseClassID' => $gibbonCourseClassID);
+                        $sqlPlanner = 'SELECT * FROM gibbonPlannerEntry WHERE date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd AND gibbonCourseClassID=:gibbonCourseClassID';
+                        $resultPlanner = $connection2->prepare($sqlPlanner);
+                        $resultPlanner->execute($dataPlanner);
                         if ($resultPlanner->rowCount() == 0) {
                             $nextDate = $rowNext['date'];
                             $nextTimeStart = $rowNext['timeStart'];
