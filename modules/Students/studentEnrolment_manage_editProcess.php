@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+use Gibbon\Domain\RollGroups\RollGroupGateway;
+
 include '../../gibbon.php';
 
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
@@ -41,7 +44,7 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
         } else {
             try {
                 $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID);
-                $sql = 'SELECT gibbonRollGroup.gibbonRollGroupID, gibbonYearGroup.gibbonYearGroupID,gibbonStudentEnrolmentID, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID ORDER BY surname, preferredName';
+                $sql = 'SELECT gibbonRollGroup.gibbonRollGroupID, gibbonYearGroup.gibbonYearGroupID,gibbonStudentEnrolmentID, gibbonPerson.gibbonPersonID, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID ORDER BY surname, preferredName';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
@@ -55,8 +58,16 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
                 header("Location: {$URL}");
                 exit;
             } else {
+                $row = $result->fetch();
+
                 $gibbonYearGroupID = $_POST['gibbonYearGroupID'];
                 $gibbonRollGroupID = $_POST['gibbonRollGroupID'];
+                $gibbonRollGroupIDOriginal = (isset($_POST['gibbonRollGroupIDOriginal']))? $_POST['gibbonRollGroupIDOriginal'] : 'N';
+                $rollGroupOriginalNameShort = $_POST['rollGroupOriginalNameShort'] ?? '';
+                $gibbonPersonID = $row['gibbonPersonID'];
+
+                $rollGroupTo = $container->get(RollGroupGateway::class)->getRollGroupByID($gibbonRollGroupID);
+                $rollGroupToName = $rollGroupTo['nameShort'];
 
                 $rollOrder = $_POST['rollOrder'];
                 if ($rollOrder == '') {
@@ -97,8 +108,6 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
                     if ($autoEnrolStudent == 'Y') {
 
                         // Remove existing auto-enrolment: moving a student from one Roll Group to another
-                        $gibbonRollGroupIDOriginal = (isset($_POST['gibbonRollGroupIDOriginal']))? $_POST['gibbonRollGroupIDOriginal'] : 'N';
-
                         $data = array('gibbonRollGroupIDOriginal' => $gibbonRollGroupIDOriginal, 'gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID, 'dateUnenrolled' => date('Y-m-d'));
                         $sql = "UPDATE gibbonCourseClassPerson
                                 JOIN gibbonStudentEnrolment ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
@@ -116,9 +125,9 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
 
                         // Update existing course enrolments for new Roll Group
                         $data = array('gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID, 'dateEnrolled' => date('Y-m-d'));
-                        $sql = "UPDATE gibbonCourseClassPerson 
+                        $sql = "UPDATE gibbonCourseClassPerson
                                 JOIN gibbonStudentEnrolment ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                                JOIN gibbonCourseClassMap ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID 
+                                JOIN gibbonCourseClassMap ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID
                                     AND gibbonCourseClassMap.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID)
                                 SET gibbonCourseClassPerson.role='Student', gibbonCourseClassPerson.dateEnrolled=:dateEnrolled, gibbonCourseClassPerson.dateUnenrolled=NULL, reportable='Y'
                                 WHERE gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID
@@ -135,6 +144,20 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
                                 WHERE gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID
                                 AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL";
                         $pdo->executeQuery($data, $sql);
+
+                        if ($pdo->getQuerySuccess() == false) {
+                            $URL .= "&return=warning3";
+                            header("Location: {$URL}");
+                            exit;
+                        }
+                    }
+
+                    // Add student note
+                    if ($gibbonRollGroupID != $gibbonRollGroupIDOriginal) {
+                        $data = array('title' => __('Change of Form Group'), 'note' => __('Student\'s form group was changed from {formGroupFrom} to {formGroupTo} on {date}', ['formGroupFrom' => $rollGroupOriginalNameShort, 'formGroupTo' => $rollGroupToName, 'date' => Format::date(date('Y-m-d'))]), 'gibbonPersonID' => $gibbonPersonID, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'timestamp' => date('Y-m-d H:i:s', time()));
+                        $sql = 'INSERT INTO gibbonStudentNote SET title=:title, note=:note, gibbonPersonID=:gibbonPersonID, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestamp=:timestamp';
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
 
                         if ($pdo->getQuerySuccess() == false) {
                             $URL .= "&return=warning3";

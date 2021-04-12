@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
     if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
         $studentGateway = $container->get(StudentGateway::class);
         $enrollment = $studentGateway->getByID($gibbonStudentEnrolmentID);
         if (empty($enrollment)) {
@@ -68,6 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
         $form->addHiddenValue('gibbonStudentEnrolmentID', $gibbonStudentEnrolmentID);
         $form->addHiddenValue('gibbonPersonID', $values['gibbonPersonID']);
         $form->addHiddenValue('gibbonRollGroupIDOriginal', $values['gibbonRollGroupID']);
+        $form->addHiddenValue('rollGroupOriginalNameShort', $values['rollGroup']);
 
         $schoolYear = $container->get(SchoolYearGateway::class)->getByID($gibbonSchoolYearID, ['name']);
         $schoolYearName = $schoolYear['name'] ?? $_SESSION[$guid]['gibbonSchoolYearName'];
@@ -132,6 +133,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
         $form->loadAllValuesFrom($values);
 
         echo $form->getOutput();
-        
+
     }
 }
