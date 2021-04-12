@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
             }
         }
         list($todayYear, $todayMonth, $todayDay) = explode('-', $today);
-        $todayStamp = mktime(0, 0, 0, $todayMonth, $todayDay, $todayYear);
+        $todayStamp = mktime(12, 0, 0, $todayMonth, $todayDay, $todayYear);
         $gibbonPersonIDArray = [];
 
         //My children's classes
