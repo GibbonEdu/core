@@ -691,7 +691,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $col->addColumn('classOf', __('Class Of'))->format(function ($values) use ($schoolYearGateway) {
                             if (empty($values['gibbonSchoolYearIDClassOf'])) return Format::small(__('N/A'));
                             $schoolYear = $schoolYearGateway->getByID($values['gibbonSchoolYearIDClassOf'], ['name']);
-                            return $schoolYear['name'];
+                            return $schoolYear['name'] ?? '';
                         });
                         $col->addColumn('nextSchool', __('Next School'));
                         $col->addColumn('dateEnd', __('End Date'))->format(Format::using('date', 'dateEnd'));
