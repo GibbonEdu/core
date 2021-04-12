@@ -50,6 +50,7 @@ v22.0.00
         Students: added Medical Form custom fields to student profile
         Students: updated Medical Data Summary to include medical custom fields
         Students: adjusted student select in Student Enrolment Add to only show unenrolled students
+        Students: automatically add Student Note on form group change
         System Admin: added option to manually invalidate front end cache for Cutting Edge installs
         System Admin: added a Reporting Values by Roll Group import option
         System Admin: updated user-related imports to enable importing by username or email address
