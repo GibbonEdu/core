@@ -636,7 +636,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $table = DataTable::createDetails('overview');
 
                         if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php')) {
-                            $table->addHeaderAction('edit', __m('Edit User'))
+                            $table->addHeaderAction('edit', __('Edit User'))
                                 ->setURL('/modules/User Admin/user_manage_edit.php')
                                 ->addParam('gibbonPersonID', $gibbonPersonID)
                                 ->displayLabel();
@@ -648,7 +648,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $col->addColumn('firstName', __('First Name'))->addClass('col-span-2');
                         $col->addColumn('preferredName', __('Preferred Name'));
                         $col->addColumn('officialName', __('Official Name'));
-                        $col->addColumn('nameInCharacters', __('Name in Characters'));
+                        $col->addColumn('nameInCharacters', __('Name In Characters'));
                         $col->addColumn('gender', __('Gender'))
                                 ->format(Format::using('genderName', 'gender'));
                         $col->addColumn('dob', __('Date of Birth'))->format(Format::using('date', 'dob'));
@@ -701,7 +701,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $country = $gibbon->session->get('country');
 
                         $col->addColumn('countryOfBirth', __('Country of Birth'))->format(function ($values) {
-                            $output = $values['countryOfBirth'];
+                            $output = __($values['countryOfBirth']);
                             if (!empty($values['birthCertificateScan'])) {
                                 $output .= '<br/>'.Format::link('./'.$values['birthCertificateScan'], __('View Birth Certificate'), ['target' => '_blank']);
                             }
@@ -729,7 +729,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             }
                             return $output;
                         });
-                        $col->addColumn('nationalIDCardNumber', $country ? $country.' '.__('ID Card') : __('National ID Card'))->format(function ($values) {
+                        $col->addColumn('nationalIDCardNumber', $country ? __($country).' '.__('ID Card') : __('National ID Card'))->format(function ($values) {
                             $output = $values['nationalIDCardNumber'];
                             if (!empty($values['nationalIDCardScan'])) {
                                 $output .= '<br/>'.Format::link('./'.$values['nationalIDCardScan'], __('View ID Card'), ['target' => '_blank']);
@@ -739,8 +739,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $col->addColumn('languageFirst', __('First Language'));
                         $col->addColumn('languageSecond', __('Second Language'));
                         $col->addColumn('languageThird', __('Third Language'));
-                        $col->addColumn('residencyStatus', $country ? $country.' '.__('Residency/Visa Type') : __('Residency/Visa Type'));
-                        $col->addColumn('visaExpiryDate', $country ? $country.' '.__('Visa Expiry Date') :__('Visa Expiry Date'))
+                        $col->addColumn('residencyStatus', $country ? __($country).' '.__('Residency/Visa Type') : __('Residency/Visa Type'));
+                        $col->addColumn('visaExpiryDate', $country ? __($country).' '.__('Visa Expiry Date') :__('Visa Expiry Date'))
                             ->format(Format::using('date', 'visaExpiryDate'));
 
                         $col = $table->addColumn('System Access', __('System Access'));
