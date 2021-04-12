@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
 
         if ($gibbonCourseClassID == '') {
             $row = getAnyTaughtClass( $pdo, $gibbon->session->get('gibbonPersonID'), $gibbon->session->get('gibbonSchoolYearID') );
-            $gibbonCourseClassID = (isset($row['gibbonCourseClassID']))? $row['gibbonCourseClassID'] : '';
+            $gibbonCourseClassID = $row['gibbonCourseClassID'] ?? '';
         }
 
         if ($gibbonCourseClassID == '') {
@@ -222,10 +222,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                         }
                         echo '</td>';
                         echo '<td>';
-                        echo $row['viewableStudents'];
+                        echo Format::yesNo($row['viewableStudents']);
                         echo '</td>';
                         echo '<td>';
-                        echo $row['viewableParents'];
+                        echo Format::yesNo($row['viewableParents']);
                         echo '</td>';
                         echo '<td>';
                         echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/markbook_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$row['gibbonMarkbookColumnID']."'><img title='".__('Edit')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/config.png'/></a> ";
