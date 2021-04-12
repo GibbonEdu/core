@@ -378,10 +378,12 @@ function getFastFinder($connection2, $guid)
         $row->addFinder('fastFinderSearch')
             ->fromAjax($_SESSION[$guid]['absoluteURL'].'/index_fastFinder_ajax.php')
             ->setClass('w-full text-white flex items-center')
+            ->setAria('label', __('Search'))
             ->setParameter('hintText', __('Start typing a name...'))
             ->setParameter('noResultsText', __('No results'))
             ->setParameter('searchingText', __('Searching...'))
             ->setParameter('tokenLimit', 1)
+            ->setParameter('arialabel', __('Fast Finder'))
             ->addValidation('Validate.Presence', 'failureMessage: " "')
             ->append('<input type="submit" style="height:34px;padding:0 1rem;" value="'.__('Go').'">');
 
