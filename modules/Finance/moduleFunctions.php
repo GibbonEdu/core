@@ -695,7 +695,7 @@ function makeFeeBlock($guid, $connection2, $i, $mode = 'add', $feeType, $gibbonF
 						<script type="text/javascript">
 							var fee<?php echo $i ?>=new LiveValidation('fee<?php echo $i ?>');
 							fee<?php echo $i ?>.add(Validate.Presence);
-							fee<?php echo $i ?>.add( Validate.Format, { pattern: /^-?[0-9]{1,13}(?:\.[0-9]{1,2})?$/, failureMessage: __("Invalid number format!") } );
+							fee<?php echo $i ?>.add( Validate.Format, { pattern: /^-?[0-9]{1,13}(?:\.[0-9]{1,2})?$/, failureMessage: "<?php echo __('Invalid number format!'); ?>" } );
 						</script>
 					</td>
 					<td style='text-align: right; width: 30%'>
