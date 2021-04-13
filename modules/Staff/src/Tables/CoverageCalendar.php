@@ -46,6 +46,7 @@ class CoverageCalendar
         );
 
         $coverageByDate = array_reduce($coverage, function ($group, $item) {
+            if ($item['status'] == 'Cancelled' || $item['status'] == 'Declined') return $group;
             $group[$item['date']][] = $item;
             return $group;
         }, []);
