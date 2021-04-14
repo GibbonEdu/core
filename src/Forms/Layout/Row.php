@@ -72,7 +72,7 @@ class Row
             }
 
             if ($function == 'createSubmit') {
-                $this->setHeading('');
+                $this->setHeading('submit');
             }
         } catch (\ReflectionException $e) {
             $element = $this->factory->createContent(strtr('Cannot {function}. This form element does not exist in the current FormFactory: {message}', [
