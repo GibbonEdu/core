@@ -322,6 +322,7 @@ class Page extends View
         return [
             'title'        => $this->getTitle(),
             'breadcrumbs'  => $displayTrail ? $breadcrumbs : [],
+            'helpLink'     => $this->action['helpURL'] ?? '',
             'alerts'       => $this->getAlerts(),
             'stylesheets'  => $this->getAllStylesheets(),
             'scriptsHead'  => $this->getAllScripts('head'),
