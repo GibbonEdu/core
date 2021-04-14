@@ -99,24 +99,8 @@ class CustomField extends Input
 
             case 'select':
                 $this->customField = $this->factory->createSelect($name);
-                if (is_string($options)) {
-                    $optionArray = array_map('trim', explode(',', $options));
-                    $options = [];
-                    
-                    // Enable [] around an option to create optgroups
-                    for ($i = 0; $i < count($optionArray); $i++) {
-                        $option = $optionArray[$i];
-                        if (substr($option, 0, 1 ) == '[') {
-                            $optGroup = trim($option, '[]');
-                            continue;
-                        }
-                        if (!empty($optGroup)) {
-                            $options[$optGroup][$option] = $option;
-                        } else {
-                            $options[$option] = $option;
-                        }
-                    }
-                }
+                $options = $this->parseOptions($options);
+
                 if (!empty($options)) {
                     $this->customField->fromArray($options)->placeholder();
                 }
@@ -124,9 +108,9 @@ class CustomField extends Input
 
             case 'checkboxes': 
                 $this->customField = $this->factory->createCheckbox($name);
-                if (!empty($options) && is_string($options)) {
-                    $this->customField->fromString($options)->alignRight();
-                } else if (!empty($options) && is_array($options)) {
+                $options = $this->parseOptions($options);
+                
+                if (!empty($options)) {
                     $this->customField->fromArray($options)->alignRight();
                 }
                 break;
@@ -233,5 +217,29 @@ class CustomField extends Input
     public function getValidationOutput()
     {
         return $this->customField->getValidationOutput();
+    }
+
+    protected function parseOptions($options) : array
+    {
+        if (is_array($options)) return $options;
+
+        $optionArray = array_map('trim', explode(',', $options));
+        $options = [];
+        
+        // Enable [] around an option to create optgroups
+        for ($i = 0; $i < count($optionArray); $i++) {
+            $option = $optionArray[$i];
+            if (substr($option, 0, 1 ) == '[') {
+                $optGroup = trim($option, '[]');
+                continue;
+            }
+            if (!empty($optGroup)) {
+                $options[$optGroup][$option] = $option;
+            } else {
+                $options[$option] = $option;
+            }
+        }
+
+        return $options;
     }
 }
