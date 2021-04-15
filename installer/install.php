@@ -905,8 +905,8 @@ $page->addData([
     'gibbonThemeName' => 'Default',
     'absolutePath'    => realpath('../'),
     'absoluteURL'     => str_replace('/installer/install.php', '', $_SERVER['PHP_SELF']),
-    'bodyBackground'  => "background: url('../themes/Default/img/backgroundPage.jpg') repeat fixed center top #A88EDB!important;",
-    'sidebar'         => true
+    'sidebar'         => true,
+    'contentClass'    => 'max-w-3xl mx-auto',
 ]);
 
 echo $page->render('installer/install.twig.html');
