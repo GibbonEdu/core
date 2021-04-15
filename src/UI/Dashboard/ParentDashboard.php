@@ -52,7 +52,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
 
         $students = [];
 
-        
+
             $data = ['gibbonPersonID' => $this->session->get('gibbonPersonID')];
             $sql = "SELECT * FROM gibbonFamilyAdult WHERE
                 gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
@@ -62,7 +62,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
         if ($result->rowCount() > 0) {
             // Get child list
             while ($row = $result->fetch()) {
-                
+
                     $dataChild = [
                         'gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'),
                         'gibbonFamilyID' => $row['gibbonFamilyID'],
@@ -98,7 +98,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
 
         if (count($students) > 0) {
             include_once $this->session->get('absolutePath').'/modules/Timetable/moduleFunctions.php';
-            
+
             $output .= '<h2>'.__('Parent Dashboard').'</h2>';
 
             foreach ($students as $student) {
@@ -107,7 +107,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                     '</h4>';
 
                 $output .= '<section class="flex flex-col sm:flex-row">';
-                
+
                 $output .= '<div class="w-24 text-center mx-auto mb-4 sm:ml-0 sm:mr-4">'.
                     getUserPhoto($guid, $student['image_240'], 75).
                     "<div style='height: 5px'></div>".
@@ -344,7 +344,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                 } else {
                     $gradesOutput .= "<td style='text-align: center'>";
                     $attainmentExtra = '';
-                    
+
                         $dataAttainment = array('gibbonScaleID' => $rowEntry['gibbonScaleIDAttainment']);
                         $sqlAttainment = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
                         $resultAttainment = $connection2->prepare($sqlAttainment);
@@ -377,7 +377,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                     } else {
                         $gradesOutput .= "<td style='text-align: center'>";
                         $effortExtra = '';
-                        
+
                             $dataEffort = array('gibbonScaleID' => $rowEntry['gibbonScaleIDEffort']);
                             $sqlEffort = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
                             $resultEffort = $connection2->prepare($sqlEffort);
@@ -525,7 +525,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
 
         //PREPARE UPCOMING DEADLINES
         $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
-        
+
         $deadlinesOutput = "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__('Upcoming Due Dates')."</span> . <span style='font-size: 70%'><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_deadlines.php&search='.$gibbonPersonID."'>".__('View {homeworkName}', ['homeworkName' => __($homeworkNamePlural)]).'</a></span></div>';
         $deadlines = false;
 
@@ -727,7 +727,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
             while ($rowHooks = $resultHooks->fetch()) {
                 $options = unserialize($rowHooks['options']);
                 //Check for permission to hook
-                
+
                     $dataHook = array('gibbonRoleIDCurrent' => $_SESSION[$guid]['gibbonRoleIDCurrent'], 'sourceModuleName' => $options['sourceModuleName']);
                     $sqlHook = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action FROM gibbonHook JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent AND name=:sourceModuleName) AND gibbonHook.type='Parental Dashboard'  AND gibbonAction.name='".$options['sourceModuleAction']."' AND gibbonModule.name='".$options['sourceModuleName']."' ORDER BY name";
                     $resultHook = $connection2->prepare($sqlHook);
@@ -774,7 +774,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
             $tabCountExtra = $tabCountExtraReset;
             foreach ($hooks as $hook) {
                 ++$tabCountExtra;
-                $return .= "<li><a href='#tabs".$tabCountExtra."'>".__($hook['name']).'</a></li>';
+                $return .= "<li><a href='#tabs".$tabCountExtra."'>".__($hook['name'], [], $hook['sourceModuleName']).'</a></li>';
             }
             $return .= '</ul>';
 
