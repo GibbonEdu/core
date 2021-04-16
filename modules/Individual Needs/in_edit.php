@@ -134,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
             $table = DataTable::createDetails('personal');
             $table->addColumn('name', __('Name'))->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', 'true']));
                         $table->addColumn('yearGroup', __('Year Group'));
-                        $table->addColumn('rollGroup', __('Roll Group'));
+                        $table->addColumn('rollGroup', __('Form Group'));
 
             echo $table->render([$student]);
 

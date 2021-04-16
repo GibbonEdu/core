@@ -134,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     }
                     echo '</td>';
                     echo "<td style='width: 34%; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Roll Group').'</span><br/>';
+                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Form Group').'</span><br/>';
 
                     $dataDetail = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
                     $sqlDetail = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
@@ -331,7 +331,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Roll Group').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Form Group').'</span><br/>';
                         if (isset($row['gibbonRollGroupID'])) {
 
                                 $dataDetail = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
@@ -669,7 +669,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $col->addColumn('yearGroup', __('Year Group'))->format(function ($values) use ($student) {
                             return $student['yearGroupName'];
                         });
-                        $col->addColumn('gibbonRollGroupID', __('Roll Group'))->format(function ($values) use ($student) {
+                        $col->addColumn('gibbonRollGroupID', __('Form Group'))->format(function ($values) use ($student) {
                             return Format::link('./index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID='.$student['gibbonRollGroupID'], $student['rollGroupName']);
                         });
                         $col->addColumn('email', __('Tutors'))->format(function ($values) use ($tutors) {
@@ -2007,7 +2007,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     });
 
                                 $table->addColumn('yearGroup', __('Year Group'))->width('15%');
-                                $table->addColumn('rollGroup', __('Roll Group'))->width('15%');
+                                $table->addColumn('rollGroup', __('Form Group'))->width('15%');
                                 $table->addColumn('timestampModified', __('Date'))
                                     ->width('30%')
                                     ->format(function ($report) {

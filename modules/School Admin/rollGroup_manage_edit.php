@@ -29,8 +29,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 
     $page->breadcrumbs
-        ->add(__('Manage Roll Groups'), 'rollGroup_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
-        ->add(__('Edit Roll Group'));
+        ->add(__('Manage Form Groups'), 'rollGroup_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+        ->add(__('Edit Form Group'));
 
     //Check if school year specified
     if ($gibbonRollGroupID == '' or $gibbonSchoolYearID == '') {
@@ -67,14 +67,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
                 $row->addTextField('nameShort')->required()->maxLength(8);
 
             $row = $form->addRow();
-                $row->addLabel('tutors', __('Tutors'))->description(__('Up to 3 per roll group. The first-listed will be marked as "Main Tutor".'));
+                $row->addLabel('tutors', __('Tutors'))->description(__('Up to 3 per form group. The first-listed will be marked as "Main Tutor".'));
                 $column = $row->addColumn()->addClass('stacked');
                 $column->addSelectStaff('gibbonPersonIDTutor')->placeholder()->photo(false);
                 $column->addSelectStaff('gibbonPersonIDTutor2')->placeholder()->photo(false);
                 $column->addSelectStaff('gibbonPersonIDTutor3')->placeholder()->photo(false);
 
             $row = $form->addRow();
-                $row->addLabel('EAs', __('Educational Assistant'))->description(__('Up to 3 per roll group.'));
+                $row->addLabel('EAs', __('Educational Assistant'))->description(__('Up to 3 per form group.'));
                 $column = $row->addColumn()->addClass('stacked');
                 $column->addSelectStaff('gibbonPersonIDEA')->placeholder()->photo(false);
                 $column->addSelectStaff('gibbonPersonIDEA2')->placeholder()->photo(false);
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 
             $nextYear = getNextSchoolYearID($gibbonSchoolYearID, $connection2);
             $row = $form->addRow();
-                $row->addLabel('gibbonRollGroupIDNext', __('Next Roll Group'))->description(__('Sets student progression on rollover.'));
+                $row->addLabel('gibbonRollGroupIDNext', __('Next Form Group'))->description(__('Sets student progression on rollover.'));
                 if (empty($nextYear)) {
                     $row->addAlert(__('The next school year cannot be determined, so this value cannot be set.'));
                 } else {

@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
         $row->addSelect('gibbonAlertLevelID')->fromQuery($pdo, $sql)->selected($gibbonAlertLevelID)->placeholder();
 
     $row = $form->addRow();
-        $row->addLabel('gibbonRollGroupID', __('Roll Group'));
+        $row->addLabel('gibbonRollGroupID', __('Form Group'));
         $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->placeholder();
     
     $row = $form->addRow();
@@ -124,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
         ->sortable(['surname', 'preferredName'])
         ->format(Format::using('nameLinked', ['gibbonPersonID', '', 'preferredName', 'surname', 'Student', true, false, ['subpage' => 'Individual Needs']]));
     $table->addColumn('yearGroup', __('Year Group'));
-    $table->addColumn('rollGroup', __('Roll Group'));
+    $table->addColumn('rollGroup', __('Form Group'));
 
     $table->addActionColumn()
         ->addParam('gibbonPersonID')

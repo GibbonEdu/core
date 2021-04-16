@@ -24,7 +24,7 @@ use Gibbon\Services\Format;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$page->breadcrumbs->add(__('Work Summary by Roll Group'));
+$page->breadcrumbs->add(__('Work Summary by Form Group'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary_byRollGroup.php') == false) {
     // Access denied
@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
     echo '</p>';
 
     echo '<h2>';
-    echo __('Choose Roll Group');
+    echo __('Choose Form Group');
     echo '</h2>';
 
     $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : null;
@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/report_workSummary_byRollGroup.php');
 
     $row = $form->addRow();
-        $row->addLabel('gibbonRollGroupID', __('Roll Group'));
+        $row->addLabel('gibbonRollGroupID', __('Form Group'));
         $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->required()->selected($gibbonRollGroupID);
 
     $row = $form->addRow();

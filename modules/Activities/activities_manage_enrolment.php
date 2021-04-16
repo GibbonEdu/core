@@ -135,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 echo __('Student');
                 echo '</th>';
                 echo '<th>';
-                echo __('Roll Group');
+                echo __('Form Group');
                 echo '</th>';
                 echo '<th>';
                 echo __('Status');

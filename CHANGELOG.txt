@@ -29,6 +29,7 @@ v22.0.00
         System: added an Enrolment tab to the Staff Dashboard
         System: added help buttons to the top of pages linking to documentation, when available
         System: renamed the old theme to Legacy, which is not installed by default
+        System: changed interface strings from Roll Group to Form Group 
 
     Changes With Important Notices
         System: removed the vendor folder for Cutting Edge Code installations

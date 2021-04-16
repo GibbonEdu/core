@@ -39,10 +39,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     $viewMode = $_REQUEST['format'] ?? '';
 
     if (empty($viewMode)) {
-        $page->breadcrumbs->add(__('Activity Spread by Roll Group'));
+        $page->breadcrumbs->add(__('Activity Spread by Form Group'));
 
         echo '<h2>';
-        echo __('Choose Roll Group');
+        echo __('Choose Form Group');
         echo '</h2>';
 
         $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_activitySpread_rollGroup.php");
 
         $row = $form->addRow();
-            $row->addLabel('gibbonRollGroupID', __('Roll Group'));
+            $row->addLabel('gibbonRollGroupID', __('Form Group'));
             $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->required();
 
         $row = $form->addRow();
@@ -90,9 +90,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     // DATA TABLE
     $table = ReportTable::createPaginated('activitySpread_rollGroup', $criteria)->setViewMode($viewMode, $gibbon->session);
 
-    $table->setTitle(__('Activity Spread by Roll Group'));
+    $table->setTitle(__('Activity Spread by Form Group'));
 
-    $table->addColumn('rollGroup', __('Roll Group'))->width('10%');
+    $table->addColumn('rollGroup', __('Form Group'))->width('10%');
     $table->addColumn('student', __('Student'))
         ->sortable(['surname', 'preferredName'])
         ->format(function ($student) use ($guid) {

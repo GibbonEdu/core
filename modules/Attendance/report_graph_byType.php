@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
     $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
     $sql = "SELECT gibbonRollGroupID as value, name FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY LENGTH(name), name";
     $row = $form->addRow();
-        $row->addLabel('gibbonRollGroupID', __('Roll Group'));
+        $row->addLabel('gibbonRollGroupID', __('Form Group'));
         $row->addSelect('gibbonRollGroupID')->fromArray(array('all' => __('All')))->fromQuery($pdo, $sql, $data)->selectMultiple()->selected($rollGroups);
 
     $row = $form->addRow();

@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byFamily.p
         ->sortable(['surname', 'preferredName'])
         ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true]));
     $table->addColumn('yearGroup', __('Year Group'));
-    $table->addColumn('rollGroup', __('Roll Group'));
+    $table->addColumn('rollGroup', __('Form Group'));
 
     $table->addActionColumn()
         ->addParam('gibbonPersonID')

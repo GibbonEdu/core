@@ -5,7 +5,7 @@ details:
     modes: { update: true, insert: true, export: true }
 access:
     module: School Admin
-    action: Manage Roll Groups
+    action: Manage Form Groups
 primaryKey:
     gibbonRollGroupID
 uniqueKeys:
@@ -27,7 +27,7 @@ table:
         args: { filter: string, required: true }
     gibbonPersonIDTutor: 
         name: "Tutor 1"
-        desc: "Up to 3 per roll group. The first-listed will be marked as \"Main Tutor\"."
+        desc: "Up to 3 per form group. The first-listed will be marked as \"Main Tutor\"."
         args: { filter: string }
         relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
     gibbonPersonIDTutor2: 
@@ -45,7 +45,7 @@ table:
         desc: "Name"
         relationship: { table: gibbonSpace, key: gibbonSpaceID, field: name }
     gibbonRollGroupIDNext: 
-        name: "Next Roll Group"
+        name: "Next Form Group"
         desc: "Short Name"
         relationship: { table: gibbonRollGroup, key: gibbonRollGroupID, field: nameShort  }
     attendance:

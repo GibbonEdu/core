@@ -88,7 +88,7 @@ class CoverageTodayView
         if (count($rollGroups) > 0) {
             $table = DataTable::create('todaysCoverageTimetable');
 
-            $table->addColumn('name', __('Roll Group'))->context('primary');
+            $table->addColumn('name', __('Form Group'))->context('primary');
             $table->addColumn('spaceName', __('Location'))->context('primary');
 
             $table->addActionColumn()

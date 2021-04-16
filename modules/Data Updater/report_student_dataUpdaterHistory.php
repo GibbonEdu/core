@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_studen
                 return Format::link($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$row['gibbonPersonID'], $name);
             });
 
-        $table->addColumn('rollGroupName', __('Roll Group'));
+        $table->addColumn('rollGroupName', __('Form Group'));
 
         $table->addColumn('personalUpdate', __('Personal Data'))
             ->format(function($row) use ($dataChecker) {
