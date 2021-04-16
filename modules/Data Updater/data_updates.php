@@ -43,16 +43,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
         $requiredUpdatesByType = explode(',', $requiredUpdatesByType);
         $cutoffDate = getSettingByScope($connection2, 'Data Updater', 'cutoffDate');
     } else {
-        $requiredUpdatesByType = array();
+        $requiredUpdatesByType = [];
         $cutoffDate = null;
     }
     
     // Get the active data types based on this user's permissions
-    $updatableDataTypes = array();
+    $updatableDataTypes = [];
     if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.php')) $updatableDataTypes[] = 'Family';
     if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal.php')) $updatableDataTypes[] = 'Personal';
     if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.php')) $updatableDataTypes[] = 'Medical';
     if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.php')) $updatableDataTypes[] = 'Finance';
+    if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.php')) $updatableDataTypes[] = 'Staff';
 
     echo '<p>';
     echo __('This page shows all the data updates that are available to you. If an update is required it will be highlighted in red.');
