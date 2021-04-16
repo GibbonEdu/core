@@ -806,6 +806,6 @@ ALTER TABLE `gibbonCourseClass` ADD `fields` TEXT NULL AFTER `gibbonScaleIDTarge
 ALTER TABLE `gibbonStaffApplicationForm` ADD `staffFields` TEXT NULL AFTER `fields`;end
 ALTER TABLE `gibbonAction` ADD `helpURL` VARCHAR(255) NULL AFTER `description`;end
 UPDATE `gibbonAction` SET helpURL='administrators/getting-started/getting-started-with-gibbon/#years-days-times' WHERE `category`='Years, Days & Times' AND `gibbonModuleID`=(SELECT gibbonModuleID FROM gibbonModule WHERE name='School Admin');end
-UPDATE `gibbonTheme` SET description='Gibbon's 2021 look and feel.', version='1.0.00', author='Sandra Kuipers', url='https://github.com/SKuipers' WHERE name='Default';end
+UPDATE `gibbonTheme` SET description='Gibbon\'s 2021 look and feel.', version='1.0.00', author='Sandra Kuipers', url='https://github.com/SKuipers' WHERE name='Default';end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System', 'themeColour', 'Theme Colour', '', 'Purple');end
 ";
