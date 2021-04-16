@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
     $form->addRow()->addClass('contextPerson')->addHeading(__('Visibility'));
 
     $form->toggleVisibilityByClass('contextPerson')->onSelect('context')->when('User');
-    $form->toggleVisibilityByClass('contextDataUpdate')->onSelect('context')->when(['User', 'Medical Form']);
+    $form->toggleVisibilityByClass('contextDataUpdate')->onSelect('context')->when(['User', 'Medical Form', 'Staff']);
     $form->toggleVisibilityByClass('contextApplication')->onSelect('context')->when(['User', 'Staff']);
 
     $activePersonOptions = [
