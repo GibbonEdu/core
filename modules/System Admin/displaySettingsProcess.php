@@ -1,4 +1,7 @@
 <?php
+
+use Gibbon\FileUploader;
+use Gibbon\Domain\System\SettingGateway;
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -25,38 +28,80 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/displaySettin
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $mainMenuCategoryOrder = '';
-    foreach (explode(',', $_POST['mainMenuCategoryOrder']) as $category) {
-        $mainMenuCategoryOrder .= trim($category).',';
-    }
-    $mainMenuCategoryOrder = substr($mainMenuCategoryOrder, 0, -1);
+    $partialFail = false;
+    $settingGateway = $container->get(SettingGateway::class);
 
-    //Validate Inputs
-    if ($mainMenuCategoryOrder == '') {
-        $URL .= '&return=error3';
-        header("Location: {$URL}");
-    } else {
-        //Write to database
-        $fail = false;
+    $settingsToUpdate = [
+        'System' => [
+            'mainMenuCategoryOrder'  => 'required',
+            'themeColour'            => 'required',
+            'organisationLogo'       => 'requiredFile',
+            'organisationBackground' => '',
+           
+        ],
+    ];
 
-        //Update internal assessment fields
-        try {
-            $data = array('value' => $mainMenuCategoryOrder);
-            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='mainMenuCategoryOrder'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        if ($fail == true) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-        } else {
-            getSystemSettings($guid, $connection2);
-            $_SESSION[$guid]['pageLoads'] = null;
-            $URL .= '&return=success0';
-            header("Location: {$URL}");
+    // Validate required fields
+    foreach ($settingsToUpdate as $scope => $settings) {
+        foreach ($settings as $name => $property) {
+            if ($property == 'requiredFile' && empty($_FILES[$name.'File']['tmp_name']) && empty($_POST[$name])) {
+                $URL .= '&return=error6';
+                header("Location: {$URL}");
+                exit;
+            }
+            if ($property == 'required' && empty($_POST[$name])) {
+                $URL .= '&return=error1';
+                header("Location: {$URL}");
+                exit;
+            }
         }
     }
+
+    $fileUploader = new FileUploader($pdo, $gibbon->session);
+    $fileUploader->getFileExtensions('Graphics/Design');
+
+    // Move attached logo file, if there is one
+    if (!empty($_FILES['organisationLogoFile']['tmp_name'])) {
+        $file = $_FILES['organisationLogoFile'] ?? null;
+
+        // Upload the file, return the /uploads relative path
+        $_POST['organisationLogo'] = $fileUploader->uploadFromPost($file, 'logo');
+
+        if (empty($_POST['organisationLogo'])) {
+            $partialFail = true;
+        }
+    }
+
+    // Move attached background file, if there is one
+    if (!empty($_FILES['organisationBackgroundFile']['tmp_name'])) {
+        $file = $_FILES['organisationBackgroundFile'] ?? null;
+
+        // Upload the file, return the /uploads relative path
+        $_POST['organisationBackground'] = $fileUploader->uploadFromPost($file, 'background');
+
+        if (empty($_POST['organisationBackground'])) {
+            $partialFail = true;
+        }
+    }
+
+    // Update fields
+    foreach ($settingsToUpdate as $scope => $settings) {
+        foreach ($settings as $name => $property) {
+            $value = $_POST[$name] ?? '';
+
+            if ($property == 'skip-empty' && empty($value)) continue;
+
+            $updated = $settingGateway->updateSettingByScope($scope, $name, $value);
+            $partialFail &= !$updated;
+        }
+    }
+
+    // Update all the system settings that are stored in the session
+    getSystemSettings($guid, $connection2);
+    $_SESSION[$guid]['pageLoads'] = null;
+
+    $URL .= $partialFail
+        ? '&return=warning1'
+        : '&return=success0';
+    header("Location: {$URL}");
 }

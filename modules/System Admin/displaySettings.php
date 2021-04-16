@@ -30,6 +30,35 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/displaySettin
     
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
     
+    $setting = getSettingByScope($connection2, 'System', 'organisationLogo', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'].'File', __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addFileUpload($setting['name'].'File')
+            ->accepts('.jpg,.jpeg,.gif,.png')
+            ->setAttachment('organisationLogo', $gibbon->session->get('absoluteURL'), $setting['value'])->required();
+
+    $themeColours = [
+        'purple' => __('Purple'),
+        'blue'   => __('Blue'),
+        'indigo' => __('Indigo'),
+        'green'  => __('Green'),
+        'yellow' => __('Yellow'),
+        'orange' => __('Orange'),
+        'red'    => __('Red'),
+        'pink'   => __('Pink'),
+    ];
+    $setting = getSettingByScope($connection2, 'System', 'themeColour', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addSelect($setting['name'])->fromArray($themeColours)->required()->selected($setting['value']);
+
+    $setting = getSettingByScope($connection2, 'System', 'organisationBackground', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addFileUpload($setting['name'].'File')
+            ->accepts('.jpg,.jpeg,.gif,.png')
+            ->setAttachment('organisationBackground', $gibbon->session->get('absoluteURL'), $setting['value']);
+
     $setting = getSettingByScope($connection2, 'System', 'mainMenuCategoryOrder', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
