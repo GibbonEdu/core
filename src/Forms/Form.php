@@ -44,6 +44,8 @@ class Form implements OutputableInterface
     protected $triggers = [];
     protected $values = [];
     protected $header = [];
+    protected $steps = [];
+    protected $step = null;
 
     /**
      * Create a form with a specific factory and renderer.
@@ -369,6 +371,31 @@ class Form implements OutputableInterface
         $selector = '#'.$id;
 
         return $this->addTrigger($selector, $this->factory->createTrigger($selector));
+    }
+
+    /**
+     * Enables displaying a multi-part form progress indicator.
+     *
+     * @param array $steps
+     * @param int $currentStep
+     * @return self
+     */
+    public function setMultiPartForm(array $steps, int $currentStep = 1)
+    {
+        $this->steps = $steps;
+        $this->step = $currentStep;
+
+        return $this;
+    }
+
+    public function getMultiPartSteps()
+    {
+        return $this->steps;
+    }
+
+    public function getCurrentStep()
+    {
+        return $this->step;
     }
 
     /**
