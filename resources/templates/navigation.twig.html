@@ -54,7 +54,7 @@ collapsed drop-down list in 'mini' view-mode.
 
             {% for categoryName, items in menuModule %}
                 <li class="w-full column-no-break p-0">
-                    <h5 class="m-0 mb-1 text-sm px-1 pt-2 pb-1 text-purple-600 border-b-0">
+                    <h5 class="m-0 mb-1 text-sm px-1 pt-2 pb-1 text-{{ themeColour }}-600 border-b-0">
                         {{ __(categoryName, (items|first).textDomain) }}
                     </h5>
 
