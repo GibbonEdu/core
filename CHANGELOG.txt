@@ -19,7 +19,7 @@ CHANGELOG
 v22.0.00
 --------
     Headlines
-        New 2021 core theme
+        New core theme for Gibbon's 2021 look and feel
         Improved custom fields system
         Added custom fields to Medical Forms, Staff records, Courses and Classes
 
@@ -27,6 +27,7 @@ v22.0.00
         System: improved support for custom themes
         System: added an Enrolment tab to the Staff Dashboard
         System: added help buttons to the top of pages linking to documentation, when available
+        System: renamed the old theme to Legacy, which is not installed by default
 
     Changes With Important Notices
         System: removed the vendor folder for Cutting Edge Code installations
