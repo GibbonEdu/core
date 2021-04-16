@@ -1,0 +1,143 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% if log %}
+    <h2>
+        {{ __('Import') }}
+    </h2>
+
+    {% if ignoreErrors %}
+        {{ formatUsing('alert', __('Imported with errors ignored.'), 'warning')|raw }}
+    {% endif %}
+
+    <table class='blank fullWidth' cellspacing='0'>	
+        <tr>
+            <td width="50%">
+                {{ __('Type') }}:<br/>
+                {{ name }}
+            </td>
+            <td width="50%">
+                {{ __('Date')}}:<br/>
+                {{ formatUsing('dateTime', log.timestamp) }}
+            </td>
+        </tr>
+        <tr>
+            <td width="50%">
+                {{ __('Details') }}:<br/>
+                {{ success ? __('Success') : __('Failed')}}
+            </td>
+            <td width="50%">
+                {{ __('User') }}:<br/>
+                {{ formatUsing('name', '', log.preferredName, log.surname, 'Staff')}} ({{ log.username }})
+            </td>
+        </tr>
+    </table>
+    <br/>
+{% endif %}
+
+<table class='smallIntBorder' cellspacing='0' style="margin: 0 auto; width: 60%;">
+    <tr class="{{ importSuccess ? "current" : "error" }}">
+        <td class="right"  width="50%">
+            {{ __('Reading File') }}:
+        </td>
+        <td>
+            {{ importSuccess ? __('Success') : __('Failed') }}
+        </td>
+    </tr>
+    <tr>
+        <td class="right">
+            {{ __('Execution Time') }}:
+        </td>
+        <td>
+            {{ executionTime }}
+        </td>
+    </tr>
+    <tr>
+        <td class="right">
+            {{ __('Memory Usage') }}:
+        </td>
+        <td>
+            {{ memoryUsage }}
+        </td>
+    </tr>
+</table><br/>
+<table class='smallIntBorder' cellspacing='0' style="margin: 0 auto; width: 60%;">
+    <tr class="{{ buildSuccess ? "current" : "error" }}">
+        <td class="right" width="50%">
+            {{ __('Validating Data') }}:
+        </td>
+        <td>
+            {{ buildSuccess ? __('Success') : __('Failed') }}
+        </td>
+    </tr>
+    <tr>
+        <td class="right">
+            {{ __('Rows Processed') }}:
+        </td>
+        <td>
+            {{ rows }}
+        </td>
+    </tr>
+    <tr>
+        <td class="right">
+            {{ __('Rows with Errors') }}:
+        </td>
+        <td>
+            {{ rowerrors }}
+        </td>
+    </tr>
+    <tr>
+        <td class="right">
+            {{ __('Total Errors') }}:
+        </td>
+        <td>
+            {{ errors }}
+        </td>
+    </tr>
+    {% if warnings %}
+    <tr>
+        <td class="right">
+            {{ __('Total Warnings') }}:
+        </td>
+        <td>
+            {{ warnings }}
+        </td>
+    </tr>
+    {% endif %}
+</table><br/>
+
+<table class='smallIntBorder' cellspacing='0' style="margin: 0 auto; width: 60%;">
+    <tr class="{{ databaseSuccess ? "current" : "error" }}">
+        <td class="right" width="50%">
+            {{ __('Querying Database') }}:
+        </td>
+        <td>
+            {{ databaseSuccess ? __('Success') : __('Failed') }}
+        </td>
+    </tr>
+    <tr>
+        <td class="right">
+            {{ step == 3 ? __('Simulated') }} {{ __('Database Inserts') }}:
+        </td>
+        <td>
+            {{ inserts }}
+            {% if inserts_skipped %}({{ inserts_skipped }} {{ __('skipped') }}){% endif %}
+        </td>
+    </tr>
+
+    <tr>
+        <td class="right">
+            {{ step == 3 ? __('Simulated') }}  {{__('Database Updates') }}:
+        </td>
+        <td>
+            {{ updates }}
+            {% if updates_skipped %}({{ updates_skipped }} {{ __('skipped') }}){% endif %}
+        </td>
+    </tr>
+
+</table><br/>

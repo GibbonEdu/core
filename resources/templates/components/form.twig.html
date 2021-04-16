@@ -8,6 +8,14 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 <form {{ form.getAttributeString|raw }} onsubmit="gibbonFormSubmitted(this)">
 
+    {% if form.getMultiPartSteps %}
+        <ul class="multiPartForm mb-4">
+            {% for stepNumber, stepName in form.getMultiPartSteps %}
+            <li class="step {{ stepNumber <= form.getCurrentStep ? 'active' : '' }}">{{ stepName }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
     {% if form.getTitle %}
         <h2>{{ form.getTitle }}</h2>
     {% endif %}
