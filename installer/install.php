@@ -920,7 +920,7 @@ $page->addData([
     'absolutePath'    => realpath('../'),
     'absoluteURL'     => str_replace('/installer/install.php', '', $_SERVER['PHP_SELF']),
     'sidebar'         => true,
-    'contentClass'    => 'max-w-3xl mx-auto',
+    'contentClass'    => 'max-w-4xl mx-auto px-12 pt-6 pb-12',
 ]);
 
 echo $page->render('installer/install.twig.html');
