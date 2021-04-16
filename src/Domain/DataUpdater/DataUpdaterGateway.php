@@ -107,6 +107,14 @@ class DataUpdaterGateway extends Gateway
             LEFT JOIN gibbonFamilyUpdate ON (gibbonFamilyUpdate.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID) 
             WHERE gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonIDSource 
             ORDER BY timestamp DESC LIMIT 1)
+        UNION ALL
+        (SELECT 'Staff' as type, gibbonPerson.gibbonPersonID as id, 'gibbonPersonID' as idType, IFNULL(timestamp, 0) as lastUpdated, '' as name
+            FROM gibbonPerson 
+            JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll))
+            LEFT JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+            LEFT JOIN gibbonStaffUpdate ON (gibbonStaffUpdate.gibbonStaffID=gibbonStaff.gibbonPersonID) 
+            WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID AND gibbonRole.category='Staff'
+            ORDER BY timestamp DESC LIMIT 1)
         ";
 
         return $this->db()->executeQuery($data, $sql);
