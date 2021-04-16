@@ -69,7 +69,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 {% macro card(name, content, icon = '', url = '', target = '_blank') %}
     <div class="w-full sm:w-1/2 pr-4">
-        <a href="{{ url }}" target="{{ target }}" class="flex bg-white rounded h-full text-gray-800 hover:bg-purple-100 hover:text-purple-700">
+        <a href="{{ url }}" target="{{ target }}" class="flex bg-white rounded h-full text-gray-800 hover:bg-{{ themeColour }}-100 hover:text-{{ themeColour }}-700">
             <div class="pl-4 pr-2 py-4">
                 {{ include('ui/icons.twig.html', {'iconClass': 'w-10 h-10 opacity-75'}) }}
             </div>

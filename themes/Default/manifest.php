@@ -26,3 +26,15 @@ $version = '1.0.00';
 $author = 'Sandra Kuipers';
 $url = 'https://github.com/SKuipers';
 $responsive = 'Y';
+
+// Optionally define a set of theme colours that this theme supports.
+$themeColours = [
+    'purple' => __('Purple'),
+    'blue'   => __('Blue'),
+    'indigo' => __('Indigo'),
+    'green'  => __('Green'),
+    'yellow' => __('Yellow'),
+    'orange' => __('Orange'),
+    'red'    => __('Red'),
+    'pink'   => __('Pink'),
+];

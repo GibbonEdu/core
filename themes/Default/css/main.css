@@ -1307,3 +1307,36 @@ table.smallIntBorder td.noPadding {
 	background-color: #A88EDB;
 	color: white;
 }
+
+.body-gradient-purple {
+    background: radial-gradient(80% 1000px at 20% 500px, #ef99c7 0%, #794d95 100%) no-repeat fixed ;
+}
+
+.body-gradient-blue {
+    background: radial-gradient(80% 1000px at 20% 500px, #63B3ED 0%, #3182CE 100%) no-repeat fixed ;
+}
+
+.body-gradient-indigo {
+    background: radial-gradient(80% 1000px at 20% 500px, #7F9CF5 0%, #5A67D8 100%) no-repeat fixed ;
+}
+
+.body-gradient-green {
+    background: radial-gradient(80% 1000px at 20% 500px, #68D391 0%, #38A169 100%) no-repeat fixed ;
+}
+
+.body-gradient-yellow {
+    background: radial-gradient(80% 1000px at 20% 500px, #ECC94B 0%, #D69E2E 100%) no-repeat fixed ;
+}
+
+.body-gradient-orange {
+    background: radial-gradient(80% 1000px at 20% 500px, #F6AD55 0%, #DD6B20 100%) no-repeat fixed ;
+}
+
+.body-gradient-red {
+    background: radial-gradient(80% 1000px at 20% 500px, #FC8181 0%, #E53E3E 100%) no-repeat fixed ;
+}
+
+.body-gradient-pink {
+    background: radial-gradient(80% 1000px at 20% 500px, #F687B3 0%, #D53F8C 100%) no-repeat fixed ;
+}
+
