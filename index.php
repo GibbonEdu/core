@@ -531,7 +531,7 @@ if ($isLoggedIn && !$upgrade) {
 $page->addData([
     'isLoggedIn'        => $isLoggedIn,
     'gibbonThemeName'   => $session->get('gibbonThemeName'),
-    'themeColour'       => $session->get('themeColour'),
+    'themeColour'       => $session->get('themeColour', 'purple'),
     'organisationLogo'  => $session->get('organisationLogo'),
     'organisationName'  => $session->get('organisationName'),
     'cacheString'       => $session->get('cacheString'),
