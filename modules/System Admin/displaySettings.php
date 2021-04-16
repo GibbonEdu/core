@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
+require_once __DIR__ . '/moduleFunctions.php';
+
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/displaySettings.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
@@ -37,20 +39,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/displaySettin
             ->accepts('.jpg,.jpeg,.gif,.png')
             ->setAttachment('organisationLogo', $gibbon->session->get('absoluteURL'), $setting['value'])->required();
 
-    $themeColours = [
-        'purple' => __('Purple'),
-        'blue'   => __('Blue'),
-        'indigo' => __('Indigo'),
-        'green'  => __('Green'),
-        'yellow' => __('Yellow'),
-        'orange' => __('Orange'),
-        'red'    => __('Red'),
-        'pink'   => __('Pink'),
-    ];
-    $setting = getSettingByScope($connection2, 'System', 'themeColour', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelect($setting['name'])->fromArray($themeColours)->required()->selected($setting['value']);
+    $theme = getThemeManifest($gibbon->session->get('gibbonThemeName'), $guid);
+    if (!empty($theme['themeColours'])) {
+        $setting = getSettingByScope($connection2, 'System', 'themeColour', true);
+        $row = $form->addRow();
+            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+            $row->addSelect($setting['name'])->fromArray($theme['themeColours'])->required()->selected($setting['value']);
+    }
 
     $setting = getSettingByScope($connection2, 'System', 'organisationBackground', true);
     $row = $form->addRow();

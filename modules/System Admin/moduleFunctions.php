@@ -164,7 +164,7 @@ function getThemeManifest($themeName, $guid)
         $manifestOK = ($name == $themeName);
     }
 
-    return compact('themeName', 'name', 'description', 'version', 'author', 'url', 'responsive', 'manifestOK');
+    return @compact('themeName', 'name', 'description', 'version', 'author', 'url', 'responsive', 'themeColours', 'manifestOK');
 }
 
 /**

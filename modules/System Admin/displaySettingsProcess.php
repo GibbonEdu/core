@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/displaySettin
     $settingsToUpdate = [
         'System' => [
             'mainMenuCategoryOrder'  => 'required',
-            'themeColour'            => 'required',
+            'themeColour'            => '',
             'organisationLogo'       => 'requiredFile',
             'organisationBackground' => '',
            
