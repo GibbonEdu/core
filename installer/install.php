@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\View\Page;
 use Gibbon\Forms\Form;
 use Gibbon\Data\Validator;
+use Gibbon\Services\Format;
 use Gibbon\Database\Connection;
 use Gibbon\Database\MySqlConnector;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -105,11 +106,16 @@ if (function_exists('gettext')) {
     textdomain('gibbon');
 }
 
-echo '<h2>'.sprintf(__('Installation - Step %1$s'), ($step + 1)).'</h2>';
-
 $isConfigValid = true;
 $isNonceValid = true;
 $canInstall = true;
+
+$steps = [
+    1 => __('System Requirements'),
+    2 => __('Database Settings'),
+    3 => __('User Account'),
+    4 => __('Installation Complete'),
+];
 
 // Check session for the presence of a valid nonce; if found, remove it so it's used only once.
 if ($step >= 1) {
@@ -156,10 +162,6 @@ if ($canInstall == false) {
 } else if ($step == 0) { //Choose language
 
     //PROCEED
-    echo "<div class='success'>";
-    echo __('The directory containing the Gibbon files is writable, so the installation may proceed.');
-    echo '</div>';
-
     $trueIcon = "<img title='" . __('Yes'). "' src='../themes/Default/img/iconTick.png' style='width:20px;height:20px;margin-right:10px' />";
     $falseIcon = "<img title='" . __('No'). "' src='../themes/Default/img/iconCross.png' style='width:20px;height:20px;margin-right:10px' />";
 
@@ -173,7 +175,10 @@ if ($canInstall == false) {
     $extensions = $gibbon->getSystemRequirement('extensions');
 
     $form = Form::create('installer', "./install.php?step=1");
+    $form->setTitle(__('Installation - Step {count}', ['count' => $step + 1]));
+    $form->setDescription(Format::alert(__('The directory containing the Gibbon files is writable, so the installation may proceed.'), 'success'));
     $form->setClass('smallIntBorder w-full');
+    $form->setMultiPartForm($steps, 1);
 
     $form->addHiddenValue('guid', $guid);
     $form->addHiddenValue('nonce', $nonce);
@@ -232,6 +237,8 @@ if ($canInstall == false) {
     }
 
     $form = Form::create('installer', "./install.php?step=2");
+    $form->setTitle(__('Installation - Step {count}', ['count' => $step + 1]));
+    $form->setMultiPartForm($steps, 2);
 
     $form->addHiddenValue('guid', $guid);
     $form->addHiddenValue('nonce', $nonce);
@@ -385,8 +392,10 @@ if ($canInstall == false) {
                     //Let's gather some more information
 
                     $form = Form::create('installer', "./install.php?step=3");
-
+                    $form->setTitle(__('Installation - Step {count}', ['count' => $step + 1]));
                     $form->setFactory(DatabaseFormFactory::create($pdo));
+                    $form->setMultiPartForm($steps, 3);
+
                     $form->addHiddenValue('guid', $guid);
                     $form->addHiddenValue('nonce', $nonce);
                     $form->addHiddenValue('code', $code);
@@ -880,6 +889,11 @@ if ($canInstall == false) {
                         echo "<iframe class='support' style='display: none; height: 10px; width: 10px' src='https://gibbonedu.org/services/support/supportRegistration.php?absolutePathProtocol=".urlencode($absolutePathProtocol).'&absolutePath='.urlencode($absolutePath).'&organisationName='.urlencode($organisationName).'&email='.urlencode($email).'&title='.urlencode($title).'&surname='.urlencode($surname).'&preferredName='.urlencode($preferredName)."'></iframe>";
                     }
 
+                    $form = Form::create('installer', "./install.php?step=4");
+                    $form->setTitle(__('Installation - Step {count}', ['count' => $step + 1]));
+                    $form->setMultiPartForm($steps, 4);
+                    echo $form->getOutput();
+
                     if ($settingsFail == true) {
                         echo "<div class='error'>";
                         echo sprintf(__('Some settings did not save. The system may work, but you may need to remove everything and start again. Try and %1$sgo to your Gibbon homepage%2$s and login as user <u>admin</u> with password <u>gibbon</u>.'), "<a href='$absoluteURL'>", '</a>');
@@ -905,8 +919,8 @@ $page->addData([
     'gibbonThemeName' => 'Default',
     'absolutePath'    => realpath('../'),
     'absoluteURL'     => str_replace('/installer/install.php', '', $_SERVER['PHP_SELF']),
-    'bodyBackground'  => "background: url('../themes/Default/img/backgroundPage.jpg') repeat fixed center top #A88EDB!important;",
-    'sidebar'         => true
+    'sidebar'         => true,
+    'contentClass'    => 'max-w-4xl mx-auto px-12 pt-6 pb-12',
 ]);
 
 echo $page->render('installer/install.twig.html');
