@@ -818,5 +818,5 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES (001, (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Data Updater' AND gibbonAction.name='Staff Data Updates'));end
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Staff Data Updates', 'Data Updater', 'Staff Data Updates', 'Core', 'All', 'Y');end
 UPDATE gibbonPerson SET gibbonThemeIDPersonal=(SELECT gibbonThemeID FROM gibbonTheme WHERE name='Default' LIMIT 1) WHERE gibbonThemeIDPersonal=(SELECT gibbonThemeID FROM gibbonTheme WHERE name='2021');end
-
+ALTER TABLE `gibbonInternalAssessmentColumn` CHANGE `name` `name` VARCHAR(30) NOT NULL;end
 ";
