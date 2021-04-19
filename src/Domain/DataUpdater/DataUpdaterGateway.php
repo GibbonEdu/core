@@ -136,7 +136,11 @@ class DataUpdaterGateway extends Gateway
 
         // Loop over each updatable person to look for required updates
         foreach ($updatablePeople as $person) {
-            $dataUpdatesByType = $this->selectDataUpdatesByPerson($person['gibbonPersonID'], $gibbonPersonID)->fetchGrouped();
+            $dataUpdatesByType = $this->selectDataUpdatesByPerson($person['gibbonPersonID'], $gibbonPersonID);
+            
+            if (!$this->db()->getQuerySuccess()) return 0;
+
+            $dataUpdatesByType = $dataUpdatesByType->fetchGrouped();
 
             foreach ($requiredUpdatesByType as $type) {
                 // Skip data update types not applicable to this user
