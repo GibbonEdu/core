@@ -11,6 +11,7 @@ uploads/*
 themes/*
 !themes/Default
 !themes/Legacy
+!themes/2021
 
 # Tests Folder
 tests/log/*
