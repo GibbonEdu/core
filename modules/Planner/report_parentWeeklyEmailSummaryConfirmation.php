@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_parentWeekl
     echo '</p>';
 
     echo '<h2>';
-    echo __('Choose Roll Group & Week');
+    echo __('Choose Form Group & Week');
     echo '</h2>';
 
     $familyGateway = $container->get(FamilyGateway::class);
@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_parentWeekl
     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/report_parentWeeklyEmailSummaryConfirmation.php');
 
     $row = $form->addRow();
-        $row->addLabel('gibbonRollGroupID', __('Roll Group'));
+        $row->addLabel('gibbonRollGroupID', __('Form Group'));
         $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->required()->selected($gibbonRollGroupID);
 
     $begin = new DateTime($_SESSION[$guid]['gibbonSchoolYearFirstDay']);

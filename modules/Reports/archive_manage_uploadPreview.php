@@ -161,7 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
             return Format::name('', $person['preferredName'], $person['surname'], 'Student', true)
                    .'<br/>'.Format::small(Format::userStatusInfo($person));
         });
-    $table->addColumn('rollGroup', __('Roll Group'));
+    $table->addColumn('rollGroup', __('Form Group'));
     $table->addColumn('username', __('Username'));
     $table->addColumn('filename', __('File Name'));
     $table->addColumn('status', __('Status'))

@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
         return;
     }
     
-    $modes = ['Person' => __('Person'), 'Roll Group' => __('Roll Group')];
+    $modes = ['Person' => __('Person'), 'Roll Group' => __('Form Group')];
     $row = $form->addRow();
         $row->addLabel('mode', __('Proof Read By'));
         $row->addSelect('mode')->fromArray($modes)->selected($mode);
@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
 
     if ($highestAction == 'Proof Read_all') {
         $row = $form->addRow()->addClass('rollGroupMode');
-            $row->addLabel('gibbonRollGroupID', __('Roll Group'));
+            $row->addLabel('gibbonRollGroupID', __('Form Group'));
             $row->addSelectRollGroup('gibbonRollGroupID', $gibbonSchoolYearID)->required()->selected($gibbonRollGroupID);
 
         $row = $form->addRow()->addClass('personMode');
@@ -138,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
         asort($rollGroups, SORT_NATURAL);
         
         $row = $form->addRow()->addClass('rollGroupMode');
-            $row->addLabel('gibbonRollGroupID', __('Roll Group'));
+            $row->addLabel('gibbonRollGroupID', __('Form Group'));
             $row->addSelect('gibbonRollGroupID')->fromArray($rollGroups)->required()->placeholder()->selected($gibbonRollGroupID);
 
         $row = $form->addRow()->addClass('personMode');

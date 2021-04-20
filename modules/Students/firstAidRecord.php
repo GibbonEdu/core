@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
             $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->placeholder()->selected($gibbonPersonID);
 
         $row = $form->addRow();
-            $row->addLabel('gibbonRollGroupID', __('Roll Group'));
+            $row->addLabel('gibbonRollGroupID', __('Form Group'));
             $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID);
 
         $row = $form->addRow();
@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
         });
 
         $table->addColumn('patient', __('Student'))
-            ->description(__('Roll Group'))
+            ->description(__('Form Group'))
             ->sortable(['surnamePatient', 'preferredNamePatient'])
             ->format(function($person) use ($guid) {
                 $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonIDPatient'].'&subpage=Medical&search=&allStudents=&sort=surname,preferredName';

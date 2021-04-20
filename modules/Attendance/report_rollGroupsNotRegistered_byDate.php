@@ -25,7 +25,7 @@ use Gibbon\Services\Format;
 require_once __DIR__ . '/moduleFunctions.php';
 
 // set page breadcrumb
-$page->breadcrumbs->add(__('Roll Groups Not Registered'));
+$page->breadcrumbs->add(__('Form Groups Not Registered'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGroupsNotRegistered_byDate.php') == false) {
     // Access denied
@@ -134,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
             echo "<table cellspacing='0' style='width: 100%'>";
             echo "<tr class='head'>";
             echo '<th>';
-            echo __('Roll Group');
+            echo __('Form Group');
             echo '</th>';
             echo '<th >';
             echo __('Date');
@@ -231,7 +231,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
             if ($count == 0) {
                 echo "<tr>";
                 echo '<td colspan=4>';
-                echo __('All roll groups have been registered.');
+                echo __('All form groups have been registered.');
                 echo '</td>';
                 echo '</tr>';
             }

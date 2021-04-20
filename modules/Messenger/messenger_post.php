@@ -343,14 +343,14 @@ else {
 		}
 
 		//Roll group
-		if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_rollGroups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_rollGroups_any")) {
+		if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_any")) {
 			$row = $form->addRow();
-				$row->addLabel('rollGroup', __('Roll Group'))->description(__('Tutees and tutors.'));
+				$row->addLabel('rollGroup', __('Form Group'))->description(__('Tutees and tutors.'));
 				$row->addYesNoRadio('rollGroup')->checked('N')->required();
 
 			$form->toggleVisibilityByClass('rollGroup')->onRadio('rollGroup')->when('Y');
 
-			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_rollGroups_any")) {
+			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_any")) {
 				$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]);
 				$sql="SELECT gibbonRollGroup.gibbonRollGroupID AS value, gibbonRollGroup.name FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name" ;
 			}
@@ -365,7 +365,7 @@ else {
 				}
 			}
 			$row = $form->addRow()->addClass('rollGroup hiddenReveal');
-				$row->addLabel('rollGroups[]', __('Select Roll Groups'));
+				$row->addLabel('rollGroups[]', __('Select Form Groups'));
 				$row->addSelect('rollGroups[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->placeholder();
 
 			$row = $form->addRow()->addClass('rollGroup hiddenReveal');
@@ -376,7 +376,7 @@ else {
 		        $row->addLabel('rollGroupsStudents', __('Include Students?'));
 				$row->addYesNo('rollGroupsStudents')->selected($defaultSendStudents);
 
-			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_rollGroups_parents")) {
+			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_parents")) {
 				$row = $form->addRow()->addClass('rollGroup hiddenReveal');
 			        $row->addLabel('rollGroupsParents', __('Include Parents?'));
 					$row->addYesNo('rollGroupsParents')->selected($defaultSendParents);

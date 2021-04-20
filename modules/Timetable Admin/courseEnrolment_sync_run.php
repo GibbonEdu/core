@@ -148,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 $header->addCheckbox('checkall'.$classMap['gibbonYearGroupID'])->checked(true);
                 $header->addContent(__('Name'));
                 $header->addContent(__('Role'));
-                $header->addContent(__('Roll Group'));
+                $header->addContent(__('Form Group'));
                 $header->addContent(__('Enrolment by Class'));
 
             while ($person = $enrolmentResult->fetch()) {

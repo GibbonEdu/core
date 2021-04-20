@@ -96,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 		$excel->getActiveSheet()->setCellValueByColumnAndRow(1, 1, __("Student"));
         $excel->getActiveSheet()->getStyleByColumnAndRow(1, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(1, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(2, 1, __("Roll Group"));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(2, 1, __("Form Group"));
         $excel->getActiveSheet()->getStyleByColumnAndRow(2, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(2, 1)->applyFromArray($style_head_fill);
 		$excel->getActiveSheet()->setCellValueByColumnAndRow(3, 1, __("Invoice To"));

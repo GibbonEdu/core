@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
         $table = $form->addRow()->addTable()->addClass('colorOddEven');
 
         $header = $table->addHeaderRow();
-        $header->addContent(__('Roll Group'));
+        $header->addContent(__('Form Group'));
         $header->addContent(__('Student'));
         $header->addContent(__('Activity'));
         $header->addContent(__('Cost'))->append('<br/><span class="small emphasis">'.$_SESSION[$guid]['currency'].'</span>');
@@ -118,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
         echo "<table cellspacing='0' style='width: 100%'>";
         echo "<tr class='head'>";
         echo '<th>';
-        echo __('Roll Group');
+        echo __('Form Group');
         echo '</th>';
         echo '<th>';
         echo __('Student');

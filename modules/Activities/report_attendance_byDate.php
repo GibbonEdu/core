@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
             $row->addLabel('date', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
             $row->addDate('date')->setValue(dateConvertBack($guid, $date))->required();
 
-        $sortOptions = array('absent' => __('Absent'), 'surname' => __('Surname'), 'preferredName' => __('Given Name'), 'rollGroup' => __('Roll Group'));
+        $sortOptions = array('absent' => __('Absent'), 'surname' => __('Surname'), 'preferredName' => __('Given Name'), 'rollGroup' => __('Form Group'));
         $row = $form->addRow();
             $row->addLabel('sort', __('Sort By'));
             $row->addSelect('sort')->fromArray($sortOptions)->selected($sort);
@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 
     $table->addMetaData('post', ['date' => $date]);
 
-    $table->addColumn('rollGroup', __('Roll Group'))->width('10%');
+    $table->addColumn('rollGroup', __('Form Group'))->width('10%');
     $table->addColumn('student', __('Student'))
         ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
         ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true]));

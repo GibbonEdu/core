@@ -238,7 +238,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
             }
             $table->addColumn('jobTitle', __('Job Title'))
                 ->context('primary')
-                ->description(__('Roll Group'))
+                ->description(__('Form Group'))
                 ->sortable(['jobTitle', 'gibbonPerson.surname', 'gibbonPerson.preferredName'])
                 ->format(function ($person) {
                     return (!empty($person['jobTitle']) ? $person['jobTitle'] : '').'<br/>'.

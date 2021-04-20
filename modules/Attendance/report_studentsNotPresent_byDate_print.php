@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
         echo __('Count');
         echo '</th>';
         echo '<th style="width:80px">';
-        echo __('Roll Group');
+        echo __('Form Group');
         echo '</th>';
         echo '<th>';
         echo __('Name');

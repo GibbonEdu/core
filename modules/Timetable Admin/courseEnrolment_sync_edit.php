@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 $header->addCheckbox('checkall'.$course['gibbonCourseID'])->checked(!empty($optionsSelected))->setClass();
                 $header->addContent(__('Class'));
                 $header->addContent('');
-                $header->addContent(__('Roll Group'));
+                $header->addContent(__('Form Group'));
 
             foreach ($classes as $class) {
                 $row = $table->addRow();

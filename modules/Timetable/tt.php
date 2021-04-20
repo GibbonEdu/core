@@ -145,7 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
                 });
         }
         $table->addColumn('yearGroup', __('Year Group'));
-        $table->addColumn('rollGroup', __('Roll Group'));
+        $table->addColumn('rollGroup', __('Form Group'));
 
         $actions = $table->addActionColumn()
             ->addParam('gibbonPersonID')

@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
         $table->addRowCountColumn($logs->getPageFrom());
 
-        $table->addColumn('rollGroup', __('Roll Group'));
+        $table->addColumn('rollGroup', __('Form Group'));
 
         $table->addColumn('student', __('Student'))
             ->context('primary')

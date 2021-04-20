@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
         $options["class"] = __('Class');
     }
     if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
-        $options["rollGroup"] = __('Roll Group');
+        $options["rollGroup"] = __('Form Group');
     }
     $row = $form->addRow();
         $row->addLabel('group', __('Group By'));
@@ -100,12 +100,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 
     $form->toggleVisibilityByClass('rollGroup')->onSelect('group')->when('rollGroup');
     $row = $form->addRow()->addClass('rollGroup');
-        $row->addLabel('gibbonRollGroupID', __('Roll Group'));
+        $row->addLabel('gibbonRollGroupID', __('Form Group'));
         $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->placeholder()->required();
 
     $row = $form->addRow();
         $row->addLabel('sort', __('Sort By'));
-        $row->addSelect('sort')->fromArray(array('surname' => __('Surname'), 'preferredName' => __('Preferred Name'), 'rollGroup' => __('Roll Group')))->selected($sort)->required();
+        $row->addSelect('sort')->fromArray(array('surname' => __('Surname'), 'preferredName' => __('Preferred Name'), 'rollGroup' => __('Form Group')))->selected($sort)->required();
 
     $row = $form->addRow();
         $row->addFooter();
@@ -247,7 +247,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 
             echo "<tr class='head'>";
             echo '<th style="width:80px" rowspan=2>';
-            echo __('Roll Group');
+            echo __('Form Group');
             echo '</th>';
             echo '<th rowspan=2>';
             echo __('Name');

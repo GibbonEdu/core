@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $sql = "SELECT name AS value, name FROM gibbonAttendanceCode WHERE active='Y' ORDER BY sequenceNumber ASC, name";
-    $setting = getSettingByScope($connection2, 'Attendance', 'defaultRollGroupAttendanceType', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'defaultFormGroupAttendanceType', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])
@@ -160,7 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 
     $row = $form->addRow()->addHeading(__('Attendance CLI'));
 
-    $setting = getSettingByScope($connection2, 'Attendance', 'attendanceCLINotifyByRollGroup', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'attendanceCLINotifyByFormGroup', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();

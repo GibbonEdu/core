@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_det
        header("Location: {$URL}");
     } else {
         $page->breadcrumbs
-            ->add(__('View Roll Groups'), 'rollGroups.php');
+            ->add(__('View Form Groups'), 'rollGroups.php');
 
         $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
         if ($gibbonRollGroupID == '') {
@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_det
         } else {
             try {
                 $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), 'gibbonRollGroupID' => $gibbonRollGroupID);
-                if ($highestAction == "View Roll Groups_all") {
+                if ($highestAction == "View Form Groups_all") {
                     $sql = 'SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonRollGroupID, gibbonSchoolYear.name as yearName, gibbonRollGroup.name, gibbonRollGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPersonIDEA, gibbonPersonIDEA2, gibbonPersonIDEA3, gibbonSpace.name AS space, website
                         FROM gibbonRollGroup
                             JOIN gibbonSchoolYear ON (gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)

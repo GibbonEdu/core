@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
             $row->addSelectYearGroup('gibbonYearGroupID')->required();
 
         $row = $form->addRow();
-            $row->addLabel('gibbonRollGroupID', __('Roll Group'));
+            $row->addLabel('gibbonRollGroupID', __('Form Group'));
             $row->addSelectRollGroup('gibbonRollGroupID', $gibbonSchoolYearID)->required();
 
         $row = $form->addRow();
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
             $autoEnrolDefault = getSettingByScope($connection2, 'Timetable Admin', 'autoEnrolCourses');
             $row = $form->addRow();
                 $row->addLabel('autoEnrolStudent', __('Auto-Enrol Courses?'))
-                    ->description(__('Should this student be automatically enrolled in courses for their Roll Group?'));
+                    ->description(__('Should this student be automatically enrolled in courses for their Form Group?'));
                 $row->addYesNo('autoEnrolStudent')->selected($autoEnrolDefault);
         }
 

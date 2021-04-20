@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
     $dateTo = $_GET['dateTo'] ?? '';
 
     if (empty($viewMode)) {
-        $page->breadcrumbs->add(__('Roll Group Summary'));
+        $page->breadcrumbs->add(__('Form Group Summary'));
 
         echo '<h2>';
         echo __('Choose Options');
@@ -97,14 +97,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
 
     // DATA TABLE
     $table = ReportTable::createPaginated('rollGroupSummary', $criteria)->setViewMode($viewMode, $gibbon->session);
-    $table->setTitle(__('Roll Group Summary'));
+    $table->setTitle(__('Form Group Summary'));
 
     $table->modifyRows(function ($rollGroup, $row) {
-        if ($rollGroup['rollGroup'] == __('All Roll Groups')) $row->addClass('dull');
+        if ($rollGroup['rollGroup'] == __('All Form Groups')) $row->addClass('dull');
         return $row;
     });
 
-    $table->addColumn('rollGroup', __('Roll Group'));
+    $table->addColumn('rollGroup', __('Form Group'));
     $table->addColumn('meanAge', __('Mean Age'));
     $table->addColumn('totalMale', __('Male'));
     $table->addColumn('totalFemale', __('Female'));
@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
     $filteredAges = array_filter(array_column($rollGroupsData, 'meanAge'));
 
     $rollGroupsData[] = [
-        'rollGroup'   => __('All Roll Groups'),
+        'rollGroup'   => __('All Form Groups'),
         'meanAge'     => !empty($filteredAges) ? number_format(array_sum($filteredAges) / count($filteredAges), 1) : 0,
         'totalMale'   => array_sum(array_column($rollGroupsData, 'totalMale')),
         'totalFemale' => array_sum(array_column($rollGroupsData, 'totalFemale')),

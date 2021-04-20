@@ -157,7 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $rollGroupsOptions = array_combine(array_column($rollGroups, 'value'), array_column($rollGroups, 'name'));
 
     $row = $form->addRow();
-        $row->addLabel('gibbonRollGroupID', __('Roll Group at Entry'))->description(__('If set, the student will automatically be enrolled on Accept.'));
+        $row->addLabel('gibbonRollGroupID', __('Form Group at Entry'))->description(__('If set, the student will automatically be enrolled on Accept.'));
         $row->addSelect('gibbonRollGroupID')
             ->fromArray($rollGroupsOptions)
             ->chainedTo('gibbonSchoolYearIDEntry', $rollGroupsChained)

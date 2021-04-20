@@ -138,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
                 return Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
             });
         $table->addColumn('yearGroup', __('Year Group'));
-        $table->addColumn('rollGroup', __('Roll Group'))
+        $table->addColumn('rollGroup', __('Form Group'))
             ->description(__('Roll Order'))
             ->format(function($row) {
                 return $row['rollGroup'] . (!empty($row['rollOrder']) ? '<br/><span class="small emphasis">'.$row['rollOrder'].'</span>' : '');

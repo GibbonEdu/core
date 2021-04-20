@@ -39,17 +39,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
     $viewMode = isset($_REQUEST['format']) ? $_REQUEST['format'] : '';
 
     if (empty($viewMode)) {
-        $page->breadcrumbs->add(__('Students by Roll Group'));
+        $page->breadcrumbs->add(__('Students by Form Group'));
 
         $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
-        $form->setTitle(__('Choose Roll Group'))
+        $form->setTitle(__('Choose Form Group'))
             ->setFactory(DatabaseFormFactory::create($pdo))
             ->setClass('noIntBorder fullWidth');
 
         $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_students_byRollGroup.php");
 
         $row = $form->addRow();
-            $row->addLabel('gibbonRollGroupID', __('Roll Group'));
+            $row->addLabel('gibbonRollGroupID', __('Form Group'));
             $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'], true)->selected($gibbonRollGroupID)->placeholder()->required();
 
         $row = $form->addRow();
@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
         if ($gibbonRollGroupID == '*') return $output;
         
         if ($rollGroup = $rollGroupGateway->getRollGroupByID($gibbonRollGroupID)) {
-            $output .= '<b>'.__('Roll Group').'</b>: '.$rollGroup['name'];
+            $output .= '<b>'.__('Form Group').'</b>: '.$rollGroup['name'];
         }
         if ($tutors = $rollGroupGateway->selectTutorsByRollGroup($gibbonRollGroupID)->fetchAll()) {
             $output .= '<br/><b>'.__('Tutors').'</b>: '.Format::nameList($tutors, 'Staff');
@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
         'view:extended' => __('View').': '.__('Extended'),
     ]);
 
-    $table->addColumn('rollGroup', __('Roll Group'))->width('5%');
+    $table->addColumn('rollGroup', __('Form Group'))->width('5%');
     $table->addColumn('student', __('Student'))
         ->sortable(['surname', 'preferredName'])
         ->format(function ($person) {

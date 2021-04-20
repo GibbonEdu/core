@@ -51,7 +51,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
         $userReport = array();
         $adminReport = array( 'rollGroup' => array(), 'classes' => array() );
 
-        $enabledByRollGroup = getSettingByScope($connection2, 'Attendance', 'attendanceCLINotifyByRollGroup');
+        $enabledByRollGroup = getSettingByScope($connection2, 'Attendance', 'attendanceCLINotifyByFormGroup');
         $additionalUsersList = getSettingByScope($connection2, 'Attendance', 'attendanceCLIAdditionalUsers');
 
         if ($enabledByRollGroup != 'Y') {
@@ -151,7 +151,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                     // Output the roll groups the particular user is a part of
                     if ( isset($items['rollGroup']) && count($items['rollGroup']) > 0) {
                         $notificationText .= '<br/><br/>';
-                        $notificationText .= '<b>'.__('Roll Group').':</b><br/>';
+                        $notificationText .= '<b>'.__('Form Group').':</b><br/>';
                         foreach ($items['rollGroup'] as $rollGroup) {
                             $notificationText .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $rollGroup['name'] .'<br/>';
                         }

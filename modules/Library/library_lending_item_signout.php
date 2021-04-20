@@ -135,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
             $result = $pdo->executeQuery($data, $sql);
 
             if ($result->rowCount() > 0) {
-                $people['--'.__('Students By Roll Group').'--'] = array_reduce($result->fetchAll(), function ($group, $item) {
+                $people['--'.__('Students By Form Group').'--'] = array_reduce($result->fetchAll(), function ($group, $item) {
                     $group[$item['gibbonPersonID']] = $item['rollGroupName'].' - '.Format::name('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Student', true).' ('.$item['username'].')';
                     return $group;
                 }, array());

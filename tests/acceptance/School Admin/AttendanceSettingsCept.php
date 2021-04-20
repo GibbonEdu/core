@@ -15,12 +15,12 @@ $newFormValues = array(
     'attendanceReasons'                  => 'Reason1,Reason2,Reason3',
     'countClassAsSchool'                 => 'Y',
     'studentSelfRegistrationIPAddresses' => '127.0.0.1,192.168.0.1',
-    'attendanceCLINotifyByRollGroup'     => 'Y',
+    'attendanceCLINotifyByFormGroup'     => 'Y',
     'attendanceCLINotifyByClass'         => 'Y',
     'attendanceCLIAdditionalUsers[]'     => '0000000001'
 );
 
-$I->selectFromDropdown('defaultRollGroupAttendanceType', 1);
+$I->selectFromDropdown('defaultFormGroupAttendanceType', 1);
 $I->selectFromDropdown('defaultClassAttendanceType', 1);
 
 $I->submitForm('#content form', $newFormValues, 'Submit');

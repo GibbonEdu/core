@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_l
             return Format::name('', $student['preferredName'], $student['surname'], 'Student', true, true)
                  . '<br/><small><i>'.Format::userStatusInfo($student).'</i></small>';
         });
-    $table->addColumn('rollGroup', __('Roll Group'));
+    $table->addColumn('rollGroup', __('Form Group'));
     $table->addColumn('username', __('Username'));
     $table->addColumn('officialName', __('Official Name'));
     $table->addColumn('dateEnd', __('End Date'))->format(function ($student) {

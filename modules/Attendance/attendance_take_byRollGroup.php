@@ -27,7 +27,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 require_once __DIR__ . '/src/AttendanceView.php';
 
 // set page breadcrumb
-$page->breadcrumbs->add(__('Take Attendance by Roll Group'));
+$page->breadcrumbs->add(__('Take Attendance by Form Group'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byRollGroup.php') == false) {
     // Access denied
@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
         $today = date('Y-m-d');
         $currentDate = isset($_GET['currentDate'])? dateConvert($guid, $_GET['currentDate']) : $today;
 
-        echo '<h2>'.__('Choose Roll Group')."</h2>";
+        echo '<h2>'.__('Choose Form Group')."</h2>";
 
         $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'] . '/index.php', 'get');
         $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
         $form->addHiddenValue('q', '/modules/' . $_SESSION[$guid]['module'] . '/attendance_take_byRollGroup.php');
 
         $row = $form->addRow();
-            $row->addLabel('gibbonRollGroupID', __('Roll Group'));
+            $row->addLabel('gibbonRollGroupID', __('Form Group'));
             $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->required()->selected($gibbonRollGroupID)->placeholder();
 
         $row = $form->addRow();
@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     echo '</div>';
                 } else {
                     $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
-                    $defaultAttendanceType = getSettingByScope($connection2, 'Attendance', 'defaultRollGroupAttendanceType');
+                    $defaultAttendanceType = getSettingByScope($connection2, 'Attendance', 'defaultFormGroupAttendanceType');
 
                     //Check roll group
                     
@@ -117,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                     if ($rollGroup['attendance'] == 'N') {
                         print "<div class='error'>" ;
-                            print __("Attendance taking has been disabled for this roll group.") ;
+                            print __("Attendance taking has been disabled for this form group.") ;
                         print "</div>" ;
                     } else {
 

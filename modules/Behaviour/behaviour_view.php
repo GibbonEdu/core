@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
                 return Format::link($url, Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true));
             });
         $table->addColumn('yearGroup', __('Year Group'));
-        $table->addColumn('rollGroup', __('Roll Group'));
+        $table->addColumn('rollGroup', __('Form Group'));
 
         $table->addActionColumn()
             ->addParam('gibbonPersonID')

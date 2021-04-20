@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_letter
         });
 
     $table->addColumn('student', __('Student'))
-        ->description(__('Roll Group'))
+        ->description(__('Form Group'))
         ->sortable(['surname', 'preferredName'])
         ->width('25%')
         ->format(function($person) use ($guid) {

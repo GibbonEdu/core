@@ -29,10 +29,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Activity Choices by Roll Group'));
+    $page->breadcrumbs->add(__('Activity Choices by Form Group'));
 
     echo '<h2>';
-    echo __('Choose Roll Group');
+    echo __('Choose Form Group');
     echo '</h2>';
 
     $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_activityChoices_byRollGroup.php");
 
     $row = $form->addRow();
-        $row->addLabel('gibbonRollGroupID', __('Roll Group'));
+        $row->addLabel('gibbonRollGroupID', __('Form Group'));
         $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->required();
 
     $row = $form->addRow();

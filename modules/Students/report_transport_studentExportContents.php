@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
 	$excel->getActiveSheet()->setCellValueByColumnAndRow(3, 1, __('Parents'));
     $excel->getActiveSheet()->getStyleByColumnAndRow(3, 1)->applyFromArray($style_border);
     $excel->getActiveSheet()->getStyleByColumnAndRow(3, 1)->applyFromArray($style_head_fill);
-	$excel->getActiveSheet()->setCellValueByColumnAndRow(4, 1, __('Roll Group'));
+	$excel->getActiveSheet()->setCellValueByColumnAndRow(4, 1, __('Form Group'));
     $excel->getActiveSheet()->getStyleByColumnAndRow(4, 1)->applyFromArray($style_border);
     $excel->getActiveSheet()->getStyleByColumnAndRow(4, 1)->applyFromArray($style_head_fill);
 

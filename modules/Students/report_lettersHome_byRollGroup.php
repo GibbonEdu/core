@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Letters Home by Roll Group'));
+    $page->breadcrumbs->add(__('Letters Home by Form Group'));
 
     
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);

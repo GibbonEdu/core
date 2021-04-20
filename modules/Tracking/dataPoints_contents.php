@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
                     ->setCellValue('B3', __('Surname'))
                    ->setCellValue('C3', __('Preferred Name'))
                    ->setCellValue('D3', __('DOB'))
-                   ->setCellValue('E3', __('Roll Group'))
+                   ->setCellValue('E3', __('Form Group'))
                    ->setCellValue('F3', __('Status'));
                 foreach (range('A', 'F') as $columnID) {
                     $excel->getActiveSheet()->getStyle($columnID.'3')->applyFromArray($style_border);

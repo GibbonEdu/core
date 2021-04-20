@@ -128,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $list->append('<li>'.__('Create a Gibbon user account for the student.').'</li>');
 
                 if (!empty($values['gibbonRollGroupID'])) {
-                    $list->append('<li>'.__('Enrol the student in the selected school year (as the student has been assigned to a roll group).').'</li>');
+                    $list->append('<li>'.__('Enrol the student in the selected school year (as the student has been assigned to a form group).').'</li>');
                 }
 
                 if (!empty($values['gibbonFamilyID']) || !empty($linkedApplication['gibbonFamilyID'])) {
@@ -158,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                         $col->addContent(__('The system can optionally perform the following actions:'))->wrap('<i><u>', '</u></i>');
                         $col->addCheckbox('autoEnrolStudent')
-                            ->description(__('Automatically enrol student in classes for Roll Group.'))
+                            ->description(__('Automatically enrol student in classes for Form Group.'))
                             ->inline(true)
                             ->setValue('Y')
                             ->checked($autoEnrolStudent? 'Y' : 'N')
@@ -171,7 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $list = $col->addContent();
 
                 if (empty($values['gibbonRollGroupID'])) {
-                    $list->append('<li>'.__('Enrol the student in the selected school year (as the student has been assigned to a roll group).').'</li>');
+                    $list->append('<li>'.__('Enrol the student in the selected school year (as the student has been assigned to a form group).').'</li>');
                 }
 
                 $list->append('<li>'.__('Create an individual needs record for the student.').'</li>')
@@ -303,7 +303,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         $body .= __('Year Group').': '.$yearGroupName."<br/>";
                     }
                     if ($values['gibbonRollGroupID'] != '' && !empty($rollGroupName)) {
-                        $body .= __('Roll Group').': '.$rollGroupName."<br/>";
+                        $body .= __('Form Group').': '.$rollGroupName."<br/>";
                     }
                     if ($values['dateStart'] != '') {
                         $body .= __('Start Date').': '.dateConvertBack($guid, $values['dateStart'])."<br/>";
@@ -471,7 +471,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             echo 'Student Enrolment';
                             echo '</h4>';
                             echo '<ul>';
-                            echo '<li>'.__('The student has successfully been enrolled in the specified school year, year group and roll group.').'</li>';
+                            echo '<li>'.__('The student has successfully been enrolled in the specified school year, year group and form group.').'</li>';
 
                             // Handle automatic course enrolment if enabled
                             $autoEnrolStudent = (isset($_POST['autoEnrolStudent']))? $_POST['autoEnrolStudent'] : 'N';
@@ -491,7 +491,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 if (!$pdo->getQuerySuccess()) {
                                     echo '<li class="warning">'.__('Student could not be automatically enrolled in courses, so this will have to be done manually at a later date.').'</li>';
                                 } else {
-                                    echo '<li>'.__('The student has automatically been enrolled in courses for Roll Group.').'</li>';
+                                    echo '<li>'.__('The student has automatically been enrolled in courses for Form Group.').'</li>';
                                 }
                             }
 
@@ -1138,7 +1138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                     $notificationText = sprintf(__('An application form for %1$s (%2$s) has been accepted for the %3$s school year.'), $studentName, $studentGroup, $schoolYearName );
                     if ($enrolmentOK && !empty($values['gibbonRollGroupID'])) {
-                        $notificationText .= ' '.__('The student has successfully been enrolled in the specified school year, year group and roll group.');
+                        $notificationText .= ' '.__('The student has successfully been enrolled in the specified school year, year group and form group.');
                     } else {
                         $notificationText .= ' '.__('Student could not be enrolled, so this will have to be done manually at a later date.');
                     }

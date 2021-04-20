@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
     $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
 
-    $page->breadcrumbs->add(__('Manage Roll Groups'));
+    $page->breadcrumbs->add(__('Manage Form Groups'));
 
     $gibbonSchoolYearID = isset($_REQUEST['gibbonSchoolYearID'])? $_REQUEST['gibbonSchoolYearID'] : $_SESSION[$guid]['gibbonSchoolYearID'];
 

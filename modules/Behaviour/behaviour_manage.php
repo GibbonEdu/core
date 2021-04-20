@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonPersonID)->placeholder();
 
         $row = $form->addRow();
-            $row->addLabel('gibbonRollGroupID',__('Roll Group'));
+            $row->addLabel('gibbonRollGroupID',__('Form Group'));
             $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->placeholder();
 
         $row = $form->addRow();
@@ -145,7 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             });
 
         $table->addColumn('student', __('Student'))
-            ->description(__('Roll Group'))
+            ->description(__('Form Group'))
             ->sortable(['student.surname', 'student.preferredName'])
             ->width('25%')
             ->format(function($person) use ($guid) {

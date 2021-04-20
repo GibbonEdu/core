@@ -49,11 +49,11 @@ class FinanceFormFactory extends DatabaseFormFactory
 
         // Opt Groups
         if ($params['allStudents'] != true) {
-            $byRollGroup = __('All Enrolled Students by Roll Group');
+            $byRollGroup = __('All Enrolled Students by Form Group');
             $byName = __('All Enrolled Students by Alphabet');
         }
         else {
-            $byRollGroup = __('All Students by Roll Group');
+            $byRollGroup = __('All Students by Form Group');
             $byName = __('All Students by Alphabet');
         }
 
@@ -102,7 +102,7 @@ class FinanceFormFactory extends DatabaseFormFactory
             foreach ($students as $student) {
                 if (empty($student['dayType']) || !in_array($student['dayType'], $dayTypes)) continue;
 
-                $byDayType = $student['dayType'].' '.__('Students by Roll Groups');
+                $byDayType = $student['dayType'].' '.__('Students by Form Groups');
                 $fullName = Format::name('', $student['preferredName'], $student['surname'], 'Student', true);
 
                 $values[$byDayType][$student['gibbonFinanceInvoiceeID']] = $student['rollGroupName'].' - '.$fullName;

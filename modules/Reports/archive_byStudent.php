@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.
         $row->addSelectYearGroup('gibbonYearGroupID')->placeholder()->selected($gibbonYearGroupID);
 
     $row = $form->addRow();
-        $row->addLabel('gibbonRollGroupID', __('Roll Group'));
+        $row->addLabel('gibbonRollGroupID', __('Form Group'));
         $row->addSelectRollGroup('gibbonRollGroupID', $gibbonSchoolYearID)->selected($gibbonRollGroupID)->placeholder();
 
     $row = $form->addRow();
@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.
         });
 
     $table->addColumn('yearGroup', __('Year Group'));
-    $table->addColumn('rollGroup', __('Roll Group'));
+    $table->addColumn('rollGroup', __('Form Group'));
     $table->addColumn('count', __('Reports'));
 
     $table->addActionColumn()
