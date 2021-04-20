@@ -29,11 +29,12 @@ v22.0.00
         System: added an Enrolment tab to the Staff Dashboard
         System: added help buttons to the top of pages linking to documentation, when available
         System: renamed the old theme to Legacy, which is not installed by default
-        System: changed interface strings from Roll Group to Form Group 
+        Staff: addded a Staff Data Updater to enable requests for updates to staff records
 
     Changes With Important Notices
         System: removed the vendor folder for Cutting Edge Code installations
         System: renamed the gibbonPersonField table to gibbonCustomField
+        System: changed interface strings from Roll Group to Form Group 
         Students: migrated Blood Type and Tetanus fields from Medical Form into Custom Fields
 
     Tweaks & Additions
@@ -46,6 +47,7 @@ v22.0.00
         System: added Somali as language option in dropdown menus
         Finance: removed student DOB and Gender from Export Invoices
         Formal Assessment: added attainment and effort descriptor as title to Internal Assessment view
+        Formal Assessment: expanded name column in Internal Assessment to 30 chars
         Messenger: updated the send report to list any emails that failed to send
         Reports: added a help tool with Data Source information to Edit Component page
         Reports: added an option to delete report files from Generate Reports page

@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
     if ($gibbonCourseClassID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
             $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse, gibbonCourseClass WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class';
             $result = $connection2->prepare($sql);
@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));
-                $row->addTextField('name')->required()->maxLength(20);
+                $row->addTextField('name')->required()->maxLength(30);
 
             $row = $form->addRow();
                 $row->addLabel('description', __('Description'));
