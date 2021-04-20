@@ -79,9 +79,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/report_gr
     }
 
     $table = ReportTable::createPaginated('inOverview', $criteria)->setViewMode($viewMode, $gibbon->session);
-    $table->setTitle(__('Individual Needs').': '.($gibbonYearGroupID ? __('Roll Group') : __('Year Groups')));
+    $table->setTitle(__('Individual Needs').': '.($gibbonYearGroupID ? __('Form Group') : __('Year Groups')));
 
-    $table->addColumn('labelName', $gibbonYearGroupID ? __('Roll Group') : __('Year Groups'))
+    $table->addColumn('labelName', $gibbonYearGroupID ? __('Form Group') : __('Year Groups'))
         ->sortable(['gibbonYearGroup.sequenceNumber', 'gibbonRollGroup.name'])
         ->format(function ($inData) use ($onClickURL) {
             return Format::link($onClickURL.$inData['labelID'], $inData['labelName']);

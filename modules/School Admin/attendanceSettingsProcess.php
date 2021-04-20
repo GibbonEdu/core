@@ -67,10 +67,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         $fail = true;
     }
 
-    $defaultRollGroupAttendanceType = (isset($_POST['defaultRollGroupAttendanceType'])) ? $_POST['defaultRollGroupAttendanceType'] : NULL;
+    $defaultFormGroupAttendanceType = (isset($_POST['defaultFormGroupAttendanceType'])) ? $_POST['defaultFormGroupAttendanceType'] : NULL;
     try {
-        $data = array('value' => $defaultRollGroupAttendanceType);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='defaultRollGroupAttendanceType'";
+        $data = array('value' => $defaultFormGroupAttendanceType);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='defaultFormGroupAttendanceType'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -111,10 +111,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         $fail = true;
     }
 
-    $attendanceCLINotifyByRollGroup = (isset($_POST['attendanceCLINotifyByRollGroup'])) ? $_POST['attendanceCLINotifyByRollGroup'] : NULL;
+    $attendanceCLINotifyByFormGroup = (isset($_POST['attendanceCLINotifyByFormGroup'])) ? $_POST['attendanceCLINotifyByFormGroup'] : NULL;
     try {
-        $data = array('value' => $attendanceCLINotifyByRollGroup);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='attendanceCLINotifyByRollGroup'";
+        $data = array('value' => $attendanceCLINotifyByFormGroup);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='attendanceCLINotifyByFormGroup'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {

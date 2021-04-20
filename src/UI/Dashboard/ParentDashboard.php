@@ -115,7 +115,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                     "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID']."'>".__('Student Profile').'</a><br/>';
 
                 if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_details.php')) {
-                    $output .= "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID='.$student['gibbonRollGroupID']."'>".__('Roll Group').' ('.$student['rollGroup'].')</a><br/>';
+                    $output .= "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID='.$student['gibbonRollGroupID']."'>".__('Form Group').' ('.$student['rollGroup'].')</a><br/>';
                 }
                 if ($student['rollGroupWebsite'] != '') {
                     $output .= "<a target='_blank' href='".$student['rollGroupWebsite']."'>".$student['rollGroup'].' '.__('Website').'</a>';

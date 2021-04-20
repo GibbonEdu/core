@@ -32,10 +32,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php
         $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         //Proceed!
-        $page->breadcrumbs->add(__('View Roll Groups'));
+        $page->breadcrumbs->add(__('View Form Groups'));
 
         $gateway = $container->get(RollGroupGateway::class);
-        if ($highestAction == "View Roll Groups_all") {
+        if ($highestAction == "View Form Groups_all") {
             $rollGroups = $gateway->selectRollGroupsBySchoolYear($gibbon->session->get('gibbonSchoolYearID'));
         }
         else {
@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php
         };
 
         $table = DataTable::create('rollGroups');
-        $table->setTitle(__('Roll Groups'));
+        $table->setTitle(__('Form Groups'));
 
         $table->addColumn('name', __('Name'));
         $table->addColumn('tutors', __('Form Tutors'))->format($formatTutorsList);

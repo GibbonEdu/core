@@ -31,10 +31,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/report_cla
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Class Enrolment by Roll Group'));
+    $page->breadcrumbs->add(__('Class Enrolment by Form Group'));
 
     echo '<h2>';
-    echo __('Choose Roll Group');
+    echo __('Choose Form Group');
     echo '</h2>';
 
     $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : '';
@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/report_cla
     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/report_classEnrolment_byRollGroup.php');
 
     $row = $form->addRow();
-        $row->addLabel('gibbonRollGroupID', __('Roll Group'));
+        $row->addLabel('gibbonRollGroupID', __('Form Group'));
         $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->required()->placeholder();
 
     $row = $form->addRow();
@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/report_cla
         // DATA TABLE
         $table = DataTable::create('courseEnrolment');
 
-        $table->addColumn('rollGroup', __('Roll Group'));
+        $table->addColumn('rollGroup', __('Form Group'));
         $table->addColumn('student', __('Student'))
             ->sortable(['surname', 'preferredName'])
             ->format(function($person) use ($guid) {

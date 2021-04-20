@@ -105,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             echo '</tr>';
             echo '<tr>';
             echo "<td style='padding-top: 15px; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__('Roll Group at Entry').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Form Group at Entry').'</span><br/>';
             
                 $dataSelect = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
                 $sqlSelect = 'SELECT name FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';

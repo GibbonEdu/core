@@ -157,7 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 
             echo "<tr class='head'>";
             echo '<th style="width:80px" rowspan=2>';
-            echo __('Roll Group');
+            echo __('Form Group');
             echo '</th>';
             echo '<th rowspan=2>';
             echo __('Name');

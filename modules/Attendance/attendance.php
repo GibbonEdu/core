@@ -294,7 +294,7 @@ if (isset($_SESSION[$guid]["username"])) {
                 'gibbonRollGroupID',
                 $takeAttendanceURL
             );
-            $attendanceByRollGroupTable->setTitle(__('My Roll Group'));
+            $attendanceByRollGroupTable->setTitle(__('My Form Group'));
             $attendanceByRollGroupTable->withData(new DataSet($attendanceByRollGroup));
         }
     }
