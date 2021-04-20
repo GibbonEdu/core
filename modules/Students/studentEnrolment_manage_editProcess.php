@@ -19,9 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-$gibbonStudentEnrolmentID = $_POST['gibbonStudentEnrolmentID'];
-$search = $_GET['search'];
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$gibbonStudentEnrolmentID = $_POST['gibbonStudentEnrolmentID'] ?? '';
+$search = $_GET['search'] ?? '';
 
 if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 } else {
@@ -55,10 +55,10 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
                 header("Location: {$URL}");
                 exit;
             } else {
-                $gibbonYearGroupID = $_POST['gibbonYearGroupID'];
-                $gibbonRollGroupID = $_POST['gibbonRollGroupID'];
+                $gibbonYearGroupID = $_POST['gibbonYearGroupID'] ?? '';
+                $gibbonRollGroupID = $_POST['gibbonRollGroupID'] ?? '';
 
-                $rollOrder = $_POST['rollOrder'];
+                $rollOrder = $_POST['rollOrder'] ?? '';
                 if ($rollOrder == '') {
                     $rollOrder = null;
                 }
@@ -116,9 +116,9 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
 
                         // Update existing course enrolments for new Roll Group
                         $data = array('gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID, 'dateEnrolled' => date('Y-m-d'));
-                        $sql = "UPDATE gibbonCourseClassPerson 
+                        $sql = "UPDATE gibbonCourseClassPerson
                                 JOIN gibbonStudentEnrolment ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                                JOIN gibbonCourseClassMap ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID 
+                                JOIN gibbonCourseClassMap ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID
                                     AND gibbonCourseClassMap.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID)
                                 SET gibbonCourseClassPerson.role='Student', gibbonCourseClassPerson.dateEnrolled=:dateEnrolled, gibbonCourseClassPerson.dateUnenrolled=NULL, reportable='Y'
                                 WHERE gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID

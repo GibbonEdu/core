@@ -33,13 +33,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
     }
 
     //Proceed!
-    $gibbonPersonID = $_POST['gibbonPersonID'];
+    $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
     $gibbonPersonIDFirstAider = $_SESSION[$guid]['gibbonPersonID'];
-    $date = $_POST['date'];
-    $timeIn = $_POST['timeIn'];
-    $description = $_POST['description'];
-    $actionTaken = $_POST['actionTaken'];
-    $followUp = $_POST['followUp'];
+    $date = $_POST['date'] ?? '';
+    $timeIn = $_POST['timeIn'] ?? '';
+    $description = $_POST['description'] ?? '';
+    $actionTaken = $_POST['actionTaken'] ?? '';
+    $followUp = $_POST['followUp' ?? '';
 
     if ($gibbonPersonID == '' or $gibbonPersonIDFirstAider == '' or $date == '' or $timeIn == '') {
         $URL .= '&return=error1&step=1';

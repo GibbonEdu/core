@@ -21,7 +21,7 @@ use Gibbon\Forms\CustomFieldHandler;
 
 include '../../gibbon.php';
 
-$search = $_GET['search'];
+$search = $_GET['search'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/medicalForm_manage_add.php&search=$search";
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage_add.php') == false) {
@@ -29,10 +29,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $gibbonPersonID = $_POST['gibbonPersonID'];
-    $longTermMedication = $_POST['longTermMedication'];
+    $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
+    $longTermMedication = $_POST['longTermMedication'] ?? '';
     $longTermMedicationDetails = (isset($_POST['longTermMedicationDetails']) ? $_POST['longTermMedicationDetails'] : '');
-    $comment = $_POST['comment'];
+    $comment = $_POST['comment'] ?? '';
 
     //Validate Inputs
     if ($gibbonPersonID == '') {

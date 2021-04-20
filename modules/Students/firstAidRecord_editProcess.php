@@ -21,7 +21,7 @@ use Gibbon\Forms\CustomFieldHandler;
 
 include '../../gibbon.php';
 
-$gibbonFirstAidID = $_GET['gibbonFirstAidID'];
+$gibbonFirstAidID = $_GET['gibbonFirstAidID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/firstAidRecord_edit.php&gibbonFirstAidID=$gibbonFirstAidID&gibbonRollGroupID=".$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_edit.php') == false) {
@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
             $row = $result->fetch();
             $gibbonPersonID = $row['gibbonPersonIDFirstAider'];
             $timeOut = (!empty($_POST['timeOut'])) ? $_POST['timeOut'] : null;
-            $followUp = $_POST['followUp'];
+            $followUp = $_POST['followUp'] ?? '';
 
             $customRequireFail = false;
             $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('First Aid', [], $customRequireFail);
