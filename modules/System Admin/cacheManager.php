@@ -51,10 +51,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/cacheManager.
         $iterator->next();
     }
 
+    // mPDF Cache Check
+    $mPDFCachePath = $gibbon->session->get('absolutePath').'/vendor/mpdf/mpdf/tmp';
+
     if (!is_dir($cachePath) || !is_writeable($cachePath)) {
         echo Format::alert(__('Your cache directory is missing or is not system writeable. Check the file permissions in your cache directory and resolve these errors manually.'), 'error');
     } elseif ($fileCount != $fileWriteable) {
         echo Format::alert(__('{count} files or folders in the cache directory are not system writeable. This will cause errors if the cache system cannot update or delete these files. Check the file permissions in your cache directory and resolve these errors manually.', ['count' => $fileCount - $fileWriteable]), 'error');
+    } else if (!is_writeable($mPDFCachePath)) {
+        echo Format::alert(__('The path {path} is missing or is not system writeable. Check the file permissions on your server and resolve these errors manually.', ['path' => $mPDFCachePath]), 'error');
     } else {
         echo Format::alert(__('Caching is running smoothly. All files and folders in your cache directory are system writeable.'), 'success');
     }
