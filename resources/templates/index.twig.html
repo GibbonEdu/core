@@ -15,7 +15,7 @@ TODO: add template variable details.
         {{ include('head.twig.html') }}
         {% endblock head %}
     </head>
-    <body class="h-full flex flex-col font-sans {{ bodyBackground  ? '' : 'body-gradient-' ~ themeColour }}" style="{{ bodyBackground  ? bodyBackground : '' }}">
+    <body class="h-full flex flex-col font-sans {{ bodyBackground  ? '' : 'body-gradient-' ~ themeColour|lower }}" style="{{ bodyBackground  ? bodyBackground : '' }} {{ themeColour is empty ? 'background: radial-gradient(80% 1000px at 20% 500px, #ef99c7 0%, #794d95 100%) no-repeat fixed ;' : '' }}">
 
         {% set sidebarPos = isLoggedIn ? 'left' : 'right' %}
         

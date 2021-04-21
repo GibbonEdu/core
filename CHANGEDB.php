@@ -868,4 +868,5 @@ UPDATE gibbonNotificationEvent SET actionName='Form Groups Not Registered' WHERE
 UPDATE gibbonSetting SET name='attendanceCLINotifyByFormGroup' WHERE name='attendanceCLINotifyByRollGroup';end
 UPDATE gibbonSetting SET name='defaultFormGroupAttendanceType' WHERE name='defaultRollGroupAttendanceType';end
 UPDATE gibbonModule SET name='Form Groups' WHERE name='Roll Groups';end
+UPDATE `gibbonSetting` SET value='purple' WHERE value='Purple' AND name='themeColour' AND scope='System';end
 ";
