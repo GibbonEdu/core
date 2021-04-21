@@ -94,8 +94,12 @@ class StudentHistoryData
             $firstDay = new DateTimeImmutable($term['firstDay']);
             $lastDay = new DateTimeImmutable($term['lastDay']);
 
+            if ($firstDayOfTheWeek == 'Monday') $firstDayModifier = 'Monday this week';
+            elseif ($firstDayOfTheWeek == 'Sunday') $firstDayModifier = 'Sunday last week';
+            elseif ($firstDayOfTheWeek == 'Saturday') $firstDayModifier = 'Saturday last week';
+
             $dateRange = new DatePeriod(
-                $firstDay->modify($firstDayOfTheWeek == 'Monday' ? "Monday this week" : "Sunday last week"),
+                $firstDay->modify($firstDayModifier),
                 new DateInterval('P1D'),
                 $lastDay->modify('+1 day')
             );
