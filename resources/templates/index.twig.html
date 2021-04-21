@@ -82,6 +82,8 @@ TODO: add template variable details.
         </div>
         <div id="wrapOuter" class="flex-1 pt-24 bg-transparent-100">
             <div id="wrap" class="px-0 sm:px-6 lg:px-12 -mt-48">
+                {% block beforePage %}
+                {% endblock beforePage %}
 
                 <div id="content-wrap" class="relative w-full min-h-1/2 flex content-start {{ sidebar ? 'flex-wrap lg:flex-no-wrap' : 'flex-col' }} {{ sidebarPos == 'left' ? 'lg:flex-row' : 'lg:flex-row-reverse' }} clearfix">
 
@@ -140,6 +142,8 @@ TODO: add template variable details.
 
                 </div>
 
+                {% block afterPage %}
+                {% endblock afterPage %}
             </div>
 
             {% block footer %}
