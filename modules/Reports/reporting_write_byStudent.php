@@ -254,15 +254,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
 
     if ($reportingScope['scopeType'] == 'Roll Group') {
         $reportingRemarks = $reportingAccessGateway->selectAllRemarksByStudent($reportingScope['gibbonReportingCycleID'], $gibbonPersonIDStudent)->fetchAll();
-        
-        $col = $form->addRow()->addColumn();
+
+        if (!empty($reportingRemarks)) {
+
+            $col = $form->addRow()->addColumn();
             $col->addLabel('remarks', __('Remarks'))
                 ->addClass('sm:max-w-md')
                 ->description(__('Remarks are comments shared by other staff members. They do not appear on the report.'));
 
-        if (empty($reportingRemarks)) {
-            $col->addContent(Format::alert(__('No remarks have been added yet.', 'message')));
-        } else {
             foreach ($reportingRemarks as $remark) {
                 $remarkDetails = $reportingAccessGateway->selectReportingDetailsByScope($remark['gibbonReportingScopeID'], $remark['scopeType'], $remark['scopeTypeID'])->fetch();
 
