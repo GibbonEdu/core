@@ -869,4 +869,5 @@ UPDATE gibbonSetting SET name='attendanceCLINotifyByFormGroup' WHERE name='atten
 UPDATE gibbonSetting SET name='defaultFormGroupAttendanceType' WHERE name='defaultRollGroupAttendanceType';end
 UPDATE gibbonModule SET name='Form Groups' WHERE name='Roll Groups';end
 UPDATE `gibbonSetting` SET value='purple' WHERE value='Purple' AND name='themeColour' AND scope='System';end
+UPDATE `gibbonAction` SET URLList='templates_preview.php,templates_manage.php,templates_manage_add.php,templates_manage_edit.php,templates_manage_duplicate.php,templates_manage_delete.php,templates_manage_section_add.php,templates_manage_section_edit.php,templates_manage_section_delete.php,templates_assets.php,templates_assets_components_preview.php,templates_assets_components_add.php,templates_assets_components_edit.php,templates_assets_components_delete.php,templates_assets_components_duplicate.php,templates_assets_fonts_preview.php,templates_assets_fonts_edit.php' WHERE `name`='Template Builder' AND `gibbonModuleID`=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Reports');end
 ";

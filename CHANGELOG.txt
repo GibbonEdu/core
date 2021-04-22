@@ -53,6 +53,7 @@ v22.0.00
         Reports: added an option to delete report files from Generate Reports page
         Reports: clear report cache when editing template assets in Production
         Reports: added a download option to the student list of the View by Report page
+        Reports: added a duplicate action in Template Builder
         Students: added Medical Form custom fields to student profile
         Students: updated Medical Data Summary to include medical custom fields
         Students: adjusted student select in Student Enrolment Add to only show unenrolled students
