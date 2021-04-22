@@ -101,7 +101,7 @@ class CoverageTodayView
                     }
 
                     $actions->addAction('view', __('View Details'))
-                        ->setURL('/modules/Roll Groups/rollGroups_details.php');
+                        ->setURL('/modules/Form Groups/rollGroups_details.php');
                 });
 
             $page->write($table->render($rollGroups).'<br/>');
