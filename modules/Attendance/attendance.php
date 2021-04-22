@@ -256,7 +256,7 @@ if (isset($_SESSION[$guid]["username"])) {
                 $row['currentDate'] = Format::date($currentDate);
 
                 // render group link variables
-                $row['groupQuery'] = '/modules/Roll Groups/rollGroups_details.php';
+                $row['groupQuery'] = '/modules/Form Groups/rollGroups_details.php';
                 $row['groupName'] = $row['name'];
 
                 // render recentHistory into the row

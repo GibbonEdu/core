@@ -22,7 +22,7 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\RollGroups\RollGroupGateway;
 use Gibbon\Domain\School\YearGroupGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Form Groups/rollGroups.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php
 
         $actions = $table->addActionColumn()->addParam('gibbonRollGroupID');
         $actions->addAction('view', __('View'))
-                ->setURL('/modules/Roll Groups/rollGroups_details.php');
+                ->setURL('/modules/Form Groups/rollGroups_details.php');
 
         echo $table->render($rollGroups->toDataSet());
 
