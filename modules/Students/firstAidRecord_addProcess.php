@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
     $timeIn = $_POST['timeIn'] ?? '';
     $description = $_POST['description'] ?? '';
     $actionTaken = $_POST['actionTaken'] ?? '';
-    $followUp = $_POST['followUp' ?? '';
+    $followUp = $_POST['followUp'] ?? '';
 
     if ($gibbonPersonID == '' or $gibbonPersonIDFirstAider == '' or $date == '' or $timeIn == '') {
         $URL .= '&return=error1&step=1';

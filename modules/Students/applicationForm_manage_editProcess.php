@@ -169,10 +169,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             //GET PARENT1 FEILDS
             $parent1gibbonPersonID = $_POST['parent1gibbonPersonID'] ?? null;
             $parent1title = $_POST['parent1title'] ?? null;
-            $parent1surname = trim($_POST['parent1surname'] ?? null);
-            $parent1firstName = trim($_POST['parent1firstName'] ?? null);
-            $parent1preferredName = trim($_POST['parent1preferredName'] ?? null);
-            $parent1officialName = trim($_POST['parent1officialName'] ?? null);
+            $parent1surname = trim($_POST['parent1surname'] ?? '');
+            $parent1firstName = trim($_POST['parent1firstName'] ?? '');
+            $parent1preferredName = trim($_POST['parent1preferredName'] ?? '');
+            $parent1officialName = trim($_POST['parent1officialName'] ?? '');
             $parent1nameInCharacters = $_POST['parent1nameInCharacters'] ?? null;
             $parent1gender = $_POST['parent1gender'] ?? null;
             $parent1relationship = $_POST['parent1relationship'] ?? null;
@@ -188,7 +188,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     $parent1visaExpiryDate = dateConvert($guid, $_POST['parent1visaExpiryDate']);
                 }
             }
-            $parent1email = trim($_POST['parent1email'] ?? null);
+            $parent1email = trim($_POST['parent1email'] ?? '');
 
             $parent1phone1Type = $_POST['parent1phone1Type'] ?? null;
 
@@ -210,10 +210,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
             //GET PARENT2 FEILDS
             $parent2title = $_POST['parent2title'] ?? null;
-            $parent2surname = trim($_POST['parent2surname'] ?? null);
-            $parent2firstName = trim($_POST['parent2firstName'] ?? null);
-            $parent2preferredName = trim($_POST['parent2preferredName'] ?? null);
-            $parent2officialName = trim($_POST['parent2officialName'] ?? null);
+            $parent2surname = trim($_POST['parent2surname'] ?? '');
+            $parent2firstName = trim($_POST['parent2firstName'] ?? '');
+            $parent2preferredName = trim($_POST['parent2preferredName'] ?? '');
+            $parent2officialName = trim($_POST['parent2officialName'] ?? '');
             $parent2nameInCharacters = $_POST['parent2nameInCharacters'] ?? null;
             $parent2gender = $_POST['parent2gender'] ?? null;
             $parent2relationship = $_POST['parent2relationship'] ?? null;
@@ -228,7 +228,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     $parent2visaExpiryDate = dateConvert($guid, $_POST['parent2visaExpiryDate']);
                 }
             }
-            $parent2email = trim($_POST['parent2email'] ?? null);
+            $parent2email = trim($_POST['parent2email'] ?? '');
             $parent2phone1Type = $_POST['parent2phone1Type'] ?? null;
             if (isset($_POST['parent2phone1']) and $parent2phone1Type == '') {
                 $parent2phone1Type = 'Other';
