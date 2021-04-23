@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                         header("Location: {$URL}");
                     } else {
                         //INSERT
-                        $replyTo = $_GET['replyTo'] ?? '';
+                        $replyTo = $_GET['replyTo'] ?? null;
 
 
                         //Attempt to prevent XSS attack
