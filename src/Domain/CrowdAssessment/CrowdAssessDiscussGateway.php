@@ -37,11 +37,26 @@ class CrowdAssessDiscussGateway extends QueryableGateway
     private static $primaryKey = 'gibbonCrowdAssessDiscussID';
     private static $searchableColumns = [];
 
-    public function selectDiscussionByHomeworkID($gibbonPlannerEntryHomeworkID)
+    public function selectDiscussionByHomeworkID($gibbonPlannerEntryHomeworkID, $parent = null)
     {
-        $data = ['gibbonPlannerEntryHomeworkID' => $gibbonPlannerEntryHomeworkID];
-        $sql = 'SELECT gibbonCrowdAssessDiscuss.*, title, surname, preferredName, category FROM gibbonCrowdAssessDiscuss JOIN gibbonPerson ON (gibbonCrowdAssessDiscuss.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonPlannerEntryHomeworkID=:gibbonPlannerEntryHomeworkID';
+        $query = $this
+            ->newSelect()
+            ->cols([
+                'gibbonCrowdAssessDiscuss.*', 'gibbonPerson.title', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.image_240', 'gibbonRole.category',
+            ])
+            ->from($this->getTableName())
+            ->innerJoin('gibbonPerson', 'gibbonCrowdAssessDiscuss.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->innerJoin('gibbonRole', 'gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID')
+            ->where('gibbonPlannerEntryHomeworkID=:gibbonPlannerEntryHomeworkID')
+            ->bindValue('gibbonPlannerEntryHomeworkID', $gibbonPlannerEntryHomeworkID)
+            ->orderBy(['gibbonCrowdAssessDiscuss.timestamp']);
 
-        return $this->db()->select($sql, $data);
+        if ($parent === 0) {
+            $query->where('gibbonCrowdAssessDiscussIDReplyTo IS NULL');
+        } elseif ($parent != null) {
+            $query->where('gibbonCrowdAssessDiscussIDReplyTo=:parent', ['parent' => $parent]);
+        }
+
+        return $this->runSelect($query);
     }
 }

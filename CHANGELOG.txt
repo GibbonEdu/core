@@ -45,6 +45,7 @@ v22.0.00
         System: added Mozambique Metical as currency option
         System: added hyperlinkAll method to Format class
         System: added Somali as language option in dropdown menus
+        Crowd Assessment: improved the view of comments in discussion threads
         Finance: removed student DOB and Gender from Export Invoices
         Formal Assessment: added attainment and effort descriptor as title to Internal Assessment view
         Formal Assessment: expanded name column in Internal Assessment to 30 chars

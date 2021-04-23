@@ -30,11 +30,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Get class variable
-    $gibbonPersonID = $_GET['gibbonPersonID'];
-    $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
-    $gibbonPlannerEntryHomeworkID = $_GET['gibbonPlannerEntryHomeworkID'];
+    $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+    $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
+    $gibbonPlannerEntryHomeworkID = $_GET['gibbonPlannerEntryHomeworkID'] ?? '';
 
-    $urlParams = ['gibbonPlannerEntryID' => $gibbonPlannerEntryID];
+    $urlParams = ['gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $gibbonPersonID];
     $page->breadcrumbs
         ->add(__('View All Assessments'), 'crowdAssess.php')
         ->add(__('View Assessment'), 'crowdAssess_view.php', $urlParams)
@@ -115,6 +115,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
     echo '<br/>';
 
    
-    // Get discussion
-    echo getThread($guid, $connection2, $homework['gibbonPlannerEntryHomeworkID'], null, 0, null, $gibbonPersonID, $gibbonPlannerEntryID);
+    // DISCUSSION - recursive
+    $getDiscussion = function ($gibbonPlannerEntryHomeworkID, $urlParams, $parent = null, $level = null) use (&$getDiscussion, &$crowdDiscussionGateway) {
+        $discussion = [];
+        $items = $crowdDiscussionGateway->selectDiscussionByHomeworkID($gibbonPlannerEntryHomeworkID, $parent)->fetchAll();
+        foreach ($items as $item) {
+            $item['replies'] = $getDiscussion($gibbonPlannerEntryHomeworkID, $urlParams, $item['gibbonCrowdAssessDiscussID'], $level + 1);
+
+            if ($level < 3) {
+                $item['attachmentLocation'] = "index.php?q=/modules/Crowd Assessment/crowdAssess_view_discuss_post.php&".http_build_query($urlParams)."&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&replyTo=".$item['gibbonCrowdAssessDiscussID'];
+                $item['attachmentText'] = __('Reply');
+            }
+            $discussion[] = $item;
+        }
+
+        return $discussion;
+    };
+    
+    $discussion = $getDiscussion($homework['gibbonPlannerEntryHomeworkID'], $urlParams, 0);
+
+    echo $page->fetchFromTemplate('ui/discussion.twig.html', [
+        'title' => __(''),
+        'compact' => true, 
+        'discussion' => $discussion
+    ]);
 }
