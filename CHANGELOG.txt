@@ -67,6 +67,7 @@ v22.0.00
         Tests: migrated test suite to GitHub actions, updated testing libraries to recent versions
         Timetable Admin: added an option to overwrite existing TT dates in Tie Days to Dates
         Timetable: added green cell background, and day colour highlight, to dates with days tied in Tie Days to Dates
+        Timetable: added This Week button to View Timetable by Facility
         Timetable: enabled editing timetable spaces and adding facility changes from View Timetable by Facility
 
     Bug Fixes
