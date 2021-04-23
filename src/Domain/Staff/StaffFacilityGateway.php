@@ -58,7 +58,7 @@ class StaffFacilityGateway extends QueryableGateway
         $this->unionWithCriteria($query, $criteria)
             ->distinct()
             ->cols([
-                'gibbonSpace.*', 'NULL AS gibbonSpacePersonID', "'Roll Group' as usageType", "NULL AS exception"
+                'gibbonSpace.*', 'NULL AS gibbonSpacePersonID', "'Form Group' as usageType", "NULL AS exception"
             ])
             ->from('gibbonRollGroup')
             ->innerJoin('gibbonSpace', 'gibbonRollGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID')
