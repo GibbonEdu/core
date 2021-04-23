@@ -101,10 +101,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
             echo __('When choosing a facility, remember that they are not mutually exclusive: you can change two classes into one facility, change one class to join another class in their normal room, or assign no facility at all. The facilities listed below are not necessarily free at the requested time: please use the View Available Facilities report to check availability.');
             echo '</p>';
 
-            $gibbonCourseClassID = null;
-            if (isset($_POST['gibbonCourseClassID'])) {
-                $gibbonCourseClassID = $_POST['gibbonCourseClassID'];
-            }
+            $gibbonCourseClassID = $_REQUEST['gibbonCourseClassID'] ?? null;
+            $gibbonTTDayRowClassID = $_REQUEST['gibbonTTDayRowClassID'] ?? null;
 
             try {
                 if ($highestAction == 'Manage Facility Changes_allClasses') {
@@ -129,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
 
             if ($resultSelect->rowCount() != 1) {
                 echo "<div class='error'>";
-                echo __('Your request failed due to a database error.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 $rowSelect = $resultSelect->fetch();
@@ -155,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
 
                 $row = $form->addRow();
                     $row->addLabel('gibbonTTDayRowClassID', __('Upcoming Class Slots'));
-                    $row->addSelect('gibbonTTDayRowClassID')->fromArray($classSlots)->required()->placeholder();
+                    $row->addSelect('gibbonTTDayRowClassID')->fromArray($classSlots)->required()->placeholder()->selected($gibbonTTDayRowClassID);
 
                 $row = $form->addRow();
                     $row->addLabel('gibbonSpaceID', __('Facility'));
