@@ -78,11 +78,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                         header("Location: {$URL}");
                     } else {
                         //INSERT
-                        $replyTo = $_GET['replyTo'] ?? '';
-
+                        $replyTo = !empty($_GET['replyTo']) ? $_GET['replyTo'] : null;
 
                         //Attempt to prevent XSS attack
                         $comment = $_POST['comment'] ?? '';
+                        $comment = trim(preg_replace('/^<p>|<\/p>$/i', '', $comment));
                         $comment = tinymceStyleStripTags($comment, $connection2);
 
                         try {
@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                             header("Location: {$URL}");
                             exit();
                         }
-                        $hash = '#'.($_GET['replyTo'] ?? '');
+                        $hash = '#'.($_GET['replyTo'] ?? null);
 
 
                         //Work out who we are replying too

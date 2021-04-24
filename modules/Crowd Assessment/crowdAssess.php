@@ -17,7 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//Module includes
+use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\Planner\UnitGateway;
+
+// Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAssess.php') == false) {
@@ -27,76 +31,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
     $page->breadcrumbs->add(__('View All Assessments'));
     
     $sql = getLessons($guid, $connection2);
+    $lessons = $pdo->select($sql[1], $sql[0])->fetchAll();
+    $unitGateway = $container->get(UnitGateway::class);
 
-    
-        $result = $connection2->prepare($sql[1]);
-        $result->execute($sql[0]);
+    $table = DataTable::create('crowdAssessment');
+    $table->setDescription(__('The list below shows all lessons in which there is work that you can crowd assess.'));
 
-    echo '<p>';
-    echo __('The list below shows all lessons in which there is work that you can crowd assess.');
-    echo '</p>';
-
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __('There are currently no lessons to for you to crowd assess.');
-        echo '</div>';
-    } else {
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __('Class');
-        echo '</th>';
-        echo '<th>';
-        echo __('Lesson').'</br>';
-        echo "<span style='font-size: 85%; font-style: italic'>".__('Unit').'</span>';
-        echo '</th>';
-        echo '<th>';
-        echo __('Date');
-        echo '</th>';
-        echo '<th>';
-        echo __('Actions');
-        echo '</th>';
-        echo '</tr>';
-
-        $count = 0;
-        $rowNum = 'odd';
-        while ($row = $result->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
+    $table->addColumn('class', __('Class'))->format(Format::using('courseClassName', ['course', 'class']));
+    $table->addColumn('lesson', __('Lesson'))->description(__('Unit'))
+        ->format(function ($lesson) use ($unitGateway) {
+            $output = '<b>'.$lesson['name'].'</b>';
+            if (!empty($lesson['gibbonUnitID'])) {
+                $unit = $unitGateway->getByID($lesson['gibbonUnitID']);
+                $output .= '<br/>'.Format::small($unit['name']);
             }
-            ++$count;
+            return $output;
+        });
+    $table->addColumn('date', __('Date'))->format(Format::using('date', 'date'));
 
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo $row['course'].'.'.$row['class'];
-            echo '</td>';
-            echo '<td>';
-            echo '<b>'.$row['name'].'</b><br/>';
-            echo "<span style='font-size: 85%; font-style: italic'>";
-            if ($row['gibbonUnitID'] != '') {
-                
-                    $dataUnit = array('gibbonUnitID' => $row['gibbonUnitID']);
-                    $sqlUnit = 'SELECT * FROM gibbonUnit WHERE gibbonUnitID=:gibbonUnitID';
-                    $resultUnit = $connection2->prepare($sqlUnit);
-                    $resultUnit->execute($dataUnit);
-                if ($resultUnit->rowCount() == 1) {
-                    $rowUnit = $resultUnit->fetch();
-                    echo $rowUnit['name'];
-                }
-            }
-            echo '</span>';
-            echo '</td>';
-            echo '<td>';
-            echo dateConvertBack($guid, $row['date']);
-            echo '</td>';
-            echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/crowdAssess_view.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."'><img title='".__('View Details')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
-            echo '</td>';
-            echo '</tr>';
-        }
-        echo '</table>';
-    }
+    $table->addActionColumn()
+        ->addParam('gibbonPlannerEntryID')
+        ->format(function ($row, $actions) {
+            $actions->addAction('view', __('View Details'))
+                ->setURL('/modules/Crowd Assessment/crowdAssess_view.php');
+        });
+
+    echo $table->render($lessons);
 }

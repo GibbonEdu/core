@@ -27,9 +27,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Get class variable
-    $gibbonPersonID = $_GET['gibbonPersonID'];
-    $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
-    $gibbonPlannerEntryHomeworkID = $_GET['gibbonPlannerEntryHomeworkID'];
+    $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+    $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
+    $gibbonPlannerEntryHomeworkID = $_GET['gibbonPlannerEntryHomeworkID'] ?? '';
 
     $urlParams = ['gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $gibbonPersonID, 'gibbonPlannerEntryHomeworkID' => $gibbonPlannerEntryHomeworkID];
     $page->breadcrumbs
@@ -39,57 +39,46 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
         ->add(__('Add Post'));    
     
     if ($gibbonPersonID == '' or $gibbonPlannerEntryID == '' or $gibbonPlannerEntryHomeworkID == '') {
-        echo "<div class='warning'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+        $page->addError(__('You have not specified one or more required parameters.'));
+        return;
     }
-    //Check existence of and access to this class.
-    else {
-        $and = " AND gibbonPlannerEntryID=$gibbonPlannerEntryID";
-        $sql = getLessons($guid, $connection2, $and);
-        
-            $result = $connection2->prepare($sql[1]);
-            $result->execute($sql[0]);
+    
+    $and = " AND gibbonPlannerEntryID=$gibbonPlannerEntryID";
+    $sql = getLessons($guid, $connection2, $and);
+    $lesson = $pdo->select($sql[1], $sql[0])->fetch();
 
-        if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The selected record does not exist, or you do not have access to it.');
-            echo '</div>';
-        } else {
-            $row = $result->fetch();
-
-            $role = getCARole($guid, $connection2, $row['gibbonCourseClassID']);
-            $replyTo = null;
-            if (isset($_GET['replyTo'])) {
-                $replyTo = $_GET['replyTo'];
-            }
-            $sqlList = getStudents($guid, $connection2, $role, $row['gibbonCourseClassID'], $row['homeworkCrowdAssessOtherTeachersRead'], $row['homeworkCrowdAssessOtherParentsRead'], $row['homeworkCrowdAssessSubmitterParentsRead'], $row['homeworkCrowdAssessClassmatesParentsRead'], $row['homeworkCrowdAssessOtherStudentsRead'], $row['homeworkCrowdAssessClassmatesRead'], " AND gibbonPerson.gibbonPersonID=$gibbonPersonID");
-
-            if ($sqlList[1] != '') {
-                
-                    $resultList = $connection2->prepare($sqlList[1]);
-                    $resultList->execute($sqlList[0]);
-
-                if ($resultList->rowCount() != 1) {
-                    echo "<div class='error'>";
-                    echo __('There is currently no work to assess.');
-                    echo '</div>';
-                } else {
-                    $rowList = $resultList->fetch();
-
-                    $form = Form::create('courseEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/crowdAssess_view_discuss_postProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&address=".$_GET['q']."&gibbonPersonID=$gibbonPersonID&replyTo=$replyTo");
-                
-                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-
-                    $column = $form->addRow()->addColumn();
-                        $column->addLabel('commentLabel', __('Write your comment below:'));
-                        $column->addEditor('comment', $guid)->setRows(10)->required();
-
-                    $form->addRow()->addSubmit();
-
-                    echo $form->getOutput();
-                }
-            }
-        }
+    if (empty($lesson)) {
+        $page->addError(__('The selected record does not exist, or you do not have access to it.'));
+        return;
     }
+
+    $role = getCARole($guid, $connection2, $lesson['gibbonCourseClassID']);
+    $replyTo = $_GET['replyTo'] ?? null;
+
+    // Get Student work
+    $sqlList = getStudents($guid, $connection2, $role, $lesson['gibbonCourseClassID'], $lesson['homeworkCrowdAssessOtherTeachersRead'], $lesson['homeworkCrowdAssessOtherParentsRead'], $lesson['homeworkCrowdAssessSubmitterParentsRead'], $lesson['homeworkCrowdAssessClassmatesParentsRead'], $lesson['homeworkCrowdAssessOtherStudentsRead'], $lesson['homeworkCrowdAssessClassmatesRead'], " AND gibbonPerson.gibbonPersonID=$gibbonPersonID");
+
+    if (empty($sqlList)) {
+        $page->addError(__('The selected record does not exist, or you do not have access to it.'));
+        return;
+    }
+
+    $student = $pdo->select($sqlList[1], $sqlList[0])->fetch();
+    if (empty($student)) {
+        $page->addError(__('There is currently no work to assess.'));
+        return;
+    }
+
+    // FORM
+    $form = Form::create('crowdAssessment', $gibbon->session->get('absoluteURL').'/modules/'.$_SESSION[$guid]['module']."/crowdAssess_view_discuss_postProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&address=".$_GET['q']."&gibbonPersonID=$gibbonPersonID&replyTo=$replyTo");
+
+    $form->addHiddenValue('address', $gibbon->session->get('address'));
+
+    $column = $form->addRow()->addColumn();
+        $column->addLabel('commentLabel', __('Write your comment below:'));
+        $column->addEditor('comment', $guid)->setRows(10)->required();
+
+    $form->addRow()->addSubmit();
+
+    echo $form->getOutput();
 }
