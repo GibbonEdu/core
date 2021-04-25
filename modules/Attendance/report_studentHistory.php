@@ -43,36 +43,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-
+        $viewMode = $_REQUEST['viewMode'] ?? '';
         $canTakeAttendanceByPerson = isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson.php');
         $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
 
         if ($highestAction == 'Student History_all') {
-            echo '<h2>';
-            echo __('Choose Student');
-            echo '</h2>';
+            $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
-            $gibbonPersonID = null;
-            if (isset($_GET['gibbonPersonID'])) {
-                $gibbonPersonID = $_GET['gibbonPersonID'];
+            if (empty($viewMode)) {
+                $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+                $form->setTitle(__('Choose Student'));
+                $form->setFactory(DatabaseFormFactory::create($pdo));
+                $form->setClass('noIntBorder fullWidth');
+
+                $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_studentHistory.php");
+
+                $row = $form->addRow();
+                    $row->addLabel('gibbonPersonID', __('Student'));
+                    $row->addSelectStudent('gibbonPersonID', $gibbonSchoolYearID)->selected($gibbonPersonID)->placeholder()->required();
+
+                $row = $form->addRow();
+                    $row->addFooter();
+                    $row->addSearchSubmit($gibbon->session);
+
+                echo $form->getOutput();
             }
-
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
-
-            $form->setFactory(DatabaseFormFactory::create($pdo));
-            $form->setClass('noIntBorder fullWidth');
-
-            $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_studentHistory.php");
-
-            $row = $form->addRow();
-                $row->addLabel('gibbonPersonID', __('Student'));
-                $row->addSelectStudent('gibbonPersonID', $gibbonSchoolYearID)->selected($gibbonPersonID)->placeholder()->required();
-
-            $row = $form->addRow();
-                $row->addFooter();
-                $row->addSearchSubmit($gibbon->session);
-
-            echo $form->getOutput();
 
             if ($gibbonPersonID != '') {
                 $output = '';
@@ -102,15 +97,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                     $renderer->addData('canTakeAttendanceByPerson', $canTakeAttendanceByPerson);
 
                     $table = DataTable::create('studentHistory', $renderer);
-                    $table->addHeaderAction('print', __('Print'))
-                        ->setURL('/report.php')
-                        ->addParam('q', '/modules/Attendance/report_studentHistory_print.php')
-                        ->addParam('gibbonPersonID', $gibbonPersonID)
-                        ->addParam('viewMode', 'print')
-                        ->setIcon('print')
-                        ->setTarget('_blank')
-                        ->directLink()
-                        ->displayLabel();
+
+                    if (empty($viewMode)) {
+                        $table->addHeaderAction('print', __('Print'))
+                            ->setURL('/report.php')
+                            ->addParam('q', '/modules/Attendance/report_studentHistory.php')
+                            ->addParam('gibbonPersonID', $gibbonPersonID)
+                            ->addParam('viewMode', 'print')
+                            ->setIcon('print')
+                            ->setTarget('_blank')
+                            ->directLink()
+                            ->displayLabel();
+                    }
 
                     echo $table->render($attendanceData);
                 }
@@ -162,12 +160,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                     echo __('Access denied.');
                     echo '</div>';
                 } else {
-                    echo '<h2>';
-                    echo __('Choose');
-                    echo '</h2>';
-
                     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
-
+                    $form->setTitle(__('Choose'));
                     $form->setFactory(DatabaseFormFactory::create($pdo));
                     $form->setClass('noIntBorder fullWidth');
 
@@ -270,4 +264,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
         }
     }
 }
-?>

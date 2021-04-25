@@ -359,6 +359,21 @@ class AttendanceLogPersonGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function selectFutureAttendanceLogsByPersonAndDate($gibbonPersonID, $date)
+    {
+        $data = array('gibbonPersonID' => $gibbonPersonID, 'date' => $date);
+        $sql = "SELECT gibbonAttendanceLogPersonID, date, direction, type, context, reason, comment, timestampTaken, gibbonAttendanceLogPerson.gibbonCourseClassID, preferredName, surname, gibbonCourseClass.nameShort as className, gibbonCourse.nameShort as courseName 
+            FROM gibbonAttendanceLogPerson 
+            JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID) 
+            LEFT JOIN gibbonCourseClass ON (gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) 
+            LEFT JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
+            WHERE gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID 
+            AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date>=:date 
+            ORDER BY date";
+
+        return $this->db()->select($sql, $data);
+    }
+
     function selectAttendanceLogsByPersonAndDate($gibbonPersonID, $date, $crossFillClasses)
     {
         $data = ['gibbonPersonID' => $gibbonPersonID, 'date' => $date];

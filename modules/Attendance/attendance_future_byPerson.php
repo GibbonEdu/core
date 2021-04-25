@@ -18,9 +18,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Module\Attendance\AttendanceView;
-use Gibbon\Services\Format;
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
+use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -41,6 +44,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     ]);
 
     $attendance = new AttendanceView($gibbon, $pdo);
+    $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
+    $courseEnrolmentGateway = $container->get(CourseEnrolmentGateway::class);
+    $gibbonThemeName = $gibbon->session->get('gibbonThemeName');
 
     $scope = (isset($_GET['scope']))? $_GET['scope'] : 'single';
     $gibbonPersonID = (isset($_GET['gibbonPersonID']))? $_GET['gibbonPersonID'] : [];
@@ -52,19 +58,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     $absenceType = (isset($_GET['absenceType']))? $_GET['absenceType'] : 'full';
     $date = (isset($_GET['date']))? $_GET['date'] : '';
 
-    echo '<h2>'.__('Choose Student')."</h2>";
-
-    //Generate choose student form
+    // Generate choose student form
     $form = Form::create('attendanceSearch',$_SESSION[$guid]['absoluteURL'] . '/index.php','GET');
+    $form->setTitle(__('Choose Student'));
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
     $form->addHiddenValue('q','/modules/'.$_SESSION[$guid]['module'].'/attendance_future_byPerson.php');
 
-    $availableScopes = array(
+    $availableScopes = [
         'single' => __('Single Student'),
         'multiple' => __('Multiple Students'),
-    );
+    ];
     $row = $form->addRow();
         $row->addLabel('scope', __('Scope'));
         $row->addSelect('scope')->fromArray($availableScopes)->selected($scope);
@@ -74,18 +79,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
     $row = $form->addRow()->addClass('student');
         $row->addLabel('gibbonPersonID', __('Student'));
-        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->setID('gibbonPersonIDSingle')->required()->placeholder()->selected($gibbonPersonID[0] ?? '');
+        $row->addSelectStudent('gibbonPersonID', $gibbon->session->get('gibbonSchoolYearID'))->setID('gibbonPersonIDSingle')->required()->placeholder()->selected($gibbonPersonID[0] ?? '');
 
     $row = $form->addRow()->addClass('students');
         $row->addLabel('gibbonPersonID', __('Students'));
-        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array('allstudents' => true, 'byRoll' => true))->setID('gibbonPersonIDMultiple')->required()->selectMultiple()->selected($gibbonPersonID);
-
+        $row->addSelectStudent('gibbonPersonID', $gibbon->session->get('gibbonSchoolYearID'), array('allstudents' => true, 'byRoll' => true))->setID('gibbonPersonIDMultiple')->required()->selectMultiple()->selected($gibbonPersonID);
 
     if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byCourseClass.php')) {
-        $availableAbsenceTypes = array(
+        $availableAbsenceTypes = [
             'full' => __('Full Day'),
             'partial' => __('Partial'),
-        );
+        ];
 
         $row = $form->addRow()->addClass('student');
             $row->addLabel('absenceType', __('Absence Type'));
@@ -111,83 +115,60 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         }
 
         if ($scope == 'single') {
-            $attendanceLog .= "<div id='attendanceLog'>";
-                //Get attendance log
-                
-                    $dataLog = array('gibbonPersonID' => $gibbonPersonID[0], 'date' => $today);
-                    $sqlLog = "SELECT gibbonAttendanceLogPersonID, date, direction, type, context, reason, comment, timestampTaken, gibbonAttendanceLogPerson.gibbonCourseClassID, preferredName, surname, gibbonCourseClass.nameShort as className, gibbonCourse.nameShort as courseName FROM gibbonAttendanceLogPerson JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonCourseClass ON (gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonAttendanceLogPerson.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date>=:date ORDER BY date";
-                    $resultLog = $connection2->prepare($sqlLog);
-                    $resultLog->execute($dataLog);
+            // Get attendance logs
+            $logs = $attendanceLogGateway->selectFutureAttendanceLogsByPersonAndDate($gibbonPersonID[0], $today)->fetchAll();
 
-                //Get classes for partial attendance
-                try {
-                    $dataClasses = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID[0], 'date' => !empty($date) ? Format::dateConvert($date) : date('Y-m-d'));
-                    $sqlClasses = "SELECT DISTINCT gibbonTT.gibbonTTID, gibbonTT.name, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.nameShort as classNameShort, gibbonTTColumnRow.name as columnName, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonCourse.name as courseName, gibbonCourse.nameShort as courseNameShort FROM gibbonTT JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID) JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID)  JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND gibbonTTDayDate.date=:date AND gibbonCourseClassPerson.role='Student' ORDER BY gibbonTTColumnRow.timeStart ASC";
-                    $resultClasses = $connection2->prepare($sqlClasses);
-                    $resultClasses->execute($dataClasses);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>" . $e->getMessage() . '</div>';
-                }
+            //Get classes for partial attendance
+            $classes = $courseEnrolmentGateway->selectClassesByPersonAndDate($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID[0], !empty($date) ? Format::dateConvert($date) : date('Y-m-d'));
+            
+            if ($absenceType == 'partial' && empty($classes)) {
+                echo Format::alert(__('Cannot record a partial absence. This student does not have timetabled classes for this day.'));
+                return;
+            }
 
-                if ($absenceType == 'partial' && $resultClasses->rowCount() == 0) {
-                    echo '<div class="error">';
-                    echo __('Cannot record a partial absence. This student does not have timetabled classes for this day.');
-                    echo '</div>';
-                    return;
-                }
+            // Display attendance logs
+            if (!empty($logs)) {
+                $table = DataTable::create('logs');
+                $table->setTitle(__('Attendance Log'));
+                $table->setDescription(__('The following future absences have been set for the selected student.'));
 
-                //Construct attendance log
-                if ($resultLog->rowCount() > 0) {
-                    $attendanceLog .= '<h4>';
-                        $attendanceLog .= __('Attendance Log');
-                    $attendanceLog .= '</h4>';
+                $table->modifyRows(function ($log, $row) {
+                    $row->addClass($log['direction'] == 'Out' ? 'error' : 'success');
+                    return $row;
+                });
 
-                    $attendanceLog .= "<p><span class='emphasis small'>";
-                        $attendanceLog .= __('The following future absences have been set for the selected student.');
-                    $attendanceLog .= '</span></p>';
-
-                    $attendanceLog .= '<table class="mini smallIntBorder fullWidth colorOddEven" cellspacing=0>';
-                    $attendanceLog .= '<tr class="head">';
-                        $attendanceLog .= '<th>'.__('Date').'</th>';
-                        $attendanceLog .= '<th>'.__('Attendance').'</th>';
-                        $attendanceLog .= '<th>'.__('Where').'</th>';
-                        $attendanceLog .= '<th>'.__('Recorded By').'</th>';
-                        $attendanceLog .= '<th>'.__('On').'</th>';
-                        $attendanceLog .= '<th style="width: 50px;">'.__('Actions').'</th>';
-                    $attendanceLog .= '</tr>';
-
-                    while ($rowLog = $resultLog->fetch()) {
-                        $attendanceLog .= '<tr class="'.( $rowLog['direction'] == 'Out'? 'error' : 'current').'">';
-
-                        $attendanceLog .= '<td>'.Format::dateReadable($rowLog['date'], '%b %d').'</td>';
-
-                        $attendanceLog .= '<td>';
-                        $attendanceLog .= '<b>'.__($rowLog['direction']).'</b> ('.__($rowLog['type']). ( !empty($rowLog['reason'])? ', '.$rowLog['reason'] : '') .')';
-                        if ( !empty($rowLog['comment']) ) {
-                            $attendanceLog .= '&nbsp;<img title="'.$rowLog['comment'].'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/messageWall.png" width=16 height=16/>';
+                $table->addColumn('date', __('Date'))->format(Format::using('date', 'date'));
+                $table->addColumn('attendance', __('Attendance'))
+                    ->format(function($log) use ($gibbonThemeName) {
+                        $output = '<b>'.__($log['direction']).'</b> ('.__($log['type']). (!empty($log['reason'])? ', '.$log['reason'] : '') .')';
+                        if (!empty($log['comment']) ) {
+                            $output .= '&nbsp;<img title="'.$log['comment'].'" src="./themes/'.$gibbonThemeName.'/img/messageWall.png" width=16 height=16/>';
                         }
-                        $attendanceLog .= '</td>';
-
-                        if (($rowLog['context'] == 'Future' || $rowLog['context'] == 'Class') && $rowLog['gibbonCourseClassID'] > 0) {
-                            $attendanceLog .= '<td>'.__($rowLog['context']).' ('.$rowLog['courseName'].'.'.$rowLog['className'].')</td>';
-                        } else {
-                            $attendanceLog .= '<td>'.__($rowLog['context']).'</td>';
-                        }
-
-                        $attendanceLog .= '<td>';
-                            $attendanceLog .= Format::name('', $rowLog['preferredName'], $rowLog['surname'], 'Staff', false, true);
-                        $attendanceLog .= '</td>';
-
-                        $attendanceLog .= '<td>'.Format::dateReadable($rowLog['timestampTaken'], '%R, %b %d').'</td>';
-
-                        $attendanceLog .= '<td>';
-                            $attendanceLog .= "<a href='".$_SESSION[$guid]['absoluteURL']."/modules/Attendance/attendance_future_byPersonDeleteProcess.php?gibbonPersonID=$gibbonPersonID[0]&gibbonAttendanceLogPersonID=".$rowLog['gibbonAttendanceLogPersonID']."' onclick='confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-                        $attendanceLog .= '</td>';
-                        $attendanceLog .= '</tr>';
+                        return $output;
+                    });
+                $table->addColumn('where', __('Where'))->format(function ($log) {
+                    if (($log['context'] == 'Future' || $log['context'] == 'Class') && $log['gibbonCourseClassID'] > 0) {
+                        return __($log['context']).' ('.$log['courseName'].'.'.$log['className'].')';
+                    } else {
+                        return __($log['context']);
                     }
-                    $attendanceLog .= '</table><br/>';
-                }
-            $attendanceLog .= '</div>';
+                });
+                $table->addColumn('staff', __('Recorded By'))->format(Format::using('name', ['', 'preferredName', 'surname', 'Staff', false, true]));
+                $table->addColumn('timestamp', __('On'))->format(Format::using('dateTimeReadable', 'timestampTaken', '%R, %b %d'));
+
+                $table->addActionColumn()
+                    ->addParam('gibbonPersonID')
+                    ->addParam('gibbonAttendanceLogPersonID')
+                    ->format(function ($row, $actions) {
+                        $actions->addAction('delete', __('Delete'))
+                            ->setURL('/modules/Attendance/attendance_future_byPersonDeleteProcess.php')
+                            ->addConfirmation(__('Are you sure you want to delete this record? Unsaved changes will be lost.'))
+                            ->directLink();
+                    });
+
+                echo $table->render($logs);
+            }
+            
         }
 
         $form = Form::create('attendanceSet',$_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/attendance_future_byPersonProcess.php');
@@ -217,7 +198,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                 $table = $row->addTable('periodSelectContainer')->setClass('standardWidth');
                 $table->addHeaderRow()->addHeading(Format::dateReadable(Format::dateConvert($date),'%B %e, %Y'));
 
-                while ($class = $resultClasses->fetch()) {
+                foreach ($classes as $class) {
                     $row = $table->addRow();
                     $row->addCheckbox('courses[]')
                         ->description($class['columnName'] . ' - ' . $class['courseNameShort'] . '.' . $class['classNameShort'])
