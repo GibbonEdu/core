@@ -13,7 +13,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 {% for item in discussion %}
 
-<div class="flex justify-between mt-4 {{ item.comment is empty and html is empty and message is empty ? 'sm:items-center'}}">
+<div class="flex justify-between my-4 {{ item.comment is empty and html is empty and message is empty ? 'sm:items-center'}}">
 
     <div class="{{ compact ? 'w-8 sm:w-12' : 'w-12 sm:w-16' }} mr-4 flex flex-col items-center">
         <div class="{{ item.image_240 ? 'flex-none' : 'flex items-center justify-center' }} overflow-hidden {{ compact ? 'w-8 sm:w-12 h-8 sm:h-12' : 'w-12 sm:w-16 h-12 sm:h-16' }} rounded-full bg-gray-200 border border-solid">
@@ -53,7 +53,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {% endif %}
                 </div>
                 {% if item.attachmentLocation %}
-                    <a class="tag block px-0 break-all mt-2 sm:mt-0" href="{{ item.attachmentType == 'Link' ? item.attachmentLocation : absoluteURL ~ "/" ~ item.attachmentLocation }}">{{ item.attachmentText ? item.attachmentText : __('View Attachment') }}</a>
+                    <a class="tag block px-0 break-all mt-2 sm:mt-0" href="{{ item.attachmentType == 'Link' ? item.attachmentLocation : absoluteURL ~ "/" ~ item.attachmentLocation }}" target="{{ item.attachmentTarget ? item.attachmentTarget : '_blank' }}">{{ item.attachmentText ? item.attachmentText : __('View Attachment') }}</a>
                 {% endif %}
             </div>
 

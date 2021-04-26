@@ -125,6 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
             if ($level < 3) {
                 $item['attachmentLocation'] = "index.php?q=/modules/Crowd Assessment/crowdAssess_view_discuss_post.php&".http_build_query($urlParams)."&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&replyTo=".$item['gibbonCrowdAssessDiscussID'];
                 $item['attachmentText'] = __('Reply');
+                $item['attachmentTarget'] = '';
             }
             $discussion[] = $item;
         }
