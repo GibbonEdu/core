@@ -217,7 +217,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             $table->addColumn('status', __('Status'));
 
-            $table->addColumn('rollGroup', __('Roll Group'));
+            $table->addColumn('rollGroup', __('Form Group'));
             $table->addColumn('comment', __('Comment'))
                 ->format(function ($child) {
                     return nl2br($child['comment']);

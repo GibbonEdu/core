@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
             header("Location: {$URL}");
         } else {
             try {
-                if ($highestAction == 'Attendance By Roll Group_all') {
+                if ($highestAction == 'Attendance By Form Group_all') {
                     $data = array('gibbonRollGroupID' => $gibbonRollGroupID);
                     $sql = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
                 }

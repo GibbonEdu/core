@@ -134,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     }
                     echo '</td>';
                     echo "<td style='width: 34%; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Roll Group').'</span><br/>';
+                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Form Group').'</span><br/>';
 
                     $dataDetail = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
                     $sqlDetail = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
@@ -331,7 +331,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Roll Group').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Form Group').'</span><br/>';
                         if (isset($row['gibbonRollGroupID'])) {
 
                                 $dataDetail = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
@@ -340,8 +340,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $resultDetail->execute($dataDetail);
                             if ($resultDetail->rowCount() == 1) {
                                 $rowDetail = $resultDetail->fetch();
-                                if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_details.php')) {
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID='.$rowDetail['gibbonRollGroupID']."'>".$rowDetail['name'].'</a>';
+                                if (isActionAccessible($guid, $connection2, '/modules/Form Groups/rollGroups_details.php')) {
+                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Form Groups/rollGroups_details.php&gibbonRollGroupID='.$rowDetail['gibbonRollGroupID']."'>".$rowDetail['name'].'</a>';
                                 } else {
                                     echo $rowDetail['name'];
                                 }
@@ -636,7 +636,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $table = DataTable::createDetails('overview');
 
                         if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php')) {
-                            $table->addHeaderAction('edit', __m('Edit User'))
+                            $table->addHeaderAction('edit', __('Edit User'))
                                 ->setURL('/modules/User Admin/user_manage_edit.php')
                                 ->addParam('gibbonPersonID', $gibbonPersonID)
                                 ->displayLabel();
@@ -648,7 +648,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $col->addColumn('firstName', __('First Name'))->addClass('col-span-2');
                         $col->addColumn('preferredName', __('Preferred Name'));
                         $col->addColumn('officialName', __('Official Name'));
-                        $col->addColumn('nameInCharacters', __('Name in Characters'));
+                        $col->addColumn('nameInCharacters', __('Name In Characters'));
                         $col->addColumn('gender', __('Gender'))
                                 ->format(Format::using('genderName', 'gender'));
                         $col->addColumn('dob', __('Date of Birth'))->format(Format::using('date', 'dob'));
@@ -669,7 +669,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $col->addColumn('yearGroup', __('Year Group'))->format(function ($values) use ($student) {
                             return $student['yearGroupName'];
                         });
-                        $col->addColumn('gibbonRollGroupID', __('Roll Group'))->format(function ($values) use ($student) {
+                        $col->addColumn('gibbonRollGroupID', __('Form Group'))->format(function ($values) use ($student) {
                             return Format::link('./index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID='.$student['gibbonRollGroupID'], $student['rollGroupName']);
                         });
                         $col->addColumn('email', __('Tutors'))->format(function ($values) use ($tutors) {
@@ -691,7 +691,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $col->addColumn('classOf', __('Class Of'))->format(function ($values) use ($schoolYearGateway) {
                             if (empty($values['gibbonSchoolYearIDClassOf'])) return Format::small(__('N/A'));
                             $schoolYear = $schoolYearGateway->getByID($values['gibbonSchoolYearIDClassOf'], ['name']);
-                            return $schoolYear['name'];
+                            return $schoolYear['name'] ?? '';
                         });
                         $col->addColumn('nextSchool', __('Next School'));
                         $col->addColumn('dateEnd', __('End Date'))->format(Format::using('date', 'dateEnd'));
@@ -701,7 +701,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $country = $gibbon->session->get('country');
 
                         $col->addColumn('countryOfBirth', __('Country of Birth'))->format(function ($values) {
-                            $output = $values['countryOfBirth'];
+                            $output = __($values['countryOfBirth']);
                             if (!empty($values['birthCertificateScan'])) {
                                 $output .= '<br/>'.Format::link('./'.$values['birthCertificateScan'], __('View Birth Certificate'), ['target' => '_blank']);
                             }
@@ -729,7 +729,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             }
                             return $output;
                         });
-                        $col->addColumn('nationalIDCardNumber', $country ? $country.' '.__('ID Card') : __('National ID Card'))->format(function ($values) {
+                        $col->addColumn('nationalIDCardNumber', $country ? __($country).' '.__('ID Card') : __('National ID Card'))->format(function ($values) {
                             $output = $values['nationalIDCardNumber'];
                             if (!empty($values['nationalIDCardScan'])) {
                                 $output .= '<br/>'.Format::link('./'.$values['nationalIDCardScan'], __('View ID Card'), ['target' => '_blank']);
@@ -739,8 +739,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $col->addColumn('languageFirst', __('First Language'));
                         $col->addColumn('languageSecond', __('Second Language'));
                         $col->addColumn('languageThird', __('Third Language'));
-                        $col->addColumn('residencyStatus', $country ? $country.' '.__('Residency/Visa Type') : __('Residency/Visa Type'));
-                        $col->addColumn('visaExpiryDate', $country ? $country.' '.__('Visa Expiry Date') :__('Visa Expiry Date'))
+                        $col->addColumn('residencyStatus', $country ? __($country).' '.__('Residency/Visa Type') : __('Residency/Visa Type'));
+                        $col->addColumn('visaExpiryDate', $country ? __($country).' '.__('Visa Expiry Date') :__('Visa Expiry Date'))
                             ->format(Format::using('date', 'visaExpiryDate'));
 
                         $col = $table->addColumn('System Access', __('System Access'));
@@ -2007,7 +2007,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     });
 
                                 $table->addColumn('yearGroup', __('Year Group'))->width('15%');
-                                $table->addColumn('rollGroup', __('Roll Group'))->width('15%');
+                                $table->addColumn('rollGroup', __('Form Group'))->width('15%');
                                 $table->addColumn('timestampModified', __('Date'))
                                     ->width('30%')
                                     ->format(function ($report) {

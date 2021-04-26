@@ -22,7 +22,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //Basic variables
 $name = '2021';
 $description = "Gibbon's 2021 look and feel.";
-$version = '0.0.01';
+$version = '1.0.00';
 $author = 'Sandra Kuipers';
 $url = 'https://github.com/SKuipers';
 $responsive = 'Y';
+
+// Optionally define a set of theme colours that this theme supports.
+$themeColours = [
+    'purple' => __('Purple'),
+    'blue'   => __('Blue'),
+    'indigo' => __('Indigo'),
+    'green'  => __('Green'),
+    'yellow' => __('Yellow'),
+    'orange' => __('Orange'),
+    'red'    => __('Red'),
+    'pink'   => __('Pink'),
+];

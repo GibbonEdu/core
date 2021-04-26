@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_
             });
 
         $table->addColumn('yearGroup', __('Year Group'))->width('15%');
-        $table->addColumn('rollGroup', __('Roll Group'))->width('15%');
+        $table->addColumn('rollGroup', __('Form Group'))->width('15%');
         $table->addColumn('timestampModified', __('Date'))
             ->width('30%')
             ->format(function ($report) {

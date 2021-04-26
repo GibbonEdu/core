@@ -79,13 +79,11 @@ if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading
                     //Prep message
                     $emailCount = 0;
                     $bodyReminder = "<p style='font-style: italic; font-weight: bold'>" . __('This is a reminder for an email that requires your action. Please look for the link in the email, and click it to confirm receipt and reading of this email.') ."</p>" ;
-                    $bodyFin = "<p style='font-style: italic'>" . sprintf(__('Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
-                    $mail = $container->get(Mailer::class);
+                    
+                    $mail= $container->get(Mailer::class);
+                    $mail->SMTPKeepAlive = true;
     				$mail->SetFrom($_SESSION[$guid]["email"], $_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"]);
-    				$mail->CharSet="UTF-8";
-    				$mail->Encoding="base64" ;
-    				$mail->IsHTML(true);
-    				$mail->Subject=__('REMINDER:').' '.$row['subject'] ;
+    				$mail->Subject=__('REMINDER:').' '.$row['subject'];
 
                     //Scan through receipients
                     foreach ($gibbonMessengerReceiptIDs as $gibbonMessengerReceiptID) {
@@ -109,17 +107,22 @@ if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading
     						if ($row['emailReceipt'] == 'Y') {
     							$bodyReadReceipt = "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID=$gibbonMessengerID&gibbonPersonID=".$rowRecipt['gibbonPersonID']."&key=".$rowRecipt['key']."'>".$row['emailReceiptText']."</a>";
     							if (is_numeric(strpos($row['body'], '[confirmLink]'))) {
-    								$bodyOut = $bodyReminder.str_replace('[confirmLink]', $bodyReadReceipt, $row['body']).$bodyFin;
+    								$bodyOut = $bodyReminder.str_replace('[confirmLink]', $bodyReadReceipt, $row['body']);
     							}
     							else {
-    								$bodyOut = $bodyReminder.$row['body'].$bodyReadReceipt.$bodyFin;
+    								$bodyOut = $bodyReminder.$row['body'].$bodyReadReceipt;
     							}
     						}
     						else {
-    							$bodyOut = $bodyReminder.$row['body'].$bodyFin;
+    							$bodyOut = $bodyReminder.$row['body'];
     						}
-    						$mail->Body = $bodyOut ;
-    						$mail->AltBody = emailBodyConvert($bodyOut);
+
+                            $mail->renderBody('mail/email.twig.html', [
+                                'title'  => $row['subject'],
+                                'body'   => $bodyOut
+                            ]);
+
+
                             if(!$mail->Send()) {
     							$partialFail = TRUE ;
     						}

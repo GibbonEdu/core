@@ -10,6 +10,7 @@ uploads/*
 # Themes Folder
 themes/*
 !themes/Default
+!themes/Legacy
 !themes/2021
 
 # Tests Folder

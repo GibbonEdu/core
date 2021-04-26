@@ -256,7 +256,7 @@ if (isset($_SESSION[$guid]["username"])) {
                 $row['currentDate'] = Format::date($currentDate);
 
                 // render group link variables
-                $row['groupQuery'] = '/modules/Roll Groups/rollGroups_details.php';
+                $row['groupQuery'] = '/modules/Form Groups/rollGroups_details.php';
                 $row['groupName'] = $row['name'];
 
                 // render recentHistory into the row
@@ -294,7 +294,7 @@ if (isset($_SESSION[$guid]["username"])) {
                 'gibbonRollGroupID',
                 $takeAttendanceURL
             );
-            $attendanceByRollGroupTable->setTitle(__('My Roll Group'));
+            $attendanceByRollGroupTable->setTitle(__('My Form Group'));
             $attendanceByRollGroupTable->withData(new DataSet($attendanceByRollGroup));
         }
     }

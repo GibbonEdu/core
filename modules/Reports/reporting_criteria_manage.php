@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
         if ($reportingScope['scopeType'] == 'Roll Group') {
             $scopeTypeID = $urlParams['gibbonRollGroupID'];
             $row = $form->addRow();
-                $row->addLabel('gibbonRollGroupID', __('Roll Group'));
+                $row->addLabel('gibbonRollGroupID', __('Form Group'));
                 $row->addSelectRollGroup('gibbonRollGroupID', $reportingCycle['gibbonSchoolYearID'])
                     ->selected($urlParams['gibbonRollGroupID']);
         }

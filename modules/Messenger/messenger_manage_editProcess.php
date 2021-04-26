@@ -169,12 +169,12 @@ else {
 				}
 
 				//Roll Groups
-				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_rollGroups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_rollGroups_any")) {
+				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_any")) {
 					if ($_POST["rollGroup"]=="Y") {
 						$staff=$_POST["rollGroupsStaff"] ;
 						$students=$_POST["rollGroupsStudents"] ;
 						$parents="N" ;
-						if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_rollGroups_parents")) {
+						if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_parents")) {
 							$parents=$_POST["rollGroupsParents"] ;
 						}
 						$choices=$_POST["rollGroups"] ;

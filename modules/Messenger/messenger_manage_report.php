@@ -117,7 +117,7 @@ else {
 			echo "<div id='tabs' style='margin: 20px 0'>";
 				//Tab links
 				echo '<ul>';
-				echo "<li><a href='#tabs1'>".__('By Roll Group').'</a></li>';
+				echo "<li><a href='#tabs1'>".__('By Form Group').'</a></li>';
 				echo "<li><a href='#tabs2'>".__('By Recipient').'</a></li>';
 				echo '</ul>';
 

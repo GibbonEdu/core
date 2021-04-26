@@ -186,7 +186,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     ->addParam('gibbonStaffID', $gibbonStaffID)
                     ->addParam('search', $search)
                     ->format(function ($room, $actions) use ($guid) {
-                        if ($room['usageType'] != 'Roll Group' and $room['usageType'] != 'Timetable') {
+                        if ($room['usageType'] != 'Form Group' and $room['usageType'] != 'Timetable') {
                             $actions->addAction('delete', __('Delete'))
                                     ->setURL('/modules/Staff/staff_manage_edit_facility_delete.php');
                         }

@@ -804,4 +804,70 @@ ALTER TABLE `gibbonStaff` ADD `fields` TEXT NULL AFTER `biographicalGroupingPrio
 ALTER TABLE `gibbonCourse` ADD `fields` TEXT NULL AFTER `orderBy`;end
 ALTER TABLE `gibbonCourseClass` ADD `fields` TEXT NULL AFTER `gibbonScaleIDTarget`;end
 ALTER TABLE `gibbonStaffApplicationForm` ADD `staffFields` TEXT NULL AFTER `fields`;end
+ALTER TABLE `gibbonAction` ADD `helpURL` VARCHAR(255) NULL AFTER `description`;end
+UPDATE `gibbonAction` SET helpURL='administrators/getting-started/getting-started-with-gibbon/#years-days-times' WHERE `category`='Years, Days & Times' AND `gibbonModuleID`=(SELECT gibbonModuleID FROM gibbonModule WHERE name='School Admin');end
+UPDATE `gibbonTheme` SET description='Gibbon\'s 2021 look and feel.', version='1.0.00', author='Sandra Kuipers', url='https://github.com/SKuipers' WHERE name='Default';end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System', 'themeColour', 'Theme Colour', '', 'Purple');end
+CREATE TABLE `gibbonStaffUpdate` (`gibbonStaffUpdateID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,`gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL DEFAULT NULL,`gibbonStaffID` int(10) UNSIGNED ZEROFILL NOT NULL,`status` enum('Pending','Complete') NOT NULL DEFAULT 'Pending',`type` varchar(20) NOT NULL,`initials` varchar(4) DEFAULT NULL,`jobTitle` varchar(100) NOT NULL,`firstAidQualified` enum('','N','Y') NOT NULL DEFAULT '',`firstAidQualification` varchar(100) DEFAULT NULL,`firstAidExpiry` date DEFAULT NULL,`countryOfOrigin` varchar(80) NOT NULL,`qualifications` varchar(255) NOT NULL,`biography` text NOT NULL,`fields` text NOT NULL,`gibbonPersonIDUpdater` int(10) UNSIGNED ZEROFILL NOT NULL,`timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY(`gibbonStaffUpdateID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `helpURL`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES((SELECT gibbonModuleID FROM gibbonModule WHERE name='Data Updater'), 'Update Staff Data_any', 1, 'Request Updates', 'Create staff data update request for any user', NULL, 'data_staff.php', 'data_staff.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
+INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES (001, (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Data Updater' AND gibbonAction.name='Update Staff Data_any'));end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `helpURL`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES((SELECT gibbonModuleID FROM gibbonModule WHERE name='Data Updater'), 'Update Staff Data_my', 0, 'Request Updates', 'Allows users to create data update request for their staff record.', NULL, 'data_staff.php', 'data_staff.php', 'Y', 'Y', 'Y', 'Y', 'N', 'Y', 'Y', 'Y', 'N', 'Y', 'N');end
+INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES (001, (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Data Updater' AND gibbonAction.name='Update Staff Data_my'));end
+INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES (002, (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Data Updater' AND gibbonAction.name='Update Staff Data_my'));end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `helpURL`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES((SELECT gibbonModuleID FROM gibbonModule WHERE name='Data Updater'), 'Staff Data Updates', 0, 'Manage Updates', 'Manage requests for updates to staff data.', NULL, 'data_staff_manage.php,data_staff_manage_edit.php,data_staff_manage_delete.php', 'data_staff_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
+INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES (001, (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Data Updater' AND gibbonAction.name='Staff Data Updates'));end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Staff Data Updates', 'Data Updater', 'Staff Data Updates', 'Core', 'All', 'Y');end
+UPDATE gibbonPerson SET gibbonThemeIDPersonal=(SELECT gibbonThemeID FROM gibbonTheme WHERE name='Default' LIMIT 1) WHERE gibbonThemeIDPersonal=(SELECT gibbonThemeID FROM gibbonTheme WHERE name='2021');end
+ALTER TABLE `gibbonInternalAssessmentColumn` CHANGE `name` `name` VARCHAR(30) NOT NULL;end
+UPDATE gibbonAction SET name='Manage Form Groups' WHERE name='Manage Roll Groups';end
+UPDATE gibbonAction SET name='Class Enrolment by Form Group' WHERE name='Class Enrolment by Roll Group';end
+UPDATE gibbonAction SET name='Students by Form Group' WHERE name='Students by Roll Group';end
+UPDATE gibbonAction SET name='Activity Spread by Form Group' WHERE name='Activity Spread by Roll Group';end
+UPDATE gibbonAction SET name='Activity Type by Form Group' WHERE name='Activity Type by Roll Group';end
+UPDATE gibbonAction SET name='Letters Home by Form Group' WHERE name='Letters Home by Roll Group';end
+UPDATE gibbonAction SET name='Form Group Summary' WHERE name='Roll Group Summary';end
+UPDATE gibbonAction SET name='Form Groups Not Registered' WHERE name='Roll Groups Not Registered';end
+UPDATE gibbonAction SET name='Work Summary by Form Group' WHERE name='Work Summary by Roll Group';end
+UPDATE gibbonAction SET name='Students By Form Group' WHERE name='Students By Roll Group';end
+UPDATE gibbonAction SET description='Bulk email to any of my form groups' WHERE description='Bulk email to any of my roll groups';end
+UPDATE gibbonAction SET description='Bulk email to any form group' WHERE description='Bulk email to any roll group';end
+UPDATE gibbonAction SET description='Print a report of form groups who have not been registered on a given day' WHERE description='Print a report of roll groups who have not been registered on a given day';end
+UPDATE gibbonAction SET description='Print form group lists showing count of various activity types' WHERE description='Print roll group lists showing count of various activity types';end
+UPDATE gibbonAction SET description='Print student form group lists' WHERE description='Print student roll group lists';end
+UPDATE gibbonAction SET description='Print work summary statistical data by form group' WHERE description='Print work summary statistical data by roll group';end
+UPDATE gibbonAction SET description='Show students in form group, less those with an older sibling, so that letters can be carried home by oldest in family.' WHERE description='Show students in roll group, less those with an older sibling, so that letters can be carried home by oldest in family.';end
+UPDATE gibbonAction SET description='Summarises gender and number of students across all form groups.' WHERE description='Summarises gender and number of students across all roll groups.';end
+UPDATE gibbonAction SET description='Take attendance, one form group at a time' WHERE description='Take attendance, one roll group at a time';end
+UPDATE gibbonAction SET description='View a brief profile of form groups in school.' WHERE description='View a brief profile of roll groups in school.';end
+UPDATE gibbonAction SET description='View spread of enrolment over terms and days by form group' WHERE description='View spread of enrolment over terms and days by roll group';end
+UPDATE gibbonAction SET description='View attendance, by form group and class' WHERE description='View attendance, by roll group and class';end
+UPDATE gibbonAction SET name='Attendance By Form Group_all' WHERE name='Attendance By Roll Group_all';end
+UPDATE gibbonAction SET name='Attendance By Form Group_myGroups' WHERE name='Attendance By Roll Group_myGroups';end
+UPDATE gibbonAction SET name='View Form Groups_all' WHERE name='View Roll Groups_all';end
+UPDATE gibbonAction SET name='View Form Groups_myChildren' WHERE name='View Roll Groups_myChildren';end
+UPDATE gibbonAction SET description='Shows the number of classes students are enroled in, organised by form group' WHERE description='Shows the number of classes students are enroled in, organised by roll group';end
+UPDATE gibbonAction SET name='New Message_formGroups_any' WHERE name='New Message_rollGroups_any';end
+UPDATE gibbonAction SET name='New Message_formGroups_my' WHERE name='New Message_rollGroups_my';end
+UPDATE gibbonAction SET name='New Message_formGroups_parents' WHERE name='New Message_rollGroups_parents';end
+UPDATE gibbonAction SET description='Bulk email to any of my form groups' WHERE description='Bulk email to any of my roll groups';end
+UPDATE gibbonAction SET description='Bulk email to any form group' WHERE description='Bulk email to any roll group';end
+UPDATE gibbonAction SET name='Activity Choices by Form Group' WHERE name='Activity Choices by Roll Group';end
+UPDATE gibbonAction SET description='View all student activity choices in the current year for a given form group.' WHERE description='View all student activity choices in the current year for a given roll group.';end
+UPDATE gibbonAction SET description='View the form groups in which a user\'s children study.' WHERE description='View the roll groups in which a user\'s children study.';end
+UPDATE gibbonAction SET category='Form Groups' WHERE category='Roll Groups';end
+UPDATE gibbonSetting SET nameDisplay='Enable Notifications by Form Group' WHERE nameDisplay='Enable Notifications by Roll Group';end
+UPDATE gibbonSetting SET nameDisplay='Default Form Group Attendance Type' WHERE nameDisplay='Default Roll Group Attendance Type';end
+UPDATE gibbonSetting SET nameDisplay='Activity Choices by Form Group' WHERE nameDisplay='Activity Choices by Roll Group';end
+UPDATE gibbonSetting SET nameDisplay='Enable Notifications for Form Group Tutors' WHERE nameDisplay='Enable Notifications for Roll Group Tutors';end
+UPDATE gibbonSetting SET description='Send the school-wide daily attendance report to additional users. Restricted to roles with permission to access Form Groups Not Registered or Classes Not Registered.' WHERE description='Send the school-wide daily attendance report to additional users. Restricted to roles with permission to access Roll Groups Not Registered or Classes Not Registered.';end
+UPDATE gibbonSetting SET description='The default selection for attendance type when taking Form Group attendance' WHERE description='The default selection for attendance type when taking Roll Group attendance';end
+UPDATE gibbonSetting SET description='View all student activity choices in the current year for a given form group.' WHERE description='View all student activity choices in the current year for a given roll group.';end
+UPDATE gibbonSetting SET description='Should the Form Group Tutors of a student be notified of new behaviour records?' WHERE description='Should the Roll Group Tutors of a student be notified of new behaviour records?';end
+UPDATE gibbonModule SET description='Allows users to view a listing of form groups' WHERE description='Allows users to view a listing of roll groups';end
+UPDATE gibbonNotificationEvent SET actionName='Form Groups Not Registered' WHERE actionName='Roll Groups Not Registered';end
+UPDATE gibbonSetting SET name='attendanceCLINotifyByFormGroup' WHERE name='attendanceCLINotifyByRollGroup';end
+UPDATE gibbonSetting SET name='defaultFormGroupAttendanceType' WHERE name='defaultRollGroupAttendanceType';end
+UPDATE gibbonModule SET name='Form Groups' WHERE name='Roll Groups';end
+UPDATE `gibbonSetting` SET value='purple' WHERE value='Purple' AND name='themeColour' AND scope='System';end
+UPDATE `gibbonAction` SET URLList='templates_preview.php,templates_manage.php,templates_manage_add.php,templates_manage_edit.php,templates_manage_duplicate.php,templates_manage_delete.php,templates_manage_section_add.php,templates_manage_section_edit.php,templates_manage_section_delete.php,templates_assets.php,templates_assets_components_preview.php,templates_assets_components_add.php,templates_assets_components_edit.php,templates_assets_components_delete.php,templates_assets_components_duplicate.php,templates_assets_fonts_preview.php,templates_assets_fonts_edit.php' WHERE `name`='Template Builder' AND `gibbonModuleID`=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Reports');end
 ";

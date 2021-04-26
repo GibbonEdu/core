@@ -375,16 +375,11 @@ if (getSettingByScope($connection2, 'User Admin', 'personalBackground') == 'Y' &
 } else if ($session->has('organisationBackground')) {
     $backgroundImage = $session->get('absoluteURL').'/'.$session->get('organisationBackground');
     $backgroundScroll = 'repeat fixed center top';
-} else {
-    $backgroundImage = $session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/backgroundPage.jpg';
-    $backgroundScroll = 'repeat fixed center top';
 }
 
-$page->stylesheets->add(
-    'personal-background',
-    'body { background: url("'.$backgroundImage.'") '.$backgroundScroll.' #626cd3!important; }',
-    ['type' => 'inline']
-);
+if (!empty($backgroundImage)) {
+    $page->addData(['bodyBackground' => 'background: url("'.$backgroundImage.'") '.$backgroundScroll.' #626cd3!important;background-size: cover !important;']);
+}
 
 $page->stylesheets->add('theme-dev', 'resources/assets/css/theme.min.css');
 $page->stylesheets->add('core', 'resources/assets/css/core.min.css', ['weight' => 10]);
@@ -535,7 +530,6 @@ if ($isLoggedIn && !$upgrade) {
 
 $page->addData([
     'isLoggedIn'        => $isLoggedIn,
-    'gibbonThemeName'   => $session->get('gibbonThemeName'),
     'organisationLogo'  => $session->get('organisationLogo'),
     'organisationName'  => $session->get('organisationName'),
     'cacheString'       => $session->get('cacheString'),

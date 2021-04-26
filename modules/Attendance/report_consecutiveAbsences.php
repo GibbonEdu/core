@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
 
     $form->setClass('noIntBorder fullWidth');
 
-    $form->setTitle('Filter');
+    $form->setTitle(__('Filter'));
 
     $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_consecutiveAbsences.php");
 
@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
             $table->setTitle(__('Report Data'));
             $table->setDescription(__("A list of students who were absent during the provided period."));
             $table->addColumn('count', __('Number Of Absences'));
-            $table->addColumn('rollGroupName', __('Roll Group'))
+            $table->addColumn('rollGroupName', __('Form Group'))
                   ->format(function ($absence) {
                     return Format::bold($absence['rollGroupName']);
                   });

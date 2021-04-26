@@ -45,9 +45,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
     //Proceed!
     echo '<h2>';
     if ($dateStart != $dateEnd) {
-        echo __('Roll Groups Not Registered').', '.dateConvertBack($guid, $dateStart).'-'.dateConvertBack($guid, $dateEnd);
+        echo __('Form Groups Not Registered').', '.dateConvertBack($guid, $dateStart).'-'.dateConvertBack($guid, $dateEnd);
     } else {
-        echo __('Roll Groups Not Registered').', '.dateConvertBack($guid, $dateStart);
+        echo __('Form Groups Not Registered').', '.dateConvertBack($guid, $dateStart);
     }
     echo '</h2>';
 
@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
         echo "<table cellspacing='0' style='width: 100%'>";
         echo "<tr class='head'>";
         echo '<th>';
-        echo __('Roll Group');
+        echo __('Form Group');
         echo '</th>';
         echo '<th >';
         echo __('Date');
@@ -188,7 +188,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
         if ($count == 0) {
             echo "<tr class=$rowNum>";
             echo '<td colspan=4>';
-            echo __('All roll groups have been registered.');
+            echo __('All form groups have been registered.');
             echo '</td>';
             echo '</tr>';
         }

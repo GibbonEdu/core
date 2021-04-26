@@ -67,32 +67,34 @@ class EnrolmentTable implements OutputableInterface
         // CHART
         $chartData = $this->studentReportGateway->selectStudentCountByYearGroup($gibbonSchoolYearID)->fetchAll();
 
-        $chart = Chart::create('overview', 'bar');
-        $chart->setTitle(__('Student Enrolment by Year Group'));
-        $chart->setLabels(array_column($chartData, 'yearGroup'));
-        $chart->setLegend(false);
-        $chart->setColors(['rgba(54, 162, 235, 1.0)']);
-        $chart->setOptions([
-            'height' => '50',
-            'tooltips' => [
-                'mode' => 'x-axis',
-            ],
-            'scales' => [
-                'yAxes' => [[
-                    'display' => false,
-                ]],
-                'xAxes' => [[
-                    'display'   => true,
-                    'gridLines' => ['display' => false],
-                ]],
-            ],
-        ]);
-        
-        $chart->addDataset('total', __('Total Students'))
-            ->setData(array_column($chartData, 'studentCount'));
+        if (!empty($chartData)) {
+            $chart = Chart::create('overview', 'bar');
+            $chart->setTitle(__('Student Enrolment by Year Group'));
+            $chart->setLabels(array_column($chartData, 'yearGroup'));
+            $chart->setLegend(false);
+            $chart->setColors(['rgba(54, 162, 235, 1.0)']);
+            $chart->setOptions([
+                'height' => '50',
+                'tooltips' => [
+                    'mode' => 'x-axis',
+                ],
+                'scales' => [
+                    'yAxes' => [[
+                        'display' => false,
+                    ]],
+                    'xAxes' => [[
+                        'display'   => true,
+                        'gridLines' => ['display' => false],
+                    ]],
+                ],
+            ]);
+            
+            $chart->addDataset('total', __('Total Students'))
+                ->setData(array_column($chartData, 'studentCount'));
 
-        // RENDER CHART
-        $output .= '<div style="overflow: visible;">'.$chart->render().'</div>';
+            // RENDER CHART
+            $output .= '<div style="overflow: visible;">'.$chart->render().'</div>';
+        }
 
         // CRITERIA
         $criteria = $this->studentReportGateway->newQueryCriteria()
@@ -120,7 +122,7 @@ class EnrolmentTable implements OutputableInterface
                 return Format::nameLinked($student['gibbonPersonID'], '', $student['preferredName'], $student['surname'], 'Student', true, true, ['allStudents' => 'on'])
                     . '<br/><small><i>'.Format::userStatusInfo($student).'</i></small>';
             });
-        $table->addColumn('rollGroup', __('Roll Group'))->context('primary');
+        $table->addColumn('rollGroup', __('Form Group'))->context('primary');
         $table->addColumn('username', __('Username'));
         $table->addColumn('officialName', __('Official Name'));
         $table->addColumn('dateStart', __('Start Date'))->context('secondary')->format(Format::using('date', 'dateStart'));
@@ -163,7 +165,7 @@ class EnrolmentTable implements OutputableInterface
                 return Format::nameLinked($student['gibbonPersonID'], '', $student['preferredName'], $student['surname'], 'Student', true, true, ['allStudents' => 'on'])
                     . '<br/><small><i>'.Format::userStatusInfo($student).'</i></small>';
             });
-        $table->addColumn('rollGroup', __('Roll Group'))->context('primary');
+        $table->addColumn('rollGroup', __('Form Group'))->context('primary');
         $table->addColumn('username', __('Username'));
         $table->addColumn('officialName', __('Official Name'));
         $table->addColumn('dateStart', __('End Date'))->context('secondary')->format(Format::using('date', 'dateEnd'));

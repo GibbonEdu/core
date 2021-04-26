@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_scopes_m
         $row->addLabel('name', __('Name'))->description(__('Must be unique'));
         $row->addTextField('name')->maxLength(90)->required();
 
-    $types = ['Year Group' => __('Year Group'), 'Roll Group' => __('Roll Group'), 'Course' => __('Course')];
+    $types = ['Year Group' => __('Year Group'), 'Roll Group' => __('Form Group'), 'Course' => __('Course')];
     $row = $form->addRow();
         $row->addLabel('scopeType', __('Type'));
         $row->addSelect('scopeType')->fromArray($types)->required()->placeholder();

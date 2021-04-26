@@ -198,7 +198,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                         echo "<span style='font-style: italic; font-size: 85%'>".__('Invoice To').'</span>';
                         echo '</th>';
                         echo "<th style='width: 110px'>";
-                        echo __('Roll Group');
+                        echo __('Form Group');
                         echo '</th>';
                         echo "<th style='width: 100px'>";
                         echo __('Status');

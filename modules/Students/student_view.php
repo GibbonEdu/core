@@ -29,16 +29,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
     } else {
         $page->breadcrumbs->add(__('View Student Profiles'));
 
         $studentGateway = $container->get(StudentGateway::class);
 
-        $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
-        $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
+        $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+        $gibbonPersonID = $gibbon->session->get('gibbonPersonID');
 
         $canViewFullProfile = ($highestAction == 'View Student Profile_full' or $highestAction == 'View Student Profile_fullNoNotes' or $highestAction == 'View Student Profile_fullEditAllNotes');
         $canViewBriefProfile = isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief');
@@ -46,31 +44,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
         if ($highestAction == 'View Student Profile_myChildren' or $highestAction == 'View Student Profile_my') {
             
             if ($highestAction == 'View Student Profile_myChildren') {
-                echo '<h2>';
-                echo __('My Children');
-                echo '</h2>';
-                
+                $title = __('My Children');                
                 $result = $studentGateway->selectActiveStudentsByFamilyAdult($gibbonSchoolYearID, $gibbonPersonID);
             } else if ($highestAction == 'View Student Profile_my') {
-                echo '<h2>';
-                echo __('View Student Profile');
-                echo '</h2>';
-
+                $title = __('View Student Profile');
                 $result = $studentGateway->selectActiveStudentByPerson($gibbonSchoolYearID, $gibbonPersonID);
             }
 
             if ($result->isEmpty()) {
-                echo "<div class='error'>";
-                echo __('You do not have access to this action.');
-                echo '</div>';
+                $page->addError( __('You do not have access to this action.'));
             } else {
                 $table = DataTable::create('students');
+                $table->setTitle($title);
 
                 $table->addColumn('student', __('Student'))
                     ->sortable(['surname', 'preferredName'])
                     ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true]));
                 $table->addColumn('yearGroup', __('Year Group'));
-                $table->addColumn('rollGroup', __('Roll Group'));
+                $table->addColumn('rollGroup', __('Form Group'));
 
                 $table->addActionColumn()
                     ->addParam('gibbonPersonID')
@@ -85,9 +76,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
       
         if ($canViewBriefProfile || $canViewFullProfile) {
             //Proceed!
-            $search = isset($_GET['search'])? $_GET['search'] : '';
-            $sort = isset($_GET['sort'])? $_GET['sort'] : 'surname,preferredName';
-            $allStudents = isset($_GET['allStudents'])? $_GET['allStudents'] : '';
+            $search = $_GET['search'] ?? '';
+            $sort = $_GET['sort'] ?? 'surname,preferredName';
+            $allStudents = $_GET['allStudents'] ?? '';
             
             $studentGateway = $container->get(StudentGateway::class);
 
@@ -101,21 +92,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 ->filterBy('all', $canViewFullProfile ? $allStudents : '')
                 ->fromPOST();
 
-            echo '<h2>';
-            echo __('Filter');
-            echo '</h2>';
-
             $sortOptions = array(
                 'surname,preferredName' => __('Surname'),
                 'preferredName' => __('Given Name'),
-                'rollGroup' => __('Roll Group'),
+                'rollGroup' => __('Form Group'),
                 'yearGroup' => __('Year Group'),
             );
 
-            $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
-            
+            $form = Form::create('filter', $gibbon->session->get('absoluteURL').'/index.php', 'get');
+            $form->setTitle(__('Filter'));
             $form->setClass('noIntBorder fullWidth');
-            $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/student_view.php');
+            $form->addHiddenValue('q', '/modules/'.$gibbon->session->get('module').'/student_view.php');
         
             $searchDescription = $canViewFullProfile 
                 ? __('Preferred, surname, username, student ID, email, phone number, vehicle registration, parent email.') 
@@ -142,15 +129,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             
             echo $form->getOutput();
 
-            echo '<h2>';
-            echo __('Choose A Student');
-            echo '</h2>';
-
             $students = $studentGateway->queryStudentsBySchoolYear($criteria, $gibbonSchoolYearID, $canViewFullProfile);
 
             // DATA TABLE
             $table = DataTable::createPaginated('students', $criteria);
-    
+            $table->setTitle(__('Choose A Student'));
             $table->modifyRows($studentGateway->getSharedUserRowHighlighter());
 
             if ($canViewFullProfile) {
@@ -175,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                     return Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
                 });
             $table->addColumn('yearGroup', __('Year Group'));
-            $table->addColumn('rollGroup', __('Roll Group'));
+            $table->addColumn('rollGroup', __('Form Group'));
     
             $table->addActionColumn()
                 ->addParam('gibbonPersonID')
