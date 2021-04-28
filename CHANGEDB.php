@@ -883,4 +883,8 @@ RENAME TABLE gibbonRollGroup TO gibbonFormGroup;end
 ALTER TABLE gibbonStudentEnrolment CHANGE `gibbonRollGroupID` `gibbonFormGroupID` int(5) unsigned zerofill NOT NULL;end
 DROP INDEX gibbonRollGroupID ON gibbonStudentEnrolment;end
 CREATE INDEX `gibbonFormGroupID` ON gibbonStudentEnrolment(gibbonFormGroupID);end
+ALTER TABLE gibbonCourseClassMap CHANGE `gibbonRollGroupID` `gibbonFormGroupID` int(5) unsigned zerofill DEFAULT NULL;end
+ALTER TABLE gibbonReportingCriteria CHANGE `gibbonRollGroupID` `gibbonFormGroupID` int(5) unsigned zerofill DEFAULT NULL;end
+
+
 ";
