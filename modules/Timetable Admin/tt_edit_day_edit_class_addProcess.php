@@ -19,16 +19,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonTTDayID = $_GET['gibbonTTDayID'];
-$gibbonTTID = $_GET['gibbonTTID'];
-$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-$gibbonTTColumnRowID = $_GET['gibbonTTColumnRowID'];
-$gibbonCourseClassID = $_POST['gibbonCourseClassID'];
+$gibbonTTDayID = $_GET['gibbonTTDayID'] ?? '';
+$gibbonTTID = $_GET['gibbonTTID'] ?? '';
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$gibbonTTColumnRowID = $_GET['gibbonTTColumnRowID'] ?? '';
+$gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
 
-$gibbonSpaceID = null;
-if ($_POST['gibbonSpaceID'] != '') {
-    $gibbonSpaceID = $_POST['gibbonSpaceID'];
-}
+$gibbonSpaceID = $_POST['gibbonSpaceID'] ?? null;
 
 if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $gibbonTTColumnRowID == '') { echo 'Fatal error loading this page!';
 } else {
@@ -44,7 +41,7 @@ if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $g
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
-            
+
                 $data = array('gibbonTTDayID' => $gibbonTTDayID, 'gibbonTTID' => $gibbonTTID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonTTColumnRowID' => $gibbonTTColumnRowID);
                 $sql = 'SELECT gibbonTT.name AS ttName, gibbonTTDay.name AS dayName, gibbonTTColumnRow.name AS rowName FROM gibbonTT JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID) JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTColumnRow ON (gibbonTTColumn.gibbonTTColumnID=gibbonTTColumnRow.gibbonTTColumnID) WHERE gibbonTTDay.gibbonTTDayID=:gibbonTTDayID AND gibbonTT.gibbonTTID=:gibbonTTID AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonTTColumnRowID=:gibbonTTColumnRowID';
                 $result = $connection2->prepare($sql);

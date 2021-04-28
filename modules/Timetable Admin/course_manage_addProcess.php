@@ -21,18 +21,14 @@ use Gibbon\Forms\CustomFieldHandler;
 
 include '../../gibbon.php';
 
-if ($_POST['gibbonDepartmentID'] != '') {
-    $gibbonDepartmentID = $_POST['gibbonDepartmentID'];
-} else {
-    $gibbonDepartmentID = null;
-}
-$name = $_POST['name'];
-$nameShort = $_POST['nameShort'];
-$orderBy = $_POST['orderBy'];
-$description = $_POST['description'];
-$map = $_POST['map'];
-$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
-$gibbonYearGroupIDList = (isset($_POST['gibbonYearGroupIDList']))? implode(',', $_POST['gibbonYearGroupIDList']) : '';
+$gibbonDepartmentID = $_POST['gibbonDepartmentID'] ?? null;
+$name = $_POST['name'] ?? '';
+$nameShort = $_POST['nameShort'] ?? '';
+$orderBy = $_POST['orderBy'] ?? '';
+$description = $_POST['description'] ?? '';
+$map = $_POST['map'] ?? '';
+$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
+$gibbonYearGroupIDList = implode(',', $_POST['gibbonYearGroupIDList']) ?? '';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/course_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID";
 

@@ -19,11 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonPersonID = $_GET['gibbonPersonID'];
-$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-$type = $_GET['type'];
-$allUsers = $_GET['allUsers'];
-$search = $_GET['search'];
+$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$type = $_GET['type'] ?? '';
+$allUsers = $_GET['allUsers'] ?? '';
+$search = $_GET['search'] ?? '';
 
 if ($gibbonSchoolYearID == '' or $gibbonPersonID == '') { echo 'Fatal error loading this page!';
 } else {
@@ -36,8 +36,8 @@ if ($gibbonSchoolYearID == '' or $gibbonPersonID == '') { echo 'Fatal error load
         //Proceed!
         //Run through each of the selected participants.
         $update = true;
-        $choices = $_POST['Members'];
-        $role = $_POST['role'];
+        $choices = $_POST['Members'] ?? '';
+        $role = $_POST['role'] ?? '';
 
         if (count($choices) < 1 or $role == '') {
             $URL .= '&return=error1';

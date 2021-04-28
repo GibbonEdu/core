@@ -19,12 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-$gibbonPersonID = $_GET['gibbonPersonID'];
-$type = $_GET['type'];
-$allUsers = $_GET['allUsers'];
-$search = $_GET['search'];
+$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+$type = $_GET['type'] ?? '';
+$allUsers = $_GET['allUsers'] ?? '';
+$search = $_GET['search'] ?? '';
 
 if ($gibbonPersonID == '' or $gibbonCourseClassID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 } else {

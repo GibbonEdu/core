@@ -19,12 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$type = $_POST['type'];
-$gibbonPersonID = $_POST['gibbonPersonID'];
-$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
-$action = $_POST['action'];
-$allUsers = $_GET['allUsers'];
-$search = isset($_GET['search'])? $_GET['search'] : '';
+$type = $_POST['type'] ?? '';
+$gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
+$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
+$action = $_POST['action'] ?? '';
+$allUsers = $_GET['allUsers'] ?? '';
+$search = $_GET['search'] ?? '';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/courseEnrolment_manage_byPerson_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&type=$type&allUsers=$allUsers&search=$search";
 
@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     header("Location: {$URL}");
 } else if ($gibbonPersonID == '' or $gibbonSchoolYearID == '' or $action == '') {
     $URL .= '&return=error1';
-    header("Location: {$URL}"); 
+    header("Location: {$URL}");
 } else {
     $classes = isset($_POST['gibbonCourseClassID'])? $_POST['gibbonCourseClassID'] : array();
 
@@ -76,5 +76,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             header("Location: {$URL}");
         }
     }
-    
+
 }

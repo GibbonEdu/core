@@ -19,9 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
-$dateStamp = $_POST['dateStamp'];
-$gibbonTTDayID = $_POST['gibbonTTDayID'];
+$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
+$dateStamp = $_POST['dateStamp'] ?? '';
+$gibbonTTDayID = $_POST['gibbonTTDayID'] ?? '';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/ttDates_edit_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=".$dateStamp;
 

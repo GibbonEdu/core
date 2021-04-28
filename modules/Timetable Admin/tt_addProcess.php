@@ -19,13 +19,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$name = $_POST['name'];
-$nameShort = $_POST['nameShort'];
-$nameShortDisplay = $_POST['nameShortDisplay'];
-$active = $_POST['active'];
-$count = $_POST['count'];
-$gibbonYearGroupIDList = (isset($_POST["gibbonYearGroupID"]) ? implode(',', $_POST["gibbonYearGroupID"]) : '');
-$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
+$name = $_POST['name'] ?? '';
+$nameShort = $_POST['nameShort'] ?? '';
+$nameShortDisplay = $_POST['nameShortDisplay'] ?? '';
+$active = $_POST['active'] ?? '';
+$count = $_POST['count'] ?? '';
+$gibbonYearGroupIDList = implode(',', $_POST["gibbonYearGroupID"]) ?? '');
+$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/tt_add.php&gibbonSchoolYearID=$gibbonSchoolYearID";
 

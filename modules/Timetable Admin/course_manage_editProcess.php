@@ -21,7 +21,7 @@ use Gibbon\Forms\CustomFieldHandler;
 
 include '../../gibbon.php';
 
-$gibbonCourseID = $_GET['gibbonCourseID'];
+$gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/course_manage_edit.php&gibbonCourseID='.$gibbonCourseID.'&gibbonSchoolYearID='.$_POST['gibbonSchoolYearID'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_manage_edit.php') == false) {
@@ -55,13 +55,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             } else {
                 $gibbonDepartmentID = null;
             }
-            $name = $_POST['name'];
-            $nameShort = $_POST['nameShort'];
-            $orderBy = $_POST['orderBy'];
-            $description = $_POST['description'];
-            $map = $_POST['map'];
-            $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
-            $gibbonYearGroupIDList = (isset($_POST['gibbonYearGroupIDList']))? implode(',', $_POST['gibbonYearGroupIDList']) : '';
+            $name = $_POST['name'] ?? '';
+            $nameShort = $_POST['nameShort'] ?? '';
+            $orderBy = $_POST['orderBy'] ?? '';
+            $description = $_POST['description'] ?? '';
+            $map = $_POST['map'] ?? '';
+            $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
+            $gibbonYearGroupIDList = implode(',', $_POST['gibbonYearGroupIDList']) ?? '';
 
             if ($name == '' or $nameShort == '' or $gibbonSchoolYearID == '' or $map == '') {
                 $URL .= '&return=error3';
