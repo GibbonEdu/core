@@ -28,7 +28,7 @@ $orderBy = $_POST['orderBy'] ?? '';
 $description = $_POST['description'] ?? '';
 $map = $_POST['map'] ?? '';
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
-$gibbonYearGroupIDList = implode(',', $_POST['gibbonYearGroupIDList'] ?? '');
+$gibbonYearGroupIDList = implode(',', ($_POST['gibbonYearGroupIDList'] ?? ''));
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/course_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID";
 
