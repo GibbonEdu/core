@@ -299,10 +299,10 @@ if ($proceed == false) {
         //GET OTHER FIELDS
         $languageChoice = $_POST['languageChoice'] ?? null;
         $languageChoiceExperience = $_POST['languageChoiceExperience'] ?? null;
-        $scholarshipInterest = $_POST['scholarshipInterest'] ?? null;
-        $scholarshipRequired = $_POST['scholarshipRequired'] ?? null;
+        $scholarshipInterest = $_POST['scholarshipInterest'] ?? 'N';
+        $scholarshipRequired = $_POST['scholarshipRequired'] ?? 'N';
         $howDidYouHear = $_POST['howDidYouHear'] ?? null;
-        $howDidYouHearMore = $_POST['howDidYouHearMore' ?? null];
+        $howDidYouHearMore = $_POST['howDidYouHearMore'] ?? null;
 
         $agreement = null;
         if (isset($_POST['agreement'])) {
