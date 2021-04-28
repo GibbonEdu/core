@@ -92,7 +92,7 @@ class CoverageTodayView
             $table->addColumn('spaceName', __('Location'))->context('primary');
 
             $table->addActionColumn()
-                ->addParam('gibbonRollGroupID')
+                ->addParam('gibbonFormGroupID')
                 ->format(function ($values, $actions) {
                     if ($values['attendance'] == 'Y') {
                         $actions->addAction('attendance', __('Take Attendance'))

@@ -134,10 +134,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     }
                     echo '</td>';
                     echo "<td style='width: 34%; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Form Group').'</span><br/>';
+                    echo "<span style='font-size: 115%; font-weight: bold'>".__('gibbonFormGroupup').'</span><br/>';
 
-                    $dataDetail = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
-                    $sqlDetail = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
+                    $dataDetail = array('gibbonFormGroupID' => $row['gibbonFormGroupID']);
+                    $sqlDetail = 'SELECT * FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID';
                     $resultDetail = $connection2->prepare($sqlDetail);
                     $resultDetail->execute($dataDetail);
                     if ($resultDetail->rowCount() == 1) {
@@ -331,17 +331,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Form Group').'</span><br/>';
-                        if (isset($row['gibbonRollGroupID'])) {
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('gibbonFormGroupup').'</span><br/>';
+                        if (isset($row['gibbonFormGroupID'])) {
 
-                                $dataDetail = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
-                                $sqlDetail = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
+                                $dataDetail = array('gibbonFormGroupID' => $row['gibbonFormGroupID']);
+                                $sqlDetail = 'SELECT * FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID';
                                 $resultDetail = $connection2->prepare($sqlDetail);
                                 $resultDetail->execute($dataDetail);
                             if ($resultDetail->rowCount() == 1) {
                                 $rowDetail = $resultDetail->fetch();
-                                if (isActionAccessible($guid, $connection2, '/modules/Form Groups/rollGroups_details.php')) {
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Form Groups/rollGroups_details.php&gibbonRollGroupID='.$rowDetail['gibbonRollGroupID']."'>".$rowDetail['name'].'</a>';
+                                if (isActionAccessible($guid, $connection2, '/modules/gibbonFormGroupups/rollGroups_details.php')) {
+                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/gibbonFormGroupups/rollGroups_details.php&gibbonFormGroupID='.$rowDetail['gibbonFormGroupID']."'>".$rowDetail['name'].'</a>';
                                 } else {
                                     echo $rowDetail['name'];
                                 }
@@ -353,8 +353,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Tutors').'</span><br/>';
                         if (isset($rowDetail['gibbonPersonIDTutor'])) {
 
-                                $dataDetail = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
-                                $sqlDetail = 'SELECT gibbonPersonID, title, surname, preferredName FROM gibbonRollGroup JOIN gibbonPerson ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID) WHERE gibbonRollGroupID=:gibbonRollGroupID ORDER BY surname, preferredName';
+                                $dataDetail = array('gibbonFormGroupID' => $row['gibbonFormGroupID']);
+                                $sqlDetail = 'SELECT gibbonPersonID, title, surname, preferredName FROM gibbonFormGroup JOIN gibbonPerson ON (gibbonFormGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID) WHERE gibbonFormGroupID=:gibbonFormGroupID ORDER BY surname, preferredName';
                                 $resultDetail = $connection2->prepare($sqlDetail);
                                 $resultDetail->execute($dataDetail);
                             while ($rowDetail = $resultDetail->fetch()) {
@@ -420,9 +420,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
 
                             $dataSelect = array('gibbonPersonID' => $row['gibbonPersonID']);
-                            $sqlSelect = "SELECT gibbonRollGroup.name AS rollGroup, gibbonSchoolYear.name AS schoolYear
+                            $sqlSelect = "SELECT gibbonFormGroup.name AS rollGroup, gibbonSchoolYear.name AS schoolYear
                                 FROM gibbonStudentEnrolment
-                                JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                                JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                                 JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
                                 WHERE gibbonPersonID=:gibbonPersonID
                                 AND (gibbonSchoolYear.status = 'Current' OR gibbonSchoolYear.status='Past')
@@ -494,7 +494,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                         //Get and display a list of student's teachers
                         $studentGateway = $container->get(StudentGateway::class);
-                        $staff = $studentGateway->selectAllRelatedUsersByStudent($gibbon->session->get('gibbonSchoolYearID'), $row['gibbonYearGroupID'], $row['gibbonRollGroupID'], $gibbonPersonID)->fetchAll();
+                        $staff = $studentGateway->selectAllRelatedUsersByStudent($gibbon->session->get('gibbonSchoolYearID'), $row['gibbonYearGroupID'], $row['gibbonFormGroupID'], $gibbonPersonID)->fetchAll();
                         $criteria = $studentGateway->newQueryCriteria();
 
                         if ($staff) {
@@ -628,7 +628,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $studentGateway = $container->get(StudentGateway::class);
 
                         $student = $studentGateway->selectActiveStudentByPerson($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, false)->fetch();
-                        $tutors = $rollGroupGateway->selectTutorsByRollGroup($student['gibbonRollGroupID'] ?? '')->fetchAll();
+                        $tutors = $rollGroupGateway->selectTutorsByRollGroup($student['gibbonFormGroupID'] ?? '')->fetchAll();
                         $yearGroup = $yearGroupGateway->getByID($student['gibbonYearGroupID'] ?? '', ['name', 'gibbonPersonIDHOY']);
                         $headOfYear = $container->get(UserGateway::class)->getByID($yearGroup['gibbonPersonIDHOY'] ?? '', ['title', 'surname', 'preferredName', 'gibbonPersonID']);
                         $house = $container->get(HouseGateway::class)->getByID($row['gibbonHouseID'] ?? '', ['name']);
@@ -669,8 +669,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $col->addColumn('yearGroup', __('Year Group'))->format(function ($values) use ($student) {
                             return $student['yearGroupName'];
                         });
-                        $col->addColumn('gibbonRollGroupID', __('Form Group'))->format(function ($values) use ($student) {
-                            return Format::link('./index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID='.$student['gibbonRollGroupID'], $student['rollGroupName']);
+                        $col->addColumn('gibbonFormGroupID', __('gibbonFormGroupup'))->format(function ($values) use ($student) {
+                            return Format::link('./index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonFormGroupID='.$student['gibbonFormGroupID'], $student['rollGroupName']);
                         });
                         $col->addColumn('email', __('Tutors'))->format(function ($values) use ($tutors) {
                             if (count($tutors) > 1) $tutors[0]['surname'] .= ' ('.__('Main Tutor').')';
@@ -2007,7 +2007,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     });
 
                                 $table->addColumn('yearGroup', __('Year Group'))->width('15%');
-                                $table->addColumn('rollGroup', __('Form Group'))->width('15%');
+                                $table->addColumn('rollGroup', __('gibbonFormGroupup'))->width('15%');
                                 $table->addColumn('timestampModified', __('Date'))
                                     ->width('30%')
                                     ->format(function ($report) {
@@ -2081,8 +2081,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 UNION
                                 (SELECT DISTINCT surname, preferredName, email
                                     FROM gibbonPerson
-                                        JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonPersonIDEA=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDEA2=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDEA3=gibbonPerson.gibbonPersonID)
-                                        JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                                        JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonPersonIDEA=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDEA2=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDEA3=gibbonPerson.gibbonPersonID)
+                                        JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                                         JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
                                     WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
                                         AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID2

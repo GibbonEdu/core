@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_scopes_m
         'gibbonReportingCycleID' => $_GET['gibbonReportingCycleID'] ?? '',
         'gibbonReportingScopeID' => $_GET['gibbonReportingScopeID'] ?? '',
         'gibbonYearGroupID'      => $_GET['gibbonYearGroupID'] ?? '',
-        'gibbonRollGroupID'      => $_GET['gibbonRollGroupID'] ?? '',
+        'gibbonFormGroupID'      => $_GET['gibbonFormGroupID'] ?? '',
         'gibbonCourseID'         => $_GET['gibbonCourseID'] ?? '',
     ];
 
@@ -136,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_scopes_m
         ->addParam('gibbonReportingCycleID', $urlParams['gibbonReportingCycleID'])
         ->addParam('gibbonReportingScopeID', $urlParams['gibbonReportingScopeID'])
         ->addParam('gibbonYearGroupID')
-        ->addParam('gibbonRollGroupID')
+        ->addParam('gibbonFormGroupID')
         ->addParam('gibbonCourseID')
         ->addParam('gibbonReportingCriteriaID')
         ->addParam('referer', 'scopes')

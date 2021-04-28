@@ -73,8 +73,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
             $row->addSelectYearGroup('gibbonYearGroupID')->required();
 
         $row = $form->addRow();
-            $row->addLabel('gibbonRollGroupID', __('Form Group'));
-            $row->addSelectRollGroup('gibbonRollGroupID', $gibbonSchoolYearID)->required();
+            $row->addLabel('gibbonFormGroupID', __('Form Group'));
+            $row->addSelectRollGroup('gibbonFormGroupID', $gibbonSchoolYearID)->required();
 
         $row = $form->addRow();
             $row->addLabel('rollOrder', __('Roll Order'));

@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
         'gibbonReportingScopeID'        => $urlParams['gibbonReportingScopeID'],
         'gibbonReportingCriteriaTypeID' => $_POST['gibbonReportingCriteriaTypeID'] ?? '',
         'gibbonYearGroupID'             => null,
-        'gibbonRollGroupID'             => null,
+        'gibbonFormGroupID'             => null,
         'gibbonCourseID'                => null,
         'target'                        => $_POST['target'] ?? '',
         'name'                          => $_POST['name'] ?? '',
@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
     if ($scopeType == 'Year Group') {
         $identifier = 'gibbonYearGroupID';
     } elseif ($scopeType == 'Roll Group') {
-        $identifier = 'gibbonRollGroupID';
+        $identifier = 'gibbonFormGroupID';
     } elseif ($scopeType == 'Course') {
         $identifier = 'gibbonCourseID';
     }

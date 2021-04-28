@@ -41,7 +41,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             {% endif %}
 
             {% if canViewRollGroups and rollGroup %}
-                <a class="px-0 sm:px-2 w-20" href="{{ absoluteURL }}/index.php?q=/modules/Form Groups/rollGroups_details.php&gibbonRollGroupID={{ rollGroup.gibbonRollGroupID }}">
+                <a class="px-0 sm:px-2 w-20" href="{{ absoluteURL }}/index.php?q=/modules/Form Groups/rollGroups_details.php&gibbonFormGroupID={{ rollGroup.gibbonFormGroupID }}">
                     <img class="" src="{{ absoluteURL }}/themes/Default/img/attendance.png" title="{{ __('Homeroom') }}" width="25" height="25">
                     <div class="mt-1">{{ __('Homeroom') }}</div>
                 </a>

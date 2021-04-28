@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         $page->scripts->add('chart');
 
         $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
-        $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
+        $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
         $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 
         $gibbonINInvestigationID = $_GET['gibbonINInvestigationID'];
@@ -72,13 +72,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                     $page->addError(__('The selected record does not exist, or you do not have access to it.'));
                 } else {
 
-                    if ($gibbonPersonID != '' or $gibbonRollGroupID != '' or $gibbonYearGroupID != '') {
+                    if ($gibbonPersonID != '' or $gibbonFormGroupID != '' or $gibbonYearGroupID != '') {
                         echo "<div class='linkTop'>";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Individual Needs/investigations_manage.php&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID'>".__('Back to Search Results').'</a>';
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Individual Needs/investigations_manage.php&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID'>".__('Back to Search Results').'</a>';
                         echo '</div>';
                     }
 
-                    $form = Form::create('addform', $_SESSION[$guid]['absoluteURL']."/modules/Individual Needs/investigations_manage_editProcess.php?gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID");
+                    $form = Form::create('addform', $_SESSION[$guid]['absoluteURL']."/modules/Individual Needs/investigations_manage_editProcess.php?gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID");
                     $form->setFactory(DatabaseFormFactory::create($pdo));
                     $form->addHiddenValue('address', "/modules/Individual Needs/investigations_manage_edit.php");
                     $form->addHiddenValue('gibbonINInvestigationID', $gibbonINInvestigationID);

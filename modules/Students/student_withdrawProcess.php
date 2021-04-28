@@ -126,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_withdraw.
 
             // Form Tutors
             if (in_array('tutors', $notify)) {
-                $rollGroup = $container->get(RollGroupGateway::class)->getByID($student['gibbonRollGroupID']);
+                $rollGroup = $container->get(RollGroupGateway::class)->getByID($student['gibbonFormGroupID']);
                 $event->addRecipient($rollGroup['gibbonPersonIDTutor']);
                 $event->addRecipient($rollGroup['gibbonPersonIDTutor2']);
                 $event->addRecipient($rollGroup['gibbonPersonIDTutor3']);

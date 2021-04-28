@@ -46,7 +46,7 @@ class Student extends DataSource
             'yearGroupName'      => ['sameAs', 'Year #'],
             'yearGroupNameShort' => ['sameAs', 'Y0#'],
 
-            'gibbonRollGroupID'  => 0,
+            'gibbonFormGroupID'  => 0,
             'rollGroupName'      => ['sameAs', 'Y0#.%'],
             'rollGroupNameShort' => ['sameAs', 'Y0#.%'],
         ];
@@ -70,13 +70,13 @@ class Student extends DataSource
                 gibbonYearGroup.gibbonYearGroupID,
                 gibbonYearGroup.name as yearGroupName,
                 gibbonYearGroup.nameShort as yearGroupNameShort,
-                gibbonRollGroup.gibbonRollGroupID,
-                gibbonRollGroup.name as rollGroupName,
-                gibbonRollGroup.nameShort as rollGroupNameShort
+                gibbonFormGroup.gibbonFormGroupID,
+                gibbonFormGroup.name as rollGroupName,
+                gibbonFormGroup.nameShort as rollGroupNameShort
                 FROM gibbonStudentEnrolment 
                 JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                 JOIN gibbonYearGroup ON (gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID)
-                JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID)
+                JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID)
                 WHERE gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID";
 
         return $this->db()->selectOne($sql, $data);

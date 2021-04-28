@@ -9340,13 +9340,13 @@ VALUES
 /*!40000 ALTER TABLE `gibbonResourceTag` ENABLE KEYS */;
 UNLOCK TABLES;
 
-# Dump of table gibbonRollGroup
+# Dump of table gibbonFormGroup
 # ------------------------------------------------------------
 
-LOCK TABLES `gibbonRollGroup` WRITE;
-/*!40000 ALTER TABLE `gibbonRollGroup` DISABLE KEYS */;
+LOCK TABLES `gibbonFormGroup` WRITE;
+/*!40000 ALTER TABLE `gibbonFormGroup` DISABLE KEYS */;
 
-INSERT INTO `gibbonRollGroup` (`gibbonRollGroupID`, `gibbonSchoolYearID`, `name`, `nameShort`, `gibbonPersonIDTutor`, `gibbonPersonIDTutor2`, `gibbonPersonIDTutor3`, `gibbonPersonIDEA`, `gibbonPersonIDEA2`, `gibbonPersonIDEA3`, `gibbonSpaceID`, `gibbonRollGroupIDNext`, `attendance`, `website`)
+INSERT INTO `gibbonFormGroup` (`gibbonFormGroupID`, `gibbonSchoolYearID`, `name`, `nameShort`, `gibbonPersonIDTutor`, `gibbonPersonIDTutor2`, `gibbonPersonIDTutor3`, `gibbonPersonIDEA`, `gibbonPersonIDEA2`, `gibbonPersonIDEA3`, `gibbonSpaceID`, `gibbonFormGroupIDNext`, `attendance`, `website`)
 VALUES
 	(00143,025,'07.1','07.1',0000002363,NULL,NULL,NULL,NULL,NULL,00007,00000,'Y',''),
 	(00144,025,'07.2','07.2',0000001778,NULL,NULL,NULL,NULL,NULL,00006,00000,'Y',''),
@@ -9369,7 +9369,7 @@ VALUES
 	(00163,025,'10.3','10.3',0000001122,NULL,NULL,NULL,NULL,NULL,00048,00000,'Y',''),
 	(00164,025,'11.3','11.3',0000002027,NULL,NULL,NULL,NULL,NULL,00023,00000,'Y','');
 
-/*!40000 ALTER TABLE `gibbonRollGroup` ENABLE KEYS */;
+/*!40000 ALTER TABLE `gibbonFormGroup` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
@@ -9789,7 +9789,7 @@ UNLOCK TABLES;
 LOCK TABLES `gibbonStudentEnrolment` WRITE;
 /*!40000 ALTER TABLE `gibbonStudentEnrolment` DISABLE KEYS */;
 
-INSERT INTO `gibbonStudentEnrolment` (`gibbonStudentEnrolmentID`, `gibbonPersonID`, `gibbonSchoolYearID`, `gibbonYearGroupID`, `gibbonRollGroupID`, `rollOrder`)
+INSERT INTO `gibbonStudentEnrolment` (`gibbonStudentEnrolmentID`, `gibbonPersonID`, `gibbonSchoolYearID`, `gibbonYearGroupID`, `gibbonFormGroupID`, `rollOrder`)
 VALUES
 	(00002482,0000001424,025,005,00153,NULL),
 	(00002483,0000001520,025,005,00153,NULL),

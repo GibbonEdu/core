@@ -29,10 +29,10 @@ $I->submitForm('#content form', $addFormValues, 'Submit');
 $I->seeSuccessMessage();
 
 $gibbonSchoolYearID = $I->grabValueFromURL('gibbonSchoolYearID');
-$gibbonRollGroupID = $I->grabEditIDFromURL();
+$gibbonFormGroupID = $I->grabEditIDFromURL();
 
 // Edit ------------------------------------------------
-$I->amOnModulePage('School Admin', 'rollGroup_manage_edit.php', array('gibbonRollGroupID' => $gibbonRollGroupID, 'gibbonSchoolYearID' => $gibbonSchoolYearID));
+$I->amOnModulePage('School Admin', 'rollGroup_manage_edit.php', array('gibbonFormGroupID' => $gibbonFormGroupID, 'gibbonSchoolYearID' => $gibbonSchoolYearID));
 $I->seeBreadcrumb('Edit');
 
 $I->seeInFormFields('#content form', $addFormValues);
@@ -48,7 +48,7 @@ $I->submitForm('#content form', $editFormValues, 'Submit');
 $I->seeSuccessMessage();
 
 // Delete ------------------------------------------------
-$I->amOnModulePage('School Admin', 'rollGroup_manage_delete.php', array('gibbonRollGroupID' => $gibbonRollGroupID, 'gibbonSchoolYearID' => $gibbonSchoolYearID));
+$I->amOnModulePage('School Admin', 'rollGroup_manage_delete.php', array('gibbonFormGroupID' => $gibbonFormGroupID, 'gibbonSchoolYearID' => $gibbonSchoolYearID));
 
 $I->click('Yes');
 $I->seeSuccessMessage();

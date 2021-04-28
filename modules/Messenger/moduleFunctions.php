@@ -216,8 +216,8 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
                 JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)
                 JOIN gibbonYearGroup ON (gibbonYearGroup.gibbonYearGroupID=gibbonMessengerTarget.id)
                 JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
-                JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID)
-                JOIN gibbonStaff ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonStaff.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor2=gibbonStaff.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor3=gibbonStaff.gibbonPersonID)
+                JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID)
+                JOIN gibbonStaff ON (gibbonFormGroup.gibbonPersonIDTutor=gibbonStaff.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDTutor2=gibbonStaff.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDTutor3=gibbonStaff.gibbonPersonID)
                 WHERE gibbonStaff.gibbonPersonID=:gibbonPersonID0
                 AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID0
                 AND gibbonMessengerTarget.type='Year Group' AND gibbonMessengerTarget.staff='Y' AND
@@ -245,20 +245,20 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         $sqlWhere = '(';
         
             $dataRollGroup = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonIDTutor' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor3' => $_SESSION[$guid]['gibbonPersonID']);
-            $sqlRollGroup = 'SELECT * FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3)';
+            $sqlRollGroup = 'SELECT * FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3)';
             $resultRollGroup = $connection2->prepare($sqlRollGroup);
             $resultRollGroup->execute($dataRollGroup);
         if ($resultRollGroup->rowCount() > 0) {
             while ($rowRollGroup = $resultRollGroup->fetch()) {
-                $dataPosts['roll'.$rowRollGroup['gibbonRollGroupID']] = $rowRollGroup['gibbonRollGroupID'];
-                $sqlWhere .= 'id=:roll'.$rowRollGroup['gibbonRollGroupID'].' OR ';
+                $dataPosts['roll'.$rowRollGroup['gibbonFormGroupID']] = $rowRollGroup['gibbonFormGroupID'];
+                $sqlWhere .= 'id=:roll'.$rowRollGroup['gibbonFormGroupID'].' OR ';
             }
             $sqlWhere = substr($sqlWhere, 0, -3).')';
             if ($sqlWhere != '(') {
                 $dataPosts['date13'] = $date;
                 $dataPosts['date14'] = $date;
                 $dataPosts['date15'] = $date;
-                $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Roll Group: ', gibbonRollGroup.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonRollGroup ON (gibbonMessengerTarget.id=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonMessengerTarget.type='Roll Group' AND (messageWall_date1=:date13 OR messageWall_date2=:date14 OR messageWall_date3=:date15) AND $sqlWhere AND staff='Y')";
+                $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Roll Group: ', gibbonFormGroup.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonFormGroup ON (gibbonMessengerTarget.id=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonMessengerTarget.type='Roll Group' AND (messageWall_date1=:date13 OR messageWall_date2=:date14 OR messageWall_date3=:date15) AND $sqlWhere AND staff='Y')";
             }
         }
     }
@@ -268,14 +268,14 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         $dataPosts['date18'] = $date;
         $dataPosts['gibbonSchoolYearID3'] = $_SESSION[$guid]['gibbonSchoolYearID'];
         $dataPosts['gibbonPersonID2'] = $_SESSION[$guid]['gibbonPersonID'];
-        $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Roll Group: ', gibbonRollGroup.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonStudentEnrolment ON (gibbonMessengerTarget.id=gibbonStudentEnrolment.gibbonRollGroupID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID2 AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID3 AND gibbonMessengerTarget.type='Roll Group' AND (messageWall_date1=:date16 OR messageWall_date2=:date17 OR messageWall_date3=:date18) AND students='Y')";
+        $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Roll Group: ', gibbonFormGroup.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonStudentEnrolment ON (gibbonMessengerTarget.id=gibbonStudentEnrolment.gibbonFormGroupID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID2 AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID3 AND gibbonMessengerTarget.type='Roll Group' AND (messageWall_date1=:date16 OR messageWall_date2=:date17 OR messageWall_date3=:date18) AND students='Y')";
     }
     if ($parent and $children != false) {
         $dataPosts['date19'] = $date;
         $dataPosts['date20'] = $date;
         $dataPosts['date21'] = $date;
         $dataPosts['gibbonSchoolYearID4'] = $_SESSION[$guid]['gibbonSchoolYearID'];
-        $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Roll Group: ', gibbonRollGroup.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonStudentEnrolment ON (gibbonMessengerTarget.id=gibbonStudentEnrolment.gibbonRollGroupID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE ".preg_replace('/gibbonPersonID/', 'gibbonStudentEnrolment.gibbonPersonID', $children)." AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID4 AND gibbonMessengerTarget.type='Roll Group' AND (messageWall_date1=:date19 OR messageWall_date2=:date20 OR messageWall_date3=:date21) AND parents='Y')";
+        $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Roll Group: ', gibbonFormGroup.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonStudentEnrolment ON (gibbonMessengerTarget.id=gibbonStudentEnrolment.gibbonFormGroupID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE ".preg_replace('/gibbonPersonID/', 'gibbonStudentEnrolment.gibbonPersonID', $children)." AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID4 AND gibbonMessengerTarget.type='Roll Group' AND (messageWall_date1=:date19 OR messageWall_date2=:date20 OR messageWall_date3=:date21) AND parents='Y')";
     }
 
     //My courses

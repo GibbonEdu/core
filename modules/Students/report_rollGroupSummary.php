@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
 
     // CRITERIA
     $criteria = $reportGateway->newQueryCriteria()
-        ->sortBy(['gibbonYearGroup.sequenceNumber', 'gibbonRollGroup.nameShort'])
+        ->sortBy(['gibbonYearGroup.sequenceNumber', 'gibbonFormGroup.nameShort'])
         ->filterBy('from', Format::dateConvert($dateFrom))
         ->filterBy('to', Format::dateConvert($dateTo))
         ->fromPOST();

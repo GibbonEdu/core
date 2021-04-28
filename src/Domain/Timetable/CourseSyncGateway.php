@@ -46,16 +46,16 @@ class CourseSyncGateway extends QueryableGateway
             ->from($this->getTableName())
             ->cols([
                 'gibbonCourseClassMap.gibbonCourseClassID',
-                'gibbonCourseClassMap.gibbonRollGroupID',
+                'gibbonCourseClassMap.gibbonFormGroupID',
                 'gibbonCourseClassMap.gibbonYearGroupID',
                 'gibbonYearGroup.gibbonYearGroupID',
-                'gibbonRollGroup.name as rollGroupName',
+                'gibbonFormGroup.name as rollGroupName',
                 'gibbonYearGroup.name as yearGroupName',
                 'COUNT(DISTINCT gibbonCourseClassMap.gibbonCourseClassID) as classCount',
-                "GROUP_CONCAT(DISTINCT gibbonRollGroup.nameShort ORDER BY gibbonRollGroup.nameShort SEPARATOR ', ') as rollGroupList",
-                "GROUP_CONCAT(DISTINCT gibbonRollGroup.gibbonRollGroupID ORDER BY gibbonRollGroup.gibbonRollGroupID SEPARATOR ',') as gibbonRollGroupIDList",
+                "GROUP_CONCAT(DISTINCT gibbonFormGroup.nameShort ORDER BY gibbonFormGroup.nameShort SEPARATOR ', ') as rollGroupList",
+                "GROUP_CONCAT(DISTINCT gibbonFormGroup.gibbonFormGroupID ORDER BY gibbonFormGroup.gibbonFormGroupID SEPARATOR ',') as gibbonFormGroupIDList",
             ])
-            ->innerJoin('gibbonRollGroup', 'gibbonCourseClassMap.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
+            ->innerJoin('gibbonFormGroup', 'gibbonCourseClassMap.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID')
             ->innerJoin('gibbonYearGroup', 'gibbonYearGroup.gibbonYearGroupID=gibbonCourseClassMap.gibbonYearGroupID')
             ->innerJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID')
             ->innerJoin('gibbonCourse', 'gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID')

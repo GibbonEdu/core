@@ -27,11 +27,11 @@ fields:
         desc: "Reporting Scope name"
         args: { filter: string, required: true, custom: true, readonly: [gibbonReportingValue]  }
         relationship: { table: gibbonReportingScope, key: gibbonReportingScopeID, field: [name, gibbonReportingCycleID]  }
-    gibbonRollGroupID: 
+    gibbonFormGroupID: 
         name: "Roll Group"
         desc: "Short Name"
         args: { filter: nospaces, required: true, custom: true, readonly: [gibbonReportingValue]  }
-        relationship: { table: gibbonRollGroup, key: gibbonRollGroupID, field: [nameShort, gibbonSchoolYearID]  }
+        relationship: { table: gibbonFormGroup, key: gibbonFormGroupID, field: [nameShort, gibbonSchoolYearID]  }
     target: 
         name: "Criteria Target"
         desc: ""
@@ -41,7 +41,7 @@ fields:
         name: "Criteria Name"
         desc: ""
         args: { filter: string, required: true, custom: true, readonly: false  }
-        relationship: { table: gibbonReportingCriteria, key: gibbonReportingCriteriaID, field: [name, target, gibbonReportingScopeID, gibbonRollGroupID]  }
+        relationship: { table: gibbonReportingCriteria, key: gibbonReportingCriteriaID, field: [name, target, gibbonReportingScopeID, gibbonFormGroupID]  }
     gibbonPersonIDStudent:
         name: "Student"
         desc: "Username or Email (if unique)"
@@ -96,7 +96,7 @@ tables:
             - gibbonSchoolYearID
             - gibbonReportingCycleID
             - gibbonReportingScopeID
-            - gibbonRollGroupID
+            - gibbonFormGroupID
             - target
             - gibbonReportingCriteriaID
             - gibbonPersonIDStudent
@@ -112,11 +112,11 @@ tables:
         primaryKey:
             gibbonReportingProgressID
         uniqueKeys:
-            - [gibbonReportingScopeID, gibbonRollGroupID, gibbonPersonIDStudent]
+            - [gibbonReportingScopeID, gibbonFormGroupID, gibbonPersonIDStudent]
         fields:
             - gibbonSchoolYearID
             - gibbonReportingCycleID
             - gibbonReportingScopeID
-            - gibbonRollGroupID
+            - gibbonFormGroupID
             - gibbonPersonIDStudent
             - status

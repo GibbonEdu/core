@@ -46,19 +46,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
         $attendance = new AttendanceView($gibbon, $pdo);
 
-        $gibbonRollGroupID = '';
-        if (isset($_GET['gibbonRollGroupID']) == false) {
+        $gibbonFormGroupID = '';
+        if (isset($_GET['gibbonFormGroupID']) == false) {
             
                 $data = array('gibbonPersonIDTutor1' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor3' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                $sql = "SELECT gibbonRollGroup.*, firstDay, lastDay FROM gibbonRollGroup JOIN gibbonSchoolYear ON (gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor1 OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID";
+                $sql = "SELECT gibbonFormGroup.*, firstDay, lastDay FROM gibbonFormGroup JOIN gibbonSchoolYear ON (gibbonFormGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor1 OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3) AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             if ($result->rowCount() > 0) {
                 $row = $result->fetch();
-                $gibbonRollGroupID = $row['gibbonRollGroupID'];
+                $gibbonFormGroupID = $row['gibbonFormGroupID'];
             }
         } else {
-            $gibbonRollGroupID = $_GET['gibbonRollGroupID'];
+            $gibbonFormGroupID = $_GET['gibbonFormGroupID'];
         }
 
         $today = date('Y-m-d');
@@ -73,8 +73,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
         $form->addHiddenValue('q', '/modules/' . $_SESSION[$guid]['module'] . '/attendance_take_byRollGroup.php');
 
         $row = $form->addRow();
-            $row->addLabel('gibbonRollGroupID', __('Form Group'));
-            $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->required()->selected($gibbonRollGroupID)->placeholder();
+            $row->addLabel('gibbonFormGroupID', __('Form Group'));
+            $row->addSelectRollGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->required()->selected($gibbonFormGroupID)->placeholder();
 
         $row = $form->addRow();
             $row->addLabel('currentDate', __('Date'));
@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
         echo $form->getOutput();
 
-        if ($gibbonRollGroupID != '') {
+        if ($gibbonFormGroupID != '') {
             if ($currentDate > $today) {
                 echo "<div class='error'>";
                 echo __('The specified date is in the future: it must be today or earlier.');
@@ -101,8 +101,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                     //Check roll group
                     
-                        $data = array('gibbonRollGroupID' => $gibbonRollGroupID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                        $sql = 'SELECT gibbonRollGroup.*, firstDay, lastDay FROM gibbonRollGroup JOIN gibbonSchoolYear ON (gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonRollGroupID=:gibbonRollGroupID AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID';
+                        $data = array('gibbonFormGroupID' => $gibbonFormGroupID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                        $sql = 'SELECT gibbonFormGroup.*, firstDay, lastDay FROM gibbonFormGroup JOIN gibbonSchoolYear ON (gibbonFormGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonFormGroupID=:gibbonFormGroupID AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
 
@@ -123,8 +123,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                         //Show attendance log for the current day
                         
-                            $dataLog = array('gibbonRollGroupID' => $gibbonRollGroupID, 'date' => $currentDate.'%');
-                            $sqlLog = 'SELECT * FROM gibbonAttendanceLogRollGroup, gibbonPerson WHERE gibbonAttendanceLogRollGroup.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonRollGroupID=:gibbonRollGroupID AND date LIKE :date ORDER BY timestampTaken';
+                            $dataLog = array('gibbonFormGroupID' => $gibbonFormGroupID, 'date' => $currentDate.'%');
+                            $sqlLog = 'SELECT * FROM gibbonAttendanceLogFormGroup, gibbonPerson WHERE gibbonAttendanceLogFormGroup.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonFormGroupID=:gibbonFormGroupID AND date LIKE :date ORDER BY timestampTaken';
                             $resultLog = $connection2->prepare($sqlLog);
                             $resultLog->execute($dataLog);
 
@@ -145,8 +145,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                         //Show roll group grid
                         
-                            $dataRollGroup = array('gibbonRollGroupID' => $gibbonRollGroupID, 'date' => $currentDate);
-                            $sqlRollGroup = "SELECT gibbonPerson.image_240, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.gibbonPersonID FROM gibbonStudentEnrolment INNER JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonRollGroupID=:gibbonRollGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date) ORDER BY rollOrder, surname, preferredName";
+                            $dataRollGroup = array('gibbonFormGroupID' => $gibbonFormGroupID, 'date' => $currentDate);
+                            $sqlRollGroup = "SELECT gibbonPerson.image_240, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.gibbonPersonID FROM gibbonStudentEnrolment INNER JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonFormGroupID=:gibbonFormGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date) ORDER BY rollOrder, surname, preferredName";
                             $resultRollGroup = $connection2->prepare($sqlRollGroup);
                             $resultRollGroup->execute($dataRollGroup);
 
@@ -159,13 +159,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                             $countPresent = 0;
                             $columns = 4;
 
-                            $defaults = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '', 'prefill' => 'Y', 'gibbonRollGroupID' => 0);
+                            $defaults = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '', 'prefill' => 'Y', 'gibbonFormGroupID' => 0);
                             $students = $resultRollGroup->fetchAll();
 
                             // Build the attendance log data per student
                             foreach ($students as $key => $student) {
                                 $data = array('gibbonPersonID' => $student['gibbonPersonID'], 'date' => $currentDate);
-                                $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, context, timestampTaken, gibbonAttendanceCode.prefill, gibbonAttendanceLogPerson.gibbonRollGroupID
+                                $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, context, timestampTaken, gibbonAttendanceCode.prefill, gibbonAttendanceLogPerson.gibbonFormGroupID
                                         FROM gibbonAttendanceLogPerson
                                         JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                                         JOIN gibbonAttendanceCode ON (gibbonAttendanceCode.gibbonAttendanceCodeID=gibbonAttendanceLogPerson.gibbonAttendanceCodeID)
@@ -180,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                                 $log = ($result->rowCount() > 0)? $result->fetch() : $defaults;
 
-                                if ($log['prefill'] == 'N' && (($log['context'] == 'Roll Group' && $log['gibbonRollGroupID'] != $gibbonRollGroupID) || $log['context'] == 'Class') ) {
+                                if ($log['prefill'] == 'N' && (($log['context'] == 'Roll Group' && $log['gibbonFormGroupID'] != $gibbonFormGroupID) || $log['context'] == 'Class') ) {
                                     $log = $defaults;
                                 }
 
@@ -211,7 +211,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                             $form->setAutocomplete('off');
 
                             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-                            $form->addHiddenValue('gibbonRollGroupID', $gibbonRollGroupID);
+                            $form->addHiddenValue('gibbonFormGroupID', $gibbonFormGroupID);
                             $form->addHiddenValue('currentDate', $currentDate);
                             $form->addHiddenValue('count', count($students));
 

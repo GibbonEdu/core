@@ -54,12 +54,12 @@ class FirstAidGateway extends QueryableGateway implements ScrubbableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonFirstAidID', 'gibbonFirstAid.date', 'gibbonFirstAid.timeIn', 'gibbonFirstAid.timeOut', 'gibbonFirstAid.description', 'gibbonFirstAid.actionTaken', 'gibbonFirstAid.followUp', 'gibbonFirstAid.date', 'patient.surname AS surnamePatient', 'patient.preferredName AS preferredNamePatient', 'gibbonFirstAid.gibbonPersonIDPatient', 'gibbonRollGroup.name as rollGroup', 'firstAider.title', 'firstAider.surname AS surnameFirstAider', 'firstAider.preferredName AS preferredNameFirstAider', 'timestamp'
+                'gibbonFirstAidID', 'gibbonFirstAid.date', 'gibbonFirstAid.timeIn', 'gibbonFirstAid.timeOut', 'gibbonFirstAid.description', 'gibbonFirstAid.actionTaken', 'gibbonFirstAid.followUp', 'gibbonFirstAid.date', 'patient.surname AS surnamePatient', 'patient.preferredName AS preferredNamePatient', 'gibbonFirstAid.gibbonPersonIDPatient', 'gibbonFormGroup.name as rollGroup', 'firstAider.title', 'firstAider.surname AS surnameFirstAider', 'firstAider.preferredName AS preferredNameFirstAider', 'timestamp'
             ])
             ->innerJoin('gibbonPerson AS patient', 'gibbonFirstAid.gibbonPersonIDPatient=patient.gibbonPersonID')
             ->innerJoin('gibbonStudentEnrolment', 'patient.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
             ->innerJoin('gibbonYearGroup', 'gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID')
-            ->innerJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
+            ->innerJoin('gibbonFormGroup', 'gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID')
             ->leftJoin('gibbonPerson AS firstAider', 'gibbonFirstAid.gibbonPersonIDFirstAider=firstAider.gibbonPersonID')
             ->where('gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
@@ -71,10 +71,10 @@ class FirstAidGateway extends QueryableGateway implements ScrubbableGateway
                     ->bindValue('gibbonPersonID', $gibbonPersonID);
             },
 
-            'rollGroup' => function ($query, $gibbonRollGroupID) {
+            'rollGroup' => function ($query, $gibbonFormGroupID) {
                 return $query
-                    ->where('gibbonStudentEnrolment.gibbonRollGroupID = :gibbonRollGroupID')
-                    ->bindValue('gibbonRollGroupID', $gibbonRollGroupID);
+                    ->where('gibbonStudentEnrolment.gibbonFormGroupID = :gibbonFormGroupID')
+                    ->bindValue('gibbonFormGroupID', $gibbonFormGroupID);
             },
 
             'yearGroup' => function ($query, $gibbonYearGroupID) {

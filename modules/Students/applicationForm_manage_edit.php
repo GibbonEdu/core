@@ -149,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $row->addSelectYearGroup('gibbonYearGroupIDEntry')->required();
 
     // ROLL GROUP
-    $sqlSelect = "SELECT gibbonRollGroupID as value, name, gibbonSchoolYearID FROM gibbonRollGroup ORDER BY gibbonSchoolYearID, name";
+    $sqlSelect = "SELECT gibbonFormGroupID as value, name, gibbonSchoolYearID FROM gibbonFormGroup ORDER BY gibbonSchoolYearID, name";
     $resultSelect = $pdo->executeQuery(array(), $sqlSelect);
 
     $rollGroups = ($resultSelect->rowCount() > 0)? $resultSelect->fetchAll() : array();
@@ -157,8 +157,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $rollGroupsOptions = array_combine(array_column($rollGroups, 'value'), array_column($rollGroups, 'name'));
 
     $row = $form->addRow();
-        $row->addLabel('gibbonRollGroupID', __('Form Group at Entry'))->description(__('If set, the student will automatically be enrolled on Accept.'));
-        $row->addSelect('gibbonRollGroupID')
+        $row->addLabel('gibbonFormGroupID', __('Form Group at Entry'))->description(__('If set, the student will automatically be enrolled on Accept.'));
+        $row->addSelect('gibbonFormGroupID')
             ->fromArray($rollGroupsOptions)
             ->chainedTo('gibbonSchoolYearIDEntry', $rollGroupsChained)
             ->placeholder();

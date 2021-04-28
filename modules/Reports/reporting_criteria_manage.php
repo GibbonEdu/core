@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
         'gibbonReportingCycleID' => $_GET['gibbonReportingCycleID'] ?? '',
         'gibbonReportingScopeID' => $_GET['gibbonReportingScopeID'] ?? '',
         'gibbonYearGroupID'      => $_GET['gibbonYearGroupID'] ?? '',
-        'gibbonRollGroupID'      => $_GET['gibbonRollGroupID'] ?? '',
+        'gibbonFormGroupID'      => $_GET['gibbonFormGroupID'] ?? '',
         'gibbonCourseID'         => $_GET['gibbonCourseID'] ?? '',
     ];
 
@@ -100,11 +100,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
         }
 
         if ($reportingScope['scopeType'] == 'Roll Group') {
-            $scopeTypeID = $urlParams['gibbonRollGroupID'];
+            $scopeTypeID = $urlParams['gibbonFormGroupID'];
             $row = $form->addRow();
-                $row->addLabel('gibbonRollGroupID', __('Form Group'));
-                $row->addSelectRollGroup('gibbonRollGroupID', $reportingCycle['gibbonSchoolYearID'])
-                    ->selected($urlParams['gibbonRollGroupID']);
+                $row->addLabel('gibbonFormGroupID', __('Form Group'));
+                $row->addSelectRollGroup('gibbonFormGroupID', $reportingCycle['gibbonSchoolYearID'])
+                    ->selected($urlParams['gibbonFormGroupID']);
         }
 
         if ($reportingScope['scopeType'] == 'Course') {
@@ -136,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
     $table = empty($scopeTypeID) ? DataTable::createPaginated('reportCriteriaManage', $criteria) : DataTable::create('reportCriteriaManage');
     $table->setTitle(__('Criteria'));
 
-    if (empty($urlParams['gibbonYearGroupID']) && empty($urlParams['gibbonRollGroupID']) && empty($urlParams['gibbonCourseID'])) {
+    if (empty($urlParams['gibbonYearGroupID']) && empty($urlParams['gibbonFormGroupID']) && empty($urlParams['gibbonCourseID'])) {
         $table->addHeaderAction('addMulti', __('Add Multiple'))
             ->setIcon('page_new_multi')
             ->setURL('/modules/Reports/reporting_criteria_manage_addMultiple.php')
@@ -149,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
             ->addParam('gibbonReportingCycleID', $urlParams['gibbonReportingCycleID'])
             ->addParam('gibbonReportingScopeID', $urlParams['gibbonReportingScopeID'])
             ->addParam('gibbonYearGroupID', $urlParams['gibbonYearGroupID'])
-            ->addParam('gibbonRollGroupID', $urlParams['gibbonRollGroupID'])
+            ->addParam('gibbonFormGroupID', $urlParams['gibbonFormGroupID'])
             ->addParam('gibbonCourseID', $urlParams['gibbonCourseID'])
             ->displayLabel();
     }
@@ -165,7 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
             ->format(function ($reportingCriteria) use (&$urlParams) {
                 $url = './index.php?q=/modules/Reports/reporting_criteria_manage.php&'.http_build_query([
                     'gibbonYearGroupID' => $reportingCriteria['gibbonYearGroupID'],
-                    'gibbonRollGroupID' => $reportingCriteria['gibbonRollGroupID'],
+                    'gibbonFormGroupID' => $reportingCriteria['gibbonFormGroupID'],
                     'gibbonCourseID' => $reportingCriteria['gibbonCourseID']
                     ] + $urlParams);
                 return Format::link($url, $reportingCriteria['scopeTypeName']);
@@ -188,7 +188,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
         ->addParam('gibbonReportingCycleID', $urlParams['gibbonReportingCycleID'])
         ->addParam('gibbonReportingScopeID', $urlParams['gibbonReportingScopeID'])
         ->addParam('gibbonYearGroupID', $urlParams['gibbonYearGroupID'])
-        ->addParam('gibbonRollGroupID', $urlParams['gibbonRollGroupID'])
+        ->addParam('gibbonFormGroupID', $urlParams['gibbonFormGroupID'])
         ->addParam('gibbonCourseID', $urlParams['gibbonCourseID'])
         ->addParam('gibbonReportingCriteriaID')
         ->format(function ($reportingCriteria, $actions) {

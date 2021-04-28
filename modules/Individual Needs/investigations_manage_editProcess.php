@@ -26,11 +26,11 @@ use Gibbon\Services\Format;
 require_once '../../gibbon.php';
 
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
-$gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
+$gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
 $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 $gibbonINInvestigationID = $_POST['gibbonINInvestigationID'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID";
+$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investigations_manage_edit.php') == false) {
     $URL .= '&return=error0';

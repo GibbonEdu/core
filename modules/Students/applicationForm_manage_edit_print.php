@@ -107,8 +107,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             echo "<td style='padding-top: 15px; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__('Form Group at Entry').'</span><br/>';
             
-                $dataSelect = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
-                $sqlSelect = 'SELECT name FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
+                $dataSelect = array('gibbonFormGroupID' => $row['gibbonFormGroupID']);
+                $sqlSelect = 'SELECT name FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID';
                 $resultSelect = $connection2->prepare($sqlSelect);
                 $resultSelect->execute($dataSelect);
             if ($resultSelect->rowCount() == 1) {

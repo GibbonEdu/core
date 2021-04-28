@@ -20,8 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
-$gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rollGroup_manage_delete.php&gibbonRollGroupID=$gibbonRollGroupID&gibbonSchoolYearID=$gibbonSchoolYearID";
+$gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rollGroup_manage_delete.php&gibbonFormGroupID=$gibbonFormGroupID&gibbonSchoolYearID=$gibbonSchoolYearID";
 $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rollGroup_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID";
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_manage_delete.php') == false) {
@@ -30,13 +30,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 } else {
     //Proceed!
     //Check if school year specified
-    if ($gibbonRollGroupID == '') {
+    if ($gibbonFormGroupID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
         try {
-            $data = array('gibbonRollGroupID' => $gibbonRollGroupID, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
-            $sql = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID AND gibbonSchoolYearID=:gibbonSchoolYearID';
+            $data = array('gibbonFormGroupID' => $gibbonFormGroupID, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
+            $sql = 'SELECT * FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID AND gibbonSchoolYearID=:gibbonSchoolYearID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -51,8 +51,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
         } else {
             //Write to database
             try {
-                $data = array('gibbonRollGroupID' => $gibbonRollGroupID);
-                $sql = 'DELETE FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
+                $data = array('gibbonFormGroupID' => $gibbonFormGroupID);
+                $sql = 'DELETE FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
@@ -62,8 +62,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
             }
 
 
-                $data = array('gibbonRollGroupID' => $gibbonRollGroupID);
-                $sql = 'DELETE FROM gibbonStudentEnrolment WHERE gibbonRollGroupID=:gibbonRollGroupID';
+                $data = array('gibbonFormGroupID' => $gibbonFormGroupID);
+                $sql = 'DELETE FROM gibbonStudentEnrolment WHERE gibbonFormGroupID=:gibbonFormGroupID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
 

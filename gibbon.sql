@@ -4200,7 +4200,7 @@ CREATE TABLE `gibbonRollGroup` (
   `gibbonPersonIDEA2` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `gibbonPersonIDEA3` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `gibbonSpaceID` int(5) UNSIGNED ZEROFILL DEFAULT NULL,
-  `gibbonRollGroupIDNext` int(5) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonFormGroupIDNext` int(5) UNSIGNED ZEROFILL DEFAULT NULL,
   `attendance` enum('Y','N') NOT NULL DEFAULT 'Y',
   `website` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

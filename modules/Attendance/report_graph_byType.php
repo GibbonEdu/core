@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
     $sort = !empty($_POST['sort'])? $_POST['sort'] : 'surname, preferredName';
 
     // Get the roll groups - revert to All if it's selected
-    $rollGroups = $_POST['gibbonRollGroupID'] ?? array('all');
+    $rollGroups = $_POST['gibbonFormGroupID'] ?? array('all');
     if (in_array('all', $rollGroups)) $rollGroups = array('all');
 
     require_once __DIR__ . '/src/AttendanceView.php';
@@ -106,10 +106,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
         $row->addSelect('reasons')->fromArray($reasonOptions)->selectMultiple()->selected($reasons);
 
     $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-    $sql = "SELECT gibbonRollGroupID as value, name FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY LENGTH(name), name";
+    $sql = "SELECT gibbonFormGroupID as value, name FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY LENGTH(name), name";
     $row = $form->addRow();
-        $row->addLabel('gibbonRollGroupID', __('Form Group'));
-        $row->addSelect('gibbonRollGroupID')->fromArray(array('all' => __('All')))->fromQuery($pdo, $sql, $data)->selectMultiple()->selected($rollGroups);
+        $row->addLabel('gibbonFormGroupID', __('Form Group'));
+        $row->addSelect('gibbonFormGroupID')->fromArray(array('all' => __('All')))->fromQuery($pdo, $sql, $data)->selectMultiple()->selected($rollGroups);
 
     $row = $form->addRow();
         $row->addFooter();
