@@ -35,12 +35,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
         header("Location: {$URL}");
     } else {
         //Proceed!
-        $foreignKey = $_POST['foreignKey'];
-        $foreignKeyID = $_POST['foreignKeyID'];
-        $dates = $_POST['dates'];
-        $timeStart = $_POST['timeStart'];
-        $timeEnd = $_POST['timeEnd'];
-        $repeat = $_POST['repeat'];
+        $foreignKey = $_POST['foreignKey'] ?? '';
+        $foreignKeyID = $_POST['foreignKeyID'] ?? '';
+        $dates = $_POST['dates'] ?? '';
+        $timeStart = $_POST['timeStart'] ?? '';
+        $timeEnd = $_POST['timeEnd'] ?? '';
+        $repeat = $_POST['repeat'] ?? '';
         $repeatDaily = null;
         $repeatWeekly = null;
         if ($repeat == 'Daily') {
@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
             $successCount = count($dates) - $failCount;
 
             //Unlock locked database tables
-            
+
                 $sql = 'UNLOCK TABLES';
                 $result = $connection2->query($sql);
 
