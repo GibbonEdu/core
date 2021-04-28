@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             $description = $_POST['description'] ?? '';
             $map = $_POST['map'] ?? '';
             $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
-            $gibbonYearGroupIDList = implode(',', $_POST['gibbonYearGroupIDList']) ?? '';
+            $gibbonYearGroupIDList = implode(',', $_POST['gibbonYearGroupIDList'] ?? []);
 
             if ($name == '' or $nameShort == '' or $gibbonSchoolYearID == '' or $map == '') {
                 $URL .= '&return=error3';
