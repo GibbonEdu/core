@@ -40,20 +40,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         $gibbonActivityID = $_GET['gibbonActivityID'];
     }
 
-    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
 
     $sql = "";
     if($highestAction == "Enter Activity Attendance") {
         $sql = "SELECT gibbonActivity.gibbonActivityID AS value, name, programStart  FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name, programStart";
     } elseif($highestAction == "Enter Activity Attendance_leader") {
-        $data["gibbonPersonID"] = $_SESSION[$guid]["gibbonPersonID"];
+        $data["gibbonPersonID"] = $session->get("gibbonPersonID");
         $sql = "SELECT gibbonActivity.gibbonActivityID AS value, name, programStart FROM gibbonActivityStaff JOIN gibbonActivity ON (gibbonActivityStaff.gibbonActivityID = gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND gibbonActivityStaff.gibbonPersonID=:gibbonPersonID AND (gibbonActivityStaff.role='Organiser' OR gibbonActivityStaff.role='Assistant' OR gibbonActivityStaff.role='Coach') ORDER BY name, programStart";
     }
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+    $form = Form::create('action', $session->get('absoluteURL').'/index.php','get');
     $form->setClass('noIntBorder w-full');
 
-    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/activities_attendance.php");
+    $form->addHiddenValue('q', "/modules/".$session->get('module')."/activities_attendance.php");
 
     $row = $form->addRow();
         $row->addLabel('gibbonActivityID', __('Activity'));
@@ -69,13 +69,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         return;
     }
 
-    
+
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonActivityID' => $gibbonActivityID);
         $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroupID, gibbonActivityStudent.status FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonActivityStudent.status='Accepted' AND gibbonActivityID=:gibbonActivityID ORDER BY gibbonActivityStudent.status, surname, preferredName";
         $studentResult = $connection2->prepare($sql);
         $studentResult->execute($data);
 
-    
+
         $data = array('gibbonActivityID' => $gibbonActivityID);
         $sql = "SELECT gibbonSchoolYearTermIDList, maxParticipants, programStart, programEnd, (SELECT COUNT(*) FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID AND gibbonActivityStudent.status='Waiting List' AND gibbonPerson.status='Full') AS waiting FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID";
         $activityResult = $connection2->prepare($sql);
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 
     $students = $studentResult->fetchAll();
 
-    
+
         $data = array('gibbonActivityID' => $gibbonActivityID);
         $sql = 'SELECT gibbonActivityAttendance.date, gibbonActivityAttendance.timestampTaken, gibbonActivityAttendance.attendance, gibbonPerson.preferredName, gibbonPerson.surname FROM gibbonActivityAttendance, gibbonPerson WHERE gibbonActivityAttendance.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonActivityAttendance.gibbonActivityID=:gibbonActivityID';
         $attendanceResult = $connection2->prepare($sql);
@@ -177,15 +177,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     } else {
         if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendanceExport.php')) {
             echo "<div class='linkTop'>";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/report_attendanceExport.php?gibbonActivityID='.$gibbonActivityID."'>".__('Export to Excel')."<img style='margin-left: 5px' title='".__('Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
+            echo "<a href='".$session->get('absoluteURL').'/modules/'.$session->get('module').'/report_attendanceExport.php?gibbonActivityID='.$gibbonActivityID."'>".__('Export to Excel')."<img style='margin-left: 5px' title='".__('Export to Excel')."' src='./themes/".$session->get('gibbonThemeName')."/img/download.png'/></a>";
             echo '</div>';
         }
 
-        $form = Form::create('attendance', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_attendanceProcess.php?gibbonActivityID='.$gibbonActivityID);
+        $form = Form::create('attendance', $session->get('absoluteURL').'/modules/'.$session->get('module').'/activities_attendanceProcess.php?gibbonActivityID='.$gibbonActivityID);
         $form->setClass('blank block max-w-full');
 
-        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-        $form->addHiddenValue('gibbonPersonID', $_SESSION[$guid]['gibbonPersonID']);
+        $form->addHiddenValue('address', $session->get('address'));
+        $form->addHiddenValue('gibbonPersonID', $session->get('gibbonPersonID'));
 
         $row = $form->addRow('doublescroll-wrapper')->setClass('block doublescroll-wrapper smallIntBorder w-full max-w-full')->addColumn();
 
@@ -246,7 +246,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
             $col = $row->addColumn()->addClass('w-48 h-8 absolute left-0 ml-px text-left');
 
             $col->addWebLink(Format::name('', $student['preferredName'], $student['surname'], 'Student', true))
-                ->setURl($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php')
+                ->setURl($session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php')
                 ->addParam('gibbonPersonID', $student['gibbonPersonID'])
                 ->setClass('')
                 ->prepend(($index+1).') ');

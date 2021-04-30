@@ -30,11 +30,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     //Proceed!
     $page->breadcrumbs
         ->add(__('Manage Activities'), 'activities_manage.php')
-        ->add(__('Add Activity'));    
+        ->add(__('Add Activity'));
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage_edit.php&gibbonActivityID='.$_GET['editID'].'&search='.$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Activities/activities_manage_edit.php&gibbonActivityID='.$_GET['editID'].'&search='.$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID'];
     }
     $page->return->setEditLink($editLink);
 

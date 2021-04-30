@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Printable Attendance Sheet'));
-    
+
     echo '<h2>';
     echo __('Choose Activity');
     echo '</h2>';
@@ -42,14 +42,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 
     $numberOfColumns = (isset($_GET['numberOfColumns']) && $_GET['numberOfColumns'] <= 20 ) ? $_GET['numberOfColumns'] : 20;
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+    $form = Form::create('action', $session->get('absoluteURL').'/index.php','get');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
     $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/activities_attendance_sheet.php");
 
-    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
     $sql = "SELECT gibbonActivityID AS value, name FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name, programStart";
     $row = $form->addRow();
         $row->addLabel('gibbonActivityID', __('Activity'));
@@ -71,8 +71,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         echo __('Report Data');
         echo '</h2>';
 
-        
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonActivityID' => $gibbonActivityID);
+
+            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonActivityID' => $gibbonActivityID);
             $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroupID, gibbonActivityStudent.status FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonActivityStudent.status='Accepted' AND gibbonActivityID=:gibbonActivityID ORDER BY gibbonActivityStudent.status, surname, preferredName";
             $result = $connection2->prepare($sql);
             $result->execute($data);
