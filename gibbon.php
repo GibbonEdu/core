@@ -48,8 +48,9 @@ $container->addServiceProvider(new Gibbon\Services\GoogleServiceProvider());
 
 // Globals for backwards compatibility
 $gibbon = $container->get('config');
-$gibbon->session = $container->get('session');
 $gibbon->locale = $container->get('locale');
+$gibbon->session = $container->get('session');
+$session = $container->get('session');
 $guid = $gibbon->getConfig('guid');
 $caching = $gibbon->getConfig('caching');
 $version = $gibbon->getConfig('version');

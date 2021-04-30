@@ -613,6 +613,7 @@ if (!$session->has('address')) {
             $globals = [
                 'guid'        => $guid,
                 'connection2' => $connection2,
+                'session'     => $session,
             ];
 
             $session->set('index_custom.php', $page->fetchFromFile('./index_custom.php', $globals));
@@ -658,6 +659,7 @@ if (!$session->has('address')) {
             'autoloader'  => $autoloader,
             'container'   => $container,
             'page'        => $page,
+            'session'     => $session,
         ];
 
         if (is_file('./'.$address)) {
