@@ -295,7 +295,7 @@ if (isset($_SESSION[$guid]["username"])) {
                 $takeAttendanceURL
             );
             $attendanceByFormGroupTable->setTitle(__('My Form Group'));
-            $attendanceByFormGroupTable->withData(new DataSet($attendanceByFormGroupTable));
+            $attendanceByFormGroupTable->withData(new DataSet($attendanceByFormGroup));
         }
     }
 
