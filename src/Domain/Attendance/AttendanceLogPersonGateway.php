@@ -129,7 +129,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
         return $this->runSelect($query);
     }
 
-    public function queryAttendanceCountsByType($criteria, $gibbonSchoolYearID, $rollGroups, $dateStart, $dateEnd, $countClassAsSchool)
+    public function queryAttendanceCountsByType($criteria, $gibbonSchoolYearID, $formGroups, $dateStart, $dateEnd, $countClassAsSchool)
     {
         $subSelect = $this
             ->newSelect()
@@ -167,11 +167,11 @@ class AttendanceLogPersonGateway extends QueryableGateway
             $query->where("gibbonAttendanceLogPerson.context <> 'Class'");
         }
 
-        if ($rollGroups != array('all')) {
+        if ($formGroups != array('all')) {
             $query
                 ->innerJoin('gibbonStudentEnrolment', 'gibbonAttendanceLogPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
                 ->where('FIND_IN_SET(gibbonStudentEnrolment.gibbonFormGroupID, :rollGroups)')
-                ->bindValue('rollGroups', implode(',', $rollGroups))
+                ->bindValue('rollGroups', implode(',', $formGroups))
                 ->where('gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID')
                 ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
         }

@@ -138,14 +138,14 @@ if (empty($accessToken) && isActionAccessible($guid, $connection2, '/modules/Rep
     // Rename the file to something human-readable before downloading
     if (!empty($archiveEntry['gibbonReportID'])) {
         $schoolYear = $container->get(SchoolYearGateway::class)->getByID($archiveEntry['gibbonSchoolYearID']);
-        $rollGroup = $container->get(RollGroupGateway::class)->getByID($archiveEntry['gibbonFormGroupID']);
+        $formGroup = $container->get(RollGroupGateway::class)->getByID($archiveEntry['gibbonFormGroupID']);
         $student = $container->get(UserGateway::class)->getByID($archiveEntry['gibbonPersonID']);
-        if (empty($schoolYear) || empty($rollGroup) || empty($student)) {
+        if (empty($schoolYear) || empty($formGroup) || empty($student)) {
             header("location:$returnPath&return=error1");
             exit;
         }
 
-        $filename = $schoolYear['name'].'-'.$rollGroup['nameShort'].'-'.$student['username'].'.pdf';
+        $filename = $schoolYear['name'].'-'.$formGroup['nameShort'].'-'.$student['username'].'.pdf';
     } else {
         $filename = basename($archiveEntry['filePath']);
     }

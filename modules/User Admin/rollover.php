@@ -121,14 +121,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                     $yearGroups[$rowSelect['gibbonYearGroupID']] =  htmlPrep($rowSelect['name']);
                 }
 
-                $rollGroups = array();
+                $formGroups = array();
                 
                     $dataSelect = array('gibbonSchoolYearID' => $nextYear);
                     $sqlSelect = 'SELECT gibbonFormGroupID, name FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
                     $resultSelect = $connection2->prepare($sqlSelect);
                     $resultSelect->execute($dataSelect);
                 while ($rowSelect = $resultSelect->fetch()) {
-                    $rollGroups[$rowSelect['gibbonFormGroupID']] =  htmlPrep($rowSelect['name']);
+                    $formGroups[$rowSelect['gibbonFormGroupID']] =  htmlPrep($rowSelect['name']);
                 }
 
                 $statuses = array(
@@ -214,7 +214,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                 $form->addRow()->addHeading(__('Enrol New Students (Status Expected)'));
                 $form->addRow()->addContent(__('Take students who are marked expected and enrol them. All parents of new students who are enrolled below will have their status set to "Full". If a student is not enrolled, they will be set to "Left".'));
 
-                if (count($yearGroups) < 1 or count($rollGroups) < 1) {
+                if (count($yearGroups) < 1 or count($formGroups) < 1) {
                     $form->addRow()->addAlert(__('Year groups or form groups are not properly set up, so you cannot proceed with this section.'), 'error');
                 } else {
                     try {
@@ -248,7 +248,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                 $column = $row->addColumn();
                                     $column->addSelect($count."-enrol-gibbonYearGroupID")->fromArray($yearGroups)->required()->setClass('shortWidth floatNone');
                                 $column = $row->addColumn();
-                                    $column->addSelect($count."-enrol-gibbonFormGroupID")->fromArray($rollGroups)->required()->setClass('shortWidth floatNone');
+                                    $column->addSelect($count."-enrol-gibbonFormGroupID")->fromArray($formGroups)->required()->setClass('shortWidth floatNone');
                         }
                         $form->addHiddenValue("enrol-count", $count);
                     }
@@ -258,7 +258,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                 $form->addRow()->addHeading(__('Enrol New Students (Status Full)'));
                 $form->addRow()->addContent(__('Take new students who are already set as full, but who were not enrolled last year, and enrol them. These students probably came through the Online Application form, and may already be enrolled in next year: if this is the case, their enrolment will be updated as per the information below. All parents of new students who are enrolled below will have their status set to "Full". If a student is not enrolled, they will be set to "Left"'));
 
-                if (count($yearGroups) < 1 or count($rollGroups) < 1) {
+                if (count($yearGroups) < 1 or count($formGroups) < 1) {
                     $form->addRow()->addAlert(__('Year groups or form groups are not properly set up, so you cannot proceed with this section.'), 'error');
                 } else {
                     $students = array();
@@ -316,7 +316,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                 $count++;
                                 //Check for enrolment in next year (caused by automated enrolment on application form accept)
                                 $yearGroupSelect = '';
-                                $rollGroupSelect = '';
+                                $formGroupSelect = '';
                                 try {
                                     $dataEnrolled = array('gibbonSchoolYearID' => $nextYear, 'gibbonPersonID' => $student[0]);
                                     $sqlEnrolled = 'SELECT * FROM gibbonStudentEnrolment WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID';
@@ -328,7 +328,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                 if ($resultEnrolled->rowCount() == 1) {
                                     $rowEnrolled = $resultEnrolled->fetch();
                                     $yearGroupSelect = $rowEnrolled['gibbonYearGroupID'];
-                                    $rollGroupSelect = $rowEnrolled['gibbonFormGroupID'];
+                                    $formGroupSelect = $rowEnrolled['gibbonFormGroupID'];
                                 }
 
                                 $form->addHiddenValue($count."-enrolFull-gibbonPersonID", $student[0]);
@@ -340,7 +340,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                     $column = $row->addColumn();
                                         $column->addSelect($count."-enrolFull-gibbonYearGroupID")->fromArray($yearGroups)->required()->setClass('shortWidth floatNone')->selected($yearGroupSelect);
                                     $column = $row->addColumn();
-                                        $column->addSelect($count."-enrolFull-gibbonFormGroupID")->fromArray($rollGroups)->required()->setClass('shortWidth floatNone')->selected($rollGroupSelect);
+                                        $column->addSelect($count."-enrolFull-gibbonFormGroupID")->fromArray($formGroups)->required()->setClass('shortWidth floatNone')->selected($formGroupSelect);
                             }
                             $form->addHiddenValue("enrolFull-count", $count);
                         }
@@ -353,7 +353,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                 $lastYearGroup = getLastYearGroupID($connection2);
 
-                if (count($yearGroups) < 1 or count($rollGroups) < 1) {
+                if (count($yearGroups) < 1 or count($formGroups) < 1) {
                     $form->addRow()->addAlert(__('Year groups or form groups are not properly set up, so you cannot proceed with this section.'), 'error');
                 } else {
                     try {
@@ -393,11 +393,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                 $form->addRow()->addAlert($e->getMessage(), 'error');
                             }
                             $enrolmentCheckYearGroup = null;
-                            $enrolmentCheckRollGroup = null;
+                            $enrolmentCheckFormGroup = null;
                             if ($resultEnrolmentCheck->rowCount() == 1) {
                                 $rowEnrolmentCheck = $resultEnrolmentCheck->fetch();
                                 $enrolmentCheckYearGroup = $rowEnrolmentCheck['gibbonYearGroupID'];
-                                $enrolmentCheckRollGroup = $rowEnrolmentCheck['gibbonFormGroupID'];
+                                $enrolmentCheckFormGroup = $rowEnrolmentCheck['gibbonFormGroupID'];
                             }
 
                             $form->addHiddenValue($count."-reenrol-gibbonPersonID", $rowReenrol['gibbonPersonID']);
@@ -409,12 +409,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                 //If no enrolment, try and work out next year and roll group
                                 if (is_null($enrolmentCheckYearGroup)) {
                                     $enrolmentCheckYearGroup=getNextYearGroupID($rowReenrol['gibbonYearGroupID'], $connection2);
-                                    $enrolmentCheckRollGroup=$rowReenrol['gibbonFormGroupIDNext'];
+                                    $enrolmentCheckFormGroup=$rowReenrol['gibbonFormGroupIDNext'];
                                 }
                                 $column = $row->addColumn();
                                     $column->addSelect($count."-reenrol-gibbonYearGroupID")->fromArray($yearGroups)->required()->setClass('shortWidth floatNone')->selected($enrolmentCheckYearGroup);
                                 $column = $row->addColumn();
-                                        $column->addSelect($count."-reenrol-gibbonFormGroupID")->fromArray($rollGroups)->required()->setClass('shortWidth floatNone')->selected($enrolmentCheckRollGroup);
+                                        $column->addSelect($count."-reenrol-gibbonFormGroupID")->fromArray($formGroups)->required()->setClass('shortWidth floatNone')->selected($enrolmentCheckFormGroup);
                         }
                         $form->addHiddenValue("reenrol-count", $count);
                     }

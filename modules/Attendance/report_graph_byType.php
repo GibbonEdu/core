@@ -57,8 +57,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
     $sort = !empty($_POST['sort'])? $_POST['sort'] : 'surname, preferredName';
 
     // Get the roll groups - revert to All if it's selected
-    $rollGroups = $_POST['gibbonFormGroupID'] ?? array('all');
-    if (in_array('all', $rollGroups)) $rollGroups = array('all');
+    $formGroups = $_POST['gibbonFormGroupID'] ?? array('all');
+    if (in_array('all', $formGroups)) $formGroups = array('all');
 
     require_once __DIR__ . '/src/AttendanceView.php';
     $attendance = new AttendanceView($gibbon, $pdo);
@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
     $sql = "SELECT gibbonFormGroupID as value, name FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY LENGTH(name), name";
     $row = $form->addRow();
         $row->addLabel('gibbonFormGroupID', __('Form Group'));
-        $row->addSelect('gibbonFormGroupID')->fromArray(array('all' => __('All')))->fromQuery($pdo, $sql, $data)->selectMultiple()->selected($rollGroups);
+        $row->addSelect('gibbonFormGroupID')->fromArray(array('all' => __('All')))->fromQuery($pdo, $sql, $data)->selectMultiple()->selected($formGroups);
 
     $row = $form->addRow();
         $row->addFooter();
@@ -130,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
         $rows = $attendanceLogGateway->queryAttendanceCountsByType(
             $attendanceLogGateway->newQueryCriteria(),
             $_SESSION[$guid]['gibbonSchoolYearID'],
-            $rollGroups,
+            $formGroups,
             $dateStart,
             $dateEnd,
             $countClassAsSchool

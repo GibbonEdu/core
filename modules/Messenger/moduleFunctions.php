@@ -244,14 +244,14 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
     if ($staff) {
         $sqlWhere = '(';
         
-            $dataRollGroup = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonIDTutor' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor3' => $_SESSION[$guid]['gibbonPersonID']);
-            $sqlRollGroup = 'SELECT * FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3)';
-            $resultRollGroup = $connection2->prepare($sqlRollGroup);
-            $resultRollGroup->execute($dataRollGroup);
-        if ($resultRollGroup->rowCount() > 0) {
-            while ($rowRollGroup = $resultRollGroup->fetch()) {
-                $dataPosts['roll'.$rowRollGroup['gibbonFormGroupID']] = $rowRollGroup['gibbonFormGroupID'];
-                $sqlWhere .= 'id=:roll'.$rowRollGroup['gibbonFormGroupID'].' OR ';
+            $dataFormGroup = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonIDTutor' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor3' => $_SESSION[$guid]['gibbonPersonID']);
+            $sqlFormGroup = 'SELECT * FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3)';
+            $resultFormGroup = $connection2->prepare($sqlFormGroup);
+            $resultFormGroup->execute($dataFormGroup);
+        if ($resultFormGroup->rowCount() > 0) {
+            while ($rowFormGroup = $resultFormGroup->fetch()) {
+                $dataPosts['roll'.$rowFormGroup['gibbonFormGroupID']] = $rowFormGroup['gibbonFormGroupID'];
+                $sqlWhere .= 'id=:roll'.$rowFormGroup['gibbonFormGroupID'].' OR ';
             }
             $sqlWhere = substr($sqlWhere, 0, -3).')';
             if ($sqlWhere != '(') {

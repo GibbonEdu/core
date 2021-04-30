@@ -35,14 +35,14 @@ use Gibbon\Domain\RollGroups\RollGroupGateway;
 class CoverageTodayView
 {
     protected $staffCoverageGateway;
-    protected $rollGroupGateway;
+    protected $formGroupGateway;
     protected $userGateway;
     protected $gibbonStaffCoverageID;
 
-    public function __construct(StaffCoverageGateway $staffCoverageGateway, RollGroupGateway $rollGroupGateway, UserGateway $userGateway)
+    public function __construct(StaffCoverageGateway $staffCoverageGateway, RollGroupGateway $formGroupGateway, UserGateway $userGateway)
     {
         $this->staffCoverageGateway = $staffCoverageGateway;
-        $this->rollGroupGateway = $rollGroupGateway;
+        $this->rollGroupGateway = $formGroupGateway;
         $this->userGateway = $userGateway;
     }
 
@@ -83,9 +83,9 @@ class CoverageTodayView
         }
 
         // Roll Group Info
-        $rollGroups = $this->rollGroupGateway->selectRollGroupsByTutor($coverage['gibbonPersonID'])->toDataSet();
+        $formGroups = $this->rollGroupGateway->selectRollGroupsByTutor($coverage['gibbonPersonID'])->toDataSet();
 
-        if (count($rollGroups) > 0) {
+        if (count($formGroups) > 0) {
             $table = DataTable::create('todaysCoverageTimetable');
 
             $table->addColumn('name', __('Form Group'))->context('primary');
@@ -104,7 +104,7 @@ class CoverageTodayView
                         ->setURL('/modules/Form Groups/rollGroups_details.php');
                 });
 
-            $page->write($table->render($rollGroups).'<br/>');
+            $page->write($table->render($formGroups).'<br/>');
         }
 
         // Timetable Info

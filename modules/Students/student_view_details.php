@@ -624,11 +624,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     } elseif ($subpage == 'Personal') {
                         $schoolYearGateway = $container->get(SchoolYearGateway::class);
                         $yearGroupGateway = $container->get(YearGroupGateway::class);
-                        $rollGroupGateway = $container->get(RollGroupGateway::class);
+                        $formGroupGateway = $container->get(RollGroupGateway::class);
                         $studentGateway = $container->get(StudentGateway::class);
 
                         $student = $studentGateway->selectActiveStudentByPerson($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, false)->fetch();
-                        $tutors = $rollGroupGateway->selectTutorsByRollGroup($student['gibbonFormGroupID'] ?? '')->fetchAll();
+                        $tutors = $formGroupGateway->selectTutorsByRollGroup($student['gibbonFormGroupID'] ?? '')->fetchAll();
                         $yearGroup = $yearGroupGateway->getByID($student['gibbonYearGroupID'] ?? '', ['name', 'gibbonPersonIDHOY']);
                         $headOfYear = $container->get(UserGateway::class)->getByID($yearGroup['gibbonPersonIDHOY'] ?? '', ['title', 'surname', 'preferredName', 'gibbonPersonID']);
                         $house = $container->get(HouseGateway::class)->getByID($row['gibbonHouseID'] ?? '', ['name']);

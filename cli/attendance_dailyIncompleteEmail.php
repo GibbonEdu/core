@@ -51,16 +51,16 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
         $userReport = array();
         $adminReport = array( 'rollGroup' => array(), 'classes' => array() );
 
-        $enabledByRollGroup = getSettingByScope($connection2, 'Attendance', 'attendanceCLINotifyByFormGroup');
+        $enabledByFormGroup = getSettingByScope($connection2, 'Attendance', 'attendanceCLINotifyByFormGroup');
         $additionalUsersList = getSettingByScope($connection2, 'Attendance', 'attendanceCLIAdditionalUsers');
 
-        if ($enabledByRollGroup != 'Y') {
+        if ($enabledByFormGroup != 'Y') {
             die('Attendance CLI cancelled: Notifications not enabled in Attendance Settings.');
         }
 
         //Produce array of attendance data ------------------------------------------------------------------------------------------------------
 
-        if ($enabledByRollGroup == 'Y') {
+        if ($enabledByFormGroup == 'Y') {
             try {
                 $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
 
@@ -104,20 +104,20 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                     // Check for a current log
                     if (isset($log[$row['gibbonFormGroupID']]) == false) {
 
-                        $rollGroupInfo = array( 'gibbonFormGroupID' => $row['gibbonFormGroupID'], 'name' => $row['name'] );
+                        $formGroupInfo = array( 'gibbonFormGroupID' => $row['gibbonFormGroupID'], 'name' => $row['name'] );
 
                         // Compile info for Admin report
                         $adminReport['rollGroup'][] = '<b>'.$row['name'] .'</b> - '. $row['preferredName'].' '.$row['surname'];
 
                         // Compile info for User reports
                         if ($row['gibbonPersonIDTutor'] != '') {
-                            $userReport[ $row['gibbonPersonIDTutor'] ]['rollGroup'][] = $rollGroupInfo;
+                            $userReport[ $row['gibbonPersonIDTutor'] ]['rollGroup'][] = $formGroupInfo;
                         }
                         if ($row['gibbonPersonIDTutor2'] != '') {
-                            $userReport[ $row['gibbonPersonIDTutor2'] ]['rollGroup'][] = $rollGroupInfo;
+                            $userReport[ $row['gibbonPersonIDTutor2'] ]['rollGroup'][] = $formGroupInfo;
                         }
                         if ($row['gibbonPersonIDTutor3'] != '') {
-                            $userReport[ $row['gibbonPersonIDTutor3'] ]['rollGroup'][] = $rollGroupInfo;
+                            $userReport[ $row['gibbonPersonIDTutor3'] ]['rollGroup'][] = $formGroupInfo;
                         }
                     }
                 }
@@ -147,13 +147,13 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
 
                 $notificationText = __('You have not taken attendance yet today. Please do so as soon as possible.');
 
-                if ($enabledByRollGroup == 'Y') {
+                if ($enabledByFormGroup == 'Y') {
                     // Output the roll groups the particular user is a part of
                     if ( isset($items['rollGroup']) && count($items['rollGroup']) > 0) {
                         $notificationText .= '<br/><br/>';
                         $notificationText .= '<b>'.__('Form Group').':</b><br/>';
-                        foreach ($items['rollGroup'] as $rollGroup) {
-                            $notificationText .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $rollGroup['name'] .'<br/>';
+                        foreach ($items['rollGroup'] as $formGroup) {
+                            $notificationText .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $formGroup['name'] .'<br/>';
                         }
 
                     }

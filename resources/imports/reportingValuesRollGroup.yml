@@ -1,5 +1,5 @@
 details:
-    type: reportingValuesRollGroup
+    type: reportingValuesFormGroup
     category: Reports
     name: Reporting Values by Roll Group
     table: gibbonReportingValue

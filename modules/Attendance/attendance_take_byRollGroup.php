@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
         $gibbonFormGroupID = '';
         if (isset($_GET['gibbonFormGroupID']) == false) {
-            
+
                 $data = array('gibbonPersonIDTutor1' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor3' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                 $sql = "SELECT gibbonFormGroup.*, firstDay, lastDay FROM gibbonFormGroup JOIN gibbonSchoolYear ON (gibbonFormGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor1 OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3) AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID";
                 $result = $connection2->prepare($sql);
@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     $defaultAttendanceType = getSettingByScope($connection2, 'Attendance', 'defaultFormGroupAttendanceType');
 
                     //Check roll group
-                    
+
                         $data = array('gibbonFormGroupID' => $gibbonFormGroupID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                         $sql = 'SELECT gibbonFormGroup.*, firstDay, lastDay FROM gibbonFormGroup JOIN gibbonSchoolYear ON (gibbonFormGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonFormGroupID=:gibbonFormGroupID AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID';
                         $result = $connection2->prepare($sql);
@@ -113,16 +113,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         return;
                     }
 
-                    $rollGroup = $result->fetch();
+                    $formGroup = $result->fetch();
 
-                    if ($rollGroup['attendance'] == 'N') {
+                    if ($formGroup['attendance'] == 'N') {
                         print "<div class='error'>" ;
                             print __("Attendance taking has been disabled for this form group.") ;
                         print "</div>" ;
                     } else {
 
                         //Show attendance log for the current day
-                        
+
                             $dataLog = array('gibbonFormGroupID' => $gibbonFormGroupID, 'date' => $currentDate.'%');
                             $sqlLog = 'SELECT * FROM gibbonAttendanceLogFormGroup, gibbonPerson WHERE gibbonAttendanceLogFormGroup.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonFormGroupID=:gibbonFormGroupID AND date LIKE :date ORDER BY timestampTaken';
                             $resultLog = $connection2->prepare($sqlLog);
@@ -144,13 +144,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         }
 
                         //Show roll group grid
-                        
-                            $dataRollGroup = array('gibbonFormGroupID' => $gibbonFormGroupID, 'date' => $currentDate);
-                            $sqlRollGroup = "SELECT gibbonPerson.image_240, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.gibbonPersonID FROM gibbonStudentEnrolment INNER JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonFormGroupID=:gibbonFormGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date) ORDER BY rollOrder, surname, preferredName";
-                            $resultRollGroup = $connection2->prepare($sqlRollGroup);
-                            $resultRollGroup->execute($dataRollGroup);
 
-                        if ($resultRollGroup->rowCount() < 1) {
+                            $dataFormGroup = array('gibbonFormGroupID' => $gibbonFormGroupID, 'date' => $currentDate);
+                            $sqlFormGroup = "SELECT gibbonPerson.image_240, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.gibbonPersonID FROM gibbonStudentEnrolment INNER JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonFormGroupID=:gibbonFormGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date) ORDER BY rollOrder, surname, preferredName";
+                            $resultFormGroup = $connection2->prepare($sqlFormGroup);
+                            $resultFormGroup->execute($dataFormGroup);
+
+                        if ($resultFormGroup->rowCount() < 1) {
                             echo "<div class='error'>";
                             echo __('There are no records to display.');
                             echo '</div>';
@@ -160,7 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                             $columns = 4;
 
                             $defaults = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '', 'prefill' => 'Y', 'gibbonFormGroupID' => 0);
-                            $students = $resultRollGroup->fetchAll();
+                            $students = $resultFormGroup->fetchAll();
 
                             // Build the attendance log data per student
                             foreach ($students as $key => $student) {
@@ -194,7 +194,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                 }
 
                                 $students[$key]['absenceCount'] = '';
-                                $absenceCount = getAbsenceCount($guid, $student['gibbonPersonID'], $connection2, $rollGroup['firstDay'], $rollGroup['lastDay']);
+                                $absenceCount = getAbsenceCount($guid, $student['gibbonPersonID'], $connection2, $formGroup['firstDay'], $formGroup['lastDay']);
                                 if ($absenceCount !== false) {
                                     $absenceText = ($absenceCount == 1)? __('%1$s Day Absent') : __('%1$s Days Absent');
                                     $students[$key]['absenceCount'] = sprintf($absenceText, $absenceCount);
@@ -207,7 +207,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                 $students[$key]['log'] = $log;
                             }
 
-                            $form = Form::create('attendanceByRollGroup', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']. '/attendance_take_byRollGroupProcess.php');
+                            $form = Form::create('attendanceByFormGroup', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']. '/attendance_take_byRollGroupProcess.php');
                             $form->setAutocomplete('off');
 
                             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
@@ -215,7 +215,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                             $form->addHiddenValue('currentDate', $currentDate);
                             $form->addHiddenValue('count', count($students));
 
-                            $form->addRow()->addHeading(__('Take Attendance') . ': '. htmlPrep($rollGroup['name']));
+                            $form->addRow()->addHeading(__('Take Attendance') . ': '. htmlPrep($formGroup['name']));
 
                             $grid = $form->addRow()->addGrid('attendance')->setBreakpoints('w-1/2 sm:w-1/4 md:w-1/5 lg:w-1/4');
 
