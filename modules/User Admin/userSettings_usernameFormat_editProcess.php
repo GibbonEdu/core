@@ -27,10 +27,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $format = isset($_POST['format'])? $_POST['format'] : '';
-    $gibbonRoleIDList = isset($_POST['gibbonRoleIDList'])? $_POST['gibbonRoleIDList'] : '';
-    $isDefault = isset($_POST['isDefault'])? $_POST['isDefault'] : '';
-    $isNumeric = isset($_POST['isNumeric'])? $_POST['isNumeric'] : '';
+    $format = $_POST['format'] ?? '';
+    $gibbonRoleIDList = $_POST['gibbonRoleIDList'] ?? '';
+    $isDefault = $_POST['isDefault'] ?? '';
+    $isNumeric = $_POST['isNumeric'] ?? '';
     $numericValue = isset($_POST['numericValue'])? $_POST['numericValue'] : 1;
     $numericSize = isset($_POST['numericSize'])? $_POST['numericSize'] : 4;
     $numericIncrement = isset($_POST['numericIncrement'])? $_POST['numericIncrement'] : 1;

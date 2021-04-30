@@ -26,16 +26,16 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $ethnicity = $_POST['ethnicity'];
-    $religions = $_POST['religions'];
-    $nationality = $_POST['nationality'];
-    $residencyStatus = $_POST['residencyStatus'];
-    $departureReasons = $_POST['departureReasons'];
-    $privacy = $_POST['privacy'];
-    $privacyBlurb = (isset($_POST['privacyBlurb'])) ? $_POST['privacyBlurb'] : null;
-    $privacyOptions = (isset($_POST['privacyOptions'])) ? $_POST['privacyOptions'] : null;
+    $ethnicity = $_POST['ethnicity'] ?? '';
+    $religions = $_POST['religions'] ?? '';
+    $nationality = $_POST['nationality'] ?? '';
+    $residencyStatus = $_POST['residencyStatus'] ?? '';
+    $departureReasons = $_POST['departureReasons'] ?? '';
+    $privacy = $_POST['privacy'] ?? '';
+    $privacyBlurb = $_POST['privacyBlurb'] ?? null;
+    $privacyOptions = $_POST['privacyOptions'] ?? null;
     $uniqueEmailAddress = (isset($_POST['uniqueEmailAddress'])) ? $_POST['uniqueEmailAddress'] : 'N';
-    $personalBackground = $_POST['personalBackground'];
+    $personalBackground = $_POST['personalBackground'] ?? '';
 
     //Write to database
     $fail = false;

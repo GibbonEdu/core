@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonPersonID = $_GET['gibbonPersonID'];
+$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/user_manage_password.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search'];
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_password.php') == false) {
@@ -47,9 +47,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
-            $passwordNew = $_POST['passwordNew'];
-            $passwordConfirm = $_POST['passwordConfirm'];
-            $passwordForceReset = $_POST['passwordForceReset'];
+            $passwordNew = $_POST['passwordNew'] ?? '';
+            $passwordConfirm = $_POST['passwordConfirm'] ?? '';
+            $passwordForceReset = $_POST['passwordForceReset'] ?? '';
 
             //Validate Inputs
             if ($passwordNew == '' or $passwordConfirm == '') {

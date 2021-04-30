@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonModuleID = isset($_POST['gibbonModuleID'])? $_POST['gibbonModuleID'] : '';
-$gibbonRoleID = isset($_POST['gibbonRoleID'])? $_POST['gibbonRoleID'] : '';
+$gibbonModuleID = $_POST['gibbonModuleID'] ?? '';
+$gibbonRoleID = $_POST['gibbonRoleID'] ?? '';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/permission_manage.php&gibbonModuleID='.$gibbonModuleID.'&gibbonRoleID='.$gibbonRoleID;
 
@@ -29,8 +29,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
     header("Location: {$URL}");
     exit;
 } else {
-    $permissions = isset($_POST['permission'])? $_POST['permission'] : array();
-    $totalCount = isset($_POST['totalCount'])? $_POST['totalCount'] : array();
+    $permissions = $_POST['permission'] ?? array();
+    $totalCount = $_POST['totalCount'] ?? array();
     $maxInputVars = ini_get('max_input_vars');
 
     if (empty($totalCount)) {
@@ -59,9 +59,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
                 $where[] = "gibbonPermission.gibbonRoleID=:gibbonRoleID";
             }
 
-            $sql = "DELETE gibbonPermission 
-                    FROM gibbonPermission 
-                    JOIN gibbonAction ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) 
+            $sql = "DELETE gibbonPermission
+                    FROM gibbonPermission
+                    JOIN gibbonAction ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
                     WHERE ".implode(' AND ', $where);
         }
 

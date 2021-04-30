@@ -27,14 +27,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_add
 } else {
     //Proceed!
     //Validate Inputs
-    $category = $_POST['category'];
-    $name = $_POST['name'];
-    $nameShort = $_POST['nameShort'];
-    $description = $_POST['description'];
+    $category = $_POST['category'] ?? '';
+    $name = $_POST['name'] ?? '';
+    $nameShort = $_POST['nameShort'] ?? '';
+    $description = $_POST['description'] ?? '';
     $canLoginRole = isset($_POST['canLoginRole'])? $_POST['canLoginRole'] : 'Y';
     $futureYearsLogin = isset($_POST['futureYearsLogin'])? $_POST['futureYearsLogin'] : 'N';
     $pastYearsLogin = isset($_POST['pastYearsLogin'])? $_POST['pastYearsLogin'] : 'N';
-    $restriction = $_POST['restriction'];
+    $restriction = $_POST['restriction'] ?? '';
 
     if (empty($category) or empty($name) or empty($nameShort) or empty($description) or empty($futureYearsLogin) or empty($pastYearsLogin) or empty($restriction) ) {
         $URL .= '&return=error1';

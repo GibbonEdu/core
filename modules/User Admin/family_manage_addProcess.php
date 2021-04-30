@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$search = $_GET['search'];
+$search = $_GET['search'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/family_manage_add.php&search=$search";
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_add.php') == false) {
@@ -27,14 +27,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_a
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $name = $_POST['name'];
-    $status = $_POST['status'];
-    $languageHomePrimary = $_POST['languageHomePrimary'];
-    $languageHomeSecondary = $_POST['languageHomeSecondary'];
-    $nameAddress = $_POST['nameAddress'];
-    $homeAddress = $_POST['homeAddress'];
-    $homeAddressDistrict = $_POST['homeAddressDistrict'];
-    $homeAddressCountry = $_POST['homeAddressCountry'];
+    $name = $_POST['name'] ?? '';
+    $status = $_POST['status'] ?? '';
+    $languageHomePrimary = $_POST['languageHomePrimary'] ?? '';
+    $languageHomeSecondary = $_POST['languageHomeSecondary'] ?? '';
+    $nameAddress = $_POST['nameAddress'] ?? '';
+    $homeAddress = $_POST['homeAddress'] ?? '';
+    $homeAddressDistrict = $_POST['homeAddressDistrict'] ?? '';
+    $homeAddressCountry = $_POST['homeAddressCountry'] ?? '';
 
     //Validate Inputs
     if ($name == '' or $nameAddress == '' or $status == '') {

@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonFamilyID = $_GET['gibbonFamilyID'];
-$search = $_GET['search'];
+$gibbonFamilyID = $_GET['gibbonFamilyID'] ?? '';
+$search = $_GET['search'] ?? '';
 
 if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
 } else {
@@ -31,9 +31,9 @@ if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
         header("Location: {$URL}");
     } else {
         //Validate Inputs
-        $relationships = $_POST['relationships'];
-        $gibbonPersonID1 = $_POST['gibbonPersonID1'];
-        $gibbonPersonID2 = $_POST['gibbonPersonID2'];
+        $relationships = $_POST['relationships'] ?? '';
+        $gibbonPersonID1 = $_POST['gibbonPersonID1'] ?? '';
+        $gibbonPersonID2 = $_POST['gibbonPersonID2'] ?? '';
 
         $partialFail = false;
 

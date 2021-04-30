@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonStudentNoteCategoryID = $_GET['gibbonStudentNoteCategoryID'];
+$gibbonStudentNoteCategoryID = $_GET['gibbonStudentNoteCategoryID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/studentsSettings_noteCategory_delete.php&gibbonStudentNoteCategoryID='.$gibbonStudentNoteCategoryID;
 $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/studentsSettings.php';
 

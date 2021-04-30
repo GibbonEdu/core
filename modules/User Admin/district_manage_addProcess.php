@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/district_manage
 } else {
     //Proceed!
     //Validate Inputs
-    $name = $_POST['name'];
+    $name = $_POST['name'] ?? '';
 
     if ($name == '') {
         $URL .= '&return=error1';
