@@ -505,7 +505,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                     }
                 }
                 $gradesOutput .= '</tr>';
-                if (strlen($rowEntry['comment']) > 50) {
+                if ($rowEntry['commentOn'] == 'Y' && strlen($rowEntry['comment']) > 50) {
                     $gradesOutput .= "<tr class='comment-$entryCount-$gibbonPersonID' id='comment-$entryCount-$gibbonPersonID'>";
                     $gradesOutput .= '<td colspan=6>';
                     $gradesOutput .= nl2br($rowEntry['comment']);
