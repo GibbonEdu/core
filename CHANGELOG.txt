@@ -80,6 +80,7 @@ v22.0.00
         Attendance: fixed non-prefillable logic for Take Attendance by Roll Group
         Attendance: fixed student attendance history when first weekday is Saturday
         Formal Assessment: fixed courses with multiple year groups causing duplicate Internal Assessment columns
+        Markbook: fixed visual error in markbook comment expandable row
         Planner: fixed teachers not showing up in attendance with timetable exceptions in multiple classes on the same day
         Planner: fixed issue where sidebar calendar showed the wrong dates
         Planner: fixed suggested date when adding a new lesson plan to exclude school closures
