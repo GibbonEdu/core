@@ -892,6 +892,5 @@ UPDATE gibbonAction SET URLList='report_workSummary_byFormGroup.php', entryURL='
 UPDATE gibbonAction SET URLList='report_classEnrolment_byFormGroup.php', entryURL='report_classEnrolment_byFormGroup.php' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable Admin') AND name='Class Enrolment by Form Group';end
 UPDATE gibbonAction SET URLList='attendance_take_byFormGroup.php', entryURL='attendance_take_byFormGroup.php' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Attendance') AND name LIKE 'Attendance by Form Group_%';end
 UPDATE gibbonAction SET URLList='report_formGroupsNotRegistered_byDate.php,report_formGroupsNotRegistered_byDate_print.php', entryURL='report_formGroupsNotRegistered_byDate.php' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Attendance') AND name='Form Groups Not Registered';end
-
 UPDATE gibbonAction SET URLList='formGroup_manage.php,formGroup_manage_edit.php,formGroup_manage_add.php,formGroup_manage_delete.php', entryURL='formGroup_manage.php' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='School Admin') AND name='Manage Form Groups';end
 ";
