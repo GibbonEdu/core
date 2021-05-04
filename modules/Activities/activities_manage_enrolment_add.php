@@ -33,8 +33,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $highestAction = getHighestGroupedAction($guid, '/modules/Activities/activities_manage_enrolment.php', $connection2);
     if ($highestAction == 'My Activities_viewEditEnrolment') {
 
-        
-            $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonActivityID' => $gibbonActivityID);
+
+            $data = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonActivityID' => $gibbonActivityID);
             $sql = "SELECT gibbonActivity.*, NULL as status, gibbonActivityStaff.role FROM gibbonActivity JOIN gibbonActivityStaff ON (gibbonActivity.gibbonActivityID=gibbonActivityStaff.gibbonActivityID) WHERE gibbonActivity.gibbonActivityID=:gibbonActivityID AND gibbonActivityStaff.gibbonPersonID=:gibbonPersonID AND gibbonActivityStaff.role='Organiser' AND gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name";
             $result = $connection2->prepare($sql);
             $result->execute($data);
@@ -47,20 +47,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             return;
         }
     }
-    
+
     $urlParams = ['gibbonActivityID' => $_GET['gibbonActivityID'], 'search' => $_GET['search'], 'gibbonSchoolYearTermID' => $_GET['gibbonSchoolYearTermID']];
-    
+
     $page->breadcrumbs
         ->add(__('Manage Activities'), 'activities_manage.php')
         ->add(__('Activity Enrolment'), 'activities_manage_enrolment.php',  $urlParams)
-        ->add(__('Add Student'));   
+        ->add(__('Add Student'));
 
     $gibbonActivityID = $_GET['gibbonActivityID'];
 
     if ($gibbonActivityID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonActivityID' => $gibbonActivityID);
             $sql = 'SELECT * FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID';
             $result = $connection2->prepare($sql);
@@ -75,13 +75,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
             if ($_GET['search'] != '' || $_GET['gibbonSchoolYearTermID'] != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage_enrolment.php&search='.$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']."&gibbonActivityID=$gibbonActivityID'>".__('Back').'</a>';
+                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Activities/activities_manage_enrolment.php&search='.$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']."&gibbonActivityID=$gibbonActivityID'>".__('Back').'</a>';
                 echo '</div>';
 			}
-			
-			$form = Form::create('activityEnrolment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/activities_manage_enrolment_addProcess.php?gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']);
-			
-			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+			$form = Form::create('activityEnrolment', $session->get('absoluteURL').'/modules/'.$session->get('module')."/activities_manage_enrolment_addProcess.php?gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']);
+
+			$form->addHiddenValue('address', $session->get('address'));
 
             $row = $form->addRow();
                 $row->addLabel('nameLabel', __('Name'));
@@ -96,29 +96,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 $row->addLabel('programDatesLabel', __('Program Dates'));
                 $row->addTextField('programDates')->readOnly()->setValue(dateConvertBack($guid, $values['programStart']).'-'.dateConvertBack($guid, $values['programEnd']));
             } else {
-                $schoolTerms = getTerms($connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
+                $schoolTerms = getTerms($connection2, $session->get('gibbonSchoolYearID'));
                 $termList = array_filter(array_map(function ($item) use ($schoolTerms) {
                     $index = array_search($item, $schoolTerms);
                     return ($index !== false && isset($schoolTerms[$index+1]))? $schoolTerms[$index+1] : '';
                 }, explode(',', $values['gibbonSchoolYearTermIDList'])));
                 $termList = (!empty($termList))? implode(', ', $termList) : '-';
-                                            
+
                 $row = $form->addRow();
                 $row->addLabel('termsLabel', __('Terms'));
                 $row->addTextField('terms')->readOnly()->setValue($termList);
 			}
 
 			$students = array();
-			$data = array('gibbonYearGroupIDList' => $values['gibbonYearGroupIDList'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date' => date('Y-m-d'));
-			$sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS rollGroupName 
+			$data = array('gibbonYearGroupIDList' => $values['gibbonYearGroupIDList'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'date' => date('Y-m-d'));
+			$sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS rollGroupName
 					FROM gibbonPerson
-					JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) 
+					JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
 					JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
 					JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
 					WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
 					AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList)
-					AND gibbonPerson.status='FULL' 
-					AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date) 
+					AND gibbonPerson.status='FULL'
+					AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date)
 					ORDER BY rollGroupName, gibbonPerson.surname, gibbonPerson.preferredName";
 			$result = $pdo->executeQuery($data, $sql);
 
@@ -142,7 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 			$row = $form->addRow();
                 $row->addLabel('Members[]', __('Students'));
 				$row->addSelect('Members[]')->fromArray($students)->selectMultiple()->required();
-				
+
 			$statuses = array('Accepted' => __('Accepted'));
 			$enrolment = getSettingByScope($connection2, 'Activities', 'enrolmentType');
 			if ($enrolment == 'Competitive') {
@@ -154,11 +154,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 			$row = $form->addRow();
                 $row->addLabel('status', __('Status'));
                 $row->addSelect('status')->fromArray($statuses)->required();
-			
+
 			$row = $form->addRow();
                 $row->addFooter();
 				$row->addSubmit();
-				
+
 			echo $form->getOutput();
         }
     }

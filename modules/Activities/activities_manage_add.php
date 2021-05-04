@@ -40,16 +40,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
     if ($_GET['search'] != '' || $_GET['gibbonSchoolYearTermID'] != '') {
         echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage.php&search='.$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']."'>".__('Back to Search Results').'</a>';
+        echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Activities/activities_manage.php&search='.$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']."'>".__('Back to Search Results').'</a>';
         echo '</div>';
 	}
 
 	$search = $_GET['search'] ?? null;
 
-	$form = Form::create('activity', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_manage_addProcess.php?search='.$search.'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID']);
+	$form = Form::create('activity', $session->get('absoluteURL').'/modules/'.$session->get('module').'/activities_manage_addProcess.php?search='.$search.'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID']);
 	$form->setFactory(DatabaseFormFactory::create($pdo));
 
-	$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+	$form->addHiddenValue('address', $session->get('address'));
 
 	$form->addRow()->addHeading(__('Basic Information'));
 
@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
 	$row = $form->addRow();
         $row->addLabel('provider', __('Provider'));
-        $row->addSelect('provider')->required()->fromArray(array('School' => $_SESSION[$guid]['organisationNameShort'], 'External' => __('External')));
+        $row->addSelect('provider')->required()->fromArray(array('School' => $session->get('organisationNameShort'), 'External' => __('External')));
 
 	$activityTypes = getSettingByScope($connection2, 'Activities', 'activityTypes');
 	if (!empty($activityTypes)) {
@@ -81,11 +81,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 	if ($dateType != 'Date') {
 		$row = $form->addRow();
             $row->addLabel('gibbonSchoolYearTermIDList', __('Terms'))->description(__('Terms in which the activity will run.'));
-            $row->addCheckboxSchoolYearTerm('gibbonSchoolYearTermIDList', $_SESSION[$guid]['gibbonSchoolYearID'])->checkAll();
+            $row->addCheckboxSchoolYearTerm('gibbonSchoolYearTermIDList', $session->get('gibbonSchoolYearID'))->checkAll();
 	} else {
 		$listingStart = $listingEnd = $programStart = $programEnd = new DateTime();
 
-		$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d'));
+		$data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'today' => date('Y-m-d'));
 		$sql = "SELECT * FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND lastDay>=:today ORDER BY sequenceNumber";
 		$result = $pdo->executeQuery($data, $sql);
 		if ($result->rowCount() > 0) {
@@ -102,19 +102,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
 		$row = $form->addRow();
         	$row->addLabel('listingStart', __('Listing Start Date'))->description(__('Default: 2 weeks before the end of the current term.'));
-			$row->addDate('listingStart')->required()->setValue($listingStart->format($_SESSION[$guid]['i18n']['dateFormatPHP']));
+			$row->addDate('listingStart')->required()->setValue($listingStart->format($session->get('i18n')('dateFormatPHP')));
 
 		$row = $form->addRow();
         	$row->addLabel('listingEnd', __('Listing End Date'))->description(__('Default: 2 weeks after the start of next term.'));
-			$row->addDate('listingEnd')->required()->setValue($listingEnd->format($_SESSION[$guid]['i18n']['dateFormatPHP']));
+			$row->addDate('listingEnd')->required()->setValue($listingEnd->format($session->get('i18n')('dateFormatPHP')));
 
 		$row = $form->addRow();
         	$row->addLabel('programStart', __('Program Start Date'))->description(__('Default: first day of next term.'));
-			$row->addDate('programStart')->required()->setValue($programStart->format($_SESSION[$guid]['i18n']['dateFormatPHP']));
+			$row->addDate('programStart')->required()->setValue($programStart->format($session->get('i18n')('dateFormatPHP')));
 
 		$row = $form->addRow();
         	$row->addLabel('programEnd', __('Program End Date'))->description(__('Default: last day of the next term.'));
-			$row->addDate('programEnd')->required()->setValue($programEnd->format($_SESSION[$guid]['i18n']['dateFormatPHP']));
+			$row->addDate('programEnd')->required()->setValue($programEnd->format($session->get('i18n')('dateFormatPHP')));
 	}
 
 	$row = $form->addRow();
@@ -208,7 +208,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
 	$row = $form->addRow();
 		$row->addLabel('staff', __('Staff'));
-		$row->addSelectUsers('staff', $_SESSION[$guid]['gibbonSchoolYearID'], array('includeStaff' => true))->selectMultiple();
+		$row->addSelectUsers('staff', $session->get('gibbonSchoolYearID'), array('includeStaff' => true))->selectMultiple();
 
 	$staffRoles = array(
 		'Organiser' => __('Organiser'),
