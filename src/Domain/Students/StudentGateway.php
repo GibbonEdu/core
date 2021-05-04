@@ -102,7 +102,7 @@ class StudentGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function queryStudentEnrolmentByRollGroup(QueryCriteria $criteria, $gibbonFormGroupID = null)
+    public function queryStudentEnrolmentByFormGroup(QueryCriteria $criteria, $gibbonFormGroupID = null)
     {
         $query = $this
             ->newQuery()

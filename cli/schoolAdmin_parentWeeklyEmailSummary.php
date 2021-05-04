@@ -23,7 +23,7 @@ use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\User\FamilyGateway;
-use Gibbon\Domain\RollGroups\RollGroupGateway;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\Planner\PlannerParentWeeklyEmailSummaryGateway;
 
 $_POST['address'] = '/modules/School Admin/emailSummarySettings.php';
@@ -68,7 +68,7 @@ $mail = $container->get(Mailer::class);
 $mail->SMTPKeepAlive = true;
 
 $familyGateway = $container->get(FamilyGateway::class);
-$formGroupGateway = $container->get(RollGroupGateway::class);
+$formGroupGateway = $container->get(FormGroupGateway::class);
 $plannerEntryGateway = $container->get(PlannerEntryGateway::class);
 $emailSummaryGateway = $container->get(PlannerParentWeeklyEmailSummaryGateway::class);
 $view = $container->get(View::class);
@@ -152,7 +152,7 @@ foreach ($families as $gibbonFamilyID => $students) {
         ]);
 
         // Get main form tutor email for reply-to
-        $formTutor = $formGroupGateway->selectTutorsByRollGroup($student['gibbonFormGroupID'])->fetch();
+        $formTutor = $formGroupGateway->selectTutorsByFormGroup($student['gibbonFormGroupID'])->fetch();
         if (!empty($formTutor)) {
             $replyTo = $formTutor['email'];
             $replyToName = Format::name($formTutor['title'], $formTutor['preferredName'], $formTutor['surname'], 'Staff');

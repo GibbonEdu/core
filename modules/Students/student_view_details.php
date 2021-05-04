@@ -30,7 +30,7 @@ use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
-use Gibbon\Domain\RollGroups\RollGroupGateway;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
 use Gibbon\Domain\Library\LibraryReportGateway;
 use Gibbon\Domain\School\HouseGateway;
@@ -340,8 +340,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $resultDetail->execute($dataDetail);
                             if ($resultDetail->rowCount() == 1) {
                                 $rowDetail = $resultDetail->fetch();
-                                if (isActionAccessible($guid, $connection2, '/modules/gibbonFormGroupups/rollGroups_details.php')) {
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/gibbonFormGroupups/rollGroups_details.php&gibbonFormGroupID='.$rowDetail['gibbonFormGroupID']."'>".$rowDetail['name'].'</a>';
+                                if (isActionAccessible($guid, $connection2, '/modules/gibbonFormGroupups/formGroups_details.php')) {
+                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/gibbonFormGroupups/formGroups_details.php&gibbonFormGroupID='.$rowDetail['gibbonFormGroupID']."'>".$rowDetail['name'].'</a>';
                                 } else {
                                     echo $rowDetail['name'];
                                 }
@@ -624,11 +624,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     } elseif ($subpage == 'Personal') {
                         $schoolYearGateway = $container->get(SchoolYearGateway::class);
                         $yearGroupGateway = $container->get(YearGroupGateway::class);
-                        $formGroupGateway = $container->get(RollGroupGateway::class);
+                        $formGroupGateway = $container->get(FormGroupGateway::class);
                         $studentGateway = $container->get(StudentGateway::class);
 
                         $student = $studentGateway->selectActiveStudentByPerson($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, false)->fetch();
-                        $tutors = $formGroupGateway->selectTutorsByRollGroup($student['gibbonFormGroupID'] ?? '')->fetchAll();
+                        $tutors = $formGroupGateway->selectTutorsByFormGroup($student['gibbonFormGroupID'] ?? '')->fetchAll();
                         $yearGroup = $yearGroupGateway->getByID($student['gibbonYearGroupID'] ?? '', ['name', 'gibbonPersonIDHOY']);
                         $headOfYear = $container->get(UserGateway::class)->getByID($yearGroup['gibbonPersonIDHOY'] ?? '', ['title', 'surname', 'preferredName', 'gibbonPersonID']);
                         $house = $container->get(HouseGateway::class)->getByID($row['gibbonHouseID'] ?? '', ['name']);
@@ -670,7 +670,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             return $student['yearGroupName'];
                         });
                         $col->addColumn('gibbonFormGroupID', __('gibbonFormGroupup'))->format(function ($values) use ($student) {
-                            return Format::link('./index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonFormGroupID='.$student['gibbonFormGroupID'], $student['rollGroupName']);
+                            return Format::link('./index.php?q=/modules/Roll Groups/formGroups_details.php&gibbonFormGroupID='.$student['gibbonFormGroupID'], $student['rollGroupName']);
                         });
                         $col->addColumn('email', __('Tutors'))->format(function ($values) use ($tutors) {
                             if (count($tutors) > 1) $tutors[0]['surname'] .= ' ('.__('Main Tutor').')';

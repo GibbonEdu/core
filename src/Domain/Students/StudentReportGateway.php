@@ -83,7 +83,7 @@ class StudentReportGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function queryStudentCountByRollGroup(QueryCriteria $criteria, $gibbonSchoolYearID)
+    public function queryStudentCountByFormGroup(QueryCriteria $criteria, $gibbonSchoolYearID)
     {
         $query = $this
             ->newQuery()

@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     if ($highestAction == 'Proof Read_all') {
         $row = $form->addRow()->addClass('rollGroupMode');
             $row->addLabel('gibbonFormGroupID', __('Form Group'));
-            $row->addSelectRollGroup('gibbonFormGroupID', $gibbonSchoolYearID)->required()->selected($gibbonFormGroupID);
+            $row->addSelectFormGroup('gibbonFormGroupID', $gibbonSchoolYearID)->required()->selected($gibbonFormGroupID);
 
         $row = $form->addRow()->addClass('personMode');
             $row->addLabel('gibbonPersonID', __('Person'));
@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
                 }, []);
             }
 
-            $formGroupsByScope = $reportingAccessGateway->selectAccessibleRollGroupsByReportingScope($scope['gibbonReportingScopeID'])->fetchKeyPair();
+            $formGroupsByScope = $reportingAccessGateway->selectAccessibleFormGroupsByReportingScope($scope['gibbonReportingScopeID'])->fetchKeyPair();
             $formGroups = array_merge($formGroups, $formGroupsByScope);
         }
 

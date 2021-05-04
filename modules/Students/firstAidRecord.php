@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
 
         $row = $form->addRow();
             $row->addLabel('gibbonFormGroupID', __('Form Group'));
-            $row->addSelectRollGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonFormGroupID);
+            $row->addSelectFormGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonFormGroupID);
 
         $row = $form->addRow();
             $row->addLabel('gibbonYearGroupID', __('Year Group'));

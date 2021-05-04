@@ -23,7 +23,7 @@ use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\School\YearGroupGateway;
-use Gibbon\Domain\RollGroups\RollGroupGateway;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
 
@@ -126,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_withdraw.
 
             // Form Tutors
             if (in_array('tutors', $notify)) {
-                $formGroup = $container->get(RollGroupGateway::class)->getByID($student['gibbonFormGroupID']);
+                $formGroup = $container->get(FormGroupGateway::class)->getByID($student['gibbonFormGroupID']);
                 $event->addRecipient($formGroup['gibbonPersonIDTutor']);
                 $event->addRecipient($formGroup['gibbonPersonIDTutor2']);
                 $event->addRecipient($formGroup['gibbonPersonIDTutor3']);

@@ -20,9 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rollGroup_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID";
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/formGroup_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID";
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_manage_add.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
@@ -30,14 +30,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
     //Validate Inputs
     $name = $_POST['name'] ?? '';
     $nameShort = $_POST['nameShort'] ?? '';
-    $gibbonPersonIDTutor = $_POST['gibbonPersonIDTutor'] ?? '';
-    $gibbonPersonIDTutor2 = $_POST['gibbonPersonIDTutor2'] ?? '';
-    $gibbonPersonIDTutor3 = $_POST['gibbonPersonIDTutor3'] ?? '';
-    $gibbonPersonIDEA = $_POST['gibbonPersonIDEA'] ?? '';
-    $gibbonPersonIDEA2 = $_POST['gibbonPersonIDEA2'] ?? '';
-    $gibbonPersonIDEA3 = $_POST['gibbonPersonIDEA3'] ?? '';
-    $gibbonSpaceID = $_POST['gibbonSpaceID'] ?? '';
-    $gibbonFormGroupIDNext = $_POST['gibbonFormGroupIDNext'] ?? '';
+    $gibbonPersonIDTutor = !empty($_POST['gibbonPersonIDTutor']) ? $_POST['gibbonPersonIDTutor'] : null;
+    $gibbonPersonIDTutor2 = !empty($_POST['gibbonPersonIDTutor2']) ? $_POST['gibbonPersonIDTutor2'] : null;
+    $gibbonPersonIDTutor3 = !empty($_POST['gibbonPersonIDTutor3']) ? $_POST['gibbonPersonIDTutor3'] : null;
+    $gibbonPersonIDEA = !empty($_POST['gibbonPersonIDEA']) ? $_POST['gibbonPersonIDEA'] : null;
+    $gibbonPersonIDEA2 = !empty($_POST['gibbonPersonIDEA2']) ? $_POST['gibbonPersonIDEA2'] : null;
+    $gibbonPersonIDEA3 = !empty($_POST['gibbonPersonIDEA3']) ? $_POST['gibbonPersonIDEA3'] : null;
+    $gibbonSpaceID = !empty($_POST['gibbonSpaceID']) ? $_POST['gibbonSpaceID'] : null;
+    $gibbonFormGroupIDNext = !empty($_POST['gibbonFormGroupIDNext']) ? $_POST['gibbonFormGroupIDNext'] : null;
     $website = $_POST['website'] ?? '';
 
     $attendance = $_POST['attendance'] ?? NULL;
