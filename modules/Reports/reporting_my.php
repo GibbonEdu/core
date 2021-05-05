@@ -103,7 +103,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_my.php')
         return $canProofRead == 'Y';
     }));
     $proofsTotal = $proofsDone = 0;
-    $proofReading = $reportingProofGateway->selectProofReadingByPerson($gibbonSchoolYearID, $gibbonPersonID)->fetchAll();
+    $proofCriteria = $reportingProofGateway->newQueryCriteria()->pageSize(0);
+    $proofReading = $reportingProofGateway->queryProofReadingByPerson($proofCriteria, $gibbonSchoolYearID, $gibbonPersonID)->toArray();
     if ($canProofRead && !empty($proofReading)) {
         $ids = array_column($proofReading, 'gibbonReportingValueID');
         $proofs = $reportingProofGateway->selectProofsByValueID($ids)->fetchGroupedUnique();
