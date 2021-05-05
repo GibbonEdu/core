@@ -24,7 +24,7 @@ use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
 
 /**
- * RollGroup Gateway
+ * FormGroup Gateway
  *
  * @version v16
  * @since   v16

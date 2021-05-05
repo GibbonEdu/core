@@ -81,7 +81,7 @@ class FinanceFormFactory extends DatabaseFormFactory
         $results = $this->pdo->executeQuery($data, $sql);
         $students = ($results->rowCount() > 0)? $results->fetchAll() : array();
 
-        // Add students by Roll Group and Name
+        // Add students by Form Group and Name
         foreach ($students as $student) {
             $fullName = Format::name('', $student['preferredName'], $student['surname'], 'Student', true);
 

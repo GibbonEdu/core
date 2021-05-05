@@ -342,7 +342,7 @@ else {
 			}
 		}
 
-		//Roll group
+		//Form group
 		if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_any")) {
 			$row = $form->addRow();
 				$row->addLabel('formGroup', __('Form Group'))->description(__('Tutees and tutors.'));

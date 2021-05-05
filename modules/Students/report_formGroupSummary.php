@@ -27,7 +27,7 @@ use Gibbon\Domain\Students\StudentReportGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupSummary.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Students/report_formGroupSummary.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setClass('noIntBorder fullWidth');
 
-        $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_rollGroupSummary.php");
+        $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_formGroupSummary.php");
 
         $row = $form->addRow();
             $row->addLabel('dateFrom', __('From Date'))->description(__('Start date must be before this date.'))->append('<br/>')->append(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);

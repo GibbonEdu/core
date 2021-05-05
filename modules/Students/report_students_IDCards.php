@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Students'));
-        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array("allStudents" => false, "byName" => true, "byRoll" => true))->required()->placeholder()->selectMultiple()->selected($choices);
+        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array("allStudents" => false, "byName" => true, "byForm" => true))->required()->placeholder()->selectMultiple()->selected($choices);
 
     $row = $form->addRow();
         $row->addLabel('file', __('Card Background'))->description('.png or .jpg file, 448 x 268px.');
@@ -144,7 +144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
                 echo "<div style='font-weight: bold; font-size: ".$size."px'>".$row['officialName'].'</div><br/>';
                 echo '<b>'.__('DOB')."</b>: <span style='float: right'><i>".dateConvertBack($guid, $row['dob']).'</span><br/>';
                 echo '<b>'.$_SESSION[$guid]['organisationNameShort'].' '.__('ID')."</b>: <span style='float: right'><i>".$row['studentID'].'</span><br/>';
-                echo '<b>'.__('Year/Roll')."</b>: <span style='float: right'><i>".__($row['year']).' / '.$row['form'].'</span><br/>';
+                echo '<b>'.__('Year/Form')."</b>: <span style='float: right'><i>".__($row['year']).' / '.$row['form'].'</span><br/>';
                 echo '<b>'.__('School Year')."</b>: <span style='float: right'><i>".$_SESSION[$guid]['gibbonSchoolYearName'].'</span><br/>';
                 echo '</div>';
                 echo '</td>';

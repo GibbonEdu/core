@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
     if (!empty($pattern)) {
-        // Allows for Roll Group naming patterns with different formats
+        // Allows for Form Group naming patterns with different formats
         $subQuery = "(SELECT syncBy.gibbonFormGroupID FROM gibbonFormGroup AS syncBy WHERE REPLACE(REPLACE(REPLACE(REPLACE(:pattern, '[courseShortName]', gibbonCourse.nameShort), '[classShortName]', gibbonCourseClass.nameShort), '[yearGroupShortName]', gibbonYearGroup.nameShort), '[formGroupShortName]', nameShort) LIKE CONCAT('%', syncBy.nameShort) AND syncBy.gibbonSchoolYearID=:gibbonSchoolYearID LIMIT 1)";
 
         // Grab courses by year group, optionally match to a pattern

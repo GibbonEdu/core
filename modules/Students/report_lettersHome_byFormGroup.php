@@ -22,14 +22,14 @@ use Gibbon\Services\Format;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_new') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Students/report_lettersHome_byFormGroup.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Letters Home by Form Group'));
 
-    
+
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
         $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonFormGroup.nameShort AS formGroup, gibbonFamily.gibbonFamilyID, gibbonFamily.name AS familyName
             FROM gibbonPerson
@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
         while ($row = $result->fetch()) {
             $currentFormGroup = $row['formGroup'];
 
-            //SPLIT INTO ROLL GROUPS
+            //SPLIT INTO FORM GROUPS
             if ($currentFormGroup != $lastFormGroup) {
                 if ($lastFormGroup != '') {
                     echo '</table>';
@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
             //PUMP OUT STUDENT DATA
             //Check for older siblings
             $proceed = false;
-            
+
                 $dataSibling = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonFamilyID' => $row['gibbonFamilyID']);
                 $sqlSibling = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonFamily.name, gibbonFamily.gibbonFamilyID
                     FROM gibbonPerson

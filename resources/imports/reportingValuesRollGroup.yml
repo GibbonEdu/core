@@ -1,7 +1,7 @@
 details:
     type: reportingValuesFormGroup
     category: Reports
-    name: Reporting Values by Roll Group
+    name: Reporting Values by Form Group
     table: gibbonReportingValue
     modes: { update: true, insert: true, export: false }
 access:
@@ -28,7 +28,7 @@ fields:
         args: { filter: string, required: true, custom: true, readonly: [gibbonReportingValue]  }
         relationship: { table: gibbonReportingScope, key: gibbonReportingScopeID, field: [name, gibbonReportingCycleID]  }
     gibbonFormGroupID: 
-        name: "Roll Group"
+        name: "Form Group"
         desc: "Short Name"
         args: { filter: nospaces, required: true, custom: true, readonly: [gibbonReportingValue]  }
         relationship: { table: gibbonFormGroup, key: gibbonFormGroupID, field: [nameShort, gibbonSchoolYearID]  }

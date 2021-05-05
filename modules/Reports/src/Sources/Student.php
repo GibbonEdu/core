@@ -40,7 +40,7 @@ class Student extends DataSource
             'dayType'            => ['randomElement', ['Full Day', 'Half Day']],
 
             '#'                  => ['randomDigit'], // Random Year Group Number
-            '%'                  => ['randomDigit'], // Random Roll Group Number
+            '%'                  => ['randomDigit'], // Random Form Group Number
 
             'gibbonYearGroupID'  => 0,
             'yearGroupName'      => ['sameAs', 'Year #'],

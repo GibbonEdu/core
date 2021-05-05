@@ -146,7 +146,7 @@ class CourseEnrolmentGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
-    public function selectCourseEnrolmentByRollGroup($gibbonFormGroupID)
+    public function selectCourseEnrolmentByFormGroup($gibbonFormGroupID)
     {
         $data = array('gibbonFormGroupID' => $gibbonFormGroupID);
         $sql = "SELECT DISTINCT gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonFormGroup.name as formGroup,

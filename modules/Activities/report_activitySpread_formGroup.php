@@ -27,7 +27,7 @@ use Gibbon\Domain\Students\StudentGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activitySpread_rollGroup.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activitySpread_formGroup.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setClass('noIntBorder fullWidth');
 
-        $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_activitySpread_rollGroup.php");
+        $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_activitySpread_formGroup.php");
 
         $row = $form->addRow();
             $row->addLabel('gibbonFormGroupID', __('Form Group'));
@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     });
 
     // DATA TABLE
-    $table = ReportTable::createPaginated('activitySpread_rollGroup', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('activitySpread_formGroup', $criteria)->setViewMode($viewMode, $gibbon->session);
 
     $table->setTitle(__('Activity Spread by Form Group'));
 

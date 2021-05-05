@@ -242,7 +242,7 @@ class StaffDashboard implements OutputableInterface
             $formGroups[$count][0] = $rowFormGroups['gibbonFormGroupID'];
             $formGroups[$count][1] = $rowFormGroups['nameShort'];
 
-            //Roll group table
+            //Form group table
             $this->formGroupTable->build($rowFormGroups['gibbonFormGroupID'], true, false, 'rollOrder, surname, preferredName');
             $this->formGroupTable->setTitle('');
 

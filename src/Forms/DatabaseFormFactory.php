@@ -426,8 +426,8 @@ class DatabaseFormFactory extends FormFactory
     $params is an array, with the following options as keys:
         allStudents - false by default. true displays students regardless of status and start/end date
         byName - true by default. Adds students organised by name
-        byRoll - false by default. Adds students organised by form group. Can be used in conjunction with byName to have multiple sections
-        showRoll - true by default. Displays form group beside student's name, when organised byName. Incompatible with allStudents
+        byForm - false by default. Adds students organised by form group. Can be used in conjunction with byName to have multiple sections
+        showForm - true by default. Displays form group beside student's name, when organised byName. Incompatible with allStudents
     */
     public function createSelectStudent($name, $gibbonSchoolYearID, $params = [])
     {
@@ -436,16 +436,16 @@ class DatabaseFormFactory extends FormFactory
         $data = [];
 
         // Check params and set defaults if not defined
-        $params = array_replace(['allStudents' => false, 'activeStudents' => false, 'byName' => true, 'byRoll' => false, 'showRoll' => true], $params);
+        $params = array_replace(['allStudents' => false, 'activeStudents' => false, 'byName' => true, 'byForm' => false, 'showForm' => true], $params);
 
         //Check for multiple by methods, so we know when to apply optgroups
         $multipleBys = false;
-        if ($params["byName"] && $params["byRoll"]) {
+        if ($params["byName"] && $params["byForm"]) {
             $multipleBys = true;
         }
 
         //Add students by form group
-        if ($params["byRoll"]) {
+        if ($params["byForm"]) {
             if ($params["allStudents"]) {
                 $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
                 $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username, gibbonFormGroup.name AS name
@@ -525,14 +525,14 @@ class DatabaseFormFactory extends FormFactory
             if ($results && $results->rowCount() > 0) {
                 while ($row = $results->fetch()) {
                     if ($multipleBys) {
-                        if (!$params['allStudents'] && $params['byName'] && $params['showRoll']) {
+                        if (!$params['allStudents'] && $params['byName'] && $params['showForm']) {
                             $values[__('Students by Name')][$row['gibbonPersonID']] = Format::name(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Student', true, true).' ('.$row['name'].', '.$row['username'].')';
                         }
                         else {
                             $values[__('Students by Name')][$row['gibbonPersonID']] = Format::name(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Student', true, true).' ('.$row['username'].')';
                         }
                     } else {
-                        if (!$params['allStudents'] && $params['byName'] && $params['showRoll']) {
+                        if (!$params['allStudents'] && $params['byName'] && $params['showForm']) {
                             $values[$row['gibbonPersonID']] = Format::name(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Student', true, true).' ('.$row['name'].', '.$row['username'].')';
                         }
                         else {

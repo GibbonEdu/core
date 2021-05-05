@@ -82,7 +82,7 @@ class CoverageTodayView
             ]);
         }
 
-        // Roll Group Info
+        // Form Group Info
         $formGroups = $this->formGroupGateway->selectFormGroupsByTutor($coverage['gibbonPersonID'])->toDataSet();
 
         if (count($formGroups) > 0) {

@@ -28,7 +28,7 @@ use Gibbon\Domain\FormGroups\FormGroupGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_byRollGroup.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_byFormGroup.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
             ->setFactory(DatabaseFormFactory::create($pdo))
             ->setClass('noIntBorder fullWidth');
 
-        $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_students_byRollGroup.php");
+        $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_students_byFormGroup.php");
 
         $row = $form->addRow();
             $row->addLabel('gibbonFormGroupID', __('Form Group'));

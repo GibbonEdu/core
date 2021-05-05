@@ -251,7 +251,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             $row = $form->addRow();
                 $row->addLabel('gibbonPersonID', __('Child\'s Name'));
-                $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array('allStudents' => true, 'byName' => true, 'byRoll' => true, 'showRoll' => true))->placeholder()->required();
+                $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array('allStudents' => true, 'byName' => true, 'byForm' => true, 'showForm' => true))->placeholder()->required();
 
             $row = $form->addRow();
                 $row->addLabel('comment', __('Comment'));

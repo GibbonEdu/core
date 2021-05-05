@@ -23,7 +23,7 @@ table:
         args: { filter: string, required: true }
         relationship: { table: gibbonYearGroup, key: gibbonYearGroupID, field: nameShort  }
     gibbonFormGroupID:
-        name: "Roll Group"
+        name: "Form Group"
         desc: "Short Name"
         args: { filter: string, required: true }
         relationship: { table: gibbonFormGroup, key: gibbonFormGroupID, field: [ nameShort, gibbonSchoolYearID ]  }

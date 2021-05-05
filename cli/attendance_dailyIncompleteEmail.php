@@ -79,7 +79,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                 $partialFail = true;
             }
 
-            // Proceed if we have attendance-able Roll Groups
+            // Proceed if we have attendance-able Form Groups
             if ($result->rowCount() > 0) {
 
                 try {
@@ -91,7 +91,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                     $partialFail = true;
                 }
 
-                // Gather the current Roll Group logs for the day
+                // Gather the current Form Group logs for the day
                 $log = array();
                 while ($row = $resultLog->fetch()) {
                     $log[$row['gibbonFormGroupID']] = true;

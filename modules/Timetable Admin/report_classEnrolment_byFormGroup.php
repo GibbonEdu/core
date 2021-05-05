@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/report_cla
 
         $courseGateway = $container->get(CourseEnrolmentGateway::class);
 
-        $enrolment = $courseGateway->selectCourseEnrolmentByRollGroup($gibbonFormGroupID);
+        $enrolment = $courseGateway->selectCourseEnrolmentByFormGroup($gibbonFormGroupID);
 
         // DATA TABLE
         $table = DataTable::create('courseEnrolment');

@@ -485,7 +485,7 @@ else {
 				}
 			}
 
-			//Roll Groups
+			//Form Groups
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_any")) {
 				if ($_POST["formGroup"]=="Y") {
 					$staff=$_POST["formGroupsStaff"] ;

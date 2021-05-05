@@ -156,7 +156,7 @@ class INGateway extends QueryableGateway implements ScrubbableGateway
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
         if (!empty($gibbonYearGroupID)) {
-            // Grouped by Roll Groups within a Year Group
+            // Grouped by Form Groups within a Year Group
             $query->cols([
                 'gibbonFormGroup.name as labelName',
                 'gibbonFormGroup.gibbonFormGroupID as labelID',
