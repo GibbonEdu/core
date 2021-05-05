@@ -159,7 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
                     foreach ($row['familyChildren'] as $child) {
                         $output .= '<tr>';
                         $output .= '<td style="width:80%">'.Format::name('', $child['preferredName'], $child['surname'], 'Student').'</td>';
-                        $output .= '<td style="width:10%">'.$child['rollGroup'].'</td>';
+                        $output .= '<td style="width:10%">'.$child['formGroup'].'</td>';
                         if (in_array('Personal', $requiredUpdatesByType)) {
                             $output .= '<td style="width:10%">'.$dataChecker($child['personalUpdate'], __('Personal')).'</td>';
                         }

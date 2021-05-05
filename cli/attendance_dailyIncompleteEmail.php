@@ -49,7 +49,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
         $partialFail = false;
 
         $userReport = array();
-        $adminReport = array( 'rollGroup' => array(), 'classes' => array() );
+        $adminReport = array( 'formGroup' => array(), 'classes' => array() );
 
         $enabledByFormGroup = getSettingByScope($connection2, 'Attendance', 'attendanceCLINotifyByFormGroup');
         $additionalUsersList = getSettingByScope($connection2, 'Attendance', 'attendanceCLIAdditionalUsers');
@@ -64,7 +64,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
             try {
                 $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
 
-                // Looks for roll groups with attendance='Y', also grabs primary tutor name
+                // Looks for form groups with attendance='Y', also grabs primary tutor name
                 $sql = "SELECT gibbonFormGroupID, gibbonFormGroup.name, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPerson.preferredName, gibbonPerson.surname, (SELECT count(*) FROM gibbonStudentEnrolment WHERE gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) AS studentCount
                 FROM gibbonFormGroup
                 JOIN gibbonPerson ON (gibbonFormGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID)
@@ -98,7 +98,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                 }
 
                 while ($row = $result->fetch()) {
-                    // Skip roll groups with no students
+                    // Skip form groups with no students
                     if ($row['studentCount'] <= 0) continue;
 
                     // Check for a current log
@@ -107,26 +107,26 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                         $formGroupInfo = array( 'gibbonFormGroupID' => $row['gibbonFormGroupID'], 'name' => $row['name'] );
 
                         // Compile info for Admin report
-                        $adminReport['rollGroup'][] = '<b>'.$row['name'] .'</b> - '. $row['preferredName'].' '.$row['surname'];
+                        $adminReport['formGroup'][] = '<b>'.$row['name'] .'</b> - '. $row['preferredName'].' '.$row['surname'];
 
                         // Compile info for User reports
                         if ($row['gibbonPersonIDTutor'] != '') {
-                            $userReport[ $row['gibbonPersonIDTutor'] ]['rollGroup'][] = $formGroupInfo;
+                            $userReport[ $row['gibbonPersonIDTutor'] ]['formGroup'][] = $formGroupInfo;
                         }
                         if ($row['gibbonPersonIDTutor2'] != '') {
-                            $userReport[ $row['gibbonPersonIDTutor2'] ]['rollGroup'][] = $formGroupInfo;
+                            $userReport[ $row['gibbonPersonIDTutor2'] ]['formGroup'][] = $formGroupInfo;
                         }
                         if ($row['gibbonPersonIDTutor3'] != '') {
-                            $userReport[ $row['gibbonPersonIDTutor3'] ]['rollGroup'][] = $formGroupInfo;
+                            $userReport[ $row['gibbonPersonIDTutor3'] ]['formGroup'][] = $formGroupInfo;
                         }
                     }
                 }
 
-                // Use the roll group counts to generate a report
-                if ( isset($adminReport['rollGroup']) && count($adminReport['rollGroup']) > 0) {
-                    $reportInner = implode('<br>', $adminReport['rollGroup']);
+                // Use the form group counts to generate a report
+                if ( isset($adminReport['formGroup']) && count($adminReport['formGroup']) > 0) {
+                    $reportInner = implode('<br>', $adminReport['formGroup']);
                     $report .= '<br/><br/>';
-                    $report .= sprintf(__('%1$s form groups have not been registered today  (%2$s).'), count($adminReport['rollGroup']), dateConvertBack($guid, $currentDate) ).'<br/><br/>'.$reportInner;
+                    $report .= sprintf(__('%1$s form groups have not been registered today  (%2$s).'), count($adminReport['formGroup']), dateConvertBack($guid, $currentDate) ).'<br/><br/>'.$reportInner;
                 } else {
                     $report .= '<br/><br/>';
                     $report .= sprintf(__('All form groups have been registered today (%1$s).'), dateConvertBack($guid, $currentDate));
@@ -148,11 +148,11 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                 $notificationText = __('You have not taken attendance yet today. Please do so as soon as possible.');
 
                 if ($enabledByFormGroup == 'Y') {
-                    // Output the roll groups the particular user is a part of
-                    if ( isset($items['rollGroup']) && count($items['rollGroup']) > 0) {
+                    // Output the form groups the particular user is a part of
+                    if ( isset($items['formGroup']) && count($items['formGroup']) > 0) {
                         $notificationText .= '<br/><br/>';
                         $notificationText .= '<b>'.__('Form Group').':</b><br/>';
-                        foreach ($items['rollGroup'] as $formGroup) {
+                        foreach ($items['formGroup'] as $formGroup) {
                             $notificationText .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $formGroup['name'] .'<br/>';
                         }
 

@@ -80,7 +80,7 @@ if (isset($_SESSION[$guid]["username"])) {
     $getDailyAttendanceTable = function ($guid, $connection2, $currentDate, $rowID, $takeAttendanceURL) use ($session) {
 
         // proto attendance table with columns for both
-        // roll group and course class
+        // form group and course class
         $dailyAttendanceTable = DataTable::create('dailyAttendanceTable');
 
         // column definitions

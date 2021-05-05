@@ -11,7 +11,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         <div class="w-full sm:w-1/2 text-center sm:text-left">
             <div class="text-lg text-gray-800 leading-none mb-2 p-0">{{ formatUsing('name', staff.title, staff.preferredName, staff.surname, 'Staff', false, true) }}</div>
 
-            <div class="text-sm text-gray-600 mb-0">{{ [staff.jobTitle, rollGroup.name]|join(", ")|trim(", ") }}</div>
+            <div class="text-sm text-gray-600 mb-0">{{ [staff.jobTitle, formGroup.name]|join(", ")|trim(", ") }}</div>
 
             {% if status %}
                 <span class="tag {{ tag|default('success') }} mt-2 mb-0">{{ status }}</span>
@@ -41,7 +41,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             {% endif %}
 
             {% if canViewFormGroups and formGroup %}
-                <a class="px-0 sm:px-2 w-20" href="{{ absoluteURL }}/index.php?q=/modules/Form Groups/formGroups_details.php&gibbonFormGroupID={{ rollGroup.gibbonFormGroupID }}">
+                <a class="px-0 sm:px-2 w-20" href="{{ absoluteURL }}/index.php?q=/modules/Form Groups/formGroups_details.php&gibbonFormGroupID={{ formGroup.gibbonFormGroupID }}">
                     <img class="" src="{{ absoluteURL }}/themes/Default/img/attendance.png" title="{{ __('Homeroom') }}" width="25" height="25">
                     <div class="mt-1">{{ __('Homeroom') }}</div>
                 </a>

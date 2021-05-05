@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
         ->sortBy(['surname', 'preferredName'])
         ->filterBy('descriptor', $gibbonINDescriptorID)
         ->filterBy('alert', $gibbonAlertLevelID)
-        ->filterBy('rollGroup', $gibbonFormGroupID)
+        ->filterBy('formGroup', $gibbonFormGroupID)
         ->filterBy('yearGroup', $gibbonYearGroupID)
         ->fromPOST();
 
@@ -124,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
         ->sortable(['surname', 'preferredName'])
         ->format(Format::using('nameLinked', ['gibbonPersonID', '', 'preferredName', 'surname', 'Student', true, false, ['subpage' => 'Individual Needs']]));
     $table->addColumn('yearGroup', __('Year Group'));
-    $table->addColumn('rollGroup', __('Form Group'));
+    $table->addColumn('formGroup', __('Form Group'));
 
     $table->addActionColumn()
         ->addParam('gibbonPersonID')

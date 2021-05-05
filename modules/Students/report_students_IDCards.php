@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
             }
             $sqlWhere = substr($sqlWhere, 0, -4);
             $sqlWhere = $sqlWhere.')';
-            $sql = "SELECT officialName, image_240, dob, studentID, gibbonPerson.gibbonPersonID, gibbonYearGroup.name AS year, gibbonFormGroup.name AS roll FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE status='Full' AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID $sqlWhere ORDER BY surname, preferredName";
+            $sql = "SELECT officialName, image_240, dob, studentID, gibbonPerson.gibbonPersonID, gibbonYearGroup.name AS year, gibbonFormGroup.name AS form FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE status='Full' AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID $sqlWhere ORDER BY surname, preferredName";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -144,7 +144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
                 echo "<div style='font-weight: bold; font-size: ".$size."px'>".$row['officialName'].'</div><br/>';
                 echo '<b>'.__('DOB')."</b>: <span style='float: right'><i>".dateConvertBack($guid, $row['dob']).'</span><br/>';
                 echo '<b>'.$_SESSION[$guid]['organisationNameShort'].' '.__('ID')."</b>: <span style='float: right'><i>".$row['studentID'].'</span><br/>';
-                echo '<b>'.__('Year/Roll')."</b>: <span style='float: right'><i>".__($row['year']).' / '.$row['roll'].'</span><br/>';
+                echo '<b>'.__('Year/Roll')."</b>: <span style='float: right'><i>".__($row['year']).' / '.$row['form'].'</span><br/>';
                 echo '<b>'.__('School Year')."</b>: <span style='float: right'><i>".$_SESSION[$guid]['gibbonSchoolYearName'].'</span><br/>';
                 echo '</div>';
                 echo '</td>';

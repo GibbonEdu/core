@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
 
     // CRITERIA
     $criteria = $reportGateway->newQueryCriteria(true)
-        ->sortBy(['rollGroup', 'gibbonPerson.surname', 'gibbonPerson.preferredName'])
+        ->sortBy(['formGroup', 'gibbonPerson.surname', 'gibbonPerson.preferredName'])
         ->pageSize(!empty($viewMode) ? 0 : 50)
         ->fromPOST();
 
@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
             return Format::name('', $student['preferredName'], $student['surname'], 'Student', true, true)
                  . '<br/><small><i>'.Format::userStatusInfo($student).'</i></small>';
         });
-    $table->addColumn('rollGroup', __('Form Group'))
+    $table->addColumn('formGroup', __('Form Group'))
         ->context('primary');
     $table->addColumn('username', __('Username'));
     $table->addColumn('officialName', __('Official Name'));

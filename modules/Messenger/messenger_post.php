@@ -345,10 +345,10 @@ else {
 		//Roll group
 		if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_any")) {
 			$row = $form->addRow();
-				$row->addLabel('rollGroup', __('Form Group'))->description(__('Tutees and tutors.'));
-				$row->addYesNoRadio('rollGroup')->checked('N')->required();
+				$row->addLabel('formGroup', __('Form Group'))->description(__('Tutees and tutors.'));
+				$row->addYesNoRadio('formGroup')->checked('N')->required();
 
-			$form->toggleVisibilityByClass('rollGroup')->onRadio('rollGroup')->when('Y');
+			$form->toggleVisibilityByClass('formGroup')->onRadio('formGroup')->when('Y');
 
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_any")) {
 				$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]);
@@ -364,22 +364,22 @@ else {
 					$sql="SELECT gibbonFormGroup.gibbonFormGroupID AS value, gibbonFormGroup.name FROM gibbonFormGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name" ;
 				}
 			}
-			$row = $form->addRow()->addClass('rollGroup hiddenReveal');
-				$row->addLabel('rollGroups[]', __('Select Form Groups'));
-				$row->addSelect('rollGroups[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->placeholder();
+			$row = $form->addRow()->addClass('formGroup hiddenReveal');
+				$row->addLabel('formGroups[]', __('Select Form Groups'));
+				$row->addSelect('formGroups[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->placeholder();
 
-			$row = $form->addRow()->addClass('rollGroup hiddenReveal');
-		        $row->addLabel('rollGroupsStaff', __('Include Staff?'));
-				$row->addYesNo('rollGroupsStaff')->selected($defaultSendStaff);
+			$row = $form->addRow()->addClass('formGroup hiddenReveal');
+		        $row->addLabel('formGroupsStaff', __('Include Staff?'));
+				$row->addYesNo('formGroupsStaff')->selected($defaultSendStaff);
 
-			$row = $form->addRow()->addClass('rollGroup hiddenReveal');
-		        $row->addLabel('rollGroupsStudents', __('Include Students?'));
-				$row->addYesNo('rollGroupsStudents')->selected($defaultSendStudents);
+			$row = $form->addRow()->addClass('formGroup hiddenReveal');
+		        $row->addLabel('formGroupsStudents', __('Include Students?'));
+				$row->addYesNo('formGroupsStudents')->selected($defaultSendStudents);
 
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_parents")) {
-				$row = $form->addRow()->addClass('rollGroup hiddenReveal');
-			        $row->addLabel('rollGroupsParents', __('Include Parents?'));
-					$row->addYesNo('rollGroupsParents')->selected($defaultSendParents);
+				$row = $form->addRow()->addClass('formGroup hiddenReveal');
+			        $row->addLabel('formGroupsParents', __('Include Parents?'));
+					$row->addYesNo('formGroupsParents')->selected($defaultSendParents);
 			}
         }
 

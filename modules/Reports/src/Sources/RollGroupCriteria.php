@@ -68,8 +68,8 @@ class RollGroupCriteria extends DataSource
                     gibbonReportingValue.comment, 
                     gibbonScaleGrade.descriptor,
                     gibbonReportingCriteriaType.valueType, 
-                    gibbonFormGroup.name as rollGroupName, 
-                    gibbonFormGroup.nameShort as rollGroupNameShort
+                    gibbonFormGroup.name as formGroupName, 
+                    gibbonFormGroup.nameShort as formGroupNameShort
                 FROM gibbonStudentEnrolment 
                 JOIN gibbonReportingCriteria ON (gibbonReportingCriteria.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID)
                 JOIN gibbonReportingValue ON (gibbonReportingCriteria.gibbonReportingCriteriaID=gibbonReportingValue.gibbonReportingCriteriaID AND (gibbonReportingValue.gibbonPersonIDStudent=gibbonStudentEnrolment.gibbonPersonID OR gibbonReportingValue.gibbonPersonIDStudent=0))

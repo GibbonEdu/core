@@ -74,12 +74,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
         $row->addSelect('mode')->fromArray($modes)->selected($mode);
 
     $form->toggleVisibilityByClass('personMode')->onSelect('mode')->when('Person');
-    $form->toggleVisibilityByClass('rollGroupMode')->onSelect('mode')->when('Roll Group');
+    $form->toggleVisibilityByClass('formGroupMode')->onSelect('mode')->when('Form Group');
 
     
 
     if ($highestAction == 'Proof Read_all') {
-        $row = $form->addRow()->addClass('rollGroupMode');
+        $row = $form->addRow()->addClass('formGroupMode');
             $row->addLabel('gibbonFormGroupID', __('Form Group'));
             $row->addSelectFormGroup('gibbonFormGroupID', $gibbonSchoolYearID)->required()->selected($gibbonFormGroupID);
 
@@ -137,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
 
         asort($formGroups, SORT_NATURAL);
         
-        $row = $form->addRow()->addClass('rollGroupMode');
+        $row = $form->addRow()->addClass('formGroupMode');
             $row->addLabel('gibbonFormGroupID', __('Form Group'));
             $row->addSelect('gibbonFormGroupID')->fromArray($formGroups)->required()->placeholder()->selected($gibbonFormGroupID);
 

@@ -47,8 +47,8 @@ class Student extends DataSource
             'yearGroupNameShort' => ['sameAs', 'Y0#'],
 
             'gibbonFormGroupID'  => 0,
-            'rollGroupName'      => ['sameAs', 'Y0#.%'],
-            'rollGroupNameShort' => ['sameAs', 'Y0#.%'],
+            'formGroupName'      => ['sameAs', 'Y0#.%'],
+            'formGroupNameShort' => ['sameAs', 'Y0#.%'],
         ];
     }
 
@@ -71,8 +71,8 @@ class Student extends DataSource
                 gibbonYearGroup.name as yearGroupName,
                 gibbonYearGroup.nameShort as yearGroupNameShort,
                 gibbonFormGroup.gibbonFormGroupID,
-                gibbonFormGroup.name as rollGroupName,
-                gibbonFormGroup.nameShort as rollGroupNameShort
+                gibbonFormGroup.name as formGroupName,
+                gibbonFormGroup.nameShort as formGroupNameShort
                 FROM gibbonStudentEnrolment 
                 JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                 JOIN gibbonYearGroup ON (gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID)

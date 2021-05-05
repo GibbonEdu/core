@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             //Proceed!
 
             $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d')];
-            $sql = "SELECT role, surname, preferredName, email, studentID, gibbonFormGroup.nameShort as rollGroup
+            $sql = "SELECT role, surname, preferredName, email, studentID, gibbonFormGroup.nameShort as formGroup
                     FROM gibbonCourseClassPerson 
                     JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID 
                     JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)

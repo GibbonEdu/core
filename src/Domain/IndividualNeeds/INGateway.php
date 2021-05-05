@@ -55,7 +55,7 @@ class INGateway extends QueryableGateway implements ScrubbableGateway
             ->distinct()
             ->from($this->getTableName())
             ->cols([
-                'gibbonINID', 'gibbonPerson.gibbonPersonID', 'preferredName', 'surname', 'gibbonYearGroup.nameShort AS yearGroup', 'gibbonFormGroup.nameShort AS rollGroup', 'dateStart', 'dateEnd', 'status'
+                'gibbonINID', 'gibbonPerson.gibbonPersonID', 'preferredName', 'surname', 'gibbonYearGroup.nameShort AS yearGroup', 'gibbonFormGroup.nameShort AS formGroup', 'dateStart', 'dateEnd', 'status'
             ])
             ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonIN.gibbonPersonID')
             ->innerJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
@@ -78,7 +78,7 @@ class INGateway extends QueryableGateway implements ScrubbableGateway
                     ->bindValue('gibbonAlertLevelID', $gibbonAlertLevelID);
             },
 
-            'rollGroup' => function ($query, $gibbonFormGroupID) {
+            'formGroup' => function ($query, $gibbonFormGroupID) {
                 return $query
                     ->where('gibbonStudentEnrolment.gibbonFormGroupID = :gibbonFormGroupID')
                     ->bindValue('gibbonFormGroupID', $gibbonFormGroupID);

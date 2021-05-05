@@ -72,8 +72,8 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                         gibbonPerson.gibbonPersonID,image_240, surname,
                         preferredName, dateStart,
                         gibbonYearGroup.nameShort AS yearGroup,
-                        gibbonFormGroup.nameShort AS rollGroup,
-                        gibbonFormGroup.website AS rollGroupWebsite,
+                        gibbonFormGroup.nameShort AS formGroup,
+                        gibbonFormGroup.website AS formGroupWebsite,
                         gibbonFormGroup.gibbonFormGroupID
                         FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID)
                         JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
@@ -115,10 +115,10 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                     "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID']."'>".__('Student Profile').'</a><br/>';
 
                 if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/formGroups_details.php')) {
-                    $output .= "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Roll Groups/formGroups_details.php&gibbonFormGroupID='.$student['gibbonFormGroupID']."'>".__('Form Group').' ('.$student['rollGroup'].')</a><br/>';
+                    $output .= "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Roll Groups/formGroups_details.php&gibbonFormGroupID='.$student['gibbonFormGroupID']."'>".__('Form Group').' ('.$student['formGroup'].')</a><br/>';
                 }
-                if ($student['rollGroupWebsite'] != '') {
-                    $output .= "<a target='_blank' href='".$student['rollGroupWebsite']."'>".$student['rollGroup'].' '.__('Website').'</a>';
+                if ($student['formGroupWebsite'] != '') {
+                    $output .= "<a target='_blank' href='".$student['formGroupWebsite']."'>".$student['formGroup'].' '.__('Website').'</a>';
                 }
 
                 $output .= '</span>';

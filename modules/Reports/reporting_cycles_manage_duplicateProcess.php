@@ -106,8 +106,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
                 )->fetchAll();
 
                 foreach ($criteria as $criteriaData) {
-                    // Grab the roll group ID by name if it's in a different school year
-                    if (!empty($criteriaData['gibbonFormGroupID']) && $data['gibbonSchoolYearID'] != $values['gibbonSchoolYearID']) {
+                    // Grab the form group ID by name if it's in a different school year
+                    formif (!empty($criteriaData['gibbonFormGroupID']) && $data['gibbonSchoolYearID'] != $values['gibbonSchoolYearID']) {
                         $formGroupSource = $formGroupGateway->getByID($criteriaData['gibbonFormGroupID']);
                         $formGroupDestination = $formGroupGateway->selectBy([
                             'gibbonSchoolYearID' => $data['gibbonSchoolYearID'], 

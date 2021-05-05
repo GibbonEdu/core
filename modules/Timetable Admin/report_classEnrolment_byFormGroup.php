@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/report_cla
         // DATA TABLE
         $table = DataTable::create('courseEnrolment');
 
-        $table->addColumn('rollGroup', __('Form Group'));
+        $table->addColumn('formGroup', __('Form Group'));
         $table->addColumn('student', __('Student'))
             ->sortable(['surname', 'preferredName'])
             ->format(function($person) use ($guid) {

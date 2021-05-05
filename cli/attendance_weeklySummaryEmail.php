@@ -50,7 +50,7 @@ if (!isCommandLineInterface()) {
         'dateEnd' => $dateEnd->format('Y-m-d'), 
         'gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID')
     );
-    $sql = "SELECT gibbonFormGroup.nameShort as rollGroupName, gibbonYearGroup.gibbonYearGroupID, gibbonAttendanceLogPerson.*, gibbonPerson.surname, gibbonPerson.preferredName, gibbonCourse.nameShort as courseName, gibbonCourseClass.nameShort as className, gibbonCourseClass.gibbonCourseClassID
+    $sql = "SELECT gibbonFormGroup.nameShort as formGroupName, gibbonYearGroup.gibbonYearGroupID, gibbonAttendanceLogPerson.*, gibbonPerson.surname, gibbonPerson.preferredName, gibbonCourse.nameShort as courseName, gibbonCourseClass.nameShort as className, gibbonCourseClass.gibbonCourseClassID
             FROM gibbonAttendanceLogPerson
             JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonAttendanceLogPerson.gibbonPersonID)
             JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
@@ -169,7 +169,7 @@ if (!isCommandLineInterface()) {
 
             $event->addScope('gibbonYearGroupID', $gibbonYearGroupID);
             $event->setNotificationText(__('An Attendance CLI script has run.').'<br/><br/>'.$reportHeading . implode(' ', $reportByFormGroup));
-            $event->setActionLink('/index.php?q=/modules/Attendance/report_summary_byDate.php&dateStart='.$dateStart->format($dateFormat).'dateEnd='.$dateEnd->format($dateFormat).'&group=all&sort=rollGroup');
+            $event->setActionLink('/index.php?q=/modules/Attendance/report_summary_byDate.php&dateStart='.$dateStart->format($dateFormat).'dateEnd='.$dateEnd->format($dateFormat).'&group=all&sort=formGroup');
 
             // Push the event to the notification sender
             $event->pushNotifications($notificationGateway, $notificationSender);

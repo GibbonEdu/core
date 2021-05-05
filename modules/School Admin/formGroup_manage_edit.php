@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_man
             //Let's go!
             $values = $result->fetch();
 
-            $form = Form::create('rollGroupEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/formGroup_manage_editProcess.php?gibbonFormGroupID='.$gibbonFormGroupID);
+            $form = Form::create('formGroupEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/formGroup_manage_editProcess.php?gibbonFormGroupID='.$gibbonFormGroupID);
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);

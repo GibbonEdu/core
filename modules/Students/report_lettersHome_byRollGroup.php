@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
 
     
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-        $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonFormGroup.nameShort AS rollGroup, gibbonFamily.gibbonFamilyID, gibbonFamily.name AS familyName
+        $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonFormGroup.nameShort AS formGroup, gibbonFamily.gibbonFamilyID, gibbonFamily.name AS familyName
             FROM gibbonPerson
                 JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
                 LEFT JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
             WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
                 AND gibbonPerson.status='Full'
-            ORDER BY rollGroup, surname, preferredName";
+            ORDER BY formGroup, surname, preferredName";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     if ($result->rowCount() < 1) {
@@ -54,14 +54,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
         $countTotal = 0;
         $rowNum = 'odd';
         while ($row = $result->fetch()) {
-            $currentFormGroup = $row['rollGroup'];
+            $currentFormGroup = $row['formGroup'];
 
             //SPLIT INTO ROLL GROUPS
             if ($currentFormGroup != $lastFormGroup) {
                 if ($lastFormGroup != '') {
                     echo '</table>';
                 }
-                echo '<h2>'.$row['rollGroup'].'</h2>';
+                echo '<h2>'.$row['formGroup'].'</h2>';
                 $count = 0;
                 $rowNum = 'odd';
                 echo "<table cellspacing='0' style='width: 100%'>";
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
                 echo '</th>';
                 echo '</tr>';
             }
-            $lastFormGroup = $row['rollGroup'];
+            $lastFormGroup = $row['formGroup'];
 
             //PUMP OUT STUDENT DATA
             //Check for older siblings

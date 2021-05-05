@@ -240,7 +240,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Year Group: ', gibbonYearGroup.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonStudentEnrolment ON (gibbonMessengerTarget.id=gibbonStudentEnrolment.gibbonYearGroupID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE ".preg_replace('/gibbonPersonID/', 'gibbonStudentEnrolment.gibbonPersonID', $children)." AND gibbonMessengerTarget.type='Year Group' AND (messageWall_date1=:date10 OR messageWall_date2=:date11 OR messageWall_date3=:date12) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID2 AND parents='Y')";
     }
 
-    //My roll groups
+    //My form groups
     if ($staff) {
         $sqlWhere = '(';
         
@@ -250,8 +250,8 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
             $resultFormGroup->execute($dataFormGroup);
         if ($resultFormGroup->rowCount() > 0) {
             while ($rowFormGroup = $resultFormGroup->fetch()) {
-                $dataPosts['roll'.$rowFormGroup['gibbonFormGroupID']] = $rowFormGroup['gibbonFormGroupID'];
-                $sqlWhere .= 'id=:roll'.$rowFormGroup['gibbonFormGroupID'].' OR ';
+                $dataPosts['form'.$rowFormGroup['gibbonFormGroupID']] = $rowFormGroup['gibbonFormGroupID'];
+                $sqlWhere .= 'id=:form'.$rowFormGroup['gibbonFormGroupID'].' OR ';
             }
             $sqlWhere = substr($sqlWhere, 0, -3).')';
             if ($sqlWhere != '(') {

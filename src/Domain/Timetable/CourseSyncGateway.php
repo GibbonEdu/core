@@ -49,10 +49,10 @@ class CourseSyncGateway extends QueryableGateway
                 'gibbonCourseClassMap.gibbonFormGroupID',
                 'gibbonCourseClassMap.gibbonYearGroupID',
                 'gibbonYearGroup.gibbonYearGroupID',
-                'gibbonFormGroup.name as rollGroupName',
+                'gibbonFormGroup.name as formGroupName',
                 'gibbonYearGroup.name as yearGroupName',
                 'COUNT(DISTINCT gibbonCourseClassMap.gibbonCourseClassID) as classCount',
-                "GROUP_CONCAT(DISTINCT gibbonFormGroup.nameShort ORDER BY gibbonFormGroup.nameShort SEPARATOR ', ') as rollGroupList",
+                "GROUP_CONCAT(DISTINCT gibbonFormGroup.nameShort ORDER BY gibbonFormGroup.nameShort SEPARATOR ', ') as formGroupList",
                 "GROUP_CONCAT(DISTINCT gibbonFormGroup.gibbonFormGroupID ORDER BY gibbonFormGroup.gibbonFormGroupID SEPARATOR ',') as gibbonFormGroupIDList",
             ])
             ->innerJoin('gibbonFormGroup', 'gibbonCourseClassMap.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID')

@@ -10,7 +10,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 {% set warningStyle = "background-color: #ffd2a8;border-color: #d45602;color: #d45602;"%}
 {% set errorStyle = "background-color: #fed7d7;border-color: #c53030;color: #c53030;"%}
 
-<b>{{ formatUsing('name', student.title, student.preferredName, student.surname, 'Student', false, true) }}</b> {{ student.rollGroup }}
+<b>{{ formatUsing('name', student.title, student.preferredName, student.surname, 'Student', false, true) }}</b> {{ student.formGroup }}
 <br/><br/>
 
 {% if schoolLog or classLogs %}

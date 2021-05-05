@@ -59,7 +59,7 @@ class FinanceFormFactory extends DatabaseFormFactory
 
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
         if ($params['allStudents'] != true) {
-            $sql = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonFormGroup.nameShort AS rollGroupName, dayType
+            $sql = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonFormGroup.nameShort AS formGroupName, dayType
                 FROM gibbonPerson
                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                 JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
@@ -69,7 +69,7 @@ class FinanceFormFactory extends DatabaseFormFactory
                 ORDER BY gibbonFormGroup.nameShort, surname, preferredName";
         }
         else {
-            $sql = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonFormGroup.nameShort AS rollGroupName, dayType
+            $sql = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonFormGroup.nameShort AS formGroupName, dayType
                 FROM gibbonPerson
                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                 JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
@@ -85,8 +85,8 @@ class FinanceFormFactory extends DatabaseFormFactory
         foreach ($students as $student) {
             $fullName = Format::name('', $student['preferredName'], $student['surname'], 'Student', true);
 
-            $values[$byFormGroup][$student['gibbonFinanceInvoiceeID']] = $student['rollGroupName'].' - '.$fullName;
-            $values[$byName][$student['gibbonFinanceInvoiceeID']] = $fullName.' - '.$student['rollGroupName'];
+            $values[$byFormGroup][$student['gibbonFinanceInvoiceeID']] = $student['formGroupName'].' - '.$fullName;
+            $values[$byName][$student['gibbonFinanceInvoiceeID']] = $fullName.' - '.$student['formGroupName'];
         }
 
         // Sort the byName list so it's not byFormGroup
@@ -105,7 +105,7 @@ class FinanceFormFactory extends DatabaseFormFactory
                 $byDayType = $student['dayType'].' '.__('Students by Form Groups');
                 $fullName = Format::name('', $student['preferredName'], $student['surname'], 'Student', true);
 
-                $values[$byDayType][$student['gibbonFinanceInvoiceeID']] = $student['rollGroupName'].' - '.$fullName;
+                $values[$byDayType][$student['gibbonFinanceInvoiceeID']] = $student['formGroupName'].' - '.$fullName;
             }
         }
 

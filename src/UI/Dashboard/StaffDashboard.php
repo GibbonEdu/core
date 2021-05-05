@@ -42,7 +42,7 @@ class StaffDashboard implements OutputableInterface
     {
         $this->db = $db;
         $this->session = $session;
-        $this->rollGroupTable = $formGroupTable;
+        $this->formGroupTable = $formGroupTable;
         $this->enrolmentTable = $enrolmentTable;
     }
 
@@ -243,11 +243,11 @@ class StaffDashboard implements OutputableInterface
             $formGroups[$count][1] = $rowFormGroups['nameShort'];
 
             //Roll group table
-            $this->rollGroupTable->build($rowFormGroups['gibbonFormGroupID'], true, false, 'rollOrder, surname, preferredName');
-            $this->rollGroupTable->setTitle('');
+            $this->formGroupTable->build($rowFormGroups['gibbonFormGroupID'], true, false, 'rollOrder, surname, preferredName');
+            $this->formGroupTable->setTitle('');
 
             if ($rowFormGroups['attendance'] == 'Y' AND $attendanceAccess) {
-                $this->rollGroupTable->addHeaderAction('attendance', __('Take Attendance'))
+                $this->formGroupTable->addHeaderAction('attendance', __('Take Attendance'))
                     ->setURL('/modules/Attendance/attendance_take_byFormGroup.php')
                     ->addParam('gibbonFormGroupID', $rowFormGroups['gibbonFormGroupID'])
                     ->setIcon('attendance')
@@ -255,13 +255,13 @@ class StaffDashboard implements OutputableInterface
                     ->append(' | ');
             }
 
-            $this->rollGroupTable->addHeaderAction('export', __('Export to Excel'))
+            $this->formGroupTable->addHeaderAction('export', __('Export to Excel'))
                 ->setURL('/indexExport.php')
                 ->addParam('gibbonFormGroupID', $rowFormGroups['gibbonFormGroupID'])
                 ->directLink()
                 ->displayLabel();
 
-            $formGroups[$count][2] = $this->rollGroupTable->getOutput();
+            $formGroups[$count][2] = $this->formGroupTable->getOutput();
 
             $behaviourView = isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.php');
             if ($behaviourView) {

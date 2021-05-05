@@ -54,7 +54,7 @@ class FirstAidGateway extends QueryableGateway implements ScrubbableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonFirstAidID', 'gibbonFirstAid.date', 'gibbonFirstAid.timeIn', 'gibbonFirstAid.timeOut', 'gibbonFirstAid.description', 'gibbonFirstAid.actionTaken', 'gibbonFirstAid.followUp', 'gibbonFirstAid.date', 'patient.surname AS surnamePatient', 'patient.preferredName AS preferredNamePatient', 'gibbonFirstAid.gibbonPersonIDPatient', 'gibbonFormGroup.name as rollGroup', 'firstAider.title', 'firstAider.surname AS surnameFirstAider', 'firstAider.preferredName AS preferredNameFirstAider', 'timestamp'
+                'gibbonFirstAidID', 'gibbonFirstAid.date', 'gibbonFirstAid.timeIn', 'gibbonFirstAid.timeOut', 'gibbonFirstAid.description', 'gibbonFirstAid.actionTaken', 'gibbonFirstAid.followUp', 'gibbonFirstAid.date', 'patient.surname AS surnamePatient', 'patient.preferredName AS preferredNamePatient', 'gibbonFirstAid.gibbonPersonIDPatient', 'gibbonFormGroup.name as formGroup', 'firstAider.title', 'firstAider.surname AS surnameFirstAider', 'firstAider.preferredName AS preferredNameFirstAider', 'timestamp'
             ])
             ->innerJoin('gibbonPerson AS patient', 'gibbonFirstAid.gibbonPersonIDPatient=patient.gibbonPersonID')
             ->innerJoin('gibbonStudentEnrolment', 'patient.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
@@ -71,7 +71,7 @@ class FirstAidGateway extends QueryableGateway implements ScrubbableGateway
                     ->bindValue('gibbonPersonID', $gibbonPersonID);
             },
 
-            'rollGroup' => function ($query, $gibbonFormGroupID) {
+            'formGroup' => function ($query, $gibbonFormGroupID) {
                 return $query
                     ->where('gibbonStudentEnrolment.gibbonFormGroupID = :gibbonFormGroupID')
                     ->bindValue('gibbonFormGroupID', $gibbonFormGroupID);

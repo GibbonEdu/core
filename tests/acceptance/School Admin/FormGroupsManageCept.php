@@ -1,6 +1,6 @@
 <?php
 $I = new AcceptanceTester($scenario);
-$I->wantTo('add, edit and delete roll groups');
+$I->wantTo('add, edit and delete form groups');
 $I->loginAsAdmin();
 $I->amOnModulePage('School Admin', 'formGroup_manage.php');
 

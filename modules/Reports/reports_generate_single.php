@@ -88,12 +88,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_s
 
     $table->addMetaData('bulkActions', $col);
 
-    if (!empty(array_filter(array_column($ids, 'rollGroup')))) {
-        $table->addColumn('rollGroup', __('Form Group'))
+    if (!empty(array_filter(array_column($ids, 'formGroup')))) {
+        $table->addColumn('formGroup', __('Form Group'))
             ->notSortable()
             ->width('10%')
             ->format(function($values) {
-                return $values['rollGroup'] ?? __('Unknown');
+                return $values['formGroup'] ?? __('Unknown');
             });
     }
 

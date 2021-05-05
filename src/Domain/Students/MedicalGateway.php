@@ -54,7 +54,7 @@ class MedicalGateway extends QueryableGateway implements ScrubbableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonPersonMedicalID', 'longTermMedication', 'longTermMedicationDetails', 'comment', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonFormGroup.name as rollGroup', '(SELECT COUNT(*) FROM gibbonPersonMedicalCondition WHERE gibbonPersonMedicalCondition.gibbonPersonMedicalID=gibbonPersonMedical.gibbonPersonMedicalID) as conditionCount'
+                'gibbonPersonMedicalID', 'longTermMedication', 'longTermMedicationDetails', 'comment', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonFormGroup.name as formGroup', '(SELECT COUNT(*) FROM gibbonPersonMedicalCondition WHERE gibbonPersonMedicalCondition.gibbonPersonMedicalID=gibbonPersonMedical.gibbonPersonMedicalID) as conditionCount'
             ])
             ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonPersonMedical.gibbonPersonID')
             ->innerJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')

@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         // Add event listeners to the notification sender
                         $event->pushNotifications($notificationGateway, $notificationSender);
 
-                        // Add direct notifications to roll group tutors
+                        // Add direct notifications to form group tutors
                         if ($event->getEventDetails($notificationGateway, 'active') == 'Y') {
                             if (getSettingByScope($connection2, 'Behaviour', 'notifyTutors') == 'Y') {
                                 $notificationText = sprintf(__('Someone has created a negative behaviour record for your tutee, %1$s.'), $studentName);

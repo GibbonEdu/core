@@ -170,8 +170,8 @@ class AttendanceLogPersonGateway extends QueryableGateway
         if ($formGroups != array('all')) {
             $query
                 ->innerJoin('gibbonStudentEnrolment', 'gibbonAttendanceLogPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
-                ->where('FIND_IN_SET(gibbonStudentEnrolment.gibbonFormGroupID, :rollGroups)')
-                ->bindValue('rollGroups', implode(',', $formGroups))
+                ->where('FIND_IN_SET(gibbonStudentEnrolment.gibbonFormGroupID, :formGroups)')
+                ->bindValue('formGroups', implode(',', $formGroups))
                 ->where('gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID')
                 ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
         }
@@ -199,8 +199,8 @@ class AttendanceLogPersonGateway extends QueryableGateway
                 'gibbonPerson.title',
                 'gibbonPerson.preferredName',
                 'gibbonPerson.surname',
-                'gibbonFormGroup.name as rollGroupName',
-                'gibbonFormGroup.nameShort as rollGroup',
+                'gibbonFormGroup.name as formGroupName',
+                'gibbonFormGroup.nameShort as formGroup',
                 'gibbonAttendanceLogPerson.type',
                 'gibbonAttendanceLogPerson.reason',
                 'gibbonAttendanceLogPerson.comment',
@@ -260,8 +260,8 @@ class AttendanceLogPersonGateway extends QueryableGateway
                 'gibbonPerson.title',
                 'gibbonPerson.preferredName',
                 'gibbonPerson.surname',
-                'gibbonFormGroup.name as rollGroupName',
-                'gibbonFormGroup.nameShort as rollGroup',
+                'gibbonFormGroup.name as formGroupName',
+                'gibbonFormGroup.nameShort as formGroup',
                 'gibbonAttendanceLogPerson.type',
                 'gibbonAttendanceLogPerson.reason',
                 'gibbonAttendanceLogPerson.comment',
@@ -308,7 +308,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
             ->newQuery()
             ->from('gibbonAttendanceLogPerson')
             ->cols([
-                'gibbonAttendanceLogPersonID', 'gibbonAttendanceLogPerson.type', 'gibbonAttendanceLogPerson.reason', 'gibbonAttendanceLogPerson.comment', 'gibbonAttendanceLogPerson.date','gibbonAttendanceLogPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.username', 'gibbonPerson.status', 'gibbonFormGroup.nameShort as rollGroup', 'gibbonYearGroup.nameShort as yearGroup', 'gibbonCourse.nameShort as courseName', 'gibbonCourseClass.nameShort as className'
+                'gibbonAttendanceLogPersonID', 'gibbonAttendanceLogPerson.type', 'gibbonAttendanceLogPerson.reason', 'gibbonAttendanceLogPerson.comment', 'gibbonAttendanceLogPerson.date','gibbonAttendanceLogPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.username', 'gibbonPerson.status', 'gibbonFormGroup.nameShort as formformGroup', 'gibbonYearGroup.nameShort as yearGroup', 'gibbonCourse.nameShort as courseName', 'gibbonCourseClass.nameShort as className'
             ])
             ->innerJoin('gibbonPerson', 'gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID')
             ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID')

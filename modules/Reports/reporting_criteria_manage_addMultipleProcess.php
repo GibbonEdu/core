@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
         $identifier = 'gibbonCourseID';
     }
 
-    // Create one record per selected year group/roll group/course
+    // Create one record per selected year group/form group/course
     $group = $_POST[$identifier] ?? [];
     foreach ($group as $scopeTypeID) {
         $data[$identifier] = $scopeTypeID;

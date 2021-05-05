@@ -74,7 +74,7 @@ class ApplicationFormGateway extends QueryableGateway implements ScrubbableGatew
                     ->bindValue('paymentMade', ucfirst($paymentMade));
             },
 
-            'rollGroup' => function ($query, $value) {
+            'formGroup' => function ($query, $value) {
                 return $query
                     ->where(strtoupper($value) == 'Y'
                         ? 'gibbonApplicationForm.gibbonFormGroupID IS NOT NULL'

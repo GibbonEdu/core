@@ -50,7 +50,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
         try {
             $data = array('date' => $currentDate, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
 
-            $sql = "SELECT gibbonFormGroup.nameShort AS rollGroup, gibbonStudentEnrolment.gibbonYearGroupID, gibbonBehaviour.gibbonBehaviourID, gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, staff.surname as staffSurname, staff.preferredName as staffPreferredName, gibbonBehaviour.descriptor, gibbonBehaviour.level, gibbonBehaviour.comment, gibbonBehaviour.followup, gibbonBehaviour.timestamp
+            $sql = "SELECT gibbonFormGroup.nameShort AS formGroup, gibbonStudentEnrolment.gibbonYearGroupID, gibbonBehaviour.gibbonBehaviourID, gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, staff.surname as staffSurname, staff.preferredName as staffPreferredName, gibbonBehaviour.descriptor, gibbonBehaviour.level, gibbonBehaviour.comment, gibbonBehaviour.followup, gibbonBehaviour.timestamp
                     FROM gibbonBehaviour
                     JOIN gibbonPerson ON (gibbonBehaviour.gibbonPersonID=gibbonPerson.gibbonPersonID)
                     JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
@@ -80,7 +80,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                 $report .= date('g:i a', strtotime($row['timestamp'])).' - '.__('Negative').' '.__('Behaviour').' - '.$row['level'];
                 $report .= '<br/>';
 
-                $report .= sprintf(__('%1$s (%2$s) received a report for %3$s from %4$s'), '<b>'.$studentName.'</b>', $row['rollGroup'], $row['descriptor'], $staffName);
+                $report .= sprintf(__('%1$s (%2$s) received a report for %3$s from %4$s'), '<b>'.$studentName.'</b>', $row['formGroup'], $row['descriptor'], $staffName);
                 $report .= ' &raquo; <a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonBehaviourID='.$row['gibbonBehaviourID'].'&gibbonPersonID='.$row['gibbonPersonID'].'&gibbonFormGroupID=&gibbonYearGroupID=&type=">'.__('View').'</a>';
 
                 $report .= '<br/><br/>';

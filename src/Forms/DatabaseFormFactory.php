@@ -96,7 +96,7 @@ class DatabaseFormFactory extends FormFactory
     }
 
     /*
-    The optional $all function adds an option to the top of the select, using * to allow selection of all roll groups
+    The optional $all function adds an option to the top of the select, using * to allow selection of all form groups
     */
     public function createSelectFormGroup($name, $gibbonSchoolYearID, $all = false)
     {
@@ -386,7 +386,7 @@ class DatabaseFormFactory extends FormFactory
 
         if ($params['includeStudents'] == true) {
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'date' => date('Y-m-d'));
-            $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username, gibbonFormGroup.name AS rollGroupName
+            $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username, gibbonFormGroup.name AS formGroupName
                     FROM gibbonPerson
                     JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                     JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
@@ -394,12 +394,12 @@ class DatabaseFormFactory extends FormFactory
                     WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
                     AND gibbonPerson.status='FULL'
                     AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date)
-                    ORDER BY rollGroupName, gibbonPerson.surname, gibbonPerson.preferredName";
+                    ORDER BY formGroupName, gibbonPerson.surname, gibbonPerson.preferredName";
             $result = $this->pdo->executeQuery($data, $sql);
 
             if ($result->rowCount() > 0) {
                 $users[__('Enrolable Students')] = array_reduce($result->fetchAll(), function($group, $item) {
-                    $group[$item['gibbonPersonID']] = $item['rollGroupName'].' - '.Format::name('', $item['preferredName'], $item['surname'], 'Student', true). " (".$item['username'].")";
+                    $group[$item['gibbonPersonID']] = $item['formGroupName'].' - '.Format::name('', $item['preferredName'], $item['surname'], 'Student', true). " (".$item['username'].")";
                     return $group;
                 }, array());
             }
@@ -426,8 +426,8 @@ class DatabaseFormFactory extends FormFactory
     $params is an array, with the following options as keys:
         allStudents - false by default. true displays students regardless of status and start/end date
         byName - true by default. Adds students organised by name
-        byRoll - false by default. Adds students organised by roll group. Can be used in conjunction with byName to have multiple sections
-        showRoll - true by default. Displays roll group beside student's name, when organised byName. Incompatible with allStudents
+        byRoll - false by default. Adds students organised by form group. Can be used in conjunction with byName to have multiple sections
+        showRoll - true by default. Displays form group beside student's name, when organised byName. Incompatible with allStudents
     */
     public function createSelectStudent($name, $gibbonSchoolYearID, $params = [])
     {
@@ -444,7 +444,7 @@ class DatabaseFormFactory extends FormFactory
             $multipleBys = true;
         }
 
-        //Add students by roll group
+        //Add students by form group
         if ($params["byRoll"]) {
             if ($params["allStudents"]) {
                 $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);

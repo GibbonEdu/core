@@ -49,7 +49,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
         $partialFail = false;
 
         $userReport = array();
-        $adminReport = array( 'rollGroup' => array(), 'classes' => array() );
+        $adminReport = array( 'classes' => array() );
 
         $enabledByClass = getSettingByScope($connection2, 'Attendance', 'attendanceCLINotifyByClass');
         $additionalUsersList = getSettingByScope($connection2, 'Attendance', 'attendanceCLIAdditionalUsers');

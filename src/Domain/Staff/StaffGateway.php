@@ -63,7 +63,7 @@ class StaffGateway extends QueryableGateway
             $biographicalGroupingOrder = $this->db()->selectOne("SELECT value FROM gibbonSetting WHERE scope='Staff' AND name='biographicalGroupingOrder'");
 
             $query->cols([
-                'gibbonFormGroup.name AS rollGroupName',
+                'gibbonFormGroup.name AS formGroupName',
                 "GROUP_CONCAT(DISTINCT gibbonSpace.name ORDER BY gibbonSpace.name SEPARATOR '<br/>') as facility",
                 "GROUP_CONCAT(DISTINCT gibbonSpace.phoneInternal ORDER BY gibbonSpace.name SEPARATOR '<br/>') as extension",
                 "GROUP_CONCAT(DISTINCT gibbonDepartment.name ORDER BY gibbonDepartment.name SEPARATOR '<br/>') as department",

@@ -170,14 +170,14 @@ else {
 
 				//Roll Groups
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_any")) {
-					if ($_POST["rollGroup"]=="Y") {
-						$staff=$_POST["rollGroupsStaff"] ;
-						$students=$_POST["rollGroupsStudents"] ;
+					if ($_POST["formGroup"]=="Y") {
+						$staff=$_POST["formGroupsStaff"] ;
+						$students=$_POST["formGroupsStudents"] ;
 						$parents="N" ;
 						if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_parents")) {
-							$parents=$_POST["rollGroupsParents"] ;
+							$parents=$_POST["formGroupsParents"] ;
 						}
-						$choices=$_POST["rollGroups"] ;
+						$choices=$_POST["formGroups"] ;
 						if ($choices!="") {
 							foreach ($choices as $t) {
 								try {

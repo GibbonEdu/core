@@ -124,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
                 if ($resultDetail->rowCount() == 1) {
                     $rowDetail = $resultDetail->fetch();
-                    $children[$count]['rollGroup'] = $rowDetail['name'];
+                    $children[$count]['formGroup'] = $rowDetail['name'];
                 }
 
                 ++$count;
@@ -217,7 +217,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             $table->addColumn('status', __('Status'));
 
-            $table->addColumn('rollGroup', __('Form Group'));
+            $table->addColumn('formGroup', __('Form Group'));
             $table->addColumn('comment', __('Comment'))
                 ->format(function ($child) {
                     return nl2br($child['comment']);

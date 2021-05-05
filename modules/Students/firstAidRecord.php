@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
         $criteria = $firstAidGateway->newQueryCriteria(true)
             ->sortBy(['date', 'timeIn'], 'DESC')
             ->filterBy('student', $gibbonPersonID)
-            ->filterBy('rollGroup', $gibbonFormGroupID)
+            ->filterBy('formGroup', $gibbonFormGroupID)
             ->filterBy('yearGroup', $gibbonYearGroupID)
             ->fromPOST();
 
@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
             ->format(function($person) use ($guid) {
                 $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonIDPatient'].'&subpage=Medical&search=&allStudents=&sort=surname,preferredName';
                 return Format::link($url, Format::name('', $person['preferredNamePatient'], $person['surnamePatient'], 'Student', true))
-                      .'<br/><small><i>'.$person['rollGroup'].'</i></small>';
+                      .'<br/><small><i>'.$person['formGroup'].'</i></small>';
             });
 
         $table->addColumn('firstAider', __('First Aider'))

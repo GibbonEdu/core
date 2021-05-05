@@ -134,14 +134,14 @@ class CourseEnrolmentGateway extends QueryableGateway
     {
         $gibbonYearGroupIDList = is_array($gibbonYearGroupID)? implode(',', $gibbonYearGroupID) : $gibbonYearGroupID;
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList);
-        $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username, gibbonFormGroup.name AS rollGroupName
+        $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username, gibbonFormGroup.name AS formGroupName
                 FROM gibbonPerson
                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                 JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                 WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
                 AND gibbonPerson.status='Full'
                 AND FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupIDList)
-                ORDER BY rollGroupName, surname, preferredName";
+                ORDER BY formGroupName, surname, preferredName";
 
         return $this->db()->select($sql, $data);
     }
@@ -149,7 +149,7 @@ class CourseEnrolmentGateway extends QueryableGateway
     public function selectCourseEnrolmentByRollGroup($gibbonFormGroupID)
     {
         $data = array('gibbonFormGroupID' => $gibbonFormGroupID);
-        $sql = "SELECT DISTINCT gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonFormGroup.name as rollGroup,
+        $sql = "SELECT DISTINCT gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonFormGroup.name as formGroup,
                     (SELECT COUNT(*) FROM gibbonCourseClassPerson
                     JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
                     JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)

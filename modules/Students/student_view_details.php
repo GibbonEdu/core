@@ -420,7 +420,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
 
                             $dataSelect = array('gibbonPersonID' => $row['gibbonPersonID']);
-                            $sqlSelect = "SELECT gibbonFormGroup.name AS rollGroup, gibbonSchoolYear.name AS schoolYear
+                            $sqlSelect = "SELECT gibbonFormGroup.name AS formGroup, gibbonSchoolYear.name AS schoolYear
                                 FROM gibbonStudentEnrolment
                                 JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                                 JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
@@ -430,7 +430,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $resultSelect = $connection2->prepare($sqlSelect);
                             $resultSelect->execute($dataSelect);
                         while ($rowSelect = $resultSelect->fetch()) {
-                            echo '<u>'.$rowSelect['schoolYear'].'</u>: '.$rowSelect['rollGroup'].'<br/>';
+                            echo '<u>'.$rowSelect['schoolYear'].'</u>: '.$rowSelect['formGroup'].'<br/>';
                         }
                         if ($row['dateEnd'] != '') {
                             echo '<u>'.__('End Date').'</u>: '.dateConvertBack($guid, $row['dateEnd']).'</br>';
@@ -670,7 +670,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             return $student['yearGroupName'];
                         });
                         $col->addColumn('gibbonFormGroupID', __('gibbonFormGroupup'))->format(function ($values) use ($student) {
-                            return Format::link('./index.php?q=/modules/Roll Groups/formGroups_details.php&gibbonFormGroupID='.$student['gibbonFormGroupID'], $student['rollGroupName']);
+                            return Format::link('./index.php?q=/modules/Roll Groups/formGroups_details.php&gibbonFormGroupID='.$student['gibbonFormGroupID'], $student['formGroupName']);
                         });
                         $col->addColumn('email', __('Tutors'))->format(function ($values) use ($tutors) {
                             if (count($tutors) > 1) $tutors[0]['surname'] .= ' ('.__('Main Tutor').')';
@@ -2007,7 +2007,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     });
 
                                 $table->addColumn('yearGroup', __('Year Group'))->width('15%');
-                                $table->addColumn('rollGroup', __('gibbonFormGroupup'))->width('15%');
+                                $table->addColumn('formGroup', __('gibbonFormGroupup'))->width('15%');
                                 $table->addColumn('timestampModified', __('Date'))
                                     ->width('30%')
                                     ->format(function ($report) {

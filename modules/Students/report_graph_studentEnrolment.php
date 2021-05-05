@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_graph_stud
         $dateEnd = $swapDates;
     }
 
-    // Get the roll groups - revert to All if it's selected
+    // Get the form groups - revert to All if it's selected
     $yearGroups = !empty($_POST['gibbonYearGroupID'])? $_POST['gibbonYearGroupID'] : array('all');
     if (in_array('all', $yearGroups)) $yearGroups = array('all');
 

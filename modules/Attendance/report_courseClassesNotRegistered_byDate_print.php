@@ -96,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
         echo __('The specified date is in the future: it must be today or earlier.');
         echo '</div>';
     } else {
-        //Produce array of roll groups
+        //Produce array of form groups
         $classes = $result->fetchAll();
 
         echo "<div class='linkTop'>";
@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
 
         $count = 0;
 
-        //Loop through each roll group
+        //Loop through each form group
         foreach ($classes as $row) {
 
             // Skip classes with no students

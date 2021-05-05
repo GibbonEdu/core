@@ -104,12 +104,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     // CRITERIA
     $criteria = $behaviourGateway->newQueryCriteria(true)
         ->sortBy('count', 'DESC')
-        ->sortBy('rollGroup')
+        ->sortBy('formGroup')
         ->sortBy(['surname', 'preferredName'])
         ->filterBy('descriptor', $descriptor)
         ->filterBy('level', $level)
         ->filterBy('fromDate', Format::dateConvert($fromDate))
-        ->filterBy('rollGroup', $gibbonFormGroupID)
+        ->filterBy('formGroup', $gibbonFormGroupID)
         ->filterBy('yearGroup', $gibbonYearGroupID)
         ->filterBy('minimumCount', $minimumCount)
         ->fromPOST();
@@ -131,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         });
     $table->addColumn('count', __('Negative Count'))->description(__('(Current Year Only)'));
     $table->addColumn('yearGroup', __('Year Group'));
-    $table->addColumn('rollGroup', __('Form Group'));
+    $table->addColumn('formGroup', __('Form Group'));
 
     $table->addActionColumn()
         ->addParam('gibbonPersonID')

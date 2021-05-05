@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
 
     $table->addColumn('transport', __('Transport'))
         ->context('primary');
-    $table->addColumn('rollGroup', __('Form Group'))
+    $table->addColumn('formGroup', __('Form Group'))
         ->context('secondary')
         ->width('10%');
     $table->addColumn('student', __('Student'))
