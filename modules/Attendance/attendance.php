@@ -239,7 +239,7 @@ if (isset($_SESSION[$guid]["username"])) {
                         JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonAttendanceLogPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonFormGroupID=gibbonAttendanceLogFormGroup.gibbonFormGroupID)
                         WHERE gibbonAttendanceLogFormGroup.gibbonFormGroupID=:gibbonFormGroupID
                         AND gibbonAttendanceLogPerson.date LIKE :date
-                        AND gibbonAttendanceLogPerson.context = 'Roll Group'
+                        AND gibbonAttendanceLogPerson.context = 'Form Group'
                         GROUP BY gibbonAttendanceLogFormGroup.gibbonAttendanceLogFormGroupID
                         ORDER BY gibbonAttendanceLogPerson.timestampTaken");
                     $resultLog->execute([

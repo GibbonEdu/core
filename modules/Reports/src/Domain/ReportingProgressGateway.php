@@ -75,7 +75,7 @@ class ReportingProgressGateway extends QueryableGateway
             ->leftJoin('gibbonReportingProgress', 'gibbonReportingProgress.gibbonReportingScopeID=gibbonReportingScope.gibbonReportingScopeID AND gibbonReportingProgress.gibbonPersonIDStudent=gibbonStudentEnrolment.gibbonPersonID AND gibbonReportingProgress.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID')
             ->where('gibbonReportingCycle.gibbonReportingCycleID=:gibbonReportingCycleID')
             ->bindValue('gibbonReportingCycleID', $gibbonReportingCycleID)
-            ->where("gibbonReportingScope.scopeType='Roll Group'")
+            ->where("gibbonReportingScope.scopeType='Form Group'")
             ->where("gibbonReportingCriteria.target='Per Student'")
             ->where("gibbonPerson.status='Full'")
             ->where("(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today)")
@@ -162,7 +162,7 @@ class ReportingProgressGateway extends QueryableGateway
             ->leftJoin('gibbonReportingProgress', 'gibbonReportingProgress.gibbonReportingScopeID=gibbonReportingScope.gibbonReportingScopeID AND gibbonReportingProgress.gibbonPersonIDStudent=gibbonStudentEnrolment.gibbonPersonID AND gibbonReportingProgress.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID')
             ->where('gibbonReportingCycle.gibbonSchoolYearID=:gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
-            ->where("gibbonReportingScope.scopeType='Roll Group'")
+            ->where("gibbonReportingScope.scopeType='Form Group'")
             ->where("gibbonReportingCriteria.target='Per Student'")
             ->where("student.status='Full'")
             ->where("(student.dateStart IS NULL OR student.dateStart<=:today)")
@@ -241,7 +241,7 @@ class ReportingProgressGateway extends QueryableGateway
                 ->where("gibbonCourseClass.reportable='Y'")
                 ->groupBy(['gibbonCourseClass.gibbonCourseClassID']);
 
-        } else if ($scopeType == 'Roll Group') {
+        } else if ($scopeType == 'Form Group') {
             $query = $this
                 ->newQuery()
                 ->cols(['gibbonFormGroup.gibbonFormGroupID', 'gibbonReportingCriteria.sequenceNumber', "gibbonFormGroup.name", "COUNT(DISTINCT gibbonReportingValue.gibbonReportingValueID) as totalCount", "COUNT(DISTINCT CASE WHEN gibbonReportingProof.status='Done' OR gibbonReportingProof.status='Accepted' THEN gibbonReportingProof.gibbonReportingProofID END) as progressCount", "COUNT(DISTINCT CASE WHEN gibbonReportingProof.status='Edited' THEN gibbonReportingProof.gibbonReportingProofID END) as partialCount"])
@@ -254,7 +254,7 @@ class ReportingProgressGateway extends QueryableGateway
                 ->leftJoin('gibbonReportingProof', 'gibbonReportingProof.gibbonReportingValueID=gibbonReportingValue.gibbonReportingValueID')
                 ->where('gibbonReportingScope.gibbonReportingScopeID=:gibbonReportingScopeID')
                 ->bindValue('gibbonReportingScopeID', $gibbonReportingScopeID)
-                ->where("gibbonReportingScope.scopeType='Roll Group'")
+                ->where("gibbonReportingScope.scopeType='Form Group'")
                 ->where("gibbonReportingCriteria.target='Per Student'")
                 ->where("gibbonReportingCriteriaType.valueType='Comment'")
                 ->where("gibbonReportingProgress.status='Complete'")

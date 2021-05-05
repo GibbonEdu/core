@@ -21,15 +21,15 @@ namespace Gibbon\Module\Reports\Sources;
 
 use Gibbon\Module\Reports\DataSource;
 
-class RollGroupCriteria extends DataSource
+class FormGroupCriteria extends DataSource
 {
     public function getSchema()
     {
         return [
             'perGroup' => [
                 0 => [
-                    'scopeName'           => 'Roll Group',
-                    'criteriaName'        => 'Roll Group Comment',
+                    'scopeName'           => 'Form Group',
+                    'criteriaName'        => 'Form Group Comment',
                     'criteriaDescription' => ['sentence'],
                     'value'               => ['randomDigit'],
                     'comment'             => ['paragraph', 6],
@@ -38,7 +38,7 @@ class RollGroupCriteria extends DataSource
             ],
             'perStudent' => [
                 0 => [
-                    'scopeName'           => 'Roll Group',
+                    'scopeName'           => 'Form Group',
                     'criteriaName'        => 'Student Comment',
                     'criteriaDescription' => ['sentence'],
                     'value'               => ['randomDigit'],
@@ -46,7 +46,7 @@ class RollGroupCriteria extends DataSource
                     'valueType'           => 'Comment',
                 ],
                 1 => [
-                    'scopeName'           => 'Roll Group',
+                    'scopeName'           => 'Form Group',
                     'criteriaName'        => 'Effort',
                     'criteriaDescription' => ['sentence'],
                     'value'               => ['randomElement', ['Excellent', 'Very Good', 'Good', 'Satisfactory', 'Needs Improvement']],
@@ -80,7 +80,7 @@ class RollGroupCriteria extends DataSource
                 LEFT JOIN gibbonScaleGrade ON (gibbonScaleGrade.gibbonScaleID=gibbonReportingCriteriaType.gibbonScaleID AND gibbonScaleGrade.gibbonScaleGradeID=gibbonReportingValue.gibbonScaleGradeID)
                 WHERE gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID
                 AND gibbonReportingCriteria.gibbonReportingCycleID=:gibbonReportingCycleID
-                AND gibbonReportingScope.scopeType='Roll Group'
+                AND gibbonReportingScope.scopeType='Form Group'
                 AND ((gibbonReportingProgress.status='Complete' AND gibbonReportingCriteria.target = 'Per Student') 
                     OR gibbonReportingCriteria.target = 'Per Group') 
                 ORDER BY gibbonReportingScope.sequenceNumber, gibbonReportingCriteria.sequenceNumber, gibbonFormGroup.nameShort";

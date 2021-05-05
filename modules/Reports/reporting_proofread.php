@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     $override = $_GET['override'] ?? 'N';
 
     $proofReview = $gibbonPersonID == $gibbon->session->get('gibbonPersonID') || ($override == 'Y' && $highestAction == 'Proof Read_all');
-    if ($mode == 'Roll Group' && !empty($gibbonFormGroupID)) $proofReview = false;
+    if ($mode == 'Form Group' && !empty($gibbonFormGroupID)) $proofReview = false;
 
     $reportingProofGateway = $container->get(ReportingProofGateway::class);
     $reportingAccessGateway = $container->get(ReportingAccessGateway::class);
@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
         return;
     }
     
-    $modes = ['Person' => __('Person'), 'Roll Group' => __('Form Group')];
+    $modes = ['Person' => __('Person'), 'Form Group' => __('Form Group')];
     $row = $form->addRow();
         $row->addLabel('mode', __('Proof Read By'));
         $row->addSelect('mode')->fromArray($modes)->selected($mode);
@@ -158,8 +158,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     }
 
     // Get criteria that needs or has proof reading
-    if ($mode == 'Roll Group' && !empty($gibbonFormGroupID)) {
-        $proofReading = $reportingProofGateway->selectProofReadingByRollGroup($gibbonSchoolYearID, $gibbonFormGroupID)->fetchAll();
+    if ($mode == 'Form Group' && !empty($gibbonFormGroupID)) {
+        $proofReading = $reportingProofGateway->selectProofReadingByFormGroup($gibbonSchoolYearID, $gibbonFormGroupID)->fetchAll();
     } elseif ($mode == 'Person' && !empty($gibbonPersonID)) {
         $proofReading = $reportingProofGateway->selectProofReadingByPerson($gibbonSchoolYearID, $gibbonPersonID, $reportingScopeIDs ?? [])->fetchAll();
     }

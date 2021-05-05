@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
 
     if ($reportingScope['scopeType'] == 'Year Group') {
         $scopeIdentifier = 'gibbonYearGroupID';
-    } elseif ($reportingScope['scopeType'] == 'Roll Group') {
+    } elseif ($reportingScope['scopeType'] == 'Form Group') {
         $scopeIdentifier = 'gibbonFormGroupID';
     } elseif ($reportingScope['scopeType'] == 'Course') {
         $scopeIdentifier = 'gibbonCourseClassID';
@@ -252,7 +252,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
         $lastCategory = $criteria['category'];
     }
 
-    if ($reportingScope['scopeType'] == 'Roll Group') {
+    if ($reportingScope['scopeType'] == 'Form Group') {
         $reportingRemarks = $reportingAccessGateway->selectAllRemarksByStudent($reportingScope['gibbonReportingCycleID'], $gibbonPersonIDStudent)->fetchAll();
 
         if (!empty($reportingRemarks)) {

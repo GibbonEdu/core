@@ -232,7 +232,7 @@ class StudentGateway extends QueryableGateway
     public function selectActiveStudentByPerson($gibbonSchoolYearID, $gibbonPersonID, $onlyFull = true)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID);
-        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, image_240, gender, dateStart, dateEnd, gibbonStudentEnrolment.gibbonStudentEnrolmentID, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonYearGroup.gibbonYearGroupID, gibbonYearGroup.nameShort AS yearGroup, gibbonYearGroup.name AS yearGroupName, gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.nameShort AS rollGroup, gibbonFormGroup.name AS rollGroupName, 'Student' as roleCategory, gibbonPerson.privacy
+        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, image_240, gender, dateStart, dateEnd, gibbonStudentEnrolment.gibbonStudentEnrolmentID, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonYearGroup.gibbonYearGroupID, gibbonYearGroup.nameShort AS yearGroup, gibbonYearGroup.name AS yearGroupName, gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.nameShort AS formGroup, gibbonFormGroup.name AS formGroupName, 'Student' as roleCategory, gibbonPerson.privacy
                 FROM gibbonPerson
                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                 JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
@@ -253,7 +253,7 @@ class StudentGateway extends QueryableGateway
     public function getStudentByUsername($gibbonSchoolYearID, $username)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'username' => $username);
-        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, image_240, gender, gibbonStudentEnrolment.gibbonStudentEnrolmentID, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonYearGroup.gibbonYearGroupID, gibbonYearGroup.nameShort AS yearGroup, gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.nameShort AS rollGroup, 'Student' as roleCategory, gibbonPerson.privacy, gibbonPerson.username
+        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, image_240, gender, gibbonStudentEnrolment.gibbonStudentEnrolmentID, gibbonStudentEnrolment.gibbonSchoolYearID, gibbonYearGroup.gibbonYearGroupID, gibbonYearGroup.nameShort AS yearGroup, gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.nameShort AS formGroup, 'Student' as roleCategory, gibbonPerson.privacy, gibbonPerson.username
                 FROM gibbonPerson
                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                 JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)

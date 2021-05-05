@@ -167,7 +167,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         });
                 }
 
-                // School-wide attendance: Roll Group, Person, Future and Self Registration
+                // School-wide attendance: Form Group, Person, Future and Self Registration
                 $schoolTable = clone $table;
                 $schoolTable->setTitle(__('Attendance Log'));
                 $schoolTable->setDescription(count($logs) > 0 ? __('The following attendance log has been recorded for the selected student today:') : '');

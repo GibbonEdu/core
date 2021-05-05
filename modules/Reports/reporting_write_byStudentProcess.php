@@ -128,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
     $dataProgress = [
         'gibbonReportingScopeID' => $urlParams['gibbonReportingScopeID'],
         'gibbonYearGroupID'      => $reportingScope['scopeType'] == 'Year Group' ? $urlParams['scopeTypeID'] : null,
-        'gibbonFormGroupID'      => $reportingScope['scopeType'] == 'Roll Group' ? $urlParams['scopeTypeID'] : null,
+        'gibbonFormGroupID'      => $reportingScope['scopeType'] == 'Form Group' ? $urlParams['scopeTypeID'] : null,
         'gibbonCourseClassID'    => $reportingScope['scopeType'] == 'Course' ? $urlParams['scopeTypeID'] : '',
         'gibbonPersonIDStudent'  => $gibbonPersonIDStudent,
         'status'               => !empty($_POST['complete'])? 'Complete' : 'In Progress',

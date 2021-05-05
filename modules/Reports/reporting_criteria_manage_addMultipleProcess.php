@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
 
     if ($scopeType == 'Year Group') {
         $identifier = 'gibbonYearGroupID';
-    } elseif ($scopeType == 'Roll Group') {
+    } elseif ($scopeType == 'Form Group') {
         $identifier = 'gibbonFormGroupID';
     } elseif ($scopeType == 'Course') {
         $identifier = 'gibbonCourseID';

@@ -182,7 +182,7 @@ else {
 							foreach ($choices as $t) {
 								try {
 									$data=array("gibbonMessengerID"=>$gibbonMessengerID, "t"=>$t, "staff"=>$staff, "students"=>$students, "parents"=>$parents);
-									$sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Roll Group', id=:t, staff=:staff, students=:students, parents=:parents" ;
+									$sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Form Group', id=:t, staff=:staff, students=:students, parents=:parents" ;
 									$result=$connection2->prepare($sql);
 									$result->execute($data);
 								}

@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
                     ->selected($urlParams['gibbonYearGroupID']);
         }
 
-        if ($reportingScope['scopeType'] == 'Roll Group') {
+        if ($reportingScope['scopeType'] == 'Form Group') {
             $scopeTypeID = $urlParams['gibbonFormGroupID'];
             $row = $form->addRow();
                 $row->addLabel('gibbonFormGroupID', __('Form Group'));

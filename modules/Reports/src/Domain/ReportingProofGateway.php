@@ -52,7 +52,7 @@ class ReportingProofGateway extends QueryableGateway
         return $this->runSelect($query);
     }
 
-    public function selectProofReadingByRollGroup($gibbonSchoolYearID, $gibbonFormGroupID)
+    public function selectProofReadingByFormGroup($gibbonSchoolYearID, $gibbonFormGroupID)
     {
         // COURSES
         $query = $this
@@ -256,7 +256,7 @@ class ReportingProofGateway extends QueryableGateway
             ->where('FIND_IN_SET(gibbonReportingCycle.gibbonReportingCycleID, :gibbonReportingCycleIDList)')
             ->bindValue('gibbonReportingCycleIDList', implode(',', $gibbonReportingCycleIDList))
             ->where("gibbonReportingProof.status='Edited'")
-            ->where("gibbonReportingScope.scopeType='Roll Group'");
+            ->where("gibbonReportingScope.scopeType='Form Group'");
 
         // YEAR GROUPS
         $query->unionAll()

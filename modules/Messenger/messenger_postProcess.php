@@ -499,7 +499,7 @@ else {
 						foreach ($choices as $t) {
 							try {
 								$data=array("AI"=>$AI, "t"=>$t, "staff"=>$staff, "students"=>$students, "parents"=>$parents);
-								$sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:AI, type='Roll Group', id=:t, staff=:staff, students=:students, parents=:parents" ;
+								$sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:AI, type='Form Group', id=:t, staff=:staff, students=:students, parents=:parents" ;
 								$result=$connection2->prepare($sql);
 								$result->execute($data);
 							}
@@ -518,7 +518,7 @@ else {
 									}
 									catch(PDOException $e) { }
 									while ($rowEmail=$resultEmail->fetch()) {
-										$report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Roll Group', $t, 'Email', $rowEmail["email"]);
+										$report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Form Group', $t, 'Email', $rowEmail["email"]);
 									}
 								}
 								if ($students=="Y") {
@@ -530,7 +530,7 @@ else {
 									}
 									catch(PDOException $e) { }
 									while ($rowEmail=$resultEmail->fetch()) {
-										$report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Roll Group', $t, 'Email', $rowEmail["email"]);
+										$report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Form Group', $t, 'Email', $rowEmail["email"]);
 									}
 								}
 								if ($parents=="Y") {
@@ -558,7 +558,7 @@ else {
 											}
 											catch(PDOException $e) { }
 											while ($rowEmail=$resultEmail->fetch()) {
-												$report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Roll Group', $t, 'Email', $rowEmail["email"], $rowStudents['gibbonPersonID'], Format::name('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student'));
+												$report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Form Group', $t, 'Email', $rowEmail["email"], $rowStudents['gibbonPersonID'], Format::name('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student'));
 											}
 										}
 									}
@@ -580,7 +580,7 @@ else {
 										$countryCodeTemp = $countryCode;
 										if ($rowEmail["countryCode"]=="")
 											$countryCodeTemp = $rowEmail["countryCode"];
-										$report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Roll Group', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
+										$report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Form Group', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 									}
 								}
 								if ($students=="Y") {
@@ -598,7 +598,7 @@ else {
 										$countryCodeTemp = $countryCode;
 										if ($rowEmail["countryCode"]=="")
 											$countryCodeTemp = $rowEmail["countryCode"];
-										$report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Roll Group', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
+										$report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Form Group', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 									}
 								}
 								if ($parents=="Y") {
@@ -632,7 +632,7 @@ else {
 												$countryCodeTemp = $countryCode;
 												if ($rowEmail["countryCode"]=="")
 													$countryCodeTemp = $rowEmail["countryCode"];
-												$report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Roll Group', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
+												$report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Form Group', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 											}
 										}
 									}

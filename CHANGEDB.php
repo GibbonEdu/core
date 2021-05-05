@@ -898,4 +898,18 @@ UPDATE gibbonAction SET URLList='report_lettersHome_byFormGroup.php', entryURL='
 UPDATE gibbonAction SET URLList='report_activityType_formGroup.php', entryURL='report_activityType_formGroup.php' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Activities') AND name='Activity Type by Form Group';end
 UPDATE gibbonAction SET URLList='report_activitySpread_rollGroup.php', entryURL='report_activitySpread_rollGroup.php' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Activities') AND name='Activity Spread by Form Group';end
 UPDATE gibbonAction SET URLList='report_students_byFormGroup.php,report_students_byFormGroup_print.php', entryURL='report_students_byFormGroup.php' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students') AND name='Students by Form Group';end
+ALTER TABLE gibbonAttendanceLogPerson CHANGE `context` `context` enum('Form Group','Roll Group','Class','Person','Future','Self Registration') DEFAULT NULL;end
+UPDATE gibbonAttendanceLogPerson SET context='Form Group' WHERE context='Roll Group';end
+ALTER TABLE gibbonAttendanceLogPerson CHANGE `context` `context` enum('Form Group','Class','Person','Future','Self Registration') DEFAULT NULL;end
+ALTER TABLE gibbonMessengerReceipt CHANGE `targetType` `targetType` enum('Class','Course','Form Group','Roll Group','Year Group','Activity','Role','Applicants','Individuals','Houses','Role Category','Transport','Attendance','Group') COLLATE utf8_unicode_ci NOT NULL;end
+UPDATE gibbonMessengerReceipt SET targetType='Form Group' WHERE targetType='Roll Group';end
+ALTER TABLE gibbonMessengerReceipt CHANGE `targetType` `targetType` enum('Class','Course','Form Group','Year Group','Activity','Role','Applicants','Individuals','Houses','Role Category','Transport','Attendance','Group') COLLATE utf8_unicode_ci NOT NULL;end
+ALTER TABLE gibbonMessengerTarget CHANGE `type` `type` enum('Class','Course','Form Group','Roll Group','Year Group','Activity','Role','Applicants','Individuals','Houses','Role Category','Transport','Attendance','Group') DEFAULT NULL;end
+UPDATE gibbonMessengerTarget SET type='Form Group' WHERE type='Roll Group';end
+ALTER TABLE gibbonMessengerTarget CHANGE `type` `type` enum('Class','Course','Form Group','Year Group','Activity','Role','Applicants','Individuals','Houses','Role Category','Transport','Attendance','Group') DEFAULT NULL;end
+ALTER TABLE gibbonReportingScope CHANGE `scopeType` `scopeType` enum('Year Group','Form Group','Roll Group','Course') NOT NULL DEFAULT 'Year Group';end
+UPDATE gibbonReportingScope SET scopeType='Form Group' WHERE scopeType='Roll Group';end
+ALTER TABLE gibbonReportingScope CHANGE `scopeType` `scopeType` enum('Year Group','Form Group','Course') NOT NULL DEFAULT 'Year Group';end
+
+
 ";

@@ -324,7 +324,7 @@ else {
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_any")) {
 					$selectedByRole = array('staff' => 'N', 'students' => 'N', 'parents' => 'N',);
 					$selected = array_reduce($targets, function($group, $item) use (&$selectedByRole) {
-						if ($item['type'] == 'Roll Group') {
+						if ($item['type'] == 'Form Group') {
 							$group[] = $item['id'];
 							$selectedByRole['staff'] = $item['staff'];
 							$selectedByRole['students'] = $item['students'];

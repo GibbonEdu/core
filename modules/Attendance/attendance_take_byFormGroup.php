@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
                     $defaultAttendanceType = getSettingByScope($connection2, 'Attendance', 'defaultFormGroupAttendanceType');
 
-                    //Check roll group
+                    //Check form group
 
                         $data = array('gibbonFormGroupID' => $gibbonFormGroupID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                         $sql = 'SELECT gibbonFormGroup.*, firstDay, lastDay FROM gibbonFormGroup JOIN gibbonSchoolYear ON (gibbonFormGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonFormGroupID=:gibbonFormGroupID AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID';
@@ -143,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                             echo '</div>';
                         }
 
-                        //Show roll group grid
+                        //Show form group grid
 
                             $dataFormGroup = array('gibbonFormGroupID' => $gibbonFormGroupID, 'date' => $currentDate);
                             $sqlFormGroup = "SELECT gibbonPerson.image_240, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.gibbonPersonID FROM gibbonStudentEnrolment INNER JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonFormGroupID=:gibbonFormGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date) ORDER BY rollOrder, surname, preferredName";
@@ -180,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                                 $log = ($result->rowCount() > 0)? $result->fetch() : $defaults;
 
-                                if ($log['prefill'] == 'N' && (($log['context'] == 'Roll Group' && $log['gibbonFormGroupID'] != $gibbonFormGroupID) || $log['context'] == 'Class') ) {
+                                if ($log['prefill'] == 'N' && (($log['context'] == 'Form Group' && $log['gibbonFormGroupID'] != $gibbonFormGroupID) || $log['context'] == 'Class') ) {
                                     $log = $defaults;
                                 }
 
@@ -246,7 +246,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                      ->maxLength(255)
                                      ->setValue($student['log']['comment'])
                                      ->setClass('mx-auto float-none w-32 m-0 mb-2');
-                                $cell->addContent($attendance->renderMiniHistory($student['gibbonPersonID'], 'Roll Group'));
+                                $cell->addContent($attendance->renderMiniHistory($student['gibbonPersonID'], 'Form Group'));
 
                                 $count++;
                             }
