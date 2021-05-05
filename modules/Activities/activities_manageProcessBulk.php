@@ -27,7 +27,7 @@ $search = $_POST['search'] ?? '';
 
 if (($gibbonSchoolYearIDCopyTo == '' and $action != 'Delete') or $action == '') { echo 'Fatal error loading this page!';
 } else {
-    $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_manage.php&search=$search";
+    $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_manage.php&search=$search";
 
     if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage.php') == false) {
         $URL .= '&return=error0';
@@ -59,7 +59,7 @@ if (($gibbonSchoolYearIDCopyTo == '' and $action != 'Delete') or $action == '') 
                     } else {
                         $row = $result->fetch();
                         $name = $row['name'];
-                        if ($gibbonSchoolYearIDCopyTo == $_SESSION[$guid]['gibbonSchoolYearID']) {
+                        if ($gibbonSchoolYearIDCopyTo == $session->get('gibbonSchoolYearID')) {
                             $name .= ' (Copy)';
                         }
 

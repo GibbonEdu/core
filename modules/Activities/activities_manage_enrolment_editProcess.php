@@ -27,7 +27,7 @@ $gibbonPersonID = $_GET['gibbonPersonID'];
 
 if ($gibbonActivityID == '' or $gibbonPersonID == '') { echo 'Fatal error loading this page!';
 } else {
-    $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_manage_enrolment_edit.php&gibbonPersonID=$gibbonPersonID&gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID'];
+    $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_manage_enrolment_edit.php&gibbonPersonID=$gibbonPersonID&gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID'];
 
     if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_enrolment_edit.php') == false) {
         $URL .= '&return=error0';
@@ -73,7 +73,7 @@ if ($gibbonActivityID == '' or $gibbonPersonID == '') { echo 'Fatal error loadin
                 //Set log
                 if ($statusOld != $status) {
                     $gibbonModuleID = getModuleIDFromName($connection2, 'Activities') ;
-                    $logGateway->addLog($_SESSION[$guid]['gibbonSchoolYearIDCurrent'], $gibbonModuleID, $_SESSION[$guid]['gibbonPersonID'], 'Activities - Student Status Changed', array('gibbonPersonIDStudent' => $gibbonPersonID, 'statusOld' => $statusOld, 'statusNew' => $status));
+                    $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), $gibbonModuleID, $_SESSION[$guid]['gibbonPersonID'], 'Activities - Student Status Changed', array('gibbonPersonIDStudent' => $gibbonPersonID, 'statusOld' => $statusOld, 'statusNew' => $status));
                 }
 
                 $URL .= '&return=success0';

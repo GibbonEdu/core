@@ -39,11 +39,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
     $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
     $enrolmentType = getSettingByScope($connection2, 'Activities', 'enrolmentType');
-    $schoolTerms = getTerms($connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
+    $schoolTerms = getTerms($connection2, $session->get('gibbonSchoolYearID'));
     $yearGroups = getYearGroups($connection2);
 
     $activityGateway = $container->get(ActivityGateway::class);
-    
+
     // CRITERIA
     $criteria = $activityGateway->newQueryCriteria(true)
         ->searchBy($activityGateway->getSearchableColumns(), $search)
@@ -60,11 +60,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
     $paymentOn = getSettingByScope($connection2, 'Activities', 'payment') != 'None' and getSettingByScope($connection2, 'Activities', 'payment') != 'Single';
 
-    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/activities_manage.php");
+    $form->addHiddenValue('q', "/modules/".$session->get('module')."/activities_manage.php");
 
     $row = $form->addRow();
         $row->addLabel('search', __('Search'))->description(__('Activity name.'));
@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $activities = $activityGateway->queryActivitiesBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
 
     // FORM
-    $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_manageProcessBulk.php');
+    $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/'.$_SESSION[$guid]['module'].'/activities_manageProcessBulk.php');
     $form->addHiddenValue('search', $search);
 
     $bulkActions = array(
@@ -181,9 +181,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
     if ($paymentOn) {
         $table->addColumn('payment', __('Cost'))
-            ->description($_SESSION[$guid]['currency'])
+            ->description($session->get('currency'))
             ->format(function($activity) {
-                $payment = ($activity['payment'] > 0) 
+                $payment = ($activity['payment'] > 0)
                     ? Format::currency($activity['payment']) . '<br/>' . __($activity['paymentType'])
                     : '<i>'.__('None').'</i>';
                 if ($activity['paymentFirmness'] != 'Finalised') $payment .= '<br/><i>'.__($activity['paymentFirmness']).'</i>';
@@ -194,7 +194,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
     $table->addColumn('provider', __('Provider'))
         ->format(function($activity) use ($guid){
-            return ($activity['provider'] == 'School')? $_SESSION[$guid]['organisationNameShort'] : __('External');
+            return ($activity['provider'] == 'School')? $session->get('organisationNameShort') : __('External');
         });
 
     $table->addColumn('enrolment', __('Enrolment'))
