@@ -56,6 +56,7 @@ v22.0.00
         Reports: clear report cache when editing template assets in Production
         Reports: added a download option to the student list of the View by Report page
         Reports: added a duplicate action in Template Builder
+        Reports: added pagination to the Proof Reading page
         Students: added Medical Form custom fields to student profile
         Students: updated Medical Data Summary to include medical custom fields
         Students: adjusted student select in Student Enrolment Add to only show unenrolled students
