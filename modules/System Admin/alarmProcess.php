@@ -29,9 +29,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $alarm = $_POST['alarm'];
-    $attachmentCurrent = $_POST['attachmentCurrent'];
-    $alarmCurrent = $_POST['alarmCurrent'];
+    $alarm = $_POST['alarm'] ?? '';
+    $attachmentCurrent = $_POST['attachmentCurrent'] ?? '';
+    $alarmCurrent = $_POST['alarmCurrent'] ?? '';
 
     //Validate Inputs
     if ($alarm != 'None' and $alarm != 'General' and $alarm != 'Lockdown' and $alarm != 'Custom' and $alarmCurrent != '') {
@@ -43,12 +43,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
         //Move attached file, if there is one
         if (!empty($_FILES['file']['tmp_name'])) {
             $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
-                
+
             $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 
             // Upload the file, return the /uploads relative path
             $attachment = $fileUploader->uploadFromPost($file, 'alarmSound');
-                
+
             if (empty($attachment)) {
                 $URL .= '&return=error1';
                 header("Location: {$URL}");
@@ -71,13 +71,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
 
         //Check for existing alarm
         $alarmTest = $alarmGateway->selectBy(['status' => 'Current'])->fetch();
-        
+
         //Alarm is being turned on, so insert new record
         if ($alarm == 'General' or $alarm == 'Lockdown' or $alarm == 'Custom') {
             if (empty($alarmTest)) {
                 //Write alarm to database
                 $data = ['type' => $alarm, 'status' => 'Current', 'gibbonPersonID' => $gibbon->session->get('gibbonPersonID'), 'timestampStart' => date('Y-m-d H:i:s')];
-                $alarmGateway->insert($data);    
+                $alarmGateway->insert($data);
             } else {
                 $alarmGateway->updateWhere(['gibbonAlarmID' => $alarmTest['gibbonAlarmID']], ['type' => $alarm]);
             }
