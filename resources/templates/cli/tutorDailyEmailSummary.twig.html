@@ -12,7 +12,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 {% set blankStyle = "background-color: #eeeeee;border-color: #dfdfdf;color: #555555;"%}
 
 <a href="{{ absoluteURL }}/index.php?q=/modules/Attendance/report_studentHistory.php&gibbonPersonID={{ student.gibbonPersonID }}" style="font-size: 12px;">
-    <b>{{ formatUsing('name', student.title, student.preferredName, student.surname, 'Student', true, true) }}</b> {{ student.rollGroup }}
+    <b>{{ formatUsing('name', student.title, student.preferredName, student.surname, 'Student', true, true) }}</b> {{ student.formGroup }}
 </a>
 <br/>
 
@@ -23,7 +23,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
     <td style="{{ schoolLog.scope == 'Onsite - Late' or schoolLog.scope == 'Offsite - Late' ? warningStyle : schoolLog.direction == 'Out' ? errorStyle : schoolLog.direction == 'In' ? successStyle : blankStyle }};padding: 4px;width:84px;text-align:center;font-size: 10px !important;">
         {{ __('School Attendance') }}<br/>
-        {{ student.rollGroup }}<br/>
+        {{ student.formGroup }}<br/>
         <b>{{ schoolLog.type ? __(schoolLog.type) : __('N/A') }}</b>
     </td>
 

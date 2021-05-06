@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
     //Proceed!
     
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-        $sql = "SELECT gibbonPerson.gibbonPersonID, transport, surname, preferredName, address1, address1District, address1Country, nameShort FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY transport, surname, preferredName";
+        $sql = "SELECT gibbonPerson.gibbonPersonID, transport, surname, preferredName, address1, address1District, address1Country, nameShort FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY transport, surname, preferredName";
         $result = $connection2->prepare($sql);
         $result->execute($data);
 
@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
 	$excel->getActiveSheet()->setCellValueByColumnAndRow(3, 1, __('Parents'));
     $excel->getActiveSheet()->getStyleByColumnAndRow(3, 1)->applyFromArray($style_border);
     $excel->getActiveSheet()->getStyleByColumnAndRow(3, 1)->applyFromArray($style_head_fill);
-	$excel->getActiveSheet()->setCellValueByColumnAndRow(4, 1, __('Form Group'));
+	$excel->getActiveSheet()->setCellValueByColumnAndRow(4, 1, __('gibbonFormGroupup'));
     $excel->getActiveSheet()->getStyleByColumnAndRow(4, 1)->applyFromArray($style_border);
     $excel->getActiveSheet()->getStyleByColumnAndRow(4, 1)->applyFromArray($style_head_fill);
 

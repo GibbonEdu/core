@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
                 return Format::nameLinked($person['gibbonPersonID'], '', $person['preferredName'], $person['surname'], 'Student', true, true, ['subpage' => 'Individual Needs', 'allStudents' => $allStudents]) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
             });
         $table->addColumn('yearGroup', __('Year Group'));
-        $table->addColumn('rollGroup', __('Form Group'));
+        $table->addColumn('formGroup', __('Form Group'));
 
         $table->addActionColumn()
             ->addParam('gibbonPersonID')

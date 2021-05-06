@@ -22,7 +22,7 @@ use Gibbon\Forms\CustomFieldHandler;
 include '../../gibbon.php';
 
 $gibbonFirstAidID = $_GET['gibbonFirstAidID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/firstAidRecord_edit.php&gibbonFirstAidID=$gibbonFirstAidID&gibbonRollGroupID=".$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'];
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/firstAidRecord_edit.php&gibbonFirstAidID=$gibbonFirstAidID&gibbonFormGroupID=".$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_edit.php') == false) {
     $URL .= '&return=error0';
@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
                     JOIN gibbonPerson AS patient ON (gibbonFirstAid.gibbonPersonIDPatient=patient.gibbonPersonID)
                     JOIN gibbonPerson AS firstAider ON (gibbonFirstAid.gibbonPersonIDFirstAider=firstAider.gibbonPersonID)
                     JOIN gibbonStudentEnrolment ON (patient.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                    JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                    JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                     JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
                 WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFirstAidID=:gibbonFirstAidID";
             $result = $connection2->prepare($sql);

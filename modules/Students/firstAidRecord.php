@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
         $page->breadcrumbs->add(__('First Aid Records'));
 
         $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : null;
-        $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : null;
+        $gibbonFormGroupID = isset($_GET['gibbonFormGroupID'])? $_GET['gibbonFormGroupID'] : null;
         $gibbonYearGroupID = isset($_GET['gibbonYearGroupID'])? $_GET['gibbonYearGroupID'] : null;
 
         echo '<h3>';
@@ -59,8 +59,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
             $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->placeholder()->selected($gibbonPersonID);
 
         $row = $form->addRow();
-            $row->addLabel('gibbonRollGroupID', __('Form Group'));
-            $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID);
+            $row->addLabel('gibbonFormGroupID', __('Form Group'));
+            $row->addSelectFormGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonFormGroupID);
 
         $row = $form->addRow();
             $row->addLabel('gibbonYearGroupID', __('Year Group'));
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
         $criteria = $firstAidGateway->newQueryCriteria(true)
             ->sortBy(['date', 'timeIn'], 'DESC')
             ->filterBy('student', $gibbonPersonID)
-            ->filterBy('rollGroup', $gibbonRollGroupID)
+            ->filterBy('formGroup', $gibbonFormGroupID)
             ->filterBy('yearGroup', $gibbonYearGroupID)
             ->fromPOST();
 
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
 
         $table->addHeaderAction('add', __('Add'))
             ->setURL('/modules/Students/firstAidRecord_add.php')
-            ->addParam('gibbonRollGroupID', $gibbonRollGroupID)
+            ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
             ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
             ->displayLabel();
 
@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
             ->format(function($person) use ($guid) {
                 $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonIDPatient'].'&subpage=Medical&search=&allStudents=&sort=surname,preferredName';
                 return Format::link($url, Format::name('', $person['preferredNamePatient'], $person['surnamePatient'], 'Student', true))
-                      .'<br/><small><i>'.$person['rollGroup'].'</i></small>';
+                      .'<br/><small><i>'.$person['formGroup'].'</i></small>';
             });
 
         $table->addColumn('firstAider', __('First Aider'))
@@ -132,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
 
         $table->addActionColumn()
             ->addParam('gibbonPersonID', $gibbonPersonID)
-            ->addParam('gibbonRollGroupID', $gibbonRollGroupID)
+            ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
             ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
             ->addParam('gibbonFirstAidID')
             ->format(function ($person, $actions) {

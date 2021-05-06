@@ -19,11 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonStringID = $_GET['gibbonStringID'];
-$search = '';
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-}
+$gibbonStringID = $_GET['gibbonStringID'] ?? '';
+$search = $_GET['search'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/stringReplacement_manage_edit.php&gibbonStringID=$gibbonStringID&search=$search";
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplacement_manage_edit.php') == false) {
@@ -51,11 +48,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
             header("Location: {$URL}");
         } else {
             //Validate Inputs
-            $original = $_POST['original'];
-            $replacement = $_POST['replacement'];
-            $mode = $_POST['mode'];
-            $caseSensitive = $_POST['caseSensitive'];
-            $priority = $_POST['priority'];
+            $original = $_POST['original'] ?? '';
+            $replacement = $_POST['replacement'] ?? '';
+            $mode = $_POST['mode'] ?? '';
+            $caseSensitive = $_POST['caseSensitive'] ?? '';
+            $priority = $_POST['priority'] ?? '';
 
             if ($original == '' or $replacement == '' or $mode == '' or $caseSensitive == '' or $priority == '') {
                 $URL .= '&return=error3';

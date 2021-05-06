@@ -73,7 +73,7 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                     exit;
                 } else {
                     $gibbonYearGroupID = $_POST['gibbonYearGroupID'];
-                    $gibbonRollGroupID = $_POST['gibbonRollGroupID'];
+                    $gibbonFormGroupID = $_POST['gibbonFormGroupID'];
                     $rollOrder = $_POST['rollOrder'];
                     if ($rollOrder == '') {
                         $rollOrder = null;
@@ -81,8 +81,8 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 
                     //Check unique inputs for uniquness
                     try {
-                        $data = array('rollOrder' => $rollOrder, 'gibbonRollGroupID' => $gibbonRollGroupID);
-                        $sql = "SELECT * FROM gibbonStudentEnrolment WHERE rollOrder=:rollOrder AND gibbonRollGroupID=:gibbonRollGroupID AND NOT rollOrder=''";
+                        $data = array('rollOrder' => $rollOrder, 'gibbonFormGroupID' => $gibbonFormGroupID);
+                        $sql = "SELECT * FROM gibbonStudentEnrolment WHERE rollOrder=:rollOrder AND gibbonFormGroupID=:gibbonFormGroupID AND NOT rollOrder=''";
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
@@ -98,8 +98,8 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                     } else {
                         //Write to database
                         try {
-                            $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonYearGroupID' => $gibbonYearGroupID, 'gibbonRollGroupID' => $gibbonRollGroupID, 'rollOrder' => $rollOrder);
-                            $sql = 'INSERT INTO gibbonStudentEnrolment SET gibbonPersonID=:gibbonPersonID, gibbonSchoolYearID=:gibbonSchoolYearID, gibbonYearGroupID=:gibbonYearGroupID, gibbonRollGroupID=:gibbonRollGroupID, rollOrder=:rollOrder';
+                            $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonYearGroupID' => $gibbonYearGroupID, 'gibbonFormGroupID' => $gibbonFormGroupID, 'rollOrder' => $rollOrder);
+                            $sql = 'INSERT INTO gibbonStudentEnrolment SET gibbonPersonID=:gibbonPersonID, gibbonSchoolYearID=:gibbonSchoolYearID, gibbonYearGroupID=:gibbonYearGroupID, gibbonFormGroupID=:gibbonFormGroupID, rollOrder=:rollOrder';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
@@ -114,12 +114,12 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                         // Handle automatic course enrolment if enabled
                         $autoEnrolStudent = (isset($_POST['autoEnrolStudent']))? $_POST['autoEnrolStudent'] : 'N';
                         if ($autoEnrolStudent == 'Y') {
-                            $data = array('gibbonRollGroupID' => $gibbonRollGroupID, 'gibbonPersonID' => $gibbonPersonID, 'dateEnrolled' => date('Y-m-d'));
+                            $data = array('gibbonFormGroupID' => $gibbonFormGroupID, 'gibbonPersonID' => $gibbonPersonID, 'dateEnrolled' => date('Y-m-d'));
                             $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `dateEnrolled`, `reportable`)
                                     SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, 'Student', :dateEnrolled, 'Y'
                                     FROM gibbonCourseClassMap
                                     LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID AND gibbonCourseClassPerson.role='Student')
-                                    WHERE gibbonCourseClassMap.gibbonRollGroupID=:gibbonRollGroupID
+                                    WHERE gibbonCourseClassMap.gibbonFormGroupID=:gibbonFormGroupID
                                     AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL";
                             $pdo->executeQuery($data, $sql);
 

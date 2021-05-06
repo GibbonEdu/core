@@ -402,7 +402,7 @@ if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $_SESSION[$guid]['gibbonPerson
                         }
                     }
                     echo '</tr>';
-                    if (mb_strlen($rowEntry['comment']) > 200) {
+                    if ($rowEntry['commentOn'] == 'Y' && mb_strlen($rowEntry['comment']) > 200) {
                         echo "<tr class='comment-$entryCount' id='comment-$entryCount'>";
                         echo '<td colspan=6>';
                         echo nl2br($rowEntry['comment']);

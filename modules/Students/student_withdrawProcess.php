@@ -23,7 +23,7 @@ use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\School\YearGroupGateway;
-use Gibbon\Domain\RollGroups\RollGroupGateway;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
 
@@ -90,9 +90,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_withdraw.
         if (!empty($notify) || !empty($notificationList)) {
             // Create the notification body
             $studentName = Format::name('', $student['preferredName'], $student['surname'], 'Student', false, true);
-            $notificationString = __('{student} {rollGroup} has withdrawn from {school} on {date}.', [
+            $notificationString = __('{student} {formGroup} has withdrawn from {school} on {date}.', [
                 'student'   => $studentName,
-                'rollGroup'   => $student['rollGroup'],
+                'formGroup'   => $student['formGroup'],
                 'school'    => $gibbon->session->get('organisationNameShort'),
                 'date'      => Format::date($data['dateEnd']),
             ]);
@@ -126,10 +126,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_withdraw.
 
             // Form Tutors
             if (in_array('tutors', $notify)) {
-                $rollGroup = $container->get(RollGroupGateway::class)->getByID($student['gibbonRollGroupID']);
-                $event->addRecipient($rollGroup['gibbonPersonIDTutor']);
-                $event->addRecipient($rollGroup['gibbonPersonIDTutor2']);
-                $event->addRecipient($rollGroup['gibbonPersonIDTutor3']);
+                $formGroup = $container->get(FormGroupGateway::class)->getByID($student['gibbonFormGroupID']);
+                $event->addRecipient($formGroup['gibbonPersonIDTutor']);
+                $event->addRecipient($formGroup['gibbonPersonIDTutor2']);
+                $event->addRecipient($formGroup['gibbonPersonIDTutor3']);
             }
 
             // Class Teachers

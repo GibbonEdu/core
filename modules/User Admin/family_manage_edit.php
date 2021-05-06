@@ -119,12 +119,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                 $children[$count]['comment'] = $rowChildren['comment'];
 
                 $dataDetail = array('gibbonPersonID' => $rowChildren['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                $sqlDetail = 'SELECT * FROM gibbonRollGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID';
+                $sqlDetail = 'SELECT * FROM gibbonFormGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID';
                 $resultDetail = $pdo->select($sqlDetail, $dataDetail);
 
                 if ($resultDetail->rowCount() == 1) {
                     $rowDetail = $resultDetail->fetch();
-                    $children[$count]['rollGroup'] = $rowDetail['name'];
+                    $children[$count]['formGroup'] = $rowDetail['name'];
                 }
 
                 ++$count;
@@ -217,7 +217,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             $table->addColumn('status', __('Status'));
 
-            $table->addColumn('rollGroup', __('Form Group'));
+            $table->addColumn('formGroup', __('Form Group'));
             $table->addColumn('comment', __('Comment'))
                 ->format(function ($child) {
                     return nl2br($child['comment']);
@@ -251,7 +251,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             $row = $form->addRow();
                 $row->addLabel('gibbonPersonID', __('Child\'s Name'));
-                $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array('allStudents' => true, 'byName' => true, 'byRoll' => true, 'showRoll' => true))->placeholder()->required();
+                $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array('allStudents' => true, 'byName' => true, 'byForm' => true, 'showForm' => true))->placeholder()->required();
 
             $row = $form->addRow();
                 $row->addLabel('comment', __('Comment'));

@@ -83,8 +83,8 @@ class ReportingScopeGateway extends QueryableGateway
         if ($scopeType == 'Year Group') {
             $query->where('gibbonReportingCriteria.gibbonYearGroupID=:scopeTypeID')
                   ->bindValue('scopeTypeID', $scopeTypeID);
-        } elseif ($scopeType == 'Roll Group') {
-            $query->where('gibbonReportingCriteria.gibbonRollGroupID=:scopeTypeID')
+        } elseif ($scopeType == 'Form Group') {
+            $query->where('gibbonReportingCriteria.gibbonFormGroupID=:scopeTypeID')
                   ->bindValue('scopeTypeID', $scopeTypeID);
         } elseif ($scopeType == 'Course') {
             $query->innerJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseID=gibbonReportingCriteria.gibbonCourseID')

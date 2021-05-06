@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
     $sort = !empty($_REQUEST['sort'])? $_REQUEST['sort'] : 'surname';
 
     $gibbonCourseClassID = (isset($_REQUEST["gibbonCourseClassID"]))? $_REQUEST["gibbonCourseClassID"] : 0;
-    $gibbonRollGroupID = (isset($_REQUEST["gibbonRollGroupID"]))? $_REQUEST["gibbonRollGroupID"] : 0;
+    $gibbonFormGroupID = (isset($_REQUEST["gibbonFormGroupID"]))? $_REQUEST["gibbonFormGroupID"] : 0;
 
     $gibbonAttendanceCodeID = (isset($_REQUEST["gibbonAttendanceCodeID"]))? $_REQUEST["gibbonAttendanceCodeID"] : 0;
     $reportType = (empty($gibbonAttendanceCodeID))? 'types' : 'reasons';
@@ -86,8 +86,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
     if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
         $options["class"] = __('Class');
     }
-    if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
-        $options["rollGroup"] = __('Form Group');
+    if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byFormGroup.php")) {
+        $options["formGroup"] = __('Form Group');
     }
     $row = $form->addRow();
         $row->addLabel('group', __('Group By'));
@@ -98,14 +98,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
         $row->addLabel('gibbonCourseClassID', __('Class'));
         $row->addSelectClass('gibbonCourseClassID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonCourseClassID)->placeholder()->required();
 
-    $form->toggleVisibilityByClass('rollGroup')->onSelect('group')->when('rollGroup');
-    $row = $form->addRow()->addClass('rollGroup');
-        $row->addLabel('gibbonRollGroupID', __('Form Group'));
-        $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->placeholder()->required();
+    $form->toggleVisibilityByClass('formGroup')->onSelect('group')->when('formGroup');
+    $row = $form->addRow()->addClass('formGroup');
+        $row->addLabel('gibbonFormGroupID', __('Form Group'));
+        $row->addSelectFormGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonFormGroupID)->placeholder()->required();
 
     $row = $form->addRow();
         $row->addLabel('sort', __('Sort By'));
-        $row->addSelect('sort')->fromArray(array('surname' => __('Surname'), 'preferredName' => __('Preferred Name'), 'rollGroup' => __('Form Group')))->selected($sort)->required();
+        $row->addSelect('sort')->fromArray(array('surname' => __('Surname'), 'preferredName' => __('Preferred Name'), 'formGroup' => __('Form Group')))->selected($sort)->required();
 
     $row = $form->addRow();
         $row->addFooter();
@@ -201,19 +201,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
             $orderBy = 'ORDER BY surname, preferredName';
             if ($sort == 'preferredName')
                 $orderBy = 'ORDER BY preferredName, surname';
-            if ($sort == 'rollGroup')
-                $orderBy = ' ORDER BY LENGTH(rollGroup), rollGroup, surname, preferredName';
+            if ($sort == 'formGroup')
+                $orderBy = ' ORDER BY LENGTH(formGroup), formGroup, surname, preferredName';
 
             if ($group == 'all') {
-                $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonRollGroup.nameShort AS rollGroup, surname, preferredName, $sqlSelect FROM gibbonAttendanceLogPerson JOIN gibbonAttendanceCode ON (gibbonAttendanceLogPerson.type=gibbonAttendanceCode.name) JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE date>=:dateStart AND date<=:dateEnd AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID";
+                $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonFormGroup.nameShort AS formGroup, surname, preferredName, $sqlSelect FROM gibbonAttendanceLogPerson JOIN gibbonAttendanceCode ON (gibbonAttendanceLogPerson.type=gibbonAttendanceCode.name) JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE date>=:dateStart AND date<=:dateEnd AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID";
             }
             else if ($group == 'class') {
                 $data['gibbonCourseClassID'] = $gibbonCourseClassID;
-                $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonRollGroup.nameShort AS rollGroup, surname, preferredName, $sqlSelect FROM gibbonAttendanceLogPerson JOIN gibbonAttendanceCode ON (gibbonAttendanceLogPerson.type=gibbonAttendanceCode.name) JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE date>=:dateStart AND date<=:dateEnd AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonAttendanceLogPerson.context='Class' AND gibbonAttendanceLogPerson.gibbonCourseClassID=:gibbonCourseClassID";
+                $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonFormGroup.nameShort AS formGroup, surname, preferredName, $sqlSelect FROM gibbonAttendanceLogPerson JOIN gibbonAttendanceCode ON (gibbonAttendanceLogPerson.type=gibbonAttendanceCode.name) JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE date>=:dateStart AND date<=:dateEnd AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonAttendanceLogPerson.context='Class' AND gibbonAttendanceLogPerson.gibbonCourseClassID=:gibbonCourseClassID";
             }
-            else if ($group == 'rollGroup') {
-                $data['gibbonRollGroupID'] = $gibbonRollGroupID;
-                $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonRollGroup.nameShort AS rollGroup, surname, preferredName, $sqlSelect FROM gibbonAttendanceLogPerson JOIN gibbonAttendanceCode ON (gibbonAttendanceLogPerson.type=gibbonAttendanceCode.name) JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE date>=:dateStart AND date<=:dateEnd AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonRollGroupID=:gibbonRollGroupID AND gibbonAttendanceLogPerson.context='Roll Group'";
+            else if ($group == 'formGroup') {
+                $data['gibbonFormGroupID'] = $gibbonFormGroupID;
+                $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonFormGroup.nameShort AS formGroup, surname, preferredName, $sqlSelect FROM gibbonAttendanceLogPerson JOIN gibbonAttendanceCode ON (gibbonAttendanceLogPerson.type=gibbonAttendanceCode.name) JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE date>=:dateStart AND date<=:dateEnd AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonFormGroupID=:gibbonFormGroupID AND gibbonAttendanceLogPerson.context='Form Group'";
             }
 
             if ( !empty($gibbonAttendanceCodeID) ) {
@@ -240,7 +240,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
         } else {
 
             echo "<div class='linkTop'>";
-            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_summary_byDate_print.php&dateStart='.dateConvertBack($guid, $dateStart).'&dateEnd='.dateConvertBack($guid, $dateEnd).'&gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonRollGroupID='.$gibbonRollGroupID.'&gibbonAttendanceCodeID='. $gibbonAttendanceCodeID .'&group=' . $group . '&sort=' . $sort . "'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_summary_byDate_print.php&dateStart='.dateConvertBack($guid, $dateStart).'&dateEnd='.dateConvertBack($guid, $dateEnd).'&gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonAttendanceCodeID='. $gibbonAttendanceCodeID .'&group=' . $group . '&sort=' . $sort . "'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
             echo '</div>';
 
             echo '<table cellspacing="0" class="fullWidth colorOddEven" >';
@@ -272,7 +272,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 
             if ($reportType == 'types') {
 
-                $href= $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_summary_byDate.php&dateStart='.dateConvertBack($guid, $dateStart).'&dateEnd='.dateConvertBack($guid, $dateEnd).'&gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonRollGroupID='.$gibbonRollGroupID.'&group=' . $group . '&sort=' . $sort;
+                $href= $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_summary_byDate.php&dateStart='.dateConvertBack($guid, $dateStart).'&dateEnd='.dateConvertBack($guid, $dateEnd).'&gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&group=' . $group . '&sort=' . $sort;
 
                 for( $i = 0; $i < count($attendanceCodes['In']); $i++ ) {
                     echo '<th class="'.( $i == 0? 'verticalHeader columnDivider' : 'verticalHeader').'" title="'.__($attendanceCodes['In'][$i]['scope']).'">';
@@ -307,7 +307,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                 // ROW
                 echo "<tr>";
                 echo '<td>';
-                    echo $row['rollGroup'];
+                    echo $row['formGroup'];
                 echo '</td>';
                 echo '<td>';
                     echo '<a href="index.php?q=/modules/Attendance/report_studentHistory.php&gibbonPersonID='.$row['gibbonPersonID'].'" target="_blank">';

@@ -27,12 +27,12 @@ use Gibbon\Domain\Students\StudentGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activityType_rollGroup.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activityType_formGroup.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : null;
+    $gibbonFormGroupID = isset($_GET['gibbonFormGroupID'])? $_GET['gibbonFormGroupID'] : null;
     $status = isset($_GET['status'])? $_GET['status'] : null;
     $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
 
@@ -47,11 +47,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setClass('noIntBorder fullWidth');
 
-        $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_activityType_rollGroup.php");
+        $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_activityType_formGroup.php");
 
         $row = $form->addRow();
-            $row->addLabel('gibbonRollGroupID', __('Form Group'));
-            $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->required();
+            $row->addLabel('gibbonFormGroupID', __('Form Group'));
+            $row->addSelectFormGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonFormGroupID)->required();
 
         $row = $form->addRow();
             $row->addLabel('status', __('Status'));
@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         echo $form->getOutput();
     }
 
-    if (empty($gibbonRollGroupID)) return;
+    if (empty($gibbonFormGroupID)) return;
 
     $activityGateway = $container->get(ActivityReportGateway::class);
     $studentGateway = $container->get(StudentGateway::class);
@@ -76,10 +76,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         ->pageSize(!empty($viewMode) ? 0 : 50)
         ->fromPOST();
 
-    $rollGroups = $studentGateway->queryStudentEnrolmentByRollGroup($criteria, $gibbonRollGroupID);
+    $formGroups = $studentGateway->queryStudentEnrolmentByFormGroup($criteria, $gibbonFormGroupID);
 
     // Build a set of activity counts for each student
-    $rollGroups->transform(function(&$student) use ($activityGateway,  $status) {
+    $formGroups->transform(function(&$student) use ($activityGateway,  $status) {
         $activities = $activityGateway->selectActivitiesByStudent($student['gibbonSchoolYearID'], $student['gibbonPersonID'], $status)->fetchAll();
         $student['total'] = count($activities);
         $student['activities'] = array();
@@ -95,11 +95,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     $activityTypes = array_map('trim', explode(',', $activityTypeSetting));
 
     // DATA TABLE
-    $table = ReportTable::createPaginated('activityType_rollGroup', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('activityType_formGroup', $criteria)->setViewMode($viewMode, $gibbon->session);
 
     $table->setTitle(__('Activity Type by Form Group'));
 
-    $table->addColumn('rollGroup', __('Form Group'))->width('10%');
+    $table->addColumn('formGroup', __('Form Group'))->width('10%');
     $table->addColumn('student', __('Student'))
         ->width('25%')
         ->sortable(['surname', 'preferredName'])
@@ -119,5 +119,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 
     $table->addColumn('total', __('Total'))->notSortable()->width('10%');
 
-    echo $table->render($rollGroups);
+    echo $table->render($formGroups);
 }
