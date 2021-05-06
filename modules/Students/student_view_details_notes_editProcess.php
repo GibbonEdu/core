@@ -22,13 +22,10 @@ use Gibbon\Domain\System\LogGateway;
 include '../../gibbon.php';
 
 $logGateway = $container->get(LogGateway::class);
-$gibbonPersonID = $_GET['gibbonPersonID'];
-$subpage = $_GET['subpage'];
-$gibbonStudentNoteID = $_GET['gibbonStudentNoteID'];
-$allStudents = '';
-if (isset($_GET['allStudents'])) {
-    $allStudents = $_GET['allStudents'];
-}
+$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+$subpage = $_GET['subpage'] ?? '';
+$gibbonStudentNoteID = $_GET['gibbonStudentNoteID'] ?? '';
+$allStudents = $_GET['allStudents'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/student_view_details_notes_edit.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=Notes&gibbonStudentNoteID=$gibbonStudentNoteID&category=".$_GET['category']."&allStudents=$allStudents";
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details_notes_edit.php') == false) {
@@ -73,12 +70,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                 } else {
                     $row = $result->fetch();
                     //Validate Inputs
-                    $title = $_POST['title'];
+                    $title = $_POST['title'] ?? '';
                     $gibbonStudentNoteCategoryID = $_POST['gibbonStudentNoteCategoryID'];
                     if ($gibbonStudentNoteCategoryID == '') {
                         $gibbonStudentNoteCategoryID = null;
                     }
-                    $note = $_POST['note'];
+                    $note = $_POST['note'] ?? '';
 
                     if ($note == '') {
                         $URL .= '&return=error3';

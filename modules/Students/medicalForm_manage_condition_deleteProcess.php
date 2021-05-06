@@ -20,9 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 //Check if school year specified
-$gibbonPersonMedicalID = $_GET['gibbonPersonMedicalID'];
-$gibbonPersonMedicalConditionID = $_GET['gibbonPersonMedicalConditionID'];
-$search = $_GET['search'];
+$gibbonPersonMedicalID = $_GET['gibbonPersonMedicalID'] ?? '';
+$gibbonPersonMedicalConditionID = $_GET['gibbonPersonMedicalConditionID'] ?? '';
+$search = $_GET['search'] ?? '';
 if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/medicalForm_manage_condition_delete.php&gibbonPersonMedicalID=$gibbonPersonMedicalID&gibbonPersonMedicalConditionID=$gibbonPersonMedicalConditionID&search=$search";
