@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
     $privacy = $_POST['privacy'] ?? '';
     $privacyBlurb = $_POST['privacyBlurb'] ?? null;
     $privacyOptions = $_POST['privacyOptions'] ?? null;
-    $uniqueEmailAddress = (isset($_POST['uniqueEmailAddress'])) ? $_POST['uniqueEmailAddress'] : 'N';
+    $uniqueEmailAddress = $_POST['uniqueEmailAddress'] ?? 'N';
     $personalBackground = $_POST['personalBackground'] ?? '';
 
     //Write to database
