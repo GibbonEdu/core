@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonTTColumnRowID = $_GET['gibbonTTColumnRowID'];
-$gibbonTTColumnID = $_GET['gibbonTTColumnID'];
+$gibbonTTColumnRowID = $_GET['gibbonTTColumnRowID'] ?? '';
+$gibbonTTColumnID = $_GET['gibbonTTColumnID'] ?? '';
 
 if ($gibbonTTColumnID == '') { echo 'Fatal error loading this page!';
 } else {

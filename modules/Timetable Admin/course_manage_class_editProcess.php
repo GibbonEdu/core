@@ -21,9 +21,9 @@ use Gibbon\Forms\CustomFieldHandler;
 
 include '../../gibbon.php';
 
-$gibbonCourseClassID = $_POST['gibbonCourseClassID'];
-$gibbonCourseID = $_POST['gibbonCourseID'];
-$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
+$gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
+$gibbonCourseID = $_POST['gibbonCourseID'] ?? '';
+$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
 
 if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 } else {
@@ -55,10 +55,10 @@ if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error load
                 header("Location: {$URL}");
             } else {
                 //Validate Inputs
-                $name = $_POST['name'];
-                $nameShort = $_POST['nameShort'];
-                $reportable = $_POST['reportable'];
-                $attendance = (isset($_POST['attendance']))? $_POST['attendance'] : 'N';
+                $name = $_POST['name'] ?? '';
+                $nameShort = $_POST['nameShort'] ?? '';
+                $reportable = $_POST['reportable'] ?? '';
+                $attendance = $_POST['attendance'] ?? 'N';
 
                 $customRequireFail = false;
                 $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Class', [], $customRequireFail);

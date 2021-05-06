@@ -21,12 +21,12 @@ use Gibbon\Forms\CustomFieldHandler;
 
 include '../../gibbon.php';
 
-$name = $_POST['name'];
-$nameShort = $_POST['nameShort'];
-$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
-$gibbonCourseID = $_POST['gibbonCourseID'];
-$reportable = $_POST['reportable'];
-$attendance = (isset($_POST['attendance']))? $_POST['attendance'] : 'N';
+$name = $_POST['name'] ?? '';
+$nameShort = $_POST['nameShort'] ?? '';
+$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
+$gibbonCourseID = $_POST['gibbonCourseID'] ?? '';
+$reportable = $_POST['reportable'] ?? '';
+$attendance = $_POST['attendance'] ?? 'N';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/course_manage_class_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID";
 

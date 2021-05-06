@@ -19,13 +19,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$name = $_POST['name'];
-$nameShort = $_POST['nameShort'];
-$timeStart = $_POST['timeStart'];
-$timeEnd = $_POST['timeEnd'];
-$type = $_POST['type'];
+$name = $_POST['name'] ?? '';
+$nameShort = $_POST['nameShort'] ?? '';
+$timeStart = $_POST['timeStart'] ?? '';
+$timeEnd = $_POST['timeEnd'] ?? '';
+$type = $_POST['type'] ?? '';
 
-$gibbonTTColumnID = $_POST['gibbonTTColumnID'];
+$gibbonTTColumnID = $_POST['gibbonTTColumnID'] ?? '';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/ttColumn_edit_row_add.php&gibbonTTColumnID=$gibbonTTColumnID";
 
