@@ -340,8 +340,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $resultDetail->execute($dataDetail);
                             if ($resultDetail->rowCount() == 1) {
                                 $rowDetail = $resultDetail->fetch();
-                                if (isActionAccessible($guid, $connection2, '/modules/gibbonFormGroupups/formGroups_details.php')) {
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/gibbonFormGroupups/formGroups_details.php&gibbonFormGroupID='.$rowDetail['gibbonFormGroupID']."'>".$rowDetail['name'].'</a>';
+                                if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_details.php')) {
+                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Form Groups/formGroups_details.php&gibbonFormGroupID='.$rowDetail['gibbonFormGroupID']."'>".$rowDetail['name'].'</a>';
                                 } else {
                                     echo $rowDetail['name'];
                                 }
@@ -2007,7 +2007,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     });
 
                                 $table->addColumn('yearGroup', __('Year Group'))->width('15%');
-                                $table->addColumn('formGroup', __('gibbonFormGroupup'))->width('15%');
+                                $table->addColumn('formGroup', __('Form Group'))->width('15%');
                                 $table->addColumn('timestampModified', __('Date'))
                                     ->width('30%')
                                     ->format(function ($report) {

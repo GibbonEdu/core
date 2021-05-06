@@ -475,7 +475,7 @@ use Gibbon\Services\Format;
                                     }
                                 }
                                 echo '</tr>';
-                                if (mb_strlen($rowEntry['comment']) > 200) {
+                                if ($rowEntry['commentOn'] == 'Y' && mb_strlen($rowEntry['comment']) > 200) {
                                     echo "<tr class='comment-$entryCount' id='comment-$entryCount'>";
                                     echo '<td colspan=6>';
                                     echo nl2br($rowEntry['comment']);

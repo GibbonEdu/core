@@ -911,5 +911,4 @@ ALTER TABLE gibbonReportingScope CHANGE `scopeType` `scopeType` enum('Year Group
 UPDATE gibbonReportingScope SET scopeType='Form Group' WHERE scopeType='Roll Group';end
 ALTER TABLE gibbonReportingScope CHANGE `scopeType` `scopeType` enum('Year Group','Form Group','Course') NOT NULL DEFAULT 'Year Group';end
 
-
 ";

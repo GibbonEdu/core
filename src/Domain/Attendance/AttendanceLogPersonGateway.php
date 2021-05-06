@@ -308,7 +308,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
             ->newQuery()
             ->from('gibbonAttendanceLogPerson')
             ->cols([
-                'gibbonAttendanceLogPersonID', 'gibbonAttendanceLogPerson.type', 'gibbonAttendanceLogPerson.reason', 'gibbonAttendanceLogPerson.comment', 'gibbonAttendanceLogPerson.date','gibbonAttendanceLogPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.username', 'gibbonPerson.status', 'gibbonFormGroup.nameShort as formformGroup', 'gibbonYearGroup.nameShort as yearGroup', 'gibbonCourse.nameShort as courseName', 'gibbonCourseClass.nameShort as className'
+                'gibbonAttendanceLogPersonID', 'gibbonAttendanceLogPerson.type', 'gibbonAttendanceLogPerson.reason', 'gibbonAttendanceLogPerson.comment', 'gibbonAttendanceLogPerson.date','gibbonAttendanceLogPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.username', 'gibbonPerson.status', 'gibbonFormGroup.nameShort as formGroup', 'gibbonYearGroup.nameShort as yearGroup', 'gibbonCourse.nameShort as courseName', 'gibbonCourseClass.nameShort as className'
             ])
             ->innerJoin('gibbonPerson', 'gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID')
             ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID')
