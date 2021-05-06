@@ -31,7 +31,7 @@ if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
         header("Location: {$URL}");
     } else {
         //Validate Inputs
-        $relationships = $_POST['relationships'] ?? '';
+        $relationships = $_POST['relationships'] ?? [];
         $gibbonPersonID1 = $_POST['gibbonPersonID1'] ?? '';
         $gibbonPersonID2 = $_POST['gibbonPersonID2'] ?? '';
 
