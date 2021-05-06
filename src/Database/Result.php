@@ -86,6 +86,6 @@ class Result extends PDOStatement implements ResultContract
      */
     public function toDataSet()
     {
-        return new DataSet($this->fetchAll());
+        return new DataSet($this->isNotEmpty()? $this->fetchAll() : []);
     }
 }

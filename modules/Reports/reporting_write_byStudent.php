@@ -364,25 +364,27 @@ function updateStatus() {
 
 function displayStatus(){
     if (readonly) {
-        $('.reportStatus td').addClass('dull');
+        $('.reportStatus div').addClass('bg-gray-300');
         $('.reportStatus h4').html('<?php echo __('Read-only') ?>');
     } else if (complete) {
-        $('#reportingWrite table').removeClass('border-blue-600').addClass('border-green-600');
-        $('.reportStatus td').removeClass('message').addClass('success');
+        $('#reportingWrite .standardForm').removeClass('border-blue-600').addClass('border-green-600');
+        $('.reportStatus div').removeClass('bg-blue-200').addClass('bg-green-200');
         $('.reportStatus h4').html('<?php echo __('Complete') ?>');
     } else if (edited) {
-        $('#reportingWrite table').removeClass('border-green-600').addClass('border-blue-600');
-        $('.reportStatus td').removeClass('success').addClass('message');
+        $('#reportingWrite .standardForm').removeClass('border-green-600').addClass('border-blue-600');
+        $('.reportStatus div').removeClass('bg-green-200').addClass('bg-blue-200');
         $('.reportStatus h4').html('<?php echo __('Editing') ?>');
     } else {
-        $('#reportingWrite table').removeClass('border-green-600');
-        $('.reportStatus td').removeClass('success');
+        $('#reportingWrite .standardForm').removeClass('border-green-600');
+        $('.reportStatus div').removeClass('bg-green-200');
     }
 
     $('input[value="Save & Next"]').toggle(complete);
 
     if (edited) {
         $('.unsavedChanges').show();
+        $('#reportingWrite .standardForm').removeClass('border-green-600').addClass('border-blue-600');
+        $('.reportStatus div').removeClass('bg-green-200').addClass('bg-blue-200');
         $('.reportStatus h4').html($('.reportStatus h4').html() + '<span class="inline-block pl-4 normal-case font-normal text-gray-700 text-xs align-middle"><?php echo __('There are unsaved changes on this page.') ?></span>');
     }
 }
