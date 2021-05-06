@@ -369,6 +369,11 @@ $('input.statusInput').change(function() {
         details.addClass('error bg-red-100');
         details.find('textarea').attr('readonly', false);
     }
+
+    window.onbeforeunload = function(event) {
+        if (event.explicitOriginalTarget.value=='Save') return;
+        return "<?php echo __('There are unsaved changes on this page.') ?>";
+    };
 });
 
 </script>
