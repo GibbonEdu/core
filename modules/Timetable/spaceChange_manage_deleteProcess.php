@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonCourseClassID = $_POST['gibbonCourseClassID'];
-$gibbonTTSpaceChangeID = $_GET['gibbonTTSpaceChangeID'];
+$gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
+$gibbonTTSpaceChangeID = $_GET['gibbonTTSpaceChangeID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/spaceChange_manage_delete.php&gibbonTTSpaceChangeID='.$gibbonTTSpaceChangeID.'&gibbonCourseClassID='.$gibbonCourseClassID;
 $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/spaceChange_manage.php';
 

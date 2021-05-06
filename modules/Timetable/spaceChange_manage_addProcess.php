@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
         header("Location: {$URL}");
     } else {
         //Proceed!
-        $gibbonCourseClassID = $_POST['gibbonCourseClassID'];
+        $gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
         $gibbonTTDayRowClassID = substr($_POST['gibbonTTDayRowClassID'], 0, 12);
         $date = substr($_POST['gibbonTTDayRowClassID'], 13);
         $gibbonSpaceID = null;
