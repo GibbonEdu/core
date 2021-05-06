@@ -29,16 +29,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Generate Invoices'));
-    
+
     echo '<h2>';
     echo __('Invoices Not Yet Generated');
     echo '</h2>';
     echo '<p>';
-    echo sprintf(__('The list below shows students who have been accepted for an activity in the current year, who have yet to have invoices generated for them. You can generate invoices to a given %1$sBilling Schedule%2$s, or you can simulate generation (e.g. mark them as generated, but not actually produce an invoice).'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/billingSchedule_manage.php'>", '</a>');
+    echo sprintf(__('The list below shows students who have been accepted for an activity in the current year, who have yet to have invoices generated for them. You can generate invoices to a given %1$sBilling Schedule%2$s, or you can simulate generation (e.g. mark them as generated, but not actually produce an invoice).'), "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/billingSchedule_manage.php'>", '</a>');
     echo '</p>';
 
-    
-        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d'));
+
+        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonSchoolYearID2' => $session->get('gibbonSchoolYearID'), 'today' => date('Y-m-d'));
         $sql = "SELECT gibbonActivityStudentID, gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.nameShort AS rollGroup, gibbonActivityStudent.status, payment, paymentType, gibbonActivity.name, programStart, programEnd FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonActivity ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) AND gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonActivityStudent.status='Accepted' AND payment>0 AND invoiceGenerated='N' ORDER BY surname, preferredName, name";
         $result = $connection2->prepare($sql);
         $result->execute($data);
@@ -50,12 +50,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
     } else {
         $lastPerson = '';
 
-        $form = Form::create('generateInvoices', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_paymentProcessBulk.php');
+        $form = Form::create('generateInvoices', $session->get('absoluteURL').'/modules/'.$session->get('module').'/activities_paymentProcessBulk.php');
         $form->addConfirmation(__('Are you sure you wish to process this action? It cannot be undone.'));
         $form->setClass('w-full blank');
-        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-        
-        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+        $form->addHiddenValue('address', $session->get('address'));
+
+        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
         $sql = "SELECT gibbonFinanceBillingScheduleID as value, name FROM gibbonFinanceBillingSchedule WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
         $resultSchedule = $pdo->executeQuery($data, $sql);
 
@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
                 ->setClass('mediumWidth floatNone')
                 ->placeholder(__('Select action'));
             $bulkAction->addSubmit(__('Go'));
-        
+
         $table = $form->addRow()->addTable()->addClass('colorOddEven');
 
         $header = $table->addHeaderRow();
@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
             $row->addCurrency("payment[$gibbonActivityStudentID]")->required()->setValue($student['payment']);
             $row->addCheckbox("gibbonActivityStudentID[$gibbonActivityStudentID]")->setValue($student['gibbonActivityStudentID'])->setClass('');
         }
-        
+
         echo $form->getOutput();
     }
 
@@ -102,8 +102,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
     echo __('Invoices Generated');
     echo '</h2>';
 
-    
-        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d'));
+
+        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonSchoolYearID2' => $session->get('gibbonSchoolYearID'), 'today' => date('Y-m-d'));
         $sql = "SELECT gibbonPerson.gibbonPersonID, studentID, surname, preferredName, gibbonRollGroup.nameShort AS rollGroup, gibbonActivityStudent.status, payment, gibbonActivity.name, programStart, programEnd, gibbonFinanceInvoiceID FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonActivity ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) AND gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonActivityStudent.status='Accepted' AND payment>0 AND invoiceGenerated='Y' ORDER BY surname, preferredName, name";
         $result = $connection2->prepare($sql);
         $result->execute($data);

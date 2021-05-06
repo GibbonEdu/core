@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             echo '</div>';
         } else {
             //Get current role category
-            $roleCategory = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
+            $roleCategory = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
 
             //Check access controls
             $access = getSettingByScope($connection2, 'Activities', 'access');
@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                     if ($_GET['search'] != '' or $gibbonPersonID != '') {
                         echo "<div class='linkTop'>";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Activities/activities_view.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."'>".__('Back to Search Results').'</a>';
+                        echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Activities/activities_view.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."'>".__('Back to Search Results').'</a>';
                         echo '</div>';
                     }
 
@@ -76,8 +76,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     $continue = false;
                     //Student
                     if ($roleCategory == 'Student' and $highestAction == 'View Activities_studentRegister') {
-                        
-                            $dataStudent = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+
+                            $dataStudent = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                             $sqlStudent = 'SELECT * FROM gibbonStudentEnrolment WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID';
                             $resultStudent = $connection2->prepare($sqlStudent);
                             $resultStudent->execute($dataStudent);
@@ -92,8 +92,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     }
                     //Parent
                     else if ($roleCategory == 'Parent' and $highestAction == 'View Activities_studentRegisterByParent' and $gibbonPersonID != '') {
-                        
-                            $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+
+                            $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
                             $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
@@ -105,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         } else {
                             $countChild = 0;
                             while ($values = $result->fetch()) {
-                                
+
                                     $dataChild = array('gibbonFamilyID' => $values['gibbonFamilyID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
                                     $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName ";
                                     $resultChild = $connection2->prepare($sqlChild);
@@ -161,8 +161,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 $values = $result->fetch();
 
                                 //Check for existing registration
-                                
-                                    $dataReg = array('gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+
+                                    $dataReg = array('gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
                                     $sqlReg = 'SELECT * FROM gibbonActivityStudent WHERE gibbonActivityID=:gibbonActivityID AND gibbonPersonID=:gibbonPersonID';
                                     $resultReg = $connection2->prepare($sqlReg);
                                     $resultReg->execute($dataReg);
@@ -179,8 +179,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                     if ($dateType == 'Term' and $maxPerTerm > 0) {
                                         $termsList = explode(',', $values['gibbonSchoolYearTermIDList']);
                                         foreach ($termsList as $term) {
-                                            
-                                                $dataActivityCount = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearTermIDList' => '%'.$term.'%');
+
+                                                $dataActivityCount = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearTermIDList' => '%'.$term.'%');
                                                 $sqlActivityCount = "SELECT * FROM gibbonActivityStudent JOIN gibbonActivity ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearTermIDList LIKE :gibbonSchoolYearTermIDList AND NOT status='Not Accepted'";
                                                 $resultActivityCount = $connection2->prepare($sqlActivityCount);
                                                 $resultActivityCount->execute($dataActivityCount);
@@ -204,9 +204,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                         }
                                         echo '</p>';
 
-                                        $form = Form::create('courseEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_view_registerProcess.php?search='.$search);
+                                        $form = Form::create('courseEdit', $session->get('absoluteURL').'/modules/'.$session->get('module').'/activities_view_registerProcess.php?search='.$search);
 
-                                        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                                        $form->addHiddenValue('address', $session->get('address'));
                                         $form->addHiddenValue('mode', $mode);
                                         $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
                                         $form->addHiddenValue('gibbonActivityID', $gibbonActivityID);
@@ -304,7 +304,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 $values = $result->fetch();
 
                                 //Check for existing registration
-                                
+
                                     $dataReg = array('gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $gibbonPersonID);
                                     $sqlReg = 'SELECT * FROM gibbonActivityStudent WHERE gibbonActivityID=:gibbonActivityID AND gibbonPersonID=:gibbonPersonID';
                                     $resultReg = $connection2->prepare($sqlReg);

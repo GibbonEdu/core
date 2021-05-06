@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/activities_attendance_sheet.php");
+    $form->addHiddenValue('q', "/modules/".$session->get('module')."/activities_attendance_sheet.php");
 
     $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
     $sql = "SELECT gibbonActivityID AS value, name FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name, programStart";

@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
     $status = $_GET['status'] ?? '';
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+    $form = Form::create('action', $session->get('absoluteURL').'/index.php','get');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         echo __('Report Data');
         echo '</h2>';
 
-        
+
             $data = array('gibbonRollGroupID' => $gibbonRollGroupID, 'today' => date('Y-m-d'));
             $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, name FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) AND gibbonStudentEnrolment.gibbonRollGroupID=:gibbonRollGroupID ORDER BY surname, preferredName";
             $result = $connection2->prepare($sql);
@@ -90,17 +90,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 
                 echo '<td>';
 
-                
+
                     $dataActivities = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                     $sqlActivities = "SELECT gibbonActivity.*, gibbonActivityStudent.status, GROUP_CONCAT(CONCAT(gibbonDaysOfWeek.nameShort, ' ', TIME_FORMAT(gibbonActivitySlot.timeStart, '%H:%i'), ' - ', (CASE WHEN gibbonActivitySlot.gibbonSpaceID IS NOT NULL THEN gibbonSpace.name ELSE gibbonActivitySlot.locationExternal END)) SEPARATOR '<br/>') as days
-                        FROM gibbonActivity 
-                        JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) 
+                        FROM gibbonActivity
+                        JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID)
                         JOIN gibbonActivitySlot ON (gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID)
                         JOIN gibbonDaysOfWeek ON (gibbonDaysOfWeek.gibbonDaysOfWeekID=gibbonActivitySlot.gibbonDaysOfWeekID)
                         LEFT JOIN gibbonSpace ON (gibbonSpace.gibbonSpaceID=gibbonActivitySlot.gibbonSpaceID)
-                        WHERE gibbonActivityStudent.gibbonPersonID=:gibbonPersonID 
-                        AND gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID 
-                        GROUP BY gibbonActivity.gibbonActivityID 
+                        WHERE gibbonActivityStudent.gibbonPersonID=:gibbonPersonID
+                        AND gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID
+                        GROUP BY gibbonActivity.gibbonActivityID
                         ORDER BY gibbonActivity.name";
                     $resultActivities = $connection2->prepare($sqlActivities);
                     $resultActivities->execute($dataActivities);
@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
                 if ($resultActivities->rowCount() > 0) {
                     echo '<table cellspacing="0" class="mini fullWidth">';
                     while ($activity = $resultActivities->fetch()) {
-                        $timespan = getActivityTimespan($connection2, $activity['gibbonActivityID'], $activity['gibbonSchoolYearTermIDList']); 
+                        $timespan = getActivityTimespan($connection2, $activity['gibbonActivityID'], $activity['gibbonSchoolYearTermIDList']);
                         $timeStatus = '';
                         if (!empty($timespan)) {
                             $timeStatus = (time() < $timespan['start'])? __('Upcoming') : (time() > $timespan['end']? __('Ended') : __('Current'));
@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
                     }
                     echo '</table>';
                 }
-                
+
                 echo '</td>';
                 echo '</tr>';
             }

@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         $row->addTextField('search')->setValue($criteria->getSearchText());
 
     if ($dateType != 'Date') {
-        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
         $sql = "SELECT gibbonSchoolYearTermID as value, name FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber";
         $row = $form->addRow();
             $row->addLabel('gibbonSchoolYearTermID', __('Term'));
@@ -193,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     }
 
     $table->addColumn('provider', __('Provider'))
-        ->format(function($activity) use ($guid){
+        ->format(function($activity) use ($session){
             return ($activity['provider'] == 'School')? $session->get('organisationNameShort') : __('External');
         });
 
