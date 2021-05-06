@@ -21,9 +21,9 @@ include '../../gibbon.php';
 
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $gibbonSchoolYearIDNext = $_GET['gibbonSchoolYearIDNext'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/School Admin/rollGroup_manage.php&gibbonSchoolYearID=$gibbonSchoolYearIDNext";
+$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/School Admin/formGroup_manage.php&gibbonSchoolYearID=$gibbonSchoolYearIDNext";
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_manage_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

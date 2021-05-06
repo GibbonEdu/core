@@ -24,7 +24,7 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
-use Gibbon\Domain\RollGroups\RollGroupGateway;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
 
 /**
  * CoverageTodayView
@@ -39,7 +39,7 @@ class CoverageTodayView
     protected $userGateway;
     protected $gibbonStaffCoverageID;
 
-    public function __construct(StaffCoverageGateway $staffCoverageGateway, RollGroupGateway $formGroupGateway, UserGateway $userGateway)
+    public function __construct(StaffCoverageGateway $staffCoverageGateway, FormGroupGateway $formGroupGateway, UserGateway $userGateway)
     {
         $this->staffCoverageGateway = $staffCoverageGateway;
         $this->rollGroupGateway = $formGroupGateway;
@@ -83,7 +83,7 @@ class CoverageTodayView
         }
 
         // Roll Group Info
-        $formGroups = $this->rollGroupGateway->selectRollGroupsByTutor($coverage['gibbonPersonID'])->toDataSet();
+        $formGroups = $this->rollGroupGateway->selectFormGroupsByTutor($coverage['gibbonPersonID'])->toDataSet();
 
         if (count($formGroups) > 0) {
             $table = DataTable::create('todaysCoverageTimetable');
@@ -97,11 +97,11 @@ class CoverageTodayView
                     if ($values['attendance'] == 'Y') {
                         $actions->addAction('attendance', __('Take Attendance'))
                             ->setIcon('attendance')
-                            ->setURL('/modules/Attendance/attendance_take_byRollGroup.php');
+                            ->setURL('/modules/Attendance/attendance_take_byFormGroup.php');
                     }
 
                     $actions->addAction('view', __('View Details'))
-                        ->setURL('/modules/Form Groups/rollGroups_details.php');
+                        ->setURL('/modules/Form Groups/formGroups_details.php');
                 });
 
             $page->write($table->render($formGroups).'<br/>');

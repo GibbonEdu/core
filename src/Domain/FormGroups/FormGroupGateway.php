@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Domain\RollGroups;
+namespace Gibbon\Domain\FormGroups;
 
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
@@ -29,7 +29,7 @@ use Gibbon\Domain\QueryableGateway;
  * @version v16
  * @since   v16
  */
-class RollGroupGateway extends QueryableGateway
+class FormGroupGateway extends QueryableGateway
 {
     use TableAware;
 
@@ -37,7 +37,7 @@ class RollGroupGateway extends QueryableGateway
     private static $primaryKey = 'gibbonFormGroupID';
     private static $searchableColumns = [];
 
-    public function queryRollGroups(QueryCriteria $criteria, $gibbonSchoolYearID)
+    public function queryFormGroups(QueryCriteria $criteria, $gibbonSchoolYearID)
     {
         $query = $this
             ->newQuery()
@@ -64,7 +64,7 @@ class RollGroupGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function selectRollGroupsBySchoolYear($gibbonSchoolYearID)
+    public function selectFormGroupsBySchoolYear($gibbonSchoolYearID)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'today' => date('Y-m-d'));
         $sql = "SELECT gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.name, gibbonFormGroup.nameShort, gibbonSpace.name AS space, gibbonFormGroup.website, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, COUNT(DISTINCT students.gibbonPersonID) as students, (SELECT MAX(sequenceNumber) FROM gibbonYearGroup JOIN gibbonStudentEnrolment ON (gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID) WHERE gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) as sequenceNumber
@@ -83,7 +83,7 @@ class RollGroupGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
-    public function selectRollGroupsBySchoolYearMyChildren($gibbonSchoolYearID, $gibbonPersonID)
+    public function selectFormGroupsBySchoolYearMyChildren($gibbonSchoolYearID, $gibbonPersonID)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d'));
         $sql = "SELECT gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.name, gibbonFormGroup.nameShort, gibbonSpace.name AS space, gibbonFormGroup.website, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, COUNT(DISTINCT students.gibbonPersonID) as students, (SELECT MAX(sequenceNumber) FROM gibbonYearGroup JOIN gibbonStudentEnrolment ON (gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID) WHERE gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) as sequenceNumber
@@ -106,7 +106,7 @@ class RollGroupGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
-    public function selectTutorsByRollGroup($gibbonFormGroupID)
+    public function selectTutorsByFormGroup($gibbonFormGroupID)
     {
         $data = array('gibbonFormGroupID' => $gibbonFormGroupID);
         $sql = "SELECT gibbonPersonID, title, surname, preferredName, email
@@ -118,7 +118,7 @@ class RollGroupGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
-    public function selectRollGroupsByTutor($gibbonPersonID)
+    public function selectFormGroupsByTutor($gibbonPersonID)
     {
         $data = array('gibbonPersonID' => $gibbonPersonID);
         $sql = "SELECT gibbonFormGroup.*, gibbonSpace.name as spaceName
@@ -133,7 +133,7 @@ class RollGroupGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
-    public function getRollGroupByID($gibbonFormGroupID)
+    public function getFormGroupByID($gibbonFormGroupID)
     {
         $data = array('gibbonFormGroupID' => $gibbonFormGroupID);
         $sql = "SELECT *

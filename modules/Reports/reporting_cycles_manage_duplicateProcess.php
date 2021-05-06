@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Services\Format;
 use Gibbon\Domain\Timetable\CourseGateway;
-use Gibbon\Domain\RollGroups\RollGroupGateway;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Module\Reports\Domain\ReportingScopeGateway;
 use Gibbon\Module\Reports\Domain\ReportingCriteriaGateway;
@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
     $reportingCycleGateway = $container->get(ReportingCycleGateway::class);
     $reportingScopeGateway = $container->get(ReportingScopeGateway::class);
     $reportingCriteriaGateway = $container->get(ReportingCriteriaGateway::class);
-    $formGroupGateway = $container->get(RollGroupGateway::class);
+    $formGroupGateway = $container->get(FormGroupGateway::class);
     $courseGateway = $container->get(CourseGateway::class);
 
     $data = [

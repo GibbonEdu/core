@@ -27,7 +27,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 // set page breadcrumb
 $page->breadcrumbs->add(__('Form Groups Not Registered'));
 
-if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGroupsNotRegistered_byDate.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGroupsNotRegistered_byDate.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_rollGroupsNotRegistered_byDate.php");
+    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_formGroupsNotRegistered_byDate.php");
 
     $row = $form->addRow();
         $row->addLabel('dateStart', __('Start Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
@@ -128,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
             $formGroups = $result->fetchAll();
 
             echo "<div class='linkTop'>";
-            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_rollGroupsNotRegistered_byDate_print.php&dateStart='.dateConvertBack($guid, $dateStart).'&dateEnd='.dateConvertBack($guid, $dateEnd)."'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_formGroupsNotRegistered_byDate_print.php&dateStart='.dateConvertBack($guid, $dateStart).'&dateEnd='.dateConvertBack($guid, $dateEnd)."'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
             echo '</div>';
 
             echo "<table cellspacing='0' style='width: 100%'>";
@@ -180,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
                                     //$class = 'highlightNoData';
                                     $class = 'highlightAbsent';
                                 } else {
-                                    $link = './index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonFormGroupID='.$row['gibbonFormGroupID'].'&currentDate='.$lastNSchoolDays[$i];
+                                    $link = './index.php?q=/modules/Attendance/attendance_take_byFormGroup.php&gibbonFormGroupID='.$row['gibbonFormGroupID'].'&currentDate='.$lastNSchoolDays[$i];
                                     $class = 'highlightPresent';
                                 }
 

@@ -20,9 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\School\SchoolYearGateway;
-use Gibbon\Domain\RollGroups\RollGroupGateway;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_manage.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -58,17 +58,17 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
         echo '</div>';
     }
         
-    $formGroupGateway = $container->get(RollGroupGateway::class);
+    $formGroupGateway = $container->get(FormGroupGateway::class);
 
     // QUERY
     $criteria = $formGroupGateway->newQueryCriteria(true)
         ->sortBy(['sequenceNumber', 'gibbonFormGroup.name'])
         ->fromPOST();
 
-    $formGroups = $formGroupGateway->queryRollGroups($criteria, $gibbonSchoolYearID);
+    $formGroups = $formGroupGateway->queryFormGroups($criteria, $gibbonSchoolYearID);
 
     $formatTutorsList = function($row) use ($formGroupGateway) {
-        $tutors = $formGroupGateway->selectTutorsByRollGroup($row['gibbonFormGroupID'])->fetchAll();
+        $tutors = $formGroupGateway->selectTutorsByFormGroup($row['gibbonFormGroupID'])->fetchAll();
         if (count($tutors) > 1) $tutors[0]['surname'] .= ' ('.__('Main Tutor').')';
 
         return Format::nameList($tutors, 'Staff', false, true);
@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 
     if (!empty($nextSchoolYear)) {
         $table->addHeaderAction('copy', __('Copy All To Next Year'))
-            ->setURL('/modules/School Admin/rollGroup_manage_copyProcess.php')
+            ->setURL('/modules/School Admin/formGroup_manage_copyProcess.php')
             ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->addParam('gibbonSchoolYearIDNext', $nextSchoolYear['gibbonSchoolYearID'])
             ->setIcon('copy')
@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
     }
 
     $table->addHeaderAction('add', __('Add'))
-        ->setURL('/modules/School Admin/rollGroup_manage_add.php')
+        ->setURL('/modules/School Admin/formGroup_manage_add.php')
         ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
         ->displayLabel();
 
@@ -110,10 +110,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
         ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
         ->format(function ($formGroup, $actions) {
             $actions->addAction('edit', __('Edit'))
-                    ->setURL('/modules/School Admin/rollGroup_manage_edit.php');
+                    ->setURL('/modules/School Admin/formGroup_manage_edit.php');
 
             $actions->addAction('delete', __('Delete'))
-                    ->setURL('/modules/School Admin/rollGroup_manage_delete.php');
+                    ->setURL('/modules/School Admin/formGroup_manage_delete.php');
         });
 
     echo $table->render($formGroups);

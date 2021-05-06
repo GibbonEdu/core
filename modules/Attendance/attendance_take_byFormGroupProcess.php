@@ -29,13 +29,13 @@ require_once __DIR__ . '/moduleFunctions.php';
 $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
 $currentDate = $_POST['currentDate'] ?? '';
 $today = date('Y-m-d');
-$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonFormGroupID=$gibbonFormGroupID&currentDate=".dateConvertBack($guid, $currentDate);
+$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Attendance/attendance_take_byFormGroup.php&gibbonFormGroupID=$gibbonFormGroupID&currentDate=".dateConvertBack($guid, $currentDate);
 
-if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byRollGroup.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byFormGroup.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $highestAction = getHighestGroupedAction($guid, '/modules/Attendance/attendance_take_byRollGroup.php', $connection2);
+    $highestAction = getHighestGroupedAction($guid, '/modules/Attendance/attendance_take_byFormGroup.php', $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
         echo __('The highest grouped action cannot be determined.');

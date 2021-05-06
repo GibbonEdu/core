@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_parentWeekl
 
     $row = $form->addRow();
         $row->addLabel('gibbonFormGroupID', __('Form Group'));
-        $row->addSelectRollGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->required()->selected($gibbonFormGroupID);
+        $row->addSelectFormGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->required()->selected($gibbonFormGroupID);
 
     $begin = new DateTime($_SESSION[$guid]['gibbonSchoolYearFirstDay']);
     $end = new DateTime();

@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Comms\NotificationEvent;
-use Gibbon\Domain\RollGroups\RollGroupGateway;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Services\Format;
 use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                     // Send a notification to student's tutors and anyone subscribed to the notification event
                     $studentGateway = $container->get(StudentGateway::class);
-                    $formGroupGateway = $container->get(RollGroupGateway::class);
+                    $formGroupGateway = $container->get(FormGroupGateway::class);
                     $inAssistantGateway = $container->get(INAssistantGateway::class);
 
                     // Send behaviour notifications
@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                         // Add direct notifications to roll group tutors
                         if (getSettingByScope($connection2, 'Behaviour', 'notifyTutors') == 'Y') {
-                            $tutors = $formGroupGateway->selectTutorsByRollGroup($student['gibbonFormGroupID'])->fetchAll();
+                            $tutors = $formGroupGateway->selectTutorsByFormGroup($student['gibbonFormGroupID'])->fetchAll();
                             foreach ($tutors as $tutor) {
                                 $event->addRecipient($tutor['gibbonPersonID']);
                             }

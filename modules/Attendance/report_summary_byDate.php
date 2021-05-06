@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
     if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
         $options["class"] = __('Class');
     }
-    if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
+    if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byFormGroup.php")) {
         $options["rollGroup"] = __('Form Group');
     }
     $row = $form->addRow();
@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
     $form->toggleVisibilityByClass('rollGroup')->onSelect('group')->when('rollGroup');
     $row = $form->addRow()->addClass('rollGroup');
         $row->addLabel('gibbonFormGroupID', __('Form Group'));
-        $row->addSelectRollGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonFormGroupID)->placeholder()->required();
+        $row->addSelectFormGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonFormGroupID)->placeholder()->required();
 
     $row = $form->addRow();
         $row->addLabel('sort', __('Sort By'));

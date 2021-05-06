@@ -29,7 +29,7 @@ require_once __DIR__ . '/src/AttendanceView.php';
 // set page breadcrumb
 $page->breadcrumbs->add(__('Take Attendance by Form Group'));
 
-if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byRollGroup.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byFormGroup.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -69,11 +69,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setClass('noIntBorder fullWidth');
 
-        $form->addHiddenValue('q', '/modules/' . $_SESSION[$guid]['module'] . '/attendance_take_byRollGroup.php');
+        $form->addHiddenValue('q', '/modules/Attendance/attendance_take_byFormGroup.php');
 
         $row = $form->addRow();
             $row->addLabel('gibbonFormGroupID', __('Form Group'));
-            $row->addSelectRollGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->required()->selected($gibbonFormGroupID)->placeholder();
+            $row->addSelectFormGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->required()->selected($gibbonFormGroupID)->placeholder();
 
         $row = $form->addRow();
             $row->addLabel('currentDate', __('Date'));
@@ -204,7 +204,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                 $students[$key]['log'] = $log;
                             }
 
-                            $form = Form::create('attendanceByFormGroup', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']. '/attendance_take_byRollGroupProcess.php');
+                            $form = Form::create('attendanceByFormGroup', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']. '/attendance_take_byFormGroupProcess.php');
                             $form->setAutocomplete('off');
 
                             $form->addHiddenValue('address', $_SESSION[$guid]['address']);

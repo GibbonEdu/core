@@ -41,7 +41,7 @@ if (!isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php
 $currentDate = isset($_GET['currentDate']) ? Format::dateConvert($_GET['currentDate']) : date('Y-m-d');
 $today = date("Y-m-d");
 $lastNSchoolDays = getLastNSchoolDays($guid, $connection2, $currentDate, 10, true);
-$accessNotRegistered = isActionAccessible($guid, $connection2, "/modules/Attendance/report_rollGroupsNotRegistered_byDate.php")
+$accessNotRegistered = isActionAccessible($guid, $connection2, "/modules/Attendance/report_formGroupsNotRegistered_byDate.php")
     && isActionAccessible($guid, $connection2, "/modules/Attendance/report_courseClassesNotRegistered_byDate.php");
 $gibbonPersonID = ($accessNotRegistered && isset($_GET['gibbonPersonID'])) ?
     $_GET['gibbonPersonID'] : $session->get('gibbonPersonID');
@@ -59,7 +59,7 @@ $row = $form->addRow();
 $row->addLabel('currentDate', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
 $row->addDate('currentDate')->setValue(Format::date($currentDate))->required();
 
-if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGroupsNotRegistered_byDate.php')) {
+if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGroupsNotRegistered_byDate.php')) {
     $row = $form->addRow();
     $row->addLabel('gibbonPersonID', __('Staff'));
     $row->addSelectStaff('gibbonPersonID')->selected($gibbonPersonID)->placeholder()->required();
@@ -196,7 +196,7 @@ if (isset($_SESSION[$guid]["username"])) {
         return;
     }
 
-    if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
+    if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byFormGroup.php")) {
         // Show My Form Groups
         try {
             $result = $connection2->prepare("SELECT gibbonFormGroupID, gibbonFormGroup.nameShort as name, firstDay, lastDay FROM gibbonFormGroup JOIN gibbonSchoolYear ON (gibbonFormGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor1 OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3) AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFormGroup.attendance = 'Y'");
@@ -256,7 +256,7 @@ if (isset($_SESSION[$guid]["username"])) {
                 $row['currentDate'] = Format::date($currentDate);
 
                 // render group link variables
-                $row['groupQuery'] = '/modules/Form Groups/rollGroups_details.php';
+                $row['groupQuery'] = '/modules/Form Groups/formGroups_details.php';
                 $row['groupName'] = $row['name'];
 
                 // render recentHistory into the row
@@ -286,7 +286,7 @@ if (isset($_SESSION[$guid]["username"])) {
             }
 
             // define DataTable
-            $takeAttendanceURL = '/modules/Attendance/attendance_take_byRollGroup.php';
+            $takeAttendanceURL = '/modules/Attendance/attendance_take_byFormGroup.php';
             $attendanceByFormGroupTable = $getDailyAttendanceTable(
                 $guid,
                 $connection2,

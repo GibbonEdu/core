@@ -68,7 +68,7 @@ else {
     }
 
     $event->setNotificationText(sprintf(__('A Library Overdue Items CLI script has run, notifying %1$s users.'), $notificationSender->getNotificationCount()));
-    $event->setActionLink('/index.php?q=/modules/Attendance/report_rollGroupsNotRegistered_byDate.php');
+    $event->setActionLink('/index.php?q=/modules/Attendance/report_formGroupsNotRegistered_byDate.php');
 
     // Push the event to the notification sender
     $event->pushNotifications($notificationGateway, $notificationSender);

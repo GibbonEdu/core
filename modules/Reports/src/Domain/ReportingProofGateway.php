@@ -52,7 +52,7 @@ class ReportingProofGateway extends QueryableGateway
         return $this->runSelect($query);
     }
 
-    public function queryProofReadingByRollGroup($criteria, $gibbonSchoolYearID, $gibbonFormGroupID)
+    public function queryProofReadingByFormGroup($criteria, $gibbonSchoolYearID, $gibbonFormGroupID)
     {
         // COURSES
         $query = $this

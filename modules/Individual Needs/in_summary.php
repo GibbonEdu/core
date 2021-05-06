@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
 
     $row = $form->addRow();
         $row->addLabel('gibbonFormGroupID', __('Form Group'));
-        $row->addSelectRollGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonFormGroupID)->placeholder();
+        $row->addSelectFormGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonFormGroupID)->placeholder();
     
     $row = $form->addRow();
         $row->addLabel('gibbonYearGroupID', __('Year Group'));

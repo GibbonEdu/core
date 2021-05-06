@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 
         $row = $form->addRow();
             $row->addLabel('gibbonFormGroupID', __('Form Group'));
-            $row->addSelectRollGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonFormGroupID)->required();
+            $row->addSelectFormGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonFormGroupID)->required();
 
         $row = $form->addRow();
             $row->addLabel('status', __('Status'));
@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         ->pageSize(!empty($viewMode) ? 0 : 50)
         ->fromPOST();
 
-    $formGroups = $studentGateway->queryStudentEnrolmentByRollGroup($criteria, $gibbonFormGroupID);
+    $formGroups = $studentGateway->queryStudentEnrolmentByFormGroup($criteria, $gibbonFormGroupID);
 
     // Build a set of activity counts for each student
     $formGroups->transform(function(&$student) use ($activityGateway,  $status) {

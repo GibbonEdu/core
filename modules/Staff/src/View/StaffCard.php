@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Module\Staff\View;
 
 use Gibbon\Domain\Staff\StaffGateway;
-use Gibbon\Domain\RollGroups\RollGroupGateway;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\View\Page;
@@ -43,12 +43,12 @@ class StaffCard
     protected $status;
     protected $tag;
 
-    public function __construct(Session $session, Connection $db, StaffGateway $staffGateway, RollGroupGateway $formGroupGateway)
+    public function __construct(Session $session, Connection $db, StaffGateway $staffGateway, FormGroupGateway $formGroupGateway)
     {
         $this->session = $session;
         $this->db = $db;
         $this->staffGateway = $staffGateway;
-        $this->rollGroupGateway = $formGroupGateway;
+        $this->formGroupGateway = $formGroupGateway;
     }
 
     public function setPerson($gibbonPersonID)
@@ -73,11 +73,11 @@ class StaffCard
 
         $page->writeFromTemplate('staffCard.twig.html', [
             'staff'             => $this->staffGateway->selectStaffByID($this->gibbonPersonID ?? '')->fetch(),
-            'rollGroup'         => $this->rollGroupGateway->selectRollGroupsByTutor($this->gibbonPersonID ?? '')->fetch(),
+            'formGroup'         => $this->formGroupGateway->selectFormGroupsByTutor($this->gibbonPersonID ?? '')->fetch(),
             'canViewProfile'    => isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php'),
             'canViewAbsences'   => isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPerson.php', 'View Absences_any'),
             'canViewTimetable'  => isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php'),
-            'canViewRollGroups' => isActionAccessible($guid, $connection2, '/modules/Form Groups/rollGroups.php'),
+            'canViewFormGroups' => isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups.php'),
             'status'            => $this->status,
             'tag'               => $this->tag,
         ]);

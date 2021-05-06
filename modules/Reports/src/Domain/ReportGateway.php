@@ -80,7 +80,7 @@ class ReportGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function queryRollGroupsByReport(QueryCriteria $criteria, $gibbonReportID, $gibbonYearGroupID = '', $viewDraft = false)
+    public function queryFormGroupsByReport(QueryCriteria $criteria, $gibbonReportID, $gibbonYearGroupID = '', $viewDraft = false)
     {
         $query = $this
             ->newQuery()

@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
     $override = $_GET['override'] ?? 'N';
 
-    $urlParams = compact('mode', 'gibbonPersonID', 'gibbonRollGroupID', 'override');
+    $urlParams = compact('mode', 'gibbonPersonID', 'gibbonFormGroupID', 'override');
 
     $proofReview = $gibbonPersonID == $gibbon->session->get('gibbonPersonID') || ($override == 'Y' && $highestAction == 'Proof Read_all');
     if ($mode == 'Roll Group' && !empty($gibbonFormGroupID)) $proofReview = false;
@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     if ($highestAction == 'Proof Read_all') {
         $row = $form->addRow()->addClass('rollGroupMode');
             $row->addLabel('gibbonFormGroupID', __('Form Group'));
-            $row->addSelectRollGroup('gibbonFormGroupID', $gibbonSchoolYearID)->required()->selected($gibbonFormGroupID);
+            $row->addSelectFormGroup('gibbonFormGroupID', $gibbonSchoolYearID)->required()->selected($gibbonFormGroupID);
 
         $row = $form->addRow()->addClass('personMode');
             $row->addLabel('gibbonPersonID', __('Person'));
@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
                 }, []);
             }
 
-            $formGroupsByScope = $reportingAccessGateway->selectAccessibleRollGroupsByReportingScope($scope['gibbonReportingScopeID'])->fetchKeyPair();
+            $formGroupsByScope = $reportingAccessGateway->selectAccessibleFormGroupsByReportingScope($scope['gibbonReportingScopeID'])->fetchKeyPair();
             $formGroups = array_merge($formGroups, $formGroupsByScope);
         }
 
@@ -166,8 +166,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
 
     // Get criteria that needs or has proof reading
     if ($mode == 'Roll Group' && !empty($gibbonFormGroupID)) {
-        $proofsTotal = $reportingProofGateway->queryProofReadingByRollGroup($totalCriteria, $gibbonSchoolYearID, $gibbonFormGroupID)->toArray();
-        $proofsPaginated = $reportingProofGateway->queryProofReadingByRollGroup($criteria, $gibbonSchoolYearID, $gibbonFormGroupID);
+        $proofsTotal = $reportingProofGateway->queryProofReadingByFormGroup($totalCriteria, $gibbonSchoolYearID, $gibbonFormGroupID)->toArray();
+        $proofsPaginated = $reportingProofGateway->queryProofReadingByFormGroup($criteria, $gibbonSchoolYearID, $gibbonFormGroupID);
         $proofReading = $proofsPaginated->toArray();
     } elseif ($mode == 'Person' && !empty($gibbonPersonID)) {
         $proofsTotal = $reportingProofGateway->queryProofReadingByPerson($totalCriteria, $gibbonSchoolYearID, $gibbonPersonID, $reportingScopeIDs ?? [])->toArray();

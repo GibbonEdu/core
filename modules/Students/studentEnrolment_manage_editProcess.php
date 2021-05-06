@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
-use Gibbon\Domain\RollGroups\RollGroupGateway;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
 
 include '../../gibbon.php';
 
@@ -66,7 +66,7 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
                 $formGroupOriginalNameShort = $_POST['rollGroupOriginalNameShort'] ?? '';
                 $gibbonPersonID = $row['gibbonPersonID'];
 
-                $formGroupTo = $container->get(RollGroupGateway::class)->getRollGroupByID($gibbonFormGroupID);
+                $formGroupTo = $container->get(FormGroupGateway::class)->getFormGroupByID($gibbonFormGroupID);
                 $formGroupToName = $formGroupTo['nameShort'];
 
                 $rollOrder = $_POST['rollOrder'];
