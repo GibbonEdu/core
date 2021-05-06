@@ -46,12 +46,12 @@ class ReportingCycleContext implements DataContext
                     gibbonPerson.dateEnd,
                     'Student' as roleCategory,
                     gibbonYearGroup.nameShort as yearGroup,
-                    gibbonRollGroup.nameShort as rollGroup
+                    gibbonFormGroup.nameShort as rollGroup
                 FROM gibbonReport
                 JOIN gibbonReportingCycle ON (gibbonReportingCycle.gibbonReportingCycleID=gibbonReport.gibbonReportingCycleID)
                 JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonReportingCycle.gibbonSchoolYearID)
                 JOIN gibbonYearGroup ON (gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID)
-                JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID)
+                JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID)
                 JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                 WHERE gibbonReport.gibbonReportID=:gibbonReportID
                 AND FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupID) ";
@@ -59,7 +59,7 @@ class ReportingCycleContext implements DataContext
             ? "AND (gibbonPerson.status='Full' OR gibbonPerson.status='Left') "
             : "AND gibbonPerson.status='Full'";
 
-        $sql .= "ORDER BY gibbonYearGroup.sequenceNumber, gibbonRollGroup.nameShort, gibbonStudentEnrolment.rollOrder, gibbonPerson.surname, gibbonPerson.preferredName";
+        $sql .= "ORDER BY gibbonYearGroup.sequenceNumber, gibbonFormGroup.nameShort, gibbonStudentEnrolment.rollOrder, gibbonPerson.surname, gibbonPerson.preferredName";
 
         return $db->select($sql, $data)->fetchAll();
     }

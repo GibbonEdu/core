@@ -77,8 +77,8 @@ class ApplicationFormGateway extends QueryableGateway implements ScrubbableGatew
             'rollGroup' => function ($query, $value) {
                 return $query
                     ->where(strtoupper($value) == 'Y'
-                        ? 'gibbonApplicationForm.gibbonRollGroupID IS NOT NULL'
-                        : 'gibbonApplicationForm.gibbonRollGroupID IS NULL');
+                        ? 'gibbonApplicationForm.gibbonFormGroupID IS NOT NULL'
+                        : 'gibbonApplicationForm.gibbonFormGroupID IS NULL');
             },
 
             'yearGroup' => function ($query, $gibbonYearGroupIDEntry) {

@@ -21,9 +21,9 @@ include '../../gibbon.php';
 
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $gibbonSchoolYearIDNext = $_GET['gibbonSchoolYearIDNext'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/School Admin/rollGroup_manage.php&gibbonSchoolYearID=$gibbonSchoolYearIDNext";
+$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/School Admin/formGroup_manage.php&gibbonSchoolYearID=$gibbonSchoolYearIDNext";
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_manage_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
         //GET CURRENT ROLL GROUPS
         try {
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-            $sql = 'SELECT * FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+            $sql = 'SELECT * FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
                 //Write to database
                 try {
                     $dataInsert = array('gibbonSchoolYearID' => $gibbonSchoolYearIDNext, 'name' => $row['name'], 'nameShort' => $row['nameShort'], 'gibbonPersonIDTutor' => $row['gibbonPersonIDTutor'], 'gibbonPersonIDTutor2' => $row['gibbonPersonIDTutor2'], 'gibbonPersonIDTutor3' => $row['gibbonPersonIDTutor3'], 'gibbonSpaceID' => $row['gibbonSpaceID'], 'website' => $row['website']);
-                    $sqlInsert = 'INSERT INTO gibbonRollGroup SET gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, nameShort=:nameShort, gibbonPersonIDTutor=:gibbonPersonIDTutor, gibbonPersonIDTutor2=:gibbonPersonIDTutor2, gibbonPersonIDTutor3=:gibbonPersonIDTutor3, gibbonSpaceID=:gibbonSpaceID, gibbonRollGroupIDNext=NULL, website=:website';
+                    $sqlInsert = 'INSERT INTO gibbonFormGroup SET gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, nameShort=:nameShort, gibbonPersonIDTutor=:gibbonPersonIDTutor, gibbonPersonIDTutor2=:gibbonPersonIDTutor2, gibbonPersonIDTutor3=:gibbonPersonIDTutor3, gibbonSpaceID=:gibbonSpaceID, gibbonFormGroupIDNext=NULL, website=:website';
                     $resultInsert = $connection2->prepare($sqlInsert);
                     $resultInsert->execute($dataInsert);
                 } catch (PDOException $e) {

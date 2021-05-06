@@ -79,14 +79,14 @@ class PersonUpdateGateway extends QueryableGateway implements ScrubbableGateway
                 'gibbonPerson.surname', 
                 'gibbonPerson.preferredName', 
                 'gibbonPerson.gibbonPersonID', 
-                'gibbonRollGroup.name as rollGroupName', 
+                'gibbonFormGroup.name as rollGroupName', 
                 'gibbonPersonUpdate.gibbonPersonUpdateID', 
                 'gibbonPersonMedicalUpdate.gibbonPersonMedicalUpdateID', 
                 "MAX(gibbonPersonUpdate.timestamp) as personalUpdate", 
                 "MAX(gibbonPersonMedicalUpdate.timestamp) as medicalUpdate"
             ])
             ->innerJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
-            ->innerJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
+            ->innerJoin('gibbonFormGroup', 'gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID')
             ->leftJoin('gibbonPersonUpdate', 'gibbonPersonUpdate.gibbonPersonID=gibbonPerson.gibbonPersonID')
             ->leftJoin('gibbonPersonMedicalUpdate', 'gibbonPersonMedicalUpdate.gibbonPersonID=gibbonPerson.gibbonPersonID')
             ->where("gibbonPerson.status = 'Full'")

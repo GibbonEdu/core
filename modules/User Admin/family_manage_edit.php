@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                 $children[$count]['comment'] = $rowChildren['comment'];
 
                 $dataDetail = array('gibbonPersonID' => $rowChildren['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                $sqlDetail = 'SELECT * FROM gibbonRollGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID';
+                $sqlDetail = 'SELECT * FROM gibbonFormGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID';
                 $resultDetail = $pdo->select($sqlDetail, $dataDetail);
 
                 if ($resultDetail->rowCount() == 1) {

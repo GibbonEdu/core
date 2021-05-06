@@ -55,12 +55,12 @@ class INGateway extends QueryableGateway implements ScrubbableGateway
             ->distinct()
             ->from($this->getTableName())
             ->cols([
-                'gibbonINID', 'gibbonPerson.gibbonPersonID', 'preferredName', 'surname', 'gibbonYearGroup.nameShort AS yearGroup', 'gibbonRollGroup.nameShort AS rollGroup', 'dateStart', 'dateEnd', 'status'
+                'gibbonINID', 'gibbonPerson.gibbonPersonID', 'preferredName', 'surname', 'gibbonYearGroup.nameShort AS yearGroup', 'gibbonFormGroup.nameShort AS rollGroup', 'dateStart', 'dateEnd', 'status'
             ])
             ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonIN.gibbonPersonID')
             ->innerJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
             ->innerJoin('gibbonYearGroup', 'gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID')
-            ->innerJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
+            ->innerJoin('gibbonFormGroup', 'gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID')
             ->innerJoin('gibbonINPersonDescriptor', 'gibbonINPersonDescriptor.gibbonPersonID=gibbonPerson.gibbonPersonID')
             ->where('gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
@@ -78,10 +78,10 @@ class INGateway extends QueryableGateway implements ScrubbableGateway
                     ->bindValue('gibbonAlertLevelID', $gibbonAlertLevelID);
             },
 
-            'rollGroup' => function ($query, $gibbonRollGroupID) {
+            'rollGroup' => function ($query, $gibbonFormGroupID) {
                 return $query
-                    ->where('gibbonStudentEnrolment.gibbonRollGroupID = :gibbonRollGroupID')
-                    ->bindValue('gibbonRollGroupID', $gibbonRollGroupID);
+                    ->where('gibbonStudentEnrolment.gibbonFormGroupID = :gibbonFormGroupID')
+                    ->bindValue('gibbonFormGroupID', $gibbonFormGroupID);
             },
 
             'yearGroup' => function ($query, $gibbonYearGroupID) {
@@ -146,7 +146,7 @@ class INGateway extends QueryableGateway implements ScrubbableGateway
             ])
             ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
             ->innerJoin('gibbonYearGroup', 'gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID')
-            ->innerJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
+            ->innerJoin('gibbonFormGroup', 'gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID')
             ->leftJoin('gibbonINPersonDescriptor', 'gibbonINPersonDescriptor.gibbonPersonID=gibbonPerson.gibbonPersonID')
             ->where("gibbonPerson.status='Full'")
             ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today)')
@@ -158,14 +158,14 @@ class INGateway extends QueryableGateway implements ScrubbableGateway
         if (!empty($gibbonYearGroupID)) {
             // Grouped by Roll Groups within a Year Group
             $query->cols([
-                'gibbonRollGroup.name as labelName',
-                'gibbonRollGroup.gibbonRollGroupID as labelID',
+                'gibbonFormGroup.name as labelName',
+                'gibbonFormGroup.gibbonFormGroupID as labelID',
                 'COUNT(DISTINCT gibbonStudentEnrolment.gibbonPersonID) as studentCount',
                 'COUNT(DISTINCT gibbonINPersonDescriptor.gibbonPersonID) as inCount',
             ])
             ->where('gibbonStudentEnrolment.gibbonYearGroupID = :gibbonYearGroupID')
             ->bindValue('gibbonYearGroupID', $gibbonYearGroupID)
-            ->groupBy(['gibbonRollGroup.gibbonRollGroupID']);
+            ->groupBy(['gibbonFormGroup.gibbonFormGroupID']);
         } else {
             // Grouped by Year Group
             $query->cols([

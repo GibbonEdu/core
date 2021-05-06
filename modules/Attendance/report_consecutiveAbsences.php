@@ -79,12 +79,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
                   gibbonPerson.title, 
                   gibbonPerson.surname, 
                   gibbonPerson.preferredName, 
-                  gibbonRollGroup.gibbonRollGroupID, 
-                  gibbonRollGroup.name as rollGroupName, 
-                  gibbonRollGroup.nameShort AS rollGroup
+                  gibbonFormGroup.gibbonFormGroupID, 
+                  gibbonFormGroup.name as rollGroupName, 
+                  gibbonFormGroup.nameShort AS rollGroup
                 FROM gibbonPerson
                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                 WHERE status='Full'
                   AND (dateStart IS NULL OR dateStart <= CURRENT_TIMESTAMP)
                   AND (dateEnd IS NULL  OR dateEnd >= CURRENT_TIMESTAMP)

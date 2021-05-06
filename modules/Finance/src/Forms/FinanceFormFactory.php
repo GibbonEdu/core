@@ -49,33 +49,33 @@ class FinanceFormFactory extends DatabaseFormFactory
 
         // Opt Groups
         if ($params['allStudents'] != true) {
-            $byRollGroup = __('All Enrolled Students by Form Group');
+            $byFormGroup = __('All Enrolled Students by Form Group');
             $byName = __('All Enrolled Students by Alphabet');
         }
         else {
-            $byRollGroup = __('All Students by Form Group');
+            $byFormGroup = __('All Students by Form Group');
             $byName = __('All Students by Alphabet');
         }
 
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
         if ($params['allStudents'] != true) {
-            $sql = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonRollGroup.nameShort AS rollGroupName, dayType
+            $sql = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonFormGroup.nameShort AS rollGroupName, dayType
                 FROM gibbonPerson
                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                 JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 WHERE gibbonPerson.status='Full'
                 AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                ORDER BY gibbonRollGroup.nameShort, surname, preferredName";
+                ORDER BY gibbonFormGroup.nameShort, surname, preferredName";
         }
         else {
-            $sql = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonRollGroup.nameShort AS rollGroupName, dayType
+            $sql = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonFormGroup.nameShort AS rollGroupName, dayType
                 FROM gibbonPerson
                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                 JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                ORDER BY gibbonRollGroup.nameShort, surname, preferredName";
+                ORDER BY gibbonFormGroup.nameShort, surname, preferredName";
         }
 
         $results = $this->pdo->executeQuery($data, $sql);
@@ -85,11 +85,11 @@ class FinanceFormFactory extends DatabaseFormFactory
         foreach ($students as $student) {
             $fullName = Format::name('', $student['preferredName'], $student['surname'], 'Student', true);
 
-            $values[$byRollGroup][$student['gibbonFinanceInvoiceeID']] = $student['rollGroupName'].' - '.$fullName;
+            $values[$byFormGroup][$student['gibbonFinanceInvoiceeID']] = $student['rollGroupName'].' - '.$fullName;
             $values[$byName][$student['gibbonFinanceInvoiceeID']] = $fullName.' - '.$student['rollGroupName'];
         }
 
-        // Sort the byName list so it's not byRollGroup
+        // Sort the byName list so it's not byFormGroup
         if (!empty($values[$byName]) && is_array($values[$byName])) {
             asort($values[$byName]);
         }

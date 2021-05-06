@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Services\Format;
 use Gibbon\Domain\Timetable\CourseGateway;
-use Gibbon\Domain\RollGroups\RollGroupGateway;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Module\Reports\Domain\ReportingScopeGateway;
 use Gibbon\Module\Reports\Domain\ReportingCriteriaGateway;
@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
     $reportingCycleGateway = $container->get(ReportingCycleGateway::class);
     $reportingScopeGateway = $container->get(ReportingScopeGateway::class);
     $reportingCriteriaGateway = $container->get(ReportingCriteriaGateway::class);
-    $rollGroupGateway = $container->get(RollGroupGateway::class);
+    $formGroupGateway = $container->get(FormGroupGateway::class);
     $courseGateway = $container->get(CourseGateway::class);
 
     $data = [
@@ -107,15 +107,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
 
                 foreach ($criteria as $criteriaData) {
                     // Grab the roll group ID by name if it's in a different school year
-                    if (!empty($criteriaData['gibbonRollGroupID']) && $data['gibbonSchoolYearID'] != $values['gibbonSchoolYearID']) {
-                        $rollGroupSource = $rollGroupGateway->getByID($criteriaData['gibbonRollGroupID']);
-                        $rollGroupDestination = $rollGroupGateway->selectBy([
+                    if (!empty($criteriaData['gibbonFormGroupID']) && $data['gibbonSchoolYearID'] != $values['gibbonSchoolYearID']) {
+                        $formGroupSource = $formGroupGateway->getByID($criteriaData['gibbonFormGroupID']);
+                        $formGroupDestination = $formGroupGateway->selectBy([
                             'gibbonSchoolYearID' => $data['gibbonSchoolYearID'], 
-                            'nameShort' => $rollGroupSource['nameShort'],
+                            'nameShort' => $formGroupSource['nameShort'],
                         ])->fetch();
 
-                        if (!empty($rollGroupDestination['gibbonRollGroupID'])) {
-                            $criteriaData['gibbonRollGroupID'] = $rollGroupDestination['gibbonRollGroupID'];
+                        if (!empty($formGroupDestination['gibbonFormGroupID'])) {
+                            $criteriaData['gibbonFormGroupID'] = $formGroupDestination['gibbonFormGroupID'];
                         } else {
                             $failedCriteria++;
                             continue;

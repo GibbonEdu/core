@@ -30,11 +30,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archiv
     $page->breadcrumbs->add(__('Archive Records'));
     
     $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-    $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.nameShort as rollGroup
+    $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonFormGroup.nameShort as rollGroup
             FROM gibbonPerson 
             JOIN gibbonIN ON (gibbonIN.gibbonPersonID=gibbonPerson.gibbonPersonID) 
             JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
-            JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID)
+            JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID)
             WHERE status='Full' ORDER BY surname, preferredName";
     $result = $pdo->executeQuery($data, $sql);
 

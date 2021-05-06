@@ -146,11 +146,11 @@ class FamilyUpdateGateway extends QueryableGateway implements ScrubbableGateway
     {
         $gibbonFamilyIDList = is_array($gibbonFamilyIDList) ? implode(',', $gibbonFamilyIDList) : $gibbonFamilyIDList;
         $data = array('gibbonFamilyIDList' => $gibbonFamilyIDList, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
-        $sql = "SELECT gibbonFamilyChild.gibbonFamilyID, '' as title, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.status, gibbonRollGroup.nameShort as rollGroup, MAX(gibbonPersonUpdate.timestamp) as personalUpdate, MAX(gibbonPersonMedicalUpdate.timestamp) as medicalUpdate, gibbonPerson.dateStart AS dateStart
+        $sql = "SELECT gibbonFamilyChild.gibbonFamilyID, '' as title, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.status, gibbonFormGroup.nameShort as rollGroup, MAX(gibbonPersonUpdate.timestamp) as personalUpdate, MAX(gibbonPersonMedicalUpdate.timestamp) as medicalUpdate, gibbonPerson.dateStart AS dateStart
             FROM gibbonFamilyChild
             JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID)
             JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
-            JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID)
+            JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID)
             JOIN gibbonYearGroup ON (gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID)
             LEFT JOIN gibbonPersonUpdate ON (gibbonPersonUpdate.gibbonPersonID=gibbonPerson.gibbonPersonID)
             LEFT JOIN gibbonPersonMedicalUpdate ON (gibbonPersonMedicalUpdate.gibbonPersonID=gibbonPerson.gibbonPersonID)
@@ -158,7 +158,7 @@ class FamilyUpdateGateway extends QueryableGateway implements ScrubbableGateway
             AND gibbonPerson.status='Full'
             AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
             GROUP BY gibbonFamilyChild.gibbonPersonID 
-            ORDER BY gibbonYearGroup.sequenceNumber, gibbonRollGroup.nameShort, gibbonPerson.surname, gibbonPerson.preferredName";
+            ORDER BY gibbonYearGroup.sequenceNumber, gibbonFormGroup.nameShort, gibbonPerson.surname, gibbonPerson.preferredName";
 
         return $this->db()->select($sql, $data);
     }

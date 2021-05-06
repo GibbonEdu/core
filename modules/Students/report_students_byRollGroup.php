@@ -23,7 +23,7 @@ use Gibbon\Tables\Prefab\ReportTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\Students\MedicalGateway;
-use Gibbon\Domain\RollGroups\RollGroupGateway;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
 } else {
     //Proceed!
 
-    $gibbonRollGroupID = (isset($_GET['gibbonRollGroupID']) ? $_GET['gibbonRollGroupID'] : null);
+    $gibbonFormGroupID = (isset($_GET['gibbonFormGroupID']) ? $_GET['gibbonFormGroupID'] : null);
     $view = isset($_GET['view']) ? $_GET['view'] : 'basic';
     $viewMode = isset($_REQUEST['format']) ? $_REQUEST['format'] : '';
 
@@ -49,8 +49,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
         $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_students_byRollGroup.php");
 
         $row = $form->addRow();
-            $row->addLabel('gibbonRollGroupID', __('Form Group'));
-            $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'], true)->selected($gibbonRollGroupID)->placeholder()->required();
+            $row->addLabel('gibbonFormGroupID', __('Form Group'));
+            $row->addSelectFormGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'], true)->selected($gibbonFormGroupID)->placeholder()->required();
 
         $row = $form->addRow();
             $row->addLabel('view', __('View'));
@@ -63,34 +63,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
         echo $form->getOutput();
     }
 
-    // Cancel out early if there's no roll group selected
-    if (empty($gibbonRollGroupID)) return;
+    // Cancel out early if there's no form group selected
+    if (empty($gibbonFormGroupID)) return;
 
-    $rollGroupGateway = $container->get(RollGroupGateway::class);
+    $formGroupGateway = $container->get(FormGroupGateway::class);
     $studentGateway = $container->get(StudentGateway::class);
     $medicalGateway = $container->get(MedicalGateway::class);
 
     // QUERY
     $criteria = $studentGateway->newQueryCriteria(true)
-        ->sortBy(['rollGroup', 'surname', 'preferredName'])
+        ->sortBy(['formGroup', 'surname', 'preferredName'])
         ->pageSize(!empty($viewMode) ? 0 : 50)
         ->filterBy('view', $view)
         ->fromArray($_POST);
     
-    $students = $studentGateway->queryStudentEnrolmentByRollGroup($criteria, $gibbonRollGroupID != '*' ? $gibbonRollGroupID : null);
+    $students = $studentGateway->queryStudentEnrolmentByFormGroup($criteria, $gibbonFormGroupID != '*' ? $gibbonFormGroupID : null);
 
     // DATA TABLE
-    $table = ReportTable::createPaginated('studentsByRollGroup', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('studentsByFormGroup', $criteria)->setViewMode($viewMode, $gibbon->session);
     $table->setTitle(__('Report Data'));
-    $table->setDescription(function () use ($gibbonRollGroupID, $rollGroupGateway) {
+    $table->setDescription(function () use ($gibbonFormGroupID, $formGroupGateway) {
         $output = '';
 
-        if ($gibbonRollGroupID == '*') return $output;
+        if ($gibbonFormGroupID == '*') return $output;
         
-        if ($rollGroup = $rollGroupGateway->getRollGroupByID($gibbonRollGroupID)) {
-            $output .= '<b>'.__('Form Group').'</b>: '.$rollGroup['name'];
+        if ($formGroup = $formGroupGateway->getFormGroupByID($gibbonFormGroupID)) {
+            $output .= '<b>'.__('Form Group').'</b>: '.$formGroup['name'];
         }
-        if ($tutors = $rollGroupGateway->selectTutorsByRollGroup($gibbonRollGroupID)->fetchAll()) {
+        if ($tutors = $formGroupGateway->selectTutorsByFormGroup($gibbonFormGroupID)->fetchAll()) {
             $output .= '<br/><b>'.__('Tutors').'</b>: '.Format::nameList($tutors, 'Staff');
         }
 
@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
         'view:extended' => __('View').': '.__('Extended'),
     ]);
 
-    $table->addColumn('rollGroup', __('Form Group'))->width('5%');
+    $table->addColumn('formGroup', __('Form Group'))->width('5%');
     $table->addColumn('student', __('Student'))
         ->sortable(['surname', 'preferredName'])
         ->format(function ($person) {

@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_
     $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
     $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
-    $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
+    $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
     $allStudents = $_GET['allStudents'] ?? '';
     $search = $_GET['search'] ?? '';
 
@@ -80,9 +80,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_
         return;
     }
 
-    if (!empty($search) || !empty($gibbonYearGroupID) || !empty($gibbonRollGroupID) || !empty($allStudents)) {
+    if (!empty($search) || !empty($gibbonYearGroupID) || !empty($gibbonFormGroupID) || !empty($allStudents)) {
         echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Reports/archive_byStudent.php&gibbonYearGroupID=$gibbonYearGroupID&gibbonRollGroupID=$gibbonRollGroupID&search=$search&allStudents=$allStudents'>".__('Back to Search Results').'</a>';
+        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Reports/archive_byStudent.php&gibbonYearGroupID=$gibbonYearGroupID&gibbonFormGroupID=$gibbonFormGroupID&search=$search&allStudents=$allStudents'>".__('Back to Search Results').'</a>';
         echo '</div>';
     }
 

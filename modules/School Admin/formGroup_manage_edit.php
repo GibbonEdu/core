@@ -20,25 +20,25 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_manage_edit.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
+    $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 
     $page->breadcrumbs
-        ->add(__('Manage Form Groups'), 'rollGroup_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+        ->add(__('Manage Form Groups'), 'formGroup_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
         ->add(__('Edit Form Group'));
 
     //Check if school year specified
-    if ($gibbonRollGroupID == '' or $gibbonSchoolYearID == '') {
+    if ($gibbonFormGroupID == '' or $gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         
-            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonRollGroupID' => $gibbonRollGroupID);
-            $sql = 'SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonRollGroupID, gibbonSchoolYear.name as schoolYearName, gibbonRollGroup.name, gibbonRollGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPersonIDEA, gibbonPersonIDEA2, gibbonPersonIDEA3, gibbonSpaceID, gibbonRollGroupIDNext, attendance, website FROM gibbonRollGroup JOIN gibbonSchoolYear ON gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonRollGroupID=:gibbonRollGroupID ORDER BY sequenceNumber, gibbonRollGroup.name';
+            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFormGroupID' => $gibbonFormGroupID);
+            $sql = 'SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonFormGroupID, gibbonSchoolYear.name as schoolYearName, gibbonFormGroup.name, gibbonFormGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPersonIDEA, gibbonPersonIDEA2, gibbonPersonIDEA3, gibbonSpaceID, gibbonFormGroupIDNext, attendance, website FROM gibbonFormGroup JOIN gibbonSchoolYear ON gibbonFormGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFormGroupID=:gibbonFormGroupID ORDER BY sequenceNumber, gibbonFormGroup.name';
             $result = $connection2->prepare($sql);
             $result->execute($data);
 
@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
             //Let's go!
             $values = $result->fetch();
 
-            $form = Form::create('rollGroupEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/rollGroup_manage_editProcess.php?gibbonRollGroupID='.$gibbonRollGroupID);
+            $form = Form::create('formGroupEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/formGroup_manage_editProcess.php?gibbonFormGroupID='.$gibbonFormGroupID);
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
@@ -86,11 +86,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 
             $nextYear = getNextSchoolYearID($gibbonSchoolYearID, $connection2);
             $row = $form->addRow();
-                $row->addLabel('gibbonRollGroupIDNext', __('Next Form Group'))->description(__('Sets student progression on rollover.'));
+                $row->addLabel('gibbonFormGroupIDNext', __('Next Form Group'))->description(__('Sets student progression on rollover.'));
                 if (empty($nextYear)) {
                     $row->addAlert(__('The next school year cannot be determined, so this value cannot be set.'));
                 } else {
-                    $row->addSelectRollGroup('gibbonRollGroupIDNext', $nextYear);
+                    $row->addSelectFormGroup('gibbonFormGroupIDNext', $nextYear);
                 }
 
             $row = $form->addRow();

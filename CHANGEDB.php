@@ -870,4 +870,27 @@ UPDATE gibbonSetting SET name='defaultFormGroupAttendanceType' WHERE name='defau
 UPDATE gibbonModule SET name='Form Groups' WHERE name='Roll Groups';end
 UPDATE `gibbonSetting` SET value='purple' WHERE value='Purple' AND name='themeColour' AND scope='System';end
 UPDATE `gibbonAction` SET URLList='templates_preview.php,templates_manage.php,templates_manage_add.php,templates_manage_edit.php,templates_manage_duplicate.php,templates_manage_delete.php,templates_manage_section_add.php,templates_manage_section_edit.php,templates_manage_section_delete.php,templates_assets.php,templates_assets_components_preview.php,templates_assets_components_add.php,templates_assets_components_edit.php,templates_assets_components_delete.php,templates_assets_components_duplicate.php,templates_assets_fonts_preview.php,templates_assets_fonts_edit.php' WHERE `name`='Template Builder' AND `gibbonModuleID`=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Reports');end
+ALTER TABLE gibbonApplicationForm CHANGE `gibbonRollGroupID` `gibbonFormGroupID` int(5) unsigned zerofill DEFAULT NULL;end
+ALTER TABLE gibbonAttendanceLogPerson CHANGE `gibbonRollGroupID` `gibbonFormGroupID` int(5) unsigned zerofill DEFAULT NULL;end
+ALTER TABLE gibbonAttendanceLogRollGroup CHANGE `gibbonRollGroupID` `gibbonFormGroupID` int(5) unsigned zerofill NOT NULL;end
+RENAME TABLE gibbonAttendanceLogRollGroup TO gibbonAttendanceLogFormGroup;end
+ALTER TABLE gibbonAttendanceLogFormGroup CHANGE `gibbonAttendanceLogRollGroupID` `gibbonAttendanceLogFormGroupID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;end
+ALTER TABLE gibbonReportArchiveEntry CHANGE `gibbonRollGroupID` `gibbonFormGroupID` int(5) unsigned zerofill DEFAULT NULL;end
+ALTER TABLE gibbonReportingProgress CHANGE `gibbonRollGroupID` `gibbonFormGroupID` int(5) unsigned zerofill DEFAULT NULL;end
+ALTER TABLE gibbonRollGroup CHANGE `gibbonRollGroupID` `gibbonFormGroupID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT;end
+ALTER TABLE gibbonRollGroup CHANGE `gibbonRollGroupIDNext` `gibbonFormGroupIDNext` int(5) unsigned zerofill DEFAULT NULL;end
+RENAME TABLE gibbonRollGroup TO gibbonFormGroup;end
+ALTER TABLE gibbonStudentEnrolment CHANGE `gibbonRollGroupID` `gibbonFormGroupID` int(5) unsigned zerofill NOT NULL;end
+DROP INDEX gibbonRollGroupID ON gibbonStudentEnrolment;end
+CREATE INDEX `gibbonFormGroupID` ON gibbonStudentEnrolment(gibbonFormGroupID);end
+ALTER TABLE gibbonCourseClassMap CHANGE `gibbonRollGroupID` `gibbonFormGroupID` int(5) unsigned zerofill DEFAULT NULL;end
+ALTER TABLE gibbonReportingCriteria CHANGE `gibbonRollGroupID` `gibbonFormGroupID` int(5) unsigned zerofill DEFAULT NULL;end
+UPDATE gibbonModule SET entryURL='formGroups.php' WHERE name='Form Groups';end
+UPDATE gibbonAction SET URLList='formGroups.php,formGroups_details.php', entryURL='formGroups.php' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Form Groups') AND name LIKE 'View Form Groups_%';end
+UPDATE gibbonAction SET URLList='report_activityChoices_byFormGroup.php', entryURL='report_activityChoices_byFormGroup.php' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Activities') AND name='Activity Choices by Form Group';end
+UPDATE gibbonAction SET URLList='report_workSummary_byFormGroup.php', entryURL='report_workSummary_byFormGroup.php' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Planner') AND name='Work Summary by Form Group';end
+UPDATE gibbonAction SET URLList='report_classEnrolment_byFormGroup.php', entryURL='report_classEnrolment_byFormGroup.php' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable Admin') AND name='Class Enrolment by Form Group';end
+UPDATE gibbonAction SET URLList='attendance_take_byFormGroup.php', entryURL='attendance_take_byFormGroup.php' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Attendance') AND name LIKE 'Attendance by Form Group_%';end
+UPDATE gibbonAction SET URLList='report_formGroupsNotRegistered_byDate.php,report_formGroupsNotRegistered_byDate_print.php', entryURL='report_formGroupsNotRegistered_byDate.php' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Attendance') AND name='Form Groups Not Registered';end
+UPDATE gibbonAction SET URLList='formGroup_manage.php,formGroup_manage_edit.php,formGroup_manage_add.php,formGroup_manage_delete.php', entryURL='formGroup_manage.php' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='School Admin') AND name='Manage Form Groups';end
 ";

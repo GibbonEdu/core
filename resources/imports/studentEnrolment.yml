@@ -10,7 +10,7 @@ primaryKey:
     gibbonStudentEnrolmentID
 uniqueKeys:
     - [ gibbonSchoolYearID, gibbonYearGroupID, gibbonPersonID ]
-    - [ gibbonSchoolYearID, gibbonRollGroupID, gibbonPersonID ]
+    - [ gibbonSchoolYearID, gibbonFormGroupID, gibbonPersonID ]
 table:
     gibbonSchoolYearID:
         name: "School Year"
@@ -22,11 +22,11 @@ table:
         desc: "Short Name"
         args: { filter: string, required: true }
         relationship: { table: gibbonYearGroup, key: gibbonYearGroupID, field: nameShort  }
-    gibbonRollGroupID:
+    gibbonFormGroupID:
         name: "Roll Group"
         desc: "Short Name"
         args: { filter: string, required: true }
-        relationship: { table: gibbonRollGroup, key: gibbonRollGroupID, field: [ nameShort, gibbonSchoolYearID ]  }
+        relationship: { table: gibbonFormGroup, key: gibbonFormGroupID, field: [ nameShort, gibbonSchoolYearID ]  }
     gibbonPersonID:
         name: "Student"
         desc: "Username or Email (if unique)"
