@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_letter
         ->format(function($person) use ($guid) {
             $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'].'&subpage=Behaviour&search=&allStudents=&sort=surname,preferredName';
             return '<b>'.Format::link($url, Format::name('', $person['preferredName'], $person['surname'], 'Student', true)).'</b>'
-                  .'<br/><small><i>'.$person['rollGroup'].'</i></small>';
+                  .'<br/><small><i>'.$person['formGroup'].'</i></small>';
         });
 
     $table->addColumn('timestamp', __('Date'))

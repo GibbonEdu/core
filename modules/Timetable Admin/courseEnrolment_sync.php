@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         ->displayLabel();
 
     $table->addColumn('yearGroupName', __('Year Group'))->sortable(['gibbonYearGroup.sequenceNumber']);
-    $table->addColumn('rollGroupList', __('Form Groups'));
+    $table->addColumn('formGroupList', __('Form Groups'));
     $table->addColumn('classCount', __('Classes'));
 
     // ACTIONS

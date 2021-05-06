@@ -44,7 +44,7 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
         } else {
             try {
                 $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID);
-                $sql = 'SELECT gibbonFormGroup.gibbonFormGroupID, gibbonYearGroup.gibbonYearGroupID,gibbonStudentEnrolmentID, gibbonPerson.gibbonPersonID, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonFormGroup.nameShort AS rollGroup FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonFormGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID ORDER BY surname, preferredName';
+                $sql = 'SELECT gibbonFormGroup.gibbonFormGroupID, gibbonYearGroup.gibbonYearGroupID,gibbonStudentEnrolmentID, gibbonPerson.gibbonPersonID, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonFormGroup.nameShort AS formGroup FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonFormGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID ORDER BY surname, preferredName';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
@@ -63,7 +63,7 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
                 $gibbonYearGroupID = $_POST['gibbonYearGroupID'];
                 $gibbonFormGroupID = $_POST['gibbonFormGroupID'];
                 $gibbonFormGroupIDOriginal = (isset($_POST['gibbonFormGroupIDOriginal']))? $_POST['gibbonFormGroupIDOriginal'] : 'N';
-                $formGroupOriginalNameShort = $_POST['rollGroupOriginalNameShort'] ?? '';
+                $formGroupOriginalNameShort = $_POST['formGroupOriginalNameShort'] ?? '';
                 $gibbonPersonID = $row['gibbonPersonID'];
 
                 $formGroupTo = $container->get(FormGroupGateway::class)->getFormGroupByID($gibbonFormGroupID);
@@ -107,7 +107,7 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
                     $autoEnrolStudent = (isset($_POST['autoEnrolStudent']))? $_POST['autoEnrolStudent'] : 'N';
                     if ($autoEnrolStudent == 'Y') {
 
-                        // Remove existing auto-enrolment: moving a student from one Roll Group to another
+                        // Remove existing auto-enrolment: moving a student from one Form Group to another
                         $data = array('gibbonFormGroupIDOriginal' => $gibbonFormGroupIDOriginal, 'gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID, 'dateUnenrolled' => date('Y-m-d'));
                         $sql = "UPDATE gibbonCourseClassPerson
                                 JOIN gibbonStudentEnrolment ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
@@ -123,7 +123,7 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
                             exit;
                         }
 
-                        // Update existing course enrolments for new Roll Group
+                        // Update existing course enrolments for new Form Group
                         $data = array('gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID, 'dateEnrolled' => date('Y-m-d'));
                         $sql = "UPDATE gibbonCourseClassPerson
                                 JOIN gibbonStudentEnrolment ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
@@ -134,7 +134,7 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
                                 AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NOT NULL";
                         $pdo->executeQuery($data, $sql);
 
-                        // Add course enrolments for new Roll Group
+                        // Add course enrolments for new Form Group
                         $data = array('gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID, 'dateEnrolled' => date('Y-m-d'));
                         $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `dateEnrolled`, `reportable`)
                                 SELECT gibbonCourseClassMap.gibbonCourseClassID, gibbonStudentEnrolment.gibbonPersonID, 'Student', :dateEnrolled, 'Y'

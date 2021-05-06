@@ -146,7 +146,7 @@ class FamilyUpdateGateway extends QueryableGateway implements ScrubbableGateway
     {
         $gibbonFamilyIDList = is_array($gibbonFamilyIDList) ? implode(',', $gibbonFamilyIDList) : $gibbonFamilyIDList;
         $data = array('gibbonFamilyIDList' => $gibbonFamilyIDList, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
-        $sql = "SELECT gibbonFamilyChild.gibbonFamilyID, '' as title, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.status, gibbonFormGroup.nameShort as rollGroup, MAX(gibbonPersonUpdate.timestamp) as personalUpdate, MAX(gibbonPersonMedicalUpdate.timestamp) as medicalUpdate, gibbonPerson.dateStart AS dateStart
+        $sql = "SELECT gibbonFamilyChild.gibbonFamilyID, '' as title, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.status, gibbonFormGroup.nameShort as formGroup, MAX(gibbonPersonUpdate.timestamp) as personalUpdate, MAX(gibbonPersonMedicalUpdate.timestamp) as medicalUpdate, gibbonPerson.dateStart AS dateStart
             FROM gibbonFamilyChild
             JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID)
             JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)

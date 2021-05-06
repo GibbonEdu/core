@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
         // CRITERIA
         $criteria = $attendanceLogGateway->newQueryCriteria(true)
-            ->sortBy(['sequenceNumber', 'rollGroup', 'gibbonPerson.surname', 'gibbonPerson.preferredName'])
+            ->sortBy(['sequenceNumber', 'formGroup', 'gibbonPerson.surname', 'gibbonPerson.preferredName'])
             ->filterBy('yearGroup', implode(',', $gibbonYearGroupIDList ?? []))
             ->filterBy('types', implode(',', $types ?? []))
             ->pageSize(!empty($viewMode) ? 0 : 50)
@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
         $table->addRowCountColumn($logs->getPageFrom());
 
-        $table->addColumn('rollGroup', __('Form Group'));
+        $table->addColumn('formGroup', __('Form Group'));
 
         $table->addColumn('student', __('Student'))
             ->context('primary')

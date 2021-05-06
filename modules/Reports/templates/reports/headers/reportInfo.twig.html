@@ -17,7 +17,7 @@ config:
 <table class="w-full table" cellspacing="0">
     <tr>
         <td style="text-align:left;width:50%;"><b>{{- report.name -}}</b> - {{ report.date|date("M jS, Y") -}}</td> 
-        <td style="text-align:right;width:50%;"><b>{{ student.officialName }}</b>, {{ student.rollGroupNameShort }}</td> 
+        <td style="text-align:right;width:50%;"><b>{{ student.officialName }}</b>, {{ student.formGroupNameShort }}</td> 
     </tr>
     {% if config.dividerLine|default('Y') == 'Y' %}
     <tr>

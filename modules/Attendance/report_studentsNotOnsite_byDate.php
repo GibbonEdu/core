@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
             $row->addLabel('currentDate', __('Date'));
             $row->addDate('currentDate')->setValue(Format::date($currentDate))->required();
 
-        $sortOptions = ['surname' => __('Surname'), 'preferredName' => __('Preferred Name'), 'rollGroup' => __('Form Group')];
+        $sortOptions = ['surname' => __('Surname'), 'preferredName' => __('Preferred Name'), 'formGroup' => __('Form Group')];
         $row = $form->addRow();
             $row->addLabel('sort', __('Sort By'));
             $row->addSelect('sort')->fromArray($sortOptions)->selected($sort)->required();
@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
     switch ($sort) {
         case 'preferredName':
             $criteria->sortBy(['gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonFormGroup.nameShort']); break;
-        case 'rollGroup':
+        case 'formGroup':
             $criteria->sortBy(['gibbonFormGroup.nameShort', 'gibbonPerson.surname', 'gibbonPerson.preferredName']); break;
         default:
         case 'surname':
@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
     $table->addMetaData('blankSlate', __('All students are present.'));
     $table->addRowCountColumn($attendance->getPageFrom());
 
-    $table->addColumn('rollGroup', __('Form Group'))->width('10%');
+    $table->addColumn('formGroup', __('Form Group'))->width('10%');
     $table->addColumn('name', __('Name'))
         ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
         ->format(function ($student) {

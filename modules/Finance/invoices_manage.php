@@ -233,7 +233,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
                 return $output;
             });
 
-        $table->addColumn('rollGroup', __('Form Group'));
+        $table->addColumn('formGroup', __('Form Group'));
 
         $table->addColumn('status', __('Status'))
             ->format(function ($invoice) {

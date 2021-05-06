@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                             $event->addRecipient($behaviourRecord['gibbonPersonIDCreator']);
                         }
 
-                        // Add direct notifications to roll group tutors
+                        // Add direct notifications to form group tutors
                         if (getSettingByScope($connection2, 'Behaviour', 'notifyTutors') == 'Y') {
                             $tutors = $formGroupGateway->selectTutorsByFormGroup($student['gibbonFormGroupID'])->fetchAll();
                             foreach ($tutors as $tutor) {

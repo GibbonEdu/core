@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_particip
 
     $table->setTitle(__('Participants by Activity'));
 
-    $table->addColumn('rollGroup', __('Form Group'))->width('10%');
+    $table->addColumn('formGroup', __('Form Group'))->width('10%');
     $table->addColumn('student', __('Student'))
         ->sortable(['surname', 'preferredName'])
         ->format(function ($student) use ($guid) {

@@ -485,21 +485,21 @@ else {
 				}
 			}
 
-			//Roll Groups
+			//Form Groups
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_any")) {
-				if ($_POST["rollGroup"]=="Y") {
-					$staff=$_POST["rollGroupsStaff"] ;
-					$students=$_POST["rollGroupsStudents"] ;
+				if ($_POST["formGroup"]=="Y") {
+					$staff=$_POST["formGroupsStaff"] ;
+					$students=$_POST["formGroupsStudents"] ;
 					$parents="N" ;
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_parents")) {
-						$parents=$_POST["rollGroupsParents"] ;
+						$parents=$_POST["formGroupsParents"] ;
 					}
-					$choices=$_POST["rollGroups"] ;
+					$choices=$_POST["formGroups"] ;
 					if ($choices!="") {
 						foreach ($choices as $t) {
 							try {
 								$data=array("AI"=>$AI, "t"=>$t, "staff"=>$staff, "students"=>$students, "parents"=>$parents);
-								$sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:AI, type='Roll Group', id=:t, staff=:staff, students=:students, parents=:parents" ;
+								$sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:AI, type='Form Group', id=:t, staff=:staff, students=:students, parents=:parents" ;
 								$result=$connection2->prepare($sql);
 								$result->execute($data);
 							}
@@ -518,7 +518,7 @@ else {
 									}
 									catch(PDOException $e) { }
 									while ($rowEmail=$resultEmail->fetch()) {
-										$report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Roll Group', $t, 'Email', $rowEmail["email"]);
+										$report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Form Group', $t, 'Email', $rowEmail["email"]);
 									}
 								}
 								if ($students=="Y") {
@@ -530,7 +530,7 @@ else {
 									}
 									catch(PDOException $e) { }
 									while ($rowEmail=$resultEmail->fetch()) {
-										$report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Roll Group', $t, 'Email', $rowEmail["email"]);
+										$report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Form Group', $t, 'Email', $rowEmail["email"]);
 									}
 								}
 								if ($parents=="Y") {
@@ -558,7 +558,7 @@ else {
 											}
 											catch(PDOException $e) { }
 											while ($rowEmail=$resultEmail->fetch()) {
-												$report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Roll Group', $t, 'Email', $rowEmail["email"], $rowStudents['gibbonPersonID'], Format::name('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student'));
+												$report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Form Group', $t, 'Email', $rowEmail["email"], $rowStudents['gibbonPersonID'], Format::name('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student'));
 											}
 										}
 									}
@@ -580,7 +580,7 @@ else {
 										$countryCodeTemp = $countryCode;
 										if ($rowEmail["countryCode"]=="")
 											$countryCodeTemp = $rowEmail["countryCode"];
-										$report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Roll Group', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
+										$report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Form Group', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 									}
 								}
 								if ($students=="Y") {
@@ -598,7 +598,7 @@ else {
 										$countryCodeTemp = $countryCode;
 										if ($rowEmail["countryCode"]=="")
 											$countryCodeTemp = $rowEmail["countryCode"];
-										$report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Roll Group', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
+										$report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Form Group', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 									}
 								}
 								if ($parents=="Y") {
@@ -632,7 +632,7 @@ else {
 												$countryCodeTemp = $countryCode;
 												if ($rowEmail["countryCode"]=="")
 													$countryCodeTemp = $rowEmail["countryCode"];
-												$report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Roll Group', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
+												$report = reportAdd($report, $emailReceipt, $rowEmail['gibbonPersonID'], 'Form Group', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 											}
 										}
 									}

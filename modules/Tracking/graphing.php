@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
 
         $row = $form->addRow();
             $row->addLabel('gibbonPersonIDs', __('Student'));
-            $row->addSelectStudent('gibbonPersonIDs', $_SESSION[$guid]['gibbonSchoolYearID'], array('byName' => true, 'byRoll' => true))->selectMultiple()->required();
+            $row->addSelectStudent('gibbonPersonIDs', $_SESSION[$guid]['gibbonSchoolYearID'], array('byName' => true, 'byForm' => true))->selectMultiple()->required();
         $row = $form->addRow();
             $row->addLabel('dataType', __('Data Type'));
             $row->addSelect('dataType')->fromArray($dataTypes)->required();

@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $criteria = $behaviourGateway->newQueryCriteria(true)
             ->sortBy('timestamp', 'DESC')
             ->filterBy('student', $gibbonPersonID)
-            ->filterBy('rollGroup', $gibbonFormGroupID)
+            ->filterBy('formGroup', $gibbonFormGroupID)
             ->filterBy('yearGroup', $gibbonYearGroupID)
             ->filterBy('type', $type)
             ->fromPOST();
@@ -151,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             ->format(function($person) use ($guid) {
                 $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'].'&subpage=Behaviour&search=&allStudents=&sort=surname,preferredName';
                 return '<b>'.Format::link($url, Format::name('', $person['preferredName'], $person['surname'], 'Student', true)).'</b>'
-                      .'<br/><small><i>'.$person['rollGroup'].'</i></small>';
+                      .'<br/><small><i>'.$person['formGroup'].'</i></small>';
             });
 
         $table->addColumn('date', __('Date'))

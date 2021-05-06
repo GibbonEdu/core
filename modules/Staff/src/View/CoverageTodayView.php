@@ -42,7 +42,7 @@ class CoverageTodayView
     public function __construct(StaffCoverageGateway $staffCoverageGateway, FormGroupGateway $formGroupGateway, UserGateway $userGateway)
     {
         $this->staffCoverageGateway = $staffCoverageGateway;
-        $this->rollGroupGateway = $formGroupGateway;
+        $this->formGroupGateway = $formGroupGateway;
         $this->userGateway = $userGateway;
     }
 
@@ -82,8 +82,8 @@ class CoverageTodayView
             ]);
         }
 
-        // Roll Group Info
-        $formGroups = $this->rollGroupGateway->selectFormGroupsByTutor($coverage['gibbonPersonID'])->toDataSet();
+        // Form Group Info
+        $formGroups = $this->formGroupGateway->selectFormGroupsByTutor($coverage['gibbonPersonID'])->toDataSet();
 
         if (count($formGroups) > 0) {
             $table = DataTable::create('todaysCoverageTimetable');

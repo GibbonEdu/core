@@ -150,8 +150,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             'paid:n'         => __('Paid').': '.__('No'),
             'paid:exemption' => __('Paid').': '.__('Exemption'),
 
-            'rollGroup:y'         => __('Form Group').': '.__('Yes'),
-            'rollGroup:n'         => __('Form Group').': '.__('No'),
+            'formGroup:y'         => __('Form Group').': '.__('Yes'),
+            'formGroup:n'         => __('Form Group').': '.__('No'),
         ]);
 
         $table->addColumn('gibbonApplicationFormID', __('ID'))

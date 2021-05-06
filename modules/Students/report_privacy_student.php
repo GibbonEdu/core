@@ -59,9 +59,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_privacy_st
     $table->setTitle(__('Privacy Choices by Student'));
 
     $table->addRowCountColumn($privacyChoices->getPageFrom());
-    $table->addColumn('rollGroup', __('Form Group'))
+    $table->addColumn('formGroup', __('Form Group'))
         ->context('secondary')
-        ->sortable(['gibbonYearGroup.sequenceNumber', 'rollGroup']);
+        ->sortable(['gibbonYearGroup.sequenceNumber', 'formGroup']);
 
     $table->addColumn('image_240', __('Student'))
         ->context('primary')

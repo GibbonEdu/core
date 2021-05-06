@@ -110,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
 			$students = array();
 			$data = array('gibbonYearGroupIDList' => $values['gibbonYearGroupIDList'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date' => date('Y-m-d'));
-			$sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonFormGroup.name AS rollGroupName 
+			$sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonFormGroup.name AS formGroupName 
 					FROM gibbonPerson
 					JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) 
 					JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
@@ -119,12 +119,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 					AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList)
 					AND gibbonPerson.status='FULL' 
 					AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date) 
-					ORDER BY rollGroupName, gibbonPerson.surname, gibbonPerson.preferredName";
+					ORDER BY formGroupName, gibbonPerson.surname, gibbonPerson.preferredName";
 			$result = $pdo->executeQuery($data, $sql);
 
 			if ($result->rowCount() > 0) {
 				$students['--'.__('Enrolable Students').'--'] = array_reduce($result->fetchAll(), function($group, $item) {
-					$group[$item['gibbonPersonID']] = $item['rollGroupName'].' - '. Format::name('', $item['preferredName'], $item['surname'], 'Student', true);
+					$group[$item['gibbonPersonID']] = $item['formGroupName'].' - '. Format::name('', $item['preferredName'], $item['surname'], 'Student', true);
 					return $group;
 				}, array());
 			}

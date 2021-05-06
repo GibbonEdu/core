@@ -69,7 +69,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {{ formatUsing('name', student.title, student.preferredName, student.surname, 'Student', false, true) }}
             </a>
             <div class="text-sm text-gray-600 mb-0">
-                {{ student.rollGroup }}
+                {{ student.formGroup }}
             
                 {% if student.status != 'Full' %}
                     <span class="tag error">{{ student.status }}</span>

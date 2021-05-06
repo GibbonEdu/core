@@ -61,7 +61,7 @@ class FormGroupTable extends DataTable
             $canViewConfidential = false;
         }
 
-        if ($canPrint && isActionAccessible($guid, $connection2, '/modules/Students/report_students_byRollGroup.php') == false) {
+        if ($canPrint && isActionAccessible($guid, $connection2, '/modules/Students/report_students_byFormGroup.php') == false) {
             $canPrint = false;
         }
 
@@ -82,7 +82,7 @@ class FormGroupTable extends DataTable
         if ($canPrint) {
             $this->addHeaderAction('print', __('Print'))
                 ->setURL('/report.php')
-                ->addParam('q', '/modules/Students/report_students_byRollGroup.php')
+                ->addParam('q', '/modules/Students/report_students_byFormGroup.php')
                 ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
                 ->addParam('format', 'print')
                 ->addParam('view', 'Basic')

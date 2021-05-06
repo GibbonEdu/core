@@ -124,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                             $gibbonAttendanceLogPersonID = '';
                             if ($result->rowCount()>0) {
                                 $row=$result->fetch() ;
-                                if ($row['context'] == 'Roll Group' && $row['type'] == $type && $row['direction'] == $direction ) {
+                                if ($row['context'] == 'Form Group' && $row['type'] == $type && $row['direction'] == $direction ) {
                                     $existing = true ;
                                     $gibbonAttendanceLogPersonID = $row['gibbonAttendanceLogPersonID'];
                                 }
@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                             $data = [
                                 'gibbonAttendanceCodeID' => $attendanceCode['gibbonAttendanceCodeID'],
                                 'gibbonPersonID'         => $gibbonPersonID,
-                                'context'                => 'Roll Group',
+                                'context'                => 'Form Group',
                                 'direction'              => $direction,
                                 'type'                   => $type,
                                 'reason'                 => $reason,

@@ -27,7 +27,7 @@ use Gibbon\Domain\Students\StudentGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activityType_rollGroup.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activityType_formGroup.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setClass('noIntBorder fullWidth');
 
-        $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_activityType_rollGroup.php");
+        $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_activityType_formGroup.php");
 
         $row = $form->addRow();
             $row->addLabel('gibbonFormGroupID', __('Form Group'));
@@ -95,11 +95,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     $activityTypes = array_map('trim', explode(',', $activityTypeSetting));
 
     // DATA TABLE
-    $table = ReportTable::createPaginated('activityType_rollGroup', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('activityType_formGroup', $criteria)->setViewMode($viewMode, $gibbon->session);
 
     $table->setTitle(__('Activity Type by Form Group'));
 
-    $table->addColumn('rollGroup', __('Form Group'))->width('10%');
+    $table->addColumn('formGroup', __('Form Group'))->width('10%');
     $table->addColumn('student', __('Student'))
         ->width('25%')
         ->sortable(['surname', 'preferredName'])

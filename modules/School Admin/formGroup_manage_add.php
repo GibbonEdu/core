@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_man
         } else {
             $values = $result->fetch();
 
-            $form = Form::create('rollGroupAdd', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/formGroup_manage_addProcess.php');
+            $form = Form::create('formGroupAdd', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/formGroup_manage_addProcess.php');
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);

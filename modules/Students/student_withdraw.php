@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_withdraw.
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Student'));
-        $row->addSelectStudent('gibbonPersonID', $gibbon->session->get('gibbonSchoolYearID'), ['showRoll' => true])->required()->placeholder();
+        $row->addSelectStudent('gibbonPersonID', $gibbon->session->get('gibbonSchoolYearID'), ['showForm' => true])->required()->placeholder();
 
     $row = $form->addRow();
         $row->addLabel('status', __('Status'))->description(__("Set this to Left unless the student's withdraw date is in the future."));

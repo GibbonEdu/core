@@ -140,7 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 return __($person['roleCategory']) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
             });
         $table->addColumn('yearGroup', __('Year Group'));
-        $table->addColumn('rollGroup', __('Form Group'));
+        $table->addColumn('formGroup', __('Form Group'));
 
         $actions = $table->addActionColumn()
             ->addParam('search', $criteria->getSearchText(true))

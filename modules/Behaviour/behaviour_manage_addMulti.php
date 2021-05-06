@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     //Student
     $row = $form->addRow();
         $row->addLabel('gibbonPersonIDMulti', __('Students'));
-        $row->addSelectStudent('gibbonPersonIDMulti', $_SESSION[$guid]['gibbonSchoolYearID'], array('byName' => true, 'byRoll' => true))->selectMultiple()->required();
+        $row->addSelectStudent('gibbonPersonIDMulti', $_SESSION[$guid]['gibbonSchoolYearID'], array('byName' => true, 'byForm' => true))->selectMultiple()->required();
 
     //Date
     $row = $form->addRow();

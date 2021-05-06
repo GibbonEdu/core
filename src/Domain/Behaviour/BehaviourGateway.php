@@ -67,7 +67,7 @@ class BehaviourGateway extends QueryableGateway implements ScrubbableGateway
                 'student.gibbonPersonID',
                 'student.surname',
                 'student.preferredName',
-                'gibbonFormGroup.nameShort AS rollGroup',
+                'gibbonFormGroup.nameShort AS formGroup',
                 'creator.title AS titleCreator',
                 'creator.surname AS surnameCreator',
                 'creator.preferredName AS preferredNameCreator',
@@ -91,7 +91,7 @@ class BehaviourGateway extends QueryableGateway implements ScrubbableGateway
                     ->where('gibbonBehaviour.gibbonPersonID = :gibbonPersonID')
                     ->bindValue('gibbonPersonID', $gibbonPersonID);
             },
-            'rollGroup' => function ($query, $gibbonFormGroupID) {
+            'formGroup' => function ($query, $gibbonFormGroupID) {
                 return $query
                     ->where('gibbonStudentEnrolment.gibbonFormGroupID = :gibbonFormGroupID')
                     ->bindValue('gibbonFormGroupID', $gibbonFormGroupID);
@@ -122,7 +122,7 @@ class BehaviourGateway extends QueryableGateway implements ScrubbableGateway
                 'gibbonPerson.surname',
                 'gibbonPerson.preferredName',
                 'gibbonYearGroup.nameShort AS yearGroup',
-                'gibbonFormGroup.nameShort AS rollGroup',
+                'gibbonFormGroup.nameShort AS formGroup',
                 'gibbonPerson.dateStart',
                 'gibbonPerson.dateEnd',
                 "COUNT(DISTINCT gibbonBehaviourID) AS count",
@@ -153,7 +153,7 @@ class BehaviourGateway extends QueryableGateway implements ScrubbableGateway
                     ->where('(gibbonBehaviourID IS NULL OR gibbonBehaviour.date >= :fromDate)')
                     ->bindValue('fromDate', $fromDate);
             },
-            'rollGroup' => function ($query, $gibbonFormGroupID) {
+            'formGroup' => function ($query, $gibbonFormGroupID) {
                 return $query
                     ->where('gibbonStudentEnrolment.gibbonFormGroupID = :gibbonFormGroupID')
                     ->bindValue('gibbonFormGroupID', $gibbonFormGroupID);
@@ -183,7 +183,7 @@ class BehaviourGateway extends QueryableGateway implements ScrubbableGateway
                 'gibbonPerson.gibbonPersonID',
                 'gibbonPerson.surname',
                 'gibbonPerson.preferredName',
-                'gibbonFormGroup.nameShort AS rollGroup',
+                'gibbonFormGroup.nameShort AS formGroup',
             ])
             ->innerJoin('gibbonPerson', 'gibbonBehaviourLetter.gibbonPersonID=gibbonPerson.gibbonPersonID')
             ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID 

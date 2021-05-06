@@ -89,7 +89,7 @@ $yearGroups = array_reduce($allStudents, function ($group, $item) {
     return $group;
 }, []);
 
-// Loop over each year group and roll group to send summary emails
+// Loop over each year group and form group to send summary emails
 foreach ($yearGroups as $gibbonYearGroupID => $formGroups) {
 
     $yearGroupContent = '';

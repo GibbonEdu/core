@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
 
         $row = $form->addRow();
             $row->addLabel('gibbonPersonID', __('Students'));
-            $row->addSelectStudent('gibbonPersonID', $gibbonSchoolYearID, array("allStudents" => false, "byName" => true, "byRoll" => true))
+            $row->addSelectStudent('gibbonPersonID', $gibbonSchoolYearID, array("allStudents" => false, "byName" => true, "byForm" => true))
                 ->isRequired()
                 ->selectMultiple()
                 ->selected($choices);

@@ -242,7 +242,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
                 ->sortable(['jobTitle', 'gibbonPerson.surname', 'gibbonPerson.preferredName'])
                 ->format(function ($person) {
                     return (!empty($person['jobTitle']) ? $person['jobTitle'] : '').'<br/>'.
-                        (!empty($person['rollGroupName']) ? Format::small($person['rollGroupName']) : '');
+                        (!empty($person['formGroupName']) ? Format::small($person['formGroupName']) : '');
                 });
         }
 

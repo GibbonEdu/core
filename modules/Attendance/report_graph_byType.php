@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
 
     $sort = !empty($_POST['sort'])? $_POST['sort'] : 'surname, preferredName';
 
-    // Get the roll groups - revert to All if it's selected
+    // Get the form groups - revert to All if it's selected
     $formGroups = $_POST['gibbonFormGroupID'] ?? array('all');
     if (in_array('all', $formGroups)) $formGroups = array('all');
 

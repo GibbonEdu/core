@@ -43,7 +43,7 @@ class FamilyGateway extends QueryableGateway implements ScrubbableGateway
 
     private static $scrubbableKey = 'gibbonFamilyID';
     private static $scrubbableColumns = ['nameAddress' => '', 'homeAddress' => '', 'homeAddressDistrict' => '', 'homeAddressCountry' => '', 'status' => 'Other', 'languageHomePrimary' => '', 'languageHomeSecondary' => ''];
-    
+
     /**
      * @param QueryCriteria $criteria
      * @return DataSet
@@ -102,7 +102,7 @@ class FamilyGateway extends QueryableGateway implements ScrubbableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonFamily.gibbonFamilyID', 'gibbonFamily.name', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonFormGroup.nameShort as rollGroup', 'gibbonFormGroup.gibbonFormGroupID', 'gibbonYearGroup.gibbonYearGroupID'
+                'gibbonFamily.gibbonFamilyID', 'gibbonFamily.name', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonFormGroup.nameShort as formGroup', 'gibbonFormGroup.gibbonFormGroupID', 'gibbonYearGroup.gibbonYearGroupID'
             ])
             ->innerJoin('gibbonFamilyChild', 'gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID')
             ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonFamilyChild.gibbonPersonID')

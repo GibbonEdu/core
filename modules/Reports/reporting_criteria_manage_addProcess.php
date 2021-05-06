@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
 
     switch ($urlParams['scopeType']) {
         case 'Year Group': $scopeTypeID = $data['gibbonYearGroupID']; break;
-        case 'Roll Group': $scopeTypeID = $data['gibbonFormGroupID']; break;
+        case 'Form Group': $scopeTypeID = $data['gibbonFormGroupID']; break;
         case 'Course':     $scopeTypeID = $data['gibbonCourseID']; break;
     }
     $data['sequenceNumber'] = $reportingCriteriaGateway->getHighestSequenceNumberByScope($urlParams['gibbonReportingScopeID'], $urlParams['scopeType'], $scopeTypeID) + 1;
