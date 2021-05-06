@@ -25,7 +25,7 @@ $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $gibbonTTColumnRowID = $_GET['gibbonTTColumnRowID'] ?? '';
 $gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
 
-$gibbonSpaceID = $_POST['gibbonSpaceID'] ?? null;
+$gibbonSpaceID = !empty($_POST['gibbonSpaceID']) ? $_POST['gibbonSpaceID'] : null;
 
 if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $gibbonTTColumnRowID == '') { echo 'Fatal error loading this page!';
 } else {
