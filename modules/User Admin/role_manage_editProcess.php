@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonRoleID = $_GET['gibbonRoleID'];
+$gibbonRoleID = $_GET['gibbonRoleID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/role_manage_edit.php&gibbonRoleID='.$gibbonRoleID;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edit.php') == false) {
@@ -50,14 +50,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edi
             $values = $result->fetch();
 
             //Validate Inputs
-            $category = $_POST['category'];
-            $name = $_POST['name'];
-            $nameShort = $_POST['nameShort'];
-            $description = $_POST['description'];
+            $category = $_POST['category'] ?? '';
+            $name = $_POST['name'] ?? '';
+            $nameShort = $_POST['nameShort'] ?? '';
+            $description = $_POST['description'] ?? '';
             $canLoginRole = isset($_POST['canLoginRole'])? $_POST['canLoginRole'] : 'Y';
             $futureYearsLogin = isset($_POST['futureYearsLogin'])? $_POST['futureYearsLogin'] : $values['futureYearsLogin'];
             $pastYearsLogin = isset($_POST['pastYearsLogin'])? $_POST['pastYearsLogin'] : $values['pastYearsLogin'];
-            $restriction = $_POST['restriction'];
+            $restriction = $_POST['restriction'] ?? '';
 
             if (empty($category) or empty($name) or empty($nameShort) or empty($description) or empty($futureYearsLogin) or empty($pastYearsLogin) or empty($restriction) ) {
                 $URL .= '&return=error3';

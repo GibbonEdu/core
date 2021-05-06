@@ -30,101 +30,101 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $title = $_POST['title'];
-    $surname = trim($_POST['surname']);
-    $firstName = trim($_POST['firstName']);
-    $preferredName = trim($_POST['preferredName']);
-    $officialName = trim($_POST['officialName']);
-    $nameInCharacters = $_POST['nameInCharacters'];
-    $gender = $_POST['gender'];
-    $username = trim($_POST['username']);
-    $password = $_POST['passwordNew'];
-    $passwordConfirm = $_POST['passwordConfirm'];
-    $status = $_POST['status'];
-    $canLogin = $_POST['canLogin'];
-    $passwordForceReset = $_POST['passwordForceReset'];
-    $gibbonRoleIDPrimary = $_POST['gibbonRoleIDPrimary'];
+    $title = $_POST['title'] ?? '';
+    $surname = trim($_POST['surname'] ?? '');
+    $firstName = trim($_POST['firstName'] ?? '');
+    $preferredName = trim($_POST['preferredName'] ?? '');
+    $officialName = trim($_POST['officialName'] ?? '');
+    $nameInCharacters = $_POST['nameInCharacters'] ?? '';
+    $gender = $_POST['gender'] ?? '';
+    $username = trim($_POST['username'] ?? '');
+    $password = $_POST['passwordNew'] ?? '';
+    $passwordConfirm = $_POST['passwordConfirm'] ?? '';
+    $status = $_POST['status'] ?? '';
+    $canLogin = $_POST['canLogin'] ?? '';
+    $passwordForceReset = $_POST['passwordForceReset'] ?? '';
+    $gibbonRoleIDPrimary = $_POST['gibbonRoleIDPrimary'] ?? '';
     $dob = $_POST['dob'];
     if ($dob == '') {
         $dob = null;
     } else {
         $dob = dateConvert($guid, $dob);
     }
-    $email = trim($_POST['email']);
-    $emailAlternate = trim($_POST['emailAlternate']);
-    $address1 = isset($_POST['address1']) ? $_POST['address1'] : '';
-    $address1District = isset($_POST['address1District']) ? $_POST['address1District'] : '';
-    $address1Country = isset($_POST['address1Country']) ? $_POST['address1Country'] : '';
-    $address2 = isset($_POST['address2']) ? $_POST['address2'] : '';
-    $address2District = isset($_POST['address2District']) ? $_POST['address2District'] : '';
-    $address2Country = isset($_POST['address2Country']) ? $_POST['address2Country'] : '';
-    $phone1Type = $_POST['phone1Type'];
+    $email = trim($_POST['email'] ?? '');
+    $emailAlternate = trim($_POST['emailAlternate'] ?? '');
+    $address1 = $_POST['address1'] ?? '';
+    $address1District = $_POST['address1District'] ?? '';
+    $address1Country = $_POST['address1Country'] ?? '';
+    $address2 = $_POST['address2'] ?? '';
+    $address2District = $_POST['address2District'] ?? '';
+    $address2Country = $_POST['address2Country'] ?? '';
+    $phone1Type = $_POST['phone1Type'] ?? '';
     if ($_POST['phone1'] != '' and $phone1Type == '') {
         $phone1Type = 'Other';
     }
-    $phone1CountryCode = $_POST['phone1CountryCode'];
-    $phone1 = preg_replace('/[^0-9+]/', '', $_POST['phone1']);
-    $phone2Type = $_POST['phone2Type'];
+    $phone1CountryCode = $_POST['phone1CountryCode'] ?? '';
+    $phone1 = preg_replace('/[^0-9+]/', '', $_POST['phone1'] ?? '');
+    $phone2Type = $_POST['phone2Type'] ?? '';
     if ($_POST['phone2'] != '' and $phone2Type == '') {
         $phone2Type = 'Other';
     }
-    $phone2CountryCode = $_POST['phone2CountryCode'];
-    $phone2 = preg_replace('/[^0-9+]/', '', $_POST['phone2']);
-    $phone3Type = $_POST['phone3Type'];
+    $phone2CountryCode = $_POST['phone2CountryCode'] ?? '';
+    $phone2 = preg_replace('/[^0-9+]/', '', $_POST['phone2'] ?? '');
+    $phone3Type = $_POST['phone3Type'] ?? '';
     if ($_POST['phone3'] != '' and $phone3Type == '') {
         $phone3Type = 'Other';
     }
-    $phone3CountryCode = $_POST['phone3CountryCode'];
-    $phone3 = preg_replace('/[^0-9+]/', '', $_POST['phone3']);
-    $phone4Type = $_POST['phone4Type'];
+    $phone3CountryCode = $_POST['phone3CountryCode'] ?? '';
+    $phone3 = preg_replace('/[^0-9+]/', '', $_POST['phone3'] ?? '');
+    $phone4Type = $_POST['phone4Type'] ?? '';
     if ($_POST['phone4'] != '' and $phone4Type == '') {
         $phone4Type = 'Other';
     }
-    $phone4CountryCode = $_POST['phone4CountryCode'];
-    $phone4 = preg_replace('/[^0-9+]/', '', $_POST['phone4']);
-    $website = $_POST['website'];
-    $languageFirst = $_POST['languageFirst'];
-    $languageSecond = $_POST['languageSecond'];
-    $languageThird = $_POST['languageThird'];
-    $countryOfBirth = $_POST['countryOfBirth'];
-    $ethnicity = $_POST['ethnicity'];
-    $citizenship1 = $_POST['citizenship1'];
-    $citizenship1Passport = $_POST['citizenship1Passport'];
+    $phone4CountryCode = $_POST['phone4CountryCode'] ?? '';
+    $phone4 = preg_replace('/[^0-9+]/', '', $_POST['phone4'] ?? '');
+    $website = $_POST['website'] ?? '';
+    $languageFirst = $_POST['languageFirst'] ?? '';
+    $languageSecond = $_POST['languageSecond'] ?? '';
+    $languageThird = $_POST['languageThird'] ?? '';
+    $countryOfBirth = $_POST['countryOfBirth'] ?? '';
+    $ethnicity = $_POST['ethnicity'] ?? '';
+    $citizenship1 = $_POST['citizenship1'] ?? '';
+    $citizenship1Passport = $_POST['citizenship1Passport'] ?? '';
     $citizenship1PassportExpiry = !empty($_POST['citizenship1PassportExpiry']) ? Format::dateConvert($_POST['citizenship1PassportExpiry']) : null;
-    $citizenship2 = $_POST['citizenship2'];
-    $citizenship2Passport = $_POST['citizenship2Passport'];
+    $citizenship2 = $_POST['citizenship2'] ?? '';
+    $citizenship2Passport = $_POST['citizenship2Passport'] ?? '';
     $citizenship2PassportExpiry = !empty($_POST['citizenship2PassportExpiry']) ? Format::dateConvert($_POST['citizenship2PassportExpiry']) : null;
-    $religion = $_POST['religion'];
-    $nationalIDCardNumber = $_POST['nationalIDCardNumber'];
-    $residencyStatus = $_POST['residencyStatus'];
+    $religion = $_POST['religion'] ?? '';
+    $nationalIDCardNumber = $_POST['nationalIDCardNumber'] ?? '';
+    $residencyStatus = $_POST['residencyStatus'] ?? '';
     $visaExpiryDate = $_POST['visaExpiryDate'];
     if ($visaExpiryDate == '') {
         $visaExpiryDate = null;
     } else {
         $visaExpiryDate = dateConvert($guid, $visaExpiryDate);
     }
-    $profession = $_POST['profession'];
-    $employer = $_POST['employer'];
-    $jobTitle = $_POST['jobTitle'];
-    $emergency1Name = $_POST['emergency1Name'];
-    $emergency1Number1 = $_POST['emergency1Number1'];
-    $emergency1Number2 = $_POST['emergency1Number2'];
-    $emergency1Relationship = $_POST['emergency1Relationship'];
-    $emergency2Name = $_POST['emergency2Name'];
-    $emergency2Number1 = $_POST['emergency2Number1'];
-    $emergency2Number2 = $_POST['emergency2Number2'];
-    $emergency2Relationship = $_POST['emergency2Relationship'];
-    $profession = $_POST['profession'];
-    $employer = $_POST['employer'];
-    $jobTitle = $_POST['jobTitle'];
-    $gibbonHouseID = $_POST['gibbonHouseID'];
+    $profession = $_POST['profession'] ?? '';
+    $employer = $_POST['employer'] ?? '';
+    $jobTitle = $_POST['jobTitle'] ?? '';
+    $emergency1Name = $_POST['emergency1Name'] ?? '';
+    $emergency1Number1 = $_POST['emergency1Number1'] ?? '';
+    $emergency1Number2 = $_POST['emergency1Number2'] ?? '';
+    $emergency1Relationship = $_POST['emergency1Relationship'] ?? '';
+    $emergency2Name = $_POST['emergency2Name'] ?? '';
+    $emergency2Number1 = $_POST['emergency2Number1'] ?? '';
+    $emergency2Number2 = $_POST['emergency2Number2'] ?? '';
+    $emergency2Relationship = $_POST['emergency2Relationship'] ?? '';
+    $profession = $_POST['profession'] ?? '';
+    $employer = $_POST['employer'] ?? '';
+    $jobTitle = $_POST['jobTitle'] ?? '';
+    $gibbonHouseID = $_POST['gibbonHouseID'] ?? '';
     if ($gibbonHouseID == '') {
         $gibbonHouseID = null;
     } else {
         $gibbonHouseID = $gibbonHouseID;
     }
-    $studentID = $_POST['studentID'];
-    $dateStart = $_POST['dateStart'];
+    $studentID = $_POST['studentID'] ?? '';
+    $dateStart = $_POST['dateStart'] ?? '';
     if ($dateStart == '') {
         $dateStart = null;
     } else {
@@ -135,11 +135,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     if ($gibbonSchoolYearIDClassOf == '') {
         $gibbonSchoolYearIDClassOf = null;
     }
-    $lastSchool = $_POST['lastSchool'];
-    $transport = $_POST['transport'];
-    $transportNotes = $_POST['transportNotes'];
-    $lockerNumber = $_POST['lockerNumber'];
-    $vehicleRegistration = $_POST['vehicleRegistration'];
+    $lastSchool = $_POST['lastSchool'] ?? '';
+    $transport = $_POST['transport'] ?? '';
+    $transportNotes = $_POST['transportNotes'] ?? '';
+    $lockerNumber = $_POST['lockerNumber'] ?? '';
+    $vehicleRegistration = $_POST['vehicleRegistration'] ?? '';
     $privacyOptions = null;
     if (isset($_POST['privacyOptions'])) {
         $privacyOptions = $_POST['privacyOptions'];
@@ -224,7 +224,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                     {
                         $path = $_SESSION[$guid]['absolutePath'];
                         $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
-                    
+
                         //Move 240 attached file, if there is one
                         if (!empty($_FILES['file1']['tmp_name'])) {
                             $file = (isset($_FILES['file1']))? $_FILES['file1'] : null;
@@ -340,7 +340,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                     $AI = str_pad($connection2->lastInsertID(), 10, '0', STR_PAD_LEFT);
 
                     //Unlock tables
-                    
+
                         $sql = 'UNLOCK TABLES';
                         $result = $connection2->query($sql);
 

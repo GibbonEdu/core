@@ -23,12 +23,9 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
-$gibbonPersonID = $_GET['gibbonPersonID'];
-$search = '';
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-}
-$size = $_GET['size'];
+$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+$search = $_GET['search'] ?? '';
+$size = $_GET['size'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID&search=$search";
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edit.php') == false) {

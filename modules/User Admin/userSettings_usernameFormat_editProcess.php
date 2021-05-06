@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonUsernameFormatID = isset($_POST['gibbonUsernameFormatID'])? $_POST['gibbonUsernameFormatID'] : '';
+$gibbonUsernameFormatID = $_POST['gibbonUsernameFormatID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/userSettings_usernameFormat_edit.php&gibbonUsernameFormatID='.$gibbonUsernameFormatID;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.php') == false) {
@@ -27,13 +27,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $format = isset($_POST['format'])? $_POST['format'] : '';
-    $gibbonRoleIDList = isset($_POST['gibbonRoleIDList'])? $_POST['gibbonRoleIDList'] : '';
-    $isDefault = isset($_POST['isDefault'])? $_POST['isDefault'] : '';
-    $isNumeric = isset($_POST['isNumeric'])? $_POST['isNumeric'] : '';
-    $numericValue = isset($_POST['numericValue'])? $_POST['numericValue'] : 1;
-    $numericSize = isset($_POST['numericSize'])? $_POST['numericSize'] : 4;
-    $numericIncrement = isset($_POST['numericIncrement'])? $_POST['numericIncrement'] : 1;
+    $format = $_POST['format'] ?? '';
+    $gibbonRoleIDList = $_POST['gibbonRoleIDList'] ?? [];
+    $isDefault = $_POST['isDefault'] ?? '';
+    $isNumeric = $_POST['isNumeric'] ?? '';
+    $numericValue = $_POST['numericValue'] ?? 1;
+    $numericSize = $_POST['numericSize'] ?? 4;
+    $numericIncrement = $_POST['numericIncrement'] ?? 1;
 
     if (empty($format) || empty($gibbonRoleIDList)) {
         $URL .= '&return=error1';
