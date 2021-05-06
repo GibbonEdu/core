@@ -161,7 +161,7 @@ else {
 						$row = $form->addBulkActionRow(array('resend' => __('Resend')))->addClass('flex justify-end');
 							$row->addSubmit(__('Go'));
 
-						$rollGroups = $result->fetchAll(\PDO::FETCH_GROUP);
+						$formGroups = $result->fetchAll(\PDO::FETCH_GROUP);
 						$countTotal = 0;
 
 						// Merge gibbonPersonIDListStudent into $receipts as an array
@@ -170,7 +170,7 @@ else {
                             return $item;
                         }, $receipts);
 
-						foreach ($rollGroups as $rollGroupName => $recipients) {
+						foreach ($formGroups as $formGroupName => $recipients) {
 							$count = 0;
 
 							// Filter the array for only those individuals involved in the message (student or parent)
@@ -197,7 +197,7 @@ else {
 							// Skip this roll group if there's no involved individuals
 							if (empty($recipients)) continue;
 
-							$form->addRow()->addHeading($rollGroupName);
+							$form->addRow()->addHeading($formGroupName);
 							$table = $form->addRow()->addTable()->setClass('colorOddEven fullWidth');
 
 							$header = $table->addHeaderRow();

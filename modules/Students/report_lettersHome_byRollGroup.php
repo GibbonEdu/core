@@ -48,17 +48,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
         echo '</div>';
     } else {
         $siblings = array();
-        $currentRollGroup = '';
-        $lastRollGroup = '';
+        $currentFormGroup = '';
+        $lastFormGroup = '';
         $count = 0;
         $countTotal = 0;
         $rowNum = 'odd';
         while ($row = $result->fetch()) {
-            $currentRollGroup = $row['rollGroup'];
+            $currentFormGroup = $row['rollGroup'];
 
             //SPLIT INTO ROLL GROUPS
-            if ($currentRollGroup != $lastRollGroup) {
-                if ($lastRollGroup != '') {
+            if ($currentFormGroup != $lastFormGroup) {
+                if ($lastFormGroup != '') {
                     echo '</table>';
                 }
                 echo '<h2>'.$row['rollGroup'].'</h2>';
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
                 echo '</th>';
                 echo '</tr>';
             }
-            $lastRollGroup = $row['rollGroup'];
+            $lastFormGroup = $row['rollGroup'];
 
             //PUMP OUT STUDENT DATA
             //Check for older siblings

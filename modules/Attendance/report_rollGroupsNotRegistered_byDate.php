@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
             echo '</div>';
         } else {
             //Produce array of roll groups
-            $rollGroups = $result->fetchAll();
+            $formGroups = $result->fetchAll();
 
             echo "<div class='linkTop'>";
             echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_rollGroupsNotRegistered_byDate_print.php&dateStart='.dateConvertBack($guid, $dateStart).'&dateEnd='.dateConvertBack($guid, $dateEnd)."'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
@@ -149,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
 
             $count = 0;
 
-            foreach ($rollGroups as $row) {
+            foreach ($formGroups as $row) {
 
                 //Output row only if not registered on specified date
                 if ( isset($log[$row['gibbonFormGroupID']]) == false || count($log[$row['gibbonFormGroupID']]) < count($lastNSchoolDays) ) {

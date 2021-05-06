@@ -93,14 +93,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
         ->filterBy('to', Format::dateConvert($dateTo))
         ->fromPOST();
 
-    $rollGroups = $reportGateway->queryStudentCountByRollGroup($criteria, $gibbonSchoolYearID);
+    $formGroups = $reportGateway->queryStudentCountByRollGroup($criteria, $gibbonSchoolYearID);
 
     // DATA TABLE
     $table = ReportTable::createPaginated('rollGroupSummary', $criteria)->setViewMode($viewMode, $gibbon->session);
     $table->setTitle(__('Form Group Summary'));
 
-    $table->modifyRows(function ($rollGroup, $row) {
-        if ($rollGroup['rollGroup'] == __('All Form Groups')) $row->addClass('dull');
+    $table->modifyRows(function ($formGroup, $row) {
+        if ($formGroup['rollGroup'] == __('All Form Groups')) $row->addClass('dull');
         return $row;
     });
 
@@ -112,18 +112,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
     $table->addColumn('totalUnspecified', __('Unspecified'));
     $table->addColumn('total', __('Total'));
 
-    $rollGroupsData = $rollGroups->toArray();
-    $filteredAges = array_filter(array_column($rollGroupsData, 'meanAge'));
+    $formGroupsData = $formGroups->toArray();
+    $filteredAges = array_filter(array_column($formGroupsData, 'meanAge'));
 
-    $rollGroupsData[] = [
+    $formGroupsData[] = [
         'rollGroup'   => __('All Form Groups'),
         'meanAge'     => !empty($filteredAges) ? number_format(array_sum($filteredAges) / count($filteredAges), 1) : 0,
-        'totalMale'   => array_sum(array_column($rollGroupsData, 'totalMale')),
-        'totalFemale' => array_sum(array_column($rollGroupsData, 'totalFemale')),
-        'totalOther' => array_sum(array_column($rollGroupsData, 'totalOther')),
-        'totalUnspecified' => array_sum(array_column($rollGroupsData, 'totalUnspecified')),
-        'total'       => array_sum(array_column($rollGroupsData, 'total')),
+        'totalMale'   => array_sum(array_column($formGroupsData, 'totalMale')),
+        'totalFemale' => array_sum(array_column($formGroupsData, 'totalFemale')),
+        'totalOther' => array_sum(array_column($formGroupsData, 'totalOther')),
+        'totalUnspecified' => array_sum(array_column($formGroupsData, 'totalUnspecified')),
+        'total'       => array_sum(array_column($formGroupsData, 'total')),
     ];
 
-    echo $table->render(new DataSet($rollGroupsData));
+    echo $table->render(new DataSet($formGroupsData));
 }

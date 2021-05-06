@@ -211,7 +211,7 @@ if (isset($_SESSION[$guid]["username"])) {
         }
 
         if ($result->rowCount() > 0) {
-            $attendanceByRollGroup = [];
+            $attendanceByFormGroup = [];
             while ($row = $result->fetch()) {
                 //Produce array of attendance data
                 try {
@@ -282,20 +282,20 @@ if (isset($_SESSION[$guid]["username"])) {
                 $row['in'] = ($resultLog->rowCount() < 1) ? "" : ($log["total"] - $log["absent"]);
                 $row['out'] = $log["absent"] ?? '';
 
-                $attendanceByRollGroup[] = $row;
+                $attendanceByFormGroup[] = $row;
             }
 
             // define DataTable
             $takeAttendanceURL = '/modules/Attendance/attendance_take_byRollGroup.php';
-            $attendanceByRollGroupTable = $getDailyAttendanceTable(
+            $attendanceByFormGroupTable = $getDailyAttendanceTable(
                 $guid,
                 $connection2,
                 $currentDate,
                 'gibbonFormGroupID',
                 $takeAttendanceURL
             );
-            $attendanceByRollGroupTable->setTitle(__('My Form Group'));
-            $attendanceByRollGroupTable->withData(new DataSet($attendanceByRollGroup));
+            $attendanceByFormGroupTable->setTitle(__('My Form Group'));
+            $attendanceByFormGroupTable->withData(new DataSet($attendanceByFormGroup));
         }
     }
 
@@ -445,8 +445,8 @@ if (isset($_SESSION[$guid]["username"])) {
 //
 // write page outputs
 //
-if (isset($attendanceByRollGroupTable)) {
-    $page->write($attendanceByRollGroupTable->getOutput());
+if (isset($attendanceByFormGroupTable)) {
+    $page->write($attendanceByFormGroupTable->getOutput());
 }
 if (isset($attendanceByCourseClassTable)) {
     $page->write($attendanceByCourseClassTable->getOutput());

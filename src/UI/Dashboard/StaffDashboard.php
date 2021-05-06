@@ -37,13 +37,13 @@ class StaffDashboard implements OutputableInterface
 {
     protected $db;
     protected $session;
-    protected $rollGroupTable;
+    protected $formGroupTable;
 
-    public function __construct(Connection $db, Session $session, RollGroupTable $rollGroupTable, EnrolmentTable $enrolmentTable)
+    public function __construct(Connection $db, Session $session, RollGroupTable $formGroupTable, EnrolmentTable $enrolmentTable)
     {
         $this->db = $db;
         $this->session = $session;
-        $this->rollGroupTable = $rollGroupTable;
+        $this->rollGroupTable = $formGroupTable;
         $this->enrolmentTable = $enrolmentTable;
     }
 
@@ -228,29 +228,29 @@ class StaffDashboard implements OutputableInterface
         }
 
         //GET ROLL GROUPS
-        $rollGroups = array();
-        $rollGroupCount = 0;
+        $formGroups = array();
+        $formGroupCount = 0;
         $count = 0;
 
-            $dataRollGroups = array('gibbonPersonIDTutor' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor3' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-            $sqlRollGroups = 'SELECT * FROM gibbonFormGroup WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3) AND gibbonSchoolYearID=:gibbonSchoolYearID';
-            $resultRollGroups = $connection2->prepare($sqlRollGroups);
-            $resultRollGroups->execute($dataRollGroups);
+            $dataFormGroups = array('gibbonPersonIDTutor' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor3' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+            $sqlFormGroups = 'SELECT * FROM gibbonFormGroup WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3) AND gibbonSchoolYearID=:gibbonSchoolYearID';
+            $resultFormGroups = $connection2->prepare($sqlFormGroups);
+            $resultFormGroups->execute($dataFormGroups);
 
         $attendanceAccess = isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byRollGroup.php');
 
-        while ($rowRollGroups = $resultRollGroups->fetch()) {
-            $rollGroups[$count][0] = $rowRollGroups['gibbonFormGroupID'];
-            $rollGroups[$count][1] = $rowRollGroups['nameShort'];
+        while ($rowFormGroups = $resultFormGroups->fetch()) {
+            $formGroups[$count][0] = $rowFormGroups['gibbonFormGroupID'];
+            $formGroups[$count][1] = $rowFormGroups['nameShort'];
 
             //Roll group table
-            $this->rollGroupTable->build($rowRollGroups['gibbonFormGroupID'], true, false, 'rollOrder, surname, preferredName');
+            $this->rollGroupTable->build($rowFormGroups['gibbonFormGroupID'], true, false, 'rollOrder, surname, preferredName');
             $this->rollGroupTable->setTitle('');
 
-            if ($rowRollGroups['attendance'] == 'Y' AND $attendanceAccess) {
+            if ($rowFormGroups['attendance'] == 'Y' AND $attendanceAccess) {
                 $this->rollGroupTable->addHeaderAction('attendance', __('Take Attendance'))
                     ->setURL('/modules/Attendance/attendance_take_byRollGroup.php')
-                    ->addParam('gibbonFormGroupID', $rowRollGroups['gibbonFormGroupID'])
+                    ->addParam('gibbonFormGroupID', $rowFormGroups['gibbonFormGroupID'])
                     ->setIcon('attendance')
                     ->displayLabel()
                     ->append(' | ');
@@ -258,65 +258,65 @@ class StaffDashboard implements OutputableInterface
 
             $this->rollGroupTable->addHeaderAction('export', __('Export to Excel'))
                 ->setURL('/indexExport.php')
-                ->addParam('gibbonFormGroupID', $rowRollGroups['gibbonFormGroupID'])
+                ->addParam('gibbonFormGroupID', $rowFormGroups['gibbonFormGroupID'])
                 ->directLink()
                 ->displayLabel();
 
-            $rollGroups[$count][2] = $this->rollGroupTable->getOutput();
+            $formGroups[$count][2] = $this->rollGroupTable->getOutput();
 
             $behaviourView = isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.php');
             if ($behaviourView) {
                 //Behaviour
-                $rollGroups[$count][3] = '';
+                $formGroups[$count][3] = '';
                 $plural = 's';
-                if ($resultRollGroups->rowCount() == 1) {
+                if ($resultFormGroups->rowCount() == 1) {
                     $plural = '';
                 }
                 try {
-                    $dataBehaviour = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonFormGroupID' => $rollGroups[$count][0]);
+                    $dataBehaviour = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonFormGroupID' => $formGroups[$count][0]);
                     $sqlBehaviour = 'SELECT gibbonBehaviour.*, student.surname AS surnameStudent, student.preferredName AS preferredNameStudent, creator.surname AS surnameCreator, creator.preferredName AS preferredNameCreator, creator.title FROM gibbonBehaviour JOIN gibbonPerson AS student ON (gibbonBehaviour.gibbonPersonID=student.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID) JOIN gibbonPerson AS creator ON (gibbonBehaviour.gibbonPersonIDCreator=creator.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonBehaviour.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonFormGroupID=:gibbonFormGroupID ORDER BY timestamp DESC';
                     $resultBehaviour = $connection2->prepare($sqlBehaviour);
                     $resultBehaviour->execute($dataBehaviour);
                 } catch (PDOException $e) {
-                    $rollGroups[$count][3] .= "<div class='error'>".$e->getMessage().'</div>';
+                    $formGroups[$count][3] .= "<div class='error'>".$e->getMessage().'</div>';
                 }
 
                 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage_add.php')) {
-                    $rollGroups[$count][3] .= "<div class='linkTop'>";
-                    $rollGroups[$count][3] .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Behaviour/behaviour_manage_add.php&gibbonPersonID=&gibbonFormGroupID=&gibbonYearGroupID=&type='>".__('Add')."<img style='margin: 0 0 -4px 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+                    $formGroups[$count][3] .= "<div class='linkTop'>";
+                    $formGroups[$count][3] .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Behaviour/behaviour_manage_add.php&gibbonPersonID=&gibbonFormGroupID=&gibbonYearGroupID=&type='>".__('Add')."<img style='margin: 0 0 -4px 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
                     $policyLink = getSettingByScope($connection2, 'Behaviour', 'policyLink');
                     if ($policyLink != '') {
-                        $rollGroups[$count][3] .= " | <a target='_blank' href='$policyLink'>".__('View Behaviour Policy').'</a>';
+                        $formGroups[$count][3] .= " | <a target='_blank' href='$policyLink'>".__('View Behaviour Policy').'</a>';
                     }
-                    $rollGroups[$count][3] .= '</div>';
+                    $formGroups[$count][3] .= '</div>';
                 }
 
                 if ($resultBehaviour->rowCount() < 1) {
-                    $rollGroups[$count][3] .= "<div class='error'>";
-                    $rollGroups[$count][3] .= __('There are no records to display.');
-                    $rollGroups[$count][3] .= '</div>';
+                    $formGroups[$count][3] .= "<div class='error'>";
+                    $formGroups[$count][3] .= __('There are no records to display.');
+                    $formGroups[$count][3] .= '</div>';
                 } else {
-                    $rollGroups[$count][3] .= "<table cellspacing='0' style='width: 100%'>";
-                    $rollGroups[$count][3] .= "<tr class='head'>";
-                    $rollGroups[$count][3] .= '<th>';
-                    $rollGroups[$count][3] .= __('Student & Date');
-                    $rollGroups[$count][3] .= '</th>';
-                    $rollGroups[$count][3] .= '<th>';
-                    $rollGroups[$count][3] .= __('Type');
-                    $rollGroups[$count][3] .= '</th>';
-                    $rollGroups[$count][3] .= '<th>';
-                    $rollGroups[$count][3] .= __('Descriptor');
-                    $rollGroups[$count][3] .= '</th>';
-                    $rollGroups[$count][3] .= '<th>';
-                    $rollGroups[$count][3] .= __('Level');
-                    $rollGroups[$count][3] .= '</th>';
-                    $rollGroups[$count][3] .= '<th>';
-                    $rollGroups[$count][3] .= __('Teacher');
-                    $rollGroups[$count][3] .= '</th>';
-                    $rollGroups[$count][3] .= '<th>';
-                    $rollGroups[$count][3] .= __('Action');
-                    $rollGroups[$count][3] .= '</th>';
-                    $rollGroups[$count][3] .= '</tr>';
+                    $formGroups[$count][3] .= "<table cellspacing='0' style='width: 100%'>";
+                    $formGroups[$count][3] .= "<tr class='head'>";
+                    $formGroups[$count][3] .= '<th>';
+                    $formGroups[$count][3] .= __('Student & Date');
+                    $formGroups[$count][3] .= '</th>';
+                    $formGroups[$count][3] .= '<th>';
+                    $formGroups[$count][3] .= __('Type');
+                    $formGroups[$count][3] .= '</th>';
+                    $formGroups[$count][3] .= '<th>';
+                    $formGroups[$count][3] .= __('Descriptor');
+                    $formGroups[$count][3] .= '</th>';
+                    $formGroups[$count][3] .= '<th>';
+                    $formGroups[$count][3] .= __('Level');
+                    $formGroups[$count][3] .= '</th>';
+                    $formGroups[$count][3] .= '<th>';
+                    $formGroups[$count][3] .= __('Teacher');
+                    $formGroups[$count][3] .= '</th>';
+                    $formGroups[$count][3] .= '<th>';
+                    $formGroups[$count][3] .= __('Action');
+                    $formGroups[$count][3] .= '</th>';
+                    $formGroups[$count][3] .= '</tr>';
 
                     $count2 = 0;
                     $rowNum = 'odd';
@@ -329,68 +329,68 @@ class StaffDashboard implements OutputableInterface
                         ++$count2;
 
                         //COLOR ROW BY STATUS!
-                        $rollGroups[$count][3] .= "<tr class=$rowNum>";
-                        $rollGroups[$count][3] .= '<td>';
-                        $rollGroups[$count][3] .= '<b>'.Format::name('', $rowBehaviour['preferredNameStudent'], $rowBehaviour['surnameStudent'], 'Student', false).'</b><br/>';
+                        $formGroups[$count][3] .= "<tr class=$rowNum>";
+                        $formGroups[$count][3] .= '<td>';
+                        $formGroups[$count][3] .= '<b>'.Format::name('', $rowBehaviour['preferredNameStudent'], $rowBehaviour['surnameStudent'], 'Student', false).'</b><br/>';
                         if (substr($rowBehaviour['timestamp'], 0, 10) > $rowBehaviour['date']) {
-                            $rollGroups[$count][3] .= __('Date Updated').': '.dateConvertBack($guid, substr($rowBehaviour['timestamp'], 0, 10)).'<br/>';
-                            $rollGroups[$count][3] .= __('Incident Date').': '.dateConvertBack($guid, $rowBehaviour['date']).'<br/>';
+                            $formGroups[$count][3] .= __('Date Updated').': '.dateConvertBack($guid, substr($rowBehaviour['timestamp'], 0, 10)).'<br/>';
+                            $formGroups[$count][3] .= __('Incident Date').': '.dateConvertBack($guid, $rowBehaviour['date']).'<br/>';
                         } else {
-                            $rollGroups[$count][3] .= dateConvertBack($guid, $rowBehaviour['date']).'<br/>';
+                            $formGroups[$count][3] .= dateConvertBack($guid, $rowBehaviour['date']).'<br/>';
                         }
-                        $rollGroups[$count][3] .= '</td>';
-                        $rollGroups[$count][3] .= "<td style='text-align: center'>";
+                        $formGroups[$count][3] .= '</td>';
+                        $formGroups[$count][3] .= "<td style='text-align: center'>";
                         if ($rowBehaviour['type'] == 'Negative') {
-                            $rollGroups[$count][3] .= "<img title='".__('Negative')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
+                            $formGroups[$count][3] .= "<img title='".__('Negative')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
                         } elseif ($rowBehaviour['type'] == 'Positive') {
-                            $rollGroups[$count][3] .= "<img title='".__('Positive')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
+                            $formGroups[$count][3] .= "<img title='".__('Positive')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
                         }
-                        $rollGroups[$count][3] .= '</td>';
-                        $rollGroups[$count][3] .= '<td>';
-                        $rollGroups[$count][3] .= trim($rowBehaviour['descriptor']);
-                        $rollGroups[$count][3] .= '</td>';
-                        $rollGroups[$count][3] .= '<td>';
-                        $rollGroups[$count][3] .= trim($rowBehaviour['level']);
-                        $rollGroups[$count][3] .= '</td>';
-                        $rollGroups[$count][3] .= '<td>';
-                        $rollGroups[$count][3] .= Format::name($rowBehaviour['title'], $rowBehaviour['preferredNameCreator'], $rowBehaviour['surnameCreator'], 'Staff', false).'<br/>';
-                        $rollGroups[$count][3] .= '</td>';
-                        $rollGroups[$count][3] .= '<td>';
-                        $rollGroups[$count][3] .= "<script type='text/javascript'>";
-                        $rollGroups[$count][3] .= '$(document).ready(function(){';
-                        $rollGroups[$count][3] .= "\$(\".comment-$count2\").hide();";
-                        $rollGroups[$count][3] .= "\$(\".show_hide-$count2\").fadeIn(1000);";
-                        $rollGroups[$count][3] .= "\$(\".show_hide-$count2\").click(function(){";
-                        $rollGroups[$count][3] .= "\$(\".comment-$count2\").fadeToggle(1000);";
-                        $rollGroups[$count][3] .= '});';
-                        $rollGroups[$count][3] .= '});';
-                        $rollGroups[$count][3] .= '</script>';
+                        $formGroups[$count][3] .= '</td>';
+                        $formGroups[$count][3] .= '<td>';
+                        $formGroups[$count][3] .= trim($rowBehaviour['descriptor']);
+                        $formGroups[$count][3] .= '</td>';
+                        $formGroups[$count][3] .= '<td>';
+                        $formGroups[$count][3] .= trim($rowBehaviour['level']);
+                        $formGroups[$count][3] .= '</td>';
+                        $formGroups[$count][3] .= '<td>';
+                        $formGroups[$count][3] .= Format::name($rowBehaviour['title'], $rowBehaviour['preferredNameCreator'], $rowBehaviour['surnameCreator'], 'Staff', false).'<br/>';
+                        $formGroups[$count][3] .= '</td>';
+                        $formGroups[$count][3] .= '<td>';
+                        $formGroups[$count][3] .= "<script type='text/javascript'>";
+                        $formGroups[$count][3] .= '$(document).ready(function(){';
+                        $formGroups[$count][3] .= "\$(\".comment-$count2\").hide();";
+                        $formGroups[$count][3] .= "\$(\".show_hide-$count2\").fadeIn(1000);";
+                        $formGroups[$count][3] .= "\$(\".show_hide-$count2\").click(function(){";
+                        $formGroups[$count][3] .= "\$(\".comment-$count2\").fadeToggle(1000);";
+                        $formGroups[$count][3] .= '});';
+                        $formGroups[$count][3] .= '});';
+                        $formGroups[$count][3] .= '</script>';
                         if ($rowBehaviour['comment'] != '') {
-                            $rollGroups[$count][3] .= "<a title='".__('View Description')."' class='show_hide-$count2' onclick='false' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/page_down.png' alt='".__('Show Comment')."' onclick='return false;' /></a>";
+                            $formGroups[$count][3] .= "<a title='".__('View Description')."' class='show_hide-$count2' onclick='false' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/page_down.png' alt='".__('Show Comment')."' onclick='return false;' /></a>";
                         }
-                        $rollGroups[$count][3] .= '</td>';
-                        $rollGroups[$count][3] .= '</tr>';
+                        $formGroups[$count][3] .= '</td>';
+                        $formGroups[$count][3] .= '</tr>';
                         if ($rowBehaviour['comment'] != '') {
                             if ($rowBehaviour['type'] == 'Positive') {
                                 $bg = 'background-color: #D4F6DC;';
                             } else {
                                 $bg = 'background-color: #F6CECB;';
                             }
-                            $rollGroups[$count][3] .= "<tr class='comment-$count2' id='comment-$count2'>";
-                            $rollGroups[$count][3] .= "<td style='$bg' colspan=6>";
-                            $rollGroups[$count][3] .= $rowBehaviour['comment'];
-                            $rollGroups[$count][3] .= '</td>';
-                            $rollGroups[$count][3] .= '</tr>';
+                            $formGroups[$count][3] .= "<tr class='comment-$count2' id='comment-$count2'>";
+                            $formGroups[$count][3] .= "<td style='$bg' colspan=6>";
+                            $formGroups[$count][3] .= $rowBehaviour['comment'];
+                            $formGroups[$count][3] .= '</td>';
+                            $formGroups[$count][3] .= '</tr>';
                         }
-                        $rollGroups[$count][3] .= '</tr>';
-                        $rollGroups[$count][3] .= '</tr>';
+                        $formGroups[$count][3] .= '</tr>';
+                        $formGroups[$count][3] .= '</tr>';
                     }
-                    $rollGroups[$count][3] .= '</table>';
+                    $formGroups[$count][3] .= '</table>';
                 }
             }
 
             ++$count;
-            ++$rollGroupCount;
+            ++$formGroupCount;
         }
 
         //GET HOOKS INTO DASHBOARD
@@ -437,12 +437,12 @@ class StaffDashboard implements OutputableInterface
                     $staffDashboardDefaultTabCount = $tabCount;
                 ++$tabCount;
             }
-            if (count($rollGroups) > 0) {
-                foreach ($rollGroups as $rollGroup) {
-                    $return .= "<li><a href='#tabs".$tabCount."'>".$rollGroup[1].'</a></li>';
+            if (count($formGroups) > 0) {
+                foreach ($formGroups as $formGroup) {
+                    $return .= "<li><a href='#tabs".$tabCount."'>".$formGroup[1].'</a></li>';
                     ++$tabCount;
                     if ($behaviourView) {
-                        $return .= "<li><a href='#tabs".$tabCount."'>".$rollGroup[1].' '.__('Behaviour').'</a></li>';
+                        $return .= "<li><a href='#tabs".$tabCount."'>".$formGroup[1].' '.__('Behaviour').'</a></li>';
                         ++$tabCount;
                     }
                 }
@@ -473,16 +473,16 @@ class StaffDashboard implements OutputableInterface
                 ++$tabCount;
             }
 
-            if (count($rollGroups) > 0) {
-                foreach ($rollGroups as $rollGroup) {
+            if (count($formGroups) > 0) {
+                foreach ($formGroups as $formGroup) {
                     $return .= "<div id='tabs".$tabCount."'>";
-                    $return .= $rollGroup[2];
+                    $return .= $formGroup[2];
                     $return .= '</div>';
                     ++$tabCount;
 
                     if ($behaviourView) {
                         $return .= "<div id='tabs".$tabCount."'>";
-                        $return .= $rollGroup[3];
+                        $return .= $formGroup[3];
                         $return .= '</div>';
                         ++$tabCount;
                     }

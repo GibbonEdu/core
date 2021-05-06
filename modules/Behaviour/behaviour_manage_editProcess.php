@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                     // Send a notification to student's tutors and anyone subscribed to the notification event
                     $studentGateway = $container->get(StudentGateway::class);
-                    $rollGroupGateway = $container->get(RollGroupGateway::class);
+                    $formGroupGateway = $container->get(RollGroupGateway::class);
                     $inAssistantGateway = $container->get(INAssistantGateway::class);
 
                     // Send behaviour notifications
@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                         // Add direct notifications to roll group tutors
                         if (getSettingByScope($connection2, 'Behaviour', 'notifyTutors') == 'Y') {
-                            $tutors = $rollGroupGateway->selectTutorsByRollGroup($student['gibbonFormGroupID'])->fetchAll();
+                            $tutors = $formGroupGateway->selectTutorsByRollGroup($student['gibbonFormGroupID'])->fetchAll();
                             foreach ($tutors as $tutor) {
                                 $event->addRecipient($tutor['gibbonPersonID']);
                             }
