@@ -22,9 +22,9 @@ use Gibbon\Domain\FormGroups\FormGroupGateway;
 
 include '../../gibbon.php';
 
-$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-$gibbonStudentEnrolmentID = $_POST['gibbonStudentEnrolmentID'];
-$search = $_GET['search'];
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$gibbonStudentEnrolmentID = $_POST['gibbonStudentEnrolmentID'] ?? '';
+$search = $_GET['search'] ?? '';
 
 if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 } else {
@@ -60,16 +60,16 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
             } else {
                 $row = $result->fetch();
 
-                $gibbonYearGroupID = $_POST['gibbonYearGroupID'];
-                $gibbonFormGroupID = $_POST['gibbonFormGroupID'];
-                $gibbonFormGroupIDOriginal = (isset($_POST['gibbonFormGroupIDOriginal']))? $_POST['gibbonFormGroupIDOriginal'] : 'N';
+                $gibbonYearGroupID = $_POST['gibbonYearGroupID'] ?? '';
+                $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
+                $gibbonFormGroupIDOriginal = $_POST['gibbonFormGroupIDOriginal'] ?? 'N';
                 $formGroupOriginalNameShort = $_POST['formGroupOriginalNameShort'] ?? '';
                 $gibbonPersonID = $row['gibbonPersonID'];
 
                 $formGroupTo = $container->get(FormGroupGateway::class)->getFormGroupByID($gibbonFormGroupID);
                 $formGroupToName = $formGroupTo['nameShort'];
 
-                $rollOrder = $_POST['rollOrder'];
+                $rollOrder = $_POST['rollOrder'] ?? '';
                 if ($rollOrder == '') {
                     $rollOrder = null;
                 }

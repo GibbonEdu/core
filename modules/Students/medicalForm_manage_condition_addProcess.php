@@ -24,8 +24,8 @@ use Gibbon\Domain\Students\StudentGateway;
 
 include '../../gibbon.php';
 
-$gibbonPersonMedicalID = $_POST['gibbonPersonMedicalID'];
-$search = $_GET['search'];
+$gibbonPersonMedicalID = $_POST['gibbonPersonMedicalID'] ?? '';
+$search = $_GET['search'] ?? '';
 
 if ($gibbonPersonMedicalID == '') { echo 'Fatal error loading this page!';
 } else {
@@ -59,19 +59,19 @@ if ($gibbonPersonMedicalID == '') { echo 'Fatal error loading this page!';
                 $values = $result->fetch();
 
                 //Validate Inputs
-                $name = $_POST['name'];
-                $gibbonAlertLevelID = $_POST['gibbonAlertLevelID'];
-                $triggers = $_POST['triggers'];
-                $reaction = $_POST['reaction'];
-                $response = $_POST['response'];
-                $medication = $_POST['medication'];
+                $name = $_POST['name'] ?? '';
+                $gibbonAlertLevelID = $_POST['gibbonAlertLevelID'] ?? '';
+                $triggers = $_POST['triggers'] ?? '';
+                $reaction = $_POST['reaction'] ?? '';
+                $response = $_POST['response'] ?? '';
+                $medication = $_POST['medication'] ?? '';
                 if ($_POST['lastEpisode'] == '') {
                     $lastEpisode = null;
                 } else {
-                    $lastEpisode = dateConvert($guid, $_POST['lastEpisode']);
+                    $lastEpisode = dateConvert($guid, $_POST['lastEpisode'] ?? '');
                 }
-                $lastEpisodeTreatment = $_POST['lastEpisodeTreatment'];
-                $comment = $_POST['comment'];
+                $lastEpisodeTreatment = $_POST['lastEpisodeTreatment'] ?? '';
+                $comment = $_POST['comment'] ?? '';
 
                 // File Upload
                 $attachment = null;

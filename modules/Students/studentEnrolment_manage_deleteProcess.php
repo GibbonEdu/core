@@ -19,9 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-$gibbonStudentEnrolmentID = $_POST['gibbonStudentEnrolmentID'];
-$search = $_GET['search'];
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$gibbonStudentEnrolmentID = $_POST['gibbonStudentEnrolmentID'] ?? '';
+$search = $_GET['search'] ?? '';
 
 if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 } else {
